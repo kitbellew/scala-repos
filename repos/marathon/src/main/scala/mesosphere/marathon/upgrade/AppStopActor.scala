@@ -19,9 +19,7 @@ class AppStopActor(
     extends StoppingBehavior {
 
   override var idsToKill: mutable.Set[Task.Id] = taskTracker
-    .appTasksLaunchedSync(app.id)
-    .map(_.taskId)
-    .to[mutable.Set]
+    .appTasksLaunchedSync(app.id).map(_.taskId).to[mutable.Set]
 
   def appId: PathId = app.id
 

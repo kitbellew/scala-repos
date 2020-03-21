@@ -133,14 +133,11 @@ object HttpConfiguration {
     HttpConfiguration(
       context = context,
       parser = ParserConfiguration(
-        maxMemoryBuffer = config
-          .getDeprecated[ConfigMemorySize](
-            "play.http.parser.maxMemoryBuffer",
-            "parsers.text.maxLength")
-          .toBytes
-          .toInt,
-        maxDiskBuffer =
-          config.get[ConfigMemorySize]("play.http.parser.maxDiskBuffer").toBytes
+        maxMemoryBuffer = config.getDeprecated[ConfigMemorySize](
+          "play.http.parser.maxMemoryBuffer",
+          "parsers.text.maxLength").toBytes.toInt,
+        maxDiskBuffer = config
+          .get[ConfigMemorySize]("play.http.parser.maxDiskBuffer").toBytes
       ),
       actionComposition = ActionCompositionConfiguration(
         controllerAnnotationsFirst = config.get[Boolean](
@@ -148,8 +145,8 @@ object HttpConfiguration {
         executeActionCreatorActionFirst = config.get[Boolean](
           "play.http.actionComposition.executeActionCreatorActionFirst")
       ),
-      cookies = CookiesConfiguration(strict = config.get[Boolean](
-        "play.http.cookies.strict")),
+      cookies = CookiesConfiguration(strict = config
+        .get[Boolean]("play.http.cookies.strict")),
       session = SessionConfiguration(
         cookieName = config.getDeprecated[String](
           "play.http.session.cookieName",
@@ -183,6 +180,6 @@ object HttpConfiguration {
     * Don't use this - only exists for transition from global state
     */
   private[play] def current =
-    Play.privateMaybeApplication.fold(HttpConfiguration())(
-      httpConfigurationCache)
+    Play.privateMaybeApplication
+      .fold(HttpConfiguration())(httpConfigurationCache)
 }

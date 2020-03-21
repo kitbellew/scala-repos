@@ -102,8 +102,7 @@ object BufCodecBenchmark {
       iter = values.iterator
       while (iter.hasNext) {
         iter.next() match {
-          case v =>
-            bw.writeIntBE(v.length)
+          case v => bw.writeIntBE(v.length)
               .writeBytes(Buf.ByteArray.Owned.extract(v))
         }
       }

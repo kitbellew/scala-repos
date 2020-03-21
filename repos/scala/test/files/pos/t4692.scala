@@ -11,8 +11,9 @@ class TypeAliasVsImplicitTest {
 
   type MyListOfInt = MyList[Int]
   def bar(xs: MyListOfInt) =
-    xs.map(x =>
-      x) // doesn't compile: value map is not a member of TypeAliasVsImplicitTest.this.MyListOfInt
+    xs
+      .map(x =>
+        x) // doesn't compile: value map is not a member of TypeAliasVsImplicitTest.this.MyListOfInt
 }
 
 // minimal case -- the bug was in type constructor inference where `xs.type` needed to be widened *and* dealiased

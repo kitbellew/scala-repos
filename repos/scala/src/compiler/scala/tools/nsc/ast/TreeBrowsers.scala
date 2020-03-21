@@ -118,8 +118,8 @@ abstract class TreeBrowsers {
     */
   class BrowserFrame(phaseName: String = "unknown") {
     try {
-      UIManager.setLookAndFeel(
-        "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")
+      UIManager
+        .setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")
     } catch {
       case _: Throwable =>
         UIManager.setLookAndFeel(
@@ -135,11 +135,9 @@ abstract class TreeBrowsers {
     var treeModel: ASTTreeModel = _
     var jTree: JTree = _
     val textArea: JTextArea = new JTextArea(30, 120)
-    textArea.setBorder(BorderFactory.createEmptyBorder(
-      borderSize,
-      borderSize,
-      borderSize,
-      borderSize))
+    textArea.setBorder(
+      BorderFactory
+        .createEmptyBorder(borderSize, borderSize, borderSize, borderSize))
 
     val infoPanel = new TextInfoPanel()
 
@@ -206,11 +204,9 @@ abstract class TreeBrowsers {
         new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, topLeftPane, topRightPane)
       topSplitPane.setResizeWeight(0.5)
 
-      jTree.setBorder(BorderFactory.createEmptyBorder(
-        borderSize,
-        borderSize,
-        borderSize,
-        borderSize))
+      jTree.setBorder(
+        BorderFactory
+          .createEmptyBorder(borderSize, borderSize, borderSize, borderSize))
       topLeftPane.add(new JScrollPane(jTree), BorderLayout.CENTER)
       topRightPane.add(new JScrollPane(infoPanel), BorderLayout.CENTER)
       bottomPane.add(new JScrollPane(textArea), BorderLayout.CENTER)
@@ -240,9 +236,7 @@ abstract class TreeBrowsers {
       // jmFile add jmiSaveImage
 
       def closeWindow() =
-        frame
-          .getToolkit()
-          .getSystemEventQueue()
+        frame.getToolkit().getSystemEventQueue()
           .postEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
 
       val jmiCancel = new JMenuItem(new AbstractAction("Cancel Compilation") {
@@ -291,11 +285,9 @@ abstract class TreeBrowsers {
     */
   class TextInfoPanel extends JTextArea(20, 50) {
 
-    setBorder(BorderFactory.createEmptyBorder(
-      borderSize,
-      borderSize,
-      borderSize,
-      borderSize))
+    setBorder(
+      BorderFactory
+        .createEmptyBorder(borderSize, borderSize, borderSize, borderSize))
     setEditable(false)
     setFont(new Font("monospaced", Font.PLAIN, 12))
 
@@ -311,12 +303,10 @@ abstract class TreeBrowsers {
           str.append("tree.id: ").append(t.id)
           str.append("\ntree.pos: ").append(t.pos)
           str.append("\nSymbol: ").append(TreeInfo.symbolText(t))
-          str
-            .append("\nSymbol owner: ")
-            .append(
-              if ((t.symbol ne null) && t.symbol != NoSymbol)
-                t.symbol.owner.toString
-              else "NoSymbol has no owner")
+          str.append("\nSymbol owner: ").append(
+            if ((t.symbol ne null) && t.symbol != NoSymbol)
+              t.symbol.owner.toString
+            else "NoSymbol has no owner")
           if ((t.symbol ne null) && t.symbol.isType) {
             str.append(
               "\ntermSymbol: " + t.symbol.tpe.termSymbol
@@ -328,23 +318,20 @@ abstract class TreeBrowsers {
           if (t.symbol ne null) {
             str.append(t.symbol.tpe).append("\n")
             buf = new StringWriter()
-            TypePrinter
-              .toDocument(t.symbol.tpe)
+            TypePrinter.toDocument(t.symbol.tpe)
               .format(getWidth() / getColumnWidth(), buf)
             str.append(buf.toString)
           }
           str.append("\n\nSymbol info: \n")
           TreeInfo.symbolTypeDoc(t).format(getWidth() / getColumnWidth(), buf)
           str.append(buf.toString)
-          str
-            .append("\n\nSymbol Attributes: \n")
+          str.append("\n\nSymbol Attributes: \n")
             .append(TreeInfo.symbolAttributes(t))
           str.append("\ntree.tpe: ")
           if (t.tpe ne null) {
             str.append(t.tpe.toString).append("\n")
             buf = new StringWriter()
-            TypePrinter
-              .toDocument(t.tpe)
+            TypePrinter.toDocument(t.tpe)
               .format(getWidth() / getColumnWidth(), buf)
             str.append(buf.toString)
           }

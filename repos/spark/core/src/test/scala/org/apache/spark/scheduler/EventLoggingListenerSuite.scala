@@ -173,9 +173,8 @@ class EventLoggingListenerSuite
     eventLogger.stop()
 
     // Verify file contains exactly the two events logged
-    val logData = EventLoggingListener.openEventLog(
-      new Path(eventLogger.logPath),
-      fileSystem)
+    val logData = EventLoggingListener
+      .openEventLog(new Path(eventLogger.logPath), fileSystem)
     try {
       val lines = readLines(logData)
       val logStart = SparkListenerLogStart(SPARK_VERSION)
@@ -225,26 +224,23 @@ class EventLoggingListenerSuite
     eventExistenceListener.assertAllCallbacksInvoked()
 
     // Make sure expected events exist in the log file.
-    val logData = EventLoggingListener.openEventLog(
-      new Path(eventLogger.logPath),
-      fileSystem)
+    val logData = EventLoggingListener
+      .openEventLog(new Path(eventLogger.logPath), fileSystem)
     val logStart = SparkListenerLogStart(SPARK_VERSION)
     val lines = readLines(logData)
-    val eventSet = mutable
-      .Set(
-        SparkListenerApplicationStart,
-        SparkListenerBlockManagerAdded,
-        SparkListenerExecutorAdded,
-        SparkListenerEnvironmentUpdate,
-        SparkListenerJobStart,
-        SparkListenerJobEnd,
-        SparkListenerStageSubmitted,
-        SparkListenerStageCompleted,
-        SparkListenerTaskStart,
-        SparkListenerTaskEnd,
-        SparkListenerApplicationEnd
-      )
-      .map(Utils.getFormattedClassName)
+    val eventSet = mutable.Set(
+      SparkListenerApplicationStart,
+      SparkListenerBlockManagerAdded,
+      SparkListenerExecutorAdded,
+      SparkListenerEnvironmentUpdate,
+      SparkListenerJobStart,
+      SparkListenerJobEnd,
+      SparkListenerStageSubmitted,
+      SparkListenerStageCompleted,
+      SparkListenerTaskStart,
+      SparkListenerTaskEnd,
+      SparkListenerApplicationEnd
+    ).map(Utils.getFormattedClassName)
     lines.foreach { line =>
       eventSet.foreach { event =>
         if (line.contains(event)) {

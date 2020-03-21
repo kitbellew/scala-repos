@@ -91,8 +91,7 @@ trait KafkaMetricsGroup extends Logging {
       eventType: String,
       timeUnit: TimeUnit,
       tags: scala.collection.Map[String, String] = Map.empty) =
-    Metrics
-      .defaultRegistry()
+    Metrics.defaultRegistry()
       .newMeter(metricName(name, tags), eventType, timeUnit)
 
   def newHistogram(
@@ -106,8 +105,7 @@ trait KafkaMetricsGroup extends Logging {
       durationUnit: TimeUnit,
       rateUnit: TimeUnit,
       tags: scala.collection.Map[String, String] = Map.empty) =
-    Metrics
-      .defaultRegistry()
+    Metrics.defaultRegistry()
       .newTimer(metricName(name, tags), durationUnit, rateUnit)
 
   def removeMetric(
@@ -232,28 +230,24 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
 
   private def toMBeanName(
       tags: collection.Map[String, String]): Option[String] = {
-    val filteredTags = tags
-      .filter { case (tagKey, tagValue) => tagValue != "" }
+    val filteredTags = tags.filter { case (tagKey, tagValue) => tagValue != "" }
     if (filteredTags.nonEmpty) {
-      val tagsString = filteredTags
-        .map { case (key, value) => "%s=%s".format(key, value) }
-        .mkString(",")
+      val tagsString = filteredTags.map {
+        case (key, value) => "%s=%s".format(key, value)
+      }.mkString(",")
 
       Some(tagsString)
     } else { None }
   }
 
   private def toScope(tags: collection.Map[String, String]): Option[String] = {
-    val filteredTags = tags
-      .filter { case (tagKey, tagValue) => tagValue != "" }
+    val filteredTags = tags.filter { case (tagKey, tagValue) => tagValue != "" }
     if (filteredTags.nonEmpty) {
       // convert dot to _ since reporters like Graphite typically use dot to represent hierarchy
-      val tagsString = filteredTags.toList
-        .sortWith((t1, t2) => t1._1 < t2._1)
+      val tagsString = filteredTags.toList.sortWith((t1, t2) => t1._1 < t2._1)
         .map {
           case (key, value) => "%s.%s".format(key, value.replaceAll("\\.", "_"))
-        }
-        .mkString(".")
+        }.mkString(".")
 
       Some(tagsString)
     } else { None }
@@ -290,11 +284,11 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
             registeredMetric.getType == metric.getType) {
           pattern.findFirstIn(registeredMetric.getMBeanName) match {
             case Some(_) => {
-              val beforeRemovalSize =
-                Metrics.defaultRegistry().allMetrics().keySet().size
+              val beforeRemovalSize = Metrics.defaultRegistry().allMetrics()
+                .keySet().size
               Metrics.defaultRegistry().removeMetric(registeredMetric)
-              val afterRemovalSize =
-                Metrics.defaultRegistry().allMetrics().keySet().size
+              val afterRemovalSize = Metrics.defaultRegistry().allMetrics()
+                .keySet().size
               trace(
                 "Removing metric %s. Metrics registry size reduced from %d to %d"
                   .format(

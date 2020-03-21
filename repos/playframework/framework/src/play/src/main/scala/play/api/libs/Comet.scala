@@ -52,8 +52,8 @@ object Comet {
       val cb: ByteString = ByteString.fromString(callback)
       def applyOn[A](
           inner: Iteratee[Html, A]): Iteratee[E, Iteratee[Html, A]] = {
-        val fedWithInitialChunk = Iteratee.flatten(
-          Enumerator(initialChunk) |>> inner)
+        val fedWithInitialChunk = Iteratee
+          .flatten(Enumerator(initialChunk) |>> inner)
         val eToScript = Enumeratee.map[E](toHtml(callback, _))
         eToScript.applyOn(fedWithInitialChunk)
       }
@@ -67,10 +67,9 @@ object Comet {
     * @return a flow of ByteString elements.
     */
   def string(callbackName: String): Flow[String, ByteString, NotUsed] = {
-    Flow[String]
-      .map(str =>
-        ByteString.fromString(
-          "'" + StringEscapeUtils.escapeEcmaScript(str) + "'"))
+    Flow[String].map(str =>
+      ByteString
+        .fromString("'" + StringEscapeUtils.escapeEcmaScript(str) + "'"))
       .via(flow(callbackName))
   }
 
@@ -82,8 +81,7 @@ object Comet {
     * @return a flow of ByteString elements.
     */
   def json(callbackName: String): Flow[JsValue, ByteString, NotUsed] = {
-    Flow[JsValue]
-      .map { msg => ByteString.fromString(Json.asciiStringify(msg)) }
+    Flow[JsValue].map { msg => ByteString.fromString(Json.asciiStringify(msg)) }
       .via(flow(callbackName))
   }
 
@@ -104,9 +102,7 @@ object Comet {
   def flow(callbackName: String, initialChunk: ByteString = initialByteString)
       : Flow[ByteString, ByteString, NotUsed] = {
     val cb: ByteString = ByteString.fromString(callbackName)
-    Flow
-      .apply[ByteString]
-      .map(msg => formatted(cb, msg))
+    Flow.apply[ByteString].map(msg => formatted(cb, msg))
       .prepend(Source.single(initialChunk))
   }
 

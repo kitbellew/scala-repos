@@ -23,10 +23,8 @@ class ScalaProblemHighlightFilter extends ProblemHighlightFilter {
     if (ProblemHighlightFilter.shouldHighlightFile(file)) {
       if (file.getFileType == ScalaFileType.SCALA_FILE_TYPE) {
         val vFile: VirtualFile = file.getVirtualFile
-        if (vFile != null && ProjectRootManager
-              .getInstance(file.getProject)
-              .getFileIndex
-              .isInLibrarySource(vFile)) { return false }
+        if (vFile != null && ProjectRootManager.getInstance(file.getProject)
+              .getFileIndex.isInLibrarySource(vFile)) { return false }
       }
       true
     } else false

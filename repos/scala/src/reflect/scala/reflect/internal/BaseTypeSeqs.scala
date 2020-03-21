@@ -257,7 +257,6 @@ trait BaseTypeSeqs {
 
 object BaseTypeSeqsStats {
   val baseTypeSeqCount = Statistics.newCounter("#base type seqs")
-  val baseTypeSeqLenTotal = Statistics.newRelCounter(
-    "avg base type seq length",
-    baseTypeSeqCount)
+  val baseTypeSeqLenTotal = Statistics
+    .newRelCounter("avg base type seq length", baseTypeSeqCount)
 }

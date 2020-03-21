@@ -52,8 +52,7 @@ private[mesos] class MesosClusterDispatcher(
 
   private val publicAddress = Option(conf.getenv("SPARK_PUBLIC_DNS"))
     .getOrElse(args.host)
-  private val recoveryMode = conf
-    .get("spark.deploy.recoveryMode", "NONE")
+  private val recoveryMode = conf.get("spark.deploy.recoveryMode", "NONE")
     .toUpperCase()
   logInfo("Recovery mode in Mesos dispatcher set to: " + recoveryMode)
 
@@ -80,9 +79,8 @@ private[mesos] class MesosClusterDispatcher(
 
   def start(): Unit = {
     webUi.bind()
-    scheduler.frameworkUrl = conf.get(
-      "spark.mesos.dispatcher.webui.url",
-      webUi.activeWebUiUrl)
+    scheduler.frameworkUrl = conf
+      .get("spark.mesos.dispatcher.webui.url", webUi.activeWebUiUrl)
     scheduler.start()
     server.start()
   }

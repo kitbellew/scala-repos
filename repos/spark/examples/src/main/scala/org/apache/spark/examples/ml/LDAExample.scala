@@ -47,21 +47,14 @@ object LDAExample {
 
     // $example on$
     // Loads data
-    val rowRDD = sc
-      .textFile(input)
-      .filter(_.nonEmpty)
-      .map(_.split(" ").map(_.toDouble))
-      .map(Vectors.dense)
-      .map(Row(_))
+    val rowRDD = sc.textFile(input).filter(_.nonEmpty)
+      .map(_.split(" ").map(_.toDouble)).map(Vectors.dense).map(Row(_))
     val schema = StructType(
       Array(StructField(FEATURES_COL, new VectorUDT, false)))
     val dataset = sqlContext.createDataFrame(rowRDD, schema)
 
     // Trains a LDA model
-    val lda = new LDA()
-      .setK(10)
-      .setMaxIter(10)
-      .setFeaturesCol(FEATURES_COL)
+    val lda = new LDA().setK(10).setMaxIter(10).setFeaturesCol(FEATURES_COL)
     val model = lda.fit(dataset)
     val transformed = model.transform(dataset)
 

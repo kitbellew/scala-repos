@@ -67,8 +67,7 @@ final class QaApi(
     def findByIds(ids: List[QuestionId]): Fu[List[Question]] =
       questionColl
         .find(BSONDocument("_id" -> BSONDocument("$in" -> ids.distinct)))
-        .cursor[Question]()
-        .collect[List]()
+        .cursor[Question]().collect[List]()
 
     def accept(q: Question) =
       questionColl.update(
@@ -98,10 +97,8 @@ final class QaApi(
       mongoCache(
         prefix = "qa:popular",
         f = (nb: Int) =>
-          questionColl
-            .find(BSONDocument())
-            .sort(BSONDocument("vote.score" -> -1))
-            .cursor[Question]()
+          questionColl.find(BSONDocument())
+            .sort(BSONDocument("vote.score" -> -1)).cursor[Question]()
             .collect[List](nb),
         timeToLive = 3 hour
       )
@@ -109,18 +106,14 @@ final class QaApi(
     def popular(max: Int): Fu[List[Question]] = popularCache(max)
 
     def byTag(tag: String, max: Int): Fu[List[Question]] =
-      questionColl
-        .find(BSONDocument("tags" -> tag.toLowerCase))
-        .sort(BSONDocument("vote.score" -> -1))
-        .cursor[Question]()
+      questionColl.find(BSONDocument("tags" -> tag.toLowerCase))
+        .sort(BSONDocument("vote.score" -> -1)).cursor[Question]()
         .collect[List](max)
 
     def byTags(tags: List[String], max: Int): Fu[List[Question]] =
-      questionColl
-        .find(BSONDocument(
-          "tags" -> BSONDocument("$in" -> tags.map(_.toLowerCase))))
-        .cursor[Question]()
-        .collect[List](max)
+      questionColl.find(BSONDocument(
+        "tags" -> BSONDocument("$in" -> tags.map(_.toLowerCase))))
+        .cursor[Question]().collect[List](max)
 
     def addComment(c: Comment)(q: Question) =
       questionColl.update(
@@ -147,14 +140,12 @@ final class QaApi(
       answer.countByQuestionId(id) flatMap { setAnswers(id, _) }
 
     def setAnswers(id: QuestionId, nb: Int) =
-      questionColl
-        .update(
-          BSONDocument("_id" -> id),
-          BSONDocument(
-            "$set" -> BSONDocument(
-              "answers" -> BSONInteger(nb),
-              "updatedAt" -> DateTime.now)))
-        .void
+      questionColl.update(
+        BSONDocument("_id" -> id),
+        BSONDocument(
+          "$set" -> BSONDocument(
+            "answers" -> BSONInteger(nb),
+            "updatedAt" -> DateTime.now))).void
 
     def remove(id: QuestionId) =
       questionColl.remove(BSONDocument("_id" -> id)) >>
@@ -214,11 +205,8 @@ final class QaApi(
         BSONDocument("$set" -> BSONDocument("acceptedAt" -> DateTime.now)))
 
     def popular(questionId: QuestionId): Fu[List[Answer]] =
-      answerColl
-        .find(BSONDocument("questionId" -> questionId))
-        .sort(BSONDocument("vote.score" -> -1))
-        .cursor[Answer]()
-        .collect[List]()
+      answerColl.find(BSONDocument("questionId" -> questionId))
+        .sort(BSONDocument("vote.score" -> -1)).cursor[Answer]().collect[List]()
 
     def zipWithQuestions(answers: List[Answer]): Fu[List[AnswerWithQuestion]] =
       question.findByIds(answers.map(_.questionId)) map { qs =>
@@ -329,24 +317,19 @@ final class QaApi(
           Unwind
         }
 
-        col
-          .aggregate(
-            Project(BSONDocument("tags" -> BSONBoolean(true))),
-            List(
-              Unwind("tags"),
-              Group(BSONBoolean(true))("tags" -> AddToSet("tags"))))
-          .map(
-            _.documents.headOption
-              .flatMap(_.getAs[List[String]]("tags"))
-              .getOrElse(List.empty[String])
-              .map(_.toLowerCase)
-              .distinct)
+        col.aggregate(
+          Project(BSONDocument("tags" -> BSONBoolean(true))),
+          List(
+            Unwind("tags"),
+            Group(BSONBoolean(true))("tags" -> AddToSet("tags")))).map(
+          _.documents.headOption.flatMap(_.getAs[List[String]]("tags"))
+          .getOrElse(List.empty[String]).map(_.toLowerCase).distinct)
       }
   }
 
   object relation {
-    private val questionsCache: Cache[List[Question]] = LruCache(timeToLive =
-      3.hours)
+    private val questionsCache: Cache[List[Question]] = LruCache(timeToLive = 3
+      .hours)
 
     def questions(q: Question, max: Int): Fu[List[Question]] =
       questionsCache(q.id -> max) {

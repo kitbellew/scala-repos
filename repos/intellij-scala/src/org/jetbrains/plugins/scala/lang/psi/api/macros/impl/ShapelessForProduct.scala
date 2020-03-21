@@ -65,9 +65,8 @@ object ShapelessForProduct extends ScalaMacroTypeable {
         undefSubst.getSubstitutor match {
           case Some(subst) =>
             val productLikeType = subst.subst(undef)
-            val parts = ScPattern.extractProductParts(
-              productLikeType,
-              context.place)
+            val parts = ScPattern
+              .extractProductParts(productLikeType, context.place)
             if (parts.length == 0) return None
             val coloncolon = manager.getCachedClass(
               "shapeless.::",

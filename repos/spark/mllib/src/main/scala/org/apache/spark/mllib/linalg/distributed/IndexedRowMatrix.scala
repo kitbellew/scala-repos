@@ -121,8 +121,8 @@ class IndexedRowMatrix @Since("1.0.0") (
           Iterator.tabulate(indices.length)(i =>
             MatrixEntry(rowIndex, indices(i), values(i)))
         case DenseVector(values) =>
-          Iterator.tabulate(values.length)(i =>
-            MatrixEntry(rowIndex, i, values(i)))
+          Iterator
+            .tabulate(values.length)(i => MatrixEntry(rowIndex, i, values(i)))
       }
     }
     new CoordinateMatrix(entries, numRows(), numCols())

@@ -70,9 +70,7 @@ private[http] class RequestContextImpl(
 
   override def complete(trm: ToResponseMarshallable): Future[RouteResult] =
     trm(request)(executionContext).fast
-      .map(res ⇒ RouteResult.Complete(res))(executionContext)
-      .fast
-      .recoverWith {
+      .map(res ⇒ RouteResult.Complete(res))(executionContext).fast.recoverWith {
         case Marshal.UnacceptableResponseContentTypeException(supported) ⇒
           attemptRecoveryFromUnacceptableResponseContentTypeException(
             trm,

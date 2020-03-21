@@ -76,18 +76,13 @@ private[spark] class SparkDeploySchedulerBackend(
       "--worker-url",
       "{{WORKER_URL}}"
     )
-    val extraJavaOpts = sc.conf
-      .getOption("spark.executor.extraJavaOptions")
-      .map(Utils.splitCommandString)
-      .getOrElse(Seq.empty)
-    val classPathEntries = sc.conf
-      .getOption("spark.executor.extraClassPath")
-      .map(_.split(java.io.File.pathSeparator).toSeq)
-      .getOrElse(Nil)
+    val extraJavaOpts = sc.conf.getOption("spark.executor.extraJavaOptions")
+      .map(Utils.splitCommandString).getOrElse(Seq.empty)
+    val classPathEntries = sc.conf.getOption("spark.executor.extraClassPath")
+      .map(_.split(java.io.File.pathSeparator).toSeq).getOrElse(Nil)
     val libraryPathEntries = sc.conf
       .getOption("spark.executor.extraLibraryPath")
-      .map(_.split(java.io.File.pathSeparator).toSeq)
-      .getOrElse(Nil)
+      .map(_.split(java.io.File.pathSeparator).toSeq).getOrElse(Nil)
 
     // When testing, expose the parent class path to the child. This is processed by
     // compute-classpath.{cmd,sh} and makes all needed jars available to child processes
@@ -98,9 +93,8 @@ private[spark] class SparkDeploySchedulerBackend(
       } else { Nil }
 
     // Start executors with a few necessary configs for registering with the scheduler
-    val sparkJavaOpts = Utils.sparkJavaOpts(
-      conf,
-      SparkConf.isExecutorStartupConf)
+    val sparkJavaOpts = Utils
+      .sparkJavaOpts(conf, SparkConf.isExecutorStartupConf)
     val javaOpts = sparkJavaOpts ++ extraJavaOpts
     val command = Command(
       "org.apache.spark.executor.CoarseGrainedExecutorBackend",
@@ -170,11 +164,8 @@ private[spark] class SparkDeploySchedulerBackend(
       cores: Int,
       memory: Int) {
     logInfo(
-      "Granted executor ID %s on hostPort %s with %d cores, %s RAM".format(
-        fullId,
-        hostPort,
-        cores,
-        Utils.megabytesToString(memory)))
+      "Granted executor ID %s on hostPort %s with %d cores, %s RAM"
+        .format(fullId, hostPort, cores, Utils.megabytesToString(memory)))
   }
 
   override def executorRemoved(

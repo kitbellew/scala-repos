@@ -59,11 +59,10 @@ class ArgumentCaptureTest
 
   test("captureOne should handle 4-ary functions") {
     val theMockSubject = mock[MockSubject]
-    when(theMockSubject.method4(
-      any[String],
-      any[String],
-      any[String],
-      any[String])).thenReturn(149L)
+    when(
+      theMockSubject
+        .method4(any[String], any[String], any[String], any[String]))
+      .thenReturn(149L)
 
     assert(theMockSubject.method4("north", "east", "south", "west") == 149L)
 
@@ -121,11 +120,10 @@ class ArgumentCaptureTest
   test("captureAll should handle 4-ary functions") {
     // This is really just a test of zip4
     val theMockSubject = mock[MockSubject]
-    when(theMockSubject.method4(
-      any[String],
-      any[String],
-      any[String],
-      any[String])).thenReturn(149L)
+    when(
+      theMockSubject
+        .method4(any[String], any[String], any[String], any[String]))
+      .thenReturn(149L)
     assert(theMockSubject.method4("foo", "bar", "baz", "spam") == 149L)
     assert(theMockSubject.method4("north", "east", "south", "west") == 149L)
 

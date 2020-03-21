@@ -41,8 +41,8 @@ object ForkTest extends Properties("Fork") {
       TestLogger { log =>
         val withScala = requiredEntries ::: relCP.map(rel => new File(dir, rel))
         val absClasspath = trimClasspath(Path.makeString(withScala))
-        val args =
-          optionName.map(_ :: absClasspath :: Nil).toList.flatten ++ mainAndArgs
+        val args = optionName.map(_ :: absClasspath :: Nil).toList
+          .flatten ++ mainAndArgs
         val config = ForkOptions(outputStrategy = Some(LoggedOutput(log)))
         val exitCode =
           try Fork.java(config, args)
@@ -60,9 +60,8 @@ object ForkTest extends Properties("Fork") {
 
   private[this] def trimClasspath(cp: String): String =
     if (cp.length > MaximumClasspathLength) {
-      val lastEntryI = cp.lastIndexOf(
-        File.pathSeparatorChar,
-        MaximumClasspathLength)
+      val lastEntryI = cp
+        .lastIndexOf(File.pathSeparatorChar, MaximumClasspathLength)
       if (lastEntryI > 0) cp.substring(0, lastEntryI) else cp
     } else cp
 }

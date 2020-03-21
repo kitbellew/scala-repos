@@ -65,17 +65,13 @@ class UDFSuite extends QueryTest with SharedSQLContext {
     withTempPath { dir =>
       val data = sparkContext.parallelize(0 to 10, 2).toDF("id")
       data.write.parquet(dir.getCanonicalPath)
-      sqlContext.read
-        .parquet(dir.getCanonicalPath)
+      sqlContext.read.parquet(dir.getCanonicalPath)
         .registerTempTable("test_table")
-      val answer = sql("select input_file_name() from test_table")
-        .head()
+      val answer = sql("select input_file_name() from test_table").head()
         .getString(0)
       assert(answer.contains(dir.getCanonicalPath))
       assert(
-        sql("select input_file_name() from test_table")
-          .distinct()
-          .collect()
+        sql("select input_file_name() from test_table").distinct().collect()
           .length >= 2)
       sqlContext.dropTempTable("test_table")
     }
@@ -116,8 +112,7 @@ class UDFSuite extends QueryTest with SharedSQLContext {
     sqlContext.udf.register("oneArgFilter", (n: Int) => { n > 80 })
 
     val df = sparkContext
-      .parallelize((1 to 100).map(i => TestData(i, i.toString)))
-      .toDF()
+      .parallelize((1 to 100).map(i => TestData(i, i.toString))).toDF()
     df.registerTempTable("integerData")
 
     val result = sql("SELECT * FROM integerData WHERE oneArgFilter(key)")
@@ -194,9 +189,7 @@ class UDFSuite extends QueryTest with SharedSQLContext {
       (f1: String, f2: String) => FunctionResult(f1, f2))
 
     val result = sql("SELECT returnStruct('test', 'test2') as ret")
-      .select($"ret.f1")
-      .head()
-      .getString(0)
+      .select($"ret.f1").head().getString(0)
     assert(result === "test")
   }
 

@@ -23,14 +23,12 @@ class MacroExpansionCollector(private val project: Project)
   }
 
   override def projectOpened() = {
-    CompilerManager
-      .getInstance(project)
+    CompilerManager.getInstance(project)
       .addCompilationStatusListener(compilationStatusListener)
   }
 
   override def projectClosed() = {
-    CompilerManager
-      .getInstance(project)
+    CompilerManager.getInstance(project)
       .removeCompilationStatusListener(compilationStatusListener)
   }
 

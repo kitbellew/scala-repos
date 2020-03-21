@@ -132,8 +132,7 @@ class RFormula(override val uid: String)
         dataset.schema(term) match {
           case column if column.dataType == StringType =>
             val indexCol = tmpColumn("stridx")
-            encoderStages += new StringIndexer()
-              .setInputCol(term)
+            encoderStages += new StringIndexer().setInputCol(term)
               .setOutputCol(indexCol)
             (term, indexCol)
           case _ => (term, term)
@@ -144,8 +143,7 @@ class RFormula(override val uid: String)
     val encodedTerms = resolvedFormula.terms.map {
       case Seq(term) if dataset.schema(term).dataType == StringType =>
         val encodedCol = tmpColumn("onehot")
-        encoderStages += new OneHotEncoder()
-          .setInputCol(indexed(term))
+        encoderStages += new OneHotEncoder().setInputCol(indexed(term))
           .setOutputCol(encodedCol)
         prefixesToRewrite(encodedCol + "_") = term + "_"
         encodedCol
@@ -153,14 +151,12 @@ class RFormula(override val uid: String)
       case terms =>
         val interactionCol = tmpColumn("interaction")
         encoderStages += new Interaction()
-          .setInputCols(terms.map(indexed).toArray)
-          .setOutputCol(interactionCol)
+          .setInputCols(terms.map(indexed).toArray).setOutputCol(interactionCol)
         prefixesToRewrite(interactionCol + "_") = ""
         interactionCol
     }
 
-    encoderStages += new VectorAssembler(uid)
-      .setInputCols(encodedTerms.toArray)
+    encoderStages += new VectorAssembler(uid).setInputCols(encodedTerms.toArray)
       .setOutputCol($(featuresCol))
     encoderStages += new VectorAttributeRewriter(
       $(featuresCol),
@@ -169,13 +165,11 @@ class RFormula(override val uid: String)
 
     if (dataset.schema.fieldNames.contains(resolvedFormula.label) &&
         dataset.schema(resolvedFormula.label).dataType == StringType) {
-      encoderStages += new StringIndexer()
-        .setInputCol(resolvedFormula.label)
+      encoderStages += new StringIndexer().setInputCol(resolvedFormula.label)
         .setOutputCol($(labelCol))
     }
 
-    val pipelineModel = new Pipeline(uid)
-      .setStages(encoderStages.toArray)
+    val pipelineModel = new Pipeline(uid).setStages(encoderStages.toArray)
       .fit(dataset)
     copyValues(
       new RFormulaModel(uid, resolvedFormula, pipelineModel).setParent(this))
@@ -273,8 +267,8 @@ class RFormulaModel private[feature] (
       !columnNames.contains($(featuresCol)),
       "Features column already exists.")
     require(
-      !columnNames.contains($(labelCol)) || schema(
-        $(labelCol)).dataType == DoubleType,
+      !columnNames.contains($(labelCol)) || schema($(labelCol))
+        .dataType == DoubleType,
       "Label column already exists and is not of type DoubleType.")
   }
 
@@ -300,11 +294,8 @@ object RFormulaModel extends MLReadable[RFormulaModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       // Save model data: resolvedFormula
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(instance.resolvedFormula))
-        .repartition(1)
-        .write
-        .parquet(dataPath)
+      sqlContext.createDataFrame(Seq(instance.resolvedFormula)).repartition(1)
+        .write.parquet(dataPath)
       // Save pipeline model
       val pmPath = new Path(path, "pipelineModel").toString
       instance.pipelineModel.save(pmPath)
@@ -320,10 +311,8 @@ object RFormulaModel extends MLReadable[RFormulaModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("label", "terms", "hasIntercept")
-        .head()
+      val data = sqlContext.read.parquet(dataPath)
+        .select("label", "terms", "hasIntercept").head()
       val label = data.getString(0)
       val terms = data.getAs[Seq[Seq[String]]](1)
       val hasIntercept = data.getBoolean(2)
@@ -386,10 +375,7 @@ private object ColumnPruner extends MLReadable[ColumnPruner] {
       // Save model data: columnsToPrune
       val data = Data(instance.columnsToPrune.toSeq)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -403,9 +389,7 @@ private object ColumnPruner extends MLReadable[ColumnPruner] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("columnsToPrune")
+      val data = sqlContext.read.parquet(dataPath).select("columnsToPrune")
         .head()
       val columnsToPrune = data.getAs[Seq[String]](0).toSet
       val pruner = new ColumnPruner(metadata.uid, columnsToPrune)
@@ -497,10 +481,7 @@ private object VectorAttributeRewriter
       // Save model data: vectorCol, prefixesToRewrite
       val data = Data(instance.vectorCol, instance.prefixesToRewrite)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -515,10 +496,8 @@ private object VectorAttributeRewriter
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("vectorCol", "prefixesToRewrite")
-        .head()
+      val data = sqlContext.read.parquet(dataPath)
+        .select("vectorCol", "prefixesToRewrite").head()
       val vectorCol = data.getString(0)
       val prefixesToRewrite = data.getAs[Map[String, String]](1)
       val rewriter =

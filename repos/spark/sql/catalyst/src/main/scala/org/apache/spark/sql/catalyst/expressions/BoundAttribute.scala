@@ -73,8 +73,7 @@ case class BoundReference(ordinal: Int, dataType: DataType, nullable: Boolean)
     } else if (nullable) {
       s"""
         boolean ${ev.isNull} = ${ctx.INPUT_ROW}.isNullAt($ordinal);
-        $javaType ${ev.value} = ${ev.isNull} ? ${ctx
-        .defaultValue(dataType)} : ($value);
+        $javaType ${ev.value} = ${ev.isNull} ? ${ctx.defaultValue(dataType)} : ($value);
       """
     } else {
       ev.isNull = "false"
@@ -91,21 +90,19 @@ object BindReferences extends Logging {
       expression: A,
       input: Seq[Attribute],
       allowFailures: Boolean = false): A = {
-    expression
-      .transform {
-        case a: AttributeReference => attachTree(a, "Binding attribute") {
-            val ordinal = input.indexWhere(_.exprId == a.exprId)
-            if (ordinal == -1) {
-              if (allowFailures) { a }
-              else {
-                sys.error(
-                  s"Couldn't find $a in ${input.mkString("[", ",", "]")}")
-              }
-            } else {
-              BoundReference(ordinal, a.dataType, input(ordinal).nullable)
+    expression.transform {
+      case a: AttributeReference => attachTree(a, "Binding attribute") {
+          val ordinal = input.indexWhere(_.exprId == a.exprId)
+          if (ordinal == -1) {
+            if (allowFailures) { a }
+            else {
+              sys.error(s"Couldn't find $a in ${input.mkString("[", ",", "]")}")
             }
+          } else {
+            BoundReference(ordinal, a.dataType, input(ordinal).nullable)
           }
-      }
+        }
+    }
       .asInstanceOf[
         A
       ] // Kind of a hack, but safe.  TODO: Tighten return type when possible.

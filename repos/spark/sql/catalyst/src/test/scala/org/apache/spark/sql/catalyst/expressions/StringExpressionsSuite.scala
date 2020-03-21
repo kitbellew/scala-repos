@@ -366,23 +366,19 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       Literal.create(null, StringType).like(Literal.create(null, StringType)),
       null)
     checkEvaluation(
-      Literal
-        .create("a", StringType)
+      Literal.create("a", StringType)
         .like(NonFoldableLiteral.create("a", StringType)),
       true)
     checkEvaluation(
-      Literal
-        .create("a", StringType)
+      Literal.create("a", StringType)
         .like(NonFoldableLiteral.create(null, StringType)),
       null)
     checkEvaluation(
-      Literal
-        .create(null, StringType)
+      Literal.create(null, StringType)
         .like(NonFoldableLiteral.create("a", StringType)),
       null)
     checkEvaluation(
-      Literal
-        .create(null, StringType)
+      Literal.create(null, StringType)
         .like(NonFoldableLiteral.create(null, StringType)),
       null)
 

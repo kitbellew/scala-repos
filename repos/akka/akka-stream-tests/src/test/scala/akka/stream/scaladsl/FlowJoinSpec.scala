@@ -50,9 +50,7 @@ class FlowJoinSpec
         FlowShape(merge.in(1), broadcast.out(1))
       })
 
-      val flow2 = Flow[Int]
-        .filter(_ % 2 == 1)
-        .map(_ * 10)
+      val flow2 = Flow[Int].filter(_ % 2 == 1).map(_ * 10)
         .buffer((end + 1) / 2, OverflowStrategy.backpressure)
         .take((end + 1) / 2)
 
@@ -103,16 +101,17 @@ class FlowJoinSpec
     "allow for zip cycle" in assertAllStagesStopped {
       val source = Source(immutable.Seq("traveler1", "traveler2"))
 
-      val flow = Flow.fromGraph(
-        GraphDSL.create(TestSink.probe[(String, String)]) { implicit b ⇒ sink ⇒
-          import GraphDSL.Implicits._
-          val zip = b.add(Zip[String, String])
-          val broadcast = b.add(Broadcast[(String, String)](2))
-          source ~> zip.in0
-          zip.out ~> broadcast.in
-          broadcast.out(0) ~> sink
+      val flow = Flow
+        .fromGraph(GraphDSL.create(TestSink.probe[(String, String)]) {
+          implicit b ⇒ sink ⇒
+            import GraphDSL.Implicits._
+            val zip = b.add(Zip[String, String])
+            val broadcast = b.add(Broadcast[(String, String)](2))
+            source ~> zip.in0
+            zip.out ~> broadcast.in
+            broadcast.out(0) ~> sink
 
-          FlowShape(zip.in1, broadcast.out(1))
+            FlowShape(zip.in1, broadcast.out(1))
         })
 
       val feedback = Flow.fromGraph(GraphDSL.create(Source.single("ignition")) {

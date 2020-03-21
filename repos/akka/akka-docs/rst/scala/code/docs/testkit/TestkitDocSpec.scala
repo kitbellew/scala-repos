@@ -233,10 +233,8 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
     //#test-probe-reply
     val probe = TestProbe()
     val future = probe.ref ? "hello"
-    probe.expectMsg(
-      0 millis,
-      "hello"
-    ) // TestActor runs on CallingThreadDispatcher
+    probe
+      .expectMsg(0 millis, "hello") // TestActor runs on CallingThreadDispatcher
     probe.reply("world")
     assert(future.isCompleted && future.value == Some(Success("world")))
     //#test-probe-reply
@@ -258,8 +256,8 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
   "demonstrate calling thread dispatcher" in {
     //#calling-thread-dispatcher
     import akka.testkit.CallingThreadDispatcher
-    val ref = system.actorOf(
-      Props[MyActor].withDispatcher(CallingThreadDispatcher.Id))
+    val ref = system
+      .actorOf(Props[MyActor].withDispatcher(CallingThreadDispatcher.Id))
     //#calling-thread-dispatcher
   }
 
@@ -270,8 +268,8 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
     implicit val system = ActorSystem(
       "testsystem",
-      ConfigFactory.parseString(
-        """
+      ConfigFactory
+        .parseString("""
       akka.loggers = ["akka.testkit.TestEventListener"]
       """))
     try {

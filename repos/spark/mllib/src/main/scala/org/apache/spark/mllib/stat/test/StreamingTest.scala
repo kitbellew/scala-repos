@@ -139,8 +139,8 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
   /** Compute summary statistics over each key and the specified test window size. */
   private[stat] def summarizeByKeyAndWindow(
       data: DStream[BinarySample]): DStream[(Boolean, StatCounter)] = {
-    val categoryValuePair = data.map(sample =>
-      (sample.isExperiment, sample.value))
+    val categoryValuePair = data
+      .map(sample => (sample.isExperiment, sample.value))
     if (this.windowSize == 0) {
       categoryValuePair.updateStateByKey[StatCounter](
         (newValues: Seq[Double], oldSummary: Option[StatCounter]) => {
@@ -150,13 +150,12 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
         })
     } else {
       val windowDuration = data.slideDuration * this.windowSize
-      categoryValuePair
-        .groupByKeyAndWindow(windowDuration)
-        .mapValues { values =>
+      categoryValuePair.groupByKeyAndWindow(windowDuration).mapValues {
+        values =>
           val summary = new StatCounter()
           values.foreach(value => summary.merge(value))
           summary
-        }
+      }
     }
   }
 
@@ -167,8 +166,7 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
   private[stat] def pairSummaries(
       summarizedData: DStream[(Boolean, StatCounter)])
       : DStream[(StatCounter, StatCounter)] = {
-    summarizedData
-      .map[(Int, StatCounter)](x => (0, x._2))
+    summarizedData.map[(Int, StatCounter)](x => (0, x._2))
       .groupByKey() // should be length two (control/experiment group)
       .map(x => (x._2.head, x._2.last))
   }

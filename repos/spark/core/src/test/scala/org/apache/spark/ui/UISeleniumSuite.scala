@@ -90,11 +90,8 @@ class UISeleniumSuite
     * It is safe to `get` the SparkUI directly from the SparkContext returned here.
     */
   private def newSparkContext(killEnabled: Boolean = true): SparkContext = {
-    val conf = new SparkConf()
-      .setMaster("local")
-      .setAppName("test")
-      .set("spark.ui.enabled", "true")
-      .set("spark.ui.port", "0")
+    val conf = new SparkConf().setMaster("local").setAppName("test")
+      .set("spark.ui.enabled", "true").set("spark.ui.port", "0")
       .set("spark.ui.killEnabled", killEnabled.toString)
     val sc = new SparkContext(conf)
     assert(sc.ui.isDefined)
@@ -109,14 +106,15 @@ class UISeleniumSuite
       rdd.persist(StorageLevels.DISK_ONLY).count()
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         goToUi(ui, "/storage")
-        val tableRowText =
-          findAll(cssSelector("#storage-by-rdd-table td")).map(_.text).toSeq
+        val tableRowText = findAll(cssSelector("#storage-by-rdd-table td"))
+          .map(_.text).toSeq
         tableRowText should contain(StorageLevels.DISK_ONLY.description)
       }
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         goToUi(ui, "/storage/rdd/?id=0")
-        val tableRowText = findAll(
-          cssSelector("#rdd-storage-by-block-table td")).map(_.text).toSeq
+        val tableRowText =
+          findAll(cssSelector("#rdd-storage-by-block-table td")).map(_.text)
+            .toSeq
         tableRowText should contain(StorageLevels.DISK_ONLY.description)
       }
 
@@ -132,14 +130,15 @@ class UISeleniumSuite
       rdd.persist(StorageLevels.MEMORY_ONLY).count()
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         goToUi(ui, "/storage")
-        val tableRowText =
-          findAll(cssSelector("#storage-by-rdd-table td")).map(_.text).toSeq
+        val tableRowText = findAll(cssSelector("#storage-by-rdd-table td"))
+          .map(_.text).toSeq
         tableRowText should contain(StorageLevels.MEMORY_ONLY.description)
       }
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
         goToUi(ui, "/storage/rdd/?id=0")
-        val tableRowText = findAll(
-          cssSelector("#rdd-storage-by-block-table td")).map(_.text).toSeq
+        val tableRowText =
+          findAll(cssSelector("#rdd-storage-by-block-table td")).map(_.text)
+            .toSeq
         tableRowText should contain(StorageLevels.MEMORY_ONLY.description)
       }
 
@@ -248,8 +247,7 @@ class UISeleniumSuite
     withSpark(newSparkContext()) { sc =>
       val data = sc.parallelize(Seq(1, 2, 3), 1).map(identity).groupBy(identity)
       val shuffleHandle = data.dependencies.head
-        .asInstanceOf[ShuffleDependency[_, _, _]]
-        .shuffleHandle
+        .asInstanceOf[ShuffleDependency[_, _, _]].shuffleHandle
       // Simulate fetch failures:
       val mappedData = data.map { x =>
         val taskContext = TaskContext.get
@@ -319,17 +317,11 @@ class UISeleniumSuite
     "job details page should display useful information for stages that haven't started") {
     withSpark(newSparkContext()) { sc =>
       // Create a multi-stage job with a long delay in the first stage:
-      val rdd = sc
-        .parallelize(Seq(1, 2, 3))
-        .map { x =>
-          // This long sleep call won't slow down the tests because we don't actually need to wait
-          // for the job to finish.
-          Thread.sleep(20000)
-        }
-        .groupBy(identity)
-        .map(identity)
-        .groupBy(identity)
-        .map(identity)
+      val rdd = sc.parallelize(Seq(1, 2, 3)).map { x =>
+        // This long sleep call won't slow down the tests because we don't actually need to wait
+        // for the job to finish.
+        Thread.sleep(20000)
+      }.groupBy(identity).map(identity).groupBy(identity).map(identity)
       // Start the job:
       rdd.countAsync()
       eventually(timeout(10 seconds), interval(50 milliseconds)) {
@@ -351,11 +343,8 @@ class UISeleniumSuite
   test("job progress bars / cells reflect skipped stages / tasks") {
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
-      val rdd = sc
-        .parallelize(1 to 8, 8)
-        .map(x => x)
-        .groupBy((x: Int) => x, numPartitions = 8)
-        .flatMap(x => x._2)
+      val rdd = sc.parallelize(1 to 8, 8).map(x => x)
+        .groupBy((x: Int) => x, numPartitions = 8).flatMap(x => x._2)
         .groupBy((x: Int) => x, numPartitions = 8)
       // Run it twice; this will cause the second job to have two "phantom" stages that were
       // mentioned in its job start event but which were never actually executed:
@@ -383,12 +372,8 @@ class UISeleniumSuite
     "stages that aren't run appear as 'skipped stages' after a job finishes") {
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
-      val rdd = sc
-        .parallelize(Seq(1, 2, 3))
-        .map(identity)
-        .groupBy(identity)
-        .map(identity)
-        .groupBy(identity)
+      val rdd = sc.parallelize(Seq(1, 2, 3)).map(identity).groupBy(identity)
+        .map(identity).groupBy(identity)
       // Run it twice; this will cause the second job to have two "phantom" stages that were
       // mentioned in its job start event but which were never actually executed:
       rdd.count()
@@ -416,12 +401,8 @@ class UISeleniumSuite
     "jobs with stages that are skipped should show correct link descriptions on all jobs page") {
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
-      val rdd = sc
-        .parallelize(Seq(1, 2, 3))
-        .map(identity)
-        .groupBy(identity)
-        .map(identity)
-        .groupBy(identity)
+      val rdd = sc.parallelize(Seq(1, 2, 3)).map(identity).groupBy(identity)
+        .map(identity).groupBy(identity)
       // Run it twice; this will cause the second job to have two "phantom" stages that were
       // mentioned in its job start event but which were never actually executed:
       rdd.count()
@@ -506,13 +487,9 @@ class UISeleniumSuite
   }
 
   test("stage & job retention") {
-    val conf = new SparkConf()
-      .setMaster("local")
-      .setAppName("test")
-      .set("spark.ui.enabled", "true")
-      .set("spark.ui.port", "0")
-      .set("spark.ui.retainedStages", "3")
-      .set("spark.ui.retainedJobs", "2")
+    val conf = new SparkConf().setMaster("local").setAppName("test")
+      .set("spark.ui.enabled", "true").set("spark.ui.port", "0")
+      .set("spark.ui.retainedStages", "3").set("spark.ui.retainedJobs", "2")
     val sc = new SparkContext(conf)
     assert(sc.ui.isDefined)
 
@@ -522,12 +499,8 @@ class UISeleniumSuite
         // NOTE: if we reverse the order, things don't really behave nicely
         // we lose the stage for a job we keep, and then the job doesn't know
         // about its last stage
-        sc.parallelize(idx to (idx + 3))
-          .map(identity)
-          .groupBy(identity)
-          .map(identity)
-          .groupBy(identity)
-          .count()
+        sc.parallelize(idx to (idx + 3)).map(identity).groupBy(identity)
+          .map(identity).groupBy(identity).count()
         sc.parallelize(idx to (idx + 3)).collect()
       }
 
@@ -572,8 +545,8 @@ class UISeleniumSuite
       goToUi(sc, "/jobs/job/?id=7")
       find("no-info").get.text should be("No information to display for job 7")
 
-      val badJob = HistoryServerSuite.getContentAndCode(
-        apiUrl(sc.ui.get, "jobs/7"))
+      val badJob = HistoryServerSuite
+        .getContentAndCode(apiUrl(sc.ui.get, "jobs/7"))
       badJob._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badJob._2 should be(None)
       badJob._3 should be(Some("unknown job: 7"))
@@ -620,21 +593,21 @@ class UISeleniumSuite
       goToUi(sc, "/stages/stage/?id=12&attempt=0")
       find("no-info").get.text should be(
         "No information to display for Stage 12 (Attempt 0)")
-      val badStage = HistoryServerSuite.getContentAndCode(
-        apiUrl(sc.ui.get, "stages/12/0"))
+      val badStage = HistoryServerSuite
+        .getContentAndCode(apiUrl(sc.ui.get, "stages/12/0"))
       badStage._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badStage._2 should be(None)
       badStage._3 should be(Some("unknown stage: 12"))
 
-      val badAttempt = HistoryServerSuite.getContentAndCode(
-        apiUrl(sc.ui.get, "stages/19/15"))
+      val badAttempt = HistoryServerSuite
+        .getContentAndCode(apiUrl(sc.ui.get, "stages/19/15"))
       badAttempt._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badAttempt._2 should be(None)
       badAttempt._3 should be(
         Some("unknown attempt for stage 19.  Found attempts: [0]"))
 
-      val badStageAttemptList = HistoryServerSuite.getContentAndCode(
-        apiUrl(sc.ui.get, "stages/12"))
+      val badStageAttemptList = HistoryServerSuite
+        .getContentAndCode(apiUrl(sc.ui.get, "stages/12"))
       badStageAttemptList._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badStageAttemptList._2 should be(None)
       badStageAttemptList._3 should be(Some("unknown stage: 12"))
@@ -643,8 +616,8 @@ class UISeleniumSuite
 
   test("live UI json application list") {
     withSpark(newSparkContext()) { sc =>
-      val appListRawJson = HistoryServerSuite.getUrl(new URL(
-        sc.ui.get.appUIAddress + "/api/v1/applications"))
+      val appListRawJson = HistoryServerSuite
+        .getUrl(new URL(sc.ui.get.appUIAddress + "/api/v1/applications"))
       val appListJsonAst = JsonMethods.parse(appListRawJson)
       appListJsonAst.children.length should be(1)
       val attempts = (appListJsonAst \ "attempts").children
@@ -660,19 +633,13 @@ class UISeleniumSuite
   test("job stages should have expected dotfile under DAG visualization") {
     withSpark(newSparkContext()) { sc =>
       // Create a multi-stage job
-      val rdd = sc
-        .parallelize(Seq(1, 2, 3))
-        .map(identity)
-        .groupBy(identity)
-        .map(identity)
-        .groupBy(identity)
+      val rdd = sc.parallelize(Seq(1, 2, 3)).map(identity).groupBy(identity)
+        .map(identity).groupBy(identity)
       rdd.count()
 
-      val stage0 = Source
-        .fromURL(
-          sc.ui.get.appUIAddress +
-            "/stages/stage/?id=0&attempt=0&expandDagViz=true")
-        .mkString
+      val stage0 = Source.fromURL(
+        sc.ui.get.appUIAddress +
+          "/stages/stage/?id=0&attempt=0&expandDagViz=true").mkString
       assert(stage0.contains(
         "digraph G {\n  subgraph clusterstage_0 {\n    " +
           "label=&quot;Stage 0&quot;;\n    subgraph "))
@@ -686,11 +653,9 @@ class UISeleniumSuite
         "{\n      label=&quot;groupBy&quot;;\n      " +
           "2 [label=&quot;MapPartitionsRDD [2]"))
 
-      val stage1 = Source
-        .fromURL(
-          sc.ui.get.appUIAddress +
-            "/stages/stage/?id=1&attempt=0&expandDagViz=true")
-        .mkString
+      val stage1 = Source.fromURL(
+        sc.ui.get.appUIAddress +
+          "/stages/stage/?id=1&attempt=0&expandDagViz=true").mkString
       assert(stage1.contains(
         "digraph G {\n  subgraph clusterstage_1 {\n    " +
           "label=&quot;Stage 1&quot;;\n    subgraph "))
@@ -704,11 +669,9 @@ class UISeleniumSuite
         "{\n      label=&quot;groupBy&quot;;\n      " +
           "5 [label=&quot;MapPartitionsRDD [5]"))
 
-      val stage2 = Source
-        .fromURL(
-          sc.ui.get.appUIAddress +
-            "/stages/stage/?id=2&attempt=0&expandDagViz=true")
-        .mkString
+      val stage2 = Source.fromURL(
+        sc.ui.get.appUIAddress +
+          "/stages/stage/?id=2&attempt=0&expandDagViz=true").mkString
       assert(stage2.contains(
         "digraph G {\n  subgraph clusterstage_2 {\n    " +
           "label=&quot;Stage 2&quot;;\n    subgraph "))
@@ -734,6 +697,7 @@ class UISeleniumSuite
 
   def apiUrl(ui: SparkUI, path: String): URL = {
     new URL(
-      ui.appUIAddress + "/api/v1/applications/" + ui.sc.get.applicationId + "/" + path)
+      ui.appUIAddress + "/api/v1/applications/" + ui.sc.get
+        .applicationId + "/" + path)
   }
 }

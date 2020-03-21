@@ -55,9 +55,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       @NotNull
       file: PsiFile) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return
-    if (!FileDocumentManager.getInstance.requestWriting(
-          editor.getDocument,
-          project)) return
+    if (!FileDocumentManager.getInstance
+          .requestWriting(editor.getDocument, project)) return
     PsiDocumentManager.getInstance(project).commitAllDocuments()
 
     val target = chooseTarget(file, editor, project)
@@ -67,8 +66,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
 
     val elementAtOffset = file.findElementAt(editor.getCaretModel.getOffset)
 
-    val specifyType =
-      ScalaApplicationSettings.getInstance().SPECIFY_RETURN_TYPE_EXPLICITLY
+    val specifyType = ScalaApplicationSettings.getInstance()
+      .SPECIFY_RETURN_TYPE_EXPLICITLY
 
     inWriteCommandAction(project) {
       try {
@@ -79,16 +78,14 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
               member.sign,
               aClass.getManager,
               specifyType,
-              body = "???")
-            .asInstanceOf[ScFunctionDefinition]
+              body = "???").asInstanceOf[ScFunctionDefinition]
           prototype.setModifierProperty("override", value = member.isOverride)
           val body = methodBody(target, prototype)
           prototype.body.foreach(_.replace(body))
           val genInfo = new ScalaGenerationInfo(member)
-          val added = aClass
-            .addMember(
-              prototype,
-              Option(genInfo.findInsertionAnchor(aClass, elementAtOffset)))
+          val added = aClass.addMember(
+            prototype,
+            Option(genInfo.findInsertionAnchor(aClass, elementAtOffset)))
             .asInstanceOf[ScFunctionDefinition]
           if (added.superMethod.nonEmpty)
             added.setModifierProperty("override", value = true)
@@ -118,15 +115,13 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
         parameter: ScTypeParam,
         elements: Seq[PsiElement]) = {
       elements.exists(elem =>
-        ReferencesSearch
-          .search(parameter, new LocalSearchScope(elem))
-          .findAll()
+        ReferencesSearch.search(parameter, new LocalSearchScope(elem)).findAll()
           .nonEmpty)
     }
     val typeParamsForCall: String = {
       val typeParams = prototype.typeParameters
-      val parametersAndRetType =
-        prototype.parameters ++ prototype.returnTypeElement
+      val parametersAndRetType = prototype.parameters ++ prototype
+        .returnTypeElement
       if (typeParams.exists(!typeParameterUsedIn(_, parametersAndRetType))) {
         typeParams.map(_.nameId.getText).mkString("[", ", ", "]")
       } else ""
@@ -137,8 +132,7 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       paramClause.parameters.map(_.name).mkString("(", ", ", ")")
     }
     val params = prototype.effectiveParameterClauses
-      .map(paramClauseApplicationText)
-      .mkString
+      .map(paramClauseApplicationText).mkString
     ScalaPsiElementFactory.createExpressionFromText(
       s"$dText.$methodName$typeParamsForCall$params",
       prototype.getManager)
@@ -198,19 +192,17 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       place: PsiElement): Seq[ScMethodMember] = {
     object isSuitable {
       def unapply(srr: ScalaResolveResult): Option[PhysicalSignature] = {
-        if (srr.implicitConversionClass.nonEmpty || srr.implicitFunction.nonEmpty)
-          return None
+        if (srr.implicitConversionClass.nonEmpty || srr.implicitFunction
+              .nonEmpty) return None
         srr.getElement match {
           case meth: PsiMethod
               if meth.isConstructor || meth.getContainingClass == null => None
           case meth: PsiMethod
-              if meth.getContainingClass.getQualifiedName == CommonClassNames.JAVA_LANG_OBJECT =>
-            None
+              if meth.getContainingClass.getQualifiedName == CommonClassNames
+                .JAVA_LANG_OBJECT => None
           case meth: PsiMethod
-              if !ResolveUtils.isAccessible(
-                meth,
-                place,
-                forCompletion = true) => None
+              if !ResolveUtils
+                .isAccessible(meth, place, forCompletion = true) => None
           case meth: PsiMethod => Some(
               new PhysicalSignature(meth, srr.substitutor))
           case _ => None
@@ -261,8 +253,7 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
 
   private def targetsIn(clazz: ScTemplateDefinition): Seq[ClassMember] = {
     //todo add ScObjectMember for targets
-    val allMembers = ScalaOIUtil
-      .allMembers(clazz, withSelfType = true)
+    val allMembers = ScalaOIUtil.allMembers(clazz, withSelfType = true)
       .flatMap(ScalaOIUtil.toClassMember(_, isImplement = false))
     allMembers.toSeq.filter(canBeTargetInClass(_, clazz))
   }
@@ -284,7 +275,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       case method: ScMethodMember => method.getElement match {
           case m: PsiMethod if {
                 val cl = m.getContainingClass;
-                cl != null && cl.getQualifiedName == CommonClassNames.JAVA_LANG_OBJECT
+                cl != null && cl.getQualifiedName == CommonClassNames
+                  .JAVA_LANG_OBJECT
               } => false
           case f: ScFunction =>
             (f.isParameterless || f.isEmptyParen) && ResolveUtils
@@ -295,11 +287,9 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
           case _ => false
         }
       case v @ (_: ScValueMember | _: ScVariableMember | _: JavaFieldMember)
-          if ResolveUtils.isAccessible(
-            v.getElement,
-            clazz,
-            forCompletion = false) => true
-      case _                       => false
+          if ResolveUtils
+            .isAccessible(v.getElement, clazz, forCompletion = false) => true
+      case _                                                          => false
     }
 
   private def classAtOffset(offset: Int, file: PsiFile) = {

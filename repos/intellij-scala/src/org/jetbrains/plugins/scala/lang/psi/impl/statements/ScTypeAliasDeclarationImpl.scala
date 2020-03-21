@@ -50,11 +50,9 @@ class ScTypeAliasDeclarationImpl private (
   def nameId =
     findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
       case null =>
-        ScalaPsiElementFactory
-          .createIdentifier(
-            getStub.asInstanceOf[ScTypeAliasStub].getName,
-            getManager)
-          .getPsi
+        ScalaPsiElementFactory.createIdentifier(
+          getStub.asInstanceOf[ScTypeAliasStub].getName,
+          getManager).getPsi
       case n => n
     }
 
@@ -76,9 +74,7 @@ class ScTypeAliasDeclarationImpl private (
     import org.jetbrains.plugins.scala.extensions._
     val stub = getStub
     if (stub != null) {
-      return stub
-        .asInstanceOf[ScTypeAliasStub]
-        .getUpperBoundTypeElement
+      return stub.asInstanceOf[ScTypeAliasStub].getUpperBoundTypeElement
         .toOption
     }
     val tUpper = findLastChildByType[PsiElement](ScalaTokenTypes.tUPPER_BOUND)
@@ -94,9 +90,7 @@ class ScTypeAliasDeclarationImpl private (
     import org.jetbrains.plugins.scala.extensions._
     val stub = getStub
     if (stub != null) {
-      return stub
-        .asInstanceOf[ScTypeAliasStub]
-        .getLowerBoundTypeElement
+      return stub.asInstanceOf[ScTypeAliasStub].getLowerBoundTypeElement
         .toOption
     }
     val tLower = findLastChildByType[PsiElement](ScalaTokenTypes.tLOWER_BOUND)
@@ -113,7 +107,8 @@ class ScTypeAliasDeclarationImpl private (
       def getPresentableText: String = name
       def getTextAttributesKey: TextAttributesKey = null
       def getLocationString: String =
-        "(" + ScTypeAliasDeclarationImpl.this.containingClass.qualifiedName + ")"
+        "(" + ScTypeAliasDeclarationImpl.this.containingClass
+          .qualifiedName + ")"
       override def getIcon(open: Boolean) =
         ScTypeAliasDeclarationImpl.this.getIcon(0)
     }

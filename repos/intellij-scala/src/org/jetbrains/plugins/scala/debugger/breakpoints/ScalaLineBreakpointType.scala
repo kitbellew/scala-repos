@@ -165,9 +165,8 @@ class ScalaLineBreakpointType
     if (position == null || position.getElementAt == null) return null
 
     val ordinal = lambdaOrdinal(breakpoint)
-    val lambdas = ScalaPositionManager.lambdasOnLine(
-      position.getFile,
-      position.getLine)
+    val lambdas = ScalaPositionManager
+      .lambdasOnLine(position.getFile, position.getLine)
     if (ordinal == null || ordinal == -1 || ordinal > lambdas.size - 1)
       DebuggerUtil.getContainingMethod(position.getElementAt).orNull
     else lambdas(ordinal)
@@ -241,9 +240,8 @@ class ScalaLineBreakpointType
         element match {
           case c: ScClass => s"constructor of ${c.name}"
           case ed: ScEarlyDefinitions =>
-            val clazz = PsiTreeUtil.getParentOfType(
-              ed,
-              classOf[ScTypeDefinition])
+            val clazz = PsiTreeUtil
+              .getParentOfType(ed, classOf[ScTypeDefinition])
             if (clazz != null) s"early definitions of ${clazz.name}"
             else "line in containing block"
           case Both(f: ScFunction, named: ScNamedElement) =>

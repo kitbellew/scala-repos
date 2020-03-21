@@ -216,8 +216,7 @@ trait Internals extends api.Internals {
       self.BoundedWildcardType(bounds)
 
     def subpatterns(tree: Tree): Option[List[Tree]] =
-      tree.attachments
-        .get[SubpatternsAttachment]
+      tree.attachments.get[SubpatternsAttachment]
         .map(_.patterns.map(duplicateAndKeepPositions))
 
     type Decorators = MacroDecoratorApi

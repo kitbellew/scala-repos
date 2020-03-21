@@ -175,8 +175,7 @@ private[util] class SparkShutdownHookManager {
     val hookTask = new Runnable() {
       override def run(): Unit = runAll()
     }
-    org.apache.hadoop.util.ShutdownHookManager
-      .get()
+    org.apache.hadoop.util.ShutdownHookManager.get()
       .addShutdownHook(hookTask, FileSystem.SHUTDOWN_HOOK_PRIORITY + 30)
   }
 

@@ -144,8 +144,8 @@ class EngineInstanceSerializer
                   case JField("env", env) =>
                     i.copy(env = Extraction.extract[Map[String, String]](env))
                   case JField("sparkConf", sparkConf) =>
-                    i.copy(sparkConf = Extraction.extract[Map[String, String]](
-                      sparkConf))
+                    i.copy(sparkConf = Extraction
+                      .extract[Map[String, String]](sparkConf))
                   case JField("dataSourceParams", JString(dataSourceParams)) =>
                     i.copy(dataSourceParams = dataSourceParams)
                   case JField("preparatorParams", JString(preparatorParams)) =>

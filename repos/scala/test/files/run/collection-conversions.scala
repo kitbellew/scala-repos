@@ -16,9 +16,8 @@ object Test {
     }
     val expectedEquals =
       if (isArray)
-        obj
-          .asInstanceOf[Array[Int]]
-          .toSeq == expected.asInstanceOf[Array[Int]].toSeq
+        obj.asInstanceOf[Array[Int]].toSeq == expected.asInstanceOf[Array[Int]]
+          .toSeq
       else obj == expected
     val tagEquals = tag == tag2
     if (expectedEquals && tagEquals) print("OK") else print("FAILED")

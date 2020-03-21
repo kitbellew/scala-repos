@@ -60,8 +60,8 @@ class BindingFactoryTest
   trait Ctx {
     def withExpectedTrace(f: => Unit, expected: Seq[Annotation]) {
       val tracer: Tracer = spy(new NullTracer)
-      val captor: ArgumentCaptor[Record] = ArgumentCaptor.forClass(
-        classOf[Record])
+      val captor: ArgumentCaptor[Record] = ArgumentCaptor
+        .forClass(classOf[Record])
       Trace.letTracer(tracer) { f }
       verify(tracer, atLeastOnce()).record(captor.capture())
       val annotations = captor.getAllValues.asScala collect {
@@ -428,8 +428,7 @@ class BindingFactoryTest
 
     val factory =
       new StackBuilder[ServiceFactory[String, String]](nilStack[String, String])
-        .push(verifyModule)
-        .push(BindingFactory.module[String, String])
+        .push(verifyModule).push(BindingFactory.module[String, String])
         .make(params)
 
     val service = Await.result(factory())

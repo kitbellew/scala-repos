@@ -183,9 +183,6 @@ class SurroundWithWikiSyntaxTest
 }
 
 object SurroundWithWikiSyntaxTest {
-  val surrounders = ScalaToolsFactory
-    .getInstance()
-    .createSurroundDescriptors()
-    .getSurroundDescriptors()(1)
-    .getSurrounders
+  val surrounders = ScalaToolsFactory.getInstance().createSurroundDescriptors()
+    .getSurroundDescriptors()(1).getSurrounders
 }

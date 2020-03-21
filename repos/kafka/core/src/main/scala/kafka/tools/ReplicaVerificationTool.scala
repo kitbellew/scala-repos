@@ -62,47 +62,31 @@ object ReplicaVerificationTool extends Logging {
 
   def main(args: Array[String]): Unit = {
     val parser = new OptionParser
-    val brokerListOpt = parser
-      .accepts(
-        "broker-list",
-        "REQUIRED: The list of hostname and port of the server to connect to.")
-      .withRequiredArg
-      .describedAs("hostname:port,...,hostname:port")
+    val brokerListOpt = parser.accepts(
+      "broker-list",
+      "REQUIRED: The list of hostname and port of the server to connect to.")
+      .withRequiredArg.describedAs("hostname:port,...,hostname:port")
       .ofType(classOf[String])
     val fetchSizeOpt = parser
-      .accepts("fetch-size", "The fetch size of each request.")
-      .withRequiredArg
-      .describedAs("bytes")
-      .ofType(classOf[java.lang.Integer])
+      .accepts("fetch-size", "The fetch size of each request.").withRequiredArg
+      .describedAs("bytes").ofType(classOf[java.lang.Integer])
       .defaultsTo(ConsumerConfig.FetchSize)
-    val maxWaitMsOpt = parser
-      .accepts(
-        "max-wait-ms",
-        "The max amount of time each fetch request waits.")
-      .withRequiredArg
-      .describedAs("ms")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1000)
-    val topicWhiteListOpt = parser
-      .accepts(
-        "topic-white-list",
-        "White list of topics to verify replica consistency. Defaults to all topics.")
-      .withRequiredArg
-      .describedAs("Java regex (String)")
-      .ofType(classOf[String])
-      .defaultsTo(".*")
+    val maxWaitMsOpt = parser.accepts(
+      "max-wait-ms",
+      "The max amount of time each fetch request waits.").withRequiredArg
+      .describedAs("ms").ofType(classOf[java.lang.Integer]).defaultsTo(1000)
+    val topicWhiteListOpt = parser.accepts(
+      "topic-white-list",
+      "White list of topics to verify replica consistency. Defaults to all topics.")
+      .withRequiredArg.describedAs("Java regex (String)")
+      .ofType(classOf[String]).defaultsTo(".*")
     val initialOffsetTimeOpt = parser
       .accepts("time", "Timestamp for getting the initial offsets.")
-      .withRequiredArg
-      .describedAs("timestamp/-1(latest)/-2(earliest)")
-      .ofType(classOf[java.lang.Long])
-      .defaultsTo(-1L)
+      .withRequiredArg.describedAs("timestamp/-1(latest)/-2(earliest)")
+      .ofType(classOf[java.lang.Long]).defaultsTo(-1L)
     val reportIntervalOpt = parser
-      .accepts("report-interval-ms", "The reporting interval.")
-      .withRequiredArg
-      .describedAs("ms")
-      .ofType(classOf[java.lang.Long])
-      .defaultsTo(30 * 1000L)
+      .accepts("report-interval-ms", "The reporting interval.").withRequiredArg
+      .describedAs("ms").ofType(classOf[java.lang.Long]).defaultsTo(30 * 1000L)
 
     if (args.length == 0)
       CommandLineUtils.printUsageAndDie(
@@ -136,8 +120,8 @@ object ReplicaVerificationTool extends Logging {
       clientId,
       maxWaitMs)
     val brokerMap = topicsMetadataResponse.brokers.map(b => (b.id, b)).toMap
-    val filteredTopicMetadata = topicsMetadataResponse.topicsMetadata.filter(
-      topicMetadata =>
+    val filteredTopicMetadata = topicsMetadataResponse.topicsMetadata
+      .filter(topicMetadata =>
         if (topicWhiteListFiler.isTopicAllowed(
               topicMetadata.topic,
               excludeInternalTopics = false)) true
@@ -152,36 +136,30 @@ object ReplicaVerificationTool extends Logging {
               replicaId = broker.id))))
     debug("Selected topic partitions: " + topicPartitionReplicaList)
     val topicAndPartitionsPerBroker: Map[Int, Seq[TopicAndPartition]] =
-      topicPartitionReplicaList
-        .groupBy(_.replicaId)
-        .map {
-          case (brokerId, partitions) =>
-            brokerId -> partitions.map {
-              case partition =>
-                new TopicAndPartition(partition.topic, partition.partitionId)
-            }
-        }
+      topicPartitionReplicaList.groupBy(_.replicaId).map {
+        case (brokerId, partitions) =>
+          brokerId -> partitions.map {
+            case partition =>
+              new TopicAndPartition(partition.topic, partition.partitionId)
+          }
+      }
     debug("Topic partitions per broker: " + topicAndPartitionsPerBroker)
     val expectedReplicasPerTopicAndPartition: Map[TopicAndPartition, Int] =
-      topicPartitionReplicaList
-        .groupBy(replica =>
-          new TopicAndPartition(replica.topic, replica.partitionId))
-        .map {
-          case (topicAndPartition, replicaSet) =>
-            topicAndPartition -> replicaSet.size
-        }
+      topicPartitionReplicaList.groupBy(replica =>
+        new TopicAndPartition(replica.topic, replica.partitionId)).map {
+        case (topicAndPartition, replicaSet) =>
+          topicAndPartition -> replicaSet.size
+      }
     debug(
       "Expected replicas per topic partition: " + expectedReplicasPerTopicAndPartition)
     val leadersPerBroker: Map[Int, Seq[TopicAndPartition]] =
-      filteredTopicMetadata
-        .flatMap(topicMetadataResponse =>
-          topicMetadataResponse.partitionsMetadata.map(partitionMetadata =>
-            (
-              new TopicAndPartition(
-                topicMetadataResponse.topic,
-                partitionMetadata.partitionId),
-              partitionMetadata.leader.get.id)))
-        .groupBy(_._2)
+      filteredTopicMetadata.flatMap(topicMetadataResponse =>
+        topicMetadataResponse.partitionsMetadata.map(partitionMetadata =>
+          (
+            new TopicAndPartition(
+              topicMetadataResponse.topic,
+              partitionMetadata.partitionId),
+            partitionMetadata.leader.get.id))).groupBy(_._2)
         .mapValues(topicAndPartitionAndLeaderIds =>
           topicAndPartitionAndLeaderIds.map {
             case (topicAndPartition, leaderId) => topicAndPartition
@@ -277,9 +255,8 @@ private class ReplicaBuffer(
 
   private def initialize() {
     for (topicAndPartition <- expectedReplicasPerTopicAndPartition.keySet)
-      messageSetCache.put(
-        topicAndPartition,
-        new Pool[Int, FetchResponsePartitionData])
+      messageSetCache
+        .put(topicAndPartition, new Pool[Int, FetchResponsePartitionData])
     setInitialOffsets()
   }
 
@@ -301,11 +278,8 @@ private class ReplicaBuffer(
         100000,
         ReplicaVerificationTool.clientId)
       val initialOffsetMap: Map[TopicAndPartition, PartitionOffsetRequestInfo] =
-        topicAndPartitions
-          .map(topicAndPartition =>
-            topicAndPartition -> PartitionOffsetRequestInfo(
-              initialOffsetTime,
-              1))
+        topicAndPartitions.map(topicAndPartition =>
+          topicAndPartition -> PartitionOffsetRequestInfo(initialOffsetTime, 1))
           .toMap
       val offsetRequest = OffsetRequest(initialOffsetMap)
       val offsetResponse = consumer.getOffsetsBefore(offsetRequest)
@@ -314,9 +288,8 @@ private class ReplicaBuffer(
         offsetResponseStringWithError(offsetResponse))
       offsetResponse.partitionErrorAndOffsets.foreach {
         case (topicAndPartition, partitionOffsetResponse) =>
-          fetchOffsetMap.put(
-            topicAndPartition,
-            partitionOffsetResponse.offsets.head)
+          fetchOffsetMap
+            .put(topicAndPartition, partitionOffsetResponse.offsets.head)
       }
     }
   }
@@ -340,14 +313,14 @@ private class ReplicaBuffer(
       assert(
         fetchResponsePerReplica.size == expectedReplicasPerTopicAndPartition(
           topicAndPartition),
-        "fetched " + fetchResponsePerReplica.size + " replicas for " + topicAndPartition + ", but expected "
+        "fetched " + fetchResponsePerReplica
+          .size + " replicas for " + topicAndPartition + ", but expected "
           + expectedReplicasPerTopicAndPartition(
             topicAndPartition) + " replicas"
       )
       val messageIteratorMap = fetchResponsePerReplica.map {
         case (replicaId, fetchResponse) =>
-          replicaId -> fetchResponse.messages
-            .asInstanceOf[ByteBufferMessageSet]
+          replicaId -> fetchResponse.messages.asInstanceOf[ByteBufferMessageSet]
             .shallowIterator
       }
       val maxHw = fetchResponsePerReplica.values.map(_.hw).max
@@ -363,8 +336,7 @@ private class ReplicaBuffer(
 
               // only verify up to the high watermark
               if (messageAndOffset.offset >= fetchResponsePerReplica
-                    .get(replicaId)
-                    .hw) isMessageInAllReplicas = false
+                    .get(replicaId).hw) isMessageInAllReplicas = false
               else {
                 messageInfoFromFirstReplicaOpt match {
                   case None =>
@@ -374,20 +346,30 @@ private class ReplicaBuffer(
                       messageAndOffset.nextOffset,
                       messageAndOffset.message.checksum))
                   case Some(messageInfoFromFirstReplica) =>
-                    if (messageInfoFromFirstReplica.offset != messageAndOffset.offset) {
+                    if (messageInfoFromFirstReplica.offset != messageAndOffset
+                          .offset) {
                       println(
-                        ReplicaVerificationTool.getCurrentTimeString + ": partition " + topicAndPartition
-                          + ": replica " + messageInfoFromFirstReplica.replicaId + "'s offset "
-                          + messageInfoFromFirstReplica.offset + " doesn't match replica "
+                        ReplicaVerificationTool
+                          .getCurrentTimeString + ": partition " + topicAndPartition
+                          + ": replica " + messageInfoFromFirstReplica
+                          .replicaId + "'s offset "
+                          + messageInfoFromFirstReplica
+                            .offset + " doesn't match replica "
                           + replicaId + "'s offset " + messageAndOffset.offset)
                       System.exit(1)
                     }
-                    if (messageInfoFromFirstReplica.checksum != messageAndOffset.message.checksum)
+                    if (messageInfoFromFirstReplica.checksum != messageAndOffset
+                          .message.checksum)
                       println(
-                        ReplicaVerificationTool.getCurrentTimeString + ": partition "
-                          + topicAndPartition + " has unmatched checksum at offset " + messageAndOffset.offset + "; replica "
-                          + messageInfoFromFirstReplica.replicaId + "'s checksum " + messageInfoFromFirstReplica.checksum
-                          + "; replica " + replicaId + "'s checksum " + messageAndOffset.message.checksum)
+                        ReplicaVerificationTool
+                          .getCurrentTimeString + ": partition "
+                          + topicAndPartition + " has unmatched checksum at offset " + messageAndOffset
+                          .offset + "; replica "
+                          + messageInfoFromFirstReplica
+                            .replicaId + "'s checksum " + messageInfoFromFirstReplica
+                          .checksum
+                          + "; replica " + replicaId + "'s checksum " + messageAndOffset
+                          .message.checksum)
                 }
               }
             } else isMessageInAllReplicas = false
@@ -421,8 +403,8 @@ private class ReplicaBuffer(
     val currentTimeMs = SystemTime.milliseconds
     if (currentTimeMs - lastReportTime > reportInterval) {
       println(
-        ReplicaVerificationTool.dateFormat.format(
-          new Date(currentTimeMs)) + ": max lag is "
+        ReplicaVerificationTool.dateFormat
+          .format(new Date(currentTimeMs)) + ": max lag is "
           + maxLag + " for partition " + maxLagTopicAndPartition + " at offset " + offsetWithMaxLag
           + " among " + messageSetCache.size + " partitions")
       lastReportTime = currentTimeMs
@@ -450,9 +432,7 @@ private class ReplicaFetcher(
     ReplicaVerificationTool.clientId)
   val fetchRequestBuilder = new FetchRequestBuilder()
     .clientId(ReplicaVerificationTool.clientId)
-    .replicaId(Request.DebuggingConsumerId)
-    .maxWait(maxWait)
-    .minBytes(minBytes)
+    .replicaId(Request.DebuggingConsumerId).maxWait(maxWait).minBytes(minBytes)
 
   override def doWork() {
 
@@ -476,10 +456,8 @@ private class ReplicaFetcher(
     if (response != null) {
       response.data.foreach {
         case (topicAndPartition, partitionData) =>
-          replicaBuffer.addFetchedData(
-            topicAndPartition,
-            sourceBroker.id,
-            partitionData)
+          replicaBuffer
+            .addFetchedData(topicAndPartition, sourceBroker.id, partitionData)
       }
     } else {
       for (topicAndPartition <- topicAndPartitions)

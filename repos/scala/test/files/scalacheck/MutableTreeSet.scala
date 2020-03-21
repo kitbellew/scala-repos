@@ -140,8 +140,8 @@ package scala.collection.mutable {
         val setView = set.rangeImpl(from, until)
         setView += k
 
-        set.contains(k) && set.size == newExpectedSize && setView.contains(
-          k) == isInRange
+        set.contains(k) && set.size == newExpectedSize && setView
+          .contains(k) == isInRange
     }
 
     property("++=") = forAll {
@@ -196,24 +196,22 @@ package scala.collection.mutable {
 
         val setView = set.rangeImpl(from, until)
         val newLower = Some(from.fold(k)(ord.max(_, k)))
-        setView.iteratorFrom(k).toSeq == keysInView(
-          ks,
-          newLower,
-          until).toSeq.sorted
+        setView.iteratorFrom(k).toSeq == keysInView(ks, newLower, until).toSeq
+          .sorted
     }
 
     property("headOption") = forAll {
       (set: mutable.TreeSet[K], from: Option[K], until: Option[K]) =>
         val setView = set.rangeImpl(from, until)
-        setView.headOption == Try(
-          keysInView(set.iterator, from, until).next()).toOption
+        setView.headOption == Try(keysInView(set.iterator, from, until).next())
+          .toOption
     }
 
     property("lastOption") = forAll {
       (set: mutable.TreeSet[K], from: Option[K], until: Option[K]) =>
         val setView = set.rangeImpl(from, until)
-        setView.lastOption == Try(
-          keysInView(set.iterator, from, until).max).toOption
+        setView.lastOption == Try(keysInView(set.iterator, from, until).max)
+          .toOption
     }
 
     property("clear") = forAll {

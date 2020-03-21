@@ -70,8 +70,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
 
   def isCaseClassObject(o: ObjectSymbol): Boolean = {
     val TypeRefType(_, classSymbol: ClassSymbol, _) = o.infoType
-    o.isFinal && (classSymbol.children.find(x =>
-      x.isCase && x.isInstanceOf[MethodSymbol]) match {
+    o.isFinal && (classSymbol.children
+      .find(x => x.isCase && x.isInstanceOf[MethodSymbol]) match {
       case Some(_) => true
       case None    => false
     })
@@ -366,9 +366,10 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
             }
           case "scala.<byname>" => "=> " + toString(typeArgs.head)
           case _ => {
-            val path = StringUtil.cutSubstring(symbol.path)(
-              ".package"
-            ) //remove package object reference
+            val path = StringUtil
+              .cutSubstring(symbol.path)(
+                ".package"
+              ) //remove package object reference
             StringUtil.trimStart(
               processName(path) + typeArgString(typeArgs),
               "<empty>.")
@@ -399,9 +400,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       case AnnotatedWithSelfType(typeRef, symbol, attribTreeRefs) =>
         toString(typeRef, sep)
       case ExistentialType(typeRef, symbols) => {
-        val refs = symbols
-          .map(toString)
-          .filter(!_.startsWith("_"))
+        val refs = symbols.map(toString).filter(!_.startsWith("_"))
           .map("type " + _)
         toString(typeRef, sep) + (if (refs.size > 0)
                                     refs.mkString(" forSome {", "; ", "}")
@@ -429,9 +428,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   def typeArgString(typeArgs: Seq[Type]): String =
     if (typeArgs.isEmpty) ""
     else
-      typeArgs
-        .map(toString)
-        .map(StringUtil.trimStart(_, "=> "))
+      typeArgs.map(toString).map(StringUtil.trimStart(_, "=> "))
         .mkString("[", ", ", "]")
 
   def typeParamString(params: Seq[Symbol]): String =
@@ -457,8 +454,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
     "\\$u2192" -> "→",
     "\\$hash" -> "#"
   )
-  val pattern = Pattern.compile(
-    _syms.keys.foldLeft("")((x, y) => if (x == "") y else x + "|" + y))
+  val pattern = Pattern
+    .compile(_syms.keys.foldLeft("")((x, y) => if (x == "") y else x + "|" + y))
   val placeholderPattern = "_\\$(\\d)+"
 
   private def stripPrivatePrefix(name: String) = {

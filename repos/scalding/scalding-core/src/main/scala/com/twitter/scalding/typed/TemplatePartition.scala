@@ -49,8 +49,8 @@ case class TemplatePartition(partitionFields: Fields, template: String)
   override def toTuple(partition: String, tupleEntry: TupleEntry): Unit = {
     val m = pattern.matcher(partition)
     m.matches
-    val parts: Array[Object] =
-      (1 to partitionFields.size).map(i => m.group(i)).toArray
+    val parts: Array[Object] = (1 to partitionFields.size).map(i => m.group(i))
+      .toArray
     tupleEntry.setCanonicalValues(parts)
   }
 

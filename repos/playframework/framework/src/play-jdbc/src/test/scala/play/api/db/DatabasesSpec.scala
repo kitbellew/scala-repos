@@ -71,8 +71,8 @@ object DatabasesSpec extends Specification {
     "supply connections" in new WithDatabase {
       val db = Databases.inMemory(name = "test-connection")
       val connection = db.getConnection
-      connection.createStatement.execute(
-        "create table test (id bigint not null, name varchar(255))")
+      connection.createStatement
+        .execute("create table test (id bigint not null, name varchar(255))")
       connection.close()
     }
 
@@ -83,10 +83,10 @@ object DatabasesSpec extends Specification {
       val c2 = db.getConnection
 
       try {
-        c1.createStatement.execute(
-          "create table test (id bigint not null, name varchar(255))")
-        c1.createStatement.execute(
-          "insert into test (id, name) values (1, 'alice')")
+        c1.createStatement
+          .execute("create table test (id bigint not null, name varchar(255))")
+        c1.createStatement
+          .execute("insert into test (id, name) values (1, 'alice')")
         val results = c2.createStatement.executeQuery("select * from test")
         results.next must beTrue
         results.next must beFalse
@@ -100,10 +100,10 @@ object DatabasesSpec extends Specification {
       val db = Databases.inMemory(name = "test-withConnection")
 
       db.withConnection { c =>
-        c.createStatement.execute(
-          "create table test (id bigint not null, name varchar(255))")
-        c.createStatement.execute(
-          "insert into test (id, name) values (1, 'alice')")
+        c.createStatement
+          .execute("create table test (id bigint not null, name varchar(255))")
+        c.createStatement
+          .execute("insert into test (id, name) values (1, 'alice')")
         val results = c.createStatement.executeQuery("select * from test")
         results.next must beTrue
         results.next must beFalse
@@ -114,10 +114,10 @@ object DatabasesSpec extends Specification {
       val db = Databases.inMemory(name = "test-withTransaction")
 
       db.withTransaction { c =>
-        c.createStatement.execute(
-          "create table test (id bigint not null, name varchar(255))")
-        c.createStatement.execute(
-          "insert into test (id, name) values (1, 'alice')")
+        c.createStatement
+          .execute("create table test (id bigint not null, name varchar(255))")
+        c.createStatement
+          .execute("insert into test (id, name) values (1, 'alice')")
       }
 
       db.withConnection { c =>
@@ -127,8 +127,8 @@ object DatabasesSpec extends Specification {
       }
 
       db.withTransaction { c =>
-        c.createStatement.execute(
-          "insert into test (id, name) values (2, 'bob')")
+        c.createStatement
+          .execute("insert into test (id, name) values (2, 'bob')")
         throw new RuntimeException("boom")
         success
       } must throwA[RuntimeException](message = "boom")

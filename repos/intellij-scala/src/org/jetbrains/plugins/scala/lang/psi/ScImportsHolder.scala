@@ -49,11 +49,9 @@ trait ScImportsHolder extends ScalaPsiElement {
       case s: ScalaStubBasedElementImpl[_] =>
         val stub: StubElement[_] = s.getStub
         if (stub != null) {
-          return stub
-            .getChildrenByType(
-              ScalaElementTypes.IMPORT_STMT,
-              JavaArrayFactoryUtil.ScImportStmtFactory)
-            .toSeq
+          return stub.getChildrenByType(
+            ScalaElementTypes.IMPORT_STMT,
+            JavaArrayFactoryUtil.ScImportStmtFactory).toSeq
         }
       case _ =>
     }
@@ -173,11 +171,9 @@ trait ScImportsHolder extends ScalaPsiElement {
     import ScalaImportOptimizer._
 
     def samePackage(path: String) = {
-      val ref = ScalaPsiElementFactory.createReferenceFromText(
-        path,
-        this.getManager)
-      val pathQualifier = Option(ref)
-        .flatMap(_.qualifier.map(_.getText))
+      val ref = ScalaPsiElementFactory
+        .createReferenceFromText(path, this.getManager)
+      val pathQualifier = Option(ref).flatMap(_.qualifier.map(_.getText))
         .getOrElse("")
       val ourPackageName: Option[String] = Option(
         PsiTreeUtil.getParentOfType(this, classOf[ScPackaging], false))
@@ -187,8 +183,7 @@ trait ScImportsHolder extends ScalaPsiElement {
 
     getFirstChild match {
       case pack: ScPackaging
-          if !pack.isExplicit && children
-            .filterByType(classOf[ScImportStmt])
+          if !pack.isExplicit && children.filterByType(classOf[ScImportStmt])
             .isEmpty =>
         pack.addImportsForPaths(paths, refsContainer)
         return
@@ -216,36 +211,30 @@ trait ScImportsHolder extends ScalaPsiElement {
       documentManager.doPostponedOperationsAndUnblockDocument(document)
       val newRange =
         new TextRange(rangeMarker.getStartOffset, rangeMarker.getEndOffset)
-      optimizer.replaceWithNewImportInfos(
-        newRange,
-        infosToAdd,
-        settings,
-        document)
+      optimizer
+        .replaceWithNewImportInfos(newRange, infosToAdd, settings, document)
       documentManager.commitDocument(document)
     }
 
     val importInfosToAdd = paths.filterNot(samePackage).flatMap { path =>
       val importText = s"import $path"
-      val place = getImportStatements.lastOption.getOrElse(
-        getFirstChild.getNextSibling)
+      val place = getImportStatements.lastOption
+        .getOrElse(getFirstChild.getNextSibling)
       val importStmt = ScalaPsiElementFactory
         .createImportFromTextWithContext(importText, this, place)
       createInfo(importStmt)
     }
 
-    val importRanges = optimizer.collectImportRanges(
-      this,
-      namesAtRangeStart,
-      createInfo(_))
+    val importRanges = optimizer
+      .collectImportRanges(this, namesAtRangeStart, createInfo(_))
 
     val needToInsertFirst =
       if (importRanges.isEmpty) true
       else refsContainer == null && hasCodeBeforeImports
 
     if (needToInsertFirst) {
-      val dummyImport = ScalaPsiElementFactory.createImportFromText(
-        "import dummy._",
-        getManager)
+      val dummyImport = ScalaPsiElementFactory
+        .createImportFromText("import dummy._", getManager)
       val usedNames = collectUsedImportedNames(this)
       val inserted = insertFirstImport(dummyImport, getFirstChild)
         .asInstanceOf[ScImportStmt]
@@ -263,10 +252,9 @@ trait ScImportsHolder extends ScalaPsiElement {
       val sortedRanges = importRanges.toSeq.sortBy(_._1.getStartOffset)
       val selectedRange =
         if (refsContainer != null && ScalaCodeStyleSettings
-              .getInstance(getProject)
-              .isAddImportMostCloseToReference)
-          sortedRanges.reverse.find(
-            _._1.getEndOffset < refsContainer.getTextRange.getStartOffset)
+              .getInstance(getProject).isAddImportMostCloseToReference)
+          sortedRanges.reverse
+            .find(_._1.getEndOffset < refsContainer.getTextRange.getStartOffset)
         else sortedRanges.headOption
 
       selectedRange match {
@@ -307,9 +295,9 @@ trait ScImportsHolder extends ScalaPsiElement {
       first: PsiElement): PsiElement = {
     childBeforeFirstImport match {
       case Some(elem)
-          if first != null && elem.getTextRange.getEndOffset > first.getTextRange.getStartOffset =>
-        addImportAfter(importSt, elem)
-      case _ => addBefore(importSt, first)
+          if first != null && elem.getTextRange.getEndOffset > first
+            .getTextRange.getStartOffset => addImportAfter(importSt, elem)
+      case _                             => addBefore(importSt, first)
     }
   }
 
@@ -318,16 +306,14 @@ trait ScImportsHolder extends ScalaPsiElement {
   }
 
   def addImport(element: PsiElement): PsiElement = {
-    CodeEditUtil
-      .addChildren(getNode, element.getNode, element.getNode, null)
+    CodeEditUtil.addChildren(getNode, element.getNode, element.getNode, null)
       .getPsi
   }
 
   def addImportBefore(element: PsiElement, anchor: PsiElement): PsiElement = {
     val anchorNode = anchor.getNode
     CodeEditUtil
-      .addChildren(getNode, element.getNode, element.getNode, anchorNode)
-      .getPsi
+      .addChildren(getNode, element.getNode, element.getNode, anchorNode).getPsi
   }
 
   def addImportAfter(element: PsiElement, anchor: PsiElement): PsiElement = {
@@ -344,9 +330,8 @@ trait ScImportsHolder extends ScalaPsiElement {
     def shortenWhitespace(node: ASTNode) {
       if (node == null) return
       if (node.getText.count(_ == '\n') >= 2) {
-        val nl = ScalaPsiElementFactory.createNewLine(
-          getManager,
-          node.getText.replaceFirst("[\n]", ""))
+        val nl = ScalaPsiElementFactory
+          .createNewLine(getManager, node.getText.replaceFirst("[\n]", ""))
         getNode.replaceChild(node, nl.getNode)
       }
     }

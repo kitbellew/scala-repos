@@ -43,8 +43,7 @@ class EnsembleImageProperties extends EnsembleExample {
 
   def getContent = {
     // We can set image properties directly during creation
-    val url = this.getClass
-      .getResource("/scalafx/ensemble/images/sanfran.jpg")
+    val url = this.getClass.getResource("/scalafx/ensemble/images/sanfran.jpg")
       .toExternalForm
     val sample1 = new ImageView(new Image(
       url,

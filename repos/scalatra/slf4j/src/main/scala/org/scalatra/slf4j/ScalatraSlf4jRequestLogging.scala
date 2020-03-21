@@ -44,17 +44,16 @@ trait ScalatraSlf4jRequestLogging extends ScalatraBase with Handler {
 
   protected def logRequest() {
     logger.info(
-      MDC.getCopyOfContextMap.asScala
-        .map(kv => kv._1.toString + ": " + kv._2.toString)
-        .mkString("{", ", ", " }"))
+      MDC.getCopyOfContextMap.asScala.map(kv =>
+        kv._1.toString + ": " + kv._2.toString).mkString("{", ", ", " }"))
   }
 
   override protected[scalatra] def withRouteMultiParams[S](
       matchedRoute: Option[MatchedRoute])(thunk: ⇒ S)(implicit
       request: HttpServletRequest): S = {
     val originalParams = multiParams
-    request(MultiParamsKey) =
-      originalParams ++ matchedRoute.map(_.multiParams).getOrElse(Map.empty)
+    request(MultiParamsKey) = originalParams ++ matchedRoute.map(_.multiParams)
+      .getOrElse(Map.empty)
     fillMdc()
     try { thunk }
     finally { request(MultiParamsKey) = originalParams }
@@ -94,8 +93,8 @@ trait ScalatraSlf4jRequestLogging extends ScalatraBase with Handler {
       "AUTH_TYPE" -> req.getAuthType,
       "CONTENT_LENGTH" -> req.getContentLength.toString,
       "CONTENT_TYPE" -> req.getContentType,
-      "DOCUMENT_ROOT" -> servletContext.getRealPath(
-        servletContext.getContextPath),
+      "DOCUMENT_ROOT" -> servletContext
+        .getRealPath(servletContext.getContextPath),
       "PATH_INFO" -> req.getPathInfo,
       "PATH_TRANSLATED" -> req.getPathTranslated,
       "QUERY_STRING" -> req.getQueryString,

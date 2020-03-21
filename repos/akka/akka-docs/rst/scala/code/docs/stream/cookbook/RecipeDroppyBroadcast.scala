@@ -23,8 +23,8 @@ class RecipeDroppyBroadcast extends RecipeSpec {
       val mySink3 = Sink.fromSubscriber(sub3)
 
       //#droppy-bcast
-      val graph = RunnableGraph.fromGraph(
-        GraphDSL.create(mySink1, mySink2, mySink3)((_, _, _)) {
+      val graph = RunnableGraph
+        .fromGraph(GraphDSL.create(mySink1, mySink2, mySink3)((_, _, _)) {
           implicit b => (sink1, sink2, sink3) =>
             import GraphDSL.Implicits._
 

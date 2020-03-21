@@ -21,20 +21,15 @@ class ChainedPackageInspection extends LocalInspectionTool {
       file: PsiFile,
       manager: InspectionManager,
       isOnTheFly: Boolean) = {
-    val problems = file
-      .asOptionOf[ScalaFile]
-      .filter(!_.isScriptFile())
+    val problems = file.asOptionOf[ScalaFile].filter(!_.isScriptFile())
       .flatMap { scalaFile =>
         scalaFile.getPackagings.headOption.flatMap { firstPackaging =>
-          val basePackages = ScalaProjectSettings
-            .getInstance(file.getProject)
-            .getBasePackages
-            .asScala
+          val basePackages = ScalaProjectSettings.getInstance(file.getProject)
+            .getBasePackages.asScala
 
-          basePackages
-            .find(basePackage =>
-              firstPackaging.getPackageName != basePackage
-                && firstPackaging.getPackageName.startsWith(basePackage))
+          basePackages.find(basePackage =>
+            firstPackaging.getPackageName != basePackage
+              && firstPackaging.getPackageName.startsWith(basePackage))
             .flatMap { basePackage =>
               firstPackaging.reference.map(_.getTextRange).map { range =>
                 manager.createProblemDescriptor(

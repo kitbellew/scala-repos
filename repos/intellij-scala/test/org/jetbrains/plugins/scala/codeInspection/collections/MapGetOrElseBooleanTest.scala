@@ -39,7 +39,8 @@ class MapGetOrElseBooleanTest extends OperationsOnCollectionInspectionTest {
 
   def test_3() {
     val selected = s"""val valueIsGoodEnough: (Any) => Boolean = _ => true
-          |(None ${START}map valueIsGoodEnough).getOrElse(false)$END""".stripMargin
+          |(None ${START}map valueIsGoodEnough).getOrElse(false)$END"""
+      .stripMargin
     check(selected)
     val text = """val valueIsGoodEnough: (Any) => Boolean = _ => true
         |(None map valueIsGoodEnough).getOrElse(false)""".stripMargin
@@ -50,7 +51,8 @@ class MapGetOrElseBooleanTest extends OperationsOnCollectionInspectionTest {
 
   def test_4() {
     val selected = s"""val valueIsGoodEnough: (Any) => Boolean = _ => true
-          |(None ${START}map valueIsGoodEnough).getOrElse(true)$END""".stripMargin
+          |(None ${START}map valueIsGoodEnough).getOrElse(true)$END"""
+      .stripMargin
     check(selected, hintTrue)
     val text = """val valueIsGoodEnough: (Any) => Boolean = _ => true
         |(None map valueIsGoodEnough).getOrElse(true)""".stripMargin

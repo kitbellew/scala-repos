@@ -55,8 +55,7 @@ private object Json {
   }
 
   mapper.setDefaultTyping(
-    TypeResolverBuilder
-      .init(JsonTypeInfo.Id.CLASS, null)
+    TypeResolverBuilder.init(JsonTypeInfo.Id.CLASS, null)
       .inclusion(JsonTypeInfo.As.WRAPPER_ARRAY))
 
   def serialize(o: AnyRef): String = mapper.writeValueAsString(o)

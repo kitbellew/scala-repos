@@ -25,10 +25,10 @@ class ChannelBufferUsageTracker(
 
   // It is probably not necessary to use synchronized methods here. We
   // can change this if there is a performance problem.
-  private[this] val currentUsageStat = statsReceiver.addGauge(
-    "channel_buffer_current_usage") { currentUsage.inBytes }
-  private[this] val maxUsageStat = statsReceiver.addGauge(
-    "channel_buffer_max_usage") { maxUsage.inBytes }
+  private[this] val currentUsageStat = statsReceiver
+    .addGauge("channel_buffer_current_usage") { currentUsage.inBytes }
+  private[this] val maxUsageStat = statsReceiver
+    .addGauge("channel_buffer_max_usage") { maxUsage.inBytes }
 
   def currentUsage: StorageUnit = synchronized { state.currentUsage.bytes }
 

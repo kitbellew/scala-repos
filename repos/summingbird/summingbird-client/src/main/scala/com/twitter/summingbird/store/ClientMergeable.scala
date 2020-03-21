@@ -94,19 +94,18 @@ class ClientMergeable[K, V: Semigroup](
      * mergeing two different batches for the same key is presumably rare,
      * it is probably not worth it.
      */
-    val batchForKey: Map[K1, V] = ks
-      .groupBy { case ((k, batchId), v) => k }
-      .iterator
-      .map { case (k, kvs) => kvs.minBy { case ((_, batchId), _) => batchId } }
-      .toMap
+    val batchForKey: Map[K1, V] = ks.groupBy { case ((k, batchId), v) => k }
+      .iterator.map {
+        case (k, kvs) => kvs.minBy { case ((_, batchId), _) => batchId }
+      }.toMap
 
     val nextCall = ks -- batchForKey.keys
 
     val firstRes = multiMergeUnique(batchForKey)
     if (nextCall.nonEmpty) {
       // Wait for these values to make it in, then call:
-      val previousIsDone: Future[Unit] =
-        Future.collect(firstRes.iterator.map(_._2).toIndexedSeq).unit
+      val previousIsDone: Future[Unit] = Future
+        .collect(firstRes.iterator.map(_._2).toIndexedSeq).unit
 
       val fmap = previousIsDone.map { _ => multiMerge(nextCall) }
       firstRes ++ FutureOps.liftFutureValues(nextCall.keySet, fmap)
@@ -116,26 +115,20 @@ class ClientMergeable[K, V: Semigroup](
   private def multiMergeUnique[K1 <: (K, BatchID)](
       ks: Map[K1, V]): Map[K1, FOpt[V]] = {
     // Here we assume each K appears only once, because the previous call ensures it
-    val result = ks
-      .groupBy { case ((_, batchId), _) => batchId }
-      .iterator
-      .map {
-        case (batch, kvs) =>
-          val batchKeys: Set[K] = kvs.map { case ((k, _), _) => k }(breakOut)
-          val existing: Map[K, FOpt[V]] = readable.multiGetBatch[K](
-            batch.prev,
-            batchKeys)
-          // Now we merge into the current store:
-          val preMerge: Map[K, FOpt[V]] = onlineStore
-            .multiMerge(kvs)
-            .map { case ((k, _), v) => (k, v) }(breakOut)
+    val result = ks.groupBy { case ((_, batchId), _) => batchId }.iterator.map {
+      case (batch, kvs) =>
+        val batchKeys: Set[K] = kvs.map { case ((k, _), _) => k }(breakOut)
+        val existing: Map[K, FOpt[V]] = readable
+          .multiGetBatch[K](batch.prev, batchKeys)
+        // Now we merge into the current store:
+        val preMerge: Map[K, FOpt[V]] = onlineStore.multiMerge(kvs).map {
+          case ((k, _), v) => (k, v)
+        }(breakOut)
 
-          (batch, mm.plus(existing, preMerge))
-      }
-      .flatMap {
-        case (b, kvs) => kvs.iterator.map { case (k, v) => ((k, b), v) }
-      }
-      .toMap
+        (batch, mm.plus(existing, preMerge))
+    }.flatMap {
+      case (b, kvs) => kvs.iterator.map { case (k, v) => ((k, b), v) }
+    }.toMap
     // Since the type is a subclass, we need to jump through this hoop:
     ks.iterator.map { case (k1, _) => (k1, result(k1)) }.toMap
   }

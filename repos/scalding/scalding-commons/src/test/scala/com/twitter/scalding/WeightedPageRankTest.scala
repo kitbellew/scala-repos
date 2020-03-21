@@ -21,11 +21,8 @@ class WeightedPageRankSpec extends WordSpec with Matchers {
   "Weighted PageRank job" should {
     var idx = 0
     JobTest(new com.twitter.scalding.examples.WeightedPageRank(_))
-      .arg("pwd", ".")
-      .arg("weighted", "true")
-      .arg("maxiterations", "1")
-      .arg("jumpprob", "0.1")
-      .source(
+      .arg("pwd", ".").arg("weighted", "true").arg("maxiterations", "1")
+      .arg("jumpprob", "0.1").source(
         Tsv("./nodes"),
         List((1, "2,3", "1,2", 0.26), (2, "3", "1", 0.54), (3, "", "", 0.2)))
       .source(Tsv("./numnodes"), List((3)))
@@ -37,8 +34,7 @@ class WeightedPageRankSpec extends WordSpec with Matchers {
           ) +- 0.001
         }
         idx += 1
-      }
-      .sink[(Int, Double)](Tsv("./pagerank_1")) { outputBuffer =>
+      }.sink[(Int, Double)](Tsv("./pagerank_1")) { outputBuffer =>
         val pageRank = outputBuffer.map { res => (res._1, res._2) }.toMap
         (idx + ": correctly compute pagerank") in {
           val deadMass = 0.722 / 3 * 0.9
@@ -57,9 +53,7 @@ class WeightedPageRankSpec extends WordSpec with Matchers {
           pageRank(3) shouldBe (expected(2)) +- 0.001
         }
         idx += 1
-      }
-      .runWithoutNext(useHadoop = false)
-      .runWithoutNext(useHadoop = true)
+      }.runWithoutNext(useHadoop = false).runWithoutNext(useHadoop = true)
       .finish
   }
 }

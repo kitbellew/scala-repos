@@ -42,12 +42,10 @@ private[streaming] class TransformedDStream[U: ClassTag](
 
   override def compute(validTime: Time): Option[RDD[U]] = {
     val parentRDDs = parents.map { parent =>
-      parent
-        .getOrCompute(validTime)
-        .getOrElse(
-          // Guard out against parent DStream that return None instead of Some(rdd) to avoid NPE
-          throw new SparkException(
-            s"Couldn't generate RDD from parent at time $validTime"))
+      parent.getOrCompute(validTime).getOrElse(
+        // Guard out against parent DStream that return None instead of Some(rdd) to avoid NPE
+        throw new SparkException(
+          s"Couldn't generate RDD from parent at time $validTime"))
     }
     val transformedRDD = transformFunc(parentRDDs, validTime)
     if (transformedRDD == null) {

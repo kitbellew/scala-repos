@@ -93,8 +93,7 @@ object StormTestRun {
     val job = mkJob(Storm.source(TraversableSpout(original)), store)
 
     implicit val s = Storm.local(Map(
-      "DEFAULT" -> Options()
-        .set(CacheSize(4))
+      "DEFAULT" -> Options().set(CacheSize(4))
         .set(FlushFrequency(Duration.fromMilliseconds(1)))))
 
     apply(job)

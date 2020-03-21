@@ -45,22 +45,18 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     val parameterBlockPrevPageSize = request.getParameter("block.prevPageSize")
 
     val blockPage = Option(parameterBlockPage).map(_.toInt).getOrElse(1)
-    val blockSortColumn = Option(parameterBlockSortColumn).getOrElse(
-      "Block Name")
-    val blockSortDesc = Option(parameterBlockSortDesc)
-      .map(_.toBoolean)
+    val blockSortColumn = Option(parameterBlockSortColumn)
+      .getOrElse("Block Name")
+    val blockSortDesc = Option(parameterBlockSortDesc).map(_.toBoolean)
       .getOrElse(false)
-    val blockPageSize = Option(parameterBlockPageSize)
-      .map(_.toInt)
+    val blockPageSize = Option(parameterBlockPageSize).map(_.toInt)
       .getOrElse(100)
-    val blockPrevPageSize = Option(parameterBlockPrevPageSize)
-      .map(_.toInt)
+    val blockPrevPageSize = Option(parameterBlockPrevPageSize).map(_.toInt)
       .getOrElse(blockPageSize)
 
     val rddId = parameterId.toInt
     val rddStorageInfo = AllRDDResource
-      .getRDDStorageInfo(rddId, listener, includeDetails = true)
-      .getOrElse {
+      .getRDDStorageInfo(rddId, listener, includeDetails = true).getOrElse {
         // Rather than crashing, render an "RDD Not Found" page
         return UIUtils.headerSparkPage("RDD Not Found", Seq[Node](), parent)
       }
@@ -82,8 +78,8 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     val blockTableHTML =
       try {
         val _blockTable = new BlockPagedTable(
-          UIUtils.prependBaseUri(
-            parent.basePath) + s"/storage/rdd/?id=${rddId}",
+          UIUtils
+            .prependBaseUri(parent.basePath) + s"/storage/rdd/?id=${rddId}",
           rddStorageInfo.partitions.get,
           blockPageSize,
           blockSortColumn,
@@ -191,8 +187,7 @@ private[ui] class BlockDataSource(
     desc: Boolean)
     extends PagedDataSource[BlockTableRowData](pageSize) {
 
-  private val data = rddPartitions
-    .map(blockRow)
+  private val data = rddPartitions.map(blockRow)
     .sorted(ordering(sortColumn, desc))
 
   override def dataSize: Int = data.size

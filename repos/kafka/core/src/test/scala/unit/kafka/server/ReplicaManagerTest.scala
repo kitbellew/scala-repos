@@ -49,8 +49,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr = TestUtils.createLogManager(
-      config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils
+      .createLogManager(config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -81,8 +81,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, false)
-    val mockLogMgr = TestUtils.createLogManager(
-      config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils
+      .createLogManager(config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -112,8 +112,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr = TestUtils.createLogManager(
-      config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils
+      .createLogManager(config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -130,7 +130,8 @@ class ReplicaManagerTest {
     try {
       def callback(responseStatus: Map[TopicPartition, PartitionResponse]) = {
         assert(
-          responseStatus.values.head.errorCode == Errors.INVALID_REQUIRED_ACKS.code)
+          responseStatus.values.head.errorCode == Errors.INVALID_REQUIRED_ACKS
+            .code)
       }
       rm.appendMessages(
         timeout = 0,
@@ -156,8 +157,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr = TestUtils.createLogManager(
-      config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils
+      .createLogManager(config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -198,9 +199,7 @@ class ReplicaManagerTest {
         new Broker(0, "host0", 0),
         new Broker(1, "host1", 1))
       val metadataCache = EasyMock.createMock(classOf[MetadataCache])
-      EasyMock
-        .expect(metadataCache.getAliveBrokers)
-        .andReturn(aliveBrokers)
+      EasyMock.expect(metadataCache.getAliveBrokers).andReturn(aliveBrokers)
         .anyTimes()
       EasyMock.replay(metadataCache)
 
@@ -213,16 +212,14 @@ class ReplicaManagerTest {
       val leaderAndIsrRequest1 = new LeaderAndIsrRequest(
         0,
         0,
-        collection.immutable
-          .Map(
-            new TopicPartition(topic, 0) -> new PartitionState(
-              0,
-              0,
-              0,
-              brokerList,
-              0,
-              brokerSet))
-          .asJava,
+        collection.immutable.Map(
+          new TopicPartition(topic, 0) -> new PartitionState(
+            0,
+            0,
+            0,
+            brokerList,
+            0,
+            brokerSet)).asJava,
         Set(
           new BrokerEndPoint(0, "host1", 0),
           new BrokerEndPoint(1, "host2", 1)).asJava)
@@ -258,16 +255,14 @@ class ReplicaManagerTest {
       val leaderAndIsrRequest2 = new LeaderAndIsrRequest(
         0,
         0,
-        collection.immutable
-          .Map(
-            new TopicPartition(topic, 0) -> new PartitionState(
-              0,
-              1,
-              1,
-              brokerList,
-              0,
-              brokerSet))
-          .asJava,
+        collection.immutable.Map(
+          new TopicPartition(topic, 0) -> new PartitionState(
+            0,
+            1,
+            1,
+            brokerList,
+            0,
+            brokerSet)).asJava,
         Set(
           new BrokerEndPoint(0, "host1", 0),
           new BrokerEndPoint(1, "host2", 1)).asJava)

@@ -22,8 +22,7 @@ trait SprayJsonSupport {
       reader: RootJsonReader[T]): FromEntityUnmarshaller[T] =
     sprayJsValueUnmarshaller.map(jsonReader[T].read)
   implicit def sprayJsValueUnmarshaller: FromEntityUnmarshaller[JsValue] =
-    Unmarshaller.byteStringUnmarshaller
-      .forContentTypes(`application/json`)
+    Unmarshaller.byteStringUnmarshaller.forContentTypes(`application/json`)
       .mapWithCharset { (data, charset) ⇒
         val input =
           if (charset == HttpCharsets.`UTF-8`) ParserInput(data.toArray)

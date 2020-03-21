@@ -179,8 +179,8 @@ object Netty3Listener {
     val ChannelFactory(cf) = params[ChannelFactory]
     val Netty3Timer(nettyTimer) = params[Netty3Timer]
     val Listener.Backlog(backlog) = params[Listener.Backlog]
-    val Transport
-      .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
+    val Transport.BufferSizes(sendBufSize, recvBufSize) = params[
+      Transport.BufferSizes]
     val Transport.Liveness(readTimeout, writeTimeout, keepAlive) = params[
       Transport.Liveness]
     val Transport.TLSServerEngine(engine) = params[Transport.TLSServerEngine]
@@ -298,9 +298,8 @@ case class Netty3Listener[In, Out](
           pipeline.addFirst("channelLogger", channelSnooper)
 
         if (!statsReceiver.isNull)
-          pipeline.addFirst(
-            "channelStatsHandler",
-            channelStatsHandler(statsReceiver))
+          pipeline
+            .addFirst("channelStatsHandler", channelStatsHandler(statsReceiver))
 
         // Apply read timeouts *after* request decoding, preventing
         // death from clients trying to DoS by slowly trickling in
@@ -406,8 +405,8 @@ private[netty3] class ServerBridge[In, Out](
     val channel = e.getChannel
     channels.add(channel)
 
-    val transport = Transport.cast[In, Out](new ChannelTransport[Any, Any](
-      channel))
+    val transport = Transport
+      .cast[In, Out](new ChannelTransport[Any, Any](channel))
     serveTransport(transport)
     super.channelOpen(ctx, e)
   }

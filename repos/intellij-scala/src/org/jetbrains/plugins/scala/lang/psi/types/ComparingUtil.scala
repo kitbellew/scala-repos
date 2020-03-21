@@ -24,8 +24,7 @@ object ComparingUtil {
     def inheritorsInSameFile(clazz: PsiClass) =
       ClassInheritorsSearch
         .search(clazz, new LocalSearchScope(clazz.getContainingFile), false)
-        .toArray(PsiClass.EMPTY_ARRAY)
-        .collect { case x: ScTypeDefinition => x }
+        .toArray(PsiClass.EMPTY_ARRAY).collect { case x: ScTypeDefinition => x }
 
     def sealedAndAllChildrenAreIrreconcilable = {
       val areSealed = classes.forall {
@@ -41,9 +40,8 @@ object ComparingUtil {
     }
 
     val areUnrelatedClasses =
-      !areClassesEquivalent(clazz1, clazz2) && !(clazz1.isInheritor(
-        clazz2,
-        true) || clazz2.isInheritor(clazz1, true))
+      !areClassesEquivalent(clazz1, clazz2) && !(clazz1
+        .isInheritor(clazz2, true) || clazz2.isInheritor(clazz1, true))
 
     areUnrelatedClasses && (
       oneFinal || twoNonTraitsOrInterfaces || sealedAndAllChildrenAreIrreconcilable
@@ -97,8 +95,7 @@ object ComparingUtil {
     }
 
     isNeverSubClass(clazz1, clazz2) ||
-    ((areClassesEquivalent(clazz1, clazz2) || (!sameType) && clazz1.isInheritor(
-      clazz2,
-      true)) && neverSubArgs())
+    ((areClassesEquivalent(clazz1, clazz2) || (!sameType) && clazz1
+      .isInheritor(clazz2, true)) && neverSubArgs())
   }
 }

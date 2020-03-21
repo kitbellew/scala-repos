@@ -63,9 +63,8 @@ trait Enumeratee2TFunctions {
                     for {
                       _ <- head[J, IterateeM]
                       a <- iterateeT[J, IterateeM, StepM[A]](
-                        advance(left, rbuf, scont(contf)) >>== (step(
-                          _,
-                          rbuf).value))
+                        advance(left, rbuf, scont(contf)) >>== (step(_, rbuf)
+                          .value))
                     } yield a
 
                   case (Some(left), Some(right)) => for {
@@ -192,8 +191,7 @@ trait Enumeratee2TFunctions {
 
   private def endStep[J, K, EE, F[_]: Monad, A](
       sa: StepT[Either3[J, (J, K), K], F, StepT[EE, F, A]]) = {
-    IterateeT
-      .IterateeTMonadTransT[J, λ[(β[_], α) => IterateeT[K, β, α]]]
+    IterateeT.IterateeTMonadTransT[J, λ[(β[_], α) => IterateeT[K, β, α]]]
       .liftM(sa.pointI.run)
   }
 }

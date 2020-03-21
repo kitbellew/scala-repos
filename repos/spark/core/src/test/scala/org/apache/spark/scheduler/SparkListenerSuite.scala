@@ -309,10 +309,9 @@ class SparkListenerSuite
     // Make a task whose result is larger than the RPC message size
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
     assert(maxRpcMessageSize === 1024 * 1024)
-    val result = sc
-      .parallelize(Seq(1), 1)
-      .map { x => 1.to(maxRpcMessageSize).toArray }
-      .reduce { case (x, y) => x }
+    val result = sc.parallelize(Seq(1), 1).map { x =>
+      1.to(maxRpcMessageSize).toArray
+    }.reduce { case (x, y) => x }
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
@@ -348,10 +347,9 @@ class SparkListenerSuite
     sc.addSparkListener(listener)
 
     val numTasks = 10
-    val f = sc
-      .parallelize(1 to 10000, numTasks)
-      .map { i => Thread.sleep(10); i }
-      .countAsync()
+    val f = sc.parallelize(1 to 10000, numTasks).map { i =>
+      Thread.sleep(10); i
+    }.countAsync()
     // Wait until one task has started (because we want to make sure that any tasks that are started
     // have corresponding end events sent to the listener).
     var finishTime = System.currentTimeMillis + WAIT_TIMEOUT_MILLIS
@@ -370,7 +368,8 @@ class SparkListenerSuite
     finishTime = System.currentTimeMillis + WAIT_TIMEOUT_MILLIS
     listener.synchronized {
       var remainingWait = finishTime - System.currentTimeMillis
-      while (listener.endedTasks.size < listener.startedTasks.size && remainingWait > 0) {
+      while (listener.endedTasks.size < listener.startedTasks
+               .size && remainingWait > 0) {
         listener.wait(finishTime - System.currentTimeMillis)
         remainingWait = finishTime - System.currentTimeMillis
       }
@@ -403,13 +402,10 @@ class SparkListenerSuite
   }
 
   test("registering listeners via spark.extraListeners") {
-    val conf = new SparkConf()
-      .setMaster("local")
-      .setAppName("test")
-      .set(
-        "spark.extraListeners",
-        classOf[ListenerThatAcceptsSparkConf].getName + "," +
-          classOf[BasicJobCounter].getName)
+    val conf = new SparkConf().setMaster("local").setAppName("test").set(
+      "spark.extraListeners",
+      classOf[ListenerThatAcceptsSparkConf].getName + "," +
+        classOf[BasicJobCounter].getName)
     sc = new SparkContext(conf)
     sc.listenerBus.listeners.asScala
       .count(_.isInstanceOf[BasicJobCounter]) should be(1)

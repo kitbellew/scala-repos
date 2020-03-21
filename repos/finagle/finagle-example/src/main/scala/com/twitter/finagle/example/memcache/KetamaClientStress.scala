@@ -64,20 +64,16 @@ object KetamaClientStress extends App {
   }
 
   private[this] def createCluster(hosts: String): Cluster[CacheNode] = {
-    CachePoolCluster.newStaticCluster(
-      PartitionedClient
-        .parseHostPortWeights(hosts)
-        .map { case (host, port, weight) => new CacheNode(host, port, weight) }
-        .toSet)
+    CachePoolCluster
+      .newStaticCluster(PartitionedClient.parseHostPortWeights(hosts).map {
+        case (host, port, weight) => new CacheNode(host, port, weight)
+      }.toSet)
   }
 
   def main() {
     // the client builder
-    var builder = ClientBuilder()
-      .name("ketamaclient")
-      .codec(Memcached())
-      .failFast(false)
-      .hostConnectionCoresize(config.concurrency())
+    var builder = ClientBuilder().name("ketamaclient").codec(Memcached())
+      .failFast(false).hostConnectionCoresize(config.concurrency())
       .hostConnectionLimit(config.concurrency())
 
     if (config.stats()) builder = builder.reportTo(new OstrichStatsReceiver)
@@ -108,12 +104,9 @@ object KetamaClientStress extends App {
     }
 
     if (replicaPool == null) {
-      val ketamaClient = memcached
-        .KetamaClientBuilder()
-        .clientBuilder(builder)
+      val ketamaClient = memcached.KetamaClientBuilder().clientBuilder(builder)
         .cachePoolCluster(primaryPool)
-        .failureAccrualParams(Int.MaxValue, Duration.Top)
-        .build()
+        .failureAccrualParams(Int.MaxValue, Duration.Top).build()
 
       val operation = config.op() match {
         case "set" =>
@@ -153,8 +146,7 @@ object KetamaClientStress extends App {
             val (key, value) = nextKeyValue
             casMap.remove(key) match {
               case Some((_, unique)) => ketamaClient.cas(key, value, unique)
-              case None =>
-                ketamaClient.gets(key).map {
+              case None => ketamaClient.gets(key).map {
                   case Some(r) => casMap(key) = r
                   case None    => // not expecting
                 }
@@ -253,8 +245,9 @@ object KetamaClientStress extends App {
               case Some(FailedReplication(failureSeq)) =>
                 // not expecting this to ever happen
                 replicationClient.set(key, value)
-              case None =>
-                replicationClient.getsAll(key).map { casMap(key) = _ }
+              case None => replicationClient.getsAll(key).map {
+                  casMap(key) = _
+                }
             }
           }
         case "add" =>
@@ -262,9 +255,8 @@ object KetamaClientStress extends App {
             randomString(config.keysize()),
             Buf.Utf8(randomString(config.valuesize())))
           () => {
-            replicationClient.add(
-              key + load_count.getAndIncrement().toString,
-              value)
+            replicationClient
+              .add(key + load_count.getAndIncrement().toString, value)
           }
         case "replace" =>
           keyValueSet foreach { case (k, v) => replicationClient.set(k, v)() }

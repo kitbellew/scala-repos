@@ -98,8 +98,8 @@ object InfoSerializers {
 
       import input._
 
-      val useHacks065 = Set("0.6.0", "0.6.3", "0.6.4", "0.6.5").contains(
-        version)
+      val useHacks065 = Set("0.6.0", "0.6.3", "0.6.4", "0.6.5")
+        .contains(version)
 
       val encodedName = readUTF()
       val isExported = readBoolean()

@@ -162,9 +162,10 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
       // Only fill if the column is part of the cols list.
-      if (f.dataType.isInstanceOf[NumericType] && cols.exists(col =>
-            columnEquals(f.name, col))) { fillCol[Double](f, value) }
-      else { df.col(f.name) }
+      if (f.dataType.isInstanceOf[NumericType] && cols
+            .exists(col => columnEquals(f.name, col))) {
+        fillCol[Double](f, value)
+      } else { df.col(f.name) }
     }
     df.select(projections: _*)
   }
@@ -188,9 +189,10 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
       // Only fill if the column is part of the cols list.
-      if (f.dataType.isInstanceOf[StringType] && cols.exists(col =>
-            columnEquals(f.name, col))) { fillCol[String](f, value) }
-      else { df.col(f.name) }
+      if (f.dataType.isInstanceOf[StringType] && cols
+            .exists(col => columnEquals(f.name, col))) {
+        fillCol[String](f, value)
+      } else { df.col(f.name) }
     }
     df.select(projections: _*)
   }
@@ -360,8 +362,9 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
       val shouldReplace = cols.exists(colName => columnEquals(colName, f.name))
-      if (f.dataType.isInstanceOf[
-            NumericType] && targetColumnType == DoubleType && shouldReplace) {
+      if (f.dataType
+            .isInstanceOf[
+              NumericType] && targetColumnType == DoubleType && shouldReplace) {
         replaceCol(f, replacementMap)
       } else if (f.dataType == targetColumnType && shouldReplace) {
         replaceCol(f, replacementMap)
@@ -390,19 +393,16 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
 
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
-      values
-        .find { case (k, _) => columnEquals(k, f.name) }
-        .map {
-          case (_, v) => v match {
-              case v: jl.Float   => fillCol[Double](f, v.toDouble)
-              case v: jl.Double  => fillCol[Double](f, v)
-              case v: jl.Long    => fillCol[Double](f, v.toDouble)
-              case v: jl.Integer => fillCol[Double](f, v.toDouble)
-              case v: jl.Boolean => fillCol[Boolean](f, v.booleanValue())
-              case v: String     => fillCol[String](f, v)
-            }
-        }
-        .getOrElse(df.col(f.name))
+      values.find { case (k, _) => columnEquals(k, f.name) }.map {
+        case (_, v) => v match {
+            case v: jl.Float   => fillCol[Double](f, v.toDouble)
+            case v: jl.Double  => fillCol[Double](f, v)
+            case v: jl.Long    => fillCol[Double](f, v.toDouble)
+            case v: jl.Integer => fillCol[Double](f, v.toDouble)
+            case v: jl.Boolean => fillCol[Boolean](f, v.booleanValue())
+            case v: String     => fillCol[String](f, v)
+          }
+      }.getOrElse(df.col(f.name))
     }
     df.select(projections: _*)
   }

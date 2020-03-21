@@ -18,8 +18,7 @@ object JavaFormSpec extends PlaySpecification {
     "throw a meaningful exception when get is called on an invalid form" in new WithApplication() {
       JavaHelpers.withContext(FakeRequest()) { _ =>
         val formFactory = app.injector.instanceOf[play.data.FormFactory]
-        val myForm = formFactory
-          .form(classOf[FooForm])
+        val myForm = formFactory.form(classOf[FooForm])
           .bind(Map("id" -> "1234567891").asJava)
         myForm.hasErrors must beEqualTo(true)
         myForm.get must throwAn[IllegalStateException].like {

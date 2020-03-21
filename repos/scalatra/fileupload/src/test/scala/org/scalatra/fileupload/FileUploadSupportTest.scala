@@ -71,8 +71,7 @@ class FileUploadSupportTest extends ScalatraFunSuite {
   def multipartResponse(path: String = "/multipart") = {
     val reqBody =
       new String(
-        IOUtils
-          .toString(getClass.getResourceAsStream("multipart_request.txt"))
+        IOUtils.toString(getClass.getResourceAsStream("multipart_request.txt"))
           .getBytes,
         "iso-8859-1").getBytes("iso-8859-1")
 
@@ -94,8 +93,8 @@ class FileUploadSupportTest extends ScalatraFunSuite {
   //  }
 
   test("sets file params") {
-    val out =
-      multipartResponse().getHeader("file").toCharArray.map(_.toByte).toList
+    val out = multipartResponse().getHeader("file").toCharArray.map(_.toByte)
+      .toList
     println(s"the output of file params: $out")
     multipartResponse().getHeader("file") should equal("one")
   }
@@ -135,13 +134,13 @@ class FileUploadSupportTest extends ScalatraFunSuite {
   }
 
   test("keeps query parameters") {
-    multipartResponse("/multipart-param?queryParam=foo").getHeader(
-      "Query-Param") should equal("foo")
+    multipartResponse("/multipart-param?queryParam=foo")
+      .getHeader("Query-Param") should equal("foo")
   }
 
   test("query parameters don't shadow post parameters") {
-    multipartResponse("/multipart-param?string=bar").getHeader(
-      "string") should equal("bar;foo")
+    multipartResponse("/multipart-param?string=bar")
+      .getHeader("string") should equal("bar;foo")
   }
 
   test("max size is respected") {

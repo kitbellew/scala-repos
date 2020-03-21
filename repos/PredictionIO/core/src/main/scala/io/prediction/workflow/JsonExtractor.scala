@@ -79,9 +79,8 @@ object JsonExtractor {
       extractorOption: JsonExtractorOption,
       param: (String, Params)): String = {
     // to be replaced JValue needs to be done by Json4s, otherwise the tuple JValue will be wrong
-    val toBeReplacedJValue = JsonExtractor.toJValue(
-      JsonExtractorOption.Json4sNative,
-      (param._1, null))
+    val toBeReplacedJValue = JsonExtractor
+      .toJValue(JsonExtractorOption.Json4sNative, (param._1, null))
     val paramJValue = JsonExtractor.toJValue(extractorOption, param._2)
 
     compact(render(toBeReplacedJValue.replace(param._1 :: Nil, paramJValue)))
@@ -144,9 +143,8 @@ object JsonExtractor {
     val jValues = params.map {
       case (name, param) =>
         // to be replaced JValue needs to be done by Json4s, otherwise the tuple JValue will be wrong
-        val toBeReplacedJValue = JsonExtractor.toJValue(
-          JsonExtractorOption.Json4sNative,
-          (name, null))
+        val toBeReplacedJValue = JsonExtractor
+          .toJValue(JsonExtractorOption.Json4sNative, (name, null))
         val paramJValue = JsonExtractor.toJValue(extractorOption, param)
 
         toBeReplacedJValue.replace(name :: Nil, paramJValue)
@@ -160,8 +158,7 @@ object JsonExtractor {
       formats: Formats,
       clazz: Class[T]): T = {
 
-    Extraction
-      .extract(parse(json), TypeInfo(clazz, None))(formats)
+    Extraction.extract(parse(json), TypeInfo(clazz, None))(formats)
       .asInstanceOf[T]
   }
 

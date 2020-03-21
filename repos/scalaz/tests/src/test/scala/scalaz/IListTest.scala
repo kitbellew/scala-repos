@@ -42,9 +42,7 @@ object IListTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: IList[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b)
-        .zipWithIndex
-        .filter(p => isEven(p._2))
+      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2))
         .map(_._1) must_=== (a)
   }
 
@@ -65,16 +63,14 @@ object IListTest extends SpecLite {
 
   "foldl is foldLeft" ! forAll { (rnge: IList[IList[Int]]) =>
     val F = Foldable[List]
-    rnge.foldLeft(IList[Int]())(_ ++ _) must_=== F.foldLeft(
-      rnge.toList,
-      IList[Int]())(_ ++ _)
+    rnge.foldLeft(IList[Int]())(_ ++ _) must_=== F
+      .foldLeft(rnge.toList, IList[Int]())(_ ++ _)
   }
 
   "foldr is foldRight" ! forAll { (rnge: IList[IList[Int]]) =>
     val F = Foldable[List]
-    rnge.foldRight(IList[Int]())(_ ++ _) must_=== F.foldRight(
-      rnge.toList,
-      IList[Int]())(_ ++ _)
+    rnge.foldRight(IList[Int]())(_ ++ _) must_=== F
+      .foldRight(rnge.toList, IList[Int]())(_ ++ _)
   }
 
   "foldLeft1Opt" ! forAll { ns: IList[List[Int]] =>
@@ -217,9 +213,7 @@ object IListTest extends SpecLite {
   }
 
   "groupBy1" ! forAll { (ns: IList[Int], f: Int => Int) =>
-    ns.groupBy1(f)
-      .map(oa => (oa.head :: oa.tail).toList.reverse)
-      .toList
+    ns.groupBy1(f).map(oa => (oa.head :: oa.tail).toList.reverse).toList
       .toMap must_=== ns.toList.groupBy(f)
   }
 
@@ -281,8 +275,8 @@ object IListTest extends SpecLite {
   }
 
   "lastIndexOfSlice" ! forAll { (ns: IList[Int], ms: IList[Int]) =>
-    ns.lastIndexOfSlice(ms).getOrElse(-1) must_=== ns.toList.lastIndexOfSlice(
-      ms.toList)
+    ns.lastIndexOfSlice(ms).getOrElse(-1) must_=== ns.toList
+      .lastIndexOfSlice(ms.toList)
   }
 
   "lastIndexWhere" ! forAll { (ns: IList[Int], f: Int => Boolean) =>
@@ -338,8 +332,8 @@ object IListTest extends SpecLite {
   "scanLeft" ! forAll { (ss: IList[String], f: (Int, String) => Int) =>
     ss.scanLeft(0)(f).toList must_=== ss.toList.scanLeft(0)(f)
     ss.scanLeft("z")(_ + _).toList must_=== ss.toList.scanLeft("z")(_ + _)
-    ss.scanLeft(IList.empty[String])(_ :+ _).toList must_=== ss.toList.scanLeft(
-      IList.empty[String])(_ :+ _)
+    ss.scanLeft(IList.empty[String])(_ :+ _).toList must_=== ss.toList
+      .scanLeft(IList.empty[String])(_ :+ _)
   }
 
   "scanRight" ! forAll { (ss: IList[String], f: (String, Int) => Int) =>
@@ -399,8 +393,8 @@ object IListTest extends SpecLite {
   }
 
   "toEphemeralStream" ! forAll { ns: List[Int] =>
-    IList(ns: _*).toEphemeralStream.toList must_=== EphemeralStream(
-      ns: _*).toList
+    IList(ns: _*).toEphemeralStream.toList must_=== EphemeralStream(ns: _*)
+      .toList
   }
 
   "toList" ! forAll { ns: List[Int] => IList(ns: _*).toList must_=== ns }

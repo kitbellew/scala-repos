@@ -20,8 +20,7 @@ import akka.http.javadsl.{model ⇒ jm}
 import akka.http.scaladsl.model._
 
 sealed abstract class ModeledCompanion[T: ClassTag] extends Renderable {
-  val name = getClass.getSimpleName
-    .replace("$minus", "-")
+  val name = getClass.getSimpleName.replace("$minus", "-")
     .dropRight(1) // trailing $
   val lowercaseName = name.toRootLowerCase
   private[this] val nameBytes = name.asciiBytes

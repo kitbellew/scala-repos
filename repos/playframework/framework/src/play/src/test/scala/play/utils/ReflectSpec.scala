@@ -63,16 +63,17 @@ object ReflectSpec extends Specification {
   def bindings(
       configured: String,
       defaultClassName: String): Seq[Binding[_]] = {
-    Reflect.bindingsFromConfiguration[
-      Duck,
-      JavaDuck,
-      JavaDuckAdapter,
-      JavaDuckDelegate,
-      DefaultDuck](
-      Environment.simple(),
-      PlayConfig(Configuration.from(Map("duck" -> configured))),
-      "duck",
-      defaultClassName)
+    Reflect
+      .bindingsFromConfiguration[
+        Duck,
+        JavaDuck,
+        JavaDuckAdapter,
+        JavaDuckDelegate,
+        DefaultDuck](
+        Environment.simple(),
+        PlayConfig(Configuration.from(Map("duck" -> configured))),
+        "duck",
+        defaultClassName)
   }
 
   def bindings[Default: ClassTag](configured: String): Seq[Binding[_]] = {

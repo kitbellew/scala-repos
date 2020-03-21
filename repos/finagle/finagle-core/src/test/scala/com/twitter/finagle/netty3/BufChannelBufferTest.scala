@@ -974,8 +974,8 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
     val wrapped = ChannelBuffers.wrappedBuffer(bytes)
     val bcb = new BufChannelBuffer(Buf.ByteArray.Owned(bytes))
     val valueContent = new Array[Byte](BLOCK_SIZE * 2)
-    val value = ChannelBuffers.wrappedBuffer(
-      ByteBuffer.allocate(BLOCK_SIZE * 2))
+    val value = ChannelBuffers
+      .wrappedBuffer(ByteBuffer.allocate(BLOCK_SIZE * 2))
     value.writerIndex(0)
     wrapped.writerIndex(0)
     0.until(CAPACITY - BLOCK_SIZE + 1, BLOCK_SIZE) foreach { i =>
@@ -1010,8 +1010,8 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
     val wrapped = ChannelBuffers.wrappedBuffer(bytes)
     val bcb = new BufChannelBuffer(Buf.ByteArray.Owned(bytes))
     val valueContent = new Array[Byte](BLOCK_SIZE * 2)
-    val value = ChannelBuffers.wrappedBuffer(
-      ByteBuffer.allocate(BLOCK_SIZE * 2))
+    val value = ChannelBuffers
+      .wrappedBuffer(ByteBuffer.allocate(BLOCK_SIZE * 2))
     value.writerIndex(0)
     wrapped.writerIndex(0)
     0.until(CAPACITY - BLOCK_SIZE + 1, BLOCK_SIZE) foreach { i =>
@@ -1296,15 +1296,17 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
 
     value(0) = (value(0) + 1).asInstanceOf[Byte]
     assert(
-      bcb.compareTo(
-        ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) < 0)
+      bcb
+        .compareTo(
+          ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) < 0)
     assert(
       bcb.compareTo(
         ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value)) < 0)
     value(0) = (value(0) - 2).asInstanceOf[Byte]
     assert(
-      bcb.compareTo(
-        ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) > 0)
+      bcb
+        .compareTo(
+          ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) > 0)
     assert(
       bcb.compareTo(
         ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value)) > 0)
@@ -1314,21 +1316,15 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
       bcb.compareTo(
         ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value, 0, 31)) > 0)
     assert(
-      bcb.compareTo(ChannelBuffers.wrappedBuffer(
-        ByteOrder.LITTLE_ENDIAN,
-        value,
-        0,
-        31)) > 0)
+      bcb.compareTo(
+        ChannelBuffers
+          .wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value, 0, 31)) > 0)
     assert(
-      bcb
-        .slice(0, 31)
-        .compareTo(
-          ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) < 0)
+      bcb.slice(0, 31).compareTo(
+        ChannelBuffers.wrappedBuffer(ByteOrder.BIG_ENDIAN, value)) < 0)
     assert(
-      bcb
-        .slice(0, 31)
-        .compareTo(
-          ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value)) < 0)
+      bcb.slice(0, 31).compareTo(
+        ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, value)) < 0)
   }
 
   test("toString") {

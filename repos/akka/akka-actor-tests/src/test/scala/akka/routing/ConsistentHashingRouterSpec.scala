@@ -58,8 +58,7 @@ class ConsistentHashingRouterSpec
 
   "consistent hashing router" must {
     "create routees from configuration" in {
-      val currentRoutees = Await
-        .result(router1 ? GetRoutees, timeout.duration)
+      val currentRoutees = Await.result(router1 ? GetRoutees, timeout.duration)
         .asInstanceOf[Routees]
       currentRoutees.routees.size should ===(3)
     }

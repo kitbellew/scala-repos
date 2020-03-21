@@ -51,9 +51,9 @@ object StreamsStressTest extends App {
       def * = id
     }
     val data = TableQuery[Data]
-    val a = data.schema.create >> (data ++= Range.apply(
-      0,
-      elements.toInt)) >> data.sortBy(_.id).map(_.id).result
+    val a =
+      data.schema.create >> (data ++= Range.apply(0, elements.toInt)) >> data
+        .sortBy(_.id).map(_.id).result
     db.stream(a.withPinnedSession)
   }
 }

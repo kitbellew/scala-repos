@@ -220,16 +220,16 @@ object ActorSystem {
     final val LoggingFilter: String = getString("akka.logging-filter")
     final val LoggerStartTimeout: Timeout = Timeout(
       config.getMillisDuration("akka.logger-startup-timeout"))
-    final val LogConfigOnStart: Boolean = config.getBoolean(
-      "akka.log-config-on-start")
+    final val LogConfigOnStart: Boolean = config
+      .getBoolean("akka.log-config-on-start")
     final val LogDeadLetters: Int =
       config.getString("akka.log-dead-letters").toLowerCase(Locale.ROOT) match {
         case "off" | "false" ⇒ 0
         case "on" | "true" ⇒ Int.MaxValue
         case _ ⇒ config.getInt("akka.log-dead-letters")
       }
-    final val LogDeadLettersDuringShutdown: Boolean = config.getBoolean(
-      "akka.log-dead-letters-during-shutdown")
+    final val LogDeadLettersDuringShutdown: Boolean = config
+      .getBoolean("akka.log-dead-letters-during-shutdown")
 
     final val AddLoggingReceive: Boolean = getBoolean(
       "akka.actor.debug.receive")
@@ -711,8 +711,7 @@ private[akka] class ActorSystemImpl(
         classOf[DynamicAccess] -> dynamicAccess)
 
       dynamicAccess
-        .createInstanceFor[ActorRefProvider](ProviderClass, arguments)
-        .get
+        .createInstanceFor[ActorRefProvider](ProviderClass, arguments).get
     } catch {
       case NonFatal(e) ⇒
         Try(stopScheduler())
@@ -826,16 +825,14 @@ private[akka] class ActorSystemImpl(
     * executed upon close(), the task may execute before its timeout.
     */
   protected def createScheduler(): Scheduler =
-    dynamicAccess
-      .createInstanceFor[Scheduler](
-        settings.SchedulerClass,
-        immutable.Seq(
-          classOf[Config] -> settings.config,
-          classOf[LoggingAdapter] -> log,
-          classOf[ThreadFactory] -> threadFactory.withName(
-            threadFactory.name + "-scheduler"))
-      )
-      .get
+    dynamicAccess.createInstanceFor[Scheduler](
+      settings.SchedulerClass,
+      immutable.Seq(
+        classOf[Config] -> settings.config,
+        classOf[LoggingAdapter] -> log,
+        classOf[ThreadFactory] -> threadFactory
+          .withName(threadFactory.name + "-scheduler"))
+    ).get
   //#create-scheduler
 
   /*
@@ -862,9 +859,10 @@ private[akka] class ActorSystemImpl(
         findExtension(ext) //Registration in process, await completion and retry
       case t: Throwable ⇒ throw t //Initialization failed, throw same again
       case other ⇒
-        other.asInstanceOf[
-          T
-        ] //could be a T or null, in which case we return the null as T
+        other
+          .asInstanceOf[
+            T
+          ] //could be a T or null, in which case we return the null as T
     }
 
   @tailrec
@@ -872,8 +870,7 @@ private[akka] class ActorSystemImpl(
     findExtension(ext) match {
       case null ⇒ //Doesn't already exist, commence registration
         val inProcessOfRegistration = new CountDownLatch(1)
-        extensions
-          .putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
+        extensions.putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
           case null ⇒
             try { // Signal was successfully sent
               ext.createExtension(this) match { // Create and initialize the extension
@@ -881,23 +878,26 @@ private[akka] class ActorSystemImpl(
                   throw new IllegalStateException(
                     "Extension instance created as 'null' for extension [" + ext + "]")
                 case instance ⇒
-                  extensions.replace(
-                    ext,
-                    inProcessOfRegistration,
-                    instance
-                  ) //Replace our in process signal with the initialized extension
+                  extensions
+                    .replace(
+                      ext,
+                      inProcessOfRegistration,
+                      instance
+                    ) //Replace our in process signal with the initialized extension
                   instance //Profit!
               }
             } catch {
               case t: Throwable ⇒
-                extensions.replace(
-                  ext,
-                  inProcessOfRegistration,
-                  t
-                ) //In case shit hits the fan, remove the inProcess signal
+                extensions
+                  .replace(
+                    ext,
+                    inProcessOfRegistration,
+                    t
+                  ) //In case shit hits the fan, remove the inProcess signal
                 throw t //Escalate to caller
             } finally {
-              inProcessOfRegistration.countDown //Always notify listeners of the inProcess signal
+              inProcessOfRegistration
+                .countDown //Always notify listeners of the inProcess signal
             }
           case other ⇒
             registerExtension(
@@ -959,10 +959,8 @@ private[akka] class ActorSystemImpl(
               case _ ⇒ ""
             }) +
             " " + (cell.childrenRefs match {
-            case ChildrenContainer.TerminatingChildrenContainer(
-                  _,
-                  toDie,
-                  reason) ⇒
+            case ChildrenContainer
+                  .TerminatingChildrenContainer(_, toDie, reason) ⇒
               "Terminating(" + reason + ")" +
                 (toDie.toSeq.sorted mkString (
                   "\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""

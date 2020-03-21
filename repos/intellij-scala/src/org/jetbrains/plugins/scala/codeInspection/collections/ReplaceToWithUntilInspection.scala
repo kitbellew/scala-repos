@@ -19,8 +19,7 @@ object ReplaceToWithUntil extends SimplificationType {
     expr match {
       case qual `.to` (x `-` literal("1")) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "until", x))
+          replace(expr).withText(invocationText(qual, "until", x))
             .highlightFrom(qual))
       case _ => None
     }

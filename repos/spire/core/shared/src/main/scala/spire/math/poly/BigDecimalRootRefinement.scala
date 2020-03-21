@@ -155,13 +155,11 @@ object BigDecimalRootRefinement {
       mc: MathContext = new MathContext(0))
       extends ApproximationContext {
     def getEps(x: JBigDecimal): Int =
-      x.scale - spire.math
-        .ceil(x.unscaledValue.bitLength * bits2dec)
-        .toInt + mc.getPrecision + 1
+      x.scale - spire.math.ceil(x.unscaledValue.bitLength * bits2dec).toInt + mc
+        .getPrecision + 1
 
     def evalExact(x: JBigDecimal): JBigDecimal =
-      poly(new BigDecimal(x, MathContext.UNLIMITED)).bigDecimal
-        .round(mc)
+      poly(new BigDecimal(x, MathContext.UNLIMITED)).bigDecimal.round(mc)
 
     def floor(x: Rational): JBigDecimal =
       x.toBigDecimal(new MathContext(mc.getPrecision, RoundingMode.CEILING))
@@ -199,17 +197,15 @@ object BigDecimalRootRefinement {
         poly: Polynomial[BigDecimal],
         h: Rational): Polynomial[BigDecimal] = {
       val n = poly.degree
-      poly
-        .mapTerms {
-          case Term(coeff, k) =>
-            val a = BigDecimal(
-              h.denominator.toBigInteger.pow(n - k),
-              MathContext.UNLIMITED)
-            Term(coeff * a, k)
-        }
-        .compose(Polynomial.linear[BigDecimal](
-          BigDecimal(h.denominator.toBigInteger, MathContext.UNLIMITED),
-          BigDecimal(h.numerator.toBigInteger, MathContext.UNLIMITED)))
+      poly.mapTerms {
+        case Term(coeff, k) =>
+          val a = BigDecimal(
+            h.denominator.toBigInteger.pow(n - k),
+            MathContext.UNLIMITED)
+          Term(coeff * a, k)
+      }.compose(Polynomial.linear[BigDecimal](
+        BigDecimal(h.denominator.toBigInteger, MathContext.UNLIMITED),
+        BigDecimal(h.numerator.toBigInteger, MathContext.UNLIMITED)))
         .removeZeroRoots
     }
 
@@ -352,10 +348,7 @@ object BigDecimalRootRefinement {
         x5: JBigDecimal,
         y5: JBigDecimal): Approximation = {
       val dy = y0.subtract(y5)
-      val k = y0
-        .divide(dy, 1, RoundingMode.HALF_UP)
-        .unscaledValue
-        .intValue
+      val k = y0.divide(dy, 1, RoundingMode.HALF_UP).unscaledValue.intValue
       val eps = x5.subtract(x0).divide(new JBigDecimal(5))
       def eval(k: Int): (JBigDecimal, JBigDecimal) = {
         val x = new JBigDecimal(k).multiply(eps).add(x0)

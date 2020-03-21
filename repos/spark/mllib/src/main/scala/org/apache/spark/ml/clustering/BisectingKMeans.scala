@@ -186,11 +186,8 @@ class BisectingKMeans @Since("2.0.0") (@Since("2.0.0") override val uid: String)
       case Row(point: Vector) => point
     }
 
-    val bkm = new MLlibBisectingKMeans()
-      .setK($(k))
-      .setMaxIterations($(maxIter))
-      .setMinDivisibleClusterSize($(minDivisibleClusterSize))
-      .setSeed($(seed))
+    val bkm = new MLlibBisectingKMeans().setK($(k)).setMaxIterations($(maxIter))
+      .setMinDivisibleClusterSize($(minDivisibleClusterSize)).setSeed($(seed))
     val parentModel = bkm.run(rdd)
     val model = new BisectingKMeansModel(uid, parentModel)
     copyValues(model.setParent(this))

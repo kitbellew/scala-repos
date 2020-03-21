@@ -48,10 +48,9 @@ object ScalaMarkerType {
         PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition])
       case ScalaTokenTypes.kTYPE =>
         PsiTreeUtil.getParentOfType(element, classOf[ScTypeAlias])
-      case ScalaTokenTypes.tIDENTIFIER | ScalaTokenTypes.kVAL |
-          ScalaTokenTypes.kVAR =>
-        PsiTreeUtil.getParentOfType(element, classOf[PsiMember])
-      case _ => element
+      case ScalaTokenTypes.tIDENTIFIER | ScalaTokenTypes.kVAL | ScalaTokenTypes
+            .kVAR => PsiTreeUtil.getParentOfType(element, classOf[PsiMember])
+      case _      => element
     }
 
   val OVERRIDING_MEMBER = ScalaMarkerType(
@@ -60,15 +59,15 @@ object ScalaMarkerType {
         val elem = elemFor(element)
         elem match {
           case method: ScFunction =>
-            val signatures: Seq[Signature] =
-              method.superSignaturesIncludingSelfType
+            val signatures: Seq[Signature] = method
+              .superSignaturesIncludingSelfType
             //removed assertion, because can be change before adding gutter, so just need to return ""
             if (signatures.isEmpty) return ""
-            val optionClazz =
-              ScalaPsiUtil.nameContext(signatures.head.namedElement) match {
-                case member: PsiMember => Option(member.containingClass)
-                case _                 => None
-              }
+            val optionClazz = ScalaPsiUtil
+              .nameContext(signatures.head.namedElement) match {
+              case member: PsiMember => Option(member.containingClass)
+              case _                 => None
+            }
             assert(optionClazz.isDefined)
             val clazz = optionClazz.get
             if (!GutterUtil.isOverrides(element, signatures))
@@ -87,11 +86,11 @@ object ScalaMarkerType {
               signatures ++= ScalaPsiUtil
                 .superValsSignatures(z, withSelfType = true)
             assert(signatures.nonEmpty)
-            val optionClazz =
-              ScalaPsiUtil.nameContext(signatures(0).namedElement) match {
-                case member: PsiMember => Option(member.containingClass)
-                case _                 => None
-              }
+            val optionClazz = ScalaPsiUtil
+              .nameContext(signatures(0).namedElement) match {
+              case member: PsiMember => Option(member.containingClass)
+              case _                 => None
+            }
             assert(optionClazz.isDefined)
             val clazz = optionClazz.get
             if (!GutterUtil.isOverrides(element, signatures))
@@ -275,8 +274,7 @@ object ScalaMarkerType {
           case _           => return
         }
         val inheritors = ClassInheritorsSearch
-          .search(clazz, clazz.getUseScope, true)
-          .toArray(PsiClass.EMPTY_ARRAY)
+          .search(clazz, clazz.getUseScope, true).toArray(PsiClass.EMPTY_ARRAY)
         if (inheritors.isEmpty) return
         val title = clazz match {
           case _: ScTrait =>
@@ -312,7 +310,8 @@ object ScalaMarkerType {
         case method: PsiMethod if method.containingClass != null =>
           val presentation = method.containingClass.getPresentation
           if (presentation != null)
-            presentation.getPresentableText + " " + presentation.getLocationString
+            presentation.getPresentableText + " " + presentation
+              .getLocationString
           else {
             ClassPresentationUtil.getNameForClass(method.containingClass, false)
           }
@@ -321,12 +320,13 @@ object ScalaMarkerType {
           presentation.getPresentableText + " " + presentation.getLocationString
         case x: PsiNamedElement
             if ScalaPsiUtil.nameContext(x).isInstanceOf[ScMember] =>
-          val containing =
-            ScalaPsiUtil.nameContext(x).asInstanceOf[ScMember].containingClass
+          val containing = ScalaPsiUtil.nameContext(x).asInstanceOf[ScMember]
+            .containingClass
           if (containing == null) defaultPresentation
           else {
             val presentation = containing.getPresentation
-            presentation.getPresentableText + " " + presentation.getLocationString
+            presentation.getPresentableText + " " + presentation
+              .getLocationString
           }
         case x: ScClassParameter =>
           val presentation = x.getPresentation

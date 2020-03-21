@@ -238,9 +238,7 @@ class ParamsSuite extends SparkFunSuite {
 
     val map1 = map0.copy
     val map2 = ParamMap(maxIter -> 10, inputCol -> "input")
-    val map3 = new ParamMap()
-      .put(maxIter, 10)
-      .put(inputCol, "input")
+    val map3 = new ParamMap().put(maxIter, 10).put(inputCol, "input")
     val map4 = ParamMap.empty ++ map0
     val map5 = ParamMap.empty
     map5 ++= map0
@@ -278,8 +276,7 @@ class ParamsSuite extends SparkFunSuite {
         "maxIter: maximum number of iterations (>= 0) (default: 10, current: 100)")
     assert(
       solver.explainParams() ===
-        Seq(handleInvalid, inputCol, maxIter)
-          .map(solver.explainParam)
+        Seq(handleInvalid, inputCol, maxIter).map(solver.explainParam)
           .mkString("\n"))
 
     assert(solver.getParam("inputCol").eq(inputCol))

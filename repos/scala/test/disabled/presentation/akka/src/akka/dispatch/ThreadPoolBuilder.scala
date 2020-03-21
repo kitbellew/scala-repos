@@ -51,13 +51,13 @@ object ThreadPoolConfig {
 }
 
 case class ThreadPoolConfig(
-    allowCorePoolTimeout: Boolean =
-      ThreadPoolConfig.defaultAllowCoreThreadTimeout,
+    allowCorePoolTimeout: Boolean = ThreadPoolConfig
+      .defaultAllowCoreThreadTimeout,
     corePoolSize: Int = ThreadPoolConfig.defaultCorePoolSize,
     maxPoolSize: Int = ThreadPoolConfig.defaultMaxPoolSize,
     threadTimeout: Duration = ThreadPoolConfig.defaultTimeout,
-    flowHandler: ThreadPoolConfig.FlowHandler =
-      ThreadPoolConfig.defaultFlowHandler,
+    flowHandler: ThreadPoolConfig.FlowHandler = ThreadPoolConfig
+      .defaultFlowHandler,
     queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig
       .linkedBlockingQueue()) {
 

@@ -77,8 +77,8 @@ class WebSocketDirectivesSpec extends RoutingSpec {
         }.toSet shouldEqual Set("greeter", "echo")
       }
 
-      WS("http://localhost/", Flow[Message], List("other")) ~> Route.seal(
-        websocketMultipleProtocolRoute) ~> check {
+      WS("http://localhost/", Flow[Message], List("other")) ~> Route
+        .seal(websocketMultipleProtocolRoute) ~> check {
         status shouldEqual StatusCodes.BadRequest
         responseAs[String] shouldEqual "None of the websocket subprotocols offered in the request are supported. Supported are 'echo','greeter'."
         header[`Sec-WebSocket-Protocol`].get.protocols.toSet shouldEqual Set(

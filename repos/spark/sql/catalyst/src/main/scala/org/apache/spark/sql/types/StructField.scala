@@ -40,8 +40,8 @@ case class StructField(
   private[sql] def buildFormattedString(
       prefix: String,
       builder: StringBuilder): Unit = {
-    builder.append(
-      s"$prefix-- $name: ${dataType.typeName} (nullable = $nullable)\n")
+    builder
+      .append(s"$prefix-- $name: ${dataType.typeName} (nullable = $nullable)\n")
     DataType.buildFormattedString(dataType, s"$prefix    |", builder)
   }
 

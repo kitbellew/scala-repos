@@ -98,11 +98,9 @@ class ReceiveTimeoutSpec extends AkkaSpec {
         }
       }))
 
-      val ticks = system.scheduler.schedule(
-        100.millis,
-        100.millis,
-        timeoutActor,
-        TransperentTick)(system.dispatcher)
+      val ticks = system.scheduler
+        .schedule(100.millis, 100.millis, timeoutActor, TransperentTick)(
+          system.dispatcher)
 
       Await.ready(timeoutLatch, TestLatch.DefaultTimeout)
       ticks.cancel()

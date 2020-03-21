@@ -32,17 +32,17 @@ abstract class ScalaPsiTestCase extends PsiTestCase {
 
   override protected def setUp() {
     super.setUp()
-    val rootModel: ModifiableRootModel =
-      ModuleRootManager.getInstance(getModule).getModifiableModel
+    val rootModel: ModifiableRootModel = ModuleRootManager
+      .getInstance(getModule).getModifiableModel
 
     try {
-      val testDataRoot = LocalFileSystem.getInstance.refreshAndFindFileByPath(
-        rootPath)
+      val testDataRoot = LocalFileSystem.getInstance
+        .refreshAndFindFileByPath(rootPath)
       assert(testDataRoot != null)
 
       val contentEntry = rootModel.addContentEntry(testDataRoot)
-      rootModel.setSdk(
-        JavaSdk.getInstance.createJdk("java sdk", JDK_HOME, false))
+      rootModel
+        .setSdk(JavaSdk.getInstance.createJdk("java sdk", JDK_HOME, false))
       contentEntry.addSourceFolder(testDataRoot, false)
 
       // Add Scala Library
@@ -56,12 +56,10 @@ abstract class ScalaPsiTestCase extends PsiTestCase {
         val srcRoot = new File(TestUtils.getScalaLibrarySrc)
         assert(srcRoot.exists)
 
-        libModel.addRoot(
-          VfsUtil.getUrlForLibraryRoot(libRoot),
-          OrderRootType.CLASSES)
-        libModel.addRoot(
-          VfsUtil.getUrlForLibraryRoot(srcRoot),
-          OrderRootType.SOURCES)
+        libModel
+          .addRoot(VfsUtil.getUrlForLibraryRoot(libRoot), OrderRootType.CLASSES)
+        libModel
+          .addRoot(VfsUtil.getUrlForLibraryRoot(srcRoot), OrderRootType.SOURCES)
 
         ApplicationManager.getApplication.runWriteAction(new Runnable {
           def run() {

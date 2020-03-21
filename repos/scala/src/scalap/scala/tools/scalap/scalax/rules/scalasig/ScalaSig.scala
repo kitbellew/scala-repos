@@ -44,14 +44,11 @@ object ScalaSigParser {
     def bytesForIndex(index: Int) =
       constantWrapped(index).asInstanceOf[StringBytesPair].bytes
 
-    classFile
-      .annotation(SCALA_SIG_ANNOTATION)
-      .orElse(classFile.annotation(SCALA_LONG_SIG_ANNOTATION))
-      .map {
+    classFile.annotation(SCALA_SIG_ANNOTATION)
+      .orElse(classFile.annotation(SCALA_LONG_SIG_ANNOTATION)).map {
         case Annotation(_, elements) =>
           val bytesElem = elements
-            .find(elem => constant(elem.elementNameIndex) == BYTES_VALUE)
-            .get
+            .find(elem => constant(elem.elementNameIndex) == BYTES_VALUE).get
           val bytes = getBytes(bytesElem)
           val length = ByteCodecs.decode(bytes)
 
@@ -60,9 +57,7 @@ object ScalaSigParser {
   }
 
   def scalaSigFromAttribute(classFile: ClassFile): Option[ScalaSig] =
-    classFile
-      .attribute(SCALA_SIG)
-      .map(_.byteCode)
+    classFile.attribute(SCALA_SIG).map(_.byteCode)
       .map(ScalaSigAttributeParsers.parse)
 
   def parse(classFile: ClassFile): Option[ScalaSig] = {

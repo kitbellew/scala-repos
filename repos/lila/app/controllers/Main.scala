@@ -54,7 +54,8 @@ object Main extends LilaController {
   def embed =
     Action { req =>
       Ok {
-        s"""document.write("<iframe src='${Env.api.Net.BaseUrl}?embed=" + document.domain + "' class='lichess-iframe' allowtransparency='true' frameBorder='0' style='width: ${getInt(
+        s"""document.write("<iframe src='${Env.api.Net
+          .BaseUrl}?embed=" + document.domain + "' class='lichess-iframe' allowtransparency='true' frameBorder='0' style='width: ${getInt(
           "w",
           req) | 820}px; height: ${getInt(
           "h",
@@ -86,9 +87,7 @@ object Main extends LilaController {
   def jslog(id: String) =
     Open { ctx =>
       val referer = HTTPRequest.referer(ctx.req)
-      lila
-        .log("cheat")
-        .branch("jslog")
+      lila.log("cheat").branch("jslog")
         .info(s"${ctx.req.remoteAddress} ${ctx.userId} $referer")
       lila.mon.cheat.cssBot()
       ctx.userId.?? { Env.report.api.autoBotReport(_, referer) }

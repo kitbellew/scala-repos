@@ -42,8 +42,7 @@ class NettyBlockTransferSecuritySuite
     with MockitoSugar
     with ShouldMatchers {
   test("security default off") {
-    val conf = new SparkConf()
-      .set("spark.app.id", "app-id")
+    val conf = new SparkConf().set("spark.app.id", "app-id")
     testConnection(conf, conf) match {
       case Success(_) => // expected
       case Failure(t) => fail(t)
@@ -51,10 +50,8 @@ class NettyBlockTransferSecuritySuite
   }
 
   test("security on same password") {
-    val conf = new SparkConf()
-      .set("spark.authenticate", "true")
-      .set("spark.authenticate.secret", "good")
-      .set("spark.app.id", "app-id")
+    val conf = new SparkConf().set("spark.authenticate", "true")
+      .set("spark.authenticate.secret", "good").set("spark.app.id", "app-id")
     testConnection(conf, conf) match {
       case Success(_) => // expected
       case Failure(t) => fail(t)
@@ -62,10 +59,8 @@ class NettyBlockTransferSecuritySuite
   }
 
   test("security on mismatch password") {
-    val conf0 = new SparkConf()
-      .set("spark.authenticate", "true")
-      .set("spark.authenticate.secret", "good")
-      .set("spark.app.id", "app-id")
+    val conf0 = new SparkConf().set("spark.authenticate", "true")
+      .set("spark.authenticate.secret", "good").set("spark.app.id", "app-id")
     val conf1 = conf0.clone.set("spark.authenticate.secret", "bad")
     testConnection(conf0, conf1) match {
       case Success(_) => fail("Should have failed")
@@ -74,10 +69,8 @@ class NettyBlockTransferSecuritySuite
   }
 
   test("security mismatch auth off on server") {
-    val conf0 = new SparkConf()
-      .set("spark.authenticate", "true")
-      .set("spark.authenticate.secret", "good")
-      .set("spark.app.id", "app-id")
+    val conf0 = new SparkConf().set("spark.authenticate", "true")
+      .set("spark.authenticate.secret", "good").set("spark.app.id", "app-id")
     val conf1 = conf0.clone.set("spark.authenticate", "false")
     testConnection(conf0, conf1) match {
       case Success(_) => fail("Should have failed")
@@ -88,10 +81,8 @@ class NettyBlockTransferSecuritySuite
   }
 
   test("security mismatch auth off on client") {
-    val conf0 = new SparkConf()
-      .set("spark.authenticate", "false")
-      .set("spark.authenticate.secret", "good")
-      .set("spark.app.id", "app-id")
+    val conf0 = new SparkConf().set("spark.authenticate", "false")
+      .set("spark.authenticate.secret", "good").set("spark.app.id", "app-id")
     val conf1 = conf0.clone.set("spark.authenticate", "true")
     testConnection(conf0, conf1) match {
       case Success(_) => fail("Should have failed")

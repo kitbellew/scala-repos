@@ -113,8 +113,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
 
     def asString(implicit M: Monad[M]): OptionT[M, String] =
       OptionT(M point {
-        FileContent.stringTypes
-          .contains(mimeType)
+        FileContent.stringTypes.contains(mimeType)
           .option(new String(data, "UTF-8"))
       })
 
@@ -129,14 +128,13 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
     def pathStructure(selector: CPath)(implicit M: Monad[M]) = {
       (projection: Projection) =>
         EitherT.right(for (columnRefs <- projection.structure) yield {
-          val types: Map[CType, Long] = columnRefs
-            .collect {
-              // FIXME: This should use real counts
-              case ColumnRef(selector, ctype) if selector.hasPrefix(selector) =>
-                (ctype, 0L)
-            }
-            .groupBy(_._1)
-            .map { case (tpe, values) => (tpe, values.map(_._2).sum) }
+          val types: Map[CType, Long] = columnRefs.collect {
+            // FIXME: This should use real counts
+            case ColumnRef(selector, ctype) if selector.hasPrefix(selector) =>
+              (ctype, 0L)
+          }.groupBy(_._1).map {
+            case (tpe, values) => (tpe, values.map(_._2).sum)
+          }
 
           PathStructure(types, columnRefs.map(_.selector))
         })
@@ -260,8 +258,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
                         _,
                         StreamRef.Create(id, _))) =>
                   val archiveKey = (path, Version.Archived(id))
-                  val appendTo = acc
-                    .get(archiveKey)
+                  val appendTo = acc.get(archiveKey)
                     .orElse(acc.get(currentKey).filter(_.versionId == id))
                   updated(
                     acc,
@@ -284,8 +281,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
                   acc.get(archiveKey).orElse(acc.get(currentKey)) map {
                     case rec @ JsonRecord(resource, `id`) =>
                       // append when it is the same id
-                      rec.resource
-                        .append(NIHDB.Batch(0, records.map(_.value)))
+                      rec.resource.append(NIHDB.Batch(0, records.map(_.value)))
                         .unsafePerformIO
                       acc + ((if (acc.contains(currentKey)) currentKey
                               else archiveKey) -> rec)
@@ -331,10 +327,8 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
                         StreamRef.Replace(id, _))) => sys.error("todo")
 
                 case (acc, _: ArchiveMessage) =>
-                  acc ++ acc
-                    .get(currentKey)
-                    .map(record =>
-                      (path, Version.Archived(record.versionId)) -> record)
+                  acc ++ acc.get(currentKey).map(record =>
+                    (path, Version.Archived(record.versionId)) -> record)
               }
           }
       }
@@ -349,12 +343,9 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
         path: Path,
         version: Version): EitherT[M, ResourceError, Resource] = {
       EitherT {
-        data
-          .get((path, version))
-          .toRightDisjunction(NotFound(
-            "No data found for path %s version %s".format(
-              path.path,
-              version))) traverse { toResource }
+        data.get((path, version)).toRightDisjunction(NotFound(
+          "No data found for path %s version %s"
+            .format(path.path, version))) traverse { toResource }
       }
     }
 

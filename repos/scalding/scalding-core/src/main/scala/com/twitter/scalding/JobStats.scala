@@ -35,11 +35,9 @@ object JobStats {
     stats.getCounterGroups.asScala.map { group =>
       (
         group,
-        stats
-          .getCountersFor(group)
-          .asScala
-          .map { counter => (counter, stats.getCounterValue(group, counter)) }
-          .toMap)
+        stats.getCountersFor(group).asScala.map { counter =>
+          (counter, stats.getCounterValue(group, counter))
+        }.toMap)
     }.toMap
 
   private def statsMap(stats: CascadingStats): Map[String, Any] =
@@ -84,15 +82,13 @@ object JobStats {
   def toJsonValue(a: Any): String =
     if (a == null) "null"
     else {
-      Try(a.toString.toInt)
-        .recoverWith { case t: Throwable => Try(a.toString.toDouble) }
-        .recover {
-          case t: Throwable =>
-            val s = a.toString
-            "\"%s\"".format(s)
-        }
-        .get
-        .toString
+      Try(a.toString.toInt).recoverWith {
+        case t: Throwable => Try(a.toString.toDouble)
+      }.recover {
+        case t: Throwable =>
+          val s = a.toString
+          "\"%s\"".format(s)
+      }.get.toString
     }
 }
 
@@ -100,14 +96,11 @@ object JobStats {
 // If you want to write this, call toMap and use json, etc... to write it
 case class JobStats(toMap: Map[String, Any]) {
   def counters: Map[String, Map[String, Long]] =
-    toMap
-      .get("counters")
-      .map(JobStats.toCounters(_))
-      .getOrElse(sys.error("counters missing from: " + toMap))
-      .get
+    toMap.get("counters").map(JobStats.toCounters(_))
+      .getOrElse(sys.error("counters missing from: " + toMap)).get
 
   def toJson: String =
-    toMap
-      .map { case (k, v) => "\"%s\" : %s".format(k, JobStats.toJsonValue(v)) }
-      .mkString("{", ",", "}")
+    toMap.map {
+      case (k, v) => "\"%s\" : %s".format(k, JobStats.toJsonValue(v))
+    }.mkString("{", ",", "}")
 }

@@ -256,9 +256,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
       val DBTypePattern = "^[a-zA-Z][a-zA-Z0-9 ]*$".r
 
       for {
-        _ <- (
-          posts.schema ++ categories.schema ++ defaultTest.schema ++ noDefaultTest.schema ++ typeTest.schema
-        ).create
+        _ <- (posts.schema ++ categories.schema ++ defaultTest
+          .schema ++ noDefaultTest.schema ++ typeTest.schema).create
         _ <- createModel(ignoreInvalidDefaults = false).map(_.assertConsistency)
         tables <- tdb.profile.defaultTables
         _ <- createModel(Some(tables), ignoreInvalidDefaults = false)
@@ -282,8 +281,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
         _ = {
           // check that the model matches the table classes
           assertEquals(model.tables.toString, 5, model.tables.size)
-          val categories =
-            model.tables.filter(_.name.table.toUpperCase == "CATEGORIES").head
+          val categories = model.tables
+            .filter(_.name.table.toUpperCase == "CATEGORIES").head
           assertEquals(2, categories.columns.size)
           assertEquals(None, categories.primaryKey)
           assertEquals(0, categories.foreignKeys.size)
@@ -291,19 +290,13 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             List("id"),
             categories.columns
               .filter(_.options.exists(_ == ColumnOption.PrimaryKey))
-              .map(_.name)
-              .toList)
+              .map(_.name).toList)
           assertEquals(
             (123, true),
-            categories.columns
-              .filter(_.name == "name")
-              .head
-              .options
-              .collect {
-                case RelationalProfile.ColumnOption.Length(length, varying) =>
-                  (length, varying)
-              }
-              .head
+            categories.columns.filter(_.name == "name").head.options.collect {
+              case RelationalProfile.ColumnOption.Length(length, varying) =>
+                (length, varying)
+            }.head
           )
           //assertEquals( categories.indices.toString, 1, categories.indices.size ) // Removed until made sure all dbs actually produce indices model
           //assertEquals( "IDX_NAME", categories.indices.head.name.get.toUpperCase )
@@ -319,8 +312,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
           }
         }
         _ = {
-          val posts =
-            model.tables.filter(_.name.table.toUpperCase == "POSTS").head
+          val posts = model.tables.filter(_.name.table.toUpperCase == "POSTS")
+            .head
           assertEquals(5, posts.columns.size)
           assertEquals(posts.indices.toString, 0, posts.indices.size)
           if (tdb.profile != SQLiteProfile) {
@@ -328,8 +321,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             // https://bitbucket.org/xerial/sqlite-jdbc/issue/107/databasemetadatagetprimarykeys-does-not
             assertEquals(Some(2), posts.primaryKey.map(_.columns.size))
             assert(
-              !posts.columns.exists(
-                _.options.exists(_ == ColumnOption.PrimaryKey)))
+              !posts.columns
+                .exists(_.options.exists(_ == ColumnOption.PrimaryKey)))
           }
           assertEquals(1, posts.foreignKeys.size)
           if (tdb.profile != slick.jdbc.SQLiteProfile) {
@@ -338,12 +331,9 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
               posts.foreignKeys.head.name.get.toUpperCase)
           }
           def tpe(col: String) =
-            posts.columns
-              .filter(_.name == col)
-              .head
-              .options
-              .collect { case SqlProfile.ColumnOption.SqlType(tpe) => tpe }
-              .head
+            posts.columns.filter(_.name == col).head.options.collect {
+              case SqlProfile.ColumnOption.SqlType(tpe) => tpe
+            }.head
           assert(
             Seq(
               "CHAR",
@@ -360,27 +350,17 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             tpe("title"))
           assertEquals(
             (99, false),
-            posts.columns
-              .filter(_.name == "title")
-              .head
-              .options
-              .collect {
-                case RelationalProfile.ColumnOption.Length(length, varying) =>
-                  (length, varying)
-              }
-              .head
+            posts.columns.filter(_.name == "title").head.options.collect {
+              case RelationalProfile.ColumnOption.Length(length, varying) =>
+                (length, varying)
+            }.head
           )
           assertEquals(
             (111, true),
-            posts.columns
-              .filter(_.name == "some_string")
-              .head
-              .options
-              .collect {
-                case RelationalProfile.ColumnOption.Length(length, varying) =>
-                  (length, varying)
-              }
-              .head
+            posts.columns.filter(_.name == "some_string").head.options.collect {
+              case RelationalProfile.ColumnOption.Length(length, varying) =>
+                (length, varying)
+            }.head
           )
           posts.columns.foreach {
             _.options.foreach {
@@ -394,8 +374,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
           }
         }
         _ = {
-          val defaultTest =
-            model.tables.filter(_.name.table.toUpperCase == "DEFAULT_TEST").head
+          val defaultTest = model.tables
+            .filter(_.name.table.toUpperCase == "DEFAULT_TEST").head
           assert(Some("PUBLIC") != defaultTest.name.schema.map(_.toUpperCase))
           assert(Some("PUBLIC") != defaultTest.name.catalog.map(_.toUpperCase))
           ifCapU(jcap.defaultValueMetaData) {
@@ -412,8 +392,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             ifNotCapU(jcap.booleanMetaData) {
               assertEquals(false, column("some_bool_default_true").nullable)
               assert(
-                Seq(Some(1), Some('1')).contains(columnDefault(
-                  "some_bool_default_true")),
+                Seq(Some(1), Some('1'))
+                  .contains(columnDefault("some_bool_default_true")),
                 columnDefault("some_bool_default_true").toString)
             }
             ifCapU(jcap.booleanMetaData) {
@@ -423,8 +403,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             }
             ifNotCapU(jcap.booleanMetaData) {
               assert(
-                Seq(Some(0), Some('0')).contains(columnDefault(
-                  "some_bool_default_false")),
+                Seq(Some(0), Some('0'))
+                  .contains(columnDefault("some_bool_default_false")),
                 columnDefault("some_bool_default_false").toString)
             }
             ifCapU(jcap.nullableNoDefault) {
@@ -440,8 +420,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             }
             ifNotCapU(jcap.booleanMetaData) {
               assert(
-                Seq(Some(Some(1)), Some(Some('1'))).contains(columnDefault(
-                  "some_bool_option_default_some")),
+                Seq(Some(Some(1)), Some(Some('1')))
+                  .contains(columnDefault("some_bool_option_default_some")),
                 columnDefault("some_bool_option_default_some").toString)
             }
             assertEquals(
@@ -468,8 +448,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
           }
         }
         _ = {
-          val typeTest =
-            model.tables.filter(_.name.table.toUpperCase == "TYPE_TEST").head
+          val typeTest = model.tables
+            .filter(_.name.table.toUpperCase == "TYPE_TEST").head
           def column(name: String) =
             typeTest.columns.filter(_.name.toUpperCase == name.toUpperCase).head
           def columnDefault(name: String) =
@@ -502,8 +482,7 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
           assertEquals(true, column("Option_Int").nullable)
           assertEquals(false, column("Long").nullable)
           assertEquals(true, column("Option_Long").nullable)
-          if (!tdb.profile.toString
-                .contains("OracleProfile")) { // FIXME: we should probably solve this somewhat cleaner
+          if (!tdb.profile.toString.contains("OracleProfile")) { // FIXME: we should probably solve this somewhat cleaner
             assertEquals("Int", column("Int").tpe)
             assertEquals("Int", column("Option_Int").tpe)
             ifCapU(jcap.defaultValueMetaData) {
@@ -542,8 +521,7 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
           assertEquals(false, column("java_sql_Timestamp").nullable)
           assertEquals(true, column("Option_java_sql_Timestamp").nullable)
 
-          if (!tdb.profile.toString
-                .contains("OracleProfile")) { // FIXME: we should probably solve this somewhat cleaner
+          if (!tdb.profile.toString.contains("OracleProfile")) { // FIXME: we should probably solve this somewhat cleaner
             assertEquals("java.sql.Date", column("java_sql_Date").tpe)
             assertEquals("java.sql.Date", column("Option_java_sql_Date").tpe)
             assertEquals("java.sql.Time", column("java_sql_Time").tpe)
@@ -561,8 +539,7 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
         }
         _ <- ifCap(jcap.defaultValueMetaData) {
           val typeTest = model.tables
-            .filter(_.name.table.toUpperCase == "NO_DEFAULT_TEST")
-            .head
+            .filter(_.name.table.toUpperCase == "NO_DEFAULT_TEST").head
           def column(name: String) =
             typeTest.columns.filter(_.name.toUpperCase == name.toUpperCase).head
           def columnDefault(name: String) =

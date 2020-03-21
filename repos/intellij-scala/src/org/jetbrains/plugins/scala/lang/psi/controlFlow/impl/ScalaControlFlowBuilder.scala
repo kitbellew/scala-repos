@@ -263,8 +263,8 @@ class ScalaControlFlowBuilder(
     val matchedParams = call.matchedParameters
     def isByNameOrFunction(arg: ScExpression) = {
       val param = matchedParams.toMap.get(arg)
-      param.isEmpty || param.exists(_.isByName) || param.exists(p =>
-        ScFunctionType.isFunctionType(p.paramType))
+      param.isEmpty || param.exists(_.isByName) || param
+        .exists(p => ScFunctionType.isFunctionType(p.paramType))
     }
     val receiver = call.getInvokedExpr
     if (receiver != null) { receiver.accept(this) }

@@ -66,56 +66,44 @@ object LDAExample {
 
     val parser = new OptionParser[Params]("LDAExample") {
       head("LDAExample: an example LDA app for plain text data.")
-      opt[Int]("k")
-        .text(s"number of topics. default: ${defaultParams.k}")
+      opt[Int]("k").text(s"number of topics. default: ${defaultParams.k}")
         .action((x, c) => c.copy(k = x))
-      opt[Int]("maxIterations")
-        .text(
-          s"number of iterations of learning. default: ${defaultParams.maxIterations}")
+      opt[Int]("maxIterations").text(
+        s"number of iterations of learning. default: ${defaultParams.maxIterations}")
         .action((x, c) => c.copy(maxIterations = x))
-      opt[Double]("docConcentration")
-        .text(
-          s"amount of topic smoothing to use (> 1.0) (-1=auto)." +
-            s"  default: ${defaultParams.docConcentration}")
+      opt[Double]("docConcentration").text(
+        s"amount of topic smoothing to use (> 1.0) (-1=auto)." +
+          s"  default: ${defaultParams.docConcentration}")
         .action((x, c) => c.copy(docConcentration = x))
-      opt[Double]("topicConcentration")
-        .text(
-          s"amount of term (word) smoothing to use (> 1.0) (-1=auto)." +
-            s"  default: ${defaultParams.topicConcentration}")
+      opt[Double]("topicConcentration").text(
+        s"amount of term (word) smoothing to use (> 1.0) (-1=auto)." +
+          s"  default: ${defaultParams.topicConcentration}")
         .action((x, c) => c.copy(topicConcentration = x))
-      opt[Int]("vocabSize")
-        .text(
-          s"number of distinct word types to use, chosen by frequency. (-1=all)" +
-            s"  default: ${defaultParams.vocabSize}")
+      opt[Int]("vocabSize").text(
+        s"number of distinct word types to use, chosen by frequency. (-1=all)" +
+          s"  default: ${defaultParams.vocabSize}")
         .action((x, c) => c.copy(vocabSize = x))
-      opt[String]("stopwordFile")
-        .text(
-          s"filepath for a list of stopwords. Note: This must fit on a single machine." +
-            s"  default: ${defaultParams.stopwordFile}")
+      opt[String]("stopwordFile").text(
+        s"filepath for a list of stopwords. Note: This must fit on a single machine." +
+          s"  default: ${defaultParams.stopwordFile}")
         .action((x, c) => c.copy(stopwordFile = x))
-      opt[String]("algorithm")
-        .text(
-          s"inference algorithm to use. em and online are supported." +
-            s" default: ${defaultParams.algorithm}")
+      opt[String]("algorithm").text(
+        s"inference algorithm to use. em and online are supported." +
+          s" default: ${defaultParams.algorithm}")
         .action((x, c) => c.copy(algorithm = x))
-      opt[String]("checkpointDir")
-        .text(
-          s"Directory for checkpointing intermediate results." +
-            s"  Checkpointing helps with recovery and eliminates temporary shuffle files on disk." +
-            s"  default: ${defaultParams.checkpointDir}")
+      opt[String]("checkpointDir").text(
+        s"Directory for checkpointing intermediate results." +
+          s"  Checkpointing helps with recovery and eliminates temporary shuffle files on disk." +
+          s"  default: ${defaultParams.checkpointDir}")
         .action((x, c) => c.copy(checkpointDir = Some(x)))
-      opt[Int]("checkpointInterval")
-        .text(
-          s"Iterations between each checkpoint.  Only used if checkpointDir is set." +
-            s" default: ${defaultParams.checkpointInterval}")
+      opt[Int]("checkpointInterval").text(
+        s"Iterations between each checkpoint.  Only used if checkpointDir is set." +
+          s" default: ${defaultParams.checkpointInterval}")
         .action((x, c) => c.copy(checkpointInterval = x))
-      arg[String]("<input>...")
-        .text(
-          "input paths (directories) to plain text corpora." +
-            "  Each text file line should hold 1 document.")
-        .unbounded()
-        .required()
-        .action((x, c) => c.copy(input = c.input :+ x))
+      arg[String]("<input>...").text(
+        "input paths (directories) to plain text corpora." +
+          "  Each text file line should hold 1 document.").unbounded()
+        .required().action((x, c) => c.copy(input = c.input :+ x))
     }
 
     parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
@@ -156,17 +144,14 @@ object LDAExample {
     val optimizer = params.algorithm.toLowerCase match {
       case "em" => new EMLDAOptimizer
       // add (1.0 / actualCorpusSize) to MiniBatchFraction be more robust on tiny datasets.
-      case "online" =>
-        new OnlineLDAOptimizer().setMiniBatchFraction(
-          0.05 + 1.0 / actualCorpusSize)
+      case "online" => new OnlineLDAOptimizer()
+          .setMiniBatchFraction(0.05 + 1.0 / actualCorpusSize)
       case _ =>
         throw new IllegalArgumentException(
           s"Only em, online are supported but got ${params.algorithm}.")
     }
 
-    lda
-      .setOptimizer(optimizer)
-      .setK(params.k)
+    lda.setOptimizer(optimizer).setK(params.k)
       .setMaxIterations(params.maxIterations)
       .setDocConcentration(params.docConcentration)
       .setTopicConcentration(params.topicConcentration)
@@ -183,8 +168,8 @@ object LDAExample {
 
     if (ldaModel.isInstanceOf[DistributedLDAModel]) {
       val distLDAModel = ldaModel.asInstanceOf[DistributedLDAModel]
-      val avgLogLikelihood =
-        distLDAModel.logLikelihood / actualCorpusSize.toDouble
+      val avgLogLikelihood = distLDAModel.logLikelihood / actualCorpusSize
+        .toDouble
       println(s"\t Training data average log likelihood: $avgLogLikelihood")
       println()
     }
@@ -192,8 +177,7 @@ object LDAExample {
     // Print the topics, showing the top-weighted terms for each topic.
     val topicIndices = ldaModel.describeTopics(maxTermsPerTopic = 10)
     val topics = topicIndices.map {
-      case (terms, termWeights) =>
-        terms.zip(termWeights).map {
+      case (terms, termWeights) => terms.zip(termWeights).map {
           case (term, weight) => (vocabArray(term.toInt), weight)
         }
     }
@@ -231,36 +215,26 @@ object LDAExample {
         val stopWordText = sc.textFile(stopwordFile).collect()
         stopWordText.flatMap(_.stripMargin.split("\\s+"))
       }
-    val tokenizer = new RegexTokenizer()
-      .setInputCol("docs")
+    val tokenizer = new RegexTokenizer().setInputCol("docs")
       .setOutputCol("rawTokens")
-    val stopWordsRemover = new StopWordsRemover()
-      .setInputCol("rawTokens")
+    val stopWordsRemover = new StopWordsRemover().setInputCol("rawTokens")
       .setOutputCol("tokens")
-    stopWordsRemover.setStopWords(
-      stopWordsRemover.getStopWords ++ customizedStopWords)
-    val countVectorizer = new CountVectorizer()
-      .setVocabSize(vocabSize)
-      .setInputCol("tokens")
-      .setOutputCol("features")
+    stopWordsRemover
+      .setStopWords(stopWordsRemover.getStopWords ++ customizedStopWords)
+    val countVectorizer = new CountVectorizer().setVocabSize(vocabSize)
+      .setInputCol("tokens").setOutputCol("features")
 
     val pipeline = new Pipeline()
       .setStages(Array(tokenizer, stopWordsRemover, countVectorizer))
 
     val model = pipeline.fit(df)
-    val documents = model
-      .transform(df)
-      .select("features")
-      .rdd
-      .map { case Row(features: Vector) => features }
-      .zipWithIndex()
-      .map(_.swap)
+    val documents = model.transform(df).select("features").rdd.map {
+      case Row(features: Vector) => features
+    }.zipWithIndex().map(_.swap)
 
     (
       documents,
-      model
-        .stages(2)
-        .asInstanceOf[CountVectorizerModel]
+      model.stages(2).asInstanceOf[CountVectorizerModel]
         .vocabulary, // vocabulary
       documents.map(_._2.numActives).sum().toLong
     ) // total token count

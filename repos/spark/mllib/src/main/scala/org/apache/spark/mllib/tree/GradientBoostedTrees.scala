@@ -68,15 +68,12 @@ class GradientBoostedTrees @Since("1.2.0") (
     val algo = boostingStrategy.treeStrategy.algo
     algo match {
       case Regression =>
-        GradientBoostedTrees.boost(
-          input,
-          input,
-          boostingStrategy,
-          validate = false)
+        GradientBoostedTrees
+          .boost(input, input, boostingStrategy, validate = false)
       case Classification =>
         // Map labels to -1, +1 so binary classification can be treated as regression.
-        val remappedInput = input.map(x =>
-          new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = input
+          .map(x => new LabeledPoint((x.label * 2) - 1, x.features))
         GradientBoostedTrees.boost(
           remappedInput,
           remappedInput,
@@ -114,17 +111,14 @@ class GradientBoostedTrees @Since("1.2.0") (
     val algo = boostingStrategy.treeStrategy.algo
     algo match {
       case Regression =>
-        GradientBoostedTrees.boost(
-          input,
-          validationInput,
-          boostingStrategy,
-          validate = true)
+        GradientBoostedTrees
+          .boost(input, validationInput, boostingStrategy, validate = true)
       case Classification =>
         // Map labels to -1, +1 so binary classification can be treated as regression.
-        val remappedInput = input.map(x =>
-          new LabeledPoint((x.label * 2) - 1, x.features))
-        val remappedValidationInput = validationInput.map(x =>
-          new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = input
+          .map(x => new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedValidationInput = validationInput
+          .map(x => new LabeledPoint((x.label * 2) - 1, x.features))
         GradientBoostedTrees.boost(
           remappedInput,
           remappedValidationInput,
@@ -305,9 +299,8 @@ object GradientBoostedTrees extends Logging {
           loss)
         validatePredErrorCheckpointer.update(validatePredError)
         val currentValidateError = validatePredError.values.mean()
-        if (bestValidateError - currentValidateError < validationTol * Math.max(
-              currentValidateError,
-              0.01)) { doneLearning = true }
+        if (bestValidateError - currentValidateError < validationTol * Math
+              .max(currentValidateError, 0.01)) { doneLearning = true }
         else if (currentValidateError < bestValidateError) {
           bestValidateError = currentValidateError
           bestM = m + 1

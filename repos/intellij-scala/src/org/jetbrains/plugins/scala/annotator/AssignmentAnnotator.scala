@@ -33,7 +33,8 @@ trait AssignmentAnnotator {
       case call: ScMethodCall =>
       case ref: ScReferenceExpression => ref.bind() match {
           case Some(r)
-              if r.isDynamic && r.name == ResolvableReferenceExpression.UPDATE_DYNAMIC => //ignore
+              if r.isDynamic && r.name == ResolvableReferenceExpression
+                .UPDATE_DYNAMIC => //ignore
           case Some(r) if !r.isNamedParameter =>
             def checkVariable() {
               left.getType(TypingContext.empty).foreach { lType =>
@@ -82,8 +83,8 @@ trait AssignmentAnnotator {
                               actualText)
                             val annotation = holder
                               .createErrorAnnotation(expression, message)
-                            annotation.registerFix(
-                              ReportHighlightingErrorQuickFix)
+                            annotation
+                              .registerFix(ReportHighlightingErrorQuickFix)
                           }
                         else {
                           //TODO investigate case when expression is null. It's possible when new Expression(ScType)

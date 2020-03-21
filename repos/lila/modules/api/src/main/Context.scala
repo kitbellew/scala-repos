@@ -43,16 +43,16 @@ sealed trait Context extends lila.user.UserContextWrapper {
     ctxPref("theme3d").fold(Pref.default.realTheme3d)(lila.pref.Theme3d.apply)
 
   def currentPieceSet =
-    ctxPref("pieceSet").fold(Pref.default.realPieceSet)(
-      lila.pref.PieceSet.apply)
+    ctxPref("pieceSet")
+      .fold(Pref.default.realPieceSet)(lila.pref.PieceSet.apply)
 
   def currentPieceSet3d =
-    ctxPref("pieceSet3d").fold(Pref.default.realPieceSet3d)(
-      lila.pref.PieceSet3d.apply)
+    ctxPref("pieceSet3d")
+      .fold(Pref.default.realPieceSet3d)(lila.pref.PieceSet3d.apply)
 
   def currentSoundSet =
-    ctxPref("soundSet").fold(Pref.default.realSoundSet)(
-      lila.pref.SoundSet.apply)
+    ctxPref("soundSet")
+      .fold(Pref.default.realSoundSet)(lila.pref.SoundSet.apply)
 
   lazy val currentBg = ctxPref("bg") | "light"
 

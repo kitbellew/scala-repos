@@ -94,25 +94,21 @@ abstract class Expression extends TreeNode[Expression] {
     * @return [[ExprCode]]
     */
   def gen(ctx: CodegenContext): ExprCode = {
-    ctx.subExprEliminationExprs
-      .get(this)
-      .map { subExprState =>
-        // This expression is repeated meaning the code to evaluated has already been added
-        // as a function and called in advance. Just use it.
-        val code = s"/* ${toCommentSafeString(this.toString)} */"
-        ExprCode(code, subExprState.isNull, subExprState.value)
-      }
-      .getOrElse {
-        val isNull = ctx.freshName("isNull")
-        val value = ctx.freshName("value")
-        val ve = ExprCode("", isNull, value)
-        ve.code = genCode(ctx, ve)
-        if (ve.code != "") {
-          // Add `this` in the comment.
-          ve.copy(
-            s"/* ${toCommentSafeString(this.toString)} */\n" + ve.code.trim)
-        } else { ve }
-      }
+    ctx.subExprEliminationExprs.get(this).map { subExprState =>
+      // This expression is repeated meaning the code to evaluated has already been added
+      // as a function and called in advance. Just use it.
+      val code = s"/* ${toCommentSafeString(this.toString)} */"
+      ExprCode(code, subExprState.isNull, subExprState.value)
+    }.getOrElse {
+      val isNull = ctx.freshName("isNull")
+      val value = ctx.freshName("value")
+      val ve = ExprCode("", isNull, value)
+      ve.code = genCode(ctx, ve)
+      if (ve.code != "") {
+        // Add `this` in the comment.
+        ve.copy(s"/* ${toCommentSafeString(this.toString)} */\n" + ve.code.trim)
+      } else { ve }
+    }
   }
 
   /**
@@ -133,8 +129,8 @@ abstract class Expression extends TreeNode[Expression] {
     * Implementations of expressions should override this if the resolution of this type of
     * expression involves more than just the resolution of its children and type checking.
     */
-  lazy val resolved: Boolean =
-    childrenResolved && checkInputDataTypes().isSuccess
+  lazy val resolved: Boolean = childrenResolved && checkInputDataTypes()
+    .isSuccess
 
   /**
     * Returns the [[DataType]] of the result of evaluating this expression.  It is
@@ -337,8 +333,8 @@ abstract class UnaryExpression extends Expression {
     val resultCode = f(childGen.value)
 
     if (nullable) {
-      val nullSafeEval = ctx.nullSafeExec(child.nullable, childGen.isNull)(
-        resultCode)
+      val nullSafeEval = ctx
+        .nullSafeExec(child.nullable, childGen.isNull)(resultCode)
       s"""
         ${childGen.code}
         boolean ${ev.isNull} = ${childGen.isNull};
@@ -571,14 +567,13 @@ abstract class TernaryExpression extends Expression {
       val nullSafeEval =
         leftGen.code + ctx.nullSafeExec(children(0).nullable, leftGen.isNull) {
           midGen.code + ctx.nullSafeExec(children(1).nullable, midGen.isNull) {
-            rightGen.code + ctx.nullSafeExec(
-              children(2).nullable,
-              rightGen.isNull) {
-              s"""
+            rightGen.code + ctx
+              .nullSafeExec(children(2).nullable, rightGen.isNull) {
+                s"""
                 ${ev.isNull} = false; // resultCode could change nullability.
                 $resultCode
               """
-            }
+              }
           }
         }
 

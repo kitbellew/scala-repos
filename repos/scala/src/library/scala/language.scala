@@ -79,8 +79,8 @@ object language {
     *
     *  @group production
     */
-  implicit lazy val reflectiveCalls: reflectiveCalls =
-    languageFeature.reflectiveCalls
+  implicit lazy val reflectiveCalls: reflectiveCalls = languageFeature
+    .reflectiveCalls
 
   /** Only where enabled, definitions of implicit conversions are allowed. An
     *  implicit conversion is an implicit value of unary function type `A => B`,
@@ -107,8 +107,8 @@ object language {
     *
     *  @group production
     */
-  implicit lazy val implicitConversions: implicitConversions =
-    languageFeature.implicitConversions
+  implicit lazy val implicitConversions: implicitConversions = languageFeature
+    .implicitConversions
 
   /** Only where this flag is enabled, higher-kinded types can be written.
     *

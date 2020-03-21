@@ -46,8 +46,7 @@ private[sbt] object SettingCompletions {
       .flattenLocals(Def.compiled(extracted.structure.settings, true)(
         structure.delegates,
         structure.scopeLocal,
-        implicitly[Show[ScopedKey[_]]]))
-      .keys
+        implicitly[Show[ScopedKey[_]]])).keys
     val projectScope = Load.projectScope(currentRef)
     def resolve(s: Setting[_]): Seq[Setting[_]] =
       Load.transformSettings(
@@ -81,8 +80,8 @@ private[sbt] object SettingCompletions {
       currentRef.build,
       rootProject,
       settings)
-    val newSession = session.appendSettings(
-      append map (a => (a, arg.split('\n').toList)))
+    val newSession = session
+      .appendSettings(append map (a => (a, arg.split('\n').toList)))
     val struct = extracted.structure
     val r = relation(newSession.mergeSettings, true)(
       structure.delegates,
@@ -118,8 +117,7 @@ private[sbt] object SettingCompletions {
       val (first, last) = in.splitAt(QuietLimit)
       if (last.isEmpty) (first.mkString(", "), false)
       else {
-        val s = first
-          .take(QuietLimit - 1)
+        val s = first.take(QuietLimit - 1)
           .mkString("", ", ", " and " + last.size + " others.")
         (s, true)
       }
@@ -130,11 +128,8 @@ private[sbt] object SettingCompletions {
       val (used, trimU) = lines(strings(affected))
       val details = if (trimR || trimU) "\n\tRun `last` for details." else ""
       val valuesString = if (redefined.size == 1) "value" else "values"
-      "Defining %s\nThe new %s will be used by %s%s".format(
-        redef,
-        valuesString,
-        used,
-        details)
+      "Defining %s\nThe new %s will be used by %s%s"
+        .format(redef, valuesString, used, details)
     }
   }
 
@@ -168,7 +163,8 @@ private[sbt] object SettingCompletions {
         inputScopedKey(keyFilter(defineKey.key)))
     } yield () // parser is currently only for completion and the parsed data structures are not used
 
-    matched(full) | any.+.string
+    matched(full) | any
+      .+.string
   }
 
   /** Parser for a Scope+AttributeKey (ScopedKey). */
@@ -250,12 +246,12 @@ private[sbt] object SettingCompletions {
         }
       def getChoices(scopes: Seq[Scope]): Map[String, T] =
         scopes.flatMap(getChoice).toMap
-      val definedChoices: Set[String] =
-        definedScopes.flatMap(s => axis(s).toOption.map(name)).toSet
+      val definedChoices: Set[String] = definedScopes
+        .flatMap(s => axis(s).toOption.map(name)).toSet
       val fullChoices: Map[String, T] = getChoices(allScopes.toSeq)
       val completions = fixedCompletions { (seen, level) =>
-        completeScope(seen, level, definedChoices, fullChoices)(
-          description).toSet
+        completeScope(seen, level, definedChoices, fullChoices)(description)
+          .toSet
       }
       Act.optionalAxis(
         inParser ~> token(Space) ~> token(
@@ -263,8 +259,8 @@ private[sbt] object SettingCompletions {
           completions),
         This)
     }
-    val configurations: Map[String, Configuration] =
-      context.configurations.map(c => (configScalaID(c.name), c)).toMap
+    val configurations: Map[String, Configuration] = context.configurations
+      .map(c => (configScalaID(c.name), c)).toMap
     val configParser = axisParser[ConfigKey](
       _.config,
       c => configScalaID(c.name),
@@ -358,9 +354,8 @@ private[sbt] object SettingCompletions {
     val applicable = all.toSeq.filter { case (k, v) => k startsWith seen }
     val prominentOnly = applicable filter { case (k, v) => prominent(k, v) }
 
-    val showAll = (level >= 3) || (
-      level == 2 && prominentOnly.size <= detailLimit
-    ) || prominentOnly.isEmpty
+    val showAll = (level >= 3) || (level == 2 && prominentOnly
+      .size <= detailLimit) || prominentOnly.isEmpty
     val showKeys = if (showAll) applicable else prominentOnly
     val showDescriptions = (level >= 2) || (showKeys.size <= detailLimit)
     completeDescribed(seen, showDescriptions, showKeys)(s =>
@@ -377,9 +372,8 @@ private[sbt] object SettingCompletions {
       val padded = CommandUtil.aligned("", "   ", withDescriptions)
       (padded, in).zipped.map {
         case (line, (id, key)) =>
-          Completion.tokenDisplay(
-            append = appendString(id),
-            display = line + "\n")
+          Completion
+            .tokenDisplay(append = appendString(id), display = line + "\n")
       }
     } else
       in map {

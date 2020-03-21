@@ -63,8 +63,7 @@ class DelayedFactoryTest extends FunSuite {
   }
 
   def numWaitersCheckFactory(factory: ServiceFactory[Int, Int], num: Int) {
-    factory.getClass.getDeclaredMethods
-      .find(_.getName == "numWaiters")
+    factory.getClass.getDeclaredMethods.find(_.getName == "numWaiters")
       .foreach { meth => assert(meth.invoke(factory) == num) }
   }
 
@@ -88,8 +87,7 @@ class DelayedFactoryTest extends FunSuite {
 
       test(
         ("%s: an incomplete buffered factory should satisfy closures with exceptions if they're " +
-          "interrupted")
-          .format(name)) {
+          "interrupted").format(name)) {
         val ctx = helpFn()
         import ctx._
 

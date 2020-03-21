@@ -98,13 +98,13 @@ class ScalaScriptRunConfiguration(
         params.getVMParametersList.add(EMACS)
 
         params.setMainClass(MAIN_CLASS)
-        params.getProgramParametersList.add(
-          "-nocompdaemon"
-        ) //todo: seems to be a bug in scala compiler. Ticket #1498
+        params.getProgramParametersList
+          .add(
+            "-nocompdaemon"
+          ) //todo: seems to be a bug in scala compiler. Ticket #1498
         params.getProgramParametersList.add("-classpath")
-        params.configureByModule(
-          module,
-          JavaParameters.JDK_AND_CLASSES_AND_TESTS)
+        params
+          .configureByModule(module, JavaParameters.JDK_AND_CLASSES_AND_TESTS)
         params.getProgramParametersList.add(params.getClassPath.getPathsString)
         params.getClassPath.addAllFiles(
           module.scalaSdk.map(_.compilerClasspath).getOrElse(Seq.empty))
@@ -116,8 +116,8 @@ class ScalaScriptRunConfiguration(
       }
     }
 
-    val consoleBuilder = TextConsoleBuilderFactory.getInstance.createBuilder(
-      getProject)
+    val consoleBuilder = TextConsoleBuilderFactory.getInstance
+      .createBuilder(getProject)
     consoleBuilder.addFilter(getFilter(script))
     state.setConsoleBuilder(consoleBuilder)
     state
@@ -167,12 +167,11 @@ class ScalaScriptRunConfiguration(
         var end = entireLength - line.length
         if (line.startsWith("(fragment of ")) {
           try {
-            var cache = line.replaceFirst(
-              "[(][f][r][a][g][m][e][n][t][ ][o][f][ ]",
-              "")
+            var cache = line
+              .replaceFirst("[(][f][r][a][g][m][e][n][t][ ][o][f][ ]", "")
             cache = cache.replaceFirst("[^)]*[)][:]", "")
-            val lineNumber = Integer.parseInt(
-              cache.substring(0, cache.indexOf(":")))
+            val lineNumber = Integer
+              .parseInt(cache.substring(0, cache.indexOf(":")))
             cache = cache.replaceFirst("[^:]", "")
             end += line.length - cache.length
             val hyperlink =

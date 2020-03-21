@@ -687,8 +687,8 @@ class LinearAlgebraTest
   }
 
   test("svd reduced float A(m, n), m < n") {
-    val m =
-      DenseMatrix((2.0f, 4.0f), (1.0f, 3.0f), (0.0f, 0.0f), (0.0f, 0.0f)).t
+    val m = DenseMatrix((2.0f, 4.0f), (1.0f, 3.0f), (0.0f, 0.0f), (0.0f, 0.0f))
+      .t
     val SVD(u, s, vt) = svd.reduced(m)
 
     // u and vt are unitary
@@ -890,10 +890,10 @@ class LinearAlgebraTest
 
   test("diag test") {
     val testDV = DenseVector(0.1, 1.1, 2.1, 3.1, 4.1)
-    val testDM = DenseMatrix.tabulate[Double](5, 5)((r, c) =>
-      if (r == c) r.toDouble + 0.1 else 0.0)
-    val testCSC = CSCMatrix.tabulate[Double](5, 5)((r, c) =>
-      if (r == c) r.toDouble + 0.1 else 0.0)
+    val testDM = DenseMatrix
+      .tabulate[Double](5, 5)((r, c) => if (r == c) r.toDouble + 0.1 else 0.0)
+    val testCSC = CSCMatrix
+      .tabulate[Double](5, 5)((r, c) => if (r == c) r.toDouble + 0.1 else 0.0)
     val testSV = SparseVector(0.1, 1.1, 2.1, 3.1, 4.1)
 
     assert(diag(testDV) === testDM)

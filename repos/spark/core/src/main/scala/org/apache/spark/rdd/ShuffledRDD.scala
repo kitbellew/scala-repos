@@ -81,13 +81,11 @@ class ShuffledRDD[K: ClassTag, V: ClassTag, C: ClassTag](
     val serializer = userSpecifiedSerializer.getOrElse {
       val serializerManager = SparkEnv.get.serializerManager
       if (mapSideCombine) {
-        serializerManager.getSerializer(
-          implicitly[ClassTag[K]],
-          implicitly[ClassTag[C]])
+        serializerManager
+          .getSerializer(implicitly[ClassTag[K]], implicitly[ClassTag[C]])
       } else {
-        serializerManager.getSerializer(
-          implicitly[ClassTag[K]],
-          implicitly[ClassTag[V]])
+        serializerManager
+          .getSerializer(implicitly[ClassTag[K]], implicitly[ClassTag[V]])
       }
     }
     List(new ShuffleDependency(
@@ -102,8 +100,8 @@ class ShuffledRDD[K: ClassTag, V: ClassTag, C: ClassTag](
   override val partitioner = Some(part)
 
   override def getPartitions: Array[Partition] = {
-    Array.tabulate[Partition](part.numPartitions)(i =>
-      new ShuffledRDDPartition(i))
+    Array
+      .tabulate[Partition](part.numPartitions)(i => new ShuffledRDDPartition(i))
   }
 
   override protected def getPreferredLocations(
@@ -120,8 +118,7 @@ class ShuffledRDD[K: ClassTag, V: ClassTag, C: ClassTag](
     val dep = dependencies.head.asInstanceOf[ShuffleDependency[K, V, C]]
     SparkEnv.get.shuffleManager
       .getReader(dep.shuffleHandle, split.index, split.index + 1, context)
-      .read()
-      .asInstanceOf[Iterator[(K, C)]]
+      .read().asInstanceOf[Iterator[(K, C)]]
   }
 
   override def clearDependencies() {

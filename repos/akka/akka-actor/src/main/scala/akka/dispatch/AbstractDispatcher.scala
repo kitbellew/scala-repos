@@ -134,11 +134,8 @@ abstract class MessageDispatcher(
   private final def shutdownSchedule: Int =
     Unsafe.instance.getIntVolatile(this, shutdownScheduleOffset)
   private final def updateShutdownSchedule(expect: Int, update: Int): Boolean =
-    Unsafe.instance.compareAndSwapInt(
-      this,
-      shutdownScheduleOffset,
-      expect,
-      update)
+    Unsafe.instance
+      .compareAndSwapInt(this, shutdownScheduleOffset, expect, update)
 
   /**
     *  Creates and returns a mailbox for the given actor.
@@ -205,8 +202,8 @@ abstract class MessageDispatcher(
 
   private def scheduleShutdownAction(): Unit = {
     // IllegalStateException is thrown if scheduler has been shutdown
-    try prerequisites.scheduler.scheduleOnce(shutdownTimeout, shutdownAction)(
-      new ExecutionContext {
+    try prerequisites.scheduler
+      .scheduleOnce(shutdownTimeout, shutdownAction)(new ExecutionContext {
         override def execute(runnable: Runnable): Unit = runnable.run()
         override def reportFailure(t: Throwable): Unit =
           MessageDispatcher.this.reportFailure(t)
@@ -396,8 +393,7 @@ abstract class MessageDispatcherConfigurator(
                     classOf[Config],
                     classOf[DispatcherPrerequisites]),
                   exception)
-            })
-            .get
+            }).get
       }
 
     config.getString("executor") match {
@@ -441,15 +437,13 @@ class ThreadPoolExecutorConfigurator(
       })
 
     if (config.getString("fixed-pool-size") == "off")
-      builder
-        .setCorePoolSizeFromFactor(
-          config getInt "core-pool-size-min",
-          config getDouble "core-pool-size-factor",
-          config getInt "core-pool-size-max")
-        .setMaxPoolSizeFromFactor(
-          config getInt "max-pool-size-min",
-          config getDouble "max-pool-size-factor",
-          config getInt "max-pool-size-max")
+      builder.setCorePoolSizeFromFactor(
+        config getInt "core-pool-size-min",
+        config getDouble "core-pool-size-factor",
+        config getInt "core-pool-size-max").setMaxPoolSizeFromFactor(
+        config getInt "max-pool-size-min",
+        config getDouble "max-pool-size-factor",
+        config getInt "max-pool-size-max")
     else builder.setFixedPoolSize(config.getInt("fixed-pool-size"))
   }
 
@@ -584,31 +578,31 @@ class DefaultExecutorServiceConfigurator(
     prerequisites: DispatcherPrerequisites,
     fallback: ExecutorServiceConfigurator)
     extends ExecutorServiceConfigurator(config, prerequisites) {
-  val provider: ExecutorServiceFactoryProvider =
-    prerequisites.defaultExecutionContext match {
-      case Some(ec) ⇒
-        prerequisites.eventStream.publish(Debug(
-          "DefaultExecutorServiceConfigurator",
-          this.getClass,
-          s"Using passed in ExecutionContext as default executor for this ActorSystem. If you want to use a different executor, please specify one in akka.actor.default-dispatcher.default-executor."
-        ))
+  val provider: ExecutorServiceFactoryProvider = prerequisites
+    .defaultExecutionContext match {
+    case Some(ec) ⇒
+      prerequisites.eventStream.publish(Debug(
+        "DefaultExecutorServiceConfigurator",
+        this.getClass,
+        s"Using passed in ExecutionContext as default executor for this ActorSystem. If you want to use a different executor, please specify one in akka.actor.default-dispatcher.default-executor."
+      ))
 
-        new AbstractExecutorService
-          with ExecutorServiceFactory
-          with ExecutorServiceFactoryProvider {
-          def createExecutorServiceFactory(
-              id: String,
-              threadFactory: ThreadFactory): ExecutorServiceFactory = this
-          def createExecutorService: ExecutorService = this
-          def shutdown(): Unit = ()
-          def isTerminated: Boolean = false
-          def awaitTermination(timeout: Long, unit: TimeUnit): Boolean = false
-          def shutdownNow(): ju.List[Runnable] = ju.Collections.emptyList()
-          def execute(command: Runnable): Unit = ec.execute(command)
-          def isShutdown: Boolean = false
-        }
-      case None ⇒ fallback
-    }
+      new AbstractExecutorService
+        with ExecutorServiceFactory
+        with ExecutorServiceFactoryProvider {
+        def createExecutorServiceFactory(
+            id: String,
+            threadFactory: ThreadFactory): ExecutorServiceFactory = this
+        def createExecutorService: ExecutorService = this
+        def shutdown(): Unit = ()
+        def isTerminated: Boolean = false
+        def awaitTermination(timeout: Long, unit: TimeUnit): Boolean = false
+        def shutdownNow(): ju.List[Runnable] = ju.Collections.emptyList()
+        def execute(command: Runnable): Unit = ec.execute(command)
+        def isShutdown: Boolean = false
+      }
+    case None ⇒ fallback
+  }
 
   def createExecutorServiceFactory(
       id: String,

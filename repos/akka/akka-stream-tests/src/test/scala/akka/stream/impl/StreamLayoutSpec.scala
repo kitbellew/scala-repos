@@ -44,8 +44,7 @@ class StreamLayoutSpec extends AkkaSpec {
       stage1.isSource should be(false)
 
       val stage2 = testStage()
-      val flow12 = stage1
-        .compose(stage2, Keep.none)
+      val flow12 = stage1.compose(stage2, Keep.none)
         .wire(stage1.outPorts.head, stage2.inPorts.head)
 
       flow12.inPorts should be(stage1.inPorts)
@@ -71,8 +70,7 @@ class StreamLayoutSpec extends AkkaSpec {
       sink3.isSink should be(true)
       sink3.isSource should be(false)
 
-      val source012 = source0
-        .compose(flow12, Keep.none)
+      val source012 = source0.compose(flow12, Keep.none)
         .wire(source0.outPorts.head, flow12.inPorts.head)
       source012.inPorts.size should be(0)
       source012.outPorts should be(flow12.outPorts)
@@ -81,8 +79,7 @@ class StreamLayoutSpec extends AkkaSpec {
       source012.isSink should be(false)
       source012.isSource should be(true)
 
-      val sink123 = flow12
-        .compose(sink3, Keep.none)
+      val sink123 = flow12.compose(sink3, Keep.none)
         .wire(flow12.outPorts.head, sink3.inPorts.head)
       sink123.inPorts should be(flow12.inPorts)
       sink123.outPorts.size should be(0)
@@ -91,15 +88,12 @@ class StreamLayoutSpec extends AkkaSpec {
       sink123.isSink should be(true)
       sink123.isSource should be(false)
 
-      val runnable0123a = source0
-        .compose(sink123, Keep.none)
+      val runnable0123a = source0.compose(sink123, Keep.none)
         .wire(source0.outPorts.head, sink123.inPorts.head)
-      val runnable0123b = source012
-        .compose(sink3, Keep.none)
+      val runnable0123b = source012.compose(sink3, Keep.none)
         .wire(source012.outPorts.head, sink3.inPorts.head)
 
-      val runnable0123c = source0
-        .compose(flow12, Keep.none)
+      val runnable0123c = source0.compose(flow12, Keep.none)
         .wire(source0.outPorts.head, flow12.inPorts.head)
         .compose(sink3, Keep.none)
         .wire(flow12.outPorts.head, sink3.inPorts.head)
@@ -118,13 +112,11 @@ class StreamLayoutSpec extends AkkaSpec {
       val stage2 = testStage()
       val sink = testSink()
 
-      val runnable = source
-        .compose(stage1, Keep.none)
+      val runnable = source.compose(stage1, Keep.none)
         .wire(source.outPorts.head, stage1.inPorts.head)
         .compose(stage2, Keep.none)
         .wire(stage1.outPorts.head, stage2.inPorts.head)
-        .compose(sink, Keep.none)
-        .wire(stage2.outPorts.head, sink.inPorts.head)
+        .compose(sink, Keep.none).wire(stage2.outPorts.head, sink.inPorts.head)
 
       checkMaterialized(runnable)
     }
@@ -152,11 +144,10 @@ class StreamLayoutSpec extends AkkaSpec {
       }
 
       "starting from a Flow" in {
-        val g = (1 to tooDeepForStack).foldLeft(Flow[Int])((f, i) ⇒
-          f.map(identity))
-        val (mat, fut) = g.runWith(
-          Source.single(42).mapMaterializedValue(_ ⇒ 1),
-          Sink.seq)
+        val g = (1 to tooDeepForStack)
+          .foldLeft(Flow[Int])((f, i) ⇒ f.map(identity))
+        val (mat, fut) = g
+          .runWith(Source.single(42).mapMaterializedValue(_ ⇒ 1), Sink.seq)
         mat should ===(1)
         fut.futureValue should ===(List(42))
       }
@@ -186,9 +177,8 @@ class StreamLayoutSpec extends AkkaSpec {
       "starting from a Flow" in {
         val g = Flow fromGraph Fusing.aggressive(
           (1 to tooDeepForStack).foldLeft(Flow[Int])((f, i) ⇒ f.map(identity)))
-        val (mat, fut) = g.runWith(
-          Source.single(42).mapMaterializedValue(_ ⇒ 1),
-          Sink.seq)
+        val (mat, fut) = g
+          .runWith(Source.single(42).mapMaterializedValue(_ ⇒ 1), Sink.seq)
         mat should ===(1)
         fut.futureValue should ===(List(42))
       }
@@ -272,10 +262,10 @@ class StreamLayoutSpec extends AkkaSpec {
 
     materializer.subscribers.size should be(materializer.publishers.size)
 
-    val inToSubscriber: Map[InPort, TestSubscriber] =
-      materializer.subscribers.map(s ⇒ s.port -> s).toMap
-    val outToPublisher: Map[OutPort, TestPublisher] =
-      materializer.publishers.map(s ⇒ s.port -> s).toMap
+    val inToSubscriber: Map[InPort, TestSubscriber] = materializer.subscribers
+      .map(s ⇒ s.port -> s).toMap
+    val outToPublisher: Map[OutPort, TestPublisher] = materializer.publishers
+      .map(s ⇒ s.port -> s).toMap
 
     for (publisher ← materializer.publishers) {
       publisher.owner.isAtomic should be(true)

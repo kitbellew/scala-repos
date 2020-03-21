@@ -53,9 +53,8 @@ final class Env(
   }
   import settings._
 
-  private val moveTimeChannel = system.actorOf(
-    Props(classOf[lila.socket.Channel]),
-    name = ChannelMoveTime)
+  private val moveTimeChannel = system
+    .actorOf(Props(classOf[lila.socket.Channel]), name = ChannelMoveTime)
 
   private val moveMonitor = new MoveMonitor(system, moveTimeChannel)
 

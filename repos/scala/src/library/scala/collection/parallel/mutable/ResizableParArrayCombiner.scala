@@ -28,8 +28,8 @@ trait ResizableParArrayCombiner[T]
       val arrayseq = new ArraySeq[T](size)
       val array = arrayseq.array.asInstanceOf[Array[Any]]
 
-      combinerTaskSupport.executeAndWaitResult(
-        new CopyChainToArray(array, 0, size))
+      combinerTaskSupport
+        .executeAndWaitResult(new CopyChainToArray(array, 0, size))
 
       new ParArray(arrayseq)
     } else { // optimisation if there is only 1 array

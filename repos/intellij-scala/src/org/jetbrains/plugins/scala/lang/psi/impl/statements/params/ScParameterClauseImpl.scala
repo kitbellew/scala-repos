@@ -55,15 +55,15 @@ class ScParameterClauseImpl private (
     //which is ok, it will not add anything more
     getParent match {
       case clauses: ScParameters =>
-        val typeParametersOwner: ScTypeParametersOwner =
-          clauses.getParent match {
-            case f: ScFunction => f
-            case p: ScPrimaryConstructor => p.containingClass match {
-                case c: ScClass => c
-                case _          => return parameters
-              }
-            case _ => return parameters
-          }
+        val typeParametersOwner: ScTypeParametersOwner = clauses
+          .getParent match {
+          case f: ScFunction => f
+          case p: ScPrimaryConstructor => p.containingClass match {
+              case c: ScClass => c
+              case _          => return parameters
+            }
+          case _ => return parameters
+        }
         def syntheticClause(): Option[ScParameterClause] = {
           val modCount = getManager.getModificationTracker.getModificationCount
           if (synthClauseModCount == modCount) return synthClause

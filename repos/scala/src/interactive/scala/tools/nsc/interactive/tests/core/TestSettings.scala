@@ -12,8 +12,7 @@ private[tests] trait TestSettings {
 
   /** The base directory for this test, usually a subdirectory of "test/files/presentation/" */
   protected val baseDir = Option(System.getProperty("partest.testname"))
-    .map(outDir / _)
-    .getOrElse(Path("."))
+    .map(outDir / _).getOrElse(Path("."))
 
   /** Where source files are placed. */
   protected val sourceDir = "src"

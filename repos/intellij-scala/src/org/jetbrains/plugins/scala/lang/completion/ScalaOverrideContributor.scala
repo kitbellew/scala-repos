@@ -93,15 +93,12 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       parameters: CompletionParameters): Unit = {
     val position = positionFromParameters(parameters)
 
-    val clazz = PsiTreeUtil.getParentOfType(
-      position,
-      classOf[ScTemplateDefinition],
-      false)
+    val clazz = PsiTreeUtil
+      .getParentOfType(position, classOf[ScTemplateDefinition], false)
     if (clazz == null) return
 
-    val classMembers = ScalaOIUtil.getMembersToOverride(
-      clazz,
-      withSelfType = true)
+    val classMembers = ScalaOIUtil
+      .getMembersToOverride(clazz, withSelfType = true)
     if (classMembers.isEmpty) return
 
     handleMembers(
@@ -126,9 +123,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     if (mlo.isEmpty) return
     else if (mlo.isDefined && !mlo.get.hasModifierProperty("override")) return
 
-    val classMembers = ScalaOIUtil.getMembersToOverride(
-      clazz,
-      withSelfType = true)
+    val classMembers = ScalaOIUtil
+      .getMembersToOverride(clazz, withSelfType = true)
     if (classMembers.isEmpty) return
 
     def membersToRender =
@@ -159,9 +155,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
 
         elementOption.foreach { element =>
           TypeAdjuster.markToAdjust(element)
-          ScalaGenerationInfo.positionCaret(
-            context.getEditor,
-            element.asInstanceOf[PsiMember])
+          ScalaGenerationInfo
+            .positionCaret(context.getEditor, element.asInstanceOf[PsiMember])
           context.commitDocument()
         }
       }
@@ -177,10 +172,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     val needsInferType = ScalaGenerationInfo.needsInferType
     val text: String = classMember match {
       case mm: ScMethodMember =>
-        val mBody = ScalaGenerationInfo.getMethodBody(
-          mm,
-          td,
-          isImplement = false)
+        val mBody = ScalaGenerationInfo
+          .getMethodBody(mm, td, isImplement = false)
         val fun =
           if (full)
             ScalaPsiElementFactory.createOverrideImplementMethod(
@@ -242,9 +235,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
             ICON_FLAG_VISIBILITY | ICON_FLAG_READ_STATUS))
           .withInsertHandler(insertionHandler(mm))
 
-        val renderingDecorator = LookupElementDecorator.withRenderer(
-          lookupItem,
-          new MyElementRenderer(mm))
+        val renderingDecorator = LookupElementDecorator
+          .withRenderer(lookupItem, new MyElementRenderer(mm))
         resultSet.consume(renderingDecorator)
       case _ =>
     }

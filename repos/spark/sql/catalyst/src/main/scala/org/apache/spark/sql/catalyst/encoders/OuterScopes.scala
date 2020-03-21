@@ -24,8 +24,7 @@ import com.google.common.collect.MapMaker
 object OuterScopes {
   @transient
   lazy val outerScopes: ConcurrentMap[String, AnyRef] = new MapMaker()
-    .weakValues()
-    .makeMap()
+    .weakValues().makeMap()
 
   /**
     * Adds a new outer scope to this context that can be used when instantiating an `inner class`

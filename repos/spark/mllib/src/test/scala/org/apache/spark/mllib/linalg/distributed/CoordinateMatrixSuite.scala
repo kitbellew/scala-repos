@@ -31,20 +31,18 @@ class CoordinateMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   override def beforeAll() {
     super.beforeAll()
-    val entries = sc
-      .parallelize(
-        Seq(
-          (0, 0, 1.0),
-          (0, 1, 2.0),
-          (1, 1, 3.0),
-          (1, 2, 4.0),
-          (2, 2, 5.0),
-          (2, 3, 6.0),
-          (3, 0, 7.0),
-          (3, 3, 8.0),
-          (4, 1, 9.0)),
-        3)
-      .map { case (i, j, value) => MatrixEntry(i, j, value) }
+    val entries = sc.parallelize(
+      Seq(
+        (0, 0, 1.0),
+        (0, 1, 2.0),
+        (1, 1, 3.0),
+        (1, 2, 4.0),
+        (2, 2, 5.0),
+        (2, 3, 6.0),
+        (3, 0, 7.0),
+        (3, 3, 8.0),
+        (4, 1, 9.0)),
+      3).map { case (i, j, value) => MatrixEntry(i, j, value) }
     mat = new CoordinateMatrix(entries)
   }
 

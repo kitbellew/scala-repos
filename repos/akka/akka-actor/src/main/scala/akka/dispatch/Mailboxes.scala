@@ -68,25 +68,18 @@ private[akka] class Mailboxes(
 
   private val mailboxBindings: Map[Class[_ <: Any], String] = {
     import scala.collection.JavaConverters._
-    settings.config
-      .getConfig("akka.actor.mailbox.requirements")
-      .root
-      .unwrapped
-      .asScala
-      .toMap
-      .foldLeft(Map.empty[Class[_ <: Any], String]) {
+    settings.config.getConfig("akka.actor.mailbox.requirements").root.unwrapped
+      .asScala.toMap.foldLeft(Map.empty[Class[_ <: Any], String]) {
         case (m, (k, v)) ⇒
-          dynamicAccess
-            .getClassFor[Any](k)
-            .map { case x ⇒ m.updated(x, v.toString) }
-            .recover {
-              case e ⇒
-                throw new ConfigurationException(
-                  s"Type [${k}] specified as akka.actor.mailbox.requirement " +
-                    s"[${v}] in config can't be loaded due to [${e.getMessage}]",
-                  e)
-            }
-            .get
+          dynamicAccess.getClassFor[Any](k).map {
+            case x ⇒ m.updated(x, v.toString)
+          }.recover {
+            case e ⇒
+              throw new ConfigurationException(
+                s"Type [${k}] specified as akka.actor.mailbox.requirement " +
+                  s"[${v}] in config can't be loaded due to [${e.getMessage}]",
+                e)
+          }.get
       }
   }
 
@@ -176,8 +169,8 @@ private[akka] class Mailboxes(
         throw new IllegalArgumentException(
           s"produced message queue type [$mqType] does not fulfill requirement for dispatcher [$id]. " +
             s"Must be a subclass of [$mailboxRequirement].")
-      if (hasRequiredType(actorClass) && !actorRequirement.isAssignableFrom(
-            mqType))
+      if (hasRequiredType(actorClass) && !actorRequirement
+            .isAssignableFrom(mqType))
         throw new IllegalArgumentException(
           s"produced message queue type [$mqType] does not fulfill requirement for actor class [$actorClass]. " +
             s"Must be a subclass of [$actorRequirement].")
@@ -186,7 +179,8 @@ private[akka] class Mailboxes(
 
     if (deploy.mailbox != Deploy.NoMailboxGiven) {
       verifyRequirements(lookup(deploy.mailbox))
-    } else if (deploy.dispatcher != Deploy.NoDispatcherGiven && hasMailboxType) {
+    } else if (deploy.dispatcher != Deploy
+                 .NoDispatcherGiven && hasMailboxType) {
       verifyRequirements(lookup(dispatcherConfig.getString("id")))
     } else if (hasRequiredType(actorClass)) {
       try verifyRequirements(lookupByQueueType(getRequiredType(actorClass)))
@@ -235,16 +229,13 @@ private[akka] class Mailboxes(
                 val args = List(
                   classOf[ActorSystem.Settings] -> settings,
                   classOf[Config] -> conf)
-                dynamicAccess
-                  .createInstanceFor[MailboxType](fqcn, args)
-                  .recover({
-                    case exception ⇒
-                      throw new IllegalArgumentException(
-                        s"Cannot instantiate MailboxType [$fqcn], defined in [$id], make sure it has a public" +
-                          " constructor with [akka.actor.ActorSystem.Settings, com.typesafe.config.Config] parameters",
-                        exception)
-                  })
-                  .get
+                dynamicAccess.createInstanceFor[MailboxType](fqcn, args).recover({
+                  case exception ⇒
+                    throw new IllegalArgumentException(
+                      s"Cannot instantiate MailboxType [$fqcn], defined in [$id], make sure it has a public" +
+                        " constructor with [akka.actor.ActorSystem.Settings, com.typesafe.config.Config] parameters",
+                      exception)
+                }).get
             }
 
             if (!mailboxNonZeroPushTimeoutWarningIssued) {
@@ -280,8 +271,7 @@ private[akka] class Mailboxes(
   //INTERNAL API
   private def config(id: String): Config = {
     import scala.collection.JavaConverters._
-    ConfigFactory
-      .parseMap(Map("id" -> id).asJava)
+    ConfigFactory.parseMap(Map("id" -> id).asJava)
       .withFallback(settings.config.getConfig(id))
       .withFallback(defaultMailboxConfig)
   }
@@ -308,8 +298,8 @@ private[akka] class Mailboxes(
       updateCache(stashCapacityCache.get, key, value) // recursive, try again
     }
 
-    if (dispatcher == Dispatchers.DefaultDispatcherId && mailbox == Mailboxes.DefaultMailboxId)
-      defaultStashCapacity
+    if (dispatcher == Dispatchers.DefaultDispatcherId && mailbox == Mailboxes
+          .DefaultMailboxId) defaultStashCapacity
     else {
       val cache = stashCapacityCache.get
       val key = dispatcher + "-" + mailbox
@@ -327,8 +317,8 @@ private[akka] class Mailboxes(
       dispatcher: String,
       mailbox: String): Int = {
     val disp = settings.config.getConfig(dispatcher)
-    val fallback = disp.withFallback(
-      settings.config.getConfig(Mailboxes.DefaultMailboxId))
+    val fallback = disp
+      .withFallback(settings.config.getConfig(Mailboxes.DefaultMailboxId))
     val config =
       if (mailbox == Mailboxes.DefaultMailboxId) fallback
       else settings.config.getConfig(mailbox).withFallback(fallback)

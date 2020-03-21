@@ -53,8 +53,7 @@ class DuplicatePattern(
     val buffer = mutable.Map[ScReferenceExpression, ExtractMethodParameter]()
     val visitor = new ScalaRecursiveElementVisitor {
       override def visitReferenceExpression(ref: ScReferenceExpression) = {
-        parameters
-          .find(_.fromElement == ref.resolve)
+        parameters.find(_.fromElement == ref.resolve)
           .foreach(p => buffer += (ref -> p))
         super.visitReferenceExpression(ref)
       }

@@ -59,7 +59,7 @@ trait MonadTransformer {
         case Success(t, _) => t
         case Failure(_, _) => default
       }
-      (for (f @ Failure(_, _) <- seq)
-        yield f).foldLeft(Success(succ(defaults), Some(self)))(_.apply(_))
+      (for (f @ Failure(_, _) <- seq) yield f)
+        .foldLeft(Success(succ(defaults), Some(self)))(_.apply(_))
     }
 }

@@ -140,9 +140,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       userSpecifiedSchema = userSpecifiedSchema,
       className = source,
       options = extraOptions.toMap)
-    Dataset.newDataFrame(
-      sqlContext,
-      LogicalRelation(dataSource.resolveRelation()))
+    Dataset
+      .newDataFrame(sqlContext, LogicalRelation(dataSource.resolveRelation()))
   }
 
   /**
@@ -164,14 +163,12 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     if (paths.isEmpty) { sqlContext.emptyDataFrame }
     else {
       sqlContext.baseRelationToDataFrame(
-        DataSource
-          .apply(
-            sqlContext,
-            paths = paths,
-            userSpecifiedSchema = userSpecifiedSchema,
-            className = source,
-            options = extraOptions.toMap)
-          .resolveRelation())
+        DataSource.apply(
+          sqlContext,
+          paths = paths,
+          userSpecifiedSchema = userSpecifiedSchema,
+          className = source,
+          options = extraOptions.toMap).resolveRelation())
     }
   }
 
@@ -187,9 +184,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       userSpecifiedSchema = userSpecifiedSchema,
       className = source,
       options = extraOptions.toMap)
-    Dataset.newDataFrame(
-      sqlContext,
-      StreamingRelation(dataSource.createSource()))
+    Dataset
+      .newDataFrame(sqlContext, StreamingRelation(dataSource.createSource()))
   }
 
   /**
@@ -450,8 +446,7 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     */
   @scala.annotation.varargs
   def text(paths: String*): Dataset[String] = {
-    format("text")
-      .load(paths: _*)
+    format("text").load(paths: _*)
       .as[String](sqlContext.implicits.newStringEncoder)
   }
 

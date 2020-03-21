@@ -144,9 +144,8 @@ trait BasicBackend {
             try { s.onSubscribe(ctx.subscription); true }
             catch {
               case NonFatal(ex) =>
-                streamLogger.warn(
-                  "Subscriber.onSubscribe failed unexpectedly",
-                  ex)
+                streamLogger
+                  .warn("Subscriber.onSubscribe failed unexpectedly", ex)
                 false
             }
           if (subscribed) {
@@ -245,8 +244,8 @@ trait BasicBackend {
             }
           }(ctx.getEC(ec))
           p.future
-        case FailedAction(a) =>
-          runInContext(a, ctx, false, topLevel).failed.asInstanceOf[Future[R]]
+        case FailedAction(a) => runInContext(a, ctx, false, topLevel)
+            .failed.asInstanceOf[Future[R]]
         case AsTryAction(a) =>
           val p = Promise[R]()
           runInContext(a, ctx, false, topLevel).onComplete(v =>
@@ -257,11 +256,12 @@ trait BasicBackend {
           if (streaming) {
             if (a.supportsStreaming)
               streamSynchronousDatabaseAction(
-                a.asInstanceOf[SynchronousDatabaseAction[
-                  _,
-                  _ <: NoStream,
-                  This,
-                  _ <: Effect]],
+                a
+                  .asInstanceOf[SynchronousDatabaseAction[
+                    _,
+                    _ <: NoStream,
+                    This,
+                    _ <: Effect]],
                 ctx.asInstanceOf[StreamingContext],
                 !topLevel).asInstanceOf[Future[R]]
             else
@@ -307,9 +307,7 @@ trait BasicBackend {
         ctx: Context,
         highPrio: Boolean): Future[R] = {
       val promise = Promise[R]()
-      ctx
-        .getEC(synchronousExecutionContext)
-        .prepare
+      ctx.getEC(synchronousExecutionContext).prepare
         .execute(new AsyncExecutor.PrioritizedRunnable {
           def highPriority = highPrio
           def run: Unit =
@@ -350,9 +348,7 @@ trait BasicBackend {
         ctx: StreamingContext,
         highPrio: Boolean)(initialState: a.StreamState): Unit =
       try {
-        ctx
-          .getEC(synchronousExecutionContext)
-          .prepare
+        ctx.getEC(synchronousExecutionContext).prepare
           .execute(new AsyncExecutor.PrioritizedRunnable {
             private[this] def str(l: Long) =
               if (l != Long.MaxValue) l

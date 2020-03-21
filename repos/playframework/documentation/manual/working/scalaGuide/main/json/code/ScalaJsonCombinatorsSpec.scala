@@ -172,8 +172,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       }
 
       //#reads-validation-custom
-      val improvedNameReads = (JsPath \ "name").read[String](minLength[String](
-        2))
+      val improvedNameReads = (JsPath \ "name")
+        .read[String](minLength[String](2))
       //#reads-validation-custom
       json.validate[String](improvedNameReads) must beLike {
         case x: JsSuccess[String] => x.get === "Watership Down"
@@ -252,8 +252,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       val json = Json.toJson(place)
       //#writes-model
 
-      val some =
-        (JsPath \ "lat").write[Double] and (JsPath \ "long").write[Double]
+      val some = (JsPath \ "lat").write[Double] and (JsPath \ "long")
+        .write[Double]
       val placeSome = Place.unapply(place)
 
       (json \ "name").get === JsString("Watership Down")

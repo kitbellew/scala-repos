@@ -111,8 +111,7 @@ object DocStrings {
     idxs.indexWhere(str.startsWith("@usecase", _)) match {
       case firstUCIndex if firstUCIndex != -1 =>
         val commentSections = idxs.take(firstUCIndex)
-        val usecaseSections = idxs
-          .drop(firstUCIndex)
+        val usecaseSections = idxs.drop(firstUCIndex)
           .filter(str.startsWith("@usecase", _))
         commentSections ::: usecaseSections
       case _ => idxs
@@ -170,9 +169,8 @@ object DocStrings {
 
   /** Extracts variable name from a string, stripping any pair of surrounding braces */
   def variableName(str: String): String =
-    if (str.length >= 2 && (str charAt 0) == '{' && (
-          str charAt (str.length - 1)
-        ) == '}') str.substring(1, str.length - 1)
+    if (str.length >= 2 && (str charAt 0) == '{' && (str charAt (str
+          .length - 1)) == '}') str.substring(1, str.length - 1)
     else str
 
   /** Returns index following variable, or start index if no variable was recognized

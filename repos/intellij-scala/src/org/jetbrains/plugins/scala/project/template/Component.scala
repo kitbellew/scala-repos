@@ -27,8 +27,7 @@ sealed class Artifact(val prefix: String, resource: Option[String] = None) {
   }
 
   private def internalVersionOf(file: File): Option[Version] =
-    resource
-      .flatMap(it => Artifact.readProperty(file, it, "version.number"))
+    resource.flatMap(it => Artifact.readProperty(file, it, "version.number"))
       .map(Version(_))
 }
 
@@ -112,8 +111,8 @@ object Component {
   def discoverIn(files: Seq[File]): Seq[Component] = {
     val patterns = (Artifact.values ++ DottyArtifact.values).flatMap {
       artifact =>
-        Kind.values.map(kind =>
-          (kind.patternFor(artifact.prefix), artifact, kind))
+        Kind.values
+          .map(kind => (kind.patternFor(artifact.prefix), artifact, kind))
     }
 
     files.filter(it => it.isFile && it.getName.endsWith(".jar")).flatMap {

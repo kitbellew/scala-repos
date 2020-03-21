@@ -39,21 +39,19 @@ class InputSizeReducerEstimator extends ReducerEstimator {
         LOG.warn(
           "InputSizeReducerEstimator unable to estimate reducers; " +
             "cannot compute size of:\n - " +
-            Common
-              .unrollTaps(info.step)
-              .filterNot(_.isInstanceOf[Hfs])
+            Common.unrollTaps(info.step).filterNot(_.isInstanceOf[Hfs])
               .mkString("\n - "))
         None
       case inputSizes =>
-        val bytesPerReducer = InputSizeReducerEstimator.getBytesPerReducer(
-          info.step.getConfig)
+        val bytesPerReducer = InputSizeReducerEstimator
+          .getBytesPerReducer(info.step.getConfig)
 
         val totalBytes = inputSizes.map(_._2).sum
         val nReducers = (totalBytes.toDouble / bytesPerReducer).ceil.toInt max 1
 
-        lazy val logStr = inputSizes
-          .map { case (name, bytes) => s"   - ${name}\t${bytes}" }
-          .mkString("\n")
+        lazy val logStr = inputSizes.map {
+          case (name, bytes) => s"   - ${name}\t${bytes}"
+        }.mkString("\n")
 
         LOG.info(
           "\nInputSizeReducerEstimator" +

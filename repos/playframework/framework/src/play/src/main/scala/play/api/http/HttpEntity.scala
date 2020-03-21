@@ -105,8 +105,8 @@ object HttpEntity {
     def asJava =
       new JHttpEntity.Streamed(
         data.asJava,
-        OptionConverters.toJava(
-          contentLength.asInstanceOf[Option[java.lang.Long]]),
+        OptionConverters
+          .toJava(contentLength.asInstanceOf[Option[java.lang.Long]]),
         OptionConverters.toJava(contentType))
     def as(contentType: String) = copy(contentType = Some(contentType))
   }

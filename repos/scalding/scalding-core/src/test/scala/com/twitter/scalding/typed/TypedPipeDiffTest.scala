@@ -133,9 +133,8 @@ object TypedPipeDiffLaws {
       right: List[T],
       diff: List[(T, (Long, Long))]): Boolean = {
     val noDuplicates = diff.size == diff.map(_._1).toSet.size
-    val expected = MapAlgebra
-      .sumByKey(
-        left.map((_, (1L, 0L))).iterator ++ right.map((_, (0L, 1L))).iterator)
+    val expected = MapAlgebra.sumByKey(
+      left.map((_, (1L, 0L))).iterator ++ right.map((_, (0L, 1L))).iterator)
       .filter { case (t, (rCount, lCount)) => rCount != lCount }
 
     noDuplicates && expected == diff.toMap
@@ -150,10 +149,7 @@ object TypedPipeDiffLaws {
 
   def diffLaw[T: Ordering: Arbitrary]: Prop =
     Prop.forAll { (left: List[T], right: List[T]) =>
-      val diff = TypedPipe
-        .from(left)
-        .diff(TypedPipe.from(right))
-        .toTypedPipe
+      val diff = TypedPipe.from(left).diff(TypedPipe.from(right)).toTypedPipe
         .inMemoryToList
       checkDiff(left, right, diff)
     }
@@ -162,19 +158,14 @@ object TypedPipeDiffLaws {
       arb: Arbitrary[List[Array[T]]],
       ct: ClassTag[T]): Prop =
     Prop.forAll { (left: List[Array[T]], right: List[Array[T]]) =>
-      val diff = TypedPipe
-        .from(left)
-        .diffArrayPipes(TypedPipe.from(right))
-        .inMemoryToList
-        .map { case (arr, counts) => (arr.toSeq, counts) }
+      val diff = TypedPipe.from(left).diffArrayPipes(TypedPipe.from(right))
+        .inMemoryToList.map { case (arr, counts) => (arr.toSeq, counts) }
       checkArrayDiff(left, right, diff)
     }
 
   def diffByGroupLaw[T: Arbitrary]: Prop =
     Prop.forAll { (left: List[T], right: List[T]) =>
-      val diff = TypedPipe
-        .from(left)
-        .diffByHashCode(TypedPipe.from(right))
+      val diff = TypedPipe.from(left).diffByHashCode(TypedPipe.from(right))
         .inMemoryToList
       checkDiff(left, right, diff)
     }

@@ -37,8 +37,7 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
       nullable: Boolean = true): Unit = {
     val toCatalyst = CatalystTypeConverters.createToCatalystConverter(dataType)
     val generator = RandomDataGenerator
-      .forType(dataType, nullable, new Random(33))
-      .getOrElse {
+      .forType(dataType, nullable, new Random(33)).getOrElse {
         fail(s"Random data generator was not defined for $dataType")
       }
     if (nullable) { assert(Iterator.fill(100)(generator()).contains(null)) }
@@ -60,13 +59,12 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
 
   for (arrayType <- DataTypeTestUtils.atomicArrayTypes
        if RandomDataGenerator
-         .forType(arrayType.elementType, arrayType.containsNull)
-         .isDefined) {
+         .forType(arrayType.elementType, arrayType.containsNull).isDefined) {
     test(s"$arrayType") { testRandomDataGeneration(arrayType) }
   }
 
-  val atomicTypesWithDataGenerators = DataTypeTestUtils.atomicTypes.filter(
-    RandomDataGenerator.forType(_).isDefined)
+  val atomicTypesWithDataGenerators = DataTypeTestUtils.atomicTypes
+    .filter(RandomDataGenerator.forType(_).isDefined)
 
   // Complex types:
   for (keyType <- atomicTypesWithDataGenerators;
@@ -90,8 +88,7 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
     val mapType = MapType(IntegerType, IntegerType)
     for (seed <- 1 to 1000) {
       val generator = RandomDataGenerator
-        .forType(mapType, nullable = false, rand = new Random(seed))
-        .get
+        .forType(mapType, nullable = false, rand = new Random(seed)).get
       val maps = Seq.fill(100)(generator().asInstanceOf[Map[Int, Int]])
       val expectedTotalElements = 100 / 2 * RandomDataGenerator.MAX_MAP_SIZE
       val deviation = math.abs(maps.map(_.size).sum - expectedTotalElements)

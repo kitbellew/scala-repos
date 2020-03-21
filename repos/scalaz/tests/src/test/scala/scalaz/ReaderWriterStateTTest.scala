@@ -16,8 +16,8 @@ object ReaderWriterStateTTest extends SpecLite {
       RWST[Option, Int, Int, Int, Int]((r: Int, s: Int) => Some((s, s, s))))
   ))
   implicit val RWSOptIntIntArb = Arbitrary(Gen.oneOf[RWSOptInt[Int => Int]](
-    Gen.const(
-      RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) => None)),
+    Gen
+      .const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) => None)),
     Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
       Some((0, x => 0, 0)))),
     Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
@@ -38,10 +38,9 @@ object ReaderWriterStateTTest extends SpecLite {
 
   "ReaderWriterStateT can be trampolined without stack overflow" in {
     import scalaz.Free._
-    val result = (0 to 10000).toList
-      .map(ii =>
-        ReaderWriterStateT[Trampoline, Unit, String, Int, Int]((_, i: Int) =>
-          Trampoline.done(("", i, ii))))
+    val result = (0 to 10000).toList.map(ii =>
+      ReaderWriterStateT[Trampoline, Unit, String, Int, Int]((_, i: Int) =>
+        Trampoline.done(("", i, ii))))
       .foldLeft(ReaderWriterStateT[Trampoline, Unit, String, Int, Int](
         (_, i: Int) => Trampoline.done(("", i, i))))((a, b) =>
         a.flatMap(_ => b))

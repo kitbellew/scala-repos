@@ -76,11 +76,7 @@ class ServiceRegistrySpec
       awaitAssert {
         val probe = TestProbe()
         registry.tell(new Lookup("a"), probe.ref)
-        probe
-          .expectMsgType[Bindings]
-          .services
-          .asScala
-          .map(_.path.name)
+        probe.expectMsgType[Bindings].services.asScala.map(_.path.name)
           .toSet should be(Set("a1"))
       }
 
@@ -97,18 +93,10 @@ class ServiceRegistrySpec
       }
 
       probe.within(10.seconds) {
-        probe
-          .expectMsgType[BindingChanged]
-          .services
-          .asScala
-          .map(_.path.name)
+        probe.expectMsgType[BindingChanged].services.asScala.map(_.path.name)
           .toSet should be(Set("a1", "a2"))
         registry.tell(new Lookup("a"), probe.ref)
-        probe
-          .expectMsgType[Bindings]
-          .services
-          .asScala
-          .map(_.path.name)
+        probe.expectMsgType[Bindings].services.asScala.map(_.path.name)
           .toSet should be(Set("a1", "a2"))
       }
 
@@ -121,28 +109,16 @@ class ServiceRegistrySpec
 
       runOn(node2) {
         registry.tell(new Lookup("a"), probe.ref)
-        val a2 = probe
-          .expectMsgType[Bindings]
-          .services
-          .asScala
-          .find(_.path.name == "a2")
-          .get
+        val a2 = probe.expectMsgType[Bindings].services.asScala
+          .find(_.path.name == "a2").get
         a2 ! PoisonPill
       }
 
       probe.within(10.seconds) {
-        probe
-          .expectMsgType[BindingChanged]
-          .services
-          .asScala
-          .map(_.path.name)
+        probe.expectMsgType[BindingChanged].services.asScala.map(_.path.name)
           .toSet should be(Set("a1"))
         registry.tell(new Lookup("a"), probe.ref)
-        probe
-          .expectMsgType[Bindings]
-          .services
-          .asScala
-          .map(_.path.name)
+        probe.expectMsgType[Bindings].services.asScala.map(_.path.name)
           .toSet should be(Set("a1"))
       }
 
@@ -151,9 +127,8 @@ class ServiceRegistrySpec
 
     "replicate many service entries" in within(10.seconds) {
       for (i ← 100 until 200) {
-        val service = system.actorOf(
-          Props[Service],
-          name = myself.name + "_" + i)
+        val service = system
+          .actorOf(Props[Service], name = myself.name + "_" + i)
         registry ! new Register("a" + i, service)
       }
 
@@ -161,11 +136,7 @@ class ServiceRegistrySpec
         val probe = TestProbe()
         for (i ← 100 until 200) {
           registry.tell(new Lookup("a" + i), probe.ref)
-          probe
-            .expectMsgType[Bindings]
-            .services
-            .asScala
-            .map(_.path.name)
+          probe.expectMsgType[Bindings].services.asScala.map(_.path.name)
             .toSet should be(roles.map(_.name + "_" + i).toSet)
         }
       }

@@ -120,8 +120,8 @@ trait StreamInstances {
           else
             Stream.cons(
               (Tag.unwrap(f).head)(Tag.unwrap(fa).head),
-              Tag.unwrap(
-                ap(Zip(Tag.unwrap(fa).tail))(Zip(Tag.unwrap(f).tail)))))
+              Tag
+                .unwrap(ap(Zip(Tag.unwrap(fa).tail))(Zip(Tag.unwrap(f).tail)))))
       }
     }
 
@@ -155,8 +155,7 @@ trait StreamInstances {
   implicit def streamShow[A](implicit A0: Show[A]) =
     new Show[Stream[A]] {
       override def show(as: Stream[A]) =
-        "Stream(" +: stream
-          .intersperse(as.map(A0.show), Cord(","))
+        "Stream(" +: stream.intersperse(as.map(A0.show), Cord(","))
           .foldLeft(Cord())(_ ++ _) :+ ")"
     }
 

@@ -248,9 +248,7 @@ object DecisionTree extends Serializable with Logging {
     trainClassifier(
       input.rdd,
       numClasses,
-      categoricalFeaturesInfo
-        .asInstanceOf[java.util.Map[Int, Int]]
-        .asScala
+      categoricalFeaturesInfo.asInstanceOf[java.util.Map[Int, Int]].asScala
         .toMap,
       impurity,
       maxDepth,
@@ -307,9 +305,7 @@ object DecisionTree extends Serializable with Logging {
       maxBins: Int): DecisionTreeModel = {
     trainRegressor(
       input.rdd,
-      categoricalFeaturesInfo
-        .asInstanceOf[java.util.Map[Int, Int]]
-        .asScala
+      categoricalFeaturesInfo.asInstanceOf[java.util.Map[Int, Int]].asScala
         .toMap,
       impurity,
       maxDepth,
@@ -345,8 +341,8 @@ object DecisionTree extends Serializable with Logging {
       val splitLeft = node.split.get.featureType match {
         case Continuous => {
           val binIndex = binnedFeatures(featureIndex)
-          val featureValueUpperBound =
-            bins(featureIndex)(binIndex).highSplit.threshold
+          val featureValueUpperBound = bins(featureIndex)(binIndex).highSplit
+            .threshold
           // bin binIndex has range (bin.lowSplit.threshold, bin.highSplit.threshold]
           // We do not need to check lowSplit since bins are separated by splits.
           featureValueUpperBound <= node.split.get.threshold
@@ -425,8 +421,8 @@ object DecisionTree extends Serializable with Logging {
         val numSplits = agg.metadata.numSplits(featureIndex)
         var splitIndex = 0
         while (splitIndex < numSplits) {
-          if (splits(featureIndex)(splitIndex).categories.contains(
-                featureValue)) {
+          if (splits(featureIndex)(splitIndex).categories
+                .contains(featureValue)) {
             agg.featureUpdate(
               leftNodeFeatureOffset,
               splitIndex,
@@ -466,8 +462,8 @@ object DecisionTree extends Serializable with Logging {
       // Use subsampled features
       var featureIndexIdx = 0
       while (featureIndexIdx < featuresForNode.get.length) {
-        val binIndex = treePoint.binnedFeatures(
-          featuresForNode.get.apply(featureIndexIdx))
+        val binIndex = treePoint
+          .binnedFeatures(featuresForNode.get.apply(featureIndexIdx))
         agg.update(featureIndexIdx, binIndex, label, instanceWeight)
         featureIndexIdx += 1
       }
@@ -692,8 +688,7 @@ object DecisionTree extends Serializable with Logging {
           // each node will have a nodeStatsAggregator
           val nodeStatsAggregators = Array.tabulate(numNodes) { nodeIndex =>
             val featuresForNode = nodeToFeaturesBc.value.flatMap {
-              nodeToFeatures =>
-                Some(nodeToFeatures(nodeIndex))
+              nodeToFeatures => Some(nodeToFeatures(nodeIndex))
             }
             new DTStatsAggregator(metadata, featuresForNode)
           }
@@ -725,8 +720,7 @@ object DecisionTree extends Serializable with Logging {
         }
       }
 
-    val nodeToBestSplits = partitionAggregates
-      .reduceByKey((a, b) => a.merge(b))
+    val nodeToBestSplits = partitionAggregates.reduceByKey((a, b) => a.merge(b))
       .map {
         case (nodeIndex, aggStats) =>
           val featuresForNode = nodeToFeaturesBc.value.map { nodeToFeatures =>
@@ -737,8 +731,7 @@ object DecisionTree extends Serializable with Logging {
           val (split: Split, stats: InformationGainStats, predict: Predict) =
             binsToBestSplit(aggStats, splits, featuresForNode, nodes(nodeIndex))
           (nodeIndex, (split, stats, predict))
-      }
-      .collectAsMap()
+      }.collectAsMap()
 
     timer.stop("chooseSplits")
 
@@ -759,8 +752,8 @@ object DecisionTree extends Serializable with Logging {
           logDebug("best split = " + split)
 
           // Extract info for this node.  Create children if not leaf.
-          val isLeaf = (stats.gain <= 0) || (Node.indexToLevel(
-            nodeIndex) == metadata.maxDepth)
+          val isLeaf = (stats.gain <= 0) || (Node
+            .indexToLevel(nodeIndex) == metadata.maxDepth)
           assert(node.id == nodeIndex)
           node.predict = predict
           node.isLeaf = isLeaf
@@ -770,8 +763,8 @@ object DecisionTree extends Serializable with Logging {
 
           if (!isLeaf) {
             node.split = Some(split)
-            val childIsLeaf =
-              (Node.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
+            val childIsLeaf = (Node.indexToLevel(nodeIndex) + 1) == metadata
+              .maxDepth
             val leftChildIsLeaf = childIsLeaf || (stats.leftImpurity == 0.0)
             val rightChildIsLeaf = childIsLeaf || (stats.rightImpurity == 0.0)
             node.leftNode = Some(Node(
@@ -916,150 +909,31 @@ object DecisionTree extends Serializable with Logging {
     // For each (feature, split), calculate the gain, and select the best (feature, split).
     val (bestSplit, bestSplitStats) = Range(
       0,
-      binAggregates.metadata.numFeaturesPerNode)
-      .map { featureIndexIdx =>
-        val featureIndex =
-          if (featuresForNode.nonEmpty) {
-            featuresForNode.get.apply(featureIndexIdx)
-          } else { featureIndexIdx }
-        val numSplits = binAggregates.metadata.numSplits(featureIndex)
-        if (binAggregates.metadata.isContinuous(featureIndex)) {
-          // Cumulative sum (scanLeft) of bin statistics.
-          // Afterwards, binAggregates for a bin is the sum of aggregates for
-          // that bin + all preceding bins.
-          val nodeFeatureOffset = binAggregates.getFeatureOffset(
-            featureIndexIdx)
-          var splitIndex = 0
-          while (splitIndex < numSplits) {
-            binAggregates.mergeForFeature(
-              nodeFeatureOffset,
-              splitIndex + 1,
-              splitIndex)
-            splitIndex += 1
-          }
-          // Find best split.
-          val (bestFeatureSplitIndex, bestFeatureGainStats) = Range(
-            0,
-            numSplits)
-            .map {
-              case splitIdx =>
-                val leftChildStats = binAggregates.getImpurityCalculator(
-                  nodeFeatureOffset,
-                  splitIdx)
-                val rightChildStats = binAggregates.getImpurityCalculator(
-                  nodeFeatureOffset,
-                  numSplits)
-                rightChildStats.subtract(leftChildStats)
-                predictWithImpurity = Some(predictWithImpurity.getOrElse(
-                  calculatePredictImpurity(leftChildStats, rightChildStats)))
-                val gainStats = calculateGainForSplit(
-                  leftChildStats,
-                  rightChildStats,
-                  binAggregates.metadata,
-                  predictWithImpurity.get._2)
-                (splitIdx, gainStats)
-            }
-            .maxBy(_._2.gain)
-          (splits(featureIndex)(bestFeatureSplitIndex), bestFeatureGainStats)
-        } else if (binAggregates.metadata.isUnordered(featureIndex)) {
-          // Unordered categorical feature
-          val leftChildOffset = binAggregates.getFeatureOffset(featureIndexIdx)
-          val (bestFeatureSplitIndex, bestFeatureGainStats) = Range(
-            0,
-            numSplits)
-            .map { splitIndex =>
-              val leftChildStats = binAggregates.getImpurityCalculator(
-                leftChildOffset,
-                splitIndex)
+      binAggregates.metadata.numFeaturesPerNode).map { featureIndexIdx =>
+      val featureIndex =
+        if (featuresForNode.nonEmpty) {
+          featuresForNode.get.apply(featureIndexIdx)
+        } else { featureIndexIdx }
+      val numSplits = binAggregates.metadata.numSplits(featureIndex)
+      if (binAggregates.metadata.isContinuous(featureIndex)) {
+        // Cumulative sum (scanLeft) of bin statistics.
+        // Afterwards, binAggregates for a bin is the sum of aggregates for
+        // that bin + all preceding bins.
+        val nodeFeatureOffset = binAggregates.getFeatureOffset(featureIndexIdx)
+        var splitIndex = 0
+        while (splitIndex < numSplits) {
+          binAggregates
+            .mergeForFeature(nodeFeatureOffset, splitIndex + 1, splitIndex)
+          splitIndex += 1
+        }
+        // Find best split.
+        val (bestFeatureSplitIndex, bestFeatureGainStats) = Range(0, numSplits)
+          .map {
+            case splitIdx =>
+              val leftChildStats = binAggregates
+                .getImpurityCalculator(nodeFeatureOffset, splitIdx)
               val rightChildStats = binAggregates
-                .getParentImpurityCalculator()
-                .subtract(leftChildStats)
-              predictWithImpurity = Some(predictWithImpurity.getOrElse(
-                calculatePredictImpurity(leftChildStats, rightChildStats)))
-              val gainStats = calculateGainForSplit(
-                leftChildStats,
-                rightChildStats,
-                binAggregates.metadata,
-                predictWithImpurity.get._2)
-              (splitIndex, gainStats)
-            }
-            .maxBy(_._2.gain)
-          (splits(featureIndex)(bestFeatureSplitIndex), bestFeatureGainStats)
-        } else {
-          // Ordered categorical feature
-          val nodeFeatureOffset = binAggregates.getFeatureOffset(
-            featureIndexIdx)
-          val numBins = binAggregates.metadata.numBins(featureIndex)
-
-          /* Each bin is one category (feature value).
-           * The bins are ordered based on centroidForCategories, and this ordering determines which
-           * splits are considered.  (With K categories, we consider K - 1 possible splits.)
-           *
-           * centroidForCategories is a list: (category, centroid)
-           */
-          val centroidForCategories = Range(0, numBins).map {
-            case featureValue =>
-              val categoryStats = binAggregates.getImpurityCalculator(
-                nodeFeatureOffset,
-                featureValue)
-              val centroid =
-                if (categoryStats.count != 0) {
-                  if (binAggregates.metadata.isMulticlass) {
-                    // For categorical variables in multiclass classification,
-                    // the bins are ordered by the impurity of their corresponding labels.
-                    categoryStats.calculate()
-                  } else if (binAggregates.metadata.isClassification) {
-                    // For categorical variables in binary classification,
-                    // the bins are ordered by the count of class 1.
-                    categoryStats.stats(1)
-                  } else {
-                    // For categorical variables in regression,
-                    // the bins are ordered by the prediction.
-                    categoryStats.predict
-                  }
-                } else { Double.MaxValue }
-              (featureValue, centroid)
-          }
-
-          logDebug(
-            "Centroids for categorical variable: " + centroidForCategories
-              .mkString(","))
-
-          // bins sorted by centroids
-          val categoriesSortedByCentroid = centroidForCategories.toList.sortBy(
-            _._2)
-
-          logDebug(
-            "Sorted centroids for categorical variable = " +
-              categoriesSortedByCentroid.mkString(","))
-
-          // Cumulative sum (scanLeft) of bin statistics.
-          // Afterwards, binAggregates for a bin is the sum of aggregates for
-          // that bin + all preceding bins.
-          var splitIndex = 0
-          while (splitIndex < numSplits) {
-            val currentCategory = categoriesSortedByCentroid(splitIndex)._1
-            val nextCategory = categoriesSortedByCentroid(splitIndex + 1)._1
-            binAggregates.mergeForFeature(
-              nodeFeatureOffset,
-              nextCategory,
-              currentCategory)
-            splitIndex += 1
-          }
-          // lastCategory = index of bin with total aggregates for this (node, feature)
-          val lastCategory = categoriesSortedByCentroid.last._1
-          // Find best split.
-          val (bestFeatureSplitIndex, bestFeatureGainStats) = Range(
-            0,
-            numSplits)
-            .map { splitIndex =>
-              val featureValue = categoriesSortedByCentroid(splitIndex)._1
-              val leftChildStats = binAggregates.getImpurityCalculator(
-                nodeFeatureOffset,
-                featureValue)
-              val rightChildStats = binAggregates.getImpurityCalculator(
-                nodeFeatureOffset,
-                lastCategory)
+                .getImpurityCalculator(nodeFeatureOffset, numSplits)
               rightChildStats.subtract(leftChildStats)
               predictWithImpurity = Some(predictWithImpurity.getOrElse(
                 calculatePredictImpurity(leftChildStats, rightChildStats)))
@@ -1068,21 +942,115 @@ object DecisionTree extends Serializable with Logging {
                 rightChildStats,
                 binAggregates.metadata,
                 predictWithImpurity.get._2)
-              (splitIndex, gainStats)
-            }
-            .maxBy(_._2.gain)
-          val categoriesForSplit = categoriesSortedByCentroid
-            .map(_._1.toDouble)
-            .slice(0, bestFeatureSplitIndex + 1)
-          val bestFeatureSplit = new Split(
-            featureIndex,
-            Double.MinValue,
-            Categorical,
-            categoriesForSplit)
-          (bestFeatureSplit, bestFeatureGainStats)
+              (splitIdx, gainStats)
+          }.maxBy(_._2.gain)
+        (splits(featureIndex)(bestFeatureSplitIndex), bestFeatureGainStats)
+      } else if (binAggregates.metadata.isUnordered(featureIndex)) {
+        // Unordered categorical feature
+        val leftChildOffset = binAggregates.getFeatureOffset(featureIndexIdx)
+        val (bestFeatureSplitIndex, bestFeatureGainStats) = Range(0, numSplits)
+          .map { splitIndex =>
+            val leftChildStats = binAggregates
+              .getImpurityCalculator(leftChildOffset, splitIndex)
+            val rightChildStats = binAggregates.getParentImpurityCalculator()
+              .subtract(leftChildStats)
+            predictWithImpurity = Some(predictWithImpurity.getOrElse(
+              calculatePredictImpurity(leftChildStats, rightChildStats)))
+            val gainStats = calculateGainForSplit(
+              leftChildStats,
+              rightChildStats,
+              binAggregates.metadata,
+              predictWithImpurity.get._2)
+            (splitIndex, gainStats)
+          }.maxBy(_._2.gain)
+        (splits(featureIndex)(bestFeatureSplitIndex), bestFeatureGainStats)
+      } else {
+        // Ordered categorical feature
+        val nodeFeatureOffset = binAggregates.getFeatureOffset(featureIndexIdx)
+        val numBins = binAggregates.metadata.numBins(featureIndex)
+
+        /* Each bin is one category (feature value).
+         * The bins are ordered based on centroidForCategories, and this ordering determines which
+         * splits are considered.  (With K categories, we consider K - 1 possible splits.)
+         *
+         * centroidForCategories is a list: (category, centroid)
+         */
+        val centroidForCategories = Range(0, numBins).map {
+          case featureValue =>
+            val categoryStats = binAggregates
+              .getImpurityCalculator(nodeFeatureOffset, featureValue)
+            val centroid =
+              if (categoryStats.count != 0) {
+                if (binAggregates.metadata.isMulticlass) {
+                  // For categorical variables in multiclass classification,
+                  // the bins are ordered by the impurity of their corresponding labels.
+                  categoryStats.calculate()
+                } else if (binAggregates.metadata.isClassification) {
+                  // For categorical variables in binary classification,
+                  // the bins are ordered by the count of class 1.
+                  categoryStats.stats(1)
+                } else {
+                  // For categorical variables in regression,
+                  // the bins are ordered by the prediction.
+                  categoryStats.predict
+                }
+              } else { Double.MaxValue }
+            (featureValue, centroid)
         }
+
+        logDebug(
+          "Centroids for categorical variable: " + centroidForCategories
+            .mkString(","))
+
+        // bins sorted by centroids
+        val categoriesSortedByCentroid = centroidForCategories.toList
+          .sortBy(_._2)
+
+        logDebug(
+          "Sorted centroids for categorical variable = " +
+            categoriesSortedByCentroid.mkString(","))
+
+        // Cumulative sum (scanLeft) of bin statistics.
+        // Afterwards, binAggregates for a bin is the sum of aggregates for
+        // that bin + all preceding bins.
+        var splitIndex = 0
+        while (splitIndex < numSplits) {
+          val currentCategory = categoriesSortedByCentroid(splitIndex)._1
+          val nextCategory = categoriesSortedByCentroid(splitIndex + 1)._1
+          binAggregates
+            .mergeForFeature(nodeFeatureOffset, nextCategory, currentCategory)
+          splitIndex += 1
+        }
+        // lastCategory = index of bin with total aggregates for this (node, feature)
+        val lastCategory = categoriesSortedByCentroid.last._1
+        // Find best split.
+        val (bestFeatureSplitIndex, bestFeatureGainStats) = Range(0, numSplits)
+          .map { splitIndex =>
+            val featureValue = categoriesSortedByCentroid(splitIndex)._1
+            val leftChildStats = binAggregates
+              .getImpurityCalculator(nodeFeatureOffset, featureValue)
+            val rightChildStats = binAggregates
+              .getImpurityCalculator(nodeFeatureOffset, lastCategory)
+            rightChildStats.subtract(leftChildStats)
+            predictWithImpurity = Some(predictWithImpurity.getOrElse(
+              calculatePredictImpurity(leftChildStats, rightChildStats)))
+            val gainStats = calculateGainForSplit(
+              leftChildStats,
+              rightChildStats,
+              binAggregates.metadata,
+              predictWithImpurity.get._2)
+            (splitIndex, gainStats)
+          }.maxBy(_._2.gain)
+        val categoriesForSplit = categoriesSortedByCentroid.map(_._1.toDouble)
+          .slice(0, bestFeatureSplitIndex + 1)
+        val bestFeatureSplit = new Split(
+          featureIndex,
+          Double.MinValue,
+          Categorical,
+          categoriesForSplit)
+        (bestFeatureSplit, bestFeatureGainStats)
       }
-      .maxBy(_._2.gain)
+    }.maxBy(_._2.gain)
 
     (bestSplit, bestSplitStats, predictWithImpurity.get._1)
   }
@@ -1130,9 +1098,8 @@ object DecisionTree extends Serializable with Logging {
     val sampledInput =
       if (continuousFeatures.nonEmpty) {
         // Calculate the number of samples for approximate quantile calculation.
-        val requiredSamples = math.max(
-          metadata.maxBins * metadata.maxBins,
-          10000)
+        val requiredSamples = math
+          .max(metadata.maxBins * metadata.maxBins, 10000)
         val fraction =
           if (requiredSamples < metadata.numExamples) {
             requiredSamples.toDouble / metadata.numExamples
@@ -1172,8 +1139,8 @@ object DecisionTree extends Serializable with Logging {
         logDebug(
           s"featureIndex = $featureIndex, numSplits = ${featureSplits.length}")
 
-        featureSplits.map(threshold =>
-          new Split(featureIndex, threshold, Continuous, Nil))
+        featureSplits
+          .map(threshold => new Split(featureIndex, threshold, Continuous, Nil))
       }
 
       val bins = {
@@ -1184,13 +1151,10 @@ object DecisionTree extends Serializable with Logging {
         val allSplits = lowSplit +: splits.toSeq :+ highSplit
 
         // slide across the split points pairwise to allocate the bins
-        allSplits
-          .sliding(2)
-          .map {
-            case Seq(left, right) =>
-              new Bin(left, right, Continuous, Double.MinValue)
-          }
-          .toArray
+        allSplits.sliding(2).map {
+          case Seq(left, right) =>
+            new Bin(left, right, Continuous, Double.MinValue)
+        }.toArray
       }
 
       (featureIndex, (splits, bins))
@@ -1200,15 +1164,12 @@ object DecisionTree extends Serializable with Logging {
       // reduce the parallelism for split computations when there are less
       // continuous features than input partitions. this prevents tasks from
       // being spun up that will definitely do no work.
-      val numPartitions = math.min(
-        continuousFeatures.length,
-        input.partitions.length)
+      val numPartitions = math
+        .min(continuousFeatures.length, input.partitions.length)
 
-      input
-        .flatMap(point =>
-          continuousFeatures.map(idx => (idx, point.features(idx))))
-        .groupByKey(numPartitions)
-        .map { case (k, v) => findSplits(k, v) }
+      input.flatMap(point =>
+        continuousFeatures.map(idx => (idx, point.features(idx))))
+        .groupByKey(numPartitions).map { case (k, v) => findSplits(k, v) }
         .collectAsMap()
     }
 
@@ -1293,10 +1254,10 @@ object DecisionTree extends Serializable with Logging {
       val numSplits = metadata.numSplits(featureIndex)
 
       // get count for each distinct value
-      val (valueCountMap, numSamples) = featureSamples.foldLeft(
-        (Map.empty[Double, Int], 0)) {
-        case ((m, cnt), x) => (m + ((x, m.getOrElse(x, 0) + 1)), cnt + 1)
-      }
+      val (valueCountMap, numSamples) = featureSamples
+        .foldLeft((Map.empty[Double, Int], 0)) {
+          case ((m, cnt), x) => (m + ((x, m.getOrElse(x, 0) + 1)), cnt + 1)
+        }
       // sort distinct values
       val valueCounts = valueCountMap.toSeq.sortBy(_._1).toArray
 

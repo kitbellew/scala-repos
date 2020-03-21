@@ -90,12 +90,11 @@ class FileAndResourceDirectivesSpec
           header[`Content-Range`] shouldEqual None
           mediaType.withParams(Map.empty) shouldEqual `multipart/byteranges`
 
-          val parts = responseAs[Multipart.ByteRanges]
-            .toStrict(1.second)
-            .awaitResult(3.seconds)
-            .strictParts
-          parts.map(
-            _.entity.data.utf8String) should contain theSameElementsAs List(
+          val parts = responseAs[Multipart.ByteRanges].toStrict(1.second)
+            .awaitResult(3.seconds).strictParts
+          parts
+            .map(
+              _.entity.data.utf8String) should contain theSameElementsAs List(
             "BCDEFGHIJK",
             "QRSTUVWXYZ")
         }
@@ -195,12 +194,8 @@ class FileAndResourceDirectivesSpec
     "return the resource content from an archive" in {
       Get() ~> getFromResource("com/typesafe/config/Config.class") ~> check {
         mediaType shouldEqual `application/octet-stream`
-        responseEntity
-          .toStrict(1.second)
-          .awaitResult(1.second)
-          .data
-          .asByteBuffer
-          .getInt shouldEqual 0xCAFEBABE
+        responseEntity.toStrict(1.second).awaitResult(1.second).data
+          .asByteBuffer.getInt shouldEqual 0xCAFEBABE
       }
     }
     "return the file content with MediaType 'application/octet-stream' on unknown file extensions" in {
@@ -240,12 +235,8 @@ class FileAndResourceDirectivesSpec
       Get("Config.class") ~> getFromResourceDirectory(
         "com/typesafe/config") ~> check {
         mediaType shouldEqual `application/octet-stream`
-        responseEntity
-          .toStrict(1.second)
-          .awaitResult(1.second)
-          .data
-          .asByteBuffer
-          .getInt shouldEqual 0xCAFEBABE
+        responseEntity.toStrict(1.second).awaitResult(1.second).data
+          .asByteBuffer.getInt shouldEqual 0xCAFEBABE
       }
     }
     "reject requests to directory resources" in {
@@ -287,8 +278,8 @@ class FileAndResourceDirectivesSpec
       s.replaceAll(
         """\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d""",
         "xxxx-xx-xx xx:xx:xx")
-    implicit val settings = RoutingSettings.default.withRenderVanityFooter(
-      false)
+    implicit val settings = RoutingSettings.default
+      .withRenderVanityFooter(false)
 
     "properly render a simple directory" in {
       Get() ~> listDirectoryContents(base + "/someDir") ~> check {

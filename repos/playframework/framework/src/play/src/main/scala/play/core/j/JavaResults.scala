@@ -90,8 +90,7 @@ object JavaResults
       filename: String) = status.sendPath(path, inline, _ => filename)
   private def enumToSource(
       enumerator: Enumerator[Array[Byte]]): Source[ByteString, _] =
-    Source
-      .fromPublisher(Streams.enumeratorToPublisher(enumerator))
+    Source.fromPublisher(Streams.enumeratorToPublisher(enumerator))
       .map(ByteString.apply)
 }
 
@@ -99,8 +98,8 @@ object JavaResultExtractor {
 
   def getCookies(responseHeader: ResponseHeader): JCookies =
     new JCookies {
-      private val cookies = Cookies.fromSetCookieHeader(
-        responseHeader.headers.get(HeaderNames.SET_COOKIE))
+      private val cookies = Cookies
+        .fromSetCookieHeader(responseHeader.headers.get(HeaderNames.SET_COOKIE))
 
       def get(name: String): JCookie = {
         cookies.get(name).map(makeJavaCookie).orNull
@@ -124,25 +123,15 @@ object JavaResultExtractor {
 
   def getSession(responseHeader: ResponseHeader): JSession =
     new JSession(
-      Session
-        .decodeFromCookie(
-          Cookies
-            .fromSetCookieHeader(
-              responseHeader.headers.get(HeaderNames.SET_COOKIE))
-            .get(Session.COOKIE_NAME))
-        .data
-        .asJava)
+      Session.decodeFromCookie(
+        Cookies.fromSetCookieHeader(responseHeader.headers.get(
+          HeaderNames.SET_COOKIE)).get(Session.COOKIE_NAME)).data.asJava)
 
   def getFlash(responseHeader: ResponseHeader): JFlash =
     new JFlash(
-      Flash
-        .decodeFromCookie(
-          Cookies
-            .fromSetCookieHeader(
-              responseHeader.headers.get(HeaderNames.SET_COOKIE))
-            .get(Flash.COOKIE_NAME))
-        .data
-        .asJava)
+      Flash.decodeFromCookie(
+        Cookies.fromSetCookieHeader(responseHeader.headers.get(
+          HeaderNames.SET_COOKIE)).get(Flash.COOKIE_NAME)).data.asJava)
 
   def withHeader(
       responseHeader: ResponseHeader,

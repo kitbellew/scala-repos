@@ -54,9 +54,8 @@ object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
             val element =
               if (isNew) refElement
               else definition.asInstanceOf[ScObject].nameId
-            val annotation = holder.createErrorAnnotation(
-              element,
-              message(undefined.toSeq: _*))
+            val annotation = holder
+              .createErrorAnnotation(element, message(undefined.toSeq: _*))
             annotation.registerFix(new ImplementMethodsQuickFix(definition))
           }
         case _ =>
@@ -66,8 +65,7 @@ object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
 
   def message(members: (String, String)*) = {
     "Object creation impossible, since %s".format(
-      members
-        .map(p => " member %s in %s is not defined".format(p._1, p._2))
+      members.map(p => " member %s in %s is not defined".format(p._1, p._2))
         .mkString("; "))
   }
 }

@@ -192,11 +192,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       mergeCombiners: JFunction2[C, C, C],
       partitioner: Partitioner): JavaPairDStream[K, C] = {
     implicit val cm: ClassTag[C] = fakeClassTag
-    dstream.combineByKey(
-      createCombiner,
-      mergeValue,
-      mergeCombiners,
-      partitioner)
+    dstream
+      .combineByKey(createCombiner, mergeValue, mergeCombiners, partitioner)
   }
 
   /**
@@ -245,8 +242,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   def groupByKeyAndWindow(
       windowDuration: Duration,
       slideDuration: Duration): JavaPairDStream[K, JIterable[V]] = {
-    dstream
-      .groupByKeyAndWindow(windowDuration, slideDuration)
+    dstream.groupByKeyAndWindow(windowDuration, slideDuration)
       .mapValues(_.asJava)
   }
 
@@ -265,8 +261,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       windowDuration: Duration,
       slideDuration: Duration,
       numPartitions: Int): JavaPairDStream[K, JIterable[V]] = {
-    dstream
-      .groupByKeyAndWindow(windowDuration, slideDuration, numPartitions)
+    dstream.groupByKeyAndWindow(windowDuration, slideDuration, numPartitions)
       .mapValues(_.asJava)
   }
 
@@ -285,8 +280,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       windowDuration: Duration,
       slideDuration: Duration,
       partitioner: Partitioner): JavaPairDStream[K, JIterable[V]] = {
-    dstream
-      .groupByKeyAndWindow(windowDuration, slideDuration, partitioner)
+    dstream.groupByKeyAndWindow(windowDuration, slideDuration, partitioner)
       .mapValues(_.asJava)
   }
 
@@ -553,9 +547,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       updateFunc: JFunction2[JList[V], Optional[S], Optional[S]],
       numPartitions: Int): JavaPairDStream[K, S] = {
     implicit val cm: ClassTag[S] = fakeClassTag
-    dstream.updateStateByKey(
-      convertUpdateStateFunction(updateFunc),
-      numPartitions)
+    dstream
+      .updateStateByKey(convertUpdateStateFunction(updateFunc), numPartitions)
   }
 
   /**
@@ -572,9 +565,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       updateFunc: JFunction2[JList[V], Optional[S], Optional[S]],
       partitioner: Partitioner): JavaPairDStream[K, S] = {
     implicit val cm: ClassTag[S] = fakeClassTag
-    dstream.updateStateByKey(
-      convertUpdateStateFunction(updateFunc),
-      partitioner)
+    dstream
+      .updateStateByKey(convertUpdateStateFunction(updateFunc), partitioner)
   }
 
   /**
@@ -640,8 +632,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       other: JavaPairDStream[K, W],
       numPartitions: Int): JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
-    dstream
-      .cogroup(other.dstream, numPartitions)
+    dstream.cogroup(other.dstream, numPartitions)
       .mapValues(t => (t._1.asJava, t._2.asJava))
   }
 
@@ -652,8 +643,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   def cogroup[W](other: JavaPairDStream[K, W], partitioner: Partitioner)
       : JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
-    dstream
-      .cogroup(other.dstream, partitioner)
+    dstream.cogroup(other.dstream, partitioner)
       .mapValues(t => (t._1.asJava, t._2.asJava))
   }
 

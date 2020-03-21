@@ -46,38 +46,38 @@ object MouseDragEvent {
   /**
     * This event occurs when the gesture enters a node.
     */
-  val MouseDragEntered: EventType[jfxsi.MouseDragEvent] =
-    jfxsi.MouseDragEvent.MOUSE_DRAG_ENTERED
+  val MouseDragEntered: EventType[jfxsi.MouseDragEvent] = jfxsi.MouseDragEvent
+    .MOUSE_DRAG_ENTERED
 
   /**
     * This event occurs when the gesture enters a node.
     */
-  val MouseDragEnteredTarget: EventType[jfxsi.MouseDragEvent] =
-    jfxsi.MouseDragEvent.MOUSE_DRAG_ENTERED_TARGET
+  val MouseDragEnteredTarget: EventType[jfxsi.MouseDragEvent] = jfxsi
+    .MouseDragEvent.MOUSE_DRAG_ENTERED_TARGET
 
   /**
     * This event occurs when the gesture exits a node.
     */
-  val MouseDragExited: EventType[jfxsi.MouseDragEvent] =
-    jfxsi.MouseDragEvent.MOUSE_DRAG_EXITED
+  val MouseDragExited: EventType[jfxsi.MouseDragEvent] = jfxsi.MouseDragEvent
+    .MOUSE_DRAG_EXITED
 
   /**
     * This event occurs when the gesture exits a node.
     */
-  val MouseDragExitedTarget: EventType[jfxsi.MouseDragEvent] =
-    jfxsi.MouseDragEvent.MOUSE_DRAG_EXITED_TARGET
+  val MouseDragExitedTarget: EventType[jfxsi.MouseDragEvent] = jfxsi
+    .MouseDragEvent.MOUSE_DRAG_EXITED_TARGET
 
   /**
     * This event occurs when the gesture progresses within this node.
     */
-  val MouseDragOver: EventType[jfxsi.MouseDragEvent] =
-    jfxsi.MouseDragEvent.MOUSE_DRAG_OVER
+  val MouseDragOver: EventType[jfxsi.MouseDragEvent] = jfxsi.MouseDragEvent
+    .MOUSE_DRAG_OVER
 
   /**
     * This event occurs when the gesture ends (by releasing mouse button) on this node.
     */
-  val MouseDragReleased: EventType[jfxsi.MouseDragEvent] =
-    jfxsi.MouseDragEvent.MOUSE_DRAG_RELEASED
+  val MouseDragReleased: EventType[jfxsi.MouseDragEvent] = jfxsi.MouseDragEvent
+    .MOUSE_DRAG_RELEASED
 
 }
 

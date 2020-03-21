@@ -35,11 +35,9 @@ class AppStartActor(
     if (!promise.isCompleted) {
       if (promise.tryFailure(new AppStartCanceledException(
             "The app start has been cancelled"))) {
-        scheduler
-          .stopApp(driver, app)
-          .onFailure {
-            case NonFatal(e) => log.error(s"while stopping app ${app.id}", e)
-          }(context.dispatcher)
+        scheduler.stopApp(driver, app).onFailure {
+          case NonFatal(e) => log.error(s"while stopping app ${app.id}", e)
+        }(context.dispatcher)
       }
     }
   }

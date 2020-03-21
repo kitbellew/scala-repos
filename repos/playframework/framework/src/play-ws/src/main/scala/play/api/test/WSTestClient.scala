@@ -27,9 +27,8 @@ trait WsTestClient {
     */
   def wsCall(call: Call)(implicit
       port: Port,
-      client: WSClient = WS
-        .client(play.api.Play.privateMaybeApplication.get)): WSRequest =
-    wsUrl(call.url)
+      client: WSClient = WS.client(play.api.Play.privateMaybeApplication.get))
+      : WSRequest = wsUrl(call.url)
 
   /**
     * Constructs a WS request holder for the given relative URL.  Optionally takes a port and WSClient.  Note that the WS client used
@@ -37,8 +36,8 @@ trait WsTestClient {
     */
   def wsUrl(url: String)(implicit
       port: Port,
-      client: WSClient = WS.client(
-        play.api.Play.privateMaybeApplication.get)) = {
+      client: WSClient = WS
+        .client(play.api.Play.privateMaybeApplication.get)) = {
     WS.clientUrl("http://localhost:" + port + url)
   }
 

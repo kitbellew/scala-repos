@@ -108,9 +108,7 @@ class IngestTask(settings: Settings)
       { "a": 1.2, "b": "asdf", "c": null, "d": null },
       { "a": 1e-308, "b": "a,b,c", "c": "33", "d": 43 },
       { "a": -1e308, "b": "hello world", "c": "x", "d": 2 }
-    ]""")
-      .valueOr(throw _)
-      .children
+    ]""").valueOr(throw _).children
 
     //FIXME
     // csv can no longer be ingested this way

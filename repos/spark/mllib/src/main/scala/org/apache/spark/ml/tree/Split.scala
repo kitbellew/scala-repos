@@ -147,9 +147,7 @@ final class CategoricalSplit private[ml] (
 
   /** [0, numCategories) \ cats */
   private def setComplement(cats: Set[Double]): Set[Double] = {
-    Range(0, numCategories)
-      .map(_.toDouble)
-      .filter(cat => !cats.contains(cat))
+    Range(0, numCategories).map(_.toDouble).filter(cat => !cats.contains(cat))
       .toSet
   }
 }
@@ -178,8 +176,8 @@ final class ContinuousSplit private[ml] (
       // > last split, so split right
       false
     } else {
-      val featureValueUpperBound =
-        splits(binnedFeature).asInstanceOf[ContinuousSplit].threshold
+      val featureValueUpperBound = splits(binnedFeature)
+        .asInstanceOf[ContinuousSplit].threshold
       featureValueUpperBound <= threshold
     }
   }

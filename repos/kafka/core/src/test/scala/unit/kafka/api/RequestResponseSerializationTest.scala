@@ -117,8 +117,8 @@ object SerializationTestUtils {
           1013,
           SecurityProtocol.PLAINTEXT)))
   )
-  private val brokerEndpoints = brokers.map(
-    _.getBrokerEndPoint(SecurityProtocol.PLAINTEXT))
+  private val brokerEndpoints = brokers
+    .map(_.getBrokerEndPoint(SecurityProtocol.PLAINTEXT))
 
   private val partitionMetaData0 = new PartitionMetadata(
     0,
@@ -309,27 +309,27 @@ object SerializationTestUtils {
 
 class RequestResponseSerializationTest extends JUnitSuite {
   private val producerRequest = SerializationTestUtils.createTestProducerRequest
-  private val producerResponse =
-    SerializationTestUtils.createTestProducerResponse
+  private val producerResponse = SerializationTestUtils
+    .createTestProducerResponse
   private val fetchRequest = SerializationTestUtils.createTestFetchRequest
   private val offsetRequest = SerializationTestUtils.createTestOffsetRequest
   private val offsetResponse = SerializationTestUtils.createTestOffsetResponse
-  private val offsetCommitRequestV0 =
-    SerializationTestUtils.createTestOffsetCommitRequestV0
-  private val offsetCommitRequestV1 =
-    SerializationTestUtils.createTestOffsetCommitRequestV1
-  private val offsetCommitRequestV2 =
-    SerializationTestUtils.createTestOffsetCommitRequestV2
-  private val offsetCommitResponse =
-    SerializationTestUtils.createTestOffsetCommitResponse
-  private val offsetFetchRequest =
-    SerializationTestUtils.createTestOffsetFetchRequest
-  private val offsetFetchResponse =
-    SerializationTestUtils.createTestOffsetFetchResponse
-  private val consumerMetadataRequest =
-    SerializationTestUtils.createConsumerMetadataRequest
-  private val consumerMetadataResponse =
-    SerializationTestUtils.createConsumerMetadataResponse
+  private val offsetCommitRequestV0 = SerializationTestUtils
+    .createTestOffsetCommitRequestV0
+  private val offsetCommitRequestV1 = SerializationTestUtils
+    .createTestOffsetCommitRequestV1
+  private val offsetCommitRequestV2 = SerializationTestUtils
+    .createTestOffsetCommitRequestV2
+  private val offsetCommitResponse = SerializationTestUtils
+    .createTestOffsetCommitResponse
+  private val offsetFetchRequest = SerializationTestUtils
+    .createTestOffsetFetchRequest
+  private val offsetFetchResponse = SerializationTestUtils
+    .createTestOffsetFetchResponse
+  private val consumerMetadataRequest = SerializationTestUtils
+    .createConsumerMetadataRequest
+  private val consumerMetadataResponse = SerializationTestUtils
+    .createConsumerMetadataResponse
   private val consumerMetadataResponseNoCoordinator = GroupCoordinatorResponse(
     None,
     ErrorMapping.ConsumerCoordinatorNotAvailableCode,
@@ -363,10 +363,12 @@ class RequestResponseSerializationTest extends JUnitSuite {
         .getDeclaredMethod("readFrom", classOf[ByteBuffer])
       val deserialized = deserializer.invoke(null, buffer)
       assertFalse(
-        "All serialized bytes in " + original.getClass.getSimpleName + " should have been consumed",
+        "All serialized bytes in " + original.getClass
+          .getSimpleName + " should have been consumed",
         buffer.hasRemaining)
       assertEquals(
-        "The original and deserialized for " + original.getClass.getSimpleName + " should be the same.",
+        "The original and deserialized for " + original.getClass
+          .getSimpleName + " should be the same.",
         original,
         deserialized)
     }

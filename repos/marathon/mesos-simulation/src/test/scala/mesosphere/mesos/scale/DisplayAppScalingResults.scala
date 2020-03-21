@@ -50,11 +50,9 @@ object DisplayAppScalingResults {
       .readJson[Seq[JsObject]](fileName)
 
     def subMetric(name: String): Map[String, JsObject] = {
-      (allMetrics.last \ name)
-        .as[JsObject]
-        .value
-        .map { case (name, value) => name -> value.as[JsObject] }
-        .toMap
+      (allMetrics.last \ name).as[JsObject].value.map {
+        case (name, value) => name -> value.as[JsObject]
+      }.toMap
     }
 
     displayMeters(subMetric("meters"))
@@ -69,8 +67,7 @@ object DisplayAppScalingResults {
   }
 
   def shortenName(name: String): String = {
-    name
-      .replaceAll("mesosphere\\.marathon", "marathon")
+    name.replaceAll("mesosphere\\.marathon", "marathon")
       .replaceAll("org\\.eclipse\\.jetty\\.servlet", "servlet")
   }
 
@@ -180,14 +177,12 @@ object DisplayAppScalingResults {
     val rows: Seq[IndexedSeq[Any]] = timers.map {
       case (timer: String, jsObject: JsObject) =>
         def d1000(fieldName: String): Any =
-          (
-            jsObject \ fieldName
-          ).asOpt[Double].map(seconds => (seconds * 1000).round).getOrElse("-")
+          (jsObject \ fieldName).asOpt[Double]
+            .map(seconds => (seconds * 1000).round).getOrElse("-")
         def dFull(fieldName: String): Any =
           (jsObject \ fieldName).asOpt[Double].map(_.round).getOrElse("-")
 
-        val rateUnits: String = (jsObject \ "rate_units")
-          .asOpt[String]
+        val rateUnits: String = (jsObject \ "rate_units").asOpt[String]
           .getOrElse("-")
         IndexedSeq[Any](
           shortenName(timer),

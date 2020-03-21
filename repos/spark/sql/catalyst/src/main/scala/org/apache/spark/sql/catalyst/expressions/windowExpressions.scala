@@ -669,11 +669,8 @@ abstract class RankLike extends AggregateWindowFunction {
   }
 
   /** Predicate that detects if the order attributes have changed. */
-  protected val orderEquals = children
-    .zip(orderAttrs)
-    .map(EqualNullSafe.tupled)
-    .reduceOption(And)
-    .getOrElse(Literal(true))
+  protected val orderEquals = children.zip(orderAttrs).map(EqualNullSafe.tupled)
+    .reduceOption(And).getOrElse(Literal(true))
 
   protected val orderInit = children.map(e => Literal.create(null, e.dataType))
   protected val rank = AttributeReference(

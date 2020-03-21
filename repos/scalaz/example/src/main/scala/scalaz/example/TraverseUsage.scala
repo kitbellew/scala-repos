@@ -42,8 +42,8 @@ object TraverseUsage extends App {
 
   assert(smallNumbers.traverse(doubleSmall) === Some(List(2, 4, 6, 8, 10)))
   assert(
-    smallNumbers
-      .traverse(doubleSmall) === smallNumbers.map(doubleSmall).sequence)
+    smallNumbers.traverse(doubleSmall) === smallNumbers.map(doubleSmall)
+      .sequence)
 
   // when we hit the 30, we get a None, which "fails" the whole computation
   assert(bigNumbers.traverse(doubleSmall) === none[List[Int]])

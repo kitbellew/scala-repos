@@ -31,7 +31,8 @@ object XMLSpec extends Specification {
       val xml = s"""<?xml version="1.0" encoding="ISO-8859-1"?>
                   | <!DOCTYPE foo [
                   |   <!ELEMENT foo ANY >
-                  |   <!ENTITY xxe SYSTEM "${f.toURI}">]><foo>hello&xxe;</foo>""".stripMargin
+                  |   <!ENTITY xxe SYSTEM "${f
+                     .toURI}">]><foo>hello&xxe;</foo>""".stripMargin
 
       parse(xml) must throwA[RuntimeException].like {
         case re => re.getCause must beAnInstanceOf[SAXException]

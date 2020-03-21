@@ -108,11 +108,8 @@ abstract class IngestProducer(args: Array[String])
       val totalMessages = messages * threadCount * samples.size
 
       println(
-        "Time: %.02f Messages: %d Throughput: %.01f msgs/s Errors: %d".format(
-          seconds,
-          totalMessages,
-          totalMessages / seconds,
-          totalErrors))
+        "Time: %.02f Messages: %d Throughput: %.01f msgs/s Errors: %d"
+          .format(seconds, totalMessages, totalMessages / seconds, totalErrors))
     }
     close
   }
@@ -209,10 +206,8 @@ Usage:
 
   def send(url: String, apiKey: String, event: JValue) {
 
-    val f: Future[HttpResponse[JValue]] = client
-      .path(url)
-      .query("apiKey", apiKey)
-      .contentType(application / MimeTypes.json)
+    val f: Future[HttpResponse[JValue]] = client.path(url)
+      .query("apiKey", apiKey).contentType(application / MimeTypes.json)
       .post[JValue]("")(event)
     Await.ready(f, 10 seconds)
     f.value match {
@@ -238,9 +233,8 @@ object WebappIngestProducer {
 
 class WebappIngestProducer(args: Array[String]) extends IngestProducer(args) {
 
-  lazy val base = config.getProperty(
-    "serviceUrl",
-    "http://localhost:30050/vfs/")
+  lazy val base = config
+    .getProperty("serviceUrl", "http://localhost:30050/vfs/")
   lazy val ingestAPIKey = config.getProperty("apiKey", "dummy")
   val ingestOwnerAccountId = Authorities("dummy")
   val client = new HttpClientXLightWeb
@@ -250,10 +244,8 @@ class WebappIngestProducer(args: Array[String]) extends IngestProducer(args) {
 
   def send(event: Ingest, timeout: Timeout) {
     // FIXME: expects ingest to be of a single value only.
-    val f: Future[HttpResponse[JValue]] = client
-      .path(base)
-      .query("apiKey", ingestAPIKey)
-      .contentType(application / MimeTypes.json)
+    val f: Future[HttpResponse[JValue]] = client.path(base)
+      .query("apiKey", ingestAPIKey).contentType(application / MimeTypes.json)
       .post[JValue](event.path.toString)(event.data.head)
     Await.ready(f, 10 seconds)
     f.value match {

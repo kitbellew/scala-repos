@@ -132,8 +132,8 @@ class NettyTransportSettings(config: Config) {
       case other ⇒ Some(other)
     }
 
-  val ConnectionTimeout: FiniteDuration = config.getMillisDuration(
-    "connection-timeout")
+  val ConnectionTimeout: FiniteDuration = config
+    .getMillisDuration("connection-timeout")
 
   val WriteBufferHighWaterMark: Option[Int] = optionSize(
     "write-buffer-high-water-mark")
@@ -271,16 +271,14 @@ private[netty] abstract class ServerHandler(
     channel.setReadable(false)
     associationListenerFuture.onSuccess {
       case listener: AssociationEventListener ⇒
-        val remoteAddress = NettyTransport
-          .addressFromSocketAddress(
-            remoteSocketAddress,
-            transport.schemeIdentifier,
-            transport.system.name,
-            hostName = None,
-            port = None)
-          .getOrElse(
-            throw new NettyTransportException(
-              s"Unknown inbound remote address type [${remoteSocketAddress.getClass.getName}]"))
+        val remoteAddress = NettyTransport.addressFromSocketAddress(
+          remoteSocketAddress,
+          transport.schemeIdentifier,
+          transport.system.name,
+          hostName = None,
+          port = None).getOrElse(
+          throw new NettyTransportException(
+            s"Unknown inbound remote address type [${remoteSocketAddress.getClass.getName}]"))
         init(channel, remoteSocketAddress, remoteAddress, msg) {
           listener notify InboundAssociation(_)
         }
@@ -375,9 +373,7 @@ class NettyTransport(
     .orElse(RARP(system).provider.remoteSettings.Dispatcher match {
       case "" ⇒ None
       case dispatcherName ⇒ Some(dispatcherName)
-    })
-    .map(system.dispatchers.lookup)
-    .getOrElse(system.dispatcher)
+    }).map(system.dispatchers.lookup).getOrElse(system.dispatcher)
 
   override val schemeIdentifier: String =
     (if (EnableSsl) "ssl." else "") + TransportMode
@@ -524,14 +520,14 @@ class NettyTransport(
       bootstrap.setOption(
         "receiveBufferSizePredictorFactory",
         new FixedReceiveBufferSizePredictorFactory(ReceiveBufferSize.get))
-    settings.ReceiveBufferSize.foreach(sz ⇒
-      bootstrap.setOption("receiveBufferSize", sz))
-    settings.SendBufferSize.foreach(sz ⇒
-      bootstrap.setOption("sendBufferSize", sz))
-    settings.WriteBufferHighWaterMark.foreach(sz ⇒
-      bootstrap.setOption("writeBufferHighWaterMark", sz))
-    settings.WriteBufferLowWaterMark.foreach(sz ⇒
-      bootstrap.setOption("writeBufferLowWaterMark", sz))
+    settings.ReceiveBufferSize
+      .foreach(sz ⇒ bootstrap.setOption("receiveBufferSize", sz))
+    settings.SendBufferSize
+      .foreach(sz ⇒ bootstrap.setOption("sendBufferSize", sz))
+    settings.WriteBufferHighWaterMark
+      .foreach(sz ⇒ bootstrap.setOption("writeBufferHighWaterMark", sz))
+    settings.WriteBufferLowWaterMark
+      .foreach(sz ⇒ bootstrap.setOption("writeBufferLowWaterMark", sz))
     bootstrap
   }
 
@@ -550,19 +546,18 @@ class NettyTransport(
     val bootstrap = setupBootstrap(
       new ClientBootstrap(clientChannelFactory),
       clientPipelineFactory(remoteAddress))
-    bootstrap.setOption(
-      "connectTimeoutMillis",
-      settings.ConnectionTimeout.toMillis)
+    bootstrap
+      .setOption("connectTimeoutMillis", settings.ConnectionTimeout.toMillis)
     bootstrap.setOption("tcpNoDelay", settings.TcpNodelay)
     bootstrap.setOption("keepAlive", settings.TcpKeepalive)
-    settings.ReceiveBufferSize.foreach(sz ⇒
-      bootstrap.setOption("receiveBufferSize", sz))
-    settings.SendBufferSize.foreach(sz ⇒
-      bootstrap.setOption("sendBufferSize", sz))
-    settings.WriteBufferHighWaterMark.foreach(sz ⇒
-      bootstrap.setOption("writeBufferHighWaterMark", sz))
-    settings.WriteBufferLowWaterMark.foreach(sz ⇒
-      bootstrap.setOption("writeBufferLowWaterMark", sz))
+    settings.ReceiveBufferSize
+      .foreach(sz ⇒ bootstrap.setOption("receiveBufferSize", sz))
+    settings.SendBufferSize
+      .foreach(sz ⇒ bootstrap.setOption("sendBufferSize", sz))
+    settings.WriteBufferHighWaterMark
+      .foreach(sz ⇒ bootstrap.setOption("writeBufferHighWaterMark", sz))
+    settings.WriteBufferLowWaterMark
+      .foreach(sz ⇒ bootstrap.setOption("writeBufferLowWaterMark", sz))
     bootstrap
   }
 
@@ -614,7 +609,8 @@ class NettyTransport(
               case Some(address) ⇒ boundTo = address
               case None ⇒
                 throw new NettyTransportException(
-                  s"Unknown local address type [${newServerChannel.getLocalAddress.getClass.getName}]")
+                  s"Unknown local address type [${newServerChannel
+                    .getLocalAddress.getClass.getName}]")
             }
             localAddress = address
             associationListenerPromise.future.onSuccess {
@@ -654,9 +650,7 @@ class NettyTransport(
         readyChannel ← NettyFutureBridge(bootstrap.connect(socketAddress)) map {
           channel ⇒
             if (EnableSsl) blocking {
-              channel.getPipeline
-                .get(classOf[SslHandler])
-                .handshake()
+              channel.getPipeline.get(classOf[SslHandler]).handshake()
                 .awaitUninterruptibly()
             }
             if (!isDatagram) channel.setReadable(false)

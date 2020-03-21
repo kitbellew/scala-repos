@@ -364,9 +364,10 @@ object Project extends ProjectExtra {
     lazy val delegates = delegates0
     lazy val settings = settings0
 
-    Dag.topologicalSort(configurations)(
-      _.extendsConfigs
-    ) // checks for cyclic references here instead of having to do it in Scope.delegates
+    Dag
+      .topologicalSort(configurations)(
+        _.extendsConfigs
+      ) // checks for cyclic references here instead of having to do it in Scope.delegates
   }
 
   // TODO: add parameter for plugins in 0.14.0
@@ -398,8 +399,8 @@ object Project extends ProjectExtra {
       id: String,
       base: File,
       aggregate: => Seq[ProjectReference]): Project = {
-    validProjectID(id).foreach(errMsg =>
-      sys.error("Invalid project ID: " + errMsg))
+    validProjectID(id)
+      .foreach(errMsg => sys.error("Invalid project ID: " + errMsg))
     new ProjectDef[ProjectReference](
       id,
       base,
@@ -493,8 +494,8 @@ object Project extends ProjectExtra {
       auto: AddSettings,
       plugins: Plugins,
       autoPlugins: Seq[AutoPlugin]): Project = {
-    validProjectID(id).foreach(errMsg =>
-      sys.error("Invalid project ID: " + errMsg))
+    validProjectID(id)
+      .foreach(errMsg => sys.error("Invalid project ID: " + errMsg))
     new ProjectDef[ProjectReference](
       id,
       base,
@@ -563,10 +564,8 @@ object Project extends ProjectExtra {
       s: State): State = {
     val unloaded = runUnloadHooks(s)
     val (onLoad, onUnload) = getHooks(structure.data)
-    val newAttrs = unloaded.attributes
-      .put(stateBuildStructure, structure)
-      .put(sessionSettings, session)
-      .put(Keys.onUnload.key, onUnload)
+    val newAttrs = unloaded.attributes.put(stateBuildStructure, structure)
+      .put(sessionSettings, session).put(Keys.onUnload.key, onUnload)
     val newState = unloaded.copy(attributes = newAttrs)
     onLoad(
       LogManager.setGlobalLogLevels(updateCurrent(newState), structure.data))
@@ -595,12 +594,10 @@ object Project extends ProjectExtra {
     val history = get(historyPath) flatMap idFun
     val prompt = get(shellPrompt)
     val watched = get(watch)
-    val commandDefs = allCommands.distinct
-      .flatten[Command]
+    val commandDefs = allCommands.distinct.flatten[Command]
       .map(_ tag (projectCommand, true))
-    val newDefinedCommands = commandDefs ++ BasicCommands.removeTagged(
-      s.definedCommands,
-      projectCommand)
+    val newDefinedCommands = commandDefs ++ BasicCommands
+      .removeTagged(s.definedCommands, projectCommand)
     val newAttrs = setCond(Watched.Configuration, watched, s.attributes)
       .put(historyPath.key, history)
     s.copy(
@@ -645,10 +642,8 @@ object Project extends ProjectExtra {
     val targetAndRef = Def.setting {
       (Keys.thisProjectRef.value, Keys.target.value)
     }
-    new SettingKeyAll(Def.optional(targetAndRef)(idFun))
-      .all(allProjects)
-      .evaluate(data)
-      .flatMap(x => x)
+    new SettingKeyAll(Def.optional(targetAndRef)(idFun)).all(allProjects)
+      .evaluate(data).flatMap(x => x)
   }
 
   def equal(a: ScopedKey[_], b: ScopedKey[_], mask: ScopeMask): Boolean =
@@ -722,21 +717,19 @@ object Project extends ProjectExtra {
     val cMap = Def.flattenLocals(comp)
     val related = cMap.keys.filter(k => k.key == key && k.scope != scope)
     def derivedDependencies(c: ScopedKey[_]): List[ScopedKey[_]] =
-      comp
-        .get(c)
+      comp.get(c)
         .map(_.settings.flatMap(s => if (s.isDerived) s.dependencies else Nil))
-        .toList
-        .flatten
+        .toList.flatten
 
     val depends = cMap.get(scoped) match {
       case Some(c) => c.dependencies.toSet; case None => Set.empty
     }
-    val derivedDepends: Set[ScopedKey[_]] = derivedDependencies(
-      definingScoped).toSet
+    val derivedDepends: Set[ScopedKey[_]] = derivedDependencies(definingScoped)
+      .toSet
 
     val reverse = reverseDependencies(cMap, scoped)
-    val derivedReverse =
-      reverse.filter(r => derivedDependencies(r).contains(definingScoped)).toSet
+    val derivedReverse = reverse
+      .filter(r => derivedDependencies(r).contains(definingScoped)).toSet
 
     def printDepScopes(
         baseLabel: String,
@@ -761,8 +754,7 @@ object Project extends ProjectExtra {
         val (limited, more) =
           if (scopes.size <= max) (scopes, "\n")
           else (scopes.take(max), "\n...\n")
-        limited
-          .map(sk => prefix(sk) + display(sk))
+        limited.map(sk => prefix(sk) + display(sk))
           .mkString(label + ":\n\t", "\n\t", more)
       }
 

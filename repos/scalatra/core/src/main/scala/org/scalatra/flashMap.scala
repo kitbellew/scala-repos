@@ -175,9 +175,7 @@ trait FlashMapSupport extends Handler {
 
   private[this] def getFlash(req: HttpServletRequest): FlashMap =
     req.get(SessionKey).map(_.asInstanceOf[FlashMap]).getOrElse {
-      val map = session
-        .get(SessionKey)
-        .map { _.asInstanceOf[FlashMap] }
+      val map = session.get(SessionKey).map { _.asInstanceOf[FlashMap] }
         .getOrElse(new FlashMap)
 
       req.setAttribute(SessionKey, map)

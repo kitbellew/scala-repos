@@ -43,8 +43,8 @@ object ForumPost extends LilaController with ForumController {
                 forms.post.bindFromRequest.fold(
                   err =>
                     forms.anyCaptcha flatMap { captcha =>
-                      ctx.userId ?? Env.timeline.status(
-                        s"forum:${topic.id}") map { unsub =>
+                      ctx.userId ?? Env.timeline
+                        .status(s"forum:${topic.id}") map { unsub =>
                         BadRequest(html.forum.topic.show(
                           categ,
                           topic,

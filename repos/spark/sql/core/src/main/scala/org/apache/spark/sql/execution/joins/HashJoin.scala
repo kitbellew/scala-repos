@@ -141,7 +141,8 @@ trait HashJoin {
       override final def hasNext: Boolean = {
         while (true) {
           // check if it's end of current matches
-          if (currentHashMatches != null && currentMatchPosition == currentHashMatches.length) {
+          if (currentHashMatches != null && currentMatchPosition == currentHashMatches
+                .length) {
             currentHashMatches = null
             currentMatchPosition = -1
           }
@@ -262,11 +263,10 @@ trait HashJoin {
     streamIter.filter { current =>
       val key = joinKeys(current)
       lazy val rowBuffer = hashedRelation.get(key)
-      val r =
-        !key.anyNull && rowBuffer != null && (condition.isEmpty || rowBuffer
-          .exists { (row: InternalRow) =>
-            boundCondition(joinedRow(current, row))
-          })
+      val r = !key.anyNull && rowBuffer != null && (condition
+        .isEmpty || rowBuffer.exists { (row: InternalRow) =>
+        boundCondition(joinedRow(current, row))
+      })
       if (r) numOutputRows += 1
       r
     }

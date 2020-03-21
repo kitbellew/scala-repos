@@ -55,52 +55,47 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
       makeConstraint("rack", Operator.GROUP_BY, ""),
       makeConstraint("color", Operator.GROUP_BY, "")))
     val tasks =
-      0.to(9)
-        .map(num =>
+      0.to(9).map(num =>
+        makeSampleTask(s"$num", Map("rack" -> "rack-1", "color" -> "blue"))) ++
+        10.to(19).map(num =>
           makeSampleTask(
             s"$num",
-            Map("rack" -> "rack-1", "color" -> "blue"))) ++
-        10.to(19)
-          .map(num =>
-            makeSampleTask(
-              s"$num",
-              Map("rack" -> "rack-1", "color" -> "green"))) ++
-        20.to(29)
-          .map(num =>
-            makeSampleTask(
-              s"$num",
-              Map("rack" -> "rack-2", "color" -> "blue"))) ++
-        30.to(39)
-          .map(num =>
-            makeSampleTask(
-              s"$num",
-              Map("rack" -> "rack-2", "color" -> "green")))
+            Map("rack" -> "rack-1", "color" -> "green"))) ++
+        20.to(29).map(num =>
+          makeSampleTask(
+            s"$num",
+            Map("rack" -> "rack-2", "color" -> "blue"))) ++
+        30.to(39).map(num =>
+          makeSampleTask(s"$num", Map("rack" -> "rack-2", "color" -> "green")))
 
     When("20 tasks should be selected to kill")
     val result = Constraints.selectTasksToKill(app, tasks, 20)
 
     Then("20 tasks got selected and evenly distributed")
     result should have size 20
-    result.count(
-      _.agentInfo.attributes.exists(_.getText.getValue == "rack-1")) should be(
+    result
+      .count(
+        _.agentInfo.attributes
+        .exists(_.getText.getValue == "rack-1")) should be(10)
+    result
+      .count(
+        _.agentInfo.attributes
+        .exists(_.getText.getValue == "rack-2")) should be(10)
+    result
+      .count(
+        _.agentInfo.attributes.exists(_.getText.getValue == "blue")) should be(
       10)
-    result.count(
-      _.agentInfo.attributes.exists(_.getText.getValue == "rack-2")) should be(
-      10)
-    result.count(
-      _.agentInfo.attributes.exists(_.getText.getValue == "blue")) should be(10)
-    result.count(
-      _.agentInfo.attributes.exists(_.getText.getValue == "green")) should be(
+    result
+      .count(
+        _.agentInfo.attributes.exists(_.getText.getValue == "green")) should be(
       10)
   }
 
   test("Does not select any task without constraint") {
     Given("app with hostname group_by and 10 tasks even distributed on 5 hosts")
     val app = AppDefinition()
-    val tasks = 0
-      .to(9)
-      .map(num =>
-        makeSampleTask(s"$num", Map("rack" -> "rack-1", "color" -> "blue")))
+    val tasks = 0.to(9).map(num =>
+      makeSampleTask(s"$num", Map("rack" -> "rack-1", "color" -> "blue")))
 
     When("10 tasks should be selected to kill")
     val result = Constraints.selectTasksToKill(app, tasks, 5)
@@ -198,10 +193,8 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
 
     assert(!clusterRackNotMet, "Should not meet cluster constraint.")
 
-    val clusterNoAttributeNotMet = Constraints.meetsConstraint(
-      freshRack,
-      makeOffer("foohost", Set()),
-      clusterByRackId)
+    val clusterNoAttributeNotMet = Constraints
+      .meetsConstraint(freshRack, makeOffer("foohost", Set()), clusterByRackId)
 
     assert(!clusterNoAttributeNotMet, "Should not meet cluster constraint.")
 
@@ -232,10 +225,8 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
 
     assert(!uniqueRackNotMet, "Should not meet unique constraint for rack.")
 
-    val uniqueNoAttributeNotMet = Constraints.meetsConstraint(
-      freshRack,
-      makeOffer("foohost", Set()),
-      uniqueRackId)
+    val uniqueNoAttributeNotMet = Constraints
+      .meetsConstraint(freshRack, makeOffer("foohost", Set()), uniqueRackId)
 
     assert(!uniqueNoAttributeNotMet, "Should not meet unique constraint.")
   }
@@ -357,10 +348,8 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
 
     assert(!groupByRackNotMet, "Should not meet group-by-rack constraint.")
 
-    val groupByNoAttributeNotMet = Constraints.meetsConstraint(
-      sameRack,
-      makeOffer("foohost", Set()),
-      group2ByRack)
+    val groupByNoAttributeNotMet = Constraints
+      .meetsConstraint(sameRack, makeOffer("foohost", Set()), group2ByRack)
     assert(
       !groupByNoAttributeNotMet,
       "Should not meet group-by-no-attribute constraints.")
@@ -448,74 +437,56 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
       Constraint.Operator.GROUP_BY,
       "2")
 
-    val groupByFreshHostMet = Constraints.meetsConstraint(
-      groupHost,
-      makeOffer("host1", attributes),
-      groupByHost)
+    val groupByFreshHostMet = Constraints
+      .meetsConstraint(groupHost, makeOffer("host1", attributes), groupByHost)
 
     assert(groupByFreshHostMet, "Should be able to schedule in fresh host.")
 
     groupHost ++= Set(task1_host1)
 
-    val groupByHostMet = Constraints.meetsConstraint(
-      groupHost,
-      makeOffer("host1", attributes),
-      groupByHost)
+    val groupByHostMet = Constraints
+      .meetsConstraint(groupHost, makeOffer("host1", attributes), groupByHost)
 
     assert(!groupByHostMet, "Should not meet group-by-host constraint.")
 
-    val groupByHostMet2 = Constraints.meetsConstraint(
-      groupHost,
-      makeOffer("host2", attributes),
-      groupByHost)
+    val groupByHostMet2 = Constraints
+      .meetsConstraint(groupHost, makeOffer("host2", attributes), groupByHost)
 
     assert(groupByHostMet2, "Should meet group-by-host constraint.")
 
     groupHost ++= Set(task3_host2)
 
-    val groupByHostMet3 = Constraints.meetsConstraint(
-      groupHost,
-      makeOffer("host1", attributes),
-      groupByHost)
+    val groupByHostMet3 = Constraints
+      .meetsConstraint(groupHost, makeOffer("host1", attributes), groupByHost)
 
     assert(groupByHostMet3, "Should meet group-by-host constraint.")
 
     groupHost ++= Set(task2_host1)
 
-    val groupByHostNotMet = Constraints.meetsConstraint(
-      groupHost,
-      makeOffer("host1", attributes),
-      groupByHost)
+    val groupByHostNotMet = Constraints
+      .meetsConstraint(groupHost, makeOffer("host1", attributes), groupByHost)
 
     assert(!groupByHostNotMet, "Should not meet group-by-host constraint.")
 
-    val groupByHostMet4 = Constraints.meetsConstraint(
-      groupHost,
-      makeOffer("host3", attributes),
-      groupByHost)
+    val groupByHostMet4 = Constraints
+      .meetsConstraint(groupHost, makeOffer("host3", attributes), groupByHost)
 
     assert(groupByHostMet4, "Should meet group-by-host constraint.")
 
     groupHost ++= Set(task4_host3)
 
-    val groupByHostNotMet2 = Constraints.meetsConstraint(
-      groupHost,
-      makeOffer("host1", attributes),
-      groupByHost)
+    val groupByHostNotMet2 = Constraints
+      .meetsConstraint(groupHost, makeOffer("host1", attributes), groupByHost)
 
     assert(!groupByHostNotMet2, "Should not meet group-by-host constraint.")
 
-    val groupByHostMet5 = Constraints.meetsConstraint(
-      groupHost,
-      makeOffer("host3", attributes),
-      groupByHost)
+    val groupByHostMet5 = Constraints
+      .meetsConstraint(groupHost, makeOffer("host3", attributes), groupByHost)
 
     assert(groupByHostMet5, "Should meet group-by-host constraint.")
 
-    val groupByHostMet6 = Constraints.meetsConstraint(
-      groupHost,
-      makeOffer("host2", attributes),
-      groupByHost)
+    val groupByHostMet6 = Constraints
+      .meetsConstraint(groupHost, makeOffer("host2", attributes), groupByHost)
 
     assert(groupByHostMet6, "Should meet group-by-host constraint.")
   }
@@ -524,34 +495,25 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
     val attributes = attrs.map {
       case (name, value) => TextAttribute(name, value): Attribute
     }
-    MarathonTestHelper
-      .stagedTask(id)
+    MarathonTestHelper.stagedTask(id)
       .withAgentInfo(_.copy(attributes = attributes))
       .withNetworking(Task.HostPorts(999))
   }
 
   def makeOffer(hostname: String, attributes: Iterable[Attribute]) = {
-    Offer.newBuilder
-      .setId(OfferID(Random.nextString(9)))
+    Offer.newBuilder.setId(OfferID(Random.nextString(9)))
       .setSlaveId(SlaveID(Random.nextString(9)))
-      .setFrameworkId(FrameworkID(Random.nextString(9)))
-      .setHostname(hostname)
-      .addAllAttributes(attributes.asJava)
-      .build
+      .setFrameworkId(FrameworkID(Random.nextString(9))).setHostname(hostname)
+      .addAllAttributes(attributes.asJava).build
   }
 
   def makeTaskWithHost(id: String, host: String) = {
-    MarathonTestHelper
-      .runningTask(id)
-      .withAgentInfo(_.copy(host = host))
+    MarathonTestHelper.runningTask(id).withAgentInfo(_.copy(host = host))
       .withNetworking(Task.HostPorts(999))
   }
 
   def makeConstraint(field: String, operator: Operator, value: String) = {
-    Constraint.newBuilder
-      .setField(field)
-      .setOperator(operator)
-      .setValue(value)
+    Constraint.newBuilder.setField(field).setOperator(operator).setValue(value)
       .build
   }
 

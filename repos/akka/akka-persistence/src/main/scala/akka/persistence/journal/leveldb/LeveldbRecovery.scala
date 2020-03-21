@@ -76,8 +76,8 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
       if (iter.hasNext) {
         val nextEntry = iter.peekNext()
         val nextKey = keyFromBytes(nextEntry.getKey)
-        if (key.persistenceId == nextKey.persistenceId && key.sequenceNr == nextKey.sequenceNr && isDeletionKey(
-              nextKey)) {
+        if (key.persistenceId == nextKey.persistenceId && key
+              .sequenceNr == nextKey.sequenceNr && isDeletionKey(nextKey)) {
           iter.next()
           true
         } else false

@@ -57,8 +57,7 @@ trait CsrfTokenSupport {
   protected def isForged: Boolean =
     !request.requestMethod.isSafe &&
       session.get(csrfKey) != params.get(csrfKey) &&
-      !CsrfTokenSupport.HeaderNames
-        .map(request.headers.get)
+      !CsrfTokenSupport.HeaderNames.map(request.headers.get)
         .contains(session.get(csrfKey))
 
   /**

@@ -189,8 +189,8 @@ object Memcached
     }
 
     object NumReps {
-      implicit val param = Stack.Param(NumReps(
-        KetamaPartitionedClient.DefaultNumReps))
+      implicit val param = Stack
+        .Param(NumReps(KetamaPartitionedClient.DefaultNumReps))
     }
   }
 
@@ -219,10 +219,9 @@ object Memcached
       * has a single pipelined connection.
       */
     def newStack: Stack[ServiceFactory[Command, Response]] =
-      StackClient.newStack
-        .replace(
-          LoadBalancerFactory.role,
-          ConcurrentLoadBalancerFactory.module[Command, Response])
+      StackClient.newStack.replace(
+        LoadBalancerFactory.role,
+        ConcurrentLoadBalancerFactory.module[Command, Response])
         .replace(DefaultPool.Role, SingletonPool.module[Command, Response])
         .replace(ClientTracingFilter.role, MemcachedTraceInitializer.Module)
 

@@ -47,18 +47,15 @@ private[mllib] class GeneralizedLinearPMMLModelExport(
       val regressionTable = new RegressionTable(model.intercept)
       val regressionModel = new RegressionModel()
         .setFunctionName(MiningFunctionType.REGRESSION)
-        .setMiningSchema(miningSchema)
-        .setModelName(description)
+        .setMiningSchema(miningSchema).setModelName(description)
         .addRegressionTables(regressionTable)
 
       for (i <- 0 until model.weights.size) {
         fields(i) = FieldName.create("field_" + i)
         dataDictionary.addDataFields(
           new DataField(fields(i), OpType.CONTINUOUS, DataType.DOUBLE))
-        miningSchema
-          .addMiningFields(
-            new MiningField(fields(i))
-              .setUsageType(FieldUsageType.ACTIVE))
+        miningSchema.addMiningFields(
+          new MiningField(fields(i)).setUsageType(FieldUsageType.ACTIVE))
         regressionTable.addNumericPredictors(
           new NumericPredictor(fields(i), model.weights(i)))
       }
@@ -67,10 +64,8 @@ private[mllib] class GeneralizedLinearPMMLModelExport(
       val targetField = FieldName.create("target")
       dataDictionary.addDataFields(
         new DataField(targetField, OpType.CONTINUOUS, DataType.DOUBLE))
-      miningSchema
-        .addMiningFields(
-          new MiningField(targetField)
-            .setUsageType(FieldUsageType.TARGET))
+      miningSchema.addMiningFields(
+        new MiningField(targetField).setUsageType(FieldUsageType.TARGET))
 
       dataDictionary.setNumberOfFields(dataDictionary.getDataFields.size)
 

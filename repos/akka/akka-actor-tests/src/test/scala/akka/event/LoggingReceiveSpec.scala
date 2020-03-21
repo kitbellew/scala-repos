@@ -26,27 +26,22 @@ object LoggingReceiveSpec {
 class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
 
   import LoggingReceiveSpec._
-  val config = ConfigFactory
-    .parseString(
-      """
+  val config = ConfigFactory.parseString(
+    """
     akka.loglevel=DEBUG
     akka.actor.serialize-messages = off # debug noise from serialization
-    """)
-    .withFallback(AkkaSpec.testConf)
+    """).withFallback(AkkaSpec.testConf)
   val appLogging = ActorSystem(
     "logging",
-    ConfigFactory
-      .parseMap(Map("akka.actor.debug.receive" -> true).asJava)
+    ConfigFactory.parseMap(Map("akka.actor.debug.receive" -> true).asJava)
       .withFallback(config))
   val appAuto = ActorSystem(
     "autoreceive",
-    ConfigFactory
-      .parseMap(Map("akka.actor.debug.autoreceive" -> true).asJava)
+    ConfigFactory.parseMap(Map("akka.actor.debug.autoreceive" -> true).asJava)
       .withFallback(config))
   val appLifecycle = ActorSystem(
     "lifecycle",
-    ConfigFactory
-      .parseMap(Map("akka.actor.debug.lifecycle" -> true).asJava)
+    ConfigFactory.parseMap(Map("akka.actor.debug.lifecycle" -> true).asJava)
       .withFallback(config))
 
   val filter = TestEvent.Mute(EventFilter.custom {
@@ -167,8 +162,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
       new TestKit(appLifecycle) {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
         within(3 seconds) {
-          val lifecycleGuardian =
-            appLifecycle.asInstanceOf[ActorSystemImpl].guardian
+          val lifecycleGuardian = appLifecycle.asInstanceOf[ActorSystemImpl]
+            .guardian
           val lname = lifecycleGuardian.path.toString
           val supervisor = TestActorRef[TestLogActor](Props[TestLogActor])
           val sname = supervisor.path.toString

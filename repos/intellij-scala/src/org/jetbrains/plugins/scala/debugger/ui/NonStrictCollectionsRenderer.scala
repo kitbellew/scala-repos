@@ -73,14 +73,11 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       methodName: String,
       signature: Char,
       context: EvaluationContext) = {
-    val suitableMethods = objectRef
-      .referenceType()
+    val suitableMethods = objectRef.referenceType()
       .methodsByName(methodName, "()" + signature)
     if (suitableMethods.size() > 0) {
-      companionObject.invokeEmptyArgsMethod(
-        objectRef,
-        suitableMethods get 0,
-        context)
+      companionObject
+        .invokeEmptyArgsMethod(objectRef, suitableMethods get 0, context)
     } else { MethodNotFound() }
   }
 
@@ -92,10 +89,9 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       invokeLengthMethodByName(objectRef, name, 'I', context)
 
     try {
-      if (!ScalaCollectionRenderer.hasDefiniteSize(
-            objectRef,
-            context) || isStreamView(objectRef.referenceType()))
-        return Success[String]("?")
+      if (!ScalaCollectionRenderer
+            .hasDefiniteSize(objectRef, context) || isStreamView(
+            objectRef.referenceType())) return Success[String]("?")
     } catch { case e: EvaluateException => return Fail(e) }
 
     invoke("size") match {
@@ -181,9 +177,7 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       context: DebuggerContext): PsiExpression = {
     node.getDescriptor match {
       case watch: WatchItemDescriptor =>
-        JavaPsiFacade
-          .getInstance(node.getProject)
-          .getElementFactory
+        JavaPsiFacade.getInstance(node.getProject).getElementFactory
           .createExpressionFromText(watch.calcValueName(), null)
       case collectionItem: CollectionElementNodeDescriptor =>
         collectionItem.getDescriptorEvaluation(context)
@@ -233,8 +227,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
         })
 
         stringBuilder append (if (tpe != null)
-                                ScalaCollectionRenderer.transformName(
-                                  tpe.name) + sizeString
+                                ScalaCollectionRenderer
+                                  .transformName(tpe.name) + sizeString
                               else "{...}")
       case _ => stringBuilder append "{...}"
     }
@@ -246,8 +240,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
 }
 
 object NonStrictCollectionsRenderer {
-  private val EMPTY_ARGS = util.Collections.unmodifiableList(
-    new util.ArrayList[Value]())
+  private val EMPTY_ARGS = util.Collections
+    .unmodifiableList(new util.ArrayList[Value]())
 
   //it considers only part of cases so it is not intended to be used outside
   private def invokeEmptyArgsMethod(
@@ -255,11 +249,8 @@ object NonStrictCollectionsRenderer {
       method: Method,
       context: EvaluationContext): SimpleMethodInvocationResult[_] = {
     try {
-      context.getDebugProcess.invokeMethod(
-        context,
-        obj,
-        method,
-        EMPTY_ARGS) match {
+      context.getDebugProcess
+        .invokeMethod(context, obj, method, EMPTY_ARGS) match {
         case intValue: IntegerValue => Success[Int](intValue.intValue())
         case boolValue: BooleanValue =>
           Success[Boolean](boolValue.booleanValue())
@@ -298,9 +289,7 @@ object NonStrictCollectionsRenderer {
 
     def getDescriptorEvaluation(context: DebuggerContext): PsiExpression = {
       try {
-        JavaPsiFacade
-          .getInstance(project)
-          .getElementFactory
+        JavaPsiFacade.getInstance(project).getElementFactory
           .createExpressionFromText(
             name,
             PositionUtil getContextElement context)

@@ -51,7 +51,6 @@ private[parser] trait CommonActions {
   }
 
   def getCharset(name: String): HttpCharset =
-    HttpCharsets
-      .getForKeyCaseInsensitive(name)
+    HttpCharsets.getForKeyCaseInsensitive(name)
       .getOrElse(HttpCharset.custom(name))
 }

@@ -48,10 +48,10 @@ class TaskStatusUpdateProcessorImplTest
     "process update for unknown task that's not lost will result in a kill and ack") {
     fOpt = Some(new Fixture)
     val origUpdate =
-      TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way
+      TaskStatusUpdateTestHelper
+        .finished // everything != lost is handled in the same way
     val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
-      .setTaskId(Task.Id.forApp(appId).mesosTaskId)
-      .build()
+      .setTaskId(Task.Id.forApp(appId).mesosTaskId).build()
     val update = origUpdate.withTaskId(status.getTaskId)
     val taskId = update.wrapped.taskId
 
@@ -78,17 +78,17 @@ class TaskStatusUpdateProcessorImplTest
     "process update for known task without launchedTask that's not lost will result in a kill and ack") {
     fOpt = Some(new Fixture)
     val origUpdate =
-      TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way
+      TaskStatusUpdateTestHelper
+        .finished // everything != lost is handled in the same way
     val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
-      .setTaskId(Task.Id.forApp(appId).mesosTaskId)
-      .build()
+      .setTaskId(Task.Id.forApp(appId).mesosTaskId).build()
     val update = origUpdate.withTaskId(status.getTaskId)
     val taskId = update.wrapped.taskId
 
     Given("an unknown task")
     import scala.concurrent.ExecutionContext.Implicits.global
-    f.taskTracker.task(taskId)(global) returns Future.successful(Some(
-      MarathonTestHelper.minimalReservedTask(
+    f.taskTracker.task(taskId)(global) returns Future
+      .successful(Some(MarathonTestHelper.minimalReservedTask(
         taskId.appId,
         Task.Reservation(
           Iterable.empty,
@@ -114,8 +114,7 @@ class TaskStatusUpdateProcessorImplTest
 
     val origUpdate = TaskStatusUpdateTestHelper.lost
     val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
-      .setTaskId(Task.Id.forApp(appId).mesosTaskId)
-      .build()
+      .setTaskId(Task.Id.forApp(appId).mesosTaskId).build()
     val update = origUpdate.withTaskId(status.getTaskId)
     val taskId = update.wrapped.taskId
 
@@ -141,16 +140,14 @@ class TaskStatusUpdateProcessorImplTest
 
     val origUpdate = TaskStatusUpdateTestHelper.finished
     val status = origUpdate.wrapped.status.mesosStatus.get.toBuilder
-      .setTaskId(Task.Id.forApp(appId).mesosTaskId)
-      .build()
+      .setTaskId(Task.Id.forApp(appId).mesosTaskId).build()
     val update = origUpdate.withTaskId(status.getTaskId)
     val taskId = update.wrapped.taskId
 
     Given("a known task")
     import scala.concurrent.ExecutionContext.Implicits.global
     f.taskTracker.task(taskId) returns Future.successful(Some(taskState))
-    f.taskUpdater
-      .statusUpdate(appId, status)
+    f.taskUpdater.statusUpdate(appId, status)
       .asInstanceOf[Future[Unit]] returns Future.successful(())
     f.appRepository.app(appId, version) returns Future.successful(Some(app))
     And("and a cooperative launchQueue")
@@ -193,11 +190,9 @@ class TaskStatusUpdateProcessorImplTest
   lazy val app = AppDefinition(appId)
   lazy val version = Timestamp.now()
   lazy val task = MarathonTestHelper
-    .makeOneCPUTask(Task.Id.forApp(appId).mesosTaskId.getValue)
-    .build()
-  lazy val taskState = MarathonTestHelper.stagedTask(
-    task.getTaskId.getValue,
-    appVersion = version)
+    .makeOneCPUTask(Task.Id.forApp(appId).mesosTaskId.getValue).build()
+  lazy val taskState = MarathonTestHelper
+    .stagedTask(task.getTaskId.getValue, appVersion = version)
   lazy val marathonTask = taskState.marathonTask
 
   after { fOpt.foreach(_.shutdown()) }

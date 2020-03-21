@@ -27,12 +27,10 @@ class PostToEventStreamStepImplTest
     When("we receive a running status update")
     val status = runningTaskStatus
     val (logs, events) = f.captureLogAndEvents {
-      f.step
-        .processUpdate(
-          timestamp = updateTimestamp,
-          task = existingTask,
-          status = status)
-        .futureValue
+      f.step.processUpdate(
+        timestamp = updateTimestamp,
+        task = existingTask,
+        status = status).futureValue
     }
 
     Then("the appropriate event is posted")
@@ -58,19 +56,16 @@ class PostToEventStreamStepImplTest
   test("ignore running notification of already running task") {
     Given("an existing RUNNING task")
     val f = new Fixture
-    val existingTask = MarathonTestHelper.runningTaskForApp(
-      appId,
-      startedAt = 100)
+    val existingTask = MarathonTestHelper
+      .runningTaskForApp(appId, startedAt = 100)
 
     When("we receive a running update")
     val status = runningTaskStatus
     val (logs, events) = f.captureLogAndEvents {
-      f.step
-        .processUpdate(
-          timestamp = updateTimestamp,
-          task = existingTask,
-          status = status)
-        .futureValue
+      f.step.processUpdate(
+        timestamp = updateTimestamp,
+        task = existingTask,
+        status = status).futureValue
     }
 
     Then("no event is posted to the event stream")
@@ -104,12 +99,10 @@ class PostToEventStreamStepImplTest
     When("we receive a terminal status update")
     val status = runningTaskStatus.toBuilder.setState(terminalTaskState).build()
     val (logs, events) = f.captureLogAndEvents {
-      f.step
-        .processUpdate(
-          timestamp = updateTimestamp,
-          task = existingTask,
-          status = status)
-        .futureValue
+      f.step.processUpdate(
+        timestamp = updateTimestamp,
+        task = existingTask,
+        status = status).futureValue
     }
 
     Then("the appropriate event is posted")
@@ -141,13 +134,9 @@ class PostToEventStreamStepImplTest
   private[this] val updateTimestamp = Timestamp(100)
   private[this] val taskStatusMessage = "some update"
 
-  private[this] val runningTaskStatus = TaskStatus
-    .newBuilder()
-    .setState(TaskState.TASK_RUNNING)
-    .setTaskId(taskId.mesosTaskId)
-    .setSlaveId(slaveId)
-    .setMessage(taskStatusMessage)
-    .build()
+  private[this] val runningTaskStatus = TaskStatus.newBuilder()
+    .setState(TaskState.TASK_RUNNING).setTaskId(taskId.mesosTaskId)
+    .setSlaveId(slaveId).setMessage(taskStatusMessage).build()
 
   import MarathonTestHelper.Implicits._
   private[this] val stagedMarathonTask = MarathonTestHelper

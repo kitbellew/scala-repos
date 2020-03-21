@@ -37,12 +37,8 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
     val f = fixture()
     val proto = f.discoveryInfoWithPort.toProto
 
-    val portProto = MesosProtos.Port
-      .newBuilder()
-      .setName("http")
-      .setNumber(80)
-      .setProtocol("tcp")
-      .build()
+    val portProto = MesosProtos.Port.newBuilder().setName("http").setNumber(80)
+      .setProtocol("tcp").build()
 
     proto.getPortsList.asScala.head should equal(portProto)
   }
@@ -58,16 +54,11 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   test("ConstructFromProto with port") {
     val f = fixture()
 
-    val portProto = MesosProtos.Port
-      .newBuilder()
-      .setName("http")
-      .setNumber(80)
-      .setProtocol("tcp")
-      .build()
+    val portProto = MesosProtos.Port.newBuilder().setName("http").setNumber(80)
+      .setProtocol("tcp").build()
 
     val protoWithPort = Protos.DiscoveryInfo.newBuilder
-      .addAllPorts(Seq(portProto).asJava)
-      .build
+      .addAllPorts(Seq(portProto).asJava).build
 
     val result = DiscoveryInfo.fromProto(protoWithPort)
     result should equal(f.discoveryInfoWithPort)

@@ -119,8 +119,7 @@ object ComboBoxTableCell {
       converter: StringConverter[T],
       items: T*): (TableColumn[S, T] => TableCell[S, T]) =
     (view: TableColumn[S, T]) =>
-      jfxscc.ComboBoxTableCell
-        .forTableColumn[S, T](converter, items: _*)
+      jfxscc.ComboBoxTableCell.forTableColumn[S, T](converter, items: _*)
         .call(view)
 
   /**

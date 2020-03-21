@@ -52,11 +52,8 @@ class HoconObjectEntryMover extends LineMover {
       file: PsiFile,
       info: MoveInfo,
       down: Boolean): Boolean =
-    super.checkAvailable(
-      editor,
-      file,
-      info,
-      down) && !editor.getSelectionModel.hasSelection &&
+    super.checkAvailable(editor, file, info, down) && !editor.getSelectionModel
+      .hasSelection &&
       (file match {
         case hoconFile: HoconPsiFile =>
           checkAvailableHocon(editor, hoconFile, info, down)
@@ -144,12 +141,10 @@ class HoconObjectEntryMover extends LineMover {
         def canInsert(field: HObjectField) =
           if (down) canInsertAfter(field) else canInsertBefore(field)
 
-        field.parent
-          .flatMap(_.prefixingField)
-          .map(_.enclosingObjectField)
+        field.parent.flatMap(_.prefixingField).map(_.enclosingObjectField)
           .filter(of =>
-            field.parent.exists(pp =>
-              edgeLine(of) == edgeLine(pp)) && canInsert(of))
+            field.parent
+              .exists(pp => edgeLine(of) == edgeLine(pp)) && canInsert(of))
           .map(of =>
             (of, of.keyedField.fieldsInPathForward.map(keyString).toList))
       } else None
@@ -158,8 +153,7 @@ class HoconObjectEntryMover extends LineMover {
       !inSingleLine(field) && {
         val lineToInsertAfter =
           if (down) firstNonCommentLine(field) else endLine(field) - 1
-        file
-          .elementsAt(document.getLineEndOffset(lineToInsertAfter))
+        file.elementsAt(document.getLineEndOffset(lineToInsertAfter))
           .collectFirst {
             case entries: HObjectEntries =>
               entries.prefixingField.map(_.enclosingObjectField).contains(field)
@@ -173,20 +167,17 @@ class HoconObjectEntryMover extends LineMover {
     def fieldToDescendInto(
         field: HObjectField): Option[(HObjectField, List[String])] =
       for {
-        adjacentField <- adjacentEntry(field)
-          .collect({ case f: HObjectField => f })
-          .filter(canInsertInto)
+        adjacentField <- adjacentEntry(field).collect({
+          case f: HObjectField => f
+        }).filter(canInsertInto)
         prefixToRemove <- {
-          val prefix =
-            adjacentField.keyedField.fieldsInPathForward.map(keyString).toList
-          val removablePrefix = field.keyedField.fieldsInPathForward
-            .takeWhile {
-              case prefixed: HPrefixedField =>
-                prefixed.subField.getTextRange.contains(offset)
-              case _ => false
-            }
-            .map(keyString)
-            .toList
+          val prefix = adjacentField.keyedField.fieldsInPathForward
+            .map(keyString).toList
+          val removablePrefix = field.keyedField.fieldsInPathForward.takeWhile {
+            case prefixed: HPrefixedField =>
+              prefixed.subField.getTextRange.contains(offset)
+            case _ => false
+          }.map(keyString).toList
           if (removablePrefix.startsWith(prefix)) Some(prefix) else None
         }
       } yield (adjacentField, prefixToRemove)
@@ -216,8 +207,7 @@ class HoconObjectEntryMover extends LineMover {
             else new LineRange(endLine(adjacentField), sourceRange.startLine)
           val prefixStr = prefixToRemove.mkString("", ".", ".")
           val needsGuard = document.getCharsSequence
-            .charAt(objField.getTextOffset + prefixStr.length)
-            .isWhitespace
+            .charAt(objField.getTextOffset + prefixStr.length).isWhitespace
           val mod = PrefixModification(
             objField.getTextOffset,
             prefixStr.length,

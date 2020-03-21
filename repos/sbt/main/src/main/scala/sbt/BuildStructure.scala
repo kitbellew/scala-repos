@@ -90,7 +90,8 @@ final class LoadedBuildUnit(
     * It includes build definition and plugin classes and classes for .sbt file statements and expressions.
     */
   def classpath: Seq[File] =
-    unit.definitions.target ++ unit.plugins.classpath ++ unit.definitions.dslDefinitions.classpath
+    unit.definitions.target ++ unit.plugins.classpath ++ unit.definitions
+      .dslDefinitions.classpath
 
   /**
     * The class loader to use for this build unit's publicly visible code.
@@ -178,21 +179,18 @@ final class DetectedPlugins(
     val builds: DetectedModules[Build]) {
 
   /** Sequence of import expressions for the build definition.  This includes the names of the [[Plugin]], [[Build]], and [[AutoImport]] modules, but not the [[AutoPlugin]] modules. */
-  lazy val imports: Seq[String] =
-    BuildUtil.getImports(plugins.names ++ builds.names) ++
-      BuildUtil.importAllRoot(autoImports(autoPluginAutoImports)) ++
-      BuildUtil.importAll(autoImports(topLevelAutoPluginAutoImports)) ++
-      BuildUtil.importNamesRoot(
-        autoPlugins.map(_.name).filter(nonTopLevelPlugin))
+  lazy val imports: Seq[String] = BuildUtil
+    .getImports(plugins.names ++ builds.names) ++
+    BuildUtil.importAllRoot(autoImports(autoPluginAutoImports)) ++
+    BuildUtil.importAll(autoImports(topLevelAutoPluginAutoImports)) ++
+    BuildUtil.importNamesRoot(autoPlugins.map(_.name).filter(nonTopLevelPlugin))
 
   private[this] lazy val (
     autoPluginAutoImports,
-    topLevelAutoPluginAutoImports) = autoPlugins
-    .flatMap {
-      case DetectedAutoPlugin(name, ap, hasAutoImport) =>
-        if (hasAutoImport) Some(name) else None
-    }
-    .partition(nonTopLevelPlugin)
+    topLevelAutoPluginAutoImports) = autoPlugins.flatMap {
+    case DetectedAutoPlugin(name, ap, hasAutoImport) =>
+      if (hasAutoImport) Some(name) else None
+  }.partition(nonTopLevelPlugin)
 
   /** A function to select the right [[AutoPlugin]]s from [[autoPlugins]] for a [[Project]]. */
   @deprecated("Use deducePluginsFromProject", "0.13.8")
@@ -376,6 +374,6 @@ object BuildStreams {
       data: Settings[Scope]): File =
     refTarget(GlobalScope.copy(project = Select(ref)), fallbackBase, data)
   def refTarget(scope: Scope, fallbackBase: File, data: Settings[Scope]): File =
-    (Keys.target in scope get data getOrElse outputDirectory(
-      fallbackBase).asFile) / StreamsDirectory
+    (Keys.target in scope get data getOrElse outputDirectory(fallbackBase)
+      .asFile) / StreamsDirectory
 }

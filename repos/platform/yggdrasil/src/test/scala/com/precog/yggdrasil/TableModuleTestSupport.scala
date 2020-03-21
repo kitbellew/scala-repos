@@ -75,8 +75,8 @@ trait TableModuleSpec[M[+_]] extends Specification with ScalaCheck {
     implicit val gen = sample(schema)
     check { (sample: SampleData) =>
       val dataset = testSupport.fromSample(sample)
-      testSupport.toJson(dataset).copoint must containAllOf(
-        sample.data.toList).only
+      testSupport.toJson(dataset).copoint must containAllOf(sample.data.toList)
+        .only
     }
   }
 }

@@ -35,8 +35,8 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
 
     when(chan.isWritable).thenReturn(false, true, false)
     when(ctx.channel).thenReturn(chan)
-    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey)).thenReturn(mkAttr(
-      true))
+    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey))
+      .thenReturn(mkAttr(true))
     when(ctx.attr(ChannelStatsHandler.ChannelWritableDurationKey))
       .thenReturn(mkAttr(Stopwatch.start()))
   }
@@ -86,8 +86,8 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
     when(durationAttr.get).thenReturn(() => Time.now - start)
     when(ctx.attr(ChannelStatsHandler.ConnectionDurationKey))
       .thenReturn(durationAttr)
-    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey)).thenReturn(mkAttr(
-      true))
+    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey))
+      .thenReturn(mkAttr(true))
     when(ctx.attr(ChannelStatsHandler.ChannelWritableDurationKey))
       .thenReturn(mkAttr(Stopwatch.start()))
   }
@@ -170,10 +170,8 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
     import tc._
 
     handler.channelActive(ctx)
-    handler.write(
-      ctx,
-      wrappedBuffer(Array.fill(42)(0.toByte)),
-      mock[ChannelPromise])
+    handler
+      .write(ctx, wrappedBuffer(Array.fill(42)(0.toByte)), mock[ChannelPromise])
     handler.channelInactive(ctx)
 
     assert(sr.counter("sent_bytes")() == 42)

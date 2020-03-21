@@ -343,10 +343,8 @@ private[clustering] trait LDAParams
   private[clustering] def getOldOptimizer: OldLDAOptimizer =
     getOptimizer match {
       case "online" =>
-        new OldOnlineLDAOptimizer()
-          .setTau0($(learningOffset))
-          .setKappa($(learningDecay))
-          .setMiniBatchFraction($(subsamplingRate))
+        new OldOnlineLDAOptimizer().setTau0($(learningOffset))
+          .setKappa($(learningDecay)).setMiniBatchFraction($(subsamplingRate))
           .setOptimizeDocConcentration($(optimizeDocConcentration))
       case "em" => new OldEMLDAOptimizer()
     }
@@ -500,8 +498,7 @@ sealed abstract class LDAModel private[ml] (
       case ((termIndices, termWeights), topic) =>
         (topic, termIndices.toSeq, termWeights.toSeq)
     }
-    sqlContext
-      .createDataFrame(topics)
+    sqlContext.createDataFrame(topics)
       .toDF("topic", "termIndices", "termWeights")
   }
 
@@ -562,10 +559,7 @@ object LocalLDAModel extends MLReadable[LocalLDAModel] {
         oldModel.topicConcentration,
         oldModel.gammaShape)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -577,15 +571,12 @@ object LocalLDAModel extends MLReadable[LocalLDAModel] {
     override def load(path: String): LocalLDAModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select(
-          "vocabSize",
-          "topicsMatrix",
-          "docConcentration",
-          "topicConcentration",
-          "gammaShape")
-        .head()
+      val data = sqlContext.read.parquet(dataPath).select(
+        "vocabSize",
+        "topicsMatrix",
+        "docConcentration",
+        "topicConcentration",
+        "gammaShape").head()
       val vocabSize = data.getAs[Int](0)
       val topicsMatrix = data.getAs[Matrix](1)
       val docConcentration = data.getAs[Vector](2)
@@ -851,12 +842,10 @@ class LDA @Since("1.6.0") (@Since("1.6.0") override val uid: String)
   @Since("1.6.0")
   override def fit(dataset: DataFrame): LDAModel = {
     transformSchema(dataset.schema, logging = true)
-    val oldLDA = new OldLDA()
-      .setK($(k))
+    val oldLDA = new OldLDA().setK($(k))
       .setDocConcentration(getOldDocConcentration)
       .setTopicConcentration(getOldTopicConcentration)
-      .setMaxIterations($(maxIter))
-      .setSeed($(seed))
+      .setMaxIterations($(maxIter)).setSeed($(seed))
       .setCheckpointInterval($(checkpointInterval))
       .setOptimizer(getOldOptimizer)
     // TODO: persist here, or in old LDA?
@@ -883,11 +872,10 @@ private[clustering] object LDA extends DefaultParamsReadable[LDA] {
   def getOldDataset(
       dataset: DataFrame,
       featuresCol: String): RDD[(Long, Vector)] = {
-    dataset
-      .withColumn("docId", monotonicallyIncreasingId())
-      .select("docId", featuresCol)
-      .rdd
-      .map { case Row(docId: Long, features: Vector) => (docId, features) }
+    dataset.withColumn("docId", monotonicallyIncreasingId())
+      .select("docId", featuresCol).rdd.map {
+        case Row(docId: Long, features: Vector) => (docId, features)
+      }
   }
 
   @Since("1.6.0")

@@ -17,10 +17,10 @@ object SbtLauncherPlugin extends AutoPlugin {
     Seq(SbtLaunchConfiguration)
   override def projectSettings: Seq[Setting[_]] =
     Seq(
-      libraryDependencies += Dependencies.rawLauncher % SbtLaunchConfiguration.name,
+      libraryDependencies += Dependencies.rawLauncher % SbtLaunchConfiguration
+        .name,
       rawSbtLaunchJar := {
-        Classpaths
-          .managedJars(SbtLaunchConfiguration, Set("jar"), update.value)
+        Classpaths.managedJars(SbtLaunchConfiguration, Set("jar"), update.value)
           .headOption match {
           case Some(jar) => jar.data
           case None => sys.error(

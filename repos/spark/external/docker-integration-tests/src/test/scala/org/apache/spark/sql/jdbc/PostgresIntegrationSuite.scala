@@ -38,20 +38,17 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
   override def dataPreparation(conn: Connection): Unit = {
     conn.prepareStatement("CREATE DATABASE foo").executeUpdate()
     conn.setCatalog("foo")
-    conn
-      .prepareStatement("CREATE TYPE enum_type AS ENUM ('d1', 'd2')")
+    conn.prepareStatement("CREATE TYPE enum_type AS ENUM ('d1', 'd2')")
       .executeUpdate()
-    conn
-      .prepareStatement(
-        "CREATE TABLE bar (c0 text, c1 integer, c2 double precision, c3 bigint, "
-          + "c4 bit(1), c5 bit(10), c6 bytea, c7 boolean, c8 inet, c9 cidr, "
-          + "c10 integer[], c11 text[], c12 real[], c13 numeric(2,2)[], c14 enum_type)")
+    conn.prepareStatement(
+      "CREATE TABLE bar (c0 text, c1 integer, c2 double precision, c3 bigint, "
+        + "c4 bit(1), c5 bit(10), c6 bytea, c7 boolean, c8 inet, c9 cidr, "
+        + "c10 integer[], c11 text[], c12 real[], c13 numeric(2,2)[], c14 enum_type)")
       .executeUpdate()
-    conn
-      .prepareStatement(
-        "INSERT INTO bar VALUES ('hello', 42, 1.25, 123456789012345, B'0', "
-          + "B'1000100101', E'\\\\xDEADBEEF', true, '172.16.0.42', '192.168.0.0/16', "
-          + """'{1, 2}', '{"a", null, "b"}', '{0.11, 0.22}', '{0.11, 0.22}', 'd1')""")
+    conn.prepareStatement(
+      "INSERT INTO bar VALUES ('hello', 42, 1.25, 123456789012345, B'0', "
+        + "B'1000100101', E'\\\\xDEADBEEF', true, '172.16.0.42', '192.168.0.0/16', "
+        + """'{1, 2}', '{"a", null, "b"}', '{0.11, 0.22}', '{0.11, 0.22}', 'd1')""")
       .executeUpdate()
   }
 
@@ -105,16 +102,12 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
     df.write.jdbc(jdbcUrl, "public.barcopy", new Properties)
     // Test that written numeric type has same DataType as input
     assert(
-      sqlContext.read
-        .jdbc(jdbcUrl, "public.barcopy", new Properties)
-        .schema(13)
+      sqlContext.read.jdbc(jdbcUrl, "public.barcopy", new Properties).schema(13)
         .dataType ==
         ArrayType(DecimalType(2, 2), true))
     // Test write null values.
     df.select(df.queryExecution.analyzed.output.map { a =>
-        Column(Literal.create(null, a.dataType)).as(a.name)
-      }: _*)
-      .write
-      .jdbc(jdbcUrl, "public.barcopy2", new Properties)
+      Column(Literal.create(null, a.dataType)).as(a.name)
+    }: _*).write.jdbc(jdbcUrl, "public.barcopy2", new Properties)
   }
 }

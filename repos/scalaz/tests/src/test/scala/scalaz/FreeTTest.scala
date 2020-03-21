@@ -49,11 +49,8 @@ object FreeTListOption {
   implicit def freeTListOptionArb[A](implicit
       A: Arbitrary[A]): Arbitrary[FreeTListOption[A]] =
     Arbitrary(
-      FreeTTest
-        .freeTGen[List, Option, A](
-          Gen
-            .choose(0, 2)
-            .flatMap(Gen.listOfN(_, freeTListOptionArb[A].arbitrary.map(_.f))))
+      FreeTTest.freeTGen[List, Option, A](Gen.choose(0, 2).flatMap(
+        Gen.listOfN(_, freeTListOptionArb[A].arbitrary.map(_.f))))
         .map(FreeTListOption.apply))
 
   implicit def freeTListOptionEq[A](implicit
@@ -74,9 +71,8 @@ object FreeTTest extends SpecLite {
       (
         1,
         Functor[Arbitrary]
-          .map(Arbitrary(g))(
-            FreeT.liftF[F, G, FreeT[F, G, A]](_).flatMap(x => x))
-          .arbitrary)
+          .map(Arbitrary(g))(FreeT.liftF[F, G, FreeT[F, G, A]](_).flatMap(x =>
+            x)).arbitrary)
     )
   "ListOption" should {
     checkAll(monadPlus.laws[FreeTListOption])
@@ -94,17 +90,18 @@ object FreeTTest extends SpecLite {
 
     "not stack overflow with 50k left-associated binds" in {
       val expected = Applicative[FreeTListOption].point(())
-      val result = (0 until 50000).foldLeft(Applicative[FreeTListOption].point(
-        ()))((fu, i) => fu.flatMap(u => Applicative[FreeTListOption].point(u)))
+      val result = (0 until 50000)
+        .foldLeft(Applicative[FreeTListOption].point(()))((fu, i) =>
+          fu.flatMap(u => Applicative[FreeTListOption].point(u)))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }
 
     "not stack overflow with bind followed by 50k maps" in {
       val expected = Applicative[FreeTListOption].point(())
-      val result = (0 until 50000).foldLeft(
-        ().point[FreeTListOption].flatMap(u => u.point[FreeTListOption]))(
-        (fu, i) => fu.map(u => u))
+      val result = (0 until 50000)
+        .foldLeft(().point[FreeTListOption].flatMap(u =>
+          u.point[FreeTListOption]))((fu, i) => fu.map(u => u))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }

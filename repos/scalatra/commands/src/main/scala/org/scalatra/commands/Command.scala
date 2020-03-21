@@ -83,9 +83,7 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
     val f: FieldDescriptor[T] =
       if (mf.runtimeClass.isAssignableFrom(classOf[Option[_]])) {
         // Yay! not one but 2 casts in the same line
-        field
-          .asInstanceOf[FieldDescriptor[Option[_]]]
-          .withDefaultValue(None)
+        field.asInstanceOf[FieldDescriptor[Option[_]]].withDefaultValue(None)
           .asInstanceOf[FieldDescriptor[T]]
       } else field
     val b = Binding(f)
@@ -159,11 +157,8 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
             val paramsBinding = Binding(b.field, pv, b.typeConverterFactory)(
               manifest[Seq[String]],
               b.valueManifest)
-            paramsBinding(
-              params
-                .read(name)
-                .right
-                .map(_ map (_.asInstanceOf[paramsBinding.S])))
+            paramsBinding(params.read(name).right.map(
+              _ map (_.asInstanceOf[paramsBinding.S])))
         }
 
         name -> result

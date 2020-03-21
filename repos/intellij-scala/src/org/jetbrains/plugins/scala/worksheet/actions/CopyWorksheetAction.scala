@@ -22,12 +22,11 @@ import org.jetbrains.plugins.scala.worksheet.ui.WorksheetFoldRegionDelegate
   */
 class CopyWorksheetAction extends AnAction with TopComponentAction {
   def actionPerformed(e: AnActionEvent) {
-    val editor =
-      FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
+    val editor = FileEditorManager.getInstance(e.getProject)
+      .getSelectedTextEditor
     if (editor == null) return
 
-    val psiFile: PsiFile = PsiDocumentManager
-      .getInstance(e.getProject)
+    val psiFile: PsiFile = PsiDocumentManager.getInstance(e.getProject)
       .getPsiFile(editor.getDocument)
     val viewer = WorksheetViewerInfo.getViewer(editor)
     if (psiFile == null || viewer == null) return
@@ -77,8 +76,7 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
 
     def getFromRight(lineNumber: Int) = getFromDoc(lineNumber, rightDocument)
 
-    val marker = viewer.getFoldingModel
-      .asInstanceOf[FoldingModelImpl]
+    val marker = viewer.getFoldingModel.asInstanceOf[FoldingModelImpl]
       .getAllFoldRegions find {
       case r: WorksheetFoldRegionDelegate => true
       case _                              => false
@@ -101,9 +99,8 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
             val leftStart = {
               var j = lastEnd
 
-              while (getFromLeft(
-                       j).trim.length == 0 && j < leftDocument.getLineCount)
-                j += 1
+              while (getFromLeft(j).trim.length == 0 && j < leftDocument
+                       .getLineCount) j += 1
               if (j == leftDocument.getLineCount) return result.toString()
               else j
             }

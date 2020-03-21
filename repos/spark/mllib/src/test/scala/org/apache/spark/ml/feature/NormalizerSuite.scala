@@ -73,10 +73,9 @@ class NormalizerSuite
       Vectors.sparse(3, Seq())
     )
 
-    dataFrame = sqlContext.createDataFrame(
-      sc.parallelize(data, 2).map(NormalizerSuite.FeatureData))
-    normalizer = new Normalizer()
-      .setInputCol("features")
+    dataFrame = sqlContext
+      .createDataFrame(sc.parallelize(data, 2).map(NormalizerSuite.FeatureData))
+    normalizer = new Normalizer().setInputCol("features")
       .setOutputCol("normalized_features")
   }
 
@@ -124,10 +123,8 @@ class NormalizerSuite
   }
 
   test("read/write") {
-    val t = new Normalizer()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setP(3.0)
+    val t = new Normalizer().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setP(3.0)
     testDefaultReadWrite(t)
   }
 }

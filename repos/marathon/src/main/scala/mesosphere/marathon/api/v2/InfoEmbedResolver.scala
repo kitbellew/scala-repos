@@ -54,8 +54,7 @@ private[v2] object InfoEmbedResolver {
       }
 
     def separatePrefix(embedMe: String): (String, String) = {
-      val removablePrefix = EmbedAppsPrefixes
-        .find(embedMe.startsWith)
+      val removablePrefix = EmbedAppsPrefixes.find(embedMe.startsWith)
         .getOrElse("")
       val withoutPrefix = embedMe.substring(removablePrefix.length)
       (removablePrefix, withoutPrefix)

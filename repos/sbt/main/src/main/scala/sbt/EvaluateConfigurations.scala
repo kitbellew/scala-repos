@@ -159,8 +159,7 @@ object EvaluateConfigurations {
           Some(file))
         val imp = BuildUtil.importAllRoot(definitions.enclosingModule :: Nil)
         val projs = (loader: ClassLoader) =>
-          definitions
-            .values(loader)
+          definitions.values(loader)
             .map(p => resolveBase(file.getParentFile, p.asInstanceOf[Project]))
         (imp, DefinedSbtValues(definitions))
       }
@@ -407,8 +406,7 @@ object Index {
   def allKeys(settings: Seq[Setting[_]]): Set[ScopedKey[_]] =
     settings
       .flatMap(s => if (s.key.key.isLocal) Nil else s.key +: s.dependencies)
-      .filter(!_.key.isLocal)
-      .toSet
+      .filter(!_.key.isLocal).toSet
   def attributeKeys(settings: Settings[Scope]): Set[AttributeKey[_]] =
     settings.data.values.flatMap(_.keys).toSet[AttributeKey[_]]
   def stringToKeyMap(

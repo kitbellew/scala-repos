@@ -195,8 +195,8 @@ trait TypeTags {
 
     override def equals(x: Any) =
       x.isInstanceOf[WeakTypeTag[_]] && this.mirror == x
-        .asInstanceOf[WeakTypeTag[_]]
-        .mirror && this.tpe == x.asInstanceOf[WeakTypeTag[_]].tpe
+        .asInstanceOf[WeakTypeTag[_]].mirror && this.tpe == x
+        .asInstanceOf[WeakTypeTag[_]].tpe
 
     override def hashCode = mirror.hashCode * 31 + tpe.hashCode
 
@@ -267,8 +267,7 @@ trait TypeTags {
     override def canEqual(x: Any) = x.isInstanceOf[TypeTag[_]]
 
     override def equals(x: Any) =
-      x.isInstanceOf[TypeTag[_]] && this.mirror == x
-        .asInstanceOf[TypeTag[_]]
+      x.isInstanceOf[TypeTag[_]] && this.mirror == x.asInstanceOf[TypeTag[_]]
         .mirror && this.tpe == x.asInstanceOf[TypeTag[_]].tpe
 
     override def hashCode = mirror.hashCode * 31 + tpe.hashCode

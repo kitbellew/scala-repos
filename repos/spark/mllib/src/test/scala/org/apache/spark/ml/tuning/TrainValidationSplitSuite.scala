@@ -43,14 +43,10 @@ class TrainValidationSplitSuite
     val lr = new LogisticRegression
     val lrParamMaps = new ParamGridBuilder()
       .addGrid(lr.regParam, Array(0.001, 1000.0))
-      .addGrid(lr.maxIter, Array(0, 10))
-      .build()
+      .addGrid(lr.maxIter, Array(0, 10)).build()
     val eval = new BinaryClassificationEvaluator
-    val cv = new TrainValidationSplit()
-      .setEstimator(lr)
-      .setEstimatorParamMaps(lrParamMaps)
-      .setEvaluator(eval)
-      .setTrainRatio(0.5)
+    val cv = new TrainValidationSplit().setEstimator(lr)
+      .setEstimatorParamMaps(lrParamMaps).setEvaluator(eval).setTrainRatio(0.5)
     val cvModel = cv.fit(dataset)
     val parent = cvModel.bestModel.parent.asInstanceOf[LogisticRegression]
     assert(cv.getTrainRatio === 0.5)
@@ -74,14 +70,10 @@ class TrainValidationSplitSuite
     val trainer = new LinearRegression().setSolver("l-bfgs")
     val lrParamMaps = new ParamGridBuilder()
       .addGrid(trainer.regParam, Array(1000.0, 0.001))
-      .addGrid(trainer.maxIter, Array(0, 10))
-      .build()
+      .addGrid(trainer.maxIter, Array(0, 10)).build()
     val eval = new RegressionEvaluator()
-    val cv = new TrainValidationSplit()
-      .setEstimator(trainer)
-      .setEstimatorParamMaps(lrParamMaps)
-      .setEvaluator(eval)
-      .setTrainRatio(0.5)
+    val cv = new TrainValidationSplit().setEstimator(trainer)
+      .setEstimatorParamMaps(lrParamMaps).setEvaluator(eval).setTrainRatio(0.5)
     val cvModel = cv.fit(dataset)
     val parent = cvModel.bestModel.parent.asInstanceOf[LinearRegression]
     assert(parent.getRegParam === 0.001)
@@ -102,14 +94,10 @@ class TrainValidationSplitSuite
     val est = new MyEstimator("est")
     val eval = new MyEvaluator
     val paramMaps = new ParamGridBuilder()
-      .addGrid(est.inputCol, Array("input1", "input2"))
-      .build()
+      .addGrid(est.inputCol, Array("input1", "input2")).build()
 
-    val cv = new TrainValidationSplit()
-      .setEstimator(est)
-      .setEstimatorParamMaps(paramMaps)
-      .setEvaluator(eval)
-      .setTrainRatio(0.5)
+    val cv = new TrainValidationSplit().setEstimator(est)
+      .setEstimatorParamMaps(paramMaps).setEvaluator(eval).setTrainRatio(0.5)
     cv.transformSchema(new StructType()) // This should pass.
 
     val invalidParamMaps = paramMaps :+ ParamMap(est.inputCol -> "")

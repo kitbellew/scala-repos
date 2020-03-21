@@ -21,10 +21,8 @@ class InProcessMemcached(address: SocketAddress) {
     new InterpreterService(interpreter)
   }
 
-  private[this] val serverSpec = ServerBuilder()
-    .name("finagle")
-    .codec(Memcached())
-    .bindTo(address)
+  private[this] val serverSpec = ServerBuilder().name("finagle")
+    .codec(Memcached()).bindTo(address)
 
   private[this] var server: Option[BuiltServer] = None
 

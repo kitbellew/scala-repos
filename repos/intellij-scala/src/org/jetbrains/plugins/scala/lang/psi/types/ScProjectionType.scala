@@ -96,8 +96,7 @@ class ScProjectionType private (
                     case ScParameterizedType(des, typeArgs) =>
                       val taArgs = ta.typeParameters
                       if (taArgs.length == typeArgs.length && taArgs
-                            .zip(typeArgs)
-                            .forall {
+                            .zip(typeArgs).forall {
                               case (
                                     tParam: ScTypeParam,
                                     ScTypeParameterType(_, _, _, _, param))
@@ -117,8 +116,8 @@ class ScProjectionType private (
           val args: ArrayBuffer[ScExistentialArgument] =
             new ArrayBuffer[ScExistentialArgument]()
           val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-            ta.typeParameters.map(tp =>
-              (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
+            ta.typeParameters
+              .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
             ta.typeParameters.map(tp => {
               val name = tp.name + "$$"
               args += new ScExistentialArgument(
@@ -132,10 +131,10 @@ class ScProjectionType private (
           val s = actualSubst.followed(genericSubst)
           Some(AliasType(
             ta,
-            ta.lowerBound.map(scType =>
-              ScExistentialType(s.subst(scType), args.toList)),
-            ta.upperBound.map(scType =>
-              ScExistentialType(s.subst(scType), args.toList))
+            ta.lowerBound
+              .map(scType => ScExistentialType(s.subst(scType), args.toList)),
+            ta.upperBound
+              .map(scType => ScExistentialType(s.subst(scType), args.toList))
           ))
         case _ => None
       }
@@ -146,8 +145,10 @@ class ScProjectionType private (
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = projected
-        .hashCode() + element.hashCode() * 31 + (if (superReference) 239 else 0)
+      hash =
+        projected.hashCode() + element.hashCode() * 31 + (if (superReference)
+                                                            239
+                                                          else 0)
     }
     hash
   }
@@ -232,8 +233,7 @@ class ScProjectionType private (
             .isInstanceOf[PsiNamedElement]) {
         val defaultSubstitutor = emptySubst followed candidates(0).substitutor
         if (superReference) {
-          ScalaPsiUtil
-            .superTypeMembersAndSubstitutors(candidates(0).element)
+          ScalaPsiUtil.superTypeMembersAndSubstitutors(candidates(0).element)
             .find { _.info == element } match {
             case Some(node) =>
               Some(element, defaultSubstitutor followed node.substitutor)
@@ -332,11 +332,8 @@ class ScProjectionType private (
             val subst = actualSubst
             val tp = subst.subst(a.getType(TypingContext.empty).getOrAny)
             if (ScType.isSingletonType(tp)) {
-              val resInner = Equivalence.equivInner(
-                tp,
-                this,
-                uSubst,
-                falseUndef)
+              val resInner = Equivalence
+                .equivInner(tp, this, uSubst, falseUndef)
               if (resInner._1) return resInner
             }
           case _ =>
@@ -363,11 +360,8 @@ class ScProjectionType private (
                 Some(projected)) followed actualSubst
               t.getType(TypingContext.empty) match {
                 case Success(tp, _) if ScType.isSingletonType(tp) =>
-                  return Equivalence.equivInner(
-                    s.subst(tp),
-                    r,
-                    uSubst,
-                    falseUndef)
+                  return Equivalence
+                    .equivInner(s.subst(tp), r, uSubst, falseUndef)
                 case _ =>
               }
             case _ =>
@@ -376,17 +370,12 @@ class ScProjectionType private (
             case o: ScObject =>
             case t: ScTypedDefinition =>
               val s: ScSubstitutor =
-                new ScSubstitutor(
-                  Map.empty,
-                  Map.empty,
-                  Some(p1)) followed proj2.actualSubst
+                new ScSubstitutor(Map.empty, Map.empty, Some(p1)) followed proj2
+                  .actualSubst
               t.getType(TypingContext.empty) match {
                 case Success(tp, _) if ScType.isSingletonType(tp) =>
-                  return Equivalence.equivInner(
-                    s.subst(tp),
-                    this,
-                    uSubst,
-                    falseUndef)
+                  return Equivalence
+                    .equivInner(s.subst(tp), this, uSubst, falseUndef)
                 case _ =>
               }
             case _ =>
@@ -474,13 +463,10 @@ case class ScThisType(clazz: ScTemplateDefinition) extends ValueType {
           if elem.isStable =>
         elem.getType(TypingContext.empty) match {
           case Success(singl, _) if ScType.isSingletonType(singl) =>
-            val newSubst = p.actualSubst.followed(
-              new ScSubstitutor(Map.empty, Map.empty, Some(tp)))
-            Equivalence.equivInner(
-              this,
-              newSubst.subst(singl),
-              uSubst,
-              falseUndef)
+            val newSubst = p.actualSubst
+              .followed(new ScSubstitutor(Map.empty, Map.empty, Some(tp)))
+            Equivalence
+              .equivInner(this, newSubst.subst(singl), uSubst, falseUndef)
           case _ => (false, uSubst)
         }
       case _ => (false, uSubst)
@@ -507,8 +493,7 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
               case Success(tp, _) => tp match {
                   case ScParameterizedType(des, typeArgs) =>
                     val taArgs = ta.typeParameters
-                    if (taArgs.length == typeArgs.length && taArgs
-                          .zip(typeArgs)
+                    if (taArgs.length == typeArgs.length && taArgs.zip(typeArgs)
                           .forall {
                             case (
                                   tParam: ScTypeParam,
@@ -529,8 +514,8 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
         val args: ArrayBuffer[ScExistentialArgument] =
           new ArrayBuffer[ScExistentialArgument]()
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta.typeParameters.map(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
+          ta.typeParameters
+            .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           ta.typeParameters.map(tp => {
             val name = tp.name + "$$"
             args += new ScExistentialArgument(

@@ -37,9 +37,7 @@ class ClientCancellationSpec extends AkkaSpec("""
       Utils.assertAllStagesStopped {
         val requests = TestPublisher.probe[HttpRequest]()
         val responses = TestSubscriber.probe[HttpResponse]()
-        Source
-          .fromPublisher(requests)
-          .via(connection)
+        Source.fromPublisher(requests).via(connection)
           .runWith(Sink.fromSubscriber(responses))
         responses.request(1)
         requests.sendNext(HttpRequest())
@@ -54,32 +52,25 @@ class ClientCancellationSpec extends AkkaSpec("""
 
     "support cancellation in pooled outgoing connection" in {
       testCase(
-        Flow[HttpRequest]
-          .map((_, ()))
-          .via(
-            Http().cachedHostConnectionPool(
-              address.getHostName,
-              address.getPort)(noncheckedMaterializer))
-          .map(_._1.get))
+        Flow[HttpRequest].map((_, ())).via(
+          Http().cachedHostConnectionPool(address.getHostName, address.getPort)(
+            noncheckedMaterializer)).map(_._1.get))
     }
 
     "support cancellation in simple outgoing connection with TLS" in {
       pending
-      testCase(Http().outgoingConnectionHttps(
-        addressTls.getHostName,
-        addressTls.getPort))
+      testCase(
+        Http()
+          .outgoingConnectionHttps(addressTls.getHostName, addressTls.getPort))
     }
 
     "support cancellation in pooled outgoing connection with TLS" in {
       pending
       testCase(
-        Flow[HttpRequest]
-          .map((_, ()))
-          .via(
-            Http().cachedHostConnectionPoolHttps(
-              addressTls.getHostName,
-              addressTls.getPort)(noncheckedMaterializer))
-          .map(_._1.get))
+        Flow[HttpRequest].map((_, ())).via(
+          Http().cachedHostConnectionPoolHttps(
+            addressTls.getHostName,
+            addressTls.getPort)(noncheckedMaterializer)).map(_._1.get))
     }
 
   }

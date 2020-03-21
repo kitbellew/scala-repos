@@ -347,9 +347,7 @@ object QueryStringBindable {
   implicit def bindableString =
     new QueryStringBindable[String] {
       def bind(key: String, params: Map[String, Seq[String]]) =
-        params
-          .get(key)
-          .flatMap(_.headOption)
+        params.get(key).flatMap(_.headOption)
           .map(Right(
             _
           )) // No need to URL decode from query string since netty already does that
@@ -479,14 +477,11 @@ object QueryStringBindable {
     new QueryStringBindable[Option[T]] {
       def bind(key: String, params: Map[String, Seq[String]]) = {
         Some(
-          implicitly[QueryStringBindable[T]]
-            .bind(key, params)
-            .map(_.right.map(Some(_)))
-            .getOrElse(Right(None)))
+          implicitly[QueryStringBindable[T]].bind(key, params)
+            .map(_.right.map(Some(_))).getOrElse(Right(None)))
       }
       def unbind(key: String, value: Option[T]) =
-        value
-          .map(implicitly[QueryStringBindable[T]].unbind(key, _))
+        value.map(implicitly[QueryStringBindable[T]].unbind(key, _))
           .getOrElse("")
       override def javascriptUnbind =
         javascriptUnbindOption(
@@ -501,14 +496,12 @@ object QueryStringBindable {
     new QueryStringBindable[Optional[T]] {
       def bind(key: String, params: Map[String, Seq[String]]) = {
         Some(
-          implicitly[QueryStringBindable[T]]
-            .bind(key, params)
-            .map(_.right.map(Optional.ofNullable[T]))
-            .getOrElse(Right(Optional.empty[T])))
+          implicitly[QueryStringBindable[T]].bind(key, params)
+            .map(_.right.map(Optional.ofNullable[T])).getOrElse(Right(
+              Optional.empty[T])))
       }
       def unbind(key: String, value: Optional[T]) = {
-        value.asScala
-          .map(implicitly[QueryStringBindable[T]].unbind(key, _))
+        value.asScala.map(implicitly[QueryStringBindable[T]].unbind(key, _))
           .getOrElse("")
       }
       override def javascriptUnbind =
@@ -612,8 +605,7 @@ object QueryStringBindable {
     new QueryStringBindable[T] {
       def bind(key: String, params: Map[String, Seq[String]]) = {
         try {
-          val o = ct.runtimeClass.newInstance
-            .asInstanceOf[T]
+          val o = ct.runtimeClass.newInstance.asInstanceOf[T]
             .bind(key, params.mapValues(_.toArray).asJava)
           if (o.isPresent) { Some(Right(o.get)) }
           else { None }

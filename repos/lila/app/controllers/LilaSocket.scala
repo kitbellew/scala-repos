@@ -39,8 +39,8 @@ trait LilaSocket {
                   consumer(ip).map { credit =>
                     if (credit >= 0) in
                     else {
-                      logger.info(
-                        s"socket:$name socket close $ip $userInfo $in")
+                      logger
+                        .info(s"socket:$name socket close $ip $userInfo $in")
                       Input.EOF
                     }
                   }

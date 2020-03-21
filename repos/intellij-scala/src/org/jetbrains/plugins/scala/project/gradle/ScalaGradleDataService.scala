@@ -79,8 +79,8 @@ private object ScalaGradleDataService {
     private def configureScalaSdk(
         module: Module,
         compilerClasspath: Seq[File]): Unit = {
-      val compilerVersionOption = findScalaLibraryIn(compilerClasspath).flatMap(
-        getVersionFromJar)
+      val compilerVersionOption = findScalaLibraryIn(compilerClasspath)
+        .flatMap(getVersionFromJar)
       if (compilerVersionOption.isEmpty) {
         showWarning(ScalaBundle.message(
           "gradle.dataService.scalaVersionCantBeDetected",
@@ -92,8 +92,8 @@ private object ScalaGradleDataService {
       val scalaLibraries = getScalaLibraries
       if (scalaLibraries.isEmpty) return
 
-      val scalaLibraryOption = scalaLibraries.find(
-        _.scalaVersion.contains(compilerVersion))
+      val scalaLibraryOption = scalaLibraries
+        .find(_.scalaVersion.contains(compilerVersion))
       if (scalaLibraryOption.isEmpty) {
         showWarning(ScalaBundle.message(
           "gradle.dataService.scalaLibraryIsNotFound",
@@ -104,8 +104,8 @@ private object ScalaGradleDataService {
       val scalaLibrary = scalaLibraryOption.get
 
       if (!scalaLibrary.isScalaSdk) {
-        val languageLevel = scalaLibrary.scalaLanguageLevel.getOrElse(
-          ScalaLanguageLevel.Default)
+        val languageLevel = scalaLibrary.scalaLanguageLevel
+          .getOrElse(ScalaLanguageLevel.Default)
         convertToScalaSdk(scalaLibrary, languageLevel, compilerClasspath)
       }
     }
@@ -127,8 +127,7 @@ private object ScalaGradleDataService {
           // the encoding value needs to be a separate option, otherwise the -encoding flag and the value will be
           // treated as a single flag
           !isEmpty(options.getEncoding) -> options.getEncoding,
-          !isEmpty(
-            data.getTargetCompatibility) -> s"-target:jvm-${data.getTargetCompatibility}"
+          !isEmpty(data.getTargetCompatibility) -> s"-target:jvm-${data.getTargetCompatibility}"
         )
 
         val additionalOptions =
@@ -150,8 +149,7 @@ private object ScalaGradleDataService {
         message,
         NotificationCategory.WARNING,
         NotificationSource.PROJECT_SYNC);
-      ExternalSystemNotificationManager
-        .getInstance(project)
+      ExternalSystemNotificationManager.getInstance(project)
         .showNotification(GradleConstants.SYSTEM_ID, notification);
     }
   }

@@ -148,8 +148,8 @@ private[reflect] trait SymbolLoaders {
                     name.toTypeName,
                     new TopClassCompleter(_, _))
                 } else {
-                  val origOwner = loadingMirror.packageNameToScala(
-                    pkgClass.fullName)
+                  val origOwner = loadingMirror
+                    .packageNameToScala(pkgClass.fullName)
                   val clazz = origOwner.info decl name.toTypeName
                   val module = origOwner.info decl name.toTermName
                   assert(clazz != NoSymbol)

@@ -39,8 +39,7 @@ object Benchmark {
       o <- orders filter { o => u.id === o.userID }
     } yield (u.first, u.last, o.orderID)
     val q3 = for (u <- users filter (_.id === 42)) yield (u.first, u.last)
-    val q4 = (users join orders on (_.id === _.userID))
-      .sortBy(_._1.last.asc)
+    val q4 = (users join orders on (_.id === _.userID)).sortBy(_._1.last.asc)
       .map(uo => (uo._1.first, uo._2.orderID))
     val q5 =
       for (o <- orders

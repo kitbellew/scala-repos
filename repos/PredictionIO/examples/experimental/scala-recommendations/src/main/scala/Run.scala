@@ -108,10 +108,7 @@ class ALSAlgorithm(val ap: AlgorithmParams)
       ((r.user, r.product), r.rating)
     }
 
-    feature
-      .map { _.swap }
-      .join(p)
-      .map { case (up, (fi, r)) => (fi, r) }
+    feature.map { _.swap }.join(p).map { case (up, (fi, r)) => (fi, r) }
   }
 
   def predict(model: PMatrixFactorizationModel, feature: (Int, Int)): Double = {

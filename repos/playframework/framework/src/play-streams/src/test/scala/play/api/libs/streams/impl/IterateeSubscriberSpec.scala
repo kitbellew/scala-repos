@@ -62,9 +62,12 @@ class IterateeSubscriberSpec extends Specification {
       val iter = Iteratee.getChunks[Int]
       val subr = new IterateeSubscriber(iter)
       pubr.subscribe(subr)
-      Await.result(
-        subr.result.unflatten,
-        ScalaFiniteDuration(2, SECONDS)) must_== Done(List(1, 2, 3), Input.EOF)
+      Await
+        .result(
+          subr.result.unflatten,
+          ScalaFiniteDuration(2, SECONDS)) must_== Done(
+        List(1, 2, 3),
+        Input.EOF)
     }
 
     "consume one element (on-subscribe/cont-step/on-next/cont-step/on-complete/done-step)" in {

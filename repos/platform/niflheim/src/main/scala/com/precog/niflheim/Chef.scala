@@ -67,15 +67,14 @@ final case class Chef(blockFormat: CookedBlockFormat, format: SegmentFormat)
       result.toValidationNel
     }
 
-    val files = files0.toList.sequence[
-      ({ type λ[α] = ValidationNel[IOException, α] })#λ,
-      (SegmentId, File)]
+    val files = files0.toList
+      .sequence[
+        ({ type λ[α] = ValidationNel[IOException, α] })#λ,
+        (SegmentId, File)]
     files flatMap { segs =>
       val metadata = CookedBlockMetadata(reader.id, reader.length, segs.toArray)
-      val mdFile = File.createTempFile(
-        "block-%08x".format(reader.id),
-        ".cookedmeta",
-        root)
+      val mdFile = File
+        .createTempFile("block-%08x".format(reader.id), ".cookedmeta", root)
       val channel = new FileOutputStream(mdFile).getChannel()
       try {
         blockFormat.writeCookedBlock(channel, metadata).toValidationNel.map {

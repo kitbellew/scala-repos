@@ -121,8 +121,7 @@ trait WikiControllerBase extends ControllerBase {
             Some(pageName),
             from,
             to,
-            JGitUtil
-              .getDiffs(git, from, to, true)
+            JGitUtil.getDiffs(git, from, to, true)
               .filter(_.newPath == pageName + ".md"),
             repository,
             hasWritePermission(
@@ -313,8 +312,7 @@ trait WikiControllerBase extends ControllerBase {
           value: String,
           params: Map[String, String],
           messages: Messages): Option[String] =
-        getWikiPageList(params("owner"), params("repository"))
-          .find(_ == value)
+        getWikiPageList(params("owner"), params("repository")).find(_ == value)
           .map(_ => "Page already exists.")
     }
 

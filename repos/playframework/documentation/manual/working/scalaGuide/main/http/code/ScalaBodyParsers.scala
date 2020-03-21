@@ -32,8 +32,7 @@ package scalaguide.http.scalabodyparsers {
             val jsonBody: Option[JsValue] = body.asJson
 
             // Expecting json body
-            jsonBody
-              .map { json => Ok("Got: " + (json \ "name").as[String]) }
+            jsonBody.map { json => Ok("Got: " + (json \ "name").as[String]) }
               .getOrElse {
                 BadRequest("Expecting application/json request body")
               }
@@ -92,8 +91,8 @@ package scalaguide.http.scalabodyparsers {
       "body parser limit file" in {
         running() { app =>
           implicit val mat = ActorMaterializer()(app.actorSystem)
-          val storeInUserFile =
-            scalaguide.http.scalabodyparsers.full.Application.storeInUserFile
+          val storeInUserFile = scalaguide.http.scalabodyparsers.full
+            .Application.storeInUserFile
           //#body-parser-limit-file
           // Accept only 10KB of data.
           def save =
@@ -127,8 +126,7 @@ package scalaguide.http.scalabodyparsers {
                 request
                 // TODO: stream body when support is implemented
                 // .withBody(source)
-                  .execute()
-                  .map(Right.apply)
+                  .execute().map(Right.apply)
               }
             }
 
@@ -206,10 +204,9 @@ package scalaguide.http.scalabodyparsers {
       def file(to: File) = parse.file(to)
       //#body-parser-combining
       val storeInUserFile = parse.using { request =>
-        request.session
-          .get("username")
-          .map { user => file(to = new File("/tmp/" + user + ".upload")) }
-          .getOrElse { sys.error("You don't have the right to upload here") }
+        request.session.get("username").map { user =>
+          file(to = new File("/tmp/" + user + ".upload"))
+        }.getOrElse { sys.error("You don't have the right to upload here") }
       }
 
       def save =

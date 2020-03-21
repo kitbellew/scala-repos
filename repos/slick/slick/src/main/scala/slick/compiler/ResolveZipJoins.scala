@@ -23,41 +23,39 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
     if (rownumStyle) Subquery.BelowRownum else Subquery.BelowRowNumber
 
   def apply(state: CompilerState) = {
-    val n2 = state.tree
-      .replace(
-        {
-          case b @ Bind(
-                s1,
-                Join(
-                  _,
-                  _,
-                  Bind(ls, from, Pure(StructNode(defs), _)),
-                  RangeFrom(offset),
-                  JoinType.Zip,
-                  LiteralNode(true)),
-                p) =>
-            logger.debug("Transforming zipWithIndex:", b)
-            val b2 = transformZipWithIndex(s1, ls, from, defs, offset, p)
-            logger.debug("Transformed zipWithIndex:", b2)
-            b2
-          case b @ Bind(
-                s1,
-                Join(
-                  jlsym,
-                  jrsym,
-                  l @ Bind(_, _, Pure(StructNode(ldefs), _)),
-                  r @ Bind(_, _, Pure(StructNode(rdefs), _)),
-                  JoinType.Zip,
-                  LiteralNode(true)),
-                sel) =>
-            logger.debug("Transforming zip:", b)
-            val b2 = transformZip(s1, jlsym, jrsym, l, ldefs, r, rdefs, sel)
-            logger.debug("Transformed zip:", b2)
-            b2
-        },
-        bottomUp = true
-      )
-      .infer()
+    val n2 = state.tree.replace(
+      {
+        case b @ Bind(
+              s1,
+              Join(
+                _,
+                _,
+                Bind(ls, from, Pure(StructNode(defs), _)),
+                RangeFrom(offset),
+                JoinType.Zip,
+                LiteralNode(true)),
+              p) =>
+          logger.debug("Transforming zipWithIndex:", b)
+          val b2 = transformZipWithIndex(s1, ls, from, defs, offset, p)
+          logger.debug("Transformed zipWithIndex:", b2)
+          b2
+        case b @ Bind(
+              s1,
+              Join(
+                jlsym,
+                jrsym,
+                l @ Bind(_, _, Pure(StructNode(ldefs), _)),
+                r @ Bind(_, _, Pure(StructNode(rdefs), _)),
+                JoinType.Zip,
+                LiteralNode(true)),
+              sel) =>
+          logger.debug("Transforming zip:", b)
+          val b2 = transformZip(s1, jlsym, jrsym, l, ldefs, r, rdefs, sel)
+          logger.debug("Transformed zip:", b2)
+          b2
+      },
+      bottomUp = true
+    ).infer()
     state + (this -> (n2 ne state.tree)) withNode n2
   }
 
@@ -75,7 +73,9 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
     val idxSym = new AnonSymbol
     val idxExpr =
       if (offset == 1L) RowNumber()
-      else Library.-.typed[Long](RowNumber(), LiteralNode(1L - offset))
+      else
+        Library
+          .-.typed[Long](RowNumber(), LiteralNode(1L - offset))
     val lbind = Bind(
       ls,
       Subquery(from, condBelow),
@@ -137,9 +137,10 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
       l2,
       r2,
       JoinType.Inner,
-      Library.==.typed[Boolean](
-        Select(Ref(jlsym), lisym),
-        Select(Ref(jrsym), risym)))
+      Library
+        .==.typed[Boolean](
+          Select(Ref(jlsym), lisym),
+          Select(Ref(jrsym), risym)))
     Bind(
       s1,
       j2,

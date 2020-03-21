@@ -59,9 +59,8 @@ class CoalescedPartitioner(
   override def equals(other: Any): Boolean =
     other match {
       case c: CoalescedPartitioner =>
-        c.parent == parent && Arrays.equals(
-          c.partitionStartIndices,
-          partitionStartIndices)
+        c.parent == parent && Arrays
+          .equals(c.partitionStartIndices, partitionStartIndices)
       case _ => false
     }
 }
@@ -108,14 +107,11 @@ class CustomShuffledRDD[K, V, C](
 
   override def compute(p: Partition, context: TaskContext): Iterator[(K, C)] = {
     val part = p.asInstanceOf[CustomShuffledRDDPartition]
-    SparkEnv.get.shuffleManager
-      .getReader(
-        dependency.shuffleHandle,
-        part.startIndexInParent,
-        part.endIndexInParent,
-        context)
-      .read()
-      .asInstanceOf[Iterator[(K, C)]]
+    SparkEnv.get.shuffleManager.getReader(
+      dependency.shuffleHandle,
+      part.startIndexInParent,
+      part.endIndexInParent,
+      context).read().asInstanceOf[Iterator[(K, C)]]
   }
 
   override def clearDependencies() {

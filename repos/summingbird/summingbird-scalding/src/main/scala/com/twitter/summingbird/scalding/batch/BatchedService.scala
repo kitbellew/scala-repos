@@ -62,8 +62,9 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
     def flatOpt[T](o: Option[Option[T]]): Option[T] = o.flatMap(identity)
 
     implicit val ord = ordering
-    LookupJoin(incoming, servStream, reducers)
-      .map { case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv)))) }
+    LookupJoin(incoming, servStream, reducers).map {
+      case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv))))
+    }
   }
 
   protected def batchedLookup[W](
@@ -76,9 +77,9 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
       (flowMode: (FlowDef, Mode)) =>
         val left = getKeys(flowMode)
         val earliestInLast = batcher.earliestTimeOf(last._1)
-        val liftedLast: KeyValuePipe[K, Option[V]] = last
-          ._2(flowMode)
-          .map { case (k, w) => (earliestInLast, (k, Some(w))) }
+        val liftedLast: KeyValuePipe[K, Option[V]] = last._2(flowMode).map {
+          case (k, w) => (earliestInLast, (k, Some(w)))
+        }
         // TODO (https://github.com/twitter/summingbird/issues/91): we
         // could not bother to load streams outside the covers, but
         // probably we aren't anyway assuming the time spans are not
@@ -105,38 +106,34 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
             .range(startingBatch.next, coveringBatches.max)
           val batchStreams = streamBatches.map { b => (b, readStream(b, mode)) }
           // only produce continuous output, so stop at the first none:
-          val existing = batchStreams
-            .takeWhile { _._2.isDefined }
-            .collect { case (batch, Some(flow)) => (batch, flow) }
+          val existing = batchStreams.takeWhile { _._2.isDefined }.collect {
+            case (batch, Some(flow)) => (batch, flow)
+          }
 
           if (existing.isEmpty) {
             Left(List(
-              "[ERROR] Could not load any batches of the service stream in: " + toString + " for: " + timeSpan.toString))
+              "[ERROR] Could not load any batches of the service stream in: " + toString + " for: " + timeSpan
+                .toString))
           } else {
             val inBatches = List(startingBatch) ++ existing.map { _._1 }
-            val bInt = BatchID
-              .toInterval(inBatches)
-              .get // by construction this is an interval, so this can't throw
+            val bInt =
+              BatchID.toInterval(inBatches)
+                .get // by construction this is an interval, so this can't throw
             val toRead = batchOps
               .intersect(bInt, timeSpan) // No need to read more than this
-            getKeys((toRead, mode)).right
-              .map {
-                case ((available, outM), getFlow) =>
-                  /*
-                   * Note we can open more batches than we need to join, but
-                   * we will deal with that when we do the join (by filtering first,
-                   * then grouping on (key, batchID) to parallelize.
-                   */
-                  (
-                    (available, outM),
-                    Scalding.limitTimes(
-                      available,
-                      batchedLookup(
-                        available,
-                        getFlow,
-                        batchLastFlow,
-                        existing)))
-              }
+            getKeys((toRead, mode)).right.map {
+              case ((available, outM), getFlow) =>
+                /*
+                 * Note we can open more batches than we need to join, but
+                 * we will deal with that when we do the join (by filtering first,
+                 * then grouping on (key, batchID) to parallelize.
+                 */
+                (
+                  (available, outM),
+                  Scalding.limitTimes(
+                    available,
+                    batchedLookup(available, getFlow, batchLastFlow, existing)))
+            }
           }
       }
     })

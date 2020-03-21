@@ -52,26 +52,18 @@ class FlowScanSpec extends AkkaSpec {
     }
 
     "emit values promptly" in {
-      val f = Source
-        .single(1)
-        .concat(Source.maybe[Int])
-        .scan(0)(_ + _)
-        .take(2)
+      val f = Source.single(1).concat(Source.maybe[Int]).scan(0)(_ + _).take(2)
         .runWith(Sink.seq)
       Await.result(f, 1.second) should ===(Seq(0, 1))
     }
 
     "fail properly" in {
       import ActorAttributes._
-      val scan = Flow[Int]
-        .scan(0) { (old, current) ⇒
-          require(current > 0)
-          old + current
-        }
-        .withAttributes(supervisionStrategy(Supervision.restartingDecider))
-      Source(List(1, 3, -1, 5, 7))
-        .via(scan)
-        .runWith(TestSink.probe)
+      val scan = Flow[Int].scan(0) { (old, current) ⇒
+        require(current > 0)
+        old + current
+      }.withAttributes(supervisionStrategy(Supervision.restartingDecider))
+      Source(List(1, 3, -1, 5, 7)).via(scan).runWith(TestSink.probe)
         .toStrict(1.second) should ===(Seq(0, 1, 4, 0, 5, 12))
     }
   }

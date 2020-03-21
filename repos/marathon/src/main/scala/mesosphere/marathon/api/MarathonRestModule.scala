@@ -17,8 +17,7 @@ import mesosphere.marathon.io.SSLContextUtil
 class LeaderProxyFilterModule extends ServletModule {
   protected override def configureServlets() {
     bind(classOf[RequestForwarder])
-      .to(classOf[JavaUrlConnectionRequestForwarder])
-      .in(Scopes.SINGLETON)
+      .to(classOf[JavaUrlConnectionRequestForwarder]).in(Scopes.SINGLETON)
     bind(classOf[LeaderProxyFilter]).asEagerSingleton()
     filter("/*").through(classOf[LeaderProxyFilter])
   }

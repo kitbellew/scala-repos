@@ -103,16 +103,14 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
   def getTypeElement: Option[ScTypeElement] = {
     if (myTypeElement != null) {
       val typeElement = myTypeElement.get
-      if (typeElement != null && (
-            typeElement.isEmpty || (typeElement.get.getContext eq getPsi)
-          )) return typeElement
+      if (typeElement != null && (typeElement.isEmpty || (typeElement.get
+            .getContext eq getPsi))) return typeElement
     }
     val res: Option[ScTypeElement] =
       if (getTypeText != "")
-        Some(ScalaPsiElementFactory.createTypeElementFromText(
-          getTypeText,
-          getPsi,
-          null))
+        Some(
+          ScalaPsiElementFactory
+            .createTypeElementFromText(getTypeText, getPsi, null))
       else None
     myTypeElement = new SofterReference[Option[ScTypeElement]](res)
     res
@@ -135,18 +133,16 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
   def getDefaultExpr: Option[ScExpression] = {
     if (myDefaultExpression != null) {
       val expression = myDefaultExpression.get
-      if (expression != null && (
-            expression.isEmpty || (expression.get.getContext eq getPsi)
-          )) return expression
+      if (expression != null && (expression.isEmpty || (expression.get
+            .getContext eq getPsi))) return expression
     }
     val res: Option[ScExpression] = getDefaultExprText match {
       case None     => None
       case Some("") => None
       case Some(text) =>
-        Some(ScalaPsiElementFactory.createExpressionWithContextFromText(
-          text,
-          getPsi,
-          null))
+        Some(
+          ScalaPsiElementFactory
+            .createExpressionWithContextFromText(text, getPsi, null))
     }
     myDefaultExpression = new SofterReference[Option[ScExpression]](res)
     res

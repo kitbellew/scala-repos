@@ -54,9 +54,7 @@ trait HTTPRequest {
     * @return - the header value. Empty if there is no such header
     */
   def header(name: String): Box[String] =
-    headers
-      .filter(_.name.equalsIgnoreCase(name))
-      .headOption
+    headers.filter(_.name.equalsIgnoreCase(name)).headOption
       .flatMap(_.values.headOption)
 
   /**

@@ -40,8 +40,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
       element: LookupElement,
       location: CompletionLocation): Comparable[_] = {
     val textForPosition = new mutable.HashMap[PsiElement, String]
-    val position = ScalaCompletionUtil.positionFromParameters(
-      location.getCompletionParameters)
+    val position = ScalaCompletionUtil
+      .positionFromParameters(location.getCompletionParameters)
     val context = location.getProcessingContext
 
     def extractVariableNameFromPosition: Option[String] = {
@@ -107,10 +107,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
         // prevent computing distance on long non including strings
         else if (Math.abs(text.length - element.getName.length) > maxDist) None
         else {
-          val distance = EditDistance.optimalAlignment(
-            element.getName,
-            text,
-            false)
+          val distance = EditDistance
+            .optimalAlignment(element.getName, text, false)
           if (distance > maxDist) None else Some(-distance)
         }
       }

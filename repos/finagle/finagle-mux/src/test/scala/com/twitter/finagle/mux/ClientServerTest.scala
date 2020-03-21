@@ -176,8 +176,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
 
     val req1 = Request(Path.empty, buf(1))
     val p1 = new Promise[Response]
-    when(service(req1)).thenReturn(Future.exception(
-      Failure.rejected("come back tomorrow")))
+    when(service(req1))
+      .thenReturn(Future.exception(Failure.rejected("come back tomorrow")))
 
     client(req1).poll match {
       case Some(Throw(f: Failure)) => assert(f.isFlagged(Failure.Restartable))
@@ -259,9 +259,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
   }
 
   test("failure detection") {
-    val config = FailureDetector.ThresholdConfig(
-      minPeriod = 10.milliseconds,
-      closeTimeout = Duration.Top)
+    val config = FailureDetector
+      .ThresholdConfig(minPeriod = 10.milliseconds, closeTimeout = Duration.Top)
 
     val ctx = new Ctx(config)
     import ctx._
@@ -315,9 +314,7 @@ class ClientServerTestDispatch extends ClientServerTest(true) {
     when(service(any[Request])).thenAnswer(new Answer[Future[Response]] {
       def answer(invocation: InvocationOnMock) =
         Future.value(Response(
-          Contexts.broadcast
-            .get(testContext)
-            .getOrElse(Buf.Empty)))
+          Contexts.broadcast.get(testContext).getOrElse(Buf.Empty)))
     })
 
     // No context set

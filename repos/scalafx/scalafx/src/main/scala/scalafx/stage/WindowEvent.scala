@@ -45,8 +45,8 @@ object WindowEvent {
   /**
     * This event is delivered to a window when there is an external request to close that window.
     */
-  val WindowCloseRequest: EventType[jfxs.WindowEvent] =
-    jfxs.WindowEvent.WINDOW_CLOSE_REQUEST
+  val WindowCloseRequest: EventType[jfxs.WindowEvent] = jfxs.WindowEvent
+    .WINDOW_CLOSE_REQUEST
 
   /**
     * This event occurs on window just after it is hidden.
@@ -61,8 +61,8 @@ object WindowEvent {
   /**
     * This event occurs on window just before it is shown.
     */
-  val WindowShowing: EventType[jfxs.WindowEvent] =
-    jfxs.WindowEvent.WINDOW_SHOWING
+  val WindowShowing: EventType[jfxs.WindowEvent] = jfxs.WindowEvent
+    .WINDOW_SHOWING
 
   /**
     * This event occurs on window just after it is shown.

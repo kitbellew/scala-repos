@@ -30,12 +30,8 @@ import scala.language.experimental.{macros => sMacros}
 
 class CompareJob[T: OrderedSerialization](in: Iterable[T], args: Args)
     extends Job(args) {
-  TypedPipe
-    .from(in)
-    .flatMap { i => (0 until 1).map(_ => i) }
-    .map(_ -> 1L)
-    .sumByKey
-    .map { case (k, v) => (k.hashCode, v) }
+  TypedPipe.from(in).flatMap { i => (0 until 1).map(_ => i) }.map(_ -> 1L)
+    .sumByKey.map { case (k, v) => (k.hashCode, v) }
     .write(TypedTsv[(Int, Long)]("output"))
 }
 private[macros] trait InstanceProvider[T] {
@@ -45,11 +41,9 @@ class PlatformTest
     extends WordSpec
     with Matchers
     with HadoopSharedPlatformTest {
-  org.apache.log4j.Logger
-    .getLogger("org.apache.hadoop")
+  org.apache.log4j.Logger.getLogger("org.apache.hadoop")
     .setLevel(org.apache.log4j.Level.FATAL)
-  org.apache.log4j.Logger
-    .getLogger("org.mortbay")
+  org.apache.log4j.Logger.getLogger("org.mortbay")
     .setLevel(org.apache.log4j.Level.FATAL)
   implicit def toScroogeInternalOrderedSerialization[T]: OrderedSerialization[
     T] = macro ScroogeInternalOrderedSerializationImpl[T]
@@ -67,13 +61,12 @@ class PlatformTest
 
     HadoopPlatformJobTest(new CompareJob[T](input, _), cluster)
       .sink(TypedTsv[(Int, Long)]("output")) { out =>
-        val expected = input
-          .groupBy(identity)
-          .map { case (k, v) => (k.hashCode, v.size) }
+        val expected = input.groupBy(identity).map {
+          case (k, v) => (k.hashCode, v.size)
+        }
 
         out.toSet shouldBe expected.toSet
-      }
-      .run
+      }.run
   }
 
   "ThriftStruct Test" should {

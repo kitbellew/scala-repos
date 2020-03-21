@@ -62,7 +62,8 @@ class TaskBuilder(
       val portsString = s"ports=($portStrings)"
 
       log.info(
-        s"Offer [${offer.getId.getValue}]. Insufficient resources for [${app.id}] (need cpus=${app.cpus}, " +
+        s"Offer [${offer.getId.getValue}]. Insufficient resources for [${app
+          .id}] (need cpus=${app.cpus}, " +
           s"mem=${app.mem}, disk=${app.disk}, $portsString, available in offer: " +
           s"[${TextFormat.shortDebugString(offer)}]")
     }
@@ -80,8 +81,8 @@ class TaskBuilder(
       runningTasks: => Iterable[Task]): Option[(TaskInfo, Seq[Int])] = {
 
     val acceptedResourceRoles: Set[String] = {
-      val roles = app.acceptedResourceRoles.getOrElse(
-        config.defaultAcceptedResourceRolesSet)
+      val roles = app.acceptedResourceRoles
+        .getOrElse(config.defaultAcceptedResourceRolesSet)
       if (log.isDebugEnabled) log.debug(s"acceptedResourceRoles $roles")
       roles
     }
@@ -116,8 +117,7 @@ class TaskBuilder(
     val taskId = newTaskId(app.id)
     val builder = TaskInfo.newBuilder
     // Use a valid hostname to make service discovery easier
-      .setName(app.id.toHostname)
-      .setTaskId(taskId.mesosTaskId)
+      .setName(app.id.toHostname).setTaskId(taskId.mesosTaskId)
       .setSlaveId(offer.getSlaveId)
       .addAllResources(resourceMatch.resources.asJava)
 
@@ -126,8 +126,8 @@ class TaskBuilder(
     if (labels.nonEmpty)
       builder.setLabels(Labels.newBuilder.addAllLabels(labels.asJava))
 
-    volumeMatchOpt.foreach(
-      _.persistentVolumeResources.foreach(builder.addResources(_)))
+    volumeMatchOpt
+      .foreach(_.persistentVolumeResources.foreach(builder.addResources(_)))
 
     val containerProto = computeContainerInfo(resourceMatch.hostPorts)
     val envPrefix: Option[String] = config.envVarsPrefix.get
@@ -146,18 +146,14 @@ class TaskBuilder(
         val executorPath = s"'$path'" // TODO: Really escape this.
         val cmd = app.cmd orElse app.args.map(_ mkString " ") getOrElse ""
         val shell = s"chmod ug+rx $executorPath && exec $executorPath $cmd"
-        val command = TaskBuilder
-          .commandInfo(
-            app,
-            Some(taskId),
-            host,
-            resourceMatch.hostPorts,
-            envPrefix)
-          .toBuilder
-          .setValue(shell)
+        val command = TaskBuilder.commandInfo(
+          app,
+          Some(taskId),
+          host,
+          resourceMatch.hostPorts,
+          envPrefix).toBuilder.setValue(shell)
 
-        val info = ExecutorInfo
-          .newBuilder()
+        val info = ExecutorInfo.newBuilder()
           .setExecutorId(ExecutorID.newBuilder().setValue(executorId))
           .setCommand(command)
         containerProto.foreach(info.setContainer)
@@ -172,8 +168,8 @@ class TaskBuilder(
 
     // Mesos supports at most one health check, and only COMMAND checks
     // are currently implemented in the Mesos health check helper program.
-    val mesosHealthChecks: Set[org.apache.mesos.Protos.HealthCheck] =
-      app.healthChecks.collect {
+    val mesosHealthChecks: Set[org.apache.mesos.Protos.HealthCheck] = app
+      .healthChecks.collect {
         case healthCheck: HealthCheck
             if healthCheck.protocol == Protocol.COMMAND => healthCheck.toMesos
       }
@@ -196,8 +192,8 @@ class TaskBuilder(
       hostPorts: Seq[Int]): org.apache.mesos.Protos.DiscoveryInfo = {
     val discoveryInfoBuilder = org.apache.mesos.Protos.DiscoveryInfo.newBuilder
     discoveryInfoBuilder.setName(app.id.toHostname)
-    discoveryInfoBuilder.setVisibility(
-      org.apache.mesos.Protos.DiscoveryInfo.Visibility.FRAMEWORK)
+    discoveryInfoBuilder
+      .setVisibility(org.apache.mesos.Protos.DiscoveryInfo.Visibility.FRAMEWORK)
 
     val portProtos = app.ipAddress match {
       case Some(IpAddress(_, _, DiscoveryInfo(ports))) if ports.nonEmpty =>
@@ -205,17 +201,11 @@ class TaskBuilder(
       case _ =>
         // Serialize app.portDefinitions to protos. The port numbers are the service ports, we need to
         // overwrite them the port numbers assigned to this particular task.
-        app.portDefinitions
-          .zip(hostPorts)
-          .map {
-            case (portDefinition, hostPort) =>
-              PortDefinitionSerializer
-                .toProto(portDefinition)
-                .toBuilder
-                .setNumber(hostPort)
-                .build
-          }
-          .asJava
+        app.portDefinitions.zip(hostPorts).map {
+          case (portDefinition, hostPort) =>
+            PortDefinitionSerializer.toProto(portDefinition).toBuilder
+              .setNumber(hostPort).build
+        }.asJava
     }
 
     val portsProto = org.apache.mesos.Protos.Ports.newBuilder
@@ -257,22 +247,19 @@ class TaskBuilder(
               _.copy(portMappings = newMappings)
             })
         }
-        builder.mergeFrom(
-          ContainerSerializer.toMesos(containerWithPortMappings))
+        builder
+          .mergeFrom(ContainerSerializer.toMesos(containerWithPortMappings))
       }
 
       // Set NetworkInfo if necessary
       app.ipAddress.foreach { ipAddress =>
-        val ipAddressLabels = Labels
-          .newBuilder()
+        val ipAddressLabels = Labels.newBuilder()
           .addAllLabels(ipAddress.labels.map {
-            case (key, value) =>
-              Label.newBuilder.setKey(key).setValue(value).build()
+            case (key, value) => Label.newBuilder.setKey(key).setValue(value)
+                .build()
           }.asJava)
-        val networkInfo: NetworkInfo.Builder = NetworkInfo
-          .newBuilder()
-          .addAllGroups(ipAddress.groups.asJava)
-          .setLabels(ipAddressLabels)
+        val networkInfo: NetworkInfo.Builder = NetworkInfo.newBuilder()
+          .addAllGroups(ipAddress.groups.asJava).setLabels(ipAddressLabels)
           .addIpAddresses(NetworkInfo.IPAddress.getDefaultInstance)
         builder.addNetworkInfos(networkInfo)
       }
@@ -281,10 +268,7 @@ class TaskBuilder(
       if (!builder.hasType) builder.setType(ContainerInfo.Type.MESOS)
 
       if (builder.getType.equals(ContainerInfo.Type.MESOS)) {
-        builder.setMesos(
-          ContainerInfo.MesosInfo
-            .newBuilder()
-            .build())
+        builder.setMesos(ContainerInfo.MesosInfo.newBuilder().build())
       }
       Some(builder.build)
     }
@@ -296,8 +280,8 @@ object TaskBuilder {
 
   val maxEnvironmentVarLength = 512
   val labelEnvironmentKeyPrefix = "MARATHON_APP_LABEL_"
-  val maxVariableLength =
-    maxEnvironmentVarLength - labelEnvironmentKeyPrefix.length
+  val maxVariableLength = maxEnvironmentVarLength - labelEnvironmentKeyPrefix
+    .length
 
   def commandInfo(
       app: AppDefinition,
@@ -315,9 +299,7 @@ object TaskBuilder {
           portsEnv(declaredPorts, ports) ++ host.map("HOST" -> _).toMap) ++
         app.env
 
-    val builder = CommandInfo
-      .newBuilder()
-      .setEnvironment(environment(envMap))
+    val builder = CommandInfo.newBuilder().setEnvironment(environment(envMap))
 
     app.cmd match {
       case Some(cmd) if cmd.nonEmpty => builder.setValue(cmd)
@@ -398,14 +380,13 @@ object TaskBuilder {
         "MESOS_TASK_ID" -> taskId.map(_.idString),
         "MARATHON_APP_ID" -> Some(app.id.toString),
         "MARATHON_APP_VERSION" -> Some(app.version.toString),
-        "MARATHON_APP_DOCKER_IMAGE" -> app.container.flatMap(
-          _.docker.map(_.image)),
+        "MARATHON_APP_DOCKER_IMAGE" -> app.container
+          .flatMap(_.docker.map(_.image)),
         "MARATHON_APP_RESOURCE_CPUS" -> Some(app.cpus.toString),
         "MARATHON_APP_RESOURCE_MEM" -> Some(app.mem.toString),
         "MARATHON_APP_RESOURCE_DISK" -> Some(app.disk.toString)
-      ).collect {
-        case (key, Some(value)) => key -> value
-      }.toMap ++ labelsToEnvVars(app.labels)
+      ).collect { case (key, Some(value)) => key -> value }
+        .toMap ++ labelsToEnvVars(app.labels)
     }
   }
 

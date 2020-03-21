@@ -49,15 +49,13 @@ final class LobbyApi(
       "speed" -> pov.game.speed.key,
       "perf" -> lila.game.PerfPicker.key(pov.game),
       "rated" -> pov.game.rated,
-      "opponent" -> Json
-        .obj(
-          "id" -> pov.opponent.userId,
-          "username" -> lila.game.Namer
-            .playerString(pov.opponent, withRating = false)(lightUser),
-          "rating" -> pov.opponent.rating,
-          "ai" -> pov.opponent.aiLevel
-        )
-        .noNull,
+      "opponent" -> Json.obj(
+        "id" -> pov.opponent.userId,
+        "username" -> lila.game.Namer
+          .playerString(pov.opponent, withRating = false)(lightUser),
+        "rating" -> pov.opponent.rating,
+        "ai" -> pov.opponent.aiLevel
+      ).noNull,
       "isMyTurn" -> pov.isMyTurn,
       "secondsLeft" -> pov.remainingSeconds
     )

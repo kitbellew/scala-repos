@@ -125,8 +125,7 @@ final class PrinterAttributes(override val delegate: jfxp.PrinterAttributes)
     */
   def supportedPageOrientations: Set[PageOrientation] =
     asScalaSet(delegate.getSupportedPageOrientations)
-      .map(new PageOrientation(_))
-      .toSet
+      .map(new PageOrientation(_)).toSet
 
   /**
     * An unmodifiable set of the supported paper sizes for this printer.
@@ -157,8 +156,7 @@ final class PrinterAttributes(override val delegate: jfxp.PrinterAttributes)
     */
   def supportedPrintResolutions: Set[PrintResolution] =
     asScalaSet(delegate.getSupportedPrintResolutions)
-      .map(new PrintResolution(_))
-      .toSet
+      .map(new PrintResolution(_)).toSet
 
   /**
     * An unmodifiable set of the supported duplex settings for this printer.

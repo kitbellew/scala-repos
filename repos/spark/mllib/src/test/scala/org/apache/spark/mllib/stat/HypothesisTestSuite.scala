@@ -46,7 +46,8 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(pearson.pValue ~== 0.8187 relTol 1e-4)
     assert(pearson.method === ChiSqTest.PEARSON.name)
     assert(
-      pearson.nullHypothesis === ChiSqTest.NullHypothesis.goodnessOfFit.toString)
+      pearson.nullHypothesis === ChiSqTest.NullHypothesis.goodnessOfFit
+        .toString)
 
     // different expected and observed sum
     val observed1 = new DenseVector(Array[Double](21, 38, 43, 80))
@@ -60,7 +61,8 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(pearson1.pValue ~== 0.002717 relTol 1e-4)
     assert(pearson1.method === ChiSqTest.PEARSON.name)
     assert(
-      pearson1.nullHypothesis === ChiSqTest.NullHypothesis.goodnessOfFit.toString)
+      pearson1.nullHypothesis === ChiSqTest.NullHypothesis.goodnessOfFit
+        .toString)
 
     // Vectors with different sizes
     val observed3 = new DenseVector(Array(1.0, 2.0, 3.0))
@@ -141,14 +143,16 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(feature1.pValue ~== 0.6873 relTol 1e-4)
       assert(feature1.method === ChiSqTest.PEARSON.name)
       assert(
-        feature1.nullHypothesis === ChiSqTest.NullHypothesis.independence.toString)
+        feature1.nullHypothesis === ChiSqTest.NullHypothesis.independence
+          .toString)
       val feature2 = chi(1)
       assert(feature2.statistic === 1.5)
       assert(feature2.degreesOfFreedom === 3)
       assert(feature2.pValue ~== 0.6823 relTol 1e-4)
       assert(feature2.method === ChiSqTest.PEARSON.name)
       assert(
-        feature2.nullHypothesis === ChiSqTest.NullHypothesis.independence.toString)
+        feature2.nullHypothesis === ChiSqTest.NullHypothesis.independence
+          .toString)
     }
 
     // Test that the right number of results is returned
@@ -199,9 +203,8 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Comparing a standard normal sample to a standard normal distribution
     val result1 = Statistics.kolmogorovSmirnovTest(sampledNorm, "norm", 0, 1)
-    val referenceStat1 = ksTest.kolmogorovSmirnovStatistic(
-      stdNormalDist,
-      sampledNorm.collect())
+    val referenceStat1 = ksTest
+      .kolmogorovSmirnovStatistic(stdNormalDist, sampledNorm.collect())
     val referencePVal1 = 1 - ksTest.cdf(referenceStat1, n)
     // Verify vs apache math commons ks test
     assert(result1.statistic ~== referenceStat1 relTol 1e-4)
@@ -211,9 +214,8 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Comparing an exponential sample to a standard normal distribution
     val result2 = Statistics.kolmogorovSmirnovTest(sampledExp, "norm", 0, 1)
-    val referenceStat2 = ksTest.kolmogorovSmirnovStatistic(
-      stdNormalDist,
-      sampledExp.collect())
+    val referenceStat2 = ksTest
+      .kolmogorovSmirnovStatistic(stdNormalDist, sampledExp.collect())
     val referencePVal2 = 1 - ksTest.cdf(referenceStat2, n)
     // verify vs apache math commons ks test
     assert(result2.statistic ~== referenceStat2 relTol 1e-4)
@@ -232,8 +234,8 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
     val referenceStat3 = ksTest.kolmogorovSmirnovStatistic(
       new ExponentialDistribution(0.2),
       sampledExp.collect())
-    val referencePVal3 =
-      1 - ksTest.cdf(referenceStat3, sampledNorm.count().toInt)
+    val referencePVal3 = 1 - ksTest
+      .cdf(referenceStat3, sampledNorm.count().toInt)
     // verify vs apache math commons ks test
     assert(result3.statistic ~== referenceStat3 relTol 1e-4)
     assert(result3.pValue ~== referencePVal3 relTol 1e-4)

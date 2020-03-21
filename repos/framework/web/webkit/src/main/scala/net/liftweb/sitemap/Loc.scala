@@ -61,9 +61,7 @@ trait Loc[T] {
     .flatMap {
       case a: Loc.MenuCssClass => List(a)
       case _                   => Nil
-    }
-    .headOption
-    .map(_.cssClass.func)
+    }.headOption.map(_.cssClass.func)
 
   /**
     * Given a value calculate the HREF to this item
@@ -75,11 +73,8 @@ trait Loc[T] {
     * Calculate HREF to this item using currentValue
     */
   def calcDefaultHref: String =
-    currentValue
-      .map(p => link.createPath(p))
-      .toOption
-      .map(path => appendQueryParameters(path, currentValue))
-      .getOrElse("")
+    currentValue.map(p => link.createPath(p)).toOption
+      .map(path => appendQueryParameters(path, currentValue)).getOrElse("")
 
   def defaultValue: Box[T]
 
@@ -137,9 +132,8 @@ trait Loc[T] {
       case null => Nil
       case menu => menu._parent match {
           case Full(parentMenu: Menu) =>
-            if (!params.collect {
-                  case i: Loc.UseParentParams => true
-                }.isEmpty) {
+            if (!params.collect { case i: Loc.UseParentParams => true }
+                  .isEmpty) {
               parentMenu.loc.allParams.asInstanceOf[List[Loc.LocParam[Any]]]
             } else { Nil }
           case _ => Nil
@@ -157,15 +151,11 @@ trait Loc[T] {
   def siteMap: SiteMap = _menu.siteMap
 
   def createDefaultLink: Option[NodeSeq] =
-    currentValue
-      .flatMap(p => link.createLink(p))
-      .toOption
+    currentValue.flatMap(p => link.createLink(p)).toOption
       .map(ns => Text(appendQueryParameters(ns.text, currentValue)))
 
   def createLink(in: T): Option[NodeSeq] =
-    link
-      .createLink(in)
-      .toOption
+    link.createLink(in).toOption
       .map(ns => Text(appendQueryParameters(ns.text, Full(in))))
 
   override def toString =
@@ -261,10 +251,9 @@ trait Loc[T] {
   /**
     * The snippets provided by `LocParam`s
     */
-  lazy val calcSnippets: SnippetTest = allParams
-    .collect { case v: Loc.ValueSnippets[T] => v.snippets }
-    .reduceLeftOption(_ orElse _)
-    .getOrElse(Map.empty)
+  lazy val calcSnippets: SnippetTest = allParams.collect {
+    case v: Loc.ValueSnippets[T] => v.snippets
+  }.reduceLeftOption(_ orElse _).getOrElse(Map.empty)
 
   /**
     * Look up a snippet by name, taking into account the current
@@ -417,8 +406,8 @@ trait Loc[T] {
   def breadCrumbs: List[Loc[_]] = _menu.breadCrumbs ::: List(this)
 
   def buildKidMenuItems(kids: Seq[Menu]): List[MenuItem] = {
-    kids.toList.flatMap(
-      _.loc.buildItem(Nil, false, false)) ::: supplementalKidMenuItems
+    kids.toList
+      .flatMap(_.loc.buildItem(Nil, false, false)) ::: supplementalKidMenuItems
   }
 
   def supplementalKidMenuItems: List[MenuItem] =
@@ -567,8 +556,8 @@ object Loc {
   case class HttpAuthProtected(role: (Req) => Box[Role]) extends AnyLocParam {
 
     override def onCreate(loc: Loc[_]) {
-      LiftRules.httpAuthProtectedResource.append(
-        new LiftRules.HttpAuthProtectedResourcePF() {
+      LiftRules.httpAuthProtectedResource
+        .append(new LiftRules.HttpAuthProtectedResourcePF() {
           def isDefinedAt(in: Req) = in.path.partPath == loc.link.uriList
           def apply(in: Req): Box[Role] = role(in)
         })

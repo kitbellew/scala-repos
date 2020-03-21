@@ -22,8 +22,7 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
 
   private[this] val semaphore = new AsyncSemaphore(1)
 
-  private[this] val queueSize = statsReceiver
-    .scope("serial")
+  private[this] val queueSize = statsReceiver.scope("serial")
     .addGauge("queue_size") { semaphore.numWaiters }
 
   private[this] val localAddress: InetSocketAddress = trans.localAddress match {
@@ -117,12 +116,8 @@ class SerialClientDispatcher[Req, Rep](
   private[this] val readTheTransport: Unit => Future[Rep] = _ => trans.read()
 
   protected def dispatch(req: Req, p: Promise[Rep]): Future[Unit] =
-    trans
-      .write(req)
-      .rescue(wrapWriteException)
-      .flatMap(readTheTransport)
-      .respond(rep => p.updateIfEmpty(rep))
-      .unit
+    trans.write(req).rescue(wrapWriteException).flatMap(readTheTransport)
+      .respond(rep => p.updateIfEmpty(rep)).unit
 
   protected def write(req: Req): Future[Unit] = trans.write(req)
   protected def read(permit: Permit): Future[Rep] =

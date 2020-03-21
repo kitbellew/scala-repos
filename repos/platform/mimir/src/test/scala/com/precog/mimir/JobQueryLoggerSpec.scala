@@ -40,15 +40,12 @@ class JobQueryLoggerSpec extends Specification {
       val M = Need.need
       val clock = Clock.System
       val jobManager = new InMemoryJobManager[Need]
-      val jobId = jobManager
-        .createJob(
-          "password",
-          "error-report-spec",
-          "hard",
-          None,
-          Some(clock.now()))
-        .copoint
-        .id
+      val jobId = jobManager.createJob(
+        "password",
+        "error-report-spec",
+        "hard",
+        None,
+        Some(clock.now())).copoint.id
       val decomposer = new Decomposer[Unit] {
         def decompose(u: Unit): JValue = JNull
       }

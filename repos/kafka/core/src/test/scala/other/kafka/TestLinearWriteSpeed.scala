@@ -33,59 +33,39 @@ object TestLinearWriteSpeed {
 
   def main(args: Array[String]): Unit = {
     val parser = new OptionParser
-    val dirOpt = parser
-      .accepts("dir", "The directory to write to.")
-      .withRequiredArg
-      .describedAs("path")
-      .ofType(classOf[java.lang.String])
+    val dirOpt = parser.accepts("dir", "The directory to write to.")
+      .withRequiredArg.describedAs("path").ofType(classOf[java.lang.String])
       .defaultsTo(System.getProperty("java.io.tmpdir"))
     val bytesOpt = parser
       .accepts("bytes", "REQUIRED: The total number of bytes to write.")
-      .withRequiredArg
-      .describedAs("num_bytes")
-      .ofType(classOf[java.lang.Long])
-    val sizeOpt = parser
-      .accepts("size", "REQUIRED: The size of each write.")
-      .withRequiredArg
-      .describedAs("num_bytes")
+      .withRequiredArg.describedAs("num_bytes").ofType(classOf[java.lang.Long])
+    val sizeOpt = parser.accepts("size", "REQUIRED: The size of each write.")
+      .withRequiredArg.describedAs("num_bytes")
       .ofType(classOf[java.lang.Integer])
-    val messageSizeOpt = parser
-      .accepts(
-        "message-size",
-        "REQUIRED: The size of each message in the message set.")
-      .withRequiredArg
-      .describedAs("num_bytes")
-      .ofType(classOf[java.lang.Integer])
+    val messageSizeOpt = parser.accepts(
+      "message-size",
+      "REQUIRED: The size of each message in the message set.").withRequiredArg
+      .describedAs("num_bytes").ofType(classOf[java.lang.Integer])
       .defaultsTo(1024)
     val filesOpt = parser
       .accepts("files", "REQUIRED: The number of logs or files.")
-      .withRequiredArg
-      .describedAs("num_files")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1)
+      .withRequiredArg.describedAs("num_files")
+      .ofType(classOf[java.lang.Integer]).defaultsTo(1)
     val reportingIntervalOpt = parser
       .accepts("reporting-interval", "The number of ms between updates.")
-      .withRequiredArg
-      .describedAs("ms")
-      .ofType(classOf[java.lang.Long])
+      .withRequiredArg.describedAs("ms").ofType(classOf[java.lang.Long])
       .defaultsTo(1000)
     val maxThroughputOpt = parser
-      .accepts("max-throughput-mb", "The maximum throughput.")
-      .withRequiredArg
-      .describedAs("mb")
-      .ofType(classOf[java.lang.Integer])
+      .accepts("max-throughput-mb", "The maximum throughput.").withRequiredArg
+      .describedAs("mb").ofType(classOf[java.lang.Integer])
       .defaultsTo(Integer.MAX_VALUE)
     val flushIntervalOpt = parser
       .accepts("flush-interval", "The number of messages between flushes")
-      .withRequiredArg()
-      .describedAs("message_count")
-      .ofType(classOf[java.lang.Long])
-      .defaultsTo(Long.MaxValue)
+      .withRequiredArg().describedAs("message_count")
+      .ofType(classOf[java.lang.Long]).defaultsTo(Long.MaxValue)
     val compressionCodecOpt = parser
-      .accepts("compression", "The compression codec to use")
-      .withRequiredArg
-      .describedAs("codec")
-      .ofType(classOf[java.lang.String])
+      .accepts("compression", "The compression codec to use").withRequiredArg
+      .describedAs("codec").ofType(classOf[java.lang.String])
       .defaultsTo(NoCompressionCodec.name)
     val mmapOpt = parser.accepts("mmap", "Do writes to memory-mapped files.")
     val channelOpt = parser.accepts("channel", "Do writes to file channesl.")
@@ -93,32 +73,28 @@ object TestLinearWriteSpeed {
 
     val options = parser.parse(args: _*)
 
-    CommandLineUtils.checkRequiredArgs(
-      parser,
-      options,
-      bytesOpt,
-      sizeOpt,
-      filesOpt)
+    CommandLineUtils
+      .checkRequiredArgs(parser, options, bytesOpt, sizeOpt, filesOpt)
 
     var bytesToWrite = options.valueOf(bytesOpt).longValue
     val bufferSize = options.valueOf(sizeOpt).intValue
     val numFiles = options.valueOf(filesOpt).intValue
     val reportingInterval = options.valueOf(reportingIntervalOpt).longValue
     val dir = options.valueOf(dirOpt)
-    val maxThroughputBytes =
-      options.valueOf(maxThroughputOpt).intValue * 1024L * 1024L
+    val maxThroughputBytes = options.valueOf(maxThroughputOpt)
+      .intValue * 1024L * 1024L
     val buffer = ByteBuffer.allocate(bufferSize)
     val messageSize = options.valueOf(messageSizeOpt).intValue
     val flushInterval = options.valueOf(flushIntervalOpt).longValue
-    val compressionCodec = CompressionCodec.getCompressionCodec(
-      options.valueOf(compressionCodecOpt))
+    val compressionCodec = CompressionCodec
+      .getCompressionCodec(options.valueOf(compressionCodecOpt))
     val rand = new Random
     rand.nextBytes(buffer.array)
     val numMessages = bufferSize / (messageSize + MessageSet.LogOverhead)
     val messageSet = new ByteBufferMessageSet(
       compressionCodec = compressionCodec,
-      messages = (0 until numMessages).map(x =>
-        new Message(new Array[Byte](messageSize))): _*)
+      messages = (0 until numMessages)
+        .map(x => new Message(new Array[Byte](messageSize))): _*)
 
     val writables = new Array[Writable](numFiles)
     val scheduler = new KafkaScheduler(1)
@@ -133,15 +109,14 @@ object TestLinearWriteSpeed {
         writables(i) =
           new ChannelWritable(new File(dir, "kafka-test-" + i + ".dat"), buffer)
       } else if (options.has(logOpt)) {
-        val segmentSize = rand.nextInt(
-          512) * 1024 * 1024 + 64 * 1024 * 1024 // vary size to avoid herd effect
+        val segmentSize = rand
+          .nextInt(
+            512) * 1024 * 1024 + 64 * 1024 * 1024 // vary size to avoid herd effect
         val logProperties = new Properties()
-        logProperties.put(
-          LogConfig.SegmentBytesProp,
-          segmentSize: java.lang.Integer)
-        logProperties.put(
-          LogConfig.FlushMessagesProp,
-          flushInterval: java.lang.Long)
+        logProperties
+          .put(LogConfig.SegmentBytesProp, segmentSize: java.lang.Integer)
+        logProperties
+          .put(LogConfig.FlushMessagesProp, flushInterval: java.lang.Long)
         writables(i) = new LogWritable(
           new File(dir, "kafka-test-" + i),
           new LogConfig(logProperties),
@@ -173,9 +148,8 @@ object TestLinearWriteSpeed {
       written += writeSize
       count += 1
       totalWritten += writeSize
-      if ((start - lastReport) / (
-            1000.0 * 1000.0
-          ) > reportingInterval.doubleValue) {
+      if ((start - lastReport) / (1000.0 * 1000.0) > reportingInterval
+            .doubleValue) {
         val ellapsedSecs = (start - lastReport) / (1000.0 * 1000.0 * 1000.0)
         val mb = written / (1024.0 * 1024.0)
         println("%10.3f\t%10.3f\t%10.3f".format(
@@ -209,8 +183,7 @@ object TestLinearWriteSpeed {
     file.deleteOnExit()
     val raf = new RandomAccessFile(file, "rw")
     raf.setLength(size)
-    val buffer = raf
-      .getChannel()
+    val buffer = raf.getChannel()
       .map(FileChannel.MapMode.READ_WRITE, 0, raf.length())
     def write(): Int = {
       buffer.put(content)

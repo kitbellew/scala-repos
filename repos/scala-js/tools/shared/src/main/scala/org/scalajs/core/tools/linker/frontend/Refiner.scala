@@ -50,10 +50,9 @@ final class Refiner {
           if (!analyzerInfo.isAnySubclassInstantiated) None
           else Some(LinkedClass.dummyParent(encodedName, Some("dummy")))
 
-        linkedClassesByName
-          .get(encodedName)
-          .map { refineClassDef(_, analyzerInfo) }
-          .orElse(optDummyParent)
+        linkedClassesByName.get(encodedName).map {
+          refineClassDef(_, analyzerInfo)
+        }.orElse(optDummyParent)
       }
 
       val linkedClassDefs = for {

@@ -44,9 +44,7 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
 
   // make it lazy so as to only do once
   lazy val fieldsFromHeaderFile = {
-    val names = readFromFile(headerPath)
-      .split("\t")
-      .toSeq
+    val names = readFromFile(headerPath).split("\t").toSeq
     new Fields(names: _*)
   }
 

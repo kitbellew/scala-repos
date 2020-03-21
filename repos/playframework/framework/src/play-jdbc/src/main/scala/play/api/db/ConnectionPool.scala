@@ -80,9 +80,7 @@ object ConnectionPool {
         val defaultProperties =
           "?useUnicode=yes&characterEncoding=UTF-8&connectionCollation=utf8_general_ci"
         val addDefaultPropertiesIfNeeded = MysqlCustomProperties
-          .findFirstMatchIn(url)
-          .map(_ => "")
-          .getOrElse(defaultProperties)
+          .findFirstMatchIn(url).map(_ => "").getOrElse(defaultProperties)
         Some(
           s"jdbc:mysql://$host/${dbname + addDefaultPropertiesIfNeeded}") -> Some(
           username -> password)

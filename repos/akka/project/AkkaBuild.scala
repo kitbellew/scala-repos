@@ -41,11 +41,9 @@ object AkkaBuild extends Build {
     SphinxDoc.akkaSettings ++ Dist.settings ++ s3Settings ++
     UnidocRoot.akkaSettings ++
     Protobuf.settings ++ Seq(
-    parallelExecution in GlobalScope := System
-      .getProperty(
-        "akka.parallelExecution",
-        parallelExecutionByDefault.toString)
-      .toBoolean,
+    parallelExecution in GlobalScope := System.getProperty(
+      "akka.parallelExecution",
+      parallelExecutionByDefault.toString).toBoolean,
     Dist.distExclude := Seq(actorTests.id, docs.id, samples.id, osgi.id),
     S3.host in S3.upload := "downloads.typesafe.com.s3.amazonaws.com",
     S3.progress in S3.upload := true,
@@ -316,8 +314,7 @@ object AkkaBuild extends Build {
 
   lazy val httpMarshallersScala = Project(
     id = "akka-http-marshallers-scala-experimental",
-    base = file("akka-http-marshallers-scala"))
-    .settings(parentSettings: _*)
+    base = file("akka-http-marshallers-scala")).settings(parentSettings: _*)
     .aggregate(httpSprayJson, httpXml)
 
   lazy val httpXml = httpMarshallersScalaSubproject("xml")
@@ -326,8 +323,7 @@ object AkkaBuild extends Build {
 
   lazy val httpMarshallersJava = Project(
     id = "akka-http-marshallers-java-experimental",
-    base = file("akka-http-marshallers-java"))
-    .settings(parentSettings: _*)
+    base = file("akka-http-marshallers-java")).settings(parentSettings: _*)
     .aggregate(httpJackson)
 
   lazy val httpJackson = httpMarshallersJavaSubproject("jackson")
@@ -450,8 +446,7 @@ object AkkaBuild extends Build {
           sampleDistributedDataScala,
           sampleDistributedDataJava
         )
-  ).settings(samplesSettings: _*)
-    .disablePlugins(MimaPlugin)
+  ).settings(samplesSettings: _*).disablePlugins(MimaPlugin)
 
   lazy val sampleCamelJava = Sample.project("akka-sample-camel-java")
   lazy val sampleCamelScala = Sample.project("akka-sample-camel-scala")
@@ -468,23 +463,23 @@ object AkkaBuild extends Build {
 
   lazy val sampleMultiNodeScala = Sample.project("akka-sample-multi-node-scala")
 
-  lazy val samplePersistenceJava = Sample.project(
-    "akka-sample-persistence-java")
-  lazy val samplePersistenceScala = Sample.project(
-    "akka-sample-persistence-scala")
-  lazy val samplePersistenceJavaLambda = Sample.project(
-    "akka-sample-persistence-java-lambda")
+  lazy val samplePersistenceJava = Sample
+    .project("akka-sample-persistence-java")
+  lazy val samplePersistenceScala = Sample
+    .project("akka-sample-persistence-scala")
+  lazy val samplePersistenceJavaLambda = Sample
+    .project("akka-sample-persistence-java-lambda")
 
   lazy val sampleRemoteJava = Sample.project("akka-sample-remote-java")
   lazy val sampleRemoteScala = Sample.project("akka-sample-remote-scala")
 
-  lazy val sampleSupervisionJavaLambda = Sample.project(
-    "akka-sample-supervision-java-lambda")
+  lazy val sampleSupervisionJavaLambda = Sample
+    .project("akka-sample-supervision-java-lambda")
 
-  lazy val sampleDistributedDataScala = Sample.project(
-    "akka-sample-distributed-data-scala")
-  lazy val sampleDistributedDataJava = Sample.project(
-    "akka-sample-distributed-data-java")
+  lazy val sampleDistributedDataScala = Sample
+    .project("akka-sample-distributed-data-scala")
+  lazy val sampleDistributedDataJava = Sample
+    .project("akka-sample-distributed-data-java")
 
   lazy val osgiDiningHakkersSampleMavenTest = Project(
     id = "akka-sample-osgi-dining-hakkers-maven-test",
@@ -522,8 +517,7 @@ object AkkaBuild extends Build {
             "install")
         }
       }
-    )
-    .settings(dontPublishSettings: _*)
+    ).settings(dontPublishSettings: _*)
 
   val dontPublishSettings = Seq(
     publishSigned := (),
@@ -554,35 +548,33 @@ object AkkaBuild extends Build {
                       |without prior deprecation.
                       |""".stripMargin)
 
-  val (mavenLocalResolver, mavenLocalResolverSettings) =
-    System.getProperty("akka.build.M2Dir") match {
-      case null => (Resolver.mavenLocal, Seq.empty)
-      case path =>
-        // Maven resolver settings
-        val resolver = Resolver.file("user-publish-m2-local", new File(path))
-        (
-          resolver,
-          Seq(
-            otherResolvers := resolver :: publishTo.value.toList,
-            publishM2Configuration := Classpaths.publishConfig(
-              packagedArtifacts.value,
-              None,
-              resolverName = resolver.name,
-              checksums = checksums.in(publishM2).value,
-              logging = ivyLoggingLevel.value)
-          ))
-    }
+  val (mavenLocalResolver, mavenLocalResolverSettings) = System
+    .getProperty("akka.build.M2Dir") match {
+    case null => (Resolver.mavenLocal, Seq.empty)
+    case path =>
+      // Maven resolver settings
+      val resolver = Resolver.file("user-publish-m2-local", new File(path))
+      (
+        resolver,
+        Seq(
+          otherResolvers := resolver :: publishTo.value.toList,
+          publishM2Configuration := Classpaths.publishConfig(
+            packagedArtifacts.value,
+            None,
+            resolverName = resolver.name,
+            checksums = checksums.in(publishM2).value,
+            logging = ivyLoggingLevel.value)
+        ))
+  }
 
   lazy val resolverSettings = {
     // should we be allowed to use artifacts published to the local maven repository
-    if (System
-          .getProperty("akka.build.useLocalMavenResolver", "false")
+    if (System.getProperty("akka.build.useLocalMavenResolver", "false")
           .toBoolean) Seq(resolvers += mavenLocalResolver)
     else Seq.empty
   } ++ {
     // should we be allowed to use artifacts from sonatype snapshots
-    if (System
-          .getProperty("akka.build.useSnapshotSonatypeResolver", "false")
+    if (System.getProperty("akka.build.useSnapshotSonatypeResolver", "false")
           .toBoolean) Seq(resolvers += Resolver.sonatypeRepo("snapshots"))
     else Seq.empty
   } ++ Seq(
@@ -649,13 +641,10 @@ object AkkaBuild extends Build {
       * Test settings
       */
 
-    parallelExecution in Test := System
-      .getProperty(
-        "akka.parallelExecution",
-        parallelExecutionByDefault.toString)
-      .toBoolean,
-    logBuffered in Test := System
-      .getProperty("akka.logBufferedTests", "false")
+    parallelExecution in Test := System.getProperty(
+      "akka.parallelExecution",
+      parallelExecutionByDefault.toString).toBoolean,
+    logBuffered in Test := System.getProperty("akka.logBufferedTests", "false")
       .toBoolean,
     // show full stack traces and test case durations
     testOptions in Test += Tests.Argument("-oDF"),

@@ -92,9 +92,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       // `throw null` is valid although scala.Null (as defined in src/library-aux) isn't a subtype of Throwable.
       // Similarly for scala.Nothing (again, as defined in src/library-aux).
       assert(
-        thrownKind.isNullType || thrownKind.isNothingType || thrownKind.asClassBType
-          .isSubtypeOf(jlThrowableRef)
-          .get)
+        thrownKind.isNullType || thrownKind.isNothingType || thrownKind
+          .asClassBType.isSubtypeOf(jlThrowableRef).get)
       genLoad(expr, thrownKind)
       lineNumber(expr)
       emit(
@@ -130,8 +129,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         // binary operation
         case rarg :: Nil =>
           resKind = tpeTK(larg).maxType(tpeTK(rarg))
-          if (scalaPrimitives.isShiftOp(code) || scalaPrimitives.isBitwiseOp(
-                code)) {
+          if (scalaPrimitives.isShiftOp(code) || scalaPrimitives
+                .isBitwiseOp(code)) {
             assert(
               resKind.isIntegralType || (resKind == BOOL),
               s"$resKind incompatible with arithmetic modulo operation.")
@@ -267,8 +266,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         genCoercion(code)
         coercionTo(code)
       } else
-        abort(
-          s"Primitive operation not handled yet: ${sym.fullName}(${fun.symbol.simpleName}) at: ${tree.pos}")
+        abort(s"Primitive operation not handled yet: ${sym.fullName}(${fun
+          .symbol.simpleName}) at: ${tree.pos}")
     }
 
     def genLoad(tree: Tree) { genLoad(tree, tpeTK(tree)) }
@@ -320,10 +319,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               qual,
               Literal(
                 Constant(boostrapMethodRef: Symbol)) :: staticAndDynamicArgs) =>
-          val numStaticArgs =
-            boostrapMethodRef.paramss.head.size - 3 /*JVM provided args*/
-          val (staticArgs, dynamicArgs) = staticAndDynamicArgs.splitAt(
-            numStaticArgs)
+          val numStaticArgs = boostrapMethodRef.paramss.head
+            .size - 3 /*JVM provided args*/
+          val (staticArgs, dynamicArgs) = staticAndDynamicArgs
+            .splitAt(numStaticArgs)
           val boostrapDescriptor = staticHandleFromSymbol(boostrapMethodRef)
           val bootstrapArgs = staticArgs.map({
             case t @ Literal(c: Constant) => bootstrapMethodArg(c, t.pos)
@@ -345,7 +344,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           val symIsModuleClass = tree.symbol.isModuleClass
           assert(
             tree.symbol == claszSymbol || symIsModuleClass,
-            s"Trying to access the this of another class: tree.symbol = ${tree.symbol}, class symbol = $claszSymbol compilation unit: $cunit"
+            s"Trying to access the this of another class: tree.symbol = ${tree
+              .symbol}, class symbol = $claszSymbol compilation unit: $cunit"
           )
           if (symIsModuleClass && tree.symbol != claszSymbol) {
             generatedType = genLoadModule(tree)
@@ -359,7 +359,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case Select(Ident(nme.EMPTY_PACKAGE_NAME), module) =>
           assert(
             tree.symbol.isModule,
-            s"Selection of non-module from empty package: $tree sym: ${tree.symbol} at: ${tree.pos}")
+            s"Selection of non-module from empty package: $tree sym: ${tree
+              .symbol} at: ${tree.pos}")
           genLoadModule(tree)
 
         case Select(qualifier, selector) =>
@@ -493,9 +494,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             const.value != null,
             const
           ) // TODO this invariant isn't documented in `case class Constant`
-          mnode.visitLdcInsn(
-            const.stringValue
-          ) // `stringValue` special-cases null, but not for a const with StringTag
+          mnode
+            .visitLdcInsn(
+              const.stringValue
+            ) // `stringValue` special-cases null, but not for a const with StringTag
 
         case NullTag => emit(asm.Opcodes.ACONST_NULL)
 
@@ -638,7 +640,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               case parent :: Nil => parent
               case parents =>
                 devWarning(
-                  "ambiguous parent class qualifier: " + qual.symbol.parentSymbols)
+                  "ambiguous parent class qualifier: " + qual.symbol
+                    .parentSymbols)
                 null
             }
           genSuperApply(hostClass, fun.symbol, args)
@@ -667,7 +670,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               if (argsSize > dims) {
                 reporter.error(
                   app.pos,
-                  s"too many arguments for array constructor: found ${args.length} but array has only $dims dimension(s)")
+                  s"too many arguments for array constructor: found ${args
+                    .length} but array has only $dims dimension(s)")
               }
               if (argsSize < dims) {
                 /* In one step:
@@ -680,9 +684,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               argsSize match {
                 case 1 => bc newarray elemKind
                 case _ =>
-                  val descr = (
-                    '[' * argsSize
-                  ) + elemKind.descriptor // denotes the same as: arrayN(elemKind, argsSize).descriptor
+                  val descr = ('[' * argsSize) + elemKind
+                    .descriptor // denotes the same as: arrayN(elemKind, argsSize).descriptor
                   mnode.visitMultiANewArrayInsn(descr, argsSize)
               }
 
@@ -699,8 +702,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           }
         case Apply(fun, args)
             if app.hasAttachment[delambdafy.LambdaMetaFactoryCapable] =>
-          val attachment =
-            app.attachments.get[delambdafy.LambdaMetaFactoryCapable].get
+          val attachment = app.attachments
+            .get[delambdafy.LambdaMetaFactoryCapable].get
           genLoadArguments(args, paramTKs(app))
           genInvokeDynamicLambda(
             attachment.target,
@@ -773,16 +776,15 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                   } else {
                     hostClass = qualSym
                     if (qual.tpe.typeSymbol != qualSym) {
-                      log(
-                        s"Precisified host class for $sym from ${qual.tpe.typeSymbol.fullName} to ${qualSym.fullName}")
+                      log(s"Precisified host class for $sym from ${qual.tpe
+                        .typeSymbol.fullName} to ${qualSym.fullName}")
                     }
                   }
 
                 case _ =>
               }
-              if ((targetTypeKind != null) && (
-                    sym == definitions.Array_clone
-                  ) && invokeStyle.isVirtual) {
+              if ((targetTypeKind != null) && (sym == definitions
+                    .Array_clone) && invokeStyle.isVirtual) {
                 // An invokevirtual points to a CONSTANT_Methodref_info which in turn points to a
                 // CONSTANT_Class_info of the receiver type.
                 // The JVMS is not explicit about this, but that receiver type may be an array type
@@ -1077,7 +1079,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
     def genLoadModule(module: Symbol) {
       def inStaticMethod = methSymbol != null && methSymbol.isStaticMember
-      if (claszSymbol == module.moduleClass && jMethodName != "readResolve" && !inStaticMethod) {
+      if (claszSymbol == module
+            .moduleClass && jMethodName != "readResolve" && !inStaticMethod) {
         mnode.visitVarInsn(asm.Opcodes.ALOAD, 0)
       } else {
         val mbt = symInfoTK(module).asClassBType
@@ -1163,26 +1166,26 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
       def needsInterfaceCall(sym: Symbol) =
         (sym.isTraitOrInterface
-          || sym.isJavaDefined && sym.isNonBottomSubClass(
-            definitions.ClassfileAnnotationClass))
+          || sym.isJavaDefined && sym
+            .isNonBottomSubClass(definitions.ClassfileAnnotationClass))
 
       val isTraitCallToObjectMethod =
         hostSymbol != methodOwner && methodOwner.isTraitOrInterface && ObjectTpe
-          .decl(method.name) != NoSymbol && method.overrideChain.last.owner == ObjectClass
+          .decl(method.name) != NoSymbol && method.overrideChain.last
+          .owner == ObjectClass
 
       // whether to reference the type of the receiver or
       // the type of the method owner
       val useMethodOwner = ((!style.isVirtual
         || hostSymbol.isBottomClass
-        || methodOwner == definitions.ObjectClass) && !(
-        style.isSuper && hostSymbol != null
-      )) || isTraitCallToObjectMethod
+        || methodOwner == definitions.ObjectClass) && !(style
+        .isSuper && hostSymbol != null)) || isTraitCallToObjectMethod
       val receiver = if (useMethodOwner) methodOwner else hostSymbol
       val jowner = internalName(receiver)
 
-      if (style.isSuper && (
-            isTraitCallToObjectMethod || receiver.isTraitOrInterface
-          ) && !cnode.interfaces.contains(jowner)) cnode.interfaces.add(jowner)
+      if (style.isSuper && (isTraitCallToObjectMethod || receiver
+            .isTraitOrInterface) && !cnode.interfaces.contains(jowner))
+        cnode.interfaces.add(jowner)
 
       val jname = method.javaSimpleName.toString
       val bmType = methodBTypeFromSymbol(method)
@@ -1236,9 +1239,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       tree match {
         case Apply(fun @ Select(larg, method), rarg) =>
           if (isPrimitive(fun.symbol) &&
-              scalaPrimitives.getPrimitive(
-                fun.symbol) == scalaPrimitives.CONCAT)
-            liftStringConcat(larg) ::: rarg
+              scalaPrimitives.getPrimitive(fun.symbol) == scalaPrimitives
+                .CONCAT) liftStringConcat(larg) ::: rarg
           else tree :: Nil
         case _ => tree :: Nil
       }
@@ -1394,8 +1396,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             case ZAND => genZandOrZor(and = true)
             case ZOR  => genZandOrZor(and = false)
             case code =>
-              if (scalaPrimitives.isUniversalEqualityOp(code) && tpeTK(
-                    lhs).isClass) {
+              if (scalaPrimitives.isUniversalEqualityOp(code) && tpeTK(lhs)
+                    .isClass) {
                 // rewrite `==` to null tests and `equals`. not needed for arrays (`equals` is reference equality).
                 if (code == EQ)
                   genEqEqPrimitive(
@@ -1481,9 +1483,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           genCZJUMP(success, failure, TestOp.NE, BOOL, targetIfNoJump)
         } else {
           // l == r -> if (l eq null) r eq null else l.equals(r)
-          val eqEqTempLocal = locals.makeLocal(
-            ObjectRef,
-            nme.EQEQ_LOCAL_VAR.toString)
+          val eqEqTempLocal = locals
+            .makeLocal(ObjectRef, nme.EQEQ_LOCAL_VAR.toString)
           val lNull = new asm.Label
           val lNonNull = new asm.Label
 
@@ -1539,20 +1540,19 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       // Requires https://github.com/scala/scala-java8-compat on the runtime classpath
       val invokedType = asm.Type.getMethodDescriptor(
         asmType(functionalInterface),
-        (receiver ::: capturedParams).map(sym =>
-          typeToBType(sym.info).toASMType): _*)
+        (receiver ::: capturedParams)
+          .map(sym => typeToBType(sym.info).toASMType): _*)
 
       val constrainedType = new MethodBType(
         lambdaParams.map(p => typeToBType(p.tpe)),
         typeToBType(lambdaTarget.tpe.resultType)).toASMType
-      val sam = functionalInterface.info.decls
-        .find(_.isDeferred)
+      val sam = functionalInterface.info.decls.find(_.isDeferred)
         .getOrElse(functionalInterface.info.member(nme.apply))
       val samName = sam.name.toString
       val samMethodType = methodBTypeFromSymbol(sam).toASMType
 
-      val flags =
-        java.lang.invoke.LambdaMetafactory.FLAG_SERIALIZABLE | java.lang.invoke.LambdaMetafactory.FLAG_MARKERS
+      val flags = java.lang.invoke.LambdaMetafactory.FLAG_SERIALIZABLE | java
+        .lang.invoke.LambdaMetafactory.FLAG_MARKERS
 
       val ScalaSerializable = classBTypeFromSymbol(
         definitions.SerializableClass).toASMType

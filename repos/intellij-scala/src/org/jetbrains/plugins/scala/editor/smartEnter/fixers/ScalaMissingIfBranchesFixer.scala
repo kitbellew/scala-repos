@@ -17,10 +17,8 @@ class ScalaMissingIfBranchesFixer extends ScalaFixer {
       editor: Editor,
       processor: ScalaSmartEnterProcessor,
       psiElement: PsiElement): OperationPerformed = {
-    val ifStatement = PsiTreeUtil.getParentOfType(
-      psiElement,
-      classOf[ScIfStmt],
-      false)
+    val ifStatement = PsiTreeUtil
+      .getParentOfType(psiElement, classOf[ScIfStmt], false)
     if (ifStatement == null) return NoOperation
 
     val doc = editor.getDocument
@@ -31,8 +29,8 @@ class ScalaMissingIfBranchesFixer extends ScalaFixer {
       case Some(block: ScBlockExpr) =>
         ifStatement.condition.foreach {
           case cond =>
-            if (cond.getTextRange.containsOffset(
-                  editor.getCaretModel.getOffset))
+            if (cond.getTextRange
+                  .containsOffset(editor.getCaretModel.getOffset))
               return placeInWholeBlock(block, editor)
         }
         return NoOperation
@@ -48,9 +46,9 @@ class ScalaMissingIfBranchesFixer extends ScalaFixer {
 
     val rParenthOffset = rParenth.getTextRange.getEndOffset
 
-    if (ifStatement.elseBranch.isEmpty && !transformingOneLiner || ifStatement.thenBranch.isEmpty) {
-      doc.insertString(rParenthOffset, " {}")
-    } else {
+    if (ifStatement.elseBranch.isEmpty && !transformingOneLiner || ifStatement
+          .thenBranch.isEmpty) { doc.insertString(rParenthOffset, " {}") }
+    else {
       doc.insertString(rParenthOffset, " {")
       doc.insertString(thenBranch.get.getTextRange.getEndOffset + 1, "}")
     }

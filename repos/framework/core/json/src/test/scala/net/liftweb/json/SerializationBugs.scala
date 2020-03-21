@@ -104,8 +104,7 @@ object SerializationBugs extends Specification {
       def deserialize(implicit format: Formats) = {
         case (TypeInfo(SeqClass, parameterizedType), JArray(xs)) =>
           val typeInfo = TypeInfo(
-            parameterizedType
-              .map(_.getActualTypeArguments()(0))
+            parameterizedType.map(_.getActualTypeArguments()(0))
               .getOrElse(failure("No type parameter info for type Seq"))
               .asInstanceOf[Class[_]],
             None)

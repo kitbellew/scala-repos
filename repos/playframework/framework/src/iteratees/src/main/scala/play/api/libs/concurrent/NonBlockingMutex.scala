@@ -57,7 +57,8 @@ private[play] final class NonBlockingMutex {
     val prevState = state.get
     val newState = prevState match {
       case null =>
-        Vector.empty // This is very cheap because Vector.empty is only allocated once
+        Vector
+          .empty // This is very cheap because Vector.empty is only allocated once
       case pending => pending :+ op
     }
     if (state.compareAndSet(prevState, newState)) {

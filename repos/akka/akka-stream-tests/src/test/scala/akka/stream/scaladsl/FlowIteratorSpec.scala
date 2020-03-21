@@ -170,9 +170,7 @@ abstract class AbstractFlowIteratorSpec extends AkkaSpec {
     }
 
     "produce elements with two transformation steps" in assertAllStagesStopped {
-      val p = createSource(4)
-        .filter(_ % 2 == 0)
-        .map(_ * 2)
+      val p = createSource(4).filter(_ % 2 == 0).map(_ * 2)
         .runWith(Sink.asPublisher(false))
       val c = TestSubscriber.manualProbe[Int]()
       p.subscribe(c)

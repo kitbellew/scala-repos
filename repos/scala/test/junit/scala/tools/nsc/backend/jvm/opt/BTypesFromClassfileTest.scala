@@ -77,9 +77,8 @@ class BTypesFromClassfileTest {
         // So a class may be public in bytecode, but the symbol still says private.
         if (fromSym.nestedInfo.isEmpty) fromSym.flags == fromClassfile.flags
         else
-          (fromSym.flags | ACC_PRIVATE | ACC_PUBLIC) == (
-            fromClassfile.flags | ACC_PRIVATE | ACC_PUBLIC
-          )
+          (fromSym.flags | ACC_PRIVATE | ACC_PUBLIC) == (fromClassfile
+            .flags | ACC_PRIVATE | ACC_PUBLIC)
       },
       s"class flags differ\n$fromSym\n$fromClassfile"
     )
@@ -108,8 +107,8 @@ class BTypesFromClassfileTest {
     //   and anonymous classes as members of the outer class. But not for unpickled symbols).
     // The fromClassfile info has all nested classes, including anonymous and local. So we filter
     // them out: member classes are identified by having the `outerName` defined.
-    val memberClassesFromClassfile = fromClassfile.nestedClasses.filter(
-      _.info.get.nestedInfo.get.outerName.isDefined)
+    val memberClassesFromClassfile = fromClassfile.nestedClasses
+      .filter(_.info.get.nestedInfo.get.outerName.isDefined)
     // Sorting is required: the backend sorts all InnerClass entries by internalName before writing
     // them to the classfile (to make it deterministic: the entries are collected in a Set during
     // code generation).
@@ -128,8 +127,8 @@ class BTypesFromClassfileTest {
       clearCache()
       val fromSymbol = classBTypeFromSymbol(classSym)
       clearCache()
-      val fromClassfile = bTypes.classBTypeFromParsedClassfile(
-        fromSymbol.internalName)
+      val fromClassfile = bTypes
+        .classBTypeFromParsedClassfile(fromSymbol.internalName)
       sameBType(fromSymbol, fromClassfile)
     }
 

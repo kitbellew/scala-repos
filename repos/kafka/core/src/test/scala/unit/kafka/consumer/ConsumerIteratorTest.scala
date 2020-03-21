@@ -36,8 +36,7 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
   val numNodes = 1
 
   def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numNodes, zkConnect)
+    TestUtils.createBrokerConfigs(numNodes, zkConnect)
       .map(KafkaConfig.fromProps)
 
   val messages = new mutable.HashMap[Int, Seq[Message]]
@@ -95,8 +94,7 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
     assertFalse(iter.hasNext)
     assertEquals(0, queue.size) // Shutdown command has been consumed.
     assertEquals(5, receivedMessages.size)
-    val unconsumed = messageSet
-      .filter(_.offset >= consumedOffset)
+    val unconsumed = messageSet.filter(_.offset >= consumedOffset)
       .map(m => TestUtils.readString(m.message.payload))
     assertEquals(unconsumed, receivedMessages)
   }
@@ -129,7 +127,8 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
         case e: UnsupportedOperationException => // this is ok
         case e2: Throwable =>
           fail(
-            "Unexpected exception when iterating the message set. " + e2.getMessage)
+            "Unexpected exception when iterating the message set. " + e2
+              .getMessage)
       }
     }
   }

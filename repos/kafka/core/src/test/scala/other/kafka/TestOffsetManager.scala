@@ -77,10 +77,8 @@ object TestOffsetManager {
 
     private val groupId = "group-" + id
     private val metadata = "Metadata from commit thread " + id
-    private var offsetsChannel = ClientUtils.channelToOffsetManager(
-      groupId,
-      zkUtils,
-      SocketTimeoutMs)
+    private var offsetsChannel = ClientUtils
+      .channelToOffsetManager(groupId, zkUtils, SocketTimeoutMs)
     private var offset = 0L
     val numErrors = new AtomicInteger(0)
     val numCommits = new AtomicInteger(0)
@@ -93,10 +91,8 @@ object TestOffsetManager {
 
     private def ensureConnected() {
       if (!offsetsChannel.isConnected)
-        offsetsChannel = ClientUtils.channelToOffsetManager(
-          groupId,
-          zkUtils,
-          SocketTimeoutMs)
+        offsetsChannel = ClientUtils
+          .channelToOffsetManager(groupId, zkUtils, SocketTimeoutMs)
     }
 
     override def doWork() {
@@ -112,8 +108,8 @@ object TestOffsetManager {
         offsetsChannel.send(commitRequest)
         numCommits.getAndIncrement
         commitTimer.time {
-          val response = OffsetCommitResponse.readFrom(
-            offsetsChannel.receive().payload())
+          val response = OffsetCommitResponse
+            .readFrom(offsetsChannel.receive().payload())
           if (response.commitStatus.exists(_._2 != Errors.NONE.code))
             numErrors.getAndIncrement
         }
@@ -164,9 +160,8 @@ object TestOffsetManager {
     private val fetchTimer = new KafkaTimer(timer)
 
     private val channels = mutable.Map[Int, BlockingChannel]()
-    private var metadataChannel = ClientUtils.channelToAnyBroker(
-      zkUtils,
-      SocketTimeoutMs)
+    private var metadataChannel = ClientUtils
+      .channelToAnyBroker(zkUtils, SocketTimeoutMs)
 
     private val numErrors = new AtomicInteger(0)
 
@@ -176,18 +171,14 @@ object TestOffsetManager {
       try {
         metadataChannel.send(GroupCoordinatorRequest(group))
         val coordinatorId = GroupCoordinatorResponse
-          .readFrom(metadataChannel.receive().payload())
-          .coordinatorOpt
-          .map(_.id)
-          .getOrElse(-1)
+          .readFrom(metadataChannel.receive().payload()).coordinatorOpt
+          .map(_.id).getOrElse(-1)
 
         val channel =
           if (channels.contains(coordinatorId)) channels(coordinatorId)
           else {
-            val newChannel = ClientUtils.channelToOffsetManager(
-              group,
-              zkUtils,
-              SocketTimeoutMs)
+            val newChannel = ClientUtils
+              .channelToOffsetManager(group, zkUtils, SocketTimeoutMs)
             channels.put(coordinatorId, newChannel)
             newChannel
           }
@@ -200,8 +191,8 @@ object TestOffsetManager {
           channel.send(fetchRequest)
 
           fetchTimer.time {
-            val response = OffsetFetchResponse.readFrom(
-              channel.receive().payload())
+            val response = OffsetFetchResponse
+              .readFrom(channel.receive().payload())
             if (response.requestInfo.exists(_._2.error != Errors.NONE.code)) {
               numErrors.getAndIncrement
             }
@@ -211,24 +202,21 @@ object TestOffsetManager {
             channel.disconnect()
             channels.remove(coordinatorId)
           case e2: IOException =>
-            println("Error while fetching offset from %s:%d due to %s.".format(
-              channel.host,
-              channel.port,
-              e2))
+            println(
+              "Error while fetching offset from %s:%d due to %s."
+                .format(channel.host, channel.port, e2))
             channel.disconnect()
             channels.remove(coordinatorId)
         }
       } catch {
         case e: IOException =>
           println(
-            "Error while querying %s:%d - shutting down query channel.".format(
-              metadataChannel.host,
-              metadataChannel.port))
+            "Error while querying %s:%d - shutting down query channel."
+              .format(metadataChannel.host, metadataChannel.port))
           metadataChannel.disconnect()
           println("Creating new query channel.")
-          metadataChannel = ClientUtils.channelToAnyBroker(
-            zkUtils,
-            SocketTimeoutMs)
+          metadataChannel = ClientUtils
+            .channelToAnyBroker(zkUtils, SocketTimeoutMs)
       } finally { Thread.sleep(fetchIntervalMs) }
 
     }
@@ -254,46 +242,33 @@ object TestOffsetManager {
   def main(args: Array[String]) {
     val parser = new OptionParser
     val zookeeperOpt = parser
-      .accepts("zookeeper", "The ZooKeeper connection URL.")
-      .withRequiredArg
-      .describedAs("ZooKeeper URL")
-      .ofType(classOf[java.lang.String])
+      .accepts("zookeeper", "The ZooKeeper connection URL.").withRequiredArg
+      .describedAs("ZooKeeper URL").ofType(classOf[java.lang.String])
       .defaultsTo("localhost:2181")
 
     val commitIntervalOpt = parser
-      .accepts("commit-interval-ms", "Offset commit interval.")
-      .withRequiredArg
-      .describedAs("interval")
-      .ofType(classOf[java.lang.Integer])
+      .accepts("commit-interval-ms", "Offset commit interval.").withRequiredArg
+      .describedAs("interval").ofType(classOf[java.lang.Integer])
       .defaultsTo(100)
 
     val fetchIntervalOpt = parser
-      .accepts("fetch-interval-ms", "Offset fetch interval.")
-      .withRequiredArg
-      .describedAs("interval")
-      .ofType(classOf[java.lang.Integer])
+      .accepts("fetch-interval-ms", "Offset fetch interval.").withRequiredArg
+      .describedAs("interval").ofType(classOf[java.lang.Integer])
       .defaultsTo(1000)
 
     val numPartitionsOpt = parser
       .accepts("partition-count", "Number of partitions per commit.")
-      .withRequiredArg
-      .describedAs("interval")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1)
+      .withRequiredArg.describedAs("interval")
+      .ofType(classOf[java.lang.Integer]).defaultsTo(1)
 
     val numThreadsOpt = parser
-      .accepts("thread-count", "Number of commit threads.")
-      .withRequiredArg
-      .describedAs("threads")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1)
+      .accepts("thread-count", "Number of commit threads.").withRequiredArg
+      .describedAs("threads").ofType(classOf[java.lang.Integer]).defaultsTo(1)
 
     val reportingIntervalOpt = parser
       .accepts("reporting-interval-ms", "Interval at which stats are reported.")
-      .withRequiredArg
-      .describedAs("interval (ms)")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(3000)
+      .withRequiredArg.describedAs("interval (ms)")
+      .ofType(classOf[java.lang.Integer]).defaultsTo(3000)
 
     val helpOpt = parser.accepts("help", "Print this message.")
 

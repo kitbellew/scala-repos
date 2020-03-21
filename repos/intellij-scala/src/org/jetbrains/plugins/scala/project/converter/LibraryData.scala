@@ -31,9 +31,7 @@ private object LibraryData {
 
   def apply(element: Element): LibraryData = {
     def urls(kind: String) =
-      XPath
-        .selectNodes(element, kind + "/root/@url")
-        .asScala
+      XPath.selectNodes(element, kind + "/root/@url").asScala
         .map(_.asInstanceOf[Attribute].getValue)
 
     LibraryData(

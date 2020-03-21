@@ -63,8 +63,8 @@ trait ValueClassAnnotator {
           ) => //value class is inside a trait or a class, need to highlight it
         holder.createErrorAnnotation(
           valueClass.nameId,
-          ScalaBundle.message(
-            "value.classes.may.not.be.member.of.another.class"))
+          ScalaBundle
+            .message("value.classes.may.not.be.member.of.another.class"))
       case _ => //we are done, value class is either top level or inside a statically accessible object
     }
   }
@@ -137,11 +137,11 @@ trait ValueClassAnnotator {
     tp match {
       case Some(tpClause) =>
         tpClause.typeParameters
-          .filter(_.hasAnnotation("scala.specialized").isDefined)
-          .foreach { tpParam =>
-            val message: String = ScalaBundle.message(
-              "type.parameter.value.class.may.not.be.specialized")
-            holder.createErrorAnnotation(tpParam.nameId, message)
+          .filter(_.hasAnnotation("scala.specialized").isDefined).foreach {
+            tpParam =>
+              val message: String = ScalaBundle
+                .message("type.parameter.value.class.may.not.be.specialized")
+              holder.createErrorAnnotation(tpParam.nameId, message)
           }
       case _ =>
     }

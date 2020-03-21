@@ -41,14 +41,11 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
             ref,
             "foreach"))
         else Seq.empty
-      val unitTypeReturns = body
-        .calculateReturns()
-        .collect {
-          case expr @ ExpressionType(ft @ ScFunctionType(Unit, _))
-              if arg.getType().getOrAny.equiv(ft) => expr
-          case expr @ ExpressionType(Unit)        => expr
-        }
-        .filter(_.getTextLength > 0)
+      val unitTypeReturns = body.calculateReturns().collect {
+        case expr @ ExpressionType(ft @ ScFunctionType(Unit, _))
+            if arg.getType().getOrAny.equiv(ft) => expr
+        case expr @ ExpressionType(Unit)        => expr
+      }.filter(_.getTextLength > 0)
 
       unitTypeReturns.foreach { e =>
         if (e.isPhysical)

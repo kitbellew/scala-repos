@@ -99,7 +99,8 @@ private[math] object Elementary {
           }
 
           if (cmp == BigInteger.EQUALS) return BigInteger.ZERO
-          else if (cmp == BigInteger.GREATER) // a minuend should not be shorter than subtrahend
+          else if (cmp == BigInteger
+                     .GREATER) // a minuend should not be shorter than subtrahend
             (op1Sign, subtract(op1.digits, op1Len, op2.digits, op2Len))
           else (op2Sign, subtract(op2.digits, op2Len, op1.digits, op1Len))
         }
@@ -227,9 +228,8 @@ private[math] object Elementary {
     */
   def inplaceAdd(op1: BigInteger, op2: BigInteger): Unit = {
     add(op1.digits, op1.digits, op1.numberLength, op2.digits, op2.numberLength)
-    op1.numberLength = Math.min(
-      Math.max(op1.numberLength, op2.numberLength) + 1,
-      op1.digits.length)
+    op1.numberLength = Math
+      .min(Math.max(op1.numberLength, op2.numberLength) + 1, op1.digits.length)
     op1.cutOffLeadingZeroes()
     op1.unCache()
   }

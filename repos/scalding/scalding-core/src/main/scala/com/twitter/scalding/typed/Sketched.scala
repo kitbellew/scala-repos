@@ -44,12 +44,9 @@ case class Sketched[K, V](
   def reducers = Some(numReducers)
 
   private lazy implicit val cms = CMS.monoid[Bytes](eps, delta, seed)
-  lazy val sketch: TypedPipe[CMS[Bytes]] = pipe
-    .map { case (k, _) => cms.create(Bytes(serialization(k))) }
-    .groupAll
-    .sum
-    .values
-    .forceToDisk
+  lazy val sketch: TypedPipe[CMS[Bytes]] = pipe.map {
+    case (k, _) => cms.create(Bytes(serialization(k)))
+  }.groupAll.sum.values.forceToDisk
 
   /**
     * Like a hashJoin, this joiner does not see all the values V at one time, only one at a time.
@@ -89,9 +86,7 @@ case class SketchJoined[K: Ordering, V, V2, R](
       case ((k, w), cms) =>
         val maxPerReducer =
           (cms.totalCount / numReducers) * maxReducerFraction + 1
-        val maxReplicas = (cms
-          .frequency(Bytes(left.serialize(k)))
-          .estimate
+        val maxReplicas = (cms.frequency(Bytes(left.serialize(k))).estimate
           .toDouble / maxPerReducer)
         //if the frequency is 0, maxReplicas.ceil will be 0 so we will filter out this key entirely
         //if it's < maxPerReducer, the ceil will round maxReplicas up to 1 to ensure we still see it
@@ -104,12 +99,9 @@ case class SketchJoined[K: Ordering, V, V2, R](
     val lhs = flatMapWithReplicas(left.pipe) { n => Some(rand.nextInt(n) + 1) }
     val rhs = flatMapWithReplicas(right) { n => 1.to(n) }
 
-    lhs.group
-      .cogroup(rhs.group) { (k, itv, itu) =>
-        itv.flatMap { v => joiner(k._2, v, itu) }
-      }
-      .withReducers(numReducers)
-      .map { case ((r, k), v) => (k, v) }
+    lhs.group.cogroup(rhs.group) { (k, itv, itu) =>
+      itv.flatMap { v => joiner(k._2, v, itu) }
+    }.withReducers(numReducers).map { case ((r, k), v) => (k, v) }
   }
 
   private implicit def intKeyOrd: Ordering[(Int, K)] = {

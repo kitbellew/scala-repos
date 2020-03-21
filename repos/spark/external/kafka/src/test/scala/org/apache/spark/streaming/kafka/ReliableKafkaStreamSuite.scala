@@ -40,8 +40,7 @@ class ReliableKafkaStreamSuite
     with BeforeAndAfter
     with Eventually {
 
-  private val sparkConf = new SparkConf()
-    .setMaster("local[4]")
+  private val sparkConf = new SparkConf().setMaster("local[4]")
     .setAppName(this.getClass.getSimpleName)
     .set("spark.streaming.receiver.writeAheadLog.enable", "true")
   private val data = Map("a" -> 10, "b" -> 10, "c" -> 10)
@@ -160,9 +159,7 @@ class ReliableKafkaStreamSuite
       partition: Int): Option[Long] = {
     val topicDirs = new ZKGroupTopicDirs(groupId, topic)
     val zkPath = s"${topicDirs.consumerOffsetDir}/$partition"
-    ZkUtils
-      .readDataMaybeNull(kafkaTestUtils.zookeeperClient, zkPath)
-      ._1
+    ZkUtils.readDataMaybeNull(kafkaTestUtils.zookeeperClient, zkPath)._1
       .map(_.toLong)
   }
 }

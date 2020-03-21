@@ -104,9 +104,8 @@ object IntroduceImplicitParameterIntention {
       buf.replace(offset, offset + p.name.length, newParam)
     }
 
-    val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-      buf.toString(),
-      expr.getManager)
+    val newExpr = ScalaPsiElementFactory
+      .createExpressionFromText(buf.toString(), expr.getManager)
 
     if (!isValidExpr(newExpr, expr.parameters.length))
       return Right(
@@ -127,10 +126,8 @@ class IntroduceImplicitParameterIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScFunctionExpr],
-      false)
+    val expr: ScFunctionExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScFunctionExpr], false)
     if (expr == null) return false
 
     val range: TextRange = expr.params.getTextRange
@@ -148,10 +145,8 @@ class IntroduceImplicitParameterIntention
       else HintManager.getInstance().showErrorHint(editor, hint)
     }
 
-    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScFunctionExpr],
-      false)
+    val expr: ScFunctionExpr = PsiTreeUtil
+      .getParentOfType(element, classOf[ScFunctionExpr], false)
     if (expr == null || !expr.isValid) return
 
     val startOffset = expr.getTextRange.getStartOffset
@@ -160,8 +155,7 @@ class IntroduceImplicitParameterIntention
       case Left(newExpr) => inWriteAction {
           expr.replace(newExpr)
           editor.getCaretModel.moveToOffset(startOffset)
-          PsiDocumentManager
-            .getInstance(project)
+          PsiDocumentManager.getInstance(project)
             .commitDocument(editor.getDocument)
         }
       case Right(message) => showErrorHint(message)

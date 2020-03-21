@@ -85,15 +85,13 @@ class ContentSecurityPolicySpec extends Specification {
     }
 
     "provide [X-]Content-Security-Policy if enforcement is enabled" in {
-      ContentSecurityPolicy()
-        .headers(enforce = true, logViolations = true)
+      ContentSecurityPolicy().headers(enforce = true, logViolations = true)
         .collect {
           case (headerName, _)
               if headerName.contains("Content-Security-Policy") => headerName
         } must_== List("Content-Security-Policy", "X-Content-Security-Policy")
 
-      ContentSecurityPolicy()
-        .headers(enforce = true, logViolations = false)
+      ContentSecurityPolicy().headers(enforce = true, logViolations = false)
         .collect {
           case (headerName, _)
               if headerName.contains("Content-Security-Policy") => headerName
@@ -101,8 +99,7 @@ class ContentSecurityPolicySpec extends Specification {
     }
 
     "provide [X-]Content-Security-Policy-Report-Only if enforcement is disabled and logging enabled" in {
-      ContentSecurityPolicy()
-        .headers(enforce = false, logViolations = true)
+      ContentSecurityPolicy().headers(enforce = false, logViolations = true)
         .collect {
           case (headerName, _)
               if headerName.contains("Content-Security-Policy") => headerName

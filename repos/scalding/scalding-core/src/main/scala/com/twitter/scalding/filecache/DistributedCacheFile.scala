@@ -27,9 +27,7 @@ object URIHasher {
   def apply(uri: URI): String = {
     val (h1, h2) = HashFunc(uri.toASCIIString)
     val bytes = ByteBuffer.allocate(16).putLong(h1).putLong(h2).array()
-    bytes
-      .map(deSign)
-      .map("%02x".format(_))
+    bytes.map(deSign).map("%02x".format(_))
       .reduceLeft(_ + _) // lifted gently from com.twitter.util.U64
   }
 }

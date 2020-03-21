@@ -154,16 +154,12 @@ object CreateWorkflow extends Logging {
       }
     }
 
-    val pioEnvVars = wfc.env
-      .map(e =>
-        e.split(',')
-          .flatMap(p =>
-            p.split('=') match {
-              case Array(k, v) => List(k -> v)
-              case _           => Nil
-            })
-          .toMap)
-      .getOrElse(Map())
+    val pioEnvVars = wfc.env.map(e =>
+      e.split(',').flatMap(p =>
+        p.split('=') match {
+          case Array(k, v) => List(k -> v)
+          case _           => Nil
+        }).toMap).getOrElse(Map())
 
     if (evaluation.isEmpty) {
       val variantJson = parse(stringFromFile(wfc.engineVariant))
@@ -240,8 +236,8 @@ object CreateWorkflow extends Logging {
           .paramToJson(wfc.jsonExtractor, engineParams.servingParams)
       )
 
-      val engineInstanceId = Storage.getMetaDataEngineInstances.insert(
-        engineInstance)
+      val engineInstanceId = Storage.getMetaDataEngineInstances
+        .insert(engineInstance)
 
       CoreWorkflow.runTrain(
         env = pioEnvVars,

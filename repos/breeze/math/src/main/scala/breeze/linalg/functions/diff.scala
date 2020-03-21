@@ -46,8 +46,8 @@ sealed trait diffLowPrio {
       override def apply(v: Vec): DenseVector[T] = {
         if (v.length <= 1) DenseVector[T]()
         else
-          DenseVector.tabulate(v.length - 1)(index =>
-            ring.-(v(index + 1), v(index)))
+          DenseVector
+            .tabulate(v.length - 1)(index => ring.-(v(index + 1), v(index)))
       }
     }
   }

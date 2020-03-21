@@ -114,10 +114,8 @@ object SVMModel extends Loader[SVMModel] {
       case (className, "1.0") if className == classNameV1_0 =>
         val (numFeatures, numClasses) = ClassificationModel
           .getNumFeaturesClasses(metadata)
-        val data = GLMClassificationModel.SaveLoadV1_0.loadData(
-          sc,
-          path,
-          classNameV1_0)
+        val data = GLMClassificationModel.SaveLoadV1_0
+          .loadData(sc, path, classNameV1_0)
         val model = new SVMModel(data.weights, data.intercept)
         assert(
           model.weights.size == numFeatures,
@@ -159,9 +157,7 @@ class SVMWithSGD private (
   private val updater = new SquaredL2Updater()
   @Since("0.8.0")
   override val optimizer = new GradientDescent(gradient, updater)
-    .setStepSize(stepSize)
-    .setNumIterations(numIterations)
-    .setRegParam(regParam)
+    .setStepSize(stepSize).setNumIterations(numIterations).setRegParam(regParam)
     .setMiniBatchFraction(miniBatchFraction)
   override protected val validators = List(DataValidators.binaryLabelValidator)
 

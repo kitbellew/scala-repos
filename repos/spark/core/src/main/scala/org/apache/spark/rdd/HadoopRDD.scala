@@ -225,8 +225,7 @@ class HadoopRDD[K, V](
 
       // TODO: there is a lot of duplicate code between this and NewHadoopRDD and SqlNewHadoopRDD
 
-      val inputMetrics = context
-        .taskMetrics()
+      val inputMetrics = context.taskMetrics()
         .registerInputMetrics(DataReadMethod.Hadoop)
       val existingBytesRead = inputMetrics.bytesRead
 
@@ -264,10 +263,8 @@ class HadoopRDD[K, V](
         theSplit.index,
         context.attemptNumber,
         jobConf)
-      reader = inputFormat.getRecordReader(
-        split.inputSplit.value,
-        jobConf,
-        Reporter.NULL)
+      reader = inputFormat
+        .getRecordReader(split.inputSplit.value, jobConf, Reporter.NULL)
 
       // Register an on-task-completion callback to close the input stream.
       context.addTaskCompletionListener { context => closeIfNeeded() }
@@ -278,9 +275,8 @@ class HadoopRDD[K, V](
         try { finished = !reader.next(key, value) }
         catch { case eof: EOFException => finished = true }
         if (!finished) { inputMetrics.incRecordsReadInternal(1) }
-        if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
-          updateBytesRead()
-        }
+        if (inputMetrics.recordsRead % SparkHadoopUtil
+              .UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) { updateBytesRead() }
         (key, value)
       }
 
@@ -304,8 +300,8 @@ class HadoopRDD[K, V](
             // If we can't get the bytes read from the FS stats, fall back to the split size,
             // which may be inaccurate.
             try {
-              inputMetrics.incBytesReadInternal(
-                split.inputSplit.value.getLength)
+              inputMetrics
+                .incBytesReadInternal(split.inputSplit.value.getLength)
             } catch {
               case e: java.io.IOException =>
                 logWarning(
@@ -333,8 +329,7 @@ class HadoopRDD[K, V](
       case Some(c) =>
         try {
           val lsplit = c.inputSplitWithLocationInfo.cast(hsplit)
-          val infos = c.getLocationInfo
-            .invoke(lsplit)
+          val infos = c.getLocationInfo.invoke(lsplit)
             .asInstanceOf[Array[AnyRef]]
           Some(HadoopRDD.convertSplitLocationInfo(infos))
         } catch {
@@ -433,15 +428,15 @@ private[spark] object HadoopRDD extends Logging {
   }
 
   private[spark] class SplitInfoReflections {
-    val inputSplitWithLocationInfo = Utils.classForName(
-      "org.apache.hadoop.mapred.InputSplitWithLocationInfo")
-    val getLocationInfo = inputSplitWithLocationInfo.getMethod(
-      "getLocationInfo")
-    val newInputSplit = Utils.classForName(
-      "org.apache.hadoop.mapreduce.InputSplit")
+    val inputSplitWithLocationInfo = Utils
+      .classForName("org.apache.hadoop.mapred.InputSplitWithLocationInfo")
+    val getLocationInfo = inputSplitWithLocationInfo
+      .getMethod("getLocationInfo")
+    val newInputSplit = Utils
+      .classForName("org.apache.hadoop.mapreduce.InputSplit")
     val newGetLocationInfo = newInputSplit.getMethod("getLocationInfo")
-    val splitLocationInfo = Utils.classForName(
-      "org.apache.hadoop.mapred.SplitLocationInfo")
+    val splitLocationInfo = Utils
+      .classForName("org.apache.hadoop.mapred.SplitLocationInfo")
     val isInMemory = splitLocationInfo.getMethod("isInMemory")
     val getLocation = splitLocationInfo.getMethod("getLocation")
   }
@@ -463,11 +458,9 @@ private[spark] object HadoopRDD extends Logging {
     infos.foreach { loc =>
       {
         val locationStr = HadoopRDD.SPLIT_INFO_REFLECTIONS.get.getLocation
-          .invoke(loc)
-          .asInstanceOf[String]
+          .invoke(loc).asInstanceOf[String]
         if (locationStr != "localhost") {
-          if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory
-                .invoke(loc)
+          if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory.invoke(loc)
                 .asInstanceOf[Boolean]) {
             logDebug("Partition " + locationStr + " is cached by Hadoop.")
             out += new HDFSCacheTaskLocation(locationStr).toString

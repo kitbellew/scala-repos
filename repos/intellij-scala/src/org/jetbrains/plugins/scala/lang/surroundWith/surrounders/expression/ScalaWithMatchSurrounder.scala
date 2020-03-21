@@ -44,8 +44,8 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
     (if (elements.length == 1 && !needBraces(elements(0)))
        super.getTemplateAsString(elements)
      else
-       "(" + super.getTemplateAsString(
-         elements) + ")") + s" match {\ncase a  $arrow\n}"
+       "(" + super
+         .getTemplateAsString(elements) + ")") + s" match {\ncase a  $arrow\n}"
   }
 
   override def getTemplateDescription = "match"
@@ -61,8 +61,8 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
 
     val whileStmt = element.asInstanceOf[ScMatchStmt]
 
-    val patternNode: ASTNode =
-      whileStmt.getNode.getLastChildNode.getTreePrev.getTreePrev.getFirstChildNode.getFirstChildNode.getTreeNext.getTreeNext
+    val patternNode: ASTNode = whileStmt.getNode.getLastChildNode.getTreePrev
+      .getTreePrev.getFirstChildNode.getFirstChildNode.getTreeNext.getTreeNext
     val offset = patternNode.getTextRange.getStartOffset
     patternNode.getTreeParent.removeChild(patternNode)
 

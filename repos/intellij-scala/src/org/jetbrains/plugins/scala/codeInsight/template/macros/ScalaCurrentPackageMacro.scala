@@ -15,8 +15,7 @@ class ScalaCurrentPackageMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
       context: ExpressionContext): Result = {
-    PsiDocumentManager
-      .getInstance(context.getProject)
+    PsiDocumentManager.getInstance(context.getProject)
       .getPsiFile(context.getEditor.getDocument) match {
       case scFile: ScalaFile => new TextResult(scFile.getPackageName)
       case _                 => new TextResult("")
@@ -30,8 +29,8 @@ class ScalaCurrentPackageMacro extends Macro {
   override def getName: String = MacroUtil.scalaIdPrefix + "currentPackage"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle.message(
-      "macro.current.package")
+    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
+      .message("macro.current.package")
 
   override def isAcceptableInContext(context: TemplateContextType): Boolean =
     context.isInstanceOf[ScalaCodeContextType]

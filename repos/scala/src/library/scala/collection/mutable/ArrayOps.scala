@@ -95,8 +95,8 @@ trait ArrayOps[T]
     *  @return         An array obtained by replacing elements of this arrays with rows the represent.
     */
   def transpose[U](implicit asArray: T => Array[U]): Array[Array[U]] = {
-    val bb: Builder[Array[U], Array[Array[U]]] = Array.newBuilder(
-      ClassTag[Array[U]](elementClass))
+    val bb: Builder[Array[U], Array[Array[U]]] = Array
+      .newBuilder(ClassTag[Array[U]](elementClass))
     if (isEmpty) bb.result()
     else {
       def mkRowBuilder() =

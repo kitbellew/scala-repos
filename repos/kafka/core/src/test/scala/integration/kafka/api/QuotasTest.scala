@@ -51,19 +51,16 @@ class QuotasTest extends KafkaServerTestHarness {
   val overridingProps = new Properties()
 
   // Low enough quota that a producer sending a small payload in a tight loop should get throttled
-  overridingProps.put(
-    KafkaConfig.ProducerQuotaBytesPerSecondDefaultProp,
-    "8000")
-  overridingProps.put(
-    KafkaConfig.ConsumerQuotaBytesPerSecondDefaultProp,
-    "2500")
+  overridingProps
+    .put(KafkaConfig.ProducerQuotaBytesPerSecondDefaultProp, "8000")
+  overridingProps
+    .put(KafkaConfig.ConsumerQuotaBytesPerSecondDefaultProp, "2500")
 
   override def generateConfigs() = {
-    FixedPortTestUtils
-      .createBrokerConfigs(
-        numServers,
-        zkConnect,
-        enableControlledShutdown = false)
+    FixedPortTestUtils.createBrokerConfigs(
+      numServers,
+      zkConnect,
+      enableControlledShutdown = false)
       .map(KafkaConfig.fromProps(_, overridingProps))
   }
 
@@ -81,9 +78,8 @@ class QuotasTest extends KafkaServerTestHarness {
     val producerProps = new Properties()
     producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList)
     producerProps.put(ProducerConfig.ACKS_CONFIG, "0")
-    producerProps.put(
-      ProducerConfig.BUFFER_MEMORY_CONFIG,
-      producerBufferSize.toString)
+    producerProps
+      .put(ProducerConfig.BUFFER_MEMORY_CONFIG, producerBufferSize.toString)
     producerProps.put(ProducerConfig.CLIENT_ID_CONFIG, producerId1)
     producerProps.put(
       ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
@@ -97,12 +93,8 @@ class QuotasTest extends KafkaServerTestHarness {
     producers += new KafkaProducer[Array[Byte], Array[Byte]](producerProps)
 
     val numPartitions = 1
-    val leaders = TestUtils.createTopic(
-      zkUtils,
-      topic1,
-      numPartitions,
-      numServers,
-      servers)
+    val leaders = TestUtils
+      .createTopic(zkUtils, topic1, numPartitions, numServers, servers)
     leaderNode =
       if (leaders(0).get == servers.head.config.brokerId) servers.head
       else servers(1)
@@ -119,9 +111,8 @@ class QuotasTest extends KafkaServerTestHarness {
     consumerProps.setProperty(
       ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG,
       4096.toString)
-    consumerProps.setProperty(
-      ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
-      "earliest")
+    consumerProps
+      .setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
     consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList)
     consumerProps.put(
       ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
@@ -160,8 +151,8 @@ class QuotasTest extends KafkaServerTestHarness {
 
   @Test
   def testThrottledProducerConsumer() {
-    val allMetrics: mutable.Map[MetricName, KafkaMetric] =
-      leaderNode.metrics.metrics().asScala
+    val allMetrics: mutable.Map[MetricName, KafkaMetric] = leaderNode.metrics
+      .metrics().asScala
 
     val numRecords = 1000
     produce(producers.head, numRecords)
@@ -179,10 +170,8 @@ class QuotasTest extends KafkaServerTestHarness {
     // Consumer should read in a bursty manner and get throttled immediately
     consume(consumers.head, numRecords)
     // The replica consumer should not be throttled also. Create a fetch request which will exceed the quota immediately
-    val request = new FetchRequestBuilder()
-      .addFetch(topic1, 0, 0, 1024 * 1024)
-      .replicaId(followerNode.config.brokerId)
-      .build()
+    val request = new FetchRequestBuilder().addFetch(topic1, 0, 0, 1024 * 1024)
+      .replicaId(followerNode.config.brokerId).build()
     replicaConsumers.head.fetch(request)
     val consumerMetricName = leaderNode.metrics.metricName(
       "throttle-time",
@@ -206,15 +195,11 @@ class QuotasTest extends KafkaServerTestHarness {
     AdminUtils.changeClientIdConfig(zkUtils, consumerId2, props)
 
     TestUtils.retry(10000) {
-      val quotaManagers: Map[Short, ClientQuotaManager] =
-        leaderNode.apis.quotaManagers
-      val overrideProducerQuota = quotaManagers
-        .get(ApiKeys.PRODUCE.id)
-        .get
+      val quotaManagers: Map[Short, ClientQuotaManager] = leaderNode.apis
+        .quotaManagers
+      val overrideProducerQuota = quotaManagers.get(ApiKeys.PRODUCE.id).get
         .quota(producerId2)
-      val overrideConsumerQuota = quotaManagers
-        .get(ApiKeys.FETCH.id)
-        .get
+      val overrideConsumerQuota = quotaManagers.get(ApiKeys.FETCH.id).get
         .quota(consumerId2)
 
       assertEquals(
@@ -227,8 +212,8 @@ class QuotasTest extends KafkaServerTestHarness {
         overrideConsumerQuota)
     }
 
-    val allMetrics: mutable.Map[MetricName, KafkaMetric] =
-      leaderNode.metrics.metrics().asScala
+    val allMetrics: mutable.Map[MetricName, KafkaMetric] = leaderNode.metrics
+      .metrics().asScala
     val numRecords = 1000
     produce(producers(1), numRecords)
     val producerMetricName = leaderNode.metrics.metricName(
@@ -246,10 +231,8 @@ class QuotasTest extends KafkaServerTestHarness {
     // The "client" consumer does not get throttled.
     consume(consumers(1), numRecords)
     // The replica consumer should not be throttled also. Create a fetch request which will exceed the quota immediately
-    val request = new FetchRequestBuilder()
-      .addFetch(topic1, 0, 0, 1024 * 1024)
-      .replicaId(followerNode.config.brokerId)
-      .build()
+    val request = new FetchRequestBuilder().addFetch(topic1, 0, 0, 1024 * 1024)
+      .replicaId(followerNode.config.brokerId).build()
     replicaConsumers(1).fetch(request)
     val consumerMetricName = leaderNode.metrics.metricName(
       "throttle-time",
@@ -270,13 +253,12 @@ class QuotasTest extends KafkaServerTestHarness {
       val payload = i.toString.getBytes
       numBytesProduced += payload.length
       p.send(
-          new ProducerRecord[Array[Byte], Array[Byte]](
-            topic1,
-            null,
-            null,
-            payload),
-          new ErrorLoggingCallback(topic1, null, null, true))
-        .get()
+        new ProducerRecord[Array[Byte], Array[Byte]](
+          topic1,
+          null,
+          null,
+          payload),
+        new ErrorLoggingCallback(topic1, null, null, true)).get()
       Thread.sleep(1)
     }
     numBytesProduced

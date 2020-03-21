@@ -63,9 +63,10 @@ private[streams] class PromiseSubscriber[T](prom: Promise[T])
     exclusive {
       case AwaitingSubscription | Subscribed =>
         state = Completed
-        prom.failure(
-          cause
-        ) // we assume any Future.onComplete handlers run asynchronously
+        prom
+          .failure(
+            cause
+          ) // we assume any Future.onComplete handlers run asynchronously
       case Completed => ()
     }
 
@@ -86,9 +87,10 @@ private[streams] class PromiseSubscriber[T](prom: Promise[T])
           "Can't handle onNext until at least one subscription has occurred")
       case Subscribed =>
         state = Completed
-        prom.success(
-          element
-        ) // we assume any Future.onComplete handlers run asynchronously
+        prom
+          .success(
+            element
+          ) // we assume any Future.onComplete handlers run asynchronously
       case Completed => ()
     }
 

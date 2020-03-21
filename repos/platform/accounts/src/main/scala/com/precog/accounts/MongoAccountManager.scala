@@ -65,12 +65,12 @@ trait ZKAccountIdSource extends AccountManager[Future] {
         zkc.createPersistent(settings.zkAccountIdPath, true)
       }
 
-      val createdPath = zkc.createPersistentSequential(
-        settings.zkAccountIdPath,
-        Array.empty[Byte])
-      createdPath.substring(
-        createdPath.length - 10
-      ) //last 10 characters are a sequential int
+      val createdPath = zkc
+        .createPersistentSequential(settings.zkAccountIdPath, Array.empty[Byte])
+      createdPath
+        .substring(
+          createdPath.length - 10
+        ) //last 10 characters are a sequential int
     }
 }
 
@@ -90,8 +90,8 @@ abstract class MongoAccountManager(
     extends AccountManager[Future] {
   import Account._
 
-  private lazy val mamLogger = LoggerFactory.getLogger(
-    "com.precog.accounts.MongoAccountManager")
+  private lazy val mamLogger = LoggerFactory
+    .getLogger("com.precog.accounts.MongoAccountManager")
 
   private implicit val impTimeout = settings.timeout
 
@@ -133,8 +133,9 @@ abstract class MongoAccountManager(
           Some(creationDate),
           profile)
 
-        database(insert(account0.serialize.asInstanceOf[JObject]).into(
-          settings.accounts)) map { _ => account0 }
+        database(
+          insert(account0.serialize.asInstanceOf[JObject])
+            .into(settings.accounts)) map { _ => account0 }
       }
     } yield account
   }
@@ -192,8 +193,7 @@ abstract class MongoAccountManager(
   def markResetTokenUsed(tokenId: ResetTokenId): Future[PrecogUnit] = {
     logger.debug("Marking reset token %s as used".format(tokenId))
     database(
-      update(settings.resetTokens)
-        .set("usedAt" set (new DateTime).serialize)
+      update(settings.resetTokens).set("usedAt" set (new DateTime).serialize)
         .where("tokenId" === tokenId)).map { _ =>
       logger.debug("Reset token %s marked as used".format(tokenId)); PrecogUnit
     }
@@ -205,8 +205,8 @@ abstract class MongoAccountManager(
     findOneMatching[ResetToken]("tokenId", tokenId, settings.resetTokens)
 
   def findAccountByAPIKey(apiKey: String) =
-    findOneMatching[Account]("apiKey", apiKey, settings.accounts).map(_.map(
-      _.accountId))
+    findOneMatching[Account]("apiKey", apiKey, settings.accounts)
+      .map(_.map(_.accountId))
 
   def findAccountById(accountId: String) =
     findOneMatching[Account]("accountId", accountId, settings.accounts)
@@ -219,8 +219,7 @@ abstract class MongoAccountManager(
       case Some(existingAccount) =>
         database {
           val updateObj = account.serialize.asInstanceOf[JObject]
-          update(settings.accounts)
-            .set(updateObj)
+          update(settings.accounts).set(updateObj)
             .where("accountId" === account.accountId)
         } map { _ => true }
 
@@ -232,8 +231,9 @@ abstract class MongoAccountManager(
     findAccountById(accountId).flatMap {
       case ot @ Some(account) =>
         for {
-          _ <- database(insert(account.serialize.asInstanceOf[JObject]).into(
-            settings.deletedAccounts))
+          _ <- database(
+            insert(account.serialize.asInstanceOf[JObject])
+              .into(settings.deletedAccounts))
           _ <- database(
             remove.from(settings.accounts).where("accountId" === accountId))
         } yield { ot }

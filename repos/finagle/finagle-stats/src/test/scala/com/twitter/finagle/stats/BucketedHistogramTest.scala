@@ -49,8 +49,7 @@ class BucketedHistogramTest
     def assertPercentiles(maxVal: Long): Unit = {
       val actuals = h.getQuantiles(wantedPs)
       actuals.zip(wantedPs).foreach {
-        case (actual, wantedP) =>
-          withClue(s"percentile=$wantedP") {
+        case (actual, wantedP) => withClue(s"percentile=$wantedP") {
             // verify that each percentile is within the error bounds.
             val ideal = Math.round(wantedP * maxVal)
             assertWithinError(ideal, actual)
@@ -186,8 +185,8 @@ private object BucketedHistogramTest {
 
   def generator =
     for {
-      samples <- Gen.nonEmptyContainerOf[List, Int](
-        Gen.chooseNum(0, Int.MaxValue))
+      samples <- Gen
+        .nonEmptyContainerOf[List, Int](Gen.chooseNum(0, Int.MaxValue))
       percentile <- Gen.choose(0.5, 0.9999)
     } yield (samples, percentile)
 

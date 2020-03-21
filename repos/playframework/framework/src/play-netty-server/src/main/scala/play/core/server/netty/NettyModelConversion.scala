@@ -134,17 +134,14 @@ private[server] class NettyModelConversion(
       override lazy val queryString: Map[String, Seq[String]] = {
         // Very rough parse of query string that doesn't decode
         if (request.getUri.contains("?")) {
-          request.getUri
-            .split("\\?", 2)(1)
-            .split('&')
-            .map { keyPair =>
-              keyPair.split("=", 2) match {
-                case Array(key)        => key -> ""
-                case Array(key, value) => key -> value
-              }
+          request.getUri.split("\\?", 2)(1).split('&').map { keyPair =>
+            keyPair.split("=", 2) match {
+              case Array(key)        => key -> ""
+              case Array(key, value) => key -> value
             }
-            .groupBy(_._1)
-            .map { case (name, values) => name -> values.map(_._2).toSeq }
+          }.groupBy(_._1).map {
+            case (name, values) => name -> values.map(_._2).toSeq
+          }
         } else { Map.empty }
       }
       override val headers = new NettyHeadersWrapper(request.headers)
@@ -172,8 +169,7 @@ private[server] class NettyModelConversion(
   /** Convert an HttpContent object to a ByteString */
   private def httpContentToByteString(content: HttpContent): ByteString = {
     val builder = ByteString.newBuilder
-    content
-      .content()
+    content.content()
       .readBytes(builder.asOutputStream, content.content().readableBytes())
     val bytes = builder.result()
     ReferenceCountUtil.release(content)
@@ -191,9 +187,8 @@ private[server] class NettyModelConversion(
       case None         => HttpResponseStatus.valueOf(result.header.status)
     }
 
-    val connectionHeader = ServerResultUtils.determineConnectionHeader(
-      requestHeader,
-      result)
+    val connectionHeader = ServerResultUtils
+      .determineConnectionHeader(requestHeader, result)
     val skipEntity = requestHeader.method == HttpMethod.HEAD.name()
 
     val response: HttpResponse = result.body match {
@@ -232,8 +227,8 @@ private[server] class NettyModelConversion(
           if (HttpHeaders.isContentLengthSet(response)) {
             val manualContentLength = response.headers.get(CONTENT_LENGTH)
             if (manualContentLength == contentLength.toString) {
-              logger.info(
-                s"Manual Content-Length header, ignoring manual header.")
+              logger
+                .info(s"Manual Content-Length header, ignoring manual header.")
             } else {
               logger.warn(
                 s"Content-Length header was set manually in the header ($manualContentLength) but is not the same as actual content length ($contentLength).")
@@ -262,9 +257,9 @@ private[server] class NettyModelConversion(
     } catch {
       case NonFatal(e) =>
         if (logger.isErrorEnabled) {
-          val prettyHeaders = headers
-            .map { case (name, value) => s"$name -> $value" }
-            .mkString("[", ",", "]")
+          val prettyHeaders = headers.map {
+            case (name, value) => s"$name -> $value"
+          }.mkString("[", ",", "]")
           val msg =
             s"Exception occurred while setting response's headers to $prettyHeaders. Action taken is to set the response's status to ${HttpResponseStatus.INTERNAL_SERVER_ERROR} and discard all headers."
           logger.error(msg, e)
@@ -285,9 +280,8 @@ private[server] class NettyModelConversion(
       stream: Source[ByteString, _],
       httpVersion: HttpVersion,
       responseStatus: HttpResponseStatus)(implicit mat: Materializer) = {
-    val publisher = SynchronousMappedStreams.map(
-      stream.runWith(Sink.asPublisher(false)),
-      byteStringToHttpContent)
+    val publisher = SynchronousMappedStreams
+      .map(stream.runWith(Sink.asPublisher(false)), byteStringToHttpContent)
     new DefaultStreamedHttpResponse(httpVersion, responseStatus, publisher)
   }
 
@@ -356,8 +350,8 @@ private[server] class NettyModelConversion(
       case (cachedSeconds, dateHeaderString)
           if cachedSeconds == currentTimeSeconds => dateHeaderString
       case _ =>
-        val dateHeaderString = ResponseHeader.httpDateFormat.print(
-          currentTimeMillis)
+        val dateHeaderString = ResponseHeader.httpDateFormat
+          .print(currentTimeMillis)
         cachedDateHeader = currentTimeSeconds -> dateHeaderString
         dateHeaderString
     }

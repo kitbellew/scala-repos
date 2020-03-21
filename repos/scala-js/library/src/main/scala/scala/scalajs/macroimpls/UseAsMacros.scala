@@ -39,11 +39,11 @@ private[scalajs] object UseAsMacros {
     private val JSNameAnnotation = typeOf[js.annotation.JSName].typeSymbol
     private val JSBracketAccessAnnotation =
       typeOf[js.annotation.JSBracketAccess].typeSymbol
-    private val JSBracketCallAnnotation =
-      typeOf[js.annotation.JSBracketCall].typeSymbol
+    private val JSBracketCallAnnotation = typeOf[js.annotation.JSBracketCall]
+      .typeSymbol
     private val JSExportAnnotation = typeOf[js.annotation.JSExport].typeSymbol
-    private val JSExportAllAnnotation =
-      typeOf[js.annotation.JSExportAll].typeSymbol
+    private val JSExportAllAnnotation = typeOf[js.annotation.JSExportAll]
+      .typeSymbol
 
     /** Base classes that are allowed in a target type.
       *  These are also the classes whose methods do not need to be provided.

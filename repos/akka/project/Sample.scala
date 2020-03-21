@@ -17,8 +17,8 @@ object Sample {
       *
       * Default: true
       */
-    val aggregateSamples =
-      sys.props.getOrElse("akka.build.aggregateSamples", "true").toBoolean
+    val aggregateSamples = sys.props
+      .getOrElse("akka.build.aggregateSamples", "true").toBoolean
   }
 
   final val akkaOrganization = "com.typesafe.akka"
@@ -50,8 +50,8 @@ object Sample {
           // add project dependency for every akka library dependency
           (
             proj,
-            deps ++ projectDependencies.map(
-              ResolvedClasspathDependency(_, None)))
+            deps ++ projectDependencies
+              .map(ResolvedClasspathDependency(_, None)))
         case (project, deps) => (project, deps)
       }
       BuildDependencies(
@@ -80,10 +80,9 @@ object Sample {
     * transformed sample projects should have its settings added here.
     */
   private val enableAutoPlugins = (project: Project) =>
-    project
-      .settings(
-        (Publish.projectSettings ++
-          ValidatePullRequest.projectSettings): _*)
+    project.settings(
+      (Publish.projectSettings ++
+        ValidatePullRequest.projectSettings): _*)
       .configs(ValidatePullRequest.ValidatePR)
 
   private implicit class RichLoadedDefinitions(ld: LoadedDefinitions) {

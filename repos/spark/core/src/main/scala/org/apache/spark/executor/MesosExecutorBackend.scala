@@ -47,11 +47,8 @@ private[spark] class MesosExecutorBackend
   override def statusUpdate(taskId: Long, state: TaskState, data: ByteBuffer) {
     val mesosTaskId = TaskID.newBuilder().setValue(taskId.toString).build()
     driver.sendStatusUpdate(
-      MesosTaskStatus
-        .newBuilder()
-        .setTaskId(mesosTaskId)
-        .setState(TaskState.toMesos(state))
-        .setData(ByteString.copyFrom(data))
+      MesosTaskStatus.newBuilder().setTaskId(mesosTaskId)
+        .setState(TaskState.toMesos(state)).setData(ByteString.copyFrom(data))
         .build())
   }
 
@@ -63,9 +60,7 @@ private[spark] class MesosExecutorBackend
 
     // Get num cores for this task from ExecutorInfo, created in MesosSchedulerBackend.
     val cpusPerTask = executorInfo.getResourcesList.asScala
-      .find(_.getName == "cpus")
-      .map(_.getScalar.getValue.toInt)
-      .getOrElse(0)
+      .find(_.getName == "cpus").map(_.getScalar.getValue.toInt).getOrElse(0)
     val executorId = executorInfo.getExecutorId.getValue
 
     logInfo(

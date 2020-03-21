@@ -333,9 +333,9 @@ private object TestUserClosuresActuallyCleaned {
     rdd.zipPartitions(rdd, rdd) { case (it1, it2, it3) => return; it1 }.count()
   }
   def testZipPartitions4(rdd: RDD[Int]): Unit = {
-    rdd
-      .zipPartitions(rdd, rdd, rdd) { case (it1, it2, it3, it4) => return; it1 }
-      .count()
+    rdd.zipPartitions(rdd, rdd, rdd) {
+      case (it1, it2, it3, it4) => return; it1
+    }.count()
   }
   def testForeach(rdd: RDD[Int]): Unit = { rdd.foreach { _ => return } }
   def testForeachPartition(rdd: RDD[Int]): Unit = {
@@ -361,19 +361,15 @@ private object TestUserClosuresActuallyCleaned {
 
   // Test pair RDD functions
   def testCombineByKey(rdd: RDD[(Int, Int)]): Unit = {
-    rdd
-      .combineByKey(
-        { _ => return; 1 }: Int => Int,
-        { case (_, _) => return; 1 }: (Int, Int) => Int,
-        { case (_, _) => return; 1 }: (Int, Int) => Int)
-      .count()
+    rdd.combineByKey(
+      { _ => return; 1 }: Int => Int,
+      { case (_, _) => return; 1 }: (Int, Int) => Int,
+      { case (_, _) => return; 1 }: (Int, Int) => Int).count()
   }
   def testAggregateByKey(rdd: RDD[(Int, Int)]): Unit = {
-    rdd
-      .aggregateByKey(0)(
-        { case (_, _) => return; 1 },
-        { case (_, _) => return; 1 })
-      .count()
+    rdd.aggregateByKey(0)(
+      { case (_, _) => return; 1 },
+      { case (_, _) => return; 1 }).count()
   }
   def testFoldByKey(rdd: RDD[(Int, Int)]): Unit = {
     rdd.foldByKey(0) { case (_, _) => return; 1 }

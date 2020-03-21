@@ -38,10 +38,8 @@ trait ReificationSupport {
       if (result ne NoSymbol) result.asMethod
       else
         throw new ScalaReflectionException(
-          "overloaded method %s #%d in %s not found".format(
-            name,
-            index,
-            owner.fullName))
+          "overloaded method %s #%d in %s not found"
+            .format(name, index, owner.fullName))
     }
 
     def newFreeTerm(
@@ -65,8 +63,7 @@ trait ReificationSupport {
         pos: Position,
         flags: Long,
         isClass: Boolean): Symbol =
-      owner
-        .newNestedSymbol(name, pos, flags, isClass)
+      owner.newNestedSymbol(name, pos, flags, isClass)
         .markFlagsCompleted(mask = AllFlags)
 
     def newScopeWith(elems: Symbol*): Scope = self.newScopeWith(elems: _*)
@@ -482,12 +479,8 @@ trait ReificationSupport {
           else parents)
         val body0 = earlyDefs ::: body
         val selfType0 = mkSelfType(selfType)
-        val templ = gen.mkTemplate(
-          parents0,
-          selfType0,
-          constrMods,
-          vparamss0,
-          body0)
+        val templ = gen
+          .mkTemplate(parents0, selfType0, constrMods, vparamss0, body0)
         gen.mkClassDef(mods, name, tparams0, templ)
       }
 
@@ -1317,8 +1310,8 @@ trait ReificationSupport {
                     List())),
                 pf: TypeTree)
               if pf.tpe != null && pf.tpe.typeSymbol.eq(PartialFunctionClass) &&
-                abspf.tpe != null && abspf.tpe.typeSymbol.eq(
-                AbstractPartialFunctionClass) &&
+                abspf.tpe != null && abspf.tpe.typeSymbol
+                .eq(AbstractPartialFunctionClass) &&
                 ser.tpe != null && ser.tpe.typeSymbol.eq(SerializableClass) &&
                 clsMods.hasFlag(FINAL) && clsMods.hasFlag(SYNTHETIC) =>
             Some(cases)

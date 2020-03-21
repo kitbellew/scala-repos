@@ -14,9 +14,7 @@ trait SlickOsgiHelper {
     bundle(file.toURI.toASCIIString)
 
   private def allBundleFiles: Array[File] =
-    Option(sys.props("slick.osgi.bundlepath"))
-      .getOrElse("")
-      .split(":")
+    Option(sys.props("slick.osgi.bundlepath")).getOrElse("").split(":")
       .map(new File(_))
 
   def standardOptions: Array[exam.Option] =

@@ -40,19 +40,14 @@ final class AssessApi(
 
   def createPlayerAssessment(assessed: PlayerAssessment) =
     collAssessments
-      .update(BSONDocument("_id" -> assessed._id), assessed, upsert = true)
-      .void
+      .update(BSONDocument("_id" -> assessed._id), assessed, upsert = true).void
 
   def getPlayerAssessmentById(id: String) =
-    collAssessments
-      .find(BSONDocument("_id" -> id))
-      .one[PlayerAssessment]
+    collAssessments.find(BSONDocument("_id" -> id)).one[PlayerAssessment]
 
   def getPlayerAssessmentsByUserId(userId: String, nb: Int = 100) =
-    collAssessments
-      .find(BSONDocument("userId" -> userId))
-      .sort(BSONDocument("date" -> -1))
-      .cursor[PlayerAssessment]()
+    collAssessments.find(BSONDocument("userId" -> userId))
+      .sort(BSONDocument("date" -> -1)).cursor[PlayerAssessment]()
       .collect[List](nb)
 
   def getResultsByGameIdAndColor(gameId: String, color: Color) =

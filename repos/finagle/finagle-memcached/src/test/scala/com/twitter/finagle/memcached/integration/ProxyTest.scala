@@ -36,20 +36,15 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
     testServer = TestMemcachedServer.start()
     if (testServer.isDefined) {
       Thread.sleep(150) // On my box the 100ms sleep wasn't long enough
-      proxyClient = ClientBuilder()
-        .hosts(Seq(testServer.get.address))
-        .codec(Memcached())
-        .hostConnectionLimit(1)
-        .build()
+      proxyClient = ClientBuilder().hosts(Seq(testServer.get.address))
+        .codec(Memcached()).hostConnectionLimit(1).build()
       proxyService = new MemcacheService {
         def apply(request: Command) = proxyClient(request)
       }
 
-      server = ServerBuilder()
-        .codec(Memcached())
+      server = ServerBuilder().codec(Memcached())
         .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        .name("memcached")
-        .build(proxyService)
+        .name("memcached").build(proxyService)
 
       serverAddress = server.boundAddress.asInstanceOf[InetSocketAddress]
       externalClient = Client(
@@ -110,8 +105,8 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
       assert(slabs != null)
       assert(!slabs.isEmpty)
       val n = slabs.head.split(" ")(1).split(":")(0).toInt
-      val stats = Await.result(
-        externalClient.stats(Some("cachedump " + n + " 100")))
+      val stats = Await
+        .result(externalClient.stats(Some("cachedump " + n + " 100")))
       assert(stats != null)
       assert(!stats.isEmpty)
       stats.foreach { stat => assert(stat.startsWith("ITEM")) }

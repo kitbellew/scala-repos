@@ -380,8 +380,7 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
       Seq(Unauthenticated),
       pipeline)
     assert(
-      pipeline
-        .get("socketAddressResolver")
+      pipeline.get("socketAddressResolver")
         .isInstanceOf[SocketAddressResolveHandler])
   }
 }

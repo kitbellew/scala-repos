@@ -38,22 +38,20 @@ class ScalaGoToSuperActionHandler extends LanguageCodeInsightActionHandler {
       .findSuperElements(file, offset)
 
     def popupChooser(superElements: Seq[PsiElement], title: String) {
-      NavigationUtil
-        .getPsiElementPopup[PsiElement](
-          superElements.toArray,
-          new ScCellRenderer,
-          title,
-          new PsiElementProcessor[PsiElement] {
-            def execute(element: PsiElement): Boolean = {
-              val descriptor = EditSourceUtil.getDescriptor(element)
-              if (descriptor != null && descriptor.canNavigate) {
-                descriptor.navigate(true)
-              }
-              true
+      NavigationUtil.getPsiElementPopup[PsiElement](
+        superElements.toArray,
+        new ScCellRenderer,
+        title,
+        new PsiElementProcessor[PsiElement] {
+          def execute(element: PsiElement): Boolean = {
+            val descriptor = EditSourceUtil.getDescriptor(element)
+            if (descriptor != null && descriptor.canNavigate) {
+              descriptor.navigate(true)
             }
+            true
           }
-        )
-        .showInBestPositionFor(editor)
+        }
+      ).showInBestPositionFor(editor)
     }
 
     (superClasses, superSignatureElements) match {
@@ -101,8 +99,8 @@ private object ScalaGoToSuperActionHandler {
           "scala.Any",
           "scala.AnyRef",
           "scala.AnyVal")
-      val supers = template.supers.filterNot((x: PsiClass) =>
-        ignored.contains(x.qualifiedName))
+      val supers = template.supers
+        .filterNot((x: PsiClass) => ignored.contains(x.qualifiedName))
       mutable.HashSet[PsiClass](supers: _*).toArray
     }
 
@@ -117,8 +115,8 @@ private object ScalaGoToSuperActionHandler {
       val elements = d.declaredElements
       if (elements.isEmpty) return empty
       val supers = mutable.HashSet[NavigatablePsiElement](
-        (if (el != null && elements.contains(
-               el.asInstanceOf[ScTypedDefinition])) {
+        (if (el != null && elements
+               .contains(el.asInstanceOf[ScTypedDefinition])) {
            ScalaPsiUtil.superValsSignatures(el.asInstanceOf[ScTypedDefinition])
          } else ScalaPsiUtil.superValsSignatures(elements.head))
           .flatMap(_.namedElement match {

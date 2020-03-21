@@ -24,8 +24,8 @@ class DenseVectorTest extends FunSuite with Checkers {
 
   def assertClose(a: Complex, b: Complex) =
     assert(
-      math.abs(a.real - b.real) < TOLERANCE && math.abs(
-        a.imag - b.imag) < TOLERANCE)
+      math.abs(a.real - b.real) < TOLERANCE && math
+        .abs(a.imag - b.imag) < TOLERANCE)
 
   test("update/valueAt properly works") {
     val v = DenseVector(2f, 0f, 3f, 2f, -1f)
@@ -433,10 +433,9 @@ class DenseVectorTest extends FunSuite with Checkers {
     assert(util.Arrays.equals(a(0 until 3 by 2).toArray, Array(1, 3)))
     assert(util.Arrays.equals(a(1 until 3 by 1).toArray, Array(2, 3)))
 
-    val b = DenseVector(
-      1d * breeze.math.i,
-      0d * breeze.math.i,
-      2d * breeze.math.i).toArray
+    val b =
+      DenseVector(1d * breeze.math.i, 0d * breeze.math.i, 2d * breeze.math.i)
+        .toArray
     //assert( util.Arrays.equals( b.toArray, Array(1d*breeze.math.i, 0d, 2d)) )
     assert(b(0) == Complex(0, 1))
     assert(b(1) == Complex(0, 0))
@@ -565,15 +564,18 @@ class DenseVectorOps_DoubleTest
         offset <- Gen.choose(0, 5)
       } yield {
         (
-          DenseVector.fill(n * stride + offset)(
-            math.random * x
-          ), //.apply(offset until (n * stride + offset) by stride),
-          DenseVector.fill(n * stride + offset)(
-            math.random * y
-          ), //.apply(offset until (n * stride + offset) by stride),
-          DenseVector.fill(n * stride + offset)(
-            math.random * z
-          ) //.apply(offset until (n * stride + offset) by stride)
+          DenseVector
+            .fill(n * stride + offset)(
+              math.random * x
+            ), //.apply(offset until (n * stride + offset) by stride),
+          DenseVector
+            .fill(n * stride + offset)(
+              math.random * y
+            ), //.apply(offset until (n * stride + offset) by stride),
+          DenseVector
+            .fill(n * stride + offset)(
+              math.random * z
+            ) //.apply(offset until (n * stride + offset) by stride)
         )
       }
     }
@@ -660,14 +662,11 @@ class DenseVectorOps_FloatTest
         offset <- Gen.choose(0, 5)
       } yield {
         (
-          DenseVector
-            .fill(n * stride + offset)(math.random * x toFloat)
+          DenseVector.fill(n * stride + offset)(math.random * x toFloat)
             .apply(offset until (n * stride + offset) by stride),
-          DenseVector
-            .fill(n * stride + offset)(math.random * y toFloat)
+          DenseVector.fill(n * stride + offset)(math.random * y toFloat)
             .apply(offset until (n * stride + offset) by stride),
-          DenseVector
-            .fill(n * stride + offset)(math.random * z toFloat)
+          DenseVector.fill(n * stride + offset)(math.random * z toFloat)
             .apply(offset until (n * stride + offset) by stride))
       }
     }

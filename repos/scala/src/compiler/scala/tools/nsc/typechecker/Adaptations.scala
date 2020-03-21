@@ -41,7 +41,8 @@ trait Adaptations {
         t.symbol.owner.decodedName + (if (t.symbol.isConstructor)
                                         t.symbol.signatureString
                                       else
-                                        "." + t.symbol.decodedName + t.symbol.signatureString)
+                                        "." + t.symbol.decodedName + t.symbol
+                                          .signatureString)
       def givenString = if (args.isEmpty) "<none>" else args.mkString(", ")
       def adaptedArgs =
         if (args.isEmpty) "(): Unit"

@@ -86,21 +86,15 @@ class SslTest extends FunSuite {
 
     val codec = Http().annotateCipherHeader("X-Transport-Cipher")
 
-    val server = ServerBuilder()
-      .codec(codec)
+    val server = ServerBuilder().codec(codec)
       .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-      .tls(certChain.certPath, certChain.keyPath)
-      .name("SSLServer")
+      .tls(certChain.certPath, certChain.keyPath).name("SSLServer")
       .build(service)
 
     def client =
-      ClientBuilder()
-        .name("http-client")
-        .hosts(server.boundAddress.asInstanceOf[InetSocketAddress])
-        .codec(codec)
-        .hostConnectionLimit(1)
-        .tlsWithoutValidation()
-        .build()
+      ClientBuilder().name("http-client")
+        .hosts(server.boundAddress.asInstanceOf[InetSocketAddress]).codec(codec)
+        .hostConnectionLimit(1).tlsWithoutValidation().build()
 
     def check(requestSize: Int, responseSize: Int) {
       val request = Request(Version.Http11, Method.Get, "/")
@@ -157,12 +151,10 @@ class SslTest extends FunSuite {
 
     val codec = Http().annotateCipherHeader("X-Transport-Cipher")
 
-    val server = ServerBuilder()
-      .codec(codec)
+    val server = ServerBuilder().codec(codec)
       .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
       .tls(certChain.certPath, certChain.keyPath, certChain.validChainPath)
-      .name("SSL server with valid certificate chain")
-      .build(service)
+      .name("SSL server with valid certificate chain").build(service)
 
     val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
 

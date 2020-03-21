@@ -40,8 +40,8 @@ class SimpleBuildFileModifier(
     val empty: Option[List[VirtualFile]] = Some(List())
     requiredElementTypes.foldLeft(empty)((acc, nextType) =>
       acc match {
-        case Some(accList) =>
-          addElements(module, nextType, fileToWorkingCopy).map(_ :: accList)
+        case Some(accList) => addElements(module, nextType, fileToWorkingCopy)
+            .map(_ :: accList)
         case _ => None
       })
   }
@@ -53,29 +53,21 @@ class SimpleBuildFileModifier(
       : Option[VirtualFile] = {
     val locationProvidersStream = buildFileLocationProviders.toStream
     //TODO: rewrite this?
-    buildFileProviders
-      .map(fileProvider =>
-        fileProvider.findBuildFile(module, elementType, fileToWorkingCopy))
-      .toStream
-      .map(_.map(buildFileEntry =>
-        locationProvidersStream
-          .map(locationProvider =>
-            buildPsiElement(
-              module.getProject,
-              Option(
-                if (buildFileEntry.isModuleLocal) null else module.getName),
-              elementType).map(SimpleBuildFileModifier.addElementsToBuildFile(
-              module,
-              locationProvider,
-              elementType,
-              buildFileEntry.file,
-              SimpleBuildFileModifier.newLine(module.getProject),
-              _)))
-          .find(_.isDefined)
-          .flatten))
-      .map(opt => opt.flatten.flatten)
-      .find(_.isDefined)
-      .flatten
+    buildFileProviders.map(fileProvider =>
+      fileProvider.findBuildFile(module, elementType, fileToWorkingCopy))
+      .toStream.map(_.map(buildFileEntry =>
+        locationProvidersStream.map(locationProvider =>
+          buildPsiElement(
+            module.getProject,
+            Option(if (buildFileEntry.isModuleLocal) null else module.getName),
+            elementType).map(SimpleBuildFileModifier.addElementsToBuildFile(
+            module,
+            locationProvider,
+            elementType,
+            buildFileEntry.file,
+            SimpleBuildFileModifier.newLine(module.getProject),
+            _))).find(_.isDefined).flatten)).map(opt => opt.flatten.flatten)
+      .find(_.isDefined).flatten
   }
 
   protected def buildPsiElement(
@@ -84,17 +76,13 @@ class SimpleBuildFileModifier(
       elementType: BuildFileElementType): Option[PsiElement] = {
     elementType match {
       case BuildFileElementType.libraryDependencyElementId =>
-        SimpleBuildFileModifier.buildLibraryDependenciesPsi(
-          project,
-          inName,
-          libDependencies)
+        SimpleBuildFileModifier
+          .buildLibraryDependenciesPsi(project, inName, libDependencies)
       case BuildFileElementType.resolverElementId =>
         SimpleBuildFileModifier.buildResolversPsi(project, inName, resolvers)
       case BuildFileElementType.`scalacOptionsElementId` =>
-        SimpleBuildFileModifier.buildScalacOptionsPsi(
-          project,
-          Some("Test"),
-          scalacOptions)
+        SimpleBuildFileModifier
+          .buildScalacOptionsPsi(project, Some("Test"), scalacOptions)
       case _ =>
         throw new IllegalArgumentException(
           "Unsupported build file element type: " + elementType)
@@ -121,8 +109,8 @@ object SimpleBuildFileModifier {
     ScalaPsiElementFactory.createNewLine(PsiManager.getInstance(project))
 
   def createSeqString(normalIndent: String, seq: Seq[String]): String =
-    "Seq(\n" + seq.tail.fold(normalIndent + seq.head)(
-      _ + ",\n" + normalIndent + _) + "\n)"
+    "Seq(\n" + seq.tail
+      .fold(normalIndent + seq.head)(_ + ",\n" + normalIndent + _) + "\n)"
 
   def createSeqPsiExpr(
       project: IJProject,
@@ -165,10 +153,8 @@ object SimpleBuildFileModifier {
       elementType: BuildFileElementType,
       buildFile: PsiFile,
       psiElements: PsiElement*): Option[VirtualFile] = {
-    locationProvider.getAddElementLocation(
-      module,
-      elementType,
-      buildFile) match {
+    locationProvider
+      .getAddElementLocation(module, elementType, buildFile) match {
       case Some((parent, index))
           if (index == 0) || parent.getChildren.size >= index =>
         val children = parent.getChildren

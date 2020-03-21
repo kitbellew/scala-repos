@@ -52,8 +52,7 @@ case class Concat(children: Seq[Expression])
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val evals = children.map(_.gen(ctx))
-    val inputs = evals
-      .map { eval => s"${eval.isNull} ? null : ${eval.value}" }
+    val inputs = evals.map { eval => s"${eval.isNull} ? null : ${eval.value}" }
       .mkString(", ")
     evals.map(_.code).mkString("\n") + s"""
       boolean ${ev.isNull} = false;
@@ -106,9 +105,9 @@ case class ConcatWs(children: Seq[Expression])
       // All children are strings. In that case we can construct a fixed size array.
       val evals = children.map(_.gen(ctx))
 
-      val inputs = evals
-        .map { eval => s"${eval.isNull} ? (UTF8String) null : ${eval.value}" }
-        .mkString(", ")
+      val inputs = evals.map { eval =>
+        s"${eval.isNull} ? (UTF8String) null : ${eval.value}"
+      }.mkString(", ")
 
       evals.map(_.code).mkString("\n") + s"""
         UTF8String ${ev.value} = UTF8String.concatWs($inputs);
@@ -120,34 +119,32 @@ case class ConcatWs(children: Seq[Expression])
       val idxInVararg = ctx.freshName("idxInVararg")
 
       val evals = children.map(_.gen(ctx))
-      val (varargCount, varargBuild) = children.tail
-        .zip(evals.tail)
-        .map {
-          case (child, eval) => child.dataType match {
-              case StringType =>
-                (
-                  "", // we count all the StringType arguments num at once below.
-                  s"$array[$idxInVararg ++] = ${eval.isNull} ? (UTF8String) null : ${eval.value};")
-              case _: ArrayType =>
-                val size = ctx.freshName("n")
-                (
-                  s"""
+      val (varargCount, varargBuild) = children.tail.zip(evals.tail).map {
+        case (child, eval) => child.dataType match {
+            case StringType =>
+              (
+                "", // we count all the StringType arguments num at once below.
+                s"$array[$idxInVararg ++] = ${eval
+                  .isNull} ? (UTF8String) null : ${eval.value};")
+            case _: ArrayType =>
+              val size = ctx.freshName("n")
+              (
+                s"""
               if (!${eval.isNull}) {
                 $varargNum += ${eval.value}.numElements();
               }
             """,
-                  s"""
+                s"""
             if (!${eval.isNull}) {
               final int $size = ${eval.value}.numElements();
               for (int j = 0; j < $size; j ++) {
                 $array[$idxInVararg ++] = ${ctx
-                    .getValue(eval.value, StringType, "j")};
+                  .getValue(eval.value, StringType, "j")};
               }
             }
             """)
-            }
-        }
-        .unzip
+          }
+      }.unzip
 
       evals.map(_.code).mkString("\n") +
         s"""
@@ -479,8 +476,7 @@ case class SubstringIndex(
   override def prettyName: String = "substring_index"
 
   override def nullSafeEval(str: Any, delim: Any, count: Any): Any = {
-    str
-      .asInstanceOf[UTF8String]
+    str.asInstanceOf[UTF8String]
       .subStringIndex(delim.asInstanceOf[UTF8String], count.asInstanceOf[Int])
   }
 
@@ -570,8 +566,7 @@ case class StringLPad(str: Expression, len: Expression, pad: Expression)
     Seq(StringType, IntegerType, StringType)
 
   override def nullSafeEval(str: Any, len: Any, pad: Any): Any = {
-    str
-      .asInstanceOf[UTF8String]
+    str.asInstanceOf[UTF8String]
       .lpad(len.asInstanceOf[Int], pad.asInstanceOf[UTF8String])
   }
 
@@ -595,8 +590,7 @@ case class StringRPad(str: Expression, len: Expression, pad: Expression)
     Seq(StringType, IntegerType, StringType)
 
   override def nullSafeEval(str: Any, len: Any, pad: Any): Any = {
-    str
-      .asInstanceOf[UTF8String]
+    str.asInstanceOf[UTF8String]
       .rpad(len.asInstanceOf[Int], pad.asInstanceOf[UTF8String])
   }
 
@@ -751,7 +745,8 @@ case class StringSpace(child: Expression)
       ctx,
       ev,
       (length) =>
-        s"""${ev.value} = UTF8String.blankString(($length < 0) ? 0 : $length);""")
+        s"""${ev
+          .value} = UTF8String.blankString(($length < 0) ? 0 : $length);""")
   }
 
   override def prettyName: String = "space"
@@ -779,8 +774,7 @@ case class Substring(str: Expression, pos: Expression, len: Expression)
   override def nullSafeEval(string: Any, pos: Any, len: Any): Any = {
     str.dataType match {
       case StringType =>
-        string
-          .asInstanceOf[UTF8String]
+        string.asInstanceOf[UTF8String]
           .substringSQL(pos.asInstanceOf[Int], len.asInstanceOf[Int])
       case BinaryType =>
         ByteArray.subStringSQL(
@@ -841,8 +835,7 @@ case class Levenshtein(left: Expression, right: Expression)
 
   override def dataType: DataType = IntegerType
   protected override def nullSafeEval(leftValue: Any, rightValue: Any): Any =
-    leftValue
-      .asInstanceOf[UTF8String]
+    leftValue.asInstanceOf[UTF8String]
       .levenshteinDistance(rightValue.asInstanceOf[UTF8String])
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -918,8 +911,9 @@ case class Base64(child: Expression)
   override def inputTypes: Seq[DataType] = Seq(BinaryType)
 
   protected override def nullSafeEval(bytes: Any): Any = {
-    UTF8String.fromBytes(org.apache.commons.codec.binary.Base64.encodeBase64(
-      bytes.asInstanceOf[Array[Byte]]))
+    UTF8String.fromBytes(
+      org.apache.commons.codec.binary.Base64
+        .encodeBase64(bytes.asInstanceOf[Array[Byte]]))
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -976,8 +970,8 @@ case class Decode(bin: Expression, charset: Expression)
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     val fromCharset = input2.asInstanceOf[UTF8String].toString
-    UTF8String.fromString(
-      new String(input1.asInstanceOf[Array[Byte]], fromCharset))
+    UTF8String
+      .fromString(new String(input1.asInstanceOf[Array[Byte]], fromCharset))
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

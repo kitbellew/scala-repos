@@ -688,8 +688,7 @@ trait SeqSplitter[+T]
             Seq(selfrem - from, until - selfrem)
           } else Seq(sz)
         }
-        val (selfszfrom, thatszfrom) = splitsizes
-          .zip(szcum.init)
+        val (selfszfrom, thatszfrom) = splitsizes.zip(szcum.init)
           .span(_._2 < selfrem)
         val (selfsizes, thatsizes) =
           (selfszfrom map { _._1 }, thatszfrom map { _._1 })
@@ -700,8 +699,9 @@ trait SeqSplitter[+T]
 
         // appended last in self with first in rest if necessary
         if (appendMiddle)
-          selfs.init ++ Seq(selfs.last.appendParSeq[U, SeqSplitter[U]](
-            thats.head)) ++ thats.tail
+          selfs.init ++ Seq(
+            selfs.last.appendParSeq[U, SeqSplitter[U]](thats.head)) ++ thats
+            .tail
         else selfs ++ thats
       } else curr.asInstanceOf[SeqSplitter[U]].psplit(sizes: _*)
   }

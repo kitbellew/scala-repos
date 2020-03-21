@@ -32,14 +32,12 @@ class TestHBLEvents() {
   lazy val eventsDb = Storage.getLEvents()
 
   def run(): Unit = {
-    val r = eventsDb
-      .find(
-        appId = 1,
-        startTime = None,
-        untilTime = None,
-        entityType = Some("pio_user"),
-        entityId = Some("3"))
-      .toList
+    val r = eventsDb.find(
+      appId = 1,
+      startTime = None,
+      untilTime = None,
+      entityType = Some("pio_user"),
+      entityId = Some("3")).toList
     println(r)
   }
 }

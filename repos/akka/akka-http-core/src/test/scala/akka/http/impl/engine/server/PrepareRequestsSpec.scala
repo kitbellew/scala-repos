@@ -40,8 +40,8 @@ class PrepareRequestsSpec extends AkkaSpec {
     closeRequested = false
   )
 
-  val chunkPart = ParserOutput.EntityChunk(
-    HttpEntity.ChunkStreamPart(ByteString("abc")))
+  val chunkPart = ParserOutput
+    .EntityChunk(HttpEntity.ChunkStreamPart(ByteString("abc")))
 
   val chunkRequestComplete = ParserOutput.MessageEnd
 
@@ -68,12 +68,9 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source
-        .fromPublisher(inProbe)
-        .via(stage)
+      Source.fromPublisher(inProbe).via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val upstreamSub = upstreamProbe.expectSubscription()
       val inSub = inProbe.expectSubscription()
@@ -87,10 +84,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
-        .to(Sink.fromSubscriber(entityProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val entitySub = entityProbe.expectSubscription()
 
@@ -130,12 +125,9 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source
-        .fromPublisher(inProbe)
-        .via(stage)
+      Source.fromPublisher(inProbe).via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val upstreamSub = upstreamProbe.expectSubscription()
       val inSub = inProbe.expectSubscription()
@@ -149,10 +141,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
-        .to(Sink.fromSubscriber(entityProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val entitySub = entityProbe.expectSubscription()
 
@@ -183,12 +173,9 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source
-        .fromPublisher(inProbe)
-        .via(stage)
+      Source.fromPublisher(inProbe).via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val upstreamSub = upstreamProbe.expectSubscription()
       val inSub = inProbe.expectSubscription()
@@ -202,10 +189,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
-        .to(Sink.fromSubscriber(entityProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val entitySub = entityProbe.expectSubscription()
 
@@ -226,12 +211,9 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       val stage = Flow.fromGraph(new PrepareRequests(ServerSettings(system)))
 
-      Source
-        .fromPublisher(inProbe)
-        .via(stage)
+      Source.fromPublisher(inProbe).via(stage)
         .to(Sink.fromSubscriber(upstreamProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val upstreamSub = upstreamProbe.expectSubscription()
       val inSub = inProbe.expectSubscription()
@@ -245,10 +227,8 @@ class PrepareRequestsSpec extends AkkaSpec {
 
       // and subscribe to it's streamed entity
       val entityProbe = TestSubscriber.manualProbe[ByteString]()
-      request.entity.dataBytes
-        .to(Sink.fromSubscriber(entityProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+      request.entity.dataBytes.to(Sink.fromSubscriber(entityProbe))
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val entitySub = entityProbe.expectSubscription()
 

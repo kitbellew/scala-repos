@@ -162,11 +162,9 @@ abstract class RemoteServerConnectorBase(
     if (files.isEmpty)
       throw new IllegalArgumentException("Non-empty list of files expected")
 
-    files
-      .find(!_.exists())
-      .foreach(f =>
-        throw new IllegalArgumentException(
-          s"File ${f.getCanonicalPath} does not exists"))
+    files.find(!_.exists()).foreach(f =>
+      throw new IllegalArgumentException(
+        s"File ${f.getCanonicalPath} does not exists"))
 
     if (files.map(_.getParent).distinct.size != 1)
       throw new IllegalArgumentException(

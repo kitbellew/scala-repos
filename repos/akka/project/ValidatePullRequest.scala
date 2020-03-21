@@ -98,8 +98,8 @@ object ValidatePullRequest extends AutoPlugin {
       changedDirs: Set[String],
       name: String,
       graphsToTest: Seq[(Configuration, ModuleGraph)])(log: Logger): Boolean = {
-    val dirsOrExperimental = changedDirs.flatMap(dir =>
-      Set(dir, s"$dir-experimental"))
+    val dirsOrExperimental = changedDirs
+      .flatMap(dir => Set(dir, s"$dir-experimental"))
     graphsToTest exists {
       case (ivyScope, deps) =>
         log.debug(s"Analysing [$ivyScope] scoped dependencies...")
@@ -127,8 +127,7 @@ object ValidatePullRequest extends AutoPlugin {
   override lazy val buildSettings = Seq(
     sourceBranch in Global in ValidatePR := {
       sys.env.get(SourceBranchEnvVarName) orElse
-        sys.env
-          .get(SourcePullIdJenkinsEnvVarName)
+        sys.env.get(SourcePullIdJenkinsEnvVarName)
           .map("pullreq/" + _) getOrElse // Set by "GitHub pull request builder plugin"
         "HEAD"
     },
@@ -151,12 +150,10 @@ object ValidatePullRequest extends AutoPlugin {
 
           try {
             import scala.collection.JavaConverters._
-            val gh = GitHubBuilder
-              .fromEnvironment()
-              .withOAuthToken(GitHub.envTokenOrThrow)
-              .build()
-            val comments =
-              gh.getRepository("akka/akka").getIssue(prId).getComments.asScala
+            val gh = GitHubBuilder.fromEnvironment()
+              .withOAuthToken(GitHub.envTokenOrThrow).build()
+            val comments = gh.getRepository("akka/akka").getIssue(prId)
+              .getComments.asScala
 
             def triggersBuildAll(c: GHIssueComment): Boolean =
               buildAllMagicPhrase.findFirstIn(c.getBody).isDefined
@@ -166,8 +163,8 @@ object ValidatePullRequest extends AutoPlugin {
             }
           } catch {
             case ex: Exception =>
-              log.warn(
-                "Unable to reach GitHub! Exception was: " + ex.getMessage)
+              log
+                .warn("Unable to reach GitHub! Exception was: " + ex.getMessage)
               None
           }
       }
@@ -181,24 +178,22 @@ object ValidatePullRequest extends AutoPlugin {
 
       // TODO could use jgit
       log.info(s"Diffing [$prId] to determine changed modules in PR...")
-      val diffOutput = s"git diff $target --name-only".!!.split("\n")
-      val diffedModuleNames = diffOutput
-        .map(l => l.trim)
-        .filter(l =>
-          l.startsWith("akka-") ||
-            (l.startsWith("project") && l != "project/MiMa.scala"))
-        .map(l ⇒ l.takeWhile(_ != '/'))
-        .toSet
+      val diffOutput = s"git diff $target --name-only"
+        .!!.split("\n")
+      val diffedModuleNames = diffOutput.map(l => l.trim).filter(l =>
+        l.startsWith("akka-") ||
+          (l.startsWith("project") && l != "project/MiMa.scala"))
+        .map(l ⇒ l.takeWhile(_ != '/')).toSet
 
       val dirtyModuleNames: Set[String] =
         if (runningOnJenkins) Set.empty
         else {
-          val statusOutput = s"git status --short".!!.split("\n")
+          val statusOutput = s"git status --short"
+            .!!.split("\n")
           val dirtyDirectories = statusOutput
             .map(l ⇒ l.trim.dropWhile(_ != ' ').drop(1))
             .map(_.takeWhile(_ != '/'))
-            .filter(dir => dir.startsWith("akka-") || dir == "project")
-            .toSet
+            .filter(dir => dir.startsWith("akka-") || dir == "project").toSet
           log.info(
             "Detected uncomitted changes in directories (including in dependency analysis): " + dirtyDirectories
               .mkString("[", ",", "]"))
@@ -276,8 +271,7 @@ object ValidatePullRequest extends AutoPlugin {
         // then zip all of the tasks together discarding outputs.
         // Task failures are propagated as normal.
         val zero: Def.Initialize[Seq[Task[Any]]] = Def.setting { Seq(task()) }
-        validationTasks
-          .map(taskKey => Def.task { taskKey.value })
+        validationTasks.map(taskKey => Def.task { taskKey.value })
           .foldLeft(zero) { (acc, current) =>
             acc.zipWith(current) {
               case (taskSeq, task) => taskSeq :+ task.asInstanceOf[Task[Any]]

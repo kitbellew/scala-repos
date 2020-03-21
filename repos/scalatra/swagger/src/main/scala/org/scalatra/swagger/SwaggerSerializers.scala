@@ -73,12 +73,11 @@ object SwaggerSerializers {
         override val parameterNameReader
             : org.json4s.reflect.ParameterNameReader = self.parameterNameReader
         override val typeHints: TypeHints = self.typeHints
-        override val customSerializers: List[Serializer[_]] =
-          self.customSerializers
+        override val customSerializers: List[Serializer[_]] = self
+          .customSerializers
         override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
-          (
-            newSerializer.mf.runtimeClass -> newSerializer
-          ) :: self.fieldSerializers
+          (newSerializer.mf.runtimeClass -> newSerializer) :: self
+            .fieldSerializers
         override val wantsBigDecimal: Boolean = self.wantsBigDecimal
         override val primitives: Set[Type] = self.primitives
         override val companions: List[(Class[_], AnyRef)] = self.companions
@@ -92,8 +91,8 @@ object SwaggerSerializers {
         override val parameterNameReader
             : org.json4s.reflect.ParameterNameReader = self.parameterNameReader
         override val typeHints: TypeHints = self.typeHints + extraHints
-        override val customSerializers: List[Serializer[_]] =
-          self.customSerializers
+        override val customSerializers: List[Serializer[_]] = self
+          .customSerializers
         override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
           self.fieldSerializers
         override val wantsBigDecimal: Boolean = self.wantsBigDecimal
@@ -109,14 +108,14 @@ object SwaggerSerializers {
         override val parameterNameReader
             : org.json4s.reflect.ParameterNameReader = self.parameterNameReader
         override val typeHints: TypeHints = self.typeHints
-        override val customSerializers: List[Serializer[_]] =
-          self.customSerializers
+        override val customSerializers: List[Serializer[_]] = self
+          .customSerializers
         override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
           self.fieldSerializers
         override val wantsBigDecimal: Boolean = self.wantsBigDecimal
         override val primitives: Set[Type] = self.primitives
-        override val companions: List[(Class[_], AnyRef)] =
-          comps.toList ::: self.companions
+        override val companions: List[(Class[_], AnyRef)] = comps
+          .toList ::: self.companions
         override val strict: Boolean = self.strict
       }
 
@@ -127,8 +126,8 @@ object SwaggerSerializers {
         override val parameterNameReader
             : org.json4s.reflect.ParameterNameReader = self.parameterNameReader
         override val typeHints: TypeHints = self.typeHints
-        override val customSerializers: List[Serializer[_]] =
-          self.customSerializers
+        override val customSerializers: List[Serializer[_]] = self
+          .customSerializers
         override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
           self.fieldSerializers
         override val wantsBigDecimal: Boolean = false
@@ -144,8 +143,8 @@ object SwaggerSerializers {
         override val parameterNameReader
             : org.json4s.reflect.ParameterNameReader = self.parameterNameReader
         override val typeHints: TypeHints = self.typeHints
-        override val customSerializers: List[Serializer[_]] =
-          self.customSerializers
+        override val customSerializers: List[Serializer[_]] = self
+          .customSerializers
         override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
           self.fieldSerializers
         override val wantsBigDecimal: Boolean = true
@@ -161,8 +160,8 @@ object SwaggerSerializers {
         override val parameterNameReader
             : org.json4s.reflect.ParameterNameReader = self.parameterNameReader
         override val typeHints: TypeHints = hints
-        override val customSerializers: List[Serializer[_]] =
-          self.customSerializers
+        override val customSerializers: List[Serializer[_]] = self
+          .customSerializers
         override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
           self.fieldSerializers
         override val wantsBigDecimal: Boolean = self.wantsBigDecimal
@@ -280,8 +279,8 @@ object SwaggerSerializers {
                 case _ => AnyValue
               }
             case value @ JObject(flds)
-                if flds.exists(_._1 == "minimum") && flds.exists(
-                  _._1 == "maximum") =>
+                if flds.exists(_._1 == "minimum") && flds
+                  .exists(_._1 == "maximum") =>
               AllowableRangeValues(
                 (value \ "minimum").as[Int] to (value \ "maximum").as[Int])
             case _ => AnyValue
@@ -306,8 +305,7 @@ object SwaggerSerializers {
                   case JBool(value) => value
                   case _            => false
                 },
-                description = (json \ "description")
-                  .getAs[String]
+                description = (json \ "description").getAs[String]
                   .flatMap(_.blankOption),
                 allowableValues = json.extract[AllowableValues],
                 items = None
@@ -385,11 +383,8 @@ object SwaggerSerializers {
                 t,
                 (json \ "description").getAs[String].flatMap(_.blankOption),
                 (json \ "notes").getAs[String].flatMap(_.blankOption),
-                (json \ "paramType")
-                  .getAs[String]
-                  .flatMap(_.blankOption)
-                  .map(ParamType.withName)
-                  .getOrElse(ParamType.Query),
+                (json \ "paramType").getAs[String].flatMap(_.blankOption)
+                  .map(ParamType.withName).getOrElse(ParamType.Query),
                 json \ "defaultValue" match {
                   case JInt(num)     => Some(num.toString)
                   case JBool(value)  => Some(value.toString)
@@ -417,8 +412,8 @@ object SwaggerSerializers {
                   ("paramType" -> x.paramType.toString) ~
                   ("paramAccess" -> x.paramAccess)
 
-              (output merge writeDataType(x.`type`)) merge Extraction.decompose(
-                x.allowableValues)
+              (output merge writeDataType(x.`type`)) merge Extraction
+                .decompose(x.allowableValues)
           }))
 
   class OperationSerializer
@@ -449,8 +444,8 @@ object SwaggerSerializers {
                 ("notes" -> obj.notes.flatMap(_.blankOption).getOrElse("")) ~
                 ("deprecated" -> obj.deprecated) ~
                 ("nickname" -> obj.nickname) ~
-                ("parameters" -> Extraction.decompose(
-                  obj.parameters.sortBy(_.position))) ~
+                ("parameters" -> Extraction
+                  .decompose(obj.parameters.sortBy(_.position))) ~
                 ("responseMessages" -> (if (obj.responseMessages.nonEmpty)
                                           Some(Extraction.decompose(
                                             obj.responseMessages))
@@ -474,8 +469,7 @@ object SwaggerSerializers {
           {
             case value => Endpoint(
                 (value \ "path").extract[String],
-                (value \ "description")
-                  .extractOpt[String]
+                (value \ "description").extractOpt[String]
                   .flatMap(_.blankOption),
                 (value \ "operations").extract[List[Operation]])
           },
@@ -494,15 +488,13 @@ object SwaggerSerializers {
                 (json \ "apiVersion").extractOrElse(""),
                 (json \ "swaggerVersion").extractOrElse(""),
                 (json \ "resourcePath").extractOrElse(""),
-                (json \ "description")
-                  .extractOpt[String]
+                (json \ "description").extractOpt[String]
                   .flatMap(_.blankOption),
                 (json \ "produces").extractOrElse(List.empty[String]),
                 (json \ "consumes").extractOrElse(List.empty[String]),
                 (json \ "protocols").extractOrElse(List.empty[String]),
                 (json \ "apis").extractOrElse(List.empty[Endpoint]),
-                (json \ "models")
-                  .extractOpt[Map[String, Model]]
+                (json \ "models").extractOpt[Map[String, Model]]
                   .getOrElse(Map.empty),
                 (json \ "authorizations").extractOrElse(List.empty[String]),
                 (json \ "position").extractOrElse(0)
@@ -581,9 +573,8 @@ object SwaggerSerializers {
           {
             case value if value \ "type" == JString("apiKey") =>
               ApiKey(
-                (
-                  value \ "keyname"
-                ).extractOpt[String].flatMap(_.blankOption).getOrElse("apiKey"),
+                (value \ "keyname").extractOpt[String].flatMap(_.blankOption)
+                  .getOrElse("apiKey"),
                 (value \ "passAs").extract[String])
             case value if value \ "type" == JString("oauth2") =>
               OAuth(

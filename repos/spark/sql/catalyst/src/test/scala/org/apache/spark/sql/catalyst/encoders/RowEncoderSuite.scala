@@ -30,12 +30,10 @@ class ExamplePoint(val x: Double, val y: Double) extends Serializable {
   override def equals(that: Any): Boolean = {
     if (that.isInstanceOf[ExamplePoint]) {
       val e = that.asInstanceOf[ExamplePoint]
-      (this.x == e.x || (this.x.isNaN && e.x.isNaN) || (
-        this.x.isInfinity && e.x.isInfinity
-      )) &&
-      (this.y == e.y || (this.y.isNaN && e.y.isNaN) || (
-        this.y.isInfinity && e.y.isInfinity
-      ))
+      (this.x == e.x || (this.x.isNaN && e.x.isNaN) || (this.x.isInfinity && e.x
+        .isInfinity)) &&
+      (this.y == e.y || (this.y.isNaN && e.y.isNaN) || (this.y.isInfinity && e.y
+        .isInfinity))
     } else { false }
   }
 }
@@ -84,25 +82,15 @@ class RowEncoderSuite extends SparkFunSuite {
   private val arrayOfUDT = ArrayType(new ExamplePointUDT, false)
 
   encodeDecodeTest(
-    new StructType()
-      .add("null", NullType)
-      .add("boolean", BooleanType)
-      .add("byte", ByteType)
-      .add("short", ShortType)
-      .add("int", IntegerType)
-      .add("long", LongType)
-      .add("float", FloatType)
-      .add("double", DoubleType)
-      .add("decimal", DecimalType.SYSTEM_DEFAULT)
-      .add("string", StringType)
-      .add("binary", BinaryType)
-      .add("date", DateType)
-      .add("timestamp", TimestampType)
-      .add("udt", new ExamplePointUDT))
+    new StructType().add("null", NullType).add("boolean", BooleanType)
+      .add("byte", ByteType).add("short", ShortType).add("int", IntegerType)
+      .add("long", LongType).add("float", FloatType).add("double", DoubleType)
+      .add("decimal", DecimalType.SYSTEM_DEFAULT).add("string", StringType)
+      .add("binary", BinaryType).add("date", DateType)
+      .add("timestamp", TimestampType).add("udt", new ExamplePointUDT))
 
   encodeDecodeTest(
-    new StructType()
-      .add("arrayOfNull", arrayOfNull)
+    new StructType().add("arrayOfNull", arrayOfNull)
       .add("arrayOfString", arrayOfString)
       .add("arrayOfArrayOfString", ArrayType(arrayOfString))
       .add("arrayOfArrayOfInt", ArrayType(ArrayType(IntegerType)))
@@ -111,8 +99,7 @@ class RowEncoderSuite extends SparkFunSuite {
       .add("arrayOfUDT", arrayOfUDT))
 
   encodeDecodeTest(
-    new StructType()
-      .add("mapOfIntAndString", MapType(IntegerType, StringType))
+    new StructType().add("mapOfIntAndString", MapType(IntegerType, StringType))
       .add("mapOfStringAndArray", MapType(StringType, arrayOfString))
       .add("mapOfArrayAndInt", MapType(arrayOfString, IntegerType))
       .add("mapOfArray", MapType(arrayOfString, arrayOfString))
@@ -121,26 +108,20 @@ class RowEncoderSuite extends SparkFunSuite {
       .add("mapOfStruct", MapType(structOfString, structOfString)))
 
   encodeDecodeTest(
-    new StructType()
-      .add("structOfString", structOfString)
-      .add(
-        "structOfStructOfString",
-        new StructType().add("struct", structOfString))
+    new StructType().add("structOfString", structOfString).add(
+      "structOfStructOfString",
+      new StructType().add("struct", structOfString))
       .add("structOfArray", new StructType().add("array", arrayOfString))
-      .add("structOfMap", new StructType().add("map", mapOfString))
-      .add(
+      .add("structOfMap", new StructType().add("map", mapOfString)).add(
         "structOfArrayAndMap",
         new StructType().add("array", arrayOfString).add("map", mapOfString))
       .add("structOfUDT", structOfUDT))
 
   test(s"encode/decode: Product") {
-    val schema = new StructType()
-      .add(
-        "structAsProduct",
-        new StructType()
-          .add("int", IntegerType)
-          .add("string", StringType)
-          .add("double", DoubleType))
+    val schema = new StructType().add(
+      "structAsProduct",
+      new StructType().add("int", IntegerType).add("string", StringType)
+        .add("double", DoubleType))
 
     val encoder = RowEncoder(schema)
 
@@ -153,8 +134,8 @@ class RowEncoderSuite extends SparkFunSuite {
   private def encodeDecodeTest(schema: StructType): Unit = {
     test(s"encode/decode: ${schema.simpleString}") {
       val encoder = RowEncoder(schema)
-      val inputGenerator =
-        RandomDataGenerator.forType(schema, nullable = false).get
+      val inputGenerator = RandomDataGenerator.forType(schema, nullable = false)
+        .get
 
       var input: Row = null
       try {

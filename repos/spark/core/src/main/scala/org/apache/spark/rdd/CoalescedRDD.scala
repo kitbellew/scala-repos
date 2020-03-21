@@ -59,8 +59,7 @@ private[spark] case class CoalescedRDDPartition(
     */
   def localFraction: Double = {
     val loc = parents.count { p =>
-      val parentPreferredLocations = rdd.context
-        .getPreferredLocs(rdd, p.index)
+      val parentPreferredLocations = rdd.context.getPreferredLocs(rdd, p.index)
         .map(_.host)
       preferredLocation.exists(parentPreferredLocations.contains)
     }
@@ -278,10 +277,11 @@ private class PartitionCoalescer(
         val pgroup = PartitionGroup(nxt_replica)
         groupArr += pgroup
         addPartToPGroup(nxt_part, pgroup)
-        groupHash.put(
-          nxt_replica,
-          ArrayBuffer(pgroup)
-        ) // list in case we have multiple
+        groupHash
+          .put(
+            nxt_replica,
+            ArrayBuffer(pgroup)
+          ) // list in case we have multiple
         numCreated += 1
       }
     }
@@ -309,8 +309,7 @@ private class PartitionCoalescer(
     * @return partition group (bin to be put in)
     */
   def pickBin(p: Partition): PartitionGroup = {
-    val pref = currPrefLocs(p)
-      .map(getLeastGroupHash(_))
+    val pref = currPrefLocs(p).map(getLeastGroupHash(_))
       .sortWith(compare) // least loaded pref locs
     val prefPart = if (pref == Nil) None else pref.head
 
@@ -338,8 +337,8 @@ private class PartitionCoalescer(
         for ((p, i) <- prev.partitions.zipWithIndex) { groupArr(i).arr += p }
       } else { // no locality available, then simply split partitions based on positions in array
         for (i <- 0 until maxPartitions) {
-          val rangeStart =
-            ((i.toLong * prev.partitions.length) / maxPartitions).toInt
+          val rangeStart = ((i.toLong * prev.partitions.length) / maxPartitions)
+            .toInt
           val rangeEnd =
             (((i.toLong + 1) * prev.partitions.length) / maxPartitions).toInt
           (rangeStart until rangeEnd).foreach { j =>

@@ -70,9 +70,7 @@ class ConsoleProducerTest {
   @Test
   def testParseKeyProp(): Unit = {
     val config = new ConsoleProducer.ProducerConfig(validArgs)
-    val reader = Class
-      .forName(config.readerClass)
-      .newInstance()
+    val reader = Class.forName(config.readerClass).newInstance()
       .asInstanceOf[LineMessageReader];
     reader.init(System.in, ConsoleProducer.getReaderProps(config))
     assert(reader.keySeparator == "#")

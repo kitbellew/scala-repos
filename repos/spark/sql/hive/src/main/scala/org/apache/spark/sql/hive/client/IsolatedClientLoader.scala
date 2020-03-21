@@ -80,9 +80,8 @@ private[hive] object IsolatedClientLoader extends Logging {
                 sharesHadoopClasses = false
                 (downloadVersion(resolvedVersion, "2.4.0", ivyPath), "2.4.0")
             }
-          resolvedVersions.put(
-            (resolvedVersion, actualHadoopVersion),
-            downloadedFiles)
+          resolvedVersions
+            .put((resolvedVersion, actualHadoopVersion), downloadedFiles)
           resolvedVersions((resolvedVersion, actualHadoopVersion))
         }
 
@@ -117,8 +116,7 @@ private[hive] object IsolatedClientLoader extends Logging {
         "hive-exec",
         "hive-common",
         "hive-serde",
-        "hive-cli")
-        .map(a => s"org.apache.hive:$a:${version.fullVersion}") ++
+        "hive-cli").map(a => s"org.apache.hive:$a:${version.fullVersion}") ++
       Seq(
         "com.google.guava:guava:14.0.1",
         s"org.apache.hadoop:hadoop-client:$hadoopVersion")
@@ -173,8 +171,8 @@ private[hive] class IsolatedClientLoader(
     val config: Map[String, String] = Map.empty,
     val isolationOn: Boolean = true,
     val sharesHadoopClasses: Boolean = true,
-    val rootClassLoader: ClassLoader =
-      ClassLoader.getSystemClassLoader.getParent.getParent,
+    val rootClassLoader: ClassLoader = ClassLoader.getSystemClassLoader
+      .getParent.getParent,
     val baseClassLoader: ClassLoader =
       Thread.currentThread().getContextClassLoader,
     val sharedPrefixes: Seq[String] = Seq.empty,
@@ -183,17 +181,16 @@ private[hive] class IsolatedClientLoader(
 
   // Check to make sure that the root classloader does not know about Hive.
   assert(
-    Try(
-      rootClassLoader.loadClass(
-        "org.apache.hadoop.hive.conf.HiveConf")).isFailure)
+    Try(rootClassLoader.loadClass("org.apache.hadoop.hive.conf.HiveConf"))
+      .isFailure)
 
   /** All jars used by the hive specific classloader. */
   protected def allJars = execJars.toArray
 
   protected def isSharedClass(name: String): Boolean = {
     val isHadoopClass =
-      name.startsWith("org.apache.hadoop.") && !name.startsWith(
-        "org.apache.hadoop.hive.")
+      name.startsWith("org.apache.hadoop.") && !name
+        .startsWith("org.apache.hadoop.hive.")
 
     name.contains("slf4j") ||
     name.contains("log4j") ||
@@ -233,8 +230,8 @@ private[hive] class IsolatedClientLoader(
             val classFileName = name.replaceAll("\\.", "/") + ".class"
             if (isBarrierClass(name)) {
               // For barrier classes, we construct a new copy of the class.
-              val bytes = IOUtils.toByteArray(
-                baseClassLoader.getResourceAsStream(classFileName))
+              val bytes = IOUtils
+                .toByteArray(baseClassLoader.getResourceAsStream(classFileName))
               logDebug(
                 s"custom defining: $name - ${util.Arrays.hashCode(bytes)}")
               defineClass(name, bytes, 0, bytes.length)
@@ -277,9 +274,7 @@ private[hive] class IsolatedClientLoader(
     Thread.currentThread.setContextClassLoader(classLoader)
 
     try {
-      classLoader
-        .loadClass(classOf[HiveClientImpl].getName)
-        .getConstructors
+      classLoader.loadClass(classOf[HiveClientImpl].getName).getConstructors
         .head
         .newInstance(version, sparkConf, hadoopConf, config, classLoader, this)
         .asInstanceOf[HiveClient]

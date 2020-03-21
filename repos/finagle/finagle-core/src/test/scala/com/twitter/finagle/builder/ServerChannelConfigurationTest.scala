@@ -37,12 +37,10 @@ class ServerChannelConfigCodec extends CodecFactory[String, String] {
                 new DelimiterBasedFrameDecoder(
                   100,
                   Delimiters.lineDelimiter: _*))
-              pipeline.addLast(
-                "stringDecoder",
-                new StringDecoder(Charsets.Utf8))
-              pipeline.addLast(
-                "stringEncoder",
-                new StringEncoder(Charsets.Utf8))
+              pipeline
+                .addLast("stringDecoder", new StringDecoder(Charsets.Utf8))
+              pipeline
+                .addLast("stringEncoder", new StringEncoder(Charsets.Utf8))
               pipeline
             }
           }
@@ -74,19 +72,14 @@ class ServerChannelConfigurationTest extends FunSuite {
   test("close connection after max life time duration") {
     // create a server builder which will close connections in 2 seconds
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-    val server = ServerBuilder()
-      .codec(ServerChannelConfigCodec)
-      .bindTo(address)
-      .name("FinagleServer")
-      .hostConnectionMaxLifeTime(2 seconds)
-      .build(service)
+    val server = ServerBuilder().codec(ServerChannelConfigCodec).bindTo(address)
+      .name("FinagleServer").hostConnectionMaxLifeTime(2 seconds).build(service)
 
     val client: Service[String, String] = ClientBuilder()
       .codec(ServerChannelConfigCodec)
       .daemon(true) // don't create an exit guard
       .hosts(server.boundAddress.asInstanceOf[InetSocketAddress])
-      .hostConnectionLimit(1)
-      .build()
+      .hostConnectionLimit(1).build()
 
     // Issue a request which is NOT newline-delimited. Server should close connection
     // after waiting for 2 seconds for a new line
@@ -99,19 +92,14 @@ class ServerChannelConfigurationTest extends FunSuite {
   test("close connection after max idle time duration") {
     // create a server builder which will close idle connections in 2 seconds
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-    val server = ServerBuilder()
-      .codec(ServerChannelConfigCodec)
-      .bindTo(address)
-      .name("FinagleServer")
-      .hostConnectionMaxIdleTime(2 seconds)
-      .build(service)
+    val server = ServerBuilder().codec(ServerChannelConfigCodec).bindTo(address)
+      .name("FinagleServer").hostConnectionMaxIdleTime(2 seconds).build(service)
 
     val client: Service[String, String] = ClientBuilder()
       .codec(ServerChannelConfigCodec)
       .daemon(true) // don't create an exit guard
       .hosts(server.boundAddress.asInstanceOf[InetSocketAddress])
-      .hostConnectionLimit(1)
-      .build()
+      .hostConnectionLimit(1).build()
 
     // Issue a request which is NOT newline-delimited. Server should close connection
     // after waiting for 2 seconds for a new line

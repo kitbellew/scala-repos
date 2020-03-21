@@ -33,12 +33,10 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
   import testImplicits._
 
   private lazy val doubleData = (1 to 10)
-    .map(i => DoubleData(i * 0.2 - 1, i * -0.2 + 1))
-    .toDF()
+    .map(i => DoubleData(i * 0.2 - 1, i * -0.2 + 1)).toDF()
 
   private lazy val nnDoubleData = (1 to 10)
-    .map(i => DoubleData(i * 0.1, i * -0.1))
-    .toDF()
+    .map(i => DoubleData(i * 0.1, i * -0.1)).toDF()
 
   private lazy val nullDoubles = Seq(
     NullDoubles(1.0),
@@ -84,16 +82,12 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
       f: (Double, Double) => Double): Unit = {
     checkAnswer(
       nnDoubleData.select(c('a, 'a)),
-      nnDoubleData
-        .collect()
-        .toSeq
+      nnDoubleData.collect().toSeq
         .map(r => Row(f(r.getDouble(0), r.getDouble(0)))))
 
     checkAnswer(
       nnDoubleData.select(c('a, 'b)),
-      nnDoubleData
-        .collect()
-        .toSeq
+      nnDoubleData.collect().toSeq
         .map(r => Row(f(r.getDouble(0), r.getDouble(1)))))
 
     checkAnswer(
@@ -133,8 +127,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     testOneToOneMathFunction(toDegrees, math.toDegrees)
     checkAnswer(
       sql("SELECT degrees(0), degrees(1), degrees(1.5)"),
-      Seq((1, 2))
-        .toDF()
+      Seq((1, 2)).toDF()
         .select(toDegrees(lit(0)), toDegrees(lit(1)), toDegrees(lit(1.5))))
   }
 
@@ -142,8 +135,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     testOneToOneMathFunction(toRadians, math.toRadians)
     checkAnswer(
       sql("SELECT radians(0), radians(1), radians(1.5)"),
-      Seq((1, 2))
-        .toDF()
+      Seq((1, 2)).toDF()
         .select(toRadians(lit(0)), toRadians(lit(1)), toRadians(lit(1.5))))
   }
 
@@ -265,8 +257,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
       math.log)
     checkAnswer(
       sql("SELECT ln(0), ln(1), ln(1.5)"),
-      Seq((1, 2))
-        .toDF()
+      Seq((1, 2)).toDF()
         .select(logarithm(lit(0)), logarithm(lit(1)), logarithm(lit(1.5))))
   }
 
@@ -276,8 +267,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
 
   test("shift left") {
     val df = Seq[(Long, Integer, Short, Byte, Integer, Integer)](
-      (21, 21, 21, 21, 21, null))
-      .toDF("a", "b", "c", "d", "e", "f")
+      (21, 21, 21, 21, 21, null)).toDF("a", "b", "c", "d", "e", "f")
 
     checkAnswer(
       df.select(
@@ -300,8 +290,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
 
   test("shift right") {
     val df = Seq[(Long, Integer, Short, Byte, Integer, Integer)](
-      (42, 42, 42, 42, 42, null))
-      .toDF("a", "b", "c", "d", "e", "f")
+      (42, 42, 42, 42, 42, null)).toDF("a", "b", "c", "d", "e", "f")
 
     checkAnswer(
       df.select(
@@ -325,8 +314,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
 
   test("shift right unsigned") {
     val df = Seq[(Long, Integer, Short, Byte, Integer, Integer)](
-      (-42, 42, 42, 42, 42, null))
-      .toDF("a", "b", "c", "d", "e", "f")
+      (-42, 42, 42, 42, 42, null)).toDF("a", "b", "c", "d", "e", "f")
 
     checkAnswer(
       df.select(

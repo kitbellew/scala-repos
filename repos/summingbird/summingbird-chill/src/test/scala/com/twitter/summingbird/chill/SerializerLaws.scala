@@ -35,8 +35,9 @@ object SerializationLaws extends Properties("SerializationLaws") {
   implicit def timestampSer: KSerializer[Timestamp] = new TimestampSerializer
 
   def round[T](ser: KSerializer[T], t: T): T = {
-    val kinst = (new ScalaKryoInstantiator)
-      .withRegistrar({ (k: Kryo) => k.register(t.getClass, ser); () })
+    val kinst = (new ScalaKryoInstantiator).withRegistrar({ (k: Kryo) =>
+      k.register(t.getClass, ser); ()
+    })
     KryoPool.withBuffer(1, kinst, 100, 10000).deepCopy(t)
   }
 

@@ -61,9 +61,7 @@ class OutputMetrics private (
     */
   private[executor] def this() {
     this(
-      InternalAccumulator
-        .createOutputAccums()
-        .map { a => (a.name.get, a) }
+      InternalAccumulator.createOutputAccums().map { a => (a.name.get, a) }
         .toMap[String, Accumulator[_]])
   }
 

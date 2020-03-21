@@ -15,9 +15,9 @@ trait Helpers {
     val members =
       if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
         sym.tpe.members
-      } else if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
-        sym.companionModule.tpe.members
-      } else { List.empty }
+      } else if (sym.isClass || sym.isPackageClass || sym
+                   .isPackageObjectClass) { sym.companionModule.tpe.members }
+      else { List.empty }
     members.toList.filter { _.name.toString == "apply" }
   }
 
@@ -82,11 +82,8 @@ trait Helpers {
       if (sym.isType) { typeIndexerName(sym) }
       else if (sym.isModule) { typeIndexerName(sym) + "$" }
       else { symbolIndexerName(sym.owner) + "." + sym.encodedName }
-    name
-      .replaceAll("\\.package\\$\\$", ".")
-      .replaceAll("\\.package\\$\\.", ".")
-      .replaceAll("\\.package\\$(?!$)", ".")
-      .replaceAll("\\.package\\.", ".")
+    name.replaceAll("\\.package\\$\\$", ".").replaceAll("\\.package\\$\\.", ".")
+      .replaceAll("\\.package\\$(?!$)", ".").replaceAll("\\.package\\.", ".")
       .replaceAll("\\.package$", ".package\\$")
   }
 
@@ -113,8 +110,7 @@ trait Helpers {
     if (withTpeArgs) {
       withoutArgs + (if (tpe.typeArgs.size > 0) {
                        "[" +
-                         tpe.typeArgs
-                           .map(typeFullName(_, true))
+                         tpe.typeArgs.map(typeFullName(_, true))
                            .mkString(", ") +
                          "]"
                      } else { "" })
@@ -236,14 +232,13 @@ trait Helpers {
       val validSyms = symbols.filter { s =>
         s != EmptyPackage && !isRoot(s) &&
         // This check is necessary to prevent infinite looping..
-        ((isRoot(s.owner) && isRoot(parent)) || (
-          s.owner.fullName == parent.fullName
-        ))
+        ((isRoot(s.owner) && isRoot(parent)) || (s.owner.fullName == parent
+          .fullName))
       }
 
       // the nameString operation is depressingly expensive - mapping to tuples first reduces the overhead.
-      val vsPairsAsList: List[(String, Symbol)] = validSyms.map(vs =>
-        (vs.nameString, vs))(scala.collection.breakOut)
+      val vsPairsAsList: List[(String, Symbol)] = validSyms
+        .map(vs => (vs.nameString, vs))(scala.collection.breakOut)
       vsPairsAsList.sortBy(_._1).map(_._2)
     }
 

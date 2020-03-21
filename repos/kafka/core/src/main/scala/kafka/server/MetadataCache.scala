@@ -78,8 +78,8 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
         case (partitionId, partitionState) =>
           val topicPartition = TopicAndPartition(topic, partitionId)
 
-          val leaderAndIsr =
-            partitionState.leaderIsrAndControllerEpoch.leaderAndIsr
+          val leaderAndIsr = partitionState.leaderIsrAndControllerEpoch
+            .leaderAndIsr
           val maybeLeader = getAliveEndpoint(leaderAndIsr.leader, protocol)
 
           val replicas = partitionState.allReplicas
@@ -106,8 +106,7 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
                   "Error while fetching metadata for %s: replica information not available for following brokers %s"
                     .format(
                       topicPartition,
-                      replicas
-                        .filterNot(replicaInfo.map(_.id).contains)
+                      replicas.filterNot(replicaInfo.map(_.id).contains)
                         .mkString(",")))
 
                 new MetadataResponse.PartitionMetadata(
@@ -220,26 +219,24 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
             removePartitionInfo(tp.topic, tp.partition)
             stateChangeLogger.trace(
               ("Broker %d deleted partition %s from metadata cache in response to UpdateMetadata request " +
-                "sent by controller %d epoch %d with correlation id %d")
-                .format(
-                  brokerId,
-                  tp,
-                  updateMetadataRequest.controllerId,
-                  updateMetadataRequest.controllerEpoch,
-                  correlationId))
+                "sent by controller %d epoch %d with correlation id %d").format(
+                brokerId,
+                tp,
+                updateMetadataRequest.controllerId,
+                updateMetadataRequest.controllerEpoch,
+                correlationId))
           } else {
             val partitionInfo = partitionStateToPartitionStateInfo(info)
             addOrUpdatePartitionInfo(tp.topic, tp.partition, partitionInfo)
             stateChangeLogger.trace(
               ("Broker %d cached leader info %s for partition %s in response to UpdateMetadata request " +
-                "sent by controller %d epoch %d with correlation id %d")
-                .format(
-                  brokerId,
-                  info,
-                  tp,
-                  updateMetadataRequest.controllerId,
-                  updateMetadataRequest.controllerEpoch,
-                  correlationId))
+                "sent by controller %d epoch %d with correlation id %d").format(
+                brokerId,
+                info,
+                tp,
+                updateMetadataRequest.controllerId,
+                updateMetadataRequest.controllerEpoch,
+                correlationId))
           }
       }
     }
@@ -263,14 +260,11 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
   }
 
   private def removePartitionInfo(topic: String, partitionId: Int): Boolean = {
-    cache
-      .get(topic)
-      .map { infos =>
-        infos.remove(partitionId)
-        if (infos.isEmpty) cache.remove(topic)
-        true
-      }
-      .getOrElse(false)
+    cache.get(topic).map { infos =>
+      infos.remove(partitionId)
+      if (infos.isEmpty) cache.remove(topic)
+      true
+    }.getOrElse(false)
   }
 
 }

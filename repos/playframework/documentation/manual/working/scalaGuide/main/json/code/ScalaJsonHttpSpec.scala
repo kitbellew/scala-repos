@@ -69,27 +69,25 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
       //#handle-json
       def savePlace =
         Action { request =>
-          request.body.asJson
-            .map { json =>
-              val placeResult = json.validate[Place]
-              placeResult.fold(
-                errors => {
-                  BadRequest(Json.obj(
-                    "status" -> "KO",
-                    "message" -> JsError.toJson(errors)))
-                },
-                place => {
-                  Place.save(place)
-                  Ok(Json.obj(
-                    "status" -> "OK",
-                    "message" -> ("Place '" + place.name + "' saved.")))
-                }
-              )
-            }
-            .getOrElse {
-              BadRequest(
-                Json.obj("status" -> "KO", "message" -> "Expecting JSON data."))
-            }
+          request.body.asJson.map { json =>
+            val placeResult = json.validate[Place]
+            placeResult.fold(
+              errors => {
+                BadRequest(Json.obj(
+                  "status" -> "KO",
+                  "message" -> JsError.toJson(errors)))
+              },
+              place => {
+                Place.save(place)
+                Ok(Json.obj(
+                  "status" -> "OK",
+                  "message" -> ("Place '" + place.name + "' saved.")))
+              }
+            )
+          }.getOrElse {
+            BadRequest(
+              Json.obj("status" -> "KO", "message" -> "Expecting JSON data."))
+          }
         }
       //#handle-json
 
@@ -103,8 +101,7 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
       }
       """)
       val request = FakeRequest()
-        .withHeaders(CONTENT_TYPE -> "application/json")
-        .withJsonBody(body)
+        .withHeaders(CONTENT_TYPE -> "application/json").withJsonBody(body)
       val result: Future[Result] = savePlace().apply(request)
 
       status(result) === OK
@@ -155,8 +152,7 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
       }
       """)
       val request = FakeRequest()
-        .withHeaders(CONTENT_TYPE -> "application/json")
-        .withBody(body)
+        .withHeaders(CONTENT_TYPE -> "application/json").withBody(body)
       val result: Future[Result] = savePlace().apply(request)
       val bodyText: String = contentAsString(result)
       status(result) === OK

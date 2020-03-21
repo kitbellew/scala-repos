@@ -35,9 +35,7 @@ object HttpClient {
 
   def main(args: Array[String]) {
     val clientWithoutErrorHandling: Service[Request, Response] = ClientBuilder()
-      .codec(Http())
-      .hosts(new InetSocketAddress(8080))
-      .hostConnectionLimit(1)
+      .codec(Http()).hosts(new InetSocketAddress(8080)).hostConnectionLimit(1)
       .build()
 
     val handleErrors = new HandleErrors
@@ -73,7 +71,8 @@ object HttpClient {
     // responses to Exceptions.
     client(unauthorizedRequest) onFailure { error =>
       println(
-        "))) Unauthorized request errored (as desired): " + error.getClass.getName)
+        "))) Unauthorized request errored (as desired): " + error.getClass
+          .getName)
     }
   }
 }

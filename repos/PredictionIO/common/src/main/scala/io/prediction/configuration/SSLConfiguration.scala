@@ -28,12 +28,12 @@ trait SSLConfiguration {
 
   private val serverConfig = ConfigFactory.load("server.conf")
 
-  private val keyStoreResource = serverConfig.getString(
-    "io.prediction.server.ssl-keystore-resource")
-  private val password = serverConfig.getString(
-    "io.prediction.server.ssl-keystore-pass")
-  private val keyAlias = serverConfig.getString(
-    "io.prediction.server.ssl-key-alias")
+  private val keyStoreResource = serverConfig
+    .getString("io.prediction.server.ssl-keystore-resource")
+  private val password = serverConfig
+    .getString("io.prediction.server.ssl-keystore-pass")
+  private val keyAlias = serverConfig
+    .getString("io.prediction.server.ssl-key-alias")
 
   private val keyStore = {
 
@@ -49,10 +49,10 @@ trait SSLConfiguration {
   // Creating SSL context
   implicit def sslContext: SSLContext = {
     val context = SSLContext.getInstance("TLS")
-    val tmf = TrustManagerFactory.getInstance(
-      TrustManagerFactory.getDefaultAlgorithm)
-    val kmf = KeyManagerFactory.getInstance(
-      KeyManagerFactory.getDefaultAlgorithm)
+    val tmf = TrustManagerFactory
+      .getInstance(TrustManagerFactory.getDefaultAlgorithm)
+    val kmf = KeyManagerFactory
+      .getInstance(KeyManagerFactory.getDefaultAlgorithm)
     kmf.init(keyStore, password.toCharArray)
     tmf.init(keyStore)
     context.init(kmf.getKeyManagers, tmf.getTrustManagers, null)

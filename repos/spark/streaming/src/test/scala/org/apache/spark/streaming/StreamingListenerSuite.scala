@@ -243,8 +243,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
 
     // Post a Streaming event after stopping StreamingContext
     val receiverInfoStopped = ReceiverInfo(0, "test", false, "localhost", "0")
-    ssc.scheduler.listenerBus.post(StreamingListenerReceiverStopped(
-      receiverInfoStopped))
+    ssc.scheduler.listenerBus
+      .post(StreamingListenerReceiverStopped(receiverInfoStopped))
     ssc.sparkContext.listenerBus.waitUntilEmpty(1000)
     // The StreamingListener should not receive any event
     verifyNoMoreInteractions(streamingListener)
@@ -352,8 +352,8 @@ class OutputOperationInfoCollector extends StreamingListener {
   override def onOutputOperationCompleted(
       outputOperationCompleted: StreamingListenerOutputOperationCompleted)
       : Unit = {
-    completedOutputOperationIds.add(
-      outputOperationCompleted.outputOperationInfo.id)
+    completedOutputOperationIds
+      .add(outputOperationCompleted.outputOperationInfo.id)
   }
 }
 

@@ -76,9 +76,8 @@ class AttributeGroup private (
   }.toArray)
 
   private lazy val nameToIndex: Map[String, Int] = {
-    attributes
-      .map(_.view.flatMap { attr => attr.name.map(_ -> attr.index.get) }.toMap)
-      .getOrElse(Map.empty)
+    attributes.map(_.view.flatMap { attr => attr.name.map(_ -> attr.index.get) }
+    .toMap).getOrElse(Map.empty)
   }
 
   /** Size of the attribute group. Returns -1 if the size is unknown. */
@@ -128,19 +127,16 @@ class AttributeGroup private (
       }
       val attrBldr = new MetadataBuilder
       if (numericMetadata.nonEmpty) {
-        attrBldr.putMetadataArray(
-          AttributeType.Numeric.name,
-          numericMetadata.toArray)
+        attrBldr
+          .putMetadataArray(AttributeType.Numeric.name, numericMetadata.toArray)
       }
       if (nominalMetadata.nonEmpty) {
-        attrBldr.putMetadataArray(
-          AttributeType.Nominal.name,
-          nominalMetadata.toArray)
+        attrBldr
+          .putMetadataArray(AttributeType.Nominal.name, nominalMetadata.toArray)
       }
       if (binaryMetadata.nonEmpty) {
-        attrBldr.putMetadataArray(
-          AttributeType.Binary.name,
-          binaryMetadata.toArray)
+        attrBldr
+          .putMetadataArray(AttributeType.Binary.name, binaryMetadata.toArray)
       }
       bldr.putMetadata(ATTRIBUTES, attrBldr.build())
       bldr.putLong(NUM_ATTRIBUTES, attributes.get.length)
@@ -152,10 +148,8 @@ class AttributeGroup private (
 
   /** Converts to ML metadata with some existing metadata. */
   def toMetadata(existingMetadata: Metadata): Metadata = {
-    new MetadataBuilder()
-      .withMetadata(existingMetadata)
-      .putMetadata(AttributeKeys.ML_ATTR, toMetadataImpl)
-      .build()
+    new MetadataBuilder().withMetadata(existingMetadata)
+      .putMetadata(AttributeKeys.ML_ATTR, toMetadataImpl).build()
   }
 
   /** Converts to ML metadata */
@@ -213,22 +207,22 @@ object AttributeGroup {
       val attributes = new Array[Attribute](numAttrs)
       val attrMetadata = metadata.getMetadata(ATTRIBUTES)
       if (attrMetadata.contains(Numeric.name)) {
-        attrMetadata
-          .getMetadataArray(Numeric.name)
-          .map(NumericAttribute.fromMetadata)
-          .foreach { attr => attributes(attr.index.get) = attr }
+        attrMetadata.getMetadataArray(Numeric.name)
+          .map(NumericAttribute.fromMetadata).foreach { attr =>
+            attributes(attr.index.get) = attr
+          }
       }
       if (attrMetadata.contains(Nominal.name)) {
-        attrMetadata
-          .getMetadataArray(Nominal.name)
-          .map(NominalAttribute.fromMetadata)
-          .foreach { attr => attributes(attr.index.get) = attr }
+        attrMetadata.getMetadataArray(Nominal.name)
+          .map(NominalAttribute.fromMetadata).foreach { attr =>
+            attributes(attr.index.get) = attr
+          }
       }
       if (attrMetadata.contains(Binary.name)) {
-        attrMetadata
-          .getMetadataArray(Binary.name)
-          .map(BinaryAttribute.fromMetadata)
-          .foreach { attr => attributes(attr.index.get) = attr }
+        attrMetadata.getMetadataArray(Binary.name)
+          .map(BinaryAttribute.fromMetadata).foreach { attr =>
+            attributes(attr.index.get) = attr
+          }
       }
       var i = 0
       while (i < numAttrs) {

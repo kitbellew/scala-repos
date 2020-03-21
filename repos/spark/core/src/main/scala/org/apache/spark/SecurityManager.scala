@@ -184,9 +184,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
 
   import SecurityManager._
 
-  private val authOn = sparkConf.getBoolean(
-    SecurityManager.SPARK_AUTH_CONF,
-    false)
+  private val authOn = sparkConf
+    .getBoolean(SecurityManager.SPARK_AUTH_CONF, false)
   // keep spark.ui.acls.enable for backwards compatibility with 1.0
   private var aclsOn = sparkConf.getBoolean(
     "spark.acls.enable",
@@ -237,10 +236,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   }
 
   // the default SSL configuration - it will be used by all communication layers unless overwritten
-  private val defaultSSLOptions = SSLOptions.parse(
-    sparkConf,
-    "spark.ssl",
-    defaults = None)
+  private val defaultSSLOptions = SSLOptions
+    .parse(sparkConf, "spark.ssl", defaults = None)
 
   // SSL configuration for the file server. This is used by Utils.setupSecureURLConnection().
   val fileServerSSLOptions = getSSLOptions("fs")
@@ -248,8 +245,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     if (fileServerSSLOptions.enabled) {
       val trustStoreManagers =
         for (trustStore <- fileServerSSLOptions.trustStore) yield {
-          val input = Files
-            .asByteSource(fileServerSSLOptions.trustStore.get)
+          val input = Files.asByteSource(fileServerSSLOptions.trustStore.get)
             .openStream()
 
           try {
@@ -258,8 +254,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
               input,
               fileServerSSLOptions.trustStorePassword.get.toCharArray)
 
-            val tmf = TrustManagerFactory.getInstance(
-              TrustManagerFactory.getDefaultAlgorithm)
+            val tmf = TrustManagerFactory
+              .getInstance(TrustManagerFactory.getDefaultAlgorithm)
             tmf.init(ks)
             tmf.getTrustManagers
           } finally { input.close() }
@@ -280,8 +276,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
         }: TrustManager
       })
 
-      val sslContext = SSLContext.getInstance(
-        fileServerSSLOptions.protocol.getOrElse("Default"))
+      val sslContext = SSLContext
+        .getInstance(fileServerSSLOptions.protocol.getOrElse("Default"))
       sslContext.init(
         null,
         trustStoreManagers.getOrElse(credulousTrustStoreManagers),
@@ -295,10 +291,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     } else { (None, None) }
 
   def getSSLOptions(module: String): SSLOptions = {
-    val opts = SSLOptions.parse(
-      sparkConf,
-      s"spark.ssl.$module",
-      Some(defaultSSLOptions))
+    val opts = SSLOptions
+      .parse(sparkConf, s"spark.ssl.$module", Some(defaultSSLOptions))
     logDebug(s"Created SSL options for $module: $opts")
     opts
   }
@@ -377,15 +371,14 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
       // In YARN mode, the secure cookie will be created by the driver and stashed in the
       // user's credentials, where executors can get it. The check for an array of size 0
       // is because of the test code in YarnSparkHadoopUtilSuite.
-      val secretKey = SparkHadoopUtil.get.getSecretKeyFromUserCredentials(
-        SECRET_LOOKUP_KEY)
+      val secretKey = SparkHadoopUtil.get
+        .getSecretKeyFromUserCredentials(SECRET_LOOKUP_KEY)
       if (secretKey == null || secretKey.length == 0) {
         logDebug(
           "generateSecretKey: yarn mode, secret key from credentials is null")
         val rnd = new SecureRandom()
-        val length = sparkConf.getInt(
-          "spark.authenticate.secretBitLength",
-          256) / JByte.SIZE
+        val length = sparkConf
+          .getInt("spark.authenticate.secretBitLength", 256) / JByte.SIZE
         val secret = new Array[Byte](length)
         rnd.nextBytes(secret)
 
@@ -397,9 +390,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     } else {
       // user must have set spark.authenticate.secret config
       // For Master/Worker, auth secret is in conf; for Executors, it is in env variable
-      Option(sparkConf.getenv(SecurityManager.ENV_AUTH_SECRET))
-        .orElse(
-          sparkConf.getOption(SecurityManager.SPARK_AUTH_SECRET_CONF)) match {
+      Option(sparkConf.getenv(SecurityManager.ENV_AUTH_SECRET)).orElse(
+        sparkConf.getOption(SecurityManager.SPARK_AUTH_SECRET_CONF)) match {
         case Some(value) => value
         case None =>
           throw new IllegalArgumentException(

@@ -39,8 +39,8 @@ trait UnrolledParArrayCombiner[T] extends Combiner[T, ParArray[T]] {
     val arrayseq = new ArraySeq[T](size)
     val array = arrayseq.array.asInstanceOf[Array[Any]]
 
-    combinerTaskSupport.executeAndWaitResult(
-      new CopyUnrolledToArray(array, 0, size))
+    combinerTaskSupport
+      .executeAndWaitResult(new CopyUnrolledToArray(array, 0, size))
 
     new ParArray(arrayseq)
   }

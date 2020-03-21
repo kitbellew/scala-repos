@@ -38,17 +38,15 @@ class HoconMultiModuleIncludeResolutionTest
 
     val fixtureBuilder = IdeaTestFixtureFactory.getFixtureFactory
       .createFixtureBuilder(getName)
-    fixture = JavaTestFixtureFactory.getFixtureFactory.createCodeInsightFixture(
-      fixtureBuilder.getFixture)
+    fixture = JavaTestFixtureFactory.getFixtureFactory
+      .createCodeInsightFixture(fixtureBuilder.getFixture)
 
     val baseDir = new File(testdataPath)
-    val moduleDirs = baseDir.listFiles
-      .sortBy(_.getName)
-      .iterator
+    val moduleDirs = baseDir.listFiles.sortBy(_.getName).iterator
       .filter(_.isDirectory)
     val moduleFixtures = moduleDirs.map { dir =>
-      val builder = fixtureBuilder.addModule(
-        classOf[JavaModuleFixtureBuilder[ModuleFixture]])
+      val builder = fixtureBuilder
+        .addModule(classOf[JavaModuleFixtureBuilder[ModuleFixture]])
       builder.addContentRoot(dir.getPath)
 
       def subpath(name: String) = new File(dir, name).getPath
@@ -56,8 +54,7 @@ class HoconMultiModuleIncludeResolutionTest
         Map(
           OrderRootType.CLASSES -> lib,
           OrderRootType.SOURCES -> (lib + "src"))
-          .mapValues(s => Array(subpath(s)))
-          .asJava
+          .mapValues(s => Array(subpath(s))).asJava
 
       builder.addLibrary(dir.getName + "lib", libMapping("lib"))
       builder.addLibrary(dir.getName + "testlib", libMapping("testlib"))
@@ -93,8 +90,8 @@ class HoconMultiModuleIncludeResolutionTest
       def addDependency(
           dependingModule: Module,
           dependencyModule: Module): Unit = {
-        val model =
-          ModuleRootManager.getInstance(dependingModule).getModifiableModel
+        val model = ModuleRootManager.getInstance(dependingModule)
+          .getModifiableModel
         model.addModuleOrderEntry(dependencyModule).setExported(true)
         model.commit()
       }

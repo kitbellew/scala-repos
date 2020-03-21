@@ -26,8 +26,7 @@ private[launchqueue] class RateLimiter(clock: Clock) {
   }
 
   def getDelay(app: AppDefinition): Timestamp =
-    taskLaunchDelays
-      .get(app.id -> app.versionInfo.lastConfigChangeVersion)
+    taskLaunchDelays.get(app.id -> app.versionInfo.lastConfigChangeVersion)
       .map(_.deadline) getOrElse clock.now()
 
   def addDelay(app: AppDefinition): Timestamp = {
@@ -39,8 +38,8 @@ private[launchqueue] class RateLimiter(clock: Clock) {
 
   private[this] def setNewDelay(app: AppDefinition, message: String)(
       calcDelay: Option[Delay] => Option[Delay]): Timestamp = {
-    val maybeDelay: Option[Delay] = taskLaunchDelays.get(
-      app.id -> app.versionInfo.lastConfigChangeVersion)
+    val maybeDelay: Option[Delay] = taskLaunchDelays
+      .get(app.id -> app.versionInfo.lastConfigChangeVersion)
     calcDelay(maybeDelay) match {
       case Some(newDelay) =>
         import mesosphere.util.DurationToHumanReadable
@@ -66,9 +65,8 @@ private[launchqueue] class RateLimiter(clock: Clock) {
   }
 
   def resetDelay(app: AppDefinition): Unit = {
-    if (taskLaunchDelays contains (
-          app.id -> app.versionInfo.lastConfigChangeVersion
-        )) {
+    if (taskLaunchDelays contains (app.id -> app.versionInfo
+          .lastConfigChangeVersion)) {
       log.info(
         s"Task launch delay for [${app.id} - ${app.versionInfo.lastConfigChangeVersion}}] reset to zero")
       taskLaunchDelays -= (app.id -> app.versionInfo.lastConfigChangeVersion)

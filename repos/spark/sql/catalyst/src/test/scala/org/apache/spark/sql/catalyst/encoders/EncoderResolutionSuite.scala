@@ -53,21 +53,16 @@ class EncoderResolutionSuite extends PlanTest {
     "real type doesn't match encoder schema but they are compatible: nested product") {
     val encoder = ExpressionEncoder[ComplexClass]
     val attrs = Seq('a.int, 'b.struct('a.int, 'b.long))
-    encoder
-      .resolve(attrs, null)
-      .bind(attrs)
+    encoder.resolve(attrs, null).bind(attrs)
       .fromRow(InternalRow(1, InternalRow(2, 3L)))
   }
 
   test(
     "real type doesn't match encoder schema but they are compatible: tupled encoder") {
-    val encoder = ExpressionEncoder.tuple(
-      ExpressionEncoder[StringLongClass],
-      ExpressionEncoder[Long])
+    val encoder = ExpressionEncoder
+      .tuple(ExpressionEncoder[StringLongClass], ExpressionEncoder[Long])
     val attrs = Seq('a.struct('a.string, 'b.byte), 'b.int)
-    encoder
-      .resolve(attrs, null)
-      .bind(attrs)
+    encoder.resolve(attrs, null).bind(attrs)
       .fromRow(InternalRow(InternalRow(str, 1.toByte), 2))
   }
 
@@ -153,12 +148,10 @@ class EncoderResolutionSuite extends PlanTest {
        """.stripMargin.trim + " of the field in the target object")
 
     val msg2 = intercept[AnalysisException] {
-      val structType = new StructType()
-        .add("a", StringType)
+      val structType = new StructType().add("a", StringType)
         .add("b", DecimalType.SYSTEM_DEFAULT)
-      ExpressionEncoder[ComplexClass].resolve(
-        Seq('a.long, 'b.struct(structType)),
-        null)
+      ExpressionEncoder[ComplexClass]
+        .resolve(Seq('a.long, 'b.struct(structType)), null)
     }.message
     assert(
       msg2 ==

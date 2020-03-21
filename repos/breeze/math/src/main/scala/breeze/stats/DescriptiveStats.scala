@@ -40,9 +40,8 @@ case class MeanAndVariance(mean: Double, variance: Double, count: Long) {
     val m2a = this.variance * (this.count - 1)
     val m2b = other.variance * (other.count - 1)
 
-    val m2x = m2a + m2b + d * d * (other.count * this.count) / (
-      other.count + this.count
-    )
+    val m2x = m2a + m2b + d * d * (other.count * this.count) / (other
+      .count + this.count)
 
     val newVariance = m2x / (other.count + this.count - 1)
 
@@ -224,41 +223,39 @@ trait DescriptiveStats {
          * However, we also use Bessel's correction, in order to agree with the rest of breeze.
          */
         def apply(data: Seq[DenseVector[Double]]): DenseMatrix[Double] = {
-          data.headOption
-            .map(firstRow => {
-              val result = new DenseMatrix[Double](firstRow.size, firstRow.size)
-              val dataSize = firstRow.size
-              //First compute the mean
-              var mean = firstRow.copy
-              var numRows: Long = 1
-              data.tail.foreach(x => {
-                numRows += 1
-                if (mean.size != x.size) {
-                  throw new IllegalArgumentException(
-                    "Attempting to compute covariance of dataset where elements have different sizes")
-                }
-                cfor(0)(i => i < firstRow.size, i => i + 1)(i => {
-                  mean(i) = mean(i) + x(i)
-                })
-
-              })
-              val numRowsD = numRows.toDouble
-              mean = mean / numRowsD
-
-              //Second compute the covariance
-              data.foreach { x =>
-                cfor(0)(i => i < dataSize, i => i + 1)(i => {
-                  val a = x(i) - mean(i)
-                  cfor(0)(j => j < dataSize, j => j + 1)(j => {
-                    val b = x(j) - mean(j)
-                    result(i, j) = result(i, j) + (a * b / (numRowsD - 1)) //Use
-                  })
-                })
+          data.headOption.map(firstRow => {
+            val result = new DenseMatrix[Double](firstRow.size, firstRow.size)
+            val dataSize = firstRow.size
+            //First compute the mean
+            var mean = firstRow.copy
+            var numRows: Long = 1
+            data.tail.foreach(x => {
+              numRows += 1
+              if (mean.size != x.size) {
+                throw new IllegalArgumentException(
+                  "Attempting to compute covariance of dataset where elements have different sizes")
               }
+              cfor(0)(i => i < firstRow.size, i => i + 1)(i => {
+                mean(i) = mean(i) + x(i)
+              })
 
-              result
             })
-            .getOrElse(new DenseMatrix[Double](0, 0))
+            val numRowsD = numRows.toDouble
+            mean = mean / numRowsD
+
+            //Second compute the covariance
+            data.foreach { x =>
+              cfor(0)(i => i < dataSize, i => i + 1)(i => {
+                val a = x(i) - mean(i)
+                cfor(0)(j => j < dataSize, j => j + 1)(j => {
+                  val b = x(j) - mean(j)
+                  result(i, j) = result(i, j) + (a * b / (numRowsD - 1)) //Use
+                })
+              })
+            }
+
+            result
+          }).getOrElse(new DenseMatrix[Double](0, 0))
         }
       }
   }
@@ -524,9 +521,8 @@ object DescriptiveStats {
         val newN = oldN + frac.fromInt(1)
         val newMu1 = oldMu1 + ((y._1 - oldMu1) / newN)
         val newMu2 = oldMu2 + ((y._2 - oldMu2) / newN)
-        val newC = oldC + (
-          (y._1 - oldMu1) * (y._2 - newMu2)
-        ) //compute covariance in single pass
+        val newC = oldC + ((y._1 - oldMu1) * (y
+          ._2 - newMu2)) //compute covariance in single pass
         (newMu1, newMu2, newC, newN)
       }
     if (n == 1) (mu1, mu2, 0) else (mu1, mu2, c / (n - frac.fromInt(1)))

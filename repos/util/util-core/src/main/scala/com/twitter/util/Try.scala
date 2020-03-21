@@ -202,8 +202,8 @@ sealed abstract class Try[+R] {
 
 object Throw {
   private val NotApplied: Throw[Nothing] = Throw[Nothing](null)
-  private val AlwaysNotApplied: Any => Throw[Nothing] =
-    scala.Function.const(NotApplied) _
+  private val AlwaysNotApplied: Any => Throw[Nothing] = scala.Function
+    .const(NotApplied) _
 }
 
 final case class Throw[+R](e: Throwable) extends Try[R] {

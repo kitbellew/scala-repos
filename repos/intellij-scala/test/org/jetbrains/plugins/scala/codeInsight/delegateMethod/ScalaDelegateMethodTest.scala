@@ -19,8 +19,8 @@ class ScalaDelegateMethodTest
     configureFromFileTextAdapter(
       "dummy.scala",
       fileText.replace("\r", "").stripMargin.trim)
-    val oldSpecifyType =
-      ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY
+    val oldSpecifyType = ScalaApplicationSettings.getInstance
+      .SPECIFY_RETURN_TYPE_EXPLICITLY
     ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
       specifyType
     new ScalaGenerateDelegateHandler()

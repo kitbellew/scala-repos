@@ -15,10 +15,8 @@ class ScalaDefaultFileTemplateUsageInspection extends LocalInspectionTool {
       file: PsiFile,
       manager: InspectionManager,
       isOnTheFly: Boolean): Array[ProblemDescriptor] = {
-    val descriptor = FileHeaderChecker.checkFileHeader(
-      file,
-      manager,
-      isOnTheFly)
+    val descriptor = FileHeaderChecker
+      .checkFileHeader(file, manager, isOnTheFly)
     if (descriptor != null) Array(descriptor) else Array.empty
   }
 }

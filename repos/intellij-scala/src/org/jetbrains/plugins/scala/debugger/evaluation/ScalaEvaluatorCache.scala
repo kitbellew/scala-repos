@@ -30,15 +30,13 @@ class ScalaEvaluatorCache(project: Project)
   }
 
   override def projectOpened() = {
-    DebuggerManagerEx
-      .getInstanceEx(project)
+    DebuggerManagerEx.getInstanceEx(project)
       .addDebuggerManagerListener(listener)
   }
 
   override def projectClosed(): Unit = {
     clear()
-    DebuggerManagerEx
-      .getInstanceEx(project)
+    DebuggerManagerEx.getInstanceEx(project)
       .removeDebuggerManagerListener(listener)
   }
 
@@ -83,8 +81,8 @@ class ScalaEvaluatorCache(project: Project)
       cachedEvaluators.get((file, offset)) match {
         case Some(map) => map += (element -> evaluator)
         case None =>
-          cachedEvaluators += ((file, offset) -> mutable.HashMap(
-            element -> evaluator))
+          cachedEvaluators += ((file, offset) -> mutable
+            .HashMap(element -> evaluator))
       }
     }
     evaluator

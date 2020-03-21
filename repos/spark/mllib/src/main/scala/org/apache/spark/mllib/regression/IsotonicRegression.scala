@@ -161,12 +161,8 @@ class IsotonicRegressionModel @Since("1.3.0") (
 
   @Since("1.4.0")
   override def save(sc: SparkContext, path: String): Unit = {
-    IsotonicRegressionModel.SaveLoadV1_0.save(
-      sc,
-      path,
-      boundaries,
-      predictions,
-      isotonic)
+    IsotonicRegressionModel.SaveLoadV1_0
+      .save(sc, path, boundaries, predictions, isotonic)
   }
 
   override protected def formatVersion: String = "1.0"
@@ -201,11 +197,9 @@ object IsotonicRegressionModel extends Loader[IsotonicRegressionModel] {
           ("isotonic" -> isotonic)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
 
-      sqlContext
-        .createDataFrame(
-          boundaries.toSeq.zip(predictions).map { case (b, p) => Data(b, p) })
-        .write
-        .parquet(dataPath(path))
+      sqlContext.createDataFrame(boundaries.toSeq.zip(predictions).map {
+        case (b, p) => Data(b, p)
+      }).write.parquet(dataPath(path))
     }
 
     def load(sc: SparkContext, path: String): (Array[Double], Array[Double]) = {
@@ -214,11 +208,9 @@ object IsotonicRegressionModel extends Loader[IsotonicRegressionModel] {
 
       checkSchema[Data](dataRDD.schema)
       val dataArray = dataRDD.select("boundary", "prediction").collect()
-      val (boundaries, predictions) = dataArray
-        .map { x => (x.getDouble(0), x.getDouble(1)) }
-        .toList
-        .sortBy(_._1)
-        .unzip
+      val (boundaries, predictions) = dataArray.map { x =>
+        (x.getDouble(0), x.getDouble(1))
+      }.toList.sortBy(_._1).unzip
       (boundaries.toArray, predictions.toArray)
     }
   }
@@ -419,11 +411,8 @@ class IsotonicRegression private (private var isotonic: Boolean)
     */
   private def parallelPoolAdjacentViolators(
       input: RDD[(Double, Double, Double)]): Array[(Double, Double, Double)] = {
-    val parallelStepResult = input
-      .sortBy(x => (x._2, x._1))
-      .glom()
-      .flatMap(poolAdjacentViolators)
-      .collect()
+    val parallelStepResult = input.sortBy(x => (x._2, x._1)).glom()
+      .flatMap(poolAdjacentViolators).collect()
       .sortBy(x =>
         (x._2, x._1)) // Sort again because collect() doesn't promise ordering.
     poolAdjacentViolators(parallelStepResult)

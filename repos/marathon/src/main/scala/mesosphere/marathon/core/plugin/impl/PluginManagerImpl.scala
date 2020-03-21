@@ -39,9 +39,8 @@ private[plugin] class PluginManagerImpl(
     * Load plugin for a specific type.
     */
   private[this] def load[T](implicit ct: ClassTag[T]): PluginHolder[T] = {
-    log.info(
-      s"Loading plugins implementing '${ct.runtimeClass.getName}' from these urls: [${urls
-        .mkString(", ")}]")
+    log.info(s"Loading plugins implementing '${ct.runtimeClass
+      .getName}' from these urls: [${urls.mkString(", ")}]")
     def configure(plugin: T, definition: PluginDefinition): T =
       plugin match {
         case cf: PluginConfiguration if definition.configuration.isDefined =>
@@ -53,15 +52,12 @@ private[plugin] class PluginManagerImpl(
           plugin
         case _ => plugin
       }
-    val serviceLoader = ServiceLoader.load(
-      ct.runtimeClass.asInstanceOf[Class[T]],
-      classLoader)
+    val serviceLoader = ServiceLoader
+      .load(ct.runtimeClass.asInstanceOf[Class[T]], classLoader)
     val providers = serviceLoader.iterator().asScala.toSeq
     val plugins = definitions.plugins
-      .filter(_.plugin == ct.runtimeClass.getName)
-      .map { definition =>
-        providers
-          .find(_.getClass.getName == definition.implementation)
+      .filter(_.plugin == ct.runtimeClass.getName).map { definition =>
+        providers.find(_.getClass.getName == definition.implementation)
           .map(plugin =>
             PluginReference(configure(plugin, definition), definition))
           .getOrElse(
@@ -85,12 +81,8 @@ private[plugin] class PluginManagerImpl(
         pluginHolder
       }
 
-      pluginHolders
-        .find(_.classTag == ct)
-        .map(_.asInstanceOf[PluginHolder[T]])
-        .getOrElse(loadAndAdd)
-        .plugins
-        .map(_.plugin)
+      pluginHolders.find(_.classTag == ct).map(_.asInstanceOf[PluginHolder[T]])
+        .getOrElse(loadAndAdd).plugins.map(_.plugin)
     }
 }
 
@@ -102,17 +94,11 @@ object PluginManagerImpl {
   implicit val definitionFormat = Json.format[PluginDefinition]
 
   def parse(fileName: String): PluginDefinitions = {
-    val plugins = Json
-      .parse(IO.readFile(fileName))
-      .as[JsObject]
-      .\("plugins")
-      .as[JsObject]
-      .fields
-      .map {
+    val plugins = Json.parse(IO.readFile(fileName)).as[JsObject].\("plugins")
+      .as[JsObject].fields.map {
         case (id, value) =>
           JsObject(value.as[JsObject].fields :+ ("id" -> JsString(id)))
-      }
-      .map(_.as[PluginDefinition])
+      }.map(_.as[PluginDefinition])
     PluginDefinitions(plugins)
   }
 

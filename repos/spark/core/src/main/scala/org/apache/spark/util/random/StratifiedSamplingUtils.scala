@@ -110,21 +110,17 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         if (copiesAccepted > 0) { acceptResult.numAccepted += copiesAccepted }
         val copiesWaitlisted = rng.nextPoisson(acceptResult.waitListBound)
         if (copiesWaitlisted > 0) {
-          acceptResult.waitList ++= ArrayBuffer.fill(copiesWaitlisted)(
-            rng.nextUniform())
+          acceptResult.waitList ++= ArrayBuffer
+            .fill(copiesWaitlisted)(rng.nextUniform())
         }
       } else {
         // We use the streaming version of the algorithm for sampling without replacement to avoid
         // using an extra pass over the RDD for computing the count.
         // Hence, acceptBound and waitListBound change on every iteration.
-        acceptResult.acceptBound = BinomialBounds.getLowerBound(
-          delta,
-          acceptResult.numItems,
-          fraction)
-        acceptResult.waitListBound = BinomialBounds.getUpperBound(
-          delta,
-          acceptResult.numItems,
-          fraction)
+        acceptResult.acceptBound = BinomialBounds
+          .getLowerBound(delta, acceptResult.numItems, fraction)
+        acceptResult.waitListBound = BinomialBounds
+          .getUpperBound(delta, acceptResult.numItems, fraction)
 
         val x = rng.nextUniform()
         if (x < acceptResult.acceptBound) { acceptResult.numAccepted += 1 }
@@ -252,8 +248,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
             if (acceptBound == 0) 0L else rng.nextPoisson(acceptBound)
           val copiesWaitlisted = rng.nextPoisson(finalResult(key).waitListBound)
           val copiesInSample = copiesAccepted +
-            (0 until copiesWaitlisted).count(i =>
-              rng.nextUniform() < thresholdByKey(key))
+            (0 until copiesWaitlisted)
+              .count(i => rng.nextUniform() < thresholdByKey(key))
           if (copiesInSample > 0) { Iterator.fill(copiesInSample.toInt)(item) }
           else { Iterator.empty }
         }

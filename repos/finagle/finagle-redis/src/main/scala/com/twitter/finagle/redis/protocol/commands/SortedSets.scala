@@ -200,8 +200,8 @@ case class ZRemRangeByRank(key: ChannelBuffer, start: Long, stop: Long)
 }
 object ZRemRangeByRank {
   def apply(args: Seq[Array[Byte]]) = {
-    val list = BytesToString.fromList(
-      trimList(args, 3, "ZREMRANGEBYRANK requires 3 arguments"))
+    val list = BytesToString
+      .fromList(trimList(args, 3, "ZREMRANGEBYRANK requires 3 arguments"))
     val key = ChannelBuffers.wrappedBuffer(args(0))
     val start = RequireClientProtocol.safe { NumberFormat.toInt(list(1)) }
     val stop = RequireClientProtocol.safe { NumberFormat.toInt(list(2)) }
@@ -220,8 +220,8 @@ case class ZRemRangeByScore(key: ChannelBuffer, min: ZInterval, max: ZInterval)
 }
 object ZRemRangeByScore {
   def apply(args: Seq[Array[Byte]]) = {
-    val list = BytesToString.fromList(
-      trimList(args, 3, "ZREMRANGEBYSCORE requires 3 arguments"))
+    val list = BytesToString
+      .fromList(trimList(args, 3, "ZREMRANGEBYSCORE requires 3 arguments"))
     val key = ChannelBuffers.wrappedBuffer(args(0))
     val min = ZInterval(list(1))
     val max = ZInterval(list(2))
@@ -424,19 +424,15 @@ object ZMembers {
       size % 2 == 0 && size > 0,
       "Unexpected uneven pair of elements")
 
-    args
-      .grouped(2)
-      .map {
-        case score :: member :: Nil =>
-          ZMember(
-            RequireClientProtocol.safe {
-              NumberFormat.toDouble(BytesToString(score))
-            },
-            ChannelBuffers.wrappedBuffer(member))
-        case _ =>
-          throw ClientError("Unexpected uneven pair of elements in members")
-      }
-      .toSeq
+    args.grouped(2).map {
+      case score :: member :: Nil =>
+        ZMember(
+          RequireClientProtocol
+            .safe { NumberFormat.toDouble(BytesToString(score)) },
+          ChannelBuffers.wrappedBuffer(member))
+      case _ =>
+        throw ClientError("Unexpected uneven pair of elements in members")
+    }.toSeq
   }
 }
 

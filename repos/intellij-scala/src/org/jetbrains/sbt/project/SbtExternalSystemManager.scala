@@ -89,8 +89,7 @@ object SbtExternalSystemManager {
       .getOrElse(SbtProjectSettings.default)
 
     val customLauncher = settings.customLauncherEnabled
-      .option(settings.getCustomLauncherPath)
-      .map(_.toFile)
+      .option(settings.getCustomLauncherPath).map(_.toFile)
     val customSbtStructureFile = settings.customSbtStructurePath.nonEmpty
       .option(settings.customSbtStructurePath.toFile)
 
@@ -146,8 +145,8 @@ object SbtExternalSystemManager {
     val customVmExecutable = settings.customVMEnabled.option(customVmFile)
 
     customVmExecutable.orElse {
-      val projectSdk = projectJdkName.flatMap(name =>
-        Option(ProjectJdkTable.getInstance().findJdk(name)))
+      val projectSdk = projectJdkName
+        .flatMap(name => Option(ProjectJdkTable.getInstance().findJdk(name)))
       projectSdk.map { sdk =>
         sdk.getSdkType match {
           case sdkType: JavaSdkType =>
@@ -169,12 +168,10 @@ object SbtExternalSystemManager {
       .flatMap(name => Option(ProjectJdkTable.getInstance().findJdk(name)))
       .flatMap { sdk =>
         try {
-          sdk.getSdkType
-            .isInstanceOf[AndroidSdkType]
+          sdk.getSdkType.isInstanceOf[AndroidSdkType]
             .option(Map("ANDROID_HOME" -> sdk.getSdkModificator.getHomePath))
         } catch { case _: NoClassDefFoundError => None }
-      }
-      .getOrElse(Map.empty)
+      }.getOrElse(Map.empty)
 
   private def getVmOptions(settings: SbtSystemSettings): Seq[String] = {
     val userOptions = settings.getVmParameters.split("\\s+").toSeq

@@ -73,9 +73,8 @@ private class TaskTrackerActor(
     with Stash {
 
   private[this] val log = LoggerFactory.getLogger(getClass)
-  private[this] val updaterRef = context.actorOf(
-    taskUpdaterProps(self),
-    "updater")
+  private[this] val updaterRef = context
+    .actorOf(taskUpdaterProps(self), "updater")
 
   override val supervisorStrategy = OneForOneStrategy() {
     case _: Exception => Escalate

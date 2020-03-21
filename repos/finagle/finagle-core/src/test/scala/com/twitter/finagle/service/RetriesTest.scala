@@ -24,9 +24,8 @@ class RetriesTest extends FunSuite {
       retries + 1, // 1 request and `retries` retries
       retryFn)
 
-  private[this] val requeableEx = Failure.wrap(
-    new RuntimeException("yep"),
-    Failure.Restartable)
+  private[this] val requeableEx = Failure
+    .wrap(new RuntimeException("yep"), Failure.Restartable)
 
   private[this] val notRequeueableEx = new RuntimeException("nope")
 
@@ -60,8 +59,7 @@ class RetriesTest extends FunSuite {
       Retries.Budget(budget)
 
     val svcFactory: ServiceFactory[Exception, Int] = Retries.moduleRequeueable
-      .toStack(end)
-      .make(params)
+      .toStack(end).make(params)
 
     val svc: Service[Exception, Int] = Await.result(svcFactory(), 5.seconds)
 
@@ -100,8 +98,8 @@ class RetriesTest extends FunSuite {
       Retries.Policy(RetryPolicy.Never) + // explicitly turn it off
       Retries.Budget(budget)
 
-    val svcFactory: ServiceFactory[Exception, Int] =
-      Retries.moduleWithRetryPolicy.toStack(end).make(params)
+    val svcFactory: ServiceFactory[Exception, Int] = Retries
+      .moduleWithRetryPolicy.toStack(end).make(params)
 
     val svc: Service[Exception, Int] = Await.result(svcFactory(), 5.seconds)
 
@@ -147,8 +145,8 @@ class RetriesTest extends FunSuite {
       Retries.Policy(newRetryPolicy(100)) + // way higher than the budget
       Retries.Budget(budget)
 
-    val svcFactory: ServiceFactory[Exception, Int] =
-      Retries.moduleWithRetryPolicy.toStack(end).make(params)
+    val svcFactory: ServiceFactory[Exception, Int] = Retries
+      .moduleWithRetryPolicy.toStack(end).make(params)
 
     val svc: Service[Exception, Int] = Await.result(svcFactory(), 5.seconds)
 
@@ -171,8 +169,8 @@ class RetriesTest extends FunSuite {
       Retries.Policy(newRetryPolicy(10)) + // this count doesn't come into play
       Retries.Budget(newBudget())
 
-    val svcFactory: ServiceFactory[Exception, Int] =
-      Retries.moduleWithRetryPolicy.toStack(end).make(params)
+    val svcFactory: ServiceFactory[Exception, Int] = Retries
+      .moduleWithRetryPolicy.toStack(end).make(params)
 
     val svc: Service[Exception, Int] = Await.result(svcFactory(), 5.seconds)
 
@@ -205,18 +203,14 @@ class RetriesTest extends FunSuite {
     })
 
     // wire em together.
-    val midToBack: Stack[ServiceFactory[Exception, Int]] = Stack.Leaf(
-      Stack.Role("mid-back"),
-      backSvc)
-    val midSvcFactory = Retries.moduleWithRetryPolicy
-      .toStack(midToBack)
+    val midToBack: Stack[ServiceFactory[Exception, Int]] = Stack
+      .Leaf(Stack.Role("mid-back"), backSvc)
+    val midSvcFactory = Retries.moduleWithRetryPolicy.toStack(midToBack)
       .make(midParams)
 
-    val frontToMid: Stack[ServiceFactory[Exception, Int]] = Stack.Leaf(
-      Stack.Role("front-mid"),
-      midSvcFactory)
-    val frontSvcFactory = Retries.moduleWithRetryPolicy
-      .toStack(frontToMid)
+    val frontToMid: Stack[ServiceFactory[Exception, Int]] = Stack
+      .Leaf(Stack.Role("front-mid"), midSvcFactory)
+    val frontSvcFactory = Retries.moduleWithRetryPolicy.toStack(frontToMid)
       .make(frontParams)
     Await.result(frontSvcFactory(), 5.seconds)
   }
@@ -296,8 +290,7 @@ class RetriesTest extends FunSuite {
       param.Stats(stats) +
       Retries.Budget(RetryBudget.Empty)
     val svcFactory: ServiceFactory[Exception, Int] = Retries.moduleRequeueable
-      .toStack(end)
-      .make(params)
+      .toStack(end).make(params)
     assert(budgetGauge.exists(_ == 0))
 
     // closing a service should not touch it

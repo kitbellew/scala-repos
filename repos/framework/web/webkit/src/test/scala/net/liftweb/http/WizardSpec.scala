@@ -79,39 +79,39 @@ object WizardSpec extends Specification {
   }
 
   "A field must have a correct Manifest" in {
-    MyWizard.nameAndAge.age.manifest.runtimeClass.getName must_== classOf[
-      Int].getName
+    MyWizard.nameAndAge.age.manifest.runtimeClass.getName must_== classOf[Int]
+      .getName
   }
 
   "A wizard must transition from first screen to second screen" in {
     S.initIfUninitted(session) {
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.nameAndAge
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.nameAndAge
 
       MyWizard.nextScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.nameAndAge
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.nameAndAge
 
       MyWizard.nameAndAge.name.set("David")
       MyWizard.nameAndAge.age.set(14)
 
       MyWizard.nextScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.parentName
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.parentName
 
       MyWizard.prevScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.nameAndAge
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.nameAndAge
 
       MyWizard.nameAndAge.age.set(45)
 
       MyWizard.nextScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.favoritePet
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.favoritePet
 
       S.clearCurrentNotices
 
@@ -127,28 +127,28 @@ object WizardSpec extends Specification {
 
   "A wizard must be able to snapshot itself" in {
     val ss = S.initIfUninitted(session) {
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.nameAndAge
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.nameAndAge
 
       MyWizard.nextScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.nameAndAge
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.nameAndAge
 
       MyWizard.nameAndAge.name.set("David")
       MyWizard.nameAndAge.age.set(14)
 
       MyWizard.nextScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.parentName
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.parentName
 
       MyWizard.createSnapshot
     }
 
     S.initIfUninitted(session) {
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.nameAndAge
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.nameAndAge
     }
 
     S.initIfUninitted(session) {
@@ -156,15 +156,15 @@ object WizardSpec extends Specification {
 
       MyWizard.prevScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.nameAndAge
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.nameAndAge
 
       MyWizard.nameAndAge.age.set(45)
 
       MyWizard.nextScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.favoritePet
+      MyWizard.currentScreen
+        .openOrThrowException("legacy code") must_== MyWizard.favoritePet
 
       S.clearCurrentNotices
 

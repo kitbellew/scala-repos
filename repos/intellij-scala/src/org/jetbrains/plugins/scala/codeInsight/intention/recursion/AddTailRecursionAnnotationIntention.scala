@@ -20,7 +20,8 @@ class AddTailRecursionAnnotationIntention
   def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     element match {
       case it @ Parent(f: ScFunctionDefinition) if f.nameId == it =>
-        !f.hasTailRecursionAnnotation && f.recursionType == RecursionType.TailRecursion
+        !f.hasTailRecursionAnnotation && f.recursionType == RecursionType
+          .TailRecursion
       case _ => false
     }
 

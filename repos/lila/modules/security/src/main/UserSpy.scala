@@ -68,10 +68,10 @@ object UserSpy {
     }
 
   private def nextValues(field: String)(user: User): Fu[Set[Value]] =
-    storeColl
-      .find(BSONDocument("user" -> user.id), BSONDocument(field -> true))
-      .cursor[BSONDocument]()
-      .collect[List]() map { _.flatMap(_.getAs[Value](field)).toSet }
+    storeColl.find(BSONDocument("user" -> user.id), BSONDocument(field -> true))
+      .cursor[BSONDocument]().collect[List]() map {
+      _.flatMap(_.getAs[Value](field)).toSet
+    }
 
   private def nextUsers(
       field: String)(values: Set[Value], user: User): Fu[Set[User]] =
@@ -80,9 +80,9 @@ object UserSpy {
         "user",
         BSONDocument(
           field -> BSONDocument("$in" -> values),
-          "user" -> BSONDocument(
-            "$ne" -> user.id)).some) map lila.db.BSON.asStrings flatMap {
-        userIds => userIds.nonEmpty ?? (UserRepo byIds userIds) map (_.toSet)
+          "user" -> BSONDocument("$ne" -> user.id)).some) map lila.db.BSON
+        .asStrings flatMap { userIds =>
+        userIds.nonEmpty ?? (UserRepo byIds userIds) map (_.toSet)
       }
     }
 }

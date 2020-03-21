@@ -93,8 +93,8 @@ case class HyperLogLogPlusPlus(
     * lower than the requested error. Use the <code>trueRsd</code> method to get the actual RSD
     * value.
     */
-  private[this] val p =
-    Math.ceil(2.0d * Math.log(1.106d / relativeSD) / Math.log(2.0d)).toInt
+  private[this] val p = Math
+    .ceil(2.0d * Math.log(1.106d / relativeSD) / Math.log(2.0d)).toInt
 
   require(
     p >= 4,
@@ -152,8 +152,8 @@ case class HyperLogLogPlusPlus(
     StructType.fromAttributes(aggBufferAttributes)
 
   /** Allocate enough words to store all registers. */
-  override val aggBufferAttributes: Seq[AttributeReference] = Seq.tabulate(
-    numWords) { i => AttributeReference(s"MS[$i]", LongType)() }
+  override val aggBufferAttributes: Seq[AttributeReference] = Seq
+    .tabulate(numWords) { i => AttributeReference(s"MS[$i]", LongType)() }
 
   // Note: although this simply copies aggBufferAttributes, this common code can not be placed
   // in the superclass because that will lead to initialization ordering issues.

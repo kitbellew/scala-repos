@@ -57,8 +57,8 @@ object StandardTestDBs {
 
   lazy val HsqldbDisk = new HsqlDB("hsqldbdisk") {
     val dbName = "hsqldb-" + confName
-    val url =
-      "jdbc:hsqldb:file:" + TestkitConfig.testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
+    val url = "jdbc:hsqldb:file:" + TestkitConfig
+      .testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
     override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
     // Recreating the DB is faster than dropping everything individually
     override def dropUserArtifacts(implicit
@@ -91,8 +91,7 @@ object StandardTestDBs {
       val dropUrl = "jdbc:derby:memory:" + dbName + ";drop=true"
       try {
         await(
-          profile.backend.Database
-            .forURL(dropUrl, driver = jdbcDriver)
+          profile.backend.Database.forURL(dropUrl, driver = jdbcDriver)
             .run(SimpleJdbcAction(_.connection)))
       } catch { case e: SQLException => }
     }
@@ -100,15 +99,14 @@ object StandardTestDBs {
 
   lazy val DerbyDisk = new DerbyDB("derbydisk") {
     val dbName = "derby-" + confName
-    val url =
-      "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";create=true"
+    val url = "jdbc:derby:" + TestkitConfig
+      .testDBPath + "/" + dbName + ";create=true"
     override def cleanUpBefore() = {
-      val dropUrl =
-        "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";shutdown=true"
+      val dropUrl = "jdbc:derby:" + TestkitConfig
+        .testDBPath + "/" + dbName + ";shutdown=true"
       try {
         await(
-          profile.backend.Database
-            .forURL(dropUrl, driver = jdbcDriver)
+          profile.backend.Database.forURL(dropUrl, driver = jdbcDriver)
             .run(SimpleJdbcAction(_.connection)))
       } catch { case e: SQLException => }
       TestDB.deleteDBFiles(dbName)
@@ -181,8 +179,7 @@ object StandardTestDBs {
       import ExecutionContext.Implicits.global
       for {
         schema <- sql"select schemaname from syscat.schemata where schemaname = '#$schema'"
-          .as[String]
-          .headOption
+          .as[String].headOption
         _ <- if (schema.isDefined) {
           println(s"[Dropping DB2 schema '$schema']")
           sqlu"call sysproc.admin_drop_schema($schema, null, ${"ERRORSCHEMA"}, ${"ERRORTABLE"})"
@@ -229,13 +226,12 @@ object StandardTestDBs {
             .as[(String, String)]
           constraintStatements = constraints.collect {
             case (c, t) if !c.startsWith("SQL") =>
-              sqlu"alter table #${profile.quoteIdentifier(
-                t)} drop constraint #${profile.quoteIdentifier(c)}"
+              sqlu"alter table #${profile.quoteIdentifier(t)} drop constraint #${profile.quoteIdentifier(c)}"
           }
           _ <- DBIO.sequence(constraintStatements)
           tables <- localTables
-          tableStatements = tables.map(t =>
-            sqlu"drop table #${profile.quoteIdentifier(t)}")
+          tableStatements = tables
+            .map(t => sqlu"drop table #${profile.quoteIdentifier(t)}")
           _ <- DBIO.sequence(tableStatements)
         } yield ()
       }
@@ -256,15 +252,16 @@ object StandardTestDBs {
 
     override def canGetLocalTables = false
     override def capabilities =
-      super.capabilities - TestDB.capabilities.jdbcMetaGetIndexInfo - TestDB.capabilities.transactionIsolation
+      super.capabilities - TestDB.capabilities.jdbcMetaGetIndexInfo - TestDB
+        .capabilities.transactionIsolation
 
     /* Only drop and recreate the user. This is much faster than dropping
      * the tablespace. */
     override def dropUserArtifacts(implicit
         session: profile.Backend#Session) = {
       session.close()
-      val a = DBIO.sequence(
-        Seq(drop(0), create(1), create(2)).map(s => sqlu"#$s"))
+      val a = DBIO
+        .sequence(Seq(drop(0), create(1), create(2)).map(s => sqlu"#$s"))
       await(databaseFor("adminConn").run(a))
     }
   }
@@ -275,7 +272,8 @@ abstract class H2TestDB(confName: String, keepAlive: Boolean)
   val profile: Profile = H2Profile
   val jdbcDriver = "org.h2.Driver"
   override def capabilities =
-    super.capabilities - TestDB.capabilities.jdbcMetaGetFunctions - TestDB.capabilities.jdbcMetaGetClientInfoProperties
+    super.capabilities - TestDB.capabilities.jdbcMetaGetFunctions - TestDB
+      .capabilities.jdbcMetaGetClientInfoProperties
   override def createDB(): profile.Backend#Database =
     database.forURL(url, driver = jdbcDriver, keepAliveConnection = keepAlive)
 }
@@ -298,8 +296,8 @@ class SQLiteTestDB(dburl: String, confName: String)
           (tables.map(t =>
             sqlu"""drop table if exists #${profile.quoteIdentifier(t)}""") ++
             sequences.map(t =>
-              sqlu"""drop sequence if exists #${profile.quoteIdentifier(
-                t)}""")): _*)
+              sqlu"""drop sequence if exists #${profile
+                .quoteIdentifier(t)}""")): _*)
       } yield ()
     }
 }
@@ -321,15 +319,17 @@ abstract class DerbyDB(confName: String) extends InternalJdbcTestDB(confName) {
     try {
       blockingRunOnSession { implicit ec =>
         for {
-          _ <- sqlu"""create table "__derby_dummy"(x integer primary key)""".asTry
+          _ <- sqlu"""create table "__derby_dummy"(x integer primary key)"""
+            .asTry
           constraints <- sql"""select c.constraintname, t.tablename
                              from sys.sysconstraints c, sys.sysschemas s, sys.systables t
                              where c.schemaid = s.schemaid and c.tableid = t.tableid and s.schemaname = 'APP'
                           """.as[(String, String)]
           _ <- DBIO.seq(
             (for ((c, t) <- constraints if !c.startsWith("SQL"))
-              yield sqlu"""alter table ${profile.quoteIdentifier(
-                t)} drop constraint ${profile.quoteIdentifier(c)}"""): _*)
+              yield sqlu"""alter table ${profile
+                .quoteIdentifier(t)} drop constraint ${profile
+                .quoteIdentifier(c)}"""): _*)
           tables <- localTables
           sequences <- localSequences
           _ <- DBIO.seq(

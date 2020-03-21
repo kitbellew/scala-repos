@@ -116,8 +116,7 @@ class SbtSystemSettings(project: Project)
       element: PsiElement): Option[SbtProjectSettings] =
     for {
       virtualFile <- Option(element.getContainingFile).safeMap(_.getVirtualFile)
-      projectFileIndex = ProjectRootManager
-        .getInstance(element.getProject)
+      projectFileIndex = ProjectRootManager.getInstance(element.getProject)
         .getFileIndex
       module <- Option(projectFileIndex.getModuleForFile(virtualFile))
       if project == element.getProject

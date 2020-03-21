@@ -31,22 +31,22 @@ object CommonUtil {
 
   implicit class CharSequenceOps(val cs: CharSequence) extends AnyVal {
     def startsWith(str: String) =
-      cs.length >= str.length && str.contentEquals(
-        cs.subSequence(0, str.length))
+      cs.length >= str.length && str
+        .contentEquals(cs.subSequence(0, str.length))
 
     def charIterator = Iterator.range(0, cs.length).map(cs.charAt)
   }
 
   implicit class NodeOps(val node: ASTNode) extends AnyVal {
     def childrenIterator =
-      Iterator
-        .iterate(node.getFirstChildNode)(_.getTreeNext)
+      Iterator.iterate(node.getFirstChildNode)(_.getTreeNext)
         .takeWhile(_ != null)
 
     def children = childrenIterator.toVector: Seq[ASTNode]
 
     def hasSingleChild =
-      node.getFirstChildNode != null && node.getFirstChildNode.getTreeNext == null
+      node.getFirstChildNode != null && node.getFirstChildNode
+        .getTreeNext == null
 
   }
 

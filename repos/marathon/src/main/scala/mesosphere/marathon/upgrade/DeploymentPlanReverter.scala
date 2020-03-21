@@ -37,8 +37,7 @@ private[upgrade] object DeploymentPlanReverter {
 
       val ids = originalById.keys ++ targetById.keys
 
-      ids.iterator
-        .map { id => originalById.get(id) -> targetById.get(id) }
+      ids.iterator.map { id => originalById.get(id) -> targetById.get(id) }
         .to[Seq]
     }
 
@@ -77,8 +76,8 @@ private[upgrade] object DeploymentPlanReverter {
         "re-adding group {} with dependencies {}",
         Seq(oldGroup.id, oldGroup.dependencies): _*)
       if ((oldGroup.dependencies -- existingGroup.dependencies).nonEmpty) {
-        existingGroup.copy(dependencies =
-          existingGroup.dependencies ++ oldGroup.dependencies)
+        existingGroup.copy(dependencies = existingGroup.dependencies ++ oldGroup
+          .dependencies)
       } else { existingGroup }
     }
 
@@ -94,8 +93,8 @@ private[upgrade] object DeploymentPlanReverter {
               s"readding removed {${removedDependencies.mkString(", ")}}, " +
               s"removing added {${addedDependencies.mkString(", ")}}")
 
-        group.copy(dependencies =
-          group.dependencies ++ removedDependencies -- addedDependencies)
+        group.copy(dependencies = group
+          .dependencies ++ removedDependencies -- addedDependencies)
       } else {
         // common case, unchanged
         group
@@ -127,8 +126,8 @@ private[upgrade] object DeploymentPlanReverter {
           result.update(
             newGroup.id,
             group =>
-              group.copy(dependencies =
-                group.dependencies -- newGroup.dependencies),
+              group.copy(dependencies = group.dependencies -- newGroup
+                .dependencies),
             version)
         case _ =>
           // still contains apps/groups, so we keep it
@@ -141,9 +140,7 @@ private[upgrade] object DeploymentPlanReverter {
       case (change1, change2) =>
         // both groups are supposed to have the same path id (if there are any)
         def pathId(change: (Option[Group], Option[Group])): PathId = {
-          Seq(change._1, change._2).flatten
-            .map(_.id)
-            .headOption
+          Seq(change._1, change._2).flatten.map(_.id).headOption
             .getOrElse(PathId.empty)
         }
 

@@ -56,17 +56,14 @@ class ScLiteralImpl(node: ASTNode)
         else Double
       case ScalaTokenTypes.tCHAR => Char
       case ScalaTokenTypes.tSYMBOL =>
-        val sym = ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(
-            "scala.Symbol",
-            getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE)
+        val sym = ScalaPsiManager.instance(getProject).getCachedClass(
+          "scala.Symbol",
+          getResolveScope,
+          ScalaPsiManager.ClassCategory.TYPE)
         if (sym != null) ScType.designator(sym) else Nothing
       case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tWRONG_STRING |
           ScalaTokenTypes.tMULTILINE_STRING =>
-        val str = ScalaPsiManager
-          .instance(getProject)
+        val str = ScalaPsiManager.instance(getProject)
           .getCachedClass(getResolveScope, "java.lang.String")
         str.map(ScType.designator(_)).getOrElse(Nothing)
       case ScalaTokenTypes.kTRUE | ScalaTokenTypes.kFALSE => Boolean
@@ -104,16 +101,14 @@ class ScLiteralImpl(node: ASTNode)
           text = text.substring(1, textLength - 1)
         } else { text = text.substring(1, textLength) }
         val chars: StringBuilder = new StringBuilder
-        val success: Boolean = PsiLiteralExpressionImpl.parseStringCharacters(
-          text,
-          chars,
-          null)
+        val success: Boolean = PsiLiteralExpressionImpl
+          .parseStringCharacters(text, chars, null)
         if (!success) return null
         if (chars.length != 1) return null
         Character.valueOf(chars.charAt(0))
       case ScalaTokenTypes.tINTEGER =>
-        val endsWithL =
-          child.getText.endsWith('l') || child.getText.endsWith('L')
+        val endsWithL = child.getText.endsWith('l') || child.getText
+          .endsWith('L')
         text = if (endsWithL) text.substring(0, text.length - 1) else text
         val (number, base) = text match {
           case t if t.startsWith("0x") || t.startsWith("0X") =>
@@ -231,8 +226,8 @@ class ScLiteralImpl(node: ASTNode)
     if (getFirstChild.getNode.getElementType != ScalaTokenTypes.kNULL)
       assert(
         assertion = false,
-        message =
-          "Only null literals accepted, type: " + getFirstChild.getNode.getElementType)
+        message = "Only null literals accepted, type: " + getFirstChild.getNode
+          .getElementType)
     typeWithoutImplicits = tp
   }
 
@@ -270,11 +265,11 @@ class ScLiteralImpl(node: ASTNode)
         PsiAnnotationOwner with PsiElement]): Option[PsiAnnotationOwner] = {
     if (!isString) return None
 
-    if (System.currentTimeMillis() > expirationTime || myAnnotationOwner.exists(
-          !_.isValid)) {
+    if (System.currentTimeMillis() > expirationTime || myAnnotationOwner
+          .exists(!_.isValid)) {
       myAnnotationOwner = annotationOwnerLookUp(this)
-      expirationTime = System
-        .currentTimeMillis() + (2 + expTimeLengthGenerator.nextInt(8)) * 1000
+      expirationTime = System.currentTimeMillis() + (2 + expTimeLengthGenerator
+        .nextInt(8)) * 1000
     }
 
     myAnnotationOwner

@@ -98,7 +98,8 @@ trait PatternTypers {
           || (resultType <:< BooleanTpe)
           || (isEmptyType <:< BooleanTpe)
           || member.isMacro
-          || member.isOverloaded // the whole overloading situation is over the rails
+          || member
+            .isOverloaded // the whole overloading situation is over the rails
         )
 
       // Dueling test cases: pos/overloaded-unapply.scala, run/case-class-23.scala, pos/t5022.scala
@@ -264,8 +265,8 @@ trait PatternTypers {
         || ptIn.typeSymbol != caseClass)
       val variantToSkolem = new VariantToSkolemMap
       val caseClassType = tree.tpe.prefix memberType caseClass
-      val caseConstructorType =
-        caseClassType memberType caseClass.primaryConstructor
+      val caseConstructorType = caseClassType memberType caseClass
+        .primaryConstructor
       val tree1 = TypeTree(caseConstructorType) setOriginal tree
       val pt = if (untrustworthyPt) caseClassType else ptIn
 
@@ -343,21 +344,16 @@ trait PatternTypers {
           unapplyType.skolemizeExistential(context.owner, tree))
         val unapplyContext = context.makeNewScope(context.tree, context.owner)
         freeVars foreach unapplyContext.scope.enter
-        val pattp = newTyper(unapplyContext).infer.inferTypedPattern(
-          tree,
-          unappFormal,
-          pt,
-          canRemedy)
+        val pattp = newTyper(unapplyContext).infer
+          .inferTypedPattern(tree, unappFormal, pt, canRemedy)
         // turn any unresolved type variables in freevars into existential skolems
         val skolems =
           freeVars map (fv => unapplyContext.owner.newExistentialSkolem(fv, fv))
         pattp.substSym(freeVars, skolems)
       }
 
-      val unapplyArg = (context.owner.newValue(
-        nme.SELECTOR_DUMMY,
-        fun.pos,
-        Flags.SYNTHETIC) setInfo (
+      val unapplyArg = (context.owner
+        .newValue(nme.SELECTOR_DUMMY, fun.pos, Flags.SYNTHETIC) setInfo (
         if (isApplicableSafe(Nil, unapplyType, pt :: Nil, WildcardType)) pt
         else freshUnapplyArgType()
       ))

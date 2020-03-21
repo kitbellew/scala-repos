@@ -73,23 +73,21 @@ trait NIHDBSnapshot {
   def getBlockAfter(
       id0: Option[Long],
       cols: Option[Set[ColumnRef]]): Option[Block] =
-    findReaderAfter(id0)
-      .map { reader =>
-        val snapshot = reader.snapshotRef(cols)
-        if (logger.isTraceEnabled) {
-          logger.trace("Block after %s, %s (%s)\nSnapshot on %s:\n  %s".format(
-            id0,
-            reader,
-            reader.hashCode,
-            cols,
-            snapshot.segments.map(_.toString).mkString("\n  ")))
-        }
-        snapshot
+    findReaderAfter(id0).map { reader =>
+      val snapshot = reader.snapshotRef(cols)
+      if (logger.isTraceEnabled) {
+        logger.trace("Block after %s, %s (%s)\nSnapshot on %s:\n  %s".format(
+          id0,
+          reader,
+          reader.hashCode,
+          cols,
+          snapshot.segments.map(_.toString).mkString("\n  ")))
       }
-      .orElse {
-        if (logger.isTraceEnabled) { logger.trace("No block after " + id0) }
-        None
-      }
+      snapshot
+    }.orElse {
+      if (logger.isTraceEnabled) { logger.trace("No block after " + id0) }
+      None
+    }
 
   def structure: Set[ColumnRef] =
     readers.flatMap(_.structure)(collection.breakOut)
@@ -108,12 +106,10 @@ trait NIHDBSnapshot {
     */
   def count(id: Option[Long], paths0: Option[Set[CPath]]): Option[Long] = {
     def countSegments(segs: Seq[Segment]): Long =
-      segs
-        .foldLeft(new BitSet) { (acc, seg) =>
-          acc.or(seg.defined)
-          acc
-        }
-        .cardinality
+      segs.foldLeft(new BitSet) { (acc, seg) =>
+        acc.or(seg.defined)
+        acc
+      }.cardinality
 
     findReader(id).map { reader =>
       paths0 map { paths =>
@@ -136,9 +132,7 @@ trait NIHDBSnapshot {
         case Block(_, segments, _) => segments.foldLeft(acc) { (acc, segment) =>
             reduction.reduce(segment, None) map { a =>
               val key = segment.ctype
-              val value = acc
-                .get(key)
-                .map(reduction.semigroup.append(_, a))
+              val value = acc.get(key).map(reduction.semigroup.append(_, a))
                 .getOrElse(a)
               acc + (key -> value)
             } getOrElse acc

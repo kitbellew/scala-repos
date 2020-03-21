@@ -71,8 +71,7 @@ abstract class ChangeSignatureTestBase
 
     processor(newVisibility, newName, newReturnType, newParams).run()
 
-    PostprocessReformattingAspect
-      .getInstance(getProjectAdapter)
+    PostprocessReformattingAspect.getInstance(getProjectAdapter)
       .doPostponedFormatting()
 
     val mainAfterText = getTextFromTestData(mainFileAfterName(testName))
@@ -108,8 +107,8 @@ abstract class ChangeSignatureTestBase
   protected def getPsiTypeFromText(
       typeText: String,
       context: PsiElement): PsiType = {
-    val factory: JavaCodeFragmentFactory = JavaCodeFragmentFactory.getInstance(
-      getProjectAdapter)
+    val factory: JavaCodeFragmentFactory = JavaCodeFragmentFactory
+      .getInstance(getProjectAdapter)
     factory.createTypeCodeFragment(typeText, context, false).getType
   }
 
@@ -124,8 +123,8 @@ abstract class ChangeSignatureTestBase
       if (newReturnType != null) getPsiTypeFromText(newReturnType, psiMethod)
       else psiMethod.getReturnType
 
-    val params =
-      newParams.flatten.map(_.asInstanceOf[ParameterInfoImpl]).toArray
+    val params = newParams.flatten.map(_.asInstanceOf[ParameterInfoImpl])
+      .toArray
 
     new ChangeSignatureProcessor(
       getProjectAdapter,

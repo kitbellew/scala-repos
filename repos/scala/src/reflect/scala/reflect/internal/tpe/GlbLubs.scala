@@ -30,8 +30,8 @@ private[internal] trait GlbLubs {
       }
     }
 
-    val sorted = btsMap.toList.sortWith((x, y) =>
-      x._1.typeSymbol isLess y._1.typeSymbol)
+    val sorted = btsMap.toList
+      .sortWith((x, y) => x._1.typeSymbol isLess y._1.typeSymbol)
     val maxSeqLength = sorted.map(_._2.size).max
     val padded = sorted map (_._2.padTo(maxSeqLength, NoType))
     val transposed = padded.transpose
@@ -164,8 +164,7 @@ private[internal] trait GlbLubs {
             val str =
               (newtps.zipWithIndex map {
                 case (tps, idx) =>
-                  tps
-                    .map("        " + _ + "\n")
+                  tps.map("        " + _ + "\n")
                     .mkString("   (" + idx + ")\n", "", "\n")
               }).mkString("")
 
@@ -371,21 +370,18 @@ private[internal] trait GlbLubs {
             val syms = narrowts map (t =>
               // SI-7602 With erroneous code, we could end up with overloaded symbols after filtering
               //         so `suchThat` unsuitable.
-              t.nonPrivateMember(proto.name)
-                .filter(sym =>
-                  sym.tpe matches prototp.substThis(lubThisType.typeSymbol, t)))
+              t.nonPrivateMember(proto.name).filter(sym =>
+                sym.tpe matches prototp.substThis(lubThisType.typeSymbol, t)))
 
             if (syms contains NoSymbol) NoSymbol
             else {
               val symtypes = map2(narrowts, syms)((t, sym) =>
                 t.memberInfo(sym).substThis(t.typeSymbol, lubThisType))
               if (proto.isTerm) // possible problem: owner of info is still the old one, instead of new refinement class
-                proto
-                  .cloneSymbol(lubRefined.typeSymbol)
+                proto.cloneSymbol(lubRefined.typeSymbol)
                   .setInfoOwnerAdjusted(lub(symtypes, depth.decr))
               else if (symtypes.tail forall (symtypes.head =:= _))
-                proto
-                  .cloneSymbol(lubRefined.typeSymbol)
+                proto.cloneSymbol(lubRefined.typeSymbol)
                   .setInfoOwnerAdjusted(symtypes.head)
               else {
                 def lubBounds(bnds: List[TypeBounds]): TypeBounds =
@@ -549,30 +545,28 @@ private[internal] trait GlbLubs {
                      if glbThisType.memberInfo(alt) matches prototp) yield alt
               val symtypes = syms map glbThisType.memberInfo
               assert(!symtypes.isEmpty)
-              proto
-                .cloneSymbol(glbRefined.typeSymbol)
-                .setInfoOwnerAdjusted(
-                  if (proto.isTerm) glb(symtypes, depth.decr)
-                  else {
-                    def isTypeBound(tp: Type) =
-                      tp match {
-                        case TypeBounds(_, _) => true
-                        case _                => false
-                      }
-                    def glbBounds(bnds: List[Type]): TypeBounds = {
-                      val lo = lub(bnds map (_.bounds.lo), depth.decr)
-                      val hi = glb(bnds map (_.bounds.hi), depth.decr)
-                      if (lo <:< hi) TypeBounds(lo, hi) else throw GlbFailure
+              proto.cloneSymbol(glbRefined.typeSymbol).setInfoOwnerAdjusted(
+                if (proto.isTerm) glb(symtypes, depth.decr)
+                else {
+                  def isTypeBound(tp: Type) =
+                    tp match {
+                      case TypeBounds(_, _) => true
+                      case _                => false
                     }
-                    val symbounds = symtypes filter isTypeBound
-                    var result: Type =
-                      if (symbounds.isEmpty) TypeBounds.empty
-                      else glbBounds(symbounds)
-                    for (t <- symtypes if !isTypeBound(t))
-                      if (result.bounds containsType t) result = t
-                      else throw GlbFailure
-                    result
-                  })
+                  def glbBounds(bnds: List[Type]): TypeBounds = {
+                    val lo = lub(bnds map (_.bounds.lo), depth.decr)
+                    val hi = glb(bnds map (_.bounds.hi), depth.decr)
+                    if (lo <:< hi) TypeBounds(lo, hi) else throw GlbFailure
+                  }
+                  val symbounds = symtypes filter isTypeBound
+                  var result: Type =
+                    if (symbounds.isEmpty) TypeBounds.empty
+                    else glbBounds(symbounds)
+                  for (t <- symtypes if !isTypeBound(t))
+                    if (result.bounds containsType t) result = t
+                    else throw GlbFailure
+                  result
+                })
             }
             if (globalGlbDepth < globalGlbLimit) try {
               globalGlbDepth = globalGlbDepth.incr

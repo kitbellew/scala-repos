@@ -61,20 +61,18 @@ class appTest extends JUnitSuite with ShouldMatchers {
   @Test
   def testSStateListDrawable(): Unit = {
     val activity = Robolectric.buildActivity(classOf[SActivityImpl]).create.get
-    val drawable = activity
-      .find[ImageView](3)
-      .getDrawable
+    val drawable = activity.find[ImageView](3).getDrawable
       .asInstanceOf[StateListDrawable]
     val shadowDrawable = Robolectric.shadowOf(drawable)
 
-    val pressedDrawable = shadowDrawable.getDrawableForState(Array(
-      android.R.attr.state_pressed))
-    pressedDrawable shouldBe activity.getResources.getDrawable(
-      android.R.drawable.btn_star_big_on)
+    val pressedDrawable = shadowDrawable
+      .getDrawableForState(Array(android.R.attr.state_pressed))
+    pressedDrawable shouldBe activity.getResources
+      .getDrawable(android.R.drawable.btn_star_big_on)
 
     val normalDrawable = shadowDrawable.getDrawableForState(Array.empty)
-    normalDrawable shouldBe activity.getResources.getDrawable(
-      android.R.drawable.btn_star_big_off)
+    normalDrawable shouldBe activity.getResources
+      .getDrawable(android.R.drawable.btn_star_big_off)
   }
 
   @Test

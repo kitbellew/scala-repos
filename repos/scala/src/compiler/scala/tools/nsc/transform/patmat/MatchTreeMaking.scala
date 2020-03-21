@@ -195,9 +195,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         * (Even though we don't do so anymore -- see SI-5158, SI-5739 and SI-6070.)
         */
       override def subPatternsAsSubstitution =
-        Substitution(
-          subPatBinders,
-          subPatRefs) >> super.subPatternsAsSubstitution
+        Substitution(subPatBinders, subPatRefs) >> super
+          .subPatternsAsSubstitution
 
       def bindSubPats(in: Tree): Tree =
         if (!emitVars) in
@@ -405,8 +404,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           // this also includes methods and (possibly nested) objects inside of methods.
           def definedInStaticLocation(tp: Type): Boolean = {
             def isStatic(tp: Type): Boolean =
-              if (tp == NoType || tp.typeSymbol.isPackageClass || tp == NoPrefix)
-                true
+              if (tp == NoType || tp.typeSymbol
+                    .isPackageClass || tp == NoPrefix) true
               else if (tp.typeSymbol.isModuleClass) isStatic(tp.prefix)
               else false
             tp.typeSymbol.owner == tp.prefix.typeSymbol && isStatic(tp.prefix)
@@ -620,10 +619,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                 altTreeMakers :+ TrivialTreeMaker(casegen.one(mkTRUE)))(
                 casegen)))
 
-          val findAltMatcher = codegenAlt.matcher(
-            EmptyTree,
-            NoSymbol,
-            BooleanTpe)(combinedAlts, Some(x => mkFALSE))
+          val findAltMatcher = codegenAlt
+            .matcher(EmptyTree, NoSymbol, BooleanTpe)(
+              combinedAlts,
+              Some(x => mkFALSE))
           codegenAlt.ifThenElseZero(findAltMatcher, substitution(next))
         }
       }
@@ -693,9 +692,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           matchFailGenOverride orElse Some(Throw(MatchErrorClass.tpe, _: Tree))
 
         debug.patmat(
-          "combining cases: " + (
-            casesNoSubstOnly.map(_.mkString(" >> ")).mkString("{", "\n", "}")
-          ))
+          "combining cases: " + (casesNoSubstOnly.map(_.mkString(" >> "))
+            .mkString("{", "\n", "}")))
 
         val (suppression, requireSwitch): (Suppression, Boolean) =
           if (settings.XnoPatmatAnalysis) (Suppression.FullSuppression, false)
@@ -721,13 +719,11 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                     l match {
                       case a :: b :: c :: _ => 3
                       case cases =>
-                        cases
-                          .map({
-                            case AlternativesTreeMaker(_, alts, _) :: _ =>
-                              lengthMax3(alts)
-                            case c => 1
-                          })
-                          .sum
+                        cases.map({
+                          case AlternativesTreeMaker(_, alts, _) :: _ =>
+                            lengthMax3(alts)
+                          case c => 1
+                        }).sum
                     }
                   lengthMax3(casesNoSubstOnly) > 2
                 }
@@ -790,9 +786,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
               t.symbol = currentOwner.newAnonymousFunctionValue(t.pos)
               debug.patmat("new symbol for " + ((t, t.symbol.ownerChain)))
             case Function(_, _)
-                if (t.symbol.owner == NoSymbol) || (
-                  t.symbol.owner == origOwner
-                ) =>
+                if (t.symbol.owner == NoSymbol) || (t.symbol
+                  .owner == origOwner) =>
               debug.patmat(
                 "fundef: " + (
                   (
@@ -801,9 +796,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                     currentOwner.ownerChain)))
               t.symbol.owner = currentOwner
             case d: DefTree
-                if (d.symbol != NoSymbol) && (
-                  (d.symbol.owner == NoSymbol) || (d.symbol.owner == origOwner)
-                ) => // don't indiscriminately change existing owners! (see e.g., pos/t3440, pos/t3534, pos/unapplyContexts2)
+                if (d.symbol != NoSymbol) && ((d.symbol.owner == NoSymbol) || (d
+                  .symbol.owner == origOwner)) => // don't indiscriminately change existing owners! (see e.g., pos/t3440, pos/t3534, pos/unapplyContexts2)
               debug.patmat(
                 "def: " + ((d, d.symbol.ownerChain, currentOwner.ownerChain)))
 

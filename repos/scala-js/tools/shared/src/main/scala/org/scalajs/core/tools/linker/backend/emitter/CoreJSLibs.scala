@@ -100,16 +100,14 @@ private[scalajs] object CoreJSLibs {
       else "" // blank line preserves line numbers in source maps
     }
 
-    val content = lines
-      .mkString("", "\n", "\n")
+    val content = lines.mkString("", "\n", "\n")
       .replace("{{LINKER_VERSION}}", ScalaJSVersions.current)
 
     val content1 = outputMode match {
       case OutputMode.ECMAScript51Global => content
 
       case OutputMode.ECMAScript51Isolated | OutputMode.ECMAScript6 =>
-        content
-          .replaceAll("ScalaJS\\.d\\.", "\\$d_")
+        content.replaceAll("ScalaJS\\.d\\.", "\\$d_")
           .replaceAll("ScalaJS\\.c\\.", "\\$c_")
           .replaceAll("ScalaJS\\.h\\.", "\\$h_")
           .replaceAll("ScalaJS\\.s\\.", "\\$s_")
@@ -125,8 +123,7 @@ private[scalajs] object CoreJSLibs {
 
     outputMode match {
       case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
-        content1
-          .replaceAll(raw"\b(let|const)\b", "var")
+        content1.replaceAll(raw"\b(let|const)\b", "var")
 
       case OutputMode.ECMAScript6 => content1
     }

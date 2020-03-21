@@ -30,8 +30,7 @@ import java.io.InputStream
 object Templates {
   // Making this lazy to ensure it doesn't accidentally init before Boot completes in case someone touches this class.
   private lazy val parsers = LiftRules.contentParsers
-    .flatMap(parser => parser.templateSuffixes.map(_ -> parser))
-    .toMap
+    .flatMap(parser => parser.templateSuffixes.map(_ -> parser)).toMap
 
   private def checkForLiftView(
       part: List[String],
@@ -115,38 +114,31 @@ object Templates {
       }
 
     in.flatMap {
-        case e: Elem if e.label == "html" => df(e.attributes)
-        case _                            => None
-      }
-      .flatMap { md => Helpers.findId(in, md.value.text) }
-      .headOption orElse
+      case e: Elem if e.label == "html" => df(e.attributes)
+      case _                            => None
+    }.flatMap { md => Helpers.findId(in, md.value.text) }.headOption orElse
       in.flatMap {
-          case e: Elem if e.label == "html" =>
-            e.child.flatMap {
-              case e: Elem if e.label == "body" => {
-                e.attribute("data-lift-content-id")
-                  .headOption
-                  .map(_.text) orElse
-                  e.attribute("class").flatMap { ns =>
-                    {
-                      val clz = ns.text.charSplit(' ')
-                      clz.flatMap {
-                        case s if s.startsWith("lift:content_id=") =>
-                          Some(
-                            urlDecode(s.substring("lift:content_id=".length)))
-                        case _ => None
-                      }.headOption
+        case e: Elem if e.label == "html" =>
+          e.child.flatMap {
+            case e: Elem if e.label == "body" => {
+              e.attribute("data-lift-content-id").headOption.map(_.text) orElse
+                e.attribute("class").flatMap { ns =>
+                  {
+                    val clz = ns.text.charSplit(' ')
+                    clz.flatMap {
+                      case s if s.startsWith("lift:content_id=") =>
+                        Some(urlDecode(s.substring("lift:content_id=".length)))
+                      case _ => None
+                    }.headOption
 
-                    }
                   }
-              }
-
-              case _ => None
+                }
             }
-          case _ => None
-        }
-        .flatMap { id => Helpers.findId(in, id) }
-        .headOption getOrElse in
+
+            case _ => None
+          }
+        case _ => None
+      }.flatMap { id => Helpers.findId(in, id) }.headOption getOrElse in
   }
 
   /**
@@ -332,25 +324,20 @@ abstract class SnippetFailureException(msg: String)
   def snippetFailure: LiftRules.SnippetFailures.Value
 
   def buildStackTrace: NodeSeq =
-    getStackTrace.toList
-      .dropWhile { e =>
-        {
-          val cn = e.getClassName
-          cn.startsWith("net.liftweb.http") ||
-          cn.startsWith("net.liftweb.common") ||
-          cn.startsWith("net.liftweb.util")
-        }
+    getStackTrace.toList.dropWhile { e =>
+      {
+        val cn = e.getClassName
+        cn.startsWith("net.liftweb.http") ||
+        cn.startsWith("net.liftweb.common") ||
+        cn.startsWith("net.liftweb.util")
       }
-      .filter { e =>
-        {
-          val cn = e.getClassName
-          !cn.startsWith("java.lang") &&
-          !cn.startsWith("sun.")
-        }
+    }.filter { e =>
+      {
+        val cn = e.getClassName
+        !cn.startsWith("java.lang") &&
+        !cn.startsWith("sun.")
       }
-      .take(10)
-      .toList
-      .map { e => <code><span><br/>{e.toString}</span></code> }
+    }.take(10).toList.map { e => <code><span><br/>{e.toString}</span></code> }
 }
 
 class StateInStatelessException(msg: String)

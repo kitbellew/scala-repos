@@ -86,8 +86,7 @@ class OrderingSuite extends SparkFunSuite with ExpressionEvalHelper {
   // contain two columns of that type, then for pairs of randomly-generated rows we check that
   // GenerateOrdering agrees with RowOrdering.
   {
-    val structType = new StructType()
-      .add("f1", FloatType, nullable = true)
+    val structType = new StructType().add("f1", FloatType, nullable = true)
       .add("f2", ArrayType(BooleanType, containsNull = true), nullable = true)
     val arrayOfStructType = ArrayType(structType)
     val complexTypes =
@@ -95,21 +94,20 @@ class OrderingSuite extends SparkFunSuite with ExpressionEvalHelper {
     (DataTypeTestUtils.atomicTypes ++ complexTypes ++ Set(NullType)).foreach {
       dataType =>
         test(s"GenerateOrdering with $dataType") {
-          val rowOrdering = InterpretedOrdering.forSchema(
-            Seq(dataType, dataType))
+          val rowOrdering = InterpretedOrdering
+            .forSchema(Seq(dataType, dataType))
           val genOrdering = GenerateOrdering.generate(
             BoundReference(0, dataType, nullable = true).asc ::
               BoundReference(1, dataType, nullable = true).asc :: Nil)
           val rowType = StructType(
             StructField("a", dataType, nullable = true) ::
               StructField("b", dataType, nullable = true) :: Nil)
-          val maybeDataGenerator = RandomDataGenerator.forType(
-            rowType,
-            nullable = false)
+          val maybeDataGenerator = RandomDataGenerator
+            .forType(rowType, nullable = false)
           assume(maybeDataGenerator.isDefined)
           val randGenerator = maybeDataGenerator.get
-          val toCatalyst = CatalystTypeConverters.createToCatalystConverter(
-            rowType)
+          val toCatalyst = CatalystTypeConverters
+            .createToCatalystConverter(rowType)
           for (_ <- 1 to 50) {
             val a = toCatalyst(randGenerator()).asInstanceOf[InternalRow]
             val b = toCatalyst(randGenerator()).asInstanceOf[InternalRow]

@@ -11,11 +11,9 @@ object Test extends BytecodeTest {
     classNode.accept(new TraceClassVisitor(null, textifier, null))
 
     val classString = stringFromWriter(w => textifier.print(w))
-    classString
-      .split('\n')
+    classString.split('\n')
       .filterNot(_.contains("@Lscala/reflect/ScalaSignature"))
-      .find(_.contains("@L"))
-      .map(_.trim)
+      .find(_.contains("@L")).map(_.trim)
   }
 
   def show {

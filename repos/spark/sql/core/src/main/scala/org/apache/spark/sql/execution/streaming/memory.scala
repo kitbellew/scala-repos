@@ -80,18 +80,13 @@ case class MemoryStream[A: Encoder](id: Int, sqlContext: SQLContext)
   override def getNextBatch(start: Option[Offset]): Option[Batch] =
     synchronized {
       val newBlocks = batches.drop(
-        start
-          .map(_.asInstanceOf[LongOffset])
-          .getOrElse(LongOffset(-1))
-          .offset
+        start.map(_.asInstanceOf[LongOffset]).getOrElse(LongOffset(-1)).offset
           .toInt + 1)
 
       if (newBlocks.nonEmpty) {
         logDebug(
           s"Running [$start, $currentOffset] on blocks ${newBlocks.mkString(", ")}")
-        val df = newBlocks
-          .map(_.toDF())
-          .reduceOption(_ unionAll _)
+        val df = newBlocks.map(_.toDF()).reduceOption(_ unionAll _)
           .getOrElse(sqlContext.emptyDataFrame)
 
         Some(new Batch(currentOffset, df))
@@ -126,10 +121,7 @@ class MemorySink(schema: StructType) extends Sink with Logging {
   /** Returns all rows that are stored in this [[Sink]]. */
   def allData: Seq[Row] =
     synchronized {
-      batches
-        .map(_.data)
-        .reduceOption(_ unionAll _)
-        .map(_.collect().toSeq)
+      batches.map(_.data).reduceOption(_ unionAll _).map(_.collect().toSeq)
         .getOrElse(Seq.empty)
     }
 
@@ -142,13 +134,11 @@ class MemorySink(schema: StructType) extends Sink with Logging {
 
   def toDebugString: String =
     synchronized {
-      batches
-        .map { b =>
-          val dataStr =
-            try b.data.collect().mkString(" ")
-            catch { case NonFatal(e) => "[Error converting to string]" }
-          s"${b.end}: $dataStr"
-        }
-        .mkString("\n")
+      batches.map { b =>
+        val dataStr =
+          try b.data.collect().mkString(" ")
+          catch { case NonFatal(e) => "[Error converting to string]" }
+        s"${b.end}: $dataStr"
+      }.mkString("\n")
     }
 }

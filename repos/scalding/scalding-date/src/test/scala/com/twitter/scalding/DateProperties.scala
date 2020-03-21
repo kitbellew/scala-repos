@@ -130,9 +130,9 @@ object DateProperties extends Properties("Date Properties") {
     (glob.flatMap { c => if (c == '*') ".*" else c.toString }).r
 
   def matches(l: List[String], arg: String): Int =
-    l.map { toRegex _ }
-      .map { _.findFirstMatchIn(arg).map { _ => 1 }.getOrElse(0) }
-      .sum
+    l.map { toRegex _ }.map {
+      _.findFirstMatchIn(arg).map { _ => 1 }.getOrElse(0)
+    }.sum
 
   // Make sure globifier always contains:
   val pattern = "%1$tY/%1$tm/%1$td/%1$tH"
@@ -141,8 +141,8 @@ object DateProperties extends Properties("Date Properties") {
     (dr: DateRange) =>
       val globbed = glob.globify(dr)
       // Brute force
-      dr.each(Hours(1))
-        .map { _.start.format(pattern)(DateOps.UTC) }
-        .forall { matches(globbed, _) == 1 }
+      dr.each(Hours(1)).map { _.start.format(pattern)(DateOps.UTC) }.forall {
+        matches(globbed, _) == 1
+      }
   }
 }

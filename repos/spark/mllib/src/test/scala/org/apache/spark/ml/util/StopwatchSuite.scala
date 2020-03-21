@@ -64,9 +64,7 @@ class StopwatchSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("MultiStopwatch") {
-    val sw = new MultiStopwatch(sc)
-      .addLocal("local")
-      .addDistributed("spark")
+    val sw = new MultiStopwatch(sc).addLocal("local").addDistributed("spark")
     assert(sw("local").name === "local")
     assert(sw("spark").name === "spark")
     intercept[NoSuchElementException] { sw("some") }

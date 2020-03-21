@@ -57,8 +57,8 @@ class helpersTest extends JUnitSuite with ShouldMatchers {
   @Test
   def testPendingActivity(): Unit = {
     implicit val tag = ClassTag(classOf[SActivityImpl])
-    val shadowPI = Robolectric.shadowOf(
-      AppHelpers.pendingActivity[SActivityImpl])
+    val shadowPI = Robolectric
+      .shadowOf(AppHelpers.pendingActivity[SActivityImpl])
     val intent = shadowPI.getSavedIntent
     intent.getComponent.getClassName shouldBe classOf[SActivityImpl].getName
   }
@@ -71,8 +71,8 @@ class helpersTest extends JUnitSuite with ShouldMatchers {
       (c: Context, i: Intent) => c.startActivity(SIntent[SActivityImpl]))
     activity = controller.start.resume.get
 
-    val registered =
-      Robolectric.getShadowApplication.getRegisteredReceivers.asScala
+    val registered = Robolectric.getShadowApplication.getRegisteredReceivers
+      .asScala
     registered shouldNot be a 'empty
     registered.foreach { r =>
       r.getIntentFilter.getAction(0) shouldBe Intent.ACTION_VIEW
@@ -80,8 +80,8 @@ class helpersTest extends JUnitSuite with ShouldMatchers {
 
     val intent =
       new Intent(Intent.ACTION_VIEW, Uri.parse("http://scaloid.org/"))
-    val received =
-      Robolectric.getShadowApplication.getReceiversForIntent(intent).asScala
+    val received = Robolectric.getShadowApplication
+      .getReceiversForIntent(intent).asScala
     received.size shouldBe 1
     received(0)
       .onReceive(Robolectric.getShadowApplication.getApplicationContext, intent)
@@ -91,8 +91,7 @@ class helpersTest extends JUnitSuite with ShouldMatchers {
 
   @Test
   def testSharedPreference(): Unit = {
-    PreferenceHelpers.defaultSharedPreferences.edit
-      .putString("foo", "bar")
+    PreferenceHelpers.defaultSharedPreferences.edit.putString("foo", "bar")
       .commit
     PreferenceHelpers.defaultSharedPreferences
       .getString("foo", "") shouldBe "bar"

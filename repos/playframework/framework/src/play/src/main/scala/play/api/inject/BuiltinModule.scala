@@ -88,8 +88,7 @@ class RoutesProvider @Inject() (
   lazy val get = {
     val prefix = httpConfig.context
 
-    val router = Router
-      .load(environment, configuration)
+    val router = Router.load(environment, configuration)
       .fold[Router](Router.empty)(injector.instanceOf(_))
     router.withPrefix(prefix)
   }

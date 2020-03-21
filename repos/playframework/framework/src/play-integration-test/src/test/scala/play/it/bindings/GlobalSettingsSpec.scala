@@ -40,14 +40,12 @@ trait GlobalSettingsSpec
     import play.api.inject._
     import play.api.routing.sird._
     lazy val app: Application = new GuiceApplicationBuilder()
-      .configure(additionalSettings)
-      .overrides(bind[Router].to(Router.from {
+      .configure(additionalSettings).overrides(bind[Router].to(Router.from {
         case p"/scala" => Action { request =>
             Ok(request.headers.get("X-Foo").getOrElse("null"))
           }
         case p"/java" => JAction(app, JavaAction)
-      }))
-      .build()
+      })).build()
     running(TestServer(port, app)) {
       val response = await(wsUrl(uri).get())
       block(response.body)

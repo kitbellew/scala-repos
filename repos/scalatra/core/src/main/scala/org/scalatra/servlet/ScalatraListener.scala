@@ -27,7 +27,8 @@ class ScalatraListener extends ServletContextListener {
     } catch {
       case e: Throwable =>
         logger.error(
-          "Failed to initialize scalatra application at " + sce.getServletContext.getContextPath,
+          "Failed to initialize scalatra application at " + sce
+            .getServletContext.getContextPath,
           e)
         throw e
     }
@@ -35,8 +36,8 @@ class ScalatraListener extends ServletContextListener {
 
   def contextDestroyed(sce: ServletContextEvent): Unit = {
     if (cycle != null) {
-      logger.info(
-        "Destroying life cycle class: %s".format(cycle.getClass.getName))
+      logger
+        .info("Destroying life cycle class: %s".format(cycle.getClass.getName))
       cycle.destroy(servletContext)
     }
   }

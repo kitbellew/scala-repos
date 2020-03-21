@@ -37,10 +37,10 @@ object ASMConverters {
       }
 
     def dropStaleLabels = {
-      val definedLabels: Set[Instruction] =
-        self.filter(_.isInstanceOf[Label]).toSet
-      val usedLabels: Set[Instruction] = self.flatMap(referencedLabels)(
-        collection.breakOut)
+      val definedLabels: Set[Instruction] = self.filter(_.isInstanceOf[Label])
+        .toSet
+      val usedLabels: Set[Instruction] = self
+        .flatMap(referencedLabels)(collection.breakOut)
       self.filterNot(definedLabels diff usedLabels)
     }
 
@@ -59,12 +59,10 @@ object ASMConverters {
           case l: Label => s" /*${l.offset}*/"
           case _        => ""
         }
-      dropNonOp
-        .map({
-          case i: Invoke => s""""${i.name}""""
-          case ins       => opcodeToString(ins.opcode, ins.opcode) + comment(ins)
-        })
-        .mkString("List(", ", ", ")")
+      dropNonOp.map({
+        case i: Invoke => s""""${i.name}""""
+        case ins       => opcodeToString(ins.opcode, ins.opcode) + comment(ins)
+      }).mkString("List(", ", ", ")")
     }
   }
 

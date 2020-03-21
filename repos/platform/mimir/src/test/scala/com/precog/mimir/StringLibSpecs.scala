@@ -1036,8 +1036,9 @@ trait StringLibSpecs[M[+_]]
     "trim the trailing '.0' in round double conversion" in {
       val input = dag.Operate(
         BuiltInFunction1Op(numToString),
-        dag.Operate(BuiltInFunction1Op(round), Const(CDouble(3.14))(line))(
-          line))(line)
+        dag
+          .Operate(BuiltInFunction1Op(round), Const(CDouble(3.14))(line))(
+            line))(line)
 
       val resultE = testEval(input)
       resultE must haveSize(1)
@@ -1053,10 +1054,8 @@ trait StringLibSpecs[M[+_]]
     val o = scala.math.Ordering.by[(SValue, _), SValue](_._1)
 
     def mogrify(result: Set[(Vector[SValue], SValue)]): List[Vector[String]] =
-      result.toList
-        .map { case (Vector(n), SArray(elems)) => (n, elems) }
-        .sorted(o)
-        .map(_._2.map { case SString(s) => s })
+      result.toList.map { case (Vector(n), SArray(elems)) => (n, elems) }
+        .sorted(o).map(_._2.map { case SString(s) => s })
 
     def mktree(f: Op2, path: String, sep: String) =
       Join(

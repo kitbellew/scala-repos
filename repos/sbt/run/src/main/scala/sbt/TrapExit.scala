@@ -257,9 +257,8 @@ private final class TrapExit(delegateManager: SecurityManager)
       try execute()
       catch {
         case x: Throwable =>
-          exitCode.set(
-            1
-          ) //exceptions in the main thread cause the exit code to be 1
+          exitCode
+            .set(1) //exceptions in the main thread cause the exit code to be 1
           throw x
       }
     }
@@ -429,7 +428,8 @@ private final class TrapExit(delegateManager: SecurityManager)
 
   /** This ensures that only actual calls to exit are trapped and not just calls to check if exit is allowed.*/
   private def isRealExit(element: StackTraceElement): Boolean =
-    element.getClassName == "java.lang.Runtime" && element.getMethodName == "exit"
+    element.getClassName == "java.lang.Runtime" && element
+      .getMethodName == "exit"
 
   // These are overridden to do nothing because there is a substantial filesystem performance penalty
   // when there is a SecurityManager defined.  The default implementations of these construct a
@@ -492,14 +492,16 @@ private final class TrapExit(delegateManager: SecurityManager)
     val allFrames = java.awt.Frame.getFrames
     if (allFrames.nonEmpty) {
       log.debug(s"Disposing ${allFrames.length} top-level windows...")
-      allFrames.foreach(
-        _.dispose
-      ) // dispose all top-level windows, which will cause the AWT-EventQueue-* threads to exit
+      allFrames
+        .foreach(
+          _.dispose
+        ) // dispose all top-level windows, which will cause the AWT-EventQueue-* threads to exit
       val waitSeconds = 2
       log.debug(s"Waiting $waitSeconds s to let AWT thread exit.")
-      Thread.sleep(
-        waitSeconds * 1000
-      ) // AWT Thread doesn't exit immediately, so wait to interrupt it
+      Thread
+        .sleep(
+          waitSeconds * 1000
+        ) // AWT Thread doesn't exit immediately, so wait to interrupt it
     }
   }
 

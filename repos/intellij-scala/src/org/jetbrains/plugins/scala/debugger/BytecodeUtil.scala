@@ -96,8 +96,8 @@ private[debugger] object BytecodeUtil {
   def loadCode(storeCode: Seq[Byte]): Seq[Byte] = {
     storeCode match {
       case Seq(b) => oneByteCodes.get(b).map(b => Seq(b)).getOrElse(Nil)
-      case Seq(code, addr) =>
-        twoBytesCodes.get(code).map(b => Seq(b, addr)).getOrElse(Nil)
+      case Seq(code, addr) => twoBytesCodes.get(code).map(b => Seq(b, addr))
+          .getOrElse(Nil)
       case _ => Nil
     }
   }

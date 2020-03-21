@@ -33,10 +33,8 @@ class PackageObjectsData extends Serializable {
 
   def invalidatedPackageObjects(sources: Seq[File]): Set[File] =
     synchronized {
-      sources
-        .to[HashSet]
-        .flatMap(f =>
-          baseSourceToPackageObjects.getOrElse(f, HashSet.empty)) -- sources
+      sources.to[HashSet].flatMap(f =>
+        baseSourceToPackageObjects.getOrElse(f, HashSet.empty)) -- sources
     }
 
   def clear(): Unit =
@@ -66,8 +64,8 @@ object PackageObjectsData {
   private val instances = mutable.HashMap[File, PackageObjectsData]()
 
   private def storageFile(context: CompileContext): File = {
-    val storageRoot =
-      context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
+    val storageRoot = context.getProjectDescriptor.dataManager.getDataPaths
+      .getDataStorageRoot
     new File(storageRoot, fileName)
   }
 
@@ -97,8 +95,7 @@ object PackageObjectsData {
     def getOrLoadInstance(file: File) =
       instances.getOrElseUpdate(file, tryToReadData(file))
 
-    Option(storageFile(context))
-      .filter(_.exists)
+    Option(storageFile(context)).filter(_.exists)
       .fold(new PackageObjectsData())(getOrLoadInstance)
   }
 }

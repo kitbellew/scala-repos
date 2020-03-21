@@ -24,8 +24,8 @@ class ResponseRendererSpec
     extends FreeSpec
     with Matchers
     with BeforeAndAfterAll {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING""")
   implicit val system = ActorSystem(getClass.getSimpleName, testConf)
@@ -664,8 +664,7 @@ class ResponseRendererSpec
             s"""${resProto.value} 200 OK
                  |Server: akka-http/1.0.0
                  |Date: Thu, 25 Aug 2011 09:10:29 GMT
-                 |${renCH
-              .fold("")(_ + "\n")}Content-Type: text/plain; charset=UTF-8
+                 |${renCH.fold("")(_ + "\n")}Content-Type: text/plain; charset=UTF-8
                  |${if (resCD) "" else "Content-Length: 6\n"}
                  |${if (headReq) "" else "ENTITY"}""",
             close
@@ -691,21 +690,16 @@ class ResponseRendererSpec
       equal(expected.stripMarginWithNewline("\r\n") -> close)
         .matcher[(String, Boolean)] compose { ctx ⇒
         val (wasCompletedFuture, resultFuture) =
-          (
-            Source.single(ctx) ++ Source.maybe[ResponseRenderingContext]
-          ) // never send upstream completion
-            .via(renderer.named("renderer"))
-            .map {
+          (Source.single(ctx) ++ Source
+            .maybe[ResponseRenderingContext]) // never send upstream completion
+            .via(renderer.named("renderer")).map {
               case ResponseRenderingOutput.HttpData(bytes) ⇒ bytes
               case _: ResponseRenderingOutput.SwitchToWebSocket ⇒
                 throw new IllegalStateException(
                   "Didn't expect websocket response")
-            }
-            .groupedWithin(1000, 100.millis)
-            .viaMat(StreamUtils.identityFinishReporter[Seq[ByteString]])(
-              Keep.right)
-            .toMat(Sink.head)(Keep.both)
-            .run()
+            }.groupedWithin(1000, 100.millis).viaMat(
+              StreamUtils.identityFinishReporter[Seq[ByteString]])(Keep.right)
+            .toMat(Sink.head)(Keep.both).run()
 
         // we try to find out if the renderer has already flagged completion even without the upstream being completed
         val wasCompleted =
@@ -713,15 +707,13 @@ class ResponseRendererSpec
             Await.ready(wasCompletedFuture, 100.millis)
             true
           } catch { case NonFatal(_) ⇒ false }
-        Await
-          .result(resultFuture, 250.millis)
-          .reduceLeft(_ ++ _)
+        Await.result(resultFuture, 250.millis).reduceLeft(_ ++ _)
           .utf8String -> wasCompleted
       }
 
     override def currentTimeMillis() =
-      DateTime(
-        2011, 8, 25, 9, 10, 29).clicks // provide a stable date for testing
+      DateTime(2011, 8, 25, 9, 10, 29)
+        .clicks // provide a stable date for testing
   }
 
   def source[T](elems: T*) = Source(elems.toList)

@@ -181,15 +181,13 @@ abstract class BasicDirectives extends BasicDirectivesBase {
       def returnsFuture(method: Method): Boolean =
         method.getReturnType == classOf[Future[_]] &&
           method.getGenericReturnType.isInstanceOf[ParameterizedType] &&
-          method.getGenericReturnType
-            .asInstanceOf[ParameterizedType]
+          method.getGenericReturnType.asInstanceOf[ParameterizedType]
             .getActualTypeArguments()(0) == classOf[RouteResult]
 
       def returnsCompletionStage(method: Method): Boolean =
         method.getReturnType == classOf[CompletionStage[_]] &&
           method.getGenericReturnType.isInstanceOf[ParameterizedType] &&
-          method.getGenericReturnType
-            .asInstanceOf[ParameterizedType]
+          method.getGenericReturnType.asInstanceOf[ParameterizedType]
             .getActualTypeArguments()(0) == classOf[RouteResult]
 
       /** Makes sure both RouteResult and Future[RouteResult] are acceptable result types. */
@@ -227,15 +225,12 @@ abstract class BasicDirectives extends BasicDirectivesBase {
           Some(method.getParameterTypes.toList)
       }
 
-      methods
-        .filter(returnTypeMatches)
-        .collectFirst {
-          case method @ ParameterTypes(RequestContextClass :: rest)
-              if paramsMatch(rest) ⇒ methodInvocator(method, _ +: _)
-          case method @ ParameterTypes(rest) if paramsMatch(rest) ⇒
-            methodInvocator(method, IdentityAdaptor)
-        }
-        .getOrElse(throw new RuntimeException("No suitable method found"))
+      methods.filter(returnTypeMatches).collectFirst {
+        case method @ ParameterTypes(RequestContextClass :: rest)
+            if paramsMatch(rest) ⇒ methodInvocator(method, _ +: _)
+        case method @ ParameterTypes(rest) if paramsMatch(rest) ⇒
+          methodInvocator(method, IdentityAdaptor)
+      }.getOrElse(throw new RuntimeException("No suitable method found"))
     }
     def lookupMethod() = {
       val candidateMethods = clazz.getMethods.filter(_.getName == methodName)

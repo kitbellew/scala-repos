@@ -433,8 +433,8 @@ sealed abstract class ==>>[A, B] {
         b: A ==>> B): A ==>> B =
       (a, b) match {
         case (t1, Tip()) => t1
-        case (Tip(), Bin(kx, x, l, r)) =>
-          (l filterGt cmplo).join(kx, x, (r filterLt cmphi))
+        case (Tip(), Bin(kx, x, l, r)) => (l filterGt cmplo)
+            .join(kx, x, (r filterLt cmphi))
         case (Bin(kx, x, l, r), t2) =>
           val cmpkx = (k: A) => o.order(kx, k)
           val (found, gt) = t2.trimLookupLo(kx, cmphi)
@@ -461,8 +461,8 @@ sealed abstract class ==>>[A, B] {
       other: A ==>> B)(implicit o: Order[A]): A ==>> B =
     (this, other) match {
       case (t1, Tip()) => t1
-      case (Tip(), Bin(kx, x, l, r)) =>
-        (l filterGt cmpLo).join(kx, x, r filterLt cmpHi)
+      case (Tip(), Bin(kx, x, l, r)) => (l filterGt cmpLo)
+          .join(kx, x, r filterLt cmpHi)
       case (Bin(kx, x, l, r), t2) =>
         val cmpkx = (k: A) => o.order(kx, k)
         val a = l.hedgeUnionL(cmpLo, cmpkx, t2.trim(cmpLo, cmpkx))
@@ -481,8 +481,8 @@ sealed abstract class ==>>[A, B] {
         b: A ==>> B): A ==>> B =
       (a, b) match {
         case (Tip(), _) => empty
-        case (Bin(kx, x, l, r), Tip()) =>
-          (l filterGt cmplo).join(kx, x, (r filterLt cmphi))
+        case (Bin(kx, x, l, r), Tip()) => (l filterGt cmplo)
+            .join(kx, x, (r filterLt cmphi))
         case (t, Bin(kx, _, l, r)) =>
           val cmpkx = (k: A) => o.order(kx, k)
           val aa = hedgeDiff(cmplo, cmpkx, t.trim(cmplo, cmpkx), l)
@@ -510,8 +510,8 @@ sealed abstract class ==>>[A, B] {
         b: A ==>> C): A ==>> B =
       (a, b) match {
         case (Tip(), _) => empty
-        case (Bin(kx, x, l, r), Tip()) =>
-          (l filterGt cmplo).join(kx, x, r filterLt cmphi)
+        case (Bin(kx, x, l, r), Tip()) => (l filterGt cmplo)
+            .join(kx, x, r filterLt cmphi)
         case (t, Bin(kx, x, l, r)) =>
           val cmpkx = (k: A) => o.order(kx, k)
           val (found, gt) = t.trimLookupLo(kx, cmphi)
@@ -625,8 +625,8 @@ sealed abstract class ==>>[A, B] {
     this match {
       case Tip() => empty
       case Bin(kx, x, l, r) => f(kx, x) match {
-          case Some(y) =>
-            l.mapOptionWithKey(f).join(kx, y, r.mapOptionWithKey(f))
+          case Some(y) => l.mapOptionWithKey(f)
+              .join(kx, y, r.mapOptionWithKey(f))
           case None => l.mapOptionWithKey(f).merge(r.mapOptionWithKey(f))
         }
     }
@@ -723,8 +723,8 @@ sealed abstract class ==>>[A, B] {
 
   override final def equals(other: Any): Boolean =
     other match {
-      case that: ==>>[A, B] =>
-        ==>>.mapEqual[A, B](Equal.equalA, Equal.equalA).equal(this, that)
+      case that: ==>>[A, B] => ==>>.mapEqual[A, B](Equal.equalA, Equal.equalA)
+        .equal(this, that)
       case _ => false
     }
 
@@ -804,12 +804,10 @@ sealed abstract class MapInstances0 {
         case (a, Tip())     => a.map(aa => f(This(aa)))
         case (Tip(), b)     => b.map(bb => f(That(bb)))
         case (a, b) =>
-          a.map(This(_): A \&/ B)
-            .unionWith(b.map(That(_): A \&/ B)) {
-              case (This(aa), That(bb)) => Both(aa, bb)
-              case _                    => sys.error("==>> alignWith")
-            }
-            .map(f)
+          a.map(This(_): A \&/ B).unionWith(b.map(That(_): A \&/ B)) {
+            case (This(aa), That(bb)) => Both(aa, bb)
+            case _                    => sys.error("==>> alignWith")
+          }.map(f)
       }
 
       def zip[A, B](a: => (S ==>> A), b: => (S ==>> B)) = {
@@ -997,8 +995,8 @@ object ==>> extends MapInstances {
 
   final def fromFoldableWithKey[F[_]: Foldable, A: Order, B](fa: F[(A, B)])(
       f: (A, B, B) => B): A ==>> B =
-    Foldable[F].foldLeft(fa, empty[A, B])((a, c) =>
-      a.insertWithKey(f, c._1, c._2))
+    Foldable[F]
+      .foldLeft(fa, empty[A, B])((a, c) => a.insertWithKey(f, c._1, c._2))
 
   final def unions[A: Order, B](xs: List[A ==>> B]): A ==>> B =
     xs.foldLeft(empty[A, B])((a, c) => a.union(c))

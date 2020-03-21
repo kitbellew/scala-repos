@@ -30,8 +30,7 @@ class DataSource(val dsp: DataSourceParams)
 
     // create a RDD of (entityID, User)
     val usersRDD: RDD[(String, User)] = eventsDb
-      .aggregateProperties(appId = dsp.appId, entityType = "user")(sc)
-      .map {
+      .aggregateProperties(appId = dsp.appId, entityType = "user")(sc).map {
         case (entityId, properties) =>
           val user =
             try { User() }
@@ -48,8 +47,7 @@ class DataSource(val dsp: DataSourceParams)
 
     // create a RDD of (entityID, Item)
     val itemsRDD: RDD[(String, Item)] = eventsDb
-      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc)
-      .map {
+      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc).map {
         case (entityId, properties) =>
           val item =
             try {
@@ -67,15 +65,14 @@ class DataSource(val dsp: DataSourceParams)
       }
 
     // get all "user" "view" "item" events
-    val viewEventsRDD: RDD[ViewEvent] = eventsDb
-      .find(
-        appId = dsp.appId,
-        entityType = Some("user"),
-        eventNames = Some(List("view")),
-        // targetEntityType is optional field of an event.
-        targetEntityType = Some(Some("item"))
-      )(sc)
-      // eventsDb.find() returns RDD[Event]
+    val viewEventsRDD: RDD[ViewEvent] = eventsDb.find(
+      appId = dsp.appId,
+      entityType = Some("user"),
+      eventNames = Some(List("view")),
+      // targetEntityType is optional field of an event.
+      targetEntityType = Some(Some("item"))
+    )(sc)
+    // eventsDb.find() returns RDD[Event]
       .map { event =>
         val viewEvent =
           try {
@@ -101,15 +98,14 @@ class DataSource(val dsp: DataSourceParams)
 
     // ADDED
     // get all "user" "like" and "dislike" "item" events
-    val likeEventsRDD: RDD[LikeEvent] = eventsDb
-      .find(
-        appId = dsp.appId,
-        entityType = Some("user"),
-        eventNames = Some(List("like", "dislike")),
-        // targetEntityType is optional field of an event.
-        targetEntityType = Some(Some("item"))
-      )(sc)
-      // eventsDb.find() returns RDD[Event]
+    val likeEventsRDD: RDD[LikeEvent] = eventsDb.find(
+      appId = dsp.appId,
+      entityType = Some("user"),
+      eventNames = Some(List("like", "dislike")),
+      // targetEntityType is optional field of an event.
+      targetEntityType = Some(Some("item"))
+    )(sc)
+    // eventsDb.find() returns RDD[Event]
       .map { event =>
         val likeEvent =
           try {

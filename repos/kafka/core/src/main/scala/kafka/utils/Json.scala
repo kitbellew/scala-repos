@@ -59,13 +59,12 @@ object Json extends Logging {
       case m: Map[_, _] =>
         "{" +
           m.map(elem =>
-              elem match {
-                case t: Tuple2[_, _] => encode(t._1) + ":" + encode(t._2)
-                case _ =>
-                  throw new IllegalArgumentException(
-                    "Invalid map element (" + elem + ") in " + obj)
-              })
-            .mkString(",") +
+            elem match {
+              case t: Tuple2[_, _] => encode(t._1) + ":" + encode(t._2)
+              case _ =>
+                throw new IllegalArgumentException(
+                  "Invalid map element (" + elem + ") in " + obj)
+            }).mkString(",") +
           "}"
       case a: Array[_]    => encode(a.toSeq)
       case i: Iterable[_] => "[" + i.map(encode).mkString(",") + "]"

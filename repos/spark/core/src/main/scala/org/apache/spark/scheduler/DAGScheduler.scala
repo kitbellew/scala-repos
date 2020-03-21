@@ -217,8 +217,8 @@ private[spark] class DAGScheduler(
       result: Any,
       accumUpdates: Seq[AccumulableInfo],
       taskInfo: TaskInfo): Unit = {
-    eventProcessLoop.post(
-      CompletionEvent(task, reason, result, accumUpdates, taskInfo))
+    eventProcessLoop
+      .post(CompletionEvent(task, reason, result, accumUpdates, taskInfo))
   }
 
   /**
@@ -273,8 +273,7 @@ private[spark] class DAGScheduler(
             IndexedSeq.fill(rdd.partitions.length)(Nil)
           } else {
             val blockIds = rdd.partitions.indices
-              .map(index => RDDBlockId(rdd.id, index))
-              .toArray[BlockId]
+              .map(index => RDDBlockId(rdd.id, index)).toArray[BlockId]
             blockManagerMaster.getLocations(blockIds).map { bms =>
               bms.map(bm => TaskLocation(bm.host, bm.executorId))
             }
@@ -384,8 +383,8 @@ private[spark] class DAGScheduler(
       firstJobId,
       rdd.creationSite)
     if (mapOutputTracker.containsShuffle(shuffleDep.shuffleId)) {
-      val serLocs = mapOutputTracker.getSerializedMapOutputStatuses(
-        shuffleDep.shuffleId)
+      val serLocs = mapOutputTracker
+        .getSerializedMapOutputStatuses(shuffleDep.shuffleId)
       val locs = MapOutputTracker.deserializeMapStatuses(serLocs)
       (0 until locs.length).foreach { i =>
         if (locs(i) ne null) {
@@ -397,9 +396,8 @@ private[spark] class DAGScheduler(
       // Kind of ugly: need to register RDDs with the cache and map output tracker here
       // since we can't do it in the RDD constructor because # of partitions is unknown
       logInfo("Registering RDD " + rdd.id + " (" + rdd.getCreationSite + ")")
-      mapOutputTracker.registerShuffle(
-        shuffleDep.shuffleId,
-        rdd.partitions.length)
+      mapOutputTracker
+        .registerShuffle(shuffleDep.shuffleId, rdd.partitions.length)
     }
     stage
   }
@@ -523,8 +521,7 @@ private[spark] class DAGScheduler(
       logError("No stages registered for job " + job.jobId)
     } else {
       stageIdToStage
-        .filterKeys(stageId => registeredStages.get.contains(stageId))
-        .foreach {
+        .filterKeys(stageId => registeredStages.get.contains(stageId)).foreach {
           case (stageId, stage) =>
             val jobSet = stage.jobIds
             if (!jobSet.contains(job.jobId)) {
@@ -780,11 +777,8 @@ private[spark] class DAGScheduler(
 
   private[scheduler] def doCancelAllJobs() {
     // Cancel all running jobs.
-    runningStages
-      .map(_.firstJobId)
-      .foreach(handleJobCancellation(
-        _,
-        reason = "as part of cancellation of all jobs"))
+    runningStages.map(_.firstJobId).foreach(
+      handleJobCancellation(_, reason = "as part of cancellation of all jobs"))
     activeJobs.clear() // These should already be empty by this point,
     jobIdToActiveJob.clear() // but just in case we lost track of some jobs...
     submitWaitingStages()
@@ -860,12 +854,10 @@ private[spark] class DAGScheduler(
   private[scheduler] def handleBeginEvent(task: Task[_], taskInfo: TaskInfo) {
     // Note that there is a chance that this task is launched after the stage is cancelled.
     // In that case, we wouldn't have the stage anymore in stageIdToStage.
-    val stageAttemptId = stageIdToStage
-      .get(task.stageId)
-      .map(_.latestInfo.attemptId)
-      .getOrElse(-1)
-    listenerBus.post(
-      SparkListenerTaskStart(task.stageId, stageAttemptId, taskInfo))
+    val stageAttemptId = stageIdToStage.get(task.stageId)
+      .map(_.latestInfo.attemptId).getOrElse(-1)
+    listenerBus
+      .post(SparkListenerTaskStart(task.stageId, stageAttemptId, taskInfo))
     submitWaitingStages()
   }
 
@@ -928,10 +920,9 @@ private[spark] class DAGScheduler(
 
     val job = new ActiveJob(jobId, finalStage, callSite, listener, properties)
     clearCacheLocs()
-    logInfo("Got job %s (%s) with %d output partitions".format(
-      job.jobId,
-      callSite.shortForm,
-      partitions.length))
+    logInfo(
+      "Got job %s (%s) with %d output partitions"
+        .format(job.jobId, callSite.shortForm, partitions.length))
     logInfo("Final stage: " + finalStage + " (" + finalStage.name + ")")
     logInfo("Parents of final stage: " + finalStage.parents)
     logInfo("Missing parents: " + getMissingParentStages(finalStage))
@@ -941,8 +932,8 @@ private[spark] class DAGScheduler(
     activeJobs += job
     finalStage.setActiveJob(job)
     val stageIds = jobIdToStageIds(jobId).toArray
-    val stageInfos = stageIds.flatMap(id =>
-      stageIdToStage.get(id).map(_.latestInfo))
+    val stageInfos = stageIds
+      .flatMap(id => stageIdToStage.get(id).map(_.latestInfo))
     listenerBus.post(SparkListenerJobStart(
       job.jobId,
       jobSubmissionTime,
@@ -977,10 +968,9 @@ private[spark] class DAGScheduler(
 
     val job = new ActiveJob(jobId, finalStage, callSite, listener, properties)
     clearCacheLocs()
-    logInfo("Got map stage job %s (%s) with %d output partitions".format(
-      jobId,
-      callSite.shortForm,
-      dependency.rdd.partitions.length))
+    logInfo(
+      "Got map stage job %s (%s) with %d output partitions"
+        .format(jobId, callSite.shortForm, dependency.rdd.partitions.length))
     logInfo("Final stage: " + finalStage + " (" + finalStage.name + ")")
     logInfo("Parents of final stage: " + finalStage.parents)
     logInfo("Missing parents: " + getMissingParentStages(finalStage))
@@ -990,8 +980,8 @@ private[spark] class DAGScheduler(
     activeJobs += job
     finalStage.addActiveJob(job)
     val stageIds = jobIdToStageIds(jobId).toArray
-    val stageInfos = stageIds.flatMap(id =>
-      stageIdToStage.get(id).map(_.latestInfo))
+    val stageInfos = stageIds
+      .flatMap(id => stageIdToStage.get(id).map(_.latestInfo))
     listenerBus.post(SparkListenerJobStart(
       job.jobId,
       jobSubmissionTime,
@@ -1018,7 +1008,8 @@ private[spark] class DAGScheduler(
         logDebug("missing: " + missing)
         if (missing.isEmpty) {
           logInfo(
-            "Submitting " + stage + " (" + stage.rdd + "), which has no missing parents")
+            "Submitting " + stage + " (" + stage
+              .rdd + "), which has no missing parents")
           submitMissingTasks(stage, jobId.get)
         } else {
           for (parent <- missing) { submitStage(parent) }
@@ -1040,7 +1031,8 @@ private[spark] class DAGScheduler(
     // Create internal accumulators if the stage has no accumulators initialized.
     // Reset internal accumulators only if this stage is not partially submitted
     // Otherwise, we may override existing accumulator values from some tasks
-    if (stage.internalAccumulators.isEmpty || stage.numPartitions == partitionsToCompute.size) {
+    if (stage.internalAccumulators.isEmpty || stage
+          .numPartitions == partitionsToCompute.size) {
       stage.resetInternalAccumulators()
     }
 
@@ -1055,9 +1047,8 @@ private[spark] class DAGScheduler(
     // event.
     stage match {
       case s: ShuffleMapStage =>
-        outputCommitCoordinator.stageStart(
-          stage = s.id,
-          maxPartitionId = s.numPartitions - 1)
+        outputCommitCoordinator
+          .stageStart(stage = s.id, maxPartitionId = s.numPartitions - 1)
       case s: ResultStage =>
         outputCommitCoordinator.stageStart(
           stage = s.id,
@@ -1080,8 +1071,8 @@ private[spark] class DAGScheduler(
       } catch {
         case NonFatal(e) =>
           stage.makeNewStageAttempt(partitionsToCompute.size)
-          listenerBus.post(
-            SparkListenerStageSubmitted(stage.latestInfo, properties))
+          listenerBus
+            .post(SparkListenerStageSubmitted(stage.latestInfo, properties))
           abortStage(
             stage,
             s"Task creation failed: $e\n${Utils.exceptionString(e)}",
@@ -1175,7 +1166,8 @@ private[spark] class DAGScheduler(
 
     if (tasks.size > 0) {
       logInfo(
-        "Submitting " + tasks.size + " missing tasks from " + stage + " (" + stage.rdd + ")")
+        "Submitting " + tasks
+          .size + " missing tasks from " + stage + " (" + stage.rdd + ")")
       stage.pendingPartitions ++= tasks.map(_.partitionId)
       logDebug("New pending partitions: " + stage.pendingPartitions)
       taskScheduler.submitTasks(new TaskSet(
@@ -1234,9 +1226,8 @@ private[spark] class DAGScheduler(
         // To avoid UI cruft, ignore cases where value wasn't updated
         if (acc.name.isDefined && partialValue != acc.zero) {
           stage.latestInfo.accumulables(id) = acc.toInfo(None, Some(acc.value))
-          event.taskInfo.accumulables += acc.toInfo(
-            Some(partialValue),
-            Some(acc.value))
+          event.taskInfo.accumulables += acc
+            .toInfo(Some(partialValue), Some(acc.value))
         }
       }
     } catch {
@@ -1325,8 +1316,8 @@ private[spark] class DAGScheduler(
                   catch {
                     case e: Exception =>
                       // TODO: Perhaps we want to mark the resultStage as failed?
-                      job.listener.jobFailed(new SparkDriverExecutionException(
-                        e))
+                      job.listener
+                        .jobFailed(new SparkDriverExecutionException(e))
                   }
                 }
               case None =>
@@ -1346,8 +1337,8 @@ private[spark] class DAGScheduler(
                 s"Ignoring possibly bogus $smt completion from executor $execId")
             } else { shuffleStage.addOutputLoc(smt.partitionId, status) }
 
-            if (runningStages.contains(
-                  shuffleStage) && shuffleStage.pendingPartitions.isEmpty) {
+            if (runningStages.contains(shuffleStage) && shuffleStage
+                  .pendingPartitions.isEmpty) {
               markStageAsFinished(shuffleStage)
               logInfo("looking for newly runnable stages")
               logInfo("running: " + runningStages)
@@ -1378,8 +1369,8 @@ private[spark] class DAGScheduler(
               } else {
                 // Mark any map-stage jobs waiting on this stage as finished
                 if (shuffleStage.mapStageJobs.nonEmpty) {
-                  val stats = mapOutputTracker.getStatistics(
-                    shuffleStage.shuffleDep)
+                  val stats = mapOutputTracker
+                    .getStatistics(shuffleStage.shuffleDep)
                   for (job <- shuffleStage.mapStageJobs) {
                     markMapStageJobAsFinished(job, stats)
                   }
@@ -1599,8 +1590,7 @@ private[spark] class DAGScheduler(
       return
     }
     val dependentJobs: Seq[ActiveJob] = activeJobs
-      .filter(job => stageDependsOn(job.finalStage, failedStage))
-      .toSeq
+      .filter(job => stageDependsOn(job.finalStage, failedStage)).toSeq
     failedStage.latestInfo.completionTime = Some(clock.getTimeMillis())
     for (job <- dependentJobs) {
       failJobAndIndependentStages(
@@ -1635,8 +1625,7 @@ private[spark] class DAGScheduler(
       logError("No stages registered for job " + job.jobId)
     }
     stages.foreach { stageId =>
-      val jobsForStage: Option[HashSet[Int]] = stageIdToStage
-        .get(stageId)
+      val jobsForStage: Option[HashSet[Int]] = stageIdToStage.get(stageId)
         .map(_.jobIds)
       if (jobsForStage.isEmpty || !jobsForStage.get.contains(job.jobId)) {
         logError(
@@ -1763,8 +1752,8 @@ private[spark] class DAGScheduler(
     job.numFinished += 1
     job.listener.taskSucceeded(0, stats)
     cleanupStateForJobAndIndependentStages(job)
-    listenerBus.post(
-      SparkListenerJobEnd(job.jobId, clock.getTimeMillis(), JobSucceeded))
+    listenerBus
+      .post(SparkListenerJobEnd(job.jobId, clock.getTimeMillis(), JobSucceeded))
   }
 
   def stop() {

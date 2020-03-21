@@ -79,27 +79,28 @@ object ActionBasedSQLInterpolation {
     val rTypes =
       try {
         val a = SimpleJdbcAction { ctx =>
-          ctx.session.withPreparedStatement(
-            macroTreeBuilder.staticQueryString) {
-            _.getMetaData match {
-              case null => Vector()
-              case resultMeta => Vector.tabulate(resultMeta.getColumnCount) {
-                  i =>
-                    val modelBuilder = dc.profile.createModelBuilder(Nil, true)(
-                      scala.concurrent.ExecutionContext.global)
-                    modelBuilder.jdbcTypeToScala(
-                      resultMeta.getColumnType(i + 1),
-                      resultMeta.getColumnTypeName(i + 1))
-                }
+          ctx.session
+            .withPreparedStatement(macroTreeBuilder.staticQueryString) {
+              _.getMetaData match {
+                case null => Vector()
+                case resultMeta => Vector.tabulate(resultMeta.getColumnCount) {
+                    i =>
+                      val modelBuilder = dc.profile
+                        .createModelBuilder(Nil, true)(
+                          scala.concurrent.ExecutionContext.global)
+                      modelBuilder.jdbcTypeToScala(
+                        resultMeta.getColumnType(i + 1),
+                        resultMeta.getColumnTypeName(i + 1))
+                  }
+              }
             }
-          }
         }
         Await.result(dc.db.run(a), Duration.Inf)
       } finally dc.db.close()
 
     reify {
-      val rconv =
-        ctxt.Expr[GetResult[Any]](macroTreeBuilder.rconvTree(rTypes)).splice
+      val rconv = ctxt.Expr[GetResult[Any]](macroTreeBuilder.rconvTree(rTypes))
+        .splice
       val res: SQLActionBuilder = SQLActionBuilder(
         ctxt.Expr[Seq[Any]](macroTreeBuilder.queryParts).splice,
         ctxt.Expr[SetParameter[Unit]](macroTreeBuilder.pconvTree).splice)

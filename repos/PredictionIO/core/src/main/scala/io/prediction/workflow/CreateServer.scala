@@ -169,17 +169,14 @@ object CreateServer extends Logging {
       WorkflowUtils.modifyLogging(sc.verbose)
       engineInstances.get(sc.engineInstanceId) map { engineInstance =>
         val engineId = sc.engineId.getOrElse(engineInstance.engineId)
-        val engineVersion = sc.engineVersion.getOrElse(
-          engineInstance.engineVersion)
+        val engineVersion = sc.engineVersion
+          .getOrElse(engineInstance.engineVersion)
         engineManifests.get(engineId, engineVersion) map { manifest =>
           val engineFactoryName = engineInstance.engineFactory
-          val upgrade = actorSystem.actorOf(
-            Props(classOf[UpgradeActor], engineFactoryName))
-          actorSystem.scheduler.schedule(
-            0.seconds,
-            1.days,
-            upgrade,
-            UpgradeCheck())
+          val upgrade = actorSystem
+            .actorOf(Props(classOf[UpgradeActor], engineFactoryName))
+          actorSystem.scheduler
+            .schedule(0.seconds, 1.days, upgrade, UpgradeCheck())
           val master = actorSystem.actorOf(
             Props(
               classOf[MasterActor],
@@ -203,15 +200,13 @@ object CreateServer extends Logging {
       engineLanguage: EngineLanguage.Value,
       manifest: EngineManifest): ActorRef = {
 
-    val engineParams = engine.engineInstanceToEngineParams(
-      engineInstance,
-      sc.jsonExtractor)
+    val engineParams = engine
+      .engineInstanceToEngineParams(engineInstance, sc.jsonExtractor)
 
     val kryo = KryoInstantiator.newKryoInjection
 
     val modelsFromEngineInstance = kryo
-      .invert(modeldata.get(engineInstance.id).get.models)
-      .get
+      .invert(modeldata.get(engineInstance.id).get.models).get
       .asInstanceOf[Seq[Any]]
 
     val batch =
@@ -287,13 +282,9 @@ class MasterActor(
     val serverUrl = s"https://${ip}:${port}"
     log.info(s"Undeploying any existing engine instance at $serverUrl")
     try {
-      val code = scalaj.http
-        .Http(s"$serverUrl/stop")
+      val code = scalaj.http.Http(s"$serverUrl/stop")
         .option(HttpOptions.allowUnsafeSSL)
-        .param(ServerKey.param, ServerKey.get)
-        .method("POST")
-        .asString
-        .code
+        .param(ServerKey.param, ServerKey.get).method("POST").asString.code
       code match {
         case 200 => Unit
         case 404 =>
@@ -387,9 +378,8 @@ class MasterActor(
       engineInstance: EngineInstance,
       engineFactoryName: String,
       manifest: EngineManifest): ActorRef = {
-    val (engineLanguage, engineFactory) = WorkflowUtils.getEngine(
-      engineFactoryName,
-      getClass.getClassLoader)
+    val (engineLanguage, engineFactory) = WorkflowUtils
+      .getEngine(engineFactoryName, getClass.getClassLoader)
     val engine = engineFactory()
 
     // EngineFactory return a base engine, which may not be deployable.
@@ -436,9 +426,8 @@ class ServerActor[Q, P](
   def actorRefFactory: ActorContext = context
 
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
-  val pluginsActorRef = context.actorOf(
-    Props(classOf[PluginsActor], args.engineVariant),
-    "PluginsActor")
+  val pluginsActorRef = context
+    .actorOf(Props(classOf[PluginsActor], args.engineVariant), "PluginsActor")
   val pluginContext = EngineServerPluginContext(log, args.engineVariant)
 
   def receive: Actor.Receive = runRoute(myRoute)
@@ -454,11 +443,9 @@ class ServerActor[Q, P](
   def remoteLog(logUrl: String, logPrefix: String, message: String): Unit = {
     implicit val formats = Utils.json4sDefaultFormats
     try {
-      scalaj.http
-        .Http(logUrl)
-        .postData(
-          logPrefix + write(
-            Map("engineInstance" -> engineInstance, "message" -> message)))
+      scalaj.http.Http(logUrl).postData(
+        logPrefix + write(
+          Map("engineInstance" -> engineInstance, "message" -> message)))
         .asString
     } catch {
       case e: Throwable =>
@@ -479,26 +466,24 @@ class ServerActor[Q, P](
         respondWithMediaType(`text/html`) {
           detach() {
             complete {
-              html
-                .index(
-                  args,
-                  manifest,
-                  engineInstance,
-                  algorithms.map(_.toString),
-                  algorithmsParams.map(_.toString),
-                  models.map(_.toString),
-                  dataSourceParams.toString,
-                  preparatorParams.toString,
-                  servingParams.toString,
-                  serverStartTime,
-                  feedbackEnabled,
-                  args.eventServerIp,
-                  args.eventServerPort,
-                  requestCount,
-                  avgServingSec,
-                  lastServingSec
-                )
-                .toString
+              html.index(
+                args,
+                manifest,
+                engineInstance,
+                algorithms.map(_.toString),
+                algorithmsParams.map(_.toString),
+                models.map(_.toString),
+                dataSourceParams.toString,
+                preparatorParams.toString,
+                servingParams.toString,
+                serverStartTime,
+                feedbackEnabled,
+                args.eventServerIp,
+                args.eventServerPort,
+                requestCount,
+                avgServingSec,
+                lastServingSec
+              ).toString
             }
           }
         }
@@ -582,13 +567,11 @@ class ServerActor[Q, P](
                     // At this point args.accessKey should be Some(String).
                     val accessKey = args.accessKey.getOrElse("")
                     val f: Future[Int] = future {
-                      scalaj.http
-                        .Http(
-                          s"http://${args.eventServerIp}:${args.eventServerPort}/" +
-                            s"events.json?accessKey=$accessKey")
+                      scalaj.http.Http(
+                        s"http://${args.eventServerIp}:${args.eventServerPort}/" +
+                          s"events.json?accessKey=$accessKey")
                         .postData(write(data))
-                        .header("content-type", "application/json")
-                        .asString
+                        .header("content-type", "application/json").asString
                         .code
                     }
                     f onComplete {
@@ -621,9 +604,8 @@ class ServerActor[Q, P](
                 // Bookkeeping
                 val servingEndTime = DateTime.now
                 lastServingSec =
-                  (
-                    servingEndTime.getMillis - servingStartTime.getMillis
-                  ) / 1000.0
+                  (servingEndTime.getMillis - servingStartTime
+                    .getMillis) / 1000.0
                 avgServingSec =
                   ((avgServingSec * requestCount) + lastServingSec) /
                     (requestCount + 1)

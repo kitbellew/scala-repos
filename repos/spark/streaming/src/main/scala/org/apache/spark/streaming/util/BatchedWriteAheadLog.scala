@@ -224,8 +224,7 @@ private[util] object BatchedWriteAheadLog {
   def deaggregate(buffer: ByteBuffer): Array[ByteBuffer] = {
     val prevPosition = buffer.position()
     try {
-      Utils
-        .deserialize[Array[Array[Byte]]](JavaUtils.bufferToArray(buffer))
+      Utils.deserialize[Array[Array[Byte]]](JavaUtils.bufferToArray(buffer))
         .map(ByteBuffer.wrap)
     } catch {
       case _: ClassCastException => // users may restart a stream with batching enabled

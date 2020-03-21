@@ -159,8 +159,7 @@ private[spark] class HiveCatalog(client: HiveClient)
 
   override def renameTable(db: String, oldName: String, newName: String): Unit =
     withClient {
-      val newTable = client
-        .getTable(db, oldName)
+      val newTable = client.getTable(db, oldName)
         .copy(name = TableIdentifier(newName, Some(db)))
       client.alterTable(oldName, newTable)
     }

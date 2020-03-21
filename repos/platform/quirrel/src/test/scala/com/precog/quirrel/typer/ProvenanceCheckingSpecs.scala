@@ -514,7 +514,8 @@ object ProvenanceCheckingSpecs
         """
         | a := //users
         | b := //heightWeight
-        | { name: a.name, height: b.height } where a.userId = b.userId """.stripMargin
+        | { name: a.name, height: b.height } where a.userId = b.userId """
+          .stripMargin
 
       val tree = compileSingle(rawInput)
       tree.provenance mustEqual NullProvenance
@@ -532,7 +533,8 @@ object ProvenanceCheckingSpecs
         """
         | a := ./users
         | b := ./heightWeight
-        | { name: a.name, height: b.height } where a.userId = b.userId """.stripMargin
+        | { name: a.name, height: b.height } where a.userId = b.userId """
+          .stripMargin
 
       val tree = compileSingle(rawInput)
       tree.provenance mustEqual NullProvenance

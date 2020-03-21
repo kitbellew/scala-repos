@@ -20,8 +20,8 @@ abstract class CharsetEncoder protected (
 
   // Config
 
-  private[this] var _malformedInputAction: CodingErrorAction =
-    CodingErrorAction.REPORT
+  private[this] var _malformedInputAction: CodingErrorAction = CodingErrorAction
+    .REPORT
   private[this] var _unmappableCharacterAction: CodingErrorAction =
     CodingErrorAction.REPORT
 
@@ -53,10 +53,8 @@ abstract class CharsetEncoder protected (
 
     @inline @tailrec
     def loop(outBufSize: Int): Boolean = {
-      val result = decoder.decode(
-        replBuf,
-        CharBuffer.allocate(outBufSize),
-        true)
+      val result = decoder
+        .decode(replBuf, CharBuffer.allocate(outBufSize), true)
       if (result.isOverflow) { loop(outBufSize * 2) }
       else { !replBuf.hasRemaining }
     }

@@ -67,8 +67,8 @@ object TouchEvent {
   /**
     * This event occurs when the touch point is released.
     */
-  val TouchReleased: EventType[jfxsi.TouchEvent] =
-    jfxsi.TouchEvent.TOUCH_RELEASED
+  val TouchReleased: EventType[jfxsi.TouchEvent] = jfxsi.TouchEvent
+    .TOUCH_RELEASED
   @deprecated(
     "Use TouchReleased; TOUCH_RELEASED will be removed in a future release",
     "8.0.60-R10")
@@ -77,8 +77,8 @@ object TouchEvent {
   /**
     * This event occurs when the touch point is pressed and still (doesn't move).
     */
-  val TouchStationary: EventType[jfxsi.TouchEvent] =
-    jfxsi.TouchEvent.TOUCH_STATIONARY
+  val TouchStationary: EventType[jfxsi.TouchEvent] = jfxsi.TouchEvent
+    .TOUCH_STATIONARY
   @deprecated(
     "Use TouchStationary; TOUCH_STATIONARY will be removed in a future release",
     "8.0.60-R10")

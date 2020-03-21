@@ -122,8 +122,7 @@ final case class PersistentJValue(baseDir: File, fileName: String)
       case (None, Some(_)) => jv = JParser.parseFromFile(file).valueOr(throw _)
 
       case (Some(rawJson), _) =>
-        jv = JParser
-          .parseFromString(new String(rawJson, "UTF-8"))
+        jv = JParser.parseFromString(new String(rawJson, "UTF-8"))
           .valueOr(throw _)
         flush()
 

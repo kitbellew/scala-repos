@@ -85,9 +85,8 @@ class ProducerFeatureTest
         name = "02-prod-anonymous-supervisor"
       )
 
-      supervisor.tell(
-        Props(new TestProducer("direct:producer-test-2")),
-        testActor)
+      supervisor
+        .tell(Props(new TestProducer("direct:producer-test-2")), testActor)
       val producer = receiveOne(timeoutDuration).asInstanceOf[ActorRef]
       val message = CamelMessage(
         "fail",
@@ -217,9 +216,7 @@ class ProducerFeatureTest
         name = "15-direct-producer-test-2-forward-failure")
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         mockEndpoint.expectedMessageCount(1)
-        mockEndpoint
-          .message(0)
-          .body()
+        mockEndpoint.message(0).body()
           .isInstanceOf(classOf[akka.actor.Status.Failure])
         producer.tell(CamelMessage("fail", Map()), producer)
         mockEndpoint.assertIsSatisfied()
@@ -286,9 +283,7 @@ class ProducerFeatureTest
         name = "19-direct-producer-test-3-forward-failure-producing-target")
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         mockEndpoint.expectedMessageCount(1)
-        mockEndpoint
-          .message(0)
-          .body()
+        mockEndpoint.message(0).body()
           .isInstanceOf(classOf[akka.actor.Status.Failure])
         producer.tell(CamelMessage("fail", Map()), producer)
         mockEndpoint.assertIsSatisfied()
@@ -415,9 +410,8 @@ object ProducerFeatureTest {
             context.sender() ! akka.actor.Status.Failure(
               new AkkaCamelException(new Exception("failure"), msg.headers))
           case _ ⇒
-            context.sender() ! (msg.mapBody { body: String ⇒
-              "received %s" format body
-            })
+            context.sender() ! (msg
+              .mapBody { body: String ⇒ "received %s" format body })
         }
     }
   }
@@ -425,8 +419,8 @@ object ProducerFeatureTest {
   class ReplyingForwardTarget extends Actor {
     def receive = {
       case msg: CamelMessage ⇒
-        context
-          .sender() ! (msg.copy(headers = msg.headers + ("test" -> "result")))
+        context.sender() ! (msg
+          .copy(headers = msg.headers + ("test" -> "result")))
       case msg: akka.actor.Status.Failure ⇒ msg.cause match {
           case e: AkkaCamelException ⇒
             context.sender() ! Status.Failure(

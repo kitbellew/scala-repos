@@ -86,8 +86,8 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
       case (module: Module, view: IdeView, project: Project) =>
         if (!Option(module).exists(checkModule)) return false
 
-        val projectFileIndex =
-          ProjectRootManager.getInstance(project).getFileIndex
+        val projectFileIndex = ProjectRootManager.getInstance(project)
+          .getFileIndex
         val dirs = view.getDirectories
 
         for (dir <- dirs) {
@@ -108,8 +108,7 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
       name: String,
       text: String,
       project: Project): PsiFile =
-    PsiFileFactory
-      .getInstance(project)
+    PsiFileFactory.getInstance(project)
       .createFileFromText(name, getFileType, text)
 }
 

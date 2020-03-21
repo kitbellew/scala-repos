@@ -92,13 +92,11 @@ abstract class UnCurry
       f(newMembers.remove(owner).getOrElse(Nil).toList)
 
     private def newFunction0(body: Tree): Tree = {
-      val result = localTyper
-        .typedPos(body.pos)(Function(Nil, body))
+      val result = localTyper.typedPos(body.pos)(Function(Nil, body))
         .asInstanceOf[Function]
-      log("Change owner from %s to %s in %s".format(
-        currentOwner,
-        result.symbol,
-        result.body))
+      log(
+        "Change owner from %s to %s in %s"
+          .format(currentOwner, result.symbol, result.body))
       result.body changeOwner (currentOwner -> result.symbol)
       transformFunction(result)
     }
@@ -179,10 +177,8 @@ abstract class UnCurry
         val ex = meth.newValue(nme.ex, body.pos) setInfo extpe
         val argType =
           restpe withAnnotation (AnnotationInfo marker UncheckedClass.tpe)
-        val pat = gen.mkBindForCase(
-          ex,
-          NonLocalReturnControlClass,
-          List(argType))
+        val pat = gen
+          .mkBindForCase(ex, NonLocalReturnControlClass, List(argType))
         val rhs = (IF((ex DOT nme.key)() OBJ_EQ Ident(key))
           THEN ((ex DOT nme.value)())
           ELSE (Throw(Ident(ex))))
@@ -364,7 +360,8 @@ abstract class UnCurry
               mkArrayValue(args drop (formals.length - 1), varargsElemType)
             if (isJava) mkArray
             else if (args.isEmpty)
-              gen.mkNil // avoid needlessly double-wrapping an empty argument list
+              gen
+                .mkNil // avoid needlessly double-wrapping an empty argument list
             else arrayToSequence(mkArray, varargsElemType)
           }
 
@@ -425,7 +422,8 @@ abstract class UnCurry
     private def isSelfSynchronized(ddef: DefDef) =
       ddef.rhs match {
         case Apply(fn @ TypeApply(Select(sel, _), _), _) =>
-          fn.symbol == Object_synchronized && sel.symbol == ddef.symbol.enclClass && !ddef.symbol.enclClass.isTrait
+          fn.symbol == Object_synchronized && sel.symbol == ddef.symbol
+            .enclClass && !ddef.symbol.enclClass.isTrait
         case _ => false
       }
 
@@ -444,7 +442,8 @@ abstract class UnCurry
         case _ => tree
       }
     def isNonLocalReturn(ret: Return) =
-      ret.symbol != currentOwner.enclMethod || currentOwner.isLazy || currentOwner.isAnonymousFunction
+      ret.symbol != currentOwner.enclMethod || currentOwner
+        .isLazy || currentOwner.isAnonymousFunction
 
 // ------ The tree transformers --------------------------------------------------------
 
@@ -460,9 +459,8 @@ abstract class UnCurry
       /* Transform tree `t` to { def f = t; f } where `f` is a fresh name */
       def liftTree(tree: Tree) = {
         debuglog("lifting tree at: " + (tree.pos))
-        val sym = currentOwner.newMethod(
-          unit.freshTermName("liftedTree"),
-          tree.pos)
+        val sym = currentOwner
+          .newMethod(unit.freshTermName("liftedTree"), tree.pos)
         sym.setInfo(MethodType(List(), tree.tpe))
         tree.changeOwner(currentOwner -> sym)
         localTyper.typedPos(tree.pos)(
@@ -480,12 +478,12 @@ abstract class UnCurry
 
       // true if the target is a lambda body that's been lifted into a method
       def isLiftedLambdaBody(target: Tree) =
-        target.symbol.isLocalToBlock && target.symbol.isArtifact && target.symbol.name
-          .containsName(nme.ANON_FUN_NAME)
+        target.symbol.isLocalToBlock && target.symbol.isArtifact && target
+          .symbol.name.containsName(nme.ANON_FUN_NAME)
 
       val result =
-        (if ((sym ne null) && sym.elisionLevel.exists(
-               _ < settings.elidebelow.value)) replaceElidableTree(tree)
+        (if ((sym ne null) && sym.elisionLevel
+               .exists(_ < settings.elidebelow.value)) replaceElidableTree(tree)
          else
            translateSynchronized(tree) match {
              case dd @ DefDef(mods, name, tparams, _, tpt, rhs) =>
@@ -505,8 +503,8 @@ abstract class UnCurry
                            withInConstructorFlag(INCONSTRUCTOR) {
                              transform(stat)
                            }
-                         val presupers = treeInfo.preSuperFields(
-                           stats) map transformInConstructor
+                         val presupers = treeInfo
+                           .preSuperFields(stats) map transformInConstructor
                          val rest = stats drop presupers.length
                          val supercalls = rest take 1 map transformInConstructor
                          val others = rest drop 1 map transform
@@ -545,8 +543,8 @@ abstract class UnCurry
                else super.transform(tree)
 
              case Apply(fn, args) =>
-               val needLift =
-                 needTryLift || !fn.symbol.isLabel // SI-6749, no need to lift in args to label jumps.
+               val needLift = needTryLift || !fn.symbol
+                 .isLabel // SI-6749, no need to lift in args to label jumps.
                withNeedLift(needLift) {
                  val formals = fn.tpe.paramTypes
                  treeCopy.Apply(
@@ -561,8 +559,8 @@ abstract class UnCurry
                }
 
              case Assign(lhs, _)
-                 if lhs.symbol.owner != currentMethod || lhs.symbol.hasFlag(
-                   LAZY | ACCESSOR) =>
+                 if lhs.symbol.owner != currentMethod || lhs.symbol
+                   .hasFlag(LAZY | ACCESSOR) =>
                withNeedLift(needLift = true) { super.transform(tree) }
 
              case ret @ Return(_) if (isNonLocalReturn(ret)) =>
@@ -669,8 +667,8 @@ abstract class UnCurry
               if (newParamss.head.isEmpty) { // We know newParamss.length == 1 from above
                 ddSym.info.resultType match {
                   case tp @ ConstantType(value) =>
-                    Literal(
-                      value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
+                    Literal(value) setType tp setPos newRhs
+                      .pos // inlining of gen.mkAttributedQualifier(tp)
                   case _ => newRhs
                 }
               } else newRhs
@@ -813,8 +811,7 @@ abstract class UnCurry
               val info = info0.normalize
               val tempValName = unit freshTermName (p.name + "$")
               val newSym = dd.symbol
-                .newTermSymbol(tempValName, p.pos, SYNTHETIC)
-                .setInfo(info)
+                .newTermSymbol(tempValName, p.pos, SYNTHETIC).setInfo(info)
               atPos(p.pos)(
                 ValDef(newSym, gen.mkAttributedCast(Ident(p.symbol), info)))
             }
@@ -890,8 +887,7 @@ abstract class UnCurry
       }
       val forwresult = dd.symbol.tpe_*.finalResultType
       val forwformsyms = map2(forwformals, flatparams)((tp, oldparam) =>
-        currentClass
-          .newValueParameter(oldparam.name.toTermName, oldparam.pos)
+        currentClass.newValueParameter(oldparam.name.toTermName, oldparam.pos)
           .setInfo(tp))
       def mono = MethodType(forwformsyms, forwresult)
       val forwtype = dd.symbol.tpe match {
@@ -931,9 +927,7 @@ abstract class UnCurry
       }
 
       // check if the method with that name and those arguments already exists in the template
-      currentClass.info
-        .member(forwsym.name)
-        .alternatives
+      currentClass.info.member(forwsym.name).alternatives
         .find(s => s != forwsym && s.tpe.matches(forwsym.tpe)) match {
         case Some(s) =>
           reporter.error(

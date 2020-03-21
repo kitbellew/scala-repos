@@ -60,8 +60,8 @@ private[spark] class PartitionwiseSampledRDD[T: ClassTag, U: ClassTag](
 
   override def getPartitions: Array[Partition] = {
     val random = new Random(seed)
-    firstParent[T].partitions.map(x =>
-      new PartitionwiseSampledRDDPartition(x, random.nextLong()))
+    firstParent[T].partitions
+      .map(x => new PartitionwiseSampledRDDPartition(x, random.nextLong()))
   }
 
   override def getPreferredLocations(split: Partition): Seq[String] =

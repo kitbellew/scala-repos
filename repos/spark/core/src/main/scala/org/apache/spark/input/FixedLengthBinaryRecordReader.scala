@@ -62,11 +62,9 @@ private[spark] class FixedLengthBinaryRecordReader
     splitStart match {
       case x if x == splitEnd => 0.0.toFloat
       case _ =>
-        Math
-          .min(
-            ((currentPosition - splitStart) / (splitEnd - splitStart)).toFloat,
-            1.0)
-          .toFloat
+        Math.min(
+          ((currentPosition - splitStart) / (splitEnd - splitStart)).toFloat,
+          1.0).toFloat
     }
   }
 

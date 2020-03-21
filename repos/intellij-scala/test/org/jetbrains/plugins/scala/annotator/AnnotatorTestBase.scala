@@ -27,18 +27,13 @@ abstract class AnnotatorTestBase[T <: ScalaPsiElement](
 
     assertEquals(
       Nil,
-      file.depthFirst
-        .filterByType(classOf[PsiErrorElement])
-        .map(_.getText)
+      file.depthFirst.filterByType(classOf[PsiErrorElement]).map(_.getText)
         .toList)
 
     assertEquals(
       Nil,
-      file.depthFirst
-        .filterByType(classOf[PsiReference])
-        .filter(_.resolve == null)
-        .map(_.getElement.getText)
-        .toList)
+      file.depthFirst.filterByType(classOf[PsiReference])
+        .filter(_.resolve == null).map(_.getElement.getText).toList)
 
     file.depthFirst.filterByType(annotator.kind).foreach { it =>
       annotator.annotate(it, mock, typeAware = true)

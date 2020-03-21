@@ -777,8 +777,9 @@ object StdLib {
         with NumColumn {
 
       override def isDefinedAt(row: Int) =
-        super
-          .isDefinedAt(row) && defined(BigDecimal(c1(row)), BigDecimal(c2(row)))
+        super.isDefinedAt(row) && defined(
+          BigDecimal(c1(row)),
+          BigDecimal(c2(row)))
 
       def apply(row: Int) = f(BigDecimal(c1(row)), BigDecimal(c2(row)))
     }
@@ -792,8 +793,9 @@ object StdLib {
         with NumColumn {
 
       override def isDefinedAt(row: Int) =
-        super
-          .isDefinedAt(row) && defined(BigDecimal(c1(row)), BigDecimal(c2(row)))
+        super.isDefinedAt(row) && defined(
+          BigDecimal(c1(row)),
+          BigDecimal(c2(row)))
 
       def apply(row: Int) = f(BigDecimal(c1(row)), BigDecimal(c2(row)))
     }
@@ -821,8 +823,9 @@ object StdLib {
         with NumColumn {
 
       override def isDefinedAt(row: Int) =
-        super
-          .isDefinedAt(row) && defined(BigDecimal(c1(row)), BigDecimal(c2(row)))
+        super.isDefinedAt(row) && defined(
+          BigDecimal(c1(row)),
+          BigDecimal(c2(row)))
 
       def apply(row: Int) = f(BigDecimal(c1(row)), BigDecimal(c2(row)))
     }
@@ -836,8 +839,9 @@ object StdLib {
         with NumColumn {
 
       override def isDefinedAt(row: Int) =
-        super
-          .isDefinedAt(row) && defined(BigDecimal(c1(row)), BigDecimal(c2(row)))
+        super.isDefinedAt(row) && defined(
+          BigDecimal(c1(row)),
+          BigDecimal(c2(row)))
 
       def apply(row: Int) = f(BigDecimal(c1(row)), BigDecimal(c2(row).toDouble))
     }

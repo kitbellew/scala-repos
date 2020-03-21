@@ -113,8 +113,8 @@ final class GCounter private[akka] (
       removedNode: UniqueAddress,
       collapseInto: UniqueAddress): GCounter =
     state.get(removedNode) match {
-      case Some(value) ⇒
-        new GCounter(state - removedNode).increment(collapseInto, value)
+      case Some(value) ⇒ new GCounter(state - removedNode)
+          .increment(collapseInto, value)
       case None ⇒ this
     }
 

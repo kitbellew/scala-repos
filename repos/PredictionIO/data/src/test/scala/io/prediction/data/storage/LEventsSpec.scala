@@ -88,8 +88,7 @@ class LEventsSpec extends Specification with TestEvents {
 
     val insertedEventId: List[String] = insertResp
 
-    val insertedEvent: List[Option[Event]] = listOfEvents
-      .zip(insertedEventId)
+    val insertedEvent: List[Option[Event]] = listOfEvents.zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
     val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
@@ -106,8 +105,7 @@ class LEventsSpec extends Specification with TestEvents {
 
     val insertedEventId: List[String] = insertResp
 
-    val insertedEvent: List[Option[Event]] = listOfEvents
-      .zip(insertedEventId)
+    val insertedEvent: List[Option[Event]] = listOfEvents.zip(insertedEventId)
       .map { case (e, id) => Some(e.copy(eventId = Some(id))) }
 
     val getResp = insertedEventId.map { id => eventClient.get(id, appId) }
@@ -145,8 +143,7 @@ class LEventsSpec extends Specification with TestEvents {
   def findUserEvents(eventClient: LEvents) = {
 
     val results: List[Event] = eventClient
-      .find(appId = appId, entityType = Some("user"))
-      .toList
+      .find(appId = appId, entityType = Some("user")).toList
       .map(e => e.copy(eventId = None)) // ignore eventID
 
     // same events in insertTestUserEvents
@@ -157,9 +154,8 @@ class LEventsSpec extends Specification with TestEvents {
 
   def aggregateUserProperties(eventClient: LEvents) = {
 
-    val result: Map[String, PropertyMap] = eventClient.aggregateProperties(
-      appId = appId,
-      entityType = "user")
+    val result: Map[String, PropertyMap] = eventClient
+      .aggregateProperties(appId = appId, entityType = "user")
 
     val expected = Map(
       "u1" -> PropertyMap(u1, u1BaseTime, u1LastTime),
@@ -224,8 +220,7 @@ class LEventsSpec extends Specification with TestEvents {
   def findChannel(eventClient: LEvents) = {
 
     val results: List[Event] = eventClient
-      .find(appId = appId, channelId = Some(channelId))
-      .toList
+      .find(appId = appId, channelId = Some(channelId)).toList
       .map(e => e.copy(eventId = None)) // ignore eventId
 
     // same events in insertChannel

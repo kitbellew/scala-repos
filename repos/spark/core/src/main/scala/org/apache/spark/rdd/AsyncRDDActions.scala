@@ -111,8 +111,8 @@ class AsyncRDDActions[T: ClassTag](self: RDD[T])
           }
 
           val left = num - results.size
-          val p = partsScanned.until(
-            math.min(partsScanned + numPartsToTry, totalParts).toInt)
+          val p = partsScanned
+            .until(math.min(partsScanned + numPartsToTry, totalParts).toInt)
 
           val buf = new Array[Array[T]](p.size)
           self.context.setCallSite(callSite)

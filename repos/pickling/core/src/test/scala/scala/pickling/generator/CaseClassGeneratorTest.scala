@@ -101,8 +101,7 @@ class CaseClassGeneratorTest extends FunSuite {
         import scala.pickling.internal.currentRuntime
         val key = FastTypeTag[OpenCaseClassSub]
         PicklerUnpickler(
-          currentRuntime.picklers
-            .genPickler(cls.getClassLoader, cls, key)
+          currentRuntime.picklers.genPickler(cls.getClassLoader, cls, key)
             .asInstanceOf[Pickler[OpenCaseClassSub]],
           currentRuntime.picklers
             .genUnpickler(currentRuntime.currentMirror, key.key)

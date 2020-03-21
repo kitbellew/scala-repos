@@ -62,12 +62,12 @@ class SystemEventIdSequence private (
   }
 
   def saveState(offset: Long) = {
-    state =
-      coordination.saveEventRelayState(agent, currentRelayState(offset)) match {
-        case Success(ers @ EventRelayState(_, _, _)) => InternalState(ers)
-        case Failure(e) =>
-          sys.error("Error trying to save relay agent state: " + e)
-      }
+    state = coordination
+      .saveEventRelayState(agent, currentRelayState(offset)) match {
+      case Success(ers @ EventRelayState(_, _, _)) => InternalState(ers)
+      case Failure(e) =>
+        sys.error("Error trying to save relay agent state: " + e)
+    }
 
     PrecogUnit
   }
@@ -98,8 +98,7 @@ object SystemEventIdSequence {
       coordination: SystemCoordination,
       blockSize: Int = 100000): SystemEventIdSequence = {
     def loadInitialState() = {
-      val eventRelayState = coordination
-        .registerRelayAgent(agent, blockSize)
+      val eventRelayState = coordination.registerRelayAgent(agent, blockSize)
         .getOrElse(throw new UnableToRetrieveRelayAgentState)
       InternalState(eventRelayState)
     }

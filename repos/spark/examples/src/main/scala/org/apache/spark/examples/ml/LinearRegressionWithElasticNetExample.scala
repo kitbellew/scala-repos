@@ -34,13 +34,10 @@ object LinearRegressionWithElasticNetExample {
 
     // $example on$
     // Load training data
-    val training = sqlCtx.read
-      .format("libsvm")
+    val training = sqlCtx.read.format("libsvm")
       .load("data/mllib/sample_linear_regression_data.txt")
 
-    val lr = new LinearRegression()
-      .setMaxIter(10)
-      .setRegParam(0.3)
+    val lr = new LinearRegression().setMaxIter(10).setRegParam(0.3)
       .setElasticNetParam(0.8)
 
     // Fit the model

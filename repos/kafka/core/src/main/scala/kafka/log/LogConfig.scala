@@ -30,8 +30,8 @@ import org.apache.kafka.common.utils.Utils
 object Defaults {
   val SegmentSize = kafka.server.Defaults.LogSegmentBytes
   val SegmentMs = kafka.server.Defaults.LogRollHours * 60 * 60 * 1000L
-  val SegmentJitterMs =
-    kafka.server.Defaults.LogRollJitterHours * 60 * 60 * 1000L
+  val SegmentJitterMs = kafka.server.Defaults
+    .LogRollJitterHours * 60 * 60 * 1000L
   val FlushInterval = kafka.server.Defaults.LogFlushIntervalMessages
   val FlushMs = kafka.server.Defaults.LogFlushSchedulerIntervalMs
   val RetentionSize = kafka.server.Defaults.LogRetentionBytes
@@ -43,15 +43,15 @@ object Defaults {
   val DeleteRetentionMs = kafka.server.Defaults.LogCleanerDeleteRetentionMs
   val MinCleanableDirtyRatio = kafka.server.Defaults.LogCleanerMinCleanRatio
   val Compact = kafka.server.Defaults.LogCleanupPolicy
-  val UncleanLeaderElectionEnable =
-    kafka.server.Defaults.UncleanLeaderElectionEnable
+  val UncleanLeaderElectionEnable = kafka.server.Defaults
+    .UncleanLeaderElectionEnable
   val MinInSyncReplicas = kafka.server.Defaults.MinInSyncReplicas
   val CompressionType = kafka.server.Defaults.CompressionType
   val PreAllocateEnable = kafka.server.Defaults.LogPreAllocateEnable
   val MessageFormatVersion = kafka.server.Defaults.LogMessageFormatVersion
   val MessageTimestampType = kafka.server.Defaults.LogMessageTimestampType
-  val MessageTimestampDifferenceMaxMs =
-    kafka.server.Defaults.LogMessageTimestampDifferenceMaxMs
+  val MessageTimestampDifferenceMaxMs = kafka.server.Defaults
+    .LogMessageTimestampDifferenceMaxMs
 }
 
 case class LogConfig(props: java.util.Map[_, _])
@@ -74,8 +74,8 @@ case class LogConfig(props: java.util.Map[_, _])
   val fileDeleteDelayMs = getLong(LogConfig.FileDeleteDelayMsProp)
   val deleteRetentionMs = getLong(LogConfig.DeleteRetentionMsProp)
   val minCleanableRatio = getDouble(LogConfig.MinCleanableDirtyRatioProp)
-  val compact =
-    getString(LogConfig.CleanupPolicyProp).toLowerCase != LogConfig.Delete
+  val compact = getString(LogConfig.CleanupPolicyProp).toLowerCase != LogConfig
+    .Delete
   val uncleanLeaderElectionEnable = getBoolean(
     LogConfig.UncleanLeaderElectionEnableProp)
   val minInSyncReplicas = getInt(LogConfig.MinInSyncReplicasProp)
@@ -83,16 +83,16 @@ case class LogConfig(props: java.util.Map[_, _])
   val preallocate = getBoolean(LogConfig.PreAllocateEnableProp)
   val messageFormatVersion = ApiVersion(
     getString(LogConfig.MessageFormatVersionProp))
-  val messageTimestampType = TimestampType.forName(getString(
-    LogConfig.MessageTimestampTypeProp))
+  val messageTimestampType = TimestampType
+    .forName(getString(LogConfig.MessageTimestampTypeProp))
   val messageTimestampDifferenceMaxMs = getLong(
     LogConfig.MessageTimestampDifferenceMaxMsProp).longValue
 
   def randomSegmentJitter: Long =
     if (segmentJitterMs == 0) 0
     else
-      Utils
-        .abs(scala.util.Random.nextInt()) % math.min(segmentJitterMs, segmentMs)
+      Utils.abs(scala.util.Random.nextInt()) % math
+        .min(segmentJitterMs, segmentMs)
 }
 
 object LogConfig {
@@ -163,8 +163,8 @@ object LogConfig {
   val PreAllocateEnableDoc = "Should pre allocate file when create new segment?"
   val MessageFormatVersionDoc = KafkaConfig.LogMessageFormatVersionDoc
   val MessageTimestampTypeDoc = KafkaConfig.LogMessageTimestampTypeDoc
-  val MessageTimestampDifferenceMaxMsDoc =
-    KafkaConfig.LogMessageTimestampDifferenceMaxMsDoc
+  val MessageTimestampDifferenceMaxMsDoc = KafkaConfig
+    .LogMessageTimestampDifferenceMaxMsDoc
 
   private val configDef = {
     import org.apache.kafka.common.config.ConfigDef.Importance._
@@ -172,50 +172,44 @@ object LogConfig {
     import org.apache.kafka.common.config.ConfigDef.Type._
     import org.apache.kafka.common.config.ConfigDef.ValidString._
 
-    new ConfigDef()
-      .define(
-        SegmentBytesProp,
-        INT,
-        Defaults.SegmentSize,
-        atLeast(Message.MinMessageOverhead),
-        MEDIUM,
-        SegmentSizeDoc)
-      .define(
-        SegmentMsProp,
-        LONG,
-        Defaults.SegmentMs,
-        atLeast(0),
-        MEDIUM,
-        SegmentMsDoc)
-      .define(
-        SegmentJitterMsProp,
-        LONG,
-        Defaults.SegmentJitterMs,
-        atLeast(0),
-        MEDIUM,
-        SegmentJitterMsDoc)
-      .define(
-        SegmentIndexBytesProp,
-        INT,
-        Defaults.MaxIndexSize,
-        atLeast(0),
-        MEDIUM,
-        MaxIndexSizeDoc)
-      .define(
-        FlushMessagesProp,
-        LONG,
-        Defaults.FlushInterval,
-        atLeast(0),
-        MEDIUM,
-        FlushIntervalDoc)
-      .define(
-        FlushMsProp,
-        LONG,
-        Defaults.FlushMs,
-        atLeast(0),
-        MEDIUM,
-        FlushMsDoc)
-      // can be negative. See kafka.log.LogManager.cleanupSegmentsToMaintainSize
+    new ConfigDef().define(
+      SegmentBytesProp,
+      INT,
+      Defaults.SegmentSize,
+      atLeast(Message.MinMessageOverhead),
+      MEDIUM,
+      SegmentSizeDoc).define(
+      SegmentMsProp,
+      LONG,
+      Defaults.SegmentMs,
+      atLeast(0),
+      MEDIUM,
+      SegmentMsDoc).define(
+      SegmentJitterMsProp,
+      LONG,
+      Defaults.SegmentJitterMs,
+      atLeast(0),
+      MEDIUM,
+      SegmentJitterMsDoc).define(
+      SegmentIndexBytesProp,
+      INT,
+      Defaults.MaxIndexSize,
+      atLeast(0),
+      MEDIUM,
+      MaxIndexSizeDoc).define(
+      FlushMessagesProp,
+      LONG,
+      Defaults.FlushInterval,
+      atLeast(0),
+      MEDIUM,
+      FlushIntervalDoc).define(
+      FlushMsProp,
+      LONG,
+      Defaults.FlushMs,
+      atLeast(0),
+      MEDIUM,
+      FlushMsDoc)
+    // can be negative. See kafka.log.LogManager.cleanupSegmentsToMaintainSize
       .define(
         RetentionBytesProp,
         LONG,
@@ -228,88 +222,75 @@ object LogConfig {
         LONG,
         Defaults.RetentionMs,
         MEDIUM,
-        RetentionMsDoc)
-      .define(
+        RetentionMsDoc).define(
         MaxMessageBytesProp,
         INT,
         Defaults.MaxMessageSize,
         atLeast(0),
         MEDIUM,
-        MaxMessageSizeDoc)
-      .define(
+        MaxMessageSizeDoc).define(
         IndexIntervalBytesProp,
         INT,
         Defaults.IndexInterval,
         atLeast(0),
         MEDIUM,
-        IndexIntervalDoc)
-      .define(
+        IndexIntervalDoc).define(
         DeleteRetentionMsProp,
         LONG,
         Defaults.DeleteRetentionMs,
         atLeast(0),
         MEDIUM,
-        DeleteRetentionMsDoc)
-      .define(
+        DeleteRetentionMsDoc).define(
         FileDeleteDelayMsProp,
         LONG,
         Defaults.FileDeleteDelayMs,
         atLeast(0),
         MEDIUM,
-        FileDeleteDelayMsDoc)
-      .define(
+        FileDeleteDelayMsDoc).define(
         MinCleanableDirtyRatioProp,
         DOUBLE,
         Defaults.MinCleanableDirtyRatio,
         between(0, 1),
         MEDIUM,
-        MinCleanableRatioDoc)
-      .define(
+        MinCleanableRatioDoc).define(
         CleanupPolicyProp,
         STRING,
         Defaults.Compact,
         in(Compact, Delete),
         MEDIUM,
-        CompactDoc)
-      .define(
+        CompactDoc).define(
         UncleanLeaderElectionEnableProp,
         BOOLEAN,
         Defaults.UncleanLeaderElectionEnable,
         MEDIUM,
-        UncleanLeaderElectionEnableDoc)
-      .define(
+        UncleanLeaderElectionEnableDoc).define(
         MinInSyncReplicasProp,
         INT,
         Defaults.MinInSyncReplicas,
         atLeast(1),
         MEDIUM,
-        MinInSyncReplicasDoc)
-      .define(
+        MinInSyncReplicasDoc).define(
         CompressionTypeProp,
         STRING,
         Defaults.CompressionType,
         in(BrokerCompressionCodec.brokerCompressionOptions: _*),
         MEDIUM,
-        CompressionTypeDoc)
-      .define(
+        CompressionTypeDoc).define(
         PreAllocateEnableProp,
         BOOLEAN,
         Defaults.PreAllocateEnable,
         MEDIUM,
-        PreAllocateEnableDoc)
-      .define(
+        PreAllocateEnableDoc).define(
         MessageFormatVersionProp,
         STRING,
         Defaults.MessageFormatVersion,
         MEDIUM,
-        MessageFormatVersionDoc)
-      .define(
+        MessageFormatVersionDoc).define(
         MessageTimestampTypeProp,
         STRING,
         Defaults.MessageTimestampType,
         MEDIUM,
-        MessageTimestampTypeDoc)
-      .define(
+        MessageTimestampTypeDoc).define(
         MessageTimestampDifferenceMaxMsProp,
         LONG,
         Defaults.MessageTimestampDifferenceMaxMs,

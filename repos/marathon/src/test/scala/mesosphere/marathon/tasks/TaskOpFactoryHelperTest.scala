@@ -23,7 +23,8 @@ class TaskOpFactoryHelperTest
     val error = intercept[AssertionError] { f.helper.launch(taskInfo, task) }
 
     Then("An exception is thrown")
-    error.getMessage shouldEqual "assumption failed: marathon task id and mesos task id must be equal"
+    error
+      .getMessage shouldEqual "assumption failed: marathon task id and mesos task id must be equal"
   }
 
   test("Create a launch TaskOp") {
@@ -31,8 +32,7 @@ class TaskOpFactoryHelperTest
 
     Given("a task and a taskInfo")
     val task = MarathonTestHelper.mininimalTask("123")
-    val taskInfo = MarathonTestHelper
-      .makeOneCPUTask(task.taskId.idString)
+    val taskInfo = MarathonTestHelper.makeOneCPUTask(task.taskId.idString)
       .build()
 
     When("We create a launch operation")
@@ -43,7 +43,8 @@ class TaskOpFactoryHelperTest
     launch.taskInfo shouldEqual taskInfo
     launch.oldTask shouldBe empty
     launch.offerOperations should have size 1
-    launch.offerOperations.head.getType shouldEqual Mesos.Offer.Operation.Type.LAUNCH
+    launch.offerOperations.head.getType shouldEqual Mesos.Offer.Operation.Type
+      .LAUNCH
   }
 
   class Fixture {

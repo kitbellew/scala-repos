@@ -181,17 +181,13 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       df.select(
         $"key",
         last("key").over(
-          Window
-            .partitionBy($"value")
-            .orderBy($"key")
+          Window.partitionBy($"value").orderBy($"key")
             .rowsBetween(0, Long.MaxValue)),
         last("key").over(
-          Window
-            .partitionBy($"value")
-            .orderBy($"key")
+          Window.partitionBy($"value").orderBy($"key")
             .rowsBetween(Long.MinValue, 0)),
-        last("key").over(
-          Window.partitionBy($"value").orderBy($"key").rowsBetween(-1, 1))
+        last("key")
+          .over(Window.partitionBy($"value").orderBy($"key").rowsBetween(-1, 1))
       ),
       Seq(
         Row(1, 1, 1, 1),
@@ -210,25 +206,15 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       df.select(
         $"key",
-        last("value")
-          .over(
-            Window.partitionBy($"value").orderBy($"key").rangeBetween(-2, -1))
-          .equalTo("2")
-          .as("last_v"),
-        avg("key")
-          .over(
-            Window
-              .partitionBy("value")
-              .orderBy("key")
-              .rangeBetween(Long.MinValue, 1))
-          .as("avg_key1"),
-        avg("key")
-          .over(
-            Window
-              .partitionBy("value")
-              .orderBy("key")
-              .rangeBetween(0, Long.MaxValue))
-          .as("avg_key2"),
+        last("value").over(
+          Window.partitionBy($"value").orderBy($"key").rangeBetween(-2, -1))
+          .equalTo("2").as("last_v"),
+        avg("key").over(
+          Window.partitionBy("value").orderBy("key")
+            .rangeBetween(Long.MinValue, 1)).as("avg_key1"),
+        avg("key").over(
+          Window.partitionBy("value").orderBy("key")
+            .rangeBetween(0, Long.MaxValue)).as("avg_key2"),
         avg("key")
           .over(Window.partitionBy("value").orderBy("key").rangeBetween(-1, 0))
           .as("avg_key3")
@@ -257,9 +243,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       (9, "Pro", "Tablet", 4500),
       (10, "Pro2", "Tablet", 6500)
     ).toDF("id", "product", "category", "revenue")
-    val window = Window
-      .partitionBy($"category")
-      .orderBy($"revenue".desc)
+    val window = Window.partitionBy($"category").orderBy($"revenue".desc)
       .rangeBetween(-2000L, 1000L)
     checkAnswer(
       df.select($"id", avg($"revenue").over(window).cast("int")),
@@ -324,13 +308,9 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   test("window function with udaf") {
     val udaf = new UserDefinedAggregateFunction {
       def inputSchema: StructType =
-        new StructType()
-          .add("a", LongType)
-          .add("b", LongType)
+        new StructType().add("a", LongType).add("b", LongType)
 
-      def bufferSchema: StructType =
-        new StructType()
-          .add("product", LongType)
+      def bufferSchema: StructType = new StructType().add("product", LongType)
 
       def dataType: DataType = LongType
 
@@ -359,11 +339,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       ("a", 2, -1),
       ("b", 4, 7),
       ("b", 3, 8),
-      ("b", 2, 4))
-      .toDF("key", "a", "b")
-    val window = Window
-      .partitionBy($"key")
-      .orderBy($"a")
+      ("b", 2, 4)).toDF("key", "a", "b")
+    val window = Window.partitionBy($"key").orderBy($"a")
       .rangeBetween(Long.MinValue, 0L)
     checkAnswer(
       df.select($"key", $"a", $"b", udaf($"a", $"b").over(window)),
@@ -386,8 +363,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       ("a", 2),
       ("b", 4),
       ("b", 3),
-      ("b", 2))
-      .toDF("key", "value")
+      ("b", 2)).toDF("key", "value")
     val window = Window.orderBy()
     checkAnswer(
       df.select(
@@ -442,11 +418,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
 
   test(
     "SPARK-12989 ExtractWindowExpressions treats alias as regular attribute") {
-    val src = Seq((0, 3, 5))
-      .toDF("a", "b", "c")
-      .withColumn("Data", struct("a", "b"))
-      .drop("a")
-      .drop("b")
+    val src = Seq((0, 3, 5)).toDF("a", "b", "c")
+      .withColumn("Data", struct("a", "b")).drop("a").drop("b")
     val winSpec = Window.partitionBy("Data.a", "Data.b").orderBy($"c".desc)
     val df = src.select($"*", max("c").over(winSpec) as "max")
     checkAnswer(df, Row(5, Row(0, 3), 5))

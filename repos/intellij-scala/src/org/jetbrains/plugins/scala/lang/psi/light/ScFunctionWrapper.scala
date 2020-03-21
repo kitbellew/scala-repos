@@ -28,13 +28,14 @@ class ScPrimaryConstructorWrapper(
     isJavaVarargs: Boolean = false,
     forDefault: Option[Int] = None)
     extends {
-  val elementFactory =
-    JavaPsiFacade.getInstance(constr.getProject).getElementFactory
+  val elementFactory = JavaPsiFacade.getInstance(constr.getProject)
+    .getElementFactory
   val containingClass = {
     val res: PsiClass = constr.containingClass
     assert(
       res != null,
-      s"Method: ${constr.getText}\nhas null containing class. \nContaining file text: ${constr.getContainingFile.getText}")
+      s"Method: ${constr.getText}\nhas null containing class. \nContaining file text: ${constr
+        .getContainingFile.getText}")
     res
   }
   val methodText = ScFunctionWrapper.methodText(
@@ -78,10 +79,8 @@ with LightScalaMethod {
       case Some(i) if returnType == null =>
         val param = constr.parameters(i - 1)
         val scalaType = param.getType(TypingContext.empty).getOrAny
-        returnType = ScType.toPsi(
-          scalaType,
-          constr.getProject,
-          constr.getResolveScope)
+        returnType = ScType
+          .toPsi(scalaType, constr.getProject, constr.getResolveScope)
       case _ =>
     }
     returnType
@@ -111,8 +110,8 @@ class ScFunctionWrapper(
     isJavaVarargs: Boolean = false,
     forDefault: Option[Int] = None)
     extends {
-  val elementFactory =
-    JavaPsiFacade.getInstance(function.getProject).getElementFactory
+  val elementFactory = JavaPsiFacade.getInstance(function.getProject)
+    .getElementFactory
   val containingClass = {
     if (cClass.isDefined) cClass.get
     else {
@@ -125,7 +124,8 @@ class ScFunctionWrapper(
       }
       assert(
         res != null,
-        "Method: " + function.getText + "\nhas null containing class. isStatic: " + isStatic +
+        "Method: " + function
+          .getText + "\nhas null containing class. isStatic: " + isStatic +
           "\nContaining file text: " + function.getContainingFile.getText
       )
       res
@@ -204,18 +204,14 @@ with LightScalaMethod {
           val scalaType = generifySubst subst ScFunctionWrapper
             .getSubstitutor(cClass, function)
             .subst(param.getType(TypingContext.empty).getOrAny)
-          returnType = ScType.toPsi(
-            scalaType,
-            function.getProject,
-            function.getResolveScope)
+          returnType = ScType
+            .toPsi(scalaType, function.getProject, function.getResolveScope)
         case None =>
           val scalaType = generifySubst subst ScFunctionWrapper
             .getSubstitutor(cClass, function)
             .subst(function.returnType.getOrAny)
-          returnType = ScType.toPsi(
-            scalaType,
-            function.getProject,
-            function.getResolveScope)
+          returnType = ScType
+            .toPsi(scalaType, function.getProject, function.getResolveScope)
       }
     }
     returnType
@@ -245,61 +241,56 @@ object ScFunctionWrapper {
       forDefault: Option[Int] = None): String = {
     val builder = new StringBuilder
 
-    builder.append(
-      JavaConversionUtil.annotationsAndModifiers(function, isStatic))
+    builder
+      .append(JavaConversionUtil.annotationsAndModifiers(function, isStatic))
 
     val subst = getSubstitutor(cClass, function)
 
     function match {
       case function: ScFunction if function.typeParameters.nonEmpty =>
         builder.append(
-          function.typeParameters
-            .map(tp => {
-              var res = tp.name
-              tp.upperTypeElement match {
-                case Some(tParam) =>
-                  val classes = new ArrayBuffer[String]()
-                  tp.upperBound.map(subst.subst) match {
-                    case Success(tp: ScCompoundType, _) =>
-                      tp.components.foreach {
-                        case tp: ScType =>
-                          ScType
-                            .extractClass(tp, Some(function.getProject)) match {
-                            case Some(clazz) =>
-                              classes += clazz.getQualifiedName
-                            case _ =>
-                          }
-                      }
-                    case Success(_: StdType, _) =>
-                      JavaPsiFacade
-                        .getInstance(function.getProject)
-                        .getElementFactory
-                        .createTypeByFQClassName(
-                          "java.lang.Object",
-                          function.getResolveScope)
-                    case Success(tpt: ScTypeParameterType, _) =>
-                      classes += tpt.canonicalText
-                    case Success(scType, _) =>
-                      ScType
-                        .extractClass(scType, Some(function.getProject)) match {
-                        case Some(clazz) => classes += clazz.getQualifiedName
-                        case _           =>
-                      }
-                    case _ =>
-                  }
-                  if (classes.nonEmpty) {
-                    res += classes.mkString(" extends ", " & ", "")
-                  }
-                case _ =>
-              }
-              res
-            })
-            .mkString("<", ", ", ">"))
+          function.typeParameters.map(tp => {
+            var res = tp.name
+            tp.upperTypeElement match {
+              case Some(tParam) =>
+                val classes = new ArrayBuffer[String]()
+                tp.upperBound.map(subst.subst) match {
+                  case Success(tp: ScCompoundType, _) =>
+                    tp.components.foreach {
+                      case tp: ScType =>
+                        ScType
+                          .extractClass(tp, Some(function.getProject)) match {
+                          case Some(clazz) => classes += clazz.getQualifiedName
+                          case _           =>
+                        }
+                    }
+                  case Success(_: StdType, _) =>
+                    JavaPsiFacade.getInstance(function.getProject)
+                      .getElementFactory.createTypeByFQClassName(
+                        "java.lang.Object",
+                        function.getResolveScope)
+                  case Success(tpt: ScTypeParameterType, _) =>
+                    classes += tpt.canonicalText
+                  case Success(scType, _) =>
+                    ScType
+                      .extractClass(scType, Some(function.getProject)) match {
+                      case Some(clazz) => classes += clazz.getQualifiedName
+                      case _           =>
+                    }
+                  case _ =>
+                }
+                if (classes.nonEmpty) {
+                  res += classes.mkString(" extends ", " & ", "")
+                }
+              case _ =>
+            }
+            res
+          }).mkString("<", ", ", ">"))
       case _ =>
     }
 
-    val params = function.effectiveParameterClauses.flatMap(
-      _.effectiveParameters)
+    val params = function.effectiveParameterClauses
+      .flatMap(_.effectiveParameters)
 
     val defaultParam = forDefault match {
       case Some(i) => Some(params(i - 1))
@@ -337,50 +328,45 @@ object ScFunctionWrapper {
     builder.append(name)
 
     builder.append(
-      function.effectiveParameterClauses
-        .takeWhile { clause =>
-          defaultParam match {
-            case Some(param) => !clause.effectiveParameters.contains(param)
-            case None        => true
+      function.effectiveParameterClauses.takeWhile { clause =>
+        defaultParam match {
+          case Some(param) => !clause.effectiveParameters.contains(param)
+          case None        => true
+        }
+      }.flatMap(_.effectiveParameters).map {
+        case param =>
+          val builder = new StringBuilder
+          val varargs: Boolean = param.isRepeatedParameter && isJavaVarargs
+          val paramAnnotations = JavaConversionUtil.annotations(param)
+            .mkString(" ")
+          if (!paramAnnotations.isEmpty)
+            builder.append(paramAnnotations).append(" ")
+          val tt =
+            if (varargs) param.getType(TypingContext.empty)
+            else param.getRealParameterType(TypingContext.empty)
+          tt match {
+            case Success(tp, _) if param.isCallByNameParameter =>
+              builder.append("scala.Function0<")
+              val psiType = ScType.toPsi(
+                subst.subst(tp),
+                function.getProject,
+                function.getResolveScope,
+                noPrimitives = true)
+              builder.append(psiType.getCanonicalText)
+              builder.append(">")
+            case Success(tp, _) =>
+              builder.append(JavaConversionUtil.typeText(
+                subst.subst(tp),
+                function.getProject,
+                function.getResolveScope))
+            case _ => builder.append("java.lang.Object")
           }
-        }
-        .flatMap(_.effectiveParameters)
-        .map {
-          case param =>
-            val builder = new StringBuilder
-            val varargs: Boolean = param.isRepeatedParameter && isJavaVarargs
-            val paramAnnotations = JavaConversionUtil
-              .annotations(param)
-              .mkString(" ")
-            if (!paramAnnotations.isEmpty)
-              builder.append(paramAnnotations).append(" ")
-            val tt =
-              if (varargs) param.getType(TypingContext.empty)
-              else param.getRealParameterType(TypingContext.empty)
-            tt match {
-              case Success(tp, _) if param.isCallByNameParameter =>
-                builder.append("scala.Function0<")
-                val psiType = ScType.toPsi(
-                  subst.subst(tp),
-                  function.getProject,
-                  function.getResolveScope,
-                  noPrimitives = true)
-                builder.append(psiType.getCanonicalText)
-                builder.append(">")
-              case Success(tp, _) =>
-                builder.append(JavaConversionUtil.typeText(
-                  subst.subst(tp),
-                  function.getProject,
-                  function.getResolveScope))
-              case _ => builder.append("java.lang.Object")
-            }
 
-            if (varargs) builder.append("...")
+          if (varargs) builder.append("...")
 
-            builder.append(" ").append(param.getName)
-            builder.toString()
-        }
-        .mkString("(", ", ", ")"))
+          builder.append(" ").append(param.getName)
+          builder.toString()
+      }.mkString("(", ", ", ")"))
 
     function match {
       case function: ScFunction =>

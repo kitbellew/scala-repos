@@ -130,8 +130,8 @@ object ObservableMap extends MutableMapFactory[ObservableMap] {
     */
   def apply[K, V](originalMap: Map[K, V]): ObservableMap[K, V] =
     new ObservableMap[K, V] {
-      override val delegate = jfxc.FXCollections.observableMap(
-        mutableMapAsJavaMap(originalMap))
+      override val delegate = jfxc.FXCollections
+        .observableMap(mutableMapAsJavaMap(originalMap))
     }
 
   // CREATION METHODS - END

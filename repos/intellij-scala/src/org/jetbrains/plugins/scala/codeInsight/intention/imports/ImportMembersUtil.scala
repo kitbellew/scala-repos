@@ -36,8 +36,8 @@ object ImportMembersUtil {
     ref match {
       case _ childOf(ScInfixExpr(qual: ScReferenceExpression, `ref`, _)) => true
       case _ childOf(ScPostfixExpr(qual: ScReferenceExpression, `ref`))  => true
-      case ScReferenceExpression.withQualifier(
-            qualRef: ScReferenceExpression) => true
+      case ScReferenceExpression
+            .withQualifier(qualRef: ScReferenceExpression) => true
       case stCodeRef: ScStableCodeReferenceElement =>
         stCodeRef.qualifier.isDefined
       case _ => false
@@ -49,8 +49,9 @@ object ImportMembersUtil {
 
     ref.resolve() match {
       case Both(member: PsiMember, named: PsiNamedElement) =>
-        ScalaPsiUtil.hasStablePath(named) && (member.hasModifierProperty(
-          PsiModifier.STATIC) || member.containingClass == null)
+        ScalaPsiUtil.hasStablePath(named) && (member
+          .hasModifierProperty(PsiModifier.STATIC) || member
+          .containingClass == null)
       case named: PsiNamedElement => ScalaPsiUtil.hasStablePath(named)
       case _                      => false
     }
@@ -76,21 +77,16 @@ object ImportMembersUtil {
         val withDot = postfix
           .replace(ScalaPsiElementFactory.createExpressionFromText(
             s"${qual.getText}.$name",
-            oldRef.getManager))
-          .asInstanceOf[ScReferenceExpression]
+            oldRef.getManager)).asInstanceOf[ScReferenceExpression]
         replaceWithName(withDot, name)
       case expr: ScReferenceExpression =>
-        oldRef
-          .replace(ScalaPsiElementFactory.createExpressionFromText(
-            name,
-            oldRef.getManager))
-          .asInstanceOf[ScReferenceElement]
+        oldRef.replace(ScalaPsiElementFactory.createExpressionFromText(
+          name,
+          oldRef.getManager)).asInstanceOf[ScReferenceElement]
       case stCodeRef: ScStableCodeReferenceElement =>
-        oldRef
-          .replace(ScalaPsiElementFactory.createReferenceFromText(
-            name,
-            oldRef.getManager))
-          .asInstanceOf[ScReferenceElement]
+        oldRef.replace(ScalaPsiElementFactory.createReferenceFromText(
+          name,
+          oldRef.getManager)).asInstanceOf[ScReferenceElement]
       case _ => null
     }
   }
@@ -122,8 +118,8 @@ object ImportMembersUtil {
           case _ childOf (postfix @ ScPostfixExpr(
                 qual: ScReferenceExpression,
                 `oldRef`)) =>
-            val refExpr = ScalaPsiElementFactory.createEquivQualifiedReference(
-              postfix)
+            val refExpr = ScalaPsiElementFactory
+              .createEquivQualifiedReference(postfix)
             val withDot = postfix
               .replaceExpression(refExpr, removeParenthesis = true)
               .asInstanceOf[ScReferenceExpression]
@@ -137,16 +133,14 @@ object ImportMembersUtil {
               .createExpressionFromText(name, oldRef.getManager)
             val replaced = expr
               .replaceExpression(refExpr, removeParenthesis = true)
-            replaced
-              .asInstanceOf[ScReferenceExpression]
+            replaced.asInstanceOf[ScReferenceExpression]
               .bindToElement(toBind, clazz)
           case stCodeRef: ScStableCodeReferenceElement =>
-            val replaced = oldRef.replace(
-              ScalaPsiElementFactory.createReferenceFromText(
+            val replaced = oldRef
+              .replace(ScalaPsiElementFactory.createReferenceFromText(
                 name,
                 oldRef.getManager))
-            replaced
-              .asInstanceOf[ScStableCodeReferenceElement]
+            replaced.asInstanceOf[ScStableCodeReferenceElement]
               .bindToElement(toBind)
           case _ =>
         }
@@ -171,10 +165,8 @@ object ImportMembersUtil {
       }
     }
     val lessThan: (PsiReference, PsiReference) => Boolean = { (ref1, ref2) =>
-      PsiTreeUtil.isAncestor(
-        actuallyReplaced(ref2),
-        actuallyReplaced(ref1),
-        true)
+      PsiTreeUtil
+        .isAncestor(actuallyReplaced(ref2), actuallyReplaced(ref1), true)
     }
     usages.toSeq.sortWith(lessThan)
   }

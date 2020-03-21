@@ -67,11 +67,9 @@ class ShuffleReadMetrics private (
     * [[TaskMetrics.mergeShuffleReadMetrics]].
     */
   private[spark] def this() {
-    this(
-      InternalAccumulator
-        .createShuffleReadAccums()
-        .map { a => (a.name.get, a) }
-        .toMap)
+    this(InternalAccumulator.createShuffleReadAccums().map { a =>
+      (a.name.get, a)
+    }.toMap)
   }
 
   /**

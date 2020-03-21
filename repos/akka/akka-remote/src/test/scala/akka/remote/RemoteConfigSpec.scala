@@ -48,8 +48,8 @@ class RemoteConfigSpec
         classOf[akka.remote.transport.netty.NettyTransport].getName)
       Transports.head._2 should ===(Nil)
       Adapters should ===(Map(
-        "gremlin" -> classOf[
-          akka.remote.transport.FailureInjectorProvider].getName,
+        "gremlin" -> classOf[akka.remote.transport.FailureInjectorProvider]
+          .getName,
         "trttl" -> classOf[akka.remote.transport.ThrottlerProvider].getName))
 
       WatchFailureDetectorImplementationClass should ===(
@@ -60,13 +60,13 @@ class RemoteConfigSpec
       WatchFailureDetectorConfig.getDouble("threshold") should ===(
         10.0 +- 0.0001)
       WatchFailureDetectorConfig.getInt("max-sample-size") should ===(200)
-      WatchFailureDetectorConfig.getMillisDuration(
-        "acceptable-heartbeat-pause") should ===(10 seconds)
-      WatchFailureDetectorConfig.getMillisDuration(
-        "min-std-deviation") should ===(100 millis)
+      WatchFailureDetectorConfig
+        .getMillisDuration("acceptable-heartbeat-pause") should ===(10 seconds)
+      WatchFailureDetectorConfig
+        .getMillisDuration("min-std-deviation") should ===(100 millis)
 
-      remoteSettings.config.getString(
-        "akka.remote.log-frame-size-exceeding") should ===("off")
+      remoteSettings.config
+        .getString("akka.remote.log-frame-size-exceeding") should ===("off")
     }
 
     "be able to parse AkkaProtocol related config elements" in {
@@ -80,8 +80,8 @@ class RemoteConfigSpec
       TransportFailureDetectorImplementationClass should ===(
         classOf[DeadlineFailureDetector].getName)
       TransportHeartBeatInterval should ===(4.seconds)
-      TransportFailureDetectorConfig.getMillisDuration(
-        "acceptable-heartbeat-pause") should ===(16.seconds)
+      TransportFailureDetectorConfig
+        .getMillisDuration("acceptable-heartbeat-pause") should ===(16.seconds)
 
     }
 
@@ -93,8 +93,8 @@ class RemoteConfigSpec
 
       ConnectionTimeout should ===(15.seconds)
       ConnectionTimeout should ===(
-        new AkkaProtocolSettings(
-          RARP(system).provider.remoteSettings.config).HandshakeTimeout)
+        new AkkaProtocolSettings(RARP(system).provider.remoteSettings.config)
+          .HandshakeTimeout)
       WriteBufferHighWaterMark should ===(None)
       WriteBufferLowWaterMark should ===(None)
       SendBufferSize should ===(Some(256000))

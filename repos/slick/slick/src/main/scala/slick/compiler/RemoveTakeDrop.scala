@@ -22,9 +22,8 @@ class RemoveTakeDrop(
       def tr(n: Node): Node =
         n.replace {
           case n @ TakeDrop(from, t, d)
-              if (translateTake && t.isDefined) || (
-                translateDrop && d.isDefined
-              ) =>
+              if (translateTake && t.isDefined) || (translateDrop && d
+                .isDefined) =>
             logger.debug(
               s"""Translating "drop $d, then take $t" to zipWithIndex operation:""",
               n)
@@ -50,19 +49,19 @@ class RemoveTakeDrop(
               b1,
               (t, d) match {
                 case (None, Some(d)) =>
-                  Library.>.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), d)
+                  Library
+                    .>.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), d)
                 case (Some(t), None) =>
-                  Library.<=.typed[Boolean](
-                    Select(Ref(fs), ElementSymbol(2)),
-                    t)
+                  Library
+                    .<=.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), t)
                 case (Some(t), Some(d)) =>
                   Library.And.typed[Boolean](
-                    Library.>.typed[Boolean](
-                      Select(Ref(fs), ElementSymbol(2)),
-                      d),
-                    Library.<=.typed[Boolean](
-                      Select(Ref(fs), ElementSymbol(2)),
-                      constOp[Long]("+")(_ + _)(t, d)))
+                    Library
+                      .>.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), d),
+                    Library
+                      .<=.typed[Boolean](
+                        Select(Ref(fs), ElementSymbol(2)),
+                        constOp[Long]("+")(_ + _)(t, d)))
                 case _ => throw new SlickException("Unexpected empty Take/Drop")
               }
             )
@@ -74,8 +73,8 @@ class RemoveTakeDrop(
             val invalidate = fromRetyped.nodeType.collect {
               case NominalType(ts, _) => ts
             }
-            logger.debug(
-              "Invalidating TypeSymbols: " + invalidate.mkString(", "))
+            logger
+              .debug("Invalidating TypeSymbols: " + invalidate.mkString(", "))
             invalid ++= invalidate.toSeq
             b2
 

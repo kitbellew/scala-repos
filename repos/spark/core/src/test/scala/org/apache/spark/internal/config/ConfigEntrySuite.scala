@@ -65,8 +65,8 @@ class ConfigEntrySuite extends SparkFunSuite {
   test("conf entry: fallback") {
     val conf = new SparkConf()
     val parentConf = ConfigBuilder("spark.int").intConf.withDefault(1)
-    val confWithFallback = ConfigBuilder("spark.fallback").fallbackConf(
-      parentConf)
+    val confWithFallback = ConfigBuilder("spark.fallback")
+      .fallbackConf(parentConf)
     assert(conf.get(confWithFallback) === 1)
     conf.set(confWithFallback, 2)
     assert(conf.get(parentConf) === 1)
@@ -75,8 +75,7 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: time") {
     val conf = new SparkConf()
-    val time = ConfigBuilder("spark.time")
-      .timeConf(TimeUnit.SECONDS)
+    val time = ConfigBuilder("spark.time").timeConf(TimeUnit.SECONDS)
       .withDefaultString("1h")
     assert(conf.get(time) === 3600L)
     conf.set(time.key, "1m")
@@ -85,8 +84,7 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: bytes") {
     val conf = new SparkConf()
-    val bytes = ConfigBuilder("spark.bytes")
-      .bytesConf(ByteUnit.KiB)
+    val bytes = ConfigBuilder("spark.bytes").bytesConf(ByteUnit.KiB)
       .withDefaultString("1m")
     assert(conf.get(bytes) === 1024L)
     conf.set(bytes.key, "1k")
@@ -115,8 +113,7 @@ class ConfigEntrySuite extends SparkFunSuite {
   test("conf entry: transformation") {
     val conf = new SparkConf()
     val transformationConf = ConfigBuilder("spark.transformation").stringConf
-      .transform(_.toLowerCase())
-      .withDefault("FOO")
+      .transform(_.toLowerCase()).withDefault("FOO")
 
     assert(conf.get(transformationConf) === "foo")
     conf.set(transformationConf, "BAR")
@@ -126,8 +123,7 @@ class ConfigEntrySuite extends SparkFunSuite {
   test("conf entry: valid values check") {
     val conf = new SparkConf()
     val enum = ConfigBuilder("spark.enum").stringConf
-      .checkValues(Set("a", "b", "c"))
-      .withDefault("a")
+      .checkValues(Set("a", "b", "c")).withDefault("a")
     assert(conf.get(enum) === "a")
 
     conf.set(enum, "b")
@@ -141,8 +137,8 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: conversion error") {
     val conf = new SparkConf()
-    val conversionTest =
-      ConfigBuilder("spark.conversionTest").doubleConf.optional
+    val conversionTest = ConfigBuilder("spark.conversionTest").doubleConf
+      .optional
     conf.set(conversionTest.key, "abc")
     val conversionError = intercept[IllegalArgumentException] {
       conf.get(conversionTest)

@@ -37,8 +37,7 @@ class DDLSourceLoadSuite extends DataSourceTest with SharedSQLContext {
 
   test("specify full classname with duplicate formats") {
     caseInsensitiveContext.read
-      .format("org.apache.spark.sql.sources.FakeSourceOne")
-      .load()
+      .format("org.apache.spark.sql.sources.FakeSourceOne").load()
       .schema == StructType(
       Seq(StructField("stringType", StringType, nullable = false)))
   }

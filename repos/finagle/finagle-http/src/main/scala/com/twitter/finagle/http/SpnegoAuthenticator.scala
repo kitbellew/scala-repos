@@ -31,8 +31,8 @@ object SpnegoAuthenticator {
     /** If the header represents a valid spnego negotiation, return it. */
     def unapply(header: String): Option[Token] =
       // must be a valid Negotiate header, and have a token
-      if (header.length <= SchemePrefixLength || !header.startsWith(
-            AuthScheme)) { None }
+      if (header.length <= SchemePrefixLength || !header
+            .startsWith(AuthScheme)) { None }
       else {
         val tokenStr = header.substring(SchemePrefixLength)
         Some(Base64StringEncoder.decode(tokenStr))
@@ -141,9 +141,8 @@ object SpnegoAuthenticator {
         _serverPrincipalType: Oid = JAAS.Krb5PrincipalType)
         extends ClientSource
         with JAAS {
-      val serverPrincipal = manager.createName(
-        _serverPrincipal,
-        _serverPrincipalType)
+      val serverPrincipal = manager
+        .createName(_serverPrincipal, _serverPrincipalType)
 
       def init(
           context: GSSContext,
@@ -174,10 +173,8 @@ object SpnegoAuthenticator {
         with JAAS {
       def accept(context: GSSContext, negotiation: Token): Future[Negotiated] =
         pool {
-          val token = context.acceptSecContext(
-            negotiation,
-            0,
-            negotiation.length)
+          val token = context
+            .acceptSecContext(negotiation, 0, negotiation.length)
           val established = if (context.isEstablished) Some(context) else None
           val wwwAuthenticate = AuthHeader(Option(token))
           Negotiated(established, wwwAuthenticate)

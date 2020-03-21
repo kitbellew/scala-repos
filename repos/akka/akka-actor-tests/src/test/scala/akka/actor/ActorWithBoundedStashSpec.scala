@@ -134,8 +134,8 @@ class ActorWithBoundedStashSpec
   "An Actor with Stash" must {
 
     "end up in DeadLetters in case of a capacity violation when configured via dispatcher" in {
-      val stasher = system.actorOf(
-        Props[StashingActor].withDispatcher(dispatcherId1))
+      val stasher = system
+        .actorOf(Props[StashingActor].withDispatcher(dispatcherId1))
       testDeadLetters(stasher)
     }
 
@@ -145,14 +145,14 @@ class ActorWithBoundedStashSpec
     }
 
     "throw a StashOverflowException in case of a stash capacity violation when configured via dispatcher" in {
-      val stasher = system.actorOf(
-        Props[StashingActorWithOverflow].withDispatcher(dispatcherId2))
+      val stasher = system
+        .actorOf(Props[StashingActorWithOverflow].withDispatcher(dispatcherId2))
       testStashOverflowException(stasher)
     }
 
     "throw a StashOverflowException in case of a stash capacity violation when configured via mailbox" in {
-      val stasher = system.actorOf(
-        Props[StashingActorWithOverflow].withMailbox(mailboxId2))
+      val stasher = system
+        .actorOf(Props[StashingActorWithOverflow].withMailbox(mailboxId2))
       testStashOverflowException(stasher)
     }
   }

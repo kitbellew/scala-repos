@@ -58,9 +58,8 @@ class ScImportSelectorImpl private (
   }
 
   def deleteSelector() {
-    val expr: ScImportExpr = PsiTreeUtil.getParentOfType(
-      this,
-      classOf[ScImportExpr])
+    val expr: ScImportExpr = PsiTreeUtil
+      .getParentOfType(this, classOf[ScImportExpr])
     if (expr.selectors.length + expr.singleWildcard.toInt == 1) {
       expr.deleteExpr()
     }
@@ -76,18 +75,16 @@ class ScImportSelectorImpl private (
         t = node.getElementType
       }
     } while (
-      node != null && !(
-        t == ScalaElementTypes.IMPORT_SELECTOR || t == ScalaTokenTypes.tUNDER
-      )
+      node != null && !(t == ScalaElementTypes
+        .IMPORT_SELECTOR || t == ScalaTokenTypes.tUNDER)
     )
 
     expr.selectors match {
       case Seq(sel: ScImportSelector) if !sel.isAliasedImport =>
-        val withoutBracesText =
-          expr.qualifier.getText + "." + sel.reference.getText
-        val newImportExpr = ScalaPsiElementFactory.createImportExprFromText(
-          withoutBracesText,
-          expr.getManager)
+        val withoutBracesText = expr.qualifier.getText + "." + sel.reference
+          .getText
+        val newImportExpr = ScalaPsiElementFactory
+          .createImportExprFromText(withoutBracesText, expr.getManager)
         expr.replace(newImportExpr)
       case _ =>
     }
@@ -97,9 +94,7 @@ class ScImportSelectorImpl private (
     getStub match {
       case stub: ScImportSelectorStub => stub.isAliasedImport
       case _ =>
-        PsiTreeUtil
-          .getParentOfType(this, classOf[ScImportExpr])
-          .selectors
+        PsiTreeUtil.getParentOfType(this, classOf[ScImportExpr]).selectors
           .nonEmpty &&
           !getLastChild.isInstanceOf[ScStableCodeReferenceElement]
     }

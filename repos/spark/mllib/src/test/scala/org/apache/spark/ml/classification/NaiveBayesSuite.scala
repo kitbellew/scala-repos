@@ -47,8 +47,8 @@ class NaiveBayesSuite
       Array(0.10, 0.10, 0.70, 0.10) // label 2
     ).map(_.map(math.log))
 
-    dataset = sqlContext.createDataFrame(
-      generateNaiveBayesInput(pi, theta, 100, 42))
+    dataset = sqlContext
+      .createDataFrame(generateNaiveBayesInput(pi, theta, 100, 42))
   }
 
   def validatePrediction(predictionAndLabels: DataFrame): Unit = {
@@ -75,8 +75,8 @@ class NaiveBayesSuite
   def expectedMultinomialProbabilities(
       model: NaiveBayesModel,
       feature: Vector): Vector = {
-    val logClassProbs: BV[Double] =
-      model.pi.toBreeze + model.theta.multiply(feature).toBreeze
+    val logClassProbs: BV[Double] = model.pi.toBreeze + model.theta
+      .multiply(feature).toBreeze
     val classProbs = logClassProbs.toArray.map(math.exp)
     val classProbsSum = classProbs.sum
     Vectors.dense(classProbs.map(_ / classProbsSum))
@@ -87,10 +87,10 @@ class NaiveBayesSuite
       feature: Vector): Vector = {
     val negThetaMatrix = model.theta.map(v => math.log(1.0 - math.exp(v)))
     val negFeature = Vectors.dense(feature.toArray.map(v => 1.0 - v))
-    val piTheta: BV[Double] =
-      model.pi.toBreeze + model.theta.multiply(feature).toBreeze
-    val logClassProbs: BV[Double] =
-      piTheta + negThetaMatrix.multiply(negFeature).toBreeze
+    val piTheta: BV[Double] = model.pi.toBreeze + model.theta.multiply(feature)
+      .toBreeze
+    val logClassProbs: BV[Double] = piTheta + negThetaMatrix
+      .multiply(negFeature).toBreeze
     val classProbs = logClassProbs.toArray.map(math.exp)
     val classProbsSum = classProbs.sum
     Vectors.dense(classProbs.map(_ / classProbsSum))
@@ -153,13 +153,11 @@ class NaiveBayesSuite
     val validationDataset = sqlContext.createDataFrame(
       generateNaiveBayesInput(piArray, thetaArray, nPoints, 17, "multinomial"))
 
-    val predictionAndLabels = model
-      .transform(validationDataset)
+    val predictionAndLabels = model.transform(validationDataset)
       .select("prediction", "label")
     validatePrediction(predictionAndLabels)
 
-    val featureAndProbabilities = model
-      .transform(validationDataset)
+    val featureAndProbabilities = model.transform(validationDataset)
       .select("features", "probability")
     validateProbabilities(featureAndProbabilities, model, "multinomial")
   }
@@ -192,13 +190,11 @@ class NaiveBayesSuite
     val validationDataset = sqlContext.createDataFrame(
       generateNaiveBayesInput(piArray, thetaArray, nPoints, 20, "bernoulli"))
 
-    val predictionAndLabels = model
-      .transform(validationDataset)
+    val predictionAndLabels = model.transform(validationDataset)
       .select("prediction", "label")
     validatePrediction(predictionAndLabels)
 
-    val featureAndProbabilities = model
-      .transform(validationDataset)
+    val featureAndProbabilities = model.transform(validationDataset)
       .select("features", "probability")
     validateProbabilities(featureAndProbabilities, model, "bernoulli")
   }

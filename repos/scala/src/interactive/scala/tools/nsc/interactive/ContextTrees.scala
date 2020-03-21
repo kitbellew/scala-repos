@@ -130,8 +130,8 @@ trait ContextTrees {
           val hi = contexts.length - 1
           if (contexts(hi).pos precedes cpos)
             contexts += new ContextTree(cpos, context)
-          else if (contexts(
-                     hi).pos properlyIncludes cpos) // fast path w/o search
+          else if (contexts(hi)
+                     .pos properlyIncludes cpos) // fast path w/o search
             addContext(contexts(hi).children, context, cpos)
           else if (cpos precedes contexts(0).pos)
             new ContextTree(cpos, context) +=: contexts

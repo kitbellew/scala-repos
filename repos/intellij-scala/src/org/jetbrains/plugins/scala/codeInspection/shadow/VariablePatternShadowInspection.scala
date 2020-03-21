@@ -28,8 +28,7 @@ class VariablePatternShadowInspection
   }
 
   private def check(refPat: ScReferencePattern, holder: ProblemsHolder) {
-    val isInCaseClause = ScalaPsiUtil
-      .nameContext(refPat)
+    val isInCaseClause = ScalaPsiUtil.nameContext(refPat)
       .isInstanceOf[ScCaseClause]
     if (isInCaseClause) {
       val dummyRef: ScStableCodeReferenceElement = ScalaPsiElementFactory
@@ -41,8 +40,7 @@ class VariablePatternShadowInspection
       if (dummyRef == null)
         return //can happen in invalid code, e.g. if ')' is absent in case pattern
       val proc = new ResolveProcessor(StdKinds.valuesRef, dummyRef, refPat.name)
-      val results = dummyRef
-        .asInstanceOf[ResolvableStableCodeReferenceElement]
+      val results = dummyRef.asInstanceOf[ResolvableStableCodeReferenceElement]
         .doResolve(dummyRef, proc)
       def isAccessible(rr: ResolveResult): Boolean =
         rr.getElement match {
@@ -66,9 +64,8 @@ class ConvertToStableIdentifierPatternFix(r: ScReferencePattern)
       r) {
   def doApplyFix(project: Project) {
     val ref = getElement
-    val stableIdPattern = ScalaPsiElementFactory.createPatternFromText(
-      "`%s`".format(ref.getText),
-      ref.getManager)
+    val stableIdPattern = ScalaPsiElementFactory
+      .createPatternFromText("`%s`".format(ref.getText), ref.getManager)
     ref.replace(stableIdPattern)
   }
 }

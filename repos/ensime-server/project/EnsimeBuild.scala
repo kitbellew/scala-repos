@@ -39,7 +39,8 @@ object EnsimeBuild extends Build {
   ) ++ sonatype("ensime", "ensime-server", GPL3)
 
   lazy val commonItSettings = inConfig(It)(
-    Defaults.testSettings ++ Sensible.testSettings) ++ scalariformSettingsWithIt ++ Seq(
+    Defaults.testSettings ++ Sensible
+      .testSettings) ++ scalariformSettingsWithIt ++ Seq(
     javaOptions in It ++= Seq("-Dlogback.configurationFile=../logback-it.xml"))
 
   lazy val JavaTools: File = JdkDir / "lib/tools.jar"
@@ -76,8 +77,8 @@ object EnsimeBuild extends Build {
     util,
     testutil % "test"
   ) settings (libraryDependencies ++= Seq(
-    "org.parboiled" %% "parboiled" % "2.1.2") ++ Sensible.shapeless(
-    scalaVersion.value))
+    "org.parboiled" %% "parboiled" % "2.1.2") ++ Sensible
+    .shapeless(scalaVersion.value))
 
   lazy val api =
     Project("api", file("api")) settings (commonSettings) settings (
@@ -110,51 +111,46 @@ object EnsimeBuild extends Build {
     "com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion) ++ Sensible
     .shapeless(scalaVersion.value))
 
-  lazy val core = Project("core", file("core"))
-    .dependsOn(
-      api,
-      s_express,
-      monkeys,
-      api % "test->test", // for the interpolator
-      testutil % "test,it",
-      // depend on "it" dependencies in "test" or sbt adds them to the release deps!
-      // https://github.com/sbt/sbt/issues/1888
-      testingEmpty % "test,it",
-      testingSimple % "test,it",
-      // test config needed to get the test jar
-      testingSimpleJar % "test,it->test",
-      testingTiming % "test,it",
-      testingDebug % "test,it",
-      testingJava % "test,it"
-    )
-    .configs(It)
-    .settings(commonSettings, commonItSettings)
-    .settings(
-      unmanagedJars in Compile += JavaTools,
-      EnsimeKeys.unmanagedSourceArchives += file(
-        ".").getCanonicalFile / "openjdk-langtools/openjdk6-langtools-src.zip",
-      libraryDependencies ++= Seq(
-        "com.h2database" % "h2" % "1.4.190",
-        "com.typesafe.slick" %% "slick" % "3.1.1",
-        "com.zaxxer" % "HikariCP-java6" % "2.3.13",
-        // Netbeans 7.4+ needs Java 7 (7.3 only needs it at runtime)
-        "org.netbeans.api" % "org-netbeans-api-java" % "RELEASE731",
-        "org.netbeans.api" % "org-netbeans-modules-java-source" % "RELEASE731",
-        // lucene 4.8+ needs Java 7: http://www.gossamer-threads.com/lists/lucene/general/225300
-        "org.apache.lucene" % "lucene-core" % luceneVersion,
-        "org.apache.lucene" % "lucene-analyzers-common" % luceneVersion,
-        "org.ow2.asm" % "asm-commons" % "5.0.4",
-        "org.ow2.asm" % "asm-util" % "5.0.4",
-        "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-        "org.scala-lang" % "scalap" % scalaVersion.value,
-        "com.typesafe.akka" %% "akka-actor" % Sensible.akkaVersion,
-        "com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion,
-        "org.scala-refactoring" %% "org.scala-refactoring.library" % "0.9.1-SNAPSHOT",
-        "commons-lang" % "commons-lang" % "2.6",
-        "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0"
-      ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(
-        scalaVersion.value)
-    ) enablePlugins BuildInfoPlugin settings (
+  lazy val core = Project("core", file("core")).dependsOn(
+    api,
+    s_express,
+    monkeys,
+    api % "test->test", // for the interpolator
+    testutil % "test,it",
+    // depend on "it" dependencies in "test" or sbt adds them to the release deps!
+    // https://github.com/sbt/sbt/issues/1888
+    testingEmpty % "test,it",
+    testingSimple % "test,it",
+    // test config needed to get the test jar
+    testingSimpleJar % "test,it->test",
+    testingTiming % "test,it",
+    testingDebug % "test,it",
+    testingJava % "test,it"
+  ).configs(It).settings(commonSettings, commonItSettings).settings(
+    unmanagedJars in Compile += JavaTools,
+    EnsimeKeys.unmanagedSourceArchives += file(".")
+      .getCanonicalFile / "openjdk-langtools/openjdk6-langtools-src.zip",
+    libraryDependencies ++= Seq(
+      "com.h2database" % "h2" % "1.4.190",
+      "com.typesafe.slick" %% "slick" % "3.1.1",
+      "com.zaxxer" % "HikariCP-java6" % "2.3.13",
+      // Netbeans 7.4+ needs Java 7 (7.3 only needs it at runtime)
+      "org.netbeans.api" % "org-netbeans-api-java" % "RELEASE731",
+      "org.netbeans.api" % "org-netbeans-modules-java-source" % "RELEASE731",
+      // lucene 4.8+ needs Java 7: http://www.gossamer-threads.com/lists/lucene/general/225300
+      "org.apache.lucene" % "lucene-core" % luceneVersion,
+      "org.apache.lucene" % "lucene-analyzers-common" % luceneVersion,
+      "org.ow2.asm" % "asm-commons" % "5.0.4",
+      "org.ow2.asm" % "asm-util" % "5.0.4",
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+      "org.scala-lang" % "scalap" % scalaVersion.value,
+      "com.typesafe.akka" %% "akka-actor" % Sensible.akkaVersion,
+      "com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion,
+      "org.scala-refactoring" %% "org.scala-refactoring.library" % "0.9.1-SNAPSHOT",
+      "commons-lang" % "commons-lang" % "2.6",
+      "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0"
+    ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(scalaVersion.value)
+  ) enablePlugins BuildInfoPlugin settings (
     buildInfoPackage := organization.value,
     buildInfoKeys += BuildInfoKey.action("gitSha")(
       Try("git rev-parse --verify HEAD".!! dropRight 1) getOrElse "n/a"),
@@ -163,40 +159,35 @@ object EnsimeBuild extends Build {
 
   val luceneVersion = "4.7.2"
   val streamsVersion = "1.0"
-  lazy val server = Project("server", file("server"))
-    .dependsOn(
-      core,
-      swanky,
-      jerky,
-      s_express % "test->test",
-      swanky % "test->test",
-      // depend on "it" dependencies in "test" or sbt adds them to the release deps!
-      // https://github.com/sbt/sbt/issues/1888
-      core % "test->test",
-      core % "it->it",
-      testingDocs % "test,it"
-    )
-    .configs(It)
-    .settings(commonSettings ++ commonItSettings)
-    .settings(
-      libraryDependencies ++= Seq(
-        "com.typesafe.akka" %% "akka-stream-experimental" % streamsVersion,
-        "com.typesafe.akka" %% "akka-http-core-experimental" % streamsVersion,
-        "com.typesafe.akka" %% "akka-http-experimental" % streamsVersion,
-        "com.typesafe.akka" %% "akka-http-spray-json-experimental" % streamsVersion,
-        "com.typesafe.akka" %% "akka-http-xml-experimental" % streamsVersion,
-        "com.typesafe.akka" %% "akka-http-testkit-experimental" % streamsVersion % "test,it"
-      ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(
-        scalaVersion.value))
+  lazy val server = Project("server", file("server")).dependsOn(
+    core,
+    swanky,
+    jerky,
+    s_express % "test->test",
+    swanky % "test->test",
+    // depend on "it" dependencies in "test" or sbt adds them to the release deps!
+    // https://github.com/sbt/sbt/issues/1888
+    core % "test->test",
+    core % "it->it",
+    testingDocs % "test,it"
+  ).configs(It).settings(commonSettings ++ commonItSettings).settings(
+    libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-stream-experimental" % streamsVersion,
+      "com.typesafe.akka" %% "akka-http-core-experimental" % streamsVersion,
+      "com.typesafe.akka" %% "akka-http-experimental" % streamsVersion,
+      "com.typesafe.akka" %% "akka-http-spray-json-experimental" % streamsVersion,
+      "com.typesafe.akka" %% "akka-http-xml-experimental" % streamsVersion,
+      "com.typesafe.akka" %% "akka-http-testkit-experimental" % streamsVersion % "test,it"
+    ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(scalaVersion.value))
 
   // testing modules
   lazy val testingEmpty = Project("testingEmpty", file("testing/empty"))
 
-  lazy val testingSimple = Project(
-    "testingSimple",
-    file("testing/simple")) settings (
-    scalacOptions in Compile := Seq(),
-    libraryDependencies += "org.scalatest" %% "scalatest" % Sensible.scalatestVersion % "test" intransitive ()
+  lazy val testingSimple =
+    Project("testingSimple", file("testing/simple")) settings (
+      scalacOptions in Compile := Seq(),
+      libraryDependencies += "org.scalatest" %% "scalatest" % Sensible
+        .scalatestVersion % "test" intransitive ()
   )
 
   lazy val testingSimpleJar = Project(
@@ -209,11 +200,11 @@ object EnsimeBuild extends Build {
       (artifactPath in (Test, packageBin)).value)
   )
 
-  lazy val testingImplicits = Project(
-    "testingImplicits",
-    file("testing/implicits")) settings (
-    libraryDependencies += "org.scalatest" %% "scalatest" % Sensible.scalatestVersion % "test" intransitive ()
-  )
+  lazy val testingImplicits =
+    Project("testingImplicits", file("testing/implicits")) settings (
+      libraryDependencies += "org.scalatest" %% "scalatest" % Sensible
+        .scalatestVersion % "test" intransitive ()
+    )
 
   lazy val testingTiming = Project("testingTiming", file("testing/timing"))
 

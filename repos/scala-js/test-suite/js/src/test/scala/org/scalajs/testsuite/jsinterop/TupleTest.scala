@@ -239,18 +239,8 @@ class TupleTest {
 
   @Test
   def should_support_tuple_of_11(): Unit = {
-    val jsObj = js.Tuple11(
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      11)
+    val jsObj = js
+      .Tuple11("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 11)
     val scalaObj: (
         String,
         String,
@@ -276,19 +266,8 @@ class TupleTest {
 
   @Test
   def should_support_tuple_of_12(): Unit = {
-    val jsObj = js.Tuple12(
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-      "7",
-      "8",
-      "9",
-      "10",
-      "11",
-      12)
+    val jsObj = js
+      .Tuple12("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", 12)
     val scalaObj: (
         String,
         String,

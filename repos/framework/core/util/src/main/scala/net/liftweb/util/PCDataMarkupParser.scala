@@ -665,9 +665,8 @@ object AltXML {
             legacyIeCompatibilityMode)
 
       case e: Elem
-          if !legacyIeCompatibilityMode && (
-            (e.child eq null) || e.child.isEmpty
-          )
+          if !legacyIeCompatibilityMode && ((e.child eq null) || e.child
+            .isEmpty)
             && inlineTags.contains(e.label) =>
         sb.append('<')
         e.nameToString(sb)
@@ -676,9 +675,8 @@ object AltXML {
         sb.append(" />")
 
       case e: Elem
-          if legacyIeCompatibilityMode && (
-            (e.child eq null) || e.child.isEmpty
-          ) &&
+          if legacyIeCompatibilityMode && ((e.child eq null) || e.child
+            .isEmpty) &&
             ieBadTags.contains(e.label) =>
         sb.append('<')
         e.nameToString(sb)

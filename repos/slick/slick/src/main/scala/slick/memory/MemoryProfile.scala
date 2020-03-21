@@ -112,8 +112,7 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
                 from,
                 CompiledMapping(converter, _)) :@ CollectionType(cons, el) =>
             val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
-            val b = cons
-              .createBuilder(el.classTag)
+            val b = cons.createBuilder(el.classTag)
               .asInstanceOf[Builder[Any, Any]]
             b ++= fromV.map(v =>
               converter
@@ -140,8 +139,7 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
     def +=(value: T)(implicit session: Backend#Session) {
       val htable = session.database.getTable(table.tableName)
       val buf = htable.createInsertRow
-      converter
-        .asInstanceOf[ResultConverter[MemoryResultConverterDomain, Any]]
+      converter.asInstanceOf[ResultConverter[MemoryResultConverterDomain, Any]]
         .set(value, buf)
       htable.append(buf)
     }
@@ -183,13 +181,10 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
     protected[this] def getIterator(ctx: Backend#Context): Iterator[T] = {
       val inter = createInterpreter(ctx.session.database, param)
       val ResultSetMapping(_, from, CompiledMapping(converter, _)) = tree
-      val pvit = inter
-        .run(from)
-        .asInstanceOf[TraversableOnce[QueryInterpreter.ProductValue]]
-        .toIterator
+      val pvit = inter.run(from)
+        .asInstanceOf[TraversableOnce[QueryInterpreter.ProductValue]].toIterator
       pvit.map(
-        converter
-          .asInstanceOf[ResultConverter[MemoryResultConverterDomain, T]]
+        converter.asInstanceOf[ResultConverter[MemoryResultConverterDomain, T]]
           .read _)
     }
     def run(ctx: Backend#Context): R =
@@ -279,8 +274,8 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
   class InsertMappingCompiler(insert: Insert)
       extends ResultConverterCompiler[MemoryResultConverterDomain] {
     val Insert(_, table: TableNode, ProductNode(cols), _) = insert
-    val tableColumnIdxs =
-      table.profileTable.asInstanceOf[Table[_]].create_*.zipWithIndex.toMap
+    val tableColumnIdxs = table.profileTable.asInstanceOf[Table[_]].create_*
+      .zipWithIndex.toMap
 
     def createColumnConverter(n: Node, idx: Int, column: Option[FieldSymbol])
         : ResultConverter[MemoryResultConverterDomain, _] =
@@ -306,8 +301,8 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
       (
         serverSide,
         mapping.map(
-          new InsertMappingCompiler(
-            serverSide.asInstanceOf[Insert]).compileMapping))
+          new InsertMappingCompiler(serverSide.asInstanceOf[Insert])
+            .compileMapping))
   }
 }
 

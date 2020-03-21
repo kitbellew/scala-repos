@@ -92,9 +92,7 @@ class JDBCEngineInstances(
       preparatorParams,
       algorithmsParams,
       servingParams
-    FROM $tableName WHERE id = $id"""
-        .map(resultToEngineInstance)
-        .single()
+    FROM $tableName WHERE id = $id""".map(resultToEngineInstance).single()
         .apply()
     }
 

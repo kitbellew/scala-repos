@@ -31,8 +31,7 @@ object Main extends Logging {
   initializeLogIfNecessary(true)
 
   val conf = new SparkConf()
-  val rootDir = conf
-    .getOption("spark.repl.classdir")
+  val rootDir = conf.getOption("spark.repl.classdir")
     .getOrElse(Utils.getLocalDir(conf))
   val outputDir = Utils.createTempDir(root = rootDir, namePrefix = "repl")
 
@@ -53,10 +52,8 @@ object Main extends Logging {
   // Visible for testing
   private[repl] def doMain(args: Array[String], _interp: SparkILoop): Unit = {
     interp = _interp
-    val jars = conf
-      .getOption("spark.jars")
-      .map(_.replace(",", File.pathSeparator))
-      .getOrElse("")
+    val jars = conf.getOption("spark.jars")
+      .map(_.replace(",", File.pathSeparator)).getOrElse("")
     val interpArguments = List(
       "-Yrepl-class-based",
       "-Yrepl-outdir",
@@ -75,13 +72,12 @@ object Main extends Logging {
 
   def createSparkContext(): SparkContext = {
     val execUri = System.getenv("SPARK_EXECUTOR_URI")
-    conf
-      .setIfMissing("spark.app.name", "Spark shell")
-      // SparkContext will detect this configuration and register it with the RpcEnv's
-      // file server, setting spark.repl.class.uri to the actual URI for executors to
-      // use. This is sort of ugly but since executors are started as part of SparkContext
-      // initialization in certain cases, there's an initialization order issue that prevents
-      // this from being set after SparkContext is instantiated.
+    conf.setIfMissing("spark.app.name", "Spark shell")
+    // SparkContext will detect this configuration and register it with the RpcEnv's
+    // file server, setting spark.repl.class.uri to the actual URI for executors to
+    // use. This is sort of ugly but since executors are started as part of SparkContext
+    // initialization in certain cases, there's an initialization order issue that prevents
+    // this from being set after SparkContext is instantiated.
       .set("spark.repl.class.outputDir", outputDir.getAbsolutePath())
     if (execUri != null) { conf.set("spark.executor.uri", execUri) }
     if (System.getenv("SPARK_HOME") != null) {
@@ -96,11 +92,8 @@ object Main extends Logging {
     val name = "org.apache.spark.sql.hive.HiveContext"
     val loader = Utils.getContextOrSparkClassLoader
     try {
-      sqlContext = loader
-        .loadClass(name)
-        .getConstructor(classOf[SparkContext])
-        .newInstance(sparkContext)
-        .asInstanceOf[SQLContext]
+      sqlContext = loader.loadClass(name).getConstructor(classOf[SparkContext])
+        .newInstance(sparkContext).asInstanceOf[SQLContext]
       logInfo("Created sql context (with Hive support)..")
     } catch {
       case _: java.lang.ClassNotFoundException |

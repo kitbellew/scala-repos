@@ -44,8 +44,8 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
   private val cpath = new Path(checkpointPath)
   @transient
   private val fs = cpath.getFileSystem(hadoopConf)
-  private val broadcastedConf = sc.broadcast(new SerializableConfiguration(
-    hadoopConf))
+  private val broadcastedConf = sc
+    .broadcast(new SerializableConfiguration(hadoopConf))
 
   // Fail fast if checkpoint directory does not exist
   require(
@@ -59,9 +59,8 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
 
   override val partitioner: Option[Partitioner] = {
     _partitioner.orElse {
-      ReliableCheckpointRDD.readCheckpointedPartitionerFile(
-        context,
-        checkpointPath)
+      ReliableCheckpointRDD
+        .readCheckpointedPartitionerFile(context, checkpointPath)
     }
   }
 
@@ -74,16 +73,13 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
     */
   protected override def getPartitions: Array[Partition] = {
     // listStatus can throw exception if path does not exist.
-    val inputFiles = fs
-      .listStatus(cpath)
-      .map(_.getPath)
-      .filter(_.getName.startsWith("part-"))
-      .sortBy(_.toString)
+    val inputFiles = fs.listStatus(cpath).map(_.getPath)
+      .filter(_.getName.startsWith("part-")).sortBy(_.toString)
     // Fail fast if input files are invalid
     inputFiles.zipWithIndex.foreach {
       case (path, i) =>
-        if (!path.toString.endsWith(ReliableCheckpointRDD.checkpointFileName(
-              i))) {
+        if (!path.toString
+              .endsWith(ReliableCheckpointRDD.checkpointFileName(i))) {
           throw new SparkException(s"Invalid checkpoint file: $path")
         }
     }
@@ -144,8 +140,8 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     }
 
     // Save to file, and reload it as an RDD
-    val broadcastedConf = sc.broadcast(new SerializableConfiguration(
-      sc.hadoopConfiguration))
+    val broadcastedConf = sc
+      .broadcast(new SerializableConfiguration(sc.hadoopConfiguration))
     // TODO: This is expensive because it computes the RDD again unnecessarily (SPARK-8582)
     sc.runJob(
       originalRDD,
@@ -183,8 +179,8 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     val outputDir = new Path(path)
     val fs = outputDir.getFileSystem(broadcastedConf.value.value)
 
-    val finalOutputName = ReliableCheckpointRDD.checkpointFileName(
-      ctx.partitionId())
+    val finalOutputName = ReliableCheckpointRDD
+      .checkpointFileName(ctx.partitionId())
     val finalOutputPath = new Path(outputDir, finalOutputName)
     val tempOutputPath =
       new Path(outputDir, s".$finalOutputName-attempt-${ctx.attemptNumber()}")

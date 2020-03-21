@@ -93,19 +93,17 @@ trait ModelFactoryImplicitSupport {
       inTpl: DocTemplateImpl): List[ImplicitConversionImpl] =
     // Nothing and Null are somewhat special -- they can be transformed by any implicit conversion available in scope.
     // But we don't want that, so we'll simply refuse to find implicit conversions on for Nothing and Null
-    if (!(
-          sym.isClass || sym.isTrait || sym == AnyRefClass
-        ) || sym == NothingClass || sym == NullClass) Nil
+    if (!(sym.isClass || sym
+          .isTrait || sym == AnyRefClass) || sym == NothingClass || sym == NullClass)
+      Nil
     else {
-      val context: global.analyzer.Context = global.analyzer.rootContext(
-        NoCompilationUnit)
+      val context: global.analyzer.Context = global.analyzer
+        .rootContext(NoCompilationUnit)
 
-      val results =
-        global.analyzer.allViewsFrom(sym.tpe_*, context, sym.typeParams) ++
-          global.analyzer.allViewsFrom(
-            byNameType(sym.tpe_*),
-            context,
-            sym.typeParams)
+      val results = global.analyzer
+        .allViewsFrom(sym.tpe_*, context, sym.typeParams) ++
+        global.analyzer
+          .allViewsFrom(byNameType(sym.tpe_*), context, sym.typeParams)
       var conversions = results.flatMap(result =>
         makeImplicitConversion(sym, result._1, result._2, context, inTpl))
       //debug(results.mkString("All views\n  ", "\n  ", "\n"))
@@ -115,8 +113,7 @@ trait ModelFactoryImplicitSupport {
       // conversions = conversions.filter(!_.members.isEmpty)
 
       val hiddenConversions: Seq[String] = thisFactory
-        .comment(sym, inTpl.linkTarget, inTpl)
-        .map(_.hideImplicitConversions)
+        .comment(sym, inTpl.linkTarget, inTpl).map(_.hideImplicitConversions)
         .getOrElse(Nil)
 
       conversions = conversions filterNot { conv: ImplicitConversionImpl =>
@@ -131,8 +128,8 @@ trait ModelFactoryImplicitSupport {
             .valueClassFilter(sym.nameString, ic.conversionQualifiedName))
 
       // Put the visible conversions in front
-      val (ownConversions, commonConversions) = conversions.partition(
-        !_.isHiddenConversion)
+      val (ownConversions, commonConversions) = conversions
+        .partition(!_.isHiddenConversion)
 
       ownConversions ::: commonConversions
     }
@@ -203,9 +200,8 @@ trait ModelFactoryImplicitSupport {
         val newContext = context.makeImplicit(context.ambiguousErrors)
         newContext.macrosEnabled = false
         val newTyper = global.analyzer.newTyper(newContext)
-        newTyper.silent(
-          _.typed(appliedTree),
-          reportAmbiguousErrors = false) match {
+        newTyper
+          .silent(_.typed(appliedTree), reportAmbiguousErrors = false) match {
 
           case global.analyzer.SilentResultValue(t: Tree) => t
           case global.analyzer.SilentTypeError(err) =>
@@ -280,8 +276,7 @@ trait ModelFactoryImplicitSupport {
       if (implType.isTrivial) {
         try {
           // TODO: Not sure if `owner = sym.owner` is the right thing to do -- seems similar to what scalac should be doing
-          val silentContext = context
-            .make(owner = sym.owner)
+          val silentContext = context.make(owner = sym.owner)
             .makeSilent(reportAmbiguousErrors = false)
           val search = inferImplicit(
             EmptyTree,
@@ -466,7 +461,8 @@ trait ModelFactoryImplicitSupport {
     def isHiddenConversion = settings.hiddenImplicits(conversionQualifiedName)
 
     override def toString =
-      "Implicit conversion from " + sym.tpe + " to " + toType + " done by " + convSym
+      "Implicit conversion from " + sym
+        .tpe + " to " + toType + " done by " + convSym
   }
 
   /* ========================= HELPER METHODS ========================== */
@@ -500,7 +496,8 @@ trait ModelFactoryImplicitSupport {
         // check if it's shadowed by a member in the original class.
         val shadowed = membersByName.get(sym1.name).toList.flatten filter {
           other =>
-            !settings.docImplicitsSoundShadowing.value || !isDistinguishableFrom(
+            !settings.docImplicitsSoundShadowing
+              .value || !isDistinguishableFrom(
               tpe1,
               inTpl.sym.info.memberInfo(other.sym))
         }
@@ -622,9 +619,8 @@ trait ModelFactoryImplicitSupport {
     // - common methods (in Any, AnyRef, Object) as they are automatically removed
     // - private and protected members (not accessible following an implicit conversion)
     // - members starting with _ (usually reserved for internal stuff)
-    localShouldDocument(aSym) && (!aSym.isConstructor) && (
-      aSym.owner != AnyValClass
-    ) &&
+    localShouldDocument(aSym) && (!aSym.isConstructor) && (aSym
+      .owner != AnyValClass) &&
     (aSym.owner != AnyClass) && (aSym.owner != ObjectClass) &&
     (!aSym.isProtected) && (!aSym.isPrivate) && (!aSym.name.startsWith("_")) &&
     (aSym.isMethod || aSym.isGetter || aSym.isSetter) &&

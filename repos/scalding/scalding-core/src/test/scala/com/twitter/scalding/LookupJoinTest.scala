@@ -25,13 +25,10 @@ object LookupJoinedTest {
   // Not defined if there is a collision in K and T, so make those unique:
   def genList(maxTime: Int, maxKey: Int, sz: Int): List[(Int, Int, Int)] = {
     val rng = new java.util.Random
-    (0 until sz).view
-      .map { _ => (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt) }
-      .groupBy { case (t, k, v) => (t, k) }
-      .mapValues(_.headOption.toList)
-      .values
-      .flatten
-      .toList
+    (0 until sz).view.map { _ =>
+      (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt)
+    }.groupBy { case (t, k, v) => (t, k) }.mapValues(_.headOption.toList).values
+      .flatten.toList
   }
 }
 
@@ -44,22 +41,17 @@ class LookupJoinerJob(args: Args) extends Job(args) {
 
   LookupJoin(
     TypedPipe.from(in0).map { case (t, k, v) => (t, (k, v)) },
-    TypedPipe.from(in1).map { case (t, k, v) => (t, (k, v)) })
-    .map {
-      case (t, (k, (v, opt))) =>
-        (t.toString, k.toString, v.toString, opt.toString)
-    }
-    .write(TypedTsv[(String, String, String, String)]("output"))
+    TypedPipe.from(in1).map { case (t, k, v) => (t, (k, v)) }).map {
+    case (t, (k, (v, opt))) =>
+      (t.toString, k.toString, v.toString, opt.toString)
+  }.write(TypedTsv[(String, String, String, String)]("output"))
 
-  LookupJoin
-    .rightSumming(
-      TypedPipe.from(in0).map { case (t, k, v) => (t, (k, v)) },
-      TypedPipe.from(in1).map { case (t, k, v) => (t, (k, v)) })
-    .map {
-      case (t, (k, (v, opt))) =>
-        (t.toString, k.toString, v.toString, opt.toString)
-    }
-    .write(TypedTsv[(String, String, String, String)]("output2"))
+  LookupJoin.rightSumming(
+    TypedPipe.from(in0).map { case (t, k, v) => (t, (k, v)) },
+    TypedPipe.from(in1).map { case (t, k, v) => (t, (k, v)) }).map {
+    case (t, (k, (v, opt))) =>
+      (t.toString, k.toString, v.toString, opt.toString)
+  }.write(TypedTsv[(String, String, String, String)]("output2"))
 }
 
 class LookupJoinedTest extends WordSpec with Matchers {
@@ -74,10 +66,8 @@ class LookupJoinedTest extends WordSpec with Matchers {
     def lookup(t: T, k: K): Option[W] = {
       val ord = Ordering.by { tkw: (T, K, W) => tkw._1 }
       serv.get(k).flatMap { in1s =>
-        in1s
-          .filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
-          .reduceOption(ord.max(_, _))
-          .map { _._3 }
+        in1s.filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
+          .reduceOption(ord.max(_, _)).map { _._3 }
       }
     }
     in0.map {
@@ -90,30 +80,19 @@ class LookupJoinedTest extends WordSpec with Matchers {
       in0: Iterable[(T, K, V)],
       in1: Iterable[(T, K, W)]) = {
     implicit val ord: Ordering[(T, K, W)] = Ordering.by { _._1 }
-    val serv = in1
-      .groupBy(_._2)
-      .mapValues {
-        _.toList.sorted
-          .scanLeft(None: Option[(T, K, W)]) { (old, newer) =>
-            old
-              .map {
-                case (_, _, w) =>
-                  (newer._1, newer._2, Semigroup.plus(w, newer._3))
-              }
-              .orElse(Some(newer))
-          }
-          .filter { _.isDefined }
-          .map { _.get }
-      }
-      .toMap // Force the map
+    val serv = in1.groupBy(_._2).mapValues {
+      _.toList.sorted.scanLeft(None: Option[(T, K, W)]) { (old, newer) =>
+        old.map {
+          case (_, _, w) => (newer._1, newer._2, Semigroup.plus(w, newer._3))
+        }.orElse(Some(newer))
+      }.filter { _.isDefined }.map { _.get }
+    }.toMap // Force the map
 
     def lookup(t: T, k: K): Option[W] = {
       val ord = Ordering.by { tkw: (T, K, W) => tkw._1 }
       serv.get(k).flatMap { in1s =>
-        in1s
-          .filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
-          .reduceOption(ord.max(_, _))
-          .map { _._3 }
+        in1s.filter { case (t1, _, _) => Ordering[T].lt(t1, t) }
+          .reduceOption(ord.max(_, _)).map { _._3 }
       }
     }
     in0.map {
@@ -135,13 +114,11 @@ class LookupJoinedTest extends WordSpec with Matchers {
           TypedTsv[(String, String, String, String)]("output")) { outBuf =>
           outBuf.toSet should equal(lookupJoin(in0, in1).toSet)
           in0.size should equal(outBuf.size)
-        }
-        .sink[(String, String, String, String)](
+        }.sink[(String, String, String, String)](
           TypedTsv[(String, String, String, String)]("output2")) { outBuf =>
           outBuf.toSet should equal(lookupSumJoin(in0, in1).toSet)
           in0.size should equal(outBuf.size)
-        }
-        .run
+        }.run
         //.runHadoop
         .finish
     }
@@ -158,15 +135,12 @@ class WindowLookupJoinerJob(args: Args) extends Job(args) {
 
   def gate(left: Int, right: Int) = (left.toLong - right.toLong) < window
 
-  LookupJoin
-    .withWindow(
-      TypedPipe.from(in0).map { case (t, k, v) => (t, (k, v)) },
-      TypedPipe.from(in1).map { case (t, k, v) => (t, (k, v)) })(gate _)
-    .map {
-      case (t, (k, (v, opt))) =>
-        (t.toString, k.toString, v.toString, opt.toString)
-    }
-    .write(TypedTsv[(String, String, String, String)]("output"))
+  LookupJoin.withWindow(
+    TypedPipe.from(in0).map { case (t, k, v) => (t, (k, v)) },
+    TypedPipe.from(in1).map { case (t, k, v) => (t, (k, v)) })(gate _).map {
+    case (t, (k, (v, opt))) =>
+      (t.toString, k.toString, v.toString, opt.toString)
+  }.write(TypedTsv[(String, String, String, String)]("output"))
 }
 
 class WindowLookupJoinedTest extends WordSpec with Matchers {
@@ -183,12 +157,9 @@ class WindowLookupJoinedTest extends WordSpec with Matchers {
     def lookup(t: Int, k: K): Option[W] = {
       val ord = Ordering.by { tkw: (Int, K, W) => tkw._1 }
       serv.get(k).flatMap { in1s =>
-        in1s
-          .filter {
-            case (t1, _, _) => (t1 < t) && ((t.toLong - t1.toLong) < win)
-          }
-          .reduceOption(ord.max(_, _))
-          .map { _._3 }
+        in1s.filter {
+          case (t1, _, _) => (t1 < t) && ((t.toLong - t1.toLong) < win)
+        }.reduceOption(ord.max(_, _)).map { _._3 }
       }
     }
     in0.map {
@@ -205,8 +176,7 @@ class WindowLookupJoinedTest extends WordSpec with Matchers {
       val sz: Int = 10000;
       val in0 = genList(MAX_TIME, MAX_KEY, 10000)
       val in1 = genList(MAX_TIME, MAX_KEY, 10000)
-      JobTest(new WindowLookupJoinerJob(_))
-        .arg("window", "100")
+      JobTest(new WindowLookupJoinerJob(_)).arg("window", "100")
         .source(TypedTsv[(Int, Int, Int)]("input0"), in0)
         .source(TypedTsv[(Int, Int, Int)]("input1"), in1)
         .sink[(String, String, String, String)](
@@ -222,8 +192,7 @@ class WindowLookupJoinedTest extends WordSpec with Matchers {
           some(results) shouldBe (some(correct))
           none(results) shouldBe (none(correct))
           in0.size should equal(outBuf.size)
-        }
-        .run
+        }.run
         //.runHadoop
         .finish
     }

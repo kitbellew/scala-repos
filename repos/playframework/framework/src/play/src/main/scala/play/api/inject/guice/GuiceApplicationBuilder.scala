@@ -105,8 +105,8 @@ final case class GuiceApplicationBuilder(
   override def applicationModule(): GuiceModule = {
     val initialConfiguration = loadConfiguration(environment)
     val appConfiguration = initialConfiguration ++ configuration
-    val globalSettings = global.getOrElse(
-      GlobalSettings(appConfiguration, environment))
+    val globalSettings = global
+      .getOrElse(GlobalSettings(appConfiguration, environment))
 
     LoggerConfigurator(environment.classLoader).foreach {
       _.configure(environment)
@@ -119,13 +119,10 @@ final case class GuiceApplicationBuilder(
 
     val loadedModules = loadModules(environment, appConfiguration)
 
-    copy(configuration = appConfiguration)
-      .bindings(loadedModules: _*)
-      .bindings(
-        bind[GlobalSettings.Deprecated] to globalSettings,
-        bind[OptionalSourceMapper] to new OptionalSourceMapper(None),
-        bind[WebCommands] to new DefaultWebCommands)
-      .createModule()
+    copy(configuration = appConfiguration).bindings(loadedModules: _*).bindings(
+      bind[GlobalSettings.Deprecated] to globalSettings,
+      bind[OptionalSourceMapper] to new OptionalSourceMapper(None),
+      bind[WebCommands] to new DefaultWebCommands).createModule()
   }
 
   /**
@@ -238,9 +235,8 @@ private class FakeRoutes(
     override def applyOrElse[A <: RequestHeader, B >: Handler](
         rh: A,
         default: A => B) =
-      injected.applyOrElse(
-        (rh.method, rh.path),
-        (_: (String, String)) => default(rh))
+      injected
+        .applyOrElse((rh.method, rh.path), (_: (String, String)) => default(rh))
     def isDefinedAt(rh: RequestHeader) =
       injected.isDefinedAt((rh.method, rh.path))
   } orElse new AbstractPartialFunction[RequestHeader, Handler] {

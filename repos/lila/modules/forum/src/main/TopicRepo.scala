@@ -16,9 +16,8 @@ object TopicRepoTroll extends TopicRepo(true)
 
 sealed abstract class TopicRepo(troll: Boolean) {
 
-  private lazy val trollFilter = troll.fold(
-    Json.obj(),
-    Json.obj("troll" -> false))
+  private lazy val trollFilter = troll
+    .fold(Json.obj(), Json.obj("troll" -> false))
 
   def close(id: String, value: Boolean): Funit =
     $update.field(id, "closed", value)

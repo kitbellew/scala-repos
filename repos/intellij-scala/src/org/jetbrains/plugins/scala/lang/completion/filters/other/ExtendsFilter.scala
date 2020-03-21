@@ -36,8 +36,8 @@ class ExtendsFilter extends ElementFilter {
           else {
             if (leaf.getNextSibling != null &&
                 leaf.getNextSibling.getNextSibling != null &&
-                leaf.getNextSibling.getNextSibling.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
-              return false
+                leaf.getNextSibling.getNextSibling.getNode
+                  .getElementType == ScalaTokenTypes.kEXTENDS) return false
             else return true
           }
         case _ => return false

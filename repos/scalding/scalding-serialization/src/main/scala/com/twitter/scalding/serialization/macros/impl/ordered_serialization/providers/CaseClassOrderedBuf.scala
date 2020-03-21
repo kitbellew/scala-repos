@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.twitter.scalding.serialization.macros.impl.ordered_serialization.providers
+package com.twitter.scalding.serialization.macros.impl.ordered_serialization
+  .providers
 
 import scala.language.experimental.macros
 import scala.reflect.macros.Context
@@ -32,8 +33,9 @@ object CaseClassOrderedBuf {
       buildDispatcher: => PartialFunction[c.Type, TreeOrderedBuf[c.type]])
       : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
     case tpe
-        if tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass && !tpe.typeSymbol.asClass.isModuleClass && !tpe.typeConstructor.takesTypeArgs =>
-      CaseClassOrderedBuf(c)(buildDispatcher, tpe)
+        if tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass && !tpe
+          .typeSymbol.asClass.isModuleClass && !tpe.typeConstructor
+          .takesTypeArgs => CaseClassOrderedBuf(c)(buildDispatcher, tpe)
   }
 
   def apply(c: Context)(
@@ -44,14 +46,13 @@ object CaseClassOrderedBuf {
 
     val dispatcher = buildDispatcher
     val elementData: List[(c.universe.Type, TermName, TreeOrderedBuf[c.type])] =
-      outerType.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
-        .map { accessorMethod =>
-          val fieldType = accessorMethod.returnType
-          val b: TreeOrderedBuf[c.type] = dispatcher(fieldType)
-          (fieldType, accessorMethod.name.toTermName, b)
-        }
-        .toList
+      outerType.declarations.collect {
+        case m: MethodSymbol if m.isCaseAccessor => m
+      }.map { accessorMethod =>
+        val fieldType = accessorMethod.returnType
+        val b: TreeOrderedBuf[c.type] = dispatcher(fieldType)
+        (fieldType, accessorMethod.name.toTermName, b)
+      }.toList
 
     new TreeOrderedBuf[c.type] {
       override val ctx: c.type = c
@@ -90,8 +91,7 @@ object CaseClassOrderedBuf {
         ProductLike.compare(c)(elementA, elementB)(elementData)
 
       override val lazyOuterVariables: Map[String, ctx.Tree] = elementData
-        .map(_._3.lazyOuterVariables)
-        .reduce(_ ++ _)
+        .map(_._3.lazyOuterVariables).reduce(_ ++ _)
 
       override def length(element: Tree) =
         ProductLike.length(c)(element)(elementData)

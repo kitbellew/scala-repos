@@ -99,8 +99,7 @@ trait Base {
     new JSONR[List[A]] {
       def read(json: JValue) =
         json match {
-          case JArray(xs) =>
-            xs.map(fromJSON[A])
+          case JArray(xs) => xs.map(fromJSON[A])
               .sequence[PartialApply1Of2[ValidationNEL, Error]#Apply, A]
           case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
         }
@@ -129,8 +128,7 @@ trait Base {
       def read(json: JValue) =
         json match {
           case JObject(fs) =>
-            val r = fs
-              .map(f => fromJSON[A](f.value).map(v => (f.name, v)))
+            val r = fs.map(f => fromJSON[A](f.value).map(v => (f.name, v)))
               .sequence[PartialApply1Of2[
                 ValidationNEL,
                 Error]#Apply, (String, A)]

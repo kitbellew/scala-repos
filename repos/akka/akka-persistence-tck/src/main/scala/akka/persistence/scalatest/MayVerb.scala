@@ -21,8 +21,8 @@ trait MayVerb {
     try body
     catch {
       case cause: Throwable ⇒
-        val shortTrace = cause.getStackTrace.take(
-          mayVerbStacktraceContextFrames)
+        val shortTrace = cause.getStackTrace
+          .take(mayVerbStacktraceContextFrames)
         throw new TestCanceledByFailure(whenSkippedMessage, shortTrace)
     }
 

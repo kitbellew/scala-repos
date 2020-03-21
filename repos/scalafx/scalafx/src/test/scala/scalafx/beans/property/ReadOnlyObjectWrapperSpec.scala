@@ -215,8 +215,8 @@ class ReadOnlyObjectWrapperSpec
 
   it should "support readOnlyProperty" in {
     val wrapper = ReadOnlyObjectWrapper("Test")
-    val readOnlyProperty: ReadOnlyObjectProperty[String] =
-      wrapper.readOnlyProperty
+    val readOnlyProperty: ReadOnlyObjectProperty[String] = wrapper
+      .readOnlyProperty
     readOnlyProperty() should equal("Test")
 
     wrapper.value = "New value"

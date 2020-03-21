@@ -53,8 +53,8 @@ private object JerkConversions extends DefaultJsonProtocol with FamilyFormats {
 }
 
 object JerkFormats {
-  implicit val RpcRequestFormat: RootJsonFormat[RpcRequest] =
-    JerkConversions.RpcRequestFormat
+  implicit val RpcRequestFormat: RootJsonFormat[RpcRequest] = JerkConversions
+    .RpcRequestFormat
   implicit val EnsimeServerMessageFormat: RootJsonFormat[EnsimeServerMessage] =
     JerkConversions.EnsimeServerMessageFormat
 }

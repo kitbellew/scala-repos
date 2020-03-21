@@ -40,8 +40,7 @@ object Test {
     code.lines.foreach(imain.interpret)
 
     val virtualFile: AbstractFile = extract.value.getClass.getClassLoader
-      .asInstanceOf[AbstractFileClassLoader]
-      .root
+      .asInstanceOf[AbstractFileClassLoader].root
     val newLoader =
       new AbstractFileClassLoader(virtualFile, getClass.getClassLoader)
 

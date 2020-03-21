@@ -16,8 +16,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
   // create a list of strings passed to this interpolation
   lazy val rawQueryParts: List[String] = {
     //Deconstruct macro application to determine the passed string and the actual parameters
-    val Apply(Select(Apply(_, List(Apply(_, strArg))), _), paramList) =
-      c.macroApplication
+    val Apply(Select(Apply(_, List(Apply(_, strArg))), _), paramList) = c
+      .macroApplication
     strArg map {
       case Literal(Constant(x: String)) => x
       case _ =>
@@ -82,8 +82,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     * Creates the tree for GetResult[] of the tsql macro
     */
   def rconvTree(resultTypes: Vector[ClassTag[_]]) = {
-    val resultTypeTrees = resultTypes.map(
-      _.runtimeClass.getCanonicalName match {
+    val resultTypeTrees = resultTypes
+      .map(_.runtimeClass.getCanonicalName match {
         case "int"     => TypeTree(typeOf[Int])
         case "byte"    => TypeTree(typeOf[Byte])
         case "long"    => TypeTree(typeOf[Long])
@@ -186,11 +186,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     else {
       val queryString = new ListBuffer[Tree]
       val remaining = new ListBuffer[c.Expr[SetParameter[Unit]]]
-      paramsList
-        .asInstanceOf[List[c.Expr[Any]]]
-        .iterator
-        .zip(rawQueryParts.iterator)
-        .foreach {
+      paramsList.asInstanceOf[List[c.Expr[Any]]].iterator
+        .zip(rawQueryParts.iterator).foreach {
           case (param, rawQueryPart) =>
             val (queryPart, append) = decode(rawQueryPart)
             queryString.append(Literal(Constant(queryPart)))

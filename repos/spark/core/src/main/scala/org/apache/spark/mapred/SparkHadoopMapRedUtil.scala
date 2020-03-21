@@ -71,9 +71,8 @@ object SparkHadoopMapRedUtil extends Logging {
         val sparkConf = SparkEnv.get.conf
         // We only need to coordinate with the driver if there are multiple concurrent task
         // attempts, which should only occur if speculation is enabled
-        val speculationEnabled = sparkConf.getBoolean(
-          "spark.speculation",
-          defaultValue = false)
+        val speculationEnabled = sparkConf
+          .getBoolean("spark.speculation", defaultValue = false)
         // This (undocumented) setting is an escape-hatch in case the commit code introduces bugs
         sparkConf.getBoolean(
           "spark.hadoop.outputCommitCoordination.enabled",
@@ -83,10 +82,8 @@ object SparkHadoopMapRedUtil extends Logging {
       if (shouldCoordinateWithDriver) {
         val outputCommitCoordinator = SparkEnv.get.outputCommitCoordinator
         val taskAttemptNumber = TaskContext.get().attemptNumber()
-        val canCommit = outputCommitCoordinator.canCommit(
-          jobId,
-          splitId,
-          taskAttemptNumber)
+        val canCommit = outputCommitCoordinator
+          .canCommit(jobId, splitId, taskAttemptNumber)
 
         if (canCommit) { performCommit() }
         else {

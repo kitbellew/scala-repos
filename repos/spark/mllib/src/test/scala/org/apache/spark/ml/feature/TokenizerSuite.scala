@@ -36,8 +36,7 @@ class TokenizerSuite
   test("params") { ParamsSuite.checkParams(new Tokenizer) }
 
   test("read/write") {
-    val t = new Tokenizer()
-      .setInputCol("myInputCol")
+    val t = new Tokenizer().setInputCol("myInputCol")
       .setOutputCol("myOutputCol")
     testDefaultReadWrite(t)
   }
@@ -53,10 +52,8 @@ class RegexTokenizerSuite
   test("params") { ParamsSuite.checkParams(new RegexTokenizer) }
 
   test("RegexTokenizer") {
-    val tokenizer0 = new RegexTokenizer()
-      .setGaps(false)
-      .setPattern("\\w+|\\p{Punct}")
-      .setInputCol("rawText")
+    val tokenizer0 = new RegexTokenizer().setGaps(false)
+      .setPattern("\\w+|\\p{Punct}").setInputCol("rawText")
       .setOutputCol("tokens")
     val dataset0 = sqlContext.createDataFrame(Seq(
       TokenizerTestData(
@@ -73,8 +70,7 @@ class RegexTokenizerSuite
     tokenizer0.setMinTokenLength(3)
     testRegexTokenizer(tokenizer0, dataset1)
 
-    val tokenizer2 = new RegexTokenizer()
-      .setInputCol("rawText")
+    val tokenizer2 = new RegexTokenizer().setInputCol("rawText")
       .setOutputCol("tokens")
     val dataset2 = sqlContext.createDataFrame(Seq(
       TokenizerTestData(
@@ -85,10 +81,8 @@ class RegexTokenizerSuite
   }
 
   test("RegexTokenizer with toLowercase false") {
-    val tokenizer = new RegexTokenizer()
-      .setInputCol("rawText")
-      .setOutputCol("tokens")
-      .setToLowercase(false)
+    val tokenizer = new RegexTokenizer().setInputCol("rawText")
+      .setOutputCol("tokens").setToLowercase(false)
     val dataset = sqlContext.createDataFrame(Seq(
       TokenizerTestData("JAVA SCALA", Array("JAVA", "SCALA")),
       TokenizerTestData("java scala", Array("java", "scala"))))
@@ -96,13 +90,9 @@ class RegexTokenizerSuite
   }
 
   test("read/write") {
-    val t = new RegexTokenizer()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setMinTokenLength(2)
-      .setGaps(false)
-      .setPattern("hi")
-      .setToLowercase(false)
+    val t = new RegexTokenizer().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setMinTokenLength(2).setGaps(false)
+      .setPattern("hi").setToLowercase(false)
     testDefaultReadWrite(t)
   }
 }
@@ -110,11 +100,8 @@ class RegexTokenizerSuite
 object RegexTokenizerSuite extends SparkFunSuite {
 
   def testRegexTokenizer(t: RegexTokenizer, dataset: DataFrame): Unit = {
-    t.transform(dataset)
-      .select("tokens", "wantedTokens")
-      .collect()
-      .foreach {
-        case Row(tokens, wantedTokens) => assert(tokens === wantedTokens)
-      }
+    t.transform(dataset).select("tokens", "wantedTokens").collect().foreach {
+      case Row(tokens, wantedTokens) => assert(tokens === wantedTokens)
+    }
   }
 }

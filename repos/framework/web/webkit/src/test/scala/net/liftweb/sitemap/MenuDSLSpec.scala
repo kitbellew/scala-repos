@@ -94,9 +94,7 @@ object MenuDslSpec extends Specification {
           Menu("Bat") / "bat"
       )
 
-      val complete = SiteMap(menu)
-        .kids(0)
-        .makeMenuItem(List())
+      val complete = SiteMap(menu).kids(0).makeMenuItem(List())
         .openOrThrowException("legacy code")
 
       complete.kids.size must_== 2

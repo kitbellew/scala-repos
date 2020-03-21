@@ -56,8 +56,8 @@ object ThriftMuxResponseClassifier {
     * Categorizes responses where the '''deserialized''' response is a
     * Thrift Exception as a [[ResponseClass.NonRetryableFailure]].
     */
-  val ThriftExceptionsAsFailures: ResponseClassifier =
-    ThriftResponseClassifier.ThriftExceptionsAsFailures
+  val ThriftExceptionsAsFailures: ResponseClassifier = ThriftResponseClassifier
+    .ThriftExceptionsAsFailures
 
   private[this] val NoDeserializeCtx: DeserializeCtx[Nothing] =
     new DeserializeCtx[Nothing](null, null)

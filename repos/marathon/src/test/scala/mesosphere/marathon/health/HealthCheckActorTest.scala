@@ -38,12 +38,11 @@ class HealthCheckActorTest
     val appVersion = Timestamp(1)
     val app = AppDefinition(id = appId)
     val appRepository: AppRepository = mock[AppRepository]
-    when(appRepository.app(appId, appVersion)).thenReturn(Future.successful(
-      Some(app)))
+    when(appRepository.app(appId, appVersion))
+      .thenReturn(Future.successful(Some(app)))
 
-    val task = MarathonTestHelper.stagedTask(
-      "test_task.9876543",
-      appVersion = appVersion)
+    val task = MarathonTestHelper
+      .stagedTask("test_task.9876543", appVersion = appVersion)
 
     when(tracker.appTasksSync(appId)).thenReturn(Set(task))
 
@@ -81,12 +80,11 @@ class HealthCheckActorTest
     val appVersion = Timestamp(1)
     val app = AppDefinition(id = appId)
     val appRepository: AppRepository = mock[AppRepository]
-    when(appRepository.app(appId, appVersion)).thenReturn(Future.successful(
-      Some(app)))
+    when(appRepository.app(appId, appVersion))
+      .thenReturn(Future.successful(Some(app)))
 
-    val task = MarathonTestHelper.runningTask(
-      "test_task.9876543",
-      appVersion = appVersion)
+    val task = MarathonTestHelper
+      .runningTask("test_task.9876543", appVersion = appVersion)
 
     val healthCheck: HealthCheck = HealthCheck(maxConsecutiveFailures = 3)
 

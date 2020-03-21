@@ -29,8 +29,7 @@ final class PerfStatIndexer(storage: PerfStatStorage, sequencer: ActorRef) {
         Query.turnsMoreThan(2) ++
         Query.variant(PerfType variantOf perfType)
 
-    }).sort(Query.sortChronological)
-      .cursor[Game]()
+    }).sort(Query.sortChronological).cursor[Game]()
       .enumerate(Int.MaxValue, stopOnError = true) |>>>
       Iteratee.fold[Game, PerfStat](PerfStat.init(user.id, perfType)) {
         case (perfStat, game) if game.perfType.contains(perfType) =>
@@ -40,12 +39,9 @@ final class PerfStatIndexer(storage: PerfStatStorage, sequencer: ActorRef) {
   } flatMap storage.insert
 
   def addGame(game: Game): Funit =
-    game.players
-      .flatMap { player =>
-        player.userId.map { userId => addPov(Pov(game, player), userId) }
-      }
-      .sequenceFu
-      .void
+    game.players.flatMap { player =>
+      player.userId.map { userId => addPov(Pov(game, player), userId) }
+    }.sequenceFu.void
 
   private def addPov(pov: Pov, userId: String): Funit =
     pov.game.perfType ?? { perfType =>

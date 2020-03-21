@@ -69,10 +69,8 @@ object PatternAnnotator {
     def exTpMatchesPattp =
       PatternAnnotatorUtil.matchesPattern(exTp, widen(patType))
 
-    val neverMatches =
-      !PatternAnnotatorUtil.matchesPattern(exTp, patType) && isNeverSubType(
-        exTp,
-        patType)
+    val neverMatches = !PatternAnnotatorUtil
+      .matchesPattern(exTp, patType) && isNeverSubType(exTp, patType)
 
     def isEliminatedByErasure =
       (ScType.extractClass(exprType), ScType.extractClass(patType)) match {
@@ -103,9 +101,8 @@ object PatternAnnotator {
         holder.createErrorAnnotation(pattern, message)
       case _: ScTypedPattern
           if exTp.isFinalType && freeTypeParams.isEmpty && !exTpMatchesPattp =>
-        val (exprTypeText, patTypeText) = ScTypePresentation.different(
-          exprType,
-          patType)
+        val (exprTypeText, patTypeText) = ScTypePresentation
+          .different(exprType, patType)
         val message = ScalaBundle.message(
           "scrutinee.incompatible.pattern.type",
           patTypeText,
@@ -122,15 +119,12 @@ object PatternAnnotator {
           exprType)
         holder.createErrorAnnotation(pattern, message)
       case (_: ScTuplePattern | _: ScInfixPattern) if neverMatches =>
-        val message = ScalaBundle.message(
-          "pattern.type.incompatible.with.expected",
-          patType,
-          exprType)
+        val message = ScalaBundle
+          .message("pattern.type.incompatible.with.expected", patType, exprType)
         holder.createErrorAnnotation(pattern, message)
       case _ if patType.isFinalType && neverMatches =>
-        val (exprTypeText, patTypeText) = ScTypePresentation.different(
-          exprType,
-          patType)
+        val (exprTypeText, patTypeText) = ScTypePresentation
+          .different(exprType, patType)
         val message = ScalaBundle.message(
           "pattern.type.incompatible.with.expected",
           patTypeText,
@@ -140,18 +134,16 @@ object PatternAnnotator {
         val erasureWarn =
           if (isEliminatedByErasure) ScalaBundle.message("erasure.warning")
           else ""
-        val (exprTypeText, patTypeText) = ScTypePresentation.different(
-          exprType,
-          patType)
+        val (exprTypeText, patTypeText) = ScTypePresentation
+          .different(exprType, patType)
         val message = ScalaBundle.message(
           "fruitless.type.test",
           exprTypeText,
           patTypeText) + erasureWarn
         holder.createWarningAnnotation(pattern, message)
       case StableIdResolvesToVar() =>
-        val message = ScalaBundle.message(
-          "stable.identifier.required",
-          pattern.getText)
+        val message = ScalaBundle
+          .message("stable.identifier.required", pattern.getText)
         holder.createErrorAnnotation(pattern, message)
       case _: ScInterpolationPattern => //do not check interpolated patterns for number of arguments
       case (_: ScConstructorPattern |

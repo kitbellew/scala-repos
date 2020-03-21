@@ -58,11 +58,8 @@ class Kalman(N: Int) {
   }
 
   override def toString =
-    "Kalman<estimate=%f, weight=%f, mvar=%f, evar=%f>".format(
-      estimate,
-      weight,
-      mvar,
-      evar)
+    "Kalman<estimate=%f, weight=%f, mvar=%f, evar=%f>"
+      .format(estimate, weight, mvar, evar)
 }
 
 /**

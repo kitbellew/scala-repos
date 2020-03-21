@@ -142,8 +142,8 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
           """{ "booyan": "shazam", "booyak": 5, "bazam": 2.5 }""")
         extends mockReq {
       val testJson = jsonString
-      val parsedJson =
-        tryo(JsonParser.parse(jsonString)) openOr json.JsonAST.JNothing
+      val parsedJson = tryo(JsonParser.parse(jsonString)) openOr json.JsonAST
+        .JNothing
 
       def bodyBytes = { testJson.getBytes("UTF-8") }
     }

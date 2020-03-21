@@ -29,8 +29,7 @@ object IntentionUtil {
       }
 
       it.takeWhile { a => acceptableElem(a) }
-        .filter(a => a.isInstanceOf[PsiComment])
-        .toSeq
+        .filter(a => a.isInstanceOf[PsiComment]).toSeq
     }
 
     CommentsAroundElement(
@@ -41,11 +40,10 @@ object IntentionUtil {
   def hasOtherComments(
       element: PsiElement,
       commentsAroundElement: CommentsAroundElement): Boolean = {
-    val allComments = PsiTreeUtil.getChildrenOfTypeAsList(
-      element,
-      classOf[PsiComment])
-    allComments
-      .size() > commentsAroundElement.before.size + commentsAroundElement.after.size
+    val allComments = PsiTreeUtil
+      .getChildrenOfTypeAsList(element, classOf[PsiComment])
+    allComments.size() > commentsAroundElement.before
+      .size + commentsAroundElement.after.size
   }
 
   def addComments(
@@ -83,8 +81,7 @@ object IntentionUtil {
     val builder: TemplateBuilderImpl = new TemplateBuilderImpl(elem)
     builder.replaceElement(elem, expression)
     editor.getCaretModel.moveToOffset(elem.getNode.getStartOffset)
-    TemplateManager
-      .getInstance(project)
+    TemplateManager.getInstance(project)
       .startTemplate(editor, builder.buildInlineTemplate())
   }
 }

@@ -61,11 +61,8 @@ class ESEvaluationInstances(
               ("type" -> "string") ~ ("index" -> "no")) ~
             ("evaluatorResultsJSON" ->
               ("type" -> "string") ~ ("index" -> "no"))))
-    indices
-      .preparePutMapping(index)
-      .setType(estype)
-      .setSource(compact(render(json)))
-      .get
+    indices.preparePutMapping(index).setType(estype)
+      .setSource(compact(render(json))).get
   }
 
   def insert(i: EvaluationInstance): String = {
@@ -105,9 +102,7 @@ class ESEvaluationInstances(
 
   def getCompleted(): Seq[EvaluationInstance] = {
     try {
-      val builder = client
-        .prepareSearch(index)
-        .setTypes(estype)
+      val builder = client.prepareSearch(index).setTypes(estype)
         .setPostFilter(termFilter("status", "EVALCOMPLETED"))
         .addSort("startTime", SortOrder.DESC)
       ESUtils.getAll[EvaluationInstance](client, builder)

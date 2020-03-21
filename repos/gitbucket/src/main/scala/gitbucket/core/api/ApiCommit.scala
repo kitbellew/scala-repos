@@ -51,8 +51,8 @@ object ApiCommit {
       },
       modified = diffs._1.collect {
         case x
-            if x.changeType != DiffEntry.ChangeType.ADD && x.changeType != DiffEntry.ChangeType.DELETE =>
-          x.newPath
+            if x.changeType != DiffEntry.ChangeType.ADD && x
+              .changeType != DiffEntry.ChangeType.DELETE => x.newPath
       },
       author = ApiPersonIdent.author(commit),
       committer = ApiPersonIdent.committer(commit)

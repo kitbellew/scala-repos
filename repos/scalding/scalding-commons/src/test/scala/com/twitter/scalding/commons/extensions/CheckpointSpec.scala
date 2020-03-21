@@ -40,10 +40,9 @@ class CheckpointJob(args: Args) extends Job(args) {
     }
   def out =
     Checkpoint[(Int, Int, Int)]("c2", ('x0, 'x1, 'score)) {
-      in0
-        .joinWithSmaller('y0 -> 'y1, in1)
-        .map(('s0, 's1) -> 'score) { v: (Int, Int) => v._1 * v._2 }
-        .groupBy('x0, 'x1) { _.sum[Double]('score) }
+      in0.joinWithSmaller('y0 -> 'y1, in1).map(('s0, 's1) -> 'score) {
+        v: (Int, Int) => v._1 * v._2
+      }.groupBy('x0, 'x1) { _.sum[Double]('score) }
     }
 
   out.write(Tsv("output"))
@@ -63,16 +62,11 @@ class TypedCheckpointJob(args: Args) extends Job(args) {
     }
   def out =
     Checkpoint[(Int, Int, Double)]("c2") {
-      in0
-        .groupBy(_._2)
-        .join(in1.groupBy(_._2))
-        .mapValues { case (l, r) => ((l._1, r._1), (l._3 * r._3).toDouble) }
-        .values
-        .group
-        .sum
-        .map { tup =>
-          (tup._1._1, tup._1._2, tup._2)
-        } // super ugly, don't do this in a real job
+      in0.groupBy(_._2).join(in1.groupBy(_._2)).mapValues {
+        case (l, r) => ((l._1, r._1), (l._3 * r._3).toDouble)
+      }.values.group.sum.map { tup =>
+        (tup._1._1, tup._1._2, tup._2)
+      } // super ugly, don't do this in a real job
     }
 
   out.write(TypedTsv[(Int, Int, Double)]("output"))
@@ -92,55 +86,41 @@ class CheckpointSpec extends WordSpec {
     // output, and clears the local file set.
     def runTest(test: JobTest) =
       // runHadoop seems to have trouble with sequencefile format; use TSV.
-      test
-        .arg("checkpoint.format", "tsv")
-        .sink[(Int, Int, Double)](Tsv("output"))(verifyOutput(out, _))
-        .run
-        .runHadoop
-        .finish
+      test.arg("checkpoint.format", "tsv")
+        .sink[(Int, Int, Double)](Tsv("output"))(verifyOutput(out, _)).run
+        .runHadoop.finish
 
     "run without checkpoints" in runTest {
-      JobTest(new CheckpointJob(_))
-        .source(Tsv("input0"), in0)
+      JobTest(new CheckpointJob(_)).source(Tsv("input0"), in0)
         .source(Tsv("input1"), in1)
     }
 
     "read c0, write c1 and c2" in runTest {
       // Adding filenames to Checkpoint.testFileSet makes Checkpoint think that
       // they exist.
-      JobTest(new CheckpointJob(_))
-        .arg("checkpoint.file", "test")
-        .registerFile("test_c0")
-        .source(Tsv("test_c0"), in0)
+      JobTest(new CheckpointJob(_)).arg("checkpoint.file", "test")
+        .registerFile("test_c0").source(Tsv("test_c0"), in0)
         .source(Tsv("input1"), in1)
         .sink[(Int, Int, Int)](Tsv("test_c1"))(verifyOutput(in1, _))
         .sink[(Int, Int, Double)](Tsv("test_c2"))(verifyOutput(out, _))
     }
 
     "read c2, skipping c0 and c1" in runTest {
-      JobTest(new CheckpointJob(_))
-        .arg("checkpoint.file", "test")
-        .registerFile("test_c2")
-        .source(Tsv("test_c2"), out)
+      JobTest(new CheckpointJob(_)).arg("checkpoint.file", "test")
+        .registerFile("test_c2").source(Tsv("test_c2"), out)
     }
 
     "clobber c0" in runTest {
-      JobTest(new CheckpointJob(_))
-        .arg("checkpoint.file.c0", "test_c0")
-        .arg("checkpoint.clobber", "")
-        .registerFile("test_c0")
-        .source(Tsv("input0"), in0)
-        .source(Tsv("input1"), in1)
+      JobTest(new CheckpointJob(_)).arg("checkpoint.file.c0", "test_c0")
+        .arg("checkpoint.clobber", "").registerFile("test_c0")
+        .source(Tsv("input0"), in0).source(Tsv("input1"), in1)
         .sink[(Int, Int, Int)](Tsv("test_c0"))(verifyOutput(in0, _))
     }
 
     "read c0 and clobber c1" in runTest {
-      JobTest(new CheckpointJob(_))
-        .arg("checkpoint.file", "test")
-        .arg("checkpoint.clobber.c1", "")
-        .registerFile("test_c0")
-        .registerFile("test_c1")
-        .source(Tsv("test_c0"), in0)
+      JobTest(new CheckpointJob(_)).arg("checkpoint.file", "test")
+        .arg("checkpoint.clobber.c1", "").registerFile("test_c0")
+        .registerFile("test_c1").source(Tsv("test_c0"), in0)
         .source(Tsv("input1"), in1)
         .sink[(Int, Int, Int)](Tsv("test_c1"))(verifyOutput(in1, _))
         .sink[(Int, Int, Double)](Tsv("test_c2"))(verifyOutput(out, _))
@@ -162,13 +142,9 @@ class TypedCheckpointSpec extends WordSpec {
     // output, and clears the local file set.
     def runTest(test: JobTest) =
       // runHadoop seems to have trouble with sequencefile format; use TSV.
-      test
-        .arg("checkpoint.format", "tsv")
-        .sink[(Int, Int, Double)](TypedTsv[(Int, Int, Double)]("output"))(
-          verifyOutput(out, _))
-        .run
-        .runHadoop
-        .finish
+      test.arg("checkpoint.format", "tsv").sink[(Int, Int, Double)](
+        TypedTsv[(Int, Int, Double)]("output"))(verifyOutput(out, _)).run
+        .runHadoop.finish
 
     "run without checkpoints" in runTest {
       JobTest(new TypedCheckpointJob(_))
@@ -179,39 +155,30 @@ class TypedCheckpointSpec extends WordSpec {
     "read c0, write c1 and c2" in runTest {
       // Adding filenames to Checkpoint.testFileSet makes Checkpoint think that
       // they exist.
-      JobTest(new TypedCheckpointJob(_))
-        .arg("checkpoint.file", "test")
-        .registerFile("test_c0")
-        .source(Tsv("test_c0"), in0)
+      JobTest(new TypedCheckpointJob(_)).arg("checkpoint.file", "test")
+        .registerFile("test_c0").source(Tsv("test_c0"), in0)
         .source(TypedTsv[(Int, Int, Int)]("input1"), in1)
         .sink[(Int, Int, Int)](Tsv("test_c1"))(verifyOutput(in1, _))
         .sink[(Int, Int, Double)](Tsv("test_c2"))(verifyOutput(out, _))
     }
 
     "read c2, skipping c0 and c1" in runTest {
-      JobTest(new TypedCheckpointJob(_))
-        .arg("checkpoint.file", "test")
-        .registerFile("test_c2")
-        .source(Tsv("test_c2"), out)
+      JobTest(new TypedCheckpointJob(_)).arg("checkpoint.file", "test")
+        .registerFile("test_c2").source(Tsv("test_c2"), out)
     }
 
     "clobber c0" in runTest {
-      JobTest(new TypedCheckpointJob(_))
-        .arg("checkpoint.file.c0", "test_c0")
-        .arg("checkpoint.clobber", "")
-        .registerFile("test_c0")
+      JobTest(new TypedCheckpointJob(_)).arg("checkpoint.file.c0", "test_c0")
+        .arg("checkpoint.clobber", "").registerFile("test_c0")
         .source(TypedTsv[(Int, Int, Int)]("input0"), in0)
         .source(TypedTsv[(Int, Int, Int)]("input1"), in1)
         .sink[(Int, Int, Int)](Tsv("test_c0"))(verifyOutput(in0, _))
     }
 
     "read c0 and clobber c1" in runTest {
-      JobTest(new TypedCheckpointJob(_))
-        .arg("checkpoint.file", "test")
-        .arg("checkpoint.clobber.c1", "")
-        .registerFile("test_c0")
-        .registerFile("test_c1")
-        .source(Tsv("test_c0"), in0)
+      JobTest(new TypedCheckpointJob(_)).arg("checkpoint.file", "test")
+        .arg("checkpoint.clobber.c1", "").registerFile("test_c0")
+        .registerFile("test_c1").source(Tsv("test_c0"), in0)
         .source(TypedTsv[(Int, Int, Int)]("input1"), in1)
         .sink[(Int, Int, Int)](Tsv("test_c1"))(verifyOutput(in1, _))
         .sink[(Int, Int, Double)](Tsv("test_c2"))(verifyOutput(out, _))

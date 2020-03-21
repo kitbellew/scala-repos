@@ -36,17 +36,17 @@ object JdbcDataSource extends Logging {
       val clazz = classLoader.loadClass(name)
       clazz.getField("MODULE$").get(clazz).asInstanceOf[JdbcDataSourceFactory]
     }
-    val pf: JdbcDataSourceFactory =
-      c.getStringOr("connectionPool", "HikariCP") match {
-        case "disabled" => DataSourceJdbcDataSource
-        case "HikariCP" => loadFactory(
-            "slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
-        case "slick.jdbc.HikariCPJdbcDataSource" =>
-          logger.warn(
-            "connectionPool class 'slick.jdbc.HikariCPJdbcDataSource$' has been renamed to 'slick.jdbc.hikaricp.HikariCPJdbcDataSource$'")
-          loadFactory("slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
-        case name => loadFactory(name)
-      }
+    val pf: JdbcDataSourceFactory = c
+      .getStringOr("connectionPool", "HikariCP") match {
+      case "disabled" => DataSourceJdbcDataSource
+      case "HikariCP" => loadFactory(
+          "slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
+      case "slick.jdbc.HikariCPJdbcDataSource" =>
+        logger.warn(
+          "connectionPool class 'slick.jdbc.HikariCPJdbcDataSource$' has been renamed to 'slick.jdbc.hikaricp.HikariCPJdbcDataSource$'")
+        loadFactory("slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
+      case name => loadFactory(name)
+    }
     pf.forConfig(c, driver, name, classLoader)
   }
 }
@@ -246,8 +246,7 @@ class ConnectionPreparer(c: Config) extends (Connection => Unit) {
       throw new SlickException(
         s"Unknown transaction isolation level [$unknown]")
   }
-  val catalog = c
-    .getStringOpt("catalog")
+  val catalog = c.getStringOpt("catalog")
     .orElse(c.getStringOpt("defaultCatalog"))
   val readOnly = c.getBooleanOpt("readOnly")
 

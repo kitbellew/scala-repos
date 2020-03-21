@@ -126,8 +126,8 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
   def createMakeProjectChb(file: VirtualFile): JCheckBox = {
     createCheckBox(
       "Make project",
-      WorksheetCompiler.isMakeBeforeRun(
-        PsiManager getInstance project findFile file),
+      WorksheetCompiler
+        .isMakeBeforeRun(PsiManager getInstance project findFile file),
       box =>
         new ChangeListener {
           override def stateChanged(e: ChangeEvent) {

@@ -181,8 +181,7 @@ class ReliableProxySpec
       runOn(local) {
         // the rateMBit value is derived from empirical studies so that it will trigger resends,
         // the exact value is not important, but it should not be too large
-        testConductor
-          .throttle(local, remote, Direction.Send, rateMBit = 0.02)
+        testConductor.throttle(local, remote, Direction.Send, rateMBit = 0.02)
           .await
         sendN(50)
         within(5 seconds) {
@@ -208,8 +207,7 @@ class ReliableProxySpec
         // the rateMBit value is derived from empirical studies so that it will trigger resends,
         // the exact value is not important, but it should not be too large
         testConductor
-          .throttle(local, remote, Direction.Receive, rateMBit = 0.02)
-          .await
+          .throttle(local, remote, Direction.Receive, rateMBit = 0.02).await
         sendN(50)
         within(5 seconds) {
           expectTransition(Idle, Active)
@@ -274,9 +272,8 @@ class ReliableProxySpec
         stopProxy() // Stop previous proxy
 
         // Start new proxy with no reconnections
-        proxy = system.actorOf(
-          ReliableProxy.props(target.path, 100.millis),
-          "proxy2")
+        proxy = system
+          .actorOf(ReliableProxy.props(target.path, 100.millis), "proxy2")
         proxy ! FSM.SubscribeTransitionCallBack(testActor)
         watch(proxy)
 

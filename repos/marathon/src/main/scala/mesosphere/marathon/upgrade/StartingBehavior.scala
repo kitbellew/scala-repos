@@ -109,9 +109,7 @@ trait StartingBehavior {
       taskQueue.add(app)
 
     case Sync =>
-      val actualSize = taskQueue
-        .get(app.id)
-        .map(_.finalTaskCount)
+      val actualSize = taskQueue.get(app.id).map(_.finalTaskCount)
         .getOrElse(taskTracker.countLaunchedAppTasksSync(app.id))
       val tasksToStartNow = Math.max(scaleTo - actualSize, 0)
       if (tasksToStartNow > 0) {

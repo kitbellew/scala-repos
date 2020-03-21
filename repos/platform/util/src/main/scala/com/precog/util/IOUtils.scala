@@ -127,17 +127,13 @@ object IOUtils extends Logging {
   def createTmpDir(prefix: String): IO[File] =
     IO {
       val tmpDir = Files.createTempDir()
-      Option(tmpDir.getParentFile)
-        .map { parent =>
-          val newTmpDir = new File(parent, prefix + tmpDir.getName)
-          if (!tmpDir.renameTo(newTmpDir)) {
-            sys.error("Error on tmpdir creation: rename to prefixed failed")
-          }
-          newTmpDir
+      Option(tmpDir.getParentFile).map { parent =>
+        val newTmpDir = new File(parent, prefix + tmpDir.getName)
+        if (!tmpDir.renameTo(newTmpDir)) {
+          sys.error("Error on tmpdir creation: rename to prefixed failed")
         }
-        .getOrElse {
-          sys.error("Error on tmpdir creation: no parent dir found")
-        }
+        newTmpDir
+      }.getOrElse { sys.error("Error on tmpdir creation: no parent dir found") }
     }
 
   def copyFile(src: File, dest: File): IO[PrecogUnit] =

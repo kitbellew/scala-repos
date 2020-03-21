@@ -74,10 +74,8 @@ private[streaming] class ReceiverSupervisorImpl(
   }
 
   /** Remote RpcEndpointRef for the ReceiverTracker */
-  private val trackerEndpoint = RpcUtils.makeDriverRef(
-    "ReceiverTracker",
-    env.conf,
-    env.rpcEnv)
+  private val trackerEndpoint = RpcUtils
+    .makeDriverRef("ReceiverTracker", env.conf, env.rpcEnv)
 
   /** RpcEndpointRef for receiving messages from the ReceiverTracker in the driver */
   private val endpoint = env.rpcEnv.setupEndpoint(
@@ -163,9 +161,8 @@ private[streaming] class ReceiverSupervisorImpl(
       blockIdOption: Option[StreamBlockId]) {
     val blockId = blockIdOption.getOrElse(nextBlockId)
     val time = System.currentTimeMillis
-    val blockStoreResult = receivedBlockHandler.storeBlock(
-      blockId,
-      receivedBlock)
+    val blockStoreResult = receivedBlockHandler
+      .storeBlock(blockId, receivedBlock)
     logDebug(
       s"Pushed block $blockId in ${(System.currentTimeMillis - time)} ms")
     val numRecords = blockStoreResult.numRecords
@@ -180,8 +177,7 @@ private[streaming] class ReceiverSupervisorImpl(
 
   /** Report error to the receiver tracker */
   def reportError(message: String, error: Throwable) {
-    val errorString = Option(error)
-      .map(Throwables.getStackTraceAsString)
+    val errorString = Option(error).map(Throwables.getStackTraceAsString)
       .getOrElse("")
     trackerEndpoint.send(ReportError(streamId, message, errorString))
     logWarning("Reported error " + message + " - " + error)
@@ -211,8 +207,8 @@ private[streaming] class ReceiverSupervisorImpl(
       error: Option[Throwable]) {
     logInfo("Deregistering receiver " + streamId)
     val errorString = error.map(Throwables.getStackTraceAsString).getOrElse("")
-    trackerEndpoint.askWithRetry[Boolean](
-      DeregisterReceiver(streamId, message, errorString))
+    trackerEndpoint
+      .askWithRetry[Boolean](DeregisterReceiver(streamId, message, errorString))
     logInfo("Stopped receiver " + streamId)
   }
 

@@ -520,13 +520,11 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
 
       lazy val groupedDomains: List[Set[Sym]] = {
         val subtypes = enumerateSubtypes(staticTp, grouped = true)
-        subtypes
-          .map { subTypes =>
-            val syms =
-              subTypes.flatMap(tpe => symForEqualsTo.get(TypeConst(tpe))).toSet
-            if (mayBeNull) syms + symForEqualsTo(NullConst) else syms
-          }
-          .filter(_.nonEmpty)
+        subtypes.map { subTypes =>
+          val syms = subTypes.flatMap(tpe => symForEqualsTo.get(TypeConst(tpe)))
+            .toSet
+          if (mayBeNull) syms + symForEqualsTo(NullConst) else syms
+        }.filter(_.nonEmpty)
       }
 
       // populate equalitySyms
@@ -671,8 +669,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
         _ map symForEqualsTo
       }
 
-      lazy val symForStaticTp: Option[Sym] = symForEqualsTo.get(TypeConst(
-        staticTpCheckable))
+      lazy val symForStaticTp: Option[Sym] = symForEqualsTo
+        .get(TypeConst(staticTpCheckable))
 
       // don't access until all potential equalities have been registered using registerEquality
       private lazy val equalitySyms = {
@@ -721,8 +719,7 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       private[TreesAndTypesDomain] def unique(
           tp: Type,
           mkFresh: => Const): Const =
-        uniques
-          .get(tp)
+        uniques.get(tp)
           .getOrElse(uniques.find { case (oldTp, oldC) => oldTp =:= tp } match {
             case Some((_, c)) =>
               debug.patmat("unique const: " + ((tp, c)))
@@ -755,8 +752,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
               orig.tpe
             case _ =>
               // duplicate, don't mutate old tree (TODO: use a map tree -> type instead?)
-              val treeWithNarrowedType =
-                t.duplicate setType freshExistentialSubtype(t.tpe)
+              val treeWithNarrowedType = t
+                .duplicate setType freshExistentialSubtype(t.tpe)
               debug.patmat("uniqued: " + ((t, t.tpe, treeWithNarrowedType.tpe)))
               trees += treeWithNarrowedType
               treeWithNarrowedType.tpe

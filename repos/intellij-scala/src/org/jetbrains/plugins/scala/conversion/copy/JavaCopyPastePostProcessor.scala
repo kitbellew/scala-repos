@@ -40,13 +40,11 @@ class JavaCopyPastePostProcessor
 
   private lazy val referenceProcessor = Extensions
     .getExtensions(CopyPastePostProcessor.EP_NAME)
-    .find(_.isInstanceOf[JavaCopyPasteReferenceProcessor])
-    .get
+    .find(_.isInstanceOf[JavaCopyPasteReferenceProcessor]).get
 
   private lazy val scalaProcessor = Extensions
     .getExtensions(CopyPastePostProcessor.EP_NAME)
-    .find(_.isInstanceOf[ScalaCopyPastePostProcessor])
-    .get
+    .find(_.isInstanceOf[ScalaCopyPastePostProcessor]).get
     .asInstanceOf[ScalaCopyPastePostProcessor]
 
   protected def collectTransferableData0(
@@ -55,8 +53,7 @@ class JavaCopyPastePostProcessor
       startOffsets: Array[Int],
       endOffsets: Array[Int]): TextBlockTransferableData = {
     if (DumbService.getInstance(file.getProject).isDumb) return null
-    if (!ScalaProjectSettings
-          .getInstance(file.getProject)
+    if (!ScalaProjectSettings.getInstance(file.getProject)
           .isEnableJavaToScalaConversion ||
         !file.isInstanceOf[PsiJavaFile]) return null
 
@@ -92,7 +89,8 @@ class JavaCopyPastePostProcessor
                   .substring(file.getText))
             }
             buffer += ElementPart(elem)
-            while (elem.getNextSibling != null && elem.getNextSibling.getTextRange.getEndOffset <= endOffset) {
+            while (elem.getNextSibling != null && elem.getNextSibling
+                     .getTextRange.getEndOffset <= endOffset) {
               elem = elem.getNextSibling
               buffer += ElementPart(elem)
             }
@@ -108,11 +106,8 @@ class JavaCopyPastePostProcessor
 
       def getRefs: Seq[ReferenceData] = {
         val refs = {
-          val data = referenceProcessor.collectTransferableData(
-            file,
-            editor,
-            startOffsets,
-            endOffsets)
+          val data = referenceProcessor
+            .collectTransferableData(file, editor, startOffsets, endOffsets)
           if (data.isEmpty) null
           else data.get(0).asInstanceOf[ReferenceTransferableData]
         }
@@ -149,16 +144,14 @@ class JavaCopyPastePostProcessor
       val rangeMap = visitor.rangedElementsMap
 
       val updatedAssociations = associationsHelper
-        .filter(_.itype.isInstanceOf[TypedElement])
-        .map { a =>
+        .filter(_.itype.isInstanceOf[TypedElement]).map { a =>
           val typedElement = a.itype.asInstanceOf[TypedElement].getType
           val range = rangeMap.getOrElse(typedElement, new TextRange(0, 0))
           new Association(a.kind, range, a.path)
         }
 
       updatedAssociations ++= associationsHelper
-        .filter(_.itype.isInstanceOf[JavaCodeReferenceStatement])
-        .map { a =>
+        .filter(_.itype.isInstanceOf[JavaCodeReferenceStatement]).map { a =>
           val range = rangeMap.getOrElse(a.itype, new TextRange(0, 0))
           new Association(a.kind, range, a.path)
         }
@@ -166,10 +159,10 @@ class JavaCopyPastePostProcessor
       new ConvertedCode(text, updatedAssociations.toArray)
     } catch {
       case e: Exception =>
-        val selections = (startOffsets, endOffsets).zipped.map((a, b) =>
-          file.getText.substring(a, b))
-        val attachments = selections.zipWithIndex.map(p =>
-          new Attachment("Selection-%d.java".format(p._2 + 1), p._1))
+        val selections = (startOffsets, endOffsets).zipped
+          .map((a, b) => file.getText.substring(a, b))
+        val attachments = selections.zipWithIndex
+          .map(p => new Attachment("Selection-%d.java".format(p._2 + 1), p._1))
         Log.error(LogMessageEx.createEvent(
           e.getMessage,
           ExceptionUtil.getThrowableText(e),
@@ -181,8 +174,7 @@ class JavaCopyPastePostProcessor
   protected def extractTransferableData0(
       content: Transferable): TextBlockTransferableData = {
     if (content.isDataFlavorSupported(ConvertedCode.Flavor))
-      content
-        .getTransferData(ConvertedCode.Flavor)
+      content.getTransferData(ConvertedCode.Flavor)
         .asInstanceOf[TextBlockTransferableData]
     else null
   }
@@ -194,12 +186,10 @@ class JavaCopyPastePostProcessor
       i: Int,
       ref: Ref[Boolean],
       value: TextBlockTransferableData) {
-    if (!ScalaProjectSettings
-          .getInstance(project)
+    if (!ScalaProjectSettings.getInstance(project)
           .isEnableJavaToScalaConversion) return
     if (value == null) return
-    val file = PsiDocumentManager
-      .getInstance(project)
+    val file = PsiDocumentManager.getInstance(project)
       .getPsiFile(editor.getDocument)
     if (!file.isInstanceOf[ScalaFile]) return
     val dialog = new ScalaPasteFromJavaDialog(project)
@@ -210,14 +200,12 @@ class JavaCopyPastePostProcessor
     if (text == "") return //copy as usually
     if (!ScalaProjectSettings.getInstance(project).isDontShowConversionDialog)
       dialog.show()
-    if (ScalaProjectSettings
-          .getInstance(project)
+    if (ScalaProjectSettings.getInstance(project)
           .isDontShowConversionDialog || dialog.isOK) {
       val shiftedAssociations = inWriteAction {
         replaceByConvertedCode(editor, bounds, text)
         editor.getCaretModel.moveToOffset(bounds.getStartOffset + text.length)
-        PsiDocumentManager
-          .getInstance(file.getProject)
+        PsiDocumentManager.getInstance(file.getProject)
           .commitDocument(editor.getDocument)
 
         val markedAssociations = associations.toList.zipMapped { dependency =>
@@ -253,13 +241,12 @@ class JavaCopyPastePostProcessor
   }
 
   private def withSpecialStyleIn(project: Project)(block: => Unit) {
-    val settings = CodeStyleSettingsManager
-      .getSettings(project)
+    val settings = CodeStyleSettingsManager.getSettings(project)
       .getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
 
     val keep_blank_lines_in_code = settings.KEEP_BLANK_LINES_IN_CODE
-    val keep_blank_lines_in_declarations =
-      settings.KEEP_BLANK_LINES_IN_DECLARATIONS
+    val keep_blank_lines_in_declarations = settings
+      .KEEP_BLANK_LINES_IN_DECLARATIONS
     val keep_blank_lines_before_rbrace = settings.KEEP_BLANK_LINES_BEFORE_RBRACE
 
     settings.KEEP_BLANK_LINES_IN_CODE = 0

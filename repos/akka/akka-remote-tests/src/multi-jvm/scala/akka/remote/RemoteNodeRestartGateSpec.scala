@@ -75,8 +75,7 @@ abstract class RemoteNodeRestartGateSpec
 
         identify(second, "subject")
 
-        EventFilter
-          .warning(pattern = "address is now gated", occurrences = 1)
+        EventFilter.warning(pattern = "address is now gated", occurrences = 1)
           .intercept {
             Await.result(
               RARP(system).provider.transport
@@ -99,13 +98,14 @@ abstract class RemoteNodeRestartGateSpec
           }
         }
 
-        system.actorSelection(
-          RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+        system
+          .actorSelection(
+            RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
       }
 
       runOn(second) {
-        val addr =
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+        val addr = system.asInstanceOf[ExtendedActorSystem].provider
+          .getDefaultAddress
         val firstAddress = node(first).address
 
         enterBarrier("gated")

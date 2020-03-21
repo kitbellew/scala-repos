@@ -208,14 +208,14 @@ abstract class PersistentViewSpec(config: Config)
 
   "A persistent view" must {
     "receive past updates from a persistent actor" in {
-      view = system.actorOf(
-        Props(classOf[TestPersistentView], name, viewProbe.ref))
+      view = system
+        .actorOf(Props(classOf[TestPersistentView], name, viewProbe.ref))
       viewProbe.expectMsg("replicated-a-1")
       viewProbe.expectMsg("replicated-b-2")
     }
     "receive live updates from a persistent actor" in {
-      view = system.actorOf(
-        Props(classOf[TestPersistentView], name, viewProbe.ref))
+      view = system
+        .actorOf(Props(classOf[TestPersistentView], name, viewProbe.ref))
       viewProbe.expectMsg("replicated-a-1")
       viewProbe.expectMsg("replicated-b-2")
       persistentActor ! "c"
@@ -313,8 +313,8 @@ abstract class PersistentViewSpec(config: Config)
 
       subscribeToReplay(replayProbe)
 
-      view = system.actorOf(
-        Props(classOf[ActiveTestPersistentView], name, viewProbe.ref))
+      view = system
+        .actorOf(Props(classOf[ActiveTestPersistentView], name, viewProbe.ref))
 
       viewProbe.expectMsg("replicated-a-1")
       viewProbe.expectMsg("replicated-b-2")
@@ -326,8 +326,8 @@ abstract class PersistentViewSpec(config: Config)
       replayProbe.expectMsgPF() { case ReplayMessages(5L, _, 2L, _, _) ⇒ }
     }
     "support context.become" in {
-      view = system.actorOf(
-        Props(classOf[BecomingPersistentView], name, viewProbe.ref))
+      view = system
+        .actorOf(Props(classOf[BecomingPersistentView], name, viewProbe.ref))
       viewProbe.expectMsg("replicated-a-1")
       viewProbe.expectMsg("replicated-b-2")
     }
@@ -364,13 +364,14 @@ abstract class PersistentViewSpec(config: Config)
       viewProbe.expectMsg("replicated-c-3")
     }
     "support stash" in {
-      view = system.actorOf(
-        Props(classOf[StashingPersistentView], name, viewProbe.ref))
+      view = system
+        .actorOf(Props(classOf[StashingPersistentView], name, viewProbe.ref))
       view ! "other"
       view ! "unstash"
-      viewProbe.expectMsg(
-        "a-2"
-      ) // note that the lastSequenceNumber is 2, since we have replayed b-2
+      viewProbe
+        .expectMsg(
+          "a-2"
+        ) // note that the lastSequenceNumber is 2, since we have replayed b-2
       viewProbe.expectMsg("b-2")
       viewProbe.expectMsg("other-2")
     }

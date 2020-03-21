@@ -319,16 +319,12 @@ class TableView[S](
     ObjectProperty((features: TableView.ResizeFeatures[S]) =>
       delegate.columnResizePolicyProperty.value.call(features))
   def columnResizePolicy_=(p: TableView.ResizeFeatures[_] => Boolean) {
-    delegate
-      .columnResizePolicyProperty()
-      .setValue(
-        new jfxu.Callback[
-          jfxsc.TableView.ResizeFeatures[_],
-          java.lang.Boolean] {
-          def call(v: jfxsc.TableView.ResizeFeatures[_]): java.lang.Boolean = {
-            p(v)
-          }
-        })
+    delegate.columnResizePolicyProperty().setValue(
+      new jfxu.Callback[jfxsc.TableView.ResizeFeatures[_], java.lang.Boolean] {
+        def call(v: jfxsc.TableView.ResizeFeatures[_]): java.lang.Boolean = {
+          p(v)
+        }
+      })
   }
   def columnResizePolicy_=(
       p: jfxu.Callback[jfxsc.TableView.ResizeFeatures[_], java.lang.Boolean]) {
@@ -382,8 +378,8 @@ class TableView[S](
     ObjectProperty((view: TableView[S]) =>
       delegate.rowFactoryProperty.value.call(view))
   def rowFactory_=(factory: TableView[S] => TableRow[S]) {
-    delegate.rowFactoryProperty.setValue(
-      new jfxu.Callback[jfxsc.TableView[S], jfxsc.TableRow[S]] {
+    delegate.rowFactoryProperty
+      .setValue(new jfxu.Callback[jfxsc.TableView[S], jfxsc.TableRow[S]] {
         def call(v: jfxsc.TableView[S]): jfxsc.TableRow[S] = { factory(v) }
       })
   }
@@ -449,8 +445,9 @@ class TableView[S](
     delegate.onScrollToColumnProperty
   def onScrollToColumn_=(
       v: jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TableColumn[S, _]]]) {
-    ObjectProperty.fillProperty[jfxe.EventHandler[
-      jfxsc.ScrollToEvent[jfxsc.TableColumn[S, _]]]](onScrollToColumn, v)
+    ObjectProperty
+      .fillProperty[jfxe.EventHandler[
+        jfxsc.ScrollToEvent[jfxsc.TableColumn[S, _]]]](onScrollToColumn, v)
   }
 
   /** Called when there's a request to sort the control. */

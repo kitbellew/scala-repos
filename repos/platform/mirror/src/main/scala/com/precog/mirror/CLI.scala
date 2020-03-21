@@ -30,9 +30,8 @@ object CLI extends App with EvaluatorModule {
   val filtered = forest filter { _.errors filterNot isWarning isEmpty }
 
   if (filtered.size == 1) {
-    filtered flatMap {
-      _.errors filter isWarning
-    } map showError foreach System.err.println
+    filtered flatMap { _.errors filter isWarning } map showError foreach System
+      .err.println
 
     eval(filtered.head)(load) foreach { jv => println(jv.renderCompact) }
   } else if (filtered.size > 1) {

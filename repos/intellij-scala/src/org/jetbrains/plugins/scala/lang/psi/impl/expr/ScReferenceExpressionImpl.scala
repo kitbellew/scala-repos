@@ -93,8 +93,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
               .createExpressionWithContextFromText(qual, getContext, this)
               .asInstanceOf[ScReferenceExpression]
           case (qual, false) =>
-            ScalaPsiElementFactory
-              .createExpressionFromText(qual, getManager)
+            ScalaPsiElementFactory.createExpressionFromText(qual, getManager)
               .asInstanceOf[ScReferenceExpression]
         }
       )(simpleImport)
@@ -103,8 +102,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
     if (isReferenceTo(element)) return this
     element match {
       case _: ScTrait | _: ScClass =>
-        ScalaPsiUtil.getCompanionModule(
-          element.asInstanceOf[ScTypeDefinition]) match {
+        ScalaPsiUtil
+          .getCompanionModule(element.asInstanceOf[ScTypeDefinition]) match {
           case Some(obj: ScObject) => bindToElement(obj, containingClass)
           case _                   => this
         }
@@ -118,8 +117,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
         val qualName = c.qualifiedName
         if (qualName != null) {
           return tail(qualName) {
-            ScalaImportTypeFix
-              .getImportHolder(ref = this, project = getProject)
+            ScalaImportTypeFix.getImportHolder(ref = this, project = getProject)
               .addImportForClass(c, ref = this)
             //need to use unqualified reference with new import
             if (!this.isQualified) this
@@ -141,8 +139,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
       case pack: ScPackage =>
         val qualName = pack.getQualifiedName
         tail(qualName) {
-          ScalaImportTypeFix
-            .getImportHolder(this, getProject)
+          ScalaImportTypeFix.getImportHolder(this, getProject)
             .addImportForPath(qualName, this)
           this
         }
@@ -156,8 +153,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
             if (cClass != null && cClass.qualifiedName != null) {
               val qualName: String = cClass.qualifiedName + "." + elem.name
               return tail(qualName) {
-                ScalaImportTypeFix
-                  .getImportHolder(this, getProject)
+                ScalaImportTypeFix.getImportHolder(this, getProject)
                   .addImportForPsiNamedElement(elem, this, Some(cClass))
                 this
               }
@@ -180,8 +176,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
   override def getVariants(
       implicits: Boolean,
       filterNotNamedVariants: Boolean): Array[Object] = {
-    val isInImport: Boolean =
-      ScalaPsiUtil.getParentOfType(this, classOf[ScImportStmt]) != null
+    val isInImport: Boolean = ScalaPsiUtil
+      .getParentOfType(this, classOf[ScImportStmt]) != null
 
     getSimpleVariants(implicits, filterNotNamedVariants).flatMap {
       case res: ScalaResolveResult =>
@@ -239,8 +235,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
   } // See SCL-3092
 
   def multiType: Array[TypeResult[ScType]] = {
-    multiResolve(incomplete = false)
-      .filter(_.isInstanceOf[ScalaResolveResult])
+    multiResolve(incomplete = false).filter(_.isInstanceOf[ScalaResolveResult])
       .map(r => convertBindToType(Some(r.asInstanceOf[ScalaResolveResult])))
   }
 
@@ -256,8 +251,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
   }
 
   def shapeMultiType: Array[TypeResult[ScType]] = {
-    shapeResolve
-      .filter(_.isInstanceOf[ScalaResolveResult])
+    shapeResolve.filter(_.isInstanceOf[ScalaResolveResult])
       .map(r => convertBindToType(Some(r.asInstanceOf[ScalaResolveResult])))
   }
 
@@ -265,9 +259,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
       bind: Option[ScalaResolveResult]): TypeResult[ScType] = {
     val fromType: Option[ScType] = bind.map(_.fromType).getOrElse(None)
     val unresolvedTypeParameters: Seq[TypeParameter] = bind
-      .map(_.unresolvedTypeParameters)
-      .getOrElse(None)
-      .getOrElse(Seq.empty)
+      .map(_.unresolvedTypeParameters).getOrElse(None).getOrElse(Seq.empty)
 
     def stableTypeRequired: Boolean = {
       //SLS 6.4
@@ -335,10 +327,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
         s.subst(fun.polymorphicType)
       //prevent infinite recursion for recursive pattern reference
       case Some(ScalaResolveResult(self: ScSelfTypeElement, _)) =>
-        val clazz = PsiTreeUtil.getContextOfType(
-          self,
-          true,
-          classOf[ScTemplateDefinition])
+        val clazz = PsiTreeUtil
+          .getContextOfType(self, true, classOf[ScTemplateDefinition])
         ScThisReferenceImpl.getThisTypeForTypeDefinition(clazz, this) match {
           case success: Success[ScType] => success.get
           case failure                  => return failure
@@ -382,20 +372,15 @@ class ScReferenceExpressionImpl(node: ASTNode)
           case Some(fT) if param.isVal && stableTypeRequired =>
             ScProjectionType(fT, param, superReference = false)
           case Some(ScThisType(clazz))
-              if owner != null && PsiTreeUtil.isContextAncestor(
-                owner,
-                this,
-                true) &&
+              if owner != null && PsiTreeUtil
+                .isContextAncestor(owner, this, true) &&
                 stableTypeRequired && owner
                 .isInstanceOf[ScTypeDefinition] && owner == clazz =>
-            ScType.designator(
-              param
-            ) //todo: think about projection from this type?
+            ScType
+              .designator(param) //todo: think about projection from this type?
           case _
-              if owner != null && PsiTreeUtil.isContextAncestor(
-                owner,
-                this,
-                true) &&
+              if owner != null && PsiTreeUtil
+                .isContextAncestor(owner, this, true) &&
                 stableTypeRequired && !owner.isInstanceOf[ScTypeDefinition] =>
             ScType.designator(param)
           case _ =>
@@ -422,12 +407,10 @@ class ScReferenceExpressionImpl(node: ASTNode)
         else functionType
       case Some(ScalaResolveResult(param: ScParameter, s))
           if param.isRepeatedParameter =>
-        val seqClass = ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(
-            "scala.collection.Seq",
-            getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE)
+        val seqClass = ScalaPsiManager.instance(getProject).getCachedClass(
+          "scala.collection.Seq",
+          getResolveScope,
+          ScalaPsiManager.ClassCategory.TYPE)
         val result = param.getType(TypingContext.empty)
         val computeType = s.subst(result match {
           case Success(tp, _) => tp
@@ -486,11 +469,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
         ScType.designator(pack)
       case Some(ScalaResolveResult(clazz: ScClass, s)) if clazz.isCase =>
         s.subst(
-          clazz.constructor
-            .getOrElse(
-              return Failure(
-                "Case Class hasn't primary constructor",
-                Some(this)))
+          clazz.constructor.getOrElse(
+            return Failure("Case Class hasn't primary constructor", Some(this)))
             .polymorphicType)
       case Some(ScalaResolveResult(clazz: ScTypeDefinition, s))
           if clazz.typeParameters.nonEmpty =>
@@ -504,12 +484,10 @@ class ScReferenceExpressionImpl(node: ASTNode)
       case Some(ScalaResolveResult(method: PsiMethod, s)) =>
         if (method.getName == "getClass" && method.containingClass != null &&
             method.containingClass.getQualifiedName == "java.lang.Object") {
-          val jlClass = ScalaPsiManager
-            .instance(getProject)
-            .getCachedClass(
-              "java.lang.Class",
-              getResolveScope,
-              ScalaPsiManager.ClassCategory.TYPE)
+          val jlClass = ScalaPsiManager.instance(getProject).getCachedClass(
+            "java.lang.Class",
+            getResolveScope,
+            ScalaPsiManager.ClassCategory.TYPE)
           def convertQualifier(
               typeResult: TypeResult[ScType]): Option[ScType] = {
             if (jlClass != null) {
@@ -521,8 +499,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
                     case ScCompoundType(comps, _, _) =>
                       if (comps.isEmpty) Any
                       else
-                        ScTypeUtil
-                          .removeTypeDesignator(comps.head)
+                        ScTypeUtil.removeTypeDesignator(comps.head)
                           .getOrElse(Any)
                     case _ => ScTypeUtil.removeTypeDesignator(tp).getOrElse(Any)
                   }
@@ -551,11 +528,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
                   } yield qualifier
               }
           }
-          ResolveUtils.javaPolymorphicType(
-            method,
-            s,
-            getResolveScope,
-            returnType)
+          ResolveUtils
+            .javaPolymorphicType(method, s, getResolveScope, returnType)
         } else { ResolveUtils.javaPolymorphicType(method, s, getResolveScope) }
       case _ => return Failure("Cannot resolve expression", Some(this))
     }
@@ -635,23 +609,16 @@ class ScReferenceExpressionImpl(node: ASTNode)
   def getPrevTypeInfoParams: Seq[TypeParameter] = {
     qualifier match {
       case Some(s: ScSuperReference) => Seq.empty
-      case Some(qual) =>
-        qual
-          .getNonValueType(TypingContext.empty)
-          .map {
-            case t: ScTypePolymorphicType => t.typeParameters
-            case _                        => Seq.empty
-          }
-          .getOrElse(Seq.empty)
+      case Some(qual) => qual.getNonValueType(TypingContext.empty).map {
+          case t: ScTypePolymorphicType => t.typeParameters
+          case _                        => Seq.empty
+        }.getOrElse(Seq.empty)
       case _ => getContext match {
           case sugar: ScSugarCallExpr if sugar.operation == this =>
-            sugar.getBaseExpr
-              .getNonValueType(TypingContext.empty)
-              .map {
-                case t: ScTypePolymorphicType => t.typeParameters
-                case _                        => Seq.empty
-              }
-              .getOrElse(Seq.empty)
+            sugar.getBaseExpr.getNonValueType(TypingContext.empty).map {
+              case t: ScTypePolymorphicType => t.typeParameters
+              case _                        => Seq.empty
+            }.getOrElse(Seq.empty)
           case _ => Seq.empty
         }
     }

@@ -356,14 +356,14 @@ private[http] object StreamUtils {
     def apply(): OneTimeValve =
       new OneTimeValve {
         val promise = Promise[Unit]()
-        val _source = Source
-          .fromFuture(promise.future)
+        val _source = Source.fromFuture(promise.future)
           .drop(1) // we are only interested in the completion event
 
         def source[T]: Source[T, NotUsed] =
-          _source.asInstanceOf[
-            Source[T, NotUsed]
-          ] // safe, because source won't generate any elements
+          _source
+            .asInstanceOf[
+              Source[T, NotUsed]
+            ] // safe, because source won't generate any elements
         def open(): Unit = promise.success(())
       }
   }

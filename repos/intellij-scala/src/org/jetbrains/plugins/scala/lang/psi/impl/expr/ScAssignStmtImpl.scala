@@ -69,8 +69,7 @@ class ScAssignStmtImpl(node: ASTNode)
           .createExpressionWithContextFromText(text, getContext, this)
         mirrorExpr match {
           case call: ScMethodCall =>
-            call.getInvokedExpr
-              .asInstanceOf[ScReferenceExpression]
+            call.getInvokedExpr.asInstanceOf[ScReferenceExpression]
               .setupResolveFunctions(
                 () => resolveAssignment.toArray,
                 () => shapeResolveAssignment.toArray)
@@ -79,9 +78,9 @@ class ScAssignStmtImpl(node: ASTNode)
         }
       case methodCall: ScMethodCall =>
         val invokedExpr = methodCall.getInvokedExpr
-        val text =
-          s"${invokedExpr.getText}.update(${methodCall.args.exprs.map(_.getText).mkString(",")}," +
-            s" ${getRExpression.map(_.getText).getOrElse("")}"
+        val text = s"${invokedExpr.getText}.update(${methodCall.args.exprs
+          .map(_.getText).mkString(",")}," +
+          s" ${getRExpression.map(_.getText).getOrElse("")}"
         val mirrorExpr = ScalaPsiElementFactory
           .createExpressionWithContextFromText(text, getContext, this)
         //todo: improve performance: do not re-evaluate resolve to "update" method
@@ -107,8 +106,7 @@ class ScAssignStmtImpl(node: ASTNode)
                 val processor = new MethodResolveProcessor(
                   ref,
                   fun.name + "_=",
-                  getRExpression
-                    .map(expr => List(Seq(new Expression(expr))))
+                  getRExpression.map(expr => List(Seq(new Expression(expr))))
                     .getOrElse(Nil),
                   Nil,
                   ref.getPrevTypeInfoParams,

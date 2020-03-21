@@ -51,8 +51,8 @@ object JsonTests extends TestSuite {
   val fractional = P("." ~ digits)
   val integral = P("0" | CharIn('1' to '9') ~ digits.?)
 
-  val number = P(CharIn("+-").? ~ integral ~ fractional.? ~ exponent.?).!.map(
-    x => Js.Num(x.toDouble))
+  val number = P(CharIn("+-").? ~ integral ~ fractional.? ~ exponent.?)
+    .!.map(x => Js.Num(x.toDouble))
 
   val `null` = P("null").map(_ => Js.Null)
   val `false` = P("false").map(_ => Js.False)
@@ -65,8 +65,8 @@ object JsonTests extends TestSuite {
   val strChars = P(CharsWhile(StringChars))
   val string = P(space ~ "\"" ~/ (strChars | escape).rep.! ~ "\"").map(Js.Str)
 
-  val array = P("[" ~/ jsonExpr.rep(sep = ",".~/) ~ space ~ "]").map(Js.Arr(
-    _: _*))
+  val array = P("[" ~/ jsonExpr.rep(sep = ",".~/) ~ space ~ "]")
+    .map(Js.Arr(_: _*))
 
   val pair = P(string.map(_.value) ~/ ":" ~/ jsonExpr)
 
@@ -93,8 +93,8 @@ object JsonTests extends TestSuite {
         * - test(obj, """{"omg": "123", "wtf": 456, "bbq": "789"}""")
       }
       'jsonExpr - {
-        val Parsed.Success(value, _) = jsonExpr.parse(
-          """{"omg": "123", "wtf": 12.4123}""")
+        val Parsed.Success(value, _) = jsonExpr
+          .parse("""{"omg": "123", "wtf": 12.4123}""")
         assert(
           value == Js.Obj("omg" -> Js.Str("123"), "wtf" -> Js.Num(12.4123)))
       }

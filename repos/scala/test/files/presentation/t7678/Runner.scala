@@ -9,9 +9,7 @@ object Test extends InteractiveTest {
     def resolveTypeTagHyperlink() {
       val sym = compiler
         .askForResponse(() => compiler.currentRun.runDefinitions.TypeTagClass)
-        .get
-        .left
-        .get
+        .get.left.get
       val r = new Response[Position]
       compiler.askLinkPos(sym, new BatchSourceFile("", source), r)
       r.get
@@ -23,14 +21,16 @@ object Test extends InteractiveTest {
           val runDefinitions = currentRun.runDefinitions
           import runDefinitions._
           assert(
-            TypeTagsClass.map(sym =>
-              getMemberClass(sym, tpnme.TypeTag)) == TypeTagClass)
+            TypeTagsClass
+              .map(sym => getMemberClass(sym, tpnme.TypeTag)) == TypeTagClass)
           assert(
-            TypeTagsClass.map(sym =>
-              getMemberClass(sym, tpnme.WeakTypeTag)) == WeakTypeTagClass)
+            TypeTagsClass
+              .map(sym =>
+                getMemberClass(sym, tpnme.WeakTypeTag)) == WeakTypeTagClass)
           assert(
-            TypeTagsClass.map(sym =>
-              getMemberModule(sym, nme.WeakTypeTag)) == WeakTypeTagModule)
+            TypeTagsClass
+              .map(sym =>
+                getMemberModule(sym, nme.WeakTypeTag)) == WeakTypeTagModule)
           assert(
             getMemberMethod(
               ReflectPackage,

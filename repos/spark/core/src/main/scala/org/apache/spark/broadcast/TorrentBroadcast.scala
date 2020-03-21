@@ -103,11 +103,8 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     // Store a copy of the broadcast variable in the driver so that tasks run on the driver
     // do not create a duplicate copy of the broadcast variable's value.
     val blockManager = SparkEnv.get.blockManager
-    if (!blockManager.putSingle(
-          broadcastId,
-          value,
-          MEMORY_AND_DISK,
-          tellMaster = false)) {
+    if (!blockManager
+          .putSingle(broadcastId, value, MEMORY_AND_DISK, tellMaster = false)) {
       throw new SparkException(s"Failed to store $broadcastId in BlockManager")
     }
     val blocks = TorrentBroadcast.blockifyObject(
@@ -238,8 +235,8 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     val blockManager = SparkEnv.get.blockManager
     Option(TaskContext.get()) match {
       case Some(taskContext) =>
-        taskContext.addTaskCompletionListener(_ =>
-          blockManager.releaseLock(blockId))
+        taskContext
+          .addTaskCompletionListener(_ => blockManager.releaseLock(blockId))
       case None =>
         // This should only happen on the driver, where broadcast variables may be accessed
         // outside of running tasks (e.g. when computing rdd.partitions()). In order to allow
@@ -261,8 +258,7 @@ private object TorrentBroadcast extends Logging {
       compressionCodec: Option[CompressionCodec]): Array[ByteBuffer] = {
     val bos = new ByteArrayChunkOutputStream(blockSize)
     val out: OutputStream = compressionCodec
-      .map(c => c.compressedOutputStream(bos))
-      .getOrElse(bos)
+      .map(c => c.compressedOutputStream(bos)).getOrElse(bos)
     val ser = serializer.newInstance()
     val serOut = ser.serializeStream(out)
     serOut.writeObject[T](obj).close()
@@ -276,8 +272,7 @@ private object TorrentBroadcast extends Logging {
     require(blocks.nonEmpty, "Cannot unblockify an empty array of blocks")
     val is = new SequenceInputStream(
       blocks.iterator.map(new ByteBufferInputStream(_)).asJavaEnumeration)
-    val in: InputStream = compressionCodec
-      .map(c => c.compressedInputStream(is))
+    val in: InputStream = compressionCodec.map(c => c.compressedInputStream(is))
       .getOrElse(is)
     val ser = serializer.newInstance()
     val serIn = ser.deserializeStream(in)

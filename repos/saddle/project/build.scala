@@ -92,8 +92,8 @@ object SaddleBuild extends sbt.Build {
     Project(
       id = id,
       base = base,
-      settings =
-        assemblySettings ++ Project.defaultSettings ++ Shared.settings ++ releaseSettings ++ settings)
+      settings = assemblySettings ++ Project.defaultSettings ++ Shared
+        .settings ++ releaseSettings ++ settings)
 }
 
 object Shared {

@@ -43,21 +43,18 @@ class LightArrayRevolverScheduler(
   import Helpers.Requiring
   import Helpers.ConfigOps
 
-  val WheelSize = config
-    .getInt("akka.scheduler.ticks-per-wheel")
-    .requiring(
-      ticks ⇒ (ticks & (ticks - 1)) == 0,
-      "ticks-per-wheel must be a power of 2")
-  val TickDuration = config
-    .getMillisDuration("akka.scheduler.tick-duration")
+  val WheelSize = config.getInt("akka.scheduler.ticks-per-wheel").requiring(
+    ticks ⇒ (ticks & (ticks - 1)) == 0,
+    "ticks-per-wheel must be a power of 2")
+  val TickDuration = config.getMillisDuration("akka.scheduler.tick-duration")
     .requiring(
       _ >= 10.millis || !Helpers.isWindows,
       "minimum supported akka.scheduler.tick-duration on Windows is 10ms")
     .requiring(
       _ >= 1.millis,
       "minimum supported akka.scheduler.tick-duration is 1ms")
-  val ShutdownTimeout = config.getMillisDuration(
-    "akka.scheduler.shutdown-timeout")
+  val ShutdownTimeout = config
+    .getMillisDuration("akka.scheduler.shutdown-timeout")
 
   import LightArrayRevolverScheduler._
 
@@ -116,8 +113,8 @@ class LightArrayRevolverScheduler(
                   swap(schedule(
                     preparedEC,
                     this,
-                    Duration.fromNanos(
-                      Math.max(delay.toNanos - driftNanos, 1))))
+                    Duration
+                      .fromNanos(Math.max(delay.toNanos - driftNanos, 1))))
               } catch {
                 case _: SchedulerException ⇒ // ignore failure to enqueue or terminated target actor
               }
@@ -207,7 +204,8 @@ class LightArrayRevolverScheduler(
       // 1 second margin in the error message due to rounding
       throw new IllegalArgumentException(
         s"Task scheduled with [${delayNanos.nanos.toSeconds}] seconds delay, " +
-          s"which is too far in future, maximum delay is [${(tickNanos * Int.MaxValue).nanos.toSeconds - 1}] seconds")
+          s"which is too far in future, maximum delay is [${(tickNanos * Int
+            .MaxValue).nanos.toSeconds - 1}] seconds")
 
   private val stopped = new AtomicReference[Promise[immutable.Seq[TimerTask]]]
   private def stop(): Future[immutable.Seq[TimerTask]] = {
@@ -338,8 +336,8 @@ class LightArrayRevolverScheduler(
 }
 
 object LightArrayRevolverScheduler {
-  private[this] val taskOffset = unsafe.objectFieldOffset(
-    classOf[TaskHolder].getDeclaredField("task"))
+  private[this] val taskOffset = unsafe
+    .objectFieldOffset(classOf[TaskHolder].getDeclaredField("task"))
 
   private class TaskQueue extends AbstractNodeQueue[TaskHolder]
 

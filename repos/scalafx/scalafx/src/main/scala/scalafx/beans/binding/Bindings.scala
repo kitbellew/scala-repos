@@ -243,8 +243,8 @@ trait Bindings {
       whenBuilder: jfxbb.When#ObjectConditionBuilder[T]) {
     // explicit conversion needed due to T(Any) typed method
     def otherwise(otherwiseExpression: ObservableValue[T, T]) =
-      whenBuilder.otherwise(
-        ObservableValue.sfxObservableValue2jfxObjectValue[T](
+      whenBuilder
+        .otherwise(ObservableValue.sfxObservableValue2jfxObjectValue[T](
           otherwiseExpression))
     def otherwise(otherwiseExpression: jfxbv.ObservableObjectValue[T]) =
       whenBuilder.otherwise(otherwiseExpression)

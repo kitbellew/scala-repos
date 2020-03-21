@@ -257,8 +257,7 @@ object ClusterEvent {
       * Java API
       */
     def getNodeMetrics: java.lang.Iterable[NodeMetrics] =
-      scala.collection.JavaConverters
-        .asJavaIterableConverter(nodeMetrics)
+      scala.collection.JavaConverters.asJavaIterableConverter(nodeMetrics)
         .asJava
   }
 
@@ -295,12 +294,12 @@ object ClusterEvent {
       selfUniqueAddress: UniqueAddress): immutable.Seq[UnreachableMember] =
     if (newGossip eq oldGossip) Nil
     else {
-      val oldUnreachableNodes =
-        oldGossip.overview.reachability.allUnreachableOrTerminated
+      val oldUnreachableNodes = oldGossip.overview.reachability
+        .allUnreachableOrTerminated
       (newGossip.overview.reachability.allUnreachableOrTerminated.collect {
         case node
-            if !oldUnreachableNodes.contains(
-              node) && node != selfUniqueAddress ⇒
+            if !oldUnreachableNodes
+              .contains(node) && node != selfUniqueAddress ⇒
           UnreachableMember(newGossip.member(node))
       })(collection.breakOut)
     }
@@ -332,13 +331,12 @@ object ClusterEvent {
     if (newGossip eq oldGossip) Nil
     else {
       val newMembers = newGossip.members diff oldGossip.members
-      val membersGroupedByAddress = List(
-        newGossip.members,
-        oldGossip.members).flatten.groupBy(_.uniqueAddress)
+      val membersGroupedByAddress = List(newGossip.members, oldGossip.members)
+        .flatten.groupBy(_.uniqueAddress)
       val changedMembers = membersGroupedByAddress collect {
         case (_, newMember :: oldMember :: Nil)
-            if newMember.status != oldMember.status || newMember.upNumber != oldMember.upNumber ⇒
-          newMember
+            if newMember.status != oldMember.status || newMember
+              .upNumber != oldMember.upNumber ⇒ newMember
       }
       val memberEvents = (newMembers ++ changedMembers) collect {
         case m if m.status == Joining ⇒ MemberJoined(m)
@@ -350,8 +348,8 @@ object ClusterEvent {
       }
 
       val removedMembers = oldGossip.members diff newGossip.members
-      val removedEvents = removedMembers.map(m ⇒
-        MemberRemoved(m.copy(status = Removed), m.status))
+      val removedEvents = removedMembers
+        .map(m ⇒ MemberRemoved(m.copy(status = Removed), m.status))
 
       (new VectorBuilder[MemberEvent]() ++= memberEvents ++= removedEvents)
         .result()
@@ -395,8 +393,8 @@ object ClusterEvent {
     else {
       val newConvergence = newGossip.convergence(selfUniqueAddress)
       val newSeenBy = newGossip.seenBy
-      if (newConvergence != oldGossip.convergence(
-            selfUniqueAddress) || newSeenBy != oldGossip.seenBy)
+      if (newConvergence != oldGossip
+            .convergence(selfUniqueAddress) || newSeenBy != oldGossip.seenBy)
         List(SeenChanged(newConvergence, newSeenBy.map(_.address)))
       else Nil
     }
@@ -453,8 +451,8 @@ private[cluster] final class ClusterDomainEventPublisher
     * to mimic what you would have seen if you were listening to the events.
     */
   def sendCurrentClusterState(receiver: ActorRef): Unit = {
-    val unreachable: Set[Member] =
-      latestGossip.overview.reachability.allUnreachableOrTerminated.collect {
+    val unreachable: Set[Member] = latestGossip.overview.reachability
+      .allUnreachableOrTerminated.collect {
         case node if node != selfUniqueAddress ⇒ latestGossip.member(node)
       }
     val state = CurrentClusterState(
@@ -463,9 +461,8 @@ private[cluster] final class ClusterDomainEventPublisher
       seenBy = latestGossip.seenBy.map(_.address),
       leader = latestGossip.leader(selfUniqueAddress).map(_.address),
       roleLeaderMap = latestGossip.allRoles.map(r ⇒
-        r -> latestGossip
-          .roleLeader(r, selfUniqueAddress)
-          .map(_.address))(collection.breakOut)
+        r -> latestGossip.roleLeader(r, selfUniqueAddress).map(_.address))(
+        collection.breakOut)
     )
     receiver ! state
   }

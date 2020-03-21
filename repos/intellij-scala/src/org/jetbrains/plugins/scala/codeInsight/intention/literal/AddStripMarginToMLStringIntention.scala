@@ -19,7 +19,8 @@ class AddStripMarginToMLStringIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    if (element == null || element.getNode == null || element.getNode.getElementType != ScalaTokenTypes.tMULTILINE_STRING ||
+    if (element == null || element.getNode == null || element.getNode
+          .getElementType != ScalaTokenTypes.tMULTILINE_STRING ||
         !element.getText.contains("\n")) return false
 
     MultilineStringUtil.needAddStripMargin(element, getMarginChar(project))
@@ -40,9 +41,6 @@ class AddStripMarginToMLStringIntention extends PsiElementBaseIntentionAction {
   }
 
   private def getMarginChar(project: Project): String =
-    CodeStyleSettingsManager
-      .getInstance(project)
-      .getCurrentSettings
-      .getCustomSettings(classOf[ScalaCodeStyleSettings])
-      .MARGIN_CHAR + ""
+    CodeStyleSettingsManager.getInstance(project).getCurrentSettings
+      .getCustomSettings(classOf[ScalaCodeStyleSettings]).MARGIN_CHAR + ""
 }

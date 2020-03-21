@@ -104,10 +104,9 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
     }
     val res: Option[ScTypeElement] =
       if (getReturnTypeText != "") {
-        Some(ScalaPsiElementFactory.createTypeElementFromText(
-          getReturnTypeText,
-          getPsi,
-          null))
+        Some(
+          ScalaPsiElementFactory
+            .createTypeElementFromText(getReturnTypeText, getPsi, null))
       } else None
     myReturnTypeElement = new SofterReference[Option[ScTypeElement]](res)
     res
@@ -121,10 +120,9 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
     }
     val res: Option[ScExpression] =
       if (getBodyText != "") {
-        Some(ScalaPsiElementFactory.createExpressionWithContextFromText(
-          getBodyText,
-          getPsi,
-          null))
+        Some(
+          ScalaPsiElementFactory
+            .createExpressionWithContextFromText(getBodyText, getPsi, null))
       } else None
     myBodyExpression = new SofterReference[Option[ScExpression]](res)
     res

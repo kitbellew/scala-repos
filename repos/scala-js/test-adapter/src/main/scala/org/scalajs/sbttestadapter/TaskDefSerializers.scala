@@ -19,12 +19,10 @@ private[testadapter] object TaskDefSerializers {
 
   implicit object TaskDefSerializer extends JSONSerializer[TaskDef] {
     def serialize(td: TaskDef): JSON = {
-      new JSONObjBuilder()
-        .fld("fullyQualifiedName", td.fullyQualifiedName)
+      new JSONObjBuilder().fld("fullyQualifiedName", td.fullyQualifiedName)
         .fld("fingerprint", td.fingerprint)
         .fld("explicitlySpecified", td.explicitlySpecified)
-        .fld("selectors", td.selectors.toList)
-        .toJSON
+        .fld("selectors", td.selectors.toList).toJSON
     }
   }
 

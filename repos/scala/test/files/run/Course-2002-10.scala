@@ -9,15 +9,14 @@ object M0 {
   def addStream(s1: Stream[Int], s2: Stream[Int]): Stream[Int] =
     Stream.cons(s1.head + s2.head, addStream(s1.tail, s2.tail));
 
-  val fib: Stream[Int] = Stream.cons(
-    0,
-    Stream.cons(1, addStream(this.fib, this.fib.tail)));
+  val fib: Stream[Int] = Stream
+    .cons(0, Stream.cons(1, addStream(this.fib, this.fib.tail)));
 
   def test = {
     var i = 0;
-    fib
-      .take(20)
-      .foreach(n => { Console.println("fib(" + i + ") = " + n); i = i + 1 });
+    fib.take(20).foreach(n => {
+      Console.println("fib(" + i + ") = " + n); i = i + 1
+    });
     Console.println;
   }
 }
@@ -36,9 +35,8 @@ object M1 {
     val nm1 = s apply 0;
     val n = s apply 1;
     val np1 = s apply 2;
-    Stream.cons(
-      np1 - ((np1 - n) * (np1 - n) / (nm1 - 2 * n + np1)),
-      euler(s.tail))
+    Stream
+      .cons(np1 - ((np1 - n) * (np1 - n) / (nm1 - 2 * n + np1)), euler(s.tail))
   };
 
   def better(

@@ -28,8 +28,7 @@ trait LocalClusterSparkContext extends BeforeAndAfterAll {
 
   override def beforeAll() {
     super.beforeAll()
-    val conf = new SparkConf()
-      .setMaster("local-cluster[2, 1, 1024]")
+    val conf = new SparkConf().setMaster("local-cluster[2, 1, 1024]")
       .setAppName("test-cluster")
       .set(
         "spark.rpc.message.maxSize",

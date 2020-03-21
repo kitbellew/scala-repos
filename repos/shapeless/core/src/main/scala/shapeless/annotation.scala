@@ -176,13 +176,10 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
 
     val annTreeOpts =
       if (isProduct(tpe)) {
-        val constructorSyms = tpe
-          .member(termNames.CONSTRUCTOR)
-          .asMethod
-          .paramLists
-          .flatten
-          .map { sym => sym.name.decodedName.toString -> sym }
-          .toMap
+        val constructorSyms = tpe.member(termNames.CONSTRUCTOR).asMethod
+          .paramLists.flatten.map { sym =>
+            sym.name.decodedName.toString -> sym
+          }.toMap
 
         fieldsOf(tpe).map {
           case (name, _) =>

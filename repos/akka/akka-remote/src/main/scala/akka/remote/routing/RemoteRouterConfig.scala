@@ -42,8 +42,8 @@ final case class RemoteRouterConfig(local: Pool, nodes: Iterable[Address])
 
   // need this iterator as instance variable since Resizer may call createRoutees several times
   @transient
-  private val nodeAddressIter: Iterator[Address] =
-    Stream.continually(nodes).flatten.iterator
+  private val nodeAddressIter: Iterator[Address] = Stream.continually(nodes)
+    .flatten.iterator
   // need this counter as instance variable since Resizer may call createRoutees several times
   @transient
   private val childNameCounter = new AtomicInteger
@@ -63,12 +63,10 @@ final case class RemoteRouterConfig(local: Pool, nodes: Iterable[Address])
     // attachChild means that the provider will treat this call as if possibly done out of the wrong
     // context and use RepointableActorRef instead of LocalActorRef. Seems like a slightly sub-optimal
     // choice in a corner case (and hence not worth fixing).
-    val ref = context
-      .asInstanceOf[ActorCell]
-      .attachChild(
-        local.enrichWithPoolDispatcher(routeeProps, context).withDeploy(deploy),
-        name,
-        systemService = false)
+    val ref = context.asInstanceOf[ActorCell].attachChild(
+      local.enrichWithPoolDispatcher(routeeProps, context).withDeploy(deploy),
+      name,
+      systemService = false)
     ActorRefRoutee(ref)
   }
 

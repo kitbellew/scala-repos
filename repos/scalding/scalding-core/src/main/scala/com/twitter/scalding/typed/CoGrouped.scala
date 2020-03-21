@@ -229,8 +229,8 @@ trait CoGrouped[K, +R]
      * we have (key1, value1), but they are then discarded:
      */
     def outFields(inCount: Int): Fields =
-      List("key", "value") ++ (0 until (2 * (inCount - 1))).map("null%d".format(
-        _))
+      List("key", "value") ++ (0 until (2 * (inCount - 1)))
+        .map("null%d".format(_))
 
     // Make this stable so the compiler does not make a closure
     val ord = keyOrdering
@@ -249,10 +249,9 @@ trait CoGrouped[K, +R]
               */
             val NUM_OF_SELF_JOINS = firstCount - 1
             new CoGroup(
-              assignName(inputs.head.toPipe[(K, Any)](("key", "value"))(
-                flowDef,
-                mode,
-                tupset)),
+              assignName(
+                inputs.head
+                  .toPipe[(K, Any)](("key", "value"))(flowDef, mode, tupset)),
               ordKeyField,
               NUM_OF_SELF_JOINS,
               outFields(firstCount),
@@ -288,8 +287,7 @@ trait CoGrouped[K, +R]
               f
             }
 
-            val groupFields: Array[Fields] = (0 until dsize)
-              .map(makeFields)
+            val groupFields: Array[Fields] = (0 until dsize).map(makeFields)
               .toArray
 
             val pipes: Array[Pipe] = distincts.zipWithIndex.map {
@@ -396,17 +394,14 @@ abstract class CoGroupedJoiner[K](
       }
 
     val rest = restIndices.map(toIterable(_))
-    joinFunction
-      .get(key, leftMost, rest)
-      .map { rval =>
-        // There always has to be the same number of resulting fields as input
-        // or otherwise the flow planner will throw
-        val res = CTuple.size(distinctSize)
-        res.set(0, key)
-        res.set(1, rval)
-        res
-      }
-      .asJava
+    joinFunction.get(key, leftMost, rest).map { rval =>
+      // There always has to be the same number of resulting fields as input
+      // or otherwise the flow planner will throw
+      val res = CTuple.size(distinctSize)
+      res.set(0, key)
+      res.set(1, rval)
+      res
+    }.asJava
   }
 
   override def numJoins = distinctSize - 1

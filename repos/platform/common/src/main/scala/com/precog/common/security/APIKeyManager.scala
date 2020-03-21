@@ -176,8 +176,7 @@ trait APIKeyManager[M[+_]] extends Logging {
     validGrants(issuerKey, expiration).flatMap { grants =>
       if (!Grant.implies(grants, perms, expiration)) none[Grant].point[M]
       else {
-        val minimized = Grant
-          .coveringGrants(grants, perms, expiration)
+        val minimized = Grant.coveringGrants(grants, perms, expiration)
           .map(_.grantId)
         if (minimized.isEmpty) { none[Grant].point[M] }
         else {

@@ -47,10 +47,8 @@ object CompilationData {
 
     val classpath = ProjectPaths
       .getCompilationClasspathFiles(chunk, chunk.containsTests, false, true)
-      .asScala
-      .toSeq
-    val compilerSettings = SettingsManager
-      .getProjectSettings(module.getProject)
+      .asScala.toSeq
+    val compilerSettings = SettingsManager.getProjectSettings(module.getProject)
       .getCompilerSettings(chunk)
     val noBootCp =
       if (CompilerData.isDotty(chunk)) Nil
@@ -64,8 +62,8 @@ object CompilationData {
         throw new RuntimeException(
           "Unknown build target output directory: " + output))
 
-      val relevantOutputToCacheMap = (outputToCacheMap - output).filter(p =>
-        classpath.contains(p._1))
+      val relevantOutputToCacheMap = (outputToCacheMap - output)
+        .filter(p => classpath.contains(p._1))
 
       val commonOptions = {
         val encoding = context.getProjectDescriptor.getEncodingConfiguration
@@ -108,8 +106,7 @@ object CompilationData {
   }
 
   def outputsNotSpecified(chunk: ModuleChunk): Option[String] = {
-    chunk.getTargets.asScala
-      .find(_.getOutputDir == null)
+    chunk.getTargets.asScala.find(_.getOutputDir == null)
       .map("Output directory not specified for module " + _.getModule.getName)
   }
 
@@ -118,8 +115,8 @@ object CompilationData {
       chunk: ModuleChunk): Seq[String] = {
     val compilerConfig = {
       val project = context.getProjectDescriptor.getProject
-      JpsJavaExtensionService.getInstance.getOrCreateCompilerConfiguration(
-        project)
+      JpsJavaExtensionService.getInstance
+        .getOrCreateCompilerConfiguration(project)
     }
 
     val options = new util.ArrayList[String]()
@@ -159,8 +156,8 @@ object CompilationData {
 
   private def createOutputToCacheMap(
       context: CompileContext): Either[String, Map[File, File]] = {
-    val targetToOutput = targetsIn(context).map(target =>
-      (target, target.getOutputDir))
+    val targetToOutput = targetsIn(context)
+      .map(target => (target, target.getOutputDir))
 
     outputClashesIn(targetToOutput).toLeft {
       val paths = context.getProjectDescriptor.dataManager.getDataPaths

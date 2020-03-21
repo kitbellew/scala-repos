@@ -127,11 +127,9 @@ case class Invoke(
 
   lazy val method = targetObject.dataType match {
     case ObjectType(cls) =>
-      cls.getMethods
-        .find(_.getName == functionName)
+      cls.getMethods.find(_.getName == functionName)
         .getOrElse(sys.error(s"Couldn't find $functionName on $cls"))
-        .getReturnType
-        .getName
+        .getReturnType.getName
     case _ => ""
   }
 
@@ -236,9 +234,9 @@ case class NewInstance(
          ${outer.map(_.code.mkString("")).getOrElse("")}
        """.stripMargin
 
-    val constructorCall = outer
-      .map { gen => s"""${gen.value}.new ${cls.getSimpleName}($argString)""" }
-      .getOrElse { s"new $className($argString)" }
+    val constructorCall = outer.map { gen =>
+      s"""${gen.value}.new ${cls.getSimpleName}($argString)"""
+    }.getOrElse { s"new $className($argString)" }
 
     if (propagateNull && argGen.nonEmpty) {
       val argsNonNull = s"!(${argGen.map(_.isNull).mkString(" || ")})"
@@ -295,8 +293,8 @@ case class UnwrapOption(dataType: DataType, child: Expression)
 
       boolean ${ev.isNull} = ${inputObject.value} == null || ${inputObject.value}.isEmpty();
       $javaType ${ev.value} =
-        ${ev.isNull} ? ${ctx
-      .defaultValue(dataType)} : ($javaType)${inputObject.value}.get();
+        ${ev.isNull} ? ${ctx.defaultValue(dataType)} : ($javaType)${inputObject
+      .value}.get();
     """
   }
 }
@@ -409,25 +407,24 @@ case class MapObjects private (
       case DateType                => (i: String) => s".getInt($i)"
     }
 
-  private lazy val (lengthFunction, itemAccessor, primitiveElement) =
-    inputData.dataType match {
-      case ObjectType(cls) if classOf[Seq[_]].isAssignableFrom(cls) =>
-        (".size()", (i: String) => s".apply($i)", false)
-      case ObjectType(cls) if cls.isArray =>
-        (".length", (i: String) => s"[$i]", false)
-      case ObjectType(cls)
-          if classOf[java.util.List[_]].isAssignableFrom(cls) =>
-        (".size()", (i: String) => s".get($i)", false)
-      case ArrayType(t, _) =>
-        val (sqlType, primitiveElement) = t match {
-          case m: MapType              => (m, false)
-          case s: StructType           => (s, false)
-          case s: StringType           => (s, false)
-          case udt: UserDefinedType[_] => (udt.sqlType, false)
-          case o                       => (o, true)
-        }
-        (".numElements()", itemAccessorMethod(sqlType), primitiveElement)
-    }
+  private lazy val (lengthFunction, itemAccessor, primitiveElement) = inputData
+    .dataType match {
+    case ObjectType(cls) if classOf[Seq[_]].isAssignableFrom(cls) =>
+      (".size()", (i: String) => s".apply($i)", false)
+    case ObjectType(cls) if cls.isArray =>
+      (".length", (i: String) => s"[$i]", false)
+    case ObjectType(cls) if classOf[java.util.List[_]].isAssignableFrom(cls) =>
+      (".size()", (i: String) => s".get($i)", false)
+    case ArrayType(t, _) =>
+      val (sqlType, primitiveElement) = t match {
+        case m: MapType              => (m, false)
+        case s: StructType           => (s, false)
+        case s: StringType           => (s, false)
+        case udt: UserDefinedType[_] => (udt.sqlType, false)
+        case o                       => (o, true)
+      }
+      (".numElements()", itemAccessorMethod(sqlType), primitiveElement)
+  }
 
   override def nullable: Boolean = true
 
@@ -456,8 +453,8 @@ case class MapObjects private (
     val arrayConstructor =
       if (convertedType contains "[]") {
         val rawType = convertedType.takeWhile(_ != '[')
-        val arrayPart =
-          convertedType.reverse.takeWhile(c => c == '[' || c == ']').reverse
+        val arrayPart = convertedType.reverse
+          .takeWhile(c => c == '[' || c == ']').reverse
         s"new $rawType[$dataLength]$arrayPart"
       } else { s"new $convertedType[$dataLength]" }
 
@@ -528,19 +525,17 @@ case class CreateExternalRow(children: Seq[Expression], schema: StructType)
       boolean ${ev.isNull} = false;
       final Object[] $values = new Object[${children.size}];
     """ +
-      children.zipWithIndex
-        .map {
-          case (e, i) =>
-            val eval = e.gen(ctx)
-            eval.code + s"""
+      children.zipWithIndex.map {
+        case (e, i) =>
+          val eval = e.gen(ctx)
+          eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
             $values[$i] = ${eval.value};
           }
          """
-        }
-        .mkString("\n") +
+      }.mkString("\n") +
       s"final ${classOf[Row].getName} ${ev.value} = new $rowClass($values, this.$schemaField);"
   }
 }

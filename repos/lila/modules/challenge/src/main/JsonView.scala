@@ -54,13 +54,11 @@ final class JsonView(getLightUser: String => Option[lila.common.LightUser]) {
 
   private implicit val RegisteredWrites = OWrites[Registered] { r =>
     val light = getLightUser(r.id)
-    Json
-      .obj(
-        "id" -> r.id,
-        "name" -> light.fold(r.id)(_.name),
-        "title" -> light.map(_.title),
-        "rating" -> r.rating.int,
-        "provisional" -> r.rating.provisional)
-      .noNull
+    Json.obj(
+      "id" -> r.id,
+      "name" -> light.fold(r.id)(_.name),
+      "title" -> light.map(_.title),
+      "rating" -> r.rating.int,
+      "provisional" -> r.rating.provisional).noNull
   }
 }

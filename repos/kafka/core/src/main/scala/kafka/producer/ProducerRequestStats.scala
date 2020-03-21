@@ -69,8 +69,8 @@ class ProducerRequestStats(clientId: String) {
   def getProducerRequestStats(
       brokerHost: String,
       brokerPort: Int): ProducerRequestMetrics = {
-    stats.getAndMaybePut(
-      new ClientIdAndBroker(clientId, brokerHost, brokerPort))
+    stats
+      .getAndMaybePut(new ClientIdAndBroker(clientId, brokerHost, brokerPort))
   }
 }
 

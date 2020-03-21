@@ -213,8 +213,8 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
       // construct table
       val table = new AddingHashTable(size, tableLoadFactor, seedvalue)
       val bucks = buckets.map(b => if (b ne null) b.headPtr else null)
-      val insertcount = combinerTaskSupport.executeAndWaitResult(
-        new FillBlocks(bucks, table, 0, bucks.length))
+      val insertcount = combinerTaskSupport
+        .executeAndWaitResult(new FillBlocks(bucks, table, 0, bucks.length))
       table.setSize(insertcount)
       // TODO compare insertcount and size to see if compression is needed
       val c = table.hashTableContents
@@ -347,5 +347,6 @@ private[parallel] object ParHashMapCombiner {
 
   def apply[K, V] =
     new ParHashMapCombiner[K, V](
-      HashTable.defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
+      HashTable
+        .defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
 }

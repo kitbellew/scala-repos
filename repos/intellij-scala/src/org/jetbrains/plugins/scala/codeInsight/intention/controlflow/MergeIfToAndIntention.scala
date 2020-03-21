@@ -26,10 +26,8 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null) return false
 
     val offset = editor.getCaretModel.getOffset
@@ -63,10 +61,8 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null || !ifStmt.isValid) return
 
     val expr = new StringBuilder
@@ -78,13 +74,8 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
     val innerThenBranch = innerIfStmt.thenBranch.get
     val innerCondition = innerIfStmt.condition.get.getText
 
-    expr
-      .append("if (")
-      .append(outerCondition)
-      .append(" && ")
-      .append(innerCondition)
-      .append(") ")
-      .append(innerThenBranch.getText)
+    expr.append("if (").append(outerCondition).append(" && ")
+      .append(innerCondition).append(") ").append(innerThenBranch.getText)
 
     val newIfStmt: ScExpression = ScalaPsiElementFactory
       .createExpressionFromText(expr.toString(), element.getManager)

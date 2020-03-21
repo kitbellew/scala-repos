@@ -80,8 +80,7 @@ class GroupsResource @Inject() (
 
       //format:off
       def appsResponse(id: PathId) =
-        infoService
-          .selectAppsInGroup(id, allAuthorized, appEmbed)
+        infoService.selectAppsInGroup(id, allAuthorized, appEmbed)
           .map(info => ok(info))
 
       def groupResponse(id: PathId) =
@@ -91,8 +90,7 @@ class GroupsResource @Inject() (
         }
 
       def groupVersionResponse(id: PathId, version: Timestamp) =
-        infoService
-          .selectGroupVersion(id, version, allAuthorized, groupEmbed)
+        infoService.selectGroupVersion(id, version, allAuthorized, groupEmbed)
           .map {
             case Some(info) => ok(info)
             case None       => unknownGroup(id)
@@ -149,8 +147,7 @@ class GroupsResource @Inject() (
       req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       withValid(Json.parse(body).as[GroupUpdate]) { groupUpdate =>
-        val effectivePath = groupUpdate.id
-          .map(_.canonicalPath(id.toRootPath))
+        val effectivePath = groupUpdate.id.map(_.canonicalPath(id.toRootPath))
           .getOrElse(id.toRootPath)
         val rootGroup = result(groupManager.rootGroup())
 
@@ -235,11 +232,9 @@ class GroupsResource @Inject() (
         rootGroup.copy(apps = Set.empty, groups = Set.empty)
       }
 
-      val deployment = result(groupManager.update(
-        PathId.empty,
-        clearRootGroup,
-        Timestamp.now(),
-        force))
+      val deployment = result(
+        groupManager
+          .update(PathId.empty, clearRootGroup, Timestamp.now(), force))
       deploymentResult(deployment)
     }
 

@@ -92,12 +92,11 @@ class MessageSerializer(val system: ExtendedActorSystem)
     val builder = mf.AtLeastOnceDeliverySnapshot.newBuilder
     builder.setCurrentDeliveryId(snap.currentDeliveryId)
     snap.unconfirmedDeliveries.foreach { unconfirmed ⇒
-      val unconfirmedBuilder =
-        mf.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.newBuilder
-          .setDeliveryId(unconfirmed.deliveryId)
-          .setDestination(unconfirmed.destination.toString)
-          .setPayload(persistentPayloadBuilder(
-            unconfirmed.message.asInstanceOf[AnyRef]))
+      val unconfirmedBuilder = mf.AtLeastOnceDeliverySnapshot
+        .UnconfirmedDelivery.newBuilder.setDeliveryId(unconfirmed.deliveryId)
+        .setDestination(unconfirmed.destination.toString)
+        .setPayload(persistentPayloadBuilder(
+          unconfirmed.message.asInstanceOf[AnyRef]))
       builder.addUnconfirmedDeliveries(unconfirmedBuilder)
     }
     builder
@@ -118,9 +117,7 @@ class MessageSerializer(val system: ExtendedActorSystem)
       : AtLeastOnceDeliverySnapshot = {
     import scala.collection.JavaConverters._
     val unconfirmedDeliveries = new VectorBuilder[UnconfirmedDelivery]()
-    atLeastOnceDeliverySnapshot
-      .getUnconfirmedDeliveriesList()
-      .iterator()
+    atLeastOnceDeliverySnapshot.getUnconfirmedDeliveriesList().iterator()
       .asScala foreach { next ⇒
       unconfirmedDeliveries += UnconfirmedDelivery(
         next.getDeliveryId,
@@ -233,12 +230,10 @@ class MessageSerializer(val system: ExtendedActorSystem)
         persistentPayload.getPayloadManifest.toStringUtf8
       else ""
 
-    serialization
-      .deserialize(
-        persistentPayload.getPayload.toByteArray,
-        persistentPayload.getSerializerId,
-        manifest)
-      .get
+    serialization.deserialize(
+      persistentPayload.getPayload.toByteArray,
+      persistentPayload.getSerializerId,
+      manifest).get
   }
 
 }

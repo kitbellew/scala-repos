@@ -168,9 +168,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   private[spark] def setIfMissing[T](
       entry: OptionalConfigEntry[T],
       value: T): SparkConf = {
-    if (settings.putIfAbsent(
-          entry.key,
-          entry.rawStringConverter(value)) == null) {
+    if (settings
+          .putIfAbsent(entry.key, entry.rawStringConverter(value)) == null) {
       logDeprecationWarning(entry.key)
     }
     this
@@ -182,8 +181,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     */
   def registerKryoClasses(classes: Array[Class[_]]): SparkConf = {
     val allClassNames = new LinkedHashSet[String]()
-    allClassNames ++= get("spark.kryo.classesToRegister", "")
-      .split(',')
+    allClassNames ++= get("spark.kryo.classesToRegister", "").split(',')
       .filter(!_.isEmpty)
     allClassNames ++= classes.map(_.getName)
 
@@ -209,10 +207,9 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
   /** Gets all the avro schemas in the configuration used in the generic Avro record serializer */
   def getAvroSchema: Map[Long, String] = {
-    getAll
-      .filter { case (k, v) => k.startsWith(avroNamespace) }
-      .map { case (k, v) => (k.substring(avroNamespace.length).toLong, v) }
-      .toMap
+    getAll.filter { case (k, v) => k.startsWith(avroNamespace) }.map {
+      case (k, v) => (k.substring(avroNamespace.length).toLong, v)
+    }.toMap
   }
 
   /** Remove a parameter from the configuration */
@@ -372,9 +369,9 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   /** Get all executor environment variables set on this SparkConf */
   def getExecutorEnv: Seq[(String, String)] = {
     val prefix = "spark.executorEnv."
-    getAll
-      .filter { case (k, v) => k.startsWith(prefix) }
-      .map { case (k, v) => (k.substring(prefix.length), v) }
+    getAll.filter { case (k, v) => k.startsWith(prefix) }.map {
+      case (k, v) => (k.substring(prefix.length), v)
+    }
   }
 
   /**
@@ -478,10 +475,11 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
       if (detected.nonEmpty) {
         logWarning(
           "Detected deprecated memory fraction settings: " +
-            detected.mkString(
-              "[",
-              ", ",
-              "]") + ". As of Spark 1.6, execution and storage " +
+            detected
+              .mkString(
+                "[",
+                ", ",
+                "]") + ". As of Spark 1.6, execution and storage " +
             "memory management are unified. All memory fractions used in the old model are " +
             "now deprecated and no longer read. If you wish to use the old memory management, " +
             s"you may explicitly enable `$legacyMemoryManagementKey` (not recommended).")
@@ -701,8 +699,8 @@ private[spark] object SparkConf extends Logging {
     * the scheduler, while the rest of the spark configs can be inherited from the driver later.
     */
   def isExecutorStartupConf(name: String): Boolean = {
-    (name.startsWith(
-      "spark.auth") && name != SecurityManager.SPARK_AUTH_SECRET_CONF) ||
+    (name.startsWith("spark.auth") && name != SecurityManager
+      .SPARK_AUTH_SECRET_CONF) ||
     name.startsWith("spark.ssl") ||
     name.startsWith("spark.rpc") ||
     isSparkPortConf(name)
@@ -712,8 +710,8 @@ private[spark] object SparkConf extends Logging {
     * Return true if the given config matches either `spark.*.port` or `spark.port.*`.
     */
   def isSparkPortConf(name: String): Boolean = {
-    (name.startsWith("spark.") && name.endsWith(".port")) || name.startsWith(
-      "spark.port.")
+    (name.startsWith("spark.") && name.endsWith(".port")) || name
+      .startsWith("spark.port.")
   }
 
   /**

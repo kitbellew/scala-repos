@@ -163,18 +163,16 @@ trait FindMembers {
               || refinementParents.contains(owner))
         )
 
-      (!isPrivate || admitPrivate(sym)) && (
-        sym.name != nme.CONSTRUCTOR || owner == initBaseClasses.head
-      )
+      (!isPrivate || admitPrivate(sym)) && (sym.name != nme
+        .CONSTRUCTOR || owner == initBaseClasses.head)
     }
 
     // True unless the already-found member of type `memberType` matches the candidate symbol `other`.
     protected def isNewMember(member: Symbol, other: Symbol): Boolean =
       ((other ne member)
         && ((member.owner eq other.owner) // same owner, therefore overload
-          || (
-            member.flags & PRIVATE
-          ) != 0 // (unqualified) private members never participate in overriding
+          || (member
+            .flags & PRIVATE) != 0 // (unqualified) private members never participate in overriding
           || (other.flags & PRIVATE) != 0 // ... as overrider or overridee.
           || !(memberTypeLow(member) matches memberTypeHi(
             other
@@ -263,9 +261,8 @@ trait FindMembers {
     }
 
     protected def shortCircuit(sym: Symbol): Boolean =
-      (
-        name.isTypeName || (stableOnly && sym.isStable && !sym.hasVolatileType)
-      ) && {
+      (name.isTypeName || (stableOnly && sym.isStable && !sym
+        .hasVolatileType)) && {
         clearAndAddResult(sym)
         true
       }

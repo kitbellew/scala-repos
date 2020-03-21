@@ -94,10 +94,8 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
       diagnostics: String = ""): Unit =
     synchronized {
       if (registered) {
-        amClient.unregisterApplicationMaster(
-          status,
-          diagnostics,
-          uiHistoryAddress)
+        amClient
+          .unregisterApplicationMaster(status, diagnostics, uiHistoryAddress)
       }
     }
 
@@ -115,8 +113,7 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
     val prefix = Try(
       classOf[WebAppUtils]
         .getMethod("getHttpSchemePrefix", classOf[Configuration])
-        .invoke(null, conf)
-        .asInstanceOf[String]).getOrElse("http://")
+        .invoke(null, conf).asInstanceOf[String]).getOrElse("http://")
 
     // If running a new enough Yarn, use the HA-aware API for retrieving the RM addresses.
     try {

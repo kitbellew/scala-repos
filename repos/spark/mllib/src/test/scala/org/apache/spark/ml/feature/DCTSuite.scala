@@ -36,25 +36,23 @@ class DCTSuite
     with DefaultReadWriteTest {
 
   test("forward transform of discrete cosine matches jTransforms result") {
-    val data = Vectors.dense(
-      (0 until 128).map(_ => 2d * math.random - 1d).toArray)
+    val data = Vectors
+      .dense((0 until 128).map(_ => 2d * math.random - 1d).toArray)
     val inverse = false
 
     testDCT(data, inverse)
   }
 
   test("inverse transform of discrete cosine matches jTransforms result") {
-    val data = Vectors.dense(
-      (0 until 128).map(_ => 2d * math.random - 1d).toArray)
+    val data = Vectors
+      .dense((0 until 128).map(_ => 2d * math.random - 1d).toArray)
     val inverse = true
 
     testDCT(data, inverse)
   }
 
   test("read/write") {
-    val t = new DCT()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
+    val t = new DCT().setInputCol("myInputCol").setOutputCol("myOutputCol")
       .setInverse(true)
     testDefaultReadWrite(t)
   }
@@ -66,18 +64,13 @@ class DCTSuite
     } else { (new DoubleDCT_1D(data.size)).forward(expectedResultBuffer, true) }
     val expectedResult = Vectors.dense(expectedResultBuffer)
 
-    val dataset = sqlContext.createDataFrame(Seq(
-      DCTTestData(data, expectedResult)))
+    val dataset = sqlContext
+      .createDataFrame(Seq(DCTTestData(data, expectedResult)))
 
-    val transformer = new DCT()
-      .setInputCol("vec")
-      .setOutputCol("resultVec")
+    val transformer = new DCT().setInputCol("vec").setOutputCol("resultVec")
       .setInverse(inverse)
 
-    transformer
-      .transform(dataset)
-      .select("resultVec", "wantedVec")
-      .collect()
+    transformer.transform(dataset).select("resultVec", "wantedVec").collect()
       .foreach {
         case Row(resultVec: Vector, wantedVec: Vector) =>
           assert(Vectors.sqdist(resultVec, wantedVec) < 1e-6)

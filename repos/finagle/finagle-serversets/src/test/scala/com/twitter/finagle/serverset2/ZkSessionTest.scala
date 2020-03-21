@@ -170,8 +170,8 @@ class ZkSessionTest extends FunSuite with Eventually with IntegrationPatience {
       val ew2watchv = Var[WatchState](WatchState.Pending)
       ew2.res() = Return(
         Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ew2watchv))
-      val Seq(`ew`, `ew2`, gw @ GetChildrenWatch("/foo/bar")) =
-        watchedZk.value.opq
+      val Seq(`ew`, `ew2`, gw @ GetChildrenWatch("/foo/bar")) = watchedZk.value
+        .opq
       assert(ref.get == Activity.Pending)
       gw.res() = Return(Watched(
         Node.Children(Seq("a", "b", "c"), null),
@@ -180,8 +180,8 @@ class ZkSessionTest extends FunSuite with Eventually with IntegrationPatience {
       assert(watchedZk.value.opq == Seq(ew, ew2, gw))
 
       ew2watchv() = WatchState.Determined(NodeEvent.ChildrenChanged)
-      val Seq(`ew`, `ew2`, `gw`, ew3 @ ExistsWatch("/foo/bar")) =
-        watchedZk.value.opq
+      val Seq(`ew`, `ew2`, `gw`, ew3 @ ExistsWatch("/foo/bar")) = watchedZk
+        .value.opq
       ew3.res() = Return(Watched(None, Var.value(WatchState.Pending)))
       assert(ref.get == Activity.Ok(Set.empty))
     }

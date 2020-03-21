@@ -81,9 +81,8 @@ trait PartialActionLaws[G, A] extends Laws {
       },
       "left and right partial action compatibility" → forAll { (a: A, g: G) =>
         (a <|+|?? g) ==>
-          ((g.inverse ??|+|> a) && (
-            (a <|+|? g).get === (g.inverse ?|+|> a).get
-          ))
+          ((g.inverse ??|+|> a) && ((a <|+|? g).get === (g.inverse ?|+|> a)
+            .get))
       })
 
   def leftSemigroupPartialAction(implicit
@@ -155,14 +154,12 @@ trait PartialActionLaws[G, A] extends Laws {
       sl = _.group(G0),
       parents = Seq(monoidPartialAction),
       "right -> left action compatibility" → forAll { (a: A, g: G) =>
-        !(
-          a <|+|?? g
-        ) || ((g ??|+|> a) && ((a <|+|? g).get === (g.inverse ?|+|> a).get))
+        !(a <|+|?? g) || ((g ??|+|> a) && ((a <|+|? g).get === (g
+          .inverse ?|+|> a).get))
       },
       "left -> right action compatibility" → forAll { (a: A, g: G) =>
-        !(g ??|+|> a) || (
-          (a <|+|?? g) && ((g ?|+|> a).get === (a <|+|? g.inverse).get)
-        )
+        !(g ??|+|> a) || ((a <|+|?? g) && ((g ?|+|> a).get === (a <|+|? g
+          .inverse).get))
       })
 
   class ActionProperties(

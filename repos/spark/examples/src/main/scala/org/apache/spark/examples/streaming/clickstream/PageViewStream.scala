@@ -56,24 +56,19 @@ object PageViewStream {
       StreamingContext.jarOfClass(this.getClass).toSeq)
 
     // Create a ReceiverInputDStream on target host:port and convert each line to a PageView
-    val pageViews = ssc
-      .socketTextStream(host, port)
-      .flatMap(_.split("\n"))
+    val pageViews = ssc.socketTextStream(host, port).flatMap(_.split("\n"))
       .map(PageView.fromString(_))
 
     // Return a count of views per URL seen in each batch
     val pageCounts = pageViews.map(view => view.url).countByValue()
 
     // Return a sliding window of page views per URL in the last ten seconds
-    val slidingPageCounts = pageViews
-      .map(view => view.url)
+    val slidingPageCounts = pageViews.map(view => view.url)
       .countByValueAndWindow(Seconds(10), Seconds(2))
 
     // Return the rate of error pages (a non 200 status) in each zip code over the last 30 seconds
-    val statusesPerZipCode = pageViews
-      .window(Seconds(30), Seconds(2))
-      .map(view => ((view.zipCode, view.status)))
-      .groupByKey()
+    val statusesPerZipCode = pageViews.window(Seconds(30), Seconds(2))
+      .map(view => ((view.zipCode, view.status))).groupByKey()
     val errorRatePerZipCode = statusesPerZipCode.map {
       case (zip, statuses) =>
         val normalCount = statuses.count(_ == 200)
@@ -84,11 +79,8 @@ object PageViewStream {
     }
 
     // Return the number unique users in last 15 seconds
-    val activeUserCount = pageViews
-      .window(Seconds(15), Seconds(2))
-      .map(view => (view.userID, 1))
-      .groupByKey()
-      .count()
+    val activeUserCount = pageViews.window(Seconds(15), Seconds(2))
+      .map(view => (view.userID, 1)).groupByKey().count()
       .map("Unique active users: " + _)
 
     // An external dataset we want to join to this stream
@@ -102,14 +94,9 @@ object PageViewStream {
       case "activeUserCount"     => activeUserCount.print()
       case "popularUsersSeen"    =>
         // Look for users in our existing dataset and print it out if we have a match
-        pageViews
-          .map(view => (view.userID, 1))
-          .foreachRDD((rdd, time) =>
-            rdd
-              .join(userList)
-              .map(_._2._2)
-              .take(10)
-              .foreach(u => println("Saw user %s at time %s".format(u, time))))
+        pageViews.map(view => (view.userID, 1)).foreachRDD((rdd, time) =>
+          rdd.join(userList).map(_._2._2).take(10)
+            .foreach(u => println("Saw user %s at time %s".format(u, time))))
       case _ => println("Invalid metric entered: " + metric)
     }
 

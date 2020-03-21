@@ -101,8 +101,7 @@ object CheckBoxTableCell {
       selectedProperty: Int => ObservableValue[Boolean, java.lang.Boolean],
       showLabel: Boolean): (TableColumn[S, T] => TableCell[S, T]) =
     (column: TableColumn[S, T]) =>
-      jfxscc.CheckBoxTableCell
-        .forTableColumn(selectedProperty, showLabel)
+      jfxscc.CheckBoxTableCell.forTableColumn(selectedProperty, showLabel)
         .call(column)
 
   /**
@@ -129,8 +128,7 @@ object CheckBoxTableCell {
       selectedProperty: Int => ObservableValue[Boolean, java.lang.Boolean],
       converter: StringConverter[T]): (TableColumn[S, T] => TableCell[S, T]) =
     (column: TableColumn[S, T]) =>
-      jfxscc.CheckBoxTableCell
-        .forTableColumn(selectedProperty, converter)
+      jfxscc.CheckBoxTableCell.forTableColumn(selectedProperty, converter)
         .call(column)
 
   /**

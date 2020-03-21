@@ -352,9 +352,10 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
   protected[this] def bf2seq[S, That](bf: CanBuildFrom[Repr, S, That]) =
     new CanBuildFrom[Sequential, S, That] {
       def apply(from: Sequential) =
-        bf.apply(
-          from.par.asInstanceOf[Repr]
-        ) // !!! we only use this on `this.seq`, and know that `this.seq.par.getClass == this.getClass`
+        bf
+          .apply(
+            from.par.asInstanceOf[Repr]
+          ) // !!! we only use this on `this.seq`, and know that `this.seq.par.getClass == this.getClass`
       def apply() = bf.apply()
     }
 
@@ -459,8 +460,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
     *  @param combop    an associative operator used to combine results from different partitions
     */
   def aggregate[S](z: => S)(seqop: (S, T) => S, combop: (S, S) => S): S = {
-    tasksupport.executeAndWaitResult(
-      new Aggregate(() => z, seqop, combop, splitter))
+    tasksupport
+      .executeAndWaitResult(new Aggregate(() => z, seqop, combop, splitter))
   }
 
   def foldLeft[S](z: S)(op: (S, T) => S): S = seq.foldLeft(z)(op)
@@ -499,14 +500,12 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
   }
 
   def min[U >: T](implicit ord: Ordering[U]): T = {
-    tasksupport
-      .executeAndWaitResult(new Min(ord, splitter) mapResult { _.get })
+    tasksupport.executeAndWaitResult(new Min(ord, splitter) mapResult { _.get })
       .asInstanceOf[T]
   }
 
   def max[U >: T](implicit ord: Ordering[U]): T = {
-    tasksupport
-      .executeAndWaitResult(new Max(ord, splitter) mapResult { _.get })
+    tasksupport.executeAndWaitResult(new Max(ord, splitter) mapResult { _.get })
       .asInstanceOf[T]
   }
 
@@ -919,8 +918,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
 
   def copyToArray[U >: T](xs: Array[U], start: Int, len: Int) =
     if (len > 0) {
-      tasksupport.executeAndWaitResult(
-        new CopyToArray(start, len, xs, splitter))
+      tasksupport
+        .executeAndWaitResult(new CopyToArray(start, len, xs, splitter))
     }
 
   def sameElements[U >: T](that: GenIterable[U]) = seq.sameElements(that)
@@ -1043,7 +1042,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
       pit.splitWithSignalling.map(newSubtask(_)) // default split procedure
     private[parallel] override def signalAbort = pit.abort()
     override def toString =
-      this.getClass.getSimpleName + "(" + pit.toString + ")(" + result + ")(supername: " + super.toString + ")"
+      this.getClass.getSimpleName + "(" + pit
+        .toString + ")(" + result + ")(supername: " + super.toString + ")"
   }
 
   protected[this] trait NonDivisibleTask[R, Tp]
@@ -1376,8 +1376,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
     @volatile
     var result: Combiner[U, That] = null
     def leaf(prev: Option[Combiner[U, That]]) =
-      result = pit.copy2builder[U, That, Combiner[U, That]](
-        reuse(prev, cfactory()))
+      result = pit
+        .copy2builder[U, That, Combiner[U, That]](reuse(prev, cfactory()))
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       new Copy[U, That](cfactory, p)
     override def merge(that: Copy[U, That]) =
@@ -1583,11 +1583,12 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
         // val lst = pit.toList
         // val pa = mutable.ParArray(lst: _*)
         // val str = "At leaf we will iterate: " + pa.splitter.toList
-        result = pit.span2combiners(
-          pred,
-          cbfBefore(),
-          cbfAfter()
-        ) // do NOT reuse old combiners here, lest ye be surprised
+        result = pit
+          .span2combiners(
+            pred,
+            cbfBefore(),
+            cbfAfter()
+          ) // do NOT reuse old combiners here, lest ye be surprised
         // println("\nAt leaf result is: " + result)
         if (result._2.size > 0) pit.setIndexFlagIfLesser(pos)
       } else {
@@ -1646,11 +1647,8 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
     @volatile
     var result: Result = null
     def leaf(prev: Option[Result]) =
-      result = pit.zipAll2combiner[U, S, That](
-        othpit,
-        thiselem,
-        thatelem,
-        pbf())
+      result = pit
+        .zipAll2combiner[U, S, That](othpit, thiselem, thatelem, pbf())
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       throw new UnsupportedOperationException
     override def split =
@@ -1678,9 +1676,7 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
             thiselem,
             thatelem,
             pbf,
-            immutable
-              .repetition(thiselem, diff)
-              .splitter
+            immutable.repetition(thiselem, diff).splitter
               .asInstanceOf[IterableSplitter[T]],
             opits(1))
         )

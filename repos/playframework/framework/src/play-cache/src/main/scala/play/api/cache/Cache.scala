@@ -153,10 +153,9 @@ trait EhCacheComponents {
   def configuration: Configuration
   def applicationLifecycle: ApplicationLifecycle
 
-  lazy val ehCacheManager: CacheManager = new CacheManagerProvider(
-    environment,
-    configuration,
-    applicationLifecycle).get
+  lazy val ehCacheManager: CacheManager =
+    new CacheManagerProvider(environment, configuration, applicationLifecycle)
+      .get
 
   /**
     * Use this to create with the given name.
@@ -177,10 +176,10 @@ class EhCacheModule extends Module {
   import scala.collection.JavaConversions._
 
   def bindings(environment: Environment, configuration: Configuration) = {
-    val defaultCacheName = configuration.underlying.getString(
-      "play.cache.defaultCache")
-    val bindCaches =
-      configuration.underlying.getStringList("play.cache.bindCaches").toSeq
+    val defaultCacheName = configuration.underlying
+      .getString("play.cache.defaultCache")
+    val bindCaches = configuration.underlying
+      .getStringList("play.cache.bindCaches").toSeq
 
     // Creates a named cache qualifier
     def named(name: String): NamedCache = { new NamedCacheImpl(name) }
@@ -193,11 +192,9 @@ class EhCacheModule extends Module {
       Seq(
         ehcacheKey.to(new NamedEhCacheProvider(name)),
         cacheApiKey.to(new NamedCacheApiProvider(ehcacheKey)),
-        bind[JavaCacheApi]
-          .qualifiedWith(namedCache)
+        bind[JavaCacheApi].qualifiedWith(namedCache)
           .to(new NamedJavaCacheApiProvider(cacheApiKey)),
-        bind[Cached]
-          .qualifiedWith(namedCache)
+        bind[Cached].qualifiedWith(namedCache)
           .to(new NamedCachedProvider(cacheApiKey))
       )
     }
@@ -219,8 +216,7 @@ class CacheManagerProvider @Inject() (
     extends Provider[CacheManager] {
   lazy val get: CacheManager = {
     val resourceName = config.underlying.getString("play.cache.configResource")
-    val configResource = env
-      .resource(resourceName)
+    val configResource = env.resource(resourceName)
       .getOrElse(env.classLoader.getResource("ehcache-default.xml"))
     val manager = CacheManager.create(configResource)
     lifecycle.addStopHook(() => Future.successful(manager.shutdown()))
@@ -294,13 +290,10 @@ class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
   }
 
   def get[T](key: String)(implicit ct: ClassTag[T]): Option[T] = {
-    Option(cache.get(key))
-      .map(_.getObjectValue)
-      .filter { v =>
-        Primitives.wrap(ct.runtimeClass).isInstance(v) ||
-        ct == ClassTag.Nothing || (ct == ClassTag.Unit && v == ((): Unit))
-      }
-      .asInstanceOf[Option[T]]
+    Option(cache.get(key)).map(_.getObjectValue).filter { v =>
+      Primitives.wrap(ct.runtimeClass).isInstance(v) ||
+      ct == ClassTag.Nothing || (ct == ClassTag.Unit && v == ((): Unit))
+    }.asInstanceOf[Option[T]]
   }
 
   def getOrElse[A: ClassTag](key: String, expiration: Duration)(

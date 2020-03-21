@@ -90,8 +90,7 @@ class IteratorTest {
     def mk(size: Int): Iterator[Int] = {
       //val closures = (1 to size).toList.map(x => (() => Iterator(1)))
       //closures.foldLeft(Iterator.empty: Iterator[Int])((res, f) => res ++ f())
-      List
-        .fill(size)(() => Iterator(1))
+      List.fill(size)(() => Iterator(1))
         .foldLeft(Iterator.empty: Iterator[Int])((res, f) => res ++ f())
     }
     assertEquals(100, mk(100).sum)
@@ -190,10 +189,7 @@ class IteratorTest {
   @Test
   def iterateIsSufficientlyLazy(): Unit = {
     //Iterator.iterate((1 to 5).toList)(_.tail).takeWhile(_.nonEmpty).toList  // suffices
-    Iterator
-      .iterate((1 to 5).toList)(_.tail)
-      .takeWhile(_.nonEmpty)
-      .map(_.head)
+    Iterator.iterate((1 to 5).toList)(_.tail).takeWhile(_.nonEmpty).map(_.head)
       .toList
   }
   // SI-3516
@@ -207,9 +203,8 @@ class IteratorTest {
     val s1 = mkIterator.toStream
     val s2 = mkInfinite.toStream
     // back and forth without slipping into nontermination.
-    results += (
-      Stream from 1
-    ).toIterator.drop(10).toStream.drop(10).toIterator.next()
+    results += (Stream from 1).toIterator.drop(10).toStream.drop(10).toIterator
+      .next()
     assertSameElements(List(1, 1, 21), results)
   }
   // SI-8552

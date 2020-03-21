@@ -12,7 +12,8 @@ class WordCountTest extends CatsSuite {
   test("wordcount") {
     import cats.data.State.{get, set}
     val text =
-      "Faith, I must leave thee, love, and shortly too.\nMy operant powers their functions leave to do.\n".toList
+      "Faith, I must leave thee, love, and shortly too.\nMy operant powers their functions leave to do.\n"
+        .toList
     // A type alias to treat Int as cartesian applicative
     type Count[A] = Const[Int, A]
     // Tye type parameter to Count is ceremonial, so hardcode it to Unit

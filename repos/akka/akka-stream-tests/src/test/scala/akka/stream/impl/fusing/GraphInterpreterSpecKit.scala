@@ -360,10 +360,8 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
       def cancel(): Unit = cancel(in)
     }
 
-    builder(sandwitchStage)
-      .connect(upstream, stagein)
-      .connect(stageout, downstream)
-      .init()
+    builder(sandwitchStage).connect(upstream, stagein)
+      .connect(stageout, downstream).init()
   }
 
   implicit class ToGraphStage[I, O](stage: Stage[I, O]) {

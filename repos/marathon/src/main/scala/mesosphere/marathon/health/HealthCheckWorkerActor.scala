@@ -32,17 +32,15 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
     case HealthCheckJob(app, task, launched, check) =>
       val replyTo = sender() // avoids closing over the volatile sender ref
 
-      doCheck(app, task, launched, check)
-        .andThen {
-          case Success(Some(result)) => replyTo ! result
-          case Success(None)         => // ignore
-          case Failure(t) =>
-            replyTo ! Unhealthy(
-              task.taskId,
-              launched.appVersion,
-              s"${t.getClass.getSimpleName}: ${t.getMessage}")
-        }
-        .onComplete { case _ => self ! PoisonPill }
+      doCheck(app, task, launched, check).andThen {
+        case Success(Some(result)) => replyTo ! result
+        case Success(None)         => // ignore
+        case Failure(t) =>
+          replyTo ! Unhealthy(
+            task.taskId,
+            launched.appVersion,
+            s"${t.getClass.getSimpleName}: ${t.getMessage}")
+      }.onComplete { case _ => self ! PoisonPill }
   }
 
   def doCheck(
@@ -97,11 +95,10 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
     get(url).map { response =>
       if (acceptableResponses contains response.status.intValue)
         Some(Healthy(task.taskId, launched.appVersion))
-      else if (check.ignoreHttp1xx && (
-                 toIgnoreResponses contains response.status.intValue
-               )) {
-        log.debug(
-          s"Ignoring health check HTTP response ${response.status.intValue} for ${task.taskId}")
+      else if (check.ignoreHttp1xx && (toIgnoreResponses contains response
+                 .status.intValue)) {
+        log.debug(s"Ignoring health check HTTP response ${response.status
+          .intValue} for ${task.taskId}")
         None
       } else {
         Some(Unhealthy(
@@ -163,10 +160,8 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
 
         val context = SSLContext.getInstance("Default")
         //scalastyle:off null
-        context.init(
-          Array[KeyManager](),
-          Array(BlindFaithX509TrustManager),
-          null)
+        context
+          .init(Array[KeyManager](), Array(BlindFaithX509TrustManager), null)
         //scalastyle:on
         context
       }

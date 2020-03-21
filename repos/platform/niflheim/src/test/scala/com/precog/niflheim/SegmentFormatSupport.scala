@@ -169,8 +169,9 @@ trait SegmentFormatMatchers {
     val out = new InMemoryWritableByteChannel
     format.writer.writeSegment(out, segment0) must beLike {
       case Success(_) =>
-        format.reader.readSegment(
-          new InMemoryReadableByteChannel(out.toArray)) must beLike {
+        format.reader
+          .readSegment(
+            new InMemoryReadableByteChannel(out.toArray)) must beLike {
           case Success(segment1) =>
             //
             areEqual(segment0, segment1)

@@ -31,8 +31,7 @@ import kafka.utils.TestUtils
 class FetcherTest extends KafkaServerTestHarness {
   val numNodes = 1
   def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numNodes, zkConnect)
+    TestUtils.createBrokerConfigs(numNodes, zkConnect)
       .map(KafkaConfig.fromProps)
 
   val messages = new mutable.HashMap[Int, Seq[Array[Byte]]]

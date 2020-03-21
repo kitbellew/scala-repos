@@ -650,12 +650,12 @@ trait AST extends Phases {
     def hashCodeIgnoreLoc: Int =
       this match {
         case Let(_, id, params, left, right) =>
-          id.hashCode + params.hashCode + left.hashCodeIgnoreLoc + right.hashCodeIgnoreLoc
+          id.hashCode + params.hashCode + left.hashCodeIgnoreLoc + right
+            .hashCodeIgnoreLoc
 
         case Solve(_, constraints, child) =>
-          (constraints map {
-            _.hashCodeIgnoreLoc
-          } sum) + child.hashCodeIgnoreLoc
+          (constraints map { _.hashCodeIgnoreLoc } sum) + child
+            .hashCodeIgnoreLoc
 
         case Import(_, spec, child) => spec.hashCode + child.hashCodeIgnoreLoc
 
@@ -705,7 +705,8 @@ trait AST extends Phases {
           } sum)
 
         case Cond(_, pred, left, right) =>
-          "if".hashCode + pred.hashCodeIgnoreLoc + "then".hashCode + left.hashCodeIgnoreLoc + "else".hashCode + right.hashCodeIgnoreLoc
+          "if".hashCode + pred.hashCodeIgnoreLoc + "then".hashCode + left
+            .hashCodeIgnoreLoc + "else".hashCode + right.hashCodeIgnoreLoc
 
         case Where(_, left, right) =>
           left.hashCodeIgnoreLoc + "where".hashCode + right.hashCodeIgnoreLoc
@@ -717,7 +718,8 @@ trait AST extends Phases {
           left.hashCodeIgnoreLoc + "union".hashCode + right.hashCodeIgnoreLoc
 
         case Intersect(_, left, right) =>
-          left.hashCodeIgnoreLoc + "intersect".hashCode + right.hashCodeIgnoreLoc
+          left.hashCodeIgnoreLoc + "intersect".hashCode + right
+            .hashCodeIgnoreLoc
 
         case Difference(_, left, right) =>
           left.hashCodeIgnoreLoc + "without".hashCode + right.hashCodeIgnoreLoc
@@ -910,9 +912,8 @@ trait AST extends Phases {
       def form =
         'solve ~ (constraints.init map { _ ~ 'comma } reduceOption {
           _ ~ _
-        } map { _ ~ constraints.last ~ child } getOrElse (
-          constraints.last ~ child
-        ))
+        } map { _ ~ constraints.last ~ child } getOrElse (constraints
+          .last ~ child))
 
       def children = child +: constraints toList
 

@@ -87,94 +87,63 @@ object ProducerPerformance extends Logging {
   }
 
   class ProducerPerfConfig(args: Array[String]) extends PerfConfig(args) {
-    val brokerListOpt = parser
-      .accepts(
-        "broker-list",
-        "REQUIRED: broker info the list of broker host and port for bootstrap.")
-      .withRequiredArg
-      .describedAs("hostname:port,..,hostname:port")
+    val brokerListOpt = parser.accepts(
+      "broker-list",
+      "REQUIRED: broker info the list of broker host and port for bootstrap.")
+      .withRequiredArg.describedAs("hostname:port,..,hostname:port")
       .ofType(classOf[String])
     val producerConfigOpt = parser
       .accepts("producer.config", "Producer config properties file.")
-      .withRequiredArg
-      .describedAs("config file")
-      .ofType(classOf[String])
-    val topicsOpt = parser
-      .accepts(
-        "topics",
-        "REQUIRED: The comma separated list of topics to produce to")
-      .withRequiredArg
-      .describedAs("topic1,topic2..")
-      .ofType(classOf[String])
+      .withRequiredArg.describedAs("config file").ofType(classOf[String])
+    val topicsOpt = parser.accepts(
+      "topics",
+      "REQUIRED: The comma separated list of topics to produce to")
+      .withRequiredArg.describedAs("topic1,topic2..").ofType(classOf[String])
     val producerRequestTimeoutMsOpt = parser
       .accepts("request-timeout-ms", "The producer request timeout in ms")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(3000)
+      .withRequiredArg().ofType(classOf[java.lang.Integer]).defaultsTo(3000)
     val producerNumRetriesOpt = parser
       .accepts("producer-num-retries", "The producer retries number")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(3)
-    val producerRetryBackOffMsOpt = parser
-      .accepts(
-        "producer-retry-backoff-ms",
-        "The producer retry backoff time in milliseconds")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(100)
-    val producerRequestRequiredAcksOpt = parser
-      .accepts(
-        "request-num-acks",
-        "Number of acks required for producer request " +
-          "to complete")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
+      .withRequiredArg().ofType(classOf[java.lang.Integer]).defaultsTo(3)
+    val producerRetryBackOffMsOpt = parser.accepts(
+      "producer-retry-backoff-ms",
+      "The producer retry backoff time in milliseconds").withRequiredArg()
+      .ofType(classOf[java.lang.Integer]).defaultsTo(100)
+    val producerRequestRequiredAcksOpt = parser.accepts(
+      "request-num-acks",
+      "Number of acks required for producer request " +
+        "to complete").withRequiredArg().ofType(classOf[java.lang.Integer])
       .defaultsTo(-1)
     val varyMessageSizeOpt = parser.accepts(
       "vary-message-size",
       "If set, message size will vary up to the given maximum.")
-    val syncOpt = parser.accepts(
-      "sync",
-      "If set, messages are sent synchronously.")
-    val numThreadsOpt = parser
-      .accepts("threads", "Number of sending threads.")
-      .withRequiredArg
-      .describedAs("number of threads")
+    val syncOpt = parser
+      .accepts("sync", "If set, messages are sent synchronously.")
+    val numThreadsOpt = parser.accepts("threads", "Number of sending threads.")
+      .withRequiredArg.describedAs("number of threads")
+      .ofType(classOf[java.lang.Integer]).defaultsTo(1)
+    val initialMessageIdOpt = parser.accepts(
+      "initial-message-id",
+      "The is used for generating test data, If set, messages will be tagged with an " +
+        "ID and sent by producer starting from this ID sequentially. Message content will be String type and " +
+        "in the form of 'Message:000...1:xxx...'"
+    ).withRequiredArg().describedAs("initial message id")
       .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1)
-    val initialMessageIdOpt = parser
-      .accepts(
-        "initial-message-id",
-        "The is used for generating test data, If set, messages will be tagged with an " +
-          "ID and sent by producer starting from this ID sequentially. Message content will be String type and " +
-          "in the form of 'Message:000...1:xxx...'"
-      )
-      .withRequiredArg()
-      .describedAs("initial message id")
-      .ofType(classOf[java.lang.Integer])
-    val messageSendGapMsOpt = parser
-      .accepts(
-        "message-send-gap-ms",
-        "If set, the send thread will wait for specified time between two sends")
-      .withRequiredArg()
-      .describedAs("message send time gap")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(0)
+    val messageSendGapMsOpt = parser.accepts(
+      "message-send-gap-ms",
+      "If set, the send thread will wait for specified time between two sends")
+      .withRequiredArg().describedAs("message send time gap")
+      .ofType(classOf[java.lang.Integer]).defaultsTo(0)
     val csvMetricsReporterEnabledOpt = parser.accepts(
       "csv-reporter-enabled",
       "If set, the CSV metrics reporter will be enabled")
-    val metricsDirectoryOpt = parser
-      .accepts(
-        "metrics-dir",
-        "If csv-reporter-enable is set, and this parameter is" +
-          "set, the csv metrics will be outputted here")
-      .withRequiredArg
-      .describedAs("metrics directory")
-      .ofType(classOf[java.lang.String])
-    val useNewProducerOpt = parser.accepts(
-      "new-producer",
-      "Use the new producer implementation.")
+    val metricsDirectoryOpt = parser.accepts(
+      "metrics-dir",
+      "If csv-reporter-enable is set, and this parameter is" +
+        "set, the csv metrics will be outputted here").withRequiredArg
+      .describedAs("metrics directory").ofType(classOf[java.lang.String])
+    val useNewProducerOpt = parser
+      .accepts("new-producer", "Use the new producer implementation.")
 
     val options = parser.parse(args: _*)
     CommandLineUtils.checkRequiredArgs(
@@ -197,21 +166,18 @@ object ProducerPerformance extends Logging {
     var isSync = options.has(syncOpt)
     var batchSize = options.valueOf(batchSizeOpt).intValue
     var numThreads = options.valueOf(numThreadsOpt).intValue
-    val compressionCodec = CompressionCodec.getCompressionCodec(
-      options.valueOf(compressionCodecOpt).intValue)
+    val compressionCodec = CompressionCodec
+      .getCompressionCodec(options.valueOf(compressionCodecOpt).intValue)
     val seqIdMode = options.has(initialMessageIdOpt)
     var initialMessageId: Int = 0
     if (seqIdMode)
       initialMessageId = options.valueOf(initialMessageIdOpt).intValue()
-    val producerRequestTimeoutMs = options
-      .valueOf(producerRequestTimeoutMsOpt)
+    val producerRequestTimeoutMs = options.valueOf(producerRequestTimeoutMsOpt)
       .intValue()
     val producerRequestRequiredAcks = options
-      .valueOf(producerRequestRequiredAcksOpt)
-      .intValue()
+      .valueOf(producerRequestRequiredAcksOpt).intValue()
     val producerNumRetries = options.valueOf(producerNumRetriesOpt).intValue()
-    val producerRetryBackoffMs = options
-      .valueOf(producerRetryBackOffMsOpt)
+    val producerRetryBackoffMs = options.valueOf(producerRetryBackOffMsOpt)
       .intValue()
     val useNewProducer = options.has(useNewProducerOpt)
 
@@ -225,9 +191,8 @@ object ProducerPerformance extends Logging {
     if (csvMetricsReporterEnabled) {
       val props = new Properties()
       props.put("kafka.metrics.polling.interval.secs", "1")
-      props.put(
-        "kafka.metrics.reporters",
-        "kafka.metrics.KafkaCSVMetricsReporter")
+      props
+        .put("kafka.metrics.reporters", "kafka.metrics.KafkaCSVMetricsReporter")
       if (options.has(metricsDirectoryOpt))
         props.put("kafka.csv.metrics.dir", options.valueOf(metricsDirectoryOpt))
       else props.put("kafka.csv.metrics.dir", "kafka_metrics")
@@ -292,12 +257,10 @@ object ProducerPerformance extends Logging {
         props.put(
           "request.required.acks",
           config.producerRequestRequiredAcks.toString)
-        props.put(
-          "request.timeout.ms",
-          config.producerRequestTimeoutMs.toString)
-        props.put(
-          "message.send.max.retries",
-          config.producerNumRetries.toString)
+        props
+          .put("request.timeout.ms", config.producerRequestTimeoutMs.toString)
+        props
+          .put("message.send.max.retries", config.producerNumRetries.toString)
         props.put("retry.backoff.ms", config.producerRetryBackoffMs.toString)
         props.put("serializer.class", classOf[DefaultEncoder].getName)
         props.put("key.serializer.class", classOf[NullEncoder[Long]].getName)
@@ -321,9 +284,8 @@ object ProducerPerformance extends Logging {
       // thread 1 IDs : 100 ~ 199
       // thread 2 IDs : 200 ~ 299
       // . . .
-      leftPaddedSeqId = String.format(
-        "%0" + seqIdNumDigit + "d",
-        long2Long(msgId))
+      leftPaddedSeqId = String
+        .format("%0" + seqIdNumDigit + "d", long2Long(msgId))
 
       val msgHeader = topicLabel + SEP +
         topic + SEP +
@@ -332,8 +294,7 @@ object ProducerPerformance extends Logging {
         messageIdLabel + SEP +
         leftPaddedSeqId + SEP
 
-      val seqMsgString = String
-        .format("%1$-" + msgSize + "s", msgHeader)
+      val seqMsgString = String.format("%1$-" + msgSize + "s", msgHeader)
         .replace(' ', 'x')
       debug(seqMsgString)
       seqMsgString.getBytes()

@@ -106,12 +106,11 @@ object ModuleExtDataService {
         javacOptions: Seq[String]): Unit = {
       val model = getModifiableRootModel(module)
       val moduleSdk = Option(model.getSdk)
-      val languageLevel = SdkUtils
-        .javaLanguageLevelFrom(javacOptions)
+      val languageLevel = SdkUtils.javaLanguageLevelFrom(javacOptions)
         .orElse(moduleSdk.flatMap(SdkUtils.defaultJavaLanguageLevelIn))
       languageLevel.foreach { level =>
-        val extension = model.getModuleExtension(
-          classOf[LanguageLevelModuleExtensionImpl])
+        val extension = model
+          .getModuleExtension(classOf[LanguageLevelModuleExtensionImpl])
         extension.setLanguageLevel(level)
       }
     }
@@ -136,8 +135,7 @@ object ModuleExtDataService {
         NotificationCategory.WARNING,
         NotificationSource.PROJECT_SYNC)
       notification.setBalloonGroup(SbtBundle("sbt.notificationGroupName"))
-      ExternalSystemNotificationManager
-        .getInstance(project)
+      ExternalSystemNotificationManager.getInstance(project)
         .showNotification(SbtProjectSystem.Id, notification)
     }
   }

@@ -19,8 +19,8 @@ import org.jetbrains.plugins.scala.scalai18n.codeInspection.i18n.ScalaI18nUtil
   */
 class ScalaI18nMessageGotoDeclarationHandler
     extends GotoDeclarationHandlerBase {
-  private final val KEY: Key[FoldingBuilder] =
-    CompositeFoldingBuilder.FOLDING_BUILDER
+  private final val KEY: Key[FoldingBuilder] = CompositeFoldingBuilder
+    .FOLDING_BUILDER
 
   def getGotoDeclarationTarget(
       myElement: PsiElement,
@@ -41,8 +41,7 @@ class ScalaI18nMessageGotoDeclarationHandler
       case methodCall: ScMethodCall =>
         var foldRegion: FoldRegion = null
         for (region <- editor.getFoldingModel.getAllFoldRegions) {
-          val psiElement: PsiElement = EditorFoldingInfo
-            .get(editor)
+          val psiElement: PsiElement = EditorFoldingInfo.get(editor)
             .getPsiElement(region)
           if (methodCall == psiElement) { foldRegion = region }
         }
@@ -50,10 +49,10 @@ class ScalaI18nMessageGotoDeclarationHandler
         for (expression <- methodCall.args.exprsArray) {
           expression match {
             case literal: ScLiteral
-                if ScalaI18nUtil.isI18nProperty(
-                  expression.getProject,
-                  literal) => return resolve(expression)
-            case _         =>
+                if ScalaI18nUtil
+                  .isI18nProperty(expression.getProject, literal) =>
+              return resolve(expression)
+            case _ =>
           }
         }
       case _ =>

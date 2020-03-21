@@ -32,9 +32,8 @@ case class MultivariateGaussian(
     extends ContinuousDistr[DenseVector[Double]]
     with Moments[DenseVector[Double], DenseMatrix[Double]] {
   def draw() = {
-    val z: DenseVector[Double] = DenseVector.rand(
-      mean.length,
-      rand.gaussian(0, 1))
+    val z: DenseVector[Double] = DenseVector
+      .rand(mean.length, rand.gaussian(0, 1))
     root * z += mean
   }
 

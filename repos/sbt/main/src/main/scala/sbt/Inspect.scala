@@ -19,10 +19,10 @@ object Inspect {
   def parser: State => Parser[(Inspect.Mode, ScopedKey[_])] =
     (s: State) =>
       spacedModeParser(s) flatMap {
-        case opt @ (Uses | Definitions) =>
-          allKeyParser(s).map(key => (opt, Def.ScopedKey(Global, key)))
-        case opt @ (DependencyTree | Details(_)) =>
-          spacedKeyParser(s).map(key => (opt, key))
+        case opt @ (Uses | Definitions) => allKeyParser(s)
+            .map(key => (opt, Def.ScopedKey(Global, key)))
+        case opt @ (DependencyTree | Details(_)) => spacedKeyParser(s)
+            .map(key => (opt, key))
       }
   val spacedModeParser: (State => Parser[Mode]) = (s: State) => {
     val actual = "actual" ^^^ Details(true)
@@ -52,9 +52,8 @@ object Inspect {
         Project.settingGraph(structure, basedir, sk).dependsAscii
       case Uses => Project.showUses(Project.usedBy(structure, true, sk.key))
       case Definitions =>
-        Project.showDefinitions(
-          sk.key,
-          Project.definitions(structure, true, sk.key))
+        Project
+          .showDefinitions(sk.key, Project.definitions(structure, true, sk.key))
     }
   }
 

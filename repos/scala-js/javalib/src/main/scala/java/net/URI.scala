@@ -791,8 +791,7 @@ object URI {
           // we need to do a CI compare for the next two characters
           assert(x.length > i + 2, "Invalid escape in URI")
           assert(y.length > i + 2, "Invalid escape in URI")
-          val cmp = x
-            .substring(i + 1, i + 3)
+          val cmp = x.substring(i + 1, i + 3)
             .compareToIgnoreCase(y.substring(i + 1, i + 3))
           if (cmp != 0) cmp else loop(i + 3)
         } else loop(i + 1)

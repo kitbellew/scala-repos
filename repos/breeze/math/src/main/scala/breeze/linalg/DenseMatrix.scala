@@ -103,14 +103,16 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   if (majorStride > 0) {
     if (data.length < linearIndex(rows - 1, cols - 1)) {
       throw new IndexOutOfBoundsException(
-        "Storage array has size " + data.size + " but indices can grow as large as " + linearIndex(
+        "Storage array has size " + data
+          .size + " but indices can grow as large as " + linearIndex(
           rows - 1,
           cols - 1))
     }
   } else {
     if (data.length < linearIndex(rows - 1, 0)) {
       throw new IndexOutOfBoundsException(
-        "Storage array has size " + data.size + " but indices can grow as large as " + linearIndex(
+        "Storage array has size " + data
+          .size + " but indices can grow as large as " + linearIndex(
           rows - 1,
           cols - 1))
     }

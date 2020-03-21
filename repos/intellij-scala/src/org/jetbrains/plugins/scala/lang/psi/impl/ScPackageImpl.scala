@@ -50,14 +50,14 @@ class ScPackageImpl private (val pack: PsiPackage)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    if (place.getLanguage == ScalaFileType.SCALA_LANGUAGE && pack.getQualifiedName == "scala") {
+    if (place.getLanguage == ScalaFileType.SCALA_LANGUAGE && pack
+          .getQualifiedName == "scala") {
       if (!BaseProcessor.isImplicitProcessor(processor)) {
         val scope = processor match {
           case r: ResolveProcessor => r.getResolveScope
           case _                   => place.getResolveScope
         }
-        val namesSet = ScalaShortNamesCacheManager
-          .getInstance(getProject)
+        val namesSet = ScalaShortNamesCacheManager.getInstance(getProject)
           .getClassNames(pack, scope)
 
         //Process synthetic classes for scala._ package
@@ -96,21 +96,17 @@ class ScPackageImpl private (val pack: PsiPackage)
         case _                   => place.getResolveScope
       }
       if (getQualifiedName == "scala") {
-        ScPackageImpl.implicitlyImportedObject(
-          place.getManager,
-          scope,
-          "scala") match {
+        ScPackageImpl
+          .implicitlyImportedObject(place.getManager, scope, "scala") match {
           case Some(obj: ScObject) =>
             var newState = state
             obj.getType(TypingContext.empty).foreach {
               case tp: ScType =>
                 newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
             }
-            if (!obj.processDeclarations(
-                  processor,
-                  newState,
-                  lastParent,
-                  place)) return false
+            if (!obj
+                  .processDeclarations(processor, newState, lastParent, place))
+              return false
           case _ =>
         }
       } else {
@@ -121,11 +117,9 @@ class ScPackageImpl private (val pack: PsiPackage)
               case tp: ScType =>
                 newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
             }
-            if (!obj.processDeclarations(
-                  processor,
-                  newState,
-                  lastParent,
-                  place)) return false
+            if (!obj
+                  .processDeclarations(processor, newState, lastParent, place))
+              return false
           case _ =>
         }
       }
@@ -156,9 +150,8 @@ class ScPackageImpl private (val pack: PsiPackage)
     val lastDot: Int = myQualifiedName.lastIndexOf('.')
     if (lastDot < 0) { ScPackageImpl.findPackage(getProject, "") }
     else {
-      ScPackageImpl.findPackage(
-        getProject,
-        myQualifiedName.substring(0, lastDot))
+      ScPackageImpl
+        .findPackage(getProject, myQualifiedName.substring(0, lastDot))
     }
   }
 
@@ -203,9 +196,7 @@ object ScPackageImpl {
       manager: PsiManager,
       scope: GlobalSearchScope,
       fqn: String): Option[PsiClass] = {
-    ScalaPsiManager
-      .instance(manager.getProject)
-      .getCachedClasses(scope, fqn)
+    ScalaPsiManager.instance(manager.getProject).getCachedClasses(scope, fqn)
       .headOption
   }
 }

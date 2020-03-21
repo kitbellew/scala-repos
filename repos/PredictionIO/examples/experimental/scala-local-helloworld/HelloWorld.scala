@@ -30,10 +30,7 @@ class MyDataSource
 
   /* override this to return Training Data only */
   override def readTraining(): MyTrainingData = {
-    val lines = Source
-      .fromFile("../data/helloworld/data.csv")
-      .getLines()
-      .toList
+    val lines = Source.fromFile("../data/helloworld/data.csv").getLines().toList
       .map { line =>
         val data = line.split(",")
         (data(0), data(1).toDouble)
@@ -53,8 +50,7 @@ class MyAlgorithm
 
   override def train(pd: MyTrainingData): MyModel = {
     // calculate average value of each day
-    val average = pd.temperatures
-      .groupBy(_._1) // group by day
+    val average = pd.temperatures.groupBy(_._1) // group by day
       .mapValues { list =>
         val tempList = list.map(_._2) // get the temperature
         tempList.sum / tempList.size

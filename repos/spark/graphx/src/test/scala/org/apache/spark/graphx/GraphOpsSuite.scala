@@ -62,8 +62,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
         .map { case (a, b) => (a.toLong, b.toLong) }
       val correctEdges = edgeArray.filter { case (a, b) => a != b }.toSet
       val graph = Graph.fromEdgeTuples(sc.parallelize(edgeArray), 1)
-      val canonicalizedEdges =
-        graph.removeSelfEdges().edges.map(e => (e.srcId, e.dstId)).collect
+      val canonicalizedEdges = graph.removeSelfEdges().edges
+        .map(e => (e.srcId, e.dstId)).collect
       assert(canonicalizedEdges.toSet.size === canonicalizedEdges.size)
       assert(canonicalizedEdges.toSet === correctEdges)
     }
@@ -75,26 +75,22 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val vertices = sc.parallelize((0 to n).map(x => (x: VertexId, x)))
       val edges = sc.parallelize((1 to n).map(x => Edge(0, x, x)))
       val graph: Graph[Int, Int] = Graph(vertices, edges).cache()
-      val filteredGraph = graph
-        .filter(
-          graph => {
-            val degrees: VertexRDD[Int] = graph.outDegrees
-            graph.outerJoinVertices(degrees) { (vid, data, deg) =>
-              deg.getOrElse(0)
-            }
-          },
-          vpred = (vid: VertexId, deg: Int) => deg > 0
-        )
-        .cache()
+      val filteredGraph = graph.filter(
+        graph => {
+          val degrees: VertexRDD[Int] = graph.outDegrees
+          graph.outerJoinVertices(degrees) { (vid, data, deg) =>
+            deg.getOrElse(0)
+          }
+        },
+        vpred = (vid: VertexId, deg: Int) => deg > 0
+      ).cache()
 
       val v = filteredGraph.vertices.collect().toSet
       assert(v === Set((0, 0)))
 
       // the map is necessary because of object-reuse in the edge iterator
-      val e = filteredGraph.edges
-        .map(e => Edge(e.srcId, e.dstId, e.attr))
-        .collect()
-        .toSet
+      val e = filteredGraph.edges.map(e => Edge(e.srcId, e.dstId, e.attr))
+        .collect().toSet
       assert(e.isEmpty)
     }
   }
@@ -104,8 +100,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val vertices = sc.parallelize(
         Seq[(VertexId, String)]((1, "one"), (2, "two"), (3, "three")),
         2)
-      val edges = sc.parallelize(
-        Seq(Edge(1, 2, 1), Edge(2, 1, 1), Edge(3, 2, 2)))
+      val edges = sc
+        .parallelize(Seq(Edge(1, 2, 1), Edge(2, 1, 1), Edge(3, 2, 2)))
       val g: Graph[String, Int] = Graph(vertices, edges)
 
       val g1 = g.convertToCanonicalEdges()

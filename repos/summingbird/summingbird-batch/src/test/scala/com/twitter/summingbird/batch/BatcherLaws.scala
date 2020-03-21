@@ -59,8 +59,7 @@ object BatcherLaws extends Properties("Batcher") {
     forAll { (d: Timestamp) =>
       val b = batcher.batchOf(d)
       val list = BatchID
-        .toIterable(batcher.batchesCoveredBy(batcher.toInterval(b)))
-        .toList
+        .toIterable(batcher.batchesCoveredBy(batcher.toInterval(b))).toList
       list == List(b)
     }
 
@@ -148,10 +147,8 @@ object BatcherLaws extends Properties("Batcher") {
     implicit val tenSecondBatcher = Batcher(10, TimeUnit.SECONDS)
     forAll { initialTime: Int =>
       initialTime > 0 ==> {
-        Stream
-          .iterate(Timestamp(initialTime * 1000L))(_.incrementSeconds(1))
-          .take(100)
-          .forall { t =>
+        Stream.iterate(Timestamp(initialTime * 1000L))(_.incrementSeconds(1))
+          .take(100).forall { t =>
             if (t.milliSinceEpoch % (1000 * 10) == 0)
               tenSecondBatcher.isLowerBatchEdge(t)
             else !tenSecondBatcher.isLowerBatchEdge(t)

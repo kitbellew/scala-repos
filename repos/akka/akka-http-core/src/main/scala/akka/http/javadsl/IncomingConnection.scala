@@ -37,8 +37,7 @@ class IncomingConnection private[http] (
     * Use `Flow.join` or one of the handleXXX methods to consume handle requests on this connection.
     */
   def flow: Flow[HttpResponse, HttpRequest, NotUsed] =
-    Flow
-      .fromGraph(delegate.flow)
+    Flow.fromGraph(delegate.flow)
       .asInstanceOf[Flow[HttpResponse, HttpRequest, NotUsed]]
 
   /**

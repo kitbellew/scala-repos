@@ -15,8 +15,7 @@ case class TypeClass(
   def doc =
     "[[" + fqn + "]]" + (if (extendsList.nonEmpty)
                            " extends " + extendsList
-                             .map(tc => "[[" + tc.fqn + "]]")
-                             .mkString(" with ")
+                             .map(tc => "[[" + tc.fqn + "]]").mkString(" with ")
                          else "")
 }
 
@@ -330,8 +329,7 @@ object GenTypeClass {
         cti: String = classifiedTypeIdent) =
       parents match {
         case Seq() => ""
-        case es =>
-          es.map(n => n + suffix + "[" + cti + "]")
+        case es => es.map(n => n + suffix + "[" + cti + "]")
             .mkString("extends ", " with ", "")
       }
     def extendsToSyntaxListText =
@@ -344,8 +342,8 @@ object GenTypeClass {
           })
         case _ => extendsList match {
             case Seq() => ""
-            case es =>
-              es.map(n => "To" + n + "Ops").mkString("extends ", " with ", "")
+            case es => es.map(n => "To" + n + "Ops")
+                .mkString("extends ", " with ", "")
           }
       }
     val extendsLikeList = extendsListText("")

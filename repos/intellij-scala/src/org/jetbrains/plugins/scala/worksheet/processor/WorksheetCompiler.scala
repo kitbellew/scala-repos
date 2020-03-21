@@ -54,8 +54,8 @@ class WorksheetCompiler {
 
     if (runType != NonServer) CompileServerLauncher.ensureServerRunning(project)
 
-    val contentManager =
-      MessageView.SERVICE.getInstance(project).getContentManager
+    val contentManager = MessageView.SERVICE.getInstance(project)
+      .getContentManager
     val oldContent = contentManager findContent ERROR_CONTENT_NAME
     if (oldContent != null) contentManager.removeContent(oldContent, true)
 
@@ -71,18 +71,14 @@ class WorksheetCompiler {
           false,
           false)
 
-        val worksheetPrinter = WorksheetEditorPrinter.newWorksheetUiFor(
-          editor,
-          worksheetVirtual)
+        val worksheetPrinter = WorksheetEditorPrinter
+          .newWorksheetUiFor(editor, worksheetVirtual)
         worksheetPrinter.scheduleWorksheetUpdate()
 
         val onError = (msg: String) => {
-          NotificationUtil
-            .builder(project, msg)
-            .setGroup("Scala")
+          NotificationUtil.builder(project, msg).setGroup("Scala")
             .setNotificationType(NotificationType.ERROR)
-            .setTitle(CONFIG_ERROR_HEADER)
-            .show()
+            .setTitle(CONFIG_ERROR_HEADER).show()
         }
 
         val consumer = new RemoteServerConnector.CompilerInterfaceImpl(
@@ -167,7 +163,8 @@ class WorksheetCompiler {
           messageView.getContentManager setSelectedContent content
 
           val toolWindow =
-            ToolWindowManager getInstance project getToolWindow ToolWindowId.MESSAGES_WINDOW
+            ToolWindowManager getInstance project getToolWindow ToolWindowId
+              .MESSAGES_WINDOW
           if (toolWindow != null) toolWindow.show(null)
         }
       },

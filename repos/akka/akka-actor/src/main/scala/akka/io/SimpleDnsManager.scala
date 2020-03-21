@@ -18,8 +18,7 @@ class SimpleDnsManager(val ext: DnsExt)
   private val resolver = actorOf(
     FromConfig.props(
       Props(ext.provider.actorClass, ext.cache, ext.Settings.ResolverConfig)
-        .withDeploy(Deploy.local)
-        .withDispatcher(ext.Settings.Dispatcher)),
+        .withDeploy(Deploy.local).withDispatcher(ext.Settings.Dispatcher)),
     ext.Settings.Resolver
   )
   private val cacheCleanup = ext.cache match {
@@ -32,11 +31,8 @@ class SimpleDnsManager(val ext: DnsExt)
       ext.Settings.ResolverConfig
         .getDuration("cache-cleanup-interval", TimeUnit.MILLISECONDS),
       TimeUnit.MILLISECONDS)
-    system.scheduler.schedule(
-      interval,
-      interval,
-      self,
-      SimpleDnsManager.CacheCleanup)
+    system.scheduler
+      .schedule(interval, interval, self, SimpleDnsManager.CacheCleanup)
   }
 
   override def receive = {

@@ -101,11 +101,8 @@ class TopologyTests extends WordSpec {
 
   "A named node after a flat map should imply its options" in {
     val nodeName = "super dooper node"
-    val p = Storm
-      .source(TraversableSpout(sample[List[Int]]))
-      .flatMap(testFn)
-      .name(nodeName)
-      .sumByKey(TestStore.createStore[Int, Int]()._2)
+    val p = Storm.source(TraversableSpout(sample[List[Int]])).flatMap(testFn)
+      .name(nodeName).sumByKey(TestStore.createStore[Int, Int]()._2)
 
     val opts = Map(nodeName -> Options().set(FlatMapParallelism(50)))
     val storm = Storm.local(opts)
@@ -122,11 +119,8 @@ class TopologyTests extends WordSpec {
   "With 2 names in a row we take the closest name" in {
     val nodeName = "super dooper node"
     val otherNodeName = "super dooper node"
-    val p = Storm
-      .source(TraversableSpout(sample[List[Int]]))
-      .flatMap(testFn)
-      .name(nodeName)
-      .name(otherNodeName)
+    val p = Storm.source(TraversableSpout(sample[List[Int]])).flatMap(testFn)
+      .name(nodeName).name(otherNodeName)
       .sumByKey(TestStore.createStore[Int, Int]()._2)
 
     val opts = Map(
@@ -147,11 +141,8 @@ class TopologyTests extends WordSpec {
   "If the closes doesnt contain the option we keep going" in {
     val nodeName = "super dooper node"
     val otherNodeName = "super dooper node"
-    val p = Storm
-      .source(TraversableSpout(sample[List[Int]]))
-      .flatMap(testFn)
-      .name(otherNodeName)
-      .name(nodeName)
+    val p = Storm.source(TraversableSpout(sample[List[Int]])).flatMap(testFn)
+      .name(otherNodeName).name(nodeName)
       .sumByKey(TestStore.createStore[Int, Int]()._2)
 
     val opts = Map(
@@ -170,16 +161,12 @@ class TopologyTests extends WordSpec {
 
   "Options propagate backwards" in {
     val nodeName = "super dooper node"
-    val p = Storm
-      .source(TraversableSpout(sample[List[Int]]))
-      .flatMap(testFn)
-      .name(nodeName)
-      .name("Throw away name")
+    val p = Storm.source(TraversableSpout(sample[List[Int]])).flatMap(testFn)
+      .name(nodeName).name("Throw away name")
       .sumByKey(TestStore.createStore[Int, Int]()._2)
 
     val opts = Map(
-      nodeName -> Options()
-        .set(FlatMapParallelism(50))
+      nodeName -> Options().set(FlatMapParallelism(50))
         .set(SourceParallelism(30)))
     val storm = Storm.local(opts)
     val stormTopo = storm.plan(p).topology
@@ -194,16 +181,12 @@ class TopologyTests extends WordSpec {
   "Options don't propagate forwards" in {
     val nodeName = "super dooper node"
     val otherNodeName = "super dooper node"
-    val p = Storm
-      .source(TraversableSpout(sample[List[Int]]))
-      .flatMap(testFn)
-      .name(otherNodeName)
-      .name(nodeName)
+    val p = Storm.source(TraversableSpout(sample[List[Int]])).flatMap(testFn)
+      .name(otherNodeName).name(nodeName)
       .sumByKey(TestStore.createStore[Int, Int]()._2)
 
     val opts = Map(
-      otherNodeName -> Options()
-        .set(SourceParallelism(30))
+      otherNodeName -> Options().set(SourceParallelism(30))
         .set(SummerParallelism(50)),
       nodeName -> Options().set(FlatMapParallelism(50)))
     val storm = Storm.local(opts)

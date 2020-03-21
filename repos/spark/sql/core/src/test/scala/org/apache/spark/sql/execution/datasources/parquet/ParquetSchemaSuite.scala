@@ -60,8 +60,8 @@ abstract class ParquetSchemaTest extends ParquetTest with SharedSQLContext {
       writeLegacyParquetFormat = writeLegacyParquetFormat)
 
     test(s"sql <= parquet: $testName") {
-      val actual = converter.convert(
-        MessageTypeParser.parseMessageType(parquetSchema))
+      val actual = converter
+        .convert(MessageTypeParser.parseMessageType(parquetSchema))
       val expected = sqlSchema
       assert(
         actual === expected,
@@ -474,10 +474,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
       sqlContext.range(3).write.parquet(s"$path/p=1")
-      sqlContext
-        .range(3)
-        .selectExpr("CAST(id AS INT) AS id")
-        .write
+      sqlContext.range(3).selectExpr("CAST(id AS INT) AS id").write
         .parquet(s"$path/p=2")
 
       val message = intercept[SparkException] {
@@ -491,10 +488,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
       sqlContext.range(3).write.parquet(s"$path/p=1")
-      sqlContext
-        .range(3)
-        .selectExpr("CAST(id AS INT) AS id")
-        .write
+      sqlContext.range(3).selectExpr("CAST(id AS INT) AS id").write
         .parquet(s"$path/p=2")
 
       sqlContext.sparkContext.conf.set("spark.default.parallelism", "20")
@@ -674,11 +668,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type 7 - " +
       "parquet-protobuf primitive lists",
-    new StructType()
-      .add(
-        "f1",
-        ArrayType(IntegerType, containsNull = false),
-        nullable = false),
+    new StructType().add(
+      "f1",
+      ArrayType(IntegerType, containsNull = false),
+      nullable = false),
     """message root {
       |  repeated int32 f1;
       |}
@@ -691,15 +684,13 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type 8 - " +
       "parquet-protobuf non-primitive lists", {
-      val elementType = new StructType()
-        .add("c1", StringType, nullable = true)
+      val elementType = new StructType().add("c1", StringType, nullable = true)
         .add("c2", IntegerType, nullable = false)
 
-      new StructType()
-        .add(
-          "f1",
-          ArrayType(elementType, containsNull = false),
-          nullable = false)
+      new StructType().add(
+        "f1",
+        ArrayType(elementType, containsNull = false),
+        nullable = false)
     },
     """message root {
       |  repeated group f1 {
@@ -1146,8 +1137,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
       """.stripMargin,
     catalystSchema = {
       val f0Type = new StructType().add("f00", IntegerType, nullable = true)
-      new StructType()
-        .add("f0", f0Type, nullable = false)
+      new StructType().add("f0", f0Type, nullable = false)
         .add("f1", IntegerType, nullable = true)
     },
     expectedSchema = """message root {
@@ -1174,17 +1164,14 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
     catalystSchema = {
       val f00Type = ArrayType(StringType, containsNull = false)
       val f01Type = ArrayType(
-        new StructType()
-          .add("f011", DoubleType, nullable = true),
+        new StructType().add("f011", DoubleType, nullable = true),
         containsNull = false)
 
-      val f0Type = new StructType()
-        .add("f00", f00Type, nullable = false)
+      val f0Type = new StructType().add("f00", f00Type, nullable = false)
         .add("f01", f01Type, nullable = false)
       val f1Type = ArrayType(IntegerType, containsNull = true)
 
-      new StructType()
-        .add("f0", f0Type, nullable = false)
+      new StructType().add("f0", f0Type, nullable = false)
         .add("f1", f1Type, nullable = true)
     },
     expectedSchema = """message root {
@@ -1226,15 +1213,13 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         .add("f011", DoubleType, nullable = true)
         .add("f012", LongType, nullable = true)
 
-      val f0Type = new StructType()
-        .add(
-          "f00",
-          ArrayType(StringType, containsNull = false),
-          nullable = true)
-        .add(
-          "f01",
-          ArrayType(f01ElementType, containsNull = false),
-          nullable = true)
+      val f0Type = new StructType().add(
+        "f00",
+        ArrayType(StringType, containsNull = false),
+        nullable = true).add(
+        "f01",
+        ArrayType(f01ElementType, containsNull = false),
+        nullable = true)
 
       new StructType().add("f0", f0Type, nullable = false)
     },
@@ -1277,15 +1262,13 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         .add("f011", DoubleType, nullable = true)
         .add("f012", LongType, nullable = true)
 
-      val f0Type = new StructType()
-        .add(
-          "f00",
-          ArrayType(StringType, containsNull = false),
-          nullable = true)
-        .add(
-          "f01",
-          ArrayType(f01ElementType, containsNull = false),
-          nullable = true)
+      val f0Type = new StructType().add(
+        "f00",
+        ArrayType(StringType, containsNull = false),
+        nullable = true).add(
+        "f01",
+        ArrayType(f01ElementType, containsNull = false),
+        nullable = true)
 
       new StructType().add("f0", f0Type, nullable = false)
     },
@@ -1424,15 +1407,13 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         .add("f011", DoubleType, nullable = true)
         .add("f012", LongType, nullable = true)
 
-      val f0Type = new StructType()
-        .add(
-          "f00",
-          ArrayType(StringType, containsNull = false),
-          nullable = true)
-        .add(
-          "f01",
-          ArrayType(f01ElementType, containsNull = false),
-          nullable = true)
+      val f0Type = new StructType().add(
+        "f00",
+        ArrayType(StringType, containsNull = false),
+        nullable = true).add(
+        "f01",
+        ArrayType(f01ElementType, containsNull = false),
+        nullable = true)
 
       new StructType().add("f0", f0Type, nullable = false)
     },
@@ -1479,13 +1460,11 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         |  }
         |}
       """.stripMargin,
-    catalystSchema = new StructType()
-      .add(
-        "f0",
-        new StructType()
-          .add("f02", FloatType, nullable = true)
-          .add("f03", DoubleType, nullable = true),
-        nullable = true),
+    catalystSchema = new StructType().add(
+      "f0",
+      new StructType().add("f02", FloatType, nullable = true)
+        .add("f03", DoubleType, nullable = true),
+      nullable = true),
     expectedSchema = """message root {
         |  required group f0 {
         |    optional float f02;
@@ -1584,8 +1563,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         |}
       """.stripMargin,
     catalystSchema = {
-      val keyType = new StructType()
-        .add("value_f1", LongType, nullable = false)
+      val keyType = new StructType().add("value_f1", LongType, nullable = false)
         .add("value_f2", DoubleType, nullable = false)
 
       val f0Type = MapType(keyType, IntegerType, valueContainsNull = false)

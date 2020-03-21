@@ -41,8 +41,8 @@ object ScalaBuilder {
       modules: Set[JpsModule],
       client: Client): Either[String, ModuleLevelBuilder.ExitCode] = {
 
-    context.processMessage(new ProgressMessage(
-      "Reading compilation settings..."))
+    context
+      .processMessage(new ProgressMessage("Reading compilation settings..."))
 
     for {
       sbtData <- sbtData
@@ -58,8 +58,8 @@ object ScalaBuilder {
 
   def checkIncrementalTypeChange(context: CompileContext) = {
     def storageFile: Option[File] = {
-      val projectDir =
-        context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
+      val projectDir = context.getProjectDescriptor.dataManager.getDataPaths
+        .getDataStorageRoot
       if (projectDir != null) Some(new File(projectDir, "incrementalType.dat"))
       else None
     }
@@ -91,8 +91,8 @@ object ScalaBuilder {
     def cleanCaches() {
       context.getProjectDescriptor.setFSCache(FSCache.NO_CACHE)
       try {
-        val directory =
-          context.getProjectDescriptor.dataManager.getDataPaths.getDataStorageRoot
+        val directory = context.getProjectDescriptor.dataManager.getDataPaths
+          .getDataStorageRoot
         FileUtil.delete(directory)
       } catch {
         case e: Exception =>
@@ -106,16 +106,15 @@ object ScalaBuilder {
     val incrType = settings.getIncrementalityType
     previousIncrementalType match {
       case _
-          if JavaBuilderUtil.isForcedRecompilationAllJavaModules(
-            context
-          ) => //isRebiuld
+          if JavaBuilderUtil
+            .isForcedRecompilationAllJavaModules(context) => //isRebiuld
         setPreviousIncrementalType(incrType)
       case None =>
       //        ScalaBuilderDelegate.Log.info("scala: cannot find type of the previous incremental compiler, full rebuild may be required")
       case Some(`incrType`) => //same incremental type, nothing to be done
       case Some(_) if isMakeProject(context) =>
-        if (ScalaBuilder.isScalaProject(
-              context.getProjectDescriptor.getProject)) {
+        if (ScalaBuilder
+              .isScalaProject(context.getProjectDescriptor.getProject)) {
           cleanCaches()
           setPreviousIncrementalType(incrType)
           context.processMessage(new CompilerMessage(
@@ -124,8 +123,8 @@ object ScalaBuilder {
             "type of incremental compiler has been changed, full rebuild..."))
         }
       case Some(_) =>
-        if (ScalaBuilder.isScalaProject(
-              context.getProjectDescriptor.getProject)) {
+        if (ScalaBuilder
+              .isScalaProject(context.getProjectDescriptor.getProject)) {
           throw new ProjectBuildException(
             "scala: type of incremental compiler has been changed, full rebuild is required")
         }
@@ -144,9 +143,10 @@ object ScalaBuilder {
 
   def hasBuildModules(chunk: ModuleChunk): Boolean = {
     import _root_.scala.collection.JavaConversions._
-    chunk.getModules.exists(
-      _.getName.endsWith("-build")
-    ) // gen-idea doesn't use the SBT module type
+    chunk.getModules
+      .exists(
+        _.getName.endsWith("-build")
+      ) // gen-idea doesn't use the SBT module type
   }
 
   def projectSettings(context: CompileContext) =
@@ -156,8 +156,7 @@ object ScalaBuilder {
     JavaBuilderUtil.isCompileJavaIncrementally(context) && {
       for {
         chunk <- context.getProjectDescriptor.getBuildTargetIndex
-          .getSortedTargetChunks(context)
-          .asScala
+          .getSortedTargetChunks(context).asScala
         target <- chunk.getTargets.asScala
       } { if (!context.getScope.isAffected(target)) return false }
       true
@@ -184,8 +183,8 @@ object ScalaBuilder {
 
   private lazy val sbtData = {
     val classLoader = getClass.getClassLoader
-    val pluginRoot = new File(
-      PathManager.getJarPathForClass(getClass)).getParentFile
+    val pluginRoot = new File(PathManager.getJarPathForClass(getClass))
+      .getParentFile
     val javaClassVersion = System.getProperty("java.class.version")
 
     SbtData.from(classLoader, pluginRoot, javaClassVersion)
@@ -196,8 +195,8 @@ object ScalaBuilder {
       compilationData: CompilationData,
       client: Client) {
     val hasScalaFacet = modules.exists(SettingsManager.hasScalaSdk)
-    val hasScalaLibrary = compilationData.classpath.exists(
-      _.getName.startsWith("scala-library"))
+    val hasScalaLibrary = compilationData.classpath
+      .exists(_.getName.startsWith("scala-library"))
 
     if (hasScalaFacet && !hasScalaLibrary) {
       val names = modules.map(_.getName).mkString(", ")
@@ -207,11 +206,11 @@ object ScalaBuilder {
   }
 
   private def getServer(context: CompileContext): Server = {
-    val settings = SettingsManager.getGlobalSettings(
-      context.getProjectDescriptor.getModel.getGlobal)
+    val settings = SettingsManager
+      .getGlobalSettings(context.getProjectDescriptor.getModel.getGlobal)
 
-    if (settings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE
-          .get(context) != null) {
+    if (settings.isCompileServerEnabled && JavaBuilderUtil
+          .CONSTANT_SEARCH_SERVICE.get(context) != null) {
       cleanLocalServerCache()
       new RemoteServer(
         InetAddress.getByName(null),

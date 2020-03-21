@@ -105,19 +105,17 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
     }
 
     EitherT {
-      vfs
-        .pathStructure(apiKey, path, property, Version.Current)
-        .fold(
-          {
-            case ResourceError.NotFound(_) => \/.right(JUndefined)
-            case otherError                => \/.left(otherError)
-          },
-          {
-            case PathStructure(types, children) => \/.right(JObject(
-                "children" -> children.serialize,
-                "types" -> JObject(normalizeTypes(types))))
-          }
-        )
+      vfs.pathStructure(apiKey, path, property, Version.Current).fold(
+        {
+          case ResourceError.NotFound(_) => \/.right(JUndefined)
+          case otherError                => \/.left(otherError)
+        },
+        {
+          case PathStructure(types, children) => \/.right(JObject(
+              "children" -> children.serialize,
+              "types" -> JObject(normalizeTypes(types))))
+        }
+      )
     }
   }
 }
@@ -141,9 +139,7 @@ class BrowseServiceHandler[A](
           kids map { paths => JObject("children" -> paths) }
 
         case "structure" =>
-          val cpath = request.parameters
-            .get('property)
-            .map(CPath(_))
+          val cpath = request.parameters.get('property).map(CPath(_))
             .getOrElse(CPath.Identity)
           structure(apiKey, path, cpath) map { detail =>
             JObject("structure" -> detail)
@@ -159,10 +155,8 @@ class BrowseServiceHandler[A](
           else browse(apiKey, path)
           struct <- structure(apiKey, path, CPath.Identity)
         } yield {
-          JObject(
-            "size" -> sz,
-            "children" -> children,
-            "structure" -> struct).normalize
+          JObject("size" -> sz, "children" -> children, "structure" -> struct)
+            .normalize
         }
       } map { content0 =>
         HttpResponse[JValue](OK, content = Some(content0))
@@ -183,8 +177,7 @@ class BrowseServiceHandler[A](
                 content = Some(JObject(
                   "errors" -> JArray(
                     "Could not find any resource that corresponded to path %s: %s"
-                      .format(path.path, message)
-                      .serialize)))
+                      .format(path.path, message).serialize)))
               )
 
             case PermissionsError(message) => HttpResponse[JValue](
@@ -192,8 +185,7 @@ class BrowseServiceHandler[A](
                 content = Some(JObject(
                   "errors" -> JArray(
                     "API key %s does not have the ability to browse path %s: %s"
-                      .format(apiKey, path.path, message)
-                      .serialize)))
+                      .format(apiKey, path.path, message).serialize)))
               )
 
             case unexpected =>

@@ -66,12 +66,12 @@ object Acl {
         val aclSet: List[Map[String, Any]] = aclMap(AclsKey)
           .asInstanceOf[List[Map[String, Any]]]
         aclSet.foreach(item => {
-          val principal: KafkaPrincipal = KafkaPrincipal.fromString(
-            item(PrincipalKey).asInstanceOf[String])
-          val permissionType: PermissionType = PermissionType.fromString(
-            item(PermissionTypeKey).asInstanceOf[String])
-          val operation: Operation = Operation.fromString(
-            item(OperationKey).asInstanceOf[String])
+          val principal: KafkaPrincipal = KafkaPrincipal
+            .fromString(item(PrincipalKey).asInstanceOf[String])
+          val permissionType: PermissionType = PermissionType
+            .fromString(item(PermissionTypeKey).asInstanceOf[String])
+          val operation: Operation = Operation
+            .fromString(item(OperationKey).asInstanceOf[String])
           val host: String = item(HostsKey).asInstanceOf[String]
           acls += new Acl(principal, permissionType, host, operation)
         })
@@ -116,11 +116,8 @@ case class Acl(
   }
 
   override def toString: String = {
-    "%s has %s permission for operations: %s from hosts: %s".format(
-      principal,
-      permissionType.name,
-      operation,
-      host)
+    "%s has %s permission for operations: %s from hosts: %s"
+      .format(principal, permissionType.name, operation, host)
   }
 
 }

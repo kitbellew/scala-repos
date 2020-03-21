@@ -85,8 +85,7 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
 
   private def readJson(file: String) = {
     val f = if (file startsWith "/") file else "/" + file
-    val rdr = Source
-      .fromInputStream(getClass.getResourceAsStream(f))
+    val rdr = Source.fromInputStream(getClass.getResourceAsStream(f))
       .bufferedReader()
     JsonParser.parse(rdr)
   }
@@ -118,18 +117,12 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       val bd = JsonParser.parseOpt(body)
       bd must beSome[JValue] and {
         val j = bd.get
-        val props = (j \ "models" \ "Pet" \ "properties")
-          .asInstanceOf[JObject]
-          .values
-          .map {
+        val props = (j \ "models" \ "Pet" \ "properties").asInstanceOf[JObject]
+          .values.map {
             case (x, y) ⇒
-              x → y
-                .asInstanceOf[Map[String, BigInt]]
-                .get("position")
-                .flatMap(x ⇒ parseInt(x.toString))
-                .getOrElse(0)
-          }
-          .toList sortBy (_._2) map (_._1)
+              x → y.asInstanceOf[Map[String, BigInt]].get("position")
+                .flatMap(x ⇒ parseInt(x.toString)).getOrElse(0)
+          }.toList sortBy (_._2) map (_._1)
         props must_== propOrder
       }
     }
@@ -204,8 +197,7 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
             "/pet/findByTags",
             "/pet/findByStatus",
             "/pet/")) and
-        petOperations
-          .map(verifyOperation(bo.get, petOperationsJValue, _))
+        petOperations.map(verifyOperation(bo.get, petOperationsJValue, _))
           .reduce(_ and _) and
         verifyPetModel(bo.get)
     }
@@ -219,8 +211,7 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
           bo.get,
           storeOperationsJValue,
           List("/store/order/{orderId}", "/store/order")) and
-        storeOperations
-          .map(verifyOperation(bo.get, storeOperationsJValue, _))
+        storeOperations.map(verifyOperation(bo.get, storeOperationsJValue, _))
           .reduce(_ and _) and
         verifyStoreModel(bo.get)
     }
@@ -363,8 +354,9 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
           if (r.nonEmpty) r reduce (_ and _) else 1.must_==(1)
         case _ =>
           val m = act \ fn must_== exp \ fn
-          m setMessage (JsonMethods.compact(
-            JsonMethods.render(act \ fn)) + " does not match\n" + JsonMethods
+          m setMessage (JsonMethods
+            .compact(
+              JsonMethods.render(act \ fn)) + " does not match\n" + JsonMethods
             .compact(JsonMethods.render(exp \ fn)) + " for field " + fn)
       }
     }
@@ -391,9 +383,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
   protected val applicationDescription = "Operations about pets"
   override protected val applicationName = Some("pet")
   protected implicit val jsonFormats: Formats = DefaultFormats
-  implicit val StringFormat = DefaultJsonFormats.GenericFormat(
-    DefaultReaders.StringReader,
-    DefaultWriters.StringWriter)
+  implicit val StringFormat = DefaultJsonFormats
+    .GenericFormat(DefaultReaders.StringReader, DefaultWriters.StringWriter)
 
   protected override val swaggerProduces: List[String] =
     "application/json" :: "application/xml" :: "text/plain" :: "text/html" :: Nil
@@ -435,8 +426,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
     (apiOperation[Unit]("addPet")
       summary "Add a new pet to the store"
       responseMessage StringResponseMessage(405, "Invalid input")
-      parameter bodyParam[Pet].description(
-        "Pet object that needs to be added to the store"))
+      parameter bodyParam[Pet]
+        .description("Pet object that needs to be added to the store"))
 
   post("/", operation(createPet)) {
     ApiResponse(ApiResponseType.OK, "pet added to store")
@@ -448,8 +439,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
       responseMessage StringResponseMessage(400, "Invalid ID supplied")
       responseMessage StringResponseMessage(404, "Pet not found")
       responseMessage StringResponseMessage(405, "Validation exception")
-      parameter bodyParam[Pet].description(
-        "Pet object that needs to be updated in the store"))
+      parameter bodyParam[Pet]
+        .description("Pet object that needs to be updated in the store"))
 
   put("/", operation(updatePet)) {
     ApiResponse(ApiResponseType.OK, "pet updated")
@@ -486,8 +477,7 @@ class SwaggerTestServlet(protected val swagger: Swagger)
       notes "Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing."
       produces ("application/json", "application/xml")
       responseMessage StringResponseMessage(400, "Invalid tag value")
-      parameter queryParam[String]("tags")
-        .description("Tags to filter by")
+      parameter queryParam[String]("tags").description("Tags to filter by")
         .multiValued)
 
   get("/findByTags", operation(findByTags)) {
@@ -502,9 +492,8 @@ class StoreApi(val swagger: Swagger)
   protected val applicationDescription = "Operations about store"
   override protected val applicationName = Some("store")
   protected implicit val jsonFormats: Formats = DefaultFormats
-  implicit val StringFormat = DefaultJsonFormats.GenericFormat(
-    DefaultReaders.StringReader,
-    DefaultWriters.StringWriter)
+  implicit val StringFormat = DefaultJsonFormats
+    .GenericFormat(DefaultReaders.StringReader, DefaultWriters.StringWriter)
   protected override val swaggerProduces: List[String] =
     "application/json" :: "application/xml" :: Nil
 
@@ -516,8 +505,7 @@ class StoreApi(val swagger: Swagger)
       notes "For valid response try integer IDs with value <= 5. Anything above 5 or nonintegers will generate API errors"
       produces ("application/json", "application/xml")
       parameter pathParam[String]("orderId")
-        .description("ID of pet that needs to be fetched")
-        .required
+        .description("ID of pet that needs to be fetched").required
       responseMessages (
         StringResponseMessage(400, "Invalid ID supplied"),
         StringResponseMessage(404, "Order not found")
@@ -540,8 +528,8 @@ class StoreApi(val swagger: Swagger)
     (apiOperation[Unit]("placeOrder")
       summary "Place an order for a pet"
       responseMessage StringResponseMessage(400, "Invalid order")
-      parameter bodyParam[Order].description(
-        "order placed for purchasing the pet"))
+      parameter bodyParam[Order]
+        .description("order placed for purchasing the pet"))
   post("/order", operation(placeOrderOperation)) { "" }
 }
 
@@ -552,9 +540,8 @@ class UserApi(val swagger: Swagger)
   protected val applicationDescription = "Operations about user"
   override protected val applicationName = Some("user")
   protected implicit val jsonFormats: Formats = DefaultFormats
-  implicit val StringFormat = DefaultJsonFormats.GenericFormat(
-    DefaultReaders.StringReader,
-    DefaultWriters.StringWriter)
+  implicit val StringFormat = DefaultJsonFormats
+    .GenericFormat(DefaultReaders.StringReader, DefaultWriters.StringWriter)
 
   val createUserOperation = apiOperation[User]("createUser")
   post("/", operation(createUserOperation)) { "" }

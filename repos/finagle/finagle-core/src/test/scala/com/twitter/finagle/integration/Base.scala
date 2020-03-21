@@ -48,8 +48,9 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
       }
     }
     when(
-      codec.prepareServiceFactory(
-        any[ServiceFactory[String, String]])) thenAnswer {
+      codec
+        .prepareServiceFactory(
+          any[ServiceFactory[String, String]])) thenAnswer {
       new Answer[ServiceFactory[String, String]] {
         def answer(
             invocation: InvocationOnMock): ServiceFactory[String, String] = {
@@ -69,9 +70,10 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
       }
     }
     when(
-      codec.newClientDispatcher(
-        any[Transport[Any, Any]],
-        any[Stack.Params])) thenAnswer {
+      codec
+        .newClientDispatcher(
+          any[Transport[Any, Any]],
+          any[Stack.Params])) thenAnswer {
       new Answer[SerialClientDispatcher[String, String]] {
         def answer(invocation: InvocationOnMock)
             : SerialClientDispatcher[String, String] = {
@@ -115,14 +117,9 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
 
     val codecFactory = Function.const(codec) _
 
-    val clientBuilder = ClientBuilder()
-      .name(name)
-      .codec(codecFactory)
-      .channelFactory(channelFactory)
-      .daemon(true) // don't create an exit guard
-      .hosts(Seq(clientAddress))
-      .reportTo(statsReceiver)
-      .hostConnectionLimit(1)
+    val clientBuilder = ClientBuilder().name(name).codec(codecFactory)
+      .channelFactory(channelFactory).daemon(true) // don't create an exit guard
+      .hosts(Seq(clientAddress)).reportTo(statsReceiver).hostConnectionLimit(1)
 
     def build() = clientBuilder.build()
     def buildFactory() = clientBuilder.buildFactory()

@@ -246,14 +246,12 @@ class FileHandler(
     if (rotateCount >= 0) {
       // collect files which are not `filename`, but which share the prefix/suffix
       val prefixName = new File(filenamePrefix).getName
-      val rotatedFiles = new File(filename)
-        .getParentFile()
+      val rotatedFiles = new File(filename).getParentFile()
         .listFiles(new FilenameFilter {
           def accept(f: File, fname: String): Boolean =
-            fname != name && fname.startsWith(prefixName) && fname.endsWith(
-              filenameSuffix)
-        })
-        .sortBy(_.getName)
+            fname != name && fname.startsWith(prefixName) && fname
+              .endsWith(filenameSuffix)
+        }).sortBy(_.getName)
 
       val toDeleteCount = math.max(0, rotatedFiles.length - rotateCount)
       rotatedFiles.take(toDeleteCount).foreach(_.delete())

@@ -56,8 +56,8 @@ class SourceMapTest {
         val trace0 = e.getStackTrace.toList
         val trace1 = trace0.dropWhile(
           normFileName(_).endsWith("/scala/scalajs/runtime/StackTrace.scala"))
-        val trace2 = trace1.dropWhile(
-          normFileName(_).endsWith("/java/lang/Throwables.scala"))
+        val trace2 = trace1
+          .dropWhile(normFileName(_).endsWith("/java/lang/Throwables.scala"))
 
         val topSte = trace2.head
         assertTrue(normFileName(topSte).contains("/SourceMapTest.scala"))
@@ -92,12 +92,8 @@ class SourceMapTest {
 
     /**/
     /**/ /***/
-    json
-      .asInstanceOf[JsArray]
-      .value(index)
-      .asInstanceOf[JsObject]
-      .value(fieldName)
-      .value
+    json.asInstanceOf[JsArray].value(index).asInstanceOf[JsObject]
+      .value(fieldName).value
   }
   def run() = {
 

@@ -72,16 +72,12 @@ trait DBLog {
 
   /** Return a list of all of the DBStatementEntry instances in the log buffer */
   def statementEntries: List[DBStatementEntry] =
-    executedStatements
-      .filter(_.isInstanceOf[DBStatementEntry])
-      .reverse
+    executedStatements.filter(_.isInstanceOf[DBStatementEntry]).reverse
       .asInstanceOf[List[DBStatementEntry]]
 
   /** Return a list of all of the DBMetaEntry instances in the log buffer */
   def metaEntries: List[DBMetaEntry] =
-    executedStatements
-      .filter(_.isInstanceOf[DBMetaEntry])
-      .reverse
+    executedStatements.filter(_.isInstanceOf[DBMetaEntry]).reverse
       .asInstanceOf[List[DBMetaEntry]]
 
   /** Return all log buffer entries */
@@ -91,12 +87,10 @@ trait DBLog {
 object DBLog {
   def createStatement(conn: Connection) = {
     val stmt = conn.createStatement
-    Proxy
-      .newProxyInstance(
-        this.getClass.getClassLoader,
-        Array(classOf[java.sql.Statement], classOf[DBLog]),
-        new LoggedStatementHandler(stmt))
-      .asInstanceOf[Statement]
+    Proxy.newProxyInstance(
+      this.getClass.getClassLoader,
+      Array(classOf[java.sql.Statement], classOf[DBLog]),
+      new LoggedStatementHandler(stmt)).asInstanceOf[Statement]
   }
 
   def prepareStatement(conn: Connection, query: String) =
@@ -118,11 +112,10 @@ object DBLog {
       stmt: => PreparedStatement,
       query: String) = {
     try {
-      Proxy
-        .newProxyInstance(
-          this.getClass.getClassLoader,
-          Array(classOf[java.sql.PreparedStatement], classOf[DBLog]),
-          new LoggedPreparedStatementHandler(query, stmt))
+      Proxy.newProxyInstance(
+        this.getClass.getClassLoader,
+        Array(classOf[java.sql.PreparedStatement], classOf[DBLog]),
+        new LoggedPreparedStatementHandler(query, stmt))
         .asInstanceOf[PreparedStatement]
     } catch {
       case sqle: SQLException =>
@@ -181,8 +174,8 @@ object DBLog {
           logStatement({ ret: Object =>
             "Exec \"%s\", Auto-gen keys = %s : result = %s".format(
               args(0),
-              StatementConstantDescriptions.genKeyDescriptions(
-                args(1).asInstanceOf[Int]),
+              StatementConstantDescriptions
+                .genKeyDescriptions(args(1).asInstanceOf[Int]),
               ret)
           }) { chain(method, args) }
         }
@@ -196,8 +189,7 @@ object DBLog {
         }
         case "executeBatch" => {
           logStatement({ result: Object =>
-            "Exec batch, counts = " + result
-              .asInstanceOf[Array[Int]]
+            "Exec batch, counts = " + result.asInstanceOf[Array[Int]]
               .mkString("(", ", ", ")")
           }) { chain(method, Array()) }
         }
@@ -215,8 +207,8 @@ object DBLog {
           logStatement({ count: Object =>
             "Exec update \"%s\", Auto-gen keys = %s".format(
               args(0),
-              StatementConstantDescriptions.genKeyDescriptions(
-                args(1).asInstanceOf[Int]),
+              StatementConstantDescriptions
+                .genKeyDescriptions(args(1).asInstanceOf[Int]),
               count)
           }) { chain(method, args) }
         }
@@ -265,8 +257,8 @@ object DBLog {
         case "getMoreResults" => {
           logMeta({ ret: Object =>
             "Get more results (%s) : %s".format(
-              StatementConstantDescriptions.getMoreResultsDescriptions(
-                args(0).asInstanceOf[Int]),
+              StatementConstantDescriptions
+                .getMoreResultsDescriptions(args(0).asInstanceOf[Int]),
               ret)
           }) { chain(method, args) }
         }
@@ -368,9 +360,8 @@ object DBLog {
 
     protected def chain(method: Method, args: Array[Object]): Object =
       try {
-        val m = representative.getMethod(
-          method.getName,
-          method.getParameterTypes: _*)
+        val m = representative
+          .getMethod(method.getName, method.getParameterTypes: _*)
 
         m.invoke(underlying, args: _*)
       } catch {
@@ -388,8 +379,7 @@ object DBLog {
      * LoggedStatementHandler directly, or via the proxied "toString" above.
      */
     override def toString =
-      "Logged Statements =\n" + executedStatements.reverse
-        .map("  " + _)
+      "Logged Statements =\n" + executedStatements.reverse.map("  " + _)
         .mkString("\n")
   }
 
@@ -481,30 +471,28 @@ object DBLog {
         }
 
         case "setAsciiStream" if args.length == 2 => {
-          paramMap += args(0).asInstanceOf[Int] -> "(Ascii Stream: %s)".format(
-            args(1))
+          paramMap += args(0).asInstanceOf[Int] -> "(Ascii Stream: %s)"
+            .format(args(1))
           chain(method, args)
         }
 
         case "setAsciiStream" => {
           paramMap += args(0)
-            .asInstanceOf[Int] -> "(Ascii Stream: %s (%d bytes))".format(
-            args(1),
-            args(2))
+            .asInstanceOf[Int] -> "(Ascii Stream: %s (%d bytes))"
+            .format(args(1), args(2))
           chain(method, args)
         }
 
         case "setBinaryStream" if args.length == 2 => {
-          paramMap += args(0).asInstanceOf[Int] -> "(Binary Stream: %s)".format(
-            args(1))
+          paramMap += args(0).asInstanceOf[Int] -> "(Binary Stream: %s)"
+            .format(args(1))
           chain(method, args)
         }
 
         case "setBinaryStream" => {
           paramMap += args(0)
-            .asInstanceOf[Int] -> "(Binary Stream: %s (%d bytes))".format(
-            args(1),
-            args(2))
+            .asInstanceOf[Int] -> "(Binary Stream: %s (%d bytes))"
+            .format(args(1), args(2))
           chain(method, args)
         }
 
@@ -520,16 +508,15 @@ object DBLog {
         }
 
         case "setCharacterStream" if args.length == 2 => {
-          paramMap += args(0).asInstanceOf[Int] -> "(Char stream : %s)".format(
-            args(1))
+          paramMap += args(0).asInstanceOf[Int] -> "(Char stream : %s)"
+            .format(args(1))
           chain(method, args)
         }
 
         case "setCharacterStream" => {
           paramMap += args(0)
-            .asInstanceOf[Int] -> "(Char stream : %s (%d bytes))".format(
-            args(1),
-            args(2))
+            .asInstanceOf[Int] -> "(Char stream : %s (%d bytes))"
+            .format(args(1), args(2))
           chain(method, args)
         }
 
@@ -555,22 +542,21 @@ object DBLog {
         }
 
         case "setNCharacterStream" if args.length == 2 => {
-          paramMap += args(0).asInstanceOf[Int] -> "(NChar Stream : %s)".format(
-            args(1))
+          paramMap += args(0).asInstanceOf[Int] -> "(NChar Stream : %s)"
+            .format(args(1))
           chain(method, args)
         }
 
         case "setNCharacterStream" => {
           paramMap += args(0)
-            .asInstanceOf[Int] -> "(NChar Stream : %s (%d bytes))".format(
-            args(1),
-            args(2))
+            .asInstanceOf[Int] -> "(NChar Stream : %s (%d bytes))"
+            .format(args(1), args(2))
           chain(method, args)
         }
 
         case "setNClob" if args.length == 2 => {
-          paramMap += args(0).asInstanceOf[Int] -> "(NClob : %s)".format(args(
-            1))
+          paramMap += args(0).asInstanceOf[Int] -> "(NClob : %s)"
+            .format(args(1))
           chain(method, args)
         }
 
@@ -591,8 +577,8 @@ object DBLog {
         }
 
         case "setObject" if args.length == 4 => {
-          paramMap += args(0)
-            .asInstanceOf[Int] -> "%s (scale %d)".format(args(1), args(3))
+          paramMap += args(0).asInstanceOf[Int] -> "%s (scale %d)"
+            .format(args(1), args(3))
           chain(method, args)
         }
 
@@ -623,9 +609,8 @@ object DBLog {
 
         case "setUnicodeStream" => {
           paramMap += args(0)
-            .asInstanceOf[Int] -> "(Unicode Stream : %s (%d bytes))".format(
-            args(1),
-            args(2))
+            .asInstanceOf[Int] -> "(Unicode Stream : %s (%d bytes))"
+            .format(args(1), args(2))
           chain(method, args)
         }
 

@@ -33,10 +33,8 @@ class AddrMetadataExtractionTest extends FunSuite with AssertionsForJUnit {
     def verify(addr: Var[Addr], name: Name, expected: Addr.Metadata) = {
       val factory =
         new StackBuilder[ServiceFactory[String, String]](
-          nilStack[String, String])
-          .push(verifyModule(expected))
-          .push(AddrMetadataExtraction.module)
-          .make(
+          nilStack[String, String]).push(verifyModule(expected))
+          .push(AddrMetadataExtraction.module).make(
             Stack.Params.empty + LoadBalancerFactory.Dest(addr) + BindingFactory
               .Dest(name))
 

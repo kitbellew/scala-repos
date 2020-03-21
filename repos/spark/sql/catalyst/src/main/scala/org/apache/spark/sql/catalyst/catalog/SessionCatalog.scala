@@ -214,8 +214,7 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     val tableWithQualifiers = SubqueryAlias(name.table, relation)
     // If an alias was specified by the lookup, wrap the plan in a subquery so that
     // attributes are properly qualified with this alias.
-    alias
-      .map(a => SubqueryAlias(a, tableWithQualifiers))
+    alias.map(a => SubqueryAlias(a, tableWithQualifiers))
       .getOrElse(tableWithQualifiers)
   }
 
@@ -238,11 +237,9 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       TableIdentifier(t, Some(db))
     }
     val regex = pattern.replaceAll("\\*", ".*").r
-    val _tempTables = tempTables
-      .keys()
-      .asScala
-      .filter { t => regex.pattern.matcher(t).matches() }
-      .map { t => TableIdentifier(t) }
+    val _tempTables = tempTables.keys().asScala.filter { t =>
+      regex.pattern.matcher(t).matches()
+    }.map { t => TableIdentifier(t) }
     dbTables ++ _tempTables
   }
 
@@ -287,11 +284,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       parts: Seq[TablePartitionSpec],
       ignoreIfNotExists: Boolean): Unit = {
     val db = tableName.database.getOrElse(currentDb)
-    externalCatalog.dropPartitions(
-      db,
-      tableName.table,
-      parts,
-      ignoreIfNotExists)
+    externalCatalog
+      .dropPartitions(db, tableName.table, parts, ignoreIfNotExists)
   }
 
   /**
@@ -445,8 +439,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
         "rename does not support moving functions across databases")
     }
     val db = oldName.database.getOrElse(currentDb)
-    if (oldName.database.isDefined || !tempFunctions.containsKey(
-          oldName.funcName)) {
+    if (oldName.database.isDefined || !tempFunctions
+          .containsKey(oldName.funcName)) {
       externalCatalog.renameFunction(db, oldName.funcName, newName.funcName)
     } else {
       val func = tempFunctions.remove(oldName.funcName)
@@ -480,11 +474,9 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       FunctionIdentifier(f, Some(db))
     }
     val regex = pattern.replaceAll("\\*", ".*").r
-    val _tempFunctions = tempFunctions
-      .keys()
-      .asScala
-      .filter { f => regex.pattern.matcher(f).matches() }
-      .map { f => FunctionIdentifier(f) }
+    val _tempFunctions = tempFunctions.keys().asScala.filter { f =>
+      regex.pattern.matcher(f).matches()
+    }.map { f => FunctionIdentifier(f) }
     dbFunctions ++ _tempFunctions
   }
 

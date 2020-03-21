@@ -150,15 +150,13 @@ private[spark] object TestUtils {
           "-classpath",
           classpathUrls.map { _.getFile }.mkString(File.pathSeparator))
       } else { Seq() }
-    compiler
-      .getTask(
-        null,
-        null,
-        null,
-        options.asJava,
-        null,
-        Arrays.asList(sourceFile))
-      .call()
+    compiler.getTask(
+      null,
+      null,
+      null,
+      options.asJava,
+      null,
+      Arrays.asList(sourceFile)).call()
 
     val fileName = className + ".class"
     val result = new File(fileName)
@@ -182,8 +180,7 @@ private[spark] object TestUtils {
       toStringValue: String = "",
       baseClass: String = null,
       classpathUrls: Seq[URL] = Seq()): File = {
-    val extendsText = Option(baseClass)
-      .map { c => s" extends ${c}" }
+    val extendsText = Option(baseClass).map { c => s" extends ${c}" }
       .getOrElse("")
     val sourceFile = new JavaSourceFromString(
       className,
@@ -232,9 +229,9 @@ private class SpillListener extends SparkListener {
   def numSpilledStages: Int = spilledStageIds.size
 
   override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = {
-    stageIdToTaskMetrics.getOrElseUpdate(
-      taskEnd.stageId,
-      new ArrayBuffer[TaskMetrics]) += taskEnd.taskMetrics
+    stageIdToTaskMetrics
+      .getOrElseUpdate(taskEnd.stageId, new ArrayBuffer[TaskMetrics]) += taskEnd
+      .taskMetrics
   }
 
   override def onStageCompleted(

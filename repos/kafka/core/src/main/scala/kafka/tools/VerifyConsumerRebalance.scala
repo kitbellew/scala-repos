@@ -28,12 +28,8 @@ object VerifyConsumerRebalance extends Logging {
 
     val zkConnectOpt = parser
       .accepts("zookeeper.connect", "ZooKeeper connect string.")
-      .withRequiredArg()
-      .defaultsTo("localhost:2181")
-      .ofType(classOf[String])
-    val groupOpt = parser
-      .accepts("group", "Consumer group.")
-      .withRequiredArg()
+      .withRequiredArg().defaultsTo("localhost:2181").ofType(classOf[String])
+    val groupOpt = parser.accepts("group", "Consumer group.").withRequiredArg()
       .ofType(classOf[String])
     parser.accepts("help", "Print this message.")
 
@@ -87,11 +83,10 @@ object VerifyConsumerRebalance extends Logging {
       * This means that for each partition registered under /brokers/topics/[topic]/[broker-id], an owner exists
       * under /consumers/[consumer_group]/owners/[topic]/[broker_id-partition_id]
       */
-    val consumersPerTopicMap = zkUtils.getConsumersPerTopic(
-      group,
-      excludeInternalTopics = false)
-    val partitionsPerTopicMap = zkUtils.getPartitionsForTopics(
-      consumersPerTopicMap.keySet.toSeq)
+    val consumersPerTopicMap = zkUtils
+      .getConsumersPerTopic(group, excludeInternalTopics = false)
+    val partitionsPerTopicMap = zkUtils
+      .getPartitionsForTopics(consumersPerTopicMap.keySet.toSeq)
 
     partitionsPerTopicMap.foreach {
       case (topic, partitions) =>
@@ -102,14 +97,15 @@ object VerifyConsumerRebalance extends Logging {
         info("Alive consumers for topic %s => %s ".format(
           topic,
           consumersPerTopicMap.get(topic)))
-        val partitionsWithOwners = zkUtils.getChildrenParentMayNotExist(
-          topicDirs.consumerOwnerDir)
+        val partitionsWithOwners = zkUtils
+          .getChildrenParentMayNotExist(topicDirs.consumerOwnerDir)
         if (partitionsWithOwners.size == 0) {
           error("No owners for any partitions for topic " + topic)
           rebalanceSucceeded = false
         }
         debug(
-          "Children of " + topicDirs.consumerOwnerDir + " = " + partitionsWithOwners.toString)
+          "Children of " + topicDirs
+            .consumerOwnerDir + " = " + partitionsWithOwners.toString)
         val consumerIdsForTopic = consumersPerTopicMap.get(topic)
 
         // for each available partition for topic, check if an owner exists
@@ -136,17 +132,13 @@ object VerifyConsumerRebalance extends Logging {
                 if (!consumerIds.contains(partitionOwner)) {
                   error(
                     ("Owner %s for partition [%s,%d] is not a valid member of consumer " +
-                      "group %s").format(
-                      partitionOwner,
-                      topic,
-                      partition,
-                      group))
+                      "group %s")
+                      .format(partitionOwner, topic, partition, group))
                   rebalanceSucceeded = false
                 } else
-                  info("Owner of partition [%s,%d] is %s".format(
-                    topic,
-                    partition,
-                    partitionOwner))
+                  info(
+                    "Owner of partition [%s,%d] is %s"
+                      .format(topic, partition, partitionOwner))
               case None => {
                 error("No consumer ids registered for topic " + topic)
                 rebalanceSucceeded = false

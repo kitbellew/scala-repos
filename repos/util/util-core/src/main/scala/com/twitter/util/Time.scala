@@ -240,9 +240,8 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] {
 
   /** Equality within `maxDelta` */
   def moreOrLessEquals(other: This, maxDelta: Duration): Boolean =
-    (other ne Undefined) && (
-      (this == other) || (this diff other).abs <= maxDelta
-    )
+    (other ne Undefined) && ((this == other) || (this diff other)
+      .abs <= maxDelta)
 }
 
 /**
@@ -515,8 +514,7 @@ class TimeFormat(
   /** Create a new TimeFormat with the default locale and timezone. **/
   def this(pattern: String) = this(pattern, None, TimeZone.getTimeZone("UTC"))
 
-  private[this] val format = locale
-    .map(TwitterDateFormat(pattern, _))
+  private[this] val format = locale.map(TwitterDateFormat(pattern, _))
     .getOrElse(TwitterDateFormat(pattern))
 
   format.setTimeZone(timezone)

@@ -30,8 +30,7 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   private var kafkaTestUtils: KafkaTestUtils = _
 
-  private val sparkConf = new SparkConf()
-    .setMaster("local[4]")
+  private val sparkConf = new SparkConf().setMaster("local[4]")
     .setAppName(this.getClass.getSimpleName)
   private var sc: SparkContext = _
 
@@ -130,8 +129,7 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(rdd.get.count === sentCount, "didn't get all sent messages")
 
     val rangesMap = ranges
-      .map(o => TopicAndPartition(o.topic, o.partition) -> o.untilOffset)
-      .toMap
+      .map(o => TopicAndPartition(o.topic, o.partition) -> o.untilOffset).toMap
 
     // make sure consumer offsets are committed before the next getRdd call
     kc.setConsumerOffsets(kafkaParams("group.id"), rangesMap)
@@ -163,13 +161,10 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
   private def getRdd(kc: KafkaCluster, topics: Set[String]) = {
     val groupId = kc.kafkaParams("group.id")
     def consumerOffsets(topicPartitions: Set[TopicAndPartition]) = {
-      kc.getConsumerOffsets(groupId, topicPartitions)
-        .right
-        .toOption
-        .orElse(
-          kc.getEarliestLeaderOffsets(topicPartitions).right.toOption.map {
-            offs => offs.map(kv => kv._1 -> kv._2.offset)
-          })
+      kc.getConsumerOffsets(groupId, topicPartitions).right.toOption.orElse(
+        kc.getEarliestLeaderOffsets(topicPartitions).right.toOption.map {
+          offs => offs.map(kv => kv._1 -> kv._2.offset)
+        })
     }
     kc.getPartitions(topics).right.toOption.flatMap { topicPartitions =>
       consumerOffsets(topicPartitions).flatMap { from =>

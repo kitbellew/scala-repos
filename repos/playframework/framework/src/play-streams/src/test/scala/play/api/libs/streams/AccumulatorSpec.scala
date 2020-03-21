@@ -68,17 +68,14 @@ object AccumulatorSpec extends Specification {
       "when the exception is introduced in the materialized value" in withMaterializer {
         implicit m =>
           await(
-            sum
-              .map(error[Int])
-              .recoverWith { case e => Future(20) }
+            sum.map(error[Int]).recoverWith { case e => Future(20) }
               .run(source)) must_== 20
       }
 
       "when the exception comes from the stream" in withMaterializer {
         implicit m =>
           await(
-            sum
-              .recoverWith { case e => Future(20) }
+            sum.recoverWith { case e => Future(20) }
               .run(errorSource)) must_== 20
       }
     }
@@ -113,11 +110,9 @@ object AccumulatorSpec extends Specification {
     "be compatible with Java accumulator" in {
       "Java asScala" in withMaterializer { implicit m =>
         await(
-          play.libs.streams.Accumulator
-            .fromSink(
-              sum.toSink.mapMaterializedValue(FutureConverters.toJava).asJava)
-            .asScala()
-            .run(source)) must_== 6
+          play.libs.streams.Accumulator.fromSink(
+            sum.toSink.mapMaterializedValue(FutureConverters.toJava).asJava)
+            .asScala().run(source)) must_== 6
       }
 
       "Scala asJava" in withMaterializer { implicit m =>

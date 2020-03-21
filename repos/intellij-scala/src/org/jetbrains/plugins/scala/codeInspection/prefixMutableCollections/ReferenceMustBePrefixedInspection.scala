@@ -35,8 +35,7 @@ class ReferenceMustBePrefixedInspection
           r.getActualElement match {
             case clazz: PsiClass if ScalaPsiUtil.hasStablePath(clazz) =>
               val qualName = clazz.qualifiedName
-              if (ScalaCodeStyleSettings
-                    .getInstance(holder.getProject)
+              if (ScalaCodeStyleSettings.getInstance(holder.getProject)
                     .hasImportWithPrefix(qualName)) {
                 holder.registerProblem(
                   ref,

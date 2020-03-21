@@ -60,8 +60,7 @@ private[akka] object RemoteWatcher {
       val watchingAddresses: Set[Address]) {
     override def toString: String = {
       def formatWatchingRefs: String =
-        watchingRefs
-          .map(x ⇒ x._2.path.name + " -> " + x._1.path.name)
+        watchingRefs.map(x ⇒ x._2.path.name + " -> " + x._1.path.name)
           .mkString("[", ", ", "]")
       def formatWatchingAddresses: String =
         watchingAddresses.mkString("[", ", ", "]")
@@ -104,13 +103,14 @@ private[akka] class RemoteWatcher(
   import context.dispatcher
   def scheduler = context.system.scheduler
 
-  val remoteProvider: RemoteActorRefProvider =
-    context.system.asInstanceOf[ExtendedActorSystem].provider match {
-      case rarp: RemoteActorRefProvider ⇒ rarp
-      case other ⇒
-        throw new ConfigurationException(
-          s"ActorSystem [${context.system}] needs to have a 'RemoteActorRefProvider' enabled in the configuration, currently uses [${other.getClass.getName}]")
-    }
+  val remoteProvider: RemoteActorRefProvider = context.system
+    .asInstanceOf[ExtendedActorSystem].provider match {
+    case rarp: RemoteActorRefProvider ⇒ rarp
+    case other ⇒
+      throw new ConfigurationException(
+        s"ActorSystem [${context.system}] needs to have a 'RemoteActorRefProvider' enabled in the configuration, currently uses [${other
+          .getClass.getName}]")
+  }
 
   val selfHeartbeatRspMsg = HeartbeatRsp(
     AddressUidExtension(context.system).addressUid)
@@ -129,11 +129,8 @@ private[akka] class RemoteWatcher(
   var unreachable: Set[Address] = Set.empty
   var addressUids: Map[Address, Int] = Map.empty
 
-  val heartbeatTask = scheduler.schedule(
-    heartbeatInterval,
-    heartbeatInterval,
-    self,
-    HeartbeatTick)
+  val heartbeatTask = scheduler
+    .schedule(heartbeatInterval, heartbeatInterval, self, HeartbeatTick)
   val failureDetectorReaperTask = scheduler.schedule(
     unreachableReaperInterval,
     unreachableReaperInterval,
@@ -159,9 +156,9 @@ private[akka] class RemoteWatcher(
 
     // test purpose
     case Stats ⇒
-      val watchSet = watching.iterator
-        .flatMap { case (wee, wers) ⇒ wers.map { wer ⇒ wee → wer } }
-        .toSet[(ActorRef, ActorRef)]
+      val watchSet = watching.iterator.flatMap {
+        case (wee, wers) ⇒ wers.map { wer ⇒ wee → wer }
+      }.toSet[(ActorRef, ActorRef)]
       sender() ! Stats(
         watching = watchSet.size,
         watchingNodes = watchingNodes.size)(watchSet, watchingNodes.toSet)
@@ -293,14 +290,14 @@ private[akka] class RemoteWatcher(
             self,
             ExpectedFirstHeartbeat(a))
         }
-        context.actorSelection(
-          RootActorPath(a) / self.path.elements) ! Heartbeat
+        context
+          .actorSelection(RootActorPath(a) / self.path.elements) ! Heartbeat
       }
     }
 
   def triggerFirstHeartbeat(address: Address): Unit =
-    if (watcheeByNodes.contains(address) && !failureDetector.isMonitoring(
-          address)) {
+    if (watcheeByNodes.contains(address) && !failureDetector
+          .isMonitoring(address)) {
       log.debug("Trigger extra expected heartbeat from [{}]", address)
       failureDetector.heartbeat(address)
     }
@@ -319,8 +316,9 @@ private[akka] class RemoteWatcher(
     } {
       val watcher = self.asInstanceOf[InternalActorRef]
       log.debug("Re-watch [{} -> {}]", watcher.path, watchee.path)
-      watchee.sendSystemMessage(
-        Watch(watchee, watcher)
-      ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+      watchee
+        .sendSystemMessage(
+          Watch(watchee, watcher)
+        ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
     }
 }

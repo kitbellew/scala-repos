@@ -37,65 +37,52 @@ private final class Streaming(
 
       case Get => sender ! onAir
 
-      case Search =>
-        streamerList.get.map(_.filter(_.featured)).foreach {
+      case Search => streamerList.get.map(_.filter(_.featured)).foreach {
           streamers =>
             val max = 5
-            val twitch = WS
-              .url("https://api.twitch.tv/kraken/streams")
+            val twitch = WS.url("https://api.twitch.tv/kraken/streams")
               .withQueryString(
-                "channel" -> streamers
-                  .filter(_.twitch)
-                  .map(_.streamerName)
+                "channel" -> streamers.filter(_.twitch).map(_.streamerName)
                   .mkString(","))
               .withHeaders("Accept" -> "application/vnd.twitchtv.v3+json")
               .get() map {
               res =>
                 res.json.validate[Twitch.Result] match {
                   case JsSuccess(data, _) =>
-                    data.streamsOnAir(streamers) filter (
-                      _.name.toLowerCase contains keyword
-                    ) take max
+                    data.streamsOnAir(streamers) filter (_.name
+                    .toLowerCase contains keyword) take max
                   case JsError(err) =>
                     logger.warn(
                       s"twitch ${res.status} $err ${~res.body.lines.toList.headOption}")
                     Nil
                 }
             }
-            val hitbox = WS
-              .url(
-                "http://api.hitbox.tv/media/live/" + streamers
-                  .filter(_.twitch)
-                  .map(_.streamerName)
-                  .mkString(","))
-              .get() map {
+            val hitbox = WS.url(
+              "http://api.hitbox.tv/media/live/" + streamers.filter(_.twitch)
+                .map(_.streamerName).mkString(",")).get() map {
               res =>
                 res.json.validate[Hitbox.Result] match {
                   case JsSuccess(data, _) =>
-                    data.streamsOnAir(streamers) filter (
-                      _.name.toLowerCase contains keyword
-                    ) take max
+                    data.streamsOnAir(streamers) filter (_.name
+                    .toLowerCase contains keyword) take max
                   case JsError(err) =>
                     logger.warn(
                       s"hitbox ${res.status} $err ${~res.body.lines.toList.headOption}")
                     Nil
                 }
             }
-            val youtube = WS
-              .url("https://www.googleapis.com/youtube/v3/search")
+            val youtube = WS.url("https://www.googleapis.com/youtube/v3/search")
               .withQueryString(
                 "part" -> "snippet",
                 "type" -> "video",
                 "eventType" -> "live",
                 "q" -> keyword,
-                "key" -> googleApiKey)
-              .get() map {
+                "key" -> googleApiKey).get() map {
               res =>
                 res.json.validate[Youtube.Result] match {
                   case JsSuccess(data, _) =>
-                    data.streamsOnAir(streamers) filter (
-                      _.name.toLowerCase contains keyword
-                    ) take max
+                    data.streamsOnAir(streamers) filter (_.name
+                    .toLowerCase contains keyword) take max
                   case JsError(err) =>
                     logger.warn(
                       s"youtube ${res.status} $err ${~res.body.lines.toList.headOption}")

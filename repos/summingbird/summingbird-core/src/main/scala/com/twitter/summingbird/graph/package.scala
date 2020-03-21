@@ -50,14 +50,14 @@ package object graph {
     * which are not stable from one run to the next.
     */
   def reversed[T](nodes: Iterable[T])(nf: NeighborFn[T]): NeighborFn[T] = {
-    val graph: Map[T, List[T]] = nodes
-      .foldLeft(Map.empty[T, List[T]]) { (g, child) =>
+    val graph: Map[T, List[T]] = nodes.foldLeft(Map.empty[T, List[T]]) {
+      (g, child) =>
         val gWithChild = g + (child -> g.getOrElse(child, Nil))
         nf(child).foldLeft(gWithChild) { (innerg, parent) =>
           innerg + (parent -> (child :: innerg.getOrElse(parent, Nil)))
         }
-      }
-      // make sure the values are sets, not .mapValues is lazy in scala
+    }
+    // make sure the values are sets, not .mapValues is lazy in scala
       .map { case (k, v) => (k, v.distinct) };
     graph.getOrElse(_, Nil)
   }
@@ -83,9 +83,7 @@ package object graph {
 
         acc ++= (doneThisStep.flatten.map { n =>
           val depth = nf(n) //n is done now, so all it's neighbors must be too.
-            .map { acc(_) + 1 }
-            .reduceOption { _ max _ }
-            .getOrElse(0)
+            .map { acc(_) + 1 }.reduceOption { _ max _ }.getOrElse(0)
           n -> depth
         })
         computeDepth(rest.flatten)

@@ -255,8 +255,7 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val denseBM = new BlockMatrix(sc.makeRDD(denseBlocks, 4), 4, 4, 8, 8)
 
     assert(
-      sparseBM.subtract(sparseBM).toBreeze() === sparseBM
-        .subtract(denseBM)
+      sparseBM.subtract(sparseBM).toBreeze() === sparseBM.subtract(denseBM)
         .toBreeze())
   }
 
@@ -304,8 +303,7 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val largeB = new BlockMatrix(sc.parallelize(largerBblocks, 8), 4, 4)
     val largeC = largeA.multiply(largeB)
     val localC = largeC.toLocalMatrix()
-    val result = largeA
-      .toLocalMatrix()
+    val result = largeA.toLocalMatrix()
       .multiply(largeB.toLocalMatrix().asInstanceOf[DenseMatrix])
     assert(largeC.numRows() === largeA.numRows())
     assert(largeC.numCols() === largeB.numCols())
@@ -322,9 +320,8 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       gridBasedMat.numRowBlocks,
       B.numColBlocks,
       math.max(numPartitions, 2))
-    val (destinationsA, destinationsB) = gridBasedMat.simulateMultiply(
-      B,
-      resultPartitioner)
+    val (destinationsA, destinationsB) = gridBasedMat
+      .simulateMultiply(B, resultPartitioner)
     assert(destinationsA((0, 0)) === Set(0))
     assert(destinationsA((0, 1)) === Set(2))
     assert(destinationsA((1, 0)) === Set(0))

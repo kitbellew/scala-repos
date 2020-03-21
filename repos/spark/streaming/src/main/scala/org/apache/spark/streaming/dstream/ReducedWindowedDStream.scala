@@ -38,13 +38,15 @@ private[streaming] class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
   require(
     _windowDuration.isMultipleOf(parent.slideDuration),
     "The window duration of ReducedWindowedDStream (" + _windowDuration + ") " +
-      "must be multiple of the slide duration of parent DStream (" + parent.slideDuration + ")"
+      "must be multiple of the slide duration of parent DStream (" + parent
+      .slideDuration + ")"
   )
 
   require(
     _slideDuration.isMultipleOf(parent.slideDuration),
     "The slide duration of ReducedWindowedDStream (" + _slideDuration + ") " +
-      "must be multiple of the slide duration of parent DStream (" + parent.slideDuration + ")"
+      "must be multiple of the slide duration of parent DStream (" + parent
+      .slideDuration + ")"
   )
 
   // Reduce each batch of data using reduceByKey which will be further reduced by window
@@ -139,14 +141,11 @@ private[streaming] class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
         throw new Exception("Unexpected number of sequences of reduced values")
       }
       // Getting reduced values "old time steps" that will be removed from current window
-      val oldValues = (1 to numOldValues)
-        .map(i => arrayOfValues(i))
-        .filter(!_.isEmpty)
-        .map(_.head)
+      val oldValues = (1 to numOldValues).map(i => arrayOfValues(i))
+        .filter(!_.isEmpty).map(_.head)
       // Getting reduced values "new time steps"
       val newValues = (1 to numNewValues)
-        .map(i => arrayOfValues(numOldValues + i))
-        .filter(!_.isEmpty)
+        .map(i => arrayOfValues(numOldValues + i)).filter(!_.isEmpty)
         .map(_.head)
 
       if (arrayOfValues(0).isEmpty) {
@@ -174,8 +173,7 @@ private[streaming] class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
     }
 
     val mergedValuesRDD = cogroupedRDD
-      .asInstanceOf[RDD[(K, Array[Iterable[V]])]]
-      .mapValues(mergeValues)
+      .asInstanceOf[RDD[(K, Array[Iterable[V]])]].mapValues(mergeValues)
 
     if (filterFunc.isDefined) { Some(mergedValuesRDD.filter(filterFunc.get)) }
     else { Some(mergedValuesRDD) }

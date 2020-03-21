@@ -30,8 +30,8 @@ object ScalaBoxingEvaluator {
       case null => null
       case DebuggerUtil.scalaRuntimeRefTo(value: Value) =>
         new BoxingEvaluator(new IdentityEvaluator(value)).evaluate(context)
-      case v: Value =>
-        new BoxingEvaluator(new IdentityEvaluator(v)).evaluate(context)
+      case v: Value => new BoxingEvaluator(new IdentityEvaluator(v))
+          .evaluate(context)
       case result =>
         throw EvaluationException(
           s"Cannot perform boxing conversion for $result")

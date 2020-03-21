@@ -112,11 +112,10 @@ class ProducerCompressionTest(compression: String)
 
       // make sure the fetched message count match
       val fetchResponse = consumer.fetch(
-        new FetchRequestBuilder()
-          .addFetch(topic, partition, 0, Int.MaxValue)
+        new FetchRequestBuilder().addFetch(topic, partition, 0, Int.MaxValue)
           .build())
-      val messageSet =
-        fetchResponse.messageSet(topic, partition).iterator.toBuffer
+      val messageSet = fetchResponse.messageSet(topic, partition).iterator
+        .toBuffer
       assertEquals(
         "Should have fetched " + numRecords + " messages",
         numRecords,

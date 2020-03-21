@@ -72,8 +72,8 @@ class ChaosJournal extends AsyncWriteJournal {
       sm.foreach(replayCallback)
       Future.failed(new ReplayFailedException(sm))
     } else {
-      read(persistenceId, fromSequenceNr, toSequenceNr, max).foreach(
-        replayCallback)
+      read(persistenceId, fromSequenceNr, toSequenceNr, max)
+        .foreach(replayCallback)
       Future.successful(())
     }
 

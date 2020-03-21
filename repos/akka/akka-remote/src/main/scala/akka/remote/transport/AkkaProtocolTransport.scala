@@ -43,7 +43,8 @@ private[remote] class AkkaProtocolSettings(config: Config) {
   val TransportHeartBeatInterval: FiniteDuration = {
     TransportFailureDetectorConfig.getMillisDuration("heartbeat-interval")
   } requiring (
-    _ > Duration.Zero, "transport-failure-detector.heartbeat-interval must be > 0"
+    _ > Duration
+      .Zero, "transport-failure-detector.heartbeat-interval must be > 0"
   )
 
   val RequireCookie: Boolean = getBoolean("akka.remote.require-cookie")
@@ -52,15 +53,14 @@ private[remote] class AkkaProtocolSettings(config: Config) {
     if (RequireCookie) Some(getString("akka.remote.secure-cookie")) else None
 
   val HandshakeTimeout: FiniteDuration = {
-    val enabledTransports = config.getStringList(
-      "akka.remote.enabled-transports")
+    val enabledTransports = config
+      .getStringList("akka.remote.enabled-transports")
     if (enabledTransports.contains("akka.remote.netty.tcp"))
       config.getMillisDuration("akka.remote.netty.tcp.connection-timeout")
     else if (enabledTransports.contains("akka.remote.netty.ssl"))
       config.getMillisDuration("akka.remote.netty.ssl.connection-timeout")
     else
-      config
-        .getMillisDuration("akka.remote.handshake-timeout")
+      config.getMillisDuration("akka.remote.handshake-timeout")
         .requiring(_ > Duration.Zero, "handshake-timeout must be > 0")
   }
 }
@@ -427,8 +427,8 @@ private[transport] class ProtocolStateActor(
     case Event(
           Handle(wrappedHandle),
           OutboundUnassociated(_, statusPromise, _)) ⇒
-      wrappedHandle.readHandlerPromise.trySuccess(ActorHandleEventListener(
-        self))
+      wrappedHandle.readHandlerPromise
+        .trySuccess(ActorHandleEventListener(self))
       if (sendAssociate(wrappedHandle, localHandshakeInfo)) {
         failureDetector.heartbeat()
         initHeartbeatTimer()

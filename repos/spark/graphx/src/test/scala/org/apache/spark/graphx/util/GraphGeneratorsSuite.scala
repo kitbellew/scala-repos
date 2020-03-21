@@ -28,10 +28,8 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
     val numEdges20 = 20
     val maxVertexId = 100
 
-    val edges10 = GraphGenerators.generateRandomEdges(
-      src,
-      numEdges10,
-      maxVertexId)
+    val edges10 = GraphGenerators
+      .generateRandomEdges(src, numEdges10, maxVertexId)
     assert(edges10.length == numEdges10)
 
     val correctSrc = edges10.forall(e => e.srcId == src)
@@ -40,36 +38,25 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
     val correctWeight = edges10.forall(e => e.attr == 1)
     assert(correctWeight)
 
-    val correctRange = edges10.forall(e =>
-      e.dstId >= 0 && e.dstId <= maxVertexId)
+    val correctRange = edges10
+      .forall(e => e.dstId >= 0 && e.dstId <= maxVertexId)
     assert(correctRange)
 
-    val edges20 = GraphGenerators.generateRandomEdges(
-      src,
-      numEdges20,
-      maxVertexId)
+    val edges20 = GraphGenerators
+      .generateRandomEdges(src, numEdges20, maxVertexId)
     assert(edges20.length == numEdges20)
 
-    val edges10_round1 = GraphGenerators.generateRandomEdges(
-      src,
-      numEdges10,
-      maxVertexId,
-      seed = 12345)
-    val edges10_round2 = GraphGenerators.generateRandomEdges(
-      src,
-      numEdges10,
-      maxVertexId,
-      seed = 12345)
+    val edges10_round1 = GraphGenerators
+      .generateRandomEdges(src, numEdges10, maxVertexId, seed = 12345)
+    val edges10_round2 = GraphGenerators
+      .generateRandomEdges(src, numEdges10, maxVertexId, seed = 12345)
     assert(edges10_round1.zip(edges10_round2).forall {
       case (e1, e2) =>
         e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
     })
 
-    val edges10_round3 = GraphGenerators.generateRandomEdges(
-      src,
-      numEdges10,
-      maxVertexId,
-      seed = 3467)
+    val edges10_round3 = GraphGenerators
+      .generateRandomEdges(src, numEdges10, maxVertexId, seed = 3467)
     assert(!edges10_round1.zip(edges10_round3).forall {
       case (e1, e2) =>
         e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
@@ -101,11 +88,8 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
       val sigma = 1.3
       val numVertices100 = 100
 
-      val graph = GraphGenerators.logNormalGraph(
-        sc,
-        numVertices100,
-        mu = mu,
-        sigma = sigma)
+      val graph = GraphGenerators
+        .logNormalGraph(sc, numVertices100, mu = mu, sigma = sigma)
       assert(graph.vertices.count() == numVertices100)
 
       val graph_round1 = GraphGenerators.logNormalGraph(
@@ -129,12 +113,8 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
           e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
       })
 
-      val graph_round3 = GraphGenerators.logNormalGraph(
-        sc,
-        numVertices100,
-        mu = mu,
-        sigma = sigma,
-        seed = 567)
+      val graph_round3 = GraphGenerators
+        .logNormalGraph(sc, numVertices100, mu = mu, sigma = sigma, seed = 567)
 
       val graph_round3_edges = graph_round3.edges.collect()
 

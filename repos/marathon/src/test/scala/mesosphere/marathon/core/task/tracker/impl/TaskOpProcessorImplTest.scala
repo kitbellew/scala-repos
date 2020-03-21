@@ -113,8 +113,8 @@ class TaskOpProcessorImplTest
     Given("a taskRepository and existing task")
     val taskState = MarathonTestHelper.stagedTaskForApp(appId)
     val task = taskState.marathonTask
-    f.taskRepository.store(task) returns Future.failed(new RuntimeException(
-      "fail"))
+    f.taskRepository.store(task) returns Future
+      .failed(new RuntimeException("fail"))
     f.taskRepository.task(task.getId) returns Future.successful(Some(task))
 
     When("the processor processes an update")
@@ -123,13 +123,11 @@ class TaskOpProcessorImplTest
       new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
       result = Try(
-        f.processor
-          .process(TaskOpProcessor.Operation(
-            deadline,
-            testActor,
-            taskState.taskId,
-            TaskOpProcessor.Action.Update(taskState)))
-          .futureValue
+        f.processor.process(TaskOpProcessor.Operation(
+          deadline,
+          testActor,
+          taskState.taskId,
+          TaskOpProcessor.Action.Update(taskState))).futureValue
       ) // we need to complete the future here to get all the logs
     }
 
@@ -173,13 +171,11 @@ class TaskOpProcessorImplTest
       new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
       result = Try(
-        f.processor
-          .process(TaskOpProcessor.Operation(
-            deadline,
-            testActor,
-            taskState.taskId,
-            TaskOpProcessor.Action.Update(taskState)))
-          .futureValue
+        f.processor.process(TaskOpProcessor.Operation(
+          deadline,
+          testActor,
+          taskState.taskId,
+          TaskOpProcessor.Action.Update(taskState))).futureValue
       ) // we need to complete the future here to get all the logs
     }
 
@@ -216,21 +212,19 @@ class TaskOpProcessorImplTest
     val storeFailed: RuntimeException =
       new scala.RuntimeException("store failed")
     f.taskRepository.store(task) returns Future.failed(storeFailed)
-    f.taskRepository.task(task.getId) returns Future.failed(
-      new RuntimeException("task failed"))
+    f.taskRepository.task(task.getId) returns Future
+      .failed(new RuntimeException("task failed"))
 
     When("the processor processes an update")
     var result: Try[Unit] = Failure(
       new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
       result = Try(
-        f.processor
-          .process(TaskOpProcessor.Operation(
-            deadline,
-            testActor,
-            taskState.taskId,
-            TaskOpProcessor.Action.Update(taskState)))
-          .futureValue
+        f.processor.process(TaskOpProcessor.Operation(
+          deadline,
+          testActor,
+          taskState.taskId,
+          TaskOpProcessor.Action.Update(taskState))).futureValue
       ) // we need to complete the future here to get all the logs
     }
 
@@ -292,8 +286,8 @@ class TaskOpProcessorImplTest
 
     Given("a taskRepository")
     val taskId = Task.Id.forApp(appId)
-    f.taskRepository.expunge(taskId.idString) returns Future.failed(
-      new RuntimeException("expunge fails"))
+    f.taskRepository.expunge(taskId.idString) returns Future
+      .failed(new RuntimeException("expunge fails"))
     f.taskRepository.task(taskId.idString) returns Future.successful(None)
 
     When("the processor processes an update")
@@ -407,9 +401,8 @@ class TaskOpProcessorImplTest
     val launched: Task = f.toLaunched(unlaunched, taskLaunchedOp)
     val marathonTask = unlaunched.marathonTask
     val taskId = launched.taskId.mesosTaskId.getValue
-    val killed: TaskStatus = MarathonTestHelper.statusForState(
-      taskId,
-      TaskState.TASK_KILLED)
+    val killed: TaskStatus = MarathonTestHelper
+      .statusForState(taskId, TaskState.TASK_KILLED)
     f.taskRepository.store(marathonTask) returns Future.successful(marathonTask)
     f.statusUpdateResolver.resolve(Task.Id(taskId), killed) returns Future
       .successful(TaskOpProcessor.Action.Update(unlaunched))

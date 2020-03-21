@@ -67,7 +67,8 @@ class TypeAnnotationInspection extends AbstractInspection {
       )
 
     case method: ScFunctionDefinition
-        if method.hasAssign && !method.hasExplicitType && !method.isSecondaryConstructor =>
+        if method.hasAssign && !method.hasExplicitType && !method
+          .isSecondaryConstructor =>
       val settings = ScalaCodeStyleSettings.getInstance(holder.getProject)
 
       inspect(
@@ -130,9 +131,8 @@ class TypeAnnotationInspection extends AbstractInspection {
       holder: ProblemsHolder) {
     if (requirement == TypeAnnotationRequirement.Required.ordinal &&
         (!isSimple || simplePolicy == TypeAnnotationPolicy.Regular.ordinal) &&
-        (
-          overridingPolicy == TypeAnnotationPolicy.Regular.ordinal || !isOverriding
-        )) {
+        (overridingPolicy == TypeAnnotationPolicy.Regular
+          .ordinal || !isOverriding)) {
       holder.registerProblem(
         element,
         s"$name requires an explicit type annotation (according to Code Style settings)",

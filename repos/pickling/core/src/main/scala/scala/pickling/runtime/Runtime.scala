@@ -82,8 +82,7 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
   def genPickler: Pickler[_] = {
     // build "interpreted" runtime pickler
     new Pickler[Any] with PickleTools {
-      val fields: List[(irs.FieldIR, Boolean)] = cir.fields
-        .filter(_.hasGetter)
+      val fields: List[(irs.FieldIR, Boolean)] = cir.fields.filter(_.hasGetter)
         .map(fir => (fir, fir.tpe.typeSymbol.isEffectivelyFinal))
 
       def tag: FastTypeTag[Any] =
@@ -234,7 +233,8 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(implicit
                   catch {
                     case e @ PicklingException(msg, cause) =>
                       debug(
-                        s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}
+                        s"""error in interpreted runtime unpickler while reading tag of field '${fir
+                             .name}
 ':
                          |$msg
 
@@ -251,9 +251,8 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(implicit
                       registerUnpicklee(result, preregisterUnpicklee())
                     result
                   } else {
-                    val fieldUnpickler =
-                      scala.pickling.internal.currentRuntime.picklers
-                        .genUnpickler(mirror, fdynamicTag)
+                    val fieldUnpickler = scala.pickling.internal.currentRuntime
+                      .picklers.genUnpickler(mirror, fdynamicTag)
                     fieldUnpickler.unpickle(fdynamicTag, freader)
                   }
                 }
@@ -344,7 +343,8 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                   catch {
                     case e @ PicklingException(msg, cause) =>
                       debug(
-                        s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}':
+                        s"""error in interpreted runtime unpickler while reading tag of field '${fir
+                             .name}':
                          |$msg
                          |enclosing object has type: '${tagKey}'
                          |static type of field: '${fir.tpe.key}'
@@ -356,9 +356,8 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
                     val result = freader.readPrimitive()
                     result
                   } else {
-                    val fieldUnpickler =
-                      scala.pickling.internal.currentRuntime.picklers
-                        .genUnpickler(mirror, fdynamicTag)
+                    val fieldUnpickler = scala.pickling.internal.currentRuntime
+                      .picklers.genUnpickler(mirror, fdynamicTag)
                     fieldUnpickler.unpickle(fdynamicTag, freader)
                   }
                 }

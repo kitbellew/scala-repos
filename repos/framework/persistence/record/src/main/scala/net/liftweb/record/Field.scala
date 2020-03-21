@@ -407,8 +407,8 @@ trait MandatoryTypedField[ThisType]
       case Full(null) | null => "null"
       case Full(v)           => v.toString
       case _ =>
-        defaultValueBox.map(v =>
-          if (v != null) v.toString else "null") openOr ""
+        defaultValueBox
+          .map(v => if (v != null) v.toString else "null") openOr ""
     }
 }
 
@@ -460,8 +460,8 @@ trait OptionalTypedField[ThisType]
       case Full(null) | null => "null"
       case Full(v)           => v.toString
       case _ =>
-        defaultValueBox.map(v =>
-          if (v != null) v.toString else "null") openOr ""
+        defaultValueBox
+          .map(v => if (v != null) v.toString else "null") openOr ""
     }
 
 }

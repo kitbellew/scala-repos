@@ -49,9 +49,8 @@ private[stats] class MetricsBucketedHistogram(
     // requests for the snapshot will return values from the previous `latchPeriod`.
 
     if (Time.Undefined eq nextSnapAfter.get) {
-      nextSnapAfter.compareAndSet(
-        Time.Undefined,
-        JsonExporter.startOfNextMinute)
+      nextSnapAfter
+        .compareAndSet(Time.Undefined, JsonExporter.startOfNextMinute)
     }
 
     current.synchronized {
@@ -89,8 +88,7 @@ private[stats] class MetricsBucketedHistogram(
         override def sum(): Long = _sum
 
         override def toString: String = {
-          val _ps = ps
-            .map { p => s"p${p.getQuantile}=${p.getValue}" }
+          val _ps = ps.map { p => s"p${p.getQuantile}=${p.getValue}" }
             .mkString("[", ", ", "]")
 
           s"Snapshot(count=${_count}, max=${_max}, min=${_min}, avg=${_avg}, sum=${_sum}, %s=${_ps})"

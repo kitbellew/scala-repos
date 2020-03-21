@@ -102,26 +102,27 @@ object JsMacroImpl {
       case Some(s) => s.asMethod
     }
 
-    val unapplyReturnTypes: Option[List[Type]] =
-      effectiveUnapply.returnType match {
-        case TypeRef(_, _, Nil) =>
-          c.abort(
-            c.enclosingPosition,
-            s"Unapply of $companionObject has no parameters. Are you using an empty case class?")
-          None
+    val unapplyReturnTypes: Option[List[Type]] = effectiveUnapply
+      .returnType match {
+      case TypeRef(_, _, Nil) =>
+        c.abort(
+          c.enclosingPosition,
+          s"Unapply of $companionObject has no parameters. Are you using an empty case class?")
+        None
 
-        case TypeRef(_, _, args) => args.head match {
-            case t @ TypeRef(_, _, Nil) => Some(List(t))
-            case t @ TypeRef(_, _, args) =>
-              import c.universe.definitions.TupleClass
-              if (!TupleClass.seq.exists(tupleSym =>
-                    t.baseType(tupleSym) ne NoType)) Some(List(t))
-              else if (t <:< typeOf[Product]) Some(args)
-              else None
-            case _ => None
-          }
-        case _ => None
-      }
+      case TypeRef(_, _, args) => args.head match {
+          case t @ TypeRef(_, _, Nil) => Some(List(t))
+          case t @ TypeRef(_, _, args) =>
+            import c.universe.definitions.TupleClass
+            if (!TupleClass.seq
+                  .exists(tupleSym => t.baseType(tupleSym) ne NoType))
+              Some(List(t))
+            else if (t <:< typeOf[Product]) Some(args)
+            else None
+          case _ => None
+        }
+      case _ => None
+    }
 
     // Now the apply methods for the object
     val applies = companionType.decl(TermName("apply")) match {
@@ -132,8 +133,8 @@ object JsMacroImpl {
     // Find an apply method that matches the unapply
     val maybeApply = applies.collectFirst {
       case (apply: MethodSymbol) if hasVarArgs && {
-            val someApplyTypes = apply.paramLists.headOption.map(_.map(
-              _.asTerm.typeSignature))
+            val someApplyTypes = apply.paramLists.headOption
+              .map(_.map(_.asTerm.typeSignature))
             val someInitApply = someApplyTypes.map(_.init)
             val someApplyLast = someApplyTypes.map(_.last)
             val someInitUnapply = unapplyReturnTypes.map(_.init)
@@ -147,8 +148,8 @@ object JsMacroImpl {
             initsMatch && lastMatch
           } => apply
       case (apply: MethodSymbol)
-          if apply.paramLists.headOption.map(
-            _.map(_.asTerm.typeSignature)) == unapplyReturnTypes => apply
+          if apply.paramLists.headOption
+            .map(_.map(_.asTerm.typeSignature)) == unapplyReturnTypes => apply
     }
 
     val params = maybeApply match {
@@ -213,45 +214,43 @@ object JsMacroImpl {
     var hasRec = false
 
     // combines all reads into CanBuildX
-    val canBuild = effectiveInferredImplicits
-      .map {
-        case Implicit(name, t, impl, rec, tpe) =>
-          // Equivalent to __ \ "name"
-          val jspathTree = q"""$JsPath \ ${name.decodedName.toString}"""
+    val canBuild = effectiveInferredImplicits.map {
+      case Implicit(name, t, impl, rec, tpe) =>
+        // Equivalent to __ \ "name"
+        val jspathTree = q"""$JsPath \ ${name.decodedName.toString}"""
 
-          // If we're not recursive, simple, just invoke read/write/format
-          if (!rec) {
-            // If we're an option, invoke the nullable version
-            if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor) {
-              q"$jspathTree.$callNullable($impl)"
-            } else { q"$jspathTree.$call($impl)" }
+        // If we're not recursive, simple, just invoke read/write/format
+        if (!rec) {
+          // If we're an option, invoke the nullable version
+          if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor) {
+            q"$jspathTree.$callNullable($impl)"
+          } else { q"$jspathTree.$call($impl)" }
+        } else {
+          // Otherwise we have to invoke the lazy version
+          hasRec = true
+          if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor) {
+            q"$jspathTree.$callNullable($JsPath.$lazyCall(this.lazyStuff))"
           } else {
-            // Otherwise we have to invoke the lazy version
-            hasRec = true
-            if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor) {
-              q"$jspathTree.$callNullable($JsPath.$lazyCall(this.lazyStuff))"
-            } else {
-              // If this is a list/set/seq/map, then we need to wrap the reads into that.
-              def readsWritesHelper(methodName: String): List[Tree] =
-                conditionalList(Reads, Writes).map(s =>
-                  q"$s.${TermName(methodName)}(this.lazyStuff)")
+            // If this is a list/set/seq/map, then we need to wrap the reads into that.
+            def readsWritesHelper(methodName: String): List[Tree] =
+              conditionalList(Reads, Writes)
+                .map(s => q"$s.${TermName(methodName)}(this.lazyStuff)")
 
-              val arg =
-                if (tpe.typeConstructor <:< typeOf[List[_]].typeConstructor)
-                  readsWritesHelper("list")
-                else if (tpe.typeConstructor <:< typeOf[Set[_]].typeConstructor)
-                  readsWritesHelper("set")
-                else if (tpe.typeConstructor <:< typeOf[Seq[_]].typeConstructor)
-                  readsWritesHelper("seq")
-                else if (tpe.typeConstructor <:< typeOf[
-                           Map[_, _]].typeConstructor) readsWritesHelper("map")
-                else List(q"this.lazyStuff")
+            val arg =
+              if (tpe.typeConstructor <:< typeOf[List[_]].typeConstructor)
+                readsWritesHelper("list")
+              else if (tpe.typeConstructor <:< typeOf[Set[_]].typeConstructor)
+                readsWritesHelper("set")
+              else if (tpe.typeConstructor <:< typeOf[Seq[_]].typeConstructor)
+                readsWritesHelper("seq")
+              else if (tpe.typeConstructor <:< typeOf[Map[_, _]]
+                         .typeConstructor) readsWritesHelper("map")
+              else List(q"this.lazyStuff")
 
-              q"$jspathTree.$lazyCall(..$arg)"
-            }
+            q"$jspathTree.$lazyCall(..$arg)"
           }
-      }
-      .reduceLeft[Tree] { (acc, r) => q"$acc.and($r)" }
+        }
+    }.reduceLeft[Tree] { (acc, r) => q"$acc.and($r)" }
 
     val applyFunction = {
       if (hasVarArgs) {

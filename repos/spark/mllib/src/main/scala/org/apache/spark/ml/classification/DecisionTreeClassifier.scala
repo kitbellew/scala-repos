@@ -102,16 +102,16 @@ final class DecisionTreeClassifier @Since("1.4.0") (
       dataset: DataFrame): DecisionTreeClassificationModel = {
     val categoricalFeatures: Map[Int, Int] = MetadataUtils
       .getCategoricalFeatures(dataset.schema($(featuresCol)))
-    val numClasses: Int =
-      MetadataUtils.getNumClasses(dataset.schema($(labelCol))) match {
-        case Some(n: Int) => n
-        case None =>
-          throw new IllegalArgumentException(
-            "DecisionTreeClassifier was given input" +
-              s" with invalid label column ${$(labelCol)}, without the number of classes" +
-              " specified. See StringIndexer.")
-        // TODO: Automatically index labels: SPARK-7126
-      }
+    val numClasses: Int = MetadataUtils
+      .getNumClasses(dataset.schema($(labelCol))) match {
+      case Some(n: Int) => n
+      case None =>
+        throw new IllegalArgumentException(
+          "DecisionTreeClassifier was given input" +
+            s" with invalid label column ${$(labelCol)}, without the number of classes" +
+            " specified. See StringIndexer.")
+      // TODO: Automatically index labels: SPARK-7126
+    }
     val oldDataset: RDD[LabeledPoint] = extractLabeledPoints(dataset)
     val strategy = getOldStrategy(categoricalFeatures, numClasses)
     val trees = RandomForest.run(
@@ -161,8 +161,8 @@ object DecisionTreeClassifier
 
   /** Accessor for supported impurities: entropy, gini */
   @Since("1.4.0")
-  final val supportedImpurities: Array[String] =
-    TreeClassifierParams.supportedImpurities
+  final val supportedImpurities: Array[String] = TreeClassifierParams
+    .supportedImpurities
 
   @Since("2.0.0")
   override def load(path: String): DecisionTreeClassifier = super.load(path)
@@ -228,8 +228,7 @@ final class DecisionTreeClassificationModel private[ml] (
         rootNode,
         numFeatures,
         numClasses),
-      extra)
-      .setParent(parent)
+      extra).setParent(parent)
   }
 
   @Since("1.4.0")
@@ -254,9 +253,8 @@ final class DecisionTreeClassificationModel private[ml] (
     *       to determine feature importance instead.
     */
   @Since("2.0.0")
-  lazy val featureImportances: Vector = RandomForest.featureImportances(
-    this,
-    numFeatures)
+  lazy val featureImportances: Vector = RandomForest
+    .featureImportances(this, numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
   private[ml] def toOld: OldDecisionTreeModel = {

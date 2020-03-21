@@ -64,8 +64,8 @@ class SbtModuleBuilder
   // TODO customize the path in UI when IDEA-122951 will be implemented
   private def updateModulePath() {
     val file = getModuleFilePath.toFile
-    val path =
-      file.getParent + "/" + Sbt.ModulesDirectory + "/" + file.getName.toLowerCase
+    val path = file.getParent + "/" + Sbt.ModulesDirectory + "/" + file.getName
+      .toLowerCase
     setModuleFilePath(path)
   }
 
@@ -109,14 +109,14 @@ class SbtModuleBuilder
 
         settingsStep.getContext setProjectJdk myJdkComboBox.getSelectedJdk
 
-        getExternalProjectSettings.setResolveClassifiers(
-          resolveClassifiersCheckBox.isSelected)
-        getExternalProjectSettings.setResolveJavadocs(
-          resolveJavadocsCheckBox.isSelected)
-        getExternalProjectSettings.setResolveSbtClassifiers(
-          resolveSbtClassifiersCheckBox.isSelected)
-        getExternalProjectSettings.setUseAutoImport(
-          useAutoImportCheckBox.isSelected)
+        getExternalProjectSettings
+          .setResolveClassifiers(resolveClassifiersCheckBox.isSelected)
+        getExternalProjectSettings
+          .setResolveJavadocs(resolveJavadocsCheckBox.isSelected)
+        getExternalProjectSettings
+          .setResolveSbtClassifiers(resolveSbtClassifiersCheckBox.isSelected)
+        getExternalProjectSettings
+          .setUseAutoImport(useAutoImportCheckBox.isSelected)
         getExternalProjectSettings.setCreateEmptyContentRootDirectories(
           createContentDirsCheckBox.isSelected)
       }

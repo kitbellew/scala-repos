@@ -48,9 +48,8 @@ class IdeClientIdea(
         if (!isTemp) {
           try {
             if (isClassFile)
-              consumer.registerCompiledClass(
-                rootDescriptor.target,
-                compiledClass)
+              consumer
+                .registerCompiledClass(rootDescriptor.target, compiledClass)
             else
               consumer.registerOutputFile(
                 rootDescriptor.target,
@@ -76,7 +75,8 @@ class IdeClientIdea(
         } catch {
           case e: Throwable =>
             val message: String =
-              "Class dependency information may be incomplete! Error parsing generated class " + outputFile.getPath
+              "Class dependency information may be incomplete! Error parsing generated class " + outputFile
+                .getPath
             context.processMessage(new CompilerMessage(
               compilerName,
               BuildMessage.Kind.WARNING,
@@ -121,8 +121,7 @@ class IdeClientIdea(
       interfaces ++ superClass
     }
     val className = reader.getClassName
-    val packageName = className
-      .stripSuffix(packageObjectClassName)
+    val packageName = className.stripSuffix(packageObjectClassName)
       .replace("/", ".")
     for {
       typeName <- baseTypes.map(_.replace('/', '.'))

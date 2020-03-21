@@ -22,11 +22,9 @@ case class OffsetMetadata(
     offset: Long,
     metadata: String = OffsetMetadata.NoMetadata) {
   override def toString =
-    "OffsetMetadata[%d,%s]"
-      .format(
-        offset,
-        if (metadata != null && metadata.length > 0) metadata
-        else "NO_METADATA")
+    "OffsetMetadata[%d,%s]".format(
+      offset,
+      if (metadata != null && metadata.length > 0) metadata else "NO_METADATA")
 }
 
 object OffsetMetadata {
@@ -50,10 +48,8 @@ case class OffsetAndMetadata(
   def metadata = offsetMetadata.metadata
 
   override def toString =
-    "[%s,CommitTime %d,ExpirationTime %d]".format(
-      offsetMetadata,
-      commitTimestamp,
-      expireTimestamp)
+    "[%s,CommitTime %d,ExpirationTime %d]"
+      .format(offsetMetadata, commitTimestamp, expireTimestamp)
 }
 
 object OffsetAndMetadata {

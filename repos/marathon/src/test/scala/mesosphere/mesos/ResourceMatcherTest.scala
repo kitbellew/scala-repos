@@ -72,12 +72,10 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
 
   test("match resources success with preserved reservations") {
     // have unique reservation to make sure that the reservations are really preserved
-    val cpuReservation = MarathonTestHelper.reservation(
-      principal = "cpuPrincipal",
-      labels = Map("some" -> "label"))
-    val cpuReservation2 = MarathonTestHelper.reservation(
-      principal = "cpuPrincipal",
-      labels = Map("some" -> "label2"))
+    val cpuReservation = MarathonTestHelper
+      .reservation(principal = "cpuPrincipal", labels = Map("some" -> "label"))
+    val cpuReservation2 = MarathonTestHelper
+      .reservation(principal = "cpuPrincipal", labels = Map("some" -> "label2"))
     val memReservation = MarathonTestHelper.reservation(
       principal = "memPrincipal",
       labels = Map("resource" -> "mem"))
@@ -88,10 +86,8 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
       principal = "portPrincipal",
       labels = Map("resource" -> "ports"))
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer(role = "marathon")
-      .clearResources()
-      .addResources(MarathonTestHelper.scalarResource(
+    val offer = MarathonTestHelper.makeBasicOffer(role = "marathon")
+      .clearResources().addResources(MarathonTestHelper.scalarResource(
         "cpus",
         1.0,
         "marathon",
@@ -114,8 +110,7 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
       .addResources(MarathonTestHelper.portsResource(
         80,
         80,
-        reservation = Some(portsReservation)))
-      .build()
+        reservation = Some(portsReservation))).build()
 
     val app = AppDefinition(
       id = "/test".toRootPath,
@@ -157,17 +152,14 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("match resources should not consider resources with disk infos") {
-    val cpuReservation = MarathonTestHelper.reservation(
-      principal = "cpuPrincipal",
-      labels = Map("some" -> "label"))
+    val cpuReservation = MarathonTestHelper
+      .reservation(principal = "cpuPrincipal", labels = Map("some" -> "label"))
     val memReservation = MarathonTestHelper.reservation(
       principal = "memPrincipal",
       labels = Map("resource" -> "mem"))
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer(role = "marathon")
-      .clearResources()
-      .addResources(MarathonTestHelper.scalarResource(
+    val offer = MarathonTestHelper.makeBasicOffer(role = "marathon")
+      .clearResources().addResources(MarathonTestHelper.scalarResource(
         "cpus",
         1.0,
         "marathon",
@@ -238,21 +230,16 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("match resources success with constraints") {
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 0, endPort = 0)
-      .setHostname("host1")
-      .build()
+    val offer = MarathonTestHelper.makeBasicOffer(beginPort = 0, endPort = 0)
+      .setHostname("host1").build()
     val app = AppDefinition(
       id = "/test".toRootPath,
       cpus = 1.0,
       mem = 128.0,
       disk = 0.0,
       constraints = Set(
-        Constraint.newBuilder
-          .setField("hostname")
-          .setOperator(Operator.LIKE)
-          .setValue("host1")
-          .build())
+        Constraint.newBuilder.setField("hostname").setOperator(Operator.LIKE)
+          .setValue("host1").build())
     )
 
     val resOpt = ResourceMatcher.matchResources(
@@ -265,21 +252,16 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("match resources fails on constraints") {
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 0, endPort = 0)
-      .setHostname("host1")
-      .build()
+    val offer = MarathonTestHelper.makeBasicOffer(beginPort = 0, endPort = 0)
+      .setHostname("host1").build()
     val app = AppDefinition(
       id = "/test".toRootPath,
       cpus = 1.0,
       mem = 128.0,
       disk = 0.0,
       constraints = Set(
-        Constraint.newBuilder
-          .setField("hostname")
-          .setOperator(Operator.LIKE)
-          .setValue("host2")
-          .build())
+        Constraint.newBuilder.setField("hostname").setOperator(Operator.LIKE)
+          .setValue("host2").build())
     )
 
     val resOpt = ResourceMatcher.matchResources(
@@ -346,8 +328,7 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("match resources fail on ports") {
-    val offer = MarathonTestHelper
-      .makeBasicOffer(beginPort = 0, endPort = 0)
+    val offer = MarathonTestHelper.makeBasicOffer(beginPort = 0, endPort = 0)
       .build()
     val app = AppDefinition(
       id = "/test".toRootPath,

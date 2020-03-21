@@ -16,23 +16,18 @@ object DiffUtil {
       revisedFile: File = new File("b")): String = {
     import collection.JavaConverters._
     val diff = difflib.DiffUtils.diff(original.asJava, revised.asJava)
-    val originalInfo =
-      originalFile.getAbsolutePath() + "\t" + fileModificationTimeOrEpoch(
-        originalFile)
-    val revisedInfo =
-      revisedFile.getAbsolutePath() + "\t" + fileModificationTimeOrEpoch(
-        revisedFile)
+    val originalInfo = originalFile
+      .getAbsolutePath() + "\t" + fileModificationTimeOrEpoch(originalFile)
+    val revisedInfo = revisedFile
+      .getAbsolutePath() + "\t" + fileModificationTimeOrEpoch(revisedFile)
     if (diff.getDeltas.isEmpty) ""
     else
-      difflib.DiffUtils
-        .generateUnifiedDiff(
-          originalInfo,
-          revisedInfo,
-          original.asJava,
-          diff,
-          1)
-        .asScala
-        .mkString("", "\n", "\n")
+      difflib.DiffUtils.generateUnifiedDiff(
+        originalInfo,
+        revisedInfo,
+        original.asJava,
+        diff,
+        1).asScala.mkString("", "\n", "\n")
   }
 
   def fileModificationTimeOrEpoch(file: File): String = {

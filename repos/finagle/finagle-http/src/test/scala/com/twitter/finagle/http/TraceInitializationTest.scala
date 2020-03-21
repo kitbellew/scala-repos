@@ -57,13 +57,10 @@ class TraceInitializationTest extends FunSuite {
   test("TraceId is propagated through the protocol") {
     testTraces { (serverTracer, clientTracer) =>
       import com.twitter.finagle
-      val server = finagle.Http.server
-        .configured(param.Tracer(serverTracer))
-        .configured(param.Label("theServer"))
-        .serve(":*", Svc)
+      val server = finagle.Http.server.configured(param.Tracer(serverTracer))
+        .configured(param.Label("theServer")).serve(":*", Svc)
       val port = server.boundAddress.asInstanceOf[InetSocketAddress].getPort
-      val client = finagle.Http.client
-        .configured(param.Tracer(clientTracer))
+      val client = finagle.Http.client.configured(param.Tracer(clientTracer))
         .newService(":" + port, "theClient")
       (client, server)
     }
@@ -71,21 +68,14 @@ class TraceInitializationTest extends FunSuite {
 
   test("TraceId is propagated through the protocol (builder)") {
     testTraces { (serverTracer, clientTracer) =>
-      val server = ServerBuilder()
-        .name("theServer")
+      val server = ServerBuilder().name("theServer")
         .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        .codec(Http(_enableTracing = true))
-        .tracer(serverTracer)
-        .build(Svc)
+        .codec(Http(_enableTracing = true)).tracer(serverTracer).build(Svc)
 
       val port = server.boundAddress.asInstanceOf[InetSocketAddress].getPort
-      val client = ClientBuilder()
-        .name("theClient")
-        .hosts(s"localhost:$port")
-        .codec(Http(_enableTracing = true))
-        .hostConnectionLimit(1)
-        .tracer(clientTracer)
-        .build()
+      val client = ClientBuilder().name("theClient").hosts(s"localhost:$port")
+        .codec(Http(_enableTracing = true)).hostConnectionLimit(1)
+        .tracer(clientTracer).build()
       (client, server)
     }
   }
@@ -94,18 +84,12 @@ class TraceInitializationTest extends FunSuite {
     import com.twitter.finagle
     val tracer = new BufferingTracer
 
-    val server = finagle.Http.server
-      .configured(param.Tracer(tracer))
-      .configured(param.Label("theServer"))
-      .serve(":*", Svc)
+    val server = finagle.Http.server.configured(param.Tracer(tracer))
+      .configured(param.Label("theServer")).serve(":*", Svc)
     try {
       val port = server.boundAddress.asInstanceOf[InetSocketAddress].getPort
-      val client = ClientBuilder()
-        .name("theClient")
-        .hosts(s"localhost:$port")
-        .codec(Http(_enableTracing = false))
-        .hostConnectionLimit(1)
-        .build()
+      val client = ClientBuilder().name("theClient").hosts(s"localhost:$port")
+        .codec(Http(_enableTracing = false)).hostConnectionLimit(1).build()
       try {
         0.until(2).foreach { _ => Await.result(client(req)) }
 

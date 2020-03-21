@@ -853,8 +853,7 @@ private[ml] class FeedForwardTrainer(
   private var dataStacker = new DataStacker(_stackSize, inputSize, outputSize)
   private var _gradient: Gradient = new ANNGradient(topology, dataStacker)
   private var _updater: Updater = new ANNUpdater()
-  private var optimizer: Optimizer = LBFGSOptimizer
-    .setConvergenceTol(1e-4)
+  private var optimizer: Optimizer = LBFGSOptimizer.setConvergenceTol(1e-4)
     .setNumIterations(100)
 
   /**

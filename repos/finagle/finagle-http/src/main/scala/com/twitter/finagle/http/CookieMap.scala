@@ -22,8 +22,7 @@ class CookieMap(message: Message)
     with mutable.MapLike[String, Cookie, CookieMap] {
   override def empty: CookieMap = new CookieMap(Request())
 
-  private[this] val underlying = mutable
-    .Map[String, Set[Cookie]]()
+  private[this] val underlying = mutable.Map[String, Set[Cookie]]()
     .withDefaultValue(Set.empty)
 
   /**

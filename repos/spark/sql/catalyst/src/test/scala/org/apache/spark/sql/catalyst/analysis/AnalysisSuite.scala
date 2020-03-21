@@ -29,11 +29,9 @@ class AnalysisSuite extends AnalysisTest {
   import org.apache.spark.sql.catalyst.analysis.TestRelations._
 
   test("union project *") {
-    val plan = (1 to 100)
-      .map(_ => testRelation)
+    val plan = (1 to 100).map(_ => testRelation)
       .fold[LogicalPlan](testRelation) { (a, b) =>
-        a.select(UnresolvedStar(None))
-          .select('a)
+        a.select(UnresolvedStar(None)).select('a)
           .unionAll(b.select(UnresolvedStar(None)))
       }
 
@@ -93,35 +91,17 @@ class AnalysisSuite extends AnalysisTest {
     val c = testRelation2.output(2)
 
     // Case 1: one missing attribute is in the leaf node and another is in the unary node
-    val plan1 = testRelation2
-      .where('a > "str")
-      .select('a, 'b)
-      .where('b > "str")
-      .select('a)
-      .sortBy('b.asc, 'c.desc)
-    val expected1 = testRelation2
-      .where(a > "str")
-      .select(a, b, c)
-      .where(b > "str")
-      .select(a, b, c)
-      .sortBy(b.asc, c.desc)
-      .select(a)
+    val plan1 = testRelation2.where('a > "str").select('a, 'b).where('b > "str")
+      .select('a).sortBy('b.asc, 'c.desc)
+    val expected1 = testRelation2.where(a > "str").select(a, b, c)
+      .where(b > "str").select(a, b, c).sortBy(b.asc, c.desc).select(a)
     checkAnalysis(plan1, expected1)
 
     // Case 2: all the missing attributes are in the leaf node
-    val plan2 = testRelation2
-      .where('a > "str")
-      .select('a)
-      .where('a > "str")
-      .select('a)
-      .sortBy('b.asc, 'c.desc)
-    val expected2 = testRelation2
-      .where(a > "str")
-      .select(a, b, c)
-      .where(a > "str")
-      .select(a, b, c)
-      .sortBy(b.asc, c.desc)
-      .select(a)
+    val plan2 = testRelation2.where('a > "str").select('a).where('a > "str")
+      .select('a).sortBy('b.asc, 'c.desc)
+    val expected2 = testRelation2.where(a > "str").select(a, b, c)
+      .where(a > "str").select(a, b, c).sortBy(b.asc, c.desc).select(a)
     checkAnalysis(plan2, expected2)
   }
 
@@ -132,17 +112,10 @@ class AnalysisSuite extends AnalysisTest {
     val h = testRelation3.output(3)
 
     // Case: join itself can resolve all the missing attributes
-    val plan = testRelation2
-      .join(testRelation3)
-      .where('a > "str")
-      .select('a, 'b)
-      .sortBy('c.desc, 'h.asc)
-    val expected = testRelation2
-      .join(testRelation3)
-      .where(a > "str")
-      .select(a, b, c, h)
-      .sortBy(c.desc, h.asc)
-      .select(a, b)
+    val plan = testRelation2.join(testRelation3).where('a > "str")
+      .select('a, 'b).sortBy('c.desc, 'h.asc)
+    val expected = testRelation2.join(testRelation3).where(a > "str")
+      .select(a, b, c, h).sortBy(c.desc, h.asc).select(a, b)
     checkAnalysis(plan, expected)
   }
 
@@ -155,29 +128,22 @@ class AnalysisSuite extends AnalysisTest {
 
     // Case 1: when the child of Sort is not Aggregate,
     //   the sort reference is handled by the rule ResolveSortReferences
-    val plan1 = testRelation2
-      .groupBy('a, 'c, 'b)('a, 'c, count('a).as("a3"))
-      .select('a, 'c, 'a3)
-      .orderBy('b.asc)
+    val plan1 = testRelation2.groupBy('a, 'c, 'b)('a, 'c, count('a).as("a3"))
+      .select('a, 'c, 'a3).orderBy('b.asc)
 
-    val expected1 = testRelation2
-      .groupBy(a, c, b)(a, c, alias_a3, b)
-      .select(a, c, alias_a3.toAttribute, b)
-      .orderBy(b.asc)
+    val expected1 = testRelation2.groupBy(a, c, b)(a, c, alias_a3, b)
+      .select(a, c, alias_a3.toAttribute, b).orderBy(b.asc)
       .select(a, c, alias_a3.toAttribute)
 
     checkAnalysis(plan1, expected1)
 
     // Case 2: when the child of Sort is Aggregate,
     //   the sort reference is handled by the rule ResolveAggregateFunctions
-    val plan2 = testRelation2
-      .groupBy('a, 'c, 'b)('a, 'c, count('a).as("a3"))
+    val plan2 = testRelation2.groupBy('a, 'c, 'b)('a, 'c, count('a).as("a3"))
       .orderBy('b.asc)
 
-    val expected2 = testRelation2
-      .groupBy(a, c, b)(a, c, alias_a3, alias_b)
-      .orderBy(alias_b.toAttribute.asc)
-      .select(a, c, alias_a3.toAttribute)
+    val expected2 = testRelation2.groupBy(a, c, b)(a, c, alias_a3, alias_b)
+      .orderBy(alias_b.toAttribute.asc).select(a, c, alias_a3.toAttribute)
 
     checkAnalysis(plan2, expected2)
   }
@@ -254,11 +220,11 @@ class AnalysisSuite extends AnalysisTest {
     checkAnalysis(plan, expected)
 
     // CreateStruct is a special case that we should not trim Alias for it.
-    plan = testRelation.select(
-      CreateStruct(Seq(a, (a + 1).as("a+1"))).as("col"))
+    plan = testRelation
+      .select(CreateStruct(Seq(a, (a + 1).as("a+1"))).as("col"))
     checkAnalysis(plan, plan)
-    plan = testRelation.select(
-      CreateStructUnsafe(Seq(a, (a + 1).as("a+1"))).as("col"))
+    plan = testRelation
+      .select(CreateStructUnsafe(Seq(a, (a + 1).as("a+1"))).as("col"))
     checkAnalysis(plan, plan)
   }
 
@@ -267,10 +233,8 @@ class AnalysisSuite extends AnalysisTest {
     val c = testRelation2.output(2)
 
     val plan = testRelation2.select('c).orderBy(Floor('a).asc)
-    val expected = testRelation2
-      .select(c, a)
-      .orderBy(Floor(a.cast(DoubleType)).asc)
-      .select(c)
+    val expected = testRelation2.select(c, a)
+      .orderBy(Floor(a.cast(DoubleType)).asc).select(c)
 
     checkAnalysis(plan, expected)
   }
@@ -359,8 +323,7 @@ class AnalysisSuite extends AnalysisTest {
       .groupBy('a, 'c)('a.as("a1"), 'c.as("a2"), count('a).as("a3"))
       .orderBy('a1.asc, 'c.asc)
 
-    val expected = testRelation2
-      .groupBy(a, c)(alias1, alias2, alias3)
+    val expected = testRelation2.groupBy(a, c)(alias1, alias2, alias3)
       .orderBy(alias1.toAttribute.asc, alias2.toAttribute.asc)
       .select(alias1.toAttribute, alias2.toAttribute, alias3.toAttribute)
     checkAnalysis(plan, expected)
@@ -376,8 +339,8 @@ class AnalysisSuite extends AnalysisTest {
     val relation = LocalRelation(
       'a.struct('x.int),
       'b.struct('x.int.withNullability(false)))
-    val plan = relation.select(
-      CaseWhen(Seq((Literal(true), 'a.attr)), 'b).as("val"))
+    val plan = relation
+      .select(CaseWhen(Seq((Literal(true), 'a.attr)), 'b).as("val"))
     assertAnalysisSuccess(plan)
   }
 

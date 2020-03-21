@@ -124,13 +124,11 @@ class SocketServer(
           processors.slice(processorBeginIndex, processorEndIndex),
           connectionQuotas)
         acceptors.put(endpoint, acceptor)
-        Utils
-          .newThread(
-            "kafka-socket-acceptor-%s-%d"
-              .format(protocol.toString, endpoint.port),
-            acceptor,
-            false)
-          .start()
+        Utils.newThread(
+          "kafka-socket-acceptor-%s-%d"
+            .format(protocol.toString, endpoint.port),
+          acceptor,
+          false).start()
         acceptor.awaitStartup()
 
         processorBeginIndex = processorEndIndex
@@ -270,13 +268,11 @@ private[kafka] class Acceptor(
 
   this.synchronized {
     processors.foreach { processor =>
-      Utils
-        .newThread(
-          "kafka-network-thread-%d-%s-%d"
-            .format(brokerId, endPoint.protocolType.toString, processor.id),
-          processor,
-          false)
-        .start()
+      Utils.newThread(
+        "kafka-network-thread-%d-%s-%d"
+          .format(brokerId, endPoint.protocolType.toString, processor.id),
+        processor,
+        false).start()
     }
   }
 
@@ -437,11 +433,8 @@ private[kafka] class Processor(
 
   private val newConnections = new ConcurrentLinkedQueue[SocketChannel]()
   private val inflightResponses = mutable.Map[String, RequestChannel.Response]()
-  private val channelBuilder = ChannelBuilders.create(
-    protocol,
-    Mode.SERVER,
-    LoginType.SERVER,
-    channelConfigs)
+  private val channelBuilder = ChannelBuilders
+    .create(protocol, Mode.SERVER, LoginType.SERVER, channelConfigs)
   private val metricTags = new util.HashMap[String, String]()
   metricTags.put("networkProcessor", id.toString)
 
@@ -449,13 +442,10 @@ private[kafka] class Processor(
     "IdlePercent",
     new Gauge[Double] {
       def value = {
-        metrics
-          .metrics()
-          .get(metrics.metricName(
-            "io-wait-ratio",
-            "socket-server-metrics",
-            metricTags))
-          .value()
+        metrics.metrics().get(metrics.metricName(
+          "io-wait-ratio",
+          "socket-server-metrics",
+          metricTags)).value()
       }
     },
     metricTags.asScala
@@ -527,13 +517,10 @@ private[kafka] class Processor(
         }
 
         selector.disconnected.asScala.foreach { connectionId =>
-          val remoteHost = ConnectionId
-            .fromString(connectionId)
-            .getOrElse {
-              throw new IllegalStateException(
-                s"connectionId has unexpected format: $connectionId")
-            }
-            .remoteHost
+          val remoteHost = ConnectionId.fromString(connectionId).getOrElse {
+            throw new IllegalStateException(
+              s"connectionId has unexpected format: $connectionId")
+          }.remoteHost
           // the channel has been closed by the selector but the quotas still need to be updated
           connectionQuotas.dec(InetAddress.getByName(remoteHost))
         }
@@ -596,7 +583,8 @@ private[kafka] class Processor(
       val channel = newConnections.poll()
       try {
         debug(
-          "Processor " + id + " listening to new connection from " + channel.socket.getRemoteSocketAddress)
+          "Processor " + id + " listening to new connection from " + channel
+            .socket.getRemoteSocketAddress)
         val localHost = channel.socket().getLocalAddress.getHostAddress
         val localPort = channel.socket().getLocalPort
         val remoteHost = channel.socket().getInetAddress.getHostAddress
@@ -611,7 +599,8 @@ private[kafka] class Processor(
           // need to close the channel here to avoid socket leak.
           close(channel)
           error(
-            "Processor " + id + " closed connection from " + channel.getRemoteAddress,
+            "Processor " + id + " closed connection from " + channel
+              .getRemoteAddress,
             e)
       }
     }

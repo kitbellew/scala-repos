@@ -14,9 +14,7 @@ class FlowZipWithSpec extends BaseTwoStreamsSetup {
 
   override def setup(p1: Publisher[Int], p2: Publisher[Int]) = {
     val subscriber = TestSubscriber.probe[Outputs]()
-    Source
-      .fromPublisher(p1)
-      .zipWith(Source.fromPublisher(p2))(_ + _)
+    Source.fromPublisher(p1).zipWith(Source.fromPublisher(p2))(_ + _)
       .runWith(Sink.fromSubscriber(subscriber))
     subscriber
   }
@@ -25,8 +23,7 @@ class FlowZipWithSpec extends BaseTwoStreamsSetup {
 
     "work in the happy case" in {
       val probe = TestSubscriber.manualProbe[Outputs]()
-      Source(1 to 4)
-        .zipWith(Source(10 to 40 by 10))((_: Int) + (_: Int))
+      Source(1 to 4).zipWith(Source(10 to 40 by 10))((_: Int) + (_: Int))
         .runWith(Sink.fromSubscriber(probe))
 
       val subscription = probe.expectSubscription()
@@ -45,8 +42,7 @@ class FlowZipWithSpec extends BaseTwoStreamsSetup {
 
     "work in the sad case" in {
       val probe = TestSubscriber.manualProbe[Outputs]()
-      Source(1 to 4)
-        .zipWith(Source(-2 to 2))((_: Int) / (_: Int))
+      Source(1 to 4).zipWith(Source(-2 to 2))((_: Int) / (_: Int))
         .runWith(Sink.fromSubscriber(probe))
       val subscription = probe.expectSubscription()
 

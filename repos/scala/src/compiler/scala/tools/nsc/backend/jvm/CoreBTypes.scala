@@ -87,9 +87,8 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     * Maps the method symbol for an unbox method to the primitive type of the result.
     * For example, the method symbol for `Byte.unbox()`) is mapped to the PrimitiveBType BYTE. */
   lazy val unboxResultType: Map[Symbol, PrimitiveBType] = {
-    for ((
-           valueClassSym,
-           unboxMethodSym) <- currentRun.runDefinitions.unboxMethod)
+    for ((valueClassSym, unboxMethodSym) <- currentRun.runDefinitions
+           .unboxMethod)
       yield unboxMethodSym -> primitiveTypeToBType(valueClassSym)
   }
 
@@ -225,9 +224,8 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
       val name = getName(primitive.name.toString, boxed.name.toString)
       (
         name,
-        methodNameAndType(
-          PredefModule.moduleClass,
-          newTermName(name)).methodType)
+        methodNameAndType(PredefModule.moduleClass, newTermName(name))
+          .methodType)
     })(collection.breakOut)
   }
 
@@ -285,9 +283,9 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     exitingSpecialize(
       cls.info
     ) // the `transformInfo` method of specialization adds specialized subclasses to the `specializedClass` map
-    specializeTypes.specializedClass
-      .collect({ case ((`cls`, _), specCls) => specCls })
-      .toList
+    specializeTypes.specializedClass.collect({
+      case ((`cls`, _), specCls) => specCls
+    }).toList
   }
 
   // scala/Tuple3 -> MethodNameAndType(<init>,(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V)

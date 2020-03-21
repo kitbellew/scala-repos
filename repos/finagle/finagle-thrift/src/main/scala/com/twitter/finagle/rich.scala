@@ -104,12 +104,8 @@ private[twitter] object ThriftUtil {
         cons <- findConstructor(
           clientCls,
           scrooge3FinagleClientWithRepClassifierParamTypes: _*)
-      } yield cons.newInstance(
-        underlying,
-        protocolFactory,
-        "",
-        sr,
-        responseClassifier)
+      } yield cons
+        .newInstance(underlying, protocolFactory, "", sr, responseClassifier)
 
     def tryScrooge3FinagledClient: Option[Iface] =
       for {
@@ -194,11 +190,11 @@ private[twitter] object ThriftUtil {
           Int.box(maxThriftBufferSize))
         val newArgs = oldArgs :+ label
         def newConsCall: Option[BinaryService] =
-          findConstructor(serviceCls, newParameters: _*).map(cons =>
-            cons.newInstance(newArgs: _*))
+          findConstructor(serviceCls, newParameters: _*)
+            .map(cons => cons.newInstance(newArgs: _*))
         def oldConsCall: Option[BinaryService] =
-          findConstructor(serviceCls, oldParameters: _*).map(cons =>
-            cons.newInstance(oldArgs: _*))
+          findConstructor(serviceCls, oldParameters: _*)
+            .map(cons => cons.newInstance(oldArgs: _*))
         newConsCall.orElse(oldConsCall)
       }).flatten
 
@@ -226,8 +222,7 @@ private[twitter] object ThriftUtil {
         tryScroogeFinagleService(cls) orElse
         tryLegacyScroogeFinagleService(cls) orElse
         trySwiftService(cls) orElse
-        (Option(cls.getSuperclass) ++ cls.getInterfaces).view
-          .flatMap(tryClass)
+        (Option(cls.getSuperclass) ++ cls.getInterfaces).view.flatMap(tryClass)
           .headOption
 
     tryClass(impl.getClass).getOrElse {
@@ -509,8 +504,8 @@ trait ThriftRichServer {
 
   protected val serverLabel = "thrift"
 
-  protected lazy val serverStats: StatsReceiver = ServerStatsReceiver.scope(
-    serverLabel)
+  protected lazy val serverStats: StatsReceiver = ServerStatsReceiver
+    .scope(serverLabel)
 
   /**
     * $serveIface

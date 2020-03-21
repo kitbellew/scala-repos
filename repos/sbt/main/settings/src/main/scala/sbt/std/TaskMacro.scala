@@ -315,10 +315,8 @@ object TaskMacro {
       name: String): String = {
     val ec = c.enclosingClass.symbol
     def inEmptyPackage(s: c.Symbol): Boolean =
-      s != c.universe.NoSymbol && (
-        s.owner == c.mirror.EmptyPackage || s.owner == c.mirror.EmptyPackageClass || inEmptyPackage(
-          s.owner)
-      )
+      s != c.universe.NoSymbol && (s.owner == c.mirror.EmptyPackage || s
+        .owner == c.mirror.EmptyPackageClass || inEmptyPackage(s.owner))
     if (!ec.isStatic) name
     else if (inEmptyPackage(ec)) path
     else s"(${ec.fullName}) $name"
@@ -350,11 +348,10 @@ object TaskMacro {
       def apply(in: c.Tree): c.Tree = f(c.Expr[T](in)).tree
     }
     val cond = c.Expr[T](conditionInputTaskTree(c)(t.tree))
-    Instance.contImpl[T, M](
-      c,
-      InitializeInstance,
-      InputInitConvert,
-      MixedBuilder)(Left(cond), inner)
+    Instance
+      .contImpl[T, M](c, InitializeInstance, InputInitConvert, MixedBuilder)(
+        Left(cond),
+        inner)
   }
   private[this] def conditionInputTaskTree(c: Context)(t: c.Tree): c.Tree = {
     import c.universe._
@@ -366,8 +363,7 @@ object TaskMacro {
     def wrapInitParser[T: c.WeakTypeTag](tree: Tree) = {
       val e = c.Expr[Initialize[State => Parser[T]]](tree)
       ParserInput
-        .wrap[T](c)(wrapInit[State => Parser[T]](c)(e, tree.pos), tree.pos)
-        .tree
+        .wrap[T](c)(wrapInit[State => Parser[T]](c)(e, tree.pos), tree.pos).tree
     }
     def wrapInitInput[T: c.WeakTypeTag](tree: Tree) = {
       val e = c.Expr[Initialize[InputTask[T]]](tree)
@@ -451,16 +447,14 @@ object TaskMacro {
         EmptyTree
       } else {
         qual.foreach(checkQual)
-        val vd = util.freshValDef(
-          tpe,
-          qual.symbol.pos,
-          functionSym
-        ) // val $x: <tpe>
+        val vd = util
+          .freshValDef(tpe, qual.symbol.pos, functionSym) // val $x: <tpe>
         result = Some((qual, tpe, vd))
         val tree = util.refVal(original, vd) // $x
-        tree.setPos(
-          qual.pos
-        ) // position needs to be set so that wrapKey passes the position onto the wrapper
+        tree
+          .setPos(
+            qual.pos
+          ) // position needs to be set so that wrapKey passes the position onto the wrapper
         assert(tree.tpe != null, "Null type: " + tree)
         tree.setType(tpe)
         tree
@@ -512,9 +506,8 @@ object TaskMacro {
         val fCore = util.createFunction(param :: Nil, tx, functionSym)
         val bodyTpe = wrapTag(tag).tpe
         val fTpe = util.functionType(tpe :: Nil, bodyTpe)
-        val fTag = c.WeakTypeTag[Any](
-          fTpe
-        ) // don't know the actual type yet, so use Any
+        val fTag = c
+          .WeakTypeTag[Any](fTpe) // don't know the actual type yet, so use Any
         val fInit = expandTask(false, fCore)(fTag).tree
         inputTaskCreate(InputTaskCreateDynName, tpe, tag.tpe, p, fInit)
       case None =>

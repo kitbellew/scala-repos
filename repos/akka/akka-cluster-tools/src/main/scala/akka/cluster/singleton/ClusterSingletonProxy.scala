@@ -36,8 +36,7 @@ object ClusterSingletonProxySettings {
       singletonName = config.getString("singleton-name"),
       role = roleOption(config.getString("role")),
       singletonIdentificationInterval = config
-        .getDuration("singleton-identification-interval", MILLISECONDS)
-        .millis,
+        .getDuration("singleton-identification-interval", MILLISECONDS).millis,
       bufferSize = config.getInt("buffer-size"))
 
   /**
@@ -165,8 +164,8 @@ final class ClusterSingletonProxy(
   var singleton: Option[ActorRef] = None
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
-  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
-    ageOrdering)
+  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet
+    .empty(ageOrdering)
 
   var buffer = new java.util.LinkedList[(Any, ActorRef)]
 
@@ -194,8 +193,8 @@ final class ClusterSingletonProxy(
 
   def handleInitial(state: CurrentClusterState): Unit = {
     trackChange { () ⇒
-      membersByAge =
-        immutable.SortedSet.empty(ageOrdering) union state.members.collect {
+      membersByAge = immutable.SortedSet.empty(ageOrdering) union state.members
+        .collect {
           case m if m.status == MemberStatus.Up && matchingRole(m) ⇒ m
         }
     }

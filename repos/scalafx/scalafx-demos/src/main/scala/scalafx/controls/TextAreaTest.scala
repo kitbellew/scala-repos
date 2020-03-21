@@ -121,8 +121,7 @@ class TextAreaControls(target: TextArea)
           observable: ObservableValue[_],
           oldValue: Any,
           newValue: Any) {
-        target.scrollLeft = chbScrollLeft.items
-          .get()
+        target.scrollLeft = chbScrollLeft.items.get()
           .get(newValue.toString.toInt)
       }
     })

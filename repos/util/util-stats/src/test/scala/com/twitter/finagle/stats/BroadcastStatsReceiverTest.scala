@@ -90,8 +90,7 @@ class BroadcastStatsReceiverTest extends FunSuite with Matchers {
     val base = new InMemoryStatsReceiver
     val scoped = base.scope("scoped")
     val subscoped = BroadcastStatsReceiver(Seq(base, scoped))
-      .scopeSuffix("suffixed")
-      .scope("sub")
+      .scopeSuffix("suffixed").scope("sub")
 
     val counter = subscoped.counter("yolo")
     counter.incr(9)

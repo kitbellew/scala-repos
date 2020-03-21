@@ -206,34 +206,34 @@ object FpFilter {
       ev0: c.Expr[Signed[A]],
       ev1: c.Expr[Rng[A]]): c.Expr[Boolean] =
     c.Expr[Boolean](
-      Fuser[c.type, A](c).comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(
-        Cmp.Lt))
+      Fuser[c.type, A](c)
+        .comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(Cmp.Lt))
 
   def gtImpl[A: c.WeakTypeTag](c: Context)(rhs: c.Expr[FpFilter[A]])(
       ev0: c.Expr[Signed[A]],
       ev1: c.Expr[Rng[A]]): c.Expr[Boolean] =
     c.Expr[Boolean](
-      Fuser[c.type, A](c).comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(
-        Cmp.Gt))
+      Fuser[c.type, A](c)
+        .comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(Cmp.Gt))
 
   def ltEqImpl[A: c.WeakTypeTag](c: Context)(rhs: c.Expr[FpFilter[A]])(
       ev0: c.Expr[Signed[A]],
       ev1: c.Expr[Rng[A]]): c.Expr[Boolean] =
     c.Expr[Boolean](
-      Fuser[c.type, A](c).comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(
-        Cmp.LtEq))
+      Fuser[c.type, A](c)
+        .comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(Cmp.LtEq))
 
   def gtEqImpl[A: c.WeakTypeTag](c: Context)(rhs: c.Expr[FpFilter[A]])(
       ev0: c.Expr[Signed[A]],
       ev1: c.Expr[Rng[A]]): c.Expr[Boolean] =
     c.Expr[Boolean](
-      Fuser[c.type, A](c).comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(
-        Cmp.GtEq))
+      Fuser[c.type, A](c)
+        .comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(Cmp.GtEq))
 
   def eqImpl[A: c.WeakTypeTag](c: Context)(rhs: c.Expr[FpFilter[A]])(
       ev0: c.Expr[Signed[A]],
       ev1: c.Expr[Rng[A]]): c.Expr[Boolean] =
     c.Expr[Boolean](
-      Fuser[c.type, A](c).comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(
-        Cmp.Eq))
+      Fuser[c.type, A](c)
+        .comp(c.prefix.tree, rhs.tree)(ev0.tree, ev1.tree)(Cmp.Eq))
 }

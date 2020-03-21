@@ -25,9 +25,8 @@ object RestartNode2SpecMultiJvmSpec extends MultiNodeConfig {
   val seed2 = role("seed2")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      """
       akka.cluster.auto-down-unreachable-after = 2s
       akka.cluster.retry-unsuccessful-join-after = 3s
       akka.remote.retry-gate-closed-for = 45s
@@ -95,8 +94,9 @@ abstract class RestartNode2SpecSpec
         enterBarrier("seed1-address-receiver-ready")
         seedNode1Address = Cluster(seed1System).selfAddress
         List(seed2) foreach { r ⇒
-          system.actorSelection(
-            RootActorPath(r) / "user" / "address-receiver") ! seedNode1Address
+          system
+            .actorSelection(
+              RootActorPath(r) / "user" / "address-receiver") ! seedNode1Address
           expectMsg(5.seconds, "ok")
         }
       }

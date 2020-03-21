@@ -42,11 +42,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     assert(1.0 == proto1.getUpgradeStrategy.getMaximumOverCapacity)
     assert(proto1.hasAcceptedResourceRoles)
     assert(
-      proto1.getAcceptedResourceRoles == Protos.ResourceRoles
-        .newBuilder()
-        .addRole("a")
-        .addRole("b")
-        .build())
+      proto1.getAcceptedResourceRoles == Protos.ResourceRoles.newBuilder()
+        .addRole("a").addRole("b").build())
 
     val app2 = AppDefinition(
       id = "play".toPath,
@@ -156,12 +153,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     val cmd = mesos.CommandInfo.newBuilder
       .setValue("bash foo-*/start -Dhttp.port=$PORT")
 
-    val proto1 = ServiceDefinition.newBuilder
-      .setId("play")
-      .setCmd(cmd)
-      .setInstances(3)
-      .setExecutor("//cmd")
-      .setVersion(Timestamp.now().toString)
+    val proto1 = ServiceDefinition.newBuilder.setId("play").setCmd(cmd)
+      .setInstances(3).setExecutor("//cmd").setVersion(Timestamp.now().toString)
       .build
 
     val app1 = AppDefinition().mergeFromProto(proto1)
@@ -176,15 +169,9 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     val cmd = mesos.CommandInfo.newBuilder
       .setValue("bash foo-*/start -Dhttp.port=$PORT")
 
-    val proto1 = ServiceDefinition.newBuilder
-      .setId("/app")
-      .setCmd(cmd)
-      .setInstances(1)
-      .setExecutor("//cmd")
-      .setVersion(Timestamp.now().toString)
-      .addPorts(1000)
-      .addPorts(1001)
-      .build
+    val proto1 = ServiceDefinition.newBuilder.setId("/app").setCmd(cmd)
+      .setInstances(1).setExecutor("//cmd").setVersion(Timestamp.now().toString)
+      .addPorts(1000).addPorts(1001).build
 
     val app = AppDefinition().mergeFromProto(proto1)
 
@@ -215,10 +202,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   def getScalarResourceValue(proto: ServiceDefinition, name: String) = {
-    proto.getResourcesList.asScala
-      .find(_.getName == name)
-      .get
-      .getScalar
+    proto.getResourcesList.asScala.find(_.getName == name).get.getScalar
       .getValue
   }
 }

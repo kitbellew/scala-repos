@@ -8,8 +8,7 @@ import com.intellij.psi.PsiElement
   */
 class ScalaInspectionSuppressor extends InspectionSuppressor {
   override def isSuppressedFor(element: PsiElement, toolId: String): Boolean = {
-    ScalaSuppressableInspectionTool
-      .findElementToolSuppressedIn(element, toolId)
+    ScalaSuppressableInspectionTool.findElementToolSuppressedIn(element, toolId)
       .isDefined
   }
 

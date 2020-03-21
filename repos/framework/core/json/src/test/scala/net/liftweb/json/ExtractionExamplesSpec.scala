@@ -37,8 +37,9 @@ object ExtractionExamples extends Specification {
 
   "Extraction with path expression example" in {
     val json = parse(testJson)
-    (json \ "address")
-      .extract[Address] mustEqual Address("Bulevard", "Helsinki")
+    (json \ "address").extract[Address] mustEqual Address(
+      "Bulevard",
+      "Helsinki")
   }
 
   "Partial extraction example" in {
@@ -50,8 +51,10 @@ object ExtractionExamples extends Specification {
 
   "Extract with a default value" in {
     val json = parse(testJson)
-    (json \ "address2").extractOrElse(
-      Address("Tie", "Helsinki")) mustEqual Address("Tie", "Helsinki")
+    (json \ "address2")
+      .extractOrElse(Address("Tie", "Helsinki")) mustEqual Address(
+      "Tie",
+      "Helsinki")
   }
 
   "Map with primitive values extraction example" in {
@@ -123,8 +126,11 @@ object ExtractionExamples extends Specification {
   "Option extraction example" in {
     val json = parse(
       """{ "name": null, "age": 5, "mother":{"name":"Marilyn"}}""")
-    json
-      .extract[OChild] mustEqual OChild(None, 5, Some(Parent("Marilyn")), None)
+    json.extract[OChild] mustEqual OChild(
+      None,
+      5,
+      Some(Parent("Marilyn")),
+      None)
   }
 
   "Missing JSON array can be extracted as an empty List" in {
@@ -214,8 +220,7 @@ object ExtractionExamples extends Specification {
   "Flatten and unflatten are symmetric with empty sets" in {
     val s = SetWrapper(Set())
 
-    Extraction
-      .unflatten(Extraction.flatten(Extraction.decompose(s)))
+    Extraction.unflatten(Extraction.flatten(Extraction.decompose(s)))
       .extract[SetWrapper] mustEqual s
   }
 
@@ -270,8 +275,9 @@ object ExtractionExamples extends Specification {
   }
 
   "Partial JSON extraction" in {
-    parse(stringField)
-      .extract[ClassWithJSON] mustEqual ClassWithJSON("one", JString("msg"))
+    parse(stringField).extract[ClassWithJSON] mustEqual ClassWithJSON(
+      "one",
+      JString("msg"))
     parse(objField).extract[ClassWithJSON] mustEqual ClassWithJSON(
       "one",
       JObject(List(JField("yes", JString("woo")))))

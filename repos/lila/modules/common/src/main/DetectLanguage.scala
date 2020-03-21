@@ -18,21 +18,18 @@ final class DetectLanguage(url: String, key: String) {
   private val messageMaxLength = 2000
 
   def apply(message: String): Fu[Option[Lang]] =
-    WS.url(url)
-      .post(
-        Map("key" -> Seq(key), "q" -> Seq(message take messageMaxLength))) map {
+    WS.url(url).post(
+      Map("key" -> Seq(key), "q" -> Seq(message take messageMaxLength))) map {
       response =>
         (response.json \ "data" \ "detections").asOpt[List[Detection]] match {
           case None =>
-            lila
-              .log("DetectLanguage")
+            lila.log("DetectLanguage")
               .warn(s"Invalide service response ${response.json}")
             None
           case Some(res) =>
-            res
-              .filter(_.isReliable)
-              .sortBy(-_.confidence)
-              .headOption map (_.language) flatMap Lang.get
+            res.filter(_.isReliable).sortBy(-_.confidence).headOption map (
+              _.language
+            ) flatMap Lang.get
         }
     } recover {
       case e: Exception =>

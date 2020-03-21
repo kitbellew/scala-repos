@@ -71,9 +71,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       checkpoint: Option[Boolean] = None,
       failoverTimeout: Option[Double] = None,
       frameworkId: Option[String] = None): SchedulerDriver = {
-    val fwInfoBuilder = FrameworkInfo
-      .newBuilder()
-      .setUser(sparkUser)
+    val fwInfoBuilder = FrameworkInfo.newBuilder().setUser(sparkUser)
       .setName(appName)
     val credBuilder = Credential.newBuilder()
     webuiUrl.foreach { url => fwInfoBuilder.setWebuiUrl(url) }
@@ -172,10 +170,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       name: String,
       amount: Double,
       role: Option[String] = None): Resource = {
-    val builder = Resource
-      .newBuilder()
-      .setName(name)
-      .setType(Value.Type.SCALAR)
+    val builder = Resource.newBuilder().setName(name).setType(Value.Type.SCALAR)
       .setScalar(Value.Scalar.newBuilder().setValue(amount).build())
 
     role.foreach { r => builder.setRole(r) }
@@ -218,8 +213,8 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     }
 
     // Filter any resource that has depleted.
-    val filteredResources = remainingResources.filter(r =>
-      r.getType != Value.Type.SCALAR || r.getScalar.getValue > 0.0)
+    val filteredResources = remainingResources
+      .filter(r => r.getType != Value.Type.SCALAR || r.getScalar.getValue > 0.0)
 
     (filteredResources.toList, requestedResources.toList)
   }
@@ -233,12 +228,8 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
   protected def createResource(
       resourceName: String,
       quantity: Double): Protos.Resource = {
-    Resource
-      .newBuilder()
-      .setName(resourceName)
-      .setType(Value.Type.SCALAR)
-      .setScalar(Value.Scalar.newBuilder().setValue(quantity).build())
-      .build()
+    Resource.newBuilder().setName(resourceName).setType(Value.Type.SCALAR)
+      .setScalar(Value.Scalar.newBuilder().setValue(quantity).build()).build()
   }
 
   /**
@@ -249,17 +240,15 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     */
   protected def toAttributeMap(
       offerAttributes: JList[Attribute]): Map[String, GeneratedMessage] = {
-    offerAttributes.asScala
-      .map(attr => {
-        val attrValue = attr.getType match {
-          case Value.Type.SCALAR => attr.getScalar
-          case Value.Type.RANGES => attr.getRanges
-          case Value.Type.SET    => attr.getSet
-          case Value.Type.TEXT   => attr.getText
-        }
-        (attr.getName, attrValue)
-      })
-      .toMap
+    offerAttributes.asScala.map(attr => {
+      val attrValue = attr.getType match {
+        case Value.Type.SCALAR => attr.getScalar
+        case Value.Type.RANGES => attr.getRanges
+        case Value.Type.SET    => attr.getSet
+        case Value.Type.TEXT   => attr.getText
+      }
+      (attr.getName, attrValue)
+    }).toMap
   }
 
   /**
@@ -335,13 +324,9 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     if (constraintsVal.isEmpty) { Map() }
     else {
       try {
-        splitter
-          .split(constraintsVal)
-          .asScala
-          .toMap
-          .mapValues(v =>
-            if (v == null || v.isEmpty) { Set[String]() }
-            else { v.split(',').toSet })
+        splitter.split(constraintsVal).asScala.toMap.mapValues(v =>
+          if (v == null || v.isEmpty) { Set[String]() }
+          else { v.split(',').toSet })
       } catch {
         case NonFatal(e) =>
           throw new IllegalArgumentException(
@@ -365,11 +350,9 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
   def executorMemory(sc: SparkContext): Int = {
     sc.conf.getInt(
       "spark.mesos.executor.memoryOverhead",
-      math
-        .max(
-          MEMORY_OVERHEAD_FRACTION * sc.executorMemory,
-          MEMORY_OVERHEAD_MINIMUM)
-        .toInt) +
+      math.max(
+        MEMORY_OVERHEAD_FRACTION * sc.executorMemory,
+        MEMORY_OVERHEAD_MINIMUM).toInt) +
       sc.executorMemory
   }
 

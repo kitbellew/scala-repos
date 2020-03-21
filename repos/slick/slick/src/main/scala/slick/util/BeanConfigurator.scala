@@ -15,12 +15,8 @@ object BeanConfigurator extends Logging {
       o: AnyRef,
       p: Properties,
       allowed: Set[String] = Set.empty): Unit = {
-    val pds = Introspector
-      .getBeanInfo(o.getClass)
-      .getPropertyDescriptors
-      .iterator
-      .map(pd => (pd.getName, pd))
-      .toMap
+    val pds = Introspector.getBeanInfo(o.getClass).getPropertyDescriptors
+      .iterator.map(pd => (pd.getName, pd)).toMap
     p.propertyNames().asScala.foreach { key =>
       val name = key.toString
       if (allowed.isEmpty || allowed.contains(name)) {

@@ -31,8 +31,7 @@ class InterpreterBenchmark {
         val source = new GraphDataSource("source", data100k)
         val sink = new GraphDataSink[Int]("sink", data100k.size)
 
-        val b = builder(identities: _*)
-          .connect(source, identities.head.in)
+        val b = builder(identities: _*).connect(source, identities.head.in)
           .connect(identities.last.out, sink)
 
         // FIXME: This should not be here, this is pure setup overhead

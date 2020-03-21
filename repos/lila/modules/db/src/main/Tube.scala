@@ -23,9 +23,8 @@ case class BsTube[Doc](handler: BSONHandler[BSONDocument, Doc])
     handler readTry bson match {
       case Success(doc) => Some(doc)
       case Failure(err) =>
-        logger.error(
-          s"[tube] Cannot read ${lila.db.BSON.debug(bson)}\n$err\n",
-          err)
+        logger
+          .error(s"[tube] Cannot read ${lila.db.BSON.debug(bson)}\n$err\n", err)
         None
     }
 

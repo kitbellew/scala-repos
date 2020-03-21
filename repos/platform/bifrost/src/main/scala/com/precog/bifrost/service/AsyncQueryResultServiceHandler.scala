@@ -68,12 +68,10 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                       { _ => HttpResponse[ByteChunk](NotFound) },
                       {
                         case (mimeType0, data0) =>
-                          val mimeType = mimeType0 getOrElse (
-                            MimeTypes.application / MimeTypes.json
-                          )
-                          if (mimeType != (
-                                MimeTypes.application / MimeTypes.json
-                              )) {
+                          val mimeType = mimeType0 getOrElse (MimeTypes
+                            .application / MimeTypes.json)
+                          if (mimeType != (MimeTypes.application / MimeTypes
+                                .json)) {
                             HttpResponse[ByteChunk](HttpStatus(
                               InternalServerError,
                               "Incompatible mime-type of query results."))
@@ -83,10 +81,10 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                             val data = data0
                             val prefix =
                               ("""{ "errors": %s, "warnings": %s, "data": """ format (
-                                JArray(
-                                  errors.toList map (_.value)).renderCompact,
-                                JArray(
-                                  warnings.toList map (_.value)).renderCompact
+                                JArray(errors.toList map (_.value))
+                                  .renderCompact,
+                                JArray(warnings.toList map (_.value))
+                                  .renderCompact
                               )).getBytes(Utf8)
                             val suffix = " }".getBytes(Utf8) :: StreamT
                               .empty[Future, Array[Byte]]

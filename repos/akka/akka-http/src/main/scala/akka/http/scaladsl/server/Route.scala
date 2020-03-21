@@ -78,13 +78,12 @@ object Route {
           request,
           routingLog.requestLog(request),
           routingSettings,
-          effectiveParserSettings)).fast
-          .map {
-            case RouteResult.Complete(response) ⇒ response
-            case RouteResult.Rejected(rejected) ⇒
-              throw new IllegalStateException(
-                s"Unhandled rejections '$rejected', unsealed RejectionHandler?!")
-          }
+          effectiveParserSettings)).fast.map {
+          case RouteResult.Complete(response) ⇒ response
+          case RouteResult.Rejected(rejected) ⇒
+            throw new IllegalStateException(
+              s"Unhandled rejections '$rejected', unsealed RejectionHandler?!")
+        }
     }
   }
 }

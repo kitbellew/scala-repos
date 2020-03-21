@@ -30,19 +30,15 @@ object Test {
       accessorName: String,
       capturedParams: Array[(Class[_], AnyRef)] = Array()) = {
     val caller = MethodHandles.lookup
-    val methodType = MethodType.methodType(
-      classOf[AnyRef],
-      Array[Class[_]](classOf[AnyRef]))
-    val instantiatedMethodType = MethodType.methodType(
-      instantiatedRet,
-      Array[Class[_]](instantiatedParam))
+    val methodType = MethodType
+      .methodType(classOf[AnyRef], Array[Class[_]](classOf[AnyRef]))
+    val instantiatedMethodType = MethodType
+      .methodType(instantiatedRet, Array[Class[_]](instantiatedParam))
     val (capturedParamTypes, captured) = capturedParams.unzip
-    val targetMethodType = MethodType.methodType(
-      instantiatedRet,
-      capturedParamTypes :+ instantiatedParam)
-    val invokedType = MethodType.methodType(
-      classOf[Function1ish[_, _]],
-      capturedParamTypes)
+    val targetMethodType = MethodType
+      .methodType(instantiatedRet, capturedParamTypes :+ instantiatedParam)
+    val invokedType = MethodType
+      .methodType(classOf[Function1ish[_, _]], capturedParamTypes)
     val target = caller.findStatic(hostClass, accessorName, targetMethodType)
     val site = LambdaMetafactory.metafactory(
       caller,
@@ -51,8 +47,7 @@ object Test {
       methodType,
       target,
       instantiatedMethodType)
-    site.getTarget
-      .invokeWithArguments(captured: _*)
+    site.getTarget.invokeWithArguments(captured: _*)
       .asInstanceOf[Function1ish[A, B]]
   }
   def main(args: Array[String]) {

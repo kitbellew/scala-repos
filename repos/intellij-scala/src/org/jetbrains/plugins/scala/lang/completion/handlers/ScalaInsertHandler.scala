@@ -73,8 +73,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
     val contextStartOffset = context.getStartOffset
     var (startOffset, lookupStringLength) =
       if (item.isInSimpleString) {
-        val literal =
-          context.getFile.findElementAt(contextStartOffset).getParent
+        val literal = context.getFile.findElementAt(contextStartOffset)
+          .getParent
         val startOffset = contextStartOffset
         val tailOffset = context.getTailOffset
         val literalOffset = literal.getTextRange.getStartOffset
@@ -84,12 +84,10 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
         context.commitDocument()
         (startOffset + 2, tailOffset - startOffset)
       } else if (item.isInInterpolatedString) {
-        val literal =
-          context.getFile.findElementAt(contextStartOffset).getParent
+        val literal = context.getFile.findElementAt(contextStartOffset)
+          .getParent
         if (!literal.isInstanceOf[ScInterpolated]) return
-        val index = literal
-          .asInstanceOf[ScInterpolated]
-          .getInjections
+        val index = literal.asInstanceOf[ScInterpolated].getInjections
           .lastIndexWhere { expr =>
             expr.getTextRange.getEndOffset <= contextStartOffset
           }
@@ -102,9 +100,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
         val (startOffset, _) = res.get
         val tailOffset = context.getTailOffset
         document.insertString(tailOffset, "}")
-        document.insertString(
-          startOffset + literal.getTextRange.getStartOffset,
-          "{")
+        document
+          .insertString(startOffset + literal.getTextRange.getStartOffset, "{")
         context.commitDocument()
         (startOffset + 1, tailOffset - startOffset)
       } else (contextStartOffset, context.getTailOffset - contextStartOffset)
@@ -120,23 +117,22 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
     val some = item.someSmartCompletion
     val someNum = if (some) 1 else 0
     //val file = context.getFile //returns wrong file in evaluate expression in debugger (runtime type completion)
-    val file = PsiDocumentManager
-      .getInstance(context.getProject)
+    val file = PsiDocumentManager.getInstance(context.getProject)
       .getPsiFile(document)
     val element =
       if (completionChar == '\t') {
         file.findElementAt(startOffset) match {
           case elem
-              if elem.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER && elem.getParent
+              if elem.getNode.getElementType == ScalaTokenTypes
+                .tIDENTIFIER && elem.getParent
                 .isInstanceOf[ScReferenceExpression]
-                && elem.getParent.getParent.isInstanceOf[
-                  ScReferenceExpression] && item.getAllLookupStrings
-                .size() > 1 =>
+                && elem.getParent.getParent
+                  .isInstanceOf[ScReferenceExpression] && item
+                .getAllLookupStrings.size() > 1 =>
             val ref = elem.getParent.asInstanceOf[ScReferenceExpression]
             val newRefText = ref.getText
-            val newRef = ScalaPsiElementFactory.createExpressionFromText(
-              newRefText,
-              ref.getManager)
+            val newRef = ScalaPsiElementFactory
+              .createExpressionFromText(newRefText, ref.getManager)
             ref.getParent.replace(newRef).getFirstChild
           case elem => elem
         }
@@ -190,8 +186,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
         withSomeNum: Boolean) {
       def shiftEndOffset(shift: Int, withSomeNum: Boolean = withSomeNum) {
         endOffset += shift
-        editor.getCaretModel.moveToOffset(
-          endOffset + (if (withSomeNum) someNum else 0))
+        editor.getCaretModel
+          .moveToOffset(endOffset + (if (withSomeNum) someNum else 0))
       }
       val documentText: String = document.getText
       val nextChar: Char =
@@ -213,8 +209,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
           if (nextNextChar == closeChar) { shiftEndOffset(2) }
           else { shiftEndOffset(1) }
         }
-      } else if (withSpace && (nextChar != ' ' || documentText.charAt(
-                   endOffset + 1) != openChar)) {
+      } else if (withSpace && (nextChar != ' ' || documentText
+                   .charAt(endOffset + 1) != openChar)) {
         document.insertString(endOffset, " ")
         shiftEndOffset(1, withSomeNum = false)
         insertIfNeeded(
@@ -337,13 +333,12 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                   document.insertString(endOffset, " ")
                   endOffset += 1
                   editor.getCaretModel.moveToOffset(endOffset + someNum)
-                } else if (endOffset == document.getTextLength || document.getCharsSequence
-                             .charAt(endOffset) != '(') {
+                } else if (endOffset == document.getTextLength || document
+                             .getCharsSequence.charAt(endOffset) != '(') {
                   disableParenthesesCompletionChar()
                   if (!item.etaExpanded) {
                     if (context.getCompletionChar == '{') {
-                      if (ScalaPsiUtil
-                            .getSettings(context.getProject)
+                      if (ScalaPsiUtil.getSettings(context.getProject)
                             .SPACE_BEFORE_BRACE_METHOD_CALL) {
                         insertIfNeeded(
                           placeInto = true,
@@ -372,8 +367,7 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                     endOffset += 2
                     editor.getCaretModel.moveToOffset(endOffset)
                   }
-                  AutoPopupController
-                    .getInstance(element.getProject)
+                  AutoPopupController.getInstance(element.getProject)
                     .autoPopupParameterInfo(editor, element)
                 } else if (completionChar != ',') {
                   editor.getCaretModel.moveToOffset(endOffset + 1 + someNum)

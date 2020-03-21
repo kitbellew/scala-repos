@@ -36,8 +36,8 @@ object RichPresentationCompilerFixture {
     settings.verbose.value = presCompLog.isDebugEnabled
     //settings.usejavacp.value = true
     settings.bootclasspath.append(scalaLib.getAbsolutePath)
-    settings.classpath.value = config.compileClasspath.mkString(
-      File.pathSeparator)
+    settings.classpath.value = config.compileClasspath
+      .mkString(File.pathSeparator)
 
     val reporter = new StoreReporter()
     val indexer = TestProbe()

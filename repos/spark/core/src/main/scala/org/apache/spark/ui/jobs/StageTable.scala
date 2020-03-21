@@ -154,8 +154,7 @@ private[ui] class StageTableBase(
 
     // The submission time for a stage is misleading because it counts the time
     // the stage waits to be launched. (SPARK-10930)
-    val taskLaunchTimes = stageData.taskData.values
-      .map(_.taskInfo.launchTime)
+    val taskLaunchTimes = stageData.taskData.values.map(_.taskInfo.launchTime)
       .filter(_ > 0)
     val duration: Option[Long] =
       if (taskLaunchTimes.nonEmpty) {
@@ -163,8 +162,7 @@ private[ui] class StageTableBase(
         if (finishTime > startTime) { Some(finishTime - startTime) }
         else { Some(System.currentTimeMillis() - startTime) }
       } else { None }
-    val formattedDuration = duration
-      .map(d => UIUtils.formatDuration(d))
+    val formattedDuration = duration.map(d => UIUtils.formatDuration(d))
       .getOrElse("Unknown")
 
     val inputRead = stageData.inputBytes

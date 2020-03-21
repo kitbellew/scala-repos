@@ -36,24 +36,24 @@ class ScalaUdpMulticastSpec
         // we do not want to use virtual docker interfaces
         !iface.getDisplayName.contains("docker")
       }
-      val Some(ipv6Iface) = NetworkInterface.getNetworkInterfaces.find(
-        okInterfaceToUse)
+      val Some(ipv6Iface) = NetworkInterface.getNetworkInterfaces
+        .find(okInterfaceToUse)
 
       // host assigned link local multicast address http://tools.ietf.org/html/rfc3307#section-4.3.2
       // generate a random 32 bit multicast address with the high order bit set
-      val randomAddress: String =
-        (Random.nextInt().abs.toLong | (1L << 31)).toHexString.toUpperCase
+      val randomAddress: String = (Random.nextInt().abs.toLong | (1L << 31))
+        .toHexString.toUpperCase
       val group = randomAddress.grouped(4).mkString("FF02::", ":", "")
       val port = TestUtils.temporaryUdpIpv6Port(ipv6Iface)
       val msg = "ohi"
       val sink = testActor
       val iface = ipv6Iface.getName
 
-      val listener = system.actorOf(
-        Props(classOf[Listener], iface, group, port, sink))
+      val listener = system
+        .actorOf(Props(classOf[Listener], iface, group, port, sink))
       expectMsgType[Udp.Bound]
-      val sender = system.actorOf(
-        Props(classOf[Sender], iface, group, port, msg))
+      val sender = system
+        .actorOf(Props(classOf[Sender], iface, group, port, msg))
       // fails here, so binding succeeds but sending a message does not
       expectMsg(msg)
 
@@ -68,11 +68,10 @@ class ScalaUdpMulticastSpec
 
 object TestUtils {
   def temporaryUdpIpv6Port(iface: NetworkInterface) = {
-    val serverSocket = DatagramChannel
-      .open(StandardProtocolFamily.INET6)
+    val serverSocket = DatagramChannel.open(StandardProtocolFamily.INET6)
       .socket()
-    serverSocket.bind(
-      new InetSocketAddress(iface.getInetAddresses.nextElement(), 0))
+    serverSocket
+      .bind(new InetSocketAddress(iface.getInetAddresses.nextElement(), 0))
     val port = serverSocket.getLocalPort
     serverSocket.close()
     port

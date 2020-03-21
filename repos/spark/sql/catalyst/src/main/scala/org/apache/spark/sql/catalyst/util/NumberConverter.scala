@@ -38,9 +38,8 @@ object NumberConverter {
       // Two's complement => x = uval - 2*MAX - 2
       // => uval = x + 2*MAX + 2
       // Now, use the fact: (a+b)/c = a/c + b/c + (a%c+b%c)/c
-      x / m + 2 * (Long.MaxValue / m) + 2 / m + (
-        x % m + 2 * (Long.MaxValue % m) + 2 % m
-      ) / m
+      x / m + 2 * (Long.MaxValue / m) + 2 / m + (x % m + 2 * (Long
+        .MaxValue % m) + 2 % m) / m
     }
   }
 
@@ -96,8 +95,7 @@ object NumberConverter {
   private def byte2char(radix: Int, fromPos: Int): Unit = {
     var i = fromPos
     while (i < value.length) {
-      value(i) = Character
-        .toUpperCase(Character.forDigit(value(i), radix))
+      value(i) = Character.toUpperCase(Character.forDigit(value(i), radix))
         .asInstanceOf[Byte]
       i += 1
     }

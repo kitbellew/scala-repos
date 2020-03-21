@@ -85,8 +85,7 @@ trait InteractiveAnalyzer extends Analyzer {
           defAtt.defaultGetters foreach enterIfNotThere
       } else if (sym != null && sym.isClass && sym.isImplicit) {
         val owningInfo = sym.owner.info
-        val existingDerivedSym = owningInfo
-          .decl(sym.name.toTermName)
+        val existingDerivedSym = owningInfo.decl(sym.name.toTermName)
           .filter(sym => sym.isSynthetic && sym.isMethod)
         existingDerivedSym.alternatives foreach (owningInfo.decls.unlink)
         val defTree = tree match {
@@ -343,7 +342,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
   override def signalDone(context: Context, old: Tree, result: Tree) {
     val canObserveTree = (interruptsEnabled
       && analyzer.lockedCount == 0
-      && !context.bufferErrors // SI-7558 look away during exploratory typing in "silent mode"
+      && !context
+        .bufferErrors // SI-7558 look away during exploratory typing in "silent mode"
     )
     if (canObserveTree) {
       if (context.unit.exists &&
@@ -352,7 +352,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         var located = new TypedLocator(context.unit.targetPos) locateIn result
         if (located == EmptyTree) {
           println(
-            "something's wrong: no " + context.unit + " in " + result + result.pos)
+            "something's wrong: no " + context.unit + " in " + result + result
+              .pos)
           located = result
         }
         throw new TyperResult(located)
@@ -605,8 +606,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         case ex: ControlThrowable => throw ex
         case ex: Throwable =>
           println(
-            "[%s]: exception during background compile: ".format(
-              unit.source) + ex)
+            "[%s]: exception during background compile: "
+              .format(unit.source) + ex)
           ex.printStackTrace()
           for (r <- waitLoadedTypeResponses(unit.source)) { r.raise(ex) }
           serviceParsedEntered()
@@ -631,7 +632,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     cleanAllResponses()
 
     // wind down
-    if (waitLoadedTypeResponses.nonEmpty || getParsedEnteredResponses.nonEmpty) {
+    if (waitLoadedTypeResponses.nonEmpty || getParsedEnteredResponses
+          .nonEmpty) {
       // need another cycle to treat those
       newTyperRun()
       backgroundCompile()
@@ -824,7 +826,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         parseAndEnter(unit)
         val tree = locateTree(pos)
         debugLog(
-          "at pos " + pos + " was found: " + tree.getClass + " " + tree.pos.show)
+          "at pos " + pos + " was found: " + tree.getClass + " " + tree.pos
+            .show)
         tree match {
           case Import(expr, _) =>
             debugLog(
@@ -935,7 +938,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     } else if (newsym.isOverloaded) {
       settings.uniqid.value = true
       debugLog(
-        "mirror ambiguous " + sym + " " + unit.source + " " + pre + " " + newsym.alternatives)
+        "mirror ambiguous " + sym + " " + unit.source + " " + pre + " " + newsym
+          .alternatives)
       NoSymbol
     } else {
       debugLog("mirror found for " + newsym + ": " + newsym.pos)
@@ -1045,8 +1049,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         toMember: (Symbol, Type) => M) {
       if ((sym.isGetter || sym.isSetter) && sym.accessed != NoSymbol) {
         add(sym.accessed, pre, implicitlyAdded)(toMember)
-      } else if (!sym.name.decodedName.containsName(
-                   "$") && !sym.isError && !sym.isArtifact && sym.hasRawInfo) {
+      } else if (!sym.name.decodedName.containsName("$") && !sym.isError && !sym
+                   .isArtifact && sym.hasRawInfo) {
         val symtpe = pre.memberType(sym) onTypeError ErrorType
         matching(sym, symtpe, this(sym.name)) match {
           case Some(m) =>
@@ -1183,8 +1187,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
       */
     def viewApply(view: SearchResult): Tree = {
       assert(view.tree != EmptyTree)
-      analyzer
-        .newTyper(context.makeImplicit(reportAmbiguousErrors = false))
+      analyzer.newTyper(context.makeImplicit(reportAmbiguousErrors = false))
         .typed(Apply(view.tree, List(tree)) setPos tree.pos)
         .onTypeError(EmptyTree)
     }
@@ -1210,8 +1213,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
             tree,
             functionType(List(ownerTpe), AnyTpe),
             isView = true,
-            context0 = context.makeImplicit(reportAmbiguousErrors =
-              false)).allImplicits
+            context0 = context.makeImplicit(reportAmbiguousErrors = false))
+            .allImplicits
       for (view <- applicableViews) {
         val vtree = viewApply(view)
         val vpre = stabilizedType(vtree)
@@ -1242,17 +1245,14 @@ with ContextTrees with RichCompilationUnits with Picklers {
         val symbol = member.sym
         def isStable =
           member.tpe.isStable || member.sym.isStable || member.sym
-            .getterIn(member.sym.owner)
-            .isStable
+            .getterIn(member.sym.owner).isStable
         def isJunk =
           symbol.name.isEmpty || !isIdentifierStart(
             member.sym.name.charAt(0)
           ) // e.g. <byname>
-        !isJunk && member.accessible && !symbol.isConstructor && (
-          name.isEmpty || matcher(member.sym.name) && (
-            symbol.name.isTermName == name.isTermName || name.isTypeName && isStable
-          )
-        )
+        !isJunk && member.accessible && !symbol.isConstructor && (name
+          .isEmpty || matcher(member.sym.name) && (symbol.name
+          .isTermName == name.isTermName || name.isTypeName && isStable))
       }
     }
   }
@@ -1301,14 +1301,12 @@ with ContextTrees with RichCompilationUnits with Picklers {
             case Nil => entered.isEmpty && matchCount > 0
             case head :: tail =>
               val enteredAlternatives = Set(entered, entered.capitalize)
-              head.inits
-                .filter(_.length <= entered.length)
-                .exists(init =>
-                  enteredAlternatives.exists(entered =>
-                    lenientMatch(
-                      entered.stripPrefix(init),
-                      tail,
-                      matchCount + (if (init.isEmpty) 0 else 1))))
+              head.inits.filter(_.length <= entered.length).exists(init =>
+                enteredAlternatives.exists(entered =>
+                  lenientMatch(
+                    entered.stripPrefix(init),
+                    tail,
+                    matchCount + (if (init.isEmpty) 0 else 1))))
           }
         }
         val containsAllEnteredChars = {
@@ -1331,16 +1329,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
       val qualPos = qual.pos
       val allTypeMembers = typeMembers(qualPos).toList.flatten
       val positionDelta: Int = pos.start - nameStart
-      val subName: Name = name
-        .newName(
-          new String(pos.source.content, nameStart, pos.start - nameStart))
+      val subName: Name = name.newName(
+        new String(pos.source.content, nameStart, pos.start - nameStart))
         .encodedName
-      CompletionResult.TypeMembers(
-        positionDelta,
-        qual,
-        tree,
-        allTypeMembers,
-        subName)
+      CompletionResult
+        .TypeMembers(positionDelta, qual, tree, allTypeMembers, subName)
     }
     focus1 match {
       case imp @ Import(i @ Ident(name), head :: Nil)

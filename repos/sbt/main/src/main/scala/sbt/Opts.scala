@@ -29,9 +29,9 @@ object Opts {
     def externalAPI(mappings: Iterable[(File, URL)]): Seq[String] =
       if (mappings.isEmpty) Nil
       else
-        mappings
-          .map { case (f, u) => s"${f.getAbsolutePath}#${u.toExternalForm}" }
-          .mkString("-doc-external-doc:", ",", "") :: Nil
+        mappings.map {
+          case (f, u) => s"${f.getAbsolutePath}#${u.toExternalForm}"
+        }.mkString("-doc-external-doc:", ",", "") :: Nil
   }
   object resolver {
     import Path._
@@ -40,9 +40,8 @@ object Opts {
     val sonatypeStaging = new MavenRepository(
       "sonatype-staging",
       "https://oss.sonatype.org/service/local/staging/deploy/maven2")
-    val mavenLocalFile = Resolver.file(
-      "Local Repository",
-      userHome / ".m2" / "repository" asFile)
+    val mavenLocalFile = Resolver
+      .file("Local Repository", userHome / ".m2" / "repository" asFile)
   }
 }
 

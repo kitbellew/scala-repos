@@ -31,13 +31,11 @@ class FlatmapIteratorSuite extends SparkFunSuite with LocalSparkContext {
    * info from the serializer, and allow old objects to be GC'd
    */
   test("Flatmap Iterator to Disk") {
-    val sconf = new SparkConf()
-      .setMaster("local")
+    val sconf = new SparkConf().setMaster("local")
       .setAppName("iterator_to_disk_test")
     sc = new SparkContext(sconf)
     val expand_size = 100
-    val data = sc
-      .parallelize((1 to 5).toSeq)
+    val data = sc.parallelize((1 to 5).toSeq)
       .flatMap(x => Stream.range(0, expand_size))
     var persisted = data.persist(StorageLevel.DISK_ONLY)
     assert(persisted.count() === 500)
@@ -45,13 +43,11 @@ class FlatmapIteratorSuite extends SparkFunSuite with LocalSparkContext {
   }
 
   test("Flatmap Iterator to Memory") {
-    val sconf = new SparkConf()
-      .setMaster("local")
+    val sconf = new SparkConf().setMaster("local")
       .setAppName("iterator_to_disk_test")
     sc = new SparkContext(sconf)
     val expand_size = 100
-    val data = sc
-      .parallelize((1 to 5).toSeq)
+    val data = sc.parallelize((1 to 5).toSeq)
       .flatMap(x => Stream.range(0, expand_size))
     var persisted = data.persist(StorageLevel.MEMORY_ONLY)
     assert(persisted.count() === 500)
@@ -59,18 +55,13 @@ class FlatmapIteratorSuite extends SparkFunSuite with LocalSparkContext {
   }
 
   test("Serializer Reset") {
-    val sconf = new SparkConf()
-      .setMaster("local")
+    val sconf = new SparkConf().setMaster("local")
       .setAppName("serializer_reset_test")
       .set("spark.serializer.objectStreamReset", "10")
     sc = new SparkContext(sconf)
     val expand_size = 500
-    val data = sc
-      .parallelize(Seq(1, 2))
-      .flatMap(x =>
-        Stream
-          .range(1, expand_size)
-          .map(y => "%d: string test %d".format(y, x)))
+    val data = sc.parallelize(Seq(1, 2)).flatMap(x =>
+      Stream.range(1, expand_size).map(y => "%d: string test %d".format(y, x)))
     val persisted = data.persist(StorageLevel.MEMORY_ONLY_SER)
     assert(persisted.filter(_.startsWith("1:")).count() === 2)
   }

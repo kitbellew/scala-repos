@@ -148,20 +148,20 @@ package play.api.mvc {
     /**
       * The HTTP cookies.
       */
-    lazy val cookies: Cookies = Cookies.fromCookieHeader(
-      headers.get(play.api.http.HeaderNames.COOKIE))
+    lazy val cookies: Cookies = Cookies
+      .fromCookieHeader(headers.get(play.api.http.HeaderNames.COOKIE))
 
     /**
       * Parses the `Session` cookie and returns the `Session` data.
       */
-    lazy val session: Session = Session.decodeFromCookie(
-      cookies.get(Session.COOKIE_NAME))
+    lazy val session: Session = Session
+      .decodeFromCookie(cookies.get(Session.COOKIE_NAME))
 
     /**
       * Parses the `Flash` cookie and returns the `Flash` data.
       */
-    lazy val flash: Flash = Flash.decodeFromCookie(
-      cookies.get(Flash.COOKIE_NAME))
+    lazy val flash: Flash = Flash
+      .decodeFromCookie(cookies.get(Flash.COOKIE_NAME))
 
     /**
       * Returns the raw query string.
@@ -172,14 +172,13 @@ package play.api.mvc {
       * The media type of this request.  Same as contentType, except returns a fully parsed media type with parameters.
       */
     lazy val mediaType: Option[MediaType] = headers
-      .get(HeaderNames.CONTENT_TYPE)
-      .flatMap(MediaType.parse.apply)
+      .get(HeaderNames.CONTENT_TYPE).flatMap(MediaType.parse.apply)
 
     /**
       * Returns the value of the Content-Type header (without the parameters (eg charset))
       */
-    lazy val contentType: Option[String] = mediaType.map(mt =>
-      mt.mediaType + "/" + mt.mediaSubType)
+    lazy val contentType: Option[String] = mediaType
+      .map(mt => mt.mediaType + "/" + mt.mediaSubType)
 
     /**
       * Returns the charset of the request for text-based body
@@ -213,8 +212,8 @@ package play.api.mvc {
         headers: Headers = this.headers,
         remoteAddress: => String = this.remoteAddress,
         secure: => Boolean = this.secure,
-        clientCertificateChain: Option[Seq[X509Certificate]] =
-          this.clientCertificateChain): RequestHeader = {
+        clientCertificateChain: Option[Seq[X509Certificate]] = this
+          .clientCertificateChain): RequestHeader = {
       val (
         _id,
         _tags,
@@ -417,8 +416,8 @@ package play.api.mvc {
       * Transform this call to an absolute URL.
       */
     def absoluteURL(secure: Boolean)(implicit request: RequestHeader): String =
-      "http" + (if (secure) "s"
-                else "") + "://" + request.host + this.url + this.appendFragment
+      "http" + (if (secure) "s" else "") + "://" + request.host + this
+        .url + this.appendFragment
 
     /**
       * Transform this call to an WebSocket URL.
@@ -483,9 +482,9 @@ package play.api.mvc {
     def getAll(key: String): Seq[String] = toMap.getOrElse(key, Nil)
 
     override def hashCode = {
-      toMap
-        .map { case (name, value) => name.toLowerCase(Locale.ENGLISH) -> value }
-        .hashCode()
+      toMap.map {
+        case (name, value) => name.toLowerCase(Locale.ENGLISH) -> value
+      }.hashCode()
     }
 
     /**
@@ -522,8 +521,8 @@ package play.api.mvc {
     /**
       * Transform the Headers to a Map by ignoring multiple values.
       */
-    lazy val toSimpleMap: Map[String, String] = toMap.mapValues(
-      _.headOption.getOrElse(""))
+    lazy val toSimpleMap: Map[String, String] = toMap
+      .mapValues(_.headOption.getOrElse(""))
 
     override def toString = headers.toString()
 
@@ -589,12 +588,10 @@ package play.api.mvc {
       * Encodes the data as a `String`.
       */
     def encode(data: Map[String, String]): String = {
-      val encoded = data
-        .map {
-          case (k, v) =>
-            URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
-        }
-        .mkString("&")
+      val encoded = data.map {
+        case (k, v) =>
+          URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
+      }.mkString("&")
       if (isSigned) cookieSigner.sign(encoded) + "-" + encoded else encoded
     }
 
@@ -604,12 +601,8 @@ package play.api.mvc {
     def decode(data: String): Map[String, String] = {
 
       def urldecode(data: String) = {
-        data
-          .split("&")
-          .map(_.split("=", 2))
-          .map(p =>
-            URLDecoder.decode(p(0), "UTF-8") -> URLDecoder
-              .decode(p(1), "UTF-8"))
+        data.split("&").map(_.split("=", 2)).map(p =>
+          URLDecoder.decode(p(0), "UTF-8") -> URLDecoder.decode(p(1), "UTF-8"))
           .toMap
       }
 
@@ -915,20 +908,15 @@ package play.api.mvc {
     def fromSetCookieHeader(header: Option[String]): Cookies =
       header match {
         case Some(headerValue) =>
-          fromMap(
-            decodeSetCookieHeader(headerValue)
-              .groupBy(_.name)
-              .mapValues(_.head))
+          fromMap(decodeSetCookieHeader(headerValue).groupBy(_.name).mapValues(
+            _.head))
         case None => fromMap(Map.empty)
       }
 
     def fromCookieHeader(header: Option[String]): Cookies =
       header match {
-        case Some(headerValue) =>
-          fromMap(
-            decodeCookieHeader(headerValue)
-              .groupBy(_.name)
-              .mapValues(_.head))
+        case Some(headerValue) => fromMap(
+            decodeCookieHeader(headerValue).groupBy(_.name).mapValues(_.head))
         case None => fromMap(Map.empty)
       }
 
@@ -997,8 +985,8 @@ package play.api.mvc {
               ))
         }
       }.getOrElse {
-        logger.debug(
-          s"Couldn't decode the Cookie header containing: $cookieHeader")
+        logger
+          .debug(s"Couldn't decode the Cookie header containing: $cookieHeader")
         Seq.empty
       }
     }
@@ -1011,14 +999,12 @@ package play.api.mvc {
       */
     def decodeCookieHeader(cookieHeader: String): Seq[Cookie] = {
       Try {
-        config.serverDecoder
-          .decode(cookieHeader)
-          .asScala
-          .map { cookie => Cookie(cookie.name, cookie.value) }
-          .toSeq
+        config.serverDecoder.decode(cookieHeader).asScala.map { cookie =>
+          Cookie(cookie.name, cookie.value)
+        }.toSeq
       }.getOrElse {
-        logger.debug(
-          s"Couldn't decode the Cookie header containing: $cookieHeader")
+        logger
+          .debug(s"Couldn't decode the Cookie header containing: $cookieHeader")
         Nil
       }
     }
@@ -1056,8 +1042,8 @@ package play.api.mvc {
     def mergeCookieHeader(
         cookieHeader: String,
         cookies: Seq[Cookie]): String = {
-      val tupledCookies = (decodeCookieHeader(cookieHeader) ++ cookies).map(
-        cookie => cookie.name -> cookie)
+      val tupledCookies = (decodeCookieHeader(cookieHeader) ++ cookies)
+        .map(cookie => cookie.name -> cookie)
       // Put cookies in a map
       // Note: Seq.toMap do not preserve order
       val uniqCookies = scala.collection.immutable.ListMap(tupledCookies: _*)

@@ -73,11 +73,8 @@ class ScalaUnreachableCodeInspection
       }
     }
 
-    val elements = instructions.toSeq
-      .sortBy(_.num)
-      .flatMap(_.element)
-      .map(e => getParentStmt(e).getOrElse(e))
-      .distinct
+    val elements = instructions.toSeq.sortBy(_.num).flatMap(_.element)
+      .map(e => getParentStmt(e).getOrElse(e)).distinct
     elements.groupBy(_.getParent).values
   }
 

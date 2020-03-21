@@ -68,8 +68,8 @@ object ParseKey extends Properties("Key parser test") {
       import skm.{structure, key}
       val mask = ScopeMask(config = false)
       val string = displayMasked(key, mask)
-      val resolvedConfig =
-        Resolve.resolveConfig(structure.extra, key.key, mask)(key.scope).config
+      val resolvedConfig = Resolve
+        .resolveConfig(structure.extra, key.key, mask)(key.scope).config
 
       ("Key: " + displayFull(key)) |:
         ("Mask: " + mask) |:

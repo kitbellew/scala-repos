@@ -49,13 +49,13 @@ private[hive] case class DescribeHiveTableCommand(
         var results: Seq[(String, String, String)] = Nil
 
         val columns: Seq[FieldSchema] = table.hiveQlTable.getCols.asScala
-        val partitionColumns: Seq[FieldSchema] =
-          table.hiveQlTable.getPartCols.asScala
-        results ++= columns.map(field =>
-          (field.getName, field.getType, field.getComment))
+        val partitionColumns: Seq[FieldSchema] = table.hiveQlTable.getPartCols
+          .asScala
+        results ++= columns
+          .map(field => (field.getName, field.getType, field.getComment))
         if (partitionColumns.nonEmpty) {
-          val partColumnInfo = partitionColumns.map(field =>
-            (field.getName, field.getType, field.getComment))
+          val partColumnInfo = partitionColumns
+            .map(field => (field.getName, field.getType, field.getComment))
           results ++=
             partColumnInfo ++
               Seq(("# Partition Information", "", "")) ++
@@ -74,8 +74,8 @@ private[hive] case class DescribeHiveTableCommand(
           case (name, dataType, comment) => Row(name, dataType, comment)
         }
 
-      case o: LogicalPlan =>
-        DescribeCommand(tableId, output, isExtended).run(sqlContext)
+      case o: LogicalPlan => DescribeCommand(tableId, output, isExtended)
+          .run(sqlContext)
     }
   }
 }

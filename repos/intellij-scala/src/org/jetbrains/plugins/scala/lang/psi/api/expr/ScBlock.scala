@@ -64,16 +64,12 @@ trait ScBlock
       getContext match {
         case c: ScCatchBlock =>
           val manager = ScalaPsiManager.instance(getProject)
-          val funs = manager.getCachedClasses(
-            getResolveScope,
-            "scala.PartialFunction")
-          val fun = funs
-            .find(_.isInstanceOf[ScTrait])
-            .getOrElse(
-              return Failure("Cannot find PartialFunction class", Some(this)))
+          val funs = manager
+            .getCachedClasses(getResolveScope, "scala.PartialFunction")
+          val fun = funs.find(_.isInstanceOf[ScTrait]).getOrElse(
+            return Failure("Cannot find PartialFunction class", Some(this)))
           val throwable = manager
-            .getCachedClass(getResolveScope, "java.lang.Throwable")
-            .orNull
+            .getCachedClass(getResolveScope, "java.lang.Throwable").orNull
           if (throwable == null)
             return Failure("Cannot find Throwable class", Some(this))
           return Success(
@@ -99,8 +95,9 @@ trait ScBlock
               Success(
                 ScPartialFunctionType(
                   clausesType,
-                  param
-                    .removeVarianceAbstracts(1))(getProject, getResolveScope),
+                  param.removeVarianceAbstracts(1))(
+                  getProject,
+                  getResolveScope),
                 Some(this))
             case _ =>
               Failure(
@@ -122,8 +119,7 @@ trait ScBlock
           t match {
             case ScDesignatorType(p: ScParameter)
                 if p.owner.isInstanceOf[ScFunctionExpr] && p.owner
-                  .asInstanceOf[ScFunctionExpr]
-                  .result == Some(this) =>
+                  .asInstanceOf[ScFunctionExpr].result == Some(this) =>
               val t = existize(
                 p.getType(TypingContext.empty).getOrAny,
                 visitedWithT)
@@ -297,16 +293,10 @@ trait ScBlock
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean =
-    super[ScDeclarationSequenceHolder].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place) &&
-      super[ScImportsHolder].processDeclarations(
-        processor,
-        state,
-        lastParent,
-        place)
+    super[ScDeclarationSequenceHolder]
+      .processDeclarations(processor, state, lastParent, place) &&
+      super[ScImportsHolder]
+        .processDeclarations(processor, state, lastParent, place)
 
   def needCheckExpectedType = true
 }

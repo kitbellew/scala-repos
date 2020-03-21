@@ -98,8 +98,8 @@ private[hive] class SparkExecuteStatementOperation(
       case DateType      => to += from.getAs[Date](ordinal)
       case TimestampType => to += from.getAs[Timestamp](ordinal)
       case BinaryType | _: ArrayType | _: StructType | _: MapType =>
-        val hiveString = HiveContext.toHiveString(
-          (from.get(ordinal), dataTypes(ordinal)))
+        val hiveString = HiveContext
+          .toHiveString((from.get(ordinal), dataTypes(ordinal)))
         to += hiveString
     }
   }
@@ -108,9 +108,8 @@ private[hive] class SparkExecuteStatementOperation(
     validateDefaultFetchOrientation(order)
     assertState(OperationState.FINISHED)
     setHasResultSet(true)
-    val resultRowSet: RowSet = RowSetFactory.create(
-      getResultSetSchema,
-      getProtocolVersion)
+    val resultRowSet: RowSet = RowSetFactory
+      .create(getResultSetSchema, getProtocolVersion)
     if (!iter.hasNext) { resultRowSet }
     else {
       // maxRowsL here typically maps to java.sql.Statement.getFetchSize, which is an int
@@ -171,8 +170,7 @@ private[hive] class SparkExecuteStatementOperation(
       }
       try {
         // This submit blocks if no background threads are available to run this operation
-        val backgroundHandle = parentSession
-          .getSessionManager()
+        val backgroundHandle = parentSession.getSessionManager()
           .submitBackgroundOperation(backgroundOperation)
         setBackgroundHandle(backgroundHandle)
       } catch {
@@ -195,8 +193,8 @@ private[hive] class SparkExecuteStatementOperation(
     logInfo(s"Running query '$statement' with $statementId")
     setState(OperationState.RUNNING)
     // Always use the latest class loader provided by executionHive's state.
-    val executionHiveClassLoader =
-      hiveContext.executionHive.state.getConf.getClassLoader
+    val executionHiveClassLoader = hiveContext.executionHive.state.getConf
+      .getClassLoader
     Thread.currentThread().setContextClassLoader(executionHiveClassLoader)
 
     HiveThriftServer2.listener.onStatementStart(

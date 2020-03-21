@@ -48,14 +48,14 @@ object Play {
     Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE,
     false)
   xercesSaxParserFactory.setFeature(
-    Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE,
+    Constants.SAX_FEATURE_PREFIX + Constants
+      .EXTERNAL_PARAMETER_ENTITIES_FEATURE,
     false)
   xercesSaxParserFactory.setFeature(
     Constants.XERCES_FEATURE_PREFIX + Constants.DISALLOW_DOCTYPE_DECL_FEATURE,
     true)
-  xercesSaxParserFactory.setFeature(
-    XMLConstants.FEATURE_SECURE_PROCESSING,
-    true)
+  xercesSaxParserFactory
+    .setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
 
   /*
    * A parser to be used that is configured to ensure that no schemas are loaded.
@@ -99,8 +99,8 @@ object Play {
     "This is a static reference to application, use DI instead",
     "2.5.0")
   implicit def current: Application =
-    privateMaybeApplication.getOrElse(
-      sys.error("There is no started application"))
+    privateMaybeApplication
+      .getOrElse(sys.error("There is no started application"))
 
   @volatile
   private[play] var _currentApp: Application = _

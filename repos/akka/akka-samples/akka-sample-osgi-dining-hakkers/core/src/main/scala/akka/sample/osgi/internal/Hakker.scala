@@ -183,8 +183,8 @@ class Hakker(name: String, chair: Int) extends Actor {
   def updateTable(leaderAdress: Address): Unit = {
     pubStateChange("-", "waiting")
     become(waitForChopsticks orElse managementEvents)
-    context.actorSelection(
-      RootActorPath(leaderAdress) / "user" / "table") ! chair
+    context
+      .actorSelection(RootActorPath(leaderAdress) / "user" / "table") ! chair
   }
 
   //All hakkers start in a non-eating state

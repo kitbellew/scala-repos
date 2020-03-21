@@ -47,8 +47,10 @@ trait DiagramFactory extends DiagramDirectiveParser {
         to: TemplateEntity,
         conv: ImplicitConversion) =
       Some(
-        from.qualifiedName + " can be implicitly converted to " + conv.targetType + " by the implicit method "
-          + conv.conversionShortName + " in " + conv.convertorOwner.kind + " " + conv.convertorOwner.qualifiedName)
+        from.qualifiedName + " can be implicitly converted to " + conv
+          .targetType + " by the implicit method "
+          + conv.conversionShortName + " in " + conv.convertorOwner
+          .kind + " " + conv.convertorOwner.qualifiedName)
 
     val result =
       if (diagramFilter == NoDiagramAtAll) None
@@ -74,12 +76,10 @@ trait DiagramFactory extends DiagramDirectiveParser {
           }
 
         // subclasses
-        var subclasses: List[Node] = tpl.directSubClasses
-          .collect {
-            case d: TemplateImpl if !classExcluded(d) =>
-              NormalNode(makeType(d.sym.tpe, tpl), Some(d))()
-          }
-          .sortBy(_.tpl.get.name)(implicitly[Ordering[String]].reverse)
+        var subclasses: List[Node] = tpl.directSubClasses.collect {
+          case d: TemplateImpl if !classExcluded(d) =>
+            NormalNode(makeType(d.sym.tpe, tpl), Some(d))()
+        }.sortBy(_.tpl.get.name)(implicitly[Ordering[String]].reverse)
 
         // outgoing implicit conversions
         lazy val outgoingImplicitNodes = tpl.outgoingImplicitlyConvertedClasses
@@ -148,9 +148,8 @@ trait DiagramFactory extends DiagramDirectiveParser {
         // we collect classes, traits and objects without a companion, which are usually used as values(e.g. scala.None)
         val nodesAll = pack.members collect {
           case d: TemplateEntity
-              if (
-                (!diagramFilter.hideInheritedNodes) || (d.inTemplate == pack)
-              ) => d
+              if ((!diagramFilter.hideInheritedNodes) || (d
+                .inTemplate == pack)) => d
         }
 
         def listSuperClasses(member: MemberTemplateImpl) = {
@@ -181,17 +180,16 @@ trait DiagramFactory extends DiagramDirectiveParser {
           }
 
           mapNodes += node -> (
-            if (node.inTemplate == pack && (
-                  node.isDocTemplate || node.isAbstractType || node.isAliasType
-                )) NormalNode(node.resultType, Some(node))()
+            if (node.inTemplate == pack && (node.isDocTemplate || node
+                  .isAbstractType || node.isAliasType))
+              NormalNode(node.resultType, Some(node))()
             else OutsideNode(node.resultType, Some(node))()
           )
         }
 
         if (nodesShown.isEmpty) None
         else {
-          val nodes = nodesAll
-            .filter(nodesShown.contains(_))
+          val nodes = nodesAll.filter(nodesShown.contains(_))
             .flatMap(mapNodes.get(_))
           val edges = edgesAll.map {
             case (entity, superClasses) => {
@@ -222,8 +220,8 @@ trait DiagramFactory extends DiagramDirectiveParser {
                   allAnyRefTypes :: nodes,
                   (
                     mapNodes(nullTemplate),
-                    allAnyRefTypes :: anyRefSubtypes) :: edges.filterNot(
-                    _._1.tpl == Some(nullTemplate)))
+                    allAnyRefTypes :: anyRefSubtypes) :: edges
+                    .filterNot(_._1.tpl == Some(nullTemplate)))
               else ContentDiagram(nodes, edges)
             } else ContentDiagram(nodes, edges)
 
@@ -260,12 +258,12 @@ trait DiagramFactory extends DiagramDirectiveParser {
                 incomingImplicits,
                 outgoingImplicits) =>
             def hideIncoming(node: Node): Boolean =
-              diagramFilter
-                .hideNode(node) || diagramFilter.hideEdge(node, thisNode)
+              diagramFilter.hideNode(node) || diagramFilter
+                .hideEdge(node, thisNode)
 
             def hideOutgoing(node: Node): Boolean =
-              diagramFilter
-                .hideNode(node) || diagramFilter.hideEdge(thisNode, node)
+              diagramFilter.hideNode(node) || diagramFilter
+                .hideEdge(thisNode, node)
 
             // println(thisNode)
             // println(superClasses.map(cl => "super: " + cl + "  " + hideOutgoing(cl)).mkString("\n"))
@@ -287,9 +285,9 @@ trait DiagramFactory extends DiagramDirectiveParser {
               case (source, dests) if !diagramFilter.hideNode(source) =>
                 val dests2 = dests.collect({
                   case dest
-                      if (!(diagramFilter.hideEdge(
-                        source,
-                        dest) || diagramFilter.hideNode(dest))) => dest
+                      if (!(diagramFilter
+                        .hideEdge(source, dest) || diagramFilter
+                        .hideNode(dest))) => dest
                 })
                 if (dests2 != Nil) List((source, dests2)) else Nil
               case _ => Nil

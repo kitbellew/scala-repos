@@ -52,8 +52,7 @@ object MappedBooleanSpec extends Specification {
       val charlie = Dog2.create
       charlie.save
 
-      val read = Dog2
-        .find(charlie.dog2id)
+      val read = Dog2.find(charlie.dog2id)
         .openOrThrowException("This is a test")
       read.dirty_? must_== false
       read.isDog(false)

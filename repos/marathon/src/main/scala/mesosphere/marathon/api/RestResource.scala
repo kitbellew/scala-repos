@@ -38,10 +38,8 @@ trait RestResource {
   }
 
   protected def notFound(message: String): Response = {
-    Response
-      .status(Status.NOT_FOUND)
-      .entity(jsonObjString("message" -> message))
-      .build()
+    Response.status(Status.NOT_FOUND)
+      .entity(jsonObjString("message" -> message)).build()
   }
 
   protected def deploymentResult(
@@ -88,8 +86,8 @@ trait RestResource {
     //scalastyle:on
     validator(t) match {
       case f: Failure =>
-        val entity =
-          Json.toJson(description.map(f.withDescription).getOrElse(f)).toString
+        val entity = Json
+          .toJson(description.map(f.withDescription).getOrElse(f)).toString
         //scalastyle:off magic.number
         Response.status(422).entity(entity).build()
       //scalastyle:on

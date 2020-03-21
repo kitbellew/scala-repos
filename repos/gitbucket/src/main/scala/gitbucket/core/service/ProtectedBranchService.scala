@@ -13,17 +13,11 @@ trait ProtectedBranchService {
       owner: String,
       repository: String,
       branch: String)(implicit session: Session): Option[ProtectedBranchInfo] =
-    ProtectedBranches
-      .leftJoin(ProtectedBranchContexts)
-      .on {
-        case (pb, c) => pb.byBranch(c.userName, c.repositoryName, c.branch)
-      }
-      .map { case (pb, c) => pb -> c.context.? }
-      .filter(_._1.byPrimaryKey(owner, repository, branch))
-      .list
-      .groupBy(_._1)
-      .map(p => p._1 -> p._2.flatMap(_._2))
-      .map {
+    ProtectedBranches.leftJoin(ProtectedBranchContexts).on {
+      case (pb, c) => pb.byBranch(c.userName, c.repositoryName, c.branch)
+    }.map { case (pb, c) => pb -> c.context.? }
+      .filter(_._1.byPrimaryKey(owner, repository, branch)).list.groupBy(_._1)
+      .map(p => p._1 -> p._2.flatMap(_._2)).map {
         case (t1, contexts) =>
           new ProtectedBranchInfo(
             t1.userName,
@@ -31,19 +25,16 @@ trait ProtectedBranchService {
             true,
             contexts,
             t1.statusCheckAdmin)
-      }
-      .headOption
+      }.headOption
 
   def getProtectedBranchInfo(owner: String, repository: String, branch: String)(
       implicit session: Session): ProtectedBranchInfo =
-    getProtectedBranchInfoOpt(owner, repository, branch).getOrElse(
-      ProtectedBranchInfo.disabled(owner, repository))
+    getProtectedBranchInfoOpt(owner, repository, branch)
+      .getOrElse(ProtectedBranchInfo.disabled(owner, repository))
 
   def getProtectedBranchList(owner: String, repository: String)(implicit
       session: Session): List[String] =
-    ProtectedBranches
-      .filter(_.byRepository(owner, repository))
-      .map(_.branch)
+    ProtectedBranches.filter(_.byRepository(owner, repository)).map(_.branch)
       .list
 
   def enableBranchProtection(
@@ -59,8 +50,8 @@ trait ProtectedBranchService {
       branch,
       includeAdministrators && contexts.nonEmpty))
     contexts.map { context =>
-      ProtectedBranchContexts.insert(
-        new ProtectedBranchContext(owner, repository, branch, context))
+      ProtectedBranchContexts
+        .insert(new ProtectedBranchContext(owner, repository, branch, context))
     }
   }
 
@@ -85,10 +76,8 @@ object ProtectedBranchService {
         pusher: String)(implicit session: Session): Option[String] = {
       val branch = command.getRefName.stripPrefix("refs/heads/")
       if (branch != command.getRefName) {
-        getProtectedBranchInfo(owner, repository, branch).getStopReason(
-          receivePack.isAllowNonFastForwards,
-          command,
-          pusher)
+        getProtectedBranchInfo(owner, repository, branch)
+          .getStopReason(receivePack.isAllowNonFastForwards, command, pusher)
       } else { None }
     }
   }
@@ -114,8 +103,7 @@ object ProtectedBranchService {
 
     def isAdministrator(pusher: String)(implicit session: Session): Boolean =
       pusher == owner || getGroupMembers(owner)
-        .filter(gm => gm.userName == pusher && gm.isManager)
-        .nonEmpty
+        .filter(gm => gm.userName == pusher && gm.isManager).nonEmpty
 
     /**
       * Can't be force pushed
@@ -128,13 +116,11 @@ object ProtectedBranchService {
         pusher: String)(implicit session: Session): Option[String] = {
       if (enabled) {
         command.getType() match {
-          case ReceiveCommand.Type.UPDATE |
-              ReceiveCommand.Type.UPDATE_NONFASTFORWARD
-              if isAllowNonFastForwards =>
+          case ReceiveCommand.Type.UPDATE | ReceiveCommand.Type
+                .UPDATE_NONFASTFORWARD if isAllowNonFastForwards =>
             Some("Cannot force-push to a protected branch")
-          case ReceiveCommand.Type.UPDATE |
-              ReceiveCommand.Type.UPDATE_NONFASTFORWARD
-              if needStatusCheck(pusher) =>
+          case ReceiveCommand.Type.UPDATE | ReceiveCommand.Type
+                .UPDATE_NONFASTFORWARD if needStatusCheck(pusher) =>
             unSuccessedContexts(command.getNewId.name) match {
               case s if s.size == 1 =>
                 Some(s"""Required status check "${s.toSeq(0)}" is expected""")
@@ -154,9 +140,7 @@ object ProtectedBranchService {
       if (contexts.isEmpty) { Set.empty }
       else {
         contexts.toSet -- getCommitStatues(owner, repository, sha1)
-          .filter(_.state == CommitState.SUCCESS)
-          .map(_.context)
-          .toSet
+          .filter(_.state == CommitState.SUCCESS).map(_.context).toSet
       }
     def needStatusCheck(pusher: String)(implicit session: Session): Boolean =
       pusher match {

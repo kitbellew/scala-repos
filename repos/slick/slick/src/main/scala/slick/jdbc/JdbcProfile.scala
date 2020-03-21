@@ -119,8 +119,8 @@ trait JdbcProfile
             _,
             CompiledMapping(_, elemType)) :@ CollectionType(cons, el) =>
         val b = cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, R]]
-        createQueryInvoker[Any](rsm, param, null).foreach({ x => b += x }, 0)(
-          session)
+        createQueryInvoker[Any](rsm, param, null)
+          .foreach({ x => b += x }, 0)(session)
         b.result()
       case First(rsm: ResultSetMapping) =>
         createQueryInvoker[R](rsm, param, null).first

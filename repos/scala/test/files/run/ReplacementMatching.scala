@@ -29,10 +29,11 @@ object Test {
 
   def groupsMatching {
     val Date = """(\d+)/(\d+)/(\d+)""".r
-    for (Regex.Groups(
-           a,
-           b,
-           c) <- Date findFirstMatchIn "1/1/2001 marks the start of the millennium. 31/12/2000 doesn't.") {
+    for (Regex
+           .Groups(
+             a,
+             b,
+             c) <- Date findFirstMatchIn "1/1/2001 marks the start of the millennium. 31/12/2000 doesn't.") {
       assert(a == "1")
       assert(b == "1")
       assert(c == "2001")

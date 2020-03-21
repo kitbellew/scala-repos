@@ -91,8 +91,7 @@ class RegressionStrategy(params: RegressionStrategyParams)
           calcIndicator(price.firstCol(ticker)).map(_.slice(firstIdx, lastIdx)),
           retF1d.firstCol(ticker).slice(firstIdx, lastIdx))
         (ticker, model)
-      })
-      .toMap
+      }).toMap
 
     // tickers mapped to model
     tickerModelMap
@@ -125,8 +124,7 @@ class RegressionStrategy(params: RegressionStrategyParams)
       query: Query): Prediction = {
     val dataView = query.dataView
 
-    val prediction = query.tickers
-      .filter(ticker => model.contains(ticker))
+    val prediction = query.tickers.filter(ticker => model.contains(ticker))
       .map { ticker =>
         {
           val p = predictOne(model(ticker), ticker, dataView)

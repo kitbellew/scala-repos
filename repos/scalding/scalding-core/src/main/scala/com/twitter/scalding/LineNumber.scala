@@ -36,12 +36,9 @@ object LineNumber {
   private[this] def ignorePaths(
       classPrefixes: Set[String],
       stack: Seq[StackTraceElement]): Option[StackTraceElement] =
-    stack
-      .drop(2)
-      .dropWhile { ste =>
-        classPrefixes.exists { prefix => ste.getClassName.startsWith(prefix) }
-      }
-      .headOption
+    stack.drop(2).dropWhile { ste =>
+      classPrefixes.exists { prefix => ste.getClassName.startsWith(prefix) }
+    }.headOption
 
   /*
    * If you use this method, it will try to give you the non-scalding
@@ -73,14 +70,12 @@ object LineNumber {
       if (it.hasNext) Some(it.next) else None
 
     val scaldingJobCaller = headOption(
-      stack.iterator
-        .filter { se => se.getClassName.startsWith(scaldingPrefix) }
+      stack.iterator.filter { se => se.getClassName.startsWith(scaldingPrefix) }
         .filter { se =>
           val cls = Class.forName(se.getClassName)
           jobClass.isAssignableFrom(cls)
         })
 
-    scaldingJobCaller
-      .orElse(nonScalding)
+    scaldingJobCaller.orElse(nonScalding)
   }
 }

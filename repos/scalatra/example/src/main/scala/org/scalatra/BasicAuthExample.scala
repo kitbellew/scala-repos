@@ -59,19 +59,15 @@ class BasicAuthExample extends ScalatraServlet with AuthenticationSupport {
       <h1>Hello from Scalatra</h1>,
       <p><a href="/auth/linked">click</a></p>)
 
-    Template.page(
-      "Basic Auth Example",
-      nodes,
-      url(_, includeServletPath = false))
+    Template
+      .page("Basic Auth Example", nodes, url(_, includeServletPath = false))
   }
 
   get("/linked") {
     basicAuth
     val nodes = Seq(<h1>Hello from Scalatra</h1>, <p><a href="/">back</a></p>)
 
-    Template.page(
-      "Basic Auth Example",
-      nodes,
-      url(_, includeServletPath = false))
+    Template
+      .page("Basic Auth Example", nodes, url(_, includeServletPath = false))
   }
 }

@@ -33,8 +33,7 @@ object PMMLModelExportExample {
     // $example on$
     // Load and parse the data
     val data = sc.textFile("data/mllib/kmeans_data.txt")
-    val parsedData = data
-      .map(s => Vectors.dense(s.split(' ').map(_.toDouble)))
+    val parsedData = data.map(s => Vectors.dense(s.split(' ').map(_.toDouble)))
       .cache()
 
     // Cluster the data into two classes using KMeans

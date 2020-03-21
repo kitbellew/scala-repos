@@ -68,12 +68,9 @@ class GBTRegressorSuite extends SparkFunSuite with MLlibTestSparkContext {
     GBTRegressor.supportedLossTypes.foreach { loss =>
       testCombinations.foreach {
         case (maxIter, learningRate, subsamplingRate) =>
-          val gbt = new GBTRegressor()
-            .setMaxDepth(2)
-            .setSubsamplingRate(subsamplingRate)
-            .setLossType(loss)
-            .setMaxIter(maxIter)
-            .setStepSize(learningRate)
+          val gbt = new GBTRegressor().setMaxDepth(2)
+            .setSubsamplingRate(subsamplingRate).setLossType(loss)
+            .setMaxIter(maxIter).setStepSize(learningRate)
           compareAPIs(data, None, gbt, categoricalFeatures)
       }
     }
@@ -88,9 +85,7 @@ class GBTRegressorSuite extends SparkFunSuite with MLlibTestSparkContext {
       LabeledPoint(9, Vectors.dense(1, 2, 6, 4)),
       LabeledPoint(-4, Vectors.dense(6, 3, 2, 2))
     ))
-    val gbt = new GBTRegressor()
-      .setMaxDepth(2)
-      .setMaxIter(2)
+    val gbt = new GBTRegressor().setMaxDepth(2).setMaxIter(2)
     val model = gbt.fit(df)
 
     // copied model must have the same parent.
@@ -108,10 +103,7 @@ class GBTRegressorSuite extends SparkFunSuite with MLlibTestSparkContext {
     sc.setCheckpointDir(path)
 
     val df = sqlContext.createDataFrame(data)
-    val gbt = new GBTRegressor()
-      .setMaxDepth(2)
-      .setMaxIter(5)
-      .setStepSize(0.1)
+    val gbt = new GBTRegressor().setMaxDepth(2).setMaxIter(5).setStepSize(0.1)
       .setCheckpointInterval(2)
     val model = gbt.fit(df)
 
@@ -177,15 +169,12 @@ private object GBTRegressorSuite extends SparkFunSuite {
       gbt: GBTRegressor,
       categoricalFeatures: Map[Int, Int]): Unit = {
     val numFeatures = data.first().features.size
-    val oldBoostingStrategy = gbt.getOldBoostingStrategy(
-      categoricalFeatures,
-      OldAlgo.Regression)
+    val oldBoostingStrategy = gbt
+      .getOldBoostingStrategy(categoricalFeatures, OldAlgo.Regression)
     val oldGBT = new OldGBT(oldBoostingStrategy)
     val oldModel = oldGBT.run(data)
-    val newData: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses = 0)
+    val newData: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses = 0)
     val newModel = gbt.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldModelAsNew = GBTRegressionModel.fromOld(

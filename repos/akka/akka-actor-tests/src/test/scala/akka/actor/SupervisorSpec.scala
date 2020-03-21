@@ -89,8 +89,8 @@ object SupervisorSpec {
         system: Option[ActorSystem]): MessageQueue = throw failure
   }
 
-  val config = ConfigFactory.parseString(
-    """
+  val config = ConfigFactory
+    .parseString("""
 akka.actor.serialize-messages = off
 error-mailbox {
   mailbox-type = "akka.actor.SupervisorSpec$Mailbox"
@@ -180,16 +180,16 @@ class SupervisorSpec
   }
 
   override def atStartup() {
-    system.eventStream.publish(Mute(
-      EventFilter[RuntimeException](ExceptionMessage)))
+    system.eventStream
+      .publish(Mute(EventFilter[RuntimeException](ExceptionMessage)))
   }
 
   override def beforeEach() = {}
 
   def ping(pingPongActor: ActorRef) = {
-    Await.result(
-      pingPongActor.?(Ping)(DilatedTimeout),
-      DilatedTimeout) should ===(PongMessage)
+    Await
+      .result(pingPongActor.?(Ping)(DilatedTimeout), DilatedTimeout) should ===(
+      PongMessage)
     expectMsg(Timeout, PingMessage)
   }
 

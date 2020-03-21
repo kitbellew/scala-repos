@@ -32,8 +32,8 @@ class ScalaOptimizeImportsFix extends IntentionAction with HighPriorityAction {
 
   def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
     file.getManager.isInProject(file) && (file
-      .isInstanceOf[ScalaFile] || ScalaLanguageDerivative.hasDerivativeOnFile(
-      file))
+      .isInstanceOf[ScalaFile] || ScalaLanguageDerivative
+      .hasDerivativeOnFile(file))
   }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
@@ -86,8 +86,7 @@ class MarkImportAsAlwaysUsed(importText: String)
   def startInWriteAction: Boolean = true
 
   def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean = {
-    importText.contains(".") && !ScalaCodeStyleSettings
-      .getInstance(project)
+    importText.contains(".") && !ScalaCodeStyleSettings.getInstance(project)
       .isAlwaysUsedImport(importText)
   }
 

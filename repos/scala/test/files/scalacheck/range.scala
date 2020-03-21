@@ -19,8 +19,8 @@ class Counter(r: Range) {
       println(msg) // exception is likely to be eaten by an out of memory error
       sys error msg
     }
-    if ((r.step > 0 && last.exists(_ > x)) || (r.step < 0 && last.exists(
-          _ < x))) {
+    if ((r.step > 0 && last.exists(_ > x)) || (r.step < 0 && last
+          .exists(_ < x))) {
       val msg = "Range %s wrapped: %d %s" format (str, x, last.toString)
       println(msg) // exception is likely to be eaten by an out of memory error
       sys error msg
@@ -227,9 +227,8 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
     arbInt.arbitrary) { (r, x) =>
 //    println("take "+str(r))
     val t = r take x
-    (
-      t.size == (0 max x min r.size) && t.start == r.start && t.step == r.step
-    ) :| str(r) + " / " + str(t) + ": " + x
+    (t.size == (0 max x min r.size) && t.start == r.start && t.step == r
+      .step) :| str(r) + " / " + str(t) + ": " + x
   }
 
   property("init") = forAll(

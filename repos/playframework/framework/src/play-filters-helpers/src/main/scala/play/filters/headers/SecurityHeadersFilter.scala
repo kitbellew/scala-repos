@@ -108,10 +108,10 @@ object SecurityHeadersConfig {
       frameOptions = config.get[Option[String]]("frameOptions"),
       xssProtection = config.get[Option[String]]("xssProtection"),
       contentTypeOptions = config.get[Option[String]]("contentTypeOptions"),
-      permittedCrossDomainPolicies = config.get[Option[String]](
-        "permittedCrossDomainPolicies"),
-      contentSecurityPolicy = config.get[Option[String]](
-        "contentSecurityPolicy")
+      permittedCrossDomainPolicies = config
+        .get[Option[String]]("permittedCrossDomainPolicies"),
+      contentSecurityPolicy = config
+        .get[Option[String]]("contentSecurityPolicy")
     )
   }
 }
@@ -134,8 +134,8 @@ class SecurityHeadersFilter @Inject() (config: SecurityHeadersConfig)
       config.frameOptions.map(X_FRAME_OPTIONS_HEADER -> _),
       config.xssProtection.map(X_XSS_PROTECTION_HEADER -> _),
       config.contentTypeOptions.map(X_CONTENT_TYPE_OPTIONS_HEADER -> _),
-      config.permittedCrossDomainPolicies.map(
-        X_PERMITTED_CROSS_DOMAIN_POLICIES_HEADER -> _),
+      config.permittedCrossDomainPolicies
+        .map(X_PERMITTED_CROSS_DOMAIN_POLICIES_HEADER -> _),
       config.contentSecurityPolicy.map(CONTENT_SECURITY_POLICY_HEADER -> _)
     ).flatten
 

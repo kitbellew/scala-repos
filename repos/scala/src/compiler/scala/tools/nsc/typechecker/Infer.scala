@@ -193,8 +193,8 @@ trait Infer extends Checkable {
       case _ => tp // @MAT aliases already handled by subtyping
     }
 
-  private lazy val stdErrorClass = rootMirror.RootClass.newErrorClass(
-    tpnme.ERROR)
+  private lazy val stdErrorClass = rootMirror.RootClass
+    .newErrorClass(tpnme.ERROR)
   private lazy val stdErrorValue = stdErrorClass.newErrorValue(nme.ERROR)
 
   /** The context-dependent inferencer part */
@@ -245,9 +245,9 @@ trait Infer extends Checkable {
         Console.println(context)
         Console.println(tree)
         Console.println(
-          "" + pre + " " + sym.owner + " " + context.owner + " " + context.outer.enclClass.owner + " " + sym.owner.thisType + (
-            pre =:= sym.owner.thisType
-          ))
+          "" + pre + " " + sym.owner + " " + context.owner + " " + context.outer
+            .enclClass.owner + " " + sym.owner.thisType + (pre =:= sym.owner
+            .thisType))
       }
       ErrorUtils.issueTypeError(AccessError(
         tree,
@@ -496,9 +496,8 @@ trait Infer extends Checkable {
         }
         if (tvar.constr.instValid) instantiate(tvar.constr.inst)
         else if (loBounds.nonEmpty && variance.isContravariant) setInst(lower)
-        else if (hiBounds.nonEmpty && (
-                   variance.isPositive || loBounds.nonEmpty && upper <:< lower
-                 )) setInst(upper)
+        else if (hiBounds.nonEmpty && (variance.isPositive || loBounds
+                   .nonEmpty && upper <:< lower)) setInst(upper)
         else WildcardType
       }
 
@@ -525,8 +524,7 @@ trait Infer extends Checkable {
       object Undets {
         def unapply(m: Result): Some[(List[Symbol], List[Type], List[Symbol])] =
           Some(toLists {
-            val (ok, nok) = m
-              .map { case (p, a) => (p, a.getOrElse(null)) }
+            val (ok, nok) = m.map { case (p, a) => (p, a.getOrElse(null)) }
               .partition(_._2 ne null)
             val (okArgs, okTparams) = ok.unzip
             (okArgs, okTparams, nok.keys)
@@ -537,8 +535,7 @@ trait Infer extends Checkable {
         def unapply(m: Result)
             : Some[(List[Symbol], List[Type], List[Type], List[Symbol])] =
           Some(toLists {
-            val (ok, nok) = m
-              .map { case (p, a) => (p, a.getOrElse(null)) }
+            val (ok, nok) = m.map { case (p, a) => (p, a.getOrElse(null)) }
               .partition(_._2 ne null)
             val (okArgs, okTparams) = ok.unzip
             (okArgs, okTparams, m.values.map(_.getOrElse(NothingTpe)), nok.keys)
@@ -579,8 +576,8 @@ trait Infer extends Checkable {
 
       foreach3(tparams, tvars, targs) { (tparam, tvar, targ) =>
         val retract = (targ.typeSymbol == NothingClass // only retract Nothings
-          && (restpe.isWildcard || !varianceInType(restpe)(
-            tparam).isPositive) // don't retract covariant occurrences
+          && (restpe.isWildcard || !varianceInType(restpe)(tparam)
+            .isPositive) // don't retract covariant occurrences
         )
 
         buf += (
@@ -594,8 +591,8 @@ trait Infer extends Checkable {
                 else if (targ.typeSymbol == JavaRepeatedParamClass)
                   targ.baseType(ArrayClass)
                 // this infers Foo.type instead of "object Foo" (see also widenIfNecessary)
-                else if (targ.typeSymbol.isModuleClass || tvar.constr.avoidWiden)
-                  targ
+                else if (targ.typeSymbol.isModuleClass || tvar.constr
+                           .avoidWiden) targ
                 else targ.widen)))
       }
       buf.result()
@@ -786,8 +783,8 @@ trait Infer extends Checkable {
       val argtpes1 = argtpes map {
         case NamedType(name, tp) => // a named argument
           var res = tp
-          val pos = params.indexWhere(p =>
-            paramMatchesName(p, name) && !p.isSynthetic)
+          val pos = params
+            .indexWhere(p => paramMatchesName(p, name) && !p.isSynthetic)
 
           if (pos == -1) {
             if (positionalAllowed) { // treat assignment as positional argument
@@ -992,11 +989,8 @@ trait Infer extends Checkable {
         pt: Type): Boolean = {
       def applicableExpectingPt(pt: Type): Boolean = {
         val silent = context.makeSilent(reportAmbiguousErrors = false)
-        val result = newTyper(silent).infer.isApplicable(
-          undetparams,
-          ftpe,
-          argtpes0,
-          pt)
+        val result = newTyper(silent).infer
+          .isApplicable(undetparams, ftpe, argtpes0, pt)
         if (silent.reporter.hasErrors && !pt.isWildcard)
           applicableExpectingPt(WildcardType) // second try
         else result
@@ -1280,16 +1274,9 @@ trait Infer extends Checkable {
               args map (x => elimAnonymousClass(x.tpe.deconst)))
             val restpe = fn.tpe.resultType(argtpes)
 
-            val AdjustedTypeArgs.AllArgsAndUndets(
-              okparams,
-              okargs,
-              allargs,
-              leftUndet) = methTypeArgs(
-              undetparams,
-              formals,
-              restpe,
-              argtpes,
-              pt)
+            val AdjustedTypeArgs
+              .AllArgsAndUndets(okparams, okargs, allargs, leftUndet) =
+              methTypeArgs(undetparams, formals, restpe, argtpes, pt)
 
             if (checkBounds(
                   fn,
@@ -1408,8 +1395,8 @@ trait Infer extends Checkable {
           notifyUndetparamsInferred(undetparams, targs)
         case _ =>
           def not = if (isFullyDefined(pt)) "" else "not "
-          devWarning(
-            s"failed inferConstructorInstance for $tree: ${tree.tpe} undet=$undetparams, pt=$pt (${not}fully defined)")
+          devWarning(s"failed inferConstructorInstance for $tree: ${tree
+            .tpe} undet=$undetparams, pt=$pt (${not}fully defined)")
           ConstrInstantiationError(tree, resTp, pt)
       }
     }
@@ -1460,7 +1447,8 @@ trait Infer extends Checkable {
         if (lo1 <:< lo0 && hi0 <:< hi1) // bounds unimproved
           log(
             s"redundant bounds: discarding TypeBounds($lo1, $hi1) for $tparam, no improvement on TypeBounds($lo0, $hi0)")
-        else if (tparam == lo1.typeSymbolDirect || tparam == hi1.typeSymbolDirect)
+        else if (tparam == lo1.typeSymbolDirect || tparam == hi1
+                   .typeSymbolDirect)
           log(
             s"cyclical bounds: discarding TypeBounds($lo1, $hi1) for $tparam because $tparam appears as bounds")
         else {
@@ -1757,11 +1745,8 @@ trait Infer extends Checkable {
         // separate method to help the inliner
         private def isAltApplicable(pt: Type)(alt: Symbol) =
           context inSilentMode {
-            isApplicable(
-              undetparams,
-              followType(alt),
-              argtpes,
-              pt) && !context.reporter.hasErrors
+            isApplicable(undetparams, followType(alt), argtpes, pt) && !context
+              .reporter.hasErrors
           }
         private def rankAlternatives(sym1: Symbol, sym2: Symbol) =
           isStrictlyMoreSpecific(followType(sym1), followType(sym2), sym1, sym2)
@@ -1803,7 +1788,8 @@ trait Infer extends Checkable {
           if (pt0.typeSymbol == UnitClass) WildcardType else pt0
         def tryOnce(isLastTry: Boolean): Unit = {
           debuglog(
-            s"infer method alt ${tree.symbol} with alternatives ${alts map pre.memberType} argtpes=$argtpes pt=$pt")
+            s"infer method alt ${tree.symbol} with alternatives ${alts map pre
+              .memberType} argtpes=$argtpes pt=$pt")
           bestForExpectedType(pt, isLastTry)
         }
       }
@@ -1825,11 +1811,13 @@ trait Infer extends Checkable {
       def errorKind =
         matchingLength match {
           case NoSymbol if allMonoAlts =>
-            PolyAlternativeErrorKind.NoParams // no polymorphic method alternative
+            PolyAlternativeErrorKind
+              .NoParams // no polymorphic method alternative
           case NoSymbol =>
             PolyAlternativeErrorKind.WrongNumber // wrong number of tparams
           case _ =>
-            PolyAlternativeErrorKind.ArgsDoNotConform // didn't conform to bounds
+            PolyAlternativeErrorKind
+              .ArgsDoNotConform // didn't conform to bounds
         }
       def fail() =
         PolyAlternativeError(tree, argtypes, matchingLength, errorKind)

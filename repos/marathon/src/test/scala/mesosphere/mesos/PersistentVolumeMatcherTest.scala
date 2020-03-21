@@ -54,8 +54,8 @@ class PersistentVolumeMatcherTest
     matchOpt should not be empty
     matchOpt.get.task.taskId shouldEqual tasks.head.taskId
     matchOpt.get.persistentVolumeResources should have size 1
-    matchOpt.get.persistentVolumeResources.head shouldEqual offer.getResources(
-      0)
+    matchOpt.get.persistentVolumeResources.head shouldEqual offer
+      .getResources(0)
   }
 
   test(
@@ -64,18 +64,12 @@ class PersistentVolumeMatcherTest
 
     Given("a resident app with 2 tasks and an offer with 3 persistent volumes")
     val app = f.appWithPersistentVolume()
-    val localVolumeId1 = Task.LocalVolumeId(
-      app.id,
-      "persistent-volume",
-      "uuid1")
-    val localVolumeId2 = Task.LocalVolumeId(
-      app.id,
-      "persistent-volume",
-      "uuid2")
-    val localVolumeId3 = Task.LocalVolumeId(
-      app.id,
-      "persistent-volume",
-      "uuid3")
+    val localVolumeId1 = Task
+      .LocalVolumeId(app.id, "persistent-volume", "uuid1")
+    val localVolumeId2 = Task
+      .LocalVolumeId(app.id, "persistent-volume", "uuid2")
+    val localVolumeId3 = Task
+      .LocalVolumeId(app.id, "persistent-volume", "uuid3")
     val tasks = IndexedSeq(
       f.makeTask(
         app.id,
@@ -85,17 +79,13 @@ class PersistentVolumeMatcherTest
         Task.Reservation(Seq(localVolumeId3), f.taskReservationStateNew))
     )
     val unknownTaskId = Task.Id.forApp(app.id)
-    val offer = f
-      .offerWithVolumes(unknownTaskId, localVolumeId1)
-      .toBuilder
+    val offer = f.offerWithVolumes(unknownTaskId, localVolumeId1).toBuilder
       .addAllResources(
         MarathonTestHelper
-          .persistentVolumeResources(tasks.head.taskId, localVolumeId2)
-          .asJava)
+          .persistentVolumeResources(tasks.head.taskId, localVolumeId2).asJava)
       .addAllResources(
         MarathonTestHelper
-          .persistentVolumeResources(tasks(1).taskId, localVolumeId3)
-          .asJava)
+          .persistentVolumeResources(tasks(1).taskId, localVolumeId3).asJava)
       .build()
 
     When("We ask for a volume match")
@@ -105,8 +95,8 @@ class PersistentVolumeMatcherTest
     matchOpt should not be empty
     matchOpt.get.task.taskId shouldEqual tasks.head.taskId
     matchOpt.get.persistentVolumeResources should have size 1
-    matchOpt.get.persistentVolumeResources.head shouldEqual offer.getResources(
-      1)
+    matchOpt.get.persistentVolumeResources.head shouldEqual offer
+      .getResources(1)
   }
 
   test("Unwanted available volumes result in NO match") {

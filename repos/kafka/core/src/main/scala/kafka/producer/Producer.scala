@@ -121,13 +121,12 @@ class Producer[K, V](
           } catch { case e: InterruptedException => false }
       }
       if (!added) {
-        producerTopicStats
-          .getProducerTopicStats(message.topic)
-          .droppedMessageRate
-          .mark()
+        producerTopicStats.getProducerTopicStats(message.topic)
+          .droppedMessageRate.mark()
         producerTopicStats.getProducerAllTopicsStats.droppedMessageRate.mark()
         throw new QueueFullException(
-          "Event queue is full of unsent messages, could not send event: " + message.toString)
+          "Event queue is full of unsent messages, could not send event: " + message
+            .toString)
       } else {
         trace("Added to send queue an event: " + message.toString)
         trace("Remaining queue size: " + queue.remainingCapacity)

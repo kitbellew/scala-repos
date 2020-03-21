@@ -43,8 +43,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       var downloaded: Option[String] = None
 
       try {
-        downloaded = ActivatorRepoProcessor.downloadStringFromRepo(
-          s"$urlString/$PROPERTIES")
+        downloaded = ActivatorRepoProcessor
+          .downloadStringFromRepo(s"$urlString/$PROPERTIES")
       } catch { case io: IOException => error("Can't download index", io) }
 
       downloaded flatMap {
@@ -59,8 +59,7 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
   }
 
   private def downloadIndex(): Option[File] = {
-    if (extractedHash
-          .flatMap(a => indexFile.map(b => (a, b._1)))
+    if (extractedHash.flatMap(a => indexFile.map(b => (a, b._1)))
           .exists(a => a._1 == a._2)) indexFile.map(_._2)
     else {
       extractHash() flatMap {
@@ -116,9 +115,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
 
         reader = DirectoryReader.open(FSDirectory.open(extracted))
         val searcher = new IndexSearcher(reader)
-        val docs = searcher.search(
-          new lucene.search.MatchAllDocsQuery,
-          reader.maxDoc())
+        val docs = searcher
+          .search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
         val data = docs.scoreDocs.map { case doc => reader document doc.doc }
 
         data.map { case docData => Keys.from(docData) }.toMap
@@ -152,10 +150,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       catch { case _: IOException => onError(a) }
     }
 
-    ActivatorRepoProcessor.downloadTemplateFromRepo(
-      templateId,
-      pathTo,
-      myOnError)
+    ActivatorRepoProcessor
+      .downloadTemplateFromRepo(templateId, pathTo, myOnError)
     workOffline = hasError
     if (!workOffline) cacheFile(pathTo, cachedTemplate)
   }
@@ -164,10 +160,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       templateId: String,
       extractTo: File,
       onError: String => Unit) {
-    val contentDir = FileUtilRt.createTempDirectory(
-      s"$templateId-template-content",
-      "",
-      true)
+    val contentDir = FileUtilRt
+      .createTempDirectory(s"$templateId-template-content", "", true)
     val contentFile = new File(contentDir, "content.zip")
 
     contentFile.createNewFile()

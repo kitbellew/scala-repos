@@ -17,10 +17,8 @@ private final class LeaderboardIndexer(
 
   def generateAll: Funit =
     leaderboardColl.remove(BSONDocument()) >> {
-      tournamentColl
-        .find(TournamentRepo.finishedSelect)
-        .sort(BSONDocument("startsAt" -> -1))
-        .cursor[Tournament]()
+      tournamentColl.find(TournamentRepo.finishedSelect)
+        .sort(BSONDocument("startsAt" -> -1)).cursor[Tournament]()
         .enumerate(20 * 1000, stopOnError = true) &>
         Enumeratee.mapM[Tournament].apply[Seq[Entry]](generateTour) &>
         Enumeratee.mapConcat[Seq[Entry]].apply[Entry](identity) &>
@@ -38,12 +36,10 @@ private final class LeaderboardIndexer(
       generateTour(tour) flatMap saveEntries
 
   private def saveEntries(entries: Seq[Entry]) =
-    entries.nonEmpty ?? leaderboardColl
-      .bulkInsert(
-        documents =
-          entries.map(BSONHandlers.leaderboardEntryHandler.write).toStream,
-        ordered = false)
-      .void
+    entries.nonEmpty ?? leaderboardColl.bulkInsert(
+      documents =
+        entries.map(BSONHandlers.leaderboardEntryHandler.write).toStream,
+      ordered = false).void
 
   private def generateTour(tour: Tournament): Fu[List[Entry]] =
     for {

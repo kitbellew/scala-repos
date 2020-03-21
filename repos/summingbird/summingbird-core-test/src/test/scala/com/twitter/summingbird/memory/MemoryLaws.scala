@@ -88,8 +88,8 @@ class MemoryLaws extends WordSpec {
       JoinedU: Arbitrary,
       V: Monoid: Arbitrary: Equiv] = {
     import MemoryArbitraries._
-    val serviceFn: MemoryService[K, JoinedU] =
-      Arbitrary.arbitrary[MemoryService[K, JoinedU]].sample.get
+    val serviceFn: MemoryService[K, JoinedU] = Arbitrary
+      .arbitrary[MemoryService[K, JoinedU]].sample.get
     testGraph[T, K, V].leftJoinChecker[U, JoinedU](
       serviceFn,
       { svc => { (k: K) => svc.get(k) } },
@@ -132,27 +132,20 @@ class MemoryLaws extends WordSpec {
     val serviceFn = storeAndService.get(_)
     val lookupFn = finalStore.get(_)
 
-    val storeAndServiceMatches = MapAlgebra
-      .sumByKey(
-        items1
-          .flatMap(fnA))
+    val storeAndServiceMatches = MapAlgebra.sumByKey(items1.flatMap(fnA))
       .forall {
         case (k, v) =>
           val lv: JoinedU = serviceFn(k).getOrElse(Monoid.zero[JoinedU])
           Equiv[JoinedU].equiv(v, lv)
       }
 
-    val finalStoreMatches = MapAlgebra
-      .sumByKey(
-        items2
-          .flatMap(fnB)
-          .map { case (k, u) => (k, (u, serviceFn(k))) }
-          .flatMap(postJoinFn))
-      .forall {
-        case (k, v) =>
-          val lv = lookupFn(k).getOrElse(Monoid.zero[V])
-          Equiv[V].equiv(v, lv)
-      }
+    val finalStoreMatches = MapAlgebra.sumByKey(
+      items2.flatMap(fnB).map { case (k, u) => (k, (u, serviceFn(k))) }
+        .flatMap(postJoinFn)).forall {
+      case (k, v) =>
+        val lv = lookupFn(k).getOrElse(Monoid.zero[V])
+        Equiv[V].equiv(v, lv)
+    }
 
     storeAndServiceMatches && finalStoreMatches
   }
@@ -219,15 +212,15 @@ class MemoryLaws extends WordSpec {
     val source = sourceMaker(original)
     val store: Memory#Store[K, V] = MutableMap.empty[K, V]
 
-    val prod = TestGraphs.jobWithStats[Memory, T, K, V](jobID, source, store)(
-      t => fn(t))
+    val prod = TestGraphs
+      .jobWithStats[Memory, T, K, V](jobID, source, store)(t => fn(t))
     mem.run(mem.plan(prod))
 
-    val origCounter =
-      mem.counter(Group("counter.test"), Name("orig_counter")).get
+    val origCounter = mem.counter(Group("counter.test"), Name("orig_counter"))
+      .get
     val fmCounter = mem.counter(Group("counter.test"), Name("fm_counter")).get
-    val fltrCounter =
-      mem.counter(Group("counter.test"), Name("fltr_counter")).get
+    val fltrCounter = mem.counter(Group("counter.test"), Name("fltr_counter"))
+      .get
 
     (origCounter == original.size) &&
     (fmCounter == (original.flatMap(fn).size * 2)) &&
@@ -280,8 +273,8 @@ class MemoryLaws extends WordSpec {
       val store1 = MutableMap.empty[Int, Int]
       val store2 = MutableMap.empty[Int, Int]
       val comp = source.map(v => (v % 3, v)).sumByKey(store1)
-      val prod = comp.also(
-        comp.mapValues(_._2).write(new BufferFunc).sumByKey(store2))
+      val prod = comp
+        .also(comp.mapValues(_._2).write(new BufferFunc).sumByKey(store2))
       val mem = new Memory
       mem.run(mem.plan(prod))
       assert(store1.toMap == ((0 to 100).groupBy(_ % 3).mapValues(_.sum)))
@@ -295,17 +288,11 @@ class MemoryLaws extends WordSpec {
       val store: Memory#Store[Int, Int] = collection.mutable.Map.empty[Int, Int]
       val sink: Memory#Sink[Int] = { x: Int => sinkBuffer += x }
 
-      val summed = source
-        .map { v => (v, v) }
-        .sumByKey(store)
-        .map {
-          case (_, (existingEventOpt, currentEvent)) =>
-            existingEventOpt
-              .map { existingEvent =>
-                Semigroup.plus(existingEvent, currentEvent)
-              }
-              .getOrElse(currentEvent)
-        }
+      val summed = source.map { v => (v, v) }.sumByKey(store).map {
+        case (_, (existingEventOpt, currentEvent)) => existingEventOpt.map {
+            existingEvent => Semigroup.plus(existingEvent, currentEvent)
+          }.getOrElse(currentEvent)
+      }
 
       val write1 = summed.write(sink)
       val write2 = summed.write(sink)

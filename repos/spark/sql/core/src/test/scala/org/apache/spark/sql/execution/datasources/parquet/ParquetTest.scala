@@ -56,9 +56,8 @@ private[sql] trait ParquetTest extends SQLTestUtils {
     (true :: false :: Nil).foreach { vectorized =>
       if (!vectorized || testVectorized) {
         withSQLConf(
-          SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> vectorized.toString) {
-          f(sqlContext.read.parquet(path.toString))
-        }
+          SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> vectorized
+            .toString) { f(sqlContext.read.parquet(path.toString)) }
       }
     }
   }
@@ -104,10 +103,7 @@ private[sql] trait ParquetTest extends SQLTestUtils {
   protected def makeParquetFile[T <: Product: ClassTag: TypeTag](
       data: Seq[T],
       path: File): Unit = {
-    sqlContext
-      .createDataFrame(data)
-      .write
-      .mode(SaveMode.Overwrite)
+    sqlContext.createDataFrame(data).write.mode(SaveMode.Overwrite)
       .parquet(path.getCanonicalPath)
   }
 
@@ -175,8 +171,7 @@ private[sql] trait ParquetTest extends SQLTestUtils {
       configuration: Configuration): Seq[Footer] = {
     val fs = path.getFileSystem(configuration)
     ParquetFileReader
-      .readAllFootersInParallel(configuration, fs.getFileStatus(path))
-      .asScala
+      .readAllFootersInParallel(configuration, fs.getFileStatus(path)).asScala
       .toSeq
   }
 

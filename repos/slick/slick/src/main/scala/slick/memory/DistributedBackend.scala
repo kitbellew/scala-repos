@@ -80,9 +80,7 @@ trait DistributedBackend extends RelationalBackend with Logging {
   class SessionDef(val sessions: Vector[BasicBackend#Session])
       extends super.SessionDef {
     def close() {
-      sessions
-        .map(s => Try(s.close()))
-        .collectFirst { case Failure(t) => t }
+      sessions.map(s => Try(s.close())).collectFirst { case Failure(t) => t }
         .foreach(throw _)
     }
 

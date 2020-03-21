@@ -92,8 +92,7 @@ trait Importer[E] {
   // FIXME: should be implemented in External System
   def getModifiableLibraryModelEx(
       library: Library): LibraryEx.ModifiableModelEx =
-    modelsProvider
-      .getModifiableLibraryModel(library)
+    modelsProvider.getModifiableLibraryModel(library)
       .asInstanceOf[LibraryEx.ModifiableModelEx]
 
   // Utility methods
@@ -106,22 +105,19 @@ trait Importer[E] {
 
   def getScalaLibraries: Set[Library] =
     modelsProvider.getAllLibraries
-      .filter(l => Option(l.getName).exists(_.contains(ScalaLibraryName)))
-      .toSet
+      .filter(l => Option(l.getName).exists(_.contains(ScalaLibraryName))).toSet
 
   def getScalaLibraries(module: Module): Set[Library] = {
     val collector = new CollectProcessor[Library]()
-    getModifiableRootModel(module)
-      .orderEntries()
-      .librariesOnly()
+    getModifiableRootModel(module).orderEntries().librariesOnly()
       .forEachLibrary(collector)
-    collector.getResults.toSet.filter(l =>
-      Option(l.getName).exists(_.contains(ScalaLibraryName)))
+    collector.getResults.toSet
+      .filter(l => Option(l.getName).exists(_.contains(ScalaLibraryName)))
   }
 
   def executeProjectChangeAction(action: => Unit): Unit =
-    ExternalSystemApiUtil.executeProjectChangeAction(
-      new DisposeAwareProjectChange(project) {
+    ExternalSystemApiUtil
+      .executeProjectChangeAction(new DisposeAwareProjectChange(project) {
         override def execute(): Unit = action
       })
 

@@ -123,17 +123,15 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
       timeout: Option[Duration])(implicit
       asyncContext: ExecutionContext): Future[JobQueryTFMonad] = {
     val start = System.currentTimeMillis
-    val futureJob = jobManager
-      .createJob(
-        apiKey,
-        "Quirrel Query",
-        "bifrost-query",
-        data,
-        Some(yggConfig.clock.now()))
-      .onComplete { _ =>
-        logger.debug(
-          "Job created in %d ms".format(System.currentTimeMillis - start))
-      }
+    val futureJob = jobManager.createJob(
+      apiKey,
+      "Quirrel Query",
+      "bifrost-query",
+      data,
+      Some(yggConfig.clock.now())).onComplete { _ =>
+      logger
+        .debug("Job created in %d ms".format(System.currentTimeMillis - start))
+    }
     for {
       job <- futureJob map { job => Some(job) } recover { case _ => None }
       queryStateManager = job map { job =>
@@ -171,10 +169,8 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
                 jobId,
                 JobManager.channels.ServerError,
                 JString("Internal server error."))
-              jobManager.abort(
-                jobId,
-                "Internal server error.",
-                yggConfig.clock.now())
+              jobManager
+                .abort(jobId, "Internal server error.", yggConfig.clock.now())
             }
             throw ex
         } map {

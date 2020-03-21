@@ -53,9 +53,7 @@ trait SampleSpec[M[+_]]
   def testSample = {
     val data = SampleData(simpleData)
     val table = fromSample(data)
-    table
-      .sample(15, Seq(TransSpec1.Id, TransSpec1.Id))
-      .copoint
+    table.sample(15, Seq(TransSpec1.Id, TransSpec1.Id)).copoint
       .toList must beLike {
       case s1 :: s2 :: Nil =>
         val result1 = toJson(s1).copoint
@@ -98,9 +96,7 @@ trait SampleSpec[M[+_]]
 
   def testLargeSampleSize = {
     val data = SampleData(simpleData)
-    fromSample(data)
-      .sample(1000, Seq(TransSpec1.Id))
-      .copoint
+    fromSample(data).sample(1000, Seq(TransSpec1.Id)).copoint
       .toList must beLike {
       case s :: Nil =>
         val result = toJson(s).copoint

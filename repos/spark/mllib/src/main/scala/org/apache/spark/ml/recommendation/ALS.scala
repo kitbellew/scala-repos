@@ -260,13 +260,12 @@ class ALSModel private[ml] (
         blas.sdot(rank, userFeatures.toArray, 1, itemFeatures.toArray, 1)
       } else { Float.NaN }
     }
-    dataset
-      .join(userFactors, dataset($(userCol)) === userFactors("id"), "left")
+    dataset.join(userFactors, dataset($(userCol)) === userFactors("id"), "left")
       .join(itemFactors, dataset($(itemCol)) === itemFactors("id"), "left")
       .select(
         dataset("*"),
-        predict(userFactors("features"), itemFactors("features")).as($(
-          predictionCol)))
+        predict(userFactors("features"), itemFactors("features"))
+          .as($(predictionCol)))
   }
 
   @Since("1.3.0")
@@ -443,13 +442,12 @@ class ALS(@Since("1.4.0") override val uid: String)
     import dataset.sqlContext.implicits._
     val r =
       if ($(ratingCol) != "") col($(ratingCol)).cast(FloatType) else lit(1.0f)
-    val ratings = dataset
-      .select(
-        col($(userCol)).cast(IntegerType),
-        col($(itemCol)).cast(IntegerType),
-        r)
-      .rdd
-      .map { row => Rating(row.getInt(0), row.getInt(1), row.getFloat(2)) }
+    val ratings = dataset.select(
+      col($(userCol)).cast(IntegerType),
+      col($(itemCol)).cast(IntegerType),
+      r).rdd.map { row =>
+      Rating(row.getInt(0), row.getInt(1), row.getFloat(2))
+    }
     val (userFactors, itemFactors) = ALS.train(
       ratings,
       rank = $(rank),
@@ -728,8 +726,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       }
     if (implicitPrefs) {
       for (iter <- 1 to maxIter) {
-        userFactors
-          .setName(s"userFactors-$iter")
+        userFactors.setName(s"userFactors-$iter")
           .persist(intermediateRDDStorageLevel)
         val previousItemFactors = itemFactors
         itemFactors = computeFactors(
@@ -743,8 +740,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
           alpha,
           solver)
         previousItemFactors.unpersist()
-        itemFactors
-          .setName(s"itemFactors-$iter")
+        itemFactors.setName(s"itemFactors-$iter")
           .persist(intermediateRDDStorageLevel)
         // TODO: Generalize PeriodicGraphCheckpointer and use it here.
         if (shouldCheckpoint(iter)) {
@@ -794,9 +790,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
           solver = solver)
       }
     }
-    val userIdAndFactors = userInBlocks
-      .mapValues(_.srcIds)
-      .join(userFactors)
+    val userIdAndFactors = userInBlocks.mapValues(_.srcIds).join(userFactors)
       .mapPartitions(
         { items =>
           items.flatMap { case (_, (ids, factors)) => ids.view.zip(factors) }
@@ -804,18 +798,13 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         // and userFactors.
         },
         preservesPartitioning = true
-      )
-      .setName("userFactors")
-      .persist(finalRDDStorageLevel)
-    val itemIdAndFactors = itemInBlocks
-      .mapValues(_.srcIds)
-      .join(itemFactors)
+      ).setName("userFactors").persist(finalRDDStorageLevel)
+    val itemIdAndFactors = itemInBlocks.mapValues(_.srcIds).join(itemFactors)
       .mapPartitions(
         { items =>
           items.flatMap { case (_, (ids, factors)) => ids.view.zip(factors) }
         },
-        preservesPartitioning = true)
-      .setName("itemFactors")
+        preservesPartitioning = true).setName("itemFactors")
       .persist(finalRDDStorageLevel)
     if (finalRDDStorageLevel != StorageLevel.NONE) {
       userIdAndFactors.count()
@@ -983,35 +972,31 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
      */
 
     val numPartitions = srcPart.numPartitions * dstPart.numPartitions
-    ratings
-      .mapPartitions { iter =>
-        val builders = Array.fill(numPartitions)(new RatingBlockBuilder[ID])
-        iter.flatMap { r =>
-          val srcBlockId = srcPart.getPartition(r.user)
-          val dstBlockId = dstPart.getPartition(r.item)
-          val idx = srcBlockId + srcPart.numPartitions * dstBlockId
-          val builder = builders(idx)
-          builder.add(r)
-          if (builder.size >= 2048) { // 2048 * (3 * 4) = 24k
-            builders(idx) = new RatingBlockBuilder
-            Iterator.single(((srcBlockId, dstBlockId), builder.build()))
-          } else { Iterator.empty }
-        } ++ {
-          builders.view.zipWithIndex.filter(_._1.size > 0).map {
-            case (block, idx) =>
-              val srcBlockId = idx % srcPart.numPartitions
-              val dstBlockId = idx / srcPart.numPartitions
-              ((srcBlockId, dstBlockId), block.build())
-          }
+    ratings.mapPartitions { iter =>
+      val builders = Array.fill(numPartitions)(new RatingBlockBuilder[ID])
+      iter.flatMap { r =>
+        val srcBlockId = srcPart.getPartition(r.user)
+        val dstBlockId = dstPart.getPartition(r.item)
+        val idx = srcBlockId + srcPart.numPartitions * dstBlockId
+        val builder = builders(idx)
+        builder.add(r)
+        if (builder.size >= 2048) { // 2048 * (3 * 4) = 24k
+          builders(idx) = new RatingBlockBuilder
+          Iterator.single(((srcBlockId, dstBlockId), builder.build()))
+        } else { Iterator.empty }
+      } ++ {
+        builders.view.zipWithIndex.filter(_._1.size > 0).map {
+          case (block, idx) =>
+            val srcBlockId = idx % srcPart.numPartitions
+            val dstBlockId = idx / srcPart.numPartitions
+            ((srcBlockId, dstBlockId), block.build())
         }
       }
-      .groupByKey()
-      .mapValues { blocks =>
-        val builder = new RatingBlockBuilder[ID]
-        blocks.foreach(builder.merge)
-        builder.build()
-      }
-      .setName("ratingBlocks")
+    }.groupByKey().mapValues { blocks =>
+      val builder = new RatingBlockBuilder[ID]
+      blocks.foreach(builder.merge)
+      builder.build()
+    }.setName("ratingBlocks")
   }
 
   /**
@@ -1239,75 +1224,66 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       dstPart: Partitioner,
       storageLevel: StorageLevel)(implicit
       srcOrd: Ordering[ID]): (RDD[(Int, InBlock[ID])], RDD[(Int, OutBlock)]) = {
-    val inBlocks = ratingBlocks
-      .map {
-        case ((srcBlockId, dstBlockId), RatingBlock(srcIds, dstIds, ratings)) =>
-          // The implementation is a faster version of
-          // val dstIdToLocalIndex = dstIds.toSet.toSeq.sorted.zipWithIndex.toMap
-          val start = System.nanoTime()
-          val dstIdSet = new OpenHashSet[ID](1 << 20)
-          dstIds.foreach(dstIdSet.add)
-          val sortedDstIds = new Array[ID](dstIdSet.size)
-          var i = 0
-          var pos = dstIdSet.nextPos(0)
-          while (pos != -1) {
-            sortedDstIds(i) = dstIdSet.getValue(pos)
-            pos = dstIdSet.nextPos(pos + 1)
-            i += 1
-          }
-          assert(i == dstIdSet.size)
-          Sorting.quickSort(sortedDstIds)
-          val dstIdToLocalIndex = new OpenHashMap[ID, Int](sortedDstIds.length)
-          i = 0
-          while (i < sortedDstIds.length) {
-            dstIdToLocalIndex.update(sortedDstIds(i), i)
-            i += 1
-          }
-          logDebug(
-            "Converting to local indices took " + (
-              System.nanoTime() - start
-            ) / 1e9 + " seconds.")
-          val dstLocalIndices = dstIds.map(dstIdToLocalIndex.apply)
-          (srcBlockId, (dstBlockId, srcIds, dstLocalIndices, ratings))
-      }
-      .groupByKey(new ALSPartitioner(srcPart.numPartitions))
-      .mapValues { iter =>
-        val builder = new UncompressedInBlockBuilder[ID](new LocalIndexEncoder(
-          dstPart.numPartitions))
-        iter.foreach {
-          case (dstBlockId, srcIds, dstLocalIndices, ratings) =>
-            builder.add(dstBlockId, srcIds, dstLocalIndices, ratings)
+    val inBlocks = ratingBlocks.map {
+      case ((srcBlockId, dstBlockId), RatingBlock(srcIds, dstIds, ratings)) =>
+        // The implementation is a faster version of
+        // val dstIdToLocalIndex = dstIds.toSet.toSeq.sorted.zipWithIndex.toMap
+        val start = System.nanoTime()
+        val dstIdSet = new OpenHashSet[ID](1 << 20)
+        dstIds.foreach(dstIdSet.add)
+        val sortedDstIds = new Array[ID](dstIdSet.size)
+        var i = 0
+        var pos = dstIdSet.nextPos(0)
+        while (pos != -1) {
+          sortedDstIds(i) = dstIdSet.getValue(pos)
+          pos = dstIdSet.nextPos(pos + 1)
+          i += 1
         }
-        builder.build().compress()
+        assert(i == dstIdSet.size)
+        Sorting.quickSort(sortedDstIds)
+        val dstIdToLocalIndex = new OpenHashMap[ID, Int](sortedDstIds.length)
+        i = 0
+        while (i < sortedDstIds.length) {
+          dstIdToLocalIndex.update(sortedDstIds(i), i)
+          i += 1
+        }
+        logDebug(
+          "Converting to local indices took " + (System
+            .nanoTime() - start) / 1e9 + " seconds.")
+        val dstLocalIndices = dstIds.map(dstIdToLocalIndex.apply)
+        (srcBlockId, (dstBlockId, srcIds, dstLocalIndices, ratings))
+    }.groupByKey(new ALSPartitioner(srcPart.numPartitions)).mapValues { iter =>
+      val builder = new UncompressedInBlockBuilder[ID](new LocalIndexEncoder(
+        dstPart.numPartitions))
+      iter.foreach {
+        case (dstBlockId, srcIds, dstLocalIndices, ratings) =>
+          builder.add(dstBlockId, srcIds, dstLocalIndices, ratings)
       }
-      .setName(prefix + "InBlocks")
-      .persist(storageLevel)
-    val outBlocks = inBlocks
-      .mapValues {
-        case InBlock(srcIds, dstPtrs, dstEncodedIndices, _) =>
-          val encoder = new LocalIndexEncoder(dstPart.numPartitions)
-          val activeIds = Array.fill(dstPart.numPartitions)(
-            mutable.ArrayBuilder.make[Int])
-          var i = 0
-          val seen = new Array[Boolean](dstPart.numPartitions)
-          while (i < srcIds.length) {
-            var j = dstPtrs(i)
-            ju.Arrays.fill(seen, false)
-            while (j < dstPtrs(i + 1)) {
-              val dstBlockId = encoder.blockId(dstEncodedIndices(j))
-              if (!seen(dstBlockId)) {
-                activeIds(
-                  dstBlockId) += i // add the local index in this out-block
-                seen(dstBlockId) = true
-              }
-              j += 1
+      builder.build().compress()
+    }.setName(prefix + "InBlocks").persist(storageLevel)
+    val outBlocks = inBlocks.mapValues {
+      case InBlock(srcIds, dstPtrs, dstEncodedIndices, _) =>
+        val encoder = new LocalIndexEncoder(dstPart.numPartitions)
+        val activeIds = Array
+          .fill(dstPart.numPartitions)(mutable.ArrayBuilder.make[Int])
+        var i = 0
+        val seen = new Array[Boolean](dstPart.numPartitions)
+        while (i < srcIds.length) {
+          var j = dstPtrs(i)
+          ju.Arrays.fill(seen, false)
+          while (j < dstPtrs(i + 1)) {
+            val dstBlockId = encoder.blockId(dstEncodedIndices(j))
+            if (!seen(dstBlockId)) {
+              activeIds(
+                dstBlockId) += i // add the local index in this out-block
+              seen(dstBlockId) = true
             }
-            i += 1
+            j += 1
           }
-          activeIds.map { x => x.result() }
-      }
-      .setName(prefix + "OutBlocks")
-      .persist(storageLevel)
+          i += 1
+        }
+        activeIds.map { x => x.result() }
+    }.setName(prefix + "OutBlocks").persist(storageLevel)
     (inBlocks, outBlocks)
   }
 
@@ -1348,8 +1324,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
               (srcBlockId, activeIndices.map(idx => srcFactors(idx))))
         }
     }
-    val merged = srcOut.groupByKey(new ALSPartitioner(
-      dstInBlocks.partitions.length))
+    val merged = srcOut
+      .groupByKey(new ALSPartitioner(dstInBlocks.partitions.length))
     dstInBlocks.join(merged).mapValues {
       case (InBlock(dstIds, srcPtrs, srcEncodedIndices, ratings), srcFactors) =>
         val sortedSrcFactors = new Array[FactorBlock](numSrcBlocks)
@@ -1423,9 +1399,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
 
     require(numBlocks > 0, s"numBlocks must be positive but found $numBlocks.")
 
-    private[this] final val numLocalIndexBits = math.min(
-      java.lang.Integer.numberOfLeadingZeros(numBlocks - 1),
-      31)
+    private[this] final val numLocalIndexBits = math
+      .min(java.lang.Integer.numberOfLeadingZeros(numBlocks - 1), 31)
     private[this] final val localIndexMask = (1 << numLocalIndexBits) - 1
 
     /** Encodes a (blockId, localIndex) into a single integer. */

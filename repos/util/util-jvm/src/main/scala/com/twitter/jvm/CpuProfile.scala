@@ -81,8 +81,8 @@ object CpuProfile {
     * See http://www.brendangregg.com/blog/2014-06-09/java-cpu-sampling-using-hprof.html
     */
   private[jvm] def isRunnable(stackElem: StackTraceElement): Boolean =
-    !IdleClassAndMethod.contains(
-      (stackElem.getClassName, stackElem.getMethodName))
+    !IdleClassAndMethod
+      .contains((stackElem.getClassName, stackElem.getMethodName))
 
   /**
     * Profile CPU usage of threads in `state` for `howlong`, sampling

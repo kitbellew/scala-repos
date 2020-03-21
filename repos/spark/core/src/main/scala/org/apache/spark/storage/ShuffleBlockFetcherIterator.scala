@@ -109,8 +109,7 @@ private[spark] final class ShuffleBlockFetcherIterator(
   /** Current number of requests in flight */
   private[this] var reqsInFlight = 0
 
-  private[this] val shuffleMetrics = context
-    .taskMetrics()
+  private[this] val shuffleMetrics = context.taskMetrics()
     .registerTempShuffleReadMetrics()
 
   /**
@@ -199,8 +198,8 @@ private[spark] final class ShuffleBlockFetcherIterator(
             }
           }
           logTrace(
-            "Got remote block " + blockId + " after " + Utils.getUsedTimeMs(
-              startTime))
+            "Got remote block " + blockId + " after " + Utils
+              .getUsedTimeMs(startTime))
         }
 
         override def onBlockFetchFailure(
@@ -319,8 +318,8 @@ private[spark] final class ShuffleBlockFetcherIterator(
 
     val numFetches = remoteRequests.size - fetchRequests.size
     logInfo(
-      "Started " + numFetches + " remote fetches in" + Utils.getUsedTimeMs(
-        startTime))
+      "Started " + numFetches + " remote fetches in" + Utils
+        .getUsedTimeMs(startTime))
 
     // Get Local Blocks
     fetchLocalBlocks()

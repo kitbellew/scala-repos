@@ -74,8 +74,8 @@ private[deploy] class Worker(
   // For worker and executor IDs
   private def createDateFormat = new SimpleDateFormat("yyyyMMddHHmmss")
   // Send a heartbeat every (heartbeat timeout) / 4 milliseconds
-  private val HEARTBEAT_MILLIS =
-    conf.getLong("spark.worker.timeout", 60) * 1000 / 4
+  private val HEARTBEAT_MILLIS = conf
+    .getLong("spark.worker.timeout", 60) * 1000 / 4
 
   // Model retries to connect to the master, after Hadoop's model.
   // The first six attempts to reconnect are in shorter intervals (between 5 and 15 seconds)
@@ -97,24 +97,22 @@ private[deploy] class Worker(
     60
       * REGISTRATION_RETRY_FUZZ_MULTIPLIER))
 
-  private val CLEANUP_ENABLED = conf.getBoolean(
-    "spark.worker.cleanup.enabled",
-    false)
+  private val CLEANUP_ENABLED = conf
+    .getBoolean("spark.worker.cleanup.enabled", false)
   // How often worker will clean up old app folders
   private val CLEANUP_INTERVAL_MILLIS =
     conf.getLong("spark.worker.cleanup.interval", 60 * 30) * 1000
   // TTL for app folders/data;  after TTL expires it will be cleaned up
-  private val APP_DATA_RETENTION_SECONDS = conf.getLong(
-    "spark.worker.cleanup.appDataTtl",
-    7 * 24 * 3600)
+  private val APP_DATA_RETENTION_SECONDS = conf
+    .getLong("spark.worker.cleanup.appDataTtl", 7 * 24 * 3600)
 
   private val testing: Boolean = sys.props.contains("spark.testing")
   private var master: Option[RpcEndpointRef] = None
   private var activeMasterUrl: String = ""
   private[worker] var activeMasterWebUiUrl: String = ""
   private var workerWebUiUrl: String = ""
-  private val workerUri =
-    RpcEndpointAddress(rpcEnv.address, endpointName).toString
+  private val workerUri = RpcEndpointAddress(rpcEnv.address, endpointName)
+    .toString
   private var registered = false
   private var connected = false
   private val workerId = generateWorkerId()
@@ -152,10 +150,8 @@ private[deploy] class Worker(
 
   private var connectionAttemptCount = 0
 
-  private val metricsSystem = MetricsSystem.createMetricsSystem(
-    "worker",
-    conf,
-    securityMgr)
+  private val metricsSystem = MetricsSystem
+    .createMetricsSystem("worker", conf, securityMgr)
   private val workerSource = new WorkerSource(this)
 
   private var registerMasterFutures: Array[JFuture[_]] = null
@@ -166,7 +162,8 @@ private[deploy] class Worker(
   // time so that we can register with all masters.
   private val registerMasterThreadPool = ThreadUtils.newDaemonCachedThreadPool(
     "worker-register-master-threadpool",
-    masterRpcAddresses.length // Make sure we can register with all masters at the same time
+    masterRpcAddresses
+      .length // Make sure we can register with all masters at the same time
   )
 
   var coresUsed = 0
@@ -176,8 +173,7 @@ private[deploy] class Worker(
   def memoryFree: Int = memory - memoryUsed
 
   private def createWorkDir() {
-    workDir = Option(workDirPath)
-      .map(new File(_))
+    workDir = Option(workDirPath).map(new File(_))
       .getOrElse(new File(sparkHome, "work"))
     try {
       // This sporadically fails - not sure why ... !workDir.exists() && !workDir.mkdirs()
@@ -197,11 +193,9 @@ private[deploy] class Worker(
 
   override def onStart() {
     assert(!registered)
-    logInfo("Starting Spark worker %s:%d with %d cores, %s RAM".format(
-      host,
-      port,
-      cores,
-      Utils.megabytesToString(memory)))
+    logInfo(
+      "Starting Spark worker %s:%d with %d cores, %s RAM"
+        .format(host, port, cores, Utils.megabytesToString(memory)))
     logInfo(s"Running Spark version ${org.apache.spark.SPARK_VERSION}")
     logInfo("Spark home: " + sparkHome)
     createWorkDir()
@@ -376,15 +370,8 @@ private[deploy] class Worker(
   }
 
   private def registerWithMaster(masterEndpoint: RpcEndpointRef): Unit = {
-    masterEndpoint
-      .ask[RegisterWorkerResponse](RegisterWorker(
-        workerId,
-        host,
-        port,
-        self,
-        cores,
-        memory,
-        workerWebUiUrl))
+    masterEndpoint.ask[RegisterWorkerResponse](
+      RegisterWorker(workerId, host, port, self, cores, memory, workerWebUiUrl))
       .onComplete {
         // This is a very fast action so we can use "ThreadUtils.sameThread"
         case Success(msg) => Utils.tryLogNonFatalError {
@@ -401,7 +388,8 @@ private[deploy] class Worker(
       msg match {
         case RegisteredWorker(masterRef, masterWebUiUrl) =>
           logInfo(
-            "Successfully registered with master " + masterRef.address.toSparkURL)
+            "Successfully registered with master " + masterRef.address
+              .toSparkURL)
           registered = true
           changeMaster(masterRef, masterWebUiUrl)
           forwordMessageScheduler.scheduleAtFixedRate(
@@ -429,8 +417,8 @@ private[deploy] class Worker(
           val execs = executors.values.map { e =>
             new ExecutorDescription(e.appId, e.execId, e.cores, e.state)
           }
-          masterRef.send(
-            WorkerLatestState(workerId, execs.toList, drivers.keys.toSeq))
+          masterRef
+            .send(WorkerLatestState(workerId, execs.toList, drivers.keys.toSeq))
 
         case RegisterWorkerFailed(message) =>
           if (!registered) {
@@ -458,21 +446,18 @@ private[deploy] class Worker(
           if (appDirs == null) {
             throw new IOException("ERROR: Failed to list files in " + appDirs)
           }
-          appDirs
-            .filter { dir =>
-              // the directory is used by an application - check that the application is not running
-              // when cleaning up
-              val appIdFromDir = dir.getName
-              val isAppStillRunning = appIds.contains(appIdFromDir)
-              dir.isDirectory && !isAppStillRunning &&
-              !Utils.doesDirectoryContainAnyNewFiles(
-                dir,
-                APP_DATA_RETENTION_SECONDS)
-            }
-            .foreach { dir =>
-              logInfo(s"Removing directory: ${dir.getPath}")
-              Utils.deleteRecursively(dir)
-            }
+          appDirs.filter { dir =>
+            // the directory is used by an application - check that the application is not running
+            // when cleaning up
+            val appIdFromDir = dir.getName
+            val isAppStillRunning = appIds.contains(appIdFromDir)
+            dir.isDirectory && !isAppStillRunning &&
+            !Utils
+              .doesDirectoryContainAnyNewFiles(dir, APP_DATA_RETENTION_SECONDS)
+          }.foreach { dir =>
+            logInfo(s"Removing directory: ${dir.getPath}")
+            Utils.deleteRecursively(dir)
+          }
         }(cleanupThreadExecutor)
 
         cleanupFuture.onFailure {
@@ -482,7 +467,8 @@ private[deploy] class Worker(
 
       case MasterChanged(masterRef, masterWebUiUrl) =>
         logInfo(
-          "Master has changed, new master is at " + masterRef.address.toSparkURL)
+          "Master has changed, new master is at " + masterRef.address
+            .toSparkURL)
         changeMaster(masterRef, masterWebUiUrl)
 
         val execs = executors.values.map(e =>
@@ -503,10 +489,9 @@ private[deploy] class Worker(
             "Invalid Master (" + masterUrl + ") attempted to launch executor.")
         } else {
           try {
-            logInfo("Asked to launch executor %s/%d for %s".format(
-              appId,
-              execId,
-              appDesc.name))
+            logInfo(
+              "Asked to launch executor %s/%d for %s"
+                .format(appId, execId, appDesc.name))
 
             // Create the executor's working directory
             val executorDir = new File(workDir, appId + "/" + execId)
@@ -519,15 +504,11 @@ private[deploy] class Worker(
             // application finishes.
             val appLocalDirs = appDirectories.getOrElse(
               appId,
-              Utils
-                .getOrCreateLocalRootDirs(conf)
-                .map { dir =>
-                  val appDir = Utils
-                    .createDirectory(dir, namePrefix = "executor")
-                  Utils.chmod700(appDir)
-                  appDir.getAbsolutePath()
-                }
-                .toSeq
+              Utils.getOrCreateLocalRootDirs(conf).map { dir =>
+                val appDir = Utils.createDirectory(dir, namePrefix = "executor")
+                Utils.chmod700(appDir)
+                appDir.getAbsolutePath()
+              }.toSeq
             )
             appDirectories(appId) = appLocalDirs
             val manager = new ExecutorRunner(
@@ -666,8 +647,8 @@ private[deploy] class Worker(
   }
 
   private def maybeCleanupApplication(id: String): Unit = {
-    val shouldCleanup =
-      finishedApps.contains(id) && !executors.values.exists(_.appId == id)
+    val shouldCleanup = finishedApps.contains(id) && !executors.values
+      .exists(_.appId == id)
     if (shouldCleanup) {
       finishedApps -= id
       appDirectories.remove(id).foreach { dirList =>

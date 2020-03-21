@@ -57,8 +57,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
   val url = s"http://localhost:$testServerPort/"
 
   // #scalaws-context
-  implicit val context =
-    play.api.libs.concurrent.Execution.Implicits.defaultContext
+  implicit val context = play.api.libs.concurrent.Execution.Implicits
+    .defaultContext
   // #scalaws-context
 
   val system = ActorSystem()
@@ -71,9 +71,9 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
   def withServer[T](routes: (String, String) => Handler)(
       block: WSClient => T): T = {
-    val app = GuiceApplicationBuilder()
-      .routes({ case (method, path) => routes(method, path) })
-      .build()
+    val app = GuiceApplicationBuilder().routes({
+      case (method, path) => routes(method, path)
+    }).build()
     running(TestServer(testServerPort, app))(block(
       app.injector.instanceOf[WSClient]))
   }
@@ -98,8 +98,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       //#complex-holder
       val complexRequest: WSRequest = request
         .withHeaders("Accept" -> "application/json")
-        .withRequestTimeout(10000.millis)
-        .withQueryString("search" -> "play")
+        .withRequestTimeout(10000.millis).withQueryString("search" -> "play")
       //#complex-holder
 
       //#holder-get
@@ -152,8 +151,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       val xmlString = "<foo></foo>"
       val response =
         //#content-type
-        ws.url(url)
-          .withHeaders("Content-Type" -> "application/xml")
+        ws.url(url).withHeaders("Content-Type" -> "application/xml")
           .post(xmlString)
       //#content-type
 
@@ -295,8 +293,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       } { ws =>
         //#stream-count-bytes
         // Make the request
-        val futureResponse
-            : Future[StreamedResponse] = ws.url(url).withMethod("GET").stream()
+        val futureResponse: Future[StreamedResponse] = ws.url(url)
+          .withMethod("GET").stream()
 
         val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
           // Count the number of bytes returned
@@ -315,10 +313,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         try {
           //#stream-to-file
           // Make the request
-          val futureResponse: Future[StreamedResponse] = ws
-            .url(url)
-            .withMethod("GET")
-            .stream()
+          val futureResponse: Future[StreamedResponse] = ws.url(url)
+            .withMethod("GET").stream()
 
           val downloadedFile: Future[File] = futureResponse.flatMap { res =>
             val outputStream = new FileOutputStream(file)
@@ -329,16 +325,13 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
             }
 
             // materialize and run the stream
-            res.body
-              .runWith(sink)
-              .andThen {
-                case result =>
-                  // Close the output stream whether there was an error or not
-                  outputStream.close()
-                  // Get the result or rethrow the error
-                  result.get
-              }
-              .map(_ => file)
+            res.body.runWith(sink).andThen {
+              case result =>
+                // Close the output stream whether there was an error or not
+                outputStream.close()
+                // Get the result or rethrow the error
+                result.get
+            }.map(_ => file)
           }
           //#stream-to-file
           await(downloadedFile) must_== file
@@ -360,10 +353,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
                 if (response.status == 200) {
 
                   // Get the content type
-                  val contentType = response.headers
-                    .get("Content-Type")
-                    .flatMap(_.headOption)
-                    .getOrElse("application/octet-stream")
+                  val contentType = response.headers.get("Content-Type")
+                    .flatMap(_.headOption).getOrElse("application/octet-stream")
 
                   // If there's a content length, send that, otherwise return the body chunked
                   response.headers.get("Content-Length") match {
@@ -379,11 +370,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           }
         //#stream-to-result
         val file = File.createTempFile("stream-to-file-", ".txt")
-        await(
-          downloadFile(FakeRequest())
-            .flatMap(
-              _.body.dataStream.runFold(0L)((t, b) =>
-                t + b.length))) must_== 10000L
+        await(downloadFile(FakeRequest()).flatMap(_.body.dataStream.runFold(0L)(
+          (t, b) => t + b.length))) must_== 10000L
         file.delete()
       }
 
@@ -391,11 +379,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         case ("PUT", "/") => Action(Ok.chunked(largeSource))
       } { ws =>
         //#stream-put
-        val futureResponse: Future[StreamedResponse] = ws
-          .url(url)
-          .withMethod("PUT")
-          .withBody("some body")
-          .stream()
+        val futureResponse: Future[StreamedResponse] = ws.url(url)
+          .withMethod("PUT").withBody("some body").stream()
         //#stream-put
 
         val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
@@ -412,10 +397,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       } { ws =>
         def largeImageFromDB: Source[ByteString, _] = largeSource
         //#scalaws-stream-request
-        val wsResponse: Future[WSResponse] = ws
-          .url(url)
-          .withBody(StreamedBody(largeImageFromDB))
-          .execute("PUT")
+        val wsResponse: Future[WSResponse] = ws.url(url)
+          .withBody(StreamedBody(largeImageFromDB)).execute("PUT")
         //#scalaws-stream-request
         await(wsResponse).status must_== 200
       }

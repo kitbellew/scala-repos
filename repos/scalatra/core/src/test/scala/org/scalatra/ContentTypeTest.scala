@@ -133,9 +133,8 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
       system.actorOf(Props(new RequestActor)) ? i
     }
     for (future <- futures) {
-      val (i: Int, mediaType: Option[String]) = Await.result(
-        future.mapTo[(Int, Option[String])],
-        5 seconds)
+      val (i: Int, mediaType: Option[String]) = Await
+        .result(future.mapTo[(Int, Option[String])], 5 seconds)
       mediaType should be(Some(i.toString))
     }
   }

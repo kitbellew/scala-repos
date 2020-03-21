@@ -33,10 +33,8 @@ class ALSModel(
     sc.parallelize(Seq(rank)).saveAsObjectFile(s"/tmp/${id}/rank")
     userFeatures.saveAsObjectFile(s"/tmp/${id}/userFeatures")
     productFeatures.saveAsObjectFile(s"/tmp/${id}/productFeatures")
-    sc.parallelize(Seq(users))
-      .saveAsObjectFile(s"/tmp/${id}/users")
-    sc.parallelize(Seq(items))
-      .saveAsObjectFile(s"/tmp/${id}/items")
+    sc.parallelize(Seq(users)).saveAsObjectFile(s"/tmp/${id}/users")
+    sc.parallelize(Seq(items)).saveAsObjectFile(s"/tmp/${id}/items")
     true
   }
 
@@ -61,11 +59,7 @@ object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
       rank = sc.get.objectFile[Int](s"/tmp/${id}/rank").first,
       userFeatures = sc.get.objectFile(s"/tmp/${id}/userFeatures"),
       productFeatures = sc.get.objectFile(s"/tmp/${id}/productFeatures"),
-      users = sc.get
-        .objectFile[EntityMap[User]](s"/tmp/${id}/users")
-        .first,
-      items = sc.get
-        .objectFile[EntityMap[Item]](s"/tmp/${id}/items")
-        .first)
+      users = sc.get.objectFile[EntityMap[User]](s"/tmp/${id}/users").first,
+      items = sc.get.objectFile[EntityMap[Item]](s"/tmp/${id}/items").first)
   }
 }

@@ -53,6 +53,5 @@ class Tutorial2(args: Args) extends Job(args) {
     entry. If we only want to write the 'reversed version, we need to use
     project.
     **/
-    .project('reversed)
-    .write(output)
+    .project('reversed).write(output)
 }

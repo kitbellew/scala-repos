@@ -101,8 +101,7 @@ class OldConsumer(topicFilter: TopicFilter, consumerProps: Properties)
       topicFilter,
       1,
       new DefaultDecoder(),
-      new DefaultDecoder())
-    .head
+      new DefaultDecoder()).head
   val iter = stream.iterator
 
   override def receive(): BaseConsumerRecord = {

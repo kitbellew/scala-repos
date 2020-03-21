@@ -24,8 +24,7 @@ object RuntimeDependencyInjection extends PlaySpecification {
       cleanup.MessageQueue.stopped must_== true
     }
     "support implemented by annotation" in new WithApplication() {
-      app.injector
-        .instanceOf[implemented.Hello]
+      app.injector.instanceOf[implemented.Hello]
         .sayHello("world") must_== "Hello world"
     }
   }
@@ -111,12 +110,10 @@ package guicemodule {
   class Module extends AbstractModule {
     def configure() = {
 
-      bind(classOf[Hello])
-        .annotatedWith(Names.named("en"))
+      bind(classOf[Hello]).annotatedWith(Names.named("en"))
         .to(classOf[EnglishHello])
 
-      bind(classOf[Hello])
-        .annotatedWith(Names.named("de"))
+      bind(classOf[Hello]).annotatedWith(Names.named("de"))
         .to(classOf[GermanHello])
     }
   }
@@ -138,8 +135,7 @@ package dynamicguicemodule {
       // Expect configuration like:
       // hello.en = "myapp.EnglishHello"
       // hello.de = "myapp.GermanHello"
-      val helloConfiguration: Configuration = configuration
-        .getConfig("hello")
+      val helloConfiguration: Configuration = configuration.getConfig("hello")
         .getOrElse(Configuration.empty)
       val languages: Set[String] = helloConfiguration.subKeys
       // Iterate through all the languages and bind the
@@ -148,11 +144,8 @@ package dynamicguicemodule {
       for (l <- languages) {
         val bindingClassName: String = helloConfiguration.getString(l).get
         val bindingClass: Class[_ <: Hello] = environment.classLoader
-          .loadClass(bindingClassName)
-          .asSubclass(classOf[Hello])
-        bind(classOf[Hello])
-          .annotatedWith(Names.named(l))
-          .to(bindingClass)
+          .loadClass(bindingClassName).asSubclass(classOf[Hello])
+        bind(classOf[Hello]).annotatedWith(Names.named(l)).to(bindingClass)
       }
     }
   }
@@ -170,15 +163,11 @@ package eagerguicemodule {
   class Module extends AbstractModule {
     def configure() = {
 
-      bind(classOf[Hello])
-        .annotatedWith(Names.named("en"))
-        .to(classOf[EnglishHello])
-        .asEagerSingleton
+      bind(classOf[Hello]).annotatedWith(Names.named("en"))
+        .to(classOf[EnglishHello]).asEagerSingleton
 
-      bind(classOf[Hello])
-        .annotatedWith(Names.named("de"))
-        .to(classOf[GermanHello])
-        .asEagerSingleton
+      bind(classOf[Hello]).annotatedWith(Names.named("de"))
+        .to(classOf[GermanHello]).asEagerSingleton
     }
   }
 //#eager-guice-module
@@ -242,8 +231,7 @@ package customapplicationloader {
     override def builder(
         context: ApplicationLoader.Context): GuiceApplicationBuilder = {
       val extra = Configuration("a" -> 1)
-      initialBuilder
-        .in(context.environment)
+      initialBuilder.in(context.environment)
         .loadConfig(extra ++ context.initialConfiguration)
         .overrides(overrides(context): _*)
     }

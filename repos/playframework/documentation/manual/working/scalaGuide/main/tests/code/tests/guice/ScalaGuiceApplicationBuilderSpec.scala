@@ -31,8 +31,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
       val application = new GuiceApplicationBuilder()
         .load(new play.api.inject.BuiltinModule) // ###skip
         .loadConfig(Configuration.reference) // ###skip
-        .in(Environment(new File("path/to/app"), classLoader, Mode.Test))
-        .build
+        .in(Environment(new File("path/to/app"), classLoader, Mode.Test)).build
       // #set-environment
 
       application.path must_== new File("path/to/app")
@@ -46,10 +45,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
       val application = new GuiceApplicationBuilder()
         .load(new play.api.inject.BuiltinModule) // ###skip
         .loadConfig(Configuration.reference) // ###skip
-        .in(new File("path/to/app"))
-        .in(Mode.Test)
-        .in(classLoader)
-        .build
+        .in(new File("path/to/app")).in(Mode.Test).in(classLoader).build
       // #set-environment-values
 
       application.path must_== new File("path/to/app")
@@ -62,8 +58,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
       val application = new GuiceApplicationBuilder()
         .configure(Configuration("a" -> 1))
         .configure(Map("b" -> 2, "c" -> "three"))
-        .configure("d" -> 4, "e" -> "five")
-        .build
+        .configure("d" -> 4, "e" -> "five").build
       // #add-configuration
 
       application.configuration.getInt("a") must beSome(1)
@@ -76,8 +71,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
     "override configuration" in {
       // #override-configuration
       val application = new GuiceApplicationBuilder()
-        .loadConfig(env => Configuration.load(env))
-        .build
+        .loadConfig(env => Configuration.load(env)).build
       // #override-configuration
 
       application.configuration.keys must not be empty
@@ -85,10 +79,8 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
 
     "add bindings" in {
       // #add-bindings
-      val injector = new GuiceApplicationBuilder()
-        .bindings(new ComponentModule)
-        .bindings(bind[Component].to[DefaultComponent])
-        .injector
+      val injector = new GuiceApplicationBuilder().bindings(new ComponentModule)
+        .bindings(bind[Component].to[DefaultComponent]).injector
       // #add-bindings
 
       injector.instanceOf[Component] must beAnInstanceOf[DefaultComponent]
@@ -99,8 +91,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
       val application = new GuiceApplicationBuilder()
         .configure("play.http.router" -> classOf[Routes].getName) // ###skip
         .bindings(new ComponentModule) // ###skip
-        .overrides(bind[Component].to[MockComponent])
-        .build
+        .overrides(bind[Component].to[MockComponent]).build
       // #override-bindings
 
       running(application) {
@@ -111,11 +102,9 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
 
     "load modules" in {
       // #load-modules
-      val injector = new GuiceApplicationBuilder()
-        .load(
-          new play.api.inject.BuiltinModule,
-          bind[Component].to[DefaultComponent])
-        .injector
+      val injector = new GuiceApplicationBuilder().load(
+        new play.api.inject.BuiltinModule,
+        bind[Component].to[DefaultComponent]).injector
       // #load-modules
 
       injector.instanceOf[Component] must beAnInstanceOf[DefaultComponent]
@@ -125,8 +114,7 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
       // #disable-modules
       val injector = new GuiceApplicationBuilder()
         .bindings(new ComponentModule) // ###skip
-        .disable[ComponentModule]
-        .injector
+        .disable[ComponentModule].injector
       // #disable-modules
 
       injector.instanceOf[Component] must throwA[
@@ -135,11 +123,9 @@ class ScalaGuiceApplicationBuilderSpec extends PlaySpecification {
 
     "injector builder" in {
       // #injector-builder
-      val injector = new GuiceInjectorBuilder()
-        .configure("key" -> "value")
+      val injector = new GuiceInjectorBuilder().configure("key" -> "value")
         .bindings(new ComponentModule)
-        .overrides(bind[Component].to[MockComponent])
-        .injector
+        .overrides(bind[Component].to[MockComponent]).injector
 
       val component = injector.instanceOf[Component]
       // #injector-builder

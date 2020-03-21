@@ -198,18 +198,17 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Dummy,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
       result must haveSize(22)
 
-      val expected = Vector
-        .tabulate(22) { i =>
-          Vector.fill(22)(SDecimal(0)).updated(i, SDecimal(1))
-        }
-        .toSet
+      val expected = Vector.tabulate(22) { i =>
+        Vector.fill(22)(SDecimal(0)).updated(i, SDecimal(1))
+      }.toSet
 
       val result2 = result collect {
         case (ids, SArray(d)) if ids.length == 1 => d
@@ -239,8 +238,8 @@ trait StatsLibSpecs[M[+_]]
     "compute rank, denseRank, indexedRank" in {
       val line = Line(1, 1, "")
 
-      val data = dag.AbsoluteLoad(
-        Const(CString("/het/numbersDoubleLong"))(line))(line)
+      val data = dag
+        .AbsoluteLoad(Const(CString("/het/numbersDoubleLong"))(line))(line)
 
       def wrapper(d: DepGraph, name: String) =
         Join(WrapObject, Cross(None), Const(CString(name))(line), d)(line)
@@ -261,10 +260,9 @@ trait StatsLibSpecs[M[+_]]
       val ordering = scala.math.Ordering.by[(SValue, _), SValue](_._1)
 
       // this is ugly, but so is the structure coming out of testEval :/
-      val result: List[Map[String, SValue]] = testEval(input).toList
-        .map { case (Vector(k), SObject(v)) => (k, v) }
-        .sorted(ordering)
-        .map(_._2)
+      val result: List[Map[String, SValue]] = testEval(input).toList.map {
+        case (Vector(k), SObject(v)) => (k, v)
+      }.sorted(ordering).map(_._2)
 
       val expected = List(
         Map(
@@ -350,8 +348,8 @@ trait StatsLibSpecs[M[+_]]
     "compute rank, denseRank, indexedRank on heterogenous numbers" in {
       val line = Line(1, 1, "")
 
-      val data = dag.AbsoluteLoad(
-        Const(CString("/het/numbersDoubleLong"))(line))(line)
+      val data = dag
+        .AbsoluteLoad(Const(CString("/het/numbersDoubleLong"))(line))(line)
 
       def wrapper(d: DepGraph, name: String) =
         Join(WrapObject, Cross(None), Const(CString(name))(line), d)(line)
@@ -372,10 +370,9 @@ trait StatsLibSpecs[M[+_]]
       val ordering = scala.math.Ordering.by[(SValue, _), SValue](_._1)
 
       // this is ugly, but so is the structure coming out of testEval :/
-      val result: List[Map[String, SValue]] = testEval(input).toList
-        .map { case (Vector(k), SObject(v)) => (k, v) }
-        .sorted(ordering)
-        .map(_._2)
+      val result: List[Map[String, SValue]] = testEval(input).toList.map {
+        case (Vector(k), SObject(v)) => (k, v)
+      }.sorted(ordering).map(_._2)
 
       val expected = List(
         Map(
@@ -578,8 +575,8 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             DenseRank,
-            dag
-              .AbsoluteLoad(Const(CString("/hom/numbers6"))(line))(line))(line),
+            dag.AbsoluteLoad(Const(CString("/hom/numbers6"))(line))(line))(
+            line),
           Const(CLong(3))(line))(line)
       )(line)
 
@@ -618,8 +615,8 @@ trait StatsLibSpecs[M[+_]]
 
     "compute linear correlation" in {
       val line = Line(1, 1, "")
-      val heightWeight = dag.AbsoluteLoad(
-        Const(CString("hom/heightWeight"))(line))(line)
+      val heightWeight = dag
+        .AbsoluteLoad(Const(CString("hom/heightWeight"))(line))(line)
 
       val input = dag.Morph2(
         LinearCorrelation,
@@ -886,8 +883,8 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             Rank,
-            dag
-              .AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
+            line),
           Const(CLong(13))(line))(line)
       )(line)
 
@@ -913,8 +910,8 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             Rank,
-            dag
-              .AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
+            line),
           Const(CLong(5))(line))(line)
       )(line)
 
@@ -941,8 +938,8 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             Rank,
-            dag
-              .AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
+            line),
           Const(CLong(10))(line))(line)
       )(line)
 
@@ -1008,8 +1005,8 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             DenseRank,
-            dag
-              .AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
+            line),
           Const(CLong(10))(line))(line)
       )(line)
 
@@ -1035,8 +1032,8 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             DenseRank,
-            dag
-              .AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
+            line),
           Const(CLong(9))(line))(line)
       )(line)
 
@@ -1352,8 +1349,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 0 => (d.toDouble ~= 1)
       }
 
-      result2 must contain(
-        true).only //todo test this answer to a certain level of accuracy
+      result2 must contain(true)
+        .only //todo test this answer to a certain level of accuracy
     }
 
     "compute covariance" in {
@@ -1646,8 +1643,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Median,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1665,8 +1663,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Median,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1700,8 +1699,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Mode,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1735,8 +1735,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Mode,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1759,8 +1760,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Rank,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1776,8 +1778,8 @@ trait StatsLibSpecs[M[+_]]
     "compute rank within a filter" in {
       val line = Line(1, 1, "")
 
-      val numbers = dag.AbsoluteLoad(
-        Const(CString("/hom/numbersAcrossSlices"))(line))(line)
+      val numbers = dag
+        .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line)
 
       val input = Filter(
         IdentitySort,
@@ -1854,8 +1856,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         DenseRank,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1865,8 +1868,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(
-        5, 10, 14, 1, 6, 9, 13, 2, 12, 7, 3, 11, 8, 4, 0).only
+      result2 must contain(5, 10, 14, 1, 6, 9, 13, 2, 12, 7, 3, 11, 8, 4, 0)
+        .only
     }
 
     "compute denseRank within a filter" in {
@@ -1879,10 +1882,11 @@ trait StatsLibSpecs[M[+_]]
         Join(
           Eq,
           Cross(None),
-          dag.Morph1(
-            DenseRank,
-            dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-              line))(line),
+          dag
+            .Morph1(
+              DenseRank,
+              dag.AbsoluteLoad(
+                Const(CString("/hom/numbersAcrossSlices"))(line))(line))(line),
           Const(CLong(3))(line))(line)
       )(line)
 
@@ -1917,8 +1921,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(
-        5, 10, 14, 6, 9, 13, 17, 12, 7, 3, 16, 11, 8, 4, 15).only
+      result2 must contain(5, 10, 14, 6, 9, 13, 17, 12, 7, 3, 16, 11, 8, 4, 15)
+        .only
     }
 
     "compute covariance" in {
@@ -2140,8 +2144,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Median,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2159,8 +2164,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Mode,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2178,8 +2184,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Mode,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2197,8 +2204,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         Rank,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2222,10 +2230,11 @@ trait StatsLibSpecs[M[+_]]
         Join(
           Eq,
           Cross(None),
-          dag.Morph1(
-            Rank,
-            dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-              line))(line),
+          dag
+            .Morph1(
+              Rank,
+              dag.AbsoluteLoad(
+                Const(CString("/het/numbersAcrossSlices"))(line))(line))(line),
           Const(CLong(17))(line))(line)
       )(line)
 
@@ -2250,10 +2259,11 @@ trait StatsLibSpecs[M[+_]]
         Join(
           Eq,
           Cross(None),
-          dag.Morph1(
-            Rank,
-            dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-              line))(line),
+          dag
+            .Morph1(
+              Rank,
+              dag.AbsoluteLoad(
+                Const(CString("/het/numbersAcrossSlices"))(line))(line))(line),
           Const(CLong(9))(line))(line)
       )(line)
 
@@ -2278,10 +2288,11 @@ trait StatsLibSpecs[M[+_]]
         Join(
           LtEq,
           Cross(None),
-          dag.Morph1(
-            Rank,
-            dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-              line))(line),
+          dag
+            .Morph1(
+              Rank,
+              dag.AbsoluteLoad(
+                Const(CString("/het/numbersAcrossSlices"))(line))(line))(line),
           Const(CLong(10))(line))(line)
       )(line)
 
@@ -2325,8 +2336,9 @@ trait StatsLibSpecs[M[+_]]
 
       val input = dag.Morph1(
         DenseRank,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2350,10 +2362,11 @@ trait StatsLibSpecs[M[+_]]
         Join(
           Eq,
           Cross(None),
-          dag.Morph1(
-            DenseRank,
-            dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-              line))(line),
+          dag
+            .Morph1(
+              DenseRank,
+              dag.AbsoluteLoad(
+                Const(CString("/het/numbersAcrossSlices"))(line))(line))(line),
           Const(CLong(13))(line))(line)
       )(line)
 
@@ -2378,10 +2391,11 @@ trait StatsLibSpecs[M[+_]]
         Join(
           LtEq,
           Cross(None),
-          dag.Morph1(
-            DenseRank,
-            dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-              line))(line),
+          dag
+            .Morph1(
+              DenseRank,
+              dag.AbsoluteLoad(
+                Const(CString("/het/numbersAcrossSlices"))(line))(line))(line),
           Const(CLong(10))(line))(line)
       )(line)
 

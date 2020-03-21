@@ -90,8 +90,8 @@ abstract class RemoteNodeShutdownAndComesBackSpec
         testConductor.blackhole(second, first, Direction.Send).await
         // Shut down all existing connections so that the system can enter recovery mode (association attempts)
         Await.result(
-          RARP(system).provider.transport.managementCommand(ForceDisassociate(
-            node(second).address)),
+          RARP(system).provider.transport
+            .managementCommand(ForceDisassociate(node(second).address)),
           3.seconds)
 
         // Trigger reconnect attempt and also queue up a system message to be in limbo state (UID of remote system
@@ -123,8 +123,9 @@ abstract class RemoteNodeShutdownAndComesBackSpec
         // Establish watch with the new system. This triggers additional system message traffic. If buffers are out
         // of sync the remote system will be quarantined and the rest of the test will fail (or even in earlier
         // stages depending on circumstances).
-        system.actorSelection(
-          RootActorPath(secondAddress) / "user" / "subject") ! Identify(
+        system
+          .actorSelection(
+            RootActorPath(secondAddress) / "user" / "subject") ! Identify(
           "subject")
         val subjectNew = expectMsgType[ActorIdentity].ref.get
         watch(subjectNew)
@@ -135,8 +136,8 @@ abstract class RemoteNodeShutdownAndComesBackSpec
       }
 
       runOn(second) {
-        val addr =
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+        val addr = system.asInstanceOf[ExtendedActorSystem].provider
+          .getDefaultAddress
         system.actorOf(Props[Subject], "subject")
         system.actorOf(Props[Subject], "sysmsgBarrier")
         val path = node(first)

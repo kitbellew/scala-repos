@@ -55,8 +55,7 @@ private[ui] class GraphUIData(
   private var dataJavaScriptName: String = _
 
   def generateDataJs(jsCollector: JsCollector): Unit = {
-    val jsForData = data
-      .map { case (x, y) => s"""{"x": $x, "y": $y}""" }
+    val jsForData = data.map { case (x, y) => s"""{"x": $x, "y": $y}""" }
       .mkString("[", ",", "]")
     dataJavaScriptName = jsCollector.nextVariableName
     jsCollector.addPreparedStatement(s"var $dataJavaScriptName = $jsForData;")
@@ -80,8 +79,8 @@ private[ui] class GraphUIData(
 
   def generateHistogramHtml(jsCollector: JsCollector): Seq[Node] = {
     val histogramData = s"$dataJavaScriptName.map(function(d) { return d.y; })"
-    jsCollector.addPreparedStatement(
-      s"registerHistogram($histogramData, $minY, $maxY);")
+    jsCollector
+      .addPreparedStatement(s"registerHistogram($histogramData, $minY, $maxY);")
     if (batchInterval.isDefined) {
       jsCollector.addStatement(
         "drawHistogram(" +
@@ -159,11 +158,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
         generateStatTable() ++
           generateBatchListTables()
       }
-    SparkUIUtils.headerSparkPage(
-      "Streaming Statistics",
-      content,
-      parent,
-      Some(5000))
+    SparkUIUtils
+      .headerSparkPage("Streaming Statistics", content, parent, Some(5000))
   }
 
   /**
@@ -211,15 +207,11 @@ private[ui] class StreamingPage(parent: StreamingTab)
     * @param times all time values that will be used in the graphs.
     */
   private def generateTimeMap(times: Seq[Long]): Seq[Node] = {
-    val js = "var timeFormat = {};\n" + times
-      .map { time =>
-        val formattedTime = UIUtils.formatBatchTime(
-          time,
-          listener.batchDuration,
-          showYYYYMMSS = false)
-        s"timeFormat[$time] = '$formattedTime';"
-      }
-      .mkString("\n")
+    val js = "var timeFormat = {};\n" + times.map { time =>
+      val formattedTime = UIUtils
+        .formatBatchTime(time, listener.batchDuration, showYYYYMMSS = false)
+      s"timeFormat[$time] = '$formattedTime';"
+    }.mkString("\n")
 
     <script>{Unparsed(js)}</script>
   }
@@ -261,14 +253,12 @@ private[ui] class StreamingPage(parent: StreamingTab)
 
     // Use the max input rate for all InputDStreams' graphs to make the Y axis ranges same.
     // If it's not an integral number, just use its ceil integral number.
-    val maxEventRate = eventRateForAllStreams.max
-      .map(_.ceil.toLong)
+    val maxEventRate = eventRateForAllStreams.max.map(_.ceil.toLong)
       .getOrElse(0L)
     val minEventRate = 0L
 
-    val batchInterval = UIUtils.convertToTimeUnit(
-      listener.batchDuration,
-      normalizedUnit)
+    val batchInterval = UIUtils
+      .convertToTimeUnit(listener.batchDuration, normalizedUnit)
 
     val jsCollector = new JsCollector
 
@@ -322,8 +312,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
 
     val numCompletedBatches = listener.retainedCompletedBatches.size
     val numActiveBatches = batchTimes.length - numCompletedBatches
-    val numReceivers =
-      listener.numInactiveReceivers + listener.numActiveReceivers
+    val numReceivers = listener.numInactiveReceivers + listener
+      .numActiveReceivers
     val table =
       // scalastyle:off
       <table id="stat-table" class="table table-bordered" style="width: auto">
@@ -406,9 +396,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
           <td style="vertical-align: middle;">
             <div style="width: 160px;">
               <div><strong>Processing Time {
-        SparkUIUtils.tooltip(
-          "Time taken to process all jobs of a batch",
-          "right")
+        SparkUIUtils
+          .tooltip("Time taken to process all jobs of a batch", "right")
       }</strong></div>
               <div>Avg: {processingTime.formattedAvg}</div>
             </div>
@@ -454,13 +443,9 @@ private[ui] class StreamingPage(parent: StreamingTab)
         case streamAndRates => streamAndRates.map {
             case (_, eventRate) => eventRate
           }
-      }
-      .reduceOption[Double](math.max)
-      .map(_.ceil.toLong)
-      .getOrElse(0L)
+      }.reduceOption[Double](math.max).map(_.ceil.toLong).getOrElse(0L)
 
-    val content = listener.receivedEventRateWithBatchTime.toList
-      .sortBy(_._1)
+    val content = listener.receivedEventRateWithBatchTime.toList.sortBy(_._1)
       .map {
         case (streamId, eventRates) =>
           generateInputDStreamRow(
@@ -471,8 +456,7 @@ private[ui] class StreamingPage(parent: StreamingTab)
             maxX,
             minY,
             maxYCalculated)
-      }
-      .foldLeft[Seq[Node]](Nil)(_ ++ _)
+      }.foldLeft[Seq[Node]](Nil)(_ ++ _)
 
     // scalastyle:off
     <table class="table table-bordered" style="width: auto">
@@ -503,33 +487,24 @@ private[ui] class StreamingPage(parent: StreamingTab)
     // If this is a ReceiverInputDStream, we need to show the receiver info. Or we only need the
     // InputDStream name.
     val receiverInfo = listener.receiverInfo(streamId)
-    val receiverName = receiverInfo
-      .map(_.name)
-      .orElse(listener.streamName(streamId))
-      .getOrElse(s"Stream-$streamId")
-    val receiverActive = receiverInfo
-      .map { info => if (info.active) "ACTIVE" else "INACTIVE" }
-      .getOrElse(emptyCell)
-    val receiverLocation = receiverInfo
-      .map { info =>
-        val executorId =
-          if (info.executorId.isEmpty) emptyCell else info.executorId
-        val location = if (info.location.isEmpty) emptyCell else info.location
-        s"$executorId / $location"
-      }
-      .getOrElse(emptyCell)
-    val receiverLastError = receiverInfo
-      .map { info =>
-        val msg = s"${info.lastErrorMessage} - ${info.lastError}"
-        if (msg.length > 100) msg.take(97) + "..." else msg
-      }
-      .getOrElse(emptyCell)
-    val receiverLastErrorTime = receiverInfo
-      .map { r =>
-        if (r.lastErrorTime < 0) "-"
-        else SparkUIUtils.formatDate(r.lastErrorTime)
-      }
-      .getOrElse(emptyCell)
+    val receiverName = receiverInfo.map(_.name)
+      .orElse(listener.streamName(streamId)).getOrElse(s"Stream-$streamId")
+    val receiverActive = receiverInfo.map { info =>
+      if (info.active) "ACTIVE" else "INACTIVE"
+    }.getOrElse(emptyCell)
+    val receiverLocation = receiverInfo.map { info =>
+      val executorId =
+        if (info.executorId.isEmpty) emptyCell else info.executorId
+      val location = if (info.location.isEmpty) emptyCell else info.location
+      s"$executorId / $location"
+    }.getOrElse(emptyCell)
+    val receiverLastError = receiverInfo.map { info =>
+      val msg = s"${info.lastErrorMessage} - ${info.lastError}"
+      if (msg.length > 100) msg.take(97) + "..." else msg
+    }.getOrElse(emptyCell)
+    val receiverLastErrorTime = receiverInfo.map { r =>
+      if (r.lastErrorTime < 0) "-" else SparkUIUtils.formatDate(r.lastErrorTime)
+    }.getOrElse(emptyCell)
     val receivedRecords = new EventRateUIData(eventRates)
 
     val graphUIDataForEventRate = new GraphUIData(
@@ -566,12 +541,12 @@ private[ui] class StreamingPage(parent: StreamingTab)
   }
 
   private def generateBatchListTables(): Seq[Node] = {
-    val runningBatches =
-      listener.runningBatches.sortBy(_.batchTime.milliseconds).reverse
-    val waitingBatches =
-      listener.waitingBatches.sortBy(_.batchTime.milliseconds).reverse
-    val completedBatches =
-      listener.retainedCompletedBatches.sortBy(_.batchTime.milliseconds).reverse
+    val runningBatches = listener.runningBatches
+      .sortBy(_.batchTime.milliseconds).reverse
+    val waitingBatches = listener.waitingBatches
+      .sortBy(_.batchTime.milliseconds).reverse
+    val completedBatches = listener.retainedCompletedBatches
+      .sortBy(_.batchTime.milliseconds).reverse
 
     val activeBatchesContent = {
       <h4 id="active">Active Batches ({
@@ -589,9 +564,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
         listener.numTotalCompletedBatches
       })
       </h4> ++
-        new CompletedBatchTable(
-          completedBatches,
-          listener.batchDuration).toNodeSeq
+        new CompletedBatchTable(completedBatches, listener.batchDuration)
+          .toNodeSeq
     }
 
     activeBatchesContent ++ completedBatchesContent

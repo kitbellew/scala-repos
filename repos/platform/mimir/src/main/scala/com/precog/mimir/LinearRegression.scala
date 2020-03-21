@@ -137,7 +137,8 @@ trait LinearRegressionLibModule[M[+_]]
               else if (isEmpty(t2.product)) { t1.product }
               else {
                 assert(
-                  t1.product.getColumnDimension == t2.product.getColumnDimension &&
+                  t1.product.getColumnDimension == t2.product
+                    .getColumnDimension &&
                     t1.product.getRowDimension == t2.product.getRowDimension)
 
                 t1.product plus t2.product
@@ -307,8 +308,8 @@ trait LinearRegressionLibModule[M[+_]]
                     else if (rank < matrixRank0)
                       inner(matrix, idx + 1, colDim, removed)
                     else
-                      sys.error(
-                        "Rank cannot increase when a column is removed.")
+                      sys
+                        .error("Rank cannot increase when a column is removed.")
                   } else {
                     sys.error(
                       "Matrix cannot have rank larger than number of columns.")
@@ -333,8 +334,8 @@ trait LinearRegressionLibModule[M[+_]]
               y <- matrixY
             } yield { x.solve(y.transpose) }
 
-            val res =
-              matrixX map { _.getArray flatten } getOrElse Array.empty[Double]
+            val res = matrixX map { _.getArray flatten } getOrElse Array
+              .empty[Double]
 
             // We weight the results to handle slices of different sizes.
             // Even though we canonicalize the slices to bound their size,
@@ -417,9 +418,8 @@ trait LinearRegressionLibModule[M[+_]]
           jtype: JType): Table = {
         val cpaths = Schema.cpath(jtype)
 
-        val tree = CPath.makeTree(
-          cpaths,
-          Range(1, coeffs.beta.length).toSeq :+ 0)
+        val tree = CPath
+          .makeTree(cpaths, Range(1, coeffs.beta.length).toSeq :+ 0)
 
         val spec = TransSpec.concatChildren(tree)
 
@@ -458,25 +458,25 @@ trait LinearRegressionLibModule[M[+_]]
         }: _*)
         val varCovarTable0 = Table.fromRValues(Stream(varCovarRv))
 
-        val varCovarTable = varCovarTable0.transform(
-          trans.WrapObject(Leaf(Source), "varianceCovarianceMatrix"))
+        val varCovarTable = varCovarTable0
+          .transform(trans.WrapObject(Leaf(Source), "varianceCovarianceMatrix"))
 
-        val coeffsTable = thetaInSchema.transform(
-          trans.WrapObject(Leaf(Source), "coefficients"))
+        val coeffsTable = thetaInSchema
+          .transform(trans.WrapObject(Leaf(Source), "coefficients"))
 
         val stdErrResult = RObject(Map(
           "estimate" -> CNum(math.sqrt(varianceEst)),
           "degreesOfFreedom" -> CNum(degOfFreedom)))
         val residualStdError = Table.fromRValues(Stream(stdErrResult))
-        val stdErrorTable = residualStdError.transform(
-          trans.WrapObject(Leaf(Source), "residualStandardError"))
+        val stdErrorTable = residualStdError
+          .transform(trans.WrapObject(Leaf(Source), "residualStandardError"))
 
         val rSquared = {
           if (errors.tss == 0) 1 else 1 - (errors.rss / errors.tss)
         }
         val rSquaredTable0 = Table.fromRValues(Stream(CNum(rSquared)))
-        val rSquaredTable = rSquaredTable0.transform(
-          trans.WrapObject(Leaf(Source), "RSquared"))
+        val rSquaredTable = rSquaredTable0
+          .transform(trans.WrapObject(Leaf(Source), "RSquared"))
 
         val result2 = coeffsTable.cross(rSquaredTable)(
           InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -485,10 +485,10 @@ trait LinearRegressionLibModule[M[+_]]
         val result = result1.cross(stdErrorTable)(
           InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
 
-        val valueTable = result.transform(
-          trans.WrapObject(Leaf(Source), paths.Value.name))
-        val keyTable = Table.constEmptyArray.transform(
-          trans.WrapObject(Leaf(Source), paths.Key.name))
+        val valueTable = result
+          .transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+        val keyTable = Table.constEmptyArray
+          .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
         valueTable.cross(keyTable)(
           InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -529,8 +529,7 @@ trait LinearRegressionLibModule[M[+_]]
           val tableReducer: (Table, JType) => M[Table] = { (table, jtype) =>
             {
               val arrayTable = table
-                .canonicalize(sliceSize, Some(sliceSize * 2))
-                .toArray[Double]
+                .canonicalize(sliceSize, Some(sliceSize * 2)).toArray[Double]
 
               val coeffs0 = arrayTable.reduce(coefficientReducer)
               val errors0 = coeffs0 flatMap { acc =>
@@ -545,9 +544,8 @@ trait LinearRegressionLibModule[M[+_]]
           }
 
           val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
-            _.map {
-              case (table, jtype) => tableReducer(table, jtype)
-            }.toStream.sequence map (_.toSeq)
+            _.map { case (table, jtype) => tableReducer(table, jtype) }.toStream
+            .sequence map (_.toSeq)
           }
 
           val objectTables: M[Seq[Table]] = reducedTables map {
@@ -582,9 +580,8 @@ trait LinearRegressionLibModule[M[+_]]
 
       override val idPolicy = IdentityPolicy.Retain.Merge
 
-      lazy val alignment = MorphismAlignment.Custom(
-        IdentityPolicy.Retain.Cross,
-        alignCustom _)
+      lazy val alignment = MorphismAlignment
+        .Custom(IdentityPolicy.Retain.Cross, alignCustom _)
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
         val spec = liftToValues(

@@ -416,10 +416,10 @@ abstract class GraphStageLogic private[stream] (
   final protected def grab[T](in: Inlet[T]): T = {
     val connection = conn(in)
     // Fast path
-    if ((interpreter
-          .portStates(connection) & (InReady | InFailed)) == InReady &&
-        (interpreter
-          .connectionSlots(connection)
+    if ((
+          interpreter.portStates(connection) & (InReady | InFailed)
+        ) == InReady &&
+        (interpreter.connectionSlots(connection)
           .asInstanceOf[AnyRef] ne Empty)) {
       val elem = interpreter.connectionSlots(connection)
       interpreter.connectionSlots(connection) = Empty
@@ -484,9 +484,9 @@ abstract class GraphStageLogic private[stream] (
     * used to check if the port is ready to be pushed or not.
     */
   final protected def push[T](out: Outlet[T], elem: T): Unit = {
-    if ((interpreter.portStates(conn(out)) & (
-          OutReady | OutClosed
-        )) == OutReady && (elem != null)) { interpreter.push(conn(out), elem) }
+    if ((
+          interpreter.portStates(conn(out)) & (OutReady | OutClosed)
+        ) == OutReady && (elem != null)) { interpreter.push(conn(out), elem) }
     else {
       // Detailed error information should not add overhead to the hot path
       ReactiveStreamsCompliance.requireNonNullElement(elem)
@@ -1020,8 +1020,8 @@ abstract class GraphStageLogic private[stream] (
       receive: ((ActorRef, Any)) ⇒ Unit): StageActor = {
     _stageActor match {
       case null ⇒
-        val actorMaterializer = ActorMaterializer.downcast(
-          interpreter.materializer)
+        val actorMaterializer = ActorMaterializer
+          .downcast(interpreter.materializer)
         _stageActor =
           new StageActor(actorMaterializer, getAsyncCallback, receive)
         _stageActor
@@ -1287,8 +1287,8 @@ abstract class TimerGraphStageLogic(_shape: Shape)
       interval,
       new Runnable {
         def run() =
-          getTimerAsyncCallback.invoke(
-            Scheduled(timerKey, id, repeating = true))
+          getTimerAsyncCallback
+            .invoke(Scheduled(timerKey, id, repeating = true))
       })
     keyToTimers(timerKey) = Timer(id, task)
   }
@@ -1307,8 +1307,8 @@ abstract class TimerGraphStageLogic(_shape: Shape)
       delay,
       new Runnable {
         def run() =
-          getTimerAsyncCallback.invoke(
-            Scheduled(timerKey, id, repeating = false))
+          getTimerAsyncCallback
+            .invoke(Scheduled(timerKey, id, repeating = false))
       })
     keyToTimers(timerKey) = Timer(id, task)
   }
@@ -1389,8 +1389,7 @@ trait OutHandler {
     */
   @throws(classOf[Exception])
   def onDownstreamFinish(): Unit = {
-    GraphInterpreter.currentInterpreter.activeStage
-      .completeStage()
+    GraphInterpreter.currentInterpreter.activeStage.completeStage()
   }
 }
 

@@ -45,8 +45,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     zookeeperServer.startNetwork()
 
     // connect to zookeeper server
-    zookeeperClient = zookeeperServer.createClient(
-      ZooKeeperClient.digestCredentials("user", "pass"))
+    zookeeperClient = zookeeperServer
+      .createClient(ZooKeeperClient.digestCredentials("user", "pass"))
 
     // create serverset
     serverSet = new CompoundServerSet(List(ServerSets.create(
@@ -65,8 +65,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
 
     // a separate client which only does zk discovery for integration test
-    zookeeperClient = zookeeperServer.createClient(
-      ZooKeeperClient.digestCredentials("user", "pass"))
+    zookeeperClient = zookeeperServer
+      .createClient(ZooKeeperClient.digestCredentials("user", "pass"))
   }
 
   override def afterEach() {

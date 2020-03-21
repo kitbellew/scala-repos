@@ -124,8 +124,8 @@ case class Game(
   def lastMoveTimeInSeconds: Option[Int] = lastMoveTime.map(x => (x / 10).toInt)
 
   // in tenths of seconds
-  lazy val moveTimes: Vector[Int] =
-    BinaryFormat.moveTime read binaryMoveTimes take playedTurns
+  lazy val moveTimes: Vector[Int] = BinaryFormat
+    .moveTime read binaryMoveTimes take playedTurns
 
   def moveTimes(color: Color): List[Int] = {
     val pivot = if (color == startColor) 0 else 1
@@ -177,9 +177,8 @@ case class Game(
     def copyPlayer(player: Player) =
       player.copy(blurs = math.min(
         playerMoves(player.color),
-        player.blurs + (
-          blur && moveOrDrop.fold(_.color, _.color) == player.color
-        ).fold(1, 0)))
+        player.blurs + (blur && moveOrDrop.fold(_.color, _.color) == player
+          .color).fold(1, 0)))
 
     val updated = copy(
       whitePlayer = copyPlayer(whitePlayer),
@@ -403,9 +402,8 @@ case class Game(
   private def outoftimeClock(playerLag: Color => Int): Boolean =
     clock ?? { c =>
       started && playable && (bothPlayersHaveMoved || isSimul) && {
-        (!c.isRunning && !c.isInit) || c.outoftimeWithGrace(
-          player.color,
-          playerLag(player.color))
+        (!c.isRunning && !c.isInit) || c
+          .outoftimeWithGrace(player.color, playerLag(player.color))
       }
     }
 
@@ -460,9 +458,8 @@ case class Game(
   def unplayed = !bothPlayersHaveMoved && (createdAt isBefore Game.unplayedDate)
 
   def abandoned =
-    (status <= Status.Started) && ((updatedAt | createdAt) isBefore hasAi.fold(
-      Game.aiAbandonedDate,
-      Game.abandonedDate))
+    (status <= Status.Started) && ((updatedAt | createdAt) isBefore hasAi
+      .fold(Game.aiAbandonedDate, Game.abandonedDate))
 
   def forecastable = started && playable && isCorrespondence && !hasAi
 
@@ -515,8 +512,8 @@ object Game {
     chess.variant.ThreeCheck,
     chess.variant.FromPosition)
 
-  val unanalysableVariants: Set[Variant] =
-    Variant.all.toSet -- analysableVariants
+  val unanalysableVariants: Set[Variant] = Variant.all
+    .toSet -- analysableVariants
 
   val variantsWhereWhiteIsBetter: Set[Variant] = Set(
     chess.variant.ThreeCheck,

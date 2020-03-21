@@ -26,9 +26,7 @@ class SQLExecutionSuite extends SparkFunSuite {
 
   test("concurrent query execution (SPARK-10548)") {
     // Try to reproduce the issue with the old SparkContext
-    val conf = new SparkConf()
-      .setMaster("local[*]")
-      .setAppName("test")
+    val conf = new SparkConf().setMaster("local[*]").setAppName("test")
     val badSparkContext = new BadSparkContext(conf)
     try {
       testConcurrentQueryExecution(badSparkContext)

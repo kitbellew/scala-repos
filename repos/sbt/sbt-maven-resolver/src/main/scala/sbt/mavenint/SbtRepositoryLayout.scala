@@ -50,21 +50,11 @@ object SbtRepositoryLayout extends RepositoryLayout {
       case Some((sbt, scala)) =>
         if (artifact.getArtifactId contains "_sbt_") {
           val SbtNameVersionSplit(name, sbt2) = artifact.getArtifactId
-          path
-            .append(name)
-            .append('_')
-            .append(scala)
-            .append('_')
-            .append(sbt)
+          path.append(name).append('_').append(scala).append('_').append(sbt)
             .append('/')
         } else
-          path
-            .append(artifact.getArtifactId)
-            .append('_')
-            .append(scala)
-            .append('_')
-            .append(sbt)
-            .append('/')
+          path.append(artifact.getArtifactId).append('_').append(scala)
+            .append('_').append(sbt).append('/')
       case None =>
         // TODO - Should we automatically append the _<scala-verison> here if it's not there?  Probably not for now.
         path.append(artifact.getArtifactId).append('/')
@@ -74,16 +64,12 @@ object SbtRepositoryLayout extends RepositoryLayout {
       case Some(_) if artifact.getArtifactId contains "_sbt_" =>
         val SbtNameVersionSplit(name, sbt2) = artifact.getArtifactId
         path.append(name).append('-').append(artifact.getVersion)
-      case None =>
-        path
-          .append(artifact.getArtifactId)
-          .append('-')
+      case None => path.append(artifact.getArtifactId).append('-')
           .append(artifact.getVersion)
     }
 
-    if (artifact.getClassifier != null && !artifact.getClassifier.trim.isEmpty) {
-      path.append("-").append(artifact.getClassifier)
-    }
+    if (artifact.getClassifier != null && !artifact.getClassifier.trim
+          .isEmpty) { path.append("-").append(artifact.getClassifier) }
     if (artifact.getExtension.length > 0) {
       path.append('.').append(artifact.getExtension)
     }
@@ -104,21 +90,11 @@ object SbtRepositoryLayout extends RepositoryLayout {
       case Some((sbt, scala)) =>
         if (metadata.getArtifactId contains "_sbt_") {
           val SbtNameVersionSplit(name, sbt2) = metadata.getArtifactId
-          path
-            .append(name)
-            .append('_')
-            .append(scala)
-            .append('_')
-            .append(sbt)
+          path.append(name).append('_').append(scala).append('_').append(sbt)
             .append('/')
         } else
-          path
-            .append(metadata.getArtifactId)
-            .append('_')
-            .append(scala)
-            .append('_')
-            .append(sbt)
-            .append('/')
+          path.append(metadata.getArtifactId).append('_').append(scala)
+            .append('_').append(sbt).append('/')
       case None =>
         // TODO - Should we automatically append the _<scala-verison> here?  Proabbly not for now.
         path.append(metadata.getArtifactId).append('/')

@@ -38,10 +38,10 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       import play.api.routing.sird._
       import play.api.mvc._
 
-      val server = NettyServer.fromRouter(
-        ServerConfig(port = Some(19000), address = "127.0.0.1")) {
-        case GET(p"/hello/$to") => Action { Results.Ok(s"Hello $to") }
-      }
+      val server = NettyServer
+        .fromRouter(ServerConfig(port = Some(19000), address = "127.0.0.1")) {
+          case GET(p"/hello/$to") => Action { Results.Ok(s"Hello $to") }
+        }
       //#config
 
       try { testRequest(19000) }
@@ -88,8 +88,7 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
 
   def testRequest(port: Int) = {
     withClient { client =>
-      Await
-        .result(client.url("/hello/world").get(), Duration.Inf)
+      Await.result(client.url("/hello/world").get(), Duration.Inf)
         .body must_== "Hello world"
     }(new play.api.http.Port(port))
   }

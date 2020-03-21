@@ -82,8 +82,8 @@ class TaskSchedulerImplSuite
       new WorkerOffer("executor1", "host1", 0))
     val taskSet = FakeTask.createTaskSet(1)
     taskScheduler.submitTasks(taskSet)
-    var taskDescriptions =
-      taskScheduler.resourceOffers(zeroCoreWorkerOffers).flatten
+    var taskDescriptions = taskScheduler.resourceOffers(zeroCoreWorkerOffers)
+      .flatten
     assert(0 === taskDescriptions.length)
 
     // No tasks should run as we only have 1 core free.
@@ -92,8 +92,8 @@ class TaskSchedulerImplSuite
       new WorkerOffer("executor0", "host0", numFreeCores),
       new WorkerOffer("executor1", "host1", numFreeCores))
     taskScheduler.submitTasks(taskSet)
-    taskDescriptions =
-      taskScheduler.resourceOffers(singleCoreWorkerOffers).flatten
+    taskDescriptions = taskScheduler.resourceOffers(singleCoreWorkerOffers)
+      .flatten
     assert(0 === taskDescriptions.length)
 
     // Now change the offers to have 2 cores in one executor and verify if it
@@ -102,8 +102,8 @@ class TaskSchedulerImplSuite
       new WorkerOffer("executor0", "host0", taskCpus),
       new WorkerOffer("executor1", "host1", numFreeCores))
     taskScheduler.submitTasks(taskSet)
-    taskDescriptions =
-      taskScheduler.resourceOffers(multiCoreWorkerOffers).flatten
+    taskDescriptions = taskScheduler.resourceOffers(multiCoreWorkerOffers)
+      .flatten
     assert(1 === taskDescriptions.length)
     assert("executor0" === taskDescriptions(0).executorId)
   }
@@ -134,8 +134,8 @@ class TaskSchedulerImplSuite
       new WorkerOffer("executor0", "host0", taskCpus),
       new WorkerOffer("executor1", "host1", numFreeCores))
     taskScheduler.submitTasks(taskSet)
-    var taskDescriptions =
-      taskScheduler.resourceOffers(multiCoreWorkerOffers).flatten
+    var taskDescriptions = taskScheduler.resourceOffers(multiCoreWorkerOffers)
+      .flatten
     assert(0 === taskDescriptions.length)
 
     // Now check that we can still submit tasks
@@ -143,8 +143,8 @@ class TaskSchedulerImplSuite
     // still be processed without error
     taskScheduler.submitTasks(taskSet)
     taskScheduler.submitTasks(FakeTask.createTaskSet(1))
-    taskDescriptions =
-      taskScheduler.resourceOffers(multiCoreWorkerOffers).flatten
+    taskDescriptions = taskScheduler.resourceOffers(multiCoreWorkerOffers)
+      .flatten
     assert(taskDescriptions.map(_.executorId) === Seq("executor0"))
   }
 
@@ -166,15 +166,13 @@ class TaskSchedulerImplSuite
 
     // OK to submit multiple if previous attempts are all zombie
     taskScheduler
-      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId)
-      .get
+      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId).get
       .isZombie = true
     taskScheduler.submitTasks(attempt2)
     val attempt3 = FakeTask.createTaskSet(1, 2)
     intercept[IllegalStateException] { taskScheduler.submitTasks(attempt3) }
     taskScheduler
-      .taskSetManagerForAttempt(attempt2.stageId, attempt2.stageAttemptId)
-      .get
+      .taskSetManagerForAttempt(attempt2.stageId, attempt2.stageAttemptId).get
       .isZombie = true
     taskScheduler.submitTasks(attempt3)
   }
@@ -200,8 +198,7 @@ class TaskSchedulerImplSuite
 
     // now mark attempt 1 as a zombie
     taskScheduler
-      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId)
-      .get
+      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId).get
       .isZombie = true
 
     // don't schedule anything on another resource offer
@@ -215,8 +212,8 @@ class TaskSchedulerImplSuite
     taskScheduler.submitTasks(attempt2)
     val taskDescriptions3 = taskScheduler.resourceOffers(workerOffers).flatten
     assert(1 === taskDescriptions3.length)
-    val mgr =
-      taskScheduler.taskIdToTaskSetManager.get(taskDescriptions3(0).taskId).get
+    val mgr = taskScheduler.taskIdToTaskSetManager
+      .get(taskDescriptions3(0).taskId).get
     assert(mgr.taskSet.stageAttemptId === 1)
   }
 
@@ -242,8 +239,7 @@ class TaskSchedulerImplSuite
 
     // now mark attempt 1 as a zombie
     val mgr1 = taskScheduler
-      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId)
-      .get
+      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId).get
     mgr1.isZombie = true
 
     // don't schedule anything on another resource offer

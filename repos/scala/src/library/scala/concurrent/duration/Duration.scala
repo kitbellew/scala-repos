@@ -90,8 +90,8 @@ object Duration {
   )
 
   // TimeUnit => standard label
-  protected[duration] val timeUnitName: Map[TimeUnit, String] =
-    timeUnitLabels.toMap mapValues (s => words(s).last) toMap
+  protected[duration] val timeUnitName: Map[TimeUnit, String] = timeUnitLabels
+    .toMap mapValues (s => words(s).last) toMap
 
   // Label => TimeUnit
   protected[duration] val timeUnit: Map[String, TimeUnit] =

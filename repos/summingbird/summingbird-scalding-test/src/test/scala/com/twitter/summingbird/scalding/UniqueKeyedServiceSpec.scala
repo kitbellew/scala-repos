@@ -65,9 +65,7 @@ class UniqueKeyedServiceSpec extends WordSpec {
             assert(input.size == outBuf.size)
             // Make sure the result is exact as expected.
             assert(outBuf.toSet == expectedResult)
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 }

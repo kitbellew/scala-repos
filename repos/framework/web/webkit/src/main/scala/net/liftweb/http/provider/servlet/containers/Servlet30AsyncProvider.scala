@@ -59,8 +59,8 @@ object Servlet30AsyncProvider extends AsyncProviderMeta {
     * return a function that vends the ServletAsyncProvider
     */
   def providerFunction: Box[HTTPRequest => ServletAsyncProvider] =
-    Full(req => new Servlet30AsyncProvider(req)).filter(i =>
-      suspendResumeSupport_?)
+    Full(req => new Servlet30AsyncProvider(req))
+      .filter(i => suspendResumeSupport_?)
 
 }
 
@@ -104,8 +104,7 @@ class Servlet30AsyncProvider(req: HTTPRequest)
 
   def resume(what: (Req, LiftResponse)): Boolean = {
     logger.trace("Servlet 3.0 begin resume")
-    val httpRes = getResponse
-      .invoke(asyncCtx)
+    val httpRes = getResponse.invoke(asyncCtx)
       .asInstanceOf[javax.servlet.http.HttpServletResponse]
     val httpResponse = new HTTPResponseServlet(httpRes)
     val liftServlet = req.provider.liftServlet

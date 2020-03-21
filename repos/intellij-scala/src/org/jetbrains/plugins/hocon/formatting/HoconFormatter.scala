@@ -16,8 +16,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
   import org.jetbrains.plugins.hocon.parser.HoconElementType._
 
   val commonSettings = settings.getCommonSettings(HoconLanguage)
-  val customSettings = settings.getCustomSettings(
-    classOf[HoconCustomCodeStyleSettings])
+  val customSettings = settings
+    .getCustomSettings(classOf[HoconCustomCodeStyleSettings])
 
   private def beforeCommentOnNewLineSpacing(
       parent: ASTNode,
@@ -78,19 +78,13 @@ class HoconFormatter(settings: CodeStyleSettings) {
       Spacing.createSpacing(spaces, spaces, 0, keepLineBreaks, maxBlankLines)
     }
 
-    val lineBreakEnsuringSpacing = Spacing.createSpacing(
-      0,
-      0,
-      1,
-      keepLineBreaks,
-      maxBlankLines)
+    val lineBreakEnsuringSpacing = Spacing
+      .createSpacing(0, 0, 1, keepLineBreaks, maxBlankLines)
 
-    val isLineBreakBetween = parent.getText
-      .subSequence(
-        leftChild.getTextRange.getEndOffset - parent.getTextRange.getStartOffset,
-        rightChild.getTextRange.getStartOffset - parent.getTextRange.getStartOffset)
-      .charIterator
-      .contains('\n')
+    val isLineBreakBetween = parent.getText.subSequence(
+      leftChild.getTextRange.getEndOffset - parent.getTextRange.getStartOffset,
+      rightChild.getTextRange.getStartOffset - parent.getTextRange
+        .getStartOffset).charIterator.contains('\n')
 
     def standardSpacing =
       (leftChild.getElementType, rightChild.getElementType) match {
@@ -209,9 +203,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
     val fieldValueWrap =
       if (keyValueSeparatorWrap == null) fieldInnerWrap else null
 
-    val includeInnerWrap = Wrap.createWrap(
-      customSettings.INCLUDED_RESOURCE_WRAP,
-      true)
+    val includeInnerWrap = Wrap
+      .createWrap(customSettings.INCLUDED_RESOURCE_WRAP, true)
 
   }
 

@@ -35,8 +35,7 @@ class ScalatraBroadcasterFactory(
         if (classOf[ScalatraBroadcaster].isAssignableFrom(c)) {
           bCfg.broadcasterClass
             .getConstructor(classOf[WireFormat], classOf[ActorSystem])
-            .newInstance(wireFormat, system)
-            .asInstanceOf[T]
+            .newInstance(wireFormat, system).asInstanceOf[T]
         } else { cfg.framework().newClassInstance(c, c) }
       b.initialize(id.toString, bCfg.uri, cfg)
       bCfg.extraSetup(b)
@@ -100,15 +99,14 @@ class ScalatraBroadcasterFactory(
       createIfNull: Boolean): T = {
     val bOpt = store get id
     if (bOpt.isDefined && !c.isAssignableFrom(bOpt.get.getClass)) {
-      val msg =
-        "Invalid lookup class " + c.getName + ". Cached class is: " + bOpt.get.getClass.getName
+      val msg = "Invalid lookup class " + c
+        .getName + ". Cached class is: " + bOpt.get.getClass.getName
       logger.warn(msg)
       throw new IllegalStateException(msg)
     }
 
-    if ((
-          bOpt.isEmpty && createIfNull
-        ) || (bOpt.isDefined && bOpt.get.isDestroyed)) {
+    if ((bOpt.isEmpty && createIfNull) || (bOpt.isDefined && bOpt.get
+          .isDestroyed)) {
       if (bOpt.isDefined) {
         val b = bOpt.get
         logger.debug("Removing destroyed Broadcaster %s" format b.getID)
@@ -140,10 +138,8 @@ class ScalatraBroadcasterFactory(
   def remove(b: Broadcaster, id: Any): Boolean = {
     val removed: Boolean = store.remove(id, b)
     if (removed) {
-      logger.debug(
-        "Removing Broadcaster {} factory size now {} ",
-        id,
-        store.size)
+      logger
+        .debug("Removing Broadcaster {} factory size now {} ", id, store.size)
     }
     removed
   }

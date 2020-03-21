@@ -93,8 +93,8 @@ class AppInfoBaseDataTest
       running3.taskId -> Seq(unhealthy)))
 
     When("requesting AppInfos with tasks")
-    val appInfo =
-      f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Tasks)).futureValue
+    val appInfo = f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Tasks))
+      .futureValue
 
     Then("we get a tasks object in the appInfo")
     appInfo.maybeTasks should not be empty
@@ -142,8 +142,8 @@ class AppInfoBaseDataTest
     ))
 
     When("requesting AppInfos with counts")
-    val appInfo =
-      f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Counts)).futureValue
+    val appInfo = f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Counts))
+      .futureValue
 
     Then("we get counts object in the appInfo")
     appInfo should be(AppInfo(
@@ -180,8 +180,8 @@ class AppInfoBaseDataTest
         DeploymentStepInfo(unrelatedDeployment, DeploymentStep(Seq.empty), 1)))
 
     When("Getting AppInfos without counts")
-    val appInfo =
-      f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Deployments)).futureValue
+    val appInfo = f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Deployments))
+      .futureValue
 
     Then("we get an counts in the appInfo")
     appInfo should be(AppInfo(
@@ -203,8 +203,8 @@ class AppInfoBaseDataTest
       .successful(Seq.empty[DeploymentStepInfo])
 
     When("Getting AppInfos with deployments")
-    val appInfo =
-      f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Deployments)).futureValue
+    val appInfo = f.baseData.appInfoFuture(app, Set(AppInfo.Embed.Deployments))
+      .futureValue
 
     Then("we get an empty list of deployments")
     appInfo should be(AppInfo(app, maybeDeployments = Some(Seq.empty)))
@@ -220,13 +220,12 @@ class AppInfoBaseDataTest
   test("requesting lastTaskFailure when one exists") {
     val f = new Fixture
     Given("One last taskFailure")
-    f.taskFailureRepository.current(app.id) returns Future.successful(Some(
-      TaskFailureTestHelper.taskFailure))
+    f.taskFailureRepository.current(app.id) returns Future
+      .successful(Some(TaskFailureTestHelper.taskFailure))
 
     When("Getting AppInfos with last task failures")
     val appInfo = f.baseData
-      .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
-      .futureValue
+      .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure)).futureValue
 
     Then("we get the failure in the app info")
     appInfo should be(AppInfo(
@@ -248,8 +247,7 @@ class AppInfoBaseDataTest
 
     When("Getting AppInfos with last task failures")
     val appInfo = f.baseData
-      .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
-      .futureValue
+      .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure)).futureValue
 
     Then("we get no failure in the app info")
     appInfo should be(AppInfo(app))
@@ -291,8 +289,8 @@ class AppInfoBaseDataTest
     f.healthCheckManager.statuses(app.id) returns Future.successful(statuses)
 
     When("requesting AppInfos with taskStats")
-    val appInfo =
-      f.baseData.appInfoFuture(app, Set(AppInfo.Embed.TaskStats)).futureValue
+    val appInfo = f.baseData.appInfoFuture(app, Set(AppInfo.Embed.TaskStats))
+      .futureValue
 
     Then("we get taskStats object in the appInfo")
     // we check the calculation of the stats in TaskStatsByVersionTest, so we only check some basic stats
@@ -301,10 +299,10 @@ class AppInfoBaseDataTest
     withClue(Json.prettyPrint(Json.toJson(appInfo))) {
       appInfo.maybeTaskStats should not be empty
       appInfo.maybeTaskStats.get.maybeTotalSummary should not be empty
-      appInfo.maybeTaskStats.get.maybeTotalSummary.get.counts.tasksStaged should be(
-        1)
-      appInfo.maybeTaskStats.get.maybeTotalSummary.get.counts.tasksRunning should be(
-        2)
+      appInfo.maybeTaskStats.get.maybeTotalSummary.get.counts
+        .tasksStaged should be(1)
+      appInfo.maybeTaskStats.get.maybeTotalSummary.get.counts
+        .tasksRunning should be(2)
 
       appInfo should be(AppInfo(
         app,
@@ -325,17 +323,15 @@ class AppInfoBaseDataTest
   test("Combining embed options work") {
     val f = new Fixture
     Given("One last taskFailure and no deployments")
-    f.taskFailureRepository.current(app.id) returns Future.successful(Some(
-      TaskFailureTestHelper.taskFailure))
+    f.taskFailureRepository.current(app.id) returns Future
+      .successful(Some(TaskFailureTestHelper.taskFailure))
     f.marathonSchedulerService.listRunningDeployments() returns Future
       .successful(Seq.empty[DeploymentStepInfo])
 
     When("Getting AppInfos with last task failures and deployments")
-    val appInfo = f.baseData
-      .appInfoFuture(
-        app,
-        Set(AppInfo.Embed.LastTaskFailure, AppInfo.Embed.Deployments))
-      .futureValue
+    val appInfo = f.baseData.appInfoFuture(
+      app,
+      Set(AppInfo.Embed.LastTaskFailure, AppInfo.Embed.Deployments)).futureValue
 
     Then("we get the failure in the app info")
     appInfo should be(AppInfo(

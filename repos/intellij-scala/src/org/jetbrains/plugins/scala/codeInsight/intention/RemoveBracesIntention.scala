@@ -63,18 +63,16 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
     val expr: Option[ScExpression] = containing match {
       case pattern @ ScPatternDefinition.expr(e) if isAncestorOfElement(e) =>
         Some(e)
-      case ifStmt: ScIfStmt =>
-        ifStmt.thenBranch
-          .filter(isAncestorOfElement)
+      case ifStmt: ScIfStmt => ifStmt.thenBranch.filter(isAncestorOfElement)
           .orElse(ifStmt.elseBranch.filter(isAncestorOfElement))
       case funDef: ScFunctionDefinition if !funDef.hasUnitResultType =>
         funDef.body.filter(isAncestorOfElement)
       case tryBlock: ScTryBlock if tryBlock.hasRBrace =>
         // special handling for try block, which itself is parent to the (optional) pair of braces.
-        val lBrace = tryBlock.getNode.getChildren(TokenSet.create(
-          ScalaTokenTypes.tLBRACE))
-        val rBrace = tryBlock.getNode.getChildren(TokenSet.create(
-          ScalaTokenTypes.tRBRACE))
+        val lBrace = tryBlock.getNode
+          .getChildren(TokenSet.create(ScalaTokenTypes.tLBRACE))
+        val rBrace = tryBlock.getNode
+          .getChildren(TokenSet.create(ScalaTokenTypes.tRBRACE))
         (lBrace, rBrace) match {
           case (Array(lBraceNode), Array(rBraceNode))
               if tryBlock.statements.length == 1 =>

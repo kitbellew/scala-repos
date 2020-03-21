@@ -14,14 +14,14 @@ private[message] final class DataForm(security: MessageSecurity) {
     Form(
       mapping(
         "username" -> nonEmptyText(maxLength = 20)
-          .verifying("Unknown username", { fetchUser(_).isDefined })
-          .verifying(
+          .verifying("Unknown username", { fetchUser(_).isDefined }).verifying(
             "Sorry, this player doesn't accept new messages",
             { name =>
               Granter(_.MessageAnyone)(me) || {
-                security.canMessage(
-                  me.id,
-                  User normalize name) awaitSeconds 2 // damn you blocking API
+                security
+                  .canMessage(
+                    me.id,
+                    User normalize name) awaitSeconds 2 // damn you blocking API
               }
             }
           ),

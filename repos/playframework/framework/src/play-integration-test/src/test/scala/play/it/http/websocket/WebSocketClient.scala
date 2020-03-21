@@ -94,8 +94,7 @@ object WebSocketClient {
   private class DefaultWebSocketClient extends WebSocketClient {
 
     val eventLoop = new NioEventLoopGroup()
-    val client = new Bootstrap()
-      .group(eventLoop)
+    val client = new Bootstrap().group(eventLoop)
       .channel(classOf[NioSocketChannel])
       .option(ChannelOption.AUTO_READ, java.lang.Boolean.FALSE)
       .handler(new ChannelInitializer[SocketChannel] {
@@ -124,25 +123,15 @@ object WebSocketClient {
 
       val disconnected = Promise[Unit]()
 
-      client
-        .connect(tgt.getHost, tgt.getPort)
-        .toScala
-        .map { channel =>
-          val handshaker = WebSocketClientHandshakerFactory.newHandshaker(
-            tgt,
-            version,
-            null,
-            false,
-            new DefaultHttpHeaders())
-          channel
-            .pipeline()
-            .addLast(
-              "supervisor",
-              new WebSocketSupervisor(disconnected, handshaker, onConnected))
-          handshaker.handshake(channel)
-          channel.read()
-        }
-        .onFailure { case t => disconnected.tryFailure(t) }
+      client.connect(tgt.getHost, tgt.getPort).toScala.map { channel =>
+        val handshaker = WebSocketClientHandshakerFactory
+          .newHandshaker(tgt, version, null, false, new DefaultHttpHeaders())
+        channel.pipeline().addLast(
+          "supervisor",
+          new WebSocketSupervisor(disconnected, handshaker, onConnected))
+        handshaker.handshake(channel)
+        channel.read()
+      }.onFailure { case t => disconnected.tryFailure(t) }
 
       disconnected.future
     }
@@ -170,11 +159,8 @@ object WebSocketClient {
             ctx.name,
             "websocket-subscriber",
             subscriber)
-          ctx.pipeline.addAfter(
-            ctx.executor,
-            ctx.name,
-            "websocket-publisher",
-            publisher)
+          ctx.pipeline
+            .addAfter(ctx.executor, ctx.name, "websocket-publisher", publisher)
 
           // Now remove ourselves from the chain
           ctx.pipeline.remove(ctx.name)
@@ -286,8 +272,8 @@ object WebSocketClient {
               }
             }
 
-            val handleConnectionTerminated = Flow[WebSocketFrame].transform(
-              () =>
+            val handleConnectionTerminated = Flow[WebSocketFrame]
+              .transform(() =>
                 new PushStage[WebSocketFrame, WebSocketFrame] {
                   def onPush(
                       elem: WebSocketFrame,
@@ -318,7 +304,9 @@ object WebSocketClient {
               frame
             }
 
-            merge.out ~> clientConnection ~> handleConnectionTerminated ~> retainForBroadcast ~> broadcast.in
+            merge
+              .out ~> clientConnection ~> handleConnectionTerminated ~> retainForBroadcast ~> broadcast
+              .in
             merge.in(0) <~ handleServerClose <~ broadcast.out(0)
 
             FlowShape(merge.in(1), broadcast.out(1))
@@ -327,8 +315,7 @@ object WebSocketClient {
 
     def toByteString(data: ByteBufHolder) = {
       val builder = ByteString.newBuilder
-      data
-        .content()
+      data.content()
         .readBytes(builder.asOutputStream, data.content().readableBytes())
       val bytes = builder.result()
       bytes

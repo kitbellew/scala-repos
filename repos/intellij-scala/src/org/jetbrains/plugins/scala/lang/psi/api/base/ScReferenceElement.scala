@@ -89,9 +89,8 @@ trait ScReferenceElement
   def isSoft: Boolean = false
 
   def handleElementRename(newElementName: String): PsiElement = {
-    val needBackticks =
-      patternNeedBackticks(newElementName) || ScalaNamesUtil.isKeyword(
-        newElementName)
+    val needBackticks = patternNeedBackticks(newElementName) || ScalaNamesUtil
+      .isKeyword(newElementName)
     val newName =
       if (needBackticks) "`" + newElementName + "`" else newElementName
     if (!ScalaNamesUtil.isIdentifier(newName)) return this
@@ -148,10 +147,10 @@ trait ScReferenceElement
             val methods = td.allMethods
             for (n <- methods if !break) {
               if (n.method.name == method.name) {
-                val methodContainingClass: ScTemplateDefinition =
-                  method.containingClass
-                val nodeMethodContainingClass: PsiClass =
-                  n.method.containingClass
+                val methodContainingClass: ScTemplateDefinition = method
+                  .containingClass
+                val nodeMethodContainingClass: PsiClass = n.method
+                  .containingClass
                 val classesEquiv: Boolean = ScEquivalenceUtil.smartEquivalence(
                   methodContainingClass,
                   nodeMethodContainingClass)
@@ -159,8 +158,7 @@ trait ScReferenceElement
               }
             }
 
-            if (!break && td.isInstanceOf[ScClass] && td
-                  .asInstanceOf[ScClass]
+            if (!break && td.isInstanceOf[ScClass] && td.asInstanceOf[ScClass]
                   .isCase && method.isSynthetic) {
               ScalaPsiUtil.getCompanionModule(td) match {
                 case Some(typeDef) => return isReferenceTo(typeDef)
@@ -283,15 +281,13 @@ trait ScReferenceElement
       })
       !reject
     }
-    val prefixImport = ScalaCodeStyleSettings
-      .getInstance(getProject)
+    val prefixImport = ScalaCodeStyleSettings.getInstance(getProject)
       .hasImportWithPrefix(qualName)
     if (!prefixImport && checkForPredefinedTypes()) { simpleImport }
     else {
       if (qualName.contains(".")) {
         var index =
-          if (ScalaCodeStyleSettings
-                .getInstance(getProject)
+          if (ScalaCodeStyleSettings.getInstance(getProject)
                 .isImportShortestPathForAmbiguousReferences) parts.length - 2
           else 0
         while (index >= 0) {
@@ -310,9 +306,8 @@ trait ScReferenceElement
             else {
               val result: ResolveResult = resolve(0)
               def smartCheck: Boolean = {
-                val holder = ScalaImportTypeFix.getImportHolder(
-                  this,
-                  getProject)
+                val holder = ScalaImportTypeFix
+                  .getImportHolder(this, getProject)
                 var res = true
                 holder.accept(new ScalaRecursiveElementVisitor {
                   //Override also visitReferenceExpression! and visitTypeProjection!
@@ -342,8 +337,7 @@ trait ScReferenceElement
             }
           }
           if (isOk) {
-            ScalaImportTypeFix
-              .getImportHolder(this, getProject)
+            ScalaImportTypeFix.getImportHolder(this, getProject)
               .addImportForPath(packagePart, this)
             val ref = referenceCreator(toReplace, false)
             return this.replace(ref)
@@ -363,19 +357,16 @@ trait ScReferenceElement
     extensions.inWriteAction {
       val refText =
         if (addImport) {
-          val importHolder = ScalaImportTypeFix.getImportHolder(
-            ref = this,
-            project = getProject)
+          val importHolder = ScalaImportTypeFix
+            .getImportHolder(ref = this, project = getProject)
           val imported = importHolder.getAllImportUsed.exists {
             case ImportExprUsed(expr) => expr.reference.exists { ref =>
-                ref
-                  .multiResolve(false)
-                  .exists(rr =>
-                    rr.getElement match {
-                      case p: ScPackage  => p.getQualifiedName == qualifiedName
-                      case p: PsiPackage => p.getQualifiedName == qualifiedName
-                      case _             => false
-                    })
+                ref.multiResolve(false).exists(rr =>
+                  rr.getElement match {
+                    case p: ScPackage  => p.getQualifiedName == qualifiedName
+                    case p: PsiPackage => p.getQualifiedName == qualifiedName
+                    case _             => false
+                  })
               }
             case _ => false
           }

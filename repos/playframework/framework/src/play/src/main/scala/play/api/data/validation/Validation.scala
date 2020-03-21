@@ -75,15 +75,14 @@ trait Constraints {
     * '''error'''[error.email]
     */
   private val emailRegex =
-    """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
+    """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"""
+      .r
   def emailAddress: Constraint[String] =
     Constraint[String]("constraint.email") { e =>
       if (e == null) Invalid(ValidationError("error.email"))
       else if (e.trim.isEmpty) Invalid(ValidationError("error.email"))
       else
-        emailRegex
-          .findFirstMatchIn(e)
-          .map(_ => Valid)
+        emailRegex.findFirstMatchIn(e).map(_ => Valid)
           .getOrElse(Invalid(ValidationError("error.email")))
     }
 
@@ -177,9 +176,7 @@ trait Constraints {
 
       if (o == null) Invalid(ValidationError(error, regex))
       else
-        regex
-          .unapplySeq(o)
-          .map(_ => Valid)
+        regex.unapplySeq(o).map(_ => Valid)
           .getOrElse(Invalid(ValidationError(error, regex)))
     }
 

@@ -346,7 +346,8 @@ abstract class Parser(
       case x: CollectingRuleTraces if !x.reportQuiet ⇒
         val saved = x.minErrorIndex
         x.minErrorIndex =
-          Int.MaxValue // disables triggering of StartTracingException in __registerMismatch
+          Int
+            .MaxValue // disables triggering of StartTracingException in __registerMismatch
         saved
       case _ ⇒ -1
     }
@@ -555,8 +556,8 @@ abstract class Parser(
         case x: CollectingRuleTraces ⇒ start - x.minErrorIndex
         case _ ⇒ throw new IllegalStateException
       }
-      _trace = _trace.copy(prefix =
-        RuleTrace.NonTerminal(key, offset) :: _trace.prefix)
+      _trace = _trace
+        .copy(prefix = RuleTrace.NonTerminal(key, offset) :: _trace.prefix)
       this
     }
   }

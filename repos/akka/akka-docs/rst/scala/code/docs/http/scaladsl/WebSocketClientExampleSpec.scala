@@ -30,14 +30,13 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
       case message: TextMessage.Strict => println(message.text)
     }
 
-    val helloSource: Source[Message, NotUsed] = Source.single(TextMessage(
-      "hello world!"))
+    val helloSource: Source[Message, NotUsed] = Source
+      .single(TextMessage("hello world!"))
 
     // the Future[Done] is the materialized value of Sink.foreach
     // and it is completed when the stream completes
-    val flow: Flow[Message, Message, Future[Done]] = Flow.fromSinkAndSourceMat(
-      printSink,
-      helloSource)(Keep.left)
+    val flow: Flow[Message, Message, Future[Done]] = Flow
+      .fromSinkAndSourceMat(printSink, helloSource)(Keep.left)
 
     // upgradeResponse is a Future[WebSocketUpgradeResponse] that
     // completes or fails when the connection succeeds or fails
@@ -113,8 +112,8 @@ class WebSocketClientExampleSpec extends WordSpec with Matchers {
     val outgoing = Source.single(TextMessage("hello world!"))
 
     // flow to use (note: not re-usable!)
-    val webSocketFlow = Http().webSocketClientFlow(WebSocketRequest(
-      "ws://echo.websocket.org"))
+    val webSocketFlow = Http()
+      .webSocketClientFlow(WebSocketRequest("ws://echo.websocket.org"))
 
     // the materialized value is a tuple with
     // upgradeResponse is a Future[WebSocketUpgradeResponse] that

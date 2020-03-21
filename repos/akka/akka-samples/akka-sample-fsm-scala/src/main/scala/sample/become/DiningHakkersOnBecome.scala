@@ -76,10 +76,9 @@ class Hakker(name: String, left: ActorRef, right: ActorRef) extends Actor {
       chopstickToWaitFor: ActorRef,
       otherChopstick: ActorRef): Receive = {
     case Taken(`chopstickToWaitFor`) =>
-      println("%s has picked up %s and %s and starts to eat".format(
-        name,
-        left.path.name,
-        right.path.name))
+      println(
+        "%s has picked up %s and %s and starts to eat"
+          .format(name, left.path.name, right.path.name))
       become(eating)
       system.scheduler.scheduleOnce(5.seconds, self, Think)
 
@@ -136,12 +135,8 @@ object DiningHakkersOnBecome {
 
     //Create 5 awesome hakkers and assign them their left and right chopstick
     val hakkers = for {
-      (name, i) <- List(
-        "Ghosh",
-        "Boner",
-        "Klang",
-        "Krasser",
-        "Manie").zipWithIndex
+      (name, i) <- List("Ghosh", "Boner", "Klang", "Krasser", "Manie")
+        .zipWithIndex
     } yield system.actorOf(
       Props(classOf[Hakker], name, chopsticks(i), chopsticks((i + 1) % 5)))
 

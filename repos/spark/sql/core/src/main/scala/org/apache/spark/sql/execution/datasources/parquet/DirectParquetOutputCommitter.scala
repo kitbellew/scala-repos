@@ -63,19 +63,15 @@ private[datasources] class DirectParquetOutputCommitter(
     val configuration = ContextUtil.getConfiguration(jobContext)
     val fileSystem = outputPath.getFileSystem(configuration)
 
-    if (configuration.getBoolean(
-          ParquetOutputFormat.ENABLE_JOB_SUMMARY,
-          true)) {
+    if (configuration
+          .getBoolean(ParquetOutputFormat.ENABLE_JOB_SUMMARY, true)) {
       try {
         val outputStatus = fileSystem.getFileStatus(outputPath)
-        val footers = ParquetFileReader.readAllFootersInParallel(
-          configuration,
-          outputStatus)
+        val footers = ParquetFileReader
+          .readAllFootersInParallel(configuration, outputStatus)
         try {
-          ParquetFileWriter.writeMetadataFile(
-            configuration,
-            outputPath,
-            footers)
+          ParquetFileWriter
+            .writeMetadataFile(configuration, outputPath, footers)
         } catch {
           case e: Exception =>
             LOG.warn("could not write summary file for " + outputPath, e)

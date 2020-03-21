@@ -58,10 +58,8 @@ private[finagle] class PipelineFactory(
 
     private[this] def thriftToMux(req: ChannelBuffer): Message.Tdispatch = {
       val header = new RequestHeader
-      val request_ = InputBuffer.peelMessage(
-        ThriftMuxUtil.bufferToArray(req),
-        header,
-        protocolFactory)
+      val request_ = InputBuffer
+        .peelMessage(ThriftMuxUtil.bufferToArray(req), header, protocolFactory)
       val richHeader = new RichRequestHeader(header)
 
       val contextBuf = new mutable.ArrayBuffer[(ChannelBuffer, ChannelBuffer)](
@@ -330,11 +328,8 @@ private[finagle] class PipelineFactory(
             new RequestSerializer(1))
           if (isTTwitterUpNegotiation(buf)) {
             pipeline.replace(this, "twitter_thrift_to_mux", new TTwitterToMux)
-            Channels.write(
-              ctx,
-              e.getFuture,
-              upNegotiationAck,
-              e.getRemoteAddress)
+            Channels
+              .write(ctx, e.getFuture, upNegotiationAck, e.getRemoteAddress)
           } else {
             pipeline.replace(this, "framed_thrift_to_mux", new TFramedToMux)
             super.messageReceived(
@@ -386,12 +381,12 @@ private[finagle] class PipelineFactory(
   private[this] val thriftMuxConnectionCount = new AtomicInteger
 
   private[this] val thriftmuxConnects = statsReceiver.counter("connects")
-  private[this] val downgradedConnects = statsReceiver.counter(
-    "downgraded_connects")
-  private[this] val downgradedConnectionGauge = statsReceiver.addGauge(
-    "downgraded_connections") { downgradedConnectionCount.get() }
-  private[this] val thriftmuxConnectionGauge = statsReceiver.addGauge(
-    "connections") { thriftMuxConnectionCount.get() }
+  private[this] val downgradedConnects = statsReceiver
+    .counter("downgraded_connects")
+  private[this] val downgradedConnectionGauge = statsReceiver
+    .addGauge("downgraded_connections") { downgradedConnectionCount.get() }
+  private[this] val thriftmuxConnectionGauge = statsReceiver
+    .addGauge("connections") { thriftMuxConnectionCount.get() }
 
   def getPipeline(): ChannelPipeline = {
     val pipeline = Netty3Framer.getPipeline()

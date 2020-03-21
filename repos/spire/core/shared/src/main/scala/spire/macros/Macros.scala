@@ -11,8 +11,8 @@ object Macros {
     import c.universe._
 
     def getString: String = {
-      val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) =
-        c.prefix.tree
+      val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) = c
+        .prefix.tree
       s
     }
   }
@@ -84,8 +84,8 @@ object Macros {
   def rational(c: Context)(): c.Expr[Rational] = {
     import c.universe._
 
-    val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) =
-      c.prefix.tree
+    val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) = c.prefix
+      .tree
     val r = Rational(s)
 
     val (n, d) = (r.numerator, r.denominator)
@@ -99,8 +99,8 @@ object Macros {
   def formatWhole(c: Context, sep: String): String = {
     val regex = "0|-?[1-9][0-9]{0,2}(%s[0-9]{3})*" format sep
     import c.universe._
-    val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) =
-      c.prefix.tree
+    val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) = c.prefix
+      .tree
     if (!s.matches(regex)) c.error(c.enclosingPosition, "invalid whole number")
     s.replace(sep, "")
   }
@@ -108,8 +108,8 @@ object Macros {
   def formatDecimal(c: Context, sep: String, dec: String): String = {
     val regex = "0|-?[1-9][0-9]{0,2}(%s[0-9]{3})*(%s[0-9]+)?" format (sep, dec)
     import c.universe._
-    val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) =
-      c.prefix.tree
+    val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) = c.prefix
+      .tree
     if (!s.matches(regex))
       c.error(c.enclosingPosition, "invalid decimal number")
     s.replace(sep, "").replace(dec, ".")
@@ -185,8 +185,8 @@ object Macros {
 
   def radix(c: Context)(): c.Expr[Int] = {
     import c.universe._
-    val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) =
-      c.prefix.tree
+    val Apply(_, List(Apply(_, List(Literal(Constant(s: String)))))) = c.prefix
+      .tree
 
     val name = c.macroApplication.symbol.name.toString
     val base = name.substring(1).toInt

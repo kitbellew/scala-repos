@@ -120,8 +120,7 @@ private[streaming] class InternalMapWithStateDStream[
 
   persist(StorageLevel.MEMORY_ONLY)
 
-  private val partitioner = spec
-    .getPartitioner()
+  private val partitioner = spec.getPartitioner()
     .getOrElse(new HashPartitioner(ssc.sc.defaultParallelism))
 
   private val mappingFunction = spec.getFunction()
@@ -159,8 +158,7 @@ private[streaming] class InternalMapWithStateDStream[
         } else { rdd }
       case None =>
         MapWithStateRDD.createFromPairRDD[K, V, S, E](
-          spec
-            .getInitialStateRDD()
+          spec.getInitialStateRDD()
             .getOrElse(new EmptyRDD[(K, S)](ssc.sparkContext)),
           partitioner,
           validTime)

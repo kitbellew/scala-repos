@@ -44,10 +44,8 @@ final class NIHDBProjection(
   val length = readers.map(_.length.toLong).sum
 
   override def toString =
-    "NIHDBProjection(id = %d, len = %d, authorities = %s)".format(
-      projectionId,
-      length,
-      authorities)
+    "NIHDBProjection(id = %d, len = %d, authorities = %s)"
+      .format(projectionId, length, authorities)
 
   def structure(implicit M: Monad[Future]) =
     M.point(readers.flatMap(_.structure)(collection.breakOut): Set[ColumnRef])
@@ -70,9 +68,7 @@ final class NIHDBProjection(
         (acc, segment) =>
           reduction.reduce(segment, None) map { a =>
             val key = segment.ctype
-            val value = acc
-              .get(key)
-              .map(reduction.semigroup.append(_, a))
+            val value = acc.get(key).map(reduction.semigroup.append(_, a))
               .getOrElse(a)
             acc + (key -> value)
           } getOrElse acc

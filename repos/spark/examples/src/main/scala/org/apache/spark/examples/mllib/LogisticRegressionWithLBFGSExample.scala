@@ -45,8 +45,7 @@ object LogisticRegressionWithLBFGSExample {
     val test = splits(1)
 
     // Run training algorithm to build the model
-    val model = new LogisticRegressionWithLBFGS()
-      .setNumClasses(10)
+    val model = new LogisticRegressionWithLBFGS().setNumClasses(10)
       .run(training)
 
     // Compute raw scores on the test set.
@@ -63,9 +62,8 @@ object LogisticRegressionWithLBFGSExample {
 
     // Save and load model
     model.save(sc, "target/tmp/scalaLogisticRegressionWithLBFGSModel")
-    val sameModel = LogisticRegressionModel.load(
-      sc,
-      "target/tmp/scalaLogisticRegressionWithLBFGSModel")
+    val sameModel = LogisticRegressionModel
+      .load(sc, "target/tmp/scalaLogisticRegressionWithLBFGSModel")
     // $example off$
 
     sc.stop()

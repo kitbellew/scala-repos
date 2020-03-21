@@ -76,8 +76,8 @@ import ManagedQueryTestSupport._
 class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
   val actorSystem = ActorSystem("managedQueryModuleSpec")
   val jobActorSystem = ActorSystem("managedQueryModuleSpecJobs")
-  implicit val executionContext = ExecutionContext.defaultExecutionContext(
-    actorSystem)
+  implicit val executionContext = ExecutionContext
+    .defaultExecutionContext(actorSystem)
   implicit val M: Monad[Future] with Comonad[Future] =
     new blueeyes.bkka.UnsafeFutureComonad(
       executionContext,
@@ -156,10 +156,9 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
   // Cancels the job after `ticks` ticks.
   def cancel(jobId: JobId, ticks: Int): Future[Boolean] = {
     schedule(ticks) {
-      jobManager
-        .cancel(jobId, "Yarrrr", yggConfig.clock.now())
-        .map { _.fold(_ => false, _ => true) }
-        .copoint
+      jobManager.cancel(jobId, "Yarrrr", yggConfig.clock.now()).map {
+        _.fold(_ => false, _ => true)
+      }.copoint
     }
   }
 
@@ -311,29 +310,31 @@ trait TestManagedQueryModule
               opts.sortOrder)
             val numTicks = query.toInt
 
-            EitherT.right[TestFuture, EvaluationError, StreamT[
-              TestFuture,
-              CharBuffer]] {
-              WriterT {
-                createQueryJob(
-                  ctx.apiKey,
-                  Some(userQuery.serialize),
-                  opts.timeout) map { implicit M0 =>
-                  val ticks = new AtomicInteger()
-                  val result = StreamT.unfoldM[JobQueryTF, CharBuffer, Int](0) {
-                    case i if i < numTicks =>
-                      schedule(1) {
-                        ticks.getAndIncrement()
-                        Some((CharBuffer.wrap("."), i + 1))
-                      }.liftM[JobQueryT]
+            EitherT
+              .right[TestFuture, EvaluationError, StreamT[
+                TestFuture,
+                CharBuffer]] {
+                WriterT {
+                  createQueryJob(
+                    ctx.apiKey,
+                    Some(userQuery.serialize),
+                    opts.timeout) map { implicit M0 =>
+                    val ticks = new AtomicInteger()
+                    val result = StreamT
+                      .unfoldM[JobQueryTF, CharBuffer, Int](0) {
+                        case i if i < numTicks =>
+                          schedule(1) {
+                            ticks.getAndIncrement()
+                            Some((CharBuffer.wrap("."), i + 1))
+                          }.liftM[JobQueryT]
 
-                    case _ => M0.point { None }
+                        case _ => M0.point { None }
+                      }
+
+                    (Tag(M0.jobId map (_ -> ticks)), completeJob(result))
                   }
-
-                  (Tag(M0.jobId map (_ -> ticks)), completeJob(result))
                 }
               }
-            }
           }
         }
       }

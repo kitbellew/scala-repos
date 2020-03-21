@@ -67,24 +67,21 @@ private[spark] class GraphiteSink(
     case None    => TimeUnit.valueOf(GRAPHITE_DEFAULT_UNIT)
   }
 
-  val prefix = propertyToOption(GRAPHITE_KEY_PREFIX).getOrElse(
-    GRAPHITE_DEFAULT_PREFIX)
+  val prefix = propertyToOption(GRAPHITE_KEY_PREFIX)
+    .getOrElse(GRAPHITE_DEFAULT_PREFIX)
 
   MetricsSystem.checkMinimalPollingPeriod(pollUnit, pollPeriod)
 
-  val graphite =
-    propertyToOption(GRAPHITE_KEY_PROTOCOL).map(_.toLowerCase) match {
-      case Some("udp")        => new GraphiteUDP(new InetSocketAddress(host, port))
-      case Some("tcp") | None => new Graphite(new InetSocketAddress(host, port))
-      case Some(p)            => throw new Exception(s"Invalid Graphite protocol: $p")
-    }
+  val graphite = propertyToOption(GRAPHITE_KEY_PROTOCOL)
+    .map(_.toLowerCase) match {
+    case Some("udp")        => new GraphiteUDP(new InetSocketAddress(host, port))
+    case Some("tcp") | None => new Graphite(new InetSocketAddress(host, port))
+    case Some(p)            => throw new Exception(s"Invalid Graphite protocol: $p")
+  }
 
-  val reporter: GraphiteReporter = GraphiteReporter
-    .forRegistry(registry)
-    .convertDurationsTo(TimeUnit.MILLISECONDS)
-    .convertRatesTo(TimeUnit.SECONDS)
-    .prefixedWith(prefix)
-    .build(graphite)
+  val reporter: GraphiteReporter = GraphiteReporter.forRegistry(registry)
+    .convertDurationsTo(TimeUnit.MILLISECONDS).convertRatesTo(TimeUnit.SECONDS)
+    .prefixedWith(prefix).build(graphite)
 
   override def start() { reporter.start(pollPeriod, pollUnit) }
 

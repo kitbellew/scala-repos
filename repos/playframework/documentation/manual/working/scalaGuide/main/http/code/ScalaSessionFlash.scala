@@ -20,9 +20,7 @@ package scalaguide.http.scalasessionflash {
         //#index-retrieve-incoming-session
         def index =
           Action { request =>
-            request.session
-              .get("connected")
-              .map { user => Ok("Hello " + user) }
+            request.session.get("connected").map { user => Ok("Hello " + user) }
               .getOrElse { Unauthorized("Oops, you are not connected") }
           }
         //#index-retrieve-incoming-session
@@ -50,8 +48,8 @@ package scalaguide.http.scalasessionflash {
         def addSession =
           Action { implicit request =>
             //#add-session
-            Ok("Hello World!").withSession(
-              request.session + ("saidHello" -> "yes"))
+            Ok("Hello World!")
+              .withSession(request.session + ("saidHello" -> "yes"))
             //#add-session
           }
 

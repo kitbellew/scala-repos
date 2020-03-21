@@ -132,12 +132,11 @@ object VonMises extends ExponentialFamily[VonMises, Double] {
         else {
           val (sinx, cosx) = (sin(mu), cos(mu))
           val bessel_k = Bessel.i0(k)
-          val logprob = stats.n * math.log(bessel_k * 2 * Pi) - (
-            stats.sines * sinx + stats.cosines * cosx
-          ) * k
+          val logprob = stats.n * math.log(bessel_k * 2 * Pi) - (stats
+            .sines * sinx + stats.cosines * cosx) * k
           val mugrad = -k * (stats.sines * cos(mu) - stats.cosines * sin(mu))
-          val kgrad = stats.n * (Bessel
-            .i1(k) / bessel_k) - (stats.sines * sinx + stats.cosines * cosx)
+          val kgrad = stats.n * (Bessel.i1(k) / bessel_k) - (stats
+            .sines * sinx + stats.cosines * cosx)
 
           (logprob, (mugrad, kgrad))
 

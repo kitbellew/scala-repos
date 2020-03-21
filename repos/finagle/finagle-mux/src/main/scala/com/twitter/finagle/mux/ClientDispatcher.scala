@@ -116,8 +116,8 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
 }
 
 private[twitter] object ClientDispatcher {
-  val FutureExhaustedTagsException = Future.exception(
-    Failure.rejected("Exhausted tags"))
+  val FutureExhaustedTagsException = Future
+    .exception(Failure.rejected("Exhausted tags"))
 
   val Empty: Updatable[Try[Message]] = Updatable.empty()
 
@@ -206,8 +206,8 @@ private class ReqRepFilter
 }
 
 private object ReqRepFilter {
-  val FutureNackedException = Future.exception(
-    Failure.rejected("The request was Nacked by the server"))
+  val FutureNackedException = Future
+    .exception(Failure.rejected("The request was Nacked by the server"))
 
   /** Indicates if our peer can accept `Tdispatch` messages. */
   object CanDispatch extends Enumeration {

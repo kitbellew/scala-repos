@@ -159,8 +159,7 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
     entrySet.foldLeft(0)((prev, item) => item.hashCode + prev)
 
   override def toString(): String = {
-    entrySet.iterator
-      .map(e => s"${e.getKey}=${e.getValue}")
+    entrySet.iterator.map(e => s"${e.getKey}=${e.getValue}")
       .mkString("{", ", ", "}")
   }
 }

@@ -94,8 +94,8 @@ private[finagle] class LatencyProfile(stopWatch: () => Duration) {
       val factor =
         if (time < end) (1.0 / time.inNanoseconds) * (end.inNanoseconds)
         else 1.0
-      Duration.fromNanoseconds(
-        (next().inNanoseconds * factor.min(maxFactor)).toLong)
+      Duration
+        .fromNanoseconds((next().inNanoseconds * factor.min(maxFactor)).toLong)
     }
 }
 
@@ -153,34 +153,28 @@ private[finagle] object Simulation extends com.twitter.app.App {
     val noBrokers = new NoBrokersAvailableException
     val newFactory = new LatencyFactory(stats)
 
-    val data = getClass.getClassLoader.getResource(
-      "resources/real_latencies.data")
+    val data = getClass.getClassLoader
+      .getResource("resources/real_latencies.data")
     val dist = LatencyProfile.fromFile(data)
-    val stable: Set[ServiceFactory[Unit, Unit]] =
-      Seq.tabulate(nstable())(i => newFactory(i, dist)).toSet
+    val stable: Set[ServiceFactory[Unit, Unit]] = Seq
+      .tabulate(nstable())(i => newFactory(i, dist)).toSet
 
     val underlying = Var(stable)
     val activity: Activity[Set[ServiceFactory[Unit, Unit]]] = Activity(
       underlying.map { facs => Activity.Ok(facs) })
 
     val factory = bal() match {
-      case "p2c" =>
-        Balancers
-          .p2c()
+      case "p2c" => Balancers.p2c()
           .newBalancer(activity, statsReceiver = stats.scope("p2c"), noBrokers)
 
-      case "ewma" =>
-        Balancers
-          .p2cPeakEwma()
+      case "ewma" => Balancers.p2cPeakEwma()
           .newBalancer(activity, statsReceiver = stats.scope("p2c"), noBrokers)
 
       case "aperture" =>
-        Balancers
-          .aperture()
-          .newBalancer(
-            activity,
-            statsReceiver = stats.scope("aperture"),
-            noBrokers)
+        Balancers.aperture().newBalancer(
+          activity,
+          statsReceiver = stats.scope("aperture"),
+          noBrokers)
     }
 
     val balancer = factory.toService
@@ -192,8 +186,8 @@ private[finagle] object Simulation extends com.twitter.app.App {
     val stopWatch = Stopwatch.start()
     val p = new LatencyProfile(stopWatch)
 
-    val coldStart =
-      p.warmup(10.seconds) _ andThen p.slowWithin(19.seconds, 23.seconds, 10)
+    val coldStart = p.warmup(10.seconds) _ andThen p
+      .slowWithin(19.seconds, 23.seconds, 10)
     underlying() += newFactory(nstable() + 1, coldStart(dist))
     underlying() += newFactory(nstable() + 2, p.slowBy(2)(dist))
 

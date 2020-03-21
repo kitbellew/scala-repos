@@ -77,11 +77,8 @@ class StringToImmutableBytesWritableConverter
   */
 class StringListToPutConverter extends Converter[Any, Put] {
   override def convert(obj: Any): Put = {
-    val output = obj
-      .asInstanceOf[java.util.ArrayList[String]]
-      .asScala
-      .map(Bytes.toBytes)
-      .toArray
+    val output = obj.asInstanceOf[java.util.ArrayList[String]].asScala
+      .map(Bytes.toBytes).toArray
     val put = new Put(output(0))
     put.add(output(1), output(2), output(3))
   }

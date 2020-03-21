@@ -30,8 +30,7 @@ object IfElseToHeadOption extends SimplificationType {
             scalaSome(coll2 `.head` ()))
           if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
         Some(
-          replace(expr)
-            .withText(invocationText(coll, "headOption"))
+          replace(expr).withText(invocationText(coll, "headOption"))
             .highlightAll)
       case IfStmt(
             CheckNonEmpty(coll, _, _),
@@ -39,8 +38,7 @@ object IfElseToHeadOption extends SimplificationType {
             scalaNone())
           if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
         Some(
-          replace(expr)
-            .withText(invocationText(coll, "headOption"))
+          replace(expr).withText(invocationText(coll, "headOption"))
             .highlightAll)
       case _ => None
     }
@@ -60,8 +58,7 @@ object IfElseToLastOption extends SimplificationType {
             scalaSome(coll2 `.last` ()))
           if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
         Some(
-          replace(expr)
-            .withText(invocationText(coll, "lastOption"))
+          replace(expr).withText(invocationText(coll, "lastOption"))
             .highlightAll)
       case IfStmt(
             CheckNonEmpty(coll, _, _),
@@ -69,8 +66,7 @@ object IfElseToLastOption extends SimplificationType {
             scalaNone())
           if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
         Some(
-          replace(expr)
-            .withText(invocationText(coll, "lastOption"))
+          replace(expr).withText(invocationText(coll, "lastOption"))
             .highlightAll)
       case _ => None
     }
@@ -86,8 +82,7 @@ object LiftToHeadOption extends SimplificationType {
     expr match {
       case (coll `.lift` ()) `.apply`(literal("0")) =>
         Some(
-          replace(expr)
-            .withText(invocationText(coll, "headOption"))
+          replace(expr).withText(invocationText(coll, "headOption"))
             .highlightFrom(coll))
       case _ => None
     }
@@ -104,8 +99,7 @@ object LiftToLastOption extends SimplificationType {
       case (coll `.lift` ()) `.apply` (coll2 `.sizeOrLength` () `-` literal(
             "1")) if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
         Some(
-          replace(expr)
-            .withText(invocationText(coll, "lastOption"))
+          replace(expr).withText(invocationText(coll, "lastOption"))
             .highlightFrom(coll))
       case _ => None
     }

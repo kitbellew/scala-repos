@@ -19,8 +19,7 @@ class EvolutionsModule extends Module {
       bind[EvolutionsConfig].toProvider[DefaultEvolutionsConfigParser],
       bind[EvolutionsReader].to[EnvironmentEvolutionsReader],
       bind[EvolutionsApi].to[DefaultEvolutionsApi],
-      bind[ApplicationEvolutions]
-        .toProvider[ApplicationEvolutionsProvider]
+      bind[ApplicationEvolutions].toProvider[ApplicationEvolutionsProvider]
         .eagerly
     )
   }

@@ -45,8 +45,7 @@ object Config {
           case value     => Some(value)
         }
 
-        (envConf orElse systemConf)
-          .map("akka." + _ + ".conf")
+        (envConf orElse systemConf).map("akka." + _ + ".conf")
           .getOrElse("akka.conf")
       }
 
@@ -62,7 +61,8 @@ object Config {
         } else if (HOME.isDefined) {
           val configFile = HOME.get + "/config/" + confName
           println(
-            "AKKA_HOME is defined as [" + HOME.get + "], loading config from [" + configFile + "].")
+            "AKKA_HOME is defined as [" + HOME
+              .get + "], loading config from [" + configFile + "].")
           Configuration.fromFile(configFile)
         } else {
           println(

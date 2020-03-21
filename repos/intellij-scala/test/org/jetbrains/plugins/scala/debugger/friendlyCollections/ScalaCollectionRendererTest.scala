@@ -46,9 +46,8 @@ class ScalaCollectionRendererTest
       val testVariable = localVar(frameTree, context, variableName)
       val renderer = testVariable.getRenderer(getDebugProcess)
       testVariable.setRenderer(renderer)
-      testVariable.updateRepresentation(
-        context,
-        DescriptorLabelListener.DUMMY_LISTENER)
+      testVariable
+        .updateRepresentation(context, DescriptorLabelListener.DUMMY_LISTENER)
       val value = testVariable.calcValue(context)
       renderer.buildChildren(
         value,
@@ -116,8 +115,8 @@ class ScalaCollectionRendererTest
     runDebugger() {
       waitForBreakpoint()
       val (label, children) = renderLabelAndChildren(collectionName)
-      val classRenderer: ClassRenderer =
-        NodeRendererSettings.getInstance().getClassRenderer
+      val classRenderer: ClassRenderer = NodeRendererSettings.getInstance()
+        .getClassRenderer
       val typeName = classRenderer.renderTypeName(collectionClass)
       val expectedLabel =
         s"$collectionName = {$typeName@$UNIQUE_ID}${ScalaCollectionRenderer

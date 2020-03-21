@@ -49,8 +49,8 @@ trait Function10[-T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, -T10, +R]
               x7: T7,
               x8: T8,
               x9: T9,
-              x10: T10) =>
-            self.apply(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10)).curried
+              x10: T10) => self.apply(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10))
+        .curried
   }
 
   /** Creates a tupled version of this function: instead of 10 arguments,

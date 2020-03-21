@@ -466,9 +466,8 @@ trait Printers extends api.Printers {
           if ((tree.tpe eq null) || (printPositions && tt.original != null)) {
             if (tt.original != null) print("<type: ", tt.original, ">")
             else print("<type ?>")
-          } else if ((
-                       tree.tpe.typeSymbol ne null
-                     ) && tree.tpe.typeSymbol.isAnonymousClass) {
+          } else if ((tree.tpe.typeSymbol ne null) && tree.tpe.typeSymbol
+                       .isAnonymousClass) {
             print(tree.tpe.typeSymbol.toString)
           } else { print(tree.tpe.toString) }
 
@@ -716,10 +715,10 @@ trait Printers extends api.Printers {
           printPosition(tree)
           printAnnotations(vd)
           val mutableOrOverride = mods.isOverride || mods.isMutable
-          val hideCtorMods =
-            mods.isParamAccessor && mods.isPrivateLocal && !mutableOrOverride
-          val hideCaseCtorMods =
-            mods.isCaseAccessor && mods.isPublic && !mutableOrOverride
+          val hideCtorMods = mods.isParamAccessor && mods
+            .isPrivateLocal && !mutableOrOverride
+          val hideCaseCtorMods = mods.isCaseAccessor && mods
+            .isPublic && !mutableOrOverride
 
           if (primaryCtorParam && !(hideCtorMods || hideCaseCtorMods)) {
             printModifiers(mods, primaryCtorParam)
@@ -967,8 +966,8 @@ trait Printers extends api.Printers {
            * passing required type for checking
            */
           def insertBraces(body: => Unit): Unit =
-            if (parentsStack.nonEmpty && parentsStack.tail.exists(
-                  _.isInstanceOf[Match])) {
+            if (parentsStack.nonEmpty && parentsStack.tail
+                  .exists(_.isInstanceOf[Match])) {
               print("(")
               body
               print(")")
@@ -1010,8 +1009,9 @@ trait Printers extends api.Printers {
             case EmptyTree | EmptyTypeTree() => printTp()
             // case for untypechecked trees
             case Annotated(annot, arg)
-                if (expr ne null) && (arg ne null) && expr.equalsStructure(
-                  arg) => printTp() // remove double arg - 5: 5: @unchecked
+                if (expr ne null) && (arg ne null) && expr
+                  .equalsStructure(arg) =>
+              printTp() // remove double arg - 5: 5: @unchecked
             case tt: TypeTree if tt.original.isInstanceOf[Annotated] =>
               printTp()
             case Function(List(), EmptyTree) => print("(", expr, " _)") //func _
@@ -1033,8 +1033,8 @@ trait Printers extends api.Printers {
                       Select(_, methodName),
                       l2 @ List(Ident(iVDName)))),
                   l3)
-                if sVD.mods.isSynthetic && treeInfo.isLeftAssoc(
-                  methodName) && sVD.name == iVDName =>
+                if sVD.mods.isSynthetic && treeInfo
+                  .isLeftAssoc(methodName) && sVD.name == iVDName =>
               val printBlock = Block(l1, Apply(a1, l3))
               print(printBlock)
             case Apply(tree1, _)
@@ -1078,7 +1078,8 @@ trait Printers extends api.Printers {
               case Select(q, _) => checkRootPackage(q)
               case _: Ident | _: This =>
                 val sym = tr.symbol
-                tr.hasExistingSymbol && sym.hasPackageFlag && sym.name != nme.ROOTPKG
+                tr.hasExistingSymbol && sym.hasPackageFlag && sym.name != nme
+                  .ROOTPKG
               case _ => false
             })
 
@@ -1107,8 +1108,8 @@ trait Printers extends api.Printers {
           x match {
             case Constant(v: String) if {
                   val strValue = x.stringValue
-                  strValue.contains(LF) && strValue.contains(
-                    "\"\"\"") && strValue.size > 1
+                  strValue.contains(LF) && strValue
+                    .contains("\"\"\"") && strValue.size > 1
                 } =>
               val splitValue = x.stringValue.split(s"$LF").toList
               val multilineStringValue =
@@ -1174,8 +1175,8 @@ trait Printers extends api.Printers {
 
   /** Hook for extensions */
   def xprintTree(treePrinter: TreePrinter, tree: Tree) =
-    treePrinter.print(
-      tree.productPrefix + tree.productIterator.mkString("(", ", ", ")"))
+    treePrinter
+      .print(tree.productPrefix + tree.productIterator.mkString("(", ", ", ")"))
 
   def newCodePrinter(
       writer: PrintWriter,
@@ -1335,8 +1336,8 @@ trait Printers extends api.Printers {
             }
         case mods: Modifiers =>
           print("Modifiers(")
-          if (mods.flags != NoFlags || mods.privateWithin != tpnme.EMPTY || mods.annotations.nonEmpty)
-            print(show(mods.flags))
+          if (mods.flags != NoFlags || mods.privateWithin != tpnme.EMPTY || mods
+                .annotations.nonEmpty) print(show(mods.flags))
           if (mods.privateWithin != tpnme.EMPTY || mods.annotations.nonEmpty) {
             print(", "); print(mods.privateWithin)
           }
@@ -1414,9 +1415,7 @@ trait Printers extends api.Printers {
       val s_flags = new scala.collection.mutable.ListBuffer[String]
       def hasFlag(left: Long, right: Long): Boolean = (left & right) != 0
       for (i <- 0 to 63 if hasFlag(flags, 1L << i))
-        s_flags += flagToString(1L << i)
-          .replace("<", "")
-          .replace(">", "")
+        s_flags += flagToString(1L << i).replace("<", "").replace(">", "")
           .toUpperCase
       s_flags mkString " | "
     }

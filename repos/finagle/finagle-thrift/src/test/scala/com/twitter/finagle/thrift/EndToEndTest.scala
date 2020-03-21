@@ -78,16 +78,13 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       }
     }
 
-    val builder = ServerBuilder()
-      .name("server")
+    val builder = ServerBuilder().name("server")
       .bindTo(new InetSocketAddress(0))
       .stack(Thrift.server.withProtocolFactory(pf))
       .build(ifaceToService(iface, pf))
-    val proto = Thrift.server
-      .withProtocolFactory(pf)
-      .serveIface(
-        new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
-        iface)
+    val proto = Thrift.server.withProtocolFactory(pf).serveIface(
+      new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
+      iface)
 
     def port(socketAddr: SocketAddress): Int =
       socketAddr.asInstanceOf[InetSocketAddress].getPort
@@ -106,10 +103,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     var clientStack = Thrift.client.withProtocolFactory(pf)
     clientId.foreach { cId => clientStack = clientStack.withClientId(cId) }
 
-    val builder = ClientBuilder()
-      .stack(clientStack)
-      .dest(dest)
-      .build()
+    val builder = ClientBuilder().stack(clientStack).dest(dest).build()
     val proto = clientStack.newService(dest)
 
     def toIface(svc: Service[ThriftClientRequest, Array[Byte]]) =
@@ -156,11 +150,9 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     }
 
     val sr = new InMemoryStatsReceiver()
-    val server = Thrift.server
-      .configured(Stats(sr))
-      .serve(
-        new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
-        ifaceToService(impl, protocolFactory))
+    val server = Thrift.server.configured(Stats(sr)).serve(
+      new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
+      ifaceToService(impl, protocolFactory))
     val client = Thrift.client.newIface[B.ServiceIface](server)
 
     intercept[org.apache.thrift.TApplicationException] {
@@ -247,14 +239,11 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       assert(ids.size == 1)
       val theId = ids.head
 
-      val traces: Seq[Record] = tracer
-        .filter(_.traceId == theId)
-        .filter {
-          // Skip spurious GC messages
-          case Record(_, _, Annotation.Message(msg), _) => !msg.startsWith("Gc")
-          case _                                        => true
-        }
-        .toSeq
+      val traces: Seq[Record] = tracer.filter(_.traceId == theId).filter {
+        // Skip spurious GC messages
+        case Record(_, _, Annotation.Message(msg), _) => !msg.startsWith("Gc")
+        case _                                        => true
+      }.toSeq
 
       // Verify the count of the annotations. Order may change.
       // These are set twice - by client and server
@@ -309,31 +298,25 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
 
   test("Configuring SSL over stack param") {
     object SslFile {
-      val cert =
-        new File(getClass.getResource("/cert.pem").toURI).getAbsolutePath
+      val cert = new File(getClass.getResource("/cert.pem").toURI)
+        .getAbsolutePath
       val key = new File(getClass.getResource("/key.pem").toURI).getAbsolutePath
     }
 
     def mkThriftTlsServer(sr: StatsReceiver) =
-      Thrift.server
-        .configured(Stats(sr))
+      Thrift.server.configured(Stats(sr))
         .configured(Transport.TLSServerEngine(Some { () =>
           Ssl.server(SslFile.cert, SslFile.key, null, null, null)
-        }))
-        .serve(
+        })).serve(
           new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
           ifaceToService(processor, Protocols.binaryFactory()))
 
     def mkThriftTlsClient(server: ListeningServer) =
-      Thrift.client
-        .configured(Transport.TLSClientEngine(Some({
-          case inet: InetSocketAddress =>
-            Ssl.clientWithoutCertificateValidation(
-              inet.getHostName,
-              inet.getPort)
-          case _ => Ssl.clientWithoutCertificateValidation()
-        })))
-        .newIface[B.ServiceIface](server)
+      Thrift.client.configured(Transport.TLSClientEngine(Some({
+        case inet: InetSocketAddress =>
+          Ssl.clientWithoutCertificateValidation(inet.getHostName, inet.getPort)
+        case _ => Ssl.clientWithoutCertificateValidation()
+      }))).newIface[B.ServiceIface](server)
 
     val sr = new InMemoryStatsReceiver()
 
@@ -398,8 +381,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
         else Future.exception(new InvalidQueryException(x.length))
     }
     val svc = new Echo.FinagledService(iface, Protocols.binaryFactory())
-    Thrift.server
-      .configured(Stats(NullStatsReceiver))
+    Thrift.server.configured(Stats(NullStatsReceiver))
       .serve(new InetSocketAddress(InetAddress.getLoopbackAddress, 0), svc)
   }
 
@@ -429,12 +411,10 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   test("thrift stack client deserialized response classification") {
     val server = serverForClassifier()
     val sr = new InMemoryStatsReceiver()
-    val client = Thrift.client
-      .configured(Stats(sr))
-      .withResponseClassifier(classifier)
-      .newIface[Echo.FutureIface](
-        Name.bound(Address(
-          server.boundAddress.asInstanceOf[InetSocketAddress])),
+    val client = Thrift.client.configured(Stats(sr))
+      .withResponseClassifier(classifier).newIface[Echo.FutureIface](
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     testFailureClassification(sr, client)
@@ -444,14 +424,9 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   test("thrift ClientBuilder deserialized response classification") {
     val server = serverForClassifier()
     val sr = new InMemoryStatsReceiver()
-    val clientBuilder = ClientBuilder()
-      .stack(Thrift.client)
-      .name("client")
-      .reportTo(sr)
-      .responseClassifier(classifier)
-      .dest(Name.bound(Address(
-        server.boundAddress.asInstanceOf[InetSocketAddress])))
-      .build()
+    val clientBuilder = ClientBuilder().stack(Thrift.client).name("client")
+      .reportTo(sr).responseClassifier(classifier).dest(Name.bound(Address(
+        server.boundAddress.asInstanceOf[InetSocketAddress]))).build()
     val client = new Echo.FinagledClient(clientBuilder)
 
     testFailureClassification(sr, client)
@@ -461,13 +436,11 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   test("thrift response classification using ThriftExceptionsAsFailures") {
     val server = serverForClassifier()
     val sr = new InMemoryStatsReceiver()
-    val client = Thrift.client
-      .configured(Stats(sr))
-      .withResponseClassifier(
-        ThriftResponseClassifier.ThriftExceptionsAsFailures)
+    val client = Thrift.client.configured(Stats(sr)).withResponseClassifier(
+      ThriftResponseClassifier.ThriftExceptionsAsFailures)
       .newIface[Echo.FutureIface](
-        Name.bound(Address(
-          server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name
+          .bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     val ex = intercept[InvalidQueryException] {
@@ -489,27 +462,18 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     Seq(
       "Thrift.server" ->
         ((sr, fi) =>
-          Thrift.server
-            .withLabel("server")
-            .withStatsReceiver(sr)
-            .serve(
-              "localhost:*",
-              new Echo.FinagledService(fi, Protocols.binaryFactory()))),
+          Thrift.server.withLabel("server").withStatsReceiver(sr).serve(
+            "localhost:*",
+            new Echo.FinagledService(fi, Protocols.binaryFactory()))),
       "ServerBuilder(stack)" ->
         ((sr, fi) =>
-          ServerBuilder()
-            .stack(Thrift.server)
-            .name("server")
-            .reportTo(sr)
+          ServerBuilder().stack(Thrift.server).name("server").reportTo(sr)
             .bindTo(new InetSocketAddress(0))
             .build(new Echo.FinagledService(fi, Protocols.binaryFactory()))),
       "ServerBuilder(codec)" ->
         ((sr, fi) =>
-          ServerBuilder()
-            .codec(ThriftServerFramedCodec())
-            .name("server")
-            .reportTo(sr)
-            .bindTo(new InetSocketAddress(0))
+          ServerBuilder().codec(ThriftServerFramedCodec()).name("server")
+            .reportTo(sr).bindTo(new InetSocketAddress(0))
             .build(new Echo.FinagledService(fi, Protocols.binaryFactory())))
     )
 
@@ -517,28 +481,19 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       : Seq[(String, (StatsReceiver, Address) => Echo.FutureIface)] = Seq(
     "Thrift.client" ->
       ((sr, addr) =>
-        Thrift.client
-          .withStatsReceiver(sr)
+        Thrift.client.withStatsReceiver(sr)
           .newIface[Echo.FutureIface](Name.bound(addr), "client")),
     "ClientBuilder(stack)" ->
       ((sr, addr) =>
         new Echo.FinagledClient(
-          ClientBuilder()
-            .stack(Thrift.client)
-            .name("client")
-            .hostConnectionLimit(1)
-            .reportTo(sr)
-            .dest(Name.bound(addr))
+          ClientBuilder().stack(Thrift.client).name("client")
+            .hostConnectionLimit(1).reportTo(sr).dest(Name.bound(addr))
             .build())),
     "ClientBuilder(codec)" ->
       ((sr, addr) =>
         new Echo.FinagledClient(
-          ClientBuilder()
-            .codec(ThriftClientFramedCodec())
-            .name("client")
-            .hostConnectionLimit(1)
-            .reportTo(sr)
-            .dest(Name.bound(addr))
+          ClientBuilder().codec(ThriftClientFramedCodec()).name("client")
+            .hostConnectionLimit(1).reportTo(sr).dest(Name.bound(addr))
             .build()))
   )
 
@@ -579,18 +534,13 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
         }
       }
     }
-    val server = Thrift.server
-      .withProtocolFactory(pf)
-      .serveIface(
-        new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
-        iface)
+    val server = Thrift.server.withProtocolFactory(pf).serveIface(
+      new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
+      iface)
 
     val sr = new InMemoryStatsReceiver()
-    val client = Thrift.client
-      .configured(Stats(sr))
-      .withProtocolFactory(pf)
-      .withClientId(ClientId("aClient"))
-      .withNoAttemptTTwitterUpgrade
+    val client = Thrift.client.configured(Stats(sr)).withProtocolFactory(pf)
+      .withClientId(ClientId("aClient")).withNoAttemptTTwitterUpgrade
       .newIface[B.ServiceIface](server)
 
     assert(Await.result(client.someway(), timeout = 100.millis) == null)

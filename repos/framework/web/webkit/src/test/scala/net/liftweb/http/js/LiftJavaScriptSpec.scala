@@ -138,9 +138,7 @@ object LiftJavaScriptSpec extends Specification {
     }
     "create init command" in withEnglishLocale {
       S.initIfUninitted(session) {
-        val init = LiftRules.javaScriptSettings
-          .vend()
-          .map(_.apply(session))
+        val init = LiftRules.javaScriptSettings.vend().map(_.apply(session))
           .map(LiftJavaScript.initCmd(_).toJsCmd)
         init must_== Full(formatjs(List(
           "var lift_settings = {};",
@@ -164,9 +162,7 @@ object LiftJavaScriptSpec extends Specification {
     "create init command with VanillaJS" in withEnglishLocale {
       S.initIfUninitted(session) {
         LiftRules.jsArtifacts = ExtCoreArtifacts
-        val init = LiftRules.javaScriptSettings
-          .vend()
-          .map(_.apply(session))
+        val init = LiftRules.javaScriptSettings.vend().map(_.apply(session))
           .map(LiftJavaScript.initCmd(_).toJsCmd)
         init must_== Full(formatjs(List(
           "var lift_settings = {};",
@@ -190,8 +186,8 @@ object LiftJavaScriptSpec extends Specification {
     "create init command with custom setting" in withEnglishLocale {
       S.initIfUninitted(session) {
         LiftRules.jsArtifacts = JQueryArtifacts
-        val settings = LiftJavaScript.settings.extend(
-          JsObj("liftPath" -> "liftyStuff", "mysetting" -> 99))
+        val settings = LiftJavaScript.settings
+          .extend(JsObj("liftPath" -> "liftyStuff", "mysetting" -> 99))
         val init = LiftJavaScript.initCmd(settings)
         init.toJsCmd must_== formatjs(List(
           "var lift_settings = {};",
@@ -217,14 +213,12 @@ object LiftJavaScriptSpec extends Specification {
 
   def formatjs(line: String): String = formatjs(line :: Nil)
   def formatjs(lines: List[String]): String =
-    lines
-      .map {
-        _.stripMargin.lines.toList match {
-          case init :+ last => (init.map(_ + " ") :+ last).mkString
-          case Nil          => ""
-        }
+    lines.map {
+      _.stripMargin.lines.toList match {
+        case init :+ last => (init.map(_ + " ") :+ last).mkString
+        case Nil          => ""
       }
-      .mkString("\n")
+    }.mkString("\n")
 
   object withEnglishLocale extends WithLocale(Locale.ENGLISH)
 

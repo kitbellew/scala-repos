@@ -29,8 +29,7 @@ class PersistenceQuerySpec
   "ReadJournal" must {
     "be found by full config key" in {
       withActorSystem() { system ⇒
-        PersistenceQuery
-          .get(system)
+        PersistenceQuery.get(system)
           .readJournalFor[DummyReadJournal](DummyReadJournal.Identifier)
       }
     }
@@ -38,10 +37,8 @@ class PersistenceQuerySpec
     "throw if unable to find query journal by config key" in {
       withActorSystem() { system ⇒
         intercept[IllegalArgumentException] {
-          PersistenceQuery
-            .get(system)
-            .readJournalFor[DummyReadJournal](
-              DummyReadJournal.Identifier + "-unknown")
+          PersistenceQuery.get(system).readJournalFor[DummyReadJournal](
+            DummyReadJournal.Identifier + "-unknown")
         }.getMessage should include("missing persistence read journal")
       }
     }

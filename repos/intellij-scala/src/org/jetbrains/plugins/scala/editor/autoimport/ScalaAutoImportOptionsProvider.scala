@@ -16,15 +16,12 @@ class ScalaAutoImportOptionsProvider extends AutoImportOptionsProvider {
   }
 
   def isModified: Boolean = {
-    if (ScalaApplicationSettings
-          .getInstance()
+    if (ScalaApplicationSettings.getInstance()
           .ADD_UNAMBIGUOUS_IMPORTS_ON_THE_FLY != form.isAddUnambiguous)
       return true
-    if (ScalaApplicationSettings
-          .getInstance()
-          .ADD_IMPORTS_ON_PASTE != form.getImportOnPasteOption) return true
-    if (ScalaApplicationSettings
-          .getInstance()
+    if (ScalaApplicationSettings.getInstance().ADD_IMPORTS_ON_PASTE != form
+          .getImportOnPasteOption) return true
+    if (ScalaApplicationSettings.getInstance()
           .OPTIMIZE_IMPORTS_ON_THE_FLY != form.isOptimizeImports) return true
     false
   }
@@ -32,10 +29,10 @@ class ScalaAutoImportOptionsProvider extends AutoImportOptionsProvider {
   def apply() {
     ScalaApplicationSettings.getInstance().ADD_UNAMBIGUOUS_IMPORTS_ON_THE_FLY =
       form.isAddUnambiguous
-    ScalaApplicationSettings.getInstance().ADD_IMPORTS_ON_PASTE =
-      form.getImportOnPasteOption
-    ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY =
-      form.isOptimizeImports
+    ScalaApplicationSettings.getInstance().ADD_IMPORTS_ON_PASTE = form
+      .getImportOnPasteOption
+    ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY = form
+      .isOptimizeImports
   }
 
   def reset() {

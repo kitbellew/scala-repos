@@ -164,8 +164,7 @@ class ApplyUnapplyForBindingSearcher
         if (checkApply || checkUnapply) {
           fun.containingClass match {
             case anon: ScNewTemplateDefinition =>
-              ScalaPsiUtil
-                .findInstanceBinding(anon)
+              ScalaPsiUtil.findInstanceBinding(anon)
                 .flatMap(Some(_, checkApply, checkUnapply))
             case _ => None
           }

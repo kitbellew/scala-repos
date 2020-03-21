@@ -120,9 +120,8 @@ trait ApplicationAnnotator {
                           "type.mismatch.expected.actual",
                           expectedText,
                           actualText)
-                        val annotation = holder.createErrorAnnotation(
-                          expression,
-                          message)
+                        val annotation = holder
+                          .createErrorAnnotation(expression, message)
                         annotation.registerFix(ReportHighlightingErrorQuickFix)
                         addCreateFromUsagesQuickFixes(reference, holder)
                       }
@@ -214,9 +213,8 @@ trait ApplicationAnnotator {
     val ref: Option[PsiElement] = refElementOpt.flatMap(_.resolve().toOption)
     val reassignment = ref.exists(ScalaPsiUtil.isReadonly)
     if (reassignment) {
-      val annotation = holder.createErrorAnnotation(
-        reference,
-        "Reassignment to val")
+      val annotation = holder
+        .createErrorAnnotation(reference, "Reassignment to val")
       ref.get match {
         case named: PsiNamedElement
             if ScalaPsiUtil.nameContext(named).isInstanceOf[ScValue] =>
@@ -234,7 +232,8 @@ trait ApplicationAnnotator {
     call.getEffectiveInvokedExpr match {
       case ref: ScReferenceElement => ref.bind() match {
           case Some(r)
-              if r.notCheckedResolveResult || r.isDynamic => //it's unhandled case
+              if r.notCheckedResolveResult || r
+                .isDynamic => //it's unhandled case
           case _ => call.applyOrUpdateElement match {
               case Some(r) if r.isDynamic => //it's still unhandled
               case _                      => return //it's definetely handled case
@@ -270,13 +269,10 @@ trait ApplicationAnnotator {
       case TypeMismatch(expression, expectedType) =>
         for (t <- expression.getType(TypingContext.empty)) {
           //TODO show parameter name
-          val (expectedText, actualText) = ScTypePresentation.different(
-            expectedType,
-            t)
-          val message = ScalaBundle.message(
-            "type.mismatch.expected.actual",
-            expectedText,
-            actualText)
+          val (expectedText, actualText) = ScTypePresentation
+            .different(expectedType, t)
+          val message = ScalaBundle
+            .message("type.mismatch.expected.actual", expectedText, actualText)
           val annotation = holder.createErrorAnnotation(expression, message)
           annotation.registerFix(ReportHighlightingErrorQuickFix)
         }
@@ -293,9 +289,8 @@ trait ApplicationAnnotator {
           expression,
           "Expansion for non-repeated parameter")
       case PositionalAfterNamedArgument(argument) =>
-        holder.createErrorAnnotation(
-          argument,
-          "Positional after named argument")
+        holder
+          .createErrorAnnotation(argument, "Positional after named argument")
       case ParameterSpecifiedMultipleTimes(assignment) =>
         holder.createErrorAnnotation(
           assignment.getLExpression,

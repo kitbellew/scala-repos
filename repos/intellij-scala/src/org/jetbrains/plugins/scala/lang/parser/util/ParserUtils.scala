@@ -72,9 +72,9 @@ object ParserUtils extends ParserUtilsBase {
   def isAssignmentOperator(id: String) =
     id.charAt(id.length - 1) match {
       case '='
-          if id != "<=" && id != ">=" && id != "!=" && (id.charAt(
-            0) != '=' || id == "=") => true
-      case _                        => false
+          if id != "<=" && id != ">=" && id != "!=" && (id
+            .charAt(0) != '=' || id == "=") => true
+      case _                                => false
     }
 
   //Defines priority

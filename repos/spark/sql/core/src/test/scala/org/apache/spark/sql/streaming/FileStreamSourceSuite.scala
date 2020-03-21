@@ -72,12 +72,9 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
       if (schema.isDefined) {
         sqlContext.read.format(format).schema(schema.get)
       } else { sqlContext.read.format(format) }
-    reader
-      .stream(path)
-      .queryExecution
-      .analyzed
-      .collect { case StreamingRelation(s: FileStreamSource, _) => s }
-      .head
+    reader.stream(path).queryExecution.analyzed.collect {
+      case StreamingRelation(s: FileStreamSource, _) => s
+    }.head
   }
 
   val valueSchema = new StructType().add("value", StringType)
@@ -97,10 +94,9 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     val df =
       if (path.isDefined) { reader.stream(path.get) }
       else { reader.stream() }
-    df.queryExecution.analyzed
-      .collect { case StreamingRelation(s: FileStreamSource, _) => s }
-      .head
-      .schema
+    df.queryExecution.analyzed.collect {
+      case StreamingRelation(s: FileStreamSource, _) => s
+    }.head.schema
   }
 
   test("FileStreamSource schema: no path") {
@@ -164,17 +160,14 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
           schema = None)
       }
       assert(
-        "Unable to infer schema.  It must be specified manually.;" === e.getMessage)
+        "Unable to infer schema.  It must be specified manually.;" === e
+          .getMessage)
     }
   }
 
   test("FileStreamSource schema: parquet, existing files, no schema") {
     withTempDir { src =>
-      Seq("a", "b", "c")
-        .toDS()
-        .as("userColumn")
-        .toDF()
-        .write
+      Seq("a", "b", "c").toDS().as("userColumn").toDF().write
         .parquet(new File(src, "1").getCanonicalPath)
       val schema = createFileStreamSourceAndGetSchema(
         format = Some("parquet"),
@@ -186,11 +179,7 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
 
   test("FileStreamSource schema: parquet, existing files, schema") {
     withTempPath { src =>
-      Seq("a", "b", "c")
-        .toDS()
-        .as("oldUserColumn")
-        .toDF()
-        .write
+      Seq("a", "b", "c").toDS().as("oldUserColumn").toDF().write
         .parquet(new File(src, "1").getCanonicalPath)
       val userSchema = new StructType().add("userColumn", StringType)
       val schema = createFileStreamSourceAndGetSchema(
@@ -210,7 +199,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
           schema = None)
       }
       assert(
-        "Unable to infer schema.  It must be specified manually.;" === e.getMessage)
+        "Unable to infer schema.  It must be specified manually.;" === e
+          .getMessage)
     }
   }
 

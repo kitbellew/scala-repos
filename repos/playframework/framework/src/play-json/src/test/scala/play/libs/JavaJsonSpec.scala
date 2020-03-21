@@ -31,12 +31,8 @@ class JavaJsonSpec extends Specification {
       testJsonString.getBytes("UTF-8"))
 
     val testJson = mapper.createObjectNode()
-    testJson
-      .put("foo", "bar")
-      .put("bar", "baz")
-      .put("instant", 1425435861)
-      .put("optNumber", 55555)
-      .put("a", 2.5)
+    testJson.put("foo", "bar").put("bar", "baz").put("instant", 1425435861)
+      .put("optNumber", 55555).put("a", 2.5)
       .put("copyright", "\u00a9") // copyright symbol
       .set("baz", mapper.createArrayNode().add(1).add(2).add(3))
 
@@ -60,12 +56,11 @@ class JavaJsonSpec extends Specification {
     }
     "stringify" in {
       "stringify" in new JsonScope {
-        Json.stringify(testJson) must_== Json.stringify(
-          Json.parse(testJsonString))
+        Json.stringify(testJson) must_== Json
+          .stringify(Json.parse(testJsonString))
       }
       "asciiStringify" in new JsonScope {
-        val resultString = Json
-          .stringify(Json.parse(testJsonString))
+        val resultString = Json.stringify(Json.parse(testJsonString))
           .replace("\u00a9", "\\u00A9")
         Json.asciiStringify(testJson) must_== resultString
       }

@@ -103,9 +103,7 @@ class RelationalMiscTest extends AsyncTest[RelationalTestDB] {
       _ <- q1.to[Set].result.map(_ shouldBe Set((1, 1), (2, 1), (3, 0), (4, 0)))
 
       q2 = t1s.map { t1 => (t1.a, Case.If(t1.a < 3) Then 1) }
-      _ <- q2
-        .to[Set]
-        .result
+      _ <- q2.to[Set].result
         .map(_ shouldBe Set((1, Some(1)), (2, Some(1)), (3, None), (4, None)))
 
       q3 = t1s.map { t1 =>
@@ -190,9 +188,8 @@ class RelationalMiscTest extends AsyncTest[RelationalTestDB] {
       ???
     } catch {
       case t: NullPointerException
-          if (t.getMessage ne null) && (
-            t.getMessage contains "initialization order"
-          ) =>
+          if (t.getMessage ne null) && (t
+            .getMessage contains "initialization order") =>
       // This is the expected error message from RelationalTableComponent.Table.column
     }
 
@@ -203,9 +200,8 @@ class RelationalMiscTest extends AsyncTest[RelationalTestDB] {
       ???
     } catch {
       case t: NullPointerException
-          if (t.getMessage ne null) && (
-            t.getMessage contains "initialization order"
-          ) =>
+          if (t.getMessage ne null) && (t
+            .getMessage contains "initialization order") =>
       // This is the expected error message from RelationalTypesComponent.MappedColumnTypeFactory.assertNonNullType
     }
 

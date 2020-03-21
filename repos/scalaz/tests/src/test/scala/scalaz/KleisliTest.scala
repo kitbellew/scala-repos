@@ -180,8 +180,7 @@ object KleisliTest extends SpecLite {
     }
 
     "catch ambient exceptions (1/2)" in {
-      C.attempt(Kleisli(_ => IO[Int](throw err)))
-        .run(1)
+      C.attempt(Kleisli(_ => IO[Int](throw err))).run(1)
         .unsafePerformIO must_== -\/(err)
     }
 

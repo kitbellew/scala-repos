@@ -34,8 +34,8 @@ class ApplicationEvolutions @Inject() (
     */
   def start(): Unit = {
 
-    webCommands.addHandler(
-      new EvolutionsWebCommands(evolutions, reader, config))
+    webCommands
+      .addHandler(new EvolutionsWebCommands(evolutions, reader, config))
 
     // allow db modules to write evolution files
     dynamicEvolutions.create()
@@ -350,8 +350,8 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
     // Since not all the datasources will necessarily appear in the db map, because some will come from deprecated
     // configuration, we create a map of them to the default config, and then override any of them with the ones
     // from db.
-    val datasourceConfigMap =
-      datasources.map(_ -> config).toMap ++ config.getPrototypedMap("db", "")
+    val datasourceConfigMap = datasources.map(_ -> config).toMap ++ config
+      .getPrototypedMap("db", "")
     val datasourceConfig = datasourceConfigMap.map {
       case (datasource, dsConfig) =>
         val enabled = dsConfig.get[Boolean]("enabled")
@@ -414,14 +414,11 @@ class EvolutionsWebCommands @Inject() (
       buildLink: play.core.BuildLink,
       path: java.io.File): Option[play.api.mvc.Result] = {
     val applyEvolutions = """/@evolutions/apply/([a-zA-Z0-9_]+)""".r
-    val resolveEvolutions =
-      """/@evolutions/resolve/([a-zA-Z0-9_]+)/([0-9]+)""".r
+    val resolveEvolutions = """/@evolutions/resolve/([a-zA-Z0-9_]+)/([0-9]+)"""
+      .r
 
-    lazy val redirectUrl = request.queryString
-      .get("redirect")
-      .filterNot(_.isEmpty)
-      .map(_.head)
-      .getOrElse("/")
+    lazy val redirectUrl = request.queryString.get("redirect")
+      .filterNot(_.isEmpty).map(_.head).getOrElse("/")
 
     // Regex removes all parent directories from request path
     request.path
@@ -429,10 +426,8 @@ class EvolutionsWebCommands @Inject() (
 
       case applyEvolutions(db) => {
         Some {
-          val scripts = evolutions.scripts(
-            db,
-            reader,
-            config.forDatasource(db).schema)
+          val scripts = evolutions
+            .scripts(db, reader, config.forDatasource(db).schema)
           evolutions.evolve(
             db,
             scripts,

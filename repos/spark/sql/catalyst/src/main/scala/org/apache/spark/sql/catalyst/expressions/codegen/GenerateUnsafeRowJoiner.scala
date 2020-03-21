@@ -64,30 +64,28 @@ object GenerateUnsafeRowJoiner
     val sizeReduction = (bitset1Words + bitset2Words - outputBitsetWords) * 8
 
     // --------------------- copy bitset from row 1 and row 2 --------------------------- //
-    val copyBitset = Seq
-      .tabulate(outputBitsetWords) { i =>
-        val bits =
-          if (bitset1Remainder > 0) {
-            if (i < bitset1Words - 1) { s"$getLong(obj1, offset1 + ${i * 8})" }
-            else if (i == bitset1Words - 1) {
-              // combine last work of bitset1 and first word of bitset2
-              s"$getLong(obj1, offset1 + ${i * 8}) | ($getLong(obj2, offset2) << $bitset1Remainder)"
-            } else if (i - bitset1Words < bitset2Words - 1) {
-              // combine next two words of bitset2
-              s"($getLong(obj2, offset2 + ${(i - bitset1Words) * 8}) >>> (64 - $bitset1Remainder))" +
-                s" | ($getLong(obj2, offset2 + ${(i - bitset1Words + 1) * 8}) << $bitset1Remainder)"
-            } else {
-              // last word of bitset2
-              s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8}) >>> (64 - $bitset1Remainder)"
-            }
+    val copyBitset = Seq.tabulate(outputBitsetWords) { i =>
+      val bits =
+        if (bitset1Remainder > 0) {
+          if (i < bitset1Words - 1) { s"$getLong(obj1, offset1 + ${i * 8})" }
+          else if (i == bitset1Words - 1) {
+            // combine last work of bitset1 and first word of bitset2
+            s"$getLong(obj1, offset1 + ${i * 8}) | ($getLong(obj2, offset2) << $bitset1Remainder)"
+          } else if (i - bitset1Words < bitset2Words - 1) {
+            // combine next two words of bitset2
+            s"($getLong(obj2, offset2 + ${(i - bitset1Words) * 8}) >>> (64 - $bitset1Remainder))" +
+              s" | ($getLong(obj2, offset2 + ${(i - bitset1Words + 1) * 8}) << $bitset1Remainder)"
           } else {
-            // they are aligned by word
-            if (i < bitset1Words) { s"$getLong(obj1, offset1 + ${i * 8})" }
-            else { s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8})" }
+            // last word of bitset2
+            s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8}) >>> (64 - $bitset1Remainder)"
           }
-        s"$putLong(buf, ${offset + i * 8}, $bits);"
-      }
-      .mkString("\n")
+        } else {
+          // they are aligned by word
+          if (i < bitset1Words) { s"$getLong(obj1, offset1 + ${i * 8})" }
+          else { s"$getLong(obj2, offset2 + ${(i - bitset1Words) * 8})" }
+        }
+      s"$putLong(buf, ${offset + i * 8}, $bits);"
+    }.mkString("\n")
 
     // --------------------- copy fixed length portion from row 1 ----------------------- //
     var cursor = offset + outputBitsetWords * 8
@@ -133,28 +131,26 @@ object GenerateUnsafeRowJoiner
      """.stripMargin
 
     // ------------- update fixed length data for variable length data type  --------------- //
-    val updateOffset = (schema1 ++ schema2).zipWithIndex
-      .map {
-        case (field, i) =>
-          // Skip fixed length data types, and only generate code for variable length data
-          if (UnsafeRow.isFixedLength(field.dataType)) { "" }
-          else {
-            // Number of bytes to increase for the offset. Note that since in UnsafeRow we store the
-            // offset in the upper 32 bit of the words, we can just shift the offset to the left by
-            // 32 and increment that amount in place.
-            val shift =
-              if (i < schema1.size) {
-                s"${(outputBitsetWords - bitset1Words + schema2.size) * 8}L"
-              } else {
-                s"(${(outputBitsetWords - bitset2Words + schema1.size) * 8}L + numBytesVariableRow1)"
-              }
-            val cursor = offset + outputBitsetWords * 8 + i * 8
-            s"""
+    val updateOffset = (schema1 ++ schema2).zipWithIndex.map {
+      case (field, i) =>
+        // Skip fixed length data types, and only generate code for variable length data
+        if (UnsafeRow.isFixedLength(field.dataType)) { "" }
+        else {
+          // Number of bytes to increase for the offset. Note that since in UnsafeRow we store the
+          // offset in the upper 32 bit of the words, we can just shift the offset to the left by
+          // 32 and increment that amount in place.
+          val shift =
+            if (i < schema1.size) {
+              s"${(outputBitsetWords - bitset1Words + schema2.size) * 8}L"
+            } else {
+              s"(${(outputBitsetWords - bitset2Words + schema1.size) * 8}L + numBytesVariableRow1)"
+            }
+          val cursor = offset + outputBitsetWords * 8 + i * 8
+          s"""
            |$putLong(buf, $cursor, $getLong(buf, $cursor) + ($shift << 32));
          """.stripMargin
-          }
-      }
-      .mkString("\n")
+        }
+    }.mkString("\n")
 
     // ------------------------ Finally, put everything together  --------------------------- //
     val code = s"""

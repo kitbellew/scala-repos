@@ -79,8 +79,8 @@ class JobProgressListenerSuite
       shouldFail: Boolean = false) {
     val stagesThatWontBeRun = jobId * 200 to jobId * 200 + 10
     val stageIds = jobId * 100 to jobId * 100 + 50
-    listener.onJobStart(
-      createJobStartEvent(jobId, stageIds ++ stagesThatWontBeRun))
+    listener
+      .onJobStart(createJobStartEvent(jobId, stageIds ++ stagesThatWontBeRun))
     for (stageId <- stageIds) {
       listener.onStageSubmitted(createStageStartEvent(stageId))
       listener.onStageCompleted(
@@ -221,11 +221,8 @@ class JobProgressListenerSuite
       taskInfo,
       taskMetrics))
     assert(
-      listener.stageIdToData
-        .getOrElse((0, 0), fail())
-        .executorSummary
-        .getOrElse("exe-1", fail())
-        .shuffleRead === 1000)
+      listener.stageIdToData.getOrElse((0, 0), fail()).executorSummary
+        .getOrElse("exe-1", fail()).shuffleRead === 1000)
 
     // finish a task with unknown executor-id, nothing should happen
     taskInfo = new TaskInfo(
@@ -268,11 +265,8 @@ class JobProgressListenerSuite
       taskInfo,
       taskMetrics))
     assert(
-      listener.stageIdToData
-        .getOrElse((0, 0), fail())
-        .executorSummary
-        .getOrElse("exe-1", fail())
-        .shuffleRead === 2000)
+      listener.stageIdToData.getOrElse((0, 0), fail()).executorSummary
+        .getOrElse("exe-1", fail()).shuffleRead === 2000)
 
     // finish this task, should get updated duration
     taskInfo = new TaskInfo(
@@ -294,11 +288,8 @@ class JobProgressListenerSuite
       taskInfo,
       taskMetrics))
     assert(
-      listener.stageIdToData
-        .getOrElse((0, 0), fail())
-        .executorSummary
-        .getOrElse("exe-2", fail())
-        .shuffleRead === 1000)
+      listener.stageIdToData.getOrElse((0, 0), fail()).executorSummary
+        .getOrElse("exe-2", fail()).shuffleRead === 1000)
   }
 
   test("test task success vs failure counting for different task end reasons") {
@@ -370,8 +361,8 @@ class JobProgressListenerSuite
       val shuffleReadMetrics = taskMetrics.registerTempShuffleReadMetrics()
       val shuffleWriteMetrics = taskMetrics.registerShuffleWriteMetrics()
       val inputMetrics = taskMetrics.registerInputMetrics(DataReadMethod.Hadoop)
-      val outputMetrics = taskMetrics.registerOutputMetrics(
-        DataWriteMethod.Hadoop)
+      val outputMetrics = taskMetrics
+        .registerOutputMetrics(DataWriteMethod.Hadoop)
       shuffleReadMetrics.incRemoteBytesRead(base + 1)
       shuffleReadMetrics.incLocalBytesRead(base + 9)
       shuffleReadMetrics.incRemoteBlocksFetched(base + 2)
@@ -430,31 +421,13 @@ class JobProgressListenerSuite
     assert(stage0Data.outputBytes == 116)
     assert(stage1Data.outputBytes == 208)
     assert(
-      stage0Data.taskData
-        .get(1234L)
-        .get
-        .taskMetrics
-        .get
-        .shuffleReadMetrics
-        .get
+      stage0Data.taskData.get(1234L).get.taskMetrics.get.shuffleReadMetrics.get
         .totalBlocksFetched == 2)
     assert(
-      stage0Data.taskData
-        .get(1235L)
-        .get
-        .taskMetrics
-        .get
-        .shuffleReadMetrics
-        .get
+      stage0Data.taskData.get(1235L).get.taskMetrics.get.shuffleReadMetrics.get
         .totalBlocksFetched == 102)
     assert(
-      stage1Data.taskData
-        .get(1236L)
-        .get
-        .taskMetrics
-        .get
-        .shuffleReadMetrics
-        .get
+      stage1Data.taskData.get(1236L).get.taskMetrics.get.shuffleReadMetrics.get
         .totalBlocksFetched == 202)
 
     // task that was included in a heartbeat
@@ -494,22 +467,10 @@ class JobProgressListenerSuite
     assert(stage0Data.outputBytes == 416)
     assert(stage1Data.outputBytes == 616)
     assert(
-      stage0Data.taskData
-        .get(1234L)
-        .get
-        .taskMetrics
-        .get
-        .shuffleReadMetrics
-        .get
+      stage0Data.taskData.get(1234L).get.taskMetrics.get.shuffleReadMetrics.get
         .totalBlocksFetched == 302)
     assert(
-      stage1Data.taskData
-        .get(1237L)
-        .get
-        .taskMetrics
-        .get
-        .shuffleReadMetrics
-        .get
+      stage1Data.taskData.get(1237L).get.taskMetrics.get.shuffleReadMetrics.get
         .totalBlocksFetched == 402)
   }
 }

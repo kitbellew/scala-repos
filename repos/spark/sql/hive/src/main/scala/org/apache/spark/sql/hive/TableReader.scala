@@ -87,14 +87,13 @@ private[hive] class HadoopTableReader(
 
   // TODO: set aws s3 credentials.
 
-  private val _broadcastedHiveConf = sc.sparkContext.broadcast(
-    new SerializableConfiguration(hiveExtraConf))
+  private val _broadcastedHiveConf = sc.sparkContext
+    .broadcast(new SerializableConfiguration(hiveExtraConf))
 
   override def makeRDDForTable(hiveTable: HiveTable): RDD[InternalRow] =
     makeRDDForTable(
       hiveTable,
-      Utils
-        .classForName(relation.tableDesc.getSerdeClassName)
+      Utils.classForName(relation.tableDesc.getSerdeClassName)
         .asInstanceOf[Class[Deserializer]],
       filterOpt = None)
 
@@ -151,9 +150,8 @@ private[hive] class HadoopTableReader(
 
   override def makeRDDForPartitionedTable(
       partitions: Seq[HivePartition]): RDD[InternalRow] = {
-    val partitionToDeserializer = partitions
-      .map(part =>
-        (part, part.getDeserializer.getClass.asInstanceOf[Class[Deserializer]]))
+    val partitionToDeserializer = partitions.map(part =>
+      (part, part.getDeserializer.getClass.asInstanceOf[Class[Deserializer]]))
       .toMap
     makeRDDForPartitionedTable(partitionToDeserializer, filterOpt = None)
   }
@@ -198,9 +196,7 @@ private[hive] class HadoopTableReader(
             }
 
             val partPath = partition.getDataLocation
-            val partNum = Utilities
-              .getPartitionDesc(partition)
-              .getPartSpec
+            val partNum = Utilities.getPartitionDesc(partition).getPartSpec
               .size();
             var pathPatternStr = getPathPatternByPath(partNum, partPath)
             if (!pathPatternSet.contains(pathPatternStr)) {
@@ -223,8 +219,8 @@ private[hive] class HadoopTableReader(
         val partSpec = partDesc.getPartSpec
         val partProps = partDesc.getProperties
 
-        val partColsDelimited: String = partProps.getProperty(
-          META_TABLE_PARTITION_COLUMNS)
+        val partColsDelimited: String = partProps
+          .getProperty(META_TABLE_PARTITION_COLUMNS)
         // Partitioning columns are delimited by "/"
         val partCols = partColsDelimited.trim().split("/").toSeq
         // 'partValues[i]' contains the value for the partitioning column at 'partCols[i]'.
@@ -308,8 +304,8 @@ private[hive] class HadoopTableReader(
       inputFormatClass: Class[InputFormat[Writable, Writable]])
       : RDD[Writable] = {
 
-    val initializeJobConfFunc =
-      HadoopTableReader.initializeLocalJobConfFunc(path, tableDesc) _
+    val initializeJobConfFunc = HadoopTableReader
+      .initializeLocalJobConfFunc(path, tableDesc) _
 
     val rdd = new HadoopRDD(
       sc.sparkContext,
@@ -358,10 +354,8 @@ private[hive] object HadoopTableReader extends HiveInspectors with Logging {
       jobConf: JobConf) {
     FileInputFormat.setInputPaths(jobConf, Seq[Path](new Path(path)): _*)
     if (tableDesc != null) {
-      HiveTableUtil.configureJobPropertiesForStorageHandler(
-        tableDesc,
-        jobConf,
-        true)
+      HiveTableUtil
+        .configureJobPropertiesForStorageHandler(tableDesc, jobConf, true)
       Utilities.copyTableJobPropertiesToConf(tableDesc, jobConf)
     }
     val bufferSize = System.getProperty("spark.buffer.size", "65536")
@@ -390,11 +384,9 @@ private[hive] object HadoopTableReader extends HiveInspectors with Logging {
       if (rawDeser.getObjectInspector.equals(tableDeser.getObjectInspector)) {
         rawDeser.getObjectInspector.asInstanceOf[StructObjectInspector]
       } else {
-        ObjectInspectorConverters
-          .getConvertedOI(
-            rawDeser.getObjectInspector,
-            tableDeser.getObjectInspector)
-          .asInstanceOf[StructObjectInspector]
+        ObjectInspectorConverters.getConvertedOI(
+          rawDeser.getObjectInspector,
+          tableDeser.getObjectInspector).asInstanceOf[StructObjectInspector]
       }
 
     logDebug(soi.toString)
@@ -462,9 +454,8 @@ private[hive] object HadoopTableReader extends HiveInspectors with Logging {
       }
     }
 
-    val converter = ObjectInspectorConverters.getConverter(
-      rawDeser.getObjectInspector,
-      soi)
+    val converter = ObjectInspectorConverters
+      .getConverter(rawDeser.getObjectInspector, soi)
 
     // Map each tuple to a row object
     iterator.map { value =>

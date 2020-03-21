@@ -57,10 +57,8 @@ class LeveldbPersistenceQueryDocSpec(config: String) extends AkkaSpec(config) {
       val queries = PersistenceQuery(system)
         .readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
 
-      val src: Source[EventEnvelope, NotUsed] = queries.eventsByPersistenceId(
-        "some-persistence-id",
-        0L,
-        Long.MaxValue)
+      val src: Source[EventEnvelope, NotUsed] = queries
+        .eventsByPersistenceId("some-persistence-id", 0L, Long.MaxValue)
 
       val events: Source[Any, NotUsed] = src.map(_.event)
       //#EventsByPersistenceId
@@ -82,9 +80,8 @@ class LeveldbPersistenceQueryDocSpec(config: String) extends AkkaSpec(config) {
       val queries = PersistenceQuery(system)
         .readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
 
-      val src: Source[EventEnvelope, NotUsed] = queries.eventsByTag(
-        tag = "green",
-        offset = 0L)
+      val src: Source[EventEnvelope, NotUsed] = queries
+        .eventsByTag(tag = "green", offset = 0L)
       //#EventsByTag
     }
 

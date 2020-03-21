@@ -145,8 +145,8 @@ object DecisionTreeRegressor
     extends DefaultParamsReadable[DecisionTreeRegressor] {
 
   /** Accessor for supported impurities: variance */
-  final val supportedImpurities: Array[String] =
-    TreeRegressorParams.supportedImpurities
+  final val supportedImpurities: Array[String] = TreeRegressorParams
+    .supportedImpurities
 
   @Since("2.0.0")
   override def load(path: String): DecisionTreeRegressor = super.load(path)
@@ -204,14 +204,12 @@ final class DecisionTreeRegressionModel private[ml] (
     }
     var output = dataset
     if ($(predictionCol).nonEmpty) {
-      output = output.withColumn(
-        $(predictionCol),
-        predictUDF(col($(featuresCol))))
+      output = output
+        .withColumn($(predictionCol), predictUDF(col($(featuresCol))))
     }
     if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
-      output = output.withColumn(
-        $(varianceCol),
-        predictVarianceUDF(col($(featuresCol))))
+      output = output
+        .withColumn($(varianceCol), predictVarianceUDF(col($(featuresCol))))
     }
     output
   }
@@ -245,9 +243,8 @@ final class DecisionTreeRegressionModel private[ml] (
     *       to determine feature importance instead.
     */
   @Since("2.0.0")
-  lazy val featureImportances: Vector = RandomForest.featureImportances(
-    this,
-    numFeatures)
+  lazy val featureImportances: Vector = RandomForest
+    .featureImportances(this, numFeatures)
 
   /** Convert to a model in the old API */
   private[ml] def toOld: OldDecisionTreeModel = {

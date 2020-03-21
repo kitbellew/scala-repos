@@ -23,14 +23,12 @@ trait MilestonesService {
       closedDate = None)
 
   def updateMilestone(milestone: Milestone)(implicit s: Session): Unit =
-    Milestones
-      .filter(t =>
-        t.byPrimaryKey(
-          milestone.userName,
-          milestone.repositoryName,
-          milestone.milestoneId))
-      .map(t => (t.title, t.description.?, t.dueDate.?, t.closedDate.?))
-      .update(
+    Milestones.filter(t =>
+      t.byPrimaryKey(
+        milestone.userName,
+        milestone.repositoryName,
+        milestone.milestoneId))
+      .map(t => (t.title, t.description.?, t.dueDate.?, t.closedDate.?)).update(
         milestone.title,
         milestone.description,
         milestone.dueDate,
@@ -44,28 +42,23 @@ trait MilestonesService {
 
   def deleteMilestone(owner: String, repository: String, milestoneId: Int)(
       implicit s: Session): Unit = {
-    Issues
-      .filter(_.byMilestone(owner, repository, milestoneId))
-      .map(_.milestoneId.?)
-      .update(None)
+    Issues.filter(_.byMilestone(owner, repository, milestoneId))
+      .map(_.milestoneId.?).update(None)
     Milestones.filter(_.byPrimaryKey(owner, repository, milestoneId)).delete
   }
 
   def getMilestone(owner: String, repository: String, milestoneId: Int)(implicit
       s: Session): Option[Milestone] =
-    Milestones
-      .filter(_.byPrimaryKey(owner, repository, milestoneId))
+    Milestones.filter(_.byPrimaryKey(owner, repository, milestoneId))
       .firstOption
 
   def getMilestonesWithIssueCount(owner: String, repository: String)(implicit
       s: Session): List[(Milestone, Int, Int)] = {
-    val counts = Issues
-      .filter { t =>
-        (t.byRepository(owner, repository)) && (t.milestoneId.? isDefined)
-      }
-      .groupBy { t => t.milestoneId -> t.closed }
-      .map { case (t1, t2) => t1._1 -> t1._2 -> t2.length }
-      .toMap
+    val counts = Issues.filter { t =>
+      (t.byRepository(owner, repository)) && (t.milestoneId.? isDefined)
+    }.groupBy { t => t.milestoneId -> t.closed }.map {
+      case (t1, t2) => t1._1 -> t1._2 -> t2.length
+    }.toMap
 
     getMilestones(owner, repository).map { milestone =>
       (
@@ -77,9 +70,7 @@ trait MilestonesService {
 
   def getMilestones(owner: String, repository: String)(implicit
       s: Session): List[Milestone] =
-    Milestones
-      .filter(_.byRepository(owner, repository))
-      .sortBy(_.milestoneId asc)
-      .list
+    Milestones.filter(_.byRepository(owner, repository))
+      .sortBy(_.milestoneId asc).list
 
 }

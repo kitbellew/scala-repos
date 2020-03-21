@@ -231,8 +231,9 @@ class ProductMacros(val c: whitebox.Context)
 
     val meth = lhsTpe.member(methodName).asMethod
 
-    if (!meth.paramLists.isEmpty && (meth
-          .paramLists(0) forall (_.isImplicit))) {
+    if (!meth.paramLists.isEmpty && (meth.paramLists(0) forall (
+          _.isImplicit
+        ))) {
       val typeParamsTree = mkProductNatTypeParamsImpl(args)
       q""" $lhs.$methodName[${typeParamsTree}] """
     } else {
@@ -257,52 +258,46 @@ class ProductMacros(val c: whitebox.Context)
   }
 
   def mkProductImpl(args: Seq[Tree], narrow: Boolean): Tree = {
-    args
-      .foldRight((hnilTpe, q"_root_.shapeless.HNil: $hnilTpe": Tree)) {
-        case (elem, (accTpe, accTree)) =>
-          val (neTpe, neTree) =
-            if (narrow) narrowValue(elem) else (elem.tpe, elem)
-          (
-            appliedType(hconsTpe, List(neTpe, accTpe)),
-            q"""_root_.shapeless.::[$neTpe, $accTpe]($neTree, $accTree)""")
-      }
-      ._2
+    args.foldRight((hnilTpe, q"_root_.shapeless.HNil: $hnilTpe": Tree)) {
+      case (elem, (accTpe, accTree)) =>
+        val (neTpe, neTree) =
+          if (narrow) narrowValue(elem) else (elem.tpe, elem)
+        (
+          appliedType(hconsTpe, List(neTpe, accTpe)),
+          q"""_root_.shapeless.::[$neTpe, $accTpe]($neTree, $accTree)""")
+    }._2
   }
 
   def mkProductNatImpl(args: Seq[Tree]): Tree = {
-    args
-      .foldRight(
-        (tq"_root_.shapeless.HNil", q"_root_.shapeless.HNil: $hnilTpe"): (
-            Tree,
-            Tree)) {
-        case (NatLiteral(n), (accTpt, accTree)) =>
-          val neTpt = mkNatTpt(n)
-          val neTree = mkNatValue(n)
-          (
-            tq"""_root_.shapeless.::[$neTpt, $accTpt]""",
-            q"""_root_.shapeless.::[$neTpt, $accTpt]($neTree, $accTree)""")
-        case (elem, _) =>
-          c.abort(
-            c.enclosingPosition,
-            s"Expression $elem does not evaluate to a non-negative Int literal")
-      }
-      ._2
+    args.foldRight(
+      (tq"_root_.shapeless.HNil", q"_root_.shapeless.HNil: $hnilTpe"): (
+          Tree,
+          Tree)) {
+      case (NatLiteral(n), (accTpt, accTree)) =>
+        val neTpt = mkNatTpt(n)
+        val neTree = mkNatValue(n)
+        (
+          tq"""_root_.shapeless.::[$neTpt, $accTpt]""",
+          q"""_root_.shapeless.::[$neTpt, $accTpt]($neTree, $accTree)""")
+      case (elem, _) =>
+        c.abort(
+          c.enclosingPosition,
+          s"Expression $elem does not evaluate to a non-negative Int literal")
+    }._2
   }
 
   def mkProductNatTypeParamsImpl(args: Seq[Tree]): Tree = {
-    args
-      .foldRight(
-        (tq"_root_.shapeless.HNil", tq"_root_.shapeless.HNil"): (Tree, Tree)) {
-        case (NatLiteral(n), (accTpt, _)) =>
-          val neTpt = mkNatTpt(n)
-          (
-            tq"""_root_.shapeless.::[$neTpt, $accTpt]""",
-            tq"""_root_.shapeless.::[$neTpt, $accTpt]""")
-        case (elem, _) =>
-          c.abort(
-            c.enclosingPosition,
-            s"Expression $elem does not evaluate to a non-negative Int literal")
-      }
-      ._2
+    args.foldRight(
+      (tq"_root_.shapeless.HNil", tq"_root_.shapeless.HNil"): (Tree, Tree)) {
+      case (NatLiteral(n), (accTpt, _)) =>
+        val neTpt = mkNatTpt(n)
+        (
+          tq"""_root_.shapeless.::[$neTpt, $accTpt]""",
+          tq"""_root_.shapeless.::[$neTpt, $accTpt]""")
+      case (elem, _) =>
+        c.abort(
+          c.enclosingPosition,
+          s"Expression $elem does not evaluate to a non-negative Int literal")
+    }._2
   }
 }

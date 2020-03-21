@@ -107,8 +107,7 @@ class SbtProjectResolver
     val javacOptions = project.java.map(_.options).getOrElse(Seq.empty)
     val sbtVersion = data.sbtVersion
     val projectJdk = project.android
-      .map(android => Android(android.targetVersion))
-      .orElse(jdk.map(JdkByName))
+      .map(android => Android(android.targetVersion)).orElse(jdk.map(JdkByName))
 
     projectNode.add(new SbtProjectNode(
       basePackages,
@@ -117,10 +116,10 @@ class SbtProjectResolver
       sbtVersion,
       root))
 
-    val newPlay2Data = projects.flatMap(p =>
-      p.play2.map(d => (p.id, p.base, d)))
-    projectNode.add(new Play2ProjectNode(Play2OldStructureAdapter(
-      newPlay2Data)))
+    val newPlay2Data = projects
+      .flatMap(p => p.play2.map(d => (p.id, p.base, d)))
+    projectNode
+      .add(new Play2ProjectNode(Play2OldStructureAdapter(newPlay2Data)))
 
     val libraryNodes = createLibraries(data, projects)
     projectNode.addAll(libraryNodes)
@@ -153,8 +152,7 @@ class SbtProjectResolver
     projects.zip(moduleNodes).foreach {
       case (moduleProject, moduleNode) =>
         moduleProject.dependencies.projects.foreach { dependencyId =>
-          val dependency = moduleNodes
-            .find(_.getId == dependencyId.project)
+          val dependency = moduleNodes.find(_.getId == dependencyId.project)
             .getOrElse(
               throw new ExternalSystemException(
                 "Cannot find project dependency: " + dependencyId.project))
@@ -170,14 +168,13 @@ class SbtProjectResolver
       projects: Seq[sbtStructure.ProjectData],
       libraryNodes: Seq[LibraryNode],
       moduleFilesDirectory: File): Seq[ModuleNode] = {
-    val unmanagedSourcesAndDocsLibrary = libraryNodes
-      .map(_.data)
+    val unmanagedSourcesAndDocsLibrary = libraryNodes.map(_.data)
       .find(_.getExternalName == Sbt.UnmanagedSourcesAndDocsName)
     projects.map { project =>
       val moduleNode = createModule(project, moduleFilesDirectory)
       val contentRootNode = createContentRoot(project)
-      project.android.foreach(a =>
-        a.apklibs.foreach(addApklibDirs(contentRootNode, _)))
+      project.android
+        .foreach(a => a.apklibs.foreach(addApklibDirs(contentRootNode, _)))
       moduleNode.add(contentRootNode)
       moduleNode.addAll(createLibraryDependencies(project.dependencies.modules)(
         moduleNode,
@@ -202,16 +199,15 @@ class SbtProjectResolver
     val repositoryModules = data.repository.map(_.modules).getOrElse(Seq.empty)
     val (modulesWithoutBinaries, modulesWithBinaries) = repositoryModules
       .partition(_.binaries.isEmpty)
-    val otherModuleIds =
-      projects.flatMap(_.dependencies.modules.map(_.id)).toSet --
-        repositoryModules.map(_.id).toSet
+    val otherModuleIds = projects.flatMap(_.dependencies.modules.map(_.id))
+      .toSet --
+      repositoryModules.map(_.id).toSet
 
-    val libs =
-      modulesWithBinaries.map(createResolvedLibrary) ++ otherModuleIds.map(
-        createUnresolvedLibrary)
+    val libs = modulesWithBinaries.map(createResolvedLibrary) ++ otherModuleIds
+      .map(createUnresolvedLibrary)
 
-    val modulesWithDocumentation = modulesWithoutBinaries.filter(m =>
-      m.docs.nonEmpty || m.sources.nonEmpty)
+    val modulesWithDocumentation = modulesWithoutBinaries
+      .filter(m => m.docs.nonEmpty || m.sources.nonEmpty)
     if (modulesWithDocumentation.isEmpty) return libs
 
     val unmanagedSourceLibrary =
@@ -228,12 +224,11 @@ class SbtProjectResolver
   private def createModuleExtData(
       project: sbtStructure.ProjectData): ModuleExtNode = {
     val scalaVersion = project.scala.map(s => Version(s.version))
-    val scalacClasspath = project.scala.fold(Seq.empty[File])(s =>
-      s.compilerJar +: s.libraryJar +: s.extraJars)
+    val scalacClasspath = project.scala
+      .fold(Seq.empty[File])(s => s.compilerJar +: s.libraryJar +: s.extraJars)
     val scalacOptions = project.scala.fold(Seq.empty[String])(_.options)
     val javacOptions = project.java.fold(Seq.empty[String])(_.options)
-    val jdk = project.android
-      .map(android => Android(android.targetVersion))
+    val jdk = project.android.map(android => Android(android.targetVersion))
       .orElse(project.java.flatMap(java => java.home.map(JdkByHome)))
     new ModuleExtNode(
       scalaVersion,
@@ -260,11 +255,8 @@ class SbtProjectResolver
 
   private def createUnresolvedLibrary(
       moduleId: sbtStructure.ModuleIdentifier): LibraryNode = {
-    val module = sbtStructure.ModuleData(
-      moduleId,
-      Set.empty,
-      Set.empty,
-      Set.empty)
+    val module = sbtStructure
+      .ModuleData(moduleId, Set.empty, Set.empty, Set.empty)
     createLibrary(module, resolved = false)
   }
 
@@ -287,8 +279,7 @@ class SbtProjectResolver
     val classifierOption =
       if (id.classifier.isEmpty) None else Some(id.classifier)
     s"${id.organization}:${id.name}:${id.revision}" + classifierOption
-      .map(":" + _)
-      .getOrElse("") + s":${id.artifactType}"
+      .map(":" + _).getOrElse("") + s":${id.artifactType}"
   }
 
   private def createModule(
@@ -351,16 +342,14 @@ class SbtProjectResolver
     val extractedExcludes = project.configurations.flatMap(_.excludes)
     if (extractedExcludes.nonEmpty) return extractedExcludes.distinct
 
-    val managedDirectories = project.configurations
-      .flatMap(configuration =>
-        configuration.sources ++ configuration.resources)
-      .filter(_.managed)
+    val managedDirectories = project.configurations.flatMap(configuration =>
+      configuration.sources ++ configuration.resources).filter(_.managed)
       .map(_.file)
 
     val defaultNames = Set("main", "test")
 
-    val relevantDirectories = managedDirectories.filter(file =>
-      file.exists || !defaultNames.contains(file.getName))
+    val relevantDirectories = managedDirectories
+      .filter(file => file.exists || !defaultNames.contains(file.getName))
     def isRelevant(f: File): Boolean =
       !relevantDirectories.forall(_.isOutsideOf(f))
 
@@ -429,9 +418,8 @@ class SbtProjectResolver
       buildRoot / Sbt.ProjectDirectory / Sbt.TargetDirectory)
 
     result.storePaths(ExternalSystemSourceType.SOURCE, sourceDirs.map(_.path))
-    result.storePaths(
-      ExternalSystemSourceType.EXCLUDED,
-      exludedDirs.map(_.path))
+    result
+      .storePaths(ExternalSystemSourceType.EXCLUDED, exludedDirs.map(_.path))
 
     result
   }
@@ -453,12 +441,8 @@ class SbtProjectResolver
       scope: String)(
       selector: sbtStructure.ConfigurationData => Seq[
         sbtStructure.DirectoryData]): Seq[String] = {
-    project.configurations
-      .find(_.id == scope)
-      .map(selector)
-      .getOrElse(Seq.empty)
-      .map(_.file)
-      .filter(!_.isOutsideOf(project.base))
+    project.configurations.find(_.id == scope).map(selector)
+      .getOrElse(Seq.empty).map(_.file).filter(!_.isOutsideOf(project.base))
       .map(_.path)
   }
 
@@ -468,10 +452,8 @@ class SbtProjectResolver
       libraries: Seq[LibraryData]): Seq[LibraryDependencyNode] = {
     dependencies.map { dependency =>
       val name = nameFor(dependency.id)
-      val library = libraries
-        .find(_.getExternalName == name)
-        .getOrElse(
-          throw new ExternalSystemException("Library not found: " + name))
+      val library = libraries.find(_.getExternalName == name).getOrElse(
+        throw new ExternalSystemException("Library not found: " + name))
       val data =
         new LibraryDependencyNode(moduleData, library, LibraryLevel.PROJECT)
       data.setScope(scopeFor(dependency.configurations))
@@ -516,9 +498,8 @@ class SbtProjectResolver
   private def addApklibDirs(
       contentRootNode: ContentRootNode,
       apklib: sbtStructure.ApkLib): Unit = {
-    contentRootNode.storePath(
-      ExternalSystemSourceType.SOURCE,
-      apklib.sources.canonicalPath)
+    contentRootNode
+      .storePath(ExternalSystemSourceType.SOURCE, apklib.sources.canonicalPath)
     contentRootNode.storePath(
       ExternalSystemSourceType.SOURCE_GENERATED,
       apklib.gen.canonicalPath)

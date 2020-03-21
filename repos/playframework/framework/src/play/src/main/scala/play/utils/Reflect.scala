@@ -148,7 +148,8 @@ object Reflect {
       case unknown =>
         throw new PlayException(
           s"Cannot load $key",
-          s"$key [${unknown.getClass}}] does not implement ${scalaTrait.runtimeClass} or ${javaInterface.runtimeClass}.")
+          s"$key [${unknown.getClass}}] does not implement ${scalaTrait
+            .runtimeClass} or ${javaInterface.runtimeClass}.")
     }
   }
 

@@ -104,25 +104,20 @@ class FileJobManager[M[+_]] private[FileJobManager] (
 
   private[this] def saveJob(jobId: JobId, jobState: FileJobState) = {
     cache += (jobId -> jobState)
-    IOUtils
-      .safeWriteToFile(jobState.serialize.renderCompact, jobFile(jobId))
+    IOUtils.safeWriteToFile(jobState.serialize.renderCompact, jobFile(jobId))
       .unsafePerformIO
   }
 
   private[this] def loadJob(jobId: JobId): Option[FileJobState] = {
     cache.get(jobId) orElse {
       if (jobFile(jobId).exists) {
-        JParser
-          .parseFromFile(jobFile(jobId))
-          .bimap(Extractor.Thrown(_), j => j)
-          .flatMap { jobV => jobV.validated[FileJobState] }
-          .bimap(
+        JParser.parseFromFile(jobFile(jobId)).bimap(Extractor.Thrown(_), j => j)
+          .flatMap { jobV => jobV.validated[FileJobState] }.bimap(
             { error =>
               logger.error(
                 "Error loading job for %s: %s".format(jobId, error.message))
             },
-            j => j)
-          .toOption
+            j => j).toOption
       } else { None }
     }
   }
@@ -177,8 +172,8 @@ class FileJobManager[M[+_]] private[FileJobManager] (
           val prior: List[Message] = messages.get(channel).getOrElse(Nil)
           val message = Message(jobId, prior.size, channel, value)
 
-          cache += (jobId -> js.copy(messages =
-            (messages + (channel -> (message :: prior)))))
+          cache += (jobId -> js
+            .copy(messages = (messages + (channel -> (message :: prior)))))
           message
 
         case None =>
@@ -192,13 +187,10 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       channel: ChannelId,
       since: Option[MessageId]): M[Seq[Message]] =
     M.point {
-      val posts = cache
-        .get(jobId)
-        .flatMap(_.messages.get(channel))
+      val posts = cache.get(jobId).flatMap(_.messages.get(channel))
         .getOrElse(Nil)
-      since map { mId =>
-        posts.takeWhile(_.id != mId).reverse
-      } getOrElse posts.reverse
+      since map { mId => posts.takeWhile(_.id != mId).reverse } getOrElse posts
+        .reverse
     }
 
   def updateStatus(
@@ -215,36 +207,32 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         JField("unit", JString(unit)) ::
         (extra map (JField("info", _) :: Nil) getOrElse Nil))
 
-    cache
-      .get(jobId)
-      .map {
-        case FileJobState(_, status, _) => status match {
-            case Some(curStatus)
-                if curStatus.id == prevStatus.getOrElse(curStatus.id) =>
-              for (m <- addMessage(jobId, JobManager.channels.Status, jval))
-                yield {
-                  val Some(s) = Status.fromMessage(m)
-                  cache += (jobId -> cache(jobId).copy(status = Some(s)))
-                  Right(s)
-                }
+    cache.get(jobId).map {
+      case FileJobState(_, status, _) => status match {
+          case Some(curStatus)
+              if curStatus.id == prevStatus.getOrElse(curStatus.id) =>
+            for (m <- addMessage(jobId, JobManager.channels.Status, jval))
+              yield {
+                val Some(s) = Status.fromMessage(m)
+                cache += (jobId -> cache(jobId).copy(status = Some(s)))
+                Right(s)
+              }
 
-            case Some(_) =>
-              M.point(Left("Current status did not match expected status."))
+          case Some(_) =>
+            M.point(Left("Current status did not match expected status."))
 
-            case None if prevStatus.isDefined =>
-              M.point(Left(
-                "Job has not yet started, yet a status was expected."))
+          case None if prevStatus.isDefined =>
+            M.point(Left("Job has not yet started, yet a status was expected."))
 
-            case None =>
-              for (m <- addMessage(jobId, JobManager.channels.Status, jval))
-                yield {
-                  val Some(s) = Status.fromMessage(m)
-                  cache += (jobId -> cache(jobId).copy(status = Some(s)))
-                  Right(s)
-                }
-          }
-      }
-      .getOrElse(M.point(Left("No job found for jobId " + jobId)))
+          case None =>
+            for (m <- addMessage(jobId, JobManager.channels.Status, jval))
+              yield {
+                val Some(s) = Status.fromMessage(m)
+                cache += (jobId -> cache(jobId).copy(status = Some(s)))
+                Right(s)
+              }
+        }
+    }.getOrElse(M.point(Left("No job found for jobId " + jobId)))
   }
 
   def getStatus(jobId: JobId): M[Option[Status]] =
@@ -253,16 +241,13 @@ class FileJobManager[M[+_]] private[FileJobManager] (
   def transition(jobId: JobId)(
       t: JobState => Either[String, JobState]): M[Either[String, Job]] =
     M.point {
-      loadJob(jobId)
-        .toSuccess("Failed to locate job " + jobId)
-        .flatMap { fjs =>
-          Validation.fromEither(t(fjs.job.state)).map { newState =>
-            val updated = fjs.copy(job = fjs.job.copy(state = newState))
-            saveJob(jobId, updated)
-            updated.job
-          }
+      loadJob(jobId).toSuccess("Failed to locate job " + jobId).flatMap { fjs =>
+        Validation.fromEither(t(fjs.job.state)).map { newState =>
+          val updated = fjs.copy(job = fjs.job.copy(state = newState))
+          saveJob(jobId, updated)
+          updated.job
         }
-        .toEither
+      }.toEither
     }
 
   // Results handling
@@ -322,9 +307,8 @@ case class FileJobState(
 object FileJobState {
   val test = implicitly[Decomposer[Option[Status]]]
 
-  implicit val fileJobStateIso = Iso.hlist(
-    FileJobState.apply _,
-    FileJobState.unapply _)
+  implicit val fileJobStateIso = Iso
+    .hlist(FileJobState.apply _, FileJobState.unapply _)
 
   val schemaV1 = "job" :: "status" :: "messages" :: HNil
 

@@ -41,26 +41,18 @@ class MinMaxScalerSuite
       Vectors.sparse(3, Array(0, 2), Array(5, 5)),
       Vectors.sparse(3, Array(0), Array(-2.5)))
 
-    val df = sqlContext
-      .createDataFrame(data.zip(expected))
+    val df = sqlContext.createDataFrame(data.zip(expected))
       .toDF("features", "expected")
-    val scaler = new MinMaxScaler()
-      .setInputCol("features")
-      .setOutputCol("scaled")
-      .setMin(-5)
-      .setMax(5)
+    val scaler = new MinMaxScaler().setInputCol("features")
+      .setOutputCol("scaled").setMin(-5).setMax(5)
 
     val model = scaler.fit(df)
-    model
-      .transform(df)
-      .select("expected", "scaled")
-      .collect()
-      .foreach {
-        case Row(vector1: Vector, vector2: Vector) =>
-          assert(
-            vector1.equals(vector2),
-            "Transformed vector is different with expected.")
-      }
+    model.transform(df).select("expected", "scaled").collect().foreach {
+      case Row(vector1: Vector, vector2: Vector) =>
+        assert(
+          vector1.equals(vector2),
+          "Transformed vector is different with expected.")
+    }
 
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(model)
@@ -72,16 +64,12 @@ class MinMaxScalerSuite
         .createDataFrame(Seq((1, Vectors.dense(1.0, 2.0))))
         .toDF("id", "feature")
       intercept[IllegalArgumentException] {
-        val scaler = new MinMaxScaler()
-          .setMin(10)
-          .setMax(0)
+        val scaler = new MinMaxScaler().setMin(10).setMax(0)
           .setInputCol("feature")
         scaler.transformSchema(dummyDF.schema)
       }
       intercept[IllegalArgumentException] {
-        val scaler = new MinMaxScaler()
-          .setMin(0)
-          .setMax(0)
+        val scaler = new MinMaxScaler().setMin(0).setMax(0)
           .setInputCol("feature")
         scaler.transformSchema(dummyDF.schema)
       }
@@ -89,11 +77,8 @@ class MinMaxScalerSuite
   }
 
   test("MinMaxScaler read/write") {
-    val t = new MinMaxScaler()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setMax(1.0)
-      .setMin(-1.0)
+    val t = new MinMaxScaler().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setMax(1.0).setMin(-1.0)
     testDefaultReadWrite(t)
   }
 
@@ -102,11 +87,8 @@ class MinMaxScalerSuite
       new MinMaxScalerModel(
         "myMinMaxScalerModel",
         Vectors.dense(-1.0, 0.0),
-        Vectors.dense(1.0, 10.0))
-        .setInputCol("myInputCol")
-        .setOutputCol("myOutputCol")
-        .setMin(-1.0)
-        .setMax(1.0)
+        Vectors.dense(1.0, 10.0)).setInputCol("myInputCol")
+        .setOutputCol("myOutputCol").setMin(-1.0).setMax(1.0)
     val newInstance = testDefaultReadWrite(instance)
     assert(newInstance.originalMin === instance.originalMin)
     assert(newInstance.originalMax === instance.originalMax)

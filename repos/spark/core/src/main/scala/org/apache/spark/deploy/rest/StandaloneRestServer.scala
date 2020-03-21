@@ -143,26 +143,24 @@ private[rest] class StandaloneSubmitRequestServlet(
     val sparkProperties = request.sparkProperties
     val driverMemory = sparkProperties.get("spark.driver.memory")
     val driverCores = sparkProperties.get("spark.driver.cores")
-    val driverExtraJavaOptions = sparkProperties.get(
-      "spark.driver.extraJavaOptions")
-    val driverExtraClassPath = sparkProperties.get(
-      "spark.driver.extraClassPath")
-    val driverExtraLibraryPath = sparkProperties.get(
-      "spark.driver.extraLibraryPath")
+    val driverExtraJavaOptions = sparkProperties
+      .get("spark.driver.extraJavaOptions")
+    val driverExtraClassPath = sparkProperties
+      .get("spark.driver.extraClassPath")
+    val driverExtraLibraryPath = sparkProperties
+      .get("spark.driver.extraLibraryPath")
     val superviseDriver = sparkProperties.get("spark.driver.supervise")
     val appArgs = request.appArgs
     val environmentVariables = request.environmentVariables
 
     // Construct driver description
-    val conf = new SparkConf(false)
-      .setAll(sparkProperties)
+    val conf = new SparkConf(false).setAll(sparkProperties)
       .set("spark.master", masterUrl)
-    val extraClassPath = driverExtraClassPath.toSeq.flatMap(_.split(
-      File.pathSeparator))
-    val extraLibraryPath = driverExtraLibraryPath.toSeq.flatMap(_.split(
-      File.pathSeparator))
-    val extraJavaOpts = driverExtraJavaOptions
-      .map(Utils.splitCommandString)
+    val extraClassPath = driverExtraClassPath.toSeq
+      .flatMap(_.split(File.pathSeparator))
+    val extraLibraryPath = driverExtraLibraryPath.toSeq
+      .flatMap(_.split(File.pathSeparator))
+    val extraJavaOpts = driverExtraJavaOptions.map(Utils.splitCommandString)
       .getOrElse(Seq.empty)
     val sparkJavaOpts = Utils.sparkJavaOpts(conf)
     val javaOpts = sparkJavaOpts ++ extraJavaOpts
@@ -176,12 +174,10 @@ private[rest] class StandaloneSubmitRequestServlet(
       extraClassPath,
       extraLibraryPath,
       javaOpts)
-    val actualDriverMemory = driverMemory
-      .map(Utils.memoryStringToMb)
+    val actualDriverMemory = driverMemory.map(Utils.memoryStringToMb)
       .getOrElse(DEFAULT_MEMORY)
     val actualDriverCores = driverCores.map(_.toInt).getOrElse(DEFAULT_CORES)
-    val actualSuperviseDriver = superviseDriver
-      .map(_.toBoolean)
+    val actualSuperviseDriver = superviseDriver.map(_.toBoolean)
       .getOrElse(DEFAULT_SUPERVISE)
     new DriverDescription(
       appResource,

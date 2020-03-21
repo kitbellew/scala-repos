@@ -86,9 +86,8 @@ class REPLConfig(dataDir: Option[String])
     with EvaluatorConfig
     with ColumnarTableModuleConfig
     with BlockStoreColumnarTableModuleConfig {
-  val defaultConfig = Configuration.loadResource(
-    "/default_ingest.conf",
-    BlockFormat)
+  val defaultConfig = Configuration
+    .loadResource("/default_ingest.conf", BlockFormat)
   val config = dataDir map {
     defaultConfig.set("precog.storage.root", _)
   } getOrElse { defaultConfig }
@@ -175,7 +174,8 @@ trait REPL
                 val result = {
                   consumeEval(graph, dummyEvaluationContext) fold (
                     error =>
-                      "An error occurred processing your query: " + error.getMessage,
+                      "An error occurred processing your query: " + error
+                        .getMessage,
                     results =>
                       JArray(results.toList.map(_._2.toJValue)).renderPretty
                   )
@@ -229,8 +229,8 @@ trait REPL
           val command =
             if ((successes lengthCompare 1) > 0)
               throw new AssertionError(
-                "Fatal error: ambiguous parse results: " + results.mkString(
-                  ", "))
+                "Fatal error: ambiguous parse results: " + results
+                  .mkString(", "))
             else successes.head
 
           if (handle(command)) {
@@ -240,9 +240,10 @@ trait REPL
         }
       }
 
-      out.println(
-        "Welcome to Quirrel early access preview."
-      ) // TODO we should try to get this string from a file
+      out
+        .println(
+          "Welcome to Quirrel early access preview."
+        ) // TODO we should try to get this string from a file
       out.println("Type in expressions to have them evaluated.")
       out.println("Press Ctrl-D on a new line to evaluate an expression.")
       out.println("Type in :help for more information.")
@@ -306,8 +307,8 @@ object Console extends App {
           val storageTimeout = yggConfig.storageTimeout
 
           implicit val actorSystem = ActorSystem("replActorSystem")
-          implicit val asyncContext = ExecutionContext.defaultExecutionContext(
-            actorSystem)
+          implicit val asyncContext = ExecutionContext
+            .defaultExecutionContext(actorSystem)
           implicit val M = new blueeyes.bkka.UnsafeFutureComonad(
             asyncContext,
             yggConfig.maxEvalDuration)

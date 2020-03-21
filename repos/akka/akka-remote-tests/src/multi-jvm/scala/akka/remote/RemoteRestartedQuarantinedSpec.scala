@@ -105,13 +105,14 @@ abstract class RemoteRestartedQuarantinedSpec
           }
         }
 
-        system.actorSelection(
-          RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+        system
+          .actorSelection(
+            RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
       }
 
       runOn(second) {
-        val addr =
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+        val addr = system.asInstanceOf[ExtendedActorSystem].provider
+          .getDefaultAddress
         val firstAddress = node(first).address
         system.eventStream
           .subscribe(testActor, classOf[ThisActorSystemQuarantinedEvent])
@@ -123,11 +124,9 @@ abstract class RemoteRestartedQuarantinedSpec
         // Check that quarantine is intact
         within(10.seconds) {
           awaitAssert {
-            EventFilter
-              .warning(
-                pattern = "The remote system has quarantined this system",
-                occurrences = 1)
-              .intercept { ref ! "boo!" }
+            EventFilter.warning(
+              pattern = "The remote system has quarantined this system",
+              occurrences = 1).intercept { ref ! "boo!" }
           }
         }
 

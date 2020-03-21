@@ -88,8 +88,8 @@ trait TestStackLike[M[+_]]
   self =>
   import TestStack._
 
-  protected lazy val parseEvalLogger = LoggerFactory.getLogger(
-    "com.precog.muspelheim.ParseEvalStackSpecs")
+  protected lazy val parseEvalLogger = LoggerFactory
+    .getLogger("com.precog.muspelheim.ParseEvalStackSpecs")
 
   class ParseEvalStackSpecConfig extends BaseConfig with IdSourceConfig {
     parseEvalLogger.trace("Init yggConfig")
@@ -141,8 +141,8 @@ trait TestStackLike[M[+_]]
     val forest = preForest filter { _.errors filterNot isWarning isEmpty }
 
     assert(
-      forest.size == 1 || preForest.forall(
-        _.errors filterNot isWarning isEmpty))
+      forest.size == 1 || preForest
+        .forall(_.errors filterNot isWarning isEmpty))
     val tree = forest.head
 
     val Right(dag) = decorate(emit(tree))

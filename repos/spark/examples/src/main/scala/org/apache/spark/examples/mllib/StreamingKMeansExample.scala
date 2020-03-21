@@ -67,9 +67,7 @@ object StreamingKMeansExample {
     val trainingData = ssc.textFileStream(args(0)).map(Vectors.parse)
     val testData = ssc.textFileStream(args(1)).map(LabeledPoint.parse)
 
-    val model = new StreamingKMeans()
-      .setK(args(3).toInt)
-      .setDecayFactor(1.0)
+    val model = new StreamingKMeans().setK(args(3).toInt).setDecayFactor(1.0)
       .setRandomCenters(args(4).toInt, 0.0)
 
     model.trainOn(trainingData)

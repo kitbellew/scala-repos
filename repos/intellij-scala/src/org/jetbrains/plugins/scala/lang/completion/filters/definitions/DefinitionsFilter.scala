@@ -41,19 +41,22 @@ class DefinitionsFilter extends ElementFilter {
             parent match {
               case clause: ScCaseClause => clause.funType match {
                   case Some(elem) =>
-                    if (leaf.getTextRange.getStartOffset <= elem.getTextRange.getStartOffset)
-                      return null
+                    if (leaf.getTextRange.getStartOffset <= elem.getTextRange
+                          .getStartOffset) return null
                   case _ => return null
                 }
               case _ =>
             }
             if (!parent.isInstanceOf[ScalaFile] || parent
-                  .asInstanceOf[ScalaFile]
-                  .isScriptFile())
-              if ((leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
-                  leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
-                  (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
-                  (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
+                  .asInstanceOf[ScalaFile].isScriptFile())
+              if ((leaf.getPrevSibling == null || leaf.getPrevSibling
+                    .getPrevSibling == null ||
+                  leaf.getPrevSibling.getPrevSibling.getNode
+                    .getElementType != ScalaTokenTypes.kDEF) &&
+                  (parent.getPrevSibling == null || parent.getPrevSibling
+                    .getPrevSibling == null ||
+                  (parent.getPrevSibling.getPrevSibling.getNode
+                    .getElementType != ScalaElementTypes.MATCH_STMT ||
                   !parent.getPrevSibling.getPrevSibling.getLastChild
                     .isInstanceOf[PsiErrorElement]))) return p
             null
@@ -61,8 +64,8 @@ class DefinitionsFilter extends ElementFilter {
         }
       }
       val otherParent = findParent(parent)
-      if (otherParent != null && otherParent.getTextRange.getStartOffset == parent.getTextRange.getStartOffset)
-        return true
+      if (otherParent != null && otherParent.getTextRange
+            .getStartOffset == parent.getTextRange.getStartOffset) return true
     }
     false
   }

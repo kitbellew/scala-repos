@@ -55,8 +55,8 @@ object NIHDBShardServer
   val clock = Clock.System
 
   val actorSystem = ActorSystem("PrecogShard")
-  implicit val executionContext = ExecutionContext.defaultExecutionContext(
-    actorSystem)
+  implicit val executionContext = ExecutionContext
+    .defaultExecutionContext(actorSystem)
   implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
   override def configureShardState(config: Configuration) =

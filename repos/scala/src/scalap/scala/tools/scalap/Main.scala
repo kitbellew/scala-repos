@@ -31,9 +31,8 @@ class Main {
   val SCALA_LONG_SIG_ANNOTATION = "Lscala/reflect/ScalaLongSignature;"
   val BYTES_VALUE = "bytes"
 
-  val versionMsg = "Scala classfile decoder %s -- %s\n".format(
-    Properties.versionString,
-    Properties.copyrightString)
+  val versionMsg = "Scala classfile decoder %s -- %s\n"
+    .format(Properties.versionString, Properties.copyrightString)
 
   /**Verbose program run?
     */
@@ -181,15 +180,15 @@ object Main extends Main {
       verbose = arguments contains opts.verbose
       printPrivates = arguments contains opts.showPrivateDefs
       // construct a custom class path
-      val cpArg = List(
-        opts.classpath,
-        opts.cp) map arguments.getArgument reduceLeft (_ orElse _)
+      val cpArg = List(opts.classpath, opts.cp) map arguments
+        .getArgument reduceLeft (_ orElse _)
 
       val settings = new Settings()
 
-      arguments getArgument opts.classPathImplType foreach settings.YclasspathImpl.tryToSetFromPropertyValue
-      settings.YdisableFlatCpCaching.value =
-        arguments contains opts.disableFlatClassPathCaching
+      arguments getArgument opts.classPathImplType foreach settings
+        .YclasspathImpl.tryToSetFromPropertyValue
+      settings.YdisableFlatCpCaching.value = arguments contains opts
+        .disableFlatClassPathCaching
       settings.Ylogcp.value = arguments contains opts.logClassPath
 
       val path = createClassPath(cpArg, settings)
@@ -197,26 +196,21 @@ object Main extends Main {
       // print the classpath if output is verbose
       if (verbose)
         Console.println(
-          Console.BOLD + "CLASSPATH" + Console.RESET + " = " + path.asClassPathString)
+          Console.BOLD + "CLASSPATH" + Console.RESET + " = " + path
+            .asClassPathString)
 
       // process all given classes
       arguments.getOthers foreach process(arguments, path)
     }
 
   private def parseArguments(args: Array[String]) =
-    Arguments
-      .Parser('-')
-      .withOption(opts.showPrivateDefs)
-      .withOption(opts.verbose)
-      .withOption(opts.version)
-      .withOption(opts.help)
-      .withOptionalArg(opts.classpath)
-      .withOptionalArg(opts.cp)
+    Arguments.Parser('-').withOption(opts.showPrivateDefs)
+      .withOption(opts.verbose).withOption(opts.version).withOption(opts.help)
+      .withOptionalArg(opts.classpath).withOptionalArg(opts.cp)
       // TODO three temporary, hidden options to be able to test different classpath representations
       .withOptionalArg(opts.classPathImplType)
       .withOption(opts.disableFlatClassPathCaching)
-      .withOption(opts.logClassPath)
-      .parse(args)
+      .withOption(opts.logClassPath).parse(args)
 
   private def createClassPath(cpArg: Option[String], settings: Settings) =
     cpArg match {

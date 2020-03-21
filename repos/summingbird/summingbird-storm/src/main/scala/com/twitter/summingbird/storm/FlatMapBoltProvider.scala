@@ -105,10 +105,8 @@ case class FlatMapBoltProvider(
     type ExecutorKey = Int
     type InnerValue = (Timestamp, V)
     type ExecutorValue = CMap[(K, BatchID), InnerValue]
-    val summerProducer = summer.members
-      .collect { case s: Summer[_, _, _] => s }
-      .head
-      .asInstanceOf[Summer[Storm, K, V]]
+    val summerProducer = summer.members.collect { case s: Summer[_, _, _] => s }
+      .head.asInstanceOf[Summer[Storm, K, V]]
     // When emitting tuples between the Final Flat Map and the summer we encode the timestamp in the value
     // The monoid we use in aggregation is timestamp max.
     val batcher = summerProducer.store.mergeableBatcher
@@ -122,8 +120,8 @@ case class FlatMapBoltProvider(
       summer)
 
     // This option we report its value here, but its not user settable.
-    val keyValueShards = executor.KeyValueShards(
-      summerParalellism.parHint * summerBatchMultiplier.get)
+    val keyValueShards = executor
+      .KeyValueShards(summerParalellism.parHint * summerBatchMultiplier.get)
     logger.info(s"[$nodeName] keyValueShards : ${keyValueShards.get}")
 
     val operation = foldOperations[T, (K, V)](node.members.reverse)
@@ -178,13 +176,11 @@ case class FlatMapBoltProvider(
   }
 
   def apply: BaseBolt[Any, Any] = {
-    val summerOpt: Option[SummerNode[Storm]] = stormDag
-      .dependantsOf(node)
-      .collect { case s: SummerNode[Storm] => s }
-      .headOption
+    val summerOpt: Option[SummerNode[Storm]] = stormDag.dependantsOf(node)
+      .collect { case s: SummerNode[Storm] => s }.headOption
     summerOpt match {
-      case Some(s) =>
-        getFFMBolt[Any, Any, Any](s).asInstanceOf[BaseBolt[Any, Any]]
+      case Some(s) => getFFMBolt[Any, Any, Any](s)
+          .asInstanceOf[BaseBolt[Any, Any]]
       case None =>
         getIntermediateFMBolt[Any, Any].asInstanceOf[BaseBolt[Any, Any]]
     }

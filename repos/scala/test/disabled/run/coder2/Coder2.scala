@@ -88,8 +88,8 @@ class ParCoder(words: List[String]) {
     *  them e.g. `5282` -> List(`Java`, `Kata`, `Lava`, ...)
     */
   val wordsForNum: Map[String, ParSeq[String]] =
-    (words groupBy wordCode).map(t =>
-      (t._1, t._2.toSeq.par)) withDefaultValue ParSeq()
+    (words groupBy wordCode)
+      .map(t => (t._1, t._2.toSeq.par)) withDefaultValue ParSeq()
 
   val comparison = new SeqCoder(words)
 
@@ -151,8 +151,8 @@ class ParCoder(words: List[String]) {
         val r2: ParSeq[ParSeq[String]] = words.flatMap(word => {
           val subs: ParSet[ParSeq[String]] = encode(dropped)
           println("subs size for '" + dropped + "': " + subs.size)
-          val subsmapped: ParSet[ParSeq[String]] = subs.map(rest =>
-            word +: rest)
+          val subsmapped: ParSet[ParSeq[String]] = subs
+            .map(rest => word +: rest)
           println("map size: " + subsmapped.size)
           subsmapped.toList
         })

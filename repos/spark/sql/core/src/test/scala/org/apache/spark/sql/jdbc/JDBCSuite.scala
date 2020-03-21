@@ -73,19 +73,15 @@ class JDBCSuite
 
     conn = DriverManager.getConnection(url, properties)
     conn.prepareStatement("create schema test").executeUpdate()
-    conn
-      .prepareStatement(
-        "create table test.people (name TEXT(32) NOT NULL, theid INTEGER NOT NULL)")
+    conn.prepareStatement(
+      "create table test.people (name TEXT(32) NOT NULL, theid INTEGER NOT NULL)")
       .executeUpdate()
-    conn
-      .prepareStatement("insert into test.people values ('fred', 1)")
+    conn.prepareStatement("insert into test.people values ('fred', 1)")
       .executeUpdate()
-    conn
-      .prepareStatement("insert into test.people values ('mary', 2)")
+    conn.prepareStatement("insert into test.people values ('mary', 2)")
       .executeUpdate()
-    conn
-      .prepareStatement(
-        "insert into test.people values ('joe ''foo'' \"bar\"', 3)")
+    conn.prepareStatement(
+      "insert into test.people values ('joe ''foo'' \"bar\"', 3)")
       .executeUpdate()
     conn.commit()
 
@@ -109,18 +105,14 @@ class JDBCSuite
         |         partitionColumn 'THEID', lowerBound '1', upperBound '4', numPartitions '3')
       """.stripMargin.replaceAll("\n", " "))
 
-    conn
-      .prepareStatement(
-        "create table test.inttypes (a INT, b BOOLEAN, c TINYINT, "
-          + "d SMALLINT, e BIGINT)")
+    conn.prepareStatement(
+      "create table test.inttypes (a INT, b BOOLEAN, c TINYINT, "
+        + "d SMALLINT, e BIGINT)").executeUpdate()
+    conn.prepareStatement(
+      "insert into test.inttypes values (1, false, 3, 4, 1234567890123)")
       .executeUpdate()
-    conn
-      .prepareStatement(
-        "insert into test.inttypes values (1, false, 3, 4, 1234567890123)")
-      .executeUpdate()
-    conn
-      .prepareStatement(
-        "insert into test.inttypes values (null, null, null, null, null)")
+    conn.prepareStatement(
+      "insert into test.inttypes values (null, null, null, null, null)")
       .executeUpdate()
     conn.commit()
     sql(s"""
@@ -129,13 +121,12 @@ class JDBCSuite
         |OPTIONS (url '$url', dbtable 'TEST.INTTYPES', user 'testUser', password 'testPass')
       """.stripMargin.replaceAll("\n", " "))
 
-    conn
-      .prepareStatement(
-        "create table test.strtypes (a BINARY(20), b VARCHAR(20), "
-          + "c VARCHAR_IGNORECASE(20), d CHAR(20), e BLOB, f CLOB)")
+    conn.prepareStatement(
+      "create table test.strtypes (a BINARY(20), b VARCHAR(20), "
+        + "c VARCHAR_IGNORECASE(20), d CHAR(20), e BLOB, f CLOB)")
       .executeUpdate()
-    val stmt = conn.prepareStatement(
-      "insert into test.strtypes values (?, ?, ?, ?, ?, ?)")
+    val stmt = conn
+      .prepareStatement("insert into test.strtypes values (?, ?, ?, ?, ?, ?)")
     stmt.setBytes(1, testBytes)
     stmt.setString(2, "Sensitive")
     stmt.setString(3, "Insensitive")
@@ -149,20 +140,15 @@ class JDBCSuite
         |OPTIONS (url '$url', dbtable 'TEST.STRTYPES', user 'testUser', password 'testPass')
       """.stripMargin.replaceAll("\n", " "))
 
-    conn
-      .prepareStatement(
-        "create table test.timetypes (a TIME, b DATE, c TIMESTAMP)")
+    conn.prepareStatement(
+      "create table test.timetypes (a TIME, b DATE, c TIMESTAMP)")
       .executeUpdate()
-    conn
-      .prepareStatement(
-        "insert into test.timetypes values ('12:34:56', "
-          + "'1996-01-01', '2002-02-20 11:22:33.543543543')")
-      .executeUpdate()
-    conn
-      .prepareStatement(
-        "insert into test.timetypes values ('12:34:56', "
-          + "null, '2002-02-20 11:22:33.543543543')")
-      .executeUpdate()
+    conn.prepareStatement(
+      "insert into test.timetypes values ('12:34:56', "
+        + "'1996-01-01', '2002-02-20 11:22:33.543543543')").executeUpdate()
+    conn.prepareStatement(
+      "insert into test.timetypes values ('12:34:56', "
+        + "null, '2002-02-20 11:22:33.543543543')").executeUpdate()
     conn.commit()
     sql(s"""
         |CREATE TEMPORARY TABLE timetypes
@@ -170,17 +156,14 @@ class JDBCSuite
         |OPTIONS (url '$url', dbtable 'TEST.TIMETYPES', user 'testUser', password 'testPass')
       """.stripMargin.replaceAll("\n", " "))
 
-    conn
-      .prepareStatement(
-        "create table test.flttypes (a DOUBLE, b REAL, c DECIMAL(38, 18))")
+    conn.prepareStatement(
+      "create table test.flttypes (a DOUBLE, b REAL, c DECIMAL(38, 18))")
       .executeUpdate()
-    conn
-      .prepareStatement(
-        "insert into test.flttypes values ("
-          + "1.0000000000000002220446049250313080847263336181640625, "
-          + "1.00000011920928955078125, "
-          + "123456789012345.543215432154321)")
-      .executeUpdate()
+    conn.prepareStatement(
+      "insert into test.flttypes values ("
+        + "1.0000000000000002220446049250313080847263336181640625, "
+        + "1.00000011920928955078125, "
+        + "123456789012345.543215432154321)").executeUpdate()
     conn.commit()
     sql(s"""
         |CREATE TEMPORARY TABLE flttypes
@@ -193,12 +176,10 @@ class JDBCSuite
         |f VARCHAR_IGNORECASE(20), g CHAR(20), h BLOB, i CLOB, j TIME, k DATE, l TIMESTAMP,
         |m DOUBLE, n REAL, o DECIMAL(38, 18))
       """.stripMargin.replaceAll("\n", " ")).executeUpdate()
-    conn
-      .prepareStatement(
-        "insert into test.nulltypes values ("
-          + "null, null, null, null, null, null, null, null, null, "
-          + "null, null, null, null, null, null)")
-      .executeUpdate()
+    conn.prepareStatement(
+      "insert into test.nulltypes values ("
+        + "null, null, null, null, null, null, null, null, null, "
+        + "null, null, null, null, null, null)").executeUpdate()
     conn.commit()
     sql(s"""
          |CREATE TEMPORARY TABLE nulltypes
@@ -206,23 +187,17 @@ class JDBCSuite
          |OPTIONS (url '$url', dbtable 'TEST.NULLTYPES', user 'testUser', password 'testPass')
       """.stripMargin.replaceAll("\n", " "))
 
-    conn
-      .prepareStatement(
-        "create table test.emp(name TEXT(32) NOT NULL," +
-          " theid INTEGER, \"Dept\" INTEGER)")
+    conn.prepareStatement(
+      "create table test.emp(name TEXT(32) NOT NULL," +
+        " theid INTEGER, \"Dept\" INTEGER)").executeUpdate()
+    conn.prepareStatement("insert into test.emp values ('fred', 1, 10)")
       .executeUpdate()
-    conn
-      .prepareStatement("insert into test.emp values ('fred', 1, 10)")
+    conn.prepareStatement("insert into test.emp values ('mary', 2, null)")
       .executeUpdate()
-    conn
-      .prepareStatement("insert into test.emp values ('mary', 2, null)")
+    conn.prepareStatement(
+      "insert into test.emp values ('joe ''foo'' \"bar\"', 3, 30)")
       .executeUpdate()
-    conn
-      .prepareStatement(
-        "insert into test.emp values ('joe ''foo'' \"bar\"', 3, 30)")
-      .executeUpdate()
-    conn
-      .prepareStatement("insert into test.emp values ('kathy', null, null)")
+    conn.prepareStatement("insert into test.emp values ('kathy', null, null)")
       .executeUpdate()
     conn.commit()
 
@@ -253,77 +228,60 @@ class JDBCSuite
       assert(
         node.child.isInstanceOf[org.apache.spark.sql.execution.DataSourceScan])
       assert(
-        node.child
-          .asInstanceOf[DataSourceScan]
-          .nodeName
+        node.child.asInstanceOf[DataSourceScan].nodeName
           .contains("JDBCRelation"))
       df
     }
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE THEID < 1"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM foobar WHERE THEID < 1")).collect()
         .size == 0)
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE THEID != 2"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM foobar WHERE THEID != 2")).collect()
         .size == 2)
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE THEID = 1"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM foobar WHERE THEID = 1")).collect()
         .size == 1)
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE NAME = 'fred'"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM foobar WHERE NAME = 'fred'")).collect()
         .size == 1)
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE NAME <=> 'fred'"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM foobar WHERE NAME <=> 'fred'")).collect()
         .size == 1)
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE NAME > 'fred'"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM foobar WHERE NAME > 'fred'")).collect()
         .size == 2)
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE NAME != 'fred'"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM foobar WHERE NAME != 'fred'")).collect()
         .size == 2)
     assert(
       checkPushdown(sql("SELECT * FROM foobar WHERE NAME IN ('mary', 'fred')"))
-        .collect()
-        .size == 2)
+        .collect().size == 2)
     assert(
       checkPushdown(sql("SELECT * FROM foobar WHERE NAME NOT IN ('fred')"))
-        .collect()
-        .size == 2)
+        .collect().size == 2)
     assert(
       checkPushdown(
-        sql("SELECT * FROM foobar WHERE THEID = 1 OR NAME = 'mary'"))
-        .collect()
+        sql("SELECT * FROM foobar WHERE THEID = 1 OR NAME = 'mary'")).collect()
         .size == 2)
     assert(
       checkPushdown(sql(
         "SELECT * FROM foobar WHERE THEID = 1 OR NAME = 'mary' "
           + "AND THEID = 2")).collect().size == 2)
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE NAME LIKE 'fr%'"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM foobar WHERE NAME LIKE 'fr%'")).collect()
         .size == 1)
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE NAME LIKE '%ed'"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM foobar WHERE NAME LIKE '%ed'")).collect()
         .size == 1)
     assert(
       checkPushdown(sql("SELECT * FROM foobar WHERE NAME LIKE '%re%'"))
-        .collect()
-        .size == 1)
+        .collect().size == 1)
     assert(
-      checkPushdown(sql("SELECT * FROM nulltypes WHERE A IS NULL"))
-        .collect()
+      checkPushdown(sql("SELECT * FROM nulltypes WHERE A IS NULL")).collect()
         .size == 1)
     assert(
       checkPushdown(sql("SELECT * FROM nulltypes WHERE A IS NOT NULL"))
-        .collect()
-        .size == 0)
+        .collect().size == 0)
 
     // This is a test to reflect discussion in SPARK-12218.
     // The older versions of spark have this kind of bugs in parquet data source.
@@ -348,12 +306,10 @@ class JDBCSuite
     }
     assert(
       checkNotPushdown(sql("SELECT * FROM foobar WHERE (THEID + 1) < 2"))
-        .collect()
-        .size == 0)
+        .collect().size == 0)
     assert(
       checkNotPushdown(sql("SELECT * FROM foobar WHERE (THEID + 2) != 4"))
-        .collect()
-        .size == 2)
+        .collect().size == 2)
   }
 
   test("SELECT COUNT(1) WHERE (predicates)") {
@@ -364,24 +320,19 @@ class JDBCSuite
     // correctly handles this case by assigning `requiredColumns` properly. See PR 10427 for more
     // discussions.
     assert(
-      sql(
-        "SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect.toSet === Set(
-        Row(1)))
+      sql("SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect
+        .toSet === Set(Row(1)))
   }
 
   test("SELECT * WHERE (quoted strings)") {
     assert(
-      sql("select * from foobar")
-        .where('NAME === "joe 'foo' \"bar\"")
-        .collect()
+      sql("select * from foobar").where('NAME === "joe 'foo' \"bar\"").collect()
         .size === 1)
   }
 
   test("SELECT first field") {
-    val names = sql("SELECT NAME FROM foobar")
-      .collect()
-      .map(x => x.getString(0))
-      .sortWith(_ < _)
+    val names = sql("SELECT NAME FROM foobar").collect()
+      .map(x => x.getString(0)).sortWith(_ < _)
     assert(names.size === 3)
     assert(names(0).equals("fred"))
     assert(names(1).equals("joe 'foo' \"bar\""))
@@ -389,10 +340,8 @@ class JDBCSuite
   }
 
   test("SELECT first field when fetchSize is two") {
-    val names = sql("SELECT NAME FROM fetchtwo")
-      .collect()
-      .map(x => x.getString(0))
-      .sortWith(_ < _)
+    val names = sql("SELECT NAME FROM fetchtwo").collect()
+      .map(x => x.getString(0)).sortWith(_ < _)
     assert(names.size === 3)
     assert(names(0).equals("fred"))
     assert(names(1).equals("joe 'foo' \"bar\""))
@@ -400,9 +349,7 @@ class JDBCSuite
   }
 
   test("SELECT second field") {
-    val ids = sql("SELECT THEID FROM foobar")
-      .collect()
-      .map(x => x.getInt(0))
+    val ids = sql("SELECT THEID FROM foobar").collect().map(x => x.getInt(0))
       .sortWith(_ < _)
     assert(ids.size === 3)
     assert(ids(0) === 1)
@@ -411,9 +358,7 @@ class JDBCSuite
   }
 
   test("SELECT second field when fetchSize is two") {
-    val ids = sql("SELECT THEID FROM fetchtwo")
-      .collect()
-      .map(x => x.getInt(0))
+    val ids = sql("SELECT THEID FROM fetchtwo").collect().map(x => x.getInt(0))
       .sortWith(_ < _)
     assert(ids.size === 3)
     assert(ids(0) === 1)
@@ -432,9 +377,7 @@ class JDBCSuite
   }
 
   test("SELECT second field partitioned") {
-    val ids = sql("SELECT THEID FROM parts")
-      .collect()
-      .map(x => x.getInt(0))
+    val ids = sql("SELECT THEID FROM parts").collect().map(x => x.getInt(0))
       .sortWith(_ < _)
     assert(ids.size === 3)
     assert(ids(0) === 1)
@@ -459,35 +402,28 @@ class JDBCSuite
 
   test("Basic API") {
     assert(
-      sqlContext.read
-        .jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
-        .collect()
-        .length === 3)
+      sqlContext.read.jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
+        .collect().length === 3)
   }
 
   test("Basic API with FetchSize") {
     val properties = new Properties
     properties.setProperty("fetchSize", "2")
     assert(
-      sqlContext.read
-        .jdbc(urlWithUserAndPass, "TEST.PEOPLE", properties)
-        .collect()
-        .length === 3)
+      sqlContext.read.jdbc(urlWithUserAndPass, "TEST.PEOPLE", properties)
+        .collect().length === 3)
   }
 
   test("Partitioning via JDBCPartitioningInfo API") {
     assert(
-      sqlContext.read
-        .jdbc(
-          urlWithUserAndPass,
-          "TEST.PEOPLE",
-          "THEID",
-          0,
-          4,
-          3,
-          new Properties)
-        .collect()
-        .length === 3)
+      sqlContext.read.jdbc(
+        urlWithUserAndPass,
+        "TEST.PEOPLE",
+        "THEID",
+        0,
+        4,
+        3,
+        new Properties).collect().length === 3)
   }
 
   test("Partitioning via list-of-where-clauses API") {
@@ -495,34 +431,28 @@ class JDBCSuite
     assert(
       sqlContext.read
         .jdbc(urlWithUserAndPass, "TEST.PEOPLE", parts, new Properties)
-        .collect()
-        .length === 3)
+        .collect().length === 3)
   }
 
   test("Partitioning on column that might have null values.") {
     assert(
       sqlContext.read
         .jdbc(urlWithUserAndPass, "TEST.EMP", "theid", 0, 4, 3, new Properties)
-        .collect()
-        .length === 4)
+        .collect().length === 4)
     assert(
       sqlContext.read
         .jdbc(urlWithUserAndPass, "TEST.EMP", "THEID", 0, 4, 3, new Properties)
-        .collect()
-        .length === 4)
+        .collect().length === 4)
     // partitioning on a nullable quoted column
     assert(
-      sqlContext.read
-        .jdbc(
-          urlWithUserAndPass,
-          "TEST.EMP",
-          """"Dept"""",
-          0,
-          4,
-          3,
-          new Properties)
-        .collect()
-        .length === 4)
+      sqlContext.read.jdbc(
+        urlWithUserAndPass,
+        "TEST.EMP",
+        """"Dept"""",
+        0,
+        4,
+        3,
+        new Properties).collect().length === 4)
   }
 
   test("SELECT * on partitioned table with a nullable partition column") {
@@ -582,11 +512,9 @@ class JDBCSuite
 
   test("test DATE types") {
     val rows = sqlContext.read
-      .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
-      .collect()
+      .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties).collect()
     val cachedRows = sqlContext.read
-      .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
-      .cache()
+      .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties).cache()
       .collect()
     assert(
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
@@ -598,12 +526,9 @@ class JDBCSuite
 
   test("test DATE types in cache") {
     val rows = sqlContext.read
-      .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
-      .collect()
-    sqlContext.read
-      .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
-      .cache()
-      .registerTempTable("mycached_date")
+      .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties).collect()
+    sqlContext.read.jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
+      .cache().registerTempTable("mycached_date")
     val cachedRows = sql("select * from mycached_date").collect()
     assert(
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
@@ -614,8 +539,7 @@ class JDBCSuite
 
   test("test types for null value") {
     val rows = sqlContext.read
-      .jdbc(urlWithUserAndPass, "TEST.NULLTYPES", new Properties)
-      .collect()
+      .jdbc(urlWithUserAndPass, "TEST.NULLTYPES", new Properties).collect()
     assert((0 to 14).forall(i => rows(0).isNullAt(i)))
   }
 
@@ -661,13 +585,10 @@ class JDBCSuite
 
   test("Remap types via JdbcDialects") {
     JdbcDialects.registerDialect(testH2Dialect)
-    val df = sqlContext.read.jdbc(
-      urlWithUserAndPass,
-      "TEST.PEOPLE",
-      new Properties)
+    val df = sqlContext.read
+      .jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
     assert(
-      df.schema
-        .filter(_.dataType != org.apache.spark.sql.types.StringType)
+      df.schema.filter(_.dataType != org.apache.spark.sql.types.StringType)
         .isEmpty)
     val rows = df.collect()
     assert(rows(0).get(0).isInstanceOf[String])
@@ -717,8 +638,9 @@ class JDBCSuite
     assert(
       doCompileFilter(LessThan(
         "col3",
-        Timestamp.valueOf(
-          "1995-11-21 00:00:00.0"))) === "col3 < '1995-11-21 00:00:00.0'")
+        Timestamp
+          .valueOf(
+            "1995-11-21 00:00:00.0"))) === "col3 < '1995-11-21 00:00:00.0'")
     assert(
       doCompileFilter(
         LessThan("col4", Date.valueOf("1983-08-04"))) === "col4 < '1983-08-04'")
@@ -767,14 +689,10 @@ class JDBCSuite
   test("DB2Dialect type mapping") {
     val db2Dialect = JdbcDialects.get("jdbc:db2://127.0.0.1/db")
     assert(
-      db2Dialect
-        .getJDBCType(StringType)
-        .map(_.databaseTypeDefinition)
+      db2Dialect.getJDBCType(StringType).map(_.databaseTypeDefinition)
         .get == "CLOB")
     assert(
-      db2Dialect
-        .getJDBCType(BooleanType)
-        .map(_.databaseTypeDefinition)
+      db2Dialect.getJDBCType(BooleanType).map(_.databaseTypeDefinition)
         .get == "CHAR(1)")
   }
 
@@ -787,14 +705,10 @@ class JDBCSuite
       Postgres.getCatalystType(java.sql.Types.OTHER, "jsonb", 1, null) === Some(
         StringType))
     assert(
-      Postgres
-        .getJDBCType(FloatType)
-        .map(_.databaseTypeDefinition)
+      Postgres.getJDBCType(FloatType).map(_.databaseTypeDefinition)
         .get == "FLOAT4")
     assert(
-      Postgres
-        .getJDBCType(DoubleType)
-        .map(_.databaseTypeDefinition)
+      Postgres.getJDBCType(DoubleType).map(_.databaseTypeDefinition)
         .get == "FLOAT8")
     val errMsg = intercept[IllegalArgumentException] {
       Postgres.getJDBCType(ByteType)
@@ -806,19 +720,13 @@ class JDBCSuite
   test("DerbyDialect jdbc type mapping") {
     val derbyDialect = JdbcDialects.get("jdbc:derby:db")
     assert(
-      derbyDialect
-        .getJDBCType(StringType)
-        .map(_.databaseTypeDefinition)
+      derbyDialect.getJDBCType(StringType).map(_.databaseTypeDefinition)
         .get == "CLOB")
     assert(
-      derbyDialect
-        .getJDBCType(ByteType)
-        .map(_.databaseTypeDefinition)
+      derbyDialect.getJDBCType(ByteType).map(_.databaseTypeDefinition)
         .get == "SMALLINT")
     assert(
-      derbyDialect
-        .getJDBCType(BooleanType)
-        .map(_.databaseTypeDefinition)
+      derbyDialect.getJDBCType(BooleanType).map(_.databaseTypeDefinition)
         .get == "BOOLEAN")
   }
 
@@ -842,10 +750,8 @@ class JDBCSuite
     // Regression test for bug SPARK-11788
     val timestamp = java.sql.Timestamp.valueOf("2001-02-20 11:22:33.543543");
     val date = java.sql.Date.valueOf("1995-01-01")
-    val jdbcDf = sqlContext.read.jdbc(
-      urlWithUserAndPass,
-      "TEST.TIMETYPES",
-      new Properties)
+    val jdbcDf = sqlContext.read
+      .jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
     val rows = jdbcDf.where($"B" > date && $"C" > timestamp).collect()
     assert(
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
@@ -868,10 +774,8 @@ class JDBCSuite
   }
 
   test("test credentials in the connection url are not in the plan output") {
-    val df = sqlContext.read.jdbc(
-      urlWithUserAndPass,
-      "TEST.PEOPLE",
-      new Properties)
+    val df = sqlContext.read
+      .jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
     val explain = ExplainCommand(df.queryExecution.logical, extended = true)
     sqlContext.executePlan(explain).executedPlan.executeCollect().foreach { r =>
       assert(!List("testPass", "testUser").exists(r.toString.contains))
@@ -881,9 +785,7 @@ class JDBCSuite
   test("SPARK 12941: The data type mapping for StringType to Oracle") {
     val oracleDialect = JdbcDialects.get("jdbc:oracle://127.0.0.1/db")
     assert(
-      oracleDialect
-        .getJDBCType(StringType)
-        .map(_.databaseTypeDefinition)
+      oracleDialect.getJDBCType(StringType).map(_.databaseTypeDefinition)
         .get == "VARCHAR2(255)")
   }
 }

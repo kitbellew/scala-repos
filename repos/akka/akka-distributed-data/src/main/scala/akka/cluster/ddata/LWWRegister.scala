@@ -171,7 +171,8 @@ final class LWWRegister[A] private[akka] (
   override def equals(o: Any): Boolean =
     o match {
       case other: LWWRegister[_] ⇒
-        timestamp == other.timestamp && value == other.value && node == other.node
+        timestamp == other.timestamp && value == other.value && node == other
+          .node
       case _ ⇒ false
     }
 

@@ -89,10 +89,8 @@ sealed abstract class Attribute extends Serializable {
 
   /** Converts to ML metadata with some existing metadata. */
   def toMetadata(existingMetadata: Metadata): Metadata = {
-    new MetadataBuilder()
-      .withMetadata(existingMetadata)
-      .putMetadata(AttributeKeys.ML_ATTR, toMetadataImpl())
-      .build()
+    new MetadataBuilder().withMetadata(existingMetadata)
+      .putMetadata(AttributeKeys.ML_ATTR, toMetadataImpl()).build()
   }
 
   /** Converts to ML metadata */
@@ -103,12 +101,10 @@ sealed abstract class Attribute extends Serializable {
     * @param existingMetadata existing metadata to carry over
     */
   def toStructField(existingMetadata: Metadata): StructField = {
-    val newMetadata = new MetadataBuilder()
-      .withMetadata(existingMetadata)
+    val newMetadata = new MetadataBuilder().withMetadata(existingMetadata)
       .putMetadata(
         AttributeKeys.ML_ATTR,
-        withoutName.withoutIndex.toMetadataImpl())
-      .build()
+        withoutName.withoutIndex.toMetadataImpl()).build()
     StructField(name.get, DoubleType, nullable = false, newMetadata)
   }
 

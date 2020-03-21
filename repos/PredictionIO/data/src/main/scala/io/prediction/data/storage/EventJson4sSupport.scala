@@ -55,16 +55,13 @@ object EventJson4sSupport {
           .getOrElse[Map[String, JValue]]("properties", Map())
         // default currentTime expressed as UTC timezone
         lazy val currentTime = DateTime.now(EventValidation.defaultTimeZone)
-        val eventTime = fields
-          .getOpt[String]("eventTime")
-          .map { s =>
-            try { DataUtils.stringToDateTime(s) }
-            catch {
-              case _: Exception =>
-                throw new MappingException(s"Fail to extract eventTime ${s}")
-            }
+        val eventTime = fields.getOpt[String]("eventTime").map { s =>
+          try { DataUtils.stringToDateTime(s) }
+          catch {
+            case _: Exception =>
+              throw new MappingException(s"Fail to extract eventTime ${s}")
           }
-          .getOrElse(currentTime)
+        }.getOrElse(currentTime)
 
         // disable tags from API for now.
         val tags = List()
@@ -152,12 +149,12 @@ object EventJson4sSupport {
       val targetEntityType = (jv \ "targetEntityType").extract[Option[String]]
       val targetEntityId = (jv \ "targetEntityId").extract[Option[String]]
       val properties = (jv \ "properties").extract[JObject]
-      val eventTime = DataUtils.stringToDateTime(
-        (jv \ "eventTime").extract[String])
+      val eventTime = DataUtils
+        .stringToDateTime((jv \ "eventTime").extract[String])
       val tags = (jv \ "tags").extract[Seq[String]]
       val prId = (jv \ "prId").extract[Option[String]]
-      val creationTime = DataUtils.stringToDateTime(
-        (jv \ "creationTime").extract[String])
+      val creationTime = DataUtils
+        .stringToDateTime((jv \ "creationTime").extract[String])
       Event(
         event = event,
         entityType = entityType,

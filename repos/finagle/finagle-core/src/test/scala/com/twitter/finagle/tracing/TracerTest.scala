@@ -18,25 +18,22 @@ class TracerTest extends FunSuite {
       "If all None returns None")
 
     assert(
-      BroadcastTracer(Seq(
-        TestTracer(Some(true)),
-        TestTracer(None),
-        TestTracer(None))).sampleTrace(id) == Some(true),
+      BroadcastTracer(
+        Seq(TestTracer(Some(true)), TestTracer(None), TestTracer(None)))
+        .sampleTrace(id) == Some(true),
       "If one Some(true) returns Some(true)")
 
     assert(
-      BroadcastTracer(Seq(
-        TestTracer(Some(true)),
-        TestTracer(Some(false)),
-        TestTracer(None))).sampleTrace(id) == Some(true),
+      BroadcastTracer(
+        Seq(TestTracer(Some(true)), TestTracer(Some(false)), TestTracer(None)))
+        .sampleTrace(id) == Some(true),
       "If one Some(true) returns Some(true)"
     )
 
     assert(
-      BroadcastTracer(Seq(
-        TestTracer(None),
-        TestTracer(Some(false)),
-        TestTracer(None))).sampleTrace(id) == None,
+      BroadcastTracer(
+        Seq(TestTracer(None), TestTracer(Some(false)), TestTracer(None)))
+        .sampleTrace(id) == None,
       "If one Some(false) returns None")
 
     assert(

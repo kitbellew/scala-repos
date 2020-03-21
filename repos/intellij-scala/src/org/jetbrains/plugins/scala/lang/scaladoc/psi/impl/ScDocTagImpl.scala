@@ -60,16 +60,13 @@ class ScDocTagImpl(node: ASTNode)
   }
 
   override def getCommentDataText(): String =
-    getNode
-      .getChildren(TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA))
-      .map(_.getText)
-      .mkString("\n")
+    getNode.getChildren(TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA))
+      .map(_.getText).mkString("\n")
 
   override def getAllText(handler: PsiElement => String): String =
-    getNode
-      .getChildren(TokenSet.orSet(
-        TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA),
-        ScalaDocTokenType.ALL_SCALADOC_SYNTAX_ELEMENTS))
-      .map { case nd => handler(nd.getPsi) }
-      .mkString(" ")
+    getNode.getChildren(TokenSet.orSet(
+      TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA),
+      ScalaDocTokenType.ALL_SCALADOC_SYNTAX_ELEMENTS)).map {
+      case nd => handler(nd.getPsi)
+    }.mkString(" ")
 }

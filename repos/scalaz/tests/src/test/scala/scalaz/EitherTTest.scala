@@ -55,8 +55,8 @@ object EitherTTest extends SpecLite {
 
   "orElse only executes the left hand monad once" should {
     val counter = new AtomicInteger(0)
-    val inc: EitherTComputation[Int] = EitherT.right(() =>
-      counter.incrementAndGet())
+    val inc: EitherTComputation[Int] = EitherT
+      .right(() => counter.incrementAndGet())
     val other: EitherTComputation[Int] = EitherT.right(() => 0) // does nothing
 
     (inc orElse other).run.apply() must_== \/-(1)
@@ -105,12 +105,10 @@ object EitherTTest extends SpecLite {
         EitherT(Some((ABC("abcData"), "Success").right))
 
       def filterComp =
-        brokenMethod
-          .filter {
-            case (abc, "Success") => true
-            case _                => false
-          }
-          .map { case (abc, "Success") => "yay" }
+        brokenMethod.filter {
+          case (abc, "Success") => true
+          case _                => false
+        }.map { case (abc, "Success") => "yay" }
 
       for { (a, b) <- brokenMethod } yield "yay"
     }

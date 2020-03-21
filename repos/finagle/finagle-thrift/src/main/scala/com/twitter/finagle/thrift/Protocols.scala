@@ -23,8 +23,8 @@ object Protocols {
     catch {
       case NonFatal(_) => // try reflection instead
         try {
-          AccessController.doPrivileged(
-            new PrivilegedExceptionAction[sun.misc.Unsafe]() {
+          AccessController
+            .doPrivileged(new PrivilegedExceptionAction[sun.misc.Unsafe]() {
               def run(): sun.misc.Unsafe = {
                 val k = classOf[sun.misc.Unsafe]
                 for (f <- k.getDeclaredFields) {
@@ -39,8 +39,7 @@ object Protocols {
             })
         } catch {
           case NonFatal(t) =>
-            Logger
-              .get()
+            Logger.get()
               .info("%s unable to initialize sun.misc.Unsafe", getClass.getName)
             null
         }
@@ -66,8 +65,8 @@ object Protocols {
       // Factories are created rarely while the creation of their TProtocol's
       // is a common event. Minimize counter creation to just once per Factory.
       val fastEncodeFailed = statsReceiver.counter("fast_encode_failed")
-      val largerThanTlOutBuffer = statsReceiver.counter(
-        "larger_than_threadlocal_out_buffer")
+      val largerThanTlOutBuffer = statsReceiver
+        .counter("larger_than_threadlocal_out_buffer")
       new TProtocolFactory {
         override def getProtocol(trans: TTransport): TProtocol = {
           val proto = new TFinagleBinaryProtocol(
@@ -97,31 +96,27 @@ object Protocols {
     private val MultiByteMultiplierEstimate = 1.3f
 
     /** Only valid if unsafe is defined */
-    private val StringValueOffset: Long = unsafe
-      .map { _.objectFieldOffset(classOf[String].getDeclaredField("value")) }
-      .getOrElse(Long.MinValue)
+    private val StringValueOffset: Long = unsafe.map {
+      _.objectFieldOffset(classOf[String].getDeclaredField("value"))
+    }.getOrElse(Long.MinValue)
 
     /**
       * Note, some versions of the JDK's define `String.offset`,
       * while others do not and always use 0.
       */
-    private val OffsetValueOffset: Long = unsafe
-      .map { u =>
-        try { u.objectFieldOffset(classOf[String].getDeclaredField("offset")) }
-        catch { case NonFatal(_) => Long.MinValue }
-      }
-      .getOrElse(Long.MinValue)
+    private val OffsetValueOffset: Long = unsafe.map { u =>
+      try { u.objectFieldOffset(classOf[String].getDeclaredField("offset")) }
+      catch { case NonFatal(_) => Long.MinValue }
+    }.getOrElse(Long.MinValue)
 
     /**
       * Note, some versions of the JDK's define `String.count`,
       * while others do not and always use `value.length`.
       */
-    private val CountValueOffset: Long = unsafe
-      .map { u =>
-        try { u.objectFieldOffset(classOf[String].getDeclaredField("count")) }
-        catch { case NonFatal(_) => Long.MinValue }
-      }
-      .getOrElse(Long.MinValue)
+    private val CountValueOffset: Long = unsafe.map { u =>
+      try { u.objectFieldOffset(classOf[String].getDeclaredField("count")) }
+      catch { case NonFatal(_) => Long.MinValue }
+    }.getOrElse(Long.MinValue)
 
     private val charsetEncoder = new ThreadLocal[CharsetEncoder] {
       override def initialValue() = Charsets.UTF_8.newEncoder()

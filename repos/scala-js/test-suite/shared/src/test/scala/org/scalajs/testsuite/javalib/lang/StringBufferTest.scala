@@ -203,8 +203,7 @@ class StringBuilderTest {
       initBuilder("adef").insert(1, initBuilder("bc")).toString)
     assertEquals(
       "abcdef",
-      initBuilder("abef")
-        .insert(2, Array('a', 'b', 'c', 'd', 'e'), 2, 2)
+      initBuilder("abef").insert(2, Array('a', 'b', 'c', 'd', 'e'), 2, 2)
         .toString)
     assertEquals(
       "abcdef",

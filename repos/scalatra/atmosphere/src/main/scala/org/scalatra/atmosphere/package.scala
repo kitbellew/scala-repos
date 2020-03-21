@@ -39,8 +39,7 @@ package object atmosphere {
   implicit def atmoResourceWithClient(res: AtmosphereResource) =
     new {
       def clientOption =
-        res.session
-          .get(AtmosphereClientKey)
+        res.session.get(AtmosphereClientKey)
           .asInstanceOf[Option[AtmosphereClient]]
       def client =
         res.session.apply(AtmosphereClientKey).asInstanceOf[AtmosphereClient]

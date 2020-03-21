@@ -34,12 +34,14 @@ class ScalaArrangementParseInfo {
   private val currentMethodDependencyRoots = mutable.HashSet[ScFunction]()
   private val currentDependentMethods = mutable.HashSet[ScFunction]()
   private var rebuildMethodDependencies = true
-  private val javaPropertiesData = mutable.HashMap[
-    (String /*property name*/, PsiElement /*PSI parent*/ ),
-    ScalaPropertyInfo]()
-  private val scalaPropertiesData = mutable.HashMap[
-    (String /*property name*/, PsiElement /*PSI parent*/ ),
-    ScalaPropertyInfo]()
+  private val javaPropertiesData = mutable
+    .HashMap[
+      (String /*property name*/, PsiElement /*PSI parent*/ ),
+      ScalaPropertyInfo]()
+  private val scalaPropertiesData = mutable
+    .HashMap[
+      (String /*property name*/, PsiElement /*PSI parent*/ ),
+      ScalaPropertyInfo]()
 
   def onMethodEntryCreated(method: ScFunction, entry: ScalaArrangementEntry) =
     methodToEntry += ((method, entry))
@@ -101,19 +103,16 @@ class ScalaArrangementParseInfo {
           usedMethods += depenenceSource
           for (dependentMethod <- dependencies.toList) {
             if (usedMethods.contains(dependentMethod)) { return None }
-            methodToEntry
-              .get(dependentMethod)
-              .foreach(dependentEntry =>
-                if (dependentEntry != null) {
-                  val dependentMethodInfo =
-                    if (cache.contains(dependentMethod)) {
-                      cache(dependentMethod)
-                    } else { new ScalaArrangementDependency(dependentEntry) }
-                  cache.put(dependentMethod, dependentMethodInfo)
-                  dependency.addDependentMethodInfo(dependentMethodInfo)
-                  toProcess =
-                    (dependentMethod, dependentMethodInfo) :: toProcess
-                })
+            methodToEntry.get(dependentMethod).foreach(dependentEntry =>
+              if (dependentEntry != null) {
+                val dependentMethodInfo =
+                  if (cache.contains(dependentMethod)) {
+                    cache(dependentMethod)
+                  } else { new ScalaArrangementDependency(dependentEntry) }
+                cache.put(dependentMethod, dependentMethodInfo)
+                dependency.addDependentMethodInfo(dependentMethodInfo)
+                toProcess = (dependentMethod, dependentMethodInfo) :: toProcess
+              })
           }
         case None =>
       }

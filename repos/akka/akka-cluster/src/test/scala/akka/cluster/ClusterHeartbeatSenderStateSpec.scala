@@ -64,11 +64,8 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
   private def fd(
       state: ClusterHeartbeatSenderState,
       node: UniqueAddress): FailureDetectorStub =
-    state.failureDetector
-      .asInstanceOf[DefaultFailureDetectorRegistry[Address]]
-      .failureDetector(node.address)
-      .get
-      .asInstanceOf[FailureDetectorStub]
+    state.failureDetector.asInstanceOf[DefaultFailureDetectorRegistry[Address]]
+      .failureDetector(node.address).get.asInstanceOf[FailureDetectorStub]
 
   "A ClusterHeartbeatSenderState" must {
 
@@ -97,48 +94,30 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
     }
 
     "use added members also when unreachable" in {
-      emptyState
-        .addMember(bb)
-        .addMember(cc)
-        .unreachableMember(bb)
+      emptyState.addMember(bb).addMember(cc).unreachableMember(bb)
         .activeReceivers should ===(Set(bb, cc))
     }
 
     "not use removed members" in {
-      emptyState
-        .addMember(bb)
-        .addMember(cc)
-        .removeMember(bb)
+      emptyState.addMember(bb).addMember(cc).removeMember(bb)
         .activeReceivers should ===(Set(cc))
     }
 
     "use specified number of members" in {
       // they are sorted by the hash (uid) of the UniqueAddress
-      emptyState
-        .addMember(cc)
-        .addMember(dd)
-        .addMember(bb)
-        .addMember(ee)
+      emptyState.addMember(cc).addMember(dd).addMember(bb).addMember(ee)
         .activeReceivers should ===(Set(bb, cc, dd))
     }
 
     "use specified number of members + unreachable" in {
       // they are sorted by the hash (uid) of the UniqueAddress
-      emptyState
-        .addMember(cc)
-        .addMember(dd)
-        .addMember(bb)
-        .addMember(ee)
-        .unreachableMember(cc)
-        .activeReceivers should ===(Set(bb, cc, dd, ee))
+      emptyState.addMember(cc).addMember(dd).addMember(bb).addMember(ee)
+        .unreachableMember(cc).activeReceivers should ===(Set(bb, cc, dd, ee))
     }
 
     "update failure detector in active set" in {
       val s1 = emptyState.addMember(bb).addMember(cc).addMember(dd)
-      val s2 = s1
-        .heartbeatRsp(bb)
-        .heartbeatRsp(cc)
-        .heartbeatRsp(dd)
+      val s2 = s1.heartbeatRsp(bb).heartbeatRsp(cc).heartbeatRsp(dd)
         .heartbeatRsp(ee)
       s2.failureDetector.isMonitoring(bb.address) should ===(true)
       s2.failureDetector.isMonitoring(cc.address) should ===(true)
@@ -161,10 +140,7 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
       fd(s2, ee).markNodeAsUnavailable()
       val s3 = s2.addMember(bb)
       s3.activeReceivers should ===(Set(bb, cc, dd, ee))
-      val s4 = s3
-        .heartbeatRsp(bb)
-        .heartbeatRsp(cc)
-        .heartbeatRsp(dd)
+      val s4 = s3.heartbeatRsp(bb).heartbeatRsp(cc).heartbeatRsp(dd)
         .heartbeatRsp(ee)
       s4.activeReceivers should ===(Set(bb, cc, dd))
       s4.failureDetector.isMonitoring(ee.address) should ===(false)
@@ -201,8 +177,8 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
         try {
           operation match {
             case Add ⇒
-              if (node != selfUniqueAddress && !state.ring.nodes.contains(
-                    node)) {
+              if (node != selfUniqueAddress && !state.ring.nodes
+                    .contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 state = state.addMember(node)
                 // keep unreachable
@@ -214,8 +190,8 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
               }
 
             case Remove ⇒
-              if (node != selfUniqueAddress && state.ring.nodes.contains(
-                    node)) {
+              if (node != selfUniqueAddress && state.ring.nodes
+                    .contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 state = state.removeMember(node)
                 // keep unreachable, unless it was the removed
@@ -234,9 +210,8 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
 
             case Unreachable ⇒
               if (node != selfUniqueAddress && state.activeReceivers(node)) {
-                state.failureDetector.heartbeat(
-                  node.address
-                ) // make sure the fd is created
+                state.failureDetector
+                  .heartbeat(node.address) // make sure the fd is created
                 fd(state, node).markNodeAsUnavailable()
                 state.failureDetector.isMonitoring(node.address) should ===(
                   true)
@@ -246,8 +221,8 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
               }
 
             case HeartbeatRsp ⇒
-              if (node != selfUniqueAddress && state.ring.nodes.contains(
-                    node)) {
+              if (node != selfUniqueAddress && state.ring.nodes
+                    .contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 val oldReceivers = state.activeReceivers
                 val oldRingReceivers = state.ring.myReceivers

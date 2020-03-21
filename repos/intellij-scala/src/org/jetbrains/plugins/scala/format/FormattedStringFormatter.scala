@@ -17,10 +17,8 @@ object FormattedStringFormatter extends StringFormatter {
         if (injection.isLiteral && specifier.isEmpty)
           if (injection.value == "%") ("%%", None) else (injection.value, None)
         else {
-          val format = specifier
-            .map(_.format)
-            .getOrElse(
-              "%" + injection.expressionType.map(letterFor).getOrElse('s'))
+          val format = specifier.map(_.format).getOrElse(
+            "%" + injection.expressionType.map(letterFor).getOrElse('s'))
           val argument =
             if (injection.isComplexBlock) injection.text else injection.value
           (format, Some(argument))

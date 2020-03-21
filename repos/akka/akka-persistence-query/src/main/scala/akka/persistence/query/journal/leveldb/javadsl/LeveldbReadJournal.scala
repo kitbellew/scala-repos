@@ -95,8 +95,7 @@ class LeveldbReadJournal(
       fromSequenceNr: Long,
       toSequenceNr: Long): Source[EventEnvelope, NotUsed] =
     scaladslReadJournal
-      .eventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr)
-      .asJava
+      .eventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr).asJava
 
   /**
     * Same type of query as [[#eventsByPersistenceId]] but the event stream
@@ -171,6 +170,6 @@ object LeveldbReadJournal {
     * The value is `"akka.persistence.query.journal.leveldb"` and corresponds
     * to the absolute path to the read journal configuration entry.
     */
-  final val Identifier =
-    akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal.Identifier
+  final val Identifier = akka.persistence.query.journal.leveldb.scaladsl
+    .LeveldbReadJournal.Identifier
 }

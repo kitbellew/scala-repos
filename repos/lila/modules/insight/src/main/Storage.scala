@@ -49,18 +49,16 @@ private final class Storage(coll: Coll) {
     coll.distinct(F.eco, selectUserId(userId).some) map lila.db.BSON.asStringSet
 
   def nbByPerf(userId: String): Fu[Map[PerfType, Int]] =
-    coll
-      .aggregate(
-        Match(BSONDocument(F.userId -> userId)),
-        List(GroupField(F.perf)("nb" -> SumValue(1))))
-      .map {
-        _.documents.flatMap { doc =>
-          for {
-            perfType <- doc.getAs[PerfType]("_id")
-            nb <- doc.getAs[Int]("nb")
-          } yield perfType -> nb
-        }.toMap
-      }
+    coll.aggregate(
+      Match(BSONDocument(F.userId -> userId)),
+      List(GroupField(F.perf)("nb" -> SumValue(1)))).map {
+      _.documents.flatMap { doc =>
+        for {
+          perfType <- doc.getAs[PerfType]("_id")
+          nb <- doc.getAs[Int]("nb")
+        } yield perfType -> nb
+      }.toMap
+    }
 }
 
 private object Storage {

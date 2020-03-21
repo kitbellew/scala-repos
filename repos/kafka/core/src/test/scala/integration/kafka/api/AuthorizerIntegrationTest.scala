@@ -113,13 +113,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
 
   val RequestKeyToErrorCode = Map[Short, (Nothing) => Short](
     ApiKeys.METADATA.id -> ((resp: requests.MetadataResponse) =>
-      resp
-        .errors()
-        .asScala
-        .find(_._1 == topic)
-        .getOrElse(("test", Errors.NONE))
-        ._2
-        .code()),
+      resp.errors().asScala.find(_._1 == topic).getOrElse(("test", Errors.NONE))
+        ._2.code()),
     ApiKeys.PRODUCE.id -> ((resp: requests.ProduceResponse) =>
       resp.responses().asScala.find(_._1 == tp).get._2.errorCode),
     ApiKeys.FETCH.id -> ((resp: requests.FetchResponse) =>
@@ -255,7 +250,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     val brokers = Set(new requests.UpdateMetadataRequest.Broker(
       brokerId,
       Map(
-        SecurityProtocol.PLAINTEXT -> new requests.UpdateMetadataRequest.EndPoint(
+        SecurityProtocol
+          .PLAINTEXT -> new requests.UpdateMetadataRequest.EndPoint(
           "localhost",
           0)).asJava,
       null)).asJava
@@ -287,10 +283,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       1,
       "",
       1000,
-      Map(
-        tp -> new requests.OffsetCommitRequest.PartitionData(
-          0,
-          "metadata")).asJava)
+      Map(tp -> new requests.OffsetCommitRequest.PartitionData(0, "metadata"))
+        .asJava)
   }
 
   private def createHeartbeatRequest = { new HeartbeatRequest(group, 1, "") }
@@ -732,8 +726,7 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     ResponseHeader.parse(resp)
 
     val response = RequestKeyToResponseDeserializer(key)
-      .getMethod("parse", classOf[ByteBuffer])
-      .invoke(null, resp)
+      .getMethod("parse", classOf[ByteBuffer]).invoke(null, resp)
       .asInstanceOf[AbstractRequestResponse]
     val errorCode = RequestKeyToErrorCode(key)
       .asInstanceOf[(AbstractRequestResponse) => Short](response)

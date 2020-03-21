@@ -59,9 +59,8 @@ class SystemConfiguration {
     logger.debug(
       "configureCheckRevocation: com.sun.security.enableCRLDP = {}",
       checkRevocation.toString)
-    System.setProperty(
-      "com.sun.net.ssl.checkRevocation",
-      checkRevocation.toString)
+    System
+      .setProperty("com.sun.net.ssl.checkRevocation", checkRevocation.toString)
   }
 
   /**

@@ -45,17 +45,15 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
     addTestFileToModuleSources()
     setUpProjectSettings()
     inWriteAction(
-      StartupManager
-        .getInstance(getProject)
-        .asInstanceOf[StartupManagerImpl]
+      StartupManager.getInstance(getProject).asInstanceOf[StartupManagerImpl]
         .startCacheUpdate())
   }
 
   override def loadTestFile(): SbtFileImpl = {
     val fileName = "SbtAnnotator.sbt"
     val filePath = testdataPath + fileName
-    val vfile = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val vfile = LocalFileSystem.getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     val psifile = PsiManager.getInstance(getProject).findFile(vfile)
     psifile.putUserData(ModuleUtilCore.KEY_MODULE, getModule)
     psifile.asInstanceOf[SbtFileImpl]
@@ -73,8 +71,7 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
   }
 
   private def setSbtVersion(sbtVersion: String): Unit = {
-    val projectSettings = SbtSystemSettings
-      .getInstance(getProject)
+    val projectSettings = SbtSystemSettings.getInstance(getProject)
       .getLinkedProjectSettings(getProject.getBasePath)
     assert(projectSettings != null)
     projectSettings.setSbtVersion(sbtVersion)
@@ -90,8 +87,7 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
   private def createBuildModule(): Module =
     inWriteAction {
       val moduleName = getModule.getName + Sbt.BuildModuleSuffix + ".iml"
-      val module = ModuleManager
-        .getInstance(getProject)
+      val module = ModuleManager.getInstance(getProject)
         .newModule(moduleName, SbtModuleType.instance.getId)
       ModuleRootModificationUtil.setModuleSdk(module, getTestProjectJdk)
       module
@@ -100,8 +96,8 @@ class SbtAnnotatorTest extends AnnotatorTestBase with MockSbt {
   private def setUpProjectSettings(): Unit = {
     val projectSettings = SbtProjectSettings.default
     projectSettings.setExternalProjectPath(getProject.getBasePath)
-    projectSettings.setModules(
-      java.util.Collections.singleton(getModule.getModuleFilePath))
+    projectSettings
+      .setModules(java.util.Collections.singleton(getModule.getModuleFilePath))
     SbtSystemSettings.getInstance(getProject).linkProject(projectSettings)
     getModule.setOption(
       ExternalSystemConstants.ROOT_PROJECT_PATH_KEY,

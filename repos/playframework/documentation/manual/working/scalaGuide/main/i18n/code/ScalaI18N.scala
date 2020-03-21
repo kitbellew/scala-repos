@@ -38,8 +38,8 @@ package scalaguide.i18n.scalai18n {
       }
     }
 
-    val conf = Configuration.reference ++ Configuration.from(Map(
-      "play.i18n.path" -> "scalaguide/i18n"))
+    val conf = Configuration.reference ++ Configuration
+      .from(Map("play.i18n.path" -> "scalaguide/i18n"))
     val messagesApi =
       new DefaultMessagesApi(Environment.simple(), conf, new DefaultLangs(conf))
 

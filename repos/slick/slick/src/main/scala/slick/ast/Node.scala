@@ -103,8 +103,7 @@ trait Node extends Dumpable {
         val n =
           if (cln.endsWith("$")) cln.substring(0, cln.length - 1)
           else cln.replaceFirst(".*\\$", "")
-        val args = p.productIterator
-          .filterNot(_.isInstanceOf[Node])
+        val args = p.productIterator.filterNot(_.isInstanceOf[Node])
           .mkString(", ")
         (n, args)
       case _ => (super.toString, "")
@@ -549,9 +548,8 @@ final case class Join(
     val left2Type = left2.nodeType.asCollectionType
     val right2Type = right2.nodeType.asCollectionType
     val on2 = on.infer(
-      scope + (
-        leftGen -> left2Type.elementType
-      ) + (rightGen -> right2Type.elementType),
+      scope + (leftGen -> left2Type.elementType) + (rightGen -> right2Type
+        .elementType),
       typeChildren)
     val (joinedLeftType, joinedRightType) = jt match {
       case JoinType.LeftOption =>
@@ -604,9 +602,8 @@ final case class Bind(generator: TermSymbol, from: Node, select: Node)
   def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self = {
     val from2 = from.infer(scope, typeChildren)
     val from2Type = from2.nodeType.asCollectionType
-    val select2 = select.infer(
-      scope + (generator -> from2Type.elementType),
-      typeChildren)
+    val select2 = select
+      .infer(scope + (generator -> from2Type.elementType), typeChildren)
     val withCh =
       if ((from2 eq from) && (select2 eq select)) this
       else rebuild(from2, select2)
@@ -692,9 +689,8 @@ final case class Select(in: Node, field: TermSymbol)
   override def getDumpInfo =
     Path.unapply(this) match {
       case Some(l) =>
-        super.getDumpInfo.copy(
-          name = "Path",
-          mainInfo = l.reverseIterator.mkString("."))
+        super.getDumpInfo
+          .copy(name = "Path", mainInfo = l.reverseIterator.mkString("."))
       case None => super.getDumpInfo
     }
   protected def buildType = in.nodeType.select(field)

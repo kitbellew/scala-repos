@@ -54,8 +54,8 @@ class KafkaTest {
     val propertiesFile = prepareDefaultConfig()
 
     // We should load configuration file without any arguments
-    val config1 = KafkaConfig.fromProps(
-      Kafka.getPropsFromArgs(Array(propertiesFile)))
+    val config1 = KafkaConfig
+      .fromProps(Kafka.getPropsFromArgs(Array(propertiesFile)))
     assertEquals(1, config1.brokerId)
 
     // We should be able to override given property on command line

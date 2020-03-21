@@ -35,9 +35,7 @@ class UISuite extends SparkFunSuite {
     * It is safe to `get` the SparkUI directly from the SparkContext returned here.
     */
   private def newSparkContext(): SparkContext = {
-    val conf = new SparkConf()
-      .setMaster("local")
-      .setAppName("test")
+    val conf = new SparkConf().setMaster("local").setAppName("test")
       .set("spark.ui.enabled", "true")
     val sc = new SparkContext(conf)
     assert(sc.ui.isDefined)
@@ -50,8 +48,7 @@ class UISuite extends SparkFunSuite {
   }
 
   private def sslEnabledConf(): (SparkConf, SSLOptions) = {
-    val conf = new SparkConf()
-      .set("spark.ssl.ui.enabled", "true")
+    val conf = new SparkConf().set("spark.ssl.ui.enabled", "true")
       .set("spark.ssl.ui.keyStore", "./src/test/resources/spark.keystore")
       .set("spark.ssl.ui.keyStorePassword", "123456")
       .set("spark.ssl.ui.keyPassword", "123456")

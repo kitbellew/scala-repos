@@ -55,9 +55,8 @@ object Coroner {
 
     override def cancel(): Unit = {
       cancelPromise.trySuccess(true)
-      finishedLatch.await(
-        startAndStopDuration.length,
-        startAndStopDuration.unit)
+      finishedLatch
+        .await(startAndStopDuration.length, startAndStopDuration.unit)
     }
 
     override def ready(atMost: Duration)(implicit
@@ -116,7 +115,8 @@ object Coroner {
         if (displayThreadCounts) {
           val endThreads = threadMx.getThreadCount
           out.println(
-            s"Coroner Thread Count started at $startThreads, ended at $endThreads, peaked at ${threadMx.getPeakThreadCount} in $reportTitle")
+            s"Coroner Thread Count started at $startThreads, ended at $endThreads, peaked at ${threadMx
+              .getPeakThreadCount} in $reportTitle")
         }
         out.flush()
         watchedHandle.finished()

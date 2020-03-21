@@ -67,14 +67,9 @@ object AvroConversionUtil extends Serializable {
   }
 
   def unpackMap(obj: Any, schema: Schema): JMap[String, Any] = {
-    obj
-      .asInstanceOf[JMap[_, _]]
-      .asScala
-      .map {
-        case (key, value) =>
-          (key.toString, fromAvro(value, schema.getValueType))
-      }
-      .asJava
+    obj.asInstanceOf[JMap[_, _]].asScala.map {
+      case (key, value) => (key.toString, fromAvro(value, schema.getValueType))
+    }.asJava
   }
 
   def unpackFixed(obj: Any, schema: Schema): Array[Byte] = {

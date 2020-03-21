@@ -111,31 +111,26 @@ class ObjectMapping1[R, A1](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1) = fields
-        field1.unbind(v1)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1) = fields
+      field1.unbind(v1)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1) = fields
-        val a1 = field1.unbindAndValidate(v1)
+    unapply(value).map { fields =>
+      val (v1) = fields
+      val a1 = field1.unbindAndValidate(v1)
 
-        (a1._1) ->
-          (a1._2)
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1) ->
+        (a1._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping1[R, A1] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping1(apply, unapply, f1, newKey, constraints))
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping1(apply, unapply, f1, newKey, constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping1[R, A1] = {
@@ -176,32 +171,27 @@ class ObjectMapping2[R, A1, A2](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2) = fields
-        field1.unbind(v1) ++ field2.unbind(v2)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2) = fields
+      field1.unbind(v1) ++ field2.unbind(v2)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
+    unapply(value).map { fields =>
+      val (v1, v2) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
 
-        (a1._1 ++ a2._1) ->
-          (a1._2 ++ a2._2)
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1) ->
+        (a1._2 ++ a2._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping2[R, A1, A2] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping2(apply, unapply, f1, f2, newKey, constraints))
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping2(apply, unapply, f1, f2, newKey, constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping2[R, A1, A2] = {
@@ -248,33 +238,28 @@ class ObjectMapping3[R, A1, A2, A3](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
+    unapply(value).map { fields =>
+      val (v1, v2, v3) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
 
-        (a1._1 ++ a2._1 ++ a3._1) ->
-          (a1._2 ++ a2._2 ++ a3._2)
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1) ->
+        (a1._2 ++ a2._2 ++ a3._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping3[R, A1, A2, A3] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping3(apply, unapply, f1, f2, f3, newKey, constraints))
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping3(apply, unapply, f1, f2, f3, newKey, constraints))
       .getOrElse(this)
 
   def verifying(
@@ -289,8 +274,8 @@ class ObjectMapping3[R, A1, A2, A3](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings =
-    Seq(this) ++ field1.mappings ++ field2.mappings ++ field3.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings
 
 }
 
@@ -332,35 +317,30 @@ class ObjectMapping4[R, A1, A2, A3, A4](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2)
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping4[R, A1, A2, A3, A4] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping4(apply, unapply, f1, f2, f3, f4, newKey, constraints))
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping4(apply, unapply, f1, f2, f3, f4, newKey, constraints))
       .getOrElse(this)
 
   def verifying(
@@ -376,8 +356,8 @@ class ObjectMapping4[R, A1, A2, A3, A4](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings
 
 }
 
@@ -424,46 +404,40 @@ class ObjectMapping5[R, A1, A2, A3, A4, A5](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2)
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping5[R, A1, A2, A3, A4, A5] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping5(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping5(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(
       addConstraints: Constraint[R]*): ObjectMapping5[R, A1, A2, A3, A4, A5] = {
@@ -479,8 +453,8 @@ class ObjectMapping5[R, A1, A2, A3, A4, A5](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings
 
 }
 
@@ -533,48 +507,42 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2)
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping6[R, A1, A2, A3, A4, A5, A6] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping6(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping6(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
       : ObjectMapping6[R, A1, A2, A3, A4, A5, A6] = {
@@ -591,8 +559,8 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings
 
 }
 
@@ -650,52 +618,46 @@ class ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2)
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(
       prefix: String): ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping7(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping7(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
       : ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7] = {
@@ -713,8 +675,9 @@ class ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings
 
 }
 
@@ -777,56 +740,48 @@ class ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1
-        ) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2)
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(
       prefix: String): ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping8(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping8(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
       : ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8] = {
@@ -845,8 +800,9 @@ class ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings
 
 }
 
@@ -915,60 +871,52 @@ class ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(
       prefix: String): ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping9(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping9(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
       : ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9] = {
@@ -988,8 +936,9 @@ class ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings
 
 }
 
@@ -1063,63 +1012,55 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String)
       : ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping10(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping10(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
       : ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10] = {
@@ -1140,8 +1081,9 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings
 
 }
 
@@ -1221,65 +1163,57 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String)
       : ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping11(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping11(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*)
       : ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11] = {
@@ -1301,8 +1235,10 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings
 
 }
 
@@ -1387,67 +1323,59 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String)
       : ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping12(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping12(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping12[
     R,
@@ -1482,8 +1410,10 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings
 
 }
 
@@ -1601,45 +1531,39 @@ class ObjectMapping13[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping13[
@@ -1657,27 +1581,25 @@ class ObjectMapping13[
     A11,
     A12,
     A13] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping13(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping13(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping13[
     R,
@@ -1714,8 +1636,10 @@ class ObjectMapping13[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings
 
 }
 
@@ -1840,48 +1764,40 @@ class ObjectMapping14[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14) =
-          fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13) ++ field14.unbind(v14)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13) ++ field14.unbind(v14)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14) =
-          fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
-        val a14 = field14.unbindAndValidate(v14)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
+      val a14 = field14.unbindAndValidate(v14)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping14[
@@ -1900,28 +1816,26 @@ class ObjectMapping14[
     A12,
     A13,
     A14] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping14(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          f14,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping14(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        f14,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping14[
     R,
@@ -1960,8 +1874,11 @@ class ObjectMapping14[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings ++ field14.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13
+    .mappings ++ field14.mappings
 
 }
 
@@ -2093,49 +2010,45 @@ class ObjectMapping15[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) =
-          fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) =
+        fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) =
-          fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
-        val a14 = field14.unbindAndValidate(v14)
-        val a15 = field15.unbindAndValidate(v15)
+    unapply(value).map { fields =>
+      val (v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) =
+        fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
+      val a14 = field14.unbindAndValidate(v14)
+      val a15 = field15.unbindAndValidate(v15)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15
+        ._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15
+          ._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping15[
@@ -2155,29 +2068,27 @@ class ObjectMapping15[
     A13,
     A14,
     A15] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping15(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          f14,
-          f15,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping15(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        f14,
+        f15,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping15[
     R,
@@ -2218,8 +2129,11 @@ class ObjectMapping15[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings ++ field14.mappings ++ field15.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13
+    .mappings ++ field14.mappings ++ field15.mappings
 
 }
 
@@ -2358,81 +2272,77 @@ class ObjectMapping16[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
-          .unbind(v16)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
+        .unbind(v16)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
-        val a14 = field14.unbindAndValidate(v14)
-        val a15 = field15.unbindAndValidate(v15)
-        val a16 = field16.unbindAndValidate(v16)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
+      val a14 = field14.unbindAndValidate(v14)
+      val a15 = field15.unbindAndValidate(v15)
+      val a16 = field16.unbindAndValidate(v16)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15
+        ._1 ++ a16._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15
+          ._2 ++ a16._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping16[
@@ -2453,30 +2363,28 @@ class ObjectMapping16[
     A14,
     A15,
     A16] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping16(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          f14,
-          f15,
-          f16,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping16(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        f14,
+        f15,
+        f16,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping16[
     R,
@@ -2519,8 +2427,11 @@ class ObjectMapping16[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings ++ field14.mappings ++ field15.mappings ++ field16.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13
+    .mappings ++ field14.mappings ++ field15.mappings ++ field16.mappings
 
 }
 
@@ -2683,84 +2594,80 @@ class ObjectMapping17[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
-          .unbind(v16) ++ field17.unbind(v17)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
+        .unbind(v16) ++ field17.unbind(v17)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
-        val a14 = field14.unbindAndValidate(v14)
-        val a15 = field15.unbindAndValidate(v15)
-        val a16 = field16.unbindAndValidate(v16)
-        val a17 = field17.unbindAndValidate(v17)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
+      val a14 = field14.unbindAndValidate(v14)
+      val a15 = field15.unbindAndValidate(v15)
+      val a16 = field16.unbindAndValidate(v16)
+      val a17 = field17.unbindAndValidate(v17)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15
+        ._1 ++ a16._1 ++ a17._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15
+          ._2 ++ a16._2 ++ a17._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping17[
@@ -2782,31 +2689,29 @@ class ObjectMapping17[
     A15,
     A16,
     A17] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping17(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          f14,
-          f15,
-          f16,
-          f17,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping17(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        f14,
+        f15,
+        f16,
+        f17,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping17[
     R,
@@ -2851,8 +2756,12 @@ class ObjectMapping17[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings ++ field14.mappings ++ field15.mappings ++ field16.mappings ++ field17.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13
+    .mappings ++ field14.mappings ++ field15.mappings ++ field16
+    .mappings ++ field17.mappings
 
 }
 
@@ -3023,87 +2932,83 @@ class ObjectMapping18[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
-          .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
+        .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
-        val a14 = field14.unbindAndValidate(v14)
-        val a15 = field15.unbindAndValidate(v15)
-        val a16 = field16.unbindAndValidate(v16)
-        val a17 = field17.unbindAndValidate(v17)
-        val a18 = field18.unbindAndValidate(v18)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
+      val a14 = field14.unbindAndValidate(v14)
+      val a15 = field15.unbindAndValidate(v15)
+      val a16 = field16.unbindAndValidate(v16)
+      val a17 = field17.unbindAndValidate(v17)
+      val a18 = field18.unbindAndValidate(v18)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15
+        ._1 ++ a16._1 ++ a17._1 ++ a18._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15
+          ._2 ++ a16._2 ++ a17._2 ++ a18._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping18[
@@ -3126,32 +3031,30 @@ class ObjectMapping18[
     A16,
     A17,
     A18] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping18(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          f14,
-          f15,
-          f16,
-          f17,
-          f18,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping18(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        f14,
+        f15,
+        f16,
+        f17,
+        f18,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping18[
     R,
@@ -3198,8 +3101,12 @@ class ObjectMapping18[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings ++ field14.mappings ++ field15.mappings ++ field16.mappings ++ field17.mappings ++ field18.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13
+    .mappings ++ field14.mappings ++ field15.mappings ++ field16
+    .mappings ++ field17.mappings ++ field18.mappings
 
 }
 
@@ -3378,91 +3285,87 @@ class ObjectMapping19[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18,
-          v19) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
-          .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18) ++ field19
-          .unbind(v19)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18,
+        v19) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
+        .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18) ++ field19
+        .unbind(v19)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18,
-          v19) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
-        val a14 = field14.unbindAndValidate(v14)
-        val a15 = field15.unbindAndValidate(v15)
-        val a16 = field16.unbindAndValidate(v16)
-        val a17 = field17.unbindAndValidate(v17)
-        val a18 = field18.unbindAndValidate(v18)
-        val a19 = field19.unbindAndValidate(v19)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18,
+        v19) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
+      val a14 = field14.unbindAndValidate(v14)
+      val a15 = field15.unbindAndValidate(v15)
+      val a16 = field16.unbindAndValidate(v16)
+      val a17 = field17.unbindAndValidate(v17)
+      val a18 = field18.unbindAndValidate(v18)
+      val a19 = field19.unbindAndValidate(v19)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15
+        ._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15
+          ._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping19[
@@ -3486,33 +3389,31 @@ class ObjectMapping19[
     A17,
     A18,
     A19] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping19(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          f14,
-          f15,
-          f16,
-          f17,
-          f18,
-          f19,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping19(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        f14,
+        f15,
+        f16,
+        f17,
+        f18,
+        f19,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping19[
     R,
@@ -3561,8 +3462,12 @@ class ObjectMapping19[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings ++ field14.mappings ++ field15.mappings ++ field16.mappings ++ field17.mappings ++ field18.mappings ++ field19.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13
+    .mappings ++ field14.mappings ++ field15.mappings ++ field16
+    .mappings ++ field17.mappings ++ field18.mappings ++ field19.mappings
 
 }
 
@@ -3749,94 +3654,90 @@ class ObjectMapping20[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18,
-          v19,
-          v20) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
-          .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18) ++ field19
-          .unbind(v19) ++ field20.unbind(v20)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18,
+        v19,
+        v20) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
+        .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18) ++ field19
+        .unbind(v19) ++ field20.unbind(v20)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18,
-          v19,
-          v20) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
-        val a14 = field14.unbindAndValidate(v14)
-        val a15 = field15.unbindAndValidate(v15)
-        val a16 = field16.unbindAndValidate(v16)
-        val a17 = field17.unbindAndValidate(v17)
-        val a18 = field18.unbindAndValidate(v18)
-        val a19 = field19.unbindAndValidate(v19)
-        val a20 = field20.unbindAndValidate(v20)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18,
+        v19,
+        v20) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
+      val a14 = field14.unbindAndValidate(v14)
+      val a15 = field15.unbindAndValidate(v15)
+      val a16 = field16.unbindAndValidate(v16)
+      val a17 = field17.unbindAndValidate(v17)
+      val a18 = field18.unbindAndValidate(v18)
+      val a19 = field19.unbindAndValidate(v19)
+      val a20 = field20.unbindAndValidate(v20)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15
+        ._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15
+          ._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping20[
@@ -3861,34 +3762,32 @@ class ObjectMapping20[
     A18,
     A19,
     A20] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping20(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          f14,
-          f15,
-          f16,
-          f17,
-          f18,
-          f19,
-          f20,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping20(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        f14,
+        f15,
+        f16,
+        f17,
+        f18,
+        f19,
+        f20,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping20[
     R,
@@ -3939,8 +3838,13 @@ class ObjectMapping20[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings ++ field14.mappings ++ field15.mappings ++ field16.mappings ++ field17.mappings ++ field18.mappings ++ field19.mappings ++ field20.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13
+    .mappings ++ field14.mappings ++ field15.mappings ++ field16
+    .mappings ++ field17.mappings ++ field18.mappings ++ field19
+    .mappings ++ field20.mappings
 
 }
 
@@ -4135,97 +4039,93 @@ class ObjectMapping21[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18,
-          v19,
-          v20,
-          v21) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
-          .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18) ++ field19
-          .unbind(v19) ++ field20.unbind(v20) ++ field21.unbind(v21)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18,
+        v19,
+        v20,
+        v21) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
+        .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18) ++ field19
+        .unbind(v19) ++ field20.unbind(v20) ++ field21.unbind(v21)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18,
-          v19,
-          v20,
-          v21) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
-        val a14 = field14.unbindAndValidate(v14)
-        val a15 = field15.unbindAndValidate(v15)
-        val a16 = field16.unbindAndValidate(v16)
-        val a17 = field17.unbindAndValidate(v17)
-        val a18 = field18.unbindAndValidate(v18)
-        val a19 = field19.unbindAndValidate(v19)
-        val a20 = field20.unbindAndValidate(v20)
-        val a21 = field21.unbindAndValidate(v21)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18,
+        v19,
+        v20,
+        v21) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
+      val a14 = field14.unbindAndValidate(v14)
+      val a15 = field15.unbindAndValidate(v15)
+      val a16 = field16.unbindAndValidate(v16)
+      val a17 = field17.unbindAndValidate(v17)
+      val a18 = field18.unbindAndValidate(v18)
+      val a19 = field19.unbindAndValidate(v19)
+      val a20 = field20.unbindAndValidate(v20)
+      val a21 = field21.unbindAndValidate(v21)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15
+        ._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15
+          ._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping21[
@@ -4251,35 +4151,33 @@ class ObjectMapping21[
     A19,
     A20,
     A21] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping21(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          f14,
-          f15,
-          f16,
-          f17,
-          f18,
-          f19,
-          f20,
-          f21,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping21(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        f14,
+        f15,
+        f16,
+        f17,
+        f18,
+        f19,
+        f20,
+        f21,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping21[
     R,
@@ -4332,8 +4230,13 @@ class ObjectMapping21[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings ++ field14.mappings ++ field15.mappings ++ field16.mappings ++ field17.mappings ++ field18.mappings ++ field19.mappings ++ field20.mappings ++ field21.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13
+    .mappings ++ field14.mappings ++ field15.mappings ++ field16
+    .mappings ++ field17.mappings ++ field18.mappings ++ field19
+    .mappings ++ field20.mappings ++ field21.mappings
 
 }
 
@@ -4536,101 +4439,99 @@ class ObjectMapping22[
   }
 
   def unbind(value: R): Map[String, String] = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18,
-          v19,
-          v20,
-          v21,
-          v22) = fields
-        field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
-          .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
-          .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
-          .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
-          .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
-          .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18) ++ field19
-          .unbind(v19) ++ field20.unbind(v20) ++ field21.unbind(v21) ++ field22
-          .unbind(v22)
-      }
-      .getOrElse(Map.empty)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18,
+        v19,
+        v20,
+        v21,
+        v22) = fields
+      field1.unbind(v1) ++ field2.unbind(v2) ++ field3.unbind(v3) ++ field4
+        .unbind(v4) ++ field5.unbind(v5) ++ field6.unbind(v6) ++ field7
+        .unbind(v7) ++ field8.unbind(v8) ++ field9.unbind(v9) ++ field10
+        .unbind(v10) ++ field11.unbind(v11) ++ field12.unbind(v12) ++ field13
+        .unbind(v13) ++ field14.unbind(v14) ++ field15.unbind(v15) ++ field16
+        .unbind(v16) ++ field17.unbind(v17) ++ field18.unbind(v18) ++ field19
+        .unbind(v19) ++ field20.unbind(v20) ++ field21.unbind(v21) ++ field22
+        .unbind(v22)
+    }.getOrElse(Map.empty)
   }
 
   def unbindAndValidate(value: R): (Map[String, String], Seq[FormError]) = {
-    unapply(value)
-      .map { fields =>
-        val (
-          v1,
-          v2,
-          v3,
-          v4,
-          v5,
-          v6,
-          v7,
-          v8,
-          v9,
-          v10,
-          v11,
-          v12,
-          v13,
-          v14,
-          v15,
-          v16,
-          v17,
-          v18,
-          v19,
-          v20,
-          v21,
-          v22) = fields
-        val a1 = field1.unbindAndValidate(v1)
-        val a2 = field2.unbindAndValidate(v2)
-        val a3 = field3.unbindAndValidate(v3)
-        val a4 = field4.unbindAndValidate(v4)
-        val a5 = field5.unbindAndValidate(v5)
-        val a6 = field6.unbindAndValidate(v6)
-        val a7 = field7.unbindAndValidate(v7)
-        val a8 = field8.unbindAndValidate(v8)
-        val a9 = field9.unbindAndValidate(v9)
-        val a10 = field10.unbindAndValidate(v10)
-        val a11 = field11.unbindAndValidate(v11)
-        val a12 = field12.unbindAndValidate(v12)
-        val a13 = field13.unbindAndValidate(v13)
-        val a14 = field14.unbindAndValidate(v14)
-        val a15 = field15.unbindAndValidate(v15)
-        val a16 = field16.unbindAndValidate(v16)
-        val a17 = field17.unbindAndValidate(v17)
-        val a18 = field18.unbindAndValidate(v18)
-        val a19 = field19.unbindAndValidate(v19)
-        val a20 = field20.unbindAndValidate(v20)
-        val a21 = field21.unbindAndValidate(v21)
-        val a22 = field22.unbindAndValidate(v22)
+    unapply(value).map { fields =>
+      val (
+        v1,
+        v2,
+        v3,
+        v4,
+        v5,
+        v6,
+        v7,
+        v8,
+        v9,
+        v10,
+        v11,
+        v12,
+        v13,
+        v14,
+        v15,
+        v16,
+        v17,
+        v18,
+        v19,
+        v20,
+        v21,
+        v22) = fields
+      val a1 = field1.unbindAndValidate(v1)
+      val a2 = field2.unbindAndValidate(v2)
+      val a3 = field3.unbindAndValidate(v3)
+      val a4 = field4.unbindAndValidate(v4)
+      val a5 = field5.unbindAndValidate(v5)
+      val a6 = field6.unbindAndValidate(v6)
+      val a7 = field7.unbindAndValidate(v7)
+      val a8 = field8.unbindAndValidate(v8)
+      val a9 = field9.unbindAndValidate(v9)
+      val a10 = field10.unbindAndValidate(v10)
+      val a11 = field11.unbindAndValidate(v11)
+      val a12 = field12.unbindAndValidate(v12)
+      val a13 = field13.unbindAndValidate(v13)
+      val a14 = field14.unbindAndValidate(v14)
+      val a15 = field15.unbindAndValidate(v15)
+      val a16 = field16.unbindAndValidate(v16)
+      val a17 = field17.unbindAndValidate(v17)
+      val a18 = field18.unbindAndValidate(v18)
+      val a19 = field19.unbindAndValidate(v19)
+      val a20 = field20.unbindAndValidate(v20)
+      val a21 = field21.unbindAndValidate(v21)
+      val a22 = field22.unbindAndValidate(v22)
 
-        (
-          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1 ++ a22._1
-        ) ->
-          (
-            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2 ++ a22._2
-          )
-      }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8
+        ._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15
+        ._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1 ++ a22
+        ._1) ->
+        (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8
+          ._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15
+          ._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2 ++ a22
+          ._2)
+    }.getOrElse(
+      Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping22[
@@ -4657,36 +4558,34 @@ class ObjectMapping22[
     A20,
     A21,
     A22] =
-    addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping22(
-          apply,
-          unapply,
-          f1,
-          f2,
-          f3,
-          f4,
-          f5,
-          f6,
-          f7,
-          f8,
-          f9,
-          f10,
-          f11,
-          f12,
-          f13,
-          f14,
-          f15,
-          f16,
-          f17,
-          f18,
-          f19,
-          f20,
-          f21,
-          f22,
-          newKey,
-          constraints))
-      .getOrElse(this)
+    addPrefix(prefix).map(newKey =>
+      new ObjectMapping22(
+        apply,
+        unapply,
+        f1,
+        f2,
+        f3,
+        f4,
+        f5,
+        f6,
+        f7,
+        f8,
+        f9,
+        f10,
+        f11,
+        f12,
+        f13,
+        f14,
+        f15,
+        f16,
+        f17,
+        f18,
+        f19,
+        f20,
+        f21,
+        f22,
+        newKey,
+        constraints)).getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping22[
     R,
@@ -4741,7 +4640,12 @@ class ObjectMapping22[
       constraints ++ addConstraints.toSeq)
   }
 
-  val mappings = Seq(
-    this) ++ field1.mappings ++ field2.mappings ++ field3.mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7.mappings ++ field8.mappings ++ field9.mappings ++ field10.mappings ++ field11.mappings ++ field12.mappings ++ field13.mappings ++ field14.mappings ++ field15.mappings ++ field16.mappings ++ field17.mappings ++ field18.mappings ++ field19.mappings ++ field20.mappings ++ field21.mappings ++ field22.mappings
+  val mappings = Seq(this) ++ field1.mappings ++ field2.mappings ++ field3
+    .mappings ++ field4.mappings ++ field5.mappings ++ field6.mappings ++ field7
+    .mappings ++ field8.mappings ++ field9.mappings ++ field10
+    .mappings ++ field11.mappings ++ field12.mappings ++ field13
+    .mappings ++ field14.mappings ++ field15.mappings ++ field16
+    .mappings ++ field17.mappings ++ field18.mappings ++ field19
+    .mappings ++ field20.mappings ++ field21.mappings ++ field22.mappings
 
 }

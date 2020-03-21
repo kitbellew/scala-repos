@@ -45,9 +45,7 @@ trait PasswordTypedField extends TypedField[String] {
   private var invalidMsg = ""
 
   def match_?(toTest: String): Boolean =
-    valueBox
-      .filter(_.length > 0)
-      .flatMap(p => tryo(BCrypt.checkpw(toTest, p)))
+    valueBox.filter(_.length > 0).flatMap(p => tryo(BCrypt.checkpw(toTest, p)))
       .openOr(false)
 
   override def set_!(in: Box[String]): Box[String] = {
@@ -121,7 +119,8 @@ trait PasswordTypedField extends TypedField[String] {
         invalidPw = true; invalidMsg = notOptionalErrorMessage
       }
       case Full(s)
-          if s == "" || s == PasswordField.blankPw || s.length < PasswordField.minPasswordLength => {
+          if s == "" || s == PasswordField.blankPw || s.length < PasswordField
+            .minPasswordLength => {
         invalidPw = true; invalidMsg = S.?("password.too.short")
       }
       case _ => { invalidPw = false; invalidMsg = "" }

@@ -43,10 +43,8 @@ class DocServerStart {
 
       override def get = Success(application)
       override def handleWebCommand(request: RequestHeader) =
-        buildDocHandler
-          .maybeHandleDocRequest(request)
-          .asInstanceOf[Option[Result]]
-          .orElse(if (request.path == "/@report") {
+        buildDocHandler.maybeHandleDocRequest(request)
+          .asInstanceOf[Option[Result]].orElse(if (request.path == "/@report") {
             if (request.getQueryString("force").isDefined) {
               forceTranslationReport.call()
               Some(Results.Redirect("/@report"))
@@ -56,8 +54,7 @@ class DocServerStart {
                 inline = true,
                 fileName = _ => "report.html"))
             }
-          } else None)
-          .orElse(Some(Results.Redirect("/@documentation")))
+          } else None).orElse(Some(Results.Redirect("/@documentation")))
     }
 
     val config = ServerConfig(
@@ -65,9 +62,8 @@ class DocServerStart {
       port = Some(port),
       mode = Mode.Test,
       properties = System.getProperties)
-    val serverProvider: ServerProvider = ServerProvider.fromConfiguration(
-      getClass.getClassLoader,
-      config.configuration)
+    val serverProvider: ServerProvider = ServerProvider
+      .fromConfiguration(getClass.getClassLoader, config.configuration)
     val context = ServerProvider.Context(
       config,
       applicationProvider,

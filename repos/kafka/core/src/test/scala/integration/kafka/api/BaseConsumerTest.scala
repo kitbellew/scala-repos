@@ -53,10 +53,11 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     "3"
   ) // don't want to lose offset
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
-  this.serverConfig.setProperty(
-    KafkaConfig.GroupMinSessionTimeoutMsProp,
-    "100"
-  ) // set small enough session timeout
+  this.serverConfig
+    .setProperty(
+      KafkaConfig.GroupMinSessionTimeoutMsProp,
+      "100"
+    ) // set small enough session timeout
   this.serverConfig
     .setProperty(KafkaConfig.GroupMaxSessionTimeoutMsProp, "30000")
   this.producerConfig.setProperty(ProducerConfig.ACKS_CONFIG, "all")
@@ -172,33 +173,27 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     this.consumers(0).poll(50)
     val pos1 = this.consumers(0).position(tp)
     val pos2 = this.consumers(0).position(tp2)
-    this
-      .consumers(0)
-      .commitSync(
-        Map[TopicPartition, OffsetAndMetadata](
-          (tp, new OffsetAndMetadata(3L))).asJava)
+    this.consumers(0).commitSync(
+      Map[TopicPartition, OffsetAndMetadata]((tp, new OffsetAndMetadata(3L)))
+        .asJava)
     assertEquals(3, this.consumers(0).committed(tp).offset)
     assertNull(this.consumers(0).committed(tp2))
 
     // Positions should not change
     assertEquals(pos1, this.consumers(0).position(tp))
     assertEquals(pos2, this.consumers(0).position(tp2))
-    this
-      .consumers(0)
-      .commitSync(
-        Map[TopicPartition, OffsetAndMetadata](
-          (tp2, new OffsetAndMetadata(5L))).asJava)
+    this.consumers(0).commitSync(
+      Map[TopicPartition, OffsetAndMetadata]((tp2, new OffsetAndMetadata(5L)))
+        .asJava)
     assertEquals(3, this.consumers(0).committed(tp).offset)
     assertEquals(5, this.consumers(0).committed(tp2).offset)
 
     // Using async should pick up the committed changes after commit completes
     val commitCallback = new CountConsumerCommitCallback()
-    this
-      .consumers(0)
-      .commitAsync(
-        Map[TopicPartition, OffsetAndMetadata](
-          (tp2, new OffsetAndMetadata(7L))).asJava,
-        commitCallback)
+    this.consumers(0).commitAsync(
+      Map[TopicPartition, OffsetAndMetadata]((tp2, new OffsetAndMetadata(7L)))
+        .asJava,
+      commitCallback)
     awaitCommitCallback(this.consumers(0), commitCallback)
     assertEquals(7, this.consumers(0).committed(tp2).offset)
   }
@@ -243,8 +238,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     // get metadata for the topic
     var parts: Seq[PartitionInfo] = null
     while (parts == null)
-      parts = consumer0
-        .partitionsFor(TopicConstants.GROUP_METADATA_TOPIC_NAME)
+      parts = consumer0.partitionsFor(TopicConstants.GROUP_METADATA_TOPIC_NAME)
         .asScala
     assertEquals(1, parts.size)
     assertNotNull(parts(0).leader())
@@ -344,14 +338,12 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
 
   protected def sendRecords(numRecords: Int, tp: TopicPartition) {
     (0 until numRecords).foreach { i =>
-      this
-        .producers(0)
-        .send(new ProducerRecord(
-          tp.topic(),
-          tp.partition(),
-          i.toLong,
-          s"key $i".getBytes,
-          s"value $i".getBytes))
+      this.producers(0).send(new ProducerRecord(
+        tp.topic(),
+        tp.partition(),
+        i.toLong,
+        s"key $i".getBytes,
+        s"value $i".getBytes))
     }
     this.producers(0).flush()
   }
@@ -381,7 +373,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
         assertEquals(timestamp.toLong, record.timestamp)
       } else
         assertTrue(
-          s"Got unexpected timestamp ${record.timestamp}. Timestamp should be between [$startingTimestamp, $now}]",
+          s"Got unexpected timestamp ${record
+            .timestamp}. Timestamp should be between [$startingTimestamp, $now}]",
           record.timestamp >= startingTimestamp && record.timestamp <= now
         )
       assertEquals(offset.toLong, record.offset)
@@ -447,8 +440,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     val rebalanceListener = new ConsumerRebalanceListener {
       override def onPartitionsAssigned(
           partitions: util.Collection[TopicPartition]) = {
-        partitionAssignment = collection.immutable.Set(
-          consumer.assignment().asScala.toArray: _*)
+        partitionAssignment = collection.immutable
+          .Set(consumer.assignment().asScala.toArray: _*)
       }
 
       override def onPartitionsRevoked(

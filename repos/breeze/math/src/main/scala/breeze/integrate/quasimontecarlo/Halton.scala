@@ -27,13 +27,10 @@ object Halton {
      * Reads a file from the classpath to an array int's.
      * The file should be stored as text, with integers separated by a ',' and perhaps arbitrary whitespace, including newlines.
      */
-    val fileStream = this
-      .getClass()
-      .getClassLoader()
+    val fileStream = this.getClass().getClassLoader()
       .getResourceAsStream(filename)
     val lines = scala.io.Source.fromInputStream(fileStream).getLines()
-    val nums = lines
-      .flatMap(x => x.split(','))
+    val nums = lines.flatMap(x => x.split(','))
       .map(x => x.replaceAll("\\s+", ""))
     nums.map(x => x.toInt).toArray
   }
@@ -71,16 +68,15 @@ class BaseUniformHaltonGenerator(val dimension: Int)
   private val bases = java.util.Arrays.copyOfRange(Halton.PRIMES, 0, dimension)
 
   private var count: Long = 0
-  private val counters: Array[UnboxedIntVector] =
-    List.fill(dimension)({ new UnboxedIntVector(16) }).toArray
-  val permutations: Array[Array[Long]] = (0 to dimension)
-    .map(i => {
-      val vv = new Array[Long](Halton.PRIMES(i))
-      cfor(0)(j => j < Halton.PRIMES(i), j => j + 1)(j => { vv(j) = j })
-      shuffle(vv)
-      vv
-    })
-    .toArray
+  private val counters: Array[UnboxedIntVector] = List.fill(dimension)({
+    new UnboxedIntVector(16)
+  }).toArray
+  val permutations: Array[Array[Long]] = (0 to dimension).map(i => {
+    val vv = new Array[Long](Halton.PRIMES(i))
+    cfor(0)(j => j < Halton.PRIMES(i), j => j + 1)(j => { vv(j) = j })
+    shuffle(vv)
+    vv
+  }).toArray
 
   private val currentValue = new Array[Double](dimension)
 
@@ -90,8 +86,9 @@ class BaseUniformHaltonGenerator(val dimension: Int)
   def getNextUnsafe = {
     cfor(0)(j => j < dimension, j => j + 1)(j => {
       var lIndex: Int = 0
-      while ((lIndex < counters(j).size()) && (counters(j)
-               .get(lIndex) == (bases(j) - 1))) {
+      while ((
+               lIndex < counters(j).size()
+             ) && (counters(j).get(lIndex) == (bases(j) - 1))) {
         counters(j).set(lIndex, 0)
         lIndex += 1
       }

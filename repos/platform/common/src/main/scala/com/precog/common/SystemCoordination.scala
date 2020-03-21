@@ -97,9 +97,8 @@ case class IdSequenceBlock(
 }
 
 object IdSequenceBlock {
-  implicit val iso = Iso.hlist(
-    IdSequenceBlock.apply _,
-    IdSequenceBlock.unapply _)
+  implicit val iso = Iso
+    .hlist(IdSequenceBlock.apply _, IdSequenceBlock.unapply _)
   val schemaV1 = "producerId" :: "firstSequenceId" :: "lastSequenceId" :: HNil
   val extractorPreV = extractorV[IdSequenceBlock](schemaV1, None)
   val (decomposerV1, extractorV1) = serializationV[IdSequenceBlock](
@@ -123,9 +122,8 @@ case class EventRelayState(
 }
 
 object EventRelayState {
-  implicit val iso = Iso.hlist(
-    EventRelayState.apply _,
-    EventRelayState.unapply _)
+  implicit val iso = Iso
+    .hlist(EventRelayState.apply _, EventRelayState.unapply _)
   val schemaV1 = "offset" :: "nextSequenceId" :: "idSequenceBlock" :: HNil
   val extractorPreV = extractorV[EventRelayState](schemaV1, None)
   val (decomposerV1, extractorV1) = serializationV[EventRelayState](

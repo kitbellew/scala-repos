@@ -44,94 +44,86 @@ final class JsonView(
       getPlayerChat(pov.game, playerUser) map {
       case (((socket, opponentUser), takebackable), chat) =>
         import pov._
-        Json
-          .obj(
-            "game" -> gameJson(game, initialFen),
-            "clock" -> game.clock.map(clockJson),
-            "correspondence" -> game.correspondenceClock,
-            "player" -> Json
-              .obj(
-                "id" -> playerId,
-                "color" -> player.color.name,
-                "version" -> socket.version,
-                "spectator" -> false,
-                "user" -> playerUser.map { userJsonView(_, game.perfType) },
-                "rating" -> player.rating,
-                "ratingDiff" -> player.ratingDiff,
-                "provisional" -> player.provisional.option(true),
-                "offeringRematch" -> player.isOfferingRematch.option(true),
-                "offeringDraw" -> player.isOfferingDraw.option(true),
-                "proposingTakeback" -> player.isProposingTakeback.option(true),
-                "onGame" -> (player.isAi || socket.onGame(player.color)),
-                "checks" -> checkCount(game, player.color),
-                "hold" -> (withBlurs option hold(player)),
-                "blurs" -> (withBlurs option blurs(game, player))
-              )
-              .noNull,
-            "opponent" -> Json
-              .obj(
-                "color" -> opponent.color.name,
-                "ai" -> opponent.aiLevel,
-                "user" -> opponentUser.map { userJsonView(_, game.perfType) },
-                "rating" -> opponent.rating,
-                "ratingDiff" -> opponent.ratingDiff,
-                "provisional" -> opponent.provisional.option(true),
-                "offeringRematch" -> opponent.isOfferingRematch.option(true),
-                "offeringDraw" -> opponent.isOfferingDraw.option(true),
-                "proposingTakeback" -> opponent.isProposingTakeback.option(
-                  true),
-                "onGame" -> (opponent.isAi || socket.onGame(opponent.color)),
-                "isGone" -> (!opponent.isAi && socket.isGone(opponent.color)),
-                "checks" -> checkCount(game, opponent.color),
-                "hold" -> (withBlurs option hold(opponent)),
-                "blurs" -> (withBlurs option blurs(game, opponent))
-              )
-              .noNull,
-            "url" -> Json.obj(
-              "socket" -> s"/$fullId/socket/v$apiVersion",
-              "round" -> s"/$fullId"),
-            "pref" -> Json.obj(
-              "blindfold" -> pref.isBlindfold,
-              "animationDuration" -> animationDuration(pov, pref),
-              "highlight" -> (pref.highlight || pref.isBlindfold),
-              "destination" -> (pref.destination && !pref.isBlindfold),
-              "coords" -> pref.coords,
-              "replay" -> pref.replay,
-              "autoQueen" -> (pov.game.variant == chess.variant.Antichess)
-                .fold(Pref.AutoQueen.NEVER, pref.autoQueen),
-              "clockTenths" -> pref.clockTenths,
-              "clockBar" -> pref.clockBar,
-              "clockSound" -> pref.clockSound,
-              "enablePremove" -> pref.premove,
-              "showCaptured" -> pref.captured,
-              "submitMove" -> {
-                import Pref.SubmitMove._
-                pref.submitMove match {
-                  case _ if game.hasAi                                   => false
-                  case ALWAYS                                            => true
-                  case CORRESPONDENCE_UNLIMITED if game.isCorrespondence => true
-                  case CORRESPONDENCE_ONLY
-                      if game.hasCorrespondenceClock => true
-                  case _                             => false
-                }
-              },
-              "confirmResign" -> (pref.confirmResign == Pref.ConfirmResign.YES)
-                .option(true)
-            ),
-            "chat" -> chat.map { c =>
-              JsArray(c.lines map {
-                case lila.chat.UserLine(username, text, _) =>
-                  Json.obj("u" -> username, "t" -> text)
-                case lila.chat.PlayerLine(color, text) =>
-                  Json.obj("c" -> color.name, "t" -> text)
-              })
+        Json.obj(
+          "game" -> gameJson(game, initialFen),
+          "clock" -> game.clock.map(clockJson),
+          "correspondence" -> game.correspondenceClock,
+          "player" -> Json.obj(
+            "id" -> playerId,
+            "color" -> player.color.name,
+            "version" -> socket.version,
+            "spectator" -> false,
+            "user" -> playerUser.map { userJsonView(_, game.perfType) },
+            "rating" -> player.rating,
+            "ratingDiff" -> player.ratingDiff,
+            "provisional" -> player.provisional.option(true),
+            "offeringRematch" -> player.isOfferingRematch.option(true),
+            "offeringDraw" -> player.isOfferingDraw.option(true),
+            "proposingTakeback" -> player.isProposingTakeback.option(true),
+            "onGame" -> (player.isAi || socket.onGame(player.color)),
+            "checks" -> checkCount(game, player.color),
+            "hold" -> (withBlurs option hold(player)),
+            "blurs" -> (withBlurs option blurs(game, player))
+          ).noNull,
+          "opponent" -> Json.obj(
+            "color" -> opponent.color.name,
+            "ai" -> opponent.aiLevel,
+            "user" -> opponentUser.map { userJsonView(_, game.perfType) },
+            "rating" -> opponent.rating,
+            "ratingDiff" -> opponent.ratingDiff,
+            "provisional" -> opponent.provisional.option(true),
+            "offeringRematch" -> opponent.isOfferingRematch.option(true),
+            "offeringDraw" -> opponent.isOfferingDraw.option(true),
+            "proposingTakeback" -> opponent.isProposingTakeback.option(true),
+            "onGame" -> (opponent.isAi || socket.onGame(opponent.color)),
+            "isGone" -> (!opponent.isAi && socket.isGone(opponent.color)),
+            "checks" -> checkCount(game, opponent.color),
+            "hold" -> (withBlurs option hold(opponent)),
+            "blurs" -> (withBlurs option blurs(game, opponent))
+          ).noNull,
+          "url" -> Json.obj(
+            "socket" -> s"/$fullId/socket/v$apiVersion",
+            "round" -> s"/$fullId"),
+          "pref" -> Json.obj(
+            "blindfold" -> pref.isBlindfold,
+            "animationDuration" -> animationDuration(pov, pref),
+            "highlight" -> (pref.highlight || pref.isBlindfold),
+            "destination" -> (pref.destination && !pref.isBlindfold),
+            "coords" -> pref.coords,
+            "replay" -> pref.replay,
+            "autoQueen" -> (pov.game.variant == chess.variant.Antichess)
+              .fold(Pref.AutoQueen.NEVER, pref.autoQueen),
+            "clockTenths" -> pref.clockTenths,
+            "clockBar" -> pref.clockBar,
+            "clockSound" -> pref.clockSound,
+            "enablePremove" -> pref.premove,
+            "showCaptured" -> pref.captured,
+            "submitMove" -> {
+              import Pref.SubmitMove._
+              pref.submitMove match {
+                case _ if game.hasAi                                    => false
+                case ALWAYS                                             => true
+                case CORRESPONDENCE_UNLIMITED if game.isCorrespondence  => true
+                case CORRESPONDENCE_ONLY if game.hasCorrespondenceClock => true
+                case _                                                  => false
+              }
             },
-            "possibleMoves" -> possibleMoves(pov),
-            "possibleDrops" -> possibleDrops(pov),
-            "takebackable" -> takebackable,
-            "crazyhouse" -> pov.game.crazyData
-          )
-          .noNull
+            "confirmResign" -> (pref.confirmResign == Pref.ConfirmResign.YES)
+              .option(true)
+          ),
+          "chat" -> chat.map { c =>
+            JsArray(c.lines map {
+              case lila.chat.UserLine(username, text, _) =>
+                Json.obj("u" -> username, "t" -> text)
+              case lila.chat.PlayerLine(color, text) =>
+                Json.obj("c" -> color.name, "t" -> text)
+            })
+          },
+          "possibleMoves" -> possibleMoves(pov),
+          "possibleDrops" -> possibleDrops(pov),
+          "takebackable" -> takebackable,
+          "crazyhouse" -> pov.game.crazyData
+        ).noNull
     }
 
   def watcherJson(
@@ -148,76 +140,68 @@ final class JsonView(
       UserRepo.pair(pov.player.userId, pov.opponent.userId) map {
       case ((socket, chat), (playerUser, opponentUser)) =>
         import pov._
-        Json
-          .obj(
-            "game" -> {
-              gameJson(game, initialFen) ++ Json
-                .obj(
-                  "moveTimes" -> withMoveTimes.option(game.moveTimes),
-                  "opening" -> game.opening,
-                  "importedBy" -> game.pgnImport.flatMap(_.user))
-                .noNull
-            },
-            "clock" -> game.clock.map(clockJson),
-            "correspondence" -> game.correspondenceClock,
-            "player" -> Json
-              .obj(
-                "color" -> color.name,
-                "version" -> socket.version,
-                "spectator" -> true,
-                "ai" -> player.aiLevel,
-                "user" -> playerUser.map { userJsonView(_, game.perfType) },
-                "name" -> player.name,
-                "rating" -> player.rating,
-                "ratingDiff" -> player.ratingDiff,
-                "provisional" -> player.provisional.option(true),
-                "onGame" -> (player.isAi || socket.onGame(player.color)),
-                "checks" -> checkCount(game, player.color),
-                "berserk" -> player.berserk.option(true),
-                "hold" -> (withBlurs option hold(player)),
-                "blurs" -> (withBlurs option blurs(game, player))
-              )
-              .noNull,
-            "opponent" -> Json
-              .obj(
-                "color" -> opponent.color.name,
-                "ai" -> opponent.aiLevel,
-                "user" -> opponentUser.map { userJsonView(_, game.perfType) },
-                "name" -> opponent.name,
-                "rating" -> opponent.rating,
-                "ratingDiff" -> opponent.ratingDiff,
-                "provisional" -> opponent.provisional.option(true),
-                "onGame" -> (opponent.isAi || socket.onGame(opponent.color)),
-                "checks" -> checkCount(game, opponent.color),
-                "berserk" -> opponent.berserk.option(true),
-                "hold" -> (withBlurs option hold(opponent)),
-                "blurs" -> (withBlurs option blurs(game, opponent))
-              )
-              .noNull,
-            "orientation" -> pov.color.name,
-            "url" -> Json.obj(
-              "socket" -> s"/$gameId/${color.name}/socket",
-              "round" -> s"/$gameId/${color.name}"),
-            "pref" -> Json.obj(
-              "animationDuration" -> animationDuration(pov, pref),
-              "highlight" -> pref.highlight,
-              "coords" -> pref.coords,
-              "replay" -> pref.replay,
-              "clockTenths" -> pref.clockTenths,
-              "clockBar" -> pref.clockBar,
-              "showCaptured" -> pref.captured
-            ),
-            "tv" -> tv.map { onTv =>
-              Json.obj("channel" -> onTv.channel, "flip" -> onTv.flip)
-            },
-            "chat" -> chat.map { c =>
-              JsArray(c.lines map {
-                case lila.chat.UserLine(username, text, _) =>
-                  Json.obj("u" -> username, "t" -> text)
-              })
-            }
-          )
-          .noNull
+        Json.obj(
+          "game" -> {
+            gameJson(game, initialFen) ++ Json.obj(
+              "moveTimes" -> withMoveTimes.option(game.moveTimes),
+              "opening" -> game.opening,
+              "importedBy" -> game.pgnImport.flatMap(_.user)).noNull
+          },
+          "clock" -> game.clock.map(clockJson),
+          "correspondence" -> game.correspondenceClock,
+          "player" -> Json.obj(
+            "color" -> color.name,
+            "version" -> socket.version,
+            "spectator" -> true,
+            "ai" -> player.aiLevel,
+            "user" -> playerUser.map { userJsonView(_, game.perfType) },
+            "name" -> player.name,
+            "rating" -> player.rating,
+            "ratingDiff" -> player.ratingDiff,
+            "provisional" -> player.provisional.option(true),
+            "onGame" -> (player.isAi || socket.onGame(player.color)),
+            "checks" -> checkCount(game, player.color),
+            "berserk" -> player.berserk.option(true),
+            "hold" -> (withBlurs option hold(player)),
+            "blurs" -> (withBlurs option blurs(game, player))
+          ).noNull,
+          "opponent" -> Json.obj(
+            "color" -> opponent.color.name,
+            "ai" -> opponent.aiLevel,
+            "user" -> opponentUser.map { userJsonView(_, game.perfType) },
+            "name" -> opponent.name,
+            "rating" -> opponent.rating,
+            "ratingDiff" -> opponent.ratingDiff,
+            "provisional" -> opponent.provisional.option(true),
+            "onGame" -> (opponent.isAi || socket.onGame(opponent.color)),
+            "checks" -> checkCount(game, opponent.color),
+            "berserk" -> opponent.berserk.option(true),
+            "hold" -> (withBlurs option hold(opponent)),
+            "blurs" -> (withBlurs option blurs(game, opponent))
+          ).noNull,
+          "orientation" -> pov.color.name,
+          "url" -> Json.obj(
+            "socket" -> s"/$gameId/${color.name}/socket",
+            "round" -> s"/$gameId/${color.name}"),
+          "pref" -> Json.obj(
+            "animationDuration" -> animationDuration(pov, pref),
+            "highlight" -> pref.highlight,
+            "coords" -> pref.coords,
+            "replay" -> pref.replay,
+            "clockTenths" -> pref.clockTenths,
+            "clockBar" -> pref.clockBar,
+            "showCaptured" -> pref.captured
+          ),
+          "tv" -> tv.map { onTv =>
+            Json.obj("channel" -> onTv.channel, "flip" -> onTv.flip)
+          },
+          "chat" -> chat.map { c =>
+            JsArray(c.lines map {
+              case lila.chat.UserLine(username, text, _) =>
+                Json.obj("u" -> username, "t" -> text)
+            })
+          }
+        ).noNull
     }
 
   def userAnalysisJson(
@@ -259,30 +243,28 @@ final class JsonView(
     }
 
   private def gameJson(game: Game, initialFen: Option[String]) =
-    Json
-      .obj(
-        "id" -> game.id,
-        "variant" -> game.variant,
-        "speed" -> game.speed.key,
-        "perf" -> PerfPicker.key(game),
-        "rated" -> game.rated,
-        "initialFen" -> (initialFen | chess.format.Forsyth.initial),
-        "fen" -> (Forsyth >> game.toChess),
-        "player" -> game.turnColor.name,
-        "winner" -> game.winnerColor.map(_.name),
-        "turns" -> game.turns,
-        "startedAtTurn" -> game.startedAtTurn,
-        "lastMove" -> game.castleLastMoveTime.lastMoveString,
-        "threefold" -> game.toChessHistory.threefoldRepetition,
-        "check" -> game.check.map(_.key),
-        "rematch" -> game.next,
-        "source" -> game.source.map(sourceJson),
-        "status" -> game.status,
-        "boosted" -> game.boosted.option(true),
-        "tournamentId" -> game.tournamentId,
-        "createdAt" -> game.createdAt
-      )
-      .noNull
+    Json.obj(
+      "id" -> game.id,
+      "variant" -> game.variant,
+      "speed" -> game.speed.key,
+      "perf" -> PerfPicker.key(game),
+      "rated" -> game.rated,
+      "initialFen" -> (initialFen | chess.format.Forsyth.initial),
+      "fen" -> (Forsyth >> game.toChess),
+      "player" -> game.turnColor.name,
+      "winner" -> game.winnerColor.map(_.name),
+      "turns" -> game.turns,
+      "startedAtTurn" -> game.startedAtTurn,
+      "lastMove" -> game.castleLastMoveTime.lastMoveString,
+      "threefold" -> game.toChessHistory.threefoldRepetition,
+      "check" -> game.check.map(_.key),
+      "rematch" -> game.next,
+      "source" -> game.source.map(sourceJson),
+      "status" -> game.status,
+      "boosted" -> game.boosted.option(true),
+      "tournamentId" -> game.tournamentId,
+      "createdAt" -> game.createdAt
+    ).noNull
 
   private def blurs(game: Game, player: lila.game.Player) = {
     val percent = game.playerBlurPercent(player.color)

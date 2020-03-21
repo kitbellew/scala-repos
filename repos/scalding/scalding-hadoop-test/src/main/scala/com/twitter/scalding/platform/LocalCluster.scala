@@ -36,17 +36,13 @@ object LocalCluster {
 }
 
 class LocalCluster(mutex: Boolean = true) {
-  org.apache.log4j.Logger
-    .getLogger("org.apache.hadoop")
+  org.apache.log4j.Logger.getLogger("org.apache.hadoop")
     .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
-    .getLogger("org.mortbay")
+  org.apache.log4j.Logger.getLogger("org.mortbay")
     .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
-    .getLogger("BlockStateChange")
+  org.apache.log4j.Logger.getLogger("BlockStateChange")
     .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
-    .getLogger("SecurityLogger")
+  org.apache.log4j.Logger.getLogger("SecurityLogger")
     .setLevel(org.apache.log4j.Level.ERROR)
 
   private val LOG = LoggerFactory.getLogger(getClass)
@@ -123,7 +119,8 @@ class LocalCluster(mutex: Boolean = true) {
     mrJobConf.set("mapreduce.user.classpath.first", "true")
 
     LOG.debug(
-      "Creating directory to store jars on classpath: " + LocalCluster.HADOOP_CLASSPATH_DIR)
+      "Creating directory to store jars on classpath: " + LocalCluster
+        .HADOOP_CLASSPATH_DIR)
     fileSystem.mkdirs(LocalCluster.HADOOP_CLASSPATH_DIR)
 
     // merge in input configuration

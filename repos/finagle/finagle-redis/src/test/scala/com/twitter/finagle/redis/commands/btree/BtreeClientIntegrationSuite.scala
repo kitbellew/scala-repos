@@ -156,8 +156,8 @@ final class BtreeClientIntegrationSuite
       val target = client.bCard(StringToChannelBuffer(outerKey))
       assert(
         inner.size == Await.result(target),
-        "BCARD failed for " + outerKey + " expected " + inner.size + " got " + Await
-          .result(target))
+        "BCARD failed for " + outerKey + " expected " + inner
+          .size + " got " + Await.result(target))
     }
 
     println("Test BCARD succeeded")
@@ -204,8 +204,8 @@ final class BtreeClientIntegrationSuite
       dict: mutable.HashMap[String, mutable.HashMap[String, String]]) {
     for ((outerKey, inner) <- dict) {
       val innerKeys = inner.toList.sortBy(_._1)
-      val target = Await.result(
-        client.bRange(StringToChannelBuffer(outerKey), None, None))
+      val target = Await
+        .result(client.bRange(StringToChannelBuffer(outerKey), None, None))
       validate(outerKey, innerKeys, target)
     }
 
@@ -337,7 +337,8 @@ final class BtreeClientIntegrationSuite
       got: Seq[(ChannelBuffer, ChannelBuffer)]) {
     assert(
       got.size == exp.size,
-      "BRANGE failed for " + outerKey + " expected size " + exp.size + " got size " + got.size)
+      "BRANGE failed for " + outerKey + " expected size " + exp
+        .size + " got size " + got.size)
 
     for (i <- 0 until exp.size) {
       val expKey = exp(i)._1

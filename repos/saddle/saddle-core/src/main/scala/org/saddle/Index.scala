@@ -503,9 +503,7 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
 
     if (varr.length == 0) buf append "Empty Index"
     else {
-      val vlens = util
-        .grab(varr, half)
-        .map(sm.strList(_))
+      val vlens = util.grab(varr, half).map(sm.strList(_))
         .foldLeft(sm.strList(varr(0)).map(_.length))(maxf)
 
       buf.append("[Index %d x 1]\n" format (length))

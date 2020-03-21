@@ -31,8 +31,7 @@ object UnsafeProjectionBenchmark {
   def generateRows(schema: StructType, numRows: Int): Array[InternalRow] = {
     val generator = RandomDataGenerator.forType(schema, nullable = false).get
     val encoder = RowEncoder(schema)
-    (1 to numRows)
-      .map(_ => encoder.toRow(generator().asInstanceOf[Row]).copy())
+    (1 to numRows).map(_ => encoder.toRow(generator().asInstanceOf[Row]).copy())
       .toArray
   }
 
@@ -74,14 +73,10 @@ object UnsafeProjectionBenchmark {
       }
     }
 
-    val schema3 = new StructType()
-      .add("boolean", BooleanType, false)
-      .add("byte", ByteType, false)
-      .add("short", ShortType, false)
-      .add("int", IntegerType, false)
-      .add("long", LongType, false)
-      .add("float", FloatType, false)
-      .add("double", DoubleType, false)
+    val schema3 = new StructType().add("boolean", BooleanType, false)
+      .add("byte", ByteType, false).add("short", ShortType, false)
+      .add("int", IntegerType, false).add("long", LongType, false)
+      .add("float", FloatType, false).add("double", DoubleType, false)
     val attrs3 = schema3.toAttributes
     val rows3 = generateRows(schema3, numRows)
     val projection3 = UnsafeProjection.create(attrs3, attrs3)
@@ -97,14 +92,10 @@ object UnsafeProjectionBenchmark {
       }
     }
 
-    val schema4 = new StructType()
-      .add("boolean", BooleanType, true)
-      .add("byte", ByteType, true)
-      .add("short", ShortType, true)
-      .add("int", IntegerType, true)
-      .add("long", LongType, true)
-      .add("float", FloatType, true)
-      .add("double", DoubleType, true)
+    val schema4 = new StructType().add("boolean", BooleanType, true)
+      .add("byte", ByteType, true).add("short", ShortType, true)
+      .add("int", IntegerType, true).add("long", LongType, true)
+      .add("float", FloatType, true).add("double", DoubleType, true)
     val attrs4 = schema4.toAttributes
     val rows4 = generateRows(schema4, numRows)
     val projection4 = UnsafeProjection.create(attrs4, attrs4)

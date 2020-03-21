@@ -109,25 +109,22 @@ trait PlayRunners extends HttpVerbs {
     * testserver.port
     */
   lazy val testServerPort = Option(System.getProperty("testserver.port"))
-    .map(_.toInt)
-    .getOrElse(19001)
+    .map(_.toInt).getOrElse(19001)
 
   /**
     * Constructs a in-memory (h2) database configuration to add to a FakeApplication.
     */
   def inMemoryDatabase(
       name: String = "default",
-      options: Map[String, String] = Map
-        .empty[String, String]): Map[String, String] = {
-    val optionsForDbUrl = options
-      .map { case (k, v) => k + "=" + v }
+      options: Map[String, String] = Map.empty[String, String])
+      : Map[String, String] = {
+    val optionsForDbUrl = options.map { case (k, v) => k + "=" + v }
       .mkString(";", ";", "")
 
     Map(
       ("db." + name + ".driver") -> "org.h2.Driver",
-      ("db." + name + ".url") -> (
-        "jdbc:h2:mem:play-test-" + scala.util.Random.nextInt + optionsForDbUrl
-      ))
+      ("db." + name + ".url") -> ("jdbc:h2:mem:play-test-" + scala.util.Random
+        .nextInt + optionsForDbUrl))
   }
 
 }
@@ -232,12 +229,11 @@ trait EssentialActionCaller {
       w: Writeable[T],
       mat: Materializer): Future[Result] = {
     import play.api.http.HeaderNames._
-    val newContentType = rh.headers
-      .get(CONTENT_TYPE)
+    val newContentType = rh.headers.get(CONTENT_TYPE)
       .fold(w.contentType)(_ => None)
-    val rhWithCt = newContentType
-      .map { ct => rh.copy(headers = rh.headers.replace(CONTENT_TYPE -> ct)) }
-      .getOrElse(rh)
+    val rhWithCt = newContentType.map { ct =>
+      rh.copy(headers = rh.headers.replace(CONTENT_TYPE -> ct))
+    }.getOrElse(rh)
 
     val requestBody = Source.single(w.transform(body))
     action(rhWithCt).run(requestBody)
@@ -332,10 +328,7 @@ trait ResultExtractors {
     */
   def contentType(of: Future[Result])(implicit
       timeout: Timeout): Option[String] = {
-    Await
-      .result(of, timeout.duration)
-      .body
-      .contentType
+    Await.result(of, timeout.duration).body.contentType
       .map(_.split(";").take(1).mkString.trim)
   }
 

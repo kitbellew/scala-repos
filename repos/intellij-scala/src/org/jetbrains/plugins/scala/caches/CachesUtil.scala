@@ -79,8 +79,8 @@ object CachesUtil {
   val IMPLICIT_TYPE: Key[ScType] = Key.create("implicit.type")
   val IMPLICIT_FUNCTION: Key[PsiNamedElement] = Key.create("implicit.function")
   val NAMED_PARAM_KEY: Key[java.lang.Boolean] = Key.create("named.key")
-  val PACKAGE_OBJECT_KEY: Key[(ScTypeDefinition, java.lang.Long)] = Key.create(
-    "package.object.key")
+  val PACKAGE_OBJECT_KEY: Key[(ScTypeDefinition, java.lang.Long)] = Key
+    .create("package.object.key")
 
   /**
     * IMPORTANT:
@@ -288,9 +288,7 @@ object CachesUtil {
       dep_item: Object = enclosingModificationOwner(element)): Object = {
     element.getContainingFile match {
       case file: ScalaFile if file.isCompiled =>
-        if (!ProjectRootManager
-              .getInstance(element.getProject)
-              .getFileIndex
+        if (!ProjectRootManager.getInstance(element.getProject).getFileIndex
               .isInContent(file.getVirtualFile)) { return dep_item }
         var dir = file.getParent
         while (dir != null) {
@@ -338,8 +336,9 @@ object CachesUtil {
             _: ScalaCodeFragment
           ) => //do not update on changes in dummy file
       case Some(owner: ScModificationTrackerOwner)
-          if owner.isValidModificationTrackerOwner(checkForChangedReturn =
-            true)      => owner.incModificationCount()
+          if owner
+            .isValidModificationTrackerOwner(checkForChangedReturn = true) =>
+        owner.incModificationCount()
       case Some(owner) => updateModificationCount(owner.getContext)
       case _ if incModCountOnTopLevel =>
         ScalaPsiManager.instance(elem.getProject).incModificationCount()
@@ -389,9 +388,8 @@ object CachesUtil {
       while (cur != null) {
         val (fun, proj) = cur
         val isValid: Boolean = fun.isValid
-        if ((
-              !isValid || fun.returnTypeHasChangedSinceLastCheck
-            ) && !proj.isDisposed) {
+        if ((!isValid || fun.returnTypeHasChangedSinceLastCheck) && !proj
+              .isDisposed) {
           //if there's more than one, just increment the general modCount If there's one, go up th
           if (!isValid || checkSize) {
             ScalaPsiManager.instance(proj).incModificationCount()

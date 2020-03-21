@@ -86,8 +86,8 @@ private[math] object Primality {
     (97, 75))
 
   /** All {@code BigInteger} prime numbers with bit length lesser than 8 bits. */
-  private val BiPrimes = Array.tabulate[BigInteger](Primes.length)(i =>
-    BigInteger.valueOf(Primes(i)))
+  private val BiPrimes = Array
+    .tabulate[BigInteger](Primes.length)(i => BigInteger.valueOf(Primes(i)))
 
   /** A random number is generated until a probable prime number is found.
     *
@@ -142,10 +142,9 @@ private[math] object Primality {
     } else {
       // To check if 'n' is divisible by some prime of the table
       for (i <- 1 until Primes.length) {
-        if (Division.remainderArrayByInt(
-              n.digits,
-              n.numberLength,
-              Primes(i)) == 0) return false
+        if (Division
+              .remainderArrayByInt(n.digits, n.numberLength, Primes(i)) == 0)
+          return false
       }
 
       // To set the number of iterations necessary for Miller-Rabin test

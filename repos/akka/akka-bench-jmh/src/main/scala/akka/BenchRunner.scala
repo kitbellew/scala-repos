@@ -22,8 +22,7 @@ object BenchRunner {
     val report = results.map { result: RunResult ⇒
       val bench = result.getParams.getBenchmark
       val params = result.getParams.getParamsKeys
-        .map(key => s"$key=${result.getParams.getParam(key)}")
-        .mkString("_")
+        .map(key => s"$key=${result.getParams.getParam(key)}").mkString("_")
       val score = result.getAggregatedResult.getPrimaryResult.getScore.round
       val unit = result.getAggregatedResult.getPrimaryResult.getScoreUnit
       s"\t${bench}_${params}\t$score\t$unit"

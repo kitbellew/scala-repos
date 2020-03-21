@@ -268,9 +268,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
     val context = system
     //#defining-dispatcher-in-code
     import akka.actor.Props
-    val myActor = context.actorOf(
-      Props[MyActor].withDispatcher("my-dispatcher"),
-      "myactor1")
+    val myActor = context
+      .actorOf(Props[MyActor].withDispatcher("my-dispatcher"), "myactor1")
     //#defining-dispatcher-in-code
   }
 
@@ -343,8 +342,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
 
         def receive = { case x => log.info(x.toString) }
       }
-      val a = system.actorOf(
-        Props(classOf[Logger], this).withDispatcher("prio-dispatcher"))
+      val a = system
+        .actorOf(Props(classOf[Logger], this).withDispatcher("prio-dispatcher"))
 
       /*
        * Logs:
@@ -395,8 +394,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
   }
 
   "require custom mailbox on dispatcher" in {
-    val myActor = system.actorOf(
-      Props[MyActor].withDispatcher("custom-dispatcher"))
+    val myActor = system
+      .actorOf(Props[MyActor].withDispatcher("custom-dispatcher"))
   }
 
   "require custom mailbox on actor" in {

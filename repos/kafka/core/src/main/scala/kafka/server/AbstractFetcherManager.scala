@@ -47,8 +47,7 @@ abstract class AbstractFetcherManager(
           fetcherThreadMapEntry._2.fetcherLagStats.stats
             .foldLeft(0L)((curMaxThread, fetcherLagStatsEntry) => {
               curMaxThread.max(fetcherLagStatsEntry._2.lag)
-            })
-            .max(curMaxAll)
+            }).max(curMaxAll)
         })
     },
     Map("clientId" -> clientId)
@@ -60,11 +59,10 @@ abstract class AbstractFetcherManager(
         // current min fetch rate across all fetchers/topics/partitions
         def value = {
           val headRate: Double = fetcherThreadMap.headOption
-            .map(_._2.fetcherStats.requestRate.oneMinuteRate)
-            .getOrElse(0)
+            .map(_._2.fetcherStats.requestRate.oneMinuteRate).getOrElse(0)
 
-          fetcherThreadMap.foldLeft(headRate)(
-            (curMinAll, fetcherThreadMapEntry) => {
+          fetcherThreadMap
+            .foldLeft(headRate)((curMinAll, fetcherThreadMapEntry) => {
               fetcherThreadMapEntry._2.fetcherStats.requestRate.oneMinuteRate
                 .min(curMinAll)
             })
@@ -104,8 +102,8 @@ abstract class AbstractFetcherManager(
             fetcherThread.start
         }
 
-        fetcherThreadMap(brokerAndFetcherId).addPartitions(
-          partitionAndOffsets.map {
+        fetcherThreadMap(brokerAndFetcherId)
+          .addPartitions(partitionAndOffsets.map {
             case (topicAndPartition, brokerAndInitOffset) =>
               topicAndPartition -> brokerAndInitOffset.initOffset
           })
@@ -114,7 +112,8 @@ abstract class AbstractFetcherManager(
 
     info("Added fetcher for partitions %s".format(partitionAndOffsets.map {
       case (topicAndPartition, brokerAndInitialOffset) =>
-        "[" + topicAndPartition + ", initOffset " + brokerAndInitialOffset.initOffset + " to broker " + brokerAndInitialOffset.broker + "] "
+        "[" + topicAndPartition + ", initOffset " + brokerAndInitialOffset
+          .initOffset + " to broker " + brokerAndInitialOffset.broker + "] "
     }))
   }
 

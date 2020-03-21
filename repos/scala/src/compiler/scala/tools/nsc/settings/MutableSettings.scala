@@ -214,8 +214,7 @@ class MutableSettings(val errorFn: String => Unit)
   /** Retrieves the contents of resource "${id}.class.path" from `loader`
     * (wrapped in Some) or None if the resource does not exist.*/
   private def getClasspath(id: String, loader: ClassLoader): Option[String] =
-    Option(loader)
-      .flatMap(ld => Option(ld.getResource(id + ".class.path")))
+    Option(loader).flatMap(ld => Option(ld.getResource(id + ".class.path")))
       .map { cp => Source.fromURL(cp).mkString }
 
   // a wrapper for all Setting creators to keep our list up to date
@@ -239,8 +238,8 @@ class MutableSettings(val errorFn: String => Unit)
       descr: String,
       choices: List[String],
       default: String) =
-    ChoiceSetting(name, helpArg, descr, choices, default).withPostSetHook(
-      sett =>
+    ChoiceSetting(name, helpArg, descr, choices, default)
+      .withPostSetHook(sett =>
         if (sett.value != default) {
           sett.withDeprecationMessage(
             s"${name}:${sett.value} is deprecated, forcing use of $default")
@@ -317,9 +316,9 @@ class MutableSettings(val errorFn: String => Unit)
         name: String,
         allowJar: Boolean = false): AbstractFile =
       (if (dir != null && dir.isDirectory) dir
-       else if (allowJar && dir == null && Jar.isJarOrZip(
-                  name,
-                  examineFile = false)) new PlainFile(Path(name))
+       else if (allowJar && dir == null && Jar
+                  .isJarOrZip(name, examineFile = false))
+         new PlainFile(Path(name))
        else
          throw new FatalError(name + " does not exist or is not a directory"))
 

@@ -66,10 +66,8 @@ class NullFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       NaNvl(Literal(Double.NaN), Literal.create(null, DoubleType)),
       null)
     assert(
-      NaNvl(Literal(Double.NaN), Literal(Double.NaN))
-        .eval(EmptyRow)
-        .asInstanceOf[Double]
-        .isNaN)
+      NaNvl(Literal(Double.NaN), Literal(Double.NaN)).eval(EmptyRow)
+        .asInstanceOf[Double].isNaN)
   }
 
   test("coalesce") {

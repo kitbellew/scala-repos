@@ -191,10 +191,8 @@ trait Trees extends scala.reflect.internal.Trees {
       tree: Tree): Tree =
     tree match {
       case DocDef(comment, definition) =>
-        transformer.treeCopy.DocDef(
-          tree,
-          comment,
-          transformer.transform(definition))
+        transformer.treeCopy
+          .DocDef(tree, comment, transformer.transform(definition))
       case SelectFromArray(qualifier, selector, erasure) =>
         transformer.treeCopy.SelectFromArray(
           tree,
@@ -202,9 +200,8 @@ trait Trees extends scala.reflect.internal.Trees {
           selector,
           erasure)
       case InjectDerivedValue(arg) =>
-        transformer.treeCopy.InjectDerivedValue(
-          tree,
-          transformer.transform(arg))
+        transformer.treeCopy
+          .InjectDerivedValue(tree, transformer.transform(arg))
       case TypeTreeWithDeferredRefCheck() =>
         transformer.treeCopy.TypeTreeWithDeferredRefCheck(tree)
     }
@@ -309,9 +306,8 @@ trait Trees extends scala.reflect.internal.Trees {
               case tpt: TypeTree =>
                 if (tpt.original != null) transform(tpt.original)
                 else {
-                  val refersToLocalSymbols =
-                    tpt.tpe != null && (tpt.tpe exists (tp =>
-                      locals contains tp.typeSymbol))
+                  val refersToLocalSymbols = tpt.tpe != null && (tpt
+                    .tpe exists (tp => locals contains tp.typeSymbol))
                   val isInferred = tpt.wasEmpty
                   if (refersToLocalSymbols || isInferred) {
                     tpt.duplicate.clearType()
@@ -345,9 +341,9 @@ trait Trees extends scala.reflect.internal.Trees {
                 // if we move these trees into lexical contexts different from their original locations.
                 if (dupl.hasSymbolField) {
                   val sym = dupl.symbol
-                  val vetoScope = !brutally && !(locals contains sym) && !(
-                    locals contains sym.deSkolemize
-                  )
+                  val vetoScope =
+                    !brutally && !(locals contains sym) && !(locals contains sym
+                      .deSkolemize)
                   val vetoThis = dupl.isInstanceOf[This] && sym.isPackageClass
                   if (!(vetoScope || vetoThis)) dupl.symbol = NoSymbol
                 }

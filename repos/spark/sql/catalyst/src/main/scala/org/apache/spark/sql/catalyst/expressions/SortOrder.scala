@@ -53,8 +53,8 @@ case class SortOrder(child: Expression, direction: SortDirection)
   override def checkInputDataTypes(): TypeCheckResult = {
     if (RowOrdering.isOrderable(dataType)) { TypeCheckResult.TypeCheckSuccess }
     else {
-      TypeCheckResult.TypeCheckFailure(
-        s"cannot sort data type ${dataType.simpleString}")
+      TypeCheckResult
+        .TypeCheckFailure(s"cannot sort data type ${dataType.simpleString}")
     }
   }
 

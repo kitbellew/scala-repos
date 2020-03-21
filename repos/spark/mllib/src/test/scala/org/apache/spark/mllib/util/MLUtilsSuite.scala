@@ -178,11 +178,8 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val tempDir = Utils.createTempDir()
     val outputDir = new File(tempDir, "output")
     MLUtils.saveAsLibSVMFile(examples, outputDir.toURI.toString)
-    val lines = outputDir
-      .listFiles()
-      .filter(_.getName.startsWith("part-"))
-      .flatMap(Source.fromFile(_).getLines())
-      .toSet
+    val lines = outputDir.listFiles().filter(_.getName.startsWith("part-"))
+      .flatMap(Source.fromFile(_).getLines()).toSet
     val expected = Set("1.1 1:1.23 3:4.56", "0.0 1:1.01 2:2.02 3:3.03")
     assert(lines === expected)
     Utils.deleteRecursively(tempDir)
@@ -206,12 +203,10 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val collectedData = data.collect().sorted
     val twoFoldedRdd = kFold(data, 2, 1)
     assert(
-      twoFoldedRdd(0)._1.collect().sorted === twoFoldedRdd(1)._2
-        .collect()
+      twoFoldedRdd(0)._1.collect().sorted === twoFoldedRdd(1)._2.collect()
         .sorted)
     assert(
-      twoFoldedRdd(0)._2.collect().sorted === twoFoldedRdd(1)._1
-        .collect()
+      twoFoldedRdd(0)._2.collect().sorted === twoFoldedRdd(1)._1.collect()
         .sorted)
     for (folds <- 2 to 10) {
       for (seed <- 1 to 5) {
@@ -285,7 +280,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     assert(log1pExp(-13.8) ~== math.log1p(math.exp(-13.8)) absTol 1e-10)
     assert(
-      log1pExp(-238423789.865) ~== math.log1p(
-        math.exp(-238423789.865)) absTol 1e-10)
+      log1pExp(-238423789.865) ~== math
+        .log1p(math.exp(-238423789.865)) absTol 1e-10)
   }
 }

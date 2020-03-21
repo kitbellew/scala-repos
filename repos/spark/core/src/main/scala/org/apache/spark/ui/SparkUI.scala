@@ -65,8 +65,7 @@ private[spark] class SparkUI private (
     with Logging
     with UIRoot {
 
-  val killEnabled = sc
-    .map(_.conf.getBoolean("spark.ui.killEnabled", true))
+  val killEnabled = sc.map(_.conf.getBoolean("spark.ui.killEnabled", true))
     .getOrElse(false)
 
   val stagesTab = new StagesTab(this)
@@ -184,11 +183,9 @@ private[spark] object SparkUI {
       basePath,
       startTime = startTime)
 
-    val listenerFactories = ServiceLoader
-      .load(
-        classOf[SparkHistoryListenerFactory],
-        Utils.getContextOrSparkClassLoader)
-      .asScala
+    val listenerFactories = ServiceLoader.load(
+      classOf[SparkHistoryListenerFactory],
+      Utils.getContextOrSparkClassLoader).asScala
     listenerFactories.foreach { listenerFactory =>
       val listeners = listenerFactory.createListeners(conf, sparkUI)
       listeners.foreach(listenerBus.addListener)

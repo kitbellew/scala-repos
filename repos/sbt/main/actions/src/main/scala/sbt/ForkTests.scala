@@ -24,7 +24,8 @@ private[sbt] object ForkTests {
 
     import std.TaskExtra._
     val dummyLoader =
-      this.getClass.getClassLoader // can't provide the loader for test classes, which is in another jvm
+      this.getClass
+        .getClassLoader // can't provide the loader for test classes, which is in another jvm
     def all(work: Seq[ClassLoader => Unit]) = work.fork(f => f(dummyLoader))
 
     val main =
@@ -68,7 +69,8 @@ private[sbt] object ForkTests {
             catch {
               case e: java.net.SocketException =>
                 log.error(
-                  "Could not accept connection from test agent: " + e.getClass + ": " + e.getMessage)
+                  "Could not accept connection from test agent: " + e
+                    .getClass + ": " + e.getMessage)
                 log.trace(e)
                 server.close()
                 return
@@ -122,8 +124,9 @@ private[sbt] object ForkTests {
             TestOutput(
               TestResult.Error,
               Map(
-                "Running java with options " + options.mkString(
-                  " ") + " failed with exit code " + ec -> SuiteResult.Error),
+                "Running java with options " + options
+                  .mkString(" ") + " failed with exit code " + ec -> SuiteResult
+                  .Error),
               Iterable.empty)
           else {
             // Need to wait acceptor thread to finish its business

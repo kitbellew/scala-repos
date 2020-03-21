@@ -174,8 +174,7 @@ object DependencyGroups {
     "0.13.6",
     "0.13.7",
     "0.13.8",
-    "0.13.9")
-    .map(v => "org.scala-sbt" % "sbt-launch" % v)
+    "0.13.9").map(v => "org.scala-sbt" % "sbt-launch" % v)
 
   val testDownloader = Seq(
     "org.scalatest" % "scalatest_2.11" % "2.2.1",

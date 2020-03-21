@@ -143,8 +143,8 @@ class SeriesCheck extends Specification with ScalaCheck {
             val exp = s.take(Range(i, j + 1).toArray)
             s(i -> j) must_== exp
             s.sliceBy(i, j) must_== exp
-            s.sliceBy(i, j, inclusive = false) must_== s.take(
-              Range(i, j).toArray)
+            s.sliceBy(i, j, inclusive = false) must_== s
+              .take(Range(i, j).toArray)
         }
       }
     }
@@ -214,9 +214,8 @@ class SeriesCheck extends Specification with ScalaCheck {
       forAll { (s: Series[Int, Double]) =>
         val idx = Gen.choose(0, s.length - 1)
         forAll(idx) { i =>
-          (s.filterAt(_ != i).length == 0 || s
-            .filterAt(_ != i)
-            .length == s.length - 1) must beTrue
+          (s.filterAt(_ != i).length == 0 || s.filterAt(_ != i).length == s
+            .length - 1) must beTrue
         }
       }
     }
@@ -255,8 +254,7 @@ class SeriesCheck extends Specification with ScalaCheck {
 
       val dat1 = v1.toDoubleArray
       val dat2 = v3.sliceBy(0, 5).toDoubleArray ++ Array(na.to[Double]) ++ v3
-        .sliceBy(6, 7)
-        .toDoubleArray
+        .sliceBy(6, 7).toDoubleArray
       val exp = Frame(Mat(2, 8, dat1 ++ dat2), Index("a", "b"), x1.map(_._2))
 
       c.pivot must_== exp
@@ -287,9 +285,8 @@ class SeriesCheck extends Specification with ScalaCheck {
         val idx = Gen.listOfN(3, Gen.choose(0, s.length - 1))
         forAll(idx) { i =>
           val res = s.take(i.toArray)
-          val exp =
-            s.slice(i(0), i(0) + 1) concat s.slice(i(1), i(1) + 1) concat s
-              .slice(i(2), i(2) + 1)
+          val exp = s.slice(i(0), i(0) + 1) concat s
+            .slice(i(1), i(1) + 1) concat s.slice(i(2), i(2) + 1)
           res must_== exp
         }
       }

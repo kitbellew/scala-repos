@@ -37,9 +37,8 @@ class ConsumerIntegrationTest
           Props(new TestActor(uri = "some invalid uri")),
           "invalidActor")
         intercept[FailedToCreateRouteException] {
-          Await.result(
-            camel.activationFutureFor(actorRef),
-            defaultTimeoutDuration)
+          Await
+            .result(camel.activationFutureFor(actorRef), defaultTimeoutDuration)
         }
       }
     }
@@ -110,9 +109,8 @@ class ConsumerIntegrationTest
       camel.routeCount should be > (0)
 
       system.stop(consumer)
-      Await.result(
-        camel.deactivationFutureFor(consumer),
-        defaultTimeoutDuration)
+      Await
+        .result(camel.deactivationFutureFor(consumer), defaultTimeoutDuration)
 
       camel.routeCount should ===(0)
     }
@@ -124,9 +122,8 @@ class ConsumerIntegrationTest
       camel.routeCount should be > (0)
       camel.routes.get(0).getEndpoint.getEndpointUri should ===("direct://test")
       system.stop(consumer)
-      Await.result(
-        camel.deactivationFutureFor(consumer),
-        defaultTimeoutDuration)
+      Await
+        .result(camel.deactivationFutureFor(consumer), defaultTimeoutDuration)
       camel.routeCount should ===(0)
       stop(consumer)
     }
@@ -136,10 +133,8 @@ class ConsumerIntegrationTest
         new ErrorThrowingConsumer("direct:error-handler-test") {
           override def onRouteDefinition =
             (rd: RouteDefinition) ⇒ {
-              rd.onException(classOf[TestException])
-                .handled(true)
-                .transform(Builder.exceptionMessage)
-                .end
+              rd.onException(classOf[TestException]).handled(true)
+                .transform(Builder.exceptionMessage).end
             }
         },
         name = "direct-error-handler-test"
@@ -175,8 +170,7 @@ class ConsumerIntegrationTest
           def receive = { case _ ⇒ sender() ! Ack }
         },
         name = "direct-manual-ack-1")
-      camel.template
-        .asyncSendBody("direct:manual-ack", "some message")
+      camel.template.asyncSendBody("direct:manual-ack", "some message")
         .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS) should ===(
         null
       ) //should not timeout
@@ -193,8 +187,7 @@ class ConsumerIntegrationTest
         name = "direct-manual-ack-2")
 
       intercept[ExecutionException] {
-        camel.template
-          .asyncSendBody("direct:manual-ack", "some message")
+        camel.template.asyncSendBody("direct:manual-ack", "some message")
           .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS)
       }.getCause.getCause should ===(someException)
       stop(ref)
@@ -210,8 +203,7 @@ class ConsumerIntegrationTest
         name = "direct-manual-ack-3")
 
       intercept[ExecutionException] {
-        camel.template
-          .asyncSendBody("direct:manual-ack", "some message")
+        camel.template.asyncSendBody("direct:manual-ack", "some message")
           .get(defaultTimeoutDuration.toSeconds, TimeUnit.SECONDS)
       }.getCause.getCause.getMessage should include("Failed to get Ack")
       stop(ref)
@@ -221,9 +213,8 @@ class ConsumerIntegrationTest
         new ErrorRespondingConsumer("direct:error-responding-consumer-1"),
         "error-responding-consumer")
       filterEvents(EventFilter[TestException](occurrences = 1)) {
-        val response = camel.sendTo(
-          "direct:error-responding-consumer-1",
-          "some body")
+        val response = camel
+          .sendTo("direct:error-responding-consumer-1", "some body")
         response should ===("some body has an error")
       }
       stop(ref)
@@ -248,10 +239,8 @@ class ErrorRespondingConsumer(override val endpointUri: String)
   override def onRouteDefinition =
     (rd: RouteDefinition) ⇒ {
       // Catch TestException and handle it by returning a modified version of the in message
-      rd.onException(classOf[TestException])
-        .handled(true)
-        .transform(Builder.body.append(" has an error"))
-        .end
+      rd.onException(classOf[TestException]).handled(true)
+        .transform(Builder.body.append(" has an error")).end
     }
 
   final override def preRestart(reason: Throwable, message: Option[Any]) {

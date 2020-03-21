@@ -45,12 +45,10 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
     } {
       val offset = editor.getCaretModel.getOffset
       //offset is on the word "do" or "while"
-      if ((
-            offset >= doStmt.getTextRange.getStartOffset && offset < body.getTextRange.getStartOffset
-          ) ||
-          (
-            offset > body.getTextRange.getEndOffset && offset < condition.getTextRange.getStartOffset
-          )) return true
+      if ((offset >= doStmt.getTextRange.getStartOffset && offset < body
+            .getTextRange.getStartOffset) ||
+          (offset > body.getTextRange.getEndOffset && offset < condition
+            .getTextRange.getStartOffset)) return true
     }
 
     false
@@ -78,29 +76,25 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
     def showNotification(text: String) {
 
       val popupFactory = JBPopupFactory.getInstance
-      popupFactory
-        .createConfirmation(
-          text,
-          "Continue",
-          "Cancel",
-          new Runnable {
-            //action on confirmation
-            def run() {
-              //to make action Undoable
-              CommandProcessor
-                .getInstance()
-                .executeCommand(
-                  project,
-                  new Runnable() {
-                    def run() { doReplacement() }
-                  },
-                  null,
-                  null)
-            }
-          },
-          0
-        )
-        .showInBestPositionFor(editor)
+      popupFactory.createConfirmation(
+        text,
+        "Continue",
+        "Cancel",
+        new Runnable {
+          //action on confirmation
+          def run() {
+            //to make action Undoable
+            CommandProcessor.getInstance().executeCommand(
+              project,
+              new Runnable() {
+                def run() { doReplacement() }
+              },
+              null,
+              null)
+          }
+        },
+        0
+      ).showInBestPositionFor(editor)
     }
 
     def doReplacement() {
@@ -118,16 +112,13 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
 
         val manager = element.getManager
 
-        val newWhileStmt = ScalaPsiElementFactory.createExpressionFromText(
-          whileText.toString,
-          manager)
-        val newBody = ScalaPsiElementFactory.createExpressionFromText(
-          bodyText,
-          manager)
+        val newWhileStmt = ScalaPsiElementFactory
+          .createExpressionFromText(whileText.toString, manager)
+        val newBody = ScalaPsiElementFactory
+          .createExpressionFromText(bodyText, manager)
 
         val parentBlockHasBraces: Boolean = doStmt.getParent.children
-          .map(_.getNode.getElementType)
-          .contains(ScalaTokenTypes.tLBRACE)
+          .map(_.getNode.getElementType).contains(ScalaTokenTypes.tLBRACE)
 
         val parentBlockNeedBraces: Boolean = doStmtParent match {
           case _: ScalaFile => false
@@ -144,14 +135,11 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
               val doStmtInBraces = doStmt.replaceExpression(
                 ScalaPsiElementFactory.createBlockFromExpr(doStmt, manager),
                 removeParenthesis = true)
-              PsiTreeUtil.findChildOfType(
-                doStmtInBraces,
-                classOf[ScDoStmt],
-                true)
+              PsiTreeUtil
+                .findChildOfType(doStmtInBraces, classOf[ScDoStmt], true)
             } else doStmt
-          val newExpression: ScExpression = newDoStmt.replaceExpression(
-            newWhileStmt,
-            removeParenthesis = true)
+          val newExpression: ScExpression = newDoStmt
+            .replaceExpression(newWhileStmt, removeParenthesis = true)
           val parent = newExpression.getParent
 
           val bodyElements = newBody match {
@@ -161,15 +149,15 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
 
           for (elem <- bodyElements) {
             val elementType: IElementType = elem.getNode.getElementType
-            if (elementType != ScalaTokenTypes.tLBRACE && elementType != ScalaTokenTypes.tRBRACE)
+            if (elementType != ScalaTokenTypes
+                  .tLBRACE && elementType != ScalaTokenTypes.tRBRACE)
               parent.addBefore(elem, newExpression)
           }
           parent.addBefore(
             ScalaPsiElementFactory.createNewLine(manager),
             newExpression)
 
-          PsiDocumentManager
-            .getInstance(project)
+          PsiDocumentManager.getInstance(project)
             .commitDocument(editor.getDocument)
         }
       }

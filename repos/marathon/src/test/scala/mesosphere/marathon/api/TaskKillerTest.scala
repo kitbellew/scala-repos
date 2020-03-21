@@ -60,8 +60,8 @@ class TaskKillerTest
   test("No tasks to kill should return with an empty array") {
     val appId = PathId("invalid")
     when(tracker.appTasksLaunchedSync(appId)).thenReturn(Iterable.empty)
-    when(groupManager.app(appId)).thenReturn(Future.successful(Some(
-      AppDefinition(appId))))
+    when(groupManager.app(appId))
+      .thenReturn(Future.successful(Some(AppDefinition(appId))))
 
     val result = taskKiller.kill(appId, (tasks) => Set.empty[Task]).futureValue
     result.isEmpty shouldEqual true
@@ -80,10 +80,8 @@ class TaskKillerTest
     val appId = PathId("invalid")
     when(tracker.hasAppTasksSync(appId)).thenReturn(false)
 
-    val result = taskKiller.killAndScale(
-      appId,
-      (tasks) => Set.empty[Task],
-      force = true)
+    val result = taskKiller
+      .killAndScale(appId, (tasks) => Set.empty[Task], force = true)
     result.failed.futureValue shouldEqual UnknownAppException(appId)
   }
 
@@ -94,26 +92,24 @@ class TaskKillerTest
     val tasksToKill = Set(task1, task2)
 
     when(tracker.hasAppTasksSync(appId)).thenReturn(true)
-    when(groupManager.group(appId.parent)).thenReturn(Future.successful(Some(
-      Group.emptyWithId(appId.parent))))
+    when(groupManager.group(appId.parent))
+      .thenReturn(Future.successful(Some(Group.emptyWithId(appId.parent))))
 
     val groupUpdateCaptor = ArgumentCaptor.forClass(classOf[(Group) => Group])
     val forceCaptor = ArgumentCaptor.forClass(classOf[Boolean])
-    val toKillCaptor = ArgumentCaptor.forClass(
-      classOf[Map[PathId, Iterable[Task]]])
+    val toKillCaptor = ArgumentCaptor
+      .forClass(classOf[Map[PathId, Iterable[Task]]])
     val expectedDeploymentPlan = DeploymentPlan.empty
     when(groupManager.update(
       any[PathId],
       groupUpdateCaptor.capture(),
       any[Timestamp],
       forceCaptor.capture(),
-      toKillCaptor.capture())).thenReturn(Future.successful(
-      expectedDeploymentPlan))
+      toKillCaptor.capture()))
+      .thenReturn(Future.successful(expectedDeploymentPlan))
 
-    val result = taskKiller.killAndScale(
-      appId,
-      (tasks) => tasksToKill,
-      force = true)
+    val result = taskKiller
+      .killAndScale(appId, (tasks) => tasksToKill, force = true)
     result.futureValue shouldEqual expectedDeploymentPlan
     forceCaptor.getValue shouldEqual true
     toKillCaptor.getValue shouldEqual Map(appId -> tasksToKill)
@@ -122,8 +118,8 @@ class TaskKillerTest
   test("KillRequested without scaling") {
     val appId = PathId(List("my", "app"))
     val tasksToKill = Set(MarathonTestHelper.runningTaskForApp(appId))
-    when(groupManager.app(appId)).thenReturn(Future.successful(Some(
-      AppDefinition(appId))))
+    when(groupManager.app(appId))
+      .thenReturn(Future.successful(Some(AppDefinition(appId))))
     when(tracker.appTasksLaunchedSync(appId)).thenReturn(tasksToKill)
 
     val result = taskKiller.kill(
@@ -143,8 +139,8 @@ class TaskKillerTest
     val tasksToKill = Set(task1, task2)
 
     when(tracker.hasAppTasksSync(appId)).thenReturn(true)
-    when(groupManager.group(appId.parent)).thenReturn(Future.successful(Some(
-      Group.emptyWithId(appId.parent))))
+    when(groupManager.group(appId.parent))
+      .thenReturn(Future.successful(Some(Group.emptyWithId(appId.parent))))
     val groupUpdateCaptor = ArgumentCaptor.forClass(classOf[(Group) => Group])
     val forceCaptor = ArgumentCaptor.forClass(classOf[Boolean])
     when(groupManager.update(
@@ -152,13 +148,11 @@ class TaskKillerTest
       groupUpdateCaptor.capture(),
       any[Timestamp],
       forceCaptor.capture(),
-      any[Map[PathId, Iterable[Task]]])).thenReturn(Future.failed(
-      AppLockedException()))
+      any[Map[PathId, Iterable[Task]]]))
+      .thenReturn(Future.failed(AppLockedException()))
 
-    val result = taskKiller.killAndScale(
-      appId,
-      (tasks) => tasksToKill,
-      force = false)
+    val result = taskKiller
+      .killAndScale(appId, (tasks) => tasksToKill, force = false)
     forceCaptor.getValue shouldEqual false
     result.failed.futureValue shouldEqual AppLockedException()
   }

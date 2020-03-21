@@ -83,8 +83,8 @@ object CanFilter {
           padding: OptPadding): DenseVector[Double] = {
         convolve(
           data,
-          kernel,
-          /*new FIRKernel1D(kernel, "User-specified kernel"),*/ OptRange.All,
+          kernel, /*new FIRKernel1D(kernel, "User-specified kernel"),*/ OptRange
+            .All,
           overhang,
           padding)
       }

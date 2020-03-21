@@ -17,17 +17,13 @@ class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
     // Register TransactionFilter and BasicAuthenticationFilter at first
     context.addFilter("transactionFilter", new TransactionFilter)
+    context.getFilterRegistration("transactionFilter").addMappingForUrlPatterns(
+      EnumSet.allOf(classOf[DispatcherType]),
+      true,
+      "/*")
     context
-      .getFilterRegistration("transactionFilter")
-      .addMappingForUrlPatterns(
-        EnumSet.allOf(classOf[DispatcherType]),
-        true,
-        "/*")
-    context.addFilter(
-      "basicAuthenticationFilter",
-      new BasicAuthenticationFilter)
-    context
-      .getFilterRegistration("basicAuthenticationFilter")
+      .addFilter("basicAuthenticationFilter", new BasicAuthenticationFilter)
+    context.getFilterRegistration("basicAuthenticationFilter")
       .addMappingForUrlPatterns(
         EnumSet.allOf(classOf[DispatcherType]),
         true,
@@ -35,8 +31,7 @@ class ScalatraBootstrap extends LifeCycle {
     context.addFilter(
       "accessTokenAuthenticationFilter",
       new AccessTokenAuthenticationFilter)
-    context
-      .getFilterRegistration("accessTokenAuthenticationFilter")
+    context.getFilterRegistration("accessTokenAuthenticationFilter")
       .addMappingForUrlPatterns(
         EnumSet.allOf(classOf[DispatcherType]),
         true,

@@ -27,8 +27,8 @@ class ElseFilter extends ElementFilter {
         val ifStmt = parent.getPrevSibling match {
           case x: ScIfStmt => x
           case x
-              if x.isInstanceOf[
-                PsiWhiteSpace] || x.getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE =>
+              if x.isInstanceOf[PsiWhiteSpace] || x.getNode
+                .getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE =>
             x.getPrevSibling match {
               case x: ScIfStmt => x
               case _           => null
@@ -41,10 +41,8 @@ class ElseFilter extends ElementFilter {
             parent = parent.getParent
           if (parent == null) return false
           text = parent.getText
-          text = Pattern
-            .compile(DUMMY_IDENTIFIER, Pattern.LITERAL)
-            .matcher(text)
-            .replaceAll(Matcher.quoteReplacement(" else true"))
+          text = Pattern.compile(DUMMY_IDENTIFIER, Pattern.LITERAL)
+            .matcher(text).replaceAll(Matcher.quoteReplacement(" else true"))
         } else { text = ifStmt.getText + " else true" }
         return checkElseWith(text, parent.getManager)
       }

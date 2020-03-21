@@ -161,8 +161,8 @@ private[finagle] class TrafficDistributor[Req, Rep](
         // Note, if an update contains multiple `Address` instances
         // with duplicate `weight` metadata, only one of the instances and its associated
         // factory is cached. Last write wins.
-        val weightedAddrs: Set[(Address, Double)] = addrs.map(
-          WeightedAddress.extract)
+        val weightedAddrs: Set[(Address, Double)] = addrs
+          .map(WeightedAddress.extract)
         val merged = weightedAddrs.foldLeft(active) {
           case (cache, (addr, weight)) => cache.get(addr) match {
               // An update with an existing Address that has a new weight
@@ -180,9 +180,8 @@ private[finagle] class TrafficDistributor[Req, Rep](
                   override def close(when: Time) =
                     (closeGate or outerClose).before { super.close(when) }
                 }
-                cache.updated(
-                  addr,
-                  WeightedFactory(endpoint, closeGate, weight))
+                cache
+                  .updated(addr, WeightedFactory(endpoint, closeGate, weight))
               case _ => cache
             }
         }

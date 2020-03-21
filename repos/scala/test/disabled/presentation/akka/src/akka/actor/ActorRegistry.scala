@@ -77,8 +77,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
   def actorsFor[T <: Actor](message: Any)(implicit
       classTag: ClassTag[T]): Array[ActorRef] =
     filter(a =>
-      classTag.erasure.isAssignableFrom(a.actor.getClass) && a.isDefinedAt(
-        message))
+      classTag.erasure.isAssignableFrom(a.actor.getClass) && a
+        .isDefinedAt(message))
 
   /**
     * Finds all actors that satisfy a predicate.
@@ -187,8 +187,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
     def predicate(proxy: AnyRef): Boolean = {
       val actorRef = TypedActorModule.typedActorObjectInstance.get
         .actorFor(proxy)
-      actorRef.isDefined && classTag.erasure.isAssignableFrom(
-        actorRef.get.actor.getClass)
+      actorRef.isDefined && classTag.erasure
+        .isAssignableFrom(actorRef.get.actor.getClass)
     }
     findTypedActor({ case a: Some[AnyRef] if predicate(a.get) => a })
   }
@@ -378,10 +378,11 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
       set.synchronized {
         if (set.remove(value)) { //If we can remove the value
           if (set.isEmpty) //and the set becomes empty
-            container.remove(
-              key,
-              emptySet
-            ) //We try to remove the key if it's mapped to an empty set
+            container
+              .remove(
+                key,
+                emptySet
+              ) //We try to remove the key if it's mapped to an empty set
 
           true //Remove succeeded
         } else false //Remove failed

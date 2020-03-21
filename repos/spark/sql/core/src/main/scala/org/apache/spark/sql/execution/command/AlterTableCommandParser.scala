@@ -390,9 +390,9 @@ object AlterTableCommandParser {
         // Note: the AST doesn't contain information about which file format is being set here.
         // E.g. we can't differentiate between INPUTFORMAT and OUTPUTFORMAT if either is set.
         // Right now this just stores the values, but we should figure out how to get the keys.
-        val fFormat = fileFormat
-          .map { _.children.map { n => cleanAndUnquoteString(n.text) } }
-          .getOrElse(Seq())
+        val fFormat = fileFormat.map {
+          _.children.map { n => cleanAndUnquoteString(n.text) }
+        }.getOrElse(Seq())
         val gFormat = genericFormat.map { f =>
           cleanAndUnquoteString(f.children(0).text)
         }

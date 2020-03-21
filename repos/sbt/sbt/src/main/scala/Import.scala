@@ -304,8 +304,8 @@ object Import {
   type ModuleInfo = sbt.librarymanagement.ModuleInfo
   val ModuleReport = sbt.librarymanagement.ModuleReport
   type ModuleReport = sbt.librarymanagement.ModuleReport
-  val OrganizationArtifactReport =
-    sbt.librarymanagement.OrganizationArtifactReport
+  val OrganizationArtifactReport = sbt.librarymanagement
+    .OrganizationArtifactReport
   type OrganizationArtifactReport =
     sbt.librarymanagement.OrganizationArtifactReport
   val Patterns = sbt.librarymanagement.Patterns
@@ -344,8 +344,8 @@ object Import {
   val ComponentManager = sbt.internal.librarymanagement.ComponentManager
   type ComponentManager = sbt.internal.librarymanagement.ComponentManager
   type ConfigurationFilter = sbt.internal.librarymanagement.ConfigurationFilter
-  val ConfigurationReportLite =
-    sbt.internal.librarymanagement.ConfigurationReportLite
+  val ConfigurationReportLite = sbt.internal.librarymanagement
+    .ConfigurationReportLite
   type ConfigurationReportLite =
     sbt.internal.librarymanagement.ConfigurationReportLite
   val ConvertResolver = sbt.internal.librarymanagement.ConvertResolver
@@ -358,12 +358,12 @@ object Import {
   type DependencyFilter = sbt.internal.librarymanagement.DependencyFilter
   type DependencyFilterExtra =
     sbt.internal.librarymanagement.DependencyFilterExtra
-  val ExternalIvyConfiguration =
-    sbt.internal.librarymanagement.ExternalIvyConfiguration
+  val ExternalIvyConfiguration = sbt.internal.librarymanagement
+    .ExternalIvyConfiguration
   type ExternalIvyConfiguration =
     sbt.internal.librarymanagement.ExternalIvyConfiguration
-  val GetClassifiersConfiguration =
-    sbt.internal.librarymanagement.GetClassifiersConfiguration
+  val GetClassifiersConfiguration = sbt.internal.librarymanagement
+    .GetClassifiersConfiguration
   type GetClassifiersConfiguration =
     sbt.internal.librarymanagement.GetClassifiersConfiguration
   val GetClassifiersModule = sbt.internal.librarymanagement.GetClassifiersModule
@@ -374,8 +374,8 @@ object Import {
   type ModuleSettings = sbt.internal.librarymanagement.ModuleSettings
   val InlineConfiguration = sbt.internal.librarymanagement.InlineConfiguration
   type InlineConfiguration = sbt.internal.librarymanagement.InlineConfiguration
-  val InlineConfigurationWithExcludes =
-    sbt.internal.librarymanagement.InlineConfigurationWithExcludes
+  val InlineConfigurationWithExcludes = sbt.internal.librarymanagement
+    .InlineConfigurationWithExcludes
   type InlineConfigurationWithExcludes =
     sbt.internal.librarymanagement.InlineConfigurationWithExcludes
   type InlineIvyConfiguration =
@@ -420,8 +420,8 @@ object Import {
   val StringUtilities = sbt.internal.librarymanagement.StringUtilities
   val UnresolvedWarning = sbt.internal.librarymanagement.UnresolvedWarning
   type UnresolvedWarning = sbt.internal.librarymanagement.UnresolvedWarning
-  val UnresolvedWarningConfiguration =
-    sbt.internal.librarymanagement.UnresolvedWarningConfiguration
+  val UnresolvedWarningConfiguration = sbt.internal.librarymanagement
+    .UnresolvedWarningConfiguration
   type UnresolvedWarningConfiguration =
     sbt.internal.librarymanagement.UnresolvedWarningConfiguration
   type UpdateConfiguration = sbt.internal.librarymanagement.UpdateConfiguration

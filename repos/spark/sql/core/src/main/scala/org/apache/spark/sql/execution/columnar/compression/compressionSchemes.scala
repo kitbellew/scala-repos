@@ -138,9 +138,8 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
         while (from.hasRemaining) {
           columnType.extract(from, value, 0)
 
-          if (value.get(0, columnType.dataType) == currentValue.get(
-                0,
-                columnType.dataType)) { currentRun += 1 }
+          if (value.get(0, columnType.dataType) == currentValue
+                .get(0, columnType.dataType)) { currentRun += 1 }
           else {
             // Writes current run
             columnType.append(currentValue, 0, to)
@@ -262,8 +261,7 @@ private[columnar] case object DictionaryEncoding extends CompressionScheme {
           "Dictionary encoding should not be used because of dictionary overflow.")
       }
 
-      to.putInt(DictionaryEncoding.typeId)
-        .putInt(dictionary.size)
+      to.putInt(DictionaryEncoding.typeId).putInt(dictionary.size)
 
       var i = 0
       while (i < values.length) {
@@ -334,7 +332,7 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
 
     override def compress(from: ByteBuffer, to: ByteBuffer): ByteBuffer = {
       to.putInt(BooleanBitSet.typeId)
-        // Total element count (1 byte per Boolean value)
+      // Total element count (1 byte per Boolean value)
         .putInt(from.remaining)
 
       while (from.remaining >= BITS_PER_LONG) {
@@ -429,9 +427,8 @@ private[columnar] case object IntDelta extends CompressionScheme {
 
       // If this is the first integer to be compressed, or the delta is out of byte range, then give
       // up compressing this integer.
-      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte.MaxValue) {
-        _compressedSize += INT.defaultSize
-      }
+      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte
+            .MaxValue) { _compressedSize += INT.defaultSize }
 
       _uncompressedSize += INT.defaultSize
       prevValue = value
@@ -517,9 +514,8 @@ private[columnar] case object LongDelta extends CompressionScheme {
 
       // If this is the first long integer to be compressed, or the delta is out of byte range, then
       // give up compressing this long integer.
-      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte.MaxValue) {
-        _compressedSize += LONG.defaultSize
-      }
+      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte
+            .MaxValue) { _compressedSize += LONG.defaultSize }
 
       _uncompressedSize += LONG.defaultSize
       prevValue = value

@@ -43,14 +43,14 @@ object BaseProcessor {
 
   val FROM_TYPE_KEY: Key[ScType] = Key.create("from.type.key")
 
-  val UNRESOLVED_TYPE_PARAMETERS_KEY: Key[Seq[TypeParameter]] = Key.create(
-    "unresolved.type.parameters.key")
+  val UNRESOLVED_TYPE_PARAMETERS_KEY: Key[Seq[TypeParameter]] = Key
+    .create("unresolved.type.parameters.key")
 
-  val COMPOUND_TYPE_THIS_TYPE_KEY: Key[Option[ScType]] = Key.create(
-    "compound.type.this.type.key")
+  val COMPOUND_TYPE_THIS_TYPE_KEY: Key[Option[ScType]] = Key
+    .create("compound.type.this.type.key")
 
-  val FORWARD_REFERENCE_KEY: Key[java.lang.Boolean] = Key.create(
-    "forward.reference.key")
+  val FORWARD_REFERENCE_KEY: Key[java.lang.Boolean] = Key
+    .create("forward.reference.key")
 
   val guard = RecursionManager.createGuard("process.element.guard")
 
@@ -137,20 +137,17 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         case null                    => true
         case DeclarationKind.PACKAGE => kinds contains ResolveTargets.PACKAGE
         case DeclarationKind.CLASS if classKind =>
-          (kinds contains ResolveTargets.CLASS) || (
-            kinds contains ResolveTargets.OBJECT
-          ) ||
-            (
-              kinds contains ResolveTargets.METHOD
-            ) //case classes get 'apply' generated
+          (
+            kinds contains ResolveTargets.CLASS
+          ) || (kinds contains ResolveTargets.OBJECT) ||
+            (kinds contains ResolveTargets
+              .METHOD) //case classes get 'apply' generated
         case DeclarationKind.VARIABLE =>
-          (kinds contains ResolveTargets.VAR) || (
-            kinds contains ResolveTargets.VAL
-          )
+          (kinds contains ResolveTargets.VAR) || (kinds contains ResolveTargets
+            .VAL)
         case DeclarationKind.FIELD =>
-          (kinds contains ResolveTargets.VAR) || (
-            kinds contains ResolveTargets.VAL
-          )
+          (kinds contains ResolveTargets.VAR) || (kinds contains ResolveTargets
+            .VAL)
         case DeclarationKind.METHOD => kinds contains ResolveTargets.METHOD
         case _                      => false
       }
@@ -183,8 +180,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
     t match {
       case ScDesignatorType(clazz: PsiClass)
           if clazz.qualifiedName == "java.lang.String" =>
-        val plusMethod: ScType => ScSyntheticFunction =
-          SyntheticClasses.get(place.getProject).stringPlusMethod
+        val plusMethod: ScType => ScSyntheticFunction = SyntheticClasses
+          .get(place.getProject).stringPlusMethod
         if (plusMethod != null) execute(plusMethod(t), state) //add + method
       case _ =>
     }
@@ -203,8 +200,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         } else {
           val selfType = clazz.selfType.get
           val clazzType: ScType = clazz
-            .getTypeWithProjections(TypingContext.empty)
-            .getOrElse(return true)
+            .getTypeWithProjections(TypingContext.empty).getOrElse(return true)
           if (selfType == ScThisType(clazz)) {
             //to prevent SOE, let's process Element
             processElement(
@@ -218,8 +214,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
             processType(
               selfType,
               place,
-              state
-                .put(BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY, Some(t))
+              state.put(BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY, Some(t))
                 .put(ScSubstitutor.key, thisSubst),
               visitedAliases = visitedAliases,
               visitedTypeParameter = visitedTypeParameter
@@ -344,10 +339,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       case proj @ ScProjectionType(des, elem, _) =>
         val s: ScSubstitutor =
           if (updateWithProjectionSubst)
-            new ScSubstitutor(
-              Map.empty,
-              Map.empty,
-              Some(proj)) followed proj.actualSubst
+            new ScSubstitutor(Map.empty, Map.empty, Some(proj)) followed proj
+              .actualSubst
           else proj.actualSubst
         processElement(
           proj.actualElement,
@@ -373,10 +366,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         }
 
         val scope = place.getResolveScope
-        val obj: PsiClass = ScalaPsiManager
-          .instance(place.getProject)
-          .getCachedClass(scope, "java.lang.Object")
-          .orNull
+        val obj: PsiClass = ScalaPsiManager.instance(place.getProject)
+          .getCachedClass(scope, "java.lang.Object").orNull
         if (obj != null) {
           val namesSet = Set("hashCode", "toString", "equals", "getClass")
           val methods = obj.getMethods.iterator
@@ -389,12 +380,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         }
         true
       case comp @ ScCompoundType(components, signaturesMap, typesMap) =>
-        TypeDefinitionMembers.processDeclarations(
-          comp,
-          this,
-          state,
-          null,
-          place)
+        TypeDefinitionMembers
+          .processDeclarations(comp, this, state, null, place)
       case ex: ScExistentialType =>
         processType(
           ex.skolem,
@@ -422,9 +409,10 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       visitedAliases: HashSet[ScTypeAlias],
       visitedTypeParameter: HashSet[ScTypeParameterType]): Boolean = {
     val subst = state.get(ScSubstitutor.key)
-    val compound = state.get(
-      BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY
-    ) //todo: looks like ugly workaround
+    val compound = state
+      .get(
+        BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY
+      ) //todo: looks like ugly workaround
     val newSubst = compound match {
       case Some(_) => subst
       case _       => if (subst != null) subst followed s else s

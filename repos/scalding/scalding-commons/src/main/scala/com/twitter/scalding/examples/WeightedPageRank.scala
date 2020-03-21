@@ -48,16 +48,12 @@ class WeightedPageRank(args: Args) extends Job(args) {
   // one iteration of pagerank
   val outputPagerank = doPageRank(nodes, inputPagerank)
   val outputFileName = PWD + "/pagerank_" + (CURITERATION + 1)
-  outputPagerank
-    .project('src_id, 'mass_n)
-    .write(Tsv(outputFileName))
+  outputPagerank.project('src_id, 'mass_n).write(Tsv(outputFileName))
 
   // detect convergence
-  val totalDiff = outputPagerank
-    .mapTo(('mass_input, 'mass_n) -> 'mass_diff) { args: (Double, Double) =>
-      scala.math.abs(args._1 - args._2)
-    }
-    .groupAll { _.sum[Double]('mass_diff) }
+  val totalDiff = outputPagerank.mapTo(('mass_input, 'mass_n) -> 'mass_diff) {
+    args: (Double, Double) => scala.math.abs(args._1 - args._2)
+  }.groupAll { _.sum[Double]('mass_diff) }
     .write(TypedTsv[Double](PWD + "/totaldiff"))
 
   /**
@@ -74,10 +70,9 @@ class WeightedPageRank(args: Args) extends Job(args) {
   }
 
   def getInputPagerank(fileName: String) = {
-    Tsv(fileName).read
-      .mapTo((0, 1) -> ('src_id_input, 'mass_input)) { input: (Int, Double) =>
-        input
-      }
+    Tsv(fileName).read.mapTo((0, 1) -> ('src_id_input, 'mass_input)) {
+      input: (Int, Double) => input
+    }
   }
 
   /**
@@ -117,8 +112,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
     * the total number of nodes, single line file
     */
   def getNumNodes(fileName: String) = {
-    Tsv(fileName).read
-      .mapTo(0 -> 'size) { input: Int => input }
+    Tsv(fileName).read.mapTo(0 -> 'size) { input: Int => input }
   }
 
   /**
@@ -173,8 +167,7 @@ class WeightedPageRank(args: Args) extends Job(args) {
               Nil
             }
           }
-      }
-      .groupBy('src_id) { _.sum[Double]('mass_n) }
+      }.groupBy('src_id) { _.sum[Double]('mass_n) }
 
     // 'sum_mass
     val sumPagerankNext = pagerankNext.groupAll {
@@ -184,23 +177,19 @@ class WeightedPageRank(args: Args) extends Job(args) {
     // 'deadMass
     // single row jobs
     // the dead page rank equally distributed to every node
-    val deadPagerank = sumPagerankNext
-      .crossWithTiny(numNodes)
+    val deadPagerank = sumPagerankNext.crossWithTiny(numNodes)
       .map(('sum_mass, 'size) -> 'deadMass) { input: (Double, Int) =>
         (1.0 - input._1) / input._2
-      }
-      .discard('size, 'sum_mass)
+      }.discard('size, 'sum_mass)
 
     // 'src_id_r, 'mass_n_r
     // random jump probability plus dead page rank
-    val randomPagerank = nodeJoined
-      .crossWithTiny(deadPagerank)
-      .mapTo(
-        ('src_id, 'mass_prior, 'deadMass, 'mass_input) -> (
-          'src_id, 'mass_n, 'mass_input
-        )) { ranks: (Int, Double, Double, Double) =>
-        (ranks._1, ranks._2 * ALPHA + ranks._3 * (1 - ALPHA), ranks._4)
-      }
+    val randomPagerank = nodeJoined.crossWithTiny(deadPagerank).mapTo(
+      ('src_id, 'mass_prior, 'deadMass, 'mass_input) -> (
+        'src_id, 'mass_n, 'mass_input
+      )) { ranks: (Int, Double, Double, Double) =>
+      (ranks._1, ranks._2 * ALPHA + ranks._3 * (1 - ALPHA), ranks._4)
+    }
 
     // 'src_id, 'mass_n
     // scale next page rank to 1-ALPHA
@@ -211,10 +200,9 @@ class WeightedPageRank(args: Args) extends Job(args) {
 
     // 'src_id, 'mass_n, 'mass_input
     // random probability + next probability
-    (randomPagerank ++ pagerankNextScaled)
-      .groupBy('src_id) {
-        _.sum[Double]('mass_input) // keep the input pagerank
-          .sum[Double]('mass_n) // take the sum
-      }
+    (randomPagerank ++ pagerankNextScaled).groupBy('src_id) {
+      _.sum[Double]('mass_input) // keep the input pagerank
+      .sum[Double]('mass_n) // take the sum
+    }
   }
 }

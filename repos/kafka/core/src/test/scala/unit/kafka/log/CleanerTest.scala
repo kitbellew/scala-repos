@@ -177,9 +177,7 @@ class CleanerTest extends JUnitSuite {
   /* extract all the keys from a log */
   def keysInLog(log: Log): Iterable[Int] =
     log.logSegments.flatMap(s =>
-      s.log
-        .filter(!_.message.isNull)
-        .filter(_.message.hasKey)
+      s.log.filter(!_.message.isNull).filter(_.message.hasKey)
         .map(m => TestUtils.readString(m.message.key).toInt))
 
   def unkeyedMessageCountInLog(log: Log) =
@@ -276,8 +274,8 @@ class CleanerTest extends JUnitSuite {
       groups.dropRight(1).forall(_.size == groupSize))
 
     // check grouping by index size
-    val indexSize =
-      log.logSegments.take(groupSize).map(_.index.sizeInBytes()).sum + 1
+    val indexSize = log.logSegments.take(groupSize).map(_.index.sizeInBytes())
+      .sum + 1
     groups = cleaner.groupSegmentsBySize(
       log.logSegments,
       maxSize = Int.MaxValue,
@@ -360,7 +358,8 @@ class CleanerTest extends JUnitSuite {
     for (group <- groups)
       assertTrue(
         "Relative offset greater than Int.MaxValue",
-        group.last.index.lastOffset - group.head.index.baseOffset <= Int.MaxValue)
+        group.last.index.lastOffset - group.head.index.baseOffset <= Int
+          .MaxValue)
     checkSegmentOrder(groups)
 
   }

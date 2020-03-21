@@ -70,8 +70,7 @@ private[v1] object AllStagesResource {
       stageUiData: StageUIData,
       includeDetails: Boolean): StageData = {
 
-    val taskLaunchTimes = stageUiData.taskData.values
-      .map(_.taskInfo.launchTime)
+    val taskLaunchTimes = stageUiData.taskData.values.map(_.taskInfo.launchTime)
       .filter(_ > 0)
 
     val firstTaskLaunchedTime: Option[Date] =

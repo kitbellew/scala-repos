@@ -108,13 +108,11 @@ private[controllers] object AssetInfo {
   import ResponseHeader.basicDateFormatPattern
 
   val standardDateParserWithoutTZ: DateTimeFormatter = DateTimeFormat
-    .forPattern(basicDateFormatPattern)
-    .withLocale(java.util.Locale.ENGLISH)
+    .forPattern(basicDateFormatPattern).withLocale(java.util.Locale.ENGLISH)
     .withZone(DateTimeZone.UTC)
   val alternativeDateFormatWithTZOffset: DateTimeFormatter = DateTimeFormat
     .forPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z")
-    .withLocale(java.util.Locale.ENGLISH)
-    .withZone(DateTimeZone.UTC)
+    .withLocale(java.util.Locale.ENGLISH).withZone(DateTimeZone.UTC)
     .withOffsetParsed
 
   /**
@@ -140,19 +138,16 @@ private[controllers] object AssetInfo {
         if (standardDate != null) {
           Some(standardDateParserWithoutTZ.parseDateTime(standardDate).toDate)
         } else {
-          val alternativeDate = matcher.group(
-            6
-          ) // Cannot be null otherwise match would have failed
+          val alternativeDate = matcher
+            .group(6) // Cannot be null otherwise match would have failed
           Some(
-            alternativeDateFormatWithTZOffset
-              .parseDateTime(alternativeDate)
+            alternativeDateFormatWithTZOffset.parseDateTime(alternativeDate)
               .toDate)
         }
       } catch {
         case e: IllegalArgumentException =>
-          Logger.debug(
-            s"An invalid date was received: couldn't parse: $date",
-            e)
+          Logger
+            .debug(s"An invalid date was received: couldn't parse: $date", e)
           None
       }
     } else {
@@ -191,14 +186,11 @@ private[controllers] class AssetInfo(
 
   val lastModified: Option[String] = {
     def getLastModified[T <: URLConnection](f: (T) => Long): Option[String] = {
-      Option(url.openConnection)
-        .map {
-          case urlConnection: T @unchecked =>
-            try { f(urlConnection) }
-            finally { Resources.closeUrlConnection(urlConnection) }
-        }
-        .filterNot(_ == -1)
-        .map(httpDateFormat.print)
+      Option(url.openConnection).map {
+        case urlConnection: T @unchecked =>
+          try { f(urlConnection) }
+          finally { Resources.closeUrlConnection(urlConnection) }
+      }.filterNot(_ == -1).map(httpDateFormat.print)
     }
 
     url.getProtocol match {
@@ -216,8 +208,7 @@ private[controllers] class AssetInfo(
       lastModified map (m => Codecs.sha1(m + " -> " + url.toExternalForm))
     } map ("\"" + _ + "\"")
 
-  val mimeType: String = MimeTypes
-    .forFileName(name)
+  val mimeType: String = MimeTypes.forFileName(name)
     .fold(ContentTypes.BINARY)(addCharsetIfNeeded)
 
   val parsedLastModified = lastModified flatMap parseModifiedDate
@@ -280,8 +271,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
     digestCache.getOrElse(
       path, {
         val maybeDigestUrl: Option[URL] = resource(path + "." + digestAlgorithm)
-        val maybeDigest: Option[String] = maybeDigestUrl.map(
-          Source.fromURL(_).mkString)
+        val maybeDigest: Option[String] = maybeDigestUrl
+          .map(Source.fromURL(_).mkString)
         if (!isDev && maybeDigest.isDefined) digestCache.put(path, maybeDigest)
         maybeDigest
       }
@@ -328,16 +319,15 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
   private def assetInfo(name: String): Future[Option[AssetInfo]] = {
     if (isDev) { Future.successful(assetInfoFromResource(name)) }
     else {
-      assetInfoCache.putIfAbsent(name)(assetInfoFromResource)(
-        Implicits.trampoline)
+      assetInfoCache
+        .putIfAbsent(name)(assetInfoFromResource)(Implicits.trampoline)
     }
   }
 
   private[controllers] def assetInfoForRequest(
       request: RequestHeader,
       name: String): Future[Option[(AssetInfo, Boolean)]] = {
-    val gzipRequested = request.headers
-      .get(ACCEPT_ENCODING)
+    val gzipRequested = request.headers.get(ACCEPT_ENCODING)
       .exists(_.split(',').exists(_.trim == "gzip"))
     assetInfo(name).map(_.map(_ -> gzipRequested))(Implicits.trampoline)
   }
@@ -355,11 +345,10 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
     implicit def string2Asset(name: String) = new Asset(name)
 
     private def pathFromParams(rrc: ReverseRouteContext): String = {
-      rrc.fixedParams
-        .getOrElse(
-          "path",
-          throw new RuntimeException(
-            "Asset path bindable must be used in combination with an action that accepts a path parameter"))
+      rrc.fixedParams.getOrElse(
+        "path",
+        throw new RuntimeException(
+          "Asset path bindable must be used in combination with an action that accepts a path parameter"))
         .toString
     }
 
@@ -372,13 +361,10 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
           val path = base + "/" + value.name
           blocking {
             val minPath = minifiedPath(path)
-            digest(minPath)
-              .fold(minPath) { dgst =>
-                val lastSep = minPath.lastIndexOf("/")
-                minPath.take(lastSep + 1) + dgst + "-" + minPath.drop(
-                  lastSep + 1)
-              }
-              .drop(base.size + 1)
+            digest(minPath).fold(minPath) { dgst =>
+              val lastSep = minPath.lastIndexOf("/")
+              minPath.take(lastSep + 1) + dgst + "-" + minPath.drop(lastSep + 1)
+            }.drop(base.size + 1)
           }
         }
       }
@@ -471,9 +457,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       val requestedDigest = f.getName.takeWhile(_ != '-')
       if (!requestedDigest.isEmpty) {
         val bareFile =
-          new File(
-            f.getParent,
-            f.getName.drop(requestedDigest.size + 1)).getPath.replace('\\', '/')
+          new File(f.getParent, f.getName.drop(requestedDigest.size + 1))
+            .getPath.replace('\\', '/')
         val bareFullPath = path + "/" + bareFile
         blocking(digest(bareFullPath)) match {
           case Some(`requestedDigest`) =>
@@ -520,8 +505,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
         } else {
           val stream = connection.getInputStream
           val length = stream.available
-          val resourceData = Enumerator.fromStream(stream)(
-            Implicits.defaultExecutionContext)
+          val resourceData = Enumerator
+            .fromStream(stream)(Implicits.defaultExecutionContext)
 
           Future.successful(
             maybeNotModified(request, assetInfo, aggressiveCaching).getOrElse {

@@ -69,8 +69,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     val candidates: List[CompletionInfo] =
       (if (ImportSubtypeRegexp.findFirstMatchIn(preceding).isDefined) {
          // Erase the trailing partial subtype (it breaks type resolution).
-         val patched = s.substring(0, indexAfterTarget) + " " + s.substring(
-           indexAfterTarget + defaultPrefix.length + 1);
+         val patched = s.substring(0, indexAfterTarget) + " " + s
+           .substring(indexAfterTarget + defaultPrefix.length + 1);
          (pathToPoint(
            SourceFileInfo(info.file, Some(patched), None),
            indexAfterTarget - 1) map {
@@ -89,9 +89,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
        } else if (isMemberAccess) {
          // TODO how to avoid allocating a new string? buffer of immutable string slices?
          // Erase the trailing partial member (it breaks type resolution).
-         val patched =
-           s.substring(0, indexAfterTarget) + ".wait()" + s.substring(
-             indexAfterTarget + defaultPrefix.length + 1);
+         val patched = s.substring(0, indexAfterTarget) + ".wait()" + s
+           .substring(indexAfterTarget + defaultPrefix.length + 1);
          (pathToPoint(
            SourceFileInfo(info.file, Some(patched), None),
            indexAfterTarget + 1) flatMap {
@@ -126,21 +125,18 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
            }
          }) map { scopeCandidates =>
            val typeSearchResult = typeSearch
-             .flatMap(Await.result(_, Duration.Inf))
-             .getOrElse(List())
+             .flatMap(Await.result(_, Duration.Inf)).getOrElse(List())
            scopeCandidates ++ typeSearchResult
          }
 
        }).getOrElse(List())
     CompletionInfoList(
       defaultPrefix,
-      candidates
-        .sortWith({ (c1, c2) =>
-          c1.relevance > c2.relevance ||
-          (c1.relevance == c2.relevance &&
-          c1.name.length < c2.name.length)
-        })
-        .take(maxResults))
+      candidates.sortWith({ (c1, c2) =>
+        c1.relevance > c2.relevance ||
+        (c1.relevance == c2.relevance &&
+        c1.name.length < c2.name.length)
+      }).take(maxResults))
   }
 
   private def getEnclosingMemberSelectTree(
@@ -276,22 +272,20 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       prefix: String,
       importing: Boolean,
       caseSense: Boolean): List[CompletionInfo] = {
-    val candidates = typeElement(info, target)
-      .map { el =>
-        el match {
-          case tel: TypeElement => {
-            val elements: Elements = info.getElements()
-            elements.getAllMembers(tel).flatMap { e =>
-              filterElement(info, e, prefix, caseSense, importing, false)
-            }
-          }
-          case e => {
-            log.warn("Unrecognized type element " + e)
-            List()
+    val candidates = typeElement(info, target).map { el =>
+      el match {
+        case tel: TypeElement => {
+          val elements: Elements = info.getElements()
+          elements.getAllMembers(tel).flatMap { e =>
+            filterElement(info, e, prefix, caseSense, importing, false)
           }
         }
+        case e => {
+          log.warn("Unrecognized type element " + e)
+          List()
+        }
       }
-      .getOrElse(List())
+    }.getOrElse(List())
     candidates.toList
   }
 
@@ -302,10 +296,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     CompletionInfo(
       s,
       CompletionSignature(
-        List(
-          e.getParameters()
-            .map { p => (p.getSimpleName.toString, p.asType.toString) }
-            .toList),
+        List(e.getParameters().map { p =>
+          (p.getSimpleName.toString, p.asType.toString)
+        }.toList),
         e.getReturnType.toString,
         false),
       true,
@@ -339,11 +332,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       e: TypeElement,
       relavence: Int): List[CompletionInfo] = {
     val s = e.getSimpleName.toString
-    ElementFilter
-      .constructorsIn(info.getElements().getAllMembers(e))
-      .map(methodInfo(_, relavence))
-      .map { m => m.copy(name = s) }
-      .toList
+    ElementFilter.constructorsIn(info.getElements().getAllMembers(e))
+      .map(methodInfo(_, relavence)).map { m => m.copy(name = s) }.toList
   }
 
   private def localTypeName(tm: TypeMirror) = {

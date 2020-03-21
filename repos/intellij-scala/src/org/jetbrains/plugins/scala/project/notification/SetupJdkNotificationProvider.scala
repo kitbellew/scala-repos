@@ -27,15 +27,13 @@ class SetupJdkNotificationProvider(
     notifications: EditorNotifications)
     extends EditorNotifications.Provider[EditorNotificationPanel] {
 
-  project.getMessageBus
-    .connect(project)
-    .subscribe(
-      ProjectTopics.PROJECT_ROOTS,
-      new ModuleRootAdapter {
-        override def rootsChanged(event: ModuleRootEvent) {
-          notifications.updateAllNotifications()
-        }
-      })
+  project.getMessageBus.connect(project).subscribe(
+    ProjectTopics.PROJECT_ROOTS,
+    new ModuleRootAdapter {
+      override def rootsChanged(event: ModuleRootEvent) {
+        notifications.updateAllNotifications()
+      }
+    })
 
   override def getKey = ProviderKey
 
@@ -43,8 +41,7 @@ class SetupJdkNotificationProvider(
       file: VirtualFile,
       fileEditor: FileEditor) = {
     val jdk = Option(PsiManager.getInstance(project).findFile(file))
-      .filter(_.getLanguage == ScalaLanguage.Instance)
-      .flatMap(psiFile =>
+      .filter(_.getLanguage == ScalaLanguage.Instance).flatMap(psiFile =>
         Option(ModuleUtilCore.findModuleForPsiElement(psiFile)))
       .map(module => ModuleRootManager.getInstance(module).getSdk)
 

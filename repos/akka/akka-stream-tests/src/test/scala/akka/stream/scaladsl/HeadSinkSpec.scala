@@ -24,9 +24,7 @@ class HeadSinkSpec extends AkkaSpec with ScriptedTest {
 
     "yield the first value" in assertAllStagesStopped {
       val p = TestPublisher.manualProbe[Int]()
-      val f: Future[Int] = Source
-        .fromPublisher(p)
-        .map(identity)
+      val f: Future[Int] = Source.fromPublisher(p).map(identity)
         .runWith(Sink.head)
       val proc = p.expectSubscription()
       proc.expectRequest()
@@ -67,9 +65,7 @@ class HeadSinkSpec extends AkkaSpec with ScriptedTest {
 
     "yield the first value" in assertAllStagesStopped {
       val p = TestPublisher.manualProbe[Int]()
-      val f: Future[Option[Int]] = Source
-        .fromPublisher(p)
-        .map(identity)
+      val f: Future[Option[Int]] = Source.fromPublisher(p).map(identity)
         .runWith(Sink.headOption)
       val proc = p.expectSubscription()
       proc.expectRequest()
@@ -86,9 +82,9 @@ class HeadSinkSpec extends AkkaSpec with ScriptedTest {
     }
 
     "yield None for empty stream" in assertAllStagesStopped {
-      Await.result(
-        Source.empty[Int].runWith(Sink.headOption),
-        1.second) should be(None)
+      Await
+        .result(Source.empty[Int].runWith(Sink.headOption), 1.second) should be(
+        None)
     }
 
   }

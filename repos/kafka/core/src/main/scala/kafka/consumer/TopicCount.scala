@@ -65,8 +65,8 @@ private[kafka] object TopicCount extends Logging {
       zkUtils: ZkUtils,
       excludeInternalTopics: Boolean): TopicCount = {
     val dirs = new ZKGroupDirs(group)
-    val topicCountString =
-      zkUtils.readData(dirs.consumerRegistryDir + "/" + consumerId)._1
+    val topicCountString = zkUtils
+      .readData(dirs.consumerRegistryDir + "/" + consumerId)._1
     var subscriptionPattern: String = null
     var topMap: Map[String, Int] = null
     try {
@@ -147,7 +147,8 @@ private[kafka] class StaticTopicCount(
     obj match {
       case null => false
       case n: StaticTopicCount =>
-        consumerIdString == n.consumerIdString && topicCountMap == n.topicCountMap
+        consumerIdString == n.consumerIdString && topicCountMap == n
+          .topicCountMap
       case _ => false
     }
   }

@@ -52,8 +52,7 @@ abstract class PlanTest extends SparkFunSuite with PredicateHelper {
     plan transform {
       case filter @ Filter(condition: Expression, child: LogicalPlan) =>
         Filter(
-          splitConjunctivePredicates(condition)
-            .sortBy(_.hashCode())
+          splitConjunctivePredicates(condition).sortBy(_.hashCode())
             .reduce(And),
           child)
     }

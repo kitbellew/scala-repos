@@ -36,8 +36,8 @@ case class Label(
     val g = color.substring(2, 4)
     val b = color.substring(4, 6)
 
-    if (Integer.parseInt(r, 16) + Integer
-          .parseInt(g, 16) + Integer.parseInt(b, 16) > 408) { "000000" }
+    if (Integer.parseInt(r, 16) + Integer.parseInt(g, 16) + Integer
+          .parseInt(b, 16) > 408) { "000000" }
     else { "ffffff" }
   }
 }

@@ -133,19 +133,18 @@ class NewHadoopRDD[K, V](
       logInfo("Input split: " + split.serializableHadoopSplit)
       val conf = getConf
 
-      val inputMetrics = context
-        .taskMetrics()
+      val inputMetrics = context.taskMetrics()
         .registerInputMetrics(DataReadMethod.Hadoop)
       val existingBytesRead = inputMetrics.bytesRead
 
       // Find a function that will return the FileSystem bytes read by this thread. Do this before
       // creating RecordReader, because RecordReader's constructor might read some bytes
-      val getBytesReadCallback: Option[() => Long] =
-        split.serializableHadoopSplit.value match {
-          case _: FileSplit | _: CombineFileSplit =>
-            SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
-          case _ => None
-        }
+      val getBytesReadCallback: Option[() => Long] = split
+        .serializableHadoopSplit.value match {
+        case _: FileSplit | _: CombineFileSplit =>
+          SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
+        case _ => None
+      }
 
       // For Hadoop 2.5+, we get our input bytes from thread-local Hadoop FileSystem statistics.
       // If we do a coalesce, however, we are likely to compute multiple partitions in the same
@@ -168,9 +167,8 @@ class NewHadoopRDD[K, V](
       private var reader = format.createRecordReader(
         split.serializableHadoopSplit.value,
         hadoopAttemptContext)
-      reader.initialize(
-        split.serializableHadoopSplit.value,
-        hadoopAttemptContext)
+      reader
+        .initialize(split.serializableHadoopSplit.value, hadoopAttemptContext)
 
       // Register an on-task-completion callback to close the input stream.
       context.addTaskCompletionListener(context => close())
@@ -198,9 +196,8 @@ class NewHadoopRDD[K, V](
         }
         havePair = false
         if (!finished) { inputMetrics.incRecordsReadInternal(1) }
-        if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
-          updateBytesRead()
-        }
+        if (inputMetrics.recordsRead % SparkHadoopUtil
+              .UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) { updateBytesRead() }
         (reader.getCurrentKey, reader.getCurrentValue)
       }
 
@@ -249,13 +246,12 @@ class NewHadoopRDD[K, V](
   }
 
   override def getPreferredLocations(hsplit: Partition): Seq[String] = {
-    val split =
-      hsplit.asInstanceOf[NewHadoopPartition].serializableHadoopSplit.value
+    val split = hsplit.asInstanceOf[NewHadoopPartition].serializableHadoopSplit
+      .value
     val locs = HadoopRDD.SPLIT_INFO_REFLECTIONS match {
       case Some(c) =>
         try {
-          val infos = c.newGetLocationInfo
-            .invoke(split)
+          val infos = c.newGetLocationInfo.invoke(split)
             .asInstanceOf[Array[AnyRef]]
           Some(HadoopRDD.convertSplitLocationInfo(infos))
         } catch {

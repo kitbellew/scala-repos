@@ -27,8 +27,7 @@ class MyClassPickler[A](implicit
   override def unpickle(tagKey: String, reader: PReader): MyClass[A] = {
     // TODO - use unpickle entry, save a few lines of code.
     val tag = reader.beginEntry()
-    val myStringUnpickled = stringUnpickler
-      .unpickle(tag, reader)
+    val myStringUnpickled = stringUnpickler.unpickle(tag, reader)
       .asInstanceOf[String]
     reader.endEntry()
     val aTag = reader.beginEntry()

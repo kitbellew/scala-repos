@@ -233,8 +233,8 @@ class ScalaReflectionSuite extends SparkFunSuite {
       true)
     val dataType = schemaFor[PrimitiveData].dataType
     assert(
-      CatalystTypeConverters.createToCatalystConverter(dataType)(
-        data) === convertedData)
+      CatalystTypeConverters
+        .createToCatalystConverter(dataType)(data) === convertedData)
   }
 
   test("convert Option[Product] to catalyst") {
@@ -259,8 +259,8 @@ class ScalaReflectionSuite extends SparkFunSuite {
       true,
       InternalRow(1, 1, 1, 1, 1, 1, true))
     assert(
-      CatalystTypeConverters.createToCatalystConverter(dataType)(
-        data) === convertedData)
+      CatalystTypeConverters
+        .createToCatalystConverter(dataType)(data) === convertedData)
   }
 
   test("infer schema from case class with multiple constructors") {

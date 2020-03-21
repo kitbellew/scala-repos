@@ -108,23 +108,24 @@ object Swagger {
         val descr = Reflector.describe(tpe)
         descr match {
           case descriptor: ClassDescriptor =>
-            val ctorModels =
-              descriptor.mostComprehensive.filterNot(_.isPrimitive).toVector
+            val ctorModels = descriptor.mostComprehensive
+              .filterNot(_.isPrimitive).toVector
             val propModels = descriptor.properties.filterNot(p =>
               p.isPrimitive || ctorModels.exists(_.name == p.name))
-            val subModels = (ctorModels.map(_.argType) ++ propModels.map(
-              _.returnType)).toSet -- known
+            val subModels =
+              (ctorModels.map(_.argType) ++ propModels.map(_.returnType))
+                .toSet -- known
             val topLevel = for {
               tl <- subModels + descriptor.erasure
               if !(tl.isCollection || tl.isMap || tl.isOption)
               m <- modelToSwagger(tl)
             } yield m
 
-            val nested = subModels.foldLeft(
-              (topLevel, known + descriptor.erasure)) { (acc, b) =>
-              val m = collectModels(b, alreadyKnown, acc._2)
-              (acc._1 ++ m, acc._2 + b)
-            }
+            val nested = subModels
+              .foldLeft((topLevel, known + descriptor.erasure)) { (acc, b) =>
+                val m = collectModels(b, alreadyKnown, acc._2)
+                (acc._1 ++ m, acc._2 + b)
+              }
             nested._1
           case _ => Set.empty
         }
@@ -161,9 +162,8 @@ object Swagger {
     prop.name -> mp
   }
   def modelToSwagger(klass: ScalaType): Option[Model] = {
-    if (Reflector.isPrimitive(klass.erasure) || Reflector.isExcluded(
-          klass.erasure,
-          excludes.toSeq)) None
+    if (Reflector.isPrimitive(klass.erasure) || Reflector
+          .isExcluded(klass.erasure, excludes.toSeq)) None
     else {
       val name = klass.simpleName
 
@@ -287,16 +287,16 @@ class Swagger(
       swaggerVersion,
       resourcePath,
       description,
-      (produces ::: endpoints.flatMap(
-        _.operations.flatMap(_.produces))).distinct,
-      (consumes ::: endpoints.flatMap(
-        _.operations.flatMap(_.consumes))).distinct,
-      (protocols ::: endpoints.flatMap(
-        _.operations.flatMap(_.protocols))).distinct,
+      (produces ::: endpoints.flatMap(_.operations.flatMap(_.produces)))
+        .distinct,
+      (consumes ::: endpoints.flatMap(_.operations.flatMap(_.consumes)))
+        .distinct,
+      (protocols ::: endpoints.flatMap(_.operations.flatMap(_.protocols)))
+        .distinct,
       endpoints,
       s.models.toMap,
-      (authorizations ::: endpoints.flatMap(
-        _.operations.flatMap(_.authorizations))).distinct,
+      (authorizations ::: endpoints
+        .flatMap(_.operations.flatMap(_.authorizations))).distinct,
       0
     )
   }
@@ -447,8 +447,8 @@ object DataType {
     val klass =
       if (st.isOption && st.typeArgs.size > 0) st.typeArgs.head.erasure
       else st.erasure
-    if (classOf[Unit].isAssignableFrom(klass) || classOf[Void].isAssignableFrom(
-          klass)) this.Void
+    if (classOf[Unit].isAssignableFrom(klass) || classOf[Void]
+          .isAssignableFrom(klass)) this.Void
     else if (isString(klass)) this.String
     else if (classOf[Byte].isAssignableFrom(klass) || classOf[java.lang.Byte]
                .isAssignableFrom(klass)) this.Byte
@@ -468,13 +468,13 @@ object DataType {
     //        GenMap(fromScalaType(k), fromScalaType(v))
     //      } else GenMap()
     //    }
-    else if (classOf[scala.collection.Set[_]].isAssignableFrom(
-               klass) || classOf[java.util.Set[_]].isAssignableFrom(klass)) {
+    else if (classOf[scala.collection.Set[_]]
+               .isAssignableFrom(klass) || classOf[java.util.Set[_]]
+               .isAssignableFrom(klass)) {
       if (st.typeArgs.nonEmpty) GenSet(fromScalaType(st.typeArgs.head))
       else GenSet()
-    } else if (classOf[collection.Seq[_]]
-                 .isAssignableFrom(klass) || classOf[java.util.List[_]]
-                 .isAssignableFrom(klass)) {
+    } else if (classOf[collection.Seq[_]].isAssignableFrom(klass) || classOf[
+                 java.util.List[_]].isAssignableFrom(klass)) {
       if (st.typeArgs.nonEmpty) GenList(fromScalaType(st.typeArgs.head))
       else GenList()
     } else if (st.isArray || isCollection(klass)) {

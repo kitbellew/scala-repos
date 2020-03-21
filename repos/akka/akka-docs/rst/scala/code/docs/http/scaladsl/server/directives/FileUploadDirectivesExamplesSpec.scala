@@ -47,10 +47,8 @@ class FileUploadDirectivesExamplesSpec extends RoutingSpec {
           val sumF: Future[Int] =
             // sum the numbers as they arrive so that we can
             // accept any size of file
-            byteSource
-              .via(Framing.delimiter(ByteString("\n"), 1024))
-              .mapConcat(_.utf8String.split(",").toVector)
-              .map(_.toInt)
+            byteSource.via(Framing.delimiter(ByteString("\n"), 1024))
+              .mapConcat(_.utf8String.split(",").toVector).map(_.toInt)
               .runFold(0) { (acc, n) => acc + n }
 
           onSuccess(sumF) { sum => complete(s"Sum: $sum") }

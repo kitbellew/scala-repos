@@ -12,14 +12,13 @@ import sbt.complete.{Parsers, Parser}
   * This must be here, and not in build.sbt, since Project.setSbtFiles only works from a .scala file
   */
 object TemplatesBuild extends Build {
-  lazy val root = (project in file("."))
-    .setSbtFiles(
-      // Load the version from Play's version.sbt
-      // Order is important, load the version first, then load build.sbt which may modify it with the play.version
-      // system property.
-      file("../framework/version.sbt"),
-      file("./build.sbt")
-    )
+  lazy val root = (project in file(".")).setSbtFiles(
+    // Load the version from Play's version.sbt
+    // Order is important, load the version first, then load build.sbt which may modify it with the play.version
+    // system property.
+    file("../framework/version.sbt"),
+    file("./build.sbt")
+  )
 }
 
 object Templates {
@@ -60,7 +59,8 @@ object Templates {
       val preparedTemplates: Seq[File] = prepareTemplates.value
       val syncTemplateDirValue: File = syncTemplateDir.value
       val mappings: Seq[(File, File)] = preparedTemplates.flatMap { template =>
-        (template.***.filter(!_.isDirectory) x relativeTo(template)).map { f =>
+        (template
+          .***.filter(!_.isDirectory) x relativeTo(template)).map { f =>
           (f._1, syncTemplateDirValue / template.getName / f._2)
         }
       }
@@ -95,7 +95,9 @@ object Templates {
       val mappings: Seq[(File, File)] = templateSourcesList.flatMap {
         case templateSources: TemplateSources =>
           val relativeMappings: Seq[(File, String)] = templateSources.sourceDirs
-            .flatMap(dir => dir.***.filter(fileFilter(_)) x relativeTo(dir))
+            .flatMap(dir =>
+              dir
+                .***.filter(fileFilter(_)) x relativeTo(dir))
           // Rebase the files onto the target directory, also filtering out ignored files
           relativeMappings.collect {
             case (orig, targ) if !ignore.contains(orig.getName) =>
@@ -121,8 +123,7 @@ object Templates {
               s"Can't rebase prepared template $file to dir $outDir"))
             val templateName: String = topDir(rebasedFile).getName
             val templateSources: TemplateSources = templateSourcesList
-              .find(_.name == templateName)
-              .getOrElse(sys.error(
+              .find(_.name == templateName).getOrElse(sys.error(
                 s"Couldn't find template named $templateName"))
             templateSources.params
           }
@@ -169,12 +170,14 @@ object Templates {
       val distDir = target.value / "dist-templates"
       preparedTemplates.map { template =>
         val zipFile = distDir / (template.getName + ".zip")
-        val files = template.***.filter(!_.isDirectory) x relativeTo(template)
+        val files = template
+          .***.filter(!_.isDirectory) x relativeTo(template)
         IO.zip(files, zipFile)
         zipFile
       }
     },
-    gitHash := "git rev-parse HEAD".!!.trim,
+    gitHash := "git rev-parse HEAD"
+      .!!.trim,
     nonce := System.currentTimeMillis,
     S3.host in S3.upload := "downloads.typesafe.com.s3.amazonaws.com",
     S3.progress in S3.upload := true,
@@ -204,8 +207,8 @@ object Templates {
         sys.error("Could not find credentials for host: " + host)
       }
       val upload = S3.upload.value // Ignore result
-      val uploaded = (mappings in S3.upload).value.map(m =>
-        m._1.getName -> m._2)
+      val uploaded = (mappings in S3.upload).value
+        .map(m => m._1.getName -> m._2)
       val logger = streams.value.log
 
       logger.info("Publishing templates...")
@@ -225,8 +228,7 @@ object Templates {
       try {
 
         def clientCall(path: String): WSRequestHolder =
-          client
-            .url(s"https://$host$path")
+          client.url(s"https://$host$path")
             .withAuth(creds.userName, creds.passwd, WSAuthScheme.BASIC)
 
         def timeout(duration: FiniteDuration): Future[Unit] = {
@@ -245,8 +247,7 @@ object Templates {
           val status: Future[TemplateStatus] = for {
             _ <- timeout(2.seconds)
             resp <- clientCall(statusUrl)
-              .withHeaders("Accept" -> "application/json,text/html;q=0.9")
-              .get()
+              .withHeaders("Accept" -> "application/json,text/html;q=0.9").get()
           } yield {
             resp.header("Content-Type") match {
               case Some(json) if json.startsWith("application/json") =>
@@ -285,29 +286,26 @@ object Templates {
         val futures: Seq[Future[(String, String, Either[String, String])]] =
           uploaded.map {
             case (name, key) =>
-              clientCall("/activator/template/publish")
-                .post(s"url=http://downloads.typesafe.com/$key")
-                .flatMap {
-                  resp =>
-                    if (resp.status != 200) {
-                      logger.error("Error publishing template " + name)
-                      logger.error("Status code was: " + resp.status)
-                      logger.error("Body was: " + resp.body)
-                      throw new RuntimeException("Error publishing template")
-                    }
-                    val js = resp.json
-                    val uuid = (js \ "uuid").as[String]
-                    val statusUrl =
-                      (for {
-                        links <- (js \ "_links").asOpt[JsObject]
-                        status <- (links \ "activator/templates/status")
-                          .asOpt[JsObject]
-                        url <- (status \ "href").asOpt[String]
-                      } yield url)
-                        .getOrElse(s"/activator/template/status/$uuid")
-                    waitUntilNotPending(uuid, statusUrl)
-                }
-                .map(result => (name, key, result))
+              clientCall("/activator/template/publish").post(
+                s"url=http://downloads.typesafe.com/$key").flatMap {
+                resp =>
+                  if (resp.status != 200) {
+                    logger.error("Error publishing template " + name)
+                    logger.error("Status code was: " + resp.status)
+                    logger.error("Body was: " + resp.body)
+                    throw new RuntimeException("Error publishing template")
+                  }
+                  val js = resp.json
+                  val uuid = (js \ "uuid").as[String]
+                  val statusUrl =
+                    (for {
+                      links <- (js \ "_links").asOpt[JsObject]
+                      status <- (links \ "activator/templates/status")
+                        .asOpt[JsObject]
+                      url <- (status \ "href").asOpt[String]
+                    } yield url).getOrElse(s"/activator/template/status/$uuid")
+                  waitUntilNotPending(uuid, statusUrl)
+              }.map(result => (name, key, result))
           }
 
         val results = Await.result(Future.sequence(futures), 1.hour)
@@ -349,40 +347,35 @@ object Templates {
 
   val templatesCommand = Command(
     "templates",
-    Help.more(
-      "templates",
-      "Execute the given command for the given templates"))(templatesParser) {
-    (state, args) =>
-      val (templateDirs, command) = args
-      val extracted = Project.extract(state)
+    Help
+      .more("templates", "Execute the given command for the given templates"))(
+    templatesParser) { (state, args) =>
+    val (templateDirs, command) = args
+    val extracted = Project.extract(state)
 
-      def createSetCommand(dirs: Seq[TemplateSources]): String = {
-        dirs
-          .map("file(\"" + _.mainDir.getAbsolutePath + "\")")
-          .mkString(
-            "set play.sbt.activator.Templates.templates := Seq(",
-            ",",
-            ")")
-      }
+    def createSetCommand(dirs: Seq[TemplateSources]): String = {
+      dirs.map("file(\"" + _.mainDir.getAbsolutePath + "\")").mkString(
+        "set play.sbt.activator.Templates.templates := Seq(",
+        ",",
+        ")")
+    }
 
-      val setCommand = createSetCommand(templateDirs)
-      val setBack =
-        templates in extracted.currentRef get extracted.structure.data map createSetCommand toList
+    val setCommand = createSetCommand(templateDirs)
+    val setBack = templates in extracted.currentRef get extracted.structure
+      .data map createSetCommand toList
 
-      if (command == "") setCommand :: state
-      else setCommand :: command :: setBack ::: state
+    if (command == "") setCommand :: state
+    else setCommand :: command :: setBack ::: state
   }
 
   private def templatesParser(
       state: State): Parser[(Seq[TemplateSources], String)] = {
     import Parser._
     import Parsers._
-    val templateSourcesList: Seq[TemplateSources] = Project
-      .extract(state)
+    val templateSourcesList: Seq[TemplateSources] = Project.extract(state)
       .get(Templates.templates)
     val templateParser = Parsers.OpOrID
-      .examples(templateSourcesList.map(_.name): _*)
-      .flatMap { name =>
+      .examples(templateSourcesList.map(_.name): _*).flatMap { name =>
         templateSourcesList.find(_.name == name) match {
           case Some(templateSources) => success(templateSources)
           case None                  => failure("No template with name " + name)
@@ -415,14 +408,9 @@ object Templates {
   private case class TemplatePending(uuid: String) extends TemplateStatus
 
   private def extractErrors(body: String) =
-    body
-      .split("\n")
-      .dropWhile(!_.contains("This template failed to publish."))
-      .drop(1)
-      .takeWhile(!_.contains("</article>"))
-      .map(_.trim)
-      .filterNot(_.isEmpty)
-      .map(_.replaceAll("<p>", "").replaceAll("</p>", ""))
+    body.split("\n").dropWhile(!_.contains("This template failed to publish."))
+      .drop(1).takeWhile(!_.contains("</article>")).map(_.trim)
+      .filterNot(_.isEmpty).map(_.replaceAll("<p>", "").replaceAll("</p>", ""))
 
   play.api.Logger.configure(play.api.Environment.simple())
 }

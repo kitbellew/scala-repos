@@ -470,9 +470,8 @@ trait TransformSpec[M[+_]]
         Equal(Leaf(Source), Leaf(Source))
       })
 
-      results.copoint must_== (Stream.tabulate(sample.data.size) { _ =>
-        JBool(true)
-      })
+      results.copoint must_== (Stream
+        .tabulate(sample.data.size) { _ => JBool(true) })
     }
   }
 
@@ -515,9 +514,8 @@ trait TransformSpec[M[+_]]
       Leaf(SourceRight),
       CPathField("value"))
 
-    val wrappedValueSpec = trans.WrapObject(
-      Equal(leftValueSpec, rightValueSpec),
-      "value")
+    val wrappedValueSpec = trans
+      .WrapObject(Equal(leftValueSpec, rightValueSpec), "value")
 
     val results = toJson(table.cross(table2)(
       InnerObjectConcat(wrappedIdentitySpec, wrappedValueSpec)))
@@ -735,8 +733,9 @@ trait TransformSpec[M[+_]]
     def hasVal1Val2(jv: JValue): Boolean =
       (jv \? ".value.value1").nonEmpty && (jv \? ".value.value2").nonEmpty
 
-    val genBase: Gen[SampleData] = sample(_ =>
-      Seq(JPath("value1") -> CLong, JPath("value2") -> CLong)).arbitrary
+    val genBase: Gen[SampleData] =
+      sample(_ => Seq(JPath("value1") -> CLong, JPath("value2") -> CLong))
+        .arbitrary
     implicit val gen: Arbitrary[SampleData] = Arbitrary {
       genBase map { sd =>
         SampleData(sd.data.zipWithIndex map {
@@ -770,8 +769,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testEqual1 = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {
         "value":{
           "value1":-1503074360046022108,
@@ -796,8 +795,8 @@ trait TransformSpec[M[+_]]
   }
 
   def checkEqualLiteral = {
-    val genBase: Gen[SampleData] =
-      sample(_ => Seq(JPath("value1") -> CLong)).arbitrary
+    val genBase: Gen[SampleData] = sample(_ => Seq(JPath("value1") -> CLong))
+      .arbitrary
     implicit val gen: Arbitrary[SampleData] = Arbitrary {
       genBase map { sd =>
         SampleData(sd.data.zipWithIndex map {
@@ -840,8 +839,8 @@ trait TransformSpec[M[+_]]
     }
   }
   def checkNotEqualLiteral = {
-    val genBase: Gen[SampleData] =
-      sample(_ => Seq(JPath("value1") -> CLong)).arbitrary
+    val genBase: Gen[SampleData] = sample(_ => Seq(JPath("value1") -> CLong))
+      .arbitrary
     implicit val gen: Arbitrary[SampleData] = Arbitrary {
       genBase map { sd =>
         SampleData(sd.data.zipWithIndex map {
@@ -948,8 +947,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testInnerObjectConcatEmptyObject = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"foo": {}, "bar": {"ack": 12}},
       {"foo": {}, "bar": {"ack": 12, "bak": 13}},
       {"foo": {"ook": 99}, "bar": {}},
@@ -998,8 +997,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testOuterObjectConcatEmptyObject = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"foo": {}, "bar": {"ack": 12}},
       {"foo": {}, "bar": {"ack": 12, "bak": 13}},
       {"foo": {"ook": 99}, "bar": {}},
@@ -1397,8 +1396,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testInnerArrayConcatEmptyArray = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"foo": [], "bar": [12]},
       {"foo": [], "bar": [12, 13]},
       {"foo": [99], "bar": []},
@@ -1444,8 +1443,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testOuterArrayConcatEmptyArray = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"foo": [], "bar": [12]},
       {"foo": [], "bar": [12, 13]},
       {"foo": [99], "bar": []},
@@ -1546,10 +1545,9 @@ trait TransformSpec[M[+_]]
 
     def randomDeletionMask(
         schema: CValueGenerators.JSchema): Option[JPathField] = {
-      Random
-        .shuffle(schema)
-        .headOption
-        .map({ case (JPath(x @ JPathField(_), _ @_*), _) => x })
+      Random.shuffle(schema).headOption.map({
+        case (JPath(x @ JPathField(_), _ @_*), _) => x
+      })
     }
 
     check { (sample: SampleData) =>
@@ -1874,8 +1872,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testIsTypeObject = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"key":[1], "value": 23},
       {"key":[1, "bax"], "value": 24},
       {"key":[2], "value": "foo"},
@@ -1998,8 +1996,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testIsTypeTrivial = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"key":[2,1,1],"value":[]},
       {"key":[2,2,2],"value":{"dx":[8.342062585288287E+307]}}]
     """)
@@ -2020,10 +2018,8 @@ trait TransformSpec[M[+_]]
     // using a generator with heterogeneous data, we're just going to produce
     // the jtype that chooses all of the elements of the non-random data.
     val jtpe = JObjectFixedT(Map(
-      "value" -> Schema
-        .mkType(cschema)
-        .getOrElse(sys.error(
-          "Could not generate JType from schema " + cschema)),
+      "value" -> Schema.mkType(cschema).getOrElse(sys.error(
+        "Could not generate JType from schema " + cschema)),
       "key" -> JArrayUnfixedT))
 
     val table = fromSample(sample)
@@ -2096,10 +2092,8 @@ trait TransformSpec[M[+_]]
     // using a generator with heterogeneous data, we're just going to produce
     // the jtype that chooses all of the elements of the non-random data.
     val jtpe = JObjectFixedT(Map(
-      "value" -> Schema
-        .mkType(cschema)
-        .getOrElse(sys.error(
-          "Could not generate JType from schema " + cschema)),
+      "value" -> Schema.mkType(cschema).getOrElse(sys.error(
+        "Could not generate JType from schema " + cschema)),
       "key" -> JArrayUnfixedT))
 
     val table = fromSample(sample)
@@ -2165,8 +2159,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testTypedObject = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser
+      .parseUnsafe("""[
       {"key":[1, 3], "value": {"foo": 23}},
       {"key":[2, 4], "value": {}}
     ]""")
@@ -2182,8 +2176,8 @@ trait TransformSpec[M[+_]]
           "key" -> JArrayUnfixedT)))
     })
 
-    val JArray(expected) = JParser.parseUnsafe(
-      """[
+    val JArray(expected) = JParser
+      .parseUnsafe("""[
       {"key":[1, 3], "value": {"foo": 23}},
       {"key":[2, 4]}
     ]""")
@@ -2245,8 +2239,8 @@ trait TransformSpec[M[+_]]
           "key" -> JArrayUnfixedT)))
     })
 
-    val JArray(expected) = JParser.parseUnsafe(
-      """[
+    val JArray(expected) = JParser
+      .parseUnsafe("""[
       {"key": [1, 2], "value": [2, true] },
       {"key": [3, 4] }
     ]""")
@@ -2431,15 +2425,15 @@ trait TransformSpec[M[+_]]
         lookupScanner(Nil, "sum"))
     })
 
-    val (_, expected) = sample.data.foldLeft(
-      (BigDecimal(0), Vector.empty[JValue])) {
-      case ((a, s), jv) => {
-        (jv \ "value") match {
-          case JNum(i) => (a + i, s :+ JNum(a + i))
-          case _       => (a, s)
+    val (_, expected) = sample.data
+      .foldLeft((BigDecimal(0), Vector.empty[JValue])) {
+        case ((a, s), jv) => {
+          (jv \ "value") match {
+            case JNum(i) => (a + i, s :+ JNum(a + i))
+            case _       => (a, s)
+          }
         }
       }
-    }
 
     results.copoint must_== expected.toStream
   }
@@ -2467,15 +2461,15 @@ trait TransformSpec[M[+_]]
         lookupScanner(Nil, "sum"))
     })
 
-    val (_, expected) = sample.data.foldLeft(
-      (BigDecimal(0), Vector.empty[JValue])) {
-      case ((a, s), jv) => {
-        (jv \ "value") match {
-          case JNum(i) => (a + i, s :+ JNum(a + i))
-          case _       => (a, s)
+    val (_, expected) = sample.data
+      .foldLeft((BigDecimal(0), Vector.empty[JValue])) {
+        case ((a, s), jv) => {
+          (jv \ "value") match {
+            case JNum(i) => (a + i, s :+ JNum(a + i))
+            case _       => (a, s)
+          }
         }
       }
-    }
 
     results.copoint must_== expected.toStream
   }
@@ -2490,15 +2484,15 @@ trait TransformSpec[M[+_]]
           lookupScanner(Nil, "sum"))
       })
 
-      val (_, expected) = sample.data.foldLeft(
-        (BigDecimal(0), Vector.empty[JValue])) {
-        case ((a, s), jv) => {
-          (jv \ "value") match {
-            case JNum(i) => (a + i, s :+ JNum(a + i))
-            case _       => (a, s)
+      val (_, expected) = sample.data
+        .foldLeft((BigDecimal(0), Vector.empty[JValue])) {
+          case ((a, s), jv) => {
+            (jv \ "value") match {
+              case JNum(i) => (a + i, s :+ JNum(a + i))
+              case _       => (a, s)
+            }
           }
         }
-      }
 
       results.copoint must_== expected.toStream
     }

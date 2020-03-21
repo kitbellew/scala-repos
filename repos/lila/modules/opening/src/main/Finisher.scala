@@ -49,8 +49,8 @@ private[opening] final class Finisher(api: OpeningApi, openingColl: Coll) {
                 Opening.BSONFields.wins -> BSONInteger(
                   win ? 1 | 0))) ++ BSONDocument(
               "$set" -> BSONDocument(
-                Opening.BSONFields.perf -> Perf.perfBSONHandler.write(
-                  openingPerf)))
+                Opening.BSONFields.perf -> Perf.perfBSONHandler
+                  .write(openingPerf)))
           ) zip UserRepo.setPerf(user.id, "opening", userPerf)
         }) recover lila.db.recoverDuplicateKey(_ => ()) inject (a -> none)
     }

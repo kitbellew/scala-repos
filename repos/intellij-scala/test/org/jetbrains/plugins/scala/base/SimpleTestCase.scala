@@ -21,11 +21,11 @@ abstract class SimpleTestCase extends UsefulTestCase {
   override def setUp() {
     super.setUp()
     val fixtureBuilder: TestFixtureBuilder[IdeaProjectTestFixture] =
-      IdeaTestFixtureFactory.getFixtureFactory.createFixtureBuilder(
-        "SimpleTestCase")
+      IdeaTestFixtureFactory.getFixtureFactory
+        .createFixtureBuilder("SimpleTestCase")
 
-    fixture = IdeaTestFixtureFactory.getFixtureFactory.createCodeInsightFixture(
-      fixtureBuilder.getFixture)
+    fixture = IdeaTestFixtureFactory.getFixtureFactory
+      .createCodeInsightFixture(fixtureBuilder.getFixture)
     fixture.setUp()
   }
 
@@ -36,22 +36,16 @@ abstract class SimpleTestCase extends UsefulTestCase {
   }
 
   def parseText(@Language("Scala") s: String): ScalaFile = {
-    PsiFileFactory
-      .getInstance(fixture.getProject)
-      .createFileFromText(
-        "foo" + ScalaFileType.DEFAULT_EXTENSION,
-        ScalaFileType.SCALA_FILE_TYPE,
-        s)
-      .asInstanceOf[ScalaFile]
+    PsiFileFactory.getInstance(fixture.getProject).createFileFromText(
+      "foo" + ScalaFileType.DEFAULT_EXTENSION,
+      ScalaFileType.SCALA_FILE_TYPE,
+      s).asInstanceOf[ScalaFile]
   }
 
   implicit class Findable(val element: ScalaFile) {
     def target: PsiElement =
-      element.depthFirst
-        .dropWhile(!_.isInstanceOf[PsiComment])
-        .drop(1)
-        .dropWhile(_.isInstanceOf[PsiWhiteSpace])
-        .next()
+      element.depthFirst.dropWhile(!_.isInstanceOf[PsiComment]).drop(1)
+        .dropWhile(_.isInstanceOf[PsiWhiteSpace]).next()
   }
 
   def assertNothing[T](actual: T) { assertMatches(actual) { case Nil => } }
@@ -73,8 +67,7 @@ abstract class SimpleTestCase extends UsefulTestCase {
 
   implicit class ScalaCode(@Language("Scala") val s: String) {
     def stripComments: String =
-      s.replaceAll("""(?s)/\*.*?\*/""", "")
-        .replaceAll("""(?m)//.*$""", "")
+      s.replaceAll("""(?s)/\*.*?\*/""", "").replaceAll("""(?m)//.*$""", "")
 
     def parse: ScalaFile = parseText(s)
 

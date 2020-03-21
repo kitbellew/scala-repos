@@ -20,8 +20,8 @@ class MultipartSpec
     with Inside
     with BeforeAndAfterAll {
 
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
   akka.event-handlers = ["akka.testkit.TestEventListener"]
   akka.loglevel = WARNING""")
   implicit val system = ActorSystem(getClass.getSimpleName, testConf)
@@ -51,8 +51,8 @@ class MultipartSpec
           Multipart.FormData.BodyPart("bar", defaultEntity("BAR")) :: Nil))
       val strict = Await.result(streamed.toStrict(1.second), 1.second)
 
-      strict shouldEqual Multipart.FormData(
-        Map("foo" -> HttpEntity("FOO"), "bar" -> HttpEntity("BAR")))
+      strict shouldEqual Multipart
+        .FormData(Map("foo" -> HttpEntity("FOO"), "bar" -> HttpEntity("BAR")))
     }
   }
 

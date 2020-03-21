@@ -34,11 +34,8 @@ class MyEventsByTagPublisher(
   var buf = Vector.empty[EventEnvelope]
 
   import context.dispatcher
-  val continueTask = context.system.scheduler.schedule(
-    refreshInterval,
-    refreshInterval,
-    self,
-    Continue)
+  val continueTask = context.system.scheduler
+    .schedule(refreshInterval, refreshInterval, self, Continue)
 
   override def postStop(): Unit = { continueTask.cancel() }
 
@@ -85,8 +82,8 @@ class MyEventsByTagPublisher(
 
         buf = result.map {
           case (id, bytes) ⇒
-            val p =
-              serialization.deserialize(bytes, classOf[PersistentRepr]).get
+            val p = serialization.deserialize(bytes, classOf[PersistentRepr])
+              .get
             EventEnvelope(offset = id, p.persistenceId, p.sequenceNr, p.payload)
         }
       } catch { case e: Exception ⇒ onErrorThenStop(e) }

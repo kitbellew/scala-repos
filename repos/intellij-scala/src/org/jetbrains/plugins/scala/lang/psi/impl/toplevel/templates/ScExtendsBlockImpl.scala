@@ -104,8 +104,7 @@ class ScExtendsBlockImpl private (
       case Some(parents: ScTemplateParents) =>
         parents.superTypes.foreach(addType)
       case _ =>
-        syntheticTypeElements
-          .map(_.getType(TypingContext.empty).getOrAny)
+        syntheticTypeElements.map(_.getType(TypingContext.empty).getOrAny)
           .foreach(addType)
     }
 
@@ -155,28 +154,20 @@ class ScExtendsBlockImpl private (
   }
 
   private def scalaProductClass: PsiClass =
-    ScalaPsiManager
-      .instance(getProject)
-      .getCachedClass(getResolveScope, "scala.Product")
-      .orNull
+    ScalaPsiManager.instance(getProject)
+      .getCachedClass(getResolveScope, "scala.Product").orNull
 
   private def scalaSerializableClass: PsiClass =
-    ScalaPsiManager
-      .instance(getProject)
-      .getCachedClass(getResolveScope, "scala.Serializable")
-      .orNull
+    ScalaPsiManager.instance(getProject)
+      .getCachedClass(getResolveScope, "scala.Serializable").orNull
 
   private def scalaObjectClass: PsiClass =
-    ScalaPsiManager
-      .instance(getProject)
-      .getCachedClass(getResolveScope, "scala.ScalaObject")
-      .orNull
+    ScalaPsiManager.instance(getProject)
+      .getCachedClass(getResolveScope, "scala.ScalaObject").orNull
 
   private def javaObjectClass: PsiClass =
-    ScalaPsiManager
-      .instance(getProject)
-      .getCachedClass(getResolveScope, "java.lang.Object")
-      .orNull
+    ScalaPsiManager.instance(getProject)
+      .getCachedClass(getResolveScope, "java.lang.Object").orNull
 
   private def scalaProduct: ScType = {
     val sp = scalaProductClass
@@ -226,9 +217,10 @@ class ScExtendsBlockImpl private (
       case Some(parents: ScTemplateParents) =>
         parents.supers foreach { t => addClass(t) }
       case _ =>
-        ScTemplateParents.extractSupers(
-          syntheticTypeElements,
-          getProject) foreach { t => addClass(t) }
+        ScTemplateParents
+          .extractSupers(syntheticTypeElements, getProject) foreach { t =>
+          addClass(t)
+        }
     }
     if (isUnderCaseClass) {
       val prod = scalaProductClass
@@ -294,8 +286,8 @@ class ScExtendsBlockImpl private (
     templateParents match {
       case None => Seq.empty
       case Some(parents) =>
-        val parentElements: Seq[ScTypeElement] =
-          parents.allTypeElements.toIndexedSeq
+        val parentElements: Seq[ScTypeElement] = parents.allTypeElements
+          .toIndexedSeq
         val results: Seq[String] =
           parentElements flatMap (process(_, Vector[String]()))
         search(results)(isUnderCaseClass).toBuffer
@@ -366,11 +358,9 @@ class ScExtendsBlockImpl private (
         getParentByStub)
       val extBlock = templDef.extendsBlock
       val kExtends = extBlock.children
-        .find(_.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
-        .get
+        .find(_.getNode.getElementType == ScalaTokenTypes.kEXTENDS).get
       val kWith = extBlock.children
-        .find(_.getNode.getElementType == ScalaTokenTypes.kWITH)
-        .get
+        .find(_.getNode.getElementType == ScalaTokenTypes.kWITH).get
       val firstElem =
         if (templateParents.isEmpty) kExtends else kExtends.getNextSibling
       val anchor =

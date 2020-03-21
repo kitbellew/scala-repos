@@ -66,8 +66,8 @@ object AsyncMeter {
     if (permits > meter.burstSize) {
       val last = permits % meter.burstSize
       val num = permits / meter.burstSize
-      val seqWithoutLast: Seq[Future[Unit]] = (0 until num).map(_ =>
-        meter.await(meter.burstSize))
+      val seqWithoutLast: Seq[Future[Unit]] = (0 until num)
+        .map(_ => meter.await(meter.burstSize))
       val seq =
         if (last == 0) seqWithoutLast else seqWithoutLast :+ meter.await(last)
       val result = Future.join(seq)
@@ -129,8 +129,8 @@ class AsyncMeter private[concurrent] (
   // if it's less frequent than 1 / millisecond, we release 1 every interval to make it hit that rate.
   // otherwise, we release N every millisecond
   private[this] val interval = period.realInterval
-  private[this] val bucket: TokenBucket = TokenBucket.newBoundedBucket(
-    burstSize)
+  private[this] val bucket: TokenBucket = TokenBucket
+    .newBoundedBucket(burstSize)
   bucket.put(burstSize)
 
   // these are synchronized on this

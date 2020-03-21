@@ -41,8 +41,7 @@ class WriteAheadLogBackedBlockRDDSuite
     with BeforeAndAfterAll
     with BeforeAndAfterEach {
 
-  val conf = new SparkConf()
-    .setMaster("local[2]")
+  val conf = new SparkConf().setMaster("local[2]")
     .setAppName(this.getClass.getSimpleName)
 
   val hadoopConf = new Configuration()
@@ -162,8 +161,8 @@ class WriteAheadLogBackedBlockRDDSuite
     val data = Seq.fill(numPartitions, 10)(scala.util.Random.nextString(50))
 
     // Put the necessary blocks in the block manager
-    val blockIds = Array.fill(numPartitions)(
-      StreamBlockId(Random.nextInt(), Random.nextInt()))
+    val blockIds = Array
+      .fill(numPartitions)(StreamBlockId(Random.nextInt(), Random.nextInt()))
     data.zip(blockIds).take(numPartitionsInBM).foreach {
       case (block, blockId) =>
         blockManager
@@ -182,20 +181,17 @@ class WriteAheadLogBackedBlockRDDSuite
       blockIds.take(numPartitionsInBM).forall(blockManager.get(_).nonEmpty),
       "Expected blocks not in BlockManager")
     require(
-      blockIds
-        .takeRight(numPartitions - numPartitionsInBM)
+      blockIds.takeRight(numPartitions - numPartitionsInBM)
         .forall(blockManager.get(_).isEmpty),
       "Unexpected blocks in BlockManager")
 
     // Make sure that the right `numPartitionsInWAL` blocks are in WALs, and other are not
     require(
-      recordHandles
-        .takeRight(numPartitionsInWAL)
+      recordHandles.takeRight(numPartitionsInWAL)
         .forall(s => new File(s.path.stripPrefix("file://")).exists()),
       "Expected blocks not in write ahead log")
     require(
-      recordHandles
-        .take(numPartitions - numPartitionsInWAL)
+      recordHandles.take(numPartitions - numPartitionsInWAL)
         .forall(s => !new File(s.path.stripPrefix("file://")).exists()),
       "Unexpected blocks in write ahead log"
     )

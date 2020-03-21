@@ -344,8 +344,7 @@ object CatalystTypeConverters {
       if (catalystValue == null) null else catalystValue.toJavaBigDecimal
     }
     override def toScalaImpl(row: InternalRow, column: Int): JavaBigDecimal =
-      row
-        .getDecimal(column, dataType.precision, dataType.scale)
+      row.getDecimal(column, dataType.precision, dataType.scale)
         .toJavaBigDecimal
   }
 

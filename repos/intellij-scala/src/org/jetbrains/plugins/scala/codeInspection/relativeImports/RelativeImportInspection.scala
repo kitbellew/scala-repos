@@ -37,8 +37,7 @@ class RelativeImportInspection
       for (elem <- resolve) {
         def applyProblem(qualifiedName: String) {
           val fixes = new ArrayBuffer[LocalQuickFix]()
-          if (!ScalaCodeStyleSettings
-                .getInstance(q.getProject)
+          if (!ScalaCodeStyleSettings.getInstance(q.getProject)
                 .isAddFullQualifiedImports) {
             fixes += new EnableFullQualifiedImports()
           }
@@ -87,10 +86,8 @@ private class MakeFullQualifiedImportFix(
   def doApplyFix(project: Project) {
     val ref = getElement
     if (ref == null || !ref.isValid) return
-    val newRef = ScalaPsiElementFactory.createReferenceFromText(
-      fqn,
-      ref.getContext,
-      ref)
+    val newRef = ScalaPsiElementFactory
+      .createReferenceFromText(fqn, ref.getContext, ref)
     import org.jetbrains.plugins.scala.codeInspection.relativeImports.RelativeImportInspection.qual
     val newFqn = qual(newRef).resolve() match {
       case p: PsiPackage if p.getQualifiedName.contains(".") => "_root_." + fqn

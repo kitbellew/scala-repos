@@ -51,11 +51,8 @@ private[mysql] class PrepareCache(svc: Service[Request, Result], max: Int = 20)
         }
       }
     }
-    val underlying = CacheBuilder
-      .newBuilder()
-      .maximumSize(max)
-      .removalListener(listener)
-      .build[Request, Future[Result]]()
+    val underlying = CacheBuilder.newBuilder().maximumSize(max)
+      .removalListener(listener).build[Request, Future[Result]]()
 
     GuavaCache.fromCache(svc, underlying)
   }

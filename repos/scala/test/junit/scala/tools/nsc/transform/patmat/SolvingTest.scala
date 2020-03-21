@@ -877,19 +877,17 @@ class SolvingTest {
 
       // expand unassigned variables
       // (otherwise solutions can not be compared)
-      val tseitinNoUnassigned =
-        tseitinSolutions.flatMap(expandUnassigned).sorted
-      val expansionNoUnassigned =
-        expansionSolutins.flatMap(expandUnassigned).sorted
+      val tseitinNoUnassigned = tseitinSolutions.flatMap(expandUnassigned)
+        .sorted
+      val expansionNoUnassigned = expansionSolutins.flatMap(expandUnassigned)
+        .sorted
       assertEquals(tseitinNoUnassigned, expansionNoUnassigned)
     }
   }
 
   def pairWiseEncoding(ops: List[Sym]) = {
     And(
-      ops
-        .combinations(2)
-        .collect { case a :: b :: Nil => Or(Not(a), Not(b)) }
+      ops.combinations(2).collect { case a :: b :: Nil => Or(Not(a), Not(b)) }
         .toSet[TestSolver.TestSolver.Prop])
   }
 

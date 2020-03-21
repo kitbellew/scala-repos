@@ -56,8 +56,8 @@ class ScaloidCodeGenerator(
 
   def prefixedClassDef = {
     val name = cls.name
-    if (cls.hasBlankConstructor || CustomClassBodies.toMap.isDefinedAt(
-          name) || companionObjectBodies.toMap.isDefinedAt(name))
+    if (cls.hasBlankConstructor || CustomClassBodies.toMap
+          .isDefinedAt(name) || companionObjectBodies.toMap.isDefinedAt(name))
       s"""$prefixedClassScalaDoc
          |${deprecated}class S$name$customClassGenerics($customClassExplicitArgs)$classImplicitArgs
          |    extends $baseClassInstance with $helperTraitName[S$name$customSimpleClassGenerics] {
@@ -116,8 +116,7 @@ class ScaloidCodeGenerator(
   private def predefinedMapping(
       mappings: PredefinedCodeMappings,
       separator: String = ", ") =
-    mappings
-      .collect { case (kind, fn) if cls.isA(kind) => fn(cls) }
+    mappings.collect { case (kind, fn) if cls.isA(kind) => fn(cls) }
       .mkString(separator)
 
   class ConstructorGenerator(con: ScalaConstructor) {
@@ -139,8 +138,8 @@ class ScaloidCodeGenerator(
       concatArgs(con.implicitArgs, customConstImplicitArgs, isImplicit = true)
 
     private def constTypeParams = {
-      val argStrings = con.paramedTypes.map(
-        paramedType(_, define = true)) :+ customConstTypeParams.trim
+      val argStrings = con.paramedTypes
+        .map(paramedType(_, define = true)) :+ customConstTypeParams.trim
       argStrings.filter(_.nonEmpty) match {
         case Nil    => ""
         case params => params.mkString("[", ", ", "]")
@@ -169,15 +168,13 @@ class ScaloidCodeGenerator(
   }
 
   def baseClassInstance = {
-    val args = BaseClassArgs.toMap
-      .get(cls.name)
+    val args = BaseClassArgs.toMap.get(cls.name)
       .fold(cls.constructors.head.args.map(_.name).mkString(", "))(_(cls))
     s"${cls.tpe.name}${typeVar(cls.tpe)}($args)"
   }
 
   def constructors =
-    cls.constructors
-      .map(new ConstructorGenerator(_).constructor)
+    cls.constructors.map(new ConstructorGenerator(_).constructor)
       .mkString("\n\n")
 
   // Methods
@@ -190,17 +187,16 @@ class ScaloidCodeGenerator(
   def namedArgs(types: List[ScalaType]) =
     types match {
       case t :: Nil => "p: " + genType(t)
-      case ts =>
-        ts.zipWithIndex
-          .map { case (t, i) => s"p${i + 1}: ${genType(t)}" }
-          .mkString(", ")
+      case ts => ts.zipWithIndex.map {
+          case (t, i) => s"p${i + 1}: ${genType(t)}"
+        }.mkString(", ")
     }
 
   def callArgs(types: List[ScalaType]) =
     types match {
       case t :: Nil => "p"
-      case ts =>
-        ts.zipWithIndex.map { case (_, i) => "p" + (i + 1) }.mkString(", ")
+      case ts => ts.zipWithIndex.map { case (_, i) => "p" + (i + 1) }
+          .mkString(", ")
     }
 
   // listener
@@ -220,7 +216,8 @@ class ScaloidCodeGenerator(
     dp + "@inline def " + l.name + (if (l.retType.name == "Unit")
                                       s"[U](f: $args => U): This = {"
                                     else
-                                      s"(f: $args => ${genType(l.retType)}): This = {") + s"\n  basis.${l.setter}(new ${l.callbackClassName} {"
+                                      s"(f: $args => ${genType(l.retType)}): This = {") + s"\n  basis.${l
+      .setter}(new ${l.callbackClassName} {"
   }
 
   def fullListener(l: AndroidListener) =
@@ -232,8 +229,7 @@ class ScaloidCodeGenerator(
 
   def unitListener(l: AndroidListener) =
     s"""${commonListener(l)}
-       |    ${l.callbackMethods
-         .map(callbackMethod(_, isUnit = true))
+       |    ${l.callbackMethods.map(callbackMethod(_, isUnit = true))
          .mkString("\n")}
        |  })
        |  basis
@@ -264,13 +260,13 @@ class ScaloidCodeGenerator(
       name)}(implicit no: NoGetterForThisProperty): Nothing = throw new Error("Android does not support the getter for '${name}'")"""
 
   def getter(prop: AndroidProperty) =
-    prop.getter
-      .fold(if (prop.nameClashes) "" else noGetter(prop.name)) { getter =>
+    prop.getter.fold(if (prop.nameClashes) "" else noGetter(prop.name)) {
+      getter =>
         val dp = if (getter.isDeprecated) deprecatedDecl else ""
         methodScalaDoc(getter) +
           s"\n$dp@inline${if (getter.isOverride) " override"
           else ""} def ${safeIdent(prop.name)} = basis.${getter.name}\n"
-      }
+    }
 
   def setter(prop: AndroidProperty, method: AndroidMethod) = {
     def _setter(postFix: String, body: String) =

@@ -153,8 +153,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     */
   def redeliveryBurstLimit: Int = defaultRedeliveryBurstLimit
 
-  private val defaultRedeliveryBurstLimit: Int = Persistence(
-    context.system).settings.atLeastOnceDelivery.redeliveryBurstLimit
+  private val defaultRedeliveryBurstLimit: Int = Persistence(context.system)
+    .settings.atLeastOnceDelivery.redeliveryBurstLimit
 
   /**
     * After this number of delivery attempts an [[AtLeastOnceDelivery.UnconfirmedWarning]] message
@@ -169,7 +169,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     defaultWarnAfterNumberOfUnconfirmedAttempts
 
   private val defaultWarnAfterNumberOfUnconfirmedAttempts: Int = Persistence(
-    context.system).settings.atLeastOnceDelivery.warnAfterNumberOfUnconfirmedAttempts
+    context.system).settings.atLeastOnceDelivery
+    .warnAfterNumberOfUnconfirmedAttempts
 
   /**
     * Maximum number of unconfirmed messages that this actor is allowed to hold in memory.
@@ -183,8 +184,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     */
   def maxUnconfirmedMessages: Int = defaultMaxUnconfirmedMessages
 
-  private val defaultMaxUnconfirmedMessages: Int = Persistence(
-    context.system).settings.atLeastOnceDelivery.maxUnconfirmedMessages
+  private val defaultMaxUnconfirmedMessages: Int = Persistence(context.system)
+    .settings.atLeastOnceDelivery.maxUnconfirmedMessages
 
   // will be started after recovery completed
   private var redeliverTask: Option[Cancellable] = None
@@ -299,19 +300,18 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     val deadline = now - redeliverInterval.toNanos
     var warnings = Vector.empty[UnconfirmedDelivery]
 
-    unconfirmed.iterator
-      .filter { case (_, delivery) ⇒ delivery.timestamp <= deadline }
-      .take(redeliveryBurstLimit)
-      .foreach {
-        case (deliveryId, delivery) ⇒
-          send(deliveryId, delivery, now)
+    unconfirmed.iterator.filter {
+      case (_, delivery) ⇒ delivery.timestamp <= deadline
+    }.take(redeliveryBurstLimit).foreach {
+      case (deliveryId, delivery) ⇒
+        send(deliveryId, delivery, now)
 
-          if (delivery.attempt == warnAfterNumberOfUnconfirmedAttempts)
-            warnings :+= UnconfirmedDelivery(
-              deliveryId,
-              delivery.destination,
-              delivery.message)
-      }
+        if (delivery.attempt == warnAfterNumberOfUnconfirmedAttempts)
+          warnings :+= UnconfirmedDelivery(
+            deliveryId,
+            delivery.destination,
+            delivery.message)
+    }
 
     if (warnings.nonEmpty) self ! UnconfirmedWarning(warnings)
   }

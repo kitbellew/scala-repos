@@ -86,8 +86,8 @@ object SimpleType {
             else tupleMarker.done(ScalaElementTypes.TYPE_IN_PARENTHESIS)
         }
         builder.restoreNewlinesState
-      case ScalaTokenTypes.kTHIS | ScalaTokenTypes.tIDENTIFIER |
-          ScalaTokenTypes.kSUPER =>
+      case ScalaTokenTypes.kTHIS | ScalaTokenTypes.tIDENTIFIER | ScalaTokenTypes
+            .kSUPER =>
         val newMarker = builder.mark
         Path parse (builder, ScalaElementTypes.REFERENCE)
         builder.getTokenType match {

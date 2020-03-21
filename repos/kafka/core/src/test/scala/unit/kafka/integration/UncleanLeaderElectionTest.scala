@@ -54,10 +54,10 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
   val partitionId = 0
 
   val kafkaApisLogger = Logger.getLogger(classOf[kafka.server.KafkaApis])
-  val networkProcessorLogger = Logger.getLogger(
-    classOf[kafka.network.Processor])
-  val syncProducerLogger = Logger.getLogger(
-    classOf[kafka.producer.SyncProducer])
+  val networkProcessorLogger = Logger
+    .getLogger(classOf[kafka.network.Processor])
+  val syncProducerLogger = Logger
+    .getLogger(classOf[kafka.producer.SyncProducer])
   val eventHandlerLogger = Logger.getLogger(
     classOf[kafka.producer.async.DefaultEventHandler[Object, Object]])
 
@@ -73,9 +73,8 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
         "controlled.shutdown.enable",
         String.valueOf(enableControlledShutdown))
       configProps.put("controlled.shutdown.max.retries", String.valueOf(1))
-      configProps.put(
-        "controlled.shutdown.retry.backoff.ms",
-        String.valueOf(1000))
+      configProps
+        .put("controlled.shutdown.retry.backoff.ms", String.valueOf(1000))
     }
 
     // temporarily set loggers to a higher level so that tests run quietly
@@ -215,19 +214,16 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
     assertEquals(List("first"), consumeAllMessages(topic))
 
     // shutdown follower server
-    servers
-      .filter(server => server.config.brokerId == followerId)
+    servers.filter(server => server.config.brokerId == followerId)
       .map(server => shutdownServer(server))
 
     produceMessage(servers, topic, "second")
     assertEquals(List("first", "second"), consumeAllMessages(topic))
 
     // shutdown leader and then restart follower
-    servers
-      .filter(server => server.config.brokerId == leaderId)
+    servers.filter(server => server.config.brokerId == leaderId)
       .map(server => shutdownServer(server))
-    servers
-      .filter(server => server.config.brokerId == followerId)
+    servers.filter(server => server.config.brokerId == followerId)
       .map(server => server.startup())
 
     // wait until new leader is (uncleanly) elected
@@ -265,19 +261,16 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
     assertEquals(List("first"), consumeAllMessages(topic))
 
     // shutdown follower server
-    servers
-      .filter(server => server.config.brokerId == followerId)
+    servers.filter(server => server.config.brokerId == followerId)
       .map(server => shutdownServer(server))
 
     produceMessage(servers, topic, "second")
     assertEquals(List("first", "second"), consumeAllMessages(topic))
 
     // shutdown leader and then restart follower
-    servers
-      .filter(server => server.config.brokerId == leaderId)
+    servers.filter(server => server.config.brokerId == leaderId)
       .map(server => shutdownServer(server))
-    servers
-      .filter(server => server.config.brokerId == followerId)
+    servers.filter(server => server.config.brokerId == followerId)
       .map(server => server.startup())
 
     // verify that unclean election to non-ISR follower does not occur
@@ -300,8 +293,7 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
     assertEquals(List.empty[String], consumeAllMessages(topic))
 
     // restart leader temporarily to send a successfully replicated message
-    servers
-      .filter(server => server.config.brokerId == leaderId)
+    servers.filter(server => server.config.brokerId == leaderId)
       .map(server => server.startup())
     waitUntilLeaderIsElectedOrChanged(
       zkUtils,
@@ -311,8 +303,7 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
 
     produceMessage(servers, topic, "third")
     waitUntilMetadataIsPropagated(servers, topic, partitionId)
-    servers
-      .filter(server => server.config.brokerId == leaderId)
+    servers.filter(server => server.config.brokerId == leaderId)
       .map(server => shutdownServer(server))
 
     // verify clean leader transition to ISR follower

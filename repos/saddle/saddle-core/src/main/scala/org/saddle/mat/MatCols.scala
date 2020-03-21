@@ -73,8 +73,8 @@ class MatCols[A: ST](cols: IndexedSeq[Vec[A]])
     val filt = cols.zipWithIndex.filter {
       case (col, ix) =>
         col.scalarTag.runtimeClass.isPrimitive && (bSt.isAny || bSt.isAnyVal) ||
-          !bSt.isAnyVal && bSt.runtimeClass.isAssignableFrom(
-            col.scalarTag.runtimeClass)
+          !bSt.isAnyVal && bSt.runtimeClass
+            .isAssignableFrom(col.scalarTag.runtimeClass)
     }
     val (vecs, locs) = filt.unzip
     (vecs.asInstanceOf[IndexedSeq[Vec[B]]], locs.toArray)

@@ -31,8 +31,8 @@ class ScalaWithTryFinallySurrounder extends ScalaExpressionSurrounder {
     }
 
     val tryCatchStmt = element.asInstanceOf[ScTryStmt]
-    val caseClause =
-      tryCatchStmt.getNode().getLastChildNode().getLastChildNode().getPsi
+    val caseClause = tryCatchStmt.getNode().getLastChildNode()
+      .getLastChildNode().getPsi
 
     val offset = caseClause.getTextRange.getStartOffset
     tryCatchStmt.getNode.removeChild(caseClause.getNode)

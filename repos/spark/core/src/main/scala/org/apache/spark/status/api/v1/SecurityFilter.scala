@@ -29,10 +29,8 @@ private[v1] class SecurityFilter
     if (uiRoot.securityManager.checkUIViewPermissions(user)) { req }
     else {
       throw new WebApplicationException(
-        Response
-          .status(Response.Status.FORBIDDEN)
-          .entity(raw"""user "$user"is not authorized""")
-          .build())
+        Response.status(Response.Status.FORBIDDEN)
+          .entity(raw"""user "$user"is not authorized""").build())
     }
   }
 }

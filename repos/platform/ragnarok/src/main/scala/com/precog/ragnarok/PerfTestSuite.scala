@@ -63,9 +63,8 @@ trait PerfTestSuite extends Logging {
           Tree.node(Group(name), Stream[Tree[PerfTest]](t))
 
         case kids =>
-          Tree.node(
-            Group(name),
-            Stream(Tree.node(RunSequential, kids.toStream)))
+          Tree
+            .node(Group(name), Stream(Tree.node(RunSequential, kids.toStream)))
       }
   }
 
@@ -146,9 +145,8 @@ trait PerfTestSuite extends Logging {
             using(in) { in =>
               val reader = new InputStreamReader(in)
               val baseline = BaselineComparisons.readBaseline(reader)
-              val delta = BaselineComparisons.compareWithBaseline(
-                result,
-                baseline)
+              val delta = BaselineComparisons
+                .compareWithBaseline(result, baseline)
 
               withPrinter(_.println(config.format match {
                 case OutputFormat.Legible => delta.toPrettyString

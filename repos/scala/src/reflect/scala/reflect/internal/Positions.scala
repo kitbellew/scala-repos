@@ -100,7 +100,8 @@ trait Positions extends api.Positions {
     def reportTree(prefix: String, tree: Tree) {
       val source = if (tree.pos.isDefined) tree.pos.source else ""
       inform(
-        "== " + prefix + " tree [" + tree.id + "] of type " + tree.productPrefix + " at " + tree.pos.show + source)
+        "== " + prefix + " tree [" + tree.id + "] of type " + tree
+          .productPrefix + " at " + tree.pos.show + source)
       inform("")
       inform(treeStatus(tree))
       inform("")
@@ -133,13 +134,15 @@ trait Positions extends api.Positions {
         if (tree.pos.isRange) {
           if (!encltree.pos.isRange)
             positionError(
-              "Synthetic tree [" + encltree.id + "] contains nonsynthetic tree [" + tree.id + "]") {
+              "Synthetic tree [" + encltree
+                .id + "] contains nonsynthetic tree [" + tree.id + "]") {
               reportTree("Enclosing", encltree)
               reportTree("Enclosed", tree)
             }
           if (!(encltree.pos includes tree.pos))
             positionError(
-              "Enclosing tree [" + encltree.id + "] does not include tree [" + tree.id + "]") {
+              "Enclosing tree [" + encltree
+                .id + "] does not include tree [" + tree.id + "]") {
               reportTree("Enclosing", encltree)
               reportTree("Enclosed", tree)
             }
@@ -147,10 +150,9 @@ trait Positions extends api.Positions {
           findOverlapping(tree.children flatMap solidDescendants) match {
             case List() => ;
             case xs => {
-              positionError(
-                "Overlapping trees " + xs
-                  .map { case (x, y) => (x.id, y.id) }
-                  .mkString("", ", ", "")) {
+              positionError("Overlapping trees " + xs.map {
+                case (x, y) => (x.id, y.id)
+              }.mkString("", ", ", "")) {
                 reportTree("Ancestor", tree)
                 for ((x, y) <- xs) {
                   reportTree("First overlapping", x)
@@ -313,9 +315,10 @@ trait Positions extends api.Positions {
       if (!t.canHaveAttrs) ()
       else if (t.pos == NoPosition) {
         t.setPos(pos)
-        super.traverse(
-          t
-        ) // TODO: bug? shouldn't the traverse be outside of the if?
+        super
+          .traverse(
+            t
+          ) // TODO: bug? shouldn't the traverse be outside of the if?
         // @PP: it's pruning whenever it encounters a node with a
         // position, which I interpret to mean that (in the author's
         // mind at least) either the children of a positioned node will

@@ -147,40 +147,34 @@ class ScalaIntroduceFieldFromExpressionHandler
     val manager = aClass.getManager
     val name = settings.name
     val typeName = Option(settings.scType).map(_.canonicalText).getOrElse("")
-    val replacedOccurences = ScalaRefactoringUtil.replaceOccurences(
-      occurrencesToReplace,
-      name,
-      ifc.file)
+    val replacedOccurences = ScalaRefactoringUtil
+      .replaceOccurences(occurrencesToReplace, name, ifc.file)
 
     val anchor = anchorForNewDeclaration(expression, replacedOccurences, aClass)
     val initInDecl = settings.initInDeclaration
     var createdDeclaration: PsiElement = null
     if (initInDecl) {
-      createdDeclaration = ScalaPsiElementFactory
-        .createDeclaration(
-          name,
-          typeName,
-          settings.defineVar,
-          expression,
-          manager)
-    } else {
-      val underscore = ScalaPsiElementFactory.createExpressionFromText(
-        "_",
+      createdDeclaration = ScalaPsiElementFactory.createDeclaration(
+        name,
+        typeName,
+        settings.defineVar,
+        expression,
         manager)
-      createdDeclaration = ScalaPsiElementFactory
-        .createDeclaration(
-          name,
-          typeName,
-          settings.defineVar,
-          underscore,
-          manager)
+    } else {
+      val underscore = ScalaPsiElementFactory
+        .createExpressionFromText("_", manager)
+      createdDeclaration = ScalaPsiElementFactory.createDeclaration(
+        name,
+        typeName,
+        settings.defineVar,
+        underscore,
+        manager)
 
       anchorForInitializer(replacedOccurences, ifc.file) match {
         case Some(anchorForInit) =>
           val parent = anchorForInit.getParent
-          val assignStmt = ScalaPsiElementFactory.createExpressionFromText(
-            s"$name = ${expression.getText}",
-            manager)
+          val assignStmt = ScalaPsiElementFactory
+            .createExpressionFromText(s"$name = ${expression.getText}", manager)
           parent.addBefore(assignStmt, anchorForInit)
           parent.addBefore(
             ScalaPsiElementFactory.createNewLineNode(manager, "\n").getPsi,
@@ -194,12 +188,10 @@ class ScalaIntroduceFieldFromExpressionHandler
     settings.visibilityLevel match {
       case VisibilityLevel.DEFAULT =>
       case VisibilityLevel.PRIVATE =>
-        createdDeclaration
-          .asInstanceOf[ScMember]
+        createdDeclaration.asInstanceOf[ScMember]
           .setModifierProperty("private", value = true)
       case VisibilityLevel.PROTECTED =>
-        createdDeclaration
-          .asInstanceOf[ScMember]
+        createdDeclaration.asInstanceOf[ScMember]
           .setModifierProperty("protected", value = true)
     }
 
@@ -208,9 +200,8 @@ class ScalaIntroduceFieldFromExpressionHandler
     anchor match {
       case (tp: ScTemplateParents) childOf (extBl: ScExtendsBlock) =>
         val earlyDef = extBl.addEarlyDefinitions()
-        createdDeclaration = earlyDef.addAfter(
-          createdDeclaration,
-          earlyDef.getFirstChild)
+        createdDeclaration = earlyDef
+          .addAfter(createdDeclaration, earlyDef.getFirstChild)
       case _ childOf (ed: ScEarlyDefinitions)
           if onOneLine(document, ed.getTextRange) =>
         def isBlockStmtOrMember(elem: PsiElement) =
@@ -249,10 +240,8 @@ class ScalaIntroduceFieldFromExpressionHandler
     val occCount = ifc.occurrences.length
     // Add occurrences highlighting
     if (occCount > 1)
-      occurrenceHighlighters = ScalaRefactoringUtil.highlightOccurrences(
-        ifc.project,
-        ifc.occurrences,
-        ifc.editor)
+      occurrenceHighlighters = ScalaRefactoringUtil
+        .highlightOccurrences(ifc.project, ifc.occurrences, ifc.editor)
 
     val dialog = new ScalaIntroduceFieldDialog(ifc, settings)
     dialog.show()
@@ -270,8 +259,8 @@ class ScalaIntroduceFieldFromExpressionHandler
       clazz: ScTemplateDefinition): Boolean = true
 
   private def onOneLine(document: Document, range: TextRange): Boolean = {
-    document.getLineNumber(range.getStartOffset) == document.getLineNumber(
-      range.getEndOffset)
+    document.getLineNumber(range.getStartOffset) == document
+      .getLineNumber(range.getEndOffset)
   }
 
   private def showErrorMessage(

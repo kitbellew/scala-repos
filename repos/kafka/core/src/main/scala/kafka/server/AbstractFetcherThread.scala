@@ -130,12 +130,12 @@ abstract class AbstractFetcherThread(
         responseData.foreach {
           case (topicAndPartition, partitionData) =>
             val TopicAndPartition(topic, partitionId) = topicAndPartition
-            partitionMap
-              .get(topicAndPartition)
+            partitionMap.get(topicAndPartition)
               .foreach(currentPartitionFetchState =>
                 // we append to the log if the current offset is defined and it is the same as the offset requested during fetch
-                if (fetchRequest.offset(
-                      topicAndPartition) == currentPartitionFetchState.offset) {
+                if (fetchRequest
+                      .offset(topicAndPartition) == currentPartitionFetchState
+                      .offset) {
                   Errors.forCode(partitionData.errorCode) match {
                     case Errors.NONE =>
                       try {
@@ -149,8 +149,7 @@ abstract class AbstractFetcherThread(
                         partitionMap.put(
                           topicAndPartition,
                           new PartitionFetchState(newOffset))
-                        fetcherLagStats
-                          .getFetcherLagStats(topic, partitionId)
+                        fetcherLagStats.getFetcherLagStats(topic, partitionId)
                           .lag = Math
                           .max(0L, partitionData.highWatermark - newOffset)
                         fetcherStats.byteRate.mark(validBytes)
@@ -166,7 +165,8 @@ abstract class AbstractFetcherThread(
                           // 2. If the message is corrupt due to a transient state in the log (truncation, partial writes can cause this), we simply continue and
                           // should get fixed in the subsequent fetches
                           logger.error(
-                            "Found invalid messages during fetch for partition [" + topic + "," + partitionId + "] offset " + currentPartitionFetchState.offset + " error " + ime.getMessage)
+                            "Found invalid messages during fetch for partition [" + topic + "," + partitionId + "] offset " + currentPartitionFetchState
+                              .offset + " error " + ime.getMessage)
                         case e: Throwable =>
                           throw new KafkaException(
                             "error processing data for partition [%s,%d] offset %d"
@@ -241,15 +241,13 @@ abstract class AbstractFetcherThread(
     partitionMapLock.lockInterruptibly()
     try {
       for (partition <- partitions) {
-        partitionMap
-          .get(partition)
-          .foreach(currentPartitionFetchState =>
-            if (currentPartitionFetchState.isActive)
-              partitionMap.put(
-                partition,
-                new PartitionFetchState(
-                  currentPartitionFetchState.offset,
-                  new DelayedItem(delay))))
+        partitionMap.get(partition).foreach(currentPartitionFetchState =>
+          if (currentPartitionFetchState.isActive)
+            partitionMap.put(
+              partition,
+              new PartitionFetchState(
+                currentPartitionFetchState.offset,
+                new DelayedItem(delay))))
       }
       partitionMapCond.signalAll()
     } finally partitionMapLock.unlock()

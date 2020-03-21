@@ -152,10 +152,9 @@ private[sql] object JDBCRDD extends Logging {
             val fieldSize = rsmd.getPrecision(i + 1)
             val fieldScale = rsmd.getScale(i + 1)
             val isSigned = rsmd.isSigned(i + 1)
-            val nullable =
-              rsmd.isNullable(i + 1) != ResultSetMetaData.columnNoNulls
-            val metadata = new MetadataBuilder()
-              .putString("name", columnName)
+            val nullable = rsmd.isNullable(i + 1) != ResultSetMetaData
+              .columnNoNulls
+            val metadata = new MetadataBuilder().putString("name", columnName)
               .putLong("scale", fieldScale)
             val columnType = dialect
               .getCatalystType(dataType, typeName, fieldSize, metadata)
@@ -267,8 +266,8 @@ private[sql] object JDBCRDD extends Logging {
       filters: Array[Filter],
       parts: Array[Partition]): RDD[InternalRow] = {
     val dialect = JdbcDialects.get(url)
-    val quotedColumns = requiredColumns.map(colName =>
-      dialect.quoteIdentifier(colName))
+    val quotedColumns = requiredColumns
+      .map(colName => dialect.quoteIdentifier(colName))
     new JDBCRDD(
       sc,
       JdbcUtils.createConnectionFactory(url, properties),
@@ -316,8 +315,7 @@ private[sql] class JDBCRDD(
   /**
     * `filters`, but as a WHERE clause suitable for injection into a SQL query.
     */
-  private val filterWhereClause: String = filters
-    .flatMap(JDBCRDD.compileFilter)
+  private val filterWhereClause: String = filters.flatMap(JDBCRDD.compileFilter)
     .mkString(" AND ")
 
   /**
@@ -478,8 +476,7 @@ private[sql] class JDBCRDD(
                             DateTimeUtils.fromJavaTimestamp)
                       }
                     case StringConversion =>
-                      array
-                        .asInstanceOf[Array[java.lang.String]]
+                      array.asInstanceOf[Array[java.lang.String]]
                         .map(UTF8String.fromString)
                     case DateConversion =>
                       array.asInstanceOf[Array[java.sql.Date]].map { date =>

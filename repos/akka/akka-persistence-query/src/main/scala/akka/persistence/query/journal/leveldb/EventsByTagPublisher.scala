@@ -127,10 +127,8 @@ private[akka] abstract class AbstractEventsByTagPublisher(
       receiveRecoverySuccess(highestSeqNr)
 
     case ReplayMessagesFailure(cause) ⇒
-      log.debug(
-        "replay failed for tag [{}], due to [{}]",
-        tag,
-        cause.getMessage)
+      log
+        .debug("replay failed for tag [{}], due to [{}]", tag, cause.getMessage)
       deliverBuf()
       onErrorThenStop(cause)
 
@@ -162,11 +160,9 @@ private[akka] class LiveEventsByTagPublisher(
       writeJournalPluginId) {
   import EventsByTagPublisher._
 
-  val tickTask = context.system.scheduler.schedule(
-    refreshInterval,
-    refreshInterval,
-    self,
-    Continue)(context.dispatcher)
+  val tickTask = context.system.scheduler
+    .schedule(refreshInterval, refreshInterval, self, Continue)(
+      context.dispatcher)
 
   override def postStop(): Unit = tickTask.cancel()
 

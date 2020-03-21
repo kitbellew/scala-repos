@@ -24,9 +24,8 @@ object Transform {
       conscriptConfigs <<= (
         managedResources in launch in Compile,
         sourceDirectory in Compile).map { (res, src) =>
-        val source =
-          res.find(_.getName == "sbt.boot.properties") getOrElse sys.error(
-            "No managed boot.properties file.")
+        val source = res.find(_.getName == "sbt.boot.properties") getOrElse sys
+          .error("No managed boot.properties file.")
         copyConscriptProperties(source, src / "conscript")
         ()
       })
@@ -57,8 +56,8 @@ object Transform {
     Seq(
       inputSourceDirectory := sourceDirectory.value / "input_sources",
       inputSourceDirectories <<= Seq(inputSourceDirectory).join,
-      inputSources <<= inputSourceDirectories.map(dirs =>
-        (dirs ** (-DirectoryFilter)).get),
+      inputSources <<= inputSourceDirectories
+        .map(dirs => (dirs ** (-DirectoryFilter)).get),
       fileMappings in transformSources <<= transformSourceMappings,
       transformSources <<= (
         fileMappings in transformSources,
@@ -85,8 +84,8 @@ object Transform {
     Seq(
       inputResourceDirectory := sourceDirectory.value / "input_resources",
       inputResourceDirectories <<= Seq(inputResourceDirectory).join,
-      inputResources <<= inputResourceDirectories.map(dirs =>
-        (dirs ** (-DirectoryFilter)).get),
+      inputResources <<= inputResourceDirectories
+        .map(dirs => (dirs ** (-DirectoryFilter)).get),
       fileMappings in transformResources <<= transformResourceMappings,
       transformResources <<= (
         fileMappings in transformResources,
@@ -104,9 +103,8 @@ object Transform {
   def transform(in: File, out: File, map: Map[String, String]): File = {
     def get(key: String): String =
       map.getOrElse(key, sys.error("No value defined for key '" + key + "'"))
-    val newString = Property.replaceAllIn(
-      IO.read(in),
-      mtch => get(mtch.group(1)))
+    val newString = Property
+      .replaceAllIn(IO.read(in), mtch => get(mtch.group(1)))
     if (Some(newString) != read(out)) IO.write(out, newString)
     out
   }

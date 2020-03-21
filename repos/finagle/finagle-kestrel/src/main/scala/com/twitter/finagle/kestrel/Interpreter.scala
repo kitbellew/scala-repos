@@ -22,8 +22,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
       case Get(queueName, timeout) => state match {
           case NoTransaction() =>
             val wait = timeout.getOrElse(0.seconds)
-            val item = queues
-              .get(queueName)
+            val item = queues.get(queueName)
               .poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
             if (item eq null) Values(Seq.empty)
             else Values(Seq(Value(queueName, item)))
@@ -33,8 +32,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
       case Open(queueName, timeout) => state match {
           case NoTransaction() =>
             val wait = timeout.getOrElse(0.seconds)
-            val item = queues
-              .get(queueName)
+            val item = queues.get(queueName)
               .poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
             state = OpenTransaction(queueName, item)
             if (item eq null) Values(Seq.empty)
@@ -76,8 +74,7 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
         }
       case Peek(queueName, timeout) =>
         val wait = timeout.getOrElse(0.seconds)
-        val item = queues
-          .get(queueName)
+        val item = queues.get(queueName)
           .poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
         if (item eq null) Values(Seq.empty)
         else Values(Seq(Value(queueName, item)))

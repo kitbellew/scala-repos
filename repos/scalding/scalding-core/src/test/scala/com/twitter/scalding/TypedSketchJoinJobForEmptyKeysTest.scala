@@ -8,11 +8,9 @@ class TypedSketchJoinJobForEmptyKeys(args: Args) extends Job(args) {
   val rightTypedPipe = TypedPipe.from(List((3, 3333), (4, 4444)))
 
   implicit def serialize(k: Int) = k.toString.getBytes
-  leftTypedPipe
-    .sketch(1)
-    .leftJoin(rightTypedPipe)
-    .map { case (a, (b, c)) => (a, b, c.getOrElse(-1)) }
-    .write(TypedTsv("output"))
+  leftTypedPipe.sketch(1).leftJoin(rightTypedPipe).map {
+    case (a, (b, c)) => (a, b, c.getOrElse(-1))
+  }.write(TypedTsv("output"))
 }
 
 class TypedSketchJoinJobForEmptyKeysTest extends WordSpec with Matchers {
@@ -24,9 +22,7 @@ class TypedSketchJoinJobForEmptyKeysTest extends WordSpec with Matchers {
           outBuf should have size 1
           val unordered = outBuf.toSet
           unordered should contain(1, 1111, -1)
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 }

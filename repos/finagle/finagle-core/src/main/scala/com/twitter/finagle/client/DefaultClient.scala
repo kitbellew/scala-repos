@@ -101,15 +101,13 @@ case class DefaultClient[Req, Rep](
       case _: DefaultClient.UninitializedFailureAccrual =>
         factory: ServiceFactory[Req, Rep] => {
           val classifier = params[param.ResponseClassifier].responseClassifier
-          DefaultClient
-            .defaultFailureAccrual(statsReceiver, classifier)
+          DefaultClient.defaultFailureAccrual(statsReceiver, classifier)
             .andThen(factory)
         }
       case _ => failureAccrual
     }
 
-    val stk = stack
-      .replace(FailureAccrualFactory.role, failureAccrualTransform)
+    val stk = stack.replace(FailureAccrualFactory.role, failureAccrualTransform)
       .replace(StackClient.Role.pool, pool(statsReceiver))
       .replace(TraceInitializerFilter.role, newTraceInitializer)
 

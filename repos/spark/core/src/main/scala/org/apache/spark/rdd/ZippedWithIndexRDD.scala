@@ -48,24 +48,22 @@ private[spark] class ZippedWithIndexRDD[T: ClassTag](prev: RDD[T])
     if (n == 0) { Array[Long]() }
     else if (n == 1) { Array(0L) }
     else {
-      prev.context
-        .runJob(
-          prev,
-          Utils.getIteratorSize _,
-          0 until n - 1 // do not need to count the last partition
-        )
-        .scanLeft(0L)(_ + _)
+      prev.context.runJob(
+        prev,
+        Utils.getIteratorSize _,
+        0 until n - 1 // do not need to count the last partition
+      ).scanLeft(0L)(_ + _)
     }
   }
 
   override def getPartitions: Array[Partition] = {
-    firstParent[T].partitions.map(x =>
-      new ZippedWithIndexRDDPartition(x, startIndices(x.index)))
+    firstParent[T].partitions
+      .map(x => new ZippedWithIndexRDDPartition(x, startIndices(x.index)))
   }
 
   override def getPreferredLocations(split: Partition): Seq[String] =
-    firstParent[T].preferredLocations(
-      split.asInstanceOf[ZippedWithIndexRDDPartition].prev)
+    firstParent[T]
+      .preferredLocations(split.asInstanceOf[ZippedWithIndexRDDPartition].prev)
 
   override def compute(
       splitIn: Partition,

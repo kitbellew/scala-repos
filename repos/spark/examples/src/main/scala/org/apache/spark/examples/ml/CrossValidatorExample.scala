@@ -64,30 +64,23 @@ object CrossValidatorExample {
     ))
 
     // Configure an ML pipeline, which consists of three stages: tokenizer, hashingTF, and lr.
-    val tokenizer = new Tokenizer()
-      .setInputCol("text")
-      .setOutputCol("words")
-    val hashingTF = new HashingTF()
-      .setInputCol(tokenizer.getOutputCol)
+    val tokenizer = new Tokenizer().setInputCol("text").setOutputCol("words")
+    val hashingTF = new HashingTF().setInputCol(tokenizer.getOutputCol)
       .setOutputCol("features")
-    val lr = new LogisticRegression()
-      .setMaxIter(10)
-    val pipeline = new Pipeline()
-      .setStages(Array(tokenizer, hashingTF, lr))
+    val lr = new LogisticRegression().setMaxIter(10)
+    val pipeline = new Pipeline().setStages(Array(tokenizer, hashingTF, lr))
 
     // We now treat the Pipeline as an Estimator, wrapping it in a CrossValidator instance.
     // This will allow us to jointly choose parameters for all Pipeline stages.
     // A CrossValidator requires an Estimator, a set of Estimator ParamMaps, and an Evaluator.
-    val crossval = new CrossValidator()
-      .setEstimator(pipeline)
+    val crossval = new CrossValidator().setEstimator(pipeline)
       .setEvaluator(new BinaryClassificationEvaluator)
     // We use a ParamGridBuilder to construct a grid of parameters to search over.
     // With 3 values for hashingTF.numFeatures and 2 values for lr.regParam,
     // this grid will have 3 x 2 = 6 parameter settings for CrossValidator to choose from.
     val paramGrid = new ParamGridBuilder()
       .addGrid(hashingTF.numFeatures, Array(10, 100, 1000))
-      .addGrid(lr.regParam, Array(0.1, 0.01))
-      .build()
+      .addGrid(lr.regParam, Array(0.1, 0.01)).build()
     crossval.setEstimatorParamMaps(paramGrid)
     crossval.setNumFolds(2) // Use 3+ in practice
 
@@ -102,11 +95,8 @@ object CrossValidatorExample {
       Document(7L, "apache hadoop")))
 
     // Make predictions on test documents. cvModel uses the best model found (lrModel).
-    cvModel
-      .transform(test.toDF())
-      .select("id", "text", "probability", "prediction")
-      .collect()
-      .foreach {
+    cvModel.transform(test.toDF())
+      .select("id", "text", "probability", "prediction").collect().foreach {
         case Row(id: Long, text: String, prob: Vector, prediction: Double) =>
           println(s"($id, $text) --> prob=$prob, prediction=$prediction")
       }

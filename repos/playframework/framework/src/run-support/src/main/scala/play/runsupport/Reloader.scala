@@ -77,8 +77,8 @@ object Reloader {
       : (Seq[(String, String)], Option[Int], Option[Int], String) = {
     val (propertyArgs, otherArgs) = args.partition(_.startsWith("-D"))
 
-    val properties =
-      propertyArgs.map(_.drop(2).split('=')).map(a => a(0) -> a(1)).toSeq
+    val properties = propertyArgs.map(_.drop(2).split('='))
+      .map(a => a(0) -> a(1)).toSeq
 
     val props = properties.toMap
     def prop(key: String): Option[String] =
@@ -97,20 +97,21 @@ object Reloader {
     // http port can be defined as the first non-property argument, or a -Dhttp.port argument or system property
     // the http port can be disabled (set to None) by setting any of the input methods to "disabled"
     // Or it can be defined in devSettings as "play.server.http.port"
-    val httpPortString: Option[String] = otherArgs.headOption orElse prop(
-      "http.port") orElse devSettings.toMap.get("play.server.http.port")
+    val httpPortString: Option[String] =
+      otherArgs.headOption orElse prop("http.port") orElse devSettings.toMap
+        .get("play.server.http.port")
     val httpPort: Option[Int] = parsePortValue(
       httpPortString,
       Option(defaultHttpPort))
 
     // https port can be defined as a -Dhttps.port argument or system property
-    val httpsPortString: Option[String] =
-      prop("https.port") orElse devSettings.toMap.get("play.server.https.port")
+    val httpsPortString: Option[String] = prop("https.port") orElse devSettings
+      .toMap.get("play.server.https.port")
     val httpsPort = parsePortValue(httpsPortString)
 
     // http address can be defined as a -Dhttp.address argument or system property
-    val httpAddress = prop("http.address") orElse devSettings.toMap.get(
-      "play.server.http.address") getOrElse defaultHttpAddress
+    val httpAddress = prop("http.address") orElse devSettings.toMap
+      .get("play.server.http.address") getOrElse defaultHttpAddress
 
     (properties, httpPort, httpsPort, httpAddress)
   }
@@ -275,16 +276,13 @@ object Reloader {
       val docsLoader =
         new URLClassLoader(urls(docsClasspath), applicationLoader)
       val maybeDocsJarFile = docsJar map { f => new JarFile(f) }
-      val docHandlerFactoryClass = docsLoader.loadClass(
-        "play.docs.BuildDocHandlerFactory")
+      val docHandlerFactoryClass = docsLoader
+        .loadClass("play.docs.BuildDocHandlerFactory")
       val buildDocHandler = maybeDocsJarFile match {
         case Some(docsJarFile) =>
-          val factoryMethod = docHandlerFactoryClass.getMethod(
-            "fromJar",
-            classOf[JarFile],
-            classOf[String])
-          factoryMethod
-            .invoke(null, docsJarFile, "play/docs/content")
+          val factoryMethod = docHandlerFactoryClass
+            .getMethod("fromJar", classOf[JarFile], classOf[String])
+          factoryMethod.invoke(null, docsJarFile, "play/docs/content")
             .asInstanceOf[BuildDocHandler]
         case None =>
           val factoryMethod = docHandlerFactoryClass.getMethod("empty")
@@ -300,14 +298,12 @@ object Reloader {
             classOf[BuildDocHandler],
             classOf[Int],
             classOf[String])
-          mainDev
-            .invoke(
-              null,
-              reloader,
-              buildDocHandler,
-              httpPort.get: java.lang.Integer,
-              httpAddress)
-            .asInstanceOf[play.core.server.ServerWithStop]
+          mainDev.invoke(
+            null,
+            reloader,
+            buildDocHandler,
+            httpPort.get: java.lang.Integer,
+            httpAddress).asInstanceOf[play.core.server.ServerWithStop]
         } else {
           val mainDev = mainClass.getMethod(
             "mainDevOnlyHttpsMode",
@@ -315,14 +311,12 @@ object Reloader {
             classOf[BuildDocHandler],
             classOf[Int],
             classOf[String])
-          mainDev
-            .invoke(
-              null,
-              reloader,
-              buildDocHandler,
-              httpsPort.get: java.lang.Integer,
-              httpAddress)
-            .asInstanceOf[play.core.server.ServerWithStop]
+          mainDev.invoke(
+            null,
+            reloader,
+            buildDocHandler,
+            httpsPort.get: java.lang.Integer,
+            httpAddress).asInstanceOf[play.core.server.ServerWithStop]
         }
       }
 
@@ -356,8 +350,8 @@ object Reloader {
         // Convert play-server exceptions to our to our ServerStartException
         def getRootCause(t: Throwable): Throwable =
           if (t.getCause == null) t else getRootCause(t.getCause)
-        if (getRootCause(
-              e).getClass.getName == "play.core.server.ServerListenException") {
+        if (getRootCause(e).getClass
+              .getName == "play.core.server.ServerListenException") {
           throw new ServerStartException(e)
         }
         throw e
@@ -400,9 +394,8 @@ class Reloader(
   private var watchState: WatchState = WatchState.empty
 
   // Create the watcher, updates the changed boolean when a file has changed.
-  private val watcher = fileWatchService.watch(
-    monitoredFiles,
-    () => { changed = true })
+  private val watcher = fileWatchService
+    .watch(monitoredFiles, () => { changed = true })
   private val classLoaderVersion =
     new java.util.concurrent.atomic.AtomicInteger(0)
 
@@ -420,7 +413,8 @@ class Reloader(
     */
   def reload: AnyRef = {
     Reloader.synchronized {
-      if (changed || forceReloadNextTime || currentSourceMap.isEmpty || currentApplicationClassLoader.isEmpty) {
+      if (changed || forceReloadNextTime || currentSourceMap
+            .isEmpty || currentApplicationClassLoader.isEmpty) {
 
         val shouldReload = forceReloadNextTime
 
@@ -442,15 +436,14 @@ class Reloader(
               // We only want to reload if the classpath has changed.  Assets don't live on the classpath, so
               // they won't trigger a reload.
               // Use the SBT watch service, passing true as the termination to force it to break after one check
-              val (_, newState) = SourceModificationWatch.watch(
-                PathFinder.strict(classpath).***,
-                0,
-                watchState)(true)
+              val (_, newState) = SourceModificationWatch
+                .watch(PathFinder.strict(classpath).***, 0, watchState)(true)
               // SBT has a quiet wait period, if that's set to true, sources were modified
               val triggered = newState.awaitingQuietPeriod
               watchState = newState
 
-              if (triggered || shouldReload || currentApplicationClassLoader.isEmpty) {
+              if (triggered || shouldReload || currentApplicationClassLoader
+                    .isEmpty) {
                 // Create a new classloader
                 val version = classLoaderVersion.incrementAndGet
                 val name = "ReloadableClassLoader(v" + version + ")"

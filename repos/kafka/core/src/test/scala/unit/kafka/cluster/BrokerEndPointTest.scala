@@ -90,8 +90,7 @@ class BrokerEndPointTest extends Logging {
     val broker = Broker.createBroker(1, brokerInfoStr)
     assert(broker.id == 1)
     assert(
-      broker
-        .getBrokerEndPoint(SecurityProtocol.PLAINTEXT)
+      broker.getBrokerEndPoint(SecurityProtocol.PLAINTEXT)
         .host == "172.16.8.243")
     assert(broker.getBrokerEndPoint(SecurityProtocol.PLAINTEXT).port == 9091)
   }

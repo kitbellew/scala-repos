@@ -32,10 +32,8 @@ class ExpandBooleanIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val returnStmt: ScReturnStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScReturnStmt],
-      false)
+    val returnStmt: ScReturnStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScReturnStmt], false)
     if (returnStmt == null) return false
 
     val range: TextRange = returnStmt.getTextRange
@@ -53,10 +51,8 @@ class ExpandBooleanIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val returnStmt: ScReturnStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScReturnStmt],
-      false)
+    val returnStmt: ScReturnStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScReturnStmt], false)
     if (returnStmt == null || !returnStmt.isValid) return
 
     val start = returnStmt.getTextRange.getStartOffset

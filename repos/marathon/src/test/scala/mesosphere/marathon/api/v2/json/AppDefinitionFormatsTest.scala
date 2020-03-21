@@ -79,8 +79,8 @@ class AppDefinitionFormatsTest
   test("ToJson should serialize full version info") {
     import Fixture._
 
-    val r1 = Json.toJson(
-      a1.copy(versionInfo = AppDefinition.VersionInfo.FullVersionInfo(
+    val r1 = Json
+      .toJson(a1.copy(versionInfo = AppDefinition.VersionInfo.FullVersionInfo(
         version = Timestamp(3),
         lastScalingAt = Timestamp(2),
         lastConfigChangeAt = Timestamp(1))))
@@ -179,8 +179,8 @@ class AppDefinitionFormatsTest
   }
 
   test("""FromJSON should parse "acceptedResourceRoles": ["*"] """) {
-    val json = Json.parse(
-      """ { "id": "test", "acceptedResourceRoles": ["*"] }""")
+    val json = Json
+      .parse(""" { "id": "test", "acceptedResourceRoles": ["*"] }""")
     val appDef = json.as[AppDefinition]
     appDef.acceptedResourceRoles should equal(Some(Set("*")))
   }

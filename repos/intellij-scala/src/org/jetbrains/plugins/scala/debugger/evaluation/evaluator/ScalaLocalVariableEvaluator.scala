@@ -81,8 +81,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
     }
 
     def withSimpleName(frameProxy: StackFrameProxyImpl): Option[AnyRef] = {
-      val local: LocalVariableProxyImpl = frameProxy.visibleVariableByName(
-        myName)
+      val local: LocalVariableProxyImpl = frameProxy
+        .visibleVariableByName(myName)
       Option(local).flatMap(saveContextAndGetValue(frameProxy, _))
     }
 
@@ -104,11 +104,12 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
       if (frameProxy == null || myParameterIndex < 0) None
       else {
         val frameMethodName = frameProxy.location().method().name()
-        if ((myMethodName == null) || frameMethodName.startsWith(
-              myMethodName)) {
+        if ((myMethodName == null) || frameMethodName
+              .startsWith(myMethodName)) {
           try {
             val values = frameProxy.getArgumentValues
-            if (values != null && !values.isEmpty && myParameterIndex >= 0 && myParameterIndex < values
+            if (values != null && !values
+                  .isEmpty && myParameterIndex >= 0 && myParameterIndex < values
                   .size()) { Some(values.get(myParameterIndex)) }
             else { None }
           } catch { case ignore: InternalException => None }
@@ -145,8 +146,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
         def setValue(value: Value) {
           val frameProxy: StackFrameProxyImpl = myContext.getFrameProxy
           try {
-            if (DebuggerUtil.isScalaRuntimeRef(
-                  myEvaluatedVariable.getType.name())) {
+            if (DebuggerUtil
+                  .isScalaRuntimeRef(myEvaluatedVariable.getType.name())) {
               frameProxy.getValue(myEvaluatedVariable) match {
                 case objRef: ObjectReference =>
                   val field = objRef.referenceType().fieldByName("elem")

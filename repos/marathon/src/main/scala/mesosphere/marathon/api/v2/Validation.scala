@@ -31,9 +31,7 @@ object Validation {
     new Validator[Iterable[T]] {
       override def apply(seq: Iterable[T]): Result = {
 
-        val violations = seq
-          .map(item => (item, validator(item)))
-          .zipWithIndex
+        val violations = seq.map(item => (item, validator(item))).zipWithIndex
           .collect {
             case ((item, f: Failure), pos: Int) =>
               GroupViolation(item, "not valid", Some(s"($pos)"), f.violations)
@@ -54,10 +52,8 @@ object Validation {
     Json.obj(
       "message" -> "Object is not valid",
       "details" -> {
-        f.violations
-          .flatMap(allRuleViolationsWithFullDescription(_))
-          .groupBy(_.description)
-          .map {
+        f.violations.flatMap(allRuleViolationsWithFullDescription(_))
+          .groupBy(_.description).map {
             case (description, ruleViolation) => Json.obj(
                 "path" -> description,
                 "errors" -> ruleViolation.map(r => JsString(r.constraint)))
@@ -224,9 +220,9 @@ object Validation {
   }
 
   def configValueSet[T <: AnyRef](config: String*): Validator[T] =
-    isTrue(
-      s"""You have to supply ${config.mkString(", ")} on the command line.""") {
-      _ => config.forall(AllConf.suppliedOptionNames)
+    isTrue(s"""You have to supply ${config
+      .mkString(", ")} on the command line.""") { _ =>
+      config.forall(AllConf.suppliedOptionNames)
     }
 
   def isTrue[T](constraint: String)(test: T => Boolean): Validator[T] =

@@ -48,8 +48,7 @@ private[camel] object TestSupport {
         msg: String,
         timeout: Duration = 1 second): AnyRef = {
       try {
-        camel.template
-          .asyncRequestBody(to, msg)
+        camel.template.asyncRequestBody(to, msg)
           .get(timeout.toNanos, TimeUnit.NANOSECONDS)
       } catch {
         case e: ExecutionException ⇒ throw e.getCause

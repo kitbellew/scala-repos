@@ -23,8 +23,8 @@ object CokleisliTest extends SpecLite {
   implicit val cokleisliArb2: Arbitrary[Cokleisli[Option, Int, Int => Int]] = {
     def arb(f: (Option[Int], Int) => (Int => Int))
         : Gen[Cokleisli[Option, Int, Int => Int]] =
-      implicitly[Arbitrary[Int]].arbitrary.map(a =>
-        Cokleisli[Option, Int, Int => Int](f(_, a)))
+      implicitly[Arbitrary[Int]].arbitrary
+        .map(a => Cokleisli[Option, Int, Int => Int](f(_, a)))
 
     Arbitrary(Gen.oneOf(
       arb((_, n) => Function.const(n)),
@@ -37,10 +37,8 @@ object CokleisliTest extends SpecLite {
 
   implicit val cokleisliEqual: Equal[Cokleisli[Option, Int, Int]] = Equal
     .equal { (a, b) =>
-      a(None) == b(None) && Iterator
-        .fill(20)(util.Random.nextInt)
-        .map(Option(_))
-        .forall(n => a(n) == b(n))
+      a(None) == b(None) && Iterator.fill(20)(util.Random.nextInt)
+        .map(Option(_)).forall(n => a(n) == b(n))
     }
 
   checkAll(bindRec.laws[Cokleisli[Option, Int, ?]])

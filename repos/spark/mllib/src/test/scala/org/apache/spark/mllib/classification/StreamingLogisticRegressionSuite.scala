@@ -48,18 +48,14 @@ class StreamingLogisticRegressionSuite
 
     // create model
     val model = new StreamingLogisticRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(0.0))
-      .setStepSize(0.2)
+      .setInitialWeights(Vectors.dense(0.0)).setStepSize(0.2)
       .setNumIterations(25)
 
     // generate sequence of simulated data
     val numBatches = 20
     val input = (0 until numBatches).map { i =>
-      LogisticRegressionSuite.generateLogisticInput(
-        0.0,
-        B,
-        nPoints,
-        42 * (i + 1))
+      LogisticRegressionSuite
+        .generateLogisticInput(0.0, B, nPoints, 42 * (i + 1))
     }
 
     // apply model training to input stream
@@ -84,18 +80,14 @@ class StreamingLogisticRegressionSuite
 
     // create model
     val model = new StreamingLogisticRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(0.0))
-      .setStepSize(0.2)
+      .setInitialWeights(Vectors.dense(0.0)).setStepSize(0.2)
       .setNumIterations(25)
 
     // generate sequence of simulated data
     val numBatches = 20
     val input = (0 until numBatches).map { i =>
-      LogisticRegressionSuite.generateLogisticInput(
-        0.0,
-        B,
-        nPoints,
-        42 * (i + 1))
+      LogisticRegressionSuite
+        .generateLogisticInput(0.0, B, nPoints, 42 * (i + 1))
     }
 
     // create buffer to store intermediate fits
@@ -130,18 +122,14 @@ class StreamingLogisticRegressionSuite
 
     // create model initialized with true weights
     val model = new StreamingLogisticRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(1.5))
-      .setStepSize(0.2)
+      .setInitialWeights(Vectors.dense(1.5)).setStepSize(0.2)
       .setNumIterations(25)
 
     // generate sequence of simulated data for testing
     val numBatches = 10
     val testInput = (0 until numBatches).map { i =>
-      LogisticRegressionSuite.generateLogisticInput(
-        0.0,
-        B,
-        nPoints,
-        42 * (i + 1))
+      LogisticRegressionSuite
+        .generateLogisticInput(0.0, B, nPoints, 42 * (i + 1))
     }
 
     // apply model predictions to test stream
@@ -158,8 +146,8 @@ class StreamingLogisticRegressionSuite
       numBatches)
 
     // check that at least 60% of predictions are correct on all batches
-    val errors = output.map(batch =>
-      batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
+    val errors = output
+      .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
 
     assert(errors.forall(x => x <= 0.4))
   }
@@ -168,19 +156,15 @@ class StreamingLogisticRegressionSuite
   test("training and prediction") {
     // create model initialized with zero weights
     val model = new StreamingLogisticRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(-0.1))
-      .setStepSize(0.01)
+      .setInitialWeights(Vectors.dense(-0.1)).setStepSize(0.01)
       .setNumIterations(10)
 
     // generate sequence of simulated data for testing
     val numBatches = 10
     val nPoints = 100
     val testInput = (0 until numBatches).map { i =>
-      LogisticRegressionSuite.generateLogisticInput(
-        0.0,
-        5.0,
-        nPoints,
-        42 * (i + 1))
+      LogisticRegressionSuite
+        .generateLogisticInput(0.0, 5.0, nPoints, 42 * (i + 1))
     }
 
     // train and predict
@@ -198,16 +182,14 @@ class StreamingLogisticRegressionSuite
 
     // assert that prediction error improves, ensuring that the updated model is being used
     val error = output
-      .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
-      .toList
+      .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints).toList
     assert(error.head > 0.8 & error.last < 0.2)
   }
 
   // Test empty RDDs in a stream
   test("handling empty RDDs in a stream") {
     val model = new StreamingLogisticRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(-0.1))
-      .setStepSize(0.01)
+      .setInitialWeights(Vectors.dense(-0.1)).setStepSize(0.01)
       .setNumIterations(10)
     val numBatches = 10
     val emptyInput = Seq.empty[Seq[LabeledPoint]]

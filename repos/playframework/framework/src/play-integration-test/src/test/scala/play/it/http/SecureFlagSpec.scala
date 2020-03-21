@@ -44,8 +44,7 @@ trait SecureFlagSpec
     running(TestServer(
       port,
       sslPort = sslPort,
-      application = GuiceApplicationBuilder()
-        .routes { case _ => action }
+      application = GuiceApplicationBuilder().routes { case _ => action }
         .build())) { block(port) }
   }
 
@@ -54,8 +53,7 @@ trait SecureFlagSpec
     val sslPort = 19943
 
     def test(connection: HttpsURLConnection, expect: Boolean) = {
-      Source
-        .fromInputStream(connection.getContent.asInstanceOf[InputStream])
+      Source.fromInputStream(connection.getContent.asInstanceOf[InputStream])
         .mkString must_== expect.toString
     }
 
@@ -73,8 +71,8 @@ trait SecureFlagSpec
   "Play http server" should {
     "not show that requests are not secure in the absence of X_FORWARDED_PROTO" in withServer(
       secureFlagAction) { port =>
-      val responses = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), "foo"))
+      val responses = BasicHttpClient
+        .makeRequests(port)(BasicRequest("GET", "/", "HTTP/1.1", Map(), "foo"))
       responses.length must_== 1
       responses(0).body must_== Left("false")
     }
@@ -105,8 +103,7 @@ trait SecureFlagSpec
   // the following are adapted from SslSpec
 
   def createConn(sslPort: Int, forwardedProto: Option[String] = None) = {
-    val conn = new URL("https://localhost:" + sslPort + "/")
-      .openConnection()
+    val conn = new URL("https://localhost:" + sslPort + "/").openConnection()
       .asInstanceOf[HttpsURLConnection]
     forwardedProto.foreach { proto =>
       conn.setRequestProperty(X_FORWARDED_FOR, "127.0.0.1")

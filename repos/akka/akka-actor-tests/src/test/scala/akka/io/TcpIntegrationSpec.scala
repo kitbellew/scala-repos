@@ -137,18 +137,13 @@ class TcpIntegrationSpec extends AkkaSpec("""
         clientConnection,
         Write(ByteString("Captain on the bridge!"), Aye))
       clientHandler.expectMsg(Aye)
-      serverHandler
-        .expectMsgType[Received]
-        .data
+      serverHandler.expectMsgType[Received].data
         .decodeString("ASCII") should ===("Captain on the bridge!")
 
-      serverHandler.send(
-        serverConnection,
-        Write(ByteString("For the king!"), Yes))
+      serverHandler
+        .send(serverConnection, Write(ByteString("For the king!"), Yes))
       serverHandler.expectMsg(Yes)
-      clientHandler
-        .expectMsgType[Received]
-        .data
+      clientHandler.expectMsgType[Received].data
         .decodeString("ASCII") should ===("For the king!")
 
       serverHandler.send(serverConnection, Close)

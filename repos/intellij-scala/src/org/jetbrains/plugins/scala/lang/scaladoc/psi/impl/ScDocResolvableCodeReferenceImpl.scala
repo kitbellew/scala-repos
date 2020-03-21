@@ -35,8 +35,7 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
     extends ScStableCodeReferenceElementImpl(node)
     with ScDocResolvableCodeReference {
   private def is2_10plus: Boolean =
-    this.scalaLanguageLevel
-      .map(_ >= ScalaLanguageLevel.Scala_2_10)
+    this.scalaLanguageLevel.map(_ >= ScalaLanguageLevel.Scala_2_10)
       .getOrElse(true)
 
   override def multiResolve(incomplete: Boolean): Array[ResolveResult] = {
@@ -58,9 +57,8 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
       clazz: TypeToImport) =
     if (is2_10plus) super.createReplacingElementWithClassName(true, clazz)
     else
-      ScalaPsiElementFactory.createDocLinkValue(
-        clazz.qualifiedName,
-        clazz.element.getManager)
+      ScalaPsiElementFactory
+        .createDocLinkValue(clazz.qualifiedName, clazz.element.getManager)
 
   override protected def processQualifier(
       ref: ScStableCodeReferenceElement,
@@ -71,13 +69,9 @@ class ScDocResolvableCodeReferenceImpl(node: ASTNode)
         case None =>
           val defaultPackage = ScPackageImpl(
             JavaPsiFacade.getInstance(getProject).findPackage(""))
-          defaultPackage.processDeclarations(
-            processor,
-            ResolveState.initial(),
-            null,
-            ref)
-        case Some(q: ScDocResolvableCodeReference) =>
-          q.multiResolve(true)
+          defaultPackage
+            .processDeclarations(processor, ResolveState.initial(), null, ref)
+        case Some(q: ScDocResolvableCodeReference) => q.multiResolve(true)
             .foreach(processQualifierResolveResult(_, processor, ref))
         case _ =>
       }

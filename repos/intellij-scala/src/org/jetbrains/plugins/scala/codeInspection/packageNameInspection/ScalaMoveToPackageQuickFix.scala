@@ -33,14 +33,11 @@ class ScalaMoveToPackageQuickFix(myFile: ScalaFile, packQualName: String)
     if (!file.isValid) return
     if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
     val packageName = packQualName
-    val fileIndex: ProjectFileIndex =
-      ProjectRootManager.getInstance(project).getFileIndex
+    val fileIndex: ProjectFileIndex = ProjectRootManager.getInstance(project)
+      .getFileIndex
     val currentModule: Module = fileIndex.getModuleForFile(file.getVirtualFile)
-    val directory = PackageUtil.findOrCreateDirectoryForPackage(
-      currentModule,
-      packageName,
-      null,
-      true)
+    val directory = PackageUtil
+      .findOrCreateDirectoryForPackage(currentModule, packageName, null, true)
 
     if (directory == null) { return }
     val error = RefactoringMessageUtil.checkCanCreateFile(directory, file.name)
@@ -57,8 +54,8 @@ class ScalaMoveToPackageQuickFix(myFile: ScalaFile, packQualName: String)
       project,
       Array[PsiElement](file.typeDefinitions.head),
       new SingleSourceRootMoveDestination(
-        PackageWrapper.create(
-          JavaDirectoryService.getInstance().getPackage(directory)),
+        PackageWrapper
+          .create(JavaDirectoryService.getInstance().getPackage(directory)),
         directory),
       false,
       false,

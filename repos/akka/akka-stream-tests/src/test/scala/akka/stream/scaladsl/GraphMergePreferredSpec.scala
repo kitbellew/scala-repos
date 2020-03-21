@@ -43,8 +43,7 @@ class GraphMergePreferredSpec extends TwoStreamsSetup {
           aux ~> merge.in(1)
           aux ~> merge.in(2)
           ClosedShape
-        })
-        .run()
+        }).run()
 
       Await.result(result, 3.seconds).filter(_ == 1).size should be(numElements)
     }
@@ -60,8 +59,7 @@ class GraphMergePreferredSpec extends TwoStreamsSetup {
           Source(201 to 300) ~> merge.in(1)
           Source(301 to 400) ~> merge.in(2)
           ClosedShape
-        })
-        .run()
+        }).run()
 
       Await.result(result, 3.seconds).toSet should ===((1 to 400).toSet)
     }

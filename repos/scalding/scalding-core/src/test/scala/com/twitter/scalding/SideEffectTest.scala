@@ -29,8 +29,7 @@ class Zip(args: Args) extends Job(args) {
       def release() {}
     }
 
-  val zipped = Tsv("line", ('line)).pipe
-    .using { createState }
+  val zipped = Tsv("line", ('line)).pipe.using { createState }
     .flatMap[String, (String, String)]('line -> ('l1, 'l2)) {
       case (accu, line) =>
         if (accu.lastLine == null) {
@@ -41,22 +40,16 @@ class Zip(args: Args) extends Job(args) {
           accu.lastLine = line
           zipped
         }
-    }
-    .project('l1, 'l2)
+    }.project('l1, 'l2)
 
   zipped.write(Tsv("zipped"))
 }
 
 class SideEffectTest extends WordSpec with Matchers with FieldConversions {
   "Zipper should do create zipped sequence. Coded with side effect" should {
-    JobTest(new Zip(_))
-      .source(
-        Tsv("line", ('line)),
-        List(
-          Tuple1("line1"),
-          Tuple1("line2"),
-          Tuple1("line3"),
-          Tuple1("line4")))
+    JobTest(new Zip(_)).source(
+      Tsv("line", ('line)),
+      List(Tuple1("line1"), Tuple1("line2"), Tuple1("line3"), Tuple1("line4")))
       .sink[(String, String)](Tsv("zipped")) { ob =>
         "correctly compute zipped sequence" in {
           val res = ob.toList
@@ -66,9 +59,7 @@ class SideEffectTest extends WordSpec with Matchers with FieldConversions {
             ("line3", "line4"))
           res shouldBe expected
         }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 }
 
@@ -84,27 +75,25 @@ class ZipBuffer(args: Args) extends Job(args) {
       def release() {}
     }
 
-  val zipped = Tsv("line", ('line)).pipe
-    .map('line -> 'oddOrEven) { line: String =>
+  val zipped = Tsv("line", ('line)).pipe.map('line -> 'oddOrEven) {
+    line: String =>
       line.substring(line.length - 1).toInt % 2 match {
         case 0 => "even"
         case 1 => "odd"
       }
-    }
-    .groupBy('oddOrEven) {
-      _.using { createState }
-        .mapStream('line -> ('l1, 'l2)) { (accu, iter: Iterator[String]) =>
-          {
-            accu.lastLine = iter.next()
-            for (line <- iter) yield {
-              val result = (accu.lastLine, line)
-              accu.lastLine = line
-              result
-            }
+  }.groupBy('oddOrEven) {
+    _.using { createState }.mapStream('line -> ('l1, 'l2)) {
+      (accu, iter: Iterator[String]) =>
+        {
+          accu.lastLine = iter.next()
+          for (line <- iter) yield {
+            val result = (accu.lastLine, line)
+            accu.lastLine = line
+            result
           }
         }
     }
-    .project('l1, 'l2)
+  }.project('l1, 'l2)
 
   zipped.write(Tsv("zipped"))
 }
@@ -114,28 +103,24 @@ class SideEffectBufferTest
     with Matchers
     with FieldConversions {
   "ZipBuffer should do create two zipped sequences, one for even lines and one for odd lines. Coded with side effect" should {
-    JobTest("com.twitter.scalding.ZipBuffer")
-      .source(
-        Tsv("line", ('line)),
-        List(
-          Tuple1("line1"),
-          Tuple1("line2"),
-          Tuple1("line3"),
-          Tuple1("line4"),
-          Tuple1("line5"),
-          Tuple1("line6")))
-      .sink[(String, String)](Tsv("zipped")) { ob =>
-        "correctly compute zipped sequence" in {
-          val res = ob.toList.sorted
-          val expected = List(
-            ("line1", "line3"),
-            ("line3", "line5"),
-            ("line2", "line4"),
-            ("line4", "line6")).sorted
-          res shouldBe expected
-        }
+    JobTest("com.twitter.scalding.ZipBuffer").source(
+      Tsv("line", ('line)),
+      List(
+        Tuple1("line1"),
+        Tuple1("line2"),
+        Tuple1("line3"),
+        Tuple1("line4"),
+        Tuple1("line5"),
+        Tuple1("line6"))).sink[(String, String)](Tsv("zipped")) { ob =>
+      "correctly compute zipped sequence" in {
+        val res = ob.toList.sorted
+        val expected = List(
+          ("line1", "line3"),
+          ("line3", "line5"),
+          ("line2", "line4"),
+          ("line4", "line6")).sorted
+        res shouldBe expected
       }
-      .run
-      .finish
+    }.run.finish
   }
 }

@@ -29,11 +29,8 @@ trait MongoTestKit extends Specification with BeforeAfterEach {
   sequential
 
   def dbName =
-    "lift_record_" + this.getClass.getName
-      .replace("$", "")
-      .replace("net.liftweb.mongodb.record.", "")
-      .replace(".", "_")
-      .toLowerCase
+    "lift_record_" + this.getClass.getName.replace("$", "")
+      .replace("net.liftweb.mongodb.record.", "").replace(".", "_").toLowerCase
 
   def mongo = new MongoClient("127.0.0.1", 27017)
 

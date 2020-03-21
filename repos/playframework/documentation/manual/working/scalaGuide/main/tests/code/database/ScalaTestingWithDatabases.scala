@@ -162,16 +162,14 @@ object ScalaTestingWithDatabases extends Specification {
         //#apply-evolutions-simple
 
         val connection = database.getConnection()
-        connection
-          .prepareStatement("insert into test values (10, 'testing')")
+        connection.prepareStatement("insert into test values (10, 'testing')")
           .execute()
 
         //#cleanup-evolutions-simple
         Evolutions.cleanupEvolutions(database)
         //#cleanup-evolutions-simple
 
-        connection
-          .prepareStatement("select * from test")
+        connection.prepareStatement("select * from test")
           .executeQuery() must throwAn[SQLException]
     }
 
@@ -224,14 +222,11 @@ object ScalaTestingWithDatabases extends Specification {
       //#with-evolutions-custom-use
       withMyDatabase { database =>
         val connection = database.getConnection()
-        connection
-          .prepareStatement("insert into test values (10, 'testing')")
+        connection.prepareStatement("insert into test values (10, 'testing')")
           .execute()
 
-        connection
-          .prepareStatement("select * from test where id = 10")
-          .executeQuery()
-          .next() must_== true
+        connection.prepareStatement("select * from test where id = 10")
+          .executeQuery().next() must_== true
       }
       //#with-evolutions-custom-use
     }

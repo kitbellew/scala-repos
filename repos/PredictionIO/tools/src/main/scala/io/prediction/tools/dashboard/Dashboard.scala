@@ -53,9 +53,8 @@ object Dashboard extends Logging with SSLConfiguration {
 
   def createDashboard(dc: DashboardConfig): Unit = {
     implicit val system = ActorSystem("pio-dashboard")
-    val service = system.actorOf(
-      Props(classOf[DashboardActor], dc),
-      "dashboard")
+    val service = system
+      .actorOf(Props(classOf[DashboardActor], dc), "dashboard")
     implicit val timeout = Timeout(5.seconds)
     val settings = ServerSettings(system)
     IO(Http) ? Http.Bind(
@@ -91,8 +90,7 @@ trait DashboardService
           respondWithMediaType(`text/html`) {
             complete {
               val completedInstances = evaluationInstances.getCompleted
-              html
-                .index(dc, serverStartTime, pioEnvVars, completedInstances)
+              html.index(dc, serverStartTime, pioEnvVars, completedInstances)
                 .toString
             }
           }

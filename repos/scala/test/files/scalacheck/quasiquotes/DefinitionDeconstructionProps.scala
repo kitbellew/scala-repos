@@ -325,6 +325,7 @@ trait ImportDeconstruction {
         q"import $expr.{$plain, $oldname => $newname, $discard => _}"
 
       expr1 ≈ expr && plain11 == plain12 && plain12 == plain &&
-      oldname1 == oldname && newname1 == newname && discard1 == discard && wildcard == termNames.WILDCARD
+      oldname1 == oldname && newname1 == newname && discard1 == discard && wildcard == termNames
+        .WILDCARD
   }
 }

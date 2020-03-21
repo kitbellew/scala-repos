@@ -66,9 +66,7 @@ abstract class ClusterConsistentHashingGroupSpec
     }
 
   def currentRoutees(router: ActorRef) =
-    Await
-      .result(router ? GetRoutees, timeout.duration)
-      .asInstanceOf[Routees]
+    Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[Routees]
       .routees
 
   "A cluster router with a consistent hashing group" must {

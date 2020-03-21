@@ -29,8 +29,7 @@ class DataSource(val dsp: DataSourceParams)
     val eventsDb = Storage.getPEvents()
 
     val itemsRDD: RDD[Item] = eventsDb
-      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc)
-      .map {
+      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc).map {
         case (entityId, properties) =>
           try {
             Item(
@@ -53,28 +52,24 @@ class DataSource(val dsp: DataSourceParams)
       targetEntityType = Some(Some("item"))
     )(sc)
 
-    val ratingsRDD: RDD[Rating] = rateEventsRDD
-      .map { event =>
-        val rating =
-          try {
-            val ratingValue: Double = event.event match {
-              case "rate" => event.properties.get[Double]("rating")
-              case "buy"  => 4.0 // map buy event to rating value of 4
-              case _ =>
-                throw new Exception(s"Unexpected event ${event} is read.")
-            }
-            // entityId and targetEntityId is String
-            Rating(event.entityId, event.targetEntityId.get, ratingValue)
-          } catch {
-            case e: Exception => {
-              logger.error(
-                s"Cannot convert ${event} to Rating. Exception: ${e}.")
-              throw e
-            }
+    val ratingsRDD: RDD[Rating] = rateEventsRDD.map { event =>
+      val rating =
+        try {
+          val ratingValue: Double = event.event match {
+            case "rate" => event.properties.get[Double]("rating")
+            case "buy"  => 4.0 // map buy event to rating value of 4
+            case _      => throw new Exception(s"Unexpected event ${event} is read.")
           }
-        rating
-      }
-      .cache()
+          // entityId and targetEntityId is String
+          Rating(event.entityId, event.targetEntityId.get, ratingValue)
+        } catch {
+          case e: Exception => {
+            logger.error(s"Cannot convert ${event} to Rating. Exception: ${e}.")
+            throw e
+          }
+        }
+      rating
+    }.cache()
 
     new TrainingData(itemsRDD, ratingsRDD)
   }

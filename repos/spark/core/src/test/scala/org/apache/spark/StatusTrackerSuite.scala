@@ -33,11 +33,8 @@ class StatusTrackerSuite
 
   test("basic status API usage") {
     sc = new SparkContext("local", "test", new SparkConf(false))
-    val jobFuture = sc
-      .parallelize(1 to 10000, 2)
-      .map(identity)
-      .groupBy(identity)
-      .collectAsync()
+    val jobFuture = sc.parallelize(1 to 10000, 2).map(identity)
+      .groupBy(identity).collectAsync()
     val jobId: Int = eventually(timeout(10 seconds)) {
       val jobIds = jobFuture.jobIds
       jobIds.size should be(1)

@@ -141,8 +141,8 @@ object BasicCommands {
         s.copy(onFailure = None)
       },
       Command.arb(s =>
-        token(Compat.OnFailure, hide = const(true)).flatMap(x =>
-          otherCommandParser(s))) { (s, arg) =>
+        token(Compat.OnFailure, hide = const(true))
+          .flatMap(x => otherCommandParser(s))) { (s, arg) =>
         s.log.warn(Compat.OnFailureDeprecated)
         s.copy(onFailure = Some(arg))
       },
@@ -178,9 +178,10 @@ object BasicCommands {
       case (state, (cp, args)) =>
         val parentLoader = getClass.getClassLoader
         state.log.info(
-          "Applying State transformations " + args
-            .mkString(", ") + (if (cp.isEmpty) ""
-                               else " from " + cp.mkString(File.pathSeparator)))
+          "Applying State transformations " + args.mkString(", ") + (
+            if (cp.isEmpty) ""
+            else " from " + cp.mkString(File.pathSeparator)
+          ))
         val loader =
           if (cp.isEmpty) parentLoader
           else toLoader(cp.map(f => new File(f)), parentLoader)
@@ -245,10 +246,9 @@ object BasicCommands {
       val line = reader.readLine(prompt)
       line match {
         case Some(line) =>
-          val newState = s
-            .copy(
-              onFailure = Some(Shell),
-              remainingCommands = line +: Shell +: s.remainingCommands)
+          val newState = s.copy(
+            onFailure = Some(Shell),
+            remainingCommands = line +: Shell +: s.remainingCommands)
             .setInteractive(true)
           if (line.trim.isEmpty) newState else newState.clearGlobalLog
         case None => s.setInteractive(false)
@@ -269,8 +269,7 @@ object BasicCommands {
         val port = math.abs(portAndSuccess)
         val previousSuccess = portAndSuccess >= 0
         readMessage(port, previousSuccess) match {
-          case Some(message) =>
-            (message :: (ReadCommand + " " + port) :: s)
+          case Some(message) => (message :: (ReadCommand + " " + port) :: s)
               .copy(onFailure = Some(ReadCommand + " " + (-port)))
           case None =>
             System.err.println("Connection closed.")
@@ -304,9 +303,9 @@ object BasicCommands {
       val name = token(OpOrID.examples(aliasNames(s): _*))
       val assign = token(OptSpace ~ '=' ~ OptSpace)
       val sfree = removeAliases(s)
-      val to = matched(
-        sfree.combinedParser,
-        partial = true).failOnException | any.+.string
+      val to = matched(sfree.combinedParser, partial = true)
+        .failOnException | any
+        .+.string
       val base = (OptSpace ~> (name ~ (assign ~> to.?).?).?)
       applyEffect(base)(t => runAlias(s, t))
     }
@@ -333,8 +332,8 @@ object BasicCommands {
 
   def removeAliases(s: State): State = removeTagged(s, CommandAliasKey)
   def removeAlias(s: State, name: String): State =
-    s.copy(definedCommands = s.definedCommands.filter(c =>
-      !isAliasNamed(name, c)))
+    s.copy(definedCommands = s.definedCommands
+      .filter(c => !isAliasNamed(name, c)))
 
   def removeTagged(s: State, tag: AttributeKey[_]): State =
     s.copy(definedCommands = removeTagged(s.definedCommands, tag))
@@ -362,10 +361,8 @@ object BasicCommands {
     s.definedCommands.flatMap(c => getAlias(c).filter(tupled(pred)))
 
   def newAlias(name: String, value: String): Command =
-    Command
-      .make(name, (name, "'" + value + "'"), "Alias of '" + value + "'")(
-        aliasBody(name, value))
-      .tag(CommandAliasKey, (name, value))
+    Command.make(name, (name, "'" + value + "'"), "Alias of '" + value + "'")(
+      aliasBody(name, value)).tag(CommandAliasKey, (name, value))
   def aliasBody(name: String, value: String)(
       state: State): Parser[() => State] = {
     val aliasRemoved = removeAlias(state, name)

@@ -26,8 +26,7 @@ trait ScalaRenameProcessor {
   override def setToSearchInComments(
       element: PsiElement,
       enabled: Boolean): Unit = {
-    ScalaApplicationSettings
-      .getInstance()
+    ScalaApplicationSettings.getInstance()
       .RENAME_SEARCH_IN_COMMENTS_AND_STRINGS = enabled
   }
 

@@ -93,27 +93,20 @@ trait DashboardControllerBase extends ControllerBase {
         if (q == null) { IssueSearchCondition(request) }
         else { IssueSearchCondition(q, Map[String, Int]()) }
       } else
-        session
-          .getAs[IssueSearchCondition](key)
+        session.getAs[IssueSearchCondition](key)
           .getOrElse(IssueSearchCondition())
     )
 
     filter match {
       case "assigned" =>
-        condition.copy(
-          assigned = Some(userName),
-          author = None,
-          mentioned = None)
+        condition
+          .copy(assigned = Some(userName), author = None, mentioned = None)
       case "mentioned" =>
-        condition.copy(
-          assigned = None,
-          author = None,
-          mentioned = Some(userName))
+        condition
+          .copy(assigned = None, author = None, mentioned = Some(userName))
       case _ =>
-        condition.copy(
-          assigned = None,
-          author = Some(userName),
-          mentioned = None)
+        condition
+          .copy(assigned = None, author = Some(userName), mentioned = None)
     }
   }
 
@@ -125,8 +118,8 @@ trait DashboardControllerBase extends ControllerBase {
       Keys.Session.DashboardIssues,
       filter,
       userName)
-    val userRepos = getUserRepositories(userName, true).map(repo =>
-      repo.owner -> repo.name)
+    val userRepos = getUserRepositories(userName, true)
+      .map(repo => repo.owner -> repo.name)
     val page = IssueSearchCondition.page(request)
 
     html.issues(

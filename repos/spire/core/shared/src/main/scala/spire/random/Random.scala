@@ -88,8 +88,7 @@ trait RandomCompanion[G <: Generator] {
   def string(size: Size): R[String] = size.random(this).flatMap(stringOfSize)
 
   def stringOfSize(n: Int): Random[String, G] =
-    char
-      .foldLeftOfSize(n)(new StringBuilder) { (sb, c) => sb.append(c); sb }
+    char.foldLeftOfSize(n)(new StringBuilder) { (sb, c) => sb.append(c); sb }
       .map(_.toString)
 
   implicit class RandomOps[A](lhs: R[A]) {
@@ -169,8 +168,7 @@ abstract class Random[+A, G <: Generator](val op: Op[A]) {
     size.random(companion).flatMap(listOfSize)
 
   def listOfSize(n: Int): Random[List[A], G] =
-    companion
-      .RandomOps(this)
+    companion.RandomOps(this)
       .foldLeftOfSize(n)(List.empty[A])((as, a) => a :: as)
 }
 

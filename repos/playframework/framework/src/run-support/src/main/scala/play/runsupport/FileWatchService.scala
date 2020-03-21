@@ -63,17 +63,14 @@ object FileWatchService {
   private case object Other extends OS
 
   private val os: OS = {
-    sys.props
-      .get("os.name")
-      .map { name =>
-        name.toLowerCase(Locale.ENGLISH) match {
-          case osx if osx.contains("darwin") || osx.contains("mac") => OSX
-          case windows if windows.contains("windows")               => Windows
-          case linux if linux.contains("linux")                     => Linux
-          case _                                                    => Other
-        }
+    sys.props.get("os.name").map { name =>
+      name.toLowerCase(Locale.ENGLISH) match {
+        case osx if osx.contains("darwin") || osx.contains("mac") => OSX
+        case windows if windows.contains("windows")               => Windows
+        case linux if linux.contains("linux")                     => Linux
+        case _                                                    => Other
       }
-      .getOrElse(Other)
+    }.getOrElse(Other)
   }
 
   def defaultWatchService(
@@ -89,8 +86,8 @@ object FileWatchService {
         case (Windows | Linux | OSX) =>
           JNotifyFileWatchService(targetDirectory).recover {
             case e =>
-              logger.warn(
-                "Error loading JNotify watch service: " + e.getMessage)
+              logger
+                .warn("Error loading JNotify watch service: " + e.getMessage)
               logger.trace(e)
               new PollingFileWatchService(pollDelayMillis)
           }.get
@@ -186,15 +183,13 @@ private object JNotifyFileWatchService {
       addWatchMethod: Method,
       removeWatchMethod: Method) {
     def addWatch(fileOrDirectory: String, listener: AnyRef): Int = {
-      addWatchMethod
-        .invoke(
-          null,
-          fileOrDirectory, // The file or directory to watch
-          15: java.lang.Integer, // flags to say watch for all events
-          true: java.lang.Boolean, // Watch subtree
-          listener
-        )
-        .asInstanceOf[Int]
+      addWatchMethod.invoke(
+        null,
+        fileOrDirectory, // The file or directory to watch
+        15: java.lang.Integer, // flags to say watch for all events
+        true: java.lang.Boolean, // Watch subtree
+        listener
+      ).asInstanceOf[Int]
     }
     def removeWatch(id: Int): Unit = {
       try { removeWatchMethod.invoke(null, id.asInstanceOf[AnyRef]) }
@@ -235,14 +230,10 @@ private object JNotifyFileWatchService {
         val ws = scala.util.control.Exception.allCatch.withTry {
 
           val classloader = GlobalStaticVar
-            .get[ClassLoader]("FileWatchServiceJNotifyHack")
-            .getOrElse {
+            .get[ClassLoader]("FileWatchServiceJNotifyHack").getOrElse {
               val jnotifyJarFile = this.getClass.getClassLoader
-                .asInstanceOf[java.net.URLClassLoader]
-                .getURLs
-                .map(_.getFile)
-                .find(_.contains("/jnotify"))
-                .map(new File(_))
+                .asInstanceOf[java.net.URLClassLoader].getURLs.map(_.getFile)
+                .find(_.contains("/jnotify")).map(new File(_))
                 .getOrElse(sys.error("Missing JNotify?"))
 
               val nativeLibrariesDirectory =
@@ -258,20 +249,18 @@ private object JNotifyFileWatchService {
 
               val libs = new File(
                 nativeLibrariesDirectory,
-                System.getProperty(
-                  "sun.arch.data.model") + "bits").getAbsolutePath
+                System.getProperty("sun.arch.data.model") + "bits")
+                .getAbsolutePath
 
               // Hack to set java.library.path
               System.setProperty(
                 "java.library.path", {
-                  Option(System.getProperty("java.library.path"))
-                    .map { existing =>
-                      existing + java.io.File.pathSeparator + libs
-                    }
-                    .getOrElse(libs)
+                  Option(System.getProperty("java.library.path")).map {
+                    existing => existing + java.io.File.pathSeparator + libs
+                  }.getOrElse(libs)
                 })
-              val fieldSysPath = classOf[ClassLoader].getDeclaredField(
-                "sys_paths")
+              val fieldSysPath = classOf[ClassLoader]
+                .getDeclaredField("sys_paths")
               fieldSysPath.setAccessible(true)
               fieldSysPath.set(null, null)
 
@@ -284,19 +273,18 @@ private object JNotifyFileWatchService {
               loader
             }
 
-          val jnotifyClass = classloader.loadClass(
-            "net.contentobjects.jnotify.JNotify")
-          val jnotifyListenerClass = classloader.loadClass(
-            "net.contentobjects.jnotify.JNotifyListener")
+          val jnotifyClass = classloader
+            .loadClass("net.contentobjects.jnotify.JNotify")
+          val jnotifyListenerClass = classloader
+            .loadClass("net.contentobjects.jnotify.JNotifyListener")
           val addWatchMethod = jnotifyClass.getMethod(
             "addWatch",
             classOf[String],
             classOf[Int],
             classOf[Boolean],
             jnotifyListenerClass)
-          val removeWatchMethod = jnotifyClass.getMethod(
-            "removeWatch",
-            classOf[Int])
+          val removeWatchMethod = jnotifyClass
+            .getMethod("removeWatch", classOf[Int])
 
           val d = new JNotifyDelegate(
             classloader,
@@ -328,7 +316,8 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
       else if (file.isFile) {
         // JDK7 WatchService can't watch files
         logger.warn(
-          "JDK7 WatchService only supports watching directories, but an attempt has been made to watch the file: " + file.getCanonicalPath)
+          "JDK7 WatchService only supports watching directories, but an attempt has been made to watch the file: " + file
+            .getCanonicalPath)
         logger.warn(
           "This file will not be watched. Either remove the file from playMonitoredFiles, or configure a different WatchService, eg:")
         logger.warn(
@@ -366,10 +355,8 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
               // If a directory has been created, we must watch it and its sub directories
               events.foreach { event =>
                 if (event.kind == ENTRY_CREATE) {
-                  val file = watchKey.watchable
-                    .asInstanceOf[Path]
-                    .resolve(event.context.asInstanceOf[Path])
-                    .toFile
+                  val file = watchKey.watchable.asInstanceOf[Path]
+                    .resolve(event.context.asInstanceOf[Path]).toFile
 
                   if (file.isDirectory) {
                     allSubDirectories(Seq(file)).foreach(watchDir)
@@ -466,11 +453,8 @@ private[runsupport] object GlobalStaticVar {
     */
   def get[T](name: String)(implicit ct: ClassTag[T]): Option[T] = {
     try {
-      val value = ManagementFactory.getPlatformMBeanServer.invoke(
-        objectName(name),
-        "get",
-        Array.empty,
-        Array.empty)
+      val value = ManagementFactory.getPlatformMBeanServer
+        .invoke(objectName(name), "get", Array.empty, Array.empty)
       if (ct.runtimeClass.isInstance(value)) { Some(value.asInstanceOf[T]) }
       else {
         throw new ClassCastException(

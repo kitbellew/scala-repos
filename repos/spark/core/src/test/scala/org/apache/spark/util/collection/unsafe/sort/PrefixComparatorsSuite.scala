@@ -32,15 +32,14 @@ class PrefixComparatorsSuite extends SparkFunSuite with PropertyChecks {
     def testPrefixComparison(s1: String, s2: String): Unit = {
       val utf8string1 = UTF8String.fromString(s1)
       val utf8string2 = UTF8String.fromString(s2)
-      val s1Prefix = PrefixComparators.StringPrefixComparator.computePrefix(
-        utf8string1)
-      val s2Prefix = PrefixComparators.StringPrefixComparator.computePrefix(
-        utf8string2)
+      val s1Prefix = PrefixComparators.StringPrefixComparator
+        .computePrefix(utf8string1)
+      val s2Prefix = PrefixComparators.StringPrefixComparator
+        .computePrefix(utf8string2)
       val prefixComparisonResult = PrefixComparators.STRING
         .compare(s1Prefix, s2Prefix)
 
-      val cmp = UnsignedBytes
-        .lexicographicalComparator()
+      val cmp = UnsignedBytes.lexicographicalComparator()
         .compare(utf8string1.getBytes.take(8), utf8string2.getBytes.take(8))
 
       assert(
@@ -109,10 +108,10 @@ class PrefixComparatorsSuite extends SparkFunSuite with PropertyChecks {
     val nan2: Double = java.lang.Double.longBitsToDouble(0x7FFFFFFFFFFFFFFFL)
     assert(nan1.isNaN)
     assert(nan2.isNaN)
-    val nan1Prefix = PrefixComparators.DoublePrefixComparator.computePrefix(
-      nan1)
-    val nan2Prefix = PrefixComparators.DoublePrefixComparator.computePrefix(
-      nan2)
+    val nan1Prefix = PrefixComparators.DoublePrefixComparator
+      .computePrefix(nan1)
+    val nan2Prefix = PrefixComparators.DoublePrefixComparator
+      .computePrefix(nan2)
     assert(nan1Prefix === nan2Prefix)
     val doubleMaxPrefix = PrefixComparators.DoublePrefixComparator
       .computePrefix(Double.MaxValue)

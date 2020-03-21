@@ -59,10 +59,7 @@ class StorageStatusListenerSuite extends SparkFunSuite {
     assert(listener.executorIdToStorageStatus.get("fat").isDefined)
     assert(listener.deadExecutorStorageStatus.size === 1)
     assert(
-      listener
-        .deadExecutorStorageStatus(0)
-        .blockManagerId
-        .executorId
+      listener.deadExecutorStorageStatus(0).blockManagerId.executorId
         .equals("big"))
     listener.onBlockManagerRemoved(SparkListenerBlockManagerRemoved(1L, bm2))
     assert(listener.executorIdToStorageStatus.size === 0)
@@ -70,10 +67,7 @@ class StorageStatusListenerSuite extends SparkFunSuite {
     assert(!listener.executorIdToStorageStatus.get("fat").isDefined)
     assert(listener.deadExecutorStorageStatus.size === 1)
     assert(
-      listener
-        .deadExecutorStorageStatus(0)
-        .blockManagerId
-        .executorId
+      listener.deadExecutorStorageStatus(0).blockManagerId.executorId
         .equals("fat"))
   }
 
@@ -174,8 +168,7 @@ class StorageStatusListenerSuite extends SparkFunSuite {
     assert(listener.executorIdToStorageStatus("big").numBlocks === 1)
     assert(listener.executorIdToStorageStatus("fat").numBlocks === 1)
     assert(
-      !listener
-        .executorIdToStorageStatus("big")
+      !listener.executorIdToStorageStatus("big")
         .containsBlock(RDDBlockId(1, 1)))
     assert(
       listener.executorIdToStorageStatus("big").containsBlock(RDDBlockId(1, 2)))
@@ -191,8 +184,7 @@ class StorageStatusListenerSuite extends SparkFunSuite {
     assert(listener.executorIdToStorageStatus("big").numBlocks === 1)
     assert(listener.executorIdToStorageStatus("fat").numBlocks === 0)
     assert(
-      !listener
-        .executorIdToStorageStatus("big")
+      !listener.executorIdToStorageStatus("big")
         .containsBlock(RDDBlockId(1, 1)))
     assert(
       listener.executorIdToStorageStatus("big").containsBlock(RDDBlockId(1, 2)))

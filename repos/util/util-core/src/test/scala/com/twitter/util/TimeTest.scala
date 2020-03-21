@@ -539,24 +539,20 @@ class TimeTest extends {
 
     "max" in {
       assert(
-        (
-          10.seconds.afterEpoch max 5.seconds.afterEpoch
-        ) == 10.seconds.afterEpoch)
+        (10.seconds.afterEpoch max 5.seconds.afterEpoch) == 10.seconds
+          .afterEpoch)
       assert(
-        (
-          5.seconds.afterEpoch max 10.seconds.afterEpoch
-        ) == 10.seconds.afterEpoch)
+        (5.seconds.afterEpoch max 10.seconds.afterEpoch) == 10.seconds
+          .afterEpoch)
     }
 
     "min" in {
       assert(
-        (
-          10.seconds.afterEpoch min 5.seconds.afterEpoch
-        ) == 5.seconds.afterEpoch)
+        (10.seconds.afterEpoch min 5.seconds.afterEpoch) == 5.seconds
+          .afterEpoch)
       assert(
-        (
-          5.seconds.afterEpoch min 10.seconds.afterEpoch
-        ) == 5.seconds.afterEpoch)
+        (5.seconds.afterEpoch min 10.seconds.afterEpoch) == 5.seconds
+          .afterEpoch)
     }
 
     "moreOrLessEquals" in {
@@ -602,12 +598,9 @@ class TimeTest extends {
       val tolerance = 2.microseconds // we permit 1us slop
 
       forAll { i: Int =>
-        assert(
-          Time
-            .fromSeconds(i)
-            .moreOrLessEquals(
-              Time.fromFractionalSeconds(i.toDouble),
-              tolerance))
+        assert(Time.fromSeconds(i).moreOrLessEquals(
+          Time.fromFractionalSeconds(i.toDouble),
+          tolerance))
       }
 
       forAll { d: Double =>
@@ -615,8 +608,7 @@ class TimeTest extends {
         val microseconds = d * 1.second.inMicroseconds
         whenever(microseconds > -magic && microseconds < magic) {
           assert(
-            Time
-              .fromMicroseconds(microseconds.toLong)
+            Time.fromMicroseconds(microseconds.toLong)
               .moreOrLessEquals(Time.fromFractionalSeconds(d), tolerance))
         }
       }
@@ -624,8 +616,7 @@ class TimeTest extends {
       forAll { l: Long =>
         val seconds: Double = l.toDouble / 1.second.inNanoseconds
         assert(
-          Time
-            .fromFractionalSeconds(seconds)
+          Time.fromFractionalSeconds(seconds)
             .moreOrLessEquals(Time.fromNanoseconds(l), tolerance))
       }
     }
@@ -643,8 +634,7 @@ class TimeTest extends {
 
       val currentTimeMicros = System.currentTimeMillis() * 1000
       assert(
-        Time
-          .fromMicroseconds(currentTimeMicros)
+        Time.fromMicroseconds(currentTimeMicros)
           .inNanoseconds == currentTimeMicros.microseconds.inNanoseconds)
     }
 
@@ -661,8 +651,7 @@ class TimeTest extends {
 
       val currentTimeMs = System.currentTimeMillis
       assert(
-        Time
-          .fromMilliseconds(currentTimeMs)
+        Time.fromMilliseconds(currentTimeMs)
           .inNanoseconds == currentTimeMs * 1000000L)
     }
 

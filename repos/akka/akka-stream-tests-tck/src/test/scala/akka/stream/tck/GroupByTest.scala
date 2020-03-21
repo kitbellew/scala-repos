@@ -17,10 +17,7 @@ class GroupByTest extends AkkaPublisherVerification[Int] {
     if (elements == 0) EmptyPublisher[Int]
     else {
       val futureGroupSource = Source(iterable(elements))
-        .groupBy(1, elem ⇒ "all")
-        .prefixAndTail(0)
-        .map(_._2)
-        .concatSubstreams
+        .groupBy(1, elem ⇒ "all").prefixAndTail(0).map(_._2).concatSubstreams
         .runWith(Sink.head)
       val groupSource = Await.result(futureGroupSource, 3.seconds)
       groupSource.runWith(Sink.asPublisher(false))

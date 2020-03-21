@@ -29,15 +29,13 @@ object PresentationUtil {
         buffer.append("(")
         if (clause.isImplicit) buffer.append("implicit ")
         buffer.append(
-          clause.parameters
-            .map(presentationString(_, substitutor))
+          clause.parameters.map(presentationString(_, substitutor))
             .mkString(", "))
         buffer.append(")")
         buffer.toString()
       case param: ScParameter =>
-        ScalaDocumentationProvider.parseParameter(
-          param,
-          presentationString(_, substitutor))
+        ScalaDocumentationProvider
+          .parseParameter(param, presentationString(_, substitutor))
       case param: Parameter =>
         val builder = new StringBuilder
         builder.append(param.name)
@@ -53,8 +51,7 @@ object PresentationUtil {
           ScType.create(tp, DecompilerUtil.obtainProject),
           substitutor)
       case tp: ScTypeParamClause =>
-        tp.typeParameters
-          .map(t => presentationString(t, substitutor))
+        tp.typeParameters.map(t => presentationString(t, substitutor))
           .mkString("[", ", ", "]")
       case param: ScTypeParam =>
         var paramText = param.name
@@ -84,8 +81,7 @@ object PresentationUtil {
         //todo: possibly add supers and extends?
         paramText
       case params: PsiParameterList =>
-        params.getParameters
-          .map(presentationString(_, substitutor))
+        params.getParameters.map(presentationString(_, substitutor))
           .mkString("(", ", ", ")")
       case param: PsiParameter =>
         val buffer: StringBuilder = new StringBuilder("")
@@ -101,9 +97,10 @@ object PresentationUtil {
         val name = param.name
         if (name != null) { buffer.append(name) }
         buffer.append(": ")
-        buffer.append(
-          presentationString(param.getType, substitutor)
-        ) //todo: create param type, java.lang.Object => Any
+        buffer
+          .append(
+            presentationString(param.getType, substitutor)
+          ) //todo: create param type, java.lang.Object => Any
         buffer.toString()
       case fun: ScFunction =>
         val buffer: StringBuilder = new StringBuilder("")
@@ -118,8 +115,7 @@ object PresentationUtil {
           case Some(tpc) => buffer.append(presentationString(tpc))
           case _         =>
         }
-        buffer
-          .append(presentationString(fun.paramClauses, substitutor))
+        buffer.append(presentationString(fun.paramClauses, substitutor))
           .append(": ")
         buffer.append(presentationString(fun.returnType.getOrAny, substitutor))
         buffer.toString()

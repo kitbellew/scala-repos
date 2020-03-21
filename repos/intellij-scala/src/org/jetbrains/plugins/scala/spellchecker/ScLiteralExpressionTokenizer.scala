@@ -28,18 +28,13 @@ class ScLiteralExpressionTokenizer extends Tokenizer[ScLiteral] {
     val unEscapedText: StringBuilder = new StringBuilder
     val offsets: Array[Int] = new Array[Int](text.length + 1)
     PsiLiteralExpressionImpl.parseStringCharacters(text, unEscapedText, offsets)
-    EscapeSequenceTokenizer.processTextWithOffsets(
-      element,
-      consumer,
-      unEscapedText,
-      offsets,
-      1)
+    EscapeSequenceTokenizer
+      .processTextWithOffsets(element, consumer, unEscapedText, offsets, 1)
   }
 
   def tokenize(element: ScLiteral, consumer: TokenConsumer) {
-    val listOwner: PsiModifierListOwner = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[PsiModifierListOwner])
+    val listOwner: PsiModifierListOwner = PsiTreeUtil
+      .getParentOfType(element, classOf[PsiModifierListOwner])
     if (listOwner != null && AnnotationUtil.isAnnotated(
           listOwner,
           Collections.singleton(AnnotationUtil.NON_NLS),

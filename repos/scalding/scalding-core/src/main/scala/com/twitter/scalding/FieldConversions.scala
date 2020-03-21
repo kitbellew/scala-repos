@@ -36,7 +36,8 @@ trait LowPriorityFieldConversions {
         if (flds.size == 1) { flds.get(0) }
         else {
           throw new Exception(
-            "Cannot convert Fields(" + flds.toString + ") to a single fields arg")
+            "Cannot convert Fields(" + flds
+              .toString + ") to a single fields arg")
         }
       }
       case w =>
@@ -158,8 +159,7 @@ trait FieldConversions extends LowPriorityFieldConversions {
     else {
       // Rename the collisions with random integer names:
       val leftSetSyms = leftSet.map { f => Symbol(f.toString) }
-      val (_, reversedRename) = asList(right)
-        .map { f => Symbol(f.toString) }
+      val (_, reversedRename) = asList(right).map { f => Symbol(f.toString) }
         .foldLeft((leftSetSyms, List[Symbol]())) { (takenRename, name) =>
           val (taken, renames) = takenRename
           val newName = newSymbol(taken, name)

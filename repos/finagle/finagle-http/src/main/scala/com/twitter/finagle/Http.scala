@@ -101,8 +101,7 @@ object Http
     private[Http] def applyToCodec(
         params: Stack.Params,
         codec: http.Http): http.Http =
-      codec
-        .maxRequestSize(params[MaxRequestSize].size)
+      codec.maxRequestSize(params[MaxRequestSize].size)
         .maxResponseSize(params[MaxResponseSize].size)
         .streaming(params[Streaming].enabled)
         .decompressionEnabled(params[Decompression].enabled)
@@ -137,8 +136,7 @@ object Http
       .replace(
         TraceInitializerFilter.role,
         new HttpClientTraceInitializer[Request, Response])
-      .prepend(http.TlsFilter.module)
-      .prepend(nonChunkedPayloadSize)
+      .prepend(http.TlsFilter.module).prepend(nonChunkedPayloadSize)
   }
 
   case class Client(
@@ -153,10 +151,9 @@ object Http
     protected type Out = Any
 
     protected def newTransporter(): Transporter[Any, Any] = {
-      val com.twitter.finagle.param
-        .Label(label) = params[com.twitter.finagle.param.Label]
-      val codec = param
-        .applyToCodec(params, http.Http())
+      val com.twitter.finagle.param.Label(label) = params[
+        com.twitter.finagle.param.Label]
+      val codec = param.applyToCodec(params, http.Http())
         .client(ClientCodecConfig(label))
       val Stats(stats) = params[Stats]
       val newTransport = (ch: Channel) => codec.newClientTransport(ch, stats)
@@ -268,12 +265,10 @@ object Http
     protected type Out = Any
 
     protected def newListener(): Listener[Any, Any] = {
-      val com.twitter.finagle.param
-        .Label(label) = params[com.twitter.finagle.param.Label]
-      val httpPipeline = param
-        .applyToCodec(params, http.Http())
-        .server(ServerCodecConfig(label, new SocketAddress {}))
-        .pipelineFactory
+      val com.twitter.finagle.param.Label(label) = params[
+        com.twitter.finagle.param.Label]
+      val httpPipeline = param.applyToCodec(params, http.Http())
+        .server(ServerCodecConfig(label, new SocketAddress {})).pipelineFactory
       Netty3Listener(httpPipeline, params)
     }
 

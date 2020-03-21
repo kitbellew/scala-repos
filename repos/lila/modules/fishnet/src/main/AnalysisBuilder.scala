@@ -25,22 +25,20 @@ private object AnalysisBuilder {
       case Some(game) =>
         GameRepo.initialFen(game) flatMap { initialFen =>
           def debug = s"Analysis ${game.id} from ${client.fullId}"
-          chess
-            .Replay(game.pgnMoves, initialFen, game.variant)
-            .fold(
-              fufail(_),
-              replay =>
-                UciToPgn(replay, uciAnalysis) match {
-                  case (analysis, errors) =>
-                    errors foreach { e => logger.warn(s"[UciToPgn] $debug $e") }
-                    if (analysis.valid) {
-                      if (analysis.emptyRatio >= 1d / 10)
-                        fufail(
-                          s"Analysis $debug has ${analysis.nbEmptyInfos} empty infos out of ${analysis.infos.size}")
-                      else fuccess(analysis)
-                    } else fufail(s"[analysis] Analysis $debug is empty")
-                }
-            )
+          chess.Replay(game.pgnMoves, initialFen, game.variant).fold(
+            fufail(_),
+            replay =>
+              UciToPgn(replay, uciAnalysis) match {
+                case (analysis, errors) =>
+                  errors foreach { e => logger.warn(s"[UciToPgn] $debug $e") }
+                  if (analysis.valid) {
+                    if (analysis.emptyRatio >= 1d / 10)
+                      fufail(s"Analysis $debug has ${analysis
+                        .nbEmptyInfos} empty infos out of ${analysis.infos.size}")
+                    else fuccess(analysis)
+                  } else fufail(s"[analysis] Analysis $debug is empty")
+              }
+          )
         }
     }
   }
@@ -49,8 +47,7 @@ private object AnalysisBuilder {
       evals: List[Evaluation],
       moves: List[String],
       startedAtPly: Int): List[Info] =
-    (evals filterNot (_.isCheckmate) sliding 2).toList
-      .zip(moves)
+    (evals filterNot (_.isCheckmate) sliding 2).toList.zip(moves)
       .zipWithIndex map {
       case ((List(before, after), move), index) => {
         val variation = before.cappedPvList match {

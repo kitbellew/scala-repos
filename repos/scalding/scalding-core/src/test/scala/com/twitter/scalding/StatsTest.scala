@@ -8,13 +8,10 @@ import scala.util.Try
 class StatsTestJob1(args: Args) extends Job(args) with CounterVerification {
   val nonZero = Stat("number of non-zero records", "stats")
 
-  TypedPipe
-    .from(TypedTsv[(String, Int)](args("input")))
-    .map { kv =>
-      if (kv._2 != 0) nonZero.inc
-      (kv._1.toLowerCase, kv._2)
-    }
-    .write(TypedTsv[(String, Int)](args("output")))
+  TypedPipe.from(TypedTsv[(String, Int)](args("input"))).map { kv =>
+    if (kv._2 != 0) nonZero.inc
+    (kv._1.toLowerCase, kv._2)
+  }.write(TypedTsv[(String, Int)](args("output")))
 
   override def verifyCounters(counters: Map[StatKey, Long]): Try[Unit] =
     Try { assert(counters(nonZero) > 0) }
@@ -30,14 +27,11 @@ class StatsTest extends WordSpec with Matchers {
   val badInput = List(("a", 0), ("b", 0), ("c", 0))
 
   def runJobTest[T: TupleSetter](f: Args => Job, input: List[T]): Unit = {
-    JobTest(f)
-      .arg("input", "input")
-      .arg("output", "output")
+    JobTest(f).arg("input", "input").arg("output", "output")
       .source(TypedTsv[(String, Int)]("input"), input)
       .sink[(String, Int)](TypedTsv[(String, Int)]("output")) { outBuf =>
         outBuf shouldBe input
-      }
-      .run
+      }.run
   }
 
   "StatsTestJob" should {

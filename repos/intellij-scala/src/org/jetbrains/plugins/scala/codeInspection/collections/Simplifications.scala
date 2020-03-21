@@ -45,8 +45,8 @@ class SimplificationBuilder private[collections] (
     highlightElem(refNameId(exprToReplace).getOrElse(exprToReplace))
 
   def highlightElem(elem: PsiElement) = {
-    this.rangeInParent = elem.getTextRange.shiftRight(
-      -exprToReplace.getTextOffset)
+    this.rangeInParent = elem.getTextRange
+      .shiftRight(-exprToReplace.getTextOffset)
     this
   }
 
@@ -67,8 +67,7 @@ class SimplificationBuilder private[collections] (
   }
 
   def toSimplification = {
-    val smartPointer = SmartPointerManager
-      .getInstance(exprToReplace.getProject)
+    val smartPointer = SmartPointerManager.getInstance(exprToReplace.getProject)
       .createSmartPsiElementPointer(exprToReplace)
     Simplification(smartPointer, replacementText, hint, rangeInParent)
   }

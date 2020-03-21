@@ -19,8 +19,8 @@ class ArbTest extends FunSuite {
   test("arb.rational") {
     // generate a reasonably large number of rationals and check if we get each kind of rational at least once
     val params = this.params
-    val samples =
-      Array.fill(100)(spire.laws.arb.rational.arbitrary(params)).flatten
+    val samples = Array.fill(100)(spire.laws.arb.rational.arbitrary(params))
+      .flatten
     def classify(x: Rational): String = {
       if (x.isZero) "zero"
       else if (x.isOne) "one"
@@ -55,8 +55,8 @@ class ArbTest extends FunSuite {
 
   test("arb.safeLong") {
     val params = this.params
-    val samples =
-      Array.fill(100)(spire.laws.arb.safeLong.arbitrary(params)).flatten
+    val samples = Array.fill(100)(spire.laws.arb.safeLong.arbitrary(params))
+      .flatten
     def classify(x: SafeLong): String = {
       if (x.isZero) "zero"
       else if (x.isOne) "one"
@@ -70,8 +70,8 @@ class ArbTest extends FunSuite {
   test("arb.interval") {
     import spire.std.int._
     val params = this.params
-    val samples =
-      Array.fill(100)(spire.laws.arb.interval[Int].arbitrary(params)).flatten
+    val samples = Array
+      .fill(100)(spire.laws.arb.interval[Int].arbitrary(params)).flatten
     def classify(x: Interval[Int]): String =
       x.fold {
         case (Unbound(), Unbound()) ⇒ "all"

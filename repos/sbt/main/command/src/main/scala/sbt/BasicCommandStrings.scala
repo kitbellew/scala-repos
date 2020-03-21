@@ -41,9 +41,8 @@ object BasicCommandStrings {
   def CompletionsBrief = (CompletionsCommand, CompletionsDetailed)
 
   def HistoryHelpBrief =
-    (
-      HistoryCommands.Start -> "History command help.  Lists and describes all history commands."
-    )
+    (HistoryCommands
+      .Start -> "History command help.  Lists and describes all history commands.")
   def historyHelp =
     Help(
       Nil,
@@ -81,8 +80,8 @@ ${runEarly(level.toString)}
     s"$EarlyCommand$sep$command"
   }
   private[sbt] def isEarlyCommand(s: String): Boolean = {
-    s.startsWith(
-      EarlyCommand) && s != Compat.FailureWall && s != Compat.ClearOnFailure
+    s.startsWith(EarlyCommand) && s != Compat.FailureWall && s != Compat
+      .ClearOnFailure
   }
 
   val EarlyCommand = "--"

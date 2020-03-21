@@ -32,21 +32,19 @@ object TlsSpec {
     val password = "changeme"
 
     val keyStore = KeyStore.getInstance(KeyStore.getDefaultType)
-    keyStore.load(
-      getClass.getResourceAsStream("/keystore"),
-      password.toCharArray)
+    keyStore
+      .load(getClass.getResourceAsStream("/keystore"), password.toCharArray)
 
     val trustStore = KeyStore.getInstance(KeyStore.getDefaultType)
-    trustStore.load(
-      getClass.getResourceAsStream(trustPath),
-      password.toCharArray)
+    trustStore
+      .load(getClass.getResourceAsStream(trustPath), password.toCharArray)
 
-    val keyManagerFactory = KeyManagerFactory.getInstance(
-      KeyManagerFactory.getDefaultAlgorithm)
+    val keyManagerFactory = KeyManagerFactory
+      .getInstance(KeyManagerFactory.getDefaultAlgorithm)
     keyManagerFactory.init(keyStore, password.toCharArray)
 
-    val trustManagerFactory = TrustManagerFactory.getInstance(
-      TrustManagerFactory.getDefaultAlgorithm)
+    val trustManagerFactory = TrustManagerFactory
+      .getInstance(TrustManagerFactory.getDefaultAlgorithm)
     trustManagerFactory.init(trustStore)
 
     val context = SSLContext.getInstance("TLS")
@@ -132,10 +130,8 @@ class TlsSpec
 
     trait Named {
       def name: String =
-        getClass.getName.reverse
-          .dropWhile(c ⇒ "$0123456789".indexOf(c) != -1)
-          .takeWhile(_ != '$')
-          .reverse
+        getClass.getName.reverse.dropWhile(c ⇒ "$0123456789".indexOf(c) != -1)
+          .takeWhile(_ != '$').reverse
     }
 
     trait CommunicationSetup extends Named {
@@ -164,10 +160,8 @@ class TlsSpec
     }
 
     def server(flow: Flow[ByteString, ByteString, Any]) = {
-      val server = Tcp()
-        .bind("localhost", 0)
-        .to(Sink.foreach(c ⇒ c.flow.join(flow).run()))
-        .run()
+      val server = Tcp().bind("localhost", 0)
+        .to(Sink.foreach(c ⇒ c.flow.join(flow).run())).run()
       Await.result(server, 2.seconds)
     }
 
@@ -178,8 +172,8 @@ class TlsSpec
           rightClosing: TLSClosing,
           rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) = {
         binding = server(serverTls(rightClosing).reversed join rhs)
-        clientTls(leftClosing) join Tcp().outgoingConnection(
-          binding.localAddress)
+        clientTls(leftClosing) join Tcp()
+          .outgoingConnection(binding.localAddress)
       }
       override def cleanup(): Unit = binding.unbind()
     }
@@ -191,8 +185,8 @@ class TlsSpec
           rightClosing: TLSClosing,
           rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) = {
         binding = server(clientTls(rightClosing).reversed join rhs)
-        serverTls(leftClosing) join Tcp().outgoingConnection(
-          binding.localAddress)
+        serverTls(leftClosing) join Tcp()
+          .outgoingConnection(binding.localAddress)
       }
       override def cleanup(): Unit = binding.unbind()
     }
@@ -205,26 +199,25 @@ class TlsSpec
 
     trait PayloadScenario extends Named {
       def flow: Flow[SslTlsInbound, SslTlsOutbound, Any] =
-        Flow[SslTlsInbound]
-          .map {
-            var session: SSLSession = null
-            def setSession(s: SSLSession) = {
-              session = s
-              system.log.debug(
-                s"new session: $session (${session.getId mkString ","})")
-            }
-
-            {
-              case SessionTruncated ⇒ SendBytes(ByteString("TRUNCATED"))
-              case SessionBytes(s, b) if session == null ⇒
-                setSession(s)
-                SendBytes(b)
-              case SessionBytes(s, b) if s != session ⇒
-                setSession(s)
-                SendBytes(ByteString("NEWSESSION") ++ b)
-              case SessionBytes(s, b) ⇒ SendBytes(b)
-            }
+        Flow[SslTlsInbound].map {
+          var session: SSLSession = null
+          def setSession(s: SSLSession) = {
+            session = s
+            system.log
+              .debug(s"new session: $session (${session.getId mkString ","})")
           }
+
+          {
+            case SessionTruncated ⇒ SendBytes(ByteString("TRUNCATED"))
+            case SessionBytes(s, b) if session == null ⇒
+              setSession(s)
+              SendBytes(b)
+            case SessionBytes(s, b) if s != session ⇒
+              setSession(s)
+              SendBytes(ByteString("NEWSESSION") ++ b)
+            case SessionBytes(s, b) ⇒ SendBytes(b)
+          }
+        }
       def leftClosing: TLSClosing = IgnoreComplete
       def rightClosing: TLSClosing = IgnoreComplete
 
@@ -274,15 +267,12 @@ class TlsSpec
     // this demonstrates that cancellation is ignored so that the five results make it back
     object CancellingRHS extends PayloadScenario {
       override def flow =
-        Flow[SslTlsInbound]
-          .mapConcat {
-            case SessionTruncated ⇒ SessionTruncated :: Nil
-            case SessionBytes(s, bytes) ⇒
-              bytes.map(b ⇒ SessionBytes(s, ByteString(b)))
-          }
-          .take(5)
-          .mapAsync(5)(x ⇒
-            later(500.millis, system.scheduler)(Future.successful(x)))
+        Flow[SslTlsInbound].mapConcat {
+          case SessionTruncated ⇒ SessionTruncated :: Nil
+          case SessionBytes(s, bytes) ⇒
+            bytes.map(b ⇒ SessionBytes(s, ByteString(b)))
+        }.take(5).mapAsync(5)(x ⇒
+          later(500.millis, system.scheduler)(Future.successful(x)))
           .via(super.flow)
       override def rightClosing = IgnoreCancel
 
@@ -293,15 +283,12 @@ class TlsSpec
 
     object CancellingRHSIgnoresBoth extends PayloadScenario {
       override def flow =
-        Flow[SslTlsInbound]
-          .mapConcat {
-            case SessionTruncated ⇒ SessionTruncated :: Nil
-            case SessionBytes(s, bytes) ⇒
-              bytes.map(b ⇒ SessionBytes(s, ByteString(b)))
-          }
-          .take(5)
-          .mapAsync(5)(x ⇒
-            later(500.millis, system.scheduler)(Future.successful(x)))
+        Flow[SslTlsInbound].mapConcat {
+          case SessionTruncated ⇒ SessionTruncated :: Nil
+          case SessionBytes(s, bytes) ⇒
+            bytes.map(b ⇒ SessionBytes(s, ByteString(b)))
+        }.take(5).mapAsync(5)(x ⇒
+          later(500.millis, system.scheduler)(Future.successful(x)))
           .via(super.flow)
       override def rightClosing = IgnoreBoth
 
@@ -338,29 +325,29 @@ class TlsSpec
       def output = ByteString(str + "NEWSESSIONhello world")
     }
 
-    val logCipherSuite = Flow[SslTlsInbound]
-      .map {
-        var session: SSLSession = null
-        def setSession(s: SSLSession) = {
-          session = s
-          system.log.debug(
-            s"new session: $session (${session.getId mkString ","})")
-        }
-
-        {
-          case SessionTruncated ⇒ SendBytes(ByteString("TRUNCATED"))
-          case SessionBytes(s, b) if s != session ⇒
-            setSession(s)
-            SendBytes(ByteString(s.getCipherSuite) ++ b)
-          case SessionBytes(s, b) ⇒ SendBytes(b)
-        }
+    val logCipherSuite = Flow[SslTlsInbound].map {
+      var session: SSLSession = null
+      def setSession(s: SSLSession) = {
+        session = s
+        system.log
+          .debug(s"new session: $session (${session.getId mkString ","})")
       }
+
+      {
+        case SessionTruncated ⇒ SendBytes(ByteString("TRUNCATED"))
+        case SessionBytes(s, b) if s != session ⇒
+          setSession(s)
+          SendBytes(ByteString(s.getCipherSuite) ++ b)
+        case SessionBytes(s, b) ⇒ SendBytes(b)
+      }
+    }
 
     object SessionRenegotiationFirstOne extends PayloadScenario {
       override def flow = logCipherSuite
       def inputs =
-        NegotiateNewSession.withCipherSuites(
-          "TLS_RSA_WITH_AES_128_CBC_SHA") :: send("hello") :: Nil
+        NegotiateNewSession
+          .withCipherSuites("TLS_RSA_WITH_AES_128_CBC_SHA") :: send(
+          "hello") :: Nil
       def output = ByteString("TLS_RSA_WITH_AES_128_CBC_SHAhello")
     }
 
@@ -392,27 +379,21 @@ class TlsSpec
     } {
       s"work in mode ${commPattern.name} while sending ${scenario.name}" in assertAllStagesStopped {
         val onRHS = debug.via(scenario.flow)
-        val f = Source(scenario.inputs)
-          .via(commPattern.decorateFlow(
-            scenario.leftClosing,
-            scenario.rightClosing,
-            onRHS))
-          .transform(() ⇒
-            new PushStage[SslTlsInbound, SslTlsInbound] {
-              override def onPush(
-                  elem: SslTlsInbound,
-                  ctx: Context[SslTlsInbound]) = ctx.push(elem)
-              override def onDownstreamFinish(ctx: Context[SslTlsInbound]) = {
-                system.log.debug("me cancelled")
-                ctx.finish()
-              }
-            })
-          .via(debug)
-          .collect { case SessionBytes(_, b) ⇒ b }
-          .scan(ByteString.empty)(_ ++ _)
-          .via(new Timeout(6.seconds))
-          .dropWhile(_.size < scenario.output.size)
-          .runWith(Sink.head)
+        val f = Source(scenario.inputs).via(commPattern.decorateFlow(
+          scenario.leftClosing,
+          scenario.rightClosing,
+          onRHS)).transform(() ⇒
+          new PushStage[SslTlsInbound, SslTlsInbound] {
+            override def onPush(
+                elem: SslTlsInbound,
+                ctx: Context[SslTlsInbound]) = ctx.push(elem)
+            override def onDownstreamFinish(ctx: Context[SslTlsInbound]) = {
+              system.log.debug("me cancelled")
+              ctx.finish()
+            }
+          }).via(debug).collect { case SessionBytes(_, b) ⇒ b }
+          .scan(ByteString.empty)(_ ++ _).via(new Timeout(6.seconds))
+          .dropWhile(_.size < scenario.output.size).runWith(Sink.head)
 
         Await.result(f, 8.seconds).utf8String should be(
           scenario.output.utf8String)
@@ -429,36 +410,25 @@ class TlsSpec
 
     "emit an error if the TLS handshake fails certificate checks" in assertAllStagesStopped {
       val getError = Flow[SslTlsInbound]
-        .map[Either[SslTlsInbound, SSLException]](i ⇒ Left(i))
-        .recover { case e: SSLException ⇒ Right(e) }
-        .collect { case Right(e) ⇒ e }
-        .toMat(Sink.head)(Keep.right)
+        .map[Either[SslTlsInbound, SSLException]](i ⇒ Left(i)).recover {
+          case e: SSLException ⇒ Right(e)
+        }.collect { case Right(e) ⇒ e }.toMat(Sink.head)(Keep.right)
 
-      val simple = Flow.fromSinkAndSourceMat(
-        getError,
-        Source.maybe[SslTlsOutbound])(Keep.left)
+      val simple = Flow
+        .fromSinkAndSourceMat(getError, Source.maybe[SslTlsOutbound])(Keep.left)
 
       // The creation of actual TCP connections is necessary. It is the easiest way to decouple the client and server
       // under error conditions, and has the bonus of matching most actual SSL deployments.
-      val (server, serverErr) = Tcp()
-        .bind("localhost", 0)
-        .map(c ⇒ {
-          c.flow
-            .joinMat(serverTls(IgnoreBoth).reversed.joinMat(simple)(
-              Keep.right))(Keep.right)
-            .run()
-        })
-        .toMat(Sink.head)(Keep.both)
+      val (server, serverErr) = Tcp().bind("localhost", 0).map(c ⇒ {
+        c.flow.joinMat(serverTls(IgnoreBoth).reversed.joinMat(simple)(
+          Keep.right))(Keep.right).run()
+      }).toMat(Sink.head)(Keep.both).run()
+
+      val clientErr = simple.join(badClientTls(IgnoreBoth)).join(
+        Tcp().outgoingConnection(Await.result(server, 1.second).localAddress))
         .run()
 
-      val clientErr = simple
-        .join(badClientTls(IgnoreBoth))
-        .join(Tcp().outgoingConnection(
-          Await.result(server, 1.second).localAddress))
-        .run()
-
-      Await
-        .result(serverErr.flatMap(identity), 1.second)
+      Await.result(serverErr.flatMap(identity), 1.second)
         .getMessage should include("certificate_unknown")
       Await.result(clientErr, 1.second).getMessage should equal(
         "General SSLEngine problem")
@@ -466,18 +436,16 @@ class TlsSpec
 
     "reliably cancel subscriptions when TransportIn fails early" in assertAllStagesStopped {
       val ex = new Exception("hello")
-      val (sub, out1, out2) = RunnableGraph
-        .fromGraph(
-          GraphDSL.create(
-            Source.asSubscriber[SslTlsOutbound],
-            Sink.head[ByteString],
-            Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
-            val tls = b.add(clientTls(EagerClose))
-            s ~> tls.in1; tls.out1 ~> o1
-            o2 <~ tls.out2; tls.in2 <~ Source.failed(ex)
-            ClosedShape
-          })
-        .run()
+      val (sub, out1, out2) = RunnableGraph.fromGraph(
+        GraphDSL.create(
+          Source.asSubscriber[SslTlsOutbound],
+          Sink.head[ByteString],
+          Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
+          val tls = b.add(clientTls(EagerClose))
+          s ~> tls.in1; tls.out1 ~> o1
+          o2 <~ tls.out2; tls.in2 <~ Source.failed(ex)
+          ClosedShape
+        }).run()
       the[Exception] thrownBy Await.result(out1, 1.second) should be(ex)
       the[Exception] thrownBy Await.result(out2, 1.second) should be(ex)
       Thread.sleep(500)
@@ -488,18 +456,16 @@ class TlsSpec
 
     "reliably cancel subscriptions when UserIn fails early" in assertAllStagesStopped {
       val ex = new Exception("hello")
-      val (sub, out1, out2) = RunnableGraph
-        .fromGraph(
-          GraphDSL.create(
-            Source.asSubscriber[ByteString],
-            Sink.head[ByteString],
-            Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
-            val tls = b.add(clientTls(EagerClose))
-            Source.failed[SslTlsOutbound](ex) ~> tls.in1; tls.out1 ~> o1
-            o2 <~ tls.out2; tls.in2 <~ s
-            ClosedShape
-          })
-        .run()
+      val (sub, out1, out2) = RunnableGraph.fromGraph(
+        GraphDSL.create(
+          Source.asSubscriber[ByteString],
+          Sink.head[ByteString],
+          Sink.head[SslTlsInbound])((_, _, _)) { implicit b ⇒ (s, o1, o2) ⇒
+          val tls = b.add(clientTls(EagerClose))
+          Source.failed[SslTlsOutbound](ex) ~> tls.in1; tls.out1 ~> o1
+          o2 <~ tls.out2; tls.in2 <~ s
+          ClosedShape
+        }).run()
       the[Exception] thrownBy Await.result(out1, 1.second) should be(ex)
       the[Exception] thrownBy Await.result(out2, 1.second) should be(ex)
       Thread.sleep(500)
@@ -513,15 +479,11 @@ class TlsSpec
   "A SslTlsPlacebo" must {
 
     "pass through data" in {
-      val f = Source(1 to 3)
-        .map(b ⇒ SendBytes(ByteString(b.toByte)))
-        .via(TLSPlacebo() join Flow.apply)
-        .grouped(10)
-        .runWith(Sink.head)
+      val f = Source(1 to 3).map(b ⇒ SendBytes(ByteString(b.toByte)))
+        .via(TLSPlacebo() join Flow.apply).grouped(10).runWith(Sink.head)
       val result = Await.result(f, 3.seconds)
       result.map(_.bytes) should be((1 to 3).map(b ⇒ ByteString(b.toByte)))
-      result
-        .map(_.session)
+      result.map(_.session)
         .foreach(s ⇒ s.getCipherSuite should be("SSL_NULL_WITH_NULL_NULL"))
     }
 

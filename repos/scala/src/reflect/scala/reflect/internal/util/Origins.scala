@@ -79,9 +79,8 @@ object Origins {
 
   case class OriginId(className: String, methodName: String) {
     def matches(el: StackTraceElement) =
-      ((methodName == el.getMethodName) && (
-        className startsWith el.getClassName
-      ))
+      ((methodName == el.getMethodName) && (className startsWith el
+        .getClassName))
   }
 
   def lookup(tag: String, orElse: String => Origins): Origins =

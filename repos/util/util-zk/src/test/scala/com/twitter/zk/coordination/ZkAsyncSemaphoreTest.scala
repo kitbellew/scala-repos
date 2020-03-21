@@ -34,8 +34,7 @@ class ZkAsyncSemaphoreTest
         def withClient(f: (ZkClient) => Unit) = {
           implicit val timer = new JavaTimer(true)
           val connector = NativeConnector(connectString, 5.seconds, 10.minutes)
-          val zk = ZkClient(connector)
-            .withRetryPolicy(RetryPolicy.Basic(3))
+          val zk = ZkClient(connector).withRetryPolicy(RetryPolicy.Basic(3))
             .withAcl(OPEN_ACL_UNSAFE.asScala)
 
           Await.result(Future { f(zk) } ensure { zk.release })

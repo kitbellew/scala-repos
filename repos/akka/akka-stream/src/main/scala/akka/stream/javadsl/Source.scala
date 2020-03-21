@@ -51,10 +51,9 @@ object Source {
     new Source(scaladsl.Source.maybe[T].mapMaterializedValue {
       scalaOptionPromise: Promise[Option[T]] ⇒
         val javaOptionPromise = new CompletableFuture[Optional[T]]()
-        scalaOptionPromise.completeWith(
-          javaOptionPromise.toScala
-            .map(_.asScala)(
-              akka.dispatch.ExecutionContexts.sameThreadExecutionContext))
+        scalaOptionPromise
+          .completeWith(javaOptionPromise.toScala.map(_.asScala)(
+            akka.dispatch.ExecutionContexts.sameThreadExecutionContext))
 
         javaOptionPromise
     })
@@ -216,10 +215,8 @@ object Source {
       f: function.Function[S, CompletionStage[Optional[Pair[S, E]]]])
       : Source[E, NotUsed] =
     new Source(scaladsl.Source.unfoldAsync(s)((s: S) ⇒
-      f.apply(s)
-        .toScala
-        .map(_.asScala.map(_.toScala))(
-          akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
+      f.apply(s).toScala.map(_.asScala.map(_.toScala))(
+        akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
 
   /**
     * Create a `Source` that immediately ends the stream with the `cause` failure to every connected `Sink`.
@@ -333,8 +330,7 @@ object Source {
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
       : Source[T, SourceQueueWithComplete[T]] =
     new Source(
-      scaladsl.Source
-        .queue[T](bufferSize, overflowStrategy)
+      scaladsl.Source.queue[T](bufferSize, overflowStrategy)
         .mapMaterializedValue(new SourceQueueAdapter(_)))
 
 }

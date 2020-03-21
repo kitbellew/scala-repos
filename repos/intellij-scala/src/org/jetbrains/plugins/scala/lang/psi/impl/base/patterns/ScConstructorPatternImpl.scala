@@ -64,10 +64,9 @@ class ScConstructorPatternImpl(node: ASTNode)
                   var i = 0
                   while (i < subpatterns.length) {
                     val tp = {
-                      substitutor.subst(
-                        params(i)
-                          .getType(TypingContext.empty)
-                          .getOrElse(return false))
+                      substitutor
+                        .subst(params(i).getType(TypingContext.empty).getOrElse(
+                          return false))
                     }
                     if (!subpatterns.apply(i).isIrrefutableFor(Some(tp))) {
                       return false
@@ -124,11 +123,9 @@ class ScConstructorPatternImpl(node: ASTNode)
             Success(
               ScParameterizedType(
                 refType,
-                td.getTypeParameters
-                  .map({ tp =>
-                    newSubst.subst(ScalaPsiManager.typeVariable(tp))
-                  })
-                  .toSeq),
+                td.getTypeParameters.map({ tp =>
+                  newSubst.subst(ScalaPsiManager.typeVariable(tp))
+                }).toSeq),
               Some(this))
           case td: ScClass   => Success(ScType.designator(td), Some(this))
           case obj: ScObject => Success(ScType.designator(obj), Some(this))
@@ -139,16 +136,16 @@ class ScConstructorPatternImpl(node: ASTNode)
             val subst =
               if (fun.typeParameters.isEmpty) substitutor
               else {
-                val undefSubst: ScSubstitutor = fun.typeParameters.foldLeft(
-                  ScSubstitutor.empty)((s, p) =>
-                  s.bindT(
-                    (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                    ScUndefinedType(new ScTypeParameterType(p, substitutor))))
-                val emptySubst: ScSubstitutor = fun.typeParameters.foldLeft(
-                  ScSubstitutor.empty)((s, p) =>
-                  s.bindT(
-                    (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                    p.upperBound.getOrAny))
+                val undefSubst: ScSubstitutor = fun.typeParameters
+                  .foldLeft(ScSubstitutor.empty)((s, p) =>
+                    s.bindT(
+                      (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                      ScUndefinedType(new ScTypeParameterType(p, substitutor))))
+                val emptySubst: ScSubstitutor = fun.typeParameters
+                  .foldLeft(ScSubstitutor.empty)((s, p) =>
+                    s.bindT(
+                      (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                      p.upperBound.getOrAny))
                 val emptyRes = substitutor followed emptySubst
                 val result = fun.parameters(0).getType(TypingContext.empty)
                 if (result.isEmpty) emptyRes
@@ -169,12 +166,8 @@ class ScConstructorPatternImpl(node: ASTNode)
                   }
                 }
               }
-            fun.paramClauses.clauses
-              .apply(0)
-              .parameters
-              .apply(0)
-              .getType(TypingContext.empty)
-              .map(subst.subst)
+            fun.paramClauses.clauses.apply(0).parameters.apply(0)
+              .getType(TypingContext.empty).map(subst.subst)
           case _ => Success(Nothing, Some(this))
         }
       case _ => Failure("Cannot resolve symbol", Some(this))

@@ -28,13 +28,10 @@ class PluginsResource @Inject() (
     extends RestResource {
 
   val pluginIdToHandler = definitions.plugins
-    .filter(_.plugin == classOf[HttpRequestHandler].getName)
-    .flatMap { d =>
-      requestHandlers
-        .find(_.getClass.getName == d.implementation)
+    .filter(_.plugin == classOf[HttpRequestHandler].getName).flatMap { d =>
+      requestHandlers.find(_.getClass.getName == d.implementation)
         .map(d.id -> _)
-    }
-    .toMap
+    }.toMap
 
   @GET @Produces(Array(MarathonMediaType.PREFERRED_APPLICATION_JSON))
   def plugins(): Response = ok(jsonString(definitions))
@@ -78,14 +75,11 @@ class PluginsResource @Inject() (
       pluginId: String,
       path: String,
       req: HttpServletRequest): Response = {
-    pluginIdToHandler
-      .get(pluginId)
-      .map { handler =>
-        val request = new RequestFacade(req, path)
-        val response = new ResponseFacade
-        handler.serve(request, response)
-        response.response
-      }
-      .getOrElse(notFound(s"No plugin with this pluginId: $pluginId"))
+    pluginIdToHandler.get(pluginId).map { handler =>
+      val request = new RequestFacade(req, path)
+      val response = new ResponseFacade
+      handler.serve(request, response)
+      response.response
+    }.getOrElse(notFound(s"No plugin with this pluginId: $pluginId"))
   }
 }

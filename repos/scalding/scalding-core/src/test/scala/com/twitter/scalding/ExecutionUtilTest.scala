@@ -12,10 +12,7 @@ class ExecutionUtilTest extends WordSpec with Matchers {
   def run[T](e: Execution[T]) = e.waitFor(Config.default, Local(true))
 
   def testJob(dr: DateRange) =
-    TypedPipe
-      .from[Int](Seq(1, 2, 3))
-      .toIterableExecution
-      .map(_.head)
+    TypedPipe.from[Int](Seq(1, 2, 3)).toIterableExecution.map(_.head)
 
   def testJobFailure(dr: DateRange) = throw new Exception("failed")
 

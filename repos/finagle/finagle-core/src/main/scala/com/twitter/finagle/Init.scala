@@ -55,9 +55,8 @@ private[twitter] object Init {
       "finagle-core_2.10",
       "finagle-core_2.11",
       "finagle-core_2.12")
-    candidates.flatMap { c =>
-      tryProps(s"/com/twitter/$c/build.properties")
-    }.headOption
+    candidates.flatMap { c => tryProps(s"/com/twitter/$c/build.properties") }
+      .headOption
   }
 
   private[this] val once = Once {

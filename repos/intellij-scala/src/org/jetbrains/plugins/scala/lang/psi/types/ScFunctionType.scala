@@ -30,8 +30,7 @@ object ScFunctionType {
       project: Project,
       scope: GlobalSearchScope): ValueType = {
     def findClass(fullyQualifiedName: String): Option[PsiClass] = {
-      ScalaPsiManager
-        .instance(project)
+      ScalaPsiManager.instance(project)
         .getCachedClass(scope, fullyQualifiedName)
     }
     findClass("scala.Function" + params.length) match {
@@ -59,8 +58,7 @@ object ScPartialFunctionType {
       project: Project,
       scope: GlobalSearchScope): ValueType = {
     def findClass(fullyQualifiedName: String): Option[PsiClass] = {
-      ScalaPsiManager
-        .instance(project)
+      ScalaPsiManager.instance(project)
         .getCachedClass(scope, fullyQualifiedName)
     }
     findClass("scala.PartialFunction") match {
@@ -72,9 +70,8 @@ object ScPartialFunctionType {
   }
 
   def unapply(tp: ScType): Option[(ScType, ScType)] = {
-    ScSynteticSugarClassesUtil.extractForPrefix(
-      tp,
-      "scala.PartialFunction") match {
+    ScSynteticSugarClassesUtil
+      .extractForPrefix(tp, "scala.PartialFunction") match {
       case Some((clazz, typeArgs)) if typeArgs.length == 2 =>
         Some(typeArgs(1), typeArgs(0))
       case _ => None
@@ -89,8 +86,7 @@ object ScTupleType {
       project: Project,
       scope: GlobalSearchScope): ValueType = {
     def findClass(fullyQualifiedName: String): Option[PsiClass] = {
-      ScalaPsiManager
-        .instance(project)
+      ScalaPsiManager.instance(project)
         .getCachedClass(scope, fullyQualifiedName)
     }
     findClass("scala.Tuple" + components.length) match {
@@ -122,8 +118,8 @@ object ScSynteticSugarClassesUtil {
       case _ => tp match {
           case p: ScParameterizedType =>
             def startsWith(clazz: PsiClass, qualNamePrefix: String) =
-              clazz.qualifiedName != null && clazz.qualifiedName.startsWith(
-                qualNamePrefix)
+              clazz.qualifiedName != null && clazz.qualifiedName
+                .startsWith(qualNamePrefix)
 
             ScType.extractClassType(p.designator) match {
               case Some((clazz: ScTypeDefinition, sub))

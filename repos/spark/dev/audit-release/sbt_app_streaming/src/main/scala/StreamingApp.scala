@@ -29,8 +29,8 @@ object SparkStreamingExample {
 
   def main(args: Array[String]) {
     val conf = sys.env.get("SPARK_AUDIT_MASTER") match {
-      case Some(master) =>
-        new SparkConf().setAppName("Simple Streaming App").setMaster(master)
+      case Some(master) => new SparkConf().setAppName("Simple Streaming App")
+          .setMaster(master)
       case None => new SparkConf().setAppName("Simple Streaming App")
     }
     val ssc = new StreamingContext(conf, Seconds(1))

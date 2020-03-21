@@ -49,132 +49,121 @@ class RuntimeReducerEstimatorTest
 
   "Single-step job with runtime-based reducer estimator" should {
     "set reducers correctly with median estimation scheme" in {
-      val config = Config.empty
-        .addReducerEstimator(classOf[Estimator1])
+      val config = Config.empty.addReducerEstimator(classOf[Estimator1])
         .+(RuntimePerReducer -> "25")
       // + (EstimationScheme -> "median")
       // + (IgnoreInputSize -> false)
 
-      HadoopPlatformJobTest(
-        new SimpleJobWithNoSetReducers(_, config),
-        cluster).inspectCompletedFlow { flow =>
-        val steps = flow.getFlowSteps.asScala
-        assert(steps.length == 1)
+      HadoopPlatformJobTest(new SimpleJobWithNoSetReducers(_, config), cluster)
+        .inspectCompletedFlow { flow =>
+          val steps = flow.getFlowSteps.asScala
+          assert(steps.length == 1)
 
-        val conf = steps.head.getConfig
-        // So our histories are (taking median runtimes):
-        //
-        // 2 * inputSize bytes, 3 reducers * 1000 ms for each reducer
-        // inputSize / 2 bytes, 3 reducers * 200 ms for each reducer
-        // inputSize * 4 bytes, 3 reducers * 2400 ms for each reducer
-        //
-        // If we scale by input size, we get:
-        //
-        // (1500 / inputSize) ms per byte
-        // (1200 / inputSize) ms per byte
-        // (1800 / inputSize) ms per byte
-        //
-        // The median of these is (1500 / inputSize) ms per byte,
-        // so we anticipate that processing (inputSize bytes)
-        // will take 1500 ms total.
-        // To do this in 25 ms, we need 60 reducers.
-        assert(conf.getNumReduceTasks == 60)
-      }.run
+          val conf = steps.head.getConfig
+          // So our histories are (taking median runtimes):
+          //
+          // 2 * inputSize bytes, 3 reducers * 1000 ms for each reducer
+          // inputSize / 2 bytes, 3 reducers * 200 ms for each reducer
+          // inputSize * 4 bytes, 3 reducers * 2400 ms for each reducer
+          //
+          // If we scale by input size, we get:
+          //
+          // (1500 / inputSize) ms per byte
+          // (1200 / inputSize) ms per byte
+          // (1800 / inputSize) ms per byte
+          //
+          // The median of these is (1500 / inputSize) ms per byte,
+          // so we anticipate that processing (inputSize bytes)
+          // will take 1500 ms total.
+          // To do this in 25 ms, we need 60 reducers.
+          assert(conf.getNumReduceTasks == 60)
+        }.run
     }
 
     "set reducers correctly with mean estimation scheme" in {
-      val config = Config.empty
-        .addReducerEstimator(classOf[Estimator1])
-        .+(RuntimePerReducer -> "25")
-        .+(EstimationScheme -> "mean")
+      val config = Config.empty.addReducerEstimator(classOf[Estimator1])
+        .+(RuntimePerReducer -> "25").+(EstimationScheme -> "mean")
       // + (IgnoreInputSize -> false)
 
-      HadoopPlatformJobTest(
-        new SimpleJobWithNoSetReducers(_, config),
-        cluster).inspectCompletedFlow { flow =>
-        val steps = flow.getFlowSteps.asScala
-        assert(steps.length == 1)
+      HadoopPlatformJobTest(new SimpleJobWithNoSetReducers(_, config), cluster)
+        .inspectCompletedFlow { flow =>
+          val steps = flow.getFlowSteps.asScala
+          assert(steps.length == 1)
 
-        val conf = steps.head.getConfig
-        // So our histories are (taking mean runtimes):
-        //
-        // 2 * inputSize bytes,  3 reducers * 1336.67 ms for each reducer
-        // inputSize / 2 bytes,  3 reducer  *  203.33 ms for each reducer
-        // inputSize * 4 bytes,  3 reducer  * 1803.33 ms for each reducer
-        //
-        // If we scale by input size, we get:
-        //
-        // (2005   / inputSize) ms per byte
-        // (1220   / inputSize) ms per byte
-        // (1352.5 / inputSize) ms per byte
-        //
-        // The mean of these is (1525.8 / inputSize) ms per byte,
-        // so we anticipate that processing (inputSize bytes)
-        // will take 1525.8 ms total.
-        //
-        // To do this in 25 ms, we need 61.03 reducers, which rounds up to 62.
-        assert(conf.getNumReduceTasks == 62)
-      }.run
+          val conf = steps.head.getConfig
+          // So our histories are (taking mean runtimes):
+          //
+          // 2 * inputSize bytes,  3 reducers * 1336.67 ms for each reducer
+          // inputSize / 2 bytes,  3 reducer  *  203.33 ms for each reducer
+          // inputSize * 4 bytes,  3 reducer  * 1803.33 ms for each reducer
+          //
+          // If we scale by input size, we get:
+          //
+          // (2005   / inputSize) ms per byte
+          // (1220   / inputSize) ms per byte
+          // (1352.5 / inputSize) ms per byte
+          //
+          // The mean of these is (1525.8 / inputSize) ms per byte,
+          // so we anticipate that processing (inputSize bytes)
+          // will take 1525.8 ms total.
+          //
+          // To do this in 25 ms, we need 61.03 reducers, which rounds up to 62.
+          assert(conf.getNumReduceTasks == 62)
+        }.run
     }
 
     "set reducers correctly with mean estimation scheme ignoring input size" in {
-      val config = Config.empty
-        .addReducerEstimator(classOf[Estimator1])
-        .+(RuntimePerReducer -> "25")
-        .+(EstimationScheme -> "mean")
+      val config = Config.empty.addReducerEstimator(classOf[Estimator1])
+        .+(RuntimePerReducer -> "25").+(EstimationScheme -> "mean")
         .+(IgnoreInputSize -> "true")
 
-      HadoopPlatformJobTest(
-        new SimpleJobWithNoSetReducers(_, config),
-        cluster).inspectCompletedFlow { flow =>
-        val steps = flow.getFlowSteps.asScala
-        assert(steps.length == 1)
+      HadoopPlatformJobTest(new SimpleJobWithNoSetReducers(_, config), cluster)
+        .inspectCompletedFlow { flow =>
+          val steps = flow.getFlowSteps.asScala
+          assert(steps.length == 1)
 
-        val conf = steps.head.getConfig
-        // So our histories are (taking mean runtimes):
-        //
-        // 2 * inputSize bytes, 3 reducers * 1337 ms for each reducer
-        // inputSize / 2 bytes, 3 reducers *  203 ms for each reducer
-        // inputSize * 4 bytes, 3 reducers * 1803 ms for each reducer
-        //
-        // We don't scale by input size.
-        //
-        // The mean of these is 3342 ms, so we anticipate
-        // that the job will take 3342 ms total.
-        //
-        // To do this in 25 ms, we need 134 reducers.
-        assert(conf.getNumReduceTasks == 134)
-      }.run
+          val conf = steps.head.getConfig
+          // So our histories are (taking mean runtimes):
+          //
+          // 2 * inputSize bytes, 3 reducers * 1337 ms for each reducer
+          // inputSize / 2 bytes, 3 reducers *  203 ms for each reducer
+          // inputSize * 4 bytes, 3 reducers * 1803 ms for each reducer
+          //
+          // We don't scale by input size.
+          //
+          // The mean of these is 3342 ms, so we anticipate
+          // that the job will take 3342 ms total.
+          //
+          // To do this in 25 ms, we need 134 reducers.
+          assert(conf.getNumReduceTasks == 134)
+        }.run
     }
 
     "set reducers correctly with median estimation scheme ignoring input size" in {
-      val config = Config.empty
-        .addReducerEstimator(classOf[Estimator1])
-        .+(RuntimePerReducer -> "25")
-        .+(IgnoreInputSize -> "true")
+      val config = Config.empty.addReducerEstimator(classOf[Estimator1])
+        .+(RuntimePerReducer -> "25").+(IgnoreInputSize -> "true")
       // + (EstimationScheme -> "median")
 
-      HadoopPlatformJobTest(
-        new SimpleJobWithNoSetReducers(_, config),
-        cluster).inspectCompletedFlow { flow =>
-        val steps = flow.getFlowSteps.asScala
-        assert(steps.length == 1)
+      HadoopPlatformJobTest(new SimpleJobWithNoSetReducers(_, config), cluster)
+        .inspectCompletedFlow { flow =>
+          val steps = flow.getFlowSteps.asScala
+          assert(steps.length == 1)
 
-        val conf = steps.head.getConfig
-        // So our histories are (taking median runtimes):
-        //
-        // 2 * inputSize bytes, 3 reducers * 1000 ms for each reducer
-        // inputSize / 2 bytes, 3 reducers *  200 ms for each reducer
-        // inputSize * 4 bytes, 3 reducers * 2400 ms for each reducer
-        //
-        // We don't scale by input size.
-        //
-        // The median of these is 3000 ms, so we anticipate
-        // that the job will take 3000 ms total.
-        //
-        // To do this in 25 ms, we need 120 reducers.
-        assert(conf.getNumReduceTasks == 120)
-      }.run
+          val conf = steps.head.getConfig
+          // So our histories are (taking median runtimes):
+          //
+          // 2 * inputSize bytes, 3 reducers * 1000 ms for each reducer
+          // inputSize / 2 bytes, 3 reducers *  200 ms for each reducer
+          // inputSize * 4 bytes, 3 reducers * 2400 ms for each reducer
+          //
+          // We don't scale by input size.
+          //
+          // The median of these is 3000 ms, so we anticipate
+          // that the job will take 3000 ms total.
+          //
+          // To do this in 25 ms, we need 120 reducers.
+          assert(conf.getNumReduceTasks == 120)
+        }.run
     }
 
     "not set reducers when history service is empty" in {

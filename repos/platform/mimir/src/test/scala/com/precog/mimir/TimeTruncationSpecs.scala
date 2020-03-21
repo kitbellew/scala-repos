@@ -523,8 +523,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date" in {
       val input = dag.Operate(
         BuiltInFunction1Op(Date),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -562,8 +563,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine year and month" in {
       val input = dag.Operate(
         BuiltInFunction1Op(YearMonth),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -598,8 +600,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine year and day of year" in {
       val input = dag.Operate(
         BuiltInFunction1Op(YearDayOfYear),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -637,8 +640,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine month and day" in {
       val input = dag.Operate(
         BuiltInFunction1Op(MonthDay),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -675,8 +679,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date and hour" in {
       val input = dag.Operate(
         BuiltInFunction1Op(DateHour),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -714,8 +719,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date, hour, and minute" in {
       val input = dag.Operate(
         BuiltInFunction1Op(DateHourMinute),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -753,8 +759,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date, hour, minute, and second" in {
       val input = dag.Operate(
         BuiltInFunction1Op(DateHourMinuteSecond),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -792,8 +799,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date, hour, minute, second, and ms" in {
       val input = dag.Operate(
         BuiltInFunction1Op(DateHourMinuteSecondMillis),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -831,8 +839,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine time with timezone" in {
       val input = dag.Operate(
         BuiltInFunction1Op(TimeWithZone),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -870,8 +879,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine time without timezone" in {
       val input = dag.Operate(
         BuiltInFunction1Op(TimeWithoutZone),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -909,8 +919,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine hour and minute" in {
       val input = dag.Operate(
         BuiltInFunction1Op(HourMinute),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -948,8 +959,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine hour, minute, and second" in {
       val input = dag.Operate(
         BuiltInFunction1Op(HourMinuteSecond),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -990,8 +1002,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date" in {
       val input = dag.Operate(
         BuiltInFunction1Op(Date),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1016,8 +1029,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine year and month" in {
       val input = dag.Operate(
         BuiltInFunction1Op(YearMonth),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1042,8 +1056,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine year and day of year" in {
       val input = dag.Operate(
         BuiltInFunction1Op(YearDayOfYear),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1068,8 +1083,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine month and day" in {
       val input = dag.Operate(
         BuiltInFunction1Op(MonthDay),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1094,8 +1110,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date and hour" in {
       val input = dag.Operate(
         BuiltInFunction1Op(DateHour),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1121,8 +1138,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date, hour, and minute" in {
       val input = dag.Operate(
         BuiltInFunction1Op(DateHourMinute),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1148,8 +1166,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date, hour, minute, and second" in {
       val input = dag.Operate(
         BuiltInFunction1Op(DateHourMinuteSecond),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1175,8 +1194,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine date, hour, minute, second, and ms" in {
       val input = dag.Operate(
         BuiltInFunction1Op(DateHourMinuteSecondMillis),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1202,8 +1222,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine time with timezone" in {
       val input = dag.Operate(
         BuiltInFunction1Op(TimeWithZone),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1229,8 +1250,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine time without timezone" in {
       val input = dag.Operate(
         BuiltInFunction1Op(TimeWithoutZone),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1255,8 +1277,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine hour and minute" in {
       val input = dag.Operate(
         BuiltInFunction1Op(HourMinute),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1281,8 +1304,9 @@ trait TimeTruncationSpecs[M[+_]]
     "determine hour, minute, and second" in {
       val input = dag.Operate(
         BuiltInFunction1Op(HourMinuteSecond),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 

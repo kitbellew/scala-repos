@@ -29,19 +29,13 @@ class MultiJoinTest extends WordSpec {
   val longs = TypedPipe.from(addKeys(List(10L, 20L, 30L)))
   val strings = TypedPipe.from(addKeys(List("one", "two", "three")))
   val sets = TypedPipe.from(addKeys(List(Set(1), Set(2), Set(3))))
-  val maps = TypedPipe.from(addKeys(
-    List(Map(1 -> 1), Map(2 -> 2), Map(3 -> 3))))
+  val maps = TypedPipe
+    .from(addKeys(List(Map(1 -> 1), Map(2 -> 2), Map(3 -> 3))))
 
   val joined = doubles.join(longs).join(strings).join(sets).join(maps)
-  val leftJoined = doubles
-    .leftJoin(longs)
-    .leftJoin(strings)
-    .leftJoin(sets)
+  val leftJoined = doubles.leftJoin(longs).leftJoin(strings).leftJoin(sets)
     .leftJoin(maps)
-  val outerJoined = doubles
-    .outerJoin(longs)
-    .outerJoin(strings)
-    .outerJoin(sets)
+  val outerJoined = doubles.outerJoin(longs).outerJoin(strings).outerJoin(sets)
     .outerJoin(maps)
 
   // note that these tests are essentially compile-time tests, all

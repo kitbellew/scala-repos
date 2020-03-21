@@ -39,8 +39,7 @@ class ThriftRichClientTest
     "ThriftRichClientTest newServiceIface takes dest String and stats scoping label arguments") {
     val captor = ArgumentCaptor.forClass(classOf[StatsReceiver])
     val mockBuilder = mock[ServiceIfaceBuilder[String]]
-    doReturn("mockServiceIface")
-      .when(mockBuilder)
+    doReturn("mockServiceIface").when(mockBuilder)
       .newServiceIface(any(), any(), captor.capture())
 
     val client = spy(ThriftRichClientMock)
@@ -57,8 +56,7 @@ class ThriftRichClientTest
     "ThriftRichClientTest newServiceIface takes dest Name and stats scoping label arguments") {
     val captor = ArgumentCaptor.forClass(classOf[StatsReceiver])
     val mockBuilder = mock[ServiceIfaceBuilder[String]]
-    doReturn("mockServiceIface")
-      .when(mockBuilder)
+    doReturn("mockServiceIface").when(mockBuilder)
       .newServiceIface(any(), any(), captor.capture())
 
     val name = Name.empty

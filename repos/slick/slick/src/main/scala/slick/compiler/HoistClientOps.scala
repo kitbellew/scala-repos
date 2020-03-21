@@ -21,9 +21,7 @@ class HoistClientOps extends Phase {
           val hoisted = defs2.map { case (ts, n) => (ts, n, unwrap(n, true)) }
           logger.debug(
             "Hoisting operations from defs: " + hoisted.iterator
-              .filter(t => t._2 ne t._3._1)
-              .map(_._1)
-              .mkString(", "))
+              .filter(t => t._2 ne t._3._1).map(_._1).mkString(", "))
           val newDefsM = hoisted.iterator.map {
             case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
           }.toMap
@@ -39,13 +37,11 @@ class HoistClientOps extends Phase {
               Pure(
                 StructNode(ConstArray.from(newDefsM.map(_.swap))),
                 new AnonTypeSymbol)).infer())
-          val rsm2 = rsm
-            .copy(
-              from = bind2,
-              map = rsm.map.replace {
-                case Select(Ref(s), f) if s == rsm.generator => oldDefsM(f)
-              })
-            .infer()
+          val rsm2 = rsm.copy(
+            from = bind2,
+            map = rsm.map.replace {
+              case Select(Ref(s), f) if s == rsm.generator => oldDefsM(f)
+            }).infer()
           logger.debug("New ResultSetMapping:", Ellipsis(rsm2, List(0, 0)))
           rsm2
         case _ =>
@@ -65,11 +61,9 @@ class HoistClientOps extends Phase {
               "Merging top-level Binds",
               Ellipsis(n.copy(from = bind2), List(0, 0)))
             val defs = elems2.iterator.toMap
-            bind2
-              .copy(select = sel1.replace {
-                case Select(Ref(s), f) if s == s1 => defs(f)
-              })
-              .infer()
+            bind2.copy(select = sel1.replace {
+              case Select(Ref(s), f) if s == s1 => defs(f)
+            }).infer()
           // Hoist operations out of the non-Option sides of inner and left and right outer joins
           case from2 @ Join(
                 sl1,
@@ -89,18 +83,15 @@ class HoistClientOps extends Phase {
                   case (ts, n) => (ts, n, unwrap(n, false))
                 }
                 logger.debug(
-                  "Hoisting operations from defs in left side of Join: " + hoisted.iterator
-                    .filter(t => t._2 ne t._3._1)
-                    .map(_._1)
+                  "Hoisting operations from defs in left side of Join: " + hoisted
+                    .iterator.filter(t => t._2 ne t._3._1).map(_._1)
                     .mkString(", "))
                 val newDefsM = hoisted.iterator.map {
                   case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
                 }.toMap
                 logger.debug("New defs: " + newDefsM)
-                val bl2 = bl
-                  .copy(select = Pure(
-                    StructNode(ConstArray.from(newDefsM.map(_.swap)))))
-                  .infer()
+                val bl2 = bl.copy(select = Pure(
+                  StructNode(ConstArray.from(newDefsM.map(_.swap))))).infer()
                 logger
                   .debug("Translated left join side:", Ellipsis(bl2, List(0)))
                 val repl = hoisted.iterator.map {
@@ -116,18 +107,15 @@ class HoistClientOps extends Phase {
                   case (ts, n) => (ts, n, unwrap(n, false))
                 }
                 logger.debug(
-                  "Hoisting operations from defs in right side of Join: " + hoisted.iterator
-                    .filter(t => t._2 ne t._3._1)
-                    .map(_._1)
+                  "Hoisting operations from defs in right side of Join: " + hoisted
+                    .iterator.filter(t => t._2 ne t._3._1).map(_._1)
                     .mkString(", "))
                 val newDefsM = hoisted.iterator.map {
                   case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
                 }.toMap
                 logger.debug("New defs: " + newDefsM)
-                val br2 = br
-                  .copy(select = Pure(
-                    StructNode(ConstArray.from(newDefsM.map(_.swap)))))
-                  .infer()
+                val br2 = br.copy(select = Pure(
+                  StructNode(ConstArray.from(newDefsM.map(_.swap))))).infer()
                 logger
                   .debug("Translated right join side:", Ellipsis(br2, List(0)))
                 val repl = hoisted.iterator.map {
@@ -242,7 +230,8 @@ class HoistClientOps extends Phase {
             recCh,
             { n =>
               IfThenElse(ConstArray(
-                Library.==.typed[Boolean](recTr(n), LiteralNode(null)),
+                Library
+                  .==.typed[Boolean](recTr(n), LiteralNode(null)),
                 r1,
                 r2))
             })

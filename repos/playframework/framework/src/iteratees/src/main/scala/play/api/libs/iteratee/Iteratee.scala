@@ -295,8 +295,7 @@ object Iteratee {
 
         case Input.El(e) => i.pureFlatFold {
             case Step.Done(a, e) => Done(s :+ a, input)
-            case Step.Cont(k) =>
-              k(input)
+            case Step.Cont(k) => k(input)
                 .flatMap(a => repeat(i).map(az => s ++ (a +: az))(dec))(dec)
             case Step.Error(msg, e) => Error(msg, e)
           }(dec)
@@ -594,24 +593,25 @@ trait Iteratee[E, +A] {
     */
   def flatMap[B](f: A => Iteratee[E, B])(implicit
       ec: ExecutionContext): Iteratee[E, B] = {
-    self.pureFlatFoldNoEC { // safe: folder either yields value immediately or executes with another EC
-      case Step.Done(a, Input.Empty) =>
-        executeIteratee(f(a))(
-          ec /* still on same thread; let executeIteratee do preparation */ )
-      case Step.Done(a, e) =>
-        executeIteratee(f(a))(
-          ec /* still on same thread; let executeIteratee do preparation */ )
-          .pureFlatFold {
-            case Step.Done(a, _)    => Done(a, e)
-            case Step.Cont(k)       => k(e)
-            case Step.Error(msg, e) => Error(msg, e)
-          }(dec)
-      case Step.Cont(k) => {
-        implicit val pec = ec.prepare()
-        Cont((in: Input[E]) => executeIteratee(k(in))(dec).flatMap(f)(pec))
+    self
+      .pureFlatFoldNoEC { // safe: folder either yields value immediately or executes with another EC
+        case Step.Done(a, Input.Empty) =>
+          executeIteratee(f(a))(
+            ec /* still on same thread; let executeIteratee do preparation */ )
+        case Step.Done(a, e) =>
+          executeIteratee(f(a))(
+            ec /* still on same thread; let executeIteratee do preparation */ )
+            .pureFlatFold {
+              case Step.Done(a, _)    => Done(a, e)
+              case Step.Cont(k)       => k(e)
+              case Step.Error(msg, e) => Error(msg, e)
+            }(dec)
+        case Step.Cont(k) => {
+          implicit val pec = ec.prepare()
+          Cont((in: Input[E]) => executeIteratee(k(in))(dec).flatMap(f)(pec))
+        }
+        case Step.Error(msg, e) => Error(msg, e)
       }
-      case Step.Error(msg, e) => Error(msg, e)
-    }
   }
 
   /**
@@ -731,10 +731,7 @@ trait Iteratee[E, +A] {
             }
           case Step.Error(msg, _) => throw new IterateeException(msg)
           case done               => done.it
-        }(dec)
-        .unflatten
-        .map(_.it)(dec)
-        .recover(pf)(pec)
+        }(dec).unflatten.map(_.it)(dec).recover(pf)(pec)
       Iteratee.flatten(futureRecoveringIteratee)
     }
 
@@ -833,8 +830,8 @@ private final class DoneIteratee[E, A](a: A, e: Input[E])
     */
   override def mapM[B](f: A => Future[B])(implicit
       ec: ExecutionContext): Iteratee[E, B] = {
-    Iteratee.flatten(
-      executeFuture { f(a).map[Iteratee[E, B]](Done(_, e))(dec) }(
+    Iteratee
+      .flatten(executeFuture { f(a).map[Iteratee[E, B]](Done(_, e))(dec) }(
         ec /* delegate preparation */ ))
   }
 

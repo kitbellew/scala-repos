@@ -172,8 +172,8 @@ abstract class ClusterShardingGetStatsSpec
           region.tell(
             ShardRegion.GetClusterShardingStats(10.seconds.dilated),
             probe.ref)
-          val regions =
-            probe.expectMsgType[ShardRegion.ClusterShardingStats].regions
+          val regions = probe.expectMsgType[ShardRegion.ClusterShardingStats]
+            .regions
           regions.size shouldEqual 3
           regions.values.flatMap(_.stats.values).sum shouldEqual 4
           regions.keys.forall(_.hasGlobalScope) should be(true)
@@ -215,8 +215,8 @@ abstract class ClusterShardingGetStatsSpec
             region.tell(
               ShardRegion.GetClusterShardingStats(20.seconds.dilated),
               probe.ref)
-            val regions =
-              probe.expectMsgType[ShardRegion.ClusterShardingStats].regions
+            val regions = probe.expectMsgType[ShardRegion.ClusterShardingStats]
+              .regions
             regions.size === 2
             regions.values.flatMap(_.stats.values).sum should ===(4)
           }

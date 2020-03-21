@@ -67,8 +67,7 @@ class StackClientTest
 
   trait Ctx {
     val sr = new InMemoryStatsReceiver
-    val client = stringClient
-      .configured(param.Stats(sr))
+    val client = stringClient.configured(param.Stats(sr))
   }
 
   after { NameInterpreter.global = DefaultInterpreter }
@@ -77,8 +76,8 @@ class StackClientTest
     // use dest when no label is set
     client.newService("inet!127.0.0.1:8080")
     eventually {
-      val counter = sr.counters(
-        Seq("inet!127.0.0.1:8080", "loadbalancer", "adds"))
+      val counter = sr
+        .counters(Seq("inet!127.0.0.1:8080", "loadbalancer", "adds"))
       assert(
         counter == 1,
         s"The instance should be to the loadbalancer once instead of $counter times.")
@@ -91,8 +90,7 @@ class StackClientTest
     }
 
     // use evaled label when both are set
-    client
-      .configured(param.Label("myclient"))
+    client.configured(param.Label("myclient"))
       .newService("othername=127.0.0.1:8080")
     eventually {
       assert(sr.counters(Seq("othername", "loadbalancer", "adds")) == 1)
@@ -125,16 +123,13 @@ class StackClientTest
     }
 
     val alwaysFailStack = new StackBuilder(stack.nilStack[String, String])
-      .push(alwaysFail)
-      .result
+      .push(alwaysFail).result
     val stk = ctx.client.stack.concat(alwaysFailStack)
 
     def newClient(
         name: String,
         failFastOn: Option[Boolean]): Service[String, String] = {
-      var stack = ctx.client
-        .configured(param.Label(name))
-        .withStack(stk)
+      var stack = ctx.client.configured(param.Label(name)).withStack(stk)
       failFastOn.foreach { ffOn => stack = stack.configured(FailFast(ffOn)) }
       val client = stack.newClient("/$/inet/localhost/0")
       new FactoryToService[String, String](client)
@@ -183,8 +178,7 @@ class StackClientTest
       def close(deadline: Time) = Future.Done
     }
 
-    val stack = StackClient
-      .newStack[Unit, Unit]
+    val stack = StackClient.newStack[Unit, Unit]
       .concat(Stack.Leaf(Stack.Role("role"), underlyingFactory))
       // don't pool or else we don't see underlying close until service is ejected from pool
       .remove(DefaultPool.Role)
@@ -226,12 +220,10 @@ class StackClientTest
       def close(deadline: Time) = Future.Done
     }
 
-    val stack = StackClient
-      .newStack[Unit, Unit]
+    val stack = StackClient.newStack[Unit, Unit]
       .concat(Stack.Leaf(Stack.Role("role"), underlyingFactory))
       // don't pool or else we don't see underlying close until service is ejected from pool
-      .remove(DefaultPool.Role)
-      .replace(
+      .remove(DefaultPool.Role).replace(
         StackClient.Role.prepFactory,
         { next: ServiceFactory[Unit, Unit] =>
           next map { service: Service[Unit, Unit] =>
@@ -286,9 +278,7 @@ class StackClientTest
       LoadBalancerFactory.role,
       (_: ServiceFactory[String, String]) => stubLB)
 
-    val cl = client
-      .withStack(stk)
-      .configured(param.Label("myclient"))
+    val cl = client.withStack(stk).configured(param.Label("myclient"))
       .newClient("/$/inet/localhost/0")
 
     def requeues = sr.counters.get(Seq("myclient", "retries", "requeues"))
@@ -401,10 +391,9 @@ class StackClientTest
       }
     }
 
-    val stack = StackClient
-      .newStack[Unit, Unit]
-      // direct the two addresses to the two service factories instead
-      // of trying to connect to them
+    val stack = StackClient.newStack[Unit, Unit]
+    // direct the two addresses to the two service factories instead
+    // of trying to connect to them
       .replace(
         LoadBalancerFactory.role,
         new Stack.Module1[
@@ -446,8 +435,8 @@ class StackClientTest
   test("StackBasedClient.configured is a StackClient") {
     // compilation test
     val client: StackBasedClient[String, String] = stringClient
-    val client2: StackBasedClient[String, String] = client.configured(
-      param.Label("foo"))
+    val client2: StackBasedClient[String, String] = client
+      .configured(param.Label("foo"))
     val client3: StackBasedClient[String, String] = client
       .configured[param.Label]((param.Label("foo"), param.Label.param))
   }
@@ -455,10 +444,10 @@ class StackClientTest
   test("StackClient.configured is a StackClient") {
     // compilation test
     val client: StackClient[String, String] = stringClient
-    val client2: StackClient[String, String] = client.configured(
-      param.Label("foo"))
-    val client3: StackClient[String, String] = client.configured[param.Label](
-      (param.Label("foo"), param.Label.param))
+    val client2: StackClient[String, String] = client
+      .configured(param.Label("foo"))
+    val client3: StackClient[String, String] = client
+      .configured[param.Label]((param.Label("foo"), param.Label.param))
   }
 
   test("StackClient binds to a local service via exp.Address.ServiceFactory") {
@@ -482,8 +471,7 @@ class StackClientTest
       def apply(str: String, svc: Service[String, String]) = svc(str.reverse)
     }
 
-    val svc = stringClient
-      .filtered(reverseFilter)
+    val svc = stringClient.filtered(reverseFilter)
       .newRichClient(name, "test_client")
     assert(Await.result(svc.ping(), 1.second) == "ping".reverse)
   }
@@ -523,21 +511,18 @@ class StackClientTest
       (new CountingService(p1), new CountingService(p2))
     var first = true
 
-    val stack = StackClient
-      .newStack[Unit, Unit]
-      .concat(Stack.Leaf(
-        Stack.Role("role"),
-        new ServiceFactory[Unit, Unit] {
-          def apply(conn: ClientConnection): Future[Service[Unit, Unit]] =
-            if (first) {
-              first = false
-              Future.value(endpoint1)
-            } else { Future.value(endpoint2) }
+    val stack = StackClient.newStack[Unit, Unit].concat(Stack.Leaf(
+      Stack.Role("role"),
+      new ServiceFactory[Unit, Unit] {
+        def apply(conn: ClientConnection): Future[Service[Unit, Unit]] =
+          if (first) {
+            first = false
+            Future.value(endpoint1)
+          } else { Future.value(endpoint2) }
 
-          def close(deadline: Time): Future[Unit] = Future.Done
-        }
-      ))
-      .remove(DefaultPool.Role)
+        def close(deadline: Time): Future[Unit] = Future.Done
+      }
+    )).remove(DefaultPool.Role)
 
     val sr = new InMemoryStatsReceiver
     val params =

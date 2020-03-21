@@ -35,9 +35,8 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
     val editor = CommonDataKeys.EDITOR.getData(context)
 
     if (editor == null) return
-    val file = PsiUtilBase.getPsiFileInEditor(
-      editor,
-      CommonDataKeys.PROJECT.getData(context))
+    val file = PsiUtilBase
+      .getPsiFileInEditor(editor, CommonDataKeys.PROJECT.getData(context))
     if (file.getLanguage != ScalaFileType.SCALA_LANGUAGE) return
 
     val selectionModel = editor.getSelectionModel
@@ -67,12 +66,11 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
             val tpeText = tpe.presentableText
             val withoutAliases = Some(ScTypePresentation.withoutAliases(tpe))
             val tpeWithoutImplicits = expr.getTypeWithoutImplicits().toOption
-            val tpeWithoutImplicitsText = tpeWithoutImplicits.map(
-              _.presentableText)
+            val tpeWithoutImplicitsText = tpeWithoutImplicits
+              .map(_.presentableText)
             val expectedTypeText = expr.expectedType().map(_.presentableText)
             val nonSingletonTypeText = ScType
-              .extractDesignatorSingletonType(tpe)
-              .map(_.presentableText)
+              .extractDesignatorSingletonType(tpe).map(_.presentableText)
 
             val mainText = Seq("Type: " + tpeText)
             def additionalTypeText(typeText: Option[String], label: String) =
@@ -84,8 +82,8 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
             val simplified = additionalTypeText(withoutAliases, "Simplified")
             val orig = additionalTypeText(tpeWithoutImplicitsText, "Original")
             val expected = additionalTypeText(expectedTypeText, "Expected")
-            val types =
-              mainText ++ simplified.orElse(nonSingleton) ++ orig ++ expected
+            val types = mainText ++ simplified
+              .orElse(nonSingleton) ++ orig ++ expected
 
             if (types.size == 1) tpeText else types.mkString("\n")
           case _ => "Could not find type for selection"
@@ -99,8 +97,7 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
         file,
         editor.getDocument,
         editor.logicalPositionToOffset(editor.getCaretModel.getLogicalPosition))
-      ShowTypeInfoAction
-        .getTypeInfoHint(editor, file, offset)
+      ShowTypeInfoAction.getTypeInfoHint(editor, file, offset)
         .foreach(ScalaActionUtil.showHint(editor, _))
     }
   }

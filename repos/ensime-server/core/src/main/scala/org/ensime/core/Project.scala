@@ -69,18 +69,16 @@ class Project(broadcaster: ActorRef, implicit val config: EnsimeConfig)
     }
 
   private def init(): Unit = {
-    searchService
-      .refresh()
-      .onComplete {
-        case Success((deletes, inserts)) =>
-          // legacy clients expect to see IndexerReady on connection.
-          // we could also just blindly send this on each connection.
-          broadcaster ! Broadcaster.Persist(IndexerReadyEvent)
-          log.debug(s"created $inserts and removed $deletes searchable rows")
-        case Failure(problem) =>
-          log.warning(problem.toString)
-          throw problem
-      }(context.dispatcher)
+    searchService.refresh().onComplete {
+      case Success((deletes, inserts)) =>
+        // legacy clients expect to see IndexerReady on connection.
+        // we could also just blindly send this on each connection.
+        broadcaster ! Broadcaster.Persist(IndexerReadyEvent)
+        log.debug(s"created $inserts and removed $deletes searchable rows")
+      case Failure(problem) =>
+        log.warning(problem.toString)
+        throw problem
+    }(context.dispatcher)
     indexer = context.actorOf(Indexer(searchService), "indexer")
     if (config.scalaLibrary.isDefined || Set("scala", "dotty")(config.name)) {
 
@@ -96,19 +94,16 @@ class Project(broadcaster: ActorRef, implicit val config: EnsimeConfig)
         }
       }))
 
-      scalac = context.actorOf(
-        Analyzer(merger, indexer, searchService),
-        "scalac")
-      javac = context.actorOf(
-        JavaAnalyzer(merger, indexer, searchService),
-        "javac")
+      scalac = context
+        .actorOf(Analyzer(merger, indexer, searchService), "scalac")
+      javac = context
+        .actorOf(JavaAnalyzer(merger, indexer, searchService), "javac")
     } else {
       log.warning(
         "Detected a pure Java project. Scala queries are not available.")
       scalac = system.deadLetters
-      javac = context.actorOf(
-        JavaAnalyzer(broadcaster, indexer, searchService),
-        "javac")
+      javac = context
+        .actorOf(JavaAnalyzer(broadcaster, indexer, searchService), "javac")
     }
     debugger = context.actorOf(DebugManager(broadcaster), "debugging")
     docs = context.actorOf(DocResolver(), "docs")
@@ -128,10 +123,8 @@ class Project(broadcaster: ActorRef, implicit val config: EnsimeConfig)
     withLabel("handleRequests") {
       case AskReTypecheck =>
         Option(rechecking).foreach(_.cancel())
-        rechecking = system.scheduler.scheduleOnce(
-          5 seconds,
-          scalac,
-          ReloadExistingFilesEvent)
+        rechecking = system.scheduler
+          .scheduleOnce(5 seconds, scalac, ReloadExistingFilesEvent)
       // HACK: to expedite initial dev, Java requests use the Scala API
       case m @ TypecheckFileReq(sfi) if sfi.file.isJava => javac forward m
       case m @ CompletionsReq(sfi, _, _, _, _) if sfi.file.isJava =>

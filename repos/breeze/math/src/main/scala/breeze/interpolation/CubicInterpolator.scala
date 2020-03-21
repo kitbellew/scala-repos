@@ -22,16 +22,15 @@ class CubicInterpolator(x_coords: Vector[Double], y_coords: Vector[Double])
   private def lambda(k: Int): Double = h(k) / (h(k - 1) + h(k))
   private def ro(k: Int): Double = 1 - lambda(k)
 
-  private val M: DenseMatrix[Double] = DenseMatrix.tabulate(
-    X.length - 2,
-    X.length - 2) {
-    case (i, j) if j - i == -1 =>
-      ro(i + 1) // one cell to left from the diagonal
-    case (i, j) if j == i => 2 // on the diagonal
-    case (i, j) if j - i == 1 =>
-      lambda(i + 1) // one cell to right from the diagonal
-    case _ => 0
-  }
+  private val M: DenseMatrix[Double] = DenseMatrix
+    .tabulate(X.length - 2, X.length - 2) {
+      case (i, j) if j - i == -1 =>
+        ro(i + 1) // one cell to left from the diagonal
+      case (i, j) if j == i => 2 // on the diagonal
+      case (i, j) if j - i == 1 =>
+        lambda(i + 1) // one cell to right from the diagonal
+      case _ => 0
+    }
   private val b = DenseVector.tabulate(X.length - 2) {
     case i => 6 * (d(i + 1) - d(i)) / (h(i) + h(i + 1))
   }

@@ -76,8 +76,8 @@ trait BuildFileModifier {
       this
     )
     if (res)
-      ExternalSystemUtil.refreshProjects(
-        new ImportSpecBuilder(project, SbtProjectSystem.Id))
+      ExternalSystemUtil
+        .refreshProjects(new ImportSpecBuilder(project, SbtProjectSystem.Id))
     res
   }
 
@@ -105,8 +105,8 @@ trait BuildFileModifier {
         val buildFileStatus =
           if (isModified) BuildFileModifiedStatus.MODIFIED_AUTOMATICALLY
           else BuildFileModifiedStatus.DETECTED
-        val buildFileModificationStamp =
-          documentManager.getDocument(copy).getModificationStamp
+        val buildFileModificationStamp = documentManager.getDocument(copy)
+          .getModificationStamp
         fileStatusMap.put(copy, (buildFileStatus, buildFileModificationStamp))
         new BuildFileChange(originalRevision, copyRevision, buildFileStatus)
     }

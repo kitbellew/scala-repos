@@ -70,8 +70,8 @@ object SimplifyBooleanUtil {
               isOfBooleanType(left) && isOfBooleanType(right)
           case _ => false
         }
-        isBooleanOperation && isOfBooleanType(expr) && children.exists(
-          canBeSimplified(_, isTopLevel = false))
+        isBooleanOperation && isOfBooleanType(expr) && children
+          .exists(canBeSimplified(_, isTopLevel = false))
     }
   }
 
@@ -91,9 +91,7 @@ object SimplifyBooleanUtil {
   }
 
   private def isOfBooleanType(expr: ScExpression): Boolean =
-    expr
-      .getType(TypingContext.empty)
-      .getOrAny
+    expr.getType(TypingContext.empty).getOrAny
       .conforms(lang.psi.types.Boolean, checkWeak = true)
 
   private def getScExprChildren(expr: ScExpression) =
@@ -121,9 +119,8 @@ object SimplifyBooleanUtil {
         else {
           booleanConst(operand) match {
             case Some(bool: Boolean) =>
-              ScalaPsiElementFactory.createExpressionFromText(
-                (!bool).toString,
-                expr.getManager)
+              ScalaPsiElementFactory
+                .createExpressionFromText((!bool).toString, expr.getManager)
             case None => expr
           }
         }

@@ -150,12 +150,12 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           t.partitionSchema.map(c => l.output.find(_.name == c.name).get))
 
         // Only pruning the partition keys
-        val partitionFilters = filters.filter(
-          _.references.subsetOf(partitionColumns))
+        val partitionFilters = filters
+          .filter(_.references.subsetOf(partitionColumns))
 
         // Only pushes down predicates that do not reference partition keys.
-        val pushedFilters = filters.filter(
-          _.references.intersect(partitionColumns).isEmpty)
+        val pushedFilters = filters
+          .filter(_.references.intersect(partitionColumns).isEmpty)
 
         // Predicates with both partition keys and attributes
         val partitionAndNormalColumnFilters =
@@ -193,8 +193,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         // this is because "partitionAndNormalColumnAttrs" may be different
         // from the original "projects", in elements or their ordering
 
-        partitionAndNormalColumnFilters
-          .reduceLeftOption(expressions.And)
+        partitionAndNormalColumnFilters.reduceLeftOption(expressions.And)
           .map(cf =>
             if (projects.isEmpty || projects == partitionAndNormalColumnProjs) {
               // if the original projection is empty, no need for the additional Project either
@@ -222,28 +221,23 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                 : (Seq[Attribute], Array[Filter]) => RDD[InternalRow] = {
               (requiredColumns: Seq[Attribute], filters: Array[Filter]) =>
                 {
-                  val bucketed = t.location
-                    .allFiles()
-                    .filterNot(_.getPath.getName startsWith "_")
-                    .groupBy { f =>
-                      BucketingUtils
-                        .getBucketId(f.getPath.getName)
+                  val bucketed = t.location.allFiles()
+                    .filterNot(_.getPath.getName startsWith "_").groupBy { f =>
+                      BucketingUtils.getBucketId(f.getPath.getName)
                         .getOrElse(sys.error(
                           s"Invalid bucket file ${f.getPath}"))
                     }
 
                   val bucketedDataMap = bucketed.mapValues { bucketFiles =>
-                    t.fileFormat
-                      .buildInternalScan(
-                        t.sqlContext,
-                        t.dataSchema,
-                        requiredColumns.map(_.name).toArray,
-                        filters,
-                        None,
-                        bucketFiles,
-                        confBroadcast,
-                        t.options)
-                      .coalesce(1)
+                    t.fileFormat.buildInternalScan(
+                      t.sqlContext,
+                      t.dataSchema,
+                      requiredColumns.map(_.name).toArray,
+                      filters,
+                      None,
+                      bucketFiles,
+                      confBroadcast,
+                      t.options).coalesce(1)
                   }
 
                   val bucketedRDD = new UnionRDD(
@@ -319,16 +313,15 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
           relation.bucketSpec match {
             case Some(spec) if relation.sqlContext.conf.bucketingEnabled =>
-              val requiredDataColumns = requiredColumns.filterNot(c =>
-                partitionColumnNames.contains(c.name))
+              val requiredDataColumns = requiredColumns
+                .filterNot(c => partitionColumnNames.contains(c.name))
 
               // Builds RDD[Row]s for each selected partition.
               val perPartitionRows: Seq[(Int, RDD[InternalRow])] = partitions
                 .flatMap {
                   case Partition(partitionValues, files) =>
                     val bucketed = files.groupBy { f =>
-                      BucketingUtils
-                        .getBucketId(f.getPath.getName)
+                      BucketingUtils.getBucketId(f.getPath.getName)
                         .getOrElse(sys.error(
                           s"Invalid bucket file ${f.getPath}"))
                     }
@@ -363,18 +356,16 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
               val bucketed = new UnionRDD(
                 relation.sqlContext.sparkContext,
                 (0 until spec.numBuckets).map { bucketId =>
-                  bucketedDataMap
-                    .get(bucketId)
-                    .map(i => i.reduce(_ ++ _).coalesce(1))
-                    .getOrElse {
+                  bucketedDataMap.get(bucketId)
+                    .map(i => i.reduce(_ ++ _).coalesce(1)).getOrElse {
                       relation.sqlContext.emptyResult: RDD[InternalRow]
                     }
                 })
               bucketed
 
             case _ =>
-              val requiredDataColumns = requiredColumns.filterNot(c =>
-                partitionColumnNames.contains(c.name))
+              val requiredDataColumns = requiredColumns
+                .filterNot(c => partitionColumnNames.contains(c.name))
 
               // Builds RDD[Row]s for each selected partition.
               val perPartitionRows = partitions.map {
@@ -428,8 +419,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       dataColumns: Seq[Attribute],
       partitionColumnSchema: StructType,
       partitionValues: InternalRow): ColumnarBatch = {
-    val result = ColumnarBatch.allocate(
-      StructType.fromAttributes(requiredColumns))
+    val result = ColumnarBatch
+      .allocate(StructType.fromAttributes(requiredColumns))
     var resultIdx = 0
     var inputIdx = 0
 
@@ -441,8 +432,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         inputIdx += 1
       } else {
         require(
-          partitionColumnSchema.fields
-            .filter(_.name.equals(attr.name))
+          partitionColumnSchema.fields.filter(_.name.equals(attr.name))
             .length == 1)
         var partitionIdx = 0
         partitionColumnSchema.fields.foreach { f =>
@@ -486,11 +476,10 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           // Note that we can't use an `UnsafeRowJoiner` to replace the following `JoinedRow` and
           // `UnsafeProjection`.  Because the projection may also adjust column order.
           val mutableJoinedRow = new JoinedRow()
-          val unsafePartitionValues = UnsafeProjection.create(
-            partitionColumnSchema)(partitionValues)
-          val unsafeProjection = UnsafeProjection.create(
-            requiredColumns,
-            dataColumns ++ partitionColumns)
+          val unsafePartitionValues = UnsafeProjection
+            .create(partitionColumnSchema)(partitionValues)
+          val unsafeProjection = UnsafeProjection
+            .create(requiredColumns, dataColumns ++ partitionColumns)
 
           // If we are returning batches directly, we need to augment them with the partitioning
           // columns. We want to do this without a row by row operation.
@@ -525,14 +514,12 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       // This is an internal RDD whose call site the user should not be concerned with
       // Since we create many of these (one per partition), the time spent on computing
       // the call site may add up.
-      Utils
-        .withDummyCallSite(dataRows.sparkContext) {
-          new MapPartitionsRDD(
-            dataRows,
-            mapPartitionsFunc,
-            preservesPartitioning = false)
-        }
-        .asInstanceOf[RDD[InternalRow]]
+      Utils.withDummyCallSite(dataRows.sparkContext) {
+        new MapPartitionsRDD(
+          dataRows,
+          mapPartitionsFunc,
+          preservesPartitioning = false)
+      }.asInstanceOf[RDD[InternalRow]]
     } else { dataRows }
   }
 
@@ -542,9 +529,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     val mutableRow = new SpecificMutableRow(Seq(bucketColumn.dataType))
     mutableRow(0) = Cast(Literal(value), bucketColumn.dataType).eval(null)
     val bucketIdGeneration = UnsafeProjection.create(
-      HashPartitioning(
-        bucketColumn :: Nil,
-        numBuckets).partitionIdExpression :: Nil,
+      HashPartitioning(bucketColumn :: Nil, numBuckets)
+        .partitionIdExpression :: Nil,
       bucketColumn :: Nil)
 
     bucketIdGeneration(mutableRow).getInt(0)
@@ -587,8 +573,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       // items. So it is possible we still get an In expression here that needs to be pushed
       // down.
       case expressions.In(a: Attribute, list)
-          if list.forall(
-            _.isInstanceOf[Literal]) && a.name == bucketColumnName =>
+          if list.forall(_.isInstanceOf[Literal]) && a
+            .name == bucketColumnName =>
         val hSet = list.map(e => e.eval(EmptyRow))
         hSet.foreach(e => matchedBuckets.set(getBucketId(a, numBuckets, e)))
       case expressions.IsNull(a: Attribute) if a.name == bucketColumnName =>
@@ -661,8 +647,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     // A set of column attributes that are only referenced by pushed down filters.  We can eliminate
     // them from requested columns.
     val handledSet = {
-      val handledPredicates = filterPredicates.filterNot(
-        unhandledPredicates.contains)
+      val handledPredicates = filterPredicates
+        .filterNot(unhandledPredicates.contains)
       val unhandledSet = AttributeSet(unhandledPredicates.flatMap(_.references))
       AttributeSet(handledPredicates.flatMap(_.references)) --
         (projectSet ++ unhandledSet).map(relation.attributeMap)
@@ -710,8 +696,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       filterCondition.map(execution.Filter(_, scan)).getOrElse(scan)
     } else {
       // Don't request columns that are only referenced by pushed filters.
-      val requestedColumns =
-        (projectSet ++ filterSet -- handledSet).map(relation.attributeMap).toSeq
+      val requestedColumns = (projectSet ++ filterSet -- handledSet)
+        .map(relation.attributeMap).toSeq
 
       val scan = execution.DataSourceScan(
         requestedColumns,
@@ -857,8 +843,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     // Data source filters that cannot be handled by `relation`. The semantic of a unhandled filter
     // at here is that a data source may not be able to apply this filter to every row
     // of the underlying dataset.
-    val unhandledFilters =
-      relation.unhandledFilters(translatedMap.values.toArray).toSet
+    val unhandledFilters = relation
+      .unhandledFilters(translatedMap.values.toArray).toSet
 
     val (unhandled, handled) = translated.partition {
       case (predicate, filter) => unhandledFilters.contains(filter)

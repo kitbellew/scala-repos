@@ -114,10 +114,12 @@ object FieldsProviderImpl {
             val indices = fb.names.zipWithIndex.map(_._2)
             q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..$indices)"""
           case _ =>
-            q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..${fb.names})"""
+            q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..${fb
+              .names})"""
         }
         q"""new _root_.cascading.tuple.Fields($nameTree,
-          _root_.scala.Array.apply[_root_.java.lang.reflect.Type](..${fb.columnTypes}))
+          _root_.scala.Array.apply[_root_.java.lang.reflect.Type](..${fb
+          .columnTypes}))
          """
       }
     }
@@ -132,8 +134,8 @@ object FieldsProviderImpl {
     case class OptionBuilder(of: FieldBuilder) extends FieldBuilder {
       // Options just use Object as the type, due to the way cascading works on number types
       def columnTypes =
-        of.columnTypes.map(_ =>
-          q"""_root_.scala.Predef.classOf[_root_.java.lang.Object]""")
+        of.columnTypes
+          .map(_ => q"""_root_.scala.Predef.classOf[_root_.java.lang.Object]""")
       def names = of.names
     }
     case class CaseClassBuilder(prefix: String, members: Vector[FieldBuilder])
@@ -175,16 +177,14 @@ object FieldsProviderImpl {
       }
 
     def expandMethod(outerTpe: Type): Vector[(Type, String)] =
-      outerTpe.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
-        .map { accessorMethod =>
-          val fieldName = accessorMethod.name.toTermName.toString
-          val fieldType = accessorMethod.returnType.asSeenFrom(
-            outerTpe,
-            outerTpe.typeSymbol.asClass)
-          (fieldType, fieldName)
-        }
-        .toVector
+      outerTpe.declarations.collect {
+        case m: MethodSymbol if m.isCaseAccessor => m
+      }.map { accessorMethod =>
+        val fieldName = accessorMethod.name.toTermName.toString
+        val fieldType = accessorMethod.returnType
+          .asSeenFrom(outerTpe, outerTpe.typeSymbol.asClass)
+        (fieldType, fieldName)
+      }.toVector
 
     val builder = matchField(T.tpe, "")
     if (builder.columnTypes.isEmpty)

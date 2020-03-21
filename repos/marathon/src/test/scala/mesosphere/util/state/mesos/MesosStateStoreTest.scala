@@ -30,8 +30,9 @@ class MesosStateStoreTest
 
   override protected def beforeAll(configMap: ConfigMap): Unit = {
     super.beforeAll(configMap + ("zkPort" -> "2186"))
-    Thread.sleep(
-      1000
-    ) //zookeeper is up and running. if I try to connect immediately, it will fail
+    Thread
+      .sleep(
+        1000
+      ) //zookeeper is up and running. if I try to connect immediately, it will fail
   }
 }

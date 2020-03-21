@@ -33,11 +33,9 @@ class OfferProcessorImplTest
   private[this] val offerId = offer.getId
   private val appId: PathId = PathId("/testapp")
   private[this] val taskInfo1 = MarathonTestHelper
-    .makeOneCPUTask(Task.Id.forApp(appId).idString)
-    .build()
+    .makeOneCPUTask(Task.Id.forApp(appId).idString).build()
   private[this] val taskInfo2 = MarathonTestHelper
-    .makeOneCPUTask(Task.Id.forApp(appId).idString)
-    .build()
+    .makeOneCPUTask(Task.Id.forApp(appId).idString).build()
   private[this] val tasks = Seq(taskInfo1, taskInfo2)
 
   test("match successful, launch tasks successful") {
@@ -52,11 +50,11 @@ class OfferProcessorImplTest
     val deadline: Timestamp = clock.now() + 1.second
 
     And("a cooperative offerMatcher and taskTracker")
-    offerMatcher.matchOffer(deadline, offer) returns Future.successful(
-      MatchedTaskOps(offerId, tasksWithSource))
+    offerMatcher.matchOffer(deadline, offer) returns Future
+      .successful(MatchedTaskOps(offerId, tasksWithSource))
     for (task <- tasks) {
-      taskCreationHandler.created(
-        MarathonTestHelper.makeTaskFromTaskInfo(task)) returns
+      taskCreationHandler
+        .created(MarathonTestHelper.makeTaskFromTaskInfo(task)) returns
         Future.successful(MarathonTestHelper.makeTaskFromTaskInfo(task))
     }
 
@@ -94,14 +92,13 @@ class OfferProcessorImplTest
 
     val deadline: Timestamp = clock.now() + 1.second
     And("a cooperative offerMatcher and taskTracker")
-    offerMatcher.matchOffer(deadline, offer) returns Future.successful(
-      MatchedTaskOps(offerId, tasksWithSource))
+    offerMatcher.matchOffer(deadline, offer) returns Future
+      .successful(MatchedTaskOps(offerId, tasksWithSource))
     for (task <- tasksWithSource) {
       val op = task.op
       taskCreationHandler.created(op.maybeNewTask.get) returns Future
         .successful(op.maybeNewTask.get)
-      taskCreationHandler
-        .terminated(op.taskId)
+      taskCreationHandler.terminated(op.taskId)
         .asInstanceOf[Future[Unit]] returns
         Future.successful(())
     }
@@ -146,14 +143,14 @@ class OfferProcessorImplTest
 
     val deadline: Timestamp = clock.now() + 1.second
     And("a cooperative offerMatcher and taskTracker")
-    offerMatcher.matchOffer(deadline, offer) returns Future.successful(
-      MatchedTaskOps(offerId, tasksWithSource))
+    offerMatcher.matchOffer(deadline, offer) returns Future
+      .successful(MatchedTaskOps(offerId, tasksWithSource))
     for (task <- tasksWithSource) {
       val op = task.op
       taskCreationHandler.created(op.maybeNewTask.get) returns Future
         .successful(op.maybeNewTask.get)
-      taskCreationHandler.created(op.oldTask.get) returns Future.successful(
-        op.oldTask.get)
+      taskCreationHandler.created(op.oldTask.get) returns Future
+        .successful(op.oldTask.get)
     }
 
     And("a dysfunctional taskLauncher")
@@ -232,13 +229,12 @@ class OfferProcessorImplTest
 
     val deadline: Timestamp = clock.now() + 1.second
     And("a cooperative taskLauncher")
-    taskLauncher.acceptOffer(
-      offerId,
-      tasksWithSource.map(_.op).take(1)) returns true
+    taskLauncher
+      .acceptOffer(offerId, tasksWithSource.map(_.op).take(1)) returns true
 
     And("a cooperative offerMatcher")
-    offerMatcher.matchOffer(deadline, offer) returns Future.successful(
-      MatchedTaskOps(offerId, tasksWithSource))
+    offerMatcher.matchOffer(deadline, offer) returns Future
+      .successful(MatchedTaskOps(offerId, tasksWithSource))
 
     for (task <- tasksWithSource) {
       taskCreationHandler.created(task.op.maybeNewTask.get) answers { args =>
@@ -246,8 +242,7 @@ class OfferProcessorImplTest
         clock += 1.hour
         Future.successful(task.op.maybeNewTask.get)
       }
-      taskCreationHandler
-        .terminated(task.op.taskId)
+      taskCreationHandler.terminated(task.op.taskId)
         .asInstanceOf[Future[Unit]] returns
         Future.successful(Some(task.op.taskId))
     }
@@ -284,8 +279,8 @@ class OfferProcessorImplTest
     val offerProcessor = createProcessor()
 
     val deadline: Timestamp = clock.now() + 1.second
-    offerMatcher.matchOffer(deadline, offer) returns Future.successful(
-      MatchedTaskOps(offerId, Seq.empty))
+    offerMatcher.matchOffer(deadline, offer) returns Future
+      .successful(MatchedTaskOps(offerId, Seq.empty))
 
     Await.result(offerProcessor.processOffer(offer), 1.second)
 
@@ -299,8 +294,8 @@ class OfferProcessorImplTest
     val offerProcessor = createProcessor()
 
     val deadline: Timestamp = clock.now() + 1.second
-    offerMatcher.matchOffer(deadline, offer) returns Future.failed(
-      new RuntimeException("failed matching"))
+    offerMatcher.matchOffer(deadline, offer) returns Future
+      .failed(new RuntimeException("failed matching"))
 
     Await.result(offerProcessor.processOffer(offer), 1.second)
 

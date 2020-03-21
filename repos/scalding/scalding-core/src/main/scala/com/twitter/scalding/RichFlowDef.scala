@@ -64,9 +64,7 @@ class RichFlowDef(val fd: FlowDef) {
   }
   private[this] def appendLeft[T](left: JList[T], right: JList[T]) {
     val existing = left.asScala.toSet
-    right.asScala
-      .filterNot(existing)
-      .foreach(left.add)
+    right.asScala.filterNot(existing).foreach(left.add)
   }
 
   /**
@@ -79,19 +77,17 @@ class RichFlowDef(val fd: FlowDef) {
 
     fd.mergeMiscFrom(o)
     // Merge the FlowState
-    FlowStateMap
-      .get(o)
-      .foreach { oFS =>
-        FlowStateMap.mutate(fd) { current =>
-          // overwrite the items from o with current
-          (
-            current.copy(
-              sourceMap = oFS.sourceMap ++ current.sourceMap,
-              flowConfigUpdates =
-                oFS.flowConfigUpdates ++ current.flowConfigUpdates),
-            ())
-        }
+    FlowStateMap.get(o).foreach { oFS =>
+      FlowStateMap.mutate(fd) { current =>
+        // overwrite the items from o with current
+        (
+          current.copy(
+            sourceMap = oFS.sourceMap ++ current.sourceMap,
+            flowConfigUpdates = oFS.flowConfigUpdates ++ current
+              .flowConfigUpdates),
+          ())
       }
+    }
   }
 
   /**
@@ -105,8 +101,8 @@ class RichFlowDef(val fd: FlowDef) {
   def withoutUnusedSources: FlowDef = {
 
     // add taps associated with heads to localFlow
-    val filteredSources =
-      fd.getSources.asScala.filterKeys(heads.map(p => p.getName)).asJava
+    val filteredSources = fd.getSources.asScala
+      .filterKeys(heads.map(p => p.getName)).asJava
 
     val newFd = fd.copy
     newFd.getSources.clear()
@@ -129,39 +125,34 @@ class RichFlowDef(val fd: FlowDef) {
     val upipes = pipe.upstreamPipes
     val headNames: Set[String] = upipes
       .filter(_.getPrevious.length == 0) // implies _ is a head
-      .map(_.getName)
-      .toSet
+      .map(_.getName).toSet
 
-    headNames
-      .foreach { head =>
-        // TODO: make sure we handle checkpoints correctly
-        if (!newSrcs.containsKey(head)) {
-          newFd.addSource(head, sourceTaps.get(head))
-        }
+    headNames.foreach { head =>
+      // TODO: make sure we handle checkpoints correctly
+      if (!newSrcs.containsKey(head)) {
+        newFd.addSource(head, sourceTaps.get(head))
       }
+    }
 
     val sinks = fd.getSinks
     if (sinks.containsKey(pipe.getName)) {
       newFd.addTailSink(pipe, sinks.get(pipe.getName))
     }
     // Update the FlowState:
-    FlowStateMap
-      .get(fd)
-      .foreach { thisFS =>
-        val subFlowState = thisFS.sourceMap
-          .foldLeft(Map[String, Source]()) {
-            case (newfs, kv @ (name, source)) =>
-              if (headNames(name)) newfs + kv else newfs
-          }
-        FlowStateMap.mutate(newFd) { oldFS =>
-          (
-            oldFS.copy(
-              sourceMap = subFlowState,
-              flowConfigUpdates =
-                thisFS.flowConfigUpdates ++ oldFS.flowConfigUpdates),
-            ())
-        }
+    FlowStateMap.get(fd).foreach { thisFS =>
+      val subFlowState = thisFS.sourceMap.foldLeft(Map[String, Source]()) {
+        case (newfs, kv @ (name, source)) =>
+          if (headNames(name)) newfs + kv else newfs
       }
+      FlowStateMap.mutate(newFd) { oldFS =>
+        (
+          oldFS.copy(
+            sourceMap = subFlowState,
+            flowConfigUpdates = thisFS.flowConfigUpdates ++ oldFS
+              .flowConfigUpdates),
+          ())
+      }
+    }
     newFd
   }
 }

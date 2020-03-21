@@ -417,8 +417,8 @@ class DeploymentPlanTest
 
   // regression test for #765
   test("Should create non-empty deployment plan when only args have changed") {
-    val versionInfo: FullVersionInfo = AppDefinition.VersionInfo.forNewConfig(
-      Timestamp(10))
+    val versionInfo: FullVersionInfo = AppDefinition.VersionInfo
+      .forNewConfig(Timestamp(10))
     val app = AppDefinition(
       id = "/test".toPath,
       cmd = Some("sleep 5"),

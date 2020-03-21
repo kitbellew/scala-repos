@@ -76,12 +76,10 @@ trait Types {
   def field[A: JSONR](name: String)(json: JValue): Result[A] =
     json match {
       case JObject(fs) =>
-        fs.find(_.name == name)
-          .map(f => implicitly[JSONR[A]].read(f.value))
-          .orElse(
-            implicitly[JSONR[A]]
-              .read(JNothing)
-              .fold(_ => none, x => some(Success(x))))
+        fs.find(_.name == name).map(f => implicitly[JSONR[A]].read(f.value))
+          .orElse(implicitly[JSONR[A]].read(JNothing).fold(
+            _ => none,
+            x => some(Success(x))))
           .getOrElse(NoSuchFieldError(name, json).fail.liftFailNel)
       case x => UnexpectedJSONError(x, classOf[JObject]).fail.liftFailNel
     }

@@ -12,14 +12,13 @@ class AuthModule(pluginManager: PluginManager) {
   private[this] def pluginOption[T](implicit ct: ClassTag[T]): Option[T] = {
     val plugins = pluginManager.plugins[T]
     if (plugins.size > 1)
-      throw new WrongConfigurationException(
-        s"Only one plugin expected for ${ct.runtimeClass.getName}, but found: ${plugins
-          .map(_.getClass.getName)}")
+      throw new WrongConfigurationException(s"Only one plugin expected for ${ct
+        .runtimeClass.getName}, but found: ${plugins.map(_.getClass.getName)}")
     plugins.headOption
   }
 
-  lazy val authorizer: Authorizer = pluginOption[Authorizer].getOrElse(
-    AuthAllowEverything)
-  lazy val authenticator: Authenticator = pluginOption[Authenticator].getOrElse(
-    AuthAllowEverything)
+  lazy val authorizer: Authorizer = pluginOption[Authorizer]
+    .getOrElse(AuthAllowEverything)
+  lazy val authenticator: Authenticator = pluginOption[Authenticator]
+    .getOrElse(AuthAllowEverything)
 }

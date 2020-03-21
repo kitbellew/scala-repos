@@ -85,8 +85,8 @@ private[spark] class Executor(
   }
 
   // Start worker thread pool
-  private val threadPool = ThreadUtils.newDaemonCachedThreadPool(
-    "Executor task launch worker")
+  private val threadPool = ThreadUtils
+    .newDaemonCachedThreadPool("Executor task launch worker")
   private val executorSource = new ExecutorSource(threadPool, executorId)
 
   if (!isLocal) {
@@ -95,9 +95,8 @@ private[spark] class Executor(
   }
 
   // Whether to load classes in user jars before those in Spark jars
-  private val userClassPathFirst = conf.getBoolean(
-    "spark.executor.userClassPathFirst",
-    false)
+  private val userClassPathFirst = conf
+    .getBoolean("spark.executor.userClassPathFirst", false)
 
   // Create our ClassLoader
   // do this after SparkEnv creation so can access the SecurityManager
@@ -120,23 +119,20 @@ private[spark] class Executor(
   private val runningTasks = new ConcurrentHashMap[Long, TaskRunner]
 
   // Executor for the heartbeat task.
-  private val heartbeater = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-    "driver-heartbeater")
+  private val heartbeater = ThreadUtils
+    .newDaemonSingleThreadScheduledExecutor("driver-heartbeater")
 
   // must be initialized before running startDriverHeartbeat()
-  private val heartbeatReceiverRef = RpcUtils.makeDriverRef(
-    HeartbeatReceiver.ENDPOINT_NAME,
-    conf,
-    env.rpcEnv)
+  private val heartbeatReceiverRef = RpcUtils
+    .makeDriverRef(HeartbeatReceiver.ENDPOINT_NAME, conf, env.rpcEnv)
 
   /**
     * When an executor is unable to send heartbeats to the driver more than `HEARTBEAT_MAX_FAILURES`
     * times, it should kill itself. The default value is 60. It means we will retry to send
     * heartbeats about 10 minutes because the heartbeat interval is 10s.
     */
-  private val HEARTBEAT_MAX_FAILURES = conf.getInt(
-    "spark.executor.heartbeat.maxFailures",
-    60)
+  private val HEARTBEAT_MAX_FAILURES = conf
+    .getInt("spark.executor.heartbeat.maxFailures", 60)
 
   /**
     * Count the failure times of heartbeat. It should only be accessed in the heartbeat thread. Each
@@ -178,8 +174,7 @@ private[spark] class Executor(
   /** Returns the total amount of time this JVM process has spent in garbage collection. */
   private def computeTotalGcTime(): Long = {
     ManagementFactory.getGarbageCollectorMXBeans.asScala
-      .map(_.getCollectionTime)
-      .sum
+      .map(_.getCollectionTime).sum
   }
 
   class TaskRunner(
@@ -222,8 +217,8 @@ private[spark] class Executor(
       startGCTime = computeTotalGcTime()
 
       try {
-        val (taskFiles, taskJars, taskBytes) = Task.deserializeWithDependencies(
-          serializedTask)
+        val (taskFiles, taskJars, taskBytes) = Task
+          .deserializeWithDependencies(serializedTask)
         updateDependencies(taskFiles, taskJars)
         task = ser.deserialize[Task[Any]](
           taskBytes,
@@ -261,9 +256,10 @@ private[spark] class Executor(
             if (freedMemory > 0) {
               val errMsg =
                 s"Managed memory leak detected; size = $freedMemory bytes, TID = $taskId"
-              if (conf.getBoolean(
-                    "spark.unsafe.exceptionOnMemoryLeak",
-                    false) && !threwException) {
+              if (conf
+                    .getBoolean(
+                      "spark.unsafe.exceptionOnMemoryLeak",
+                      false) && !threwException) {
                 throw new SparkException(errMsg)
               } else { logError(errMsg) }
             }
@@ -272,9 +268,10 @@ private[spark] class Executor(
               val errMsg =
                 s"${releasedLocks.size} block locks were not released by TID = $taskId:\n" +
                   releasedLocks.mkString("[", ", ", "]")
-              if (conf.getBoolean(
-                    "spark.storage.exceptionOnPinLeak",
-                    false) && !threwException) {
+              if (conf
+                    .getBoolean(
+                      "spark.storage.exceptionOnPinLeak",
+                      false) && !threwException) {
                 throw new SparkException(errMsg)
               } else { logError(errMsg) }
             }
@@ -339,24 +336,18 @@ private[spark] class Executor(
       } catch {
         case ffe: FetchFailedException =>
           val reason = ffe.toTaskEndReason
-          execBackend.statusUpdate(
-            taskId,
-            TaskState.FAILED,
-            ser.serialize(reason))
+          execBackend
+            .statusUpdate(taskId, TaskState.FAILED, ser.serialize(reason))
 
         case _: TaskKilledException | _: InterruptedException if task.killed =>
           logInfo(s"Executor killed $taskName (TID $taskId)")
-          execBackend.statusUpdate(
-            taskId,
-            TaskState.KILLED,
-            ser.serialize(TaskKilled))
+          execBackend
+            .statusUpdate(taskId, TaskState.KILLED, ser.serialize(TaskKilled))
 
         case cDE: CommitDeniedException =>
           val reason = cDE.toTaskEndReason
-          execBackend.statusUpdate(
-            taskId,
-            TaskState.FAILED,
-            ser.serialize(reason))
+          execBackend
+            .statusUpdate(taskId, TaskState.FAILED, ser.serialize(reason))
 
         case t: Throwable =>
           // Attempt to exit cleanly by informing the driver of our failure.
@@ -385,10 +376,8 @@ private[spark] class Executor(
                   preserveCause = false))
             }
           }
-          execBackend.statusUpdate(
-            taskId,
-            TaskState.FAILED,
-            serializedTaskEndReason)
+          execBackend
+            .statusUpdate(taskId, TaskState.FAILED, serializedTaskEndReason)
 
           // Don't forcibly exit unless the exception was inherently fatal, to avoid
           // stopping other tasks unnecessarily.
@@ -442,12 +431,8 @@ private[spark] class Executor(
           classOf[String],
           classOf[ClassLoader],
           classOf[Boolean])
-        constructor.newInstance(
-          conf,
-          env,
-          classUri,
-          parent,
-          _userClassPathFirst)
+        constructor
+          .newInstance(conf, env, classUri, parent, _userClassPathFirst)
       } catch {
         case _: ClassNotFoundException =>
           logError(
@@ -484,10 +469,8 @@ private[spark] class Executor(
       }
       for ((name, timestamp) <- newJars) {
         val localName = name.split("/").last
-        val currentTimeStamp = currentJars
-          .get(name)
-          .orElse(currentJars.get(localName))
-          .getOrElse(-1L)
+        val currentTimeStamp = currentJars.get(name)
+          .orElse(currentJars.get(localName)).getOrElse(-1L)
         if (currentTimeStamp < timestamp) {
           logInfo("Fetching " + name + " with timestamp " + timestamp)
           // Fetch file with useCache mode, close cache for local mode.
@@ -501,8 +484,8 @@ private[spark] class Executor(
             useCache = !isLocal)
           currentJars(name) = timestamp
           // Add it to our class loader
-          val url =
-            new File(SparkFiles.getRootDirectory(), localName).toURI.toURL
+          val url = new File(SparkFiles.getRootDirectory(), localName).toURI
+            .toURL
           if (!urlClassLoader.getURLs().contains(url)) {
             logInfo("Adding " + url + " to class loader")
             urlClassLoader.addURL(url)

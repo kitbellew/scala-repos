@@ -26,8 +26,7 @@ class SbtReImportNotificationProvider(
       notifications.updateNotifications(event.getFile)
   }
 
-  VirtualFileManager
-    .getInstance()
+  VirtualFileManager.getInstance()
     .addVirtualFileListener(fileChangeListener, project)
 
   override def getKey: Key[EditorNotificationPanel] =
@@ -38,8 +37,7 @@ class SbtReImportNotificationProvider(
       fileEditor: FileEditor): Boolean =
     getProjectSettings(file).fold(false) { projectSettings =>
       val stamp = Option(SbtLocalSettings.getInstance(project))
-        .map(_.lastUpdateTimestamp)
-        .getOrElse(0L)
+        .map(_.lastUpdateTimestamp).getOrElse(0L)
       !projectSettings.useOurOwnAutoImport && stamp < file.getTimeStamp
     }
 

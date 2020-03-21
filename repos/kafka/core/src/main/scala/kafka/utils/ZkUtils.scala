@@ -204,8 +204,7 @@ class ZkUtils(
   def getLeaderAndIsrForPartition(
       topic: String,
       partition: Int): Option[LeaderAndIsr] = {
-    ReplicationUtils
-      .getLeaderIsrAndEpochForPartition(this, topic, partition)
+    ReplicationUtils.getLeaderIsrAndEpochForPartition(this, topic, partition)
       .map(_.leaderAndIsr)
   }
 
@@ -220,9 +219,7 @@ class ZkUtils(
       case Some(leaderAndIsr) => Json.parseFull(leaderAndIsr) match {
           case Some(m) =>
             Some(
-              m.asInstanceOf[Map[String, Any]]
-                .get("leader")
-                .get
+              m.asInstanceOf[Map[String, Any]].get("leader").get
                 .asInstanceOf[Int])
           case None => None
         }
@@ -244,16 +241,14 @@ class ZkUtils(
             throw new NoEpochForPartitionException(
               "No epoch, leaderAndISR data for partition [%s,%d] is invalid"
                 .format(topic, partition))
-          case Some(m) =>
-            m.asInstanceOf[Map[String, Any]]
-              .get("leader_epoch")
-              .get
-              .asInstanceOf[Int]
+          case Some(m) => m.asInstanceOf[Map[String, Any]].get("leader_epoch")
+              .get.asInstanceOf[Int]
         }
       case None =>
         throw new NoEpochForPartitionException(
-          "No epoch, ISR path for partition [%s,%d] is empty"
-            .format(topic, partition))
+          "No epoch, ISR path for partition [%s,%d] is empty".format(
+            topic,
+            partition))
     }
   }
 
@@ -273,11 +268,8 @@ class ZkUtils(
       getTopicPartitionLeaderAndIsrPath(topic, partition))._1
     leaderAndIsrOpt match {
       case Some(leaderAndIsr) => Json.parseFull(leaderAndIsr) match {
-          case Some(m) =>
-            m.asInstanceOf[Map[String, Any]]
-              .get("isr")
-              .get
-              .asInstanceOf[Seq[Int]]
+          case Some(m) => m.asInstanceOf[Map[String, Any]].get("isr")
+              .get.asInstanceOf[Seq[Int]]
           case None => Seq.empty[Int]
         }
       case None => Seq.empty[Int]
@@ -294,8 +286,7 @@ class ZkUtils(
           case Some(m) =>
             m.asInstanceOf[Map[String, Any]].get("partitions") match {
               case Some(replicaMap) =>
-                replicaMap
-                  .asInstanceOf[Map[String, Seq[Int]]]
+                replicaMap.asInstanceOf[Map[String, Seq[Int]]]
                   .get(partition.toString) match {
                   case Some(seq) => seq
                   case None      => Seq.empty[Int]
@@ -350,10 +341,9 @@ class ZkUtils(
     val brokerInfo = Json.encode(jsonMap)
     registerBrokerInZk(brokerIdPath, brokerInfo)
 
-    info("Registered broker %d at path %s with addresses: %s".format(
-      id,
-      brokerIdPath,
-      advertisedEndpoints.mkString(",")))
+    info(
+      "Registered broker %d at path %s with addresses: %s"
+        .format(id, brokerIdPath, advertisedEndpoints.mkString(",")))
   }
 
   private def registerBrokerInZk(brokerIdPath: String, brokerInfo: String) {
@@ -413,12 +403,13 @@ class ZkUtils(
       } else acls
 
     if (!zkClient.exists(path))
-      ZkPath.createPersistent(
-        zkClient,
-        path,
-        true,
-        acl
-      ) //won't throw NoNodeException or NodeExistsException
+      ZkPath
+        .createPersistent(
+          zkClient,
+          path,
+          true,
+          acl
+        ) //won't throw NoNodeException or NodeExistsException
   }
 
   /**
@@ -779,8 +770,8 @@ class ZkUtils(
       case Some(jsonPartitionMap) =>
         val reassignedPartitions = parsePartitionReassignmentData(
           jsonPartitionMap)
-        reassignedPartitions.map(p =>
-          (p._1 -> new ReassignedPartitionsContext(p._2)))
+        reassignedPartitions
+          .map(p => (p._1 -> new ReassignedPartitionsContext(p._2)))
       case None => Map.empty[TopicAndPartition, ReassignedPartitionsContext]
     }
   }
@@ -791,14 +782,12 @@ class ZkUtils(
     Json.parseFull(jsonData) match {
       case Some(m) => m.asInstanceOf[Map[String, Any]].get("partitions") match {
           case Some(partitionsSeq) =>
-            partitionsSeq
-              .asInstanceOf[Seq[Map[String, Any]]]
-              .map(p => {
-                val topic = p.get("topic").get.asInstanceOf[String]
-                val partition = p.get("partition").get.asInstanceOf[Int]
-                val newReplicas = p.get("replicas").get.asInstanceOf[Seq[Int]]
-                TopicAndPartition(topic, partition) -> newReplicas
-              })
+            partitionsSeq.asInstanceOf[Seq[Map[String, Any]]].map(p => {
+              val topic = p.get("topic").get.asInstanceOf[String]
+              val partition = p.get("partition").get.asInstanceOf[Int]
+              val newReplicas = p.get("replicas").get.asInstanceOf[Seq[Int]]
+              TopicAndPartition(topic, partition) -> newReplicas
+            })
           case None => Seq.empty
         }
       case None => Seq.empty
@@ -871,8 +860,8 @@ class ZkUtils(
       PreferredReplicaLeaderElectionPath)._1
     jsonPartitionListOpt match {
       case Some(jsonPartitionList) =>
-        PreferredReplicaLeaderElectionCommand.parsePreferredReplicaElectionData(
-          jsonPartitionList)
+        PreferredReplicaLeaderElectionCommand
+          .parsePreferredReplicaElectionData(jsonPartitionList)
       case None => Set.empty[TopicAndPartition]
     }
   }
@@ -880,8 +869,8 @@ class ZkUtils(
   def deletePartition(brokerId: Int, topic: String) {
     val brokerIdPath = BrokerIdsPath + "/" + brokerId
     zkClient.delete(brokerIdPath)
-    val brokerPartTopicPath =
-      ZkUtils.BrokerTopicsPath + "/" + topic + "/" + brokerId
+    val brokerPartTopicPath = ZkUtils
+      .BrokerTopicsPath + "/" + topic + "/" + brokerId
     zkClient.delete(brokerPartTopicPath)
   }
 
@@ -897,14 +886,10 @@ class ZkUtils(
     val consumersPerTopicMap =
       new mutable.HashMap[String, List[ConsumerThreadId]]
     for (consumer <- consumers) {
-      val topicCount = TopicCount.constructTopicCount(
-        group,
-        consumer,
-        this,
-        excludeInternalTopics)
-      for ((
-             topic,
-             consumerThreadIdSet) <- topicCount.getConsumerThreadIdsPerTopic) {
+      val topicCount = TopicCount
+        .constructTopicCount(group, consumer, this, excludeInternalTopics)
+      for ((topic, consumerThreadIdSet) <- topicCount
+             .getConsumerThreadIdsPerTopic) {
         for (consumerThreadId <- consumerThreadIdSet)
           consumersPerTopicMap.get(topic) match {
             case Some(curConsumers) =>
@@ -951,10 +936,8 @@ class ZkUtils(
           0
         } catch {
           case e: ZkNodeExistsException =>
-            val stat = zkClient.writeDataReturnStat(
-              BrokerSequenceIdPath,
-              "",
-              -1)
+            val stat = zkClient
+              .writeDataReturnStat(BrokerSequenceIdPath, "", -1)
             stat.getVersion
         }
       }
@@ -979,14 +962,10 @@ class ZkUtils(
     val topics = getChildrenParentMayNotExist(BrokerTopicsPath)
     if (topics == null) Set.empty[TopicAndPartition]
     else {
-      topics
-        .map { topic =>
-          getChildren(getTopicPartitionsPath(topic))
-            .map(_.toInt)
-            .map(TopicAndPartition(topic, _))
-        }
-        .flatten
-        .toSet
+      topics.map { topic =>
+        getChildren(getTopicPartitionsPath(topic)).map(_.toInt)
+          .map(TopicAndPartition(topic, _))
+      }.flatten.toSet
     }
   }
 
@@ -1047,9 +1026,8 @@ class ZKConfig(props: VerifiableProperties) {
   val zkSessionTimeoutMs = props.getInt("zookeeper.session.timeout.ms", 6000)
 
   /** the max time that the client waits to establish a connection to zookeeper */
-  val zkConnectionTimeoutMs = props.getInt(
-    "zookeeper.connection.timeout.ms",
-    zkSessionTimeoutMs)
+  val zkConnectionTimeoutMs = props
+    .getInt("zookeeper.connection.timeout.ms", zkSessionTimeoutMs)
 
   /** how far a ZK follower can be behind a ZK leader */
   val zkSyncTimeMs = props.getInt("zookeeper.sync.time.ms", 2000)

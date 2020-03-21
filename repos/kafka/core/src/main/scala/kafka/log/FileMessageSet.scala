@@ -188,7 +188,8 @@ class FileMessageSet private[kafka] (
       case dc                 => channel.transferTo(position, count, dc)
     }).toInt
     trace(
-      "FileMessageSet " + file.getAbsolutePath + " : bytes transferred : " + bytesTransferred
+      "FileMessageSet " + file
+        .getAbsolutePath + " : bytes transferred : " + bytesTransferred
         + " bytes requested for transfer : " + math.min(size, sizeInBytes))
     bytesTransferred
   }
@@ -204,8 +205,8 @@ class FileMessageSet private[kafka] (
       expectedMagicValue: Byte): Boolean = {
     var location = start
     val offsetAndSizeBuffer = ByteBuffer.allocate(MessageSet.LogOverhead)
-    val crcAndMagicByteBuffer = ByteBuffer.allocate(
-      Message.CrcLength + Message.MagicLength)
+    val crcAndMagicByteBuffer = ByteBuffer
+      .allocate(Message.CrcLength + Message.MagicLength)
     while (location < end) {
       offsetAndSizeBuffer.rewind()
       channel.read(offsetAndSizeBuffer, location)
@@ -239,8 +240,8 @@ class FileMessageSet private[kafka] (
         // File message set only has shallow iterator. We need to do deep iteration here if needed.
         val deepIter = ByteBufferMessageSet.deepIterator(messageAndOffset)
         for (innerMessageAndOffset <- deepIter) {
-          newMessages += innerMessageAndOffset.message.toFormatVersion(
-            toMagicValue)
+          newMessages += innerMessageAndOffset.message
+            .toFormatVersion(toMagicValue)
           offsets += innerMessageAndOffset.offset
         }
       }
@@ -248,8 +249,7 @@ class FileMessageSet private[kafka] (
 
     // We use the offset seq to assign offsets so the offset of the messages does not change.
     new ByteBufferMessageSet(
-      compressionCodec = this.headOption
-        .map(_.message.compressionCodec)
+      compressionCodec = this.headOption.map(_.message.compressionCodec)
         .getOrElse(NoCompressionCodec),
       offsetSeq = offsets,
       newMessages: _*)

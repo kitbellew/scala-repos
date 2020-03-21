@@ -131,8 +131,7 @@ abstract class Enumeration(initial: Int) extends Serializable {
     *           name is in this `Enumeration`
     */
   final def withName(s: String): Value =
-    values
-      .find(_.toString == s)
+    values.find(_.toString == s)
       .getOrElse(throw new NoSuchElementException(s"No value found for '$s'"))
 
   /** Creates a fresh value, part of this enumeration. */

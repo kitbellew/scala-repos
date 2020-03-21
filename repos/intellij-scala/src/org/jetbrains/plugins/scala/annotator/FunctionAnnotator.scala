@@ -34,19 +34,15 @@ trait FunctionAnnotator {
       typeAware: Boolean) {
     if (!function.hasExplicitType && !function.returnTypeIsDefined) {
       function.recursiveReferences.foreach { ref =>
-        val message = ScalaBundle.message(
-          "function.recursive.need.result.type",
-          function.name)
+        val message = ScalaBundle
+          .message("function.recursive.need.result.type", function.name)
         holder.createErrorAnnotation(ref.element, message)
       }
     }
 
     val tailrecAnnotation = function.annotations.find(
-      _.typeElement
-        .getType(TypingContext.empty)
-        .map(_.canonicalText)
-        .filter(_ == "_root_.scala.annotation.tailrec")
-        .isDefined)
+      _.typeElement.getType(TypingContext.empty).map(_.canonicalText)
+      .filter(_ == "_root_.scala.annotation.tailrec").isDefined)
 
     tailrecAnnotation.foreach { it =>
       if (!function.canBeTailRecursive) {
@@ -97,8 +93,8 @@ trait FunctionAnnotator {
       val unitFunction = !hasAssign || unitType
 
       val explicitReturn = usage.isInstanceOf[ScReturnStmt]
-      val emptyReturn =
-        explicitReturn && usage.asInstanceOf[ScReturnStmt].expr.isEmpty
+      val emptyReturn = explicitReturn && usage.asInstanceOf[ScReturnStmt].expr
+        .isEmpty
       val anyReturn = usageType == AnyType
       val underCatchBlock = usage.getContext.isInstanceOf[ScCatchBlock]
 
@@ -110,12 +106,9 @@ trait FunctionAnnotator {
                    .conforms(functionType)) { typeMismatch() }
 
       def needsTypeAnnotation() = {
-        val message = ScalaBundle.message(
-          "function.must.define.type.explicitly",
-          function.name)
-        val returnTypes = function
-          .returnUsages(withBooleanInfix = false)
-          .toSeq
+        val message = ScalaBundle
+          .message("function.must.define.type.explicitly", function.name)
+        val returnTypes = function.returnUsages(withBooleanInfix = false).toSeq
           .collect {
             case retStmt: ScReturnStmt =>
               retStmt.expr.flatMap(_.getType().toOption).getOrElse(AnyType)
@@ -129,9 +122,8 @@ trait FunctionAnnotator {
       }
 
       def redundantReturnExpression() = {
-        val message = ScalaBundle.message(
-          "return.expression.is.redundant",
-          usageType.presentableText)
+        val message = ScalaBundle
+          .message("return.expression.is.redundant", usageType.presentableText)
         holder.createWarningAnnotation(
           usage.asInstanceOf[ScReturnStmt].expr.get,
           message)
@@ -139,9 +131,8 @@ trait FunctionAnnotator {
 
       def typeMismatch() {
         if (typeAware) {
-          val (usageTypeText, functionTypeText) = ScTypePresentation.different(
-            usageType,
-            functionType)
+          val (usageTypeText, functionTypeText) = ScTypePresentation
+            .different(usageType, functionType)
           val message = ScalaBundle.message(
             "type.mismatch.found.required",
             usageTypeText,

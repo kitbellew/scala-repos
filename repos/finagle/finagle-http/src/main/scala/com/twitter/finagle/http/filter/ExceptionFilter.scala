@@ -57,6 +57,6 @@ class ExceptionFilter[REQUEST <: Request]
 }
 
 object ExceptionFilter extends ExceptionFilter[Request] {
-  private[ExceptionFilter] val ClientClosedRequestStatus =
-    Status.ClientClosedRequest
+  private[ExceptionFilter] val ClientClosedRequestStatus = Status
+    .ClientClosedRequest
 }

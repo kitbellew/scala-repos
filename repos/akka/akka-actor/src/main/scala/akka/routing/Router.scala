@@ -119,17 +119,14 @@ final case class Router(
     */
   def route(message: Any, sender: ActorRef): Unit =
     message match {
-      case akka.routing.Broadcast(msg) ⇒
-        SeveralRoutees(routees).send(msg, sender)
+      case akka.routing.Broadcast(msg) ⇒ SeveralRoutees(routees)
+          .send(msg, sender)
       case msg ⇒ send(logic.select(msg, routees), message, sender)
     }
 
   private def send(routee: Routee, msg: Any, sender: ActorRef): Unit = {
     if (routee == NoRoutee && sender.isInstanceOf[InternalActorRef])
-      sender
-        .asInstanceOf[InternalActorRef]
-        .provider
-        .deadLetters
+      sender.asInstanceOf[InternalActorRef].provider.deadLetters
         .tell(unwrap(msg), sender)
     else routee.send(unwrap(msg), sender)
   }

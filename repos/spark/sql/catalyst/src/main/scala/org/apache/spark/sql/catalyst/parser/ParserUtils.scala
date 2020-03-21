@@ -85,25 +85,28 @@ object ParserUtils {
       nodeList: Seq[ASTNode]): Seq[Option[ASTNode]] = {
     var remainingNodes = nodeList
     val clauses = clauseNames.map { clauseName =>
-      val (matches, nonMatches) = remainingNodes.partition(
-        _.text.toUpperCase == clauseName)
+      val (matches, nonMatches) = remainingNodes
+        .partition(_.text.toUpperCase == clauseName)
       remainingNodes =
         nonMatches ++ (if (matches.nonEmpty) matches.tail else Nil)
       matches.headOption
     }
 
     if (remainingNodes.nonEmpty) {
-      sys.error(s"""Unhandled clauses: ${remainingNodes
-                     .map(_.treeString)
-                     .mkString("\n")}.
-            |You are likely trying to use an unsupported Hive feature."""".stripMargin)
+      sys
+        .error(
+          s"""Unhandled clauses: ${remainingNodes.map(_.treeString)
+               .mkString("\n")}.
+            |You are likely trying to use an unsupported Hive feature.""""
+            .stripMargin)
     }
     clauses
   }
 
   def getClause(clauseName: String, nodeList: Seq[ASTNode]): ASTNode = {
-    getClauseOption(clauseName, nodeList).getOrElse(sys.error(
-      s"Expected clause $clauseName missing from ${nodeList.map(_.treeString).mkString("\n")}"))
+    getClauseOption(clauseName, nodeList)
+      .getOrElse(sys.error(s"Expected clause $clauseName missing from ${nodeList
+        .map(_.treeString).mkString("\n")}"))
   }
 
   def getClauseOption(
@@ -170,8 +173,7 @@ object ParserUtils {
             "TOK_TABCOL",
             Token(fieldName, Nil) :: dataType :: comment :: Nil) =>
         val meta = new MetadataBuilder()
-          .putString("comment", unquoteString(comment.text))
-          .build()
+          .putString("comment", unquoteString(comment.text)).build()
         StructField(
           cleanIdentifier(fieldName),
           nodeToDataType(dataType),

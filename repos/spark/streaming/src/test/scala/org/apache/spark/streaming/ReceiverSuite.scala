@@ -175,8 +175,8 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
 
     // the first and last block may be incomplete, so we slice them out
     val validBlocks = recordedBlocks.drop(1).dropRight(1)
-    val averageBlockSize =
-      validBlocks.map(block => block.size).sum / validBlocks.size
+    val averageBlockSize = validBlocks.map(block => block.size)
+      .sum / validBlocks.size
 
     assert(
       averageBlockSize >= minExpectedMessagesPerBlock &&
@@ -198,8 +198,7 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
       .setMaster(
         "local[4]"
       ) // must be at least 3 as we are going to start 2 receivers
-      .setAppName(framework)
-      .set("spark.ui.enabled", "true")
+      .setAppName(framework).set("spark.ui.enabled", "true")
       .set("spark.streaming.receiver.writeAheadLog.enable", "true")
       .set("spark.streaming.receiver.writeAheadLog.rollingIntervalSecs", "1")
     val batchDuration = Milliseconds(500)

@@ -159,9 +159,8 @@ class StormLaws extends WordSpec {
 
     val returnedState = StormTestRun.simpleRun[Int, Int, Int](
       original,
-      TestGraphs.twinStepOptionMapFlatMapJob[Storm, Int, Int, Int, Int](_, _)(
-        fnA,
-        fnB))
+      TestGraphs
+        .twinStepOptionMapFlatMapJob[Storm, Int, Int, Int, Int](_, _)(fnA, fnB))
 
     assert(
       Equiv[Map[Int, Int]].equiv(
@@ -176,9 +175,8 @@ class StormLaws extends WordSpec {
 
     val returnedState = StormTestRun.simpleRun[Int, Int, Int](
       original,
-      TestGraphs.twinStepOptionMapFlatMapJob[Storm, Int, Int, Int, Int](_, _)(
-        fnA,
-        fnB))
+      TestGraphs
+        .twinStepOptionMapFlatMapJob[Storm, Int, Int, Int, Int](_, _)(fnA, fnB))
     assert(
       Equiv[Map[Int, Int]].equiv(
         TestGraphs.twinStepOptionMapFlatMapScala(original)(fnA, fnB),
@@ -211,9 +209,8 @@ class StormLaws extends WordSpec {
     val fnB = sample[Int => List[Int]]
     val returnedState = StormTestRun.simpleRun[Int, Int, Int](
       original,
-      TestGraphs.singleStepMapKeysJob[Storm, Int, Int, Int, Int](_, _)(
-        fnA,
-        fnB))
+      TestGraphs
+        .singleStepMapKeysJob[Storm, Int, Int, Int, Int](_, _)(fnA, fnB))
 
     assert(
       Equiv[Map[Int, Int]].equiv(
@@ -276,11 +273,8 @@ class StormLaws extends WordSpec {
 
     val cluster = new LocalCluster()
 
-    val producer = Storm
-      .source(TraversableSpout(original))
-      .filter(_ % 2 == 0)
-      .map(_ -> 10)
-      .sumByKey(storeSupplier)
+    val producer = Storm.source(TraversableSpout(original)).filter(_ % 2 == 0)
+      .map(_ -> 10).sumByKey(storeSupplier)
 
     StormTestRun(producer)
 

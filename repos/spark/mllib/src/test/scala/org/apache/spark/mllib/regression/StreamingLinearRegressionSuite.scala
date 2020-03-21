@@ -58,19 +58,14 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
   test("parameter accuracy") {
     // create model
     val model = new StreamingLinearRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(0.0, 0.0))
-      .setStepSize(0.2)
-      .setNumIterations(25)
-      .setConvergenceTol(0.0001)
+      .setInitialWeights(Vectors.dense(0.0, 0.0)).setStepSize(0.2)
+      .setNumIterations(25).setConvergenceTol(0.0001)
 
     // generate sequence of simulated data
     val numBatches = 10
     val input = (0 until numBatches).map { i =>
-      LinearDataGenerator.generateLinearInput(
-        0.0,
-        Array(10.0, 10.0),
-        100,
-        42 * (i + 1))
+      LinearDataGenerator
+        .generateLinearInput(0.0, Array(10.0, 10.0), 100, 42 * (i + 1))
     }
 
     // apply model training to input stream
@@ -88,11 +83,8 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     assertEqual(model.latestModel().weights(1), 10.0, 0.1)
 
     // check accuracy of predictions
-    val validationData = LinearDataGenerator.generateLinearInput(
-      0.0,
-      Array(10.0, 10.0),
-      100,
-      17)
+    val validationData = LinearDataGenerator
+      .generateLinearInput(0.0, Array(10.0, 10.0), 100, 17)
     validatePrediction(
       validationData.map(row => model.latestModel().predict(row.features)),
       validationData)
@@ -102,18 +94,14 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
   test("parameter convergence") {
     // create model
     val model = new StreamingLinearRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(0.0))
-      .setStepSize(0.2)
+      .setInitialWeights(Vectors.dense(0.0)).setStepSize(0.2)
       .setNumIterations(25)
 
     // generate sequence of simulated data
     val numBatches = 10
     val input = (0 until numBatches).map { i =>
-      LinearDataGenerator.generateLinearInput(
-        0.0,
-        Array(10.0),
-        100,
-        42 * (i + 1))
+      LinearDataGenerator
+        .generateLinearInput(0.0, Array(10.0), 100, 42 * (i + 1))
     }
 
     // create buffer to store intermediate fits
@@ -144,19 +132,15 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
   test("predictions") {
     // create model initialized with true weights
     val model = new StreamingLinearRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(10.0, 10.0))
-      .setStepSize(0.2)
+      .setInitialWeights(Vectors.dense(10.0, 10.0)).setStepSize(0.2)
       .setNumIterations(25)
 
     // generate sequence of simulated data for testing
     val numBatches = 10
     val nPoints = 100
     val testInput = (0 until numBatches).map { i =>
-      LinearDataGenerator.generateLinearInput(
-        0.0,
-        Array(10.0, 10.0),
-        nPoints,
-        42 * (i + 1))
+      LinearDataGenerator
+        .generateLinearInput(0.0, Array(10.0, 10.0), nPoints, 42 * (i + 1))
     }
 
     // apply model predictions to test stream
@@ -172,8 +156,8 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
       numBatches)
 
     // compute the mean absolute error and check that it's always less than 0.1
-    val errors = output.map(batch =>
-      batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
+    val errors = output
+      .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
     assert(errors.forall(x => x <= 0.1))
   }
 
@@ -181,19 +165,15 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
   test("training and prediction") {
     // create model initialized with zero weights
     val model = new StreamingLinearRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(0.0, 0.0))
-      .setStepSize(0.2)
+      .setInitialWeights(Vectors.dense(0.0, 0.0)).setStepSize(0.2)
       .setNumIterations(25)
 
     // generate sequence of simulated data for testing
     val numBatches = 10
     val nPoints = 100
     val testInput = (0 until numBatches).map { i =>
-      LinearDataGenerator.generateLinearInput(
-        0.0,
-        Array(10.0, 10.0),
-        nPoints,
-        42 * (i + 1))
+      LinearDataGenerator
+        .generateLinearInput(0.0, Array(10.0, 10.0), nPoints, 42 * (i + 1))
     }
 
     // train and predict
@@ -211,16 +191,14 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
 
     // assert that prediction error improves, ensuring that the updated model is being used
     val error = output
-      .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
-      .toList
+      .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints).toList
     assert((error.head - error.last) > 2)
   }
 
   // Test empty RDDs in a stream
   test("handling empty RDDs in a stream") {
     val model = new StreamingLinearRegressionWithSGD()
-      .setInitialWeights(Vectors.dense(0.0, 0.0))
-      .setStepSize(0.2)
+      .setInitialWeights(Vectors.dense(0.0, 0.0)).setStepSize(0.2)
       .setNumIterations(25)
     val numBatches = 10
     val nPoints = 100

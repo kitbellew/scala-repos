@@ -56,10 +56,7 @@ object VectorTest extends SpecLite {
 
   "groupWhen" ! forAll { (xs: Vector[Int]) =>
     (xs.groupWhen(_ < _)
-      must_=== (list
-        .groupWhen(xs.toList)(_ < _)
-        .map(_.toVector)
-        .toVector))
+      must_=== (list.groupWhen(xs.toList)(_ < _).map(_.toVector).toVector))
   }
 
   "partitionM" ! forAll { (xs: Vector[Int]) =>
@@ -92,11 +89,9 @@ object VectorTest extends SpecLite {
 
   "Issue #266" in {
     import syntax.std.list._
-    List(1, 2, 4)
-      .groupWhen((i1, i2) => scala.math.abs(i1 - i2) <= 1)
+    List(1, 2, 4).groupWhen((i1, i2) => scala.math.abs(i1 - i2) <= 1)
       .length must_=== (2)
-    List(1, 2, 4).toVector
-      .groupWhen((i1, i2) => scala.math.abs(i1 - i2) <= 1)
+    List(1, 2, 4).toVector.groupWhen((i1, i2) => scala.math.abs(i1 - i2) <= 1)
       .length must_=== (2)
   }
 

@@ -68,30 +68,18 @@ object WebAccountFinder extends Logging {
         serviceConfig[String]("hardcoded_rootKey", ""),
         serviceConfig.get[String]("hardcoded_rootPath")))
     } getOrElse {
-      (serviceConfig
-        .get[String]("protocol")
-        .toSuccess(
-          nels("Configuration property service.protocol is required")) |@|
-        serviceConfig
-          .get[String]("host")
-          .toSuccess(
-            nels("Configuration property service.host is required")) |@|
-        serviceConfig
-          .get[Int]("port")
-          .toSuccess(
-            nels("Configuration property service.port is required")) |@|
-        serviceConfig
-          .get[String]("path")
-          .toSuccess(
-            nels("Configuration property service.path is required")) |@|
-        serviceConfig
-          .get[String]("user")
-          .toSuccess(
-            nels("Configuration property service.user is required")) |@|
-        serviceConfig
-          .get[String]("password")
-          .toSuccess(nels(
-            "Configuration property service.password is required"))) {
+      (serviceConfig.get[String]("protocol").toSuccess(nels(
+        "Configuration property service.protocol is required")) |@|
+        serviceConfig.get[String]("host").toSuccess(nels(
+          "Configuration property service.host is required")) |@|
+        serviceConfig.get[Int]("port").toSuccess(nels(
+          "Configuration property service.port is required")) |@|
+        serviceConfig.get[String]("path").toSuccess(nels(
+          "Configuration property service.path is required")) |@|
+        serviceConfig.get[String]("user").toSuccess(nels(
+          "Configuration property service.user is required")) |@|
+        serviceConfig.get[String]("password").toSuccess(nels(
+          "Configuration property service.password is required"))) {
         (protocol, host, port, path, user, password) =>
           logger.info(
             "Creating new WebAccountFinder with properties %s://%s:%s/%s %s:%s"
@@ -135,9 +123,8 @@ class WebAccountFinder(
         case HttpResponse(HttpStatus(OK, _), _, Some(jaccountId), _) =>
           logger.info("Got response for apiKey " + apiKey)
           (((_: Extractor.Error).message) <-: jaccountId
-            .validated[WrappedAccountId] :-> { wid =>
-            Some(wid.accountId)
-          }).disjunction
+            .validated[WrappedAccountId] :-> { wid => Some(wid.accountId) })
+            .disjunction
 
         case HttpResponse(HttpStatus(OK, _), _, None, _) =>
           logger.warn("No account found for apiKey: " + apiKey)
@@ -152,7 +139,8 @@ class WebAccountFinder(
         case ex =>
           logger.error("findAccountByAPIKey for " + apiKey + "failed.", ex)
           Promise.successful(left(
-            "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
+            "Client error accessing accounts service; unable to proceed: " + ex
+              .getMessage))
       })
     }
   }
@@ -176,7 +164,8 @@ class WebAccountFinder(
         case ex =>
           logger.error("findAccountById for " + accountId + "failed.", ex)
           Promise.successful(left(
-            "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
+            "Client error accessing accounts service; unable to proceed: " + ex
+              .getMessage))
       })
     }
   }

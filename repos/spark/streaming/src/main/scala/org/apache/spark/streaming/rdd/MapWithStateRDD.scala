@@ -161,12 +161,10 @@ private[streaming] class MapWithStateRDD[
       context: TaskContext): Iterator[MapWithStateRDDRecord[K, S, E]] = {
 
     val stateRDDPartition = partition.asInstanceOf[MapWithStateRDDPartition]
-    val prevStateRDDIterator = prevStateRDD.iterator(
-      stateRDDPartition.previousSessionRDDPartition,
-      context)
-    val dataIterator = partitionedDataRDD.iterator(
-      stateRDDPartition.partitionedDataRDDPartition,
-      context)
+    val prevStateRDDIterator = prevStateRDD
+      .iterator(stateRDDPartition.previousSessionRDDPartition, context)
+    val dataIterator = partitionedDataRDD
+      .iterator(stateRDDPartition.partitionedDataRDDPartition, context)
 
     val prevRecord =
       if (prevStateRDDIterator.hasNext) Some(prevStateRDDIterator.next())
@@ -205,22 +203,18 @@ private[streaming] object MapWithStateRDD {
       partitioner: Partitioner,
       updateTime: Time): MapWithStateRDD[K, V, S, E] = {
 
-    val stateRDD = pairRDD
-      .partitionBy(partitioner)
-      .mapPartitions(
-        { iterator =>
-          val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
-          iterator.foreach {
-            case (key, state) =>
-              stateMap.put(key, state, updateTime.milliseconds)
-          }
-          Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
-        },
-        preservesPartitioning = true
-      )
+    val stateRDD = pairRDD.partitionBy(partitioner).mapPartitions(
+      { iterator =>
+        val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
+        iterator.foreach {
+          case (key, state) => stateMap.put(key, state, updateTime.milliseconds)
+        }
+        Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
+      },
+      preservesPartitioning = true
+    )
 
-    val emptyDataRDD = pairRDD.sparkContext
-      .emptyRDD[(K, V)]
+    val emptyDataRDD = pairRDD.sparkContext.emptyRDD[(K, V)]
       .partitionBy(partitioner)
 
     val noOpFunc = (time: Time, key: K, value: Option[V], state: State[S]) =>
@@ -240,22 +234,19 @@ private[streaming] object MapWithStateRDD {
       updateTime: Time): MapWithStateRDD[K, V, S, E] = {
 
     val pairRDD = rdd.map { x => (x._1, (x._2, x._3)) }
-    val stateRDD = pairRDD
-      .partitionBy(partitioner)
-      .mapPartitions(
-        { iterator =>
-          val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
-          iterator.foreach {
-            case (key, (state, updateTime)) =>
-              stateMap.put(key, state, updateTime)
-          }
-          Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
-        },
-        preservesPartitioning = true
-      )
+    val stateRDD = pairRDD.partitionBy(partitioner).mapPartitions(
+      { iterator =>
+        val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
+        iterator.foreach {
+          case (key, (state, updateTime)) =>
+            stateMap.put(key, state, updateTime)
+        }
+        Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
+      },
+      preservesPartitioning = true
+    )
 
-    val emptyDataRDD = pairRDD.sparkContext
-      .emptyRDD[(K, V)]
+    val emptyDataRDD = pairRDD.sparkContext.emptyRDD[(K, V)]
       .partitionBy(partitioner)
 
     val noOpFunc = (time: Time, key: K, value: Option[V], state: State[S]) =>

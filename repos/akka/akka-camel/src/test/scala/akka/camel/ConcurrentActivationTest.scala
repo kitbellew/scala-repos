@@ -29,8 +29,8 @@ class ConcurrentActivationTest
     "support concurrent registrations and de-registrations" in {
       implicit val ec = system.dispatcher
       val number = 10
-      val eventFilter = EventFilter.warning(pattern =
-        "received dead letter from .*producerRegistrar.*")
+      val eventFilter = EventFilter
+        .warning(pattern = "received dead letter from .*producerRegistrar.*")
       system.eventStream.publish(TestEvent.Mute(eventFilter))
       try {
         // A ConsumerBroadcast creates 'number' amount of ConsumerRegistrars, which will register 'number' amount of endpoints,
@@ -49,8 +49,8 @@ class ConcurrentActivationTest
         ref ! CreateRegistrars(number)
         // send a broadcast to all registrars, so that number * number messages are sent
         // every Register registers a consumer and a producer
-        (1 to number).map(i ⇒
-          ref ! RegisterConsumersAndProducers("direct:concurrent-"))
+        (1 to number)
+          .map(i ⇒ ref ! RegisterConsumersAndProducers("direct:concurrent-"))
         // de-register all consumers and producers
         ref ! DeRegisterConsumersAndProducers()
 
@@ -61,20 +61,18 @@ class ConcurrentActivationTest
           case (futureActivations, futureDeactivations) ⇒
             futureActivations zip futureDeactivations map {
               case (activations, deactivations) ⇒
-                promiseAllRefs.success(
-                  (activations.flatten, deactivations.flatten))
+                promiseAllRefs
+                  .success((activations.flatten, deactivations.flatten))
             }
         }
-        val (activations, deactivations) = Await.result(
-          allRefsFuture,
-          10.seconds.dilated)
+        val (activations, deactivations) = Await
+          .result(allRefsFuture, 10.seconds.dilated)
         // should be the size of the activated activated producers and consumers
         activations.size should ===(2 * number * number)
         // should be the size of the activated activated producers and consumers
         deactivations.size should ===(2 * number * number)
         def partitionNames(refs: immutable.Seq[ActorRef]) =
-          refs
-            .map(_.path.name)
+          refs.map(_.path.name)
             .partition(_.startsWith("concurrent-test-echo-consumer"))
         def assertContainsSameElements(lists: (Seq[_], Seq[_])) {
           val (a, b) = lists
@@ -124,8 +122,8 @@ class ConsumerBroadcast(
         routee.path.toString
       }
       promise.success(
-        Future.sequence(allActivationFutures) -> Future.sequence(
-          allDeactivationFutures))
+        Future.sequence(allActivationFutures) -> Future
+          .sequence(allDeactivationFutures))
 
       broadcaster = Some(
         context.actorOf(BroadcastGroup(routeePaths).props(), "registrarRouter"))
@@ -206,10 +204,8 @@ class EchoConsumer(endpoint: String) extends Actor with Consumer {
     */
   override def onRouteDefinition =
     (rd: RouteDefinition) ⇒
-      rd.onException(classOf[Exception])
-        .handled(true)
-        .transform(Builder.exceptionMessage)
-        .end
+      rd.onException(classOf[Exception]).handled(true)
+        .transform(Builder.exceptionMessage).end
 }
 
 class TestProducer(uri: String) extends Actor with Producer {

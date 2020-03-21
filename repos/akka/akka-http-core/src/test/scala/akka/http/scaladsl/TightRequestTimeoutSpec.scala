@@ -50,8 +50,8 @@ class TightRequestTimeoutSpec
     with Matchers
     with BeforeAndAfterAll
     with ScalaFutures {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.loggers = ["akka.testkit.TestEventListener"]
     akka.loglevel = ERROR
     akka.stdout-loglevel = ERROR
@@ -68,8 +68,7 @@ class TightRequestTimeoutSpec
 
     "not cause double push error caused by the late response attemting to push" in {
       val (_, hostname, port) = TestUtils.temporaryServerHostnameAndPort()
-      val slowHandler = Flow[HttpRequest]
-        .map(_ ⇒ HttpResponse())
+      val slowHandler = Flow[HttpRequest].map(_ ⇒ HttpResponse())
         .delay(500.millis, OverflowStrategy.backpressure)
       val binding = Http().bindAndHandle(slowHandler, hostname, port)
 

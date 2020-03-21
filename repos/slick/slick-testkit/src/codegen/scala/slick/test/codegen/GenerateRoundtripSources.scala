@@ -20,31 +20,26 @@ object GenerateRoundtripSources {
     object Tables extends Tables(profile)
     import Tables._
     import Tables.profile.api._
-    val ddl =
-      posts.schema ++ categories.schema ++ typeTest.schema ++ large.schema ++ `null`.schema ++ X.schema ++ SingleNonOptionColumn.schema ++ SelfRef.schema
-    val a1 = profile
-      .createModel(ignoreInvalidDefaults = false)
-      .map(m =>
-        new SourceCodeGenerator(m) {
-          override def tableName = {
-            case n if n.toLowerCase == "null" =>
-              "null" // testing null as table name
-            case n => super.tableName(n)
+    val ddl = posts.schema ++ categories.schema ++ typeTest.schema ++ large
+      .schema ++ `null`.schema ++ X.schema ++ SingleNonOptionColumn
+      .schema ++ SelfRef.schema
+    val a1 = profile.createModel(ignoreInvalidDefaults = false).map(m =>
+      new SourceCodeGenerator(m) {
+        override def tableName = {
+          case n if n.toLowerCase == "null" =>
+            "null" // testing null as table name
+          case n => super.tableName(n)
+        }
+      })
+    val a2 = profile.createModel(ignoreInvalidDefaults = false).map(m =>
+      new SourceCodeGenerator(m) {
+        override def Table =
+          new Table(_) {
+            override def autoIncLastAsOption = true
           }
-        })
-    val a2 = profile
-      .createModel(ignoreInvalidDefaults = false)
-      .map(m =>
-        new SourceCodeGenerator(m) {
-          override def Table =
-            new Table(_) {
-              override def autoIncLastAsOption = true
-            }
-        })
-    val db = Database.forURL(
-      url = url,
-      driver = jdbcDriver,
-      keepAliveConnection = true)
+      })
+    val db = Database
+      .forURL(url = url, driver = jdbcDriver, keepAliveConnection = true)
     val (gen, gen2) =
       try Await.result(db.run(ddl.create >> (a1 zip a2)), Duration.Inf)
       finally db.close

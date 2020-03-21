@@ -169,8 +169,8 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
       modify: DefaultAsyncHttpClientConfig.Builder => DefaultAsyncHttpClientConfig.Builder)
       : AhcConfigBuilder = {
     new AhcConfigBuilder(ahcConfig) {
-      override val addCustomSettings =
-        modify compose AhcConfigBuilder.this.addCustomSettings
+      override val addCustomSettings = modify compose AhcConfigBuilder.this
+        .addCustomSettings
       override val builder = AhcConfigBuilder.this.builder
     }
   }
@@ -185,8 +185,7 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
       if (duration.isFinite()) duration.toMillis.toInt else -1
     }
 
-    builder
-      .setConnectTimeout(toMillis(config.connectionTimeout))
+    builder.setConnectTimeout(toMillis(config.connectionTimeout))
       .setReadTimeout(toMillis(config.idleTimeout))
       .setRequestTimeout(toMillis(config.requestTimeout))
       .setFollowRedirect(config.followRedirects)
@@ -226,8 +225,7 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
 
       case None =>
         // Otherwise, we return the default protocols in the given list.
-        Protocols.recommendedProtocols
-          .filter(existingProtocols.contains)
+        Protocols.recommendedProtocols.filter(existingProtocols.contains)
           .toArray
     }
 
@@ -328,19 +326,15 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     //
     // http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7-b147/sun/security/ssl/SSLContextImpl.java#79
 
-    val tmf = TrustManagerFactory.getInstance(
-      TrustManagerFactory.getDefaultAlgorithm)
+    val tmf = TrustManagerFactory
+      .getInstance(TrustManagerFactory.getDefaultAlgorithm)
     tmf.init(null.asInstanceOf[KeyStore])
-    val trustManager: X509TrustManager = tmf
-      .getTrustManagers()(0)
+    val trustManager: X509TrustManager = tmf.getTrustManagers()(0)
       .asInstanceOf[X509TrustManager]
 
-    val constraints = sslConfig.disabledKeyAlgorithms
-      .map(a =>
-        AlgorithmConstraintsParser
-          .parseAll(AlgorithmConstraintsParser.expression, a)
-          .get)
-      .toSet
+    val constraints = sslConfig.disabledKeyAlgorithms.map(a =>
+      AlgorithmConstraintsParser
+        .parseAll(AlgorithmConstraintsParser.expression, a).get).toSet
     val algorithmChecker = new AlgorithmChecker(
       keyConstraints = constraints,
       signatureConstraints = Set())

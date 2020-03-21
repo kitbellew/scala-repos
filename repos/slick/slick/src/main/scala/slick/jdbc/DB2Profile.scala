@@ -50,8 +50,8 @@ trait DB2Profile extends JdbcProfile {
 
   override protected lazy val useServerSideUpsert = true
   override protected lazy val useServerSideUpsertReturning = false
-  override protected val invokerMutateType: ResultSetType =
-    ResultSetType.ScrollSensitive
+  override protected val invokerMutateType: ResultSetType = ResultSetType
+    .ScrollSensitive
 
   override protected def computeQueryCompiler =
     (super.computeQueryCompiler.addAfter(Phase.removeTakeDrop, Phase.expandSums)
@@ -68,8 +68,7 @@ trait DB2Profile extends JdbcProfile {
       seq: Sequence[_]): SequenceDDLBuilder[_] = new SequenceDDLBuilder(seq)
 
   override def defaultTables(implicit ec: ExecutionContext): DBIO[Seq[MTable]] =
-    MTable
-      .getTables(None, None, None, Some(Seq("TABLE")))
+    MTable.getTables(None, None, None, Some(Seq("TABLE")))
       .map(_.filter(_.name.schema.filter(_ == "SYSTOOLS").isEmpty))
 
   override def defaultSqlTypeName(

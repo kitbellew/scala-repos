@@ -38,10 +38,8 @@ class HashingTFSuite
       .createDataFrame(Seq((0, "a a b b c d".split(" ").toSeq)))
       .toDF("id", "words")
     val n = 100
-    val hashingTF = new HashingTF()
-      .setInputCol("words")
-      .setOutputCol("features")
-      .setNumFeatures(n)
+    val hashingTF = new HashingTF().setInputCol("words")
+      .setOutputCol("features").setNumFeatures(n)
     val output = hashingTF.transform(df)
     val attrGroup = AttributeGroup.fromStructField(output.schema("features"))
     require(attrGroup.numAttributes === Some(n))
@@ -55,10 +53,8 @@ class HashingTFSuite
   }
 
   test("read/write") {
-    val t = new HashingTF()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setNumFeatures(10)
+    val t = new HashingTF().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setNumFeatures(10)
     testDefaultReadWrite(t)
   }
 }

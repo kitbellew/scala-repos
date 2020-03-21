@@ -146,12 +146,10 @@ object ImportInfo {
 
     def collectAllNamesForWildcard(): Unit = {
       val refText = imp.qualifier.getText + ".someIdentifier"
-      val reference = ScalaPsiElementFactory
-        .createReferenceFromText(
-          refText,
-          imp.qualifier.getContext,
-          imp.qualifier)
-        .asInstanceOf[ScStableCodeReferenceElementImpl]
+      val reference = ScalaPsiElementFactory.createReferenceFromText(
+        refText,
+        imp.qualifier.getContext,
+        imp.qualifier).asInstanceOf[ScStableCodeReferenceElementImpl]
       val processor = new CompletionProcessor(
         StdKinds.stableImportSelector,
         reference,

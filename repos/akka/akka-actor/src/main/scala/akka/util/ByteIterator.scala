@@ -279,8 +279,8 @@ object ByteIterator {
       }
 
     final override def clone: MultiByteArrayIterator = {
-      val clonedIterators: List[ByteArrayIterator] = iterators.map(_.clone)(
-        collection.breakOut)
+      val clonedIterators: List[ByteArrayIterator] = iterators
+        .map(_.clone)(collection.breakOut)
       new MultiByteArrayIterator(clonedIterators)
     }
 

@@ -26,12 +26,10 @@ private[twitter] object BucketedHistogram {
     }
     require(error > 0.0 && error <= 1.0, error)
 
-    val values = build(Int.MaxValue.toDouble, 1.0 + (error * 2), 1.0)
-      .map(
-        _.toInt + 1
-      ) // this ensures that the smallest value is 2 (below we prepend `1`)
-      .distinct
-      .force
+    val values = build(Int.MaxValue.toDouble, 1.0 + (error * 2), 1.0).map(
+      _.toInt + 1
+    ) // this ensures that the smallest value is 2 (below we prepend `1`)
+      .distinct.force
     (Seq(1) ++ values).toArray
   }
 

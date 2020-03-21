@@ -85,8 +85,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
     * @return map of expressions and parameters
     */
   def matchedParameters: Seq[(ScExpression, Parameter)] = {
-    matchedParametersInner
-      .map(a => a.swap)
+    matchedParametersInner.map(a => a.swap)
       .filter(a => a._1 != null) //todo: catch when expression is null
   }
 
@@ -179,8 +178,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
       case _ =>
     }
 
-    val withExpectedType =
-      useExpectedType && expectedType().isDefined //optimization to avoid except
+    val withExpectedType = useExpectedType && expectedType()
+      .isDefined //optimization to avoid except
 
     if (useExpectedType)
       nonValueType = updateAccordingToExpectedType(nonValueType, check = true)
@@ -234,45 +233,40 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
         dependentSubst.subst(c._1)
       }
       if (c._2.nonEmpty) {
-        ScalaPsiUtil
-          .tuplizy(
-            exprs,
-            getResolveScope,
-            getManager,
-            ScalaPsiUtil.firstLeaf(this))
-          .map { e =>
-            val cd = fun(e)
-            if (cd._2.nonEmpty) tail
-            else {
-              setApplicabilityProblemsVar(cd._2)
-              setMatchedParametersVar(cd._3)
-              val dependentSubst = new ScSubstitutor(() => {
-                this.scalaLanguageLevel match {
-                  case Some(level) if level < Scala_2_10 => Map.empty
-                  case _                                 => cd._4.toMap
-                }
-              })
-              dependentSubst.subst(cd._1)
-            }
+        ScalaPsiUtil.tuplizy(
+          exprs,
+          getResolveScope,
+          getManager,
+          ScalaPsiUtil.firstLeaf(this)).map { e =>
+          val cd = fun(e)
+          if (cd._2.nonEmpty) tail
+          else {
+            setApplicabilityProblemsVar(cd._2)
+            setMatchedParametersVar(cd._3)
+            val dependentSubst = new ScSubstitutor(() => {
+              this.scalaLanguageLevel match {
+                case Some(level) if level < Scala_2_10 => Map.empty
+                case _                                 => cd._4.toMap
+              }
+            })
+            dependentSubst.subst(cd._1)
           }
-          .getOrElse(tail)
+        }.getOrElse(tail)
       } else tail
     }
 
     def functionParams(params: Seq[ScType]): Seq[Parameter] = {
       val functionName = "scala.Function" + params.length
       val functionClass = Option(
-        ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(
-            functionName,
-            getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE)).flatMap {
+        ScalaPsiManager.instance(getProject).getCachedClass(
+          functionName,
+          getResolveScope,
+          ScalaPsiManager.ClassCategory.TYPE)).flatMap {
         case t: ScTrait => Option(t)
         case _          => None
       }
-      val applyFunction = functionClass.flatMap(
-        _.functions.find(_.name == "apply"))
+      val applyFunction = functionClass
+        .flatMap(_.functions.find(_.name == "apply"))
       params.mapWithIndex {
         case (tp, i) =>
           new Parameter(
@@ -345,11 +339,9 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
                 checkImplicits,
                 isShape,
                 expectedOption)
-              val str = ScalaPsiManager
-                .instance(getProject)
+              val str = ScalaPsiManager.instance(getProject)
                 .getCachedClass(getResolveScope, "java.lang.String")
-              val stringType = str
-                .map(ScType.designator(_))
+              val stringType = str.map(ScType.designator(_))
                 .getOrElse(types.Any)
               (
                 res.map(tp =>
@@ -366,10 +358,9 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
     def isApplyDynamicNamed: Boolean = {
       getEffectiveInvokedExpr match {
         case ref: ScReferenceExpression =>
-          ref
-            .bind()
-            .exists(result =>
-              result.isDynamic && result.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED)
+          ref.bind().exists(result =>
+            result.isDynamic && result.name == ResolvableReferenceExpression
+              .APPLY_DYNAMIC_NAMED)
         case _ => false
       }
     }
@@ -388,8 +379,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
               this.applyOrUpdateElement)
           }
       if (useExpectedType) {
-        updateAccordingToExpectedType(Success(processedType, None)).foreach(x =>
-          processedType = x)
+        updateAccordingToExpectedType(Success(processedType, None))
+          .foreach(x => processedType = x)
       }
       setApplyOrUpdate(applyOrUpdateResult)
       setImportsUsed(importsUsed)
@@ -471,11 +462,11 @@ object MethodInvocation {
     Some(invocation.getInvokedExpr, invocation.argumentExpressions)
 
   private val APPLICABILITY_PROBLEMS_VAR_KEY
-      : Key[(Long, Seq[ApplicabilityProblem])] = Key.create(
-    "applicability.problems.var.key")
+      : Key[(Long, Seq[ApplicabilityProblem])] = Key
+    .create("applicability.problems.var.key")
   private val MATCHED_PARAMETERS_VAR_KEY
-      : Key[(Long, Seq[(Parameter, ScExpression)])] = Key.create(
-    "matched.parameter.var.key")
+      : Key[(Long, Seq[(Parameter, ScExpression)])] = Key
+    .create("matched.parameter.var.key")
   private val IMPORTS_USED_KEY: Key[(Long, collection.Set[ImportUsed])] = Key
     .create("imports.used.method.invocation.key")
   private val IMPLICIT_FUNCTION_KEY: Key[(Long, Option[PsiNamedElement])] = Key

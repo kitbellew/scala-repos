@@ -40,18 +40,12 @@ private[r] object SparkRWrappers {
     val formula = new RFormula().setFormula(value)
     val estimator = family match {
       case "gaussian" =>
-        new LinearRegression()
-          .setRegParam(lambda)
-          .setElasticNetParam(alpha)
-          .setFitIntercept(formula.hasIntercept)
-          .setStandardization(standardize)
+        new LinearRegression().setRegParam(lambda).setElasticNetParam(alpha)
+          .setFitIntercept(formula.hasIntercept).setStandardization(standardize)
           .setSolver(solver)
       case "binomial" =>
-        new LogisticRegression()
-          .setRegParam(lambda)
-          .setElasticNetParam(alpha)
-          .setFitIntercept(formula.hasIntercept)
-          .setStandardization(standardize)
+        new LogisticRegression().setRegParam(lambda).setElasticNetParam(alpha)
+          .setFitIntercept(formula.hasIntercept).setStandardization(standardize)
     }
     val pipeline = new Pipeline().setStages(Array(formula, estimator))
     pipeline.fit(df)
@@ -64,11 +58,8 @@ private[r] object SparkRWrappers {
       k: Double,
       columns: Array[String]): PipelineModel = {
     val assembler = new VectorAssembler().setInputCols(columns)
-    val kMeans = new KMeans()
-      .setInitMode(initMode)
-      .setMaxIter(maxIter.toInt)
-      .setK(k.toInt)
-      .setFeaturesCol(assembler.getOutputCol)
+    val kMeans = new KMeans().setInitMode(initMode).setMaxIter(maxIter.toInt)
+      .setK(k.toInt).setFeaturesCol(assembler.getOutputCol)
     val pipeline = new Pipeline().setStages(Array(assembler, kMeans))
     pipeline.fit(df)
   }
@@ -79,16 +70,17 @@ private[r] object SparkRWrappers {
         val coefficientStandardErrorsR =
           Array(m.summary.coefficientStandardErrors.last) ++
             m.summary.coefficientStandardErrors.dropRight(1)
-        val tValuesR =
-          Array(m.summary.tValues.last) ++ m.summary.tValues.dropRight(1)
-        val pValuesR =
-          Array(m.summary.pValues.last) ++ m.summary.pValues.dropRight(1)
+        val tValuesR = Array(m.summary.tValues.last) ++ m.summary.tValues
+          .dropRight(1)
+        val pValuesR = Array(m.summary.pValues.last) ++ m.summary.pValues
+          .dropRight(1)
         if (m.getFitIntercept) {
-          Array(
-            m.intercept) ++ m.coefficients.toArray ++ coefficientStandardErrorsR ++
+          Array(m.intercept) ++ m.coefficients
+            .toArray ++ coefficientStandardErrorsR ++
             tValuesR ++ pValuesR
         } else {
-          m.coefficients.toArray ++ coefficientStandardErrorsR ++ tValuesR ++ pValuesR
+          m.coefficients
+            .toArray ++ coefficientStandardErrorsR ++ tValuesR ++ pValuesR
         }
       }
       case m: LogisticRegressionModel => {
@@ -137,20 +129,20 @@ private[r] object SparkRWrappers {
   def getModelFeatures(model: PipelineModel): Array[String] = {
     model.stages.last match {
       case m: LinearRegressionModel =>
-        val attrs = AttributeGroup.fromStructField(
-          m.summary.predictions.schema(m.summary.featuresCol))
+        val attrs = AttributeGroup
+          .fromStructField(m.summary.predictions.schema(m.summary.featuresCol))
         if (m.getFitIntercept) {
           Array("(Intercept)") ++ attrs.attributes.get.map(_.name.get)
         } else { attrs.attributes.get.map(_.name.get) }
       case m: LogisticRegressionModel =>
-        val attrs = AttributeGroup.fromStructField(
-          m.summary.predictions.schema(m.summary.featuresCol))
+        val attrs = AttributeGroup
+          .fromStructField(m.summary.predictions.schema(m.summary.featuresCol))
         if (m.getFitIntercept) {
           Array("(Intercept)") ++ attrs.attributes.get.map(_.name.get)
         } else { attrs.attributes.get.map(_.name.get) }
       case m: KMeansModel =>
-        val attrs = AttributeGroup.fromStructField(
-          m.summary.predictions.schema(m.summary.featuresCol))
+        val attrs = AttributeGroup
+          .fromStructField(m.summary.predictions.schema(m.summary.featuresCol))
         attrs.attributes.get.map(_.name.get)
     }
   }

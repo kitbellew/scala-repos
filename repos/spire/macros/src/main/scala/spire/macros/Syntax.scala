@@ -191,12 +191,8 @@ v     */
     import c.universe._
     val util = SyntaxUtil[c.type](c)
 
-    val List(range, index, end, limit, step) = util.names(
-      "range",
-      "index",
-      "end",
-      "limit",
-      "step")
+    val List(range, index, end, limit, step) = util
+      .names("range", "index", "end", "limit", "step")
 
     def isLiteral(t: Tree): Option[Int] =
       t match {

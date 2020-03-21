@@ -76,8 +76,8 @@ private[round] final class Round(
           messenger.system(
             pov.game,
             (_.untranslated(s"${pov.color.name.capitalize} is going berserk!")))
-          GameRepo.save(progress) >> GameRepo.goBerserk(
-            pov) inject progress.events
+          GameRepo.save(progress) >> GameRepo.goBerserk(pov) inject progress
+            .events
         }
       }
 
@@ -139,10 +139,9 @@ private[round] final class Round(
 
     case HoldAlert(playerId, mean, sd, ip) => handle(playerId) { pov =>
         !pov.player.hasHoldAlert ?? {
-          lila
-            .log("cheat")
-            .info(
-              s"hold alert $ip http://lichess.org/${pov.gameId}/${pov.color.name}#${pov.game.turns} ${pov.player.userId | "anon"} mean: $mean SD: $sd")
+          lila.log("cheat").info(
+            s"hold alert $ip http://lichess.org/${pov.gameId}/${pov.color.name}#${pov
+              .game.turns} ${pov.player.userId | "anon"} mean: $mean SD: $sd")
           lila.mon.cheat.holdAlert()
           GameRepo.setHoldAlert(pov, mean, sd) inject List[Event]()
         }
@@ -179,8 +178,7 @@ private[round] final class Round(
     case Deploy(RemindDeployPost, _) => handle { game =>
         game.clock.filter(_ => game.playable) ?? { clock =>
           val freeSeconds = 15
-          val newClock = clock
-            .giveTime(Color.White, freeSeconds)
+          val newClock = clock.giveTime(Color.White, freeSeconds)
             .giveTime(Color.Black, freeSeconds)
           val progress = (game withClock newClock) + Event.Clock(newClock)
           messenger.system(game, (_.untranslated("Lichess has been updated")))

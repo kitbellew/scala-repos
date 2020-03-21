@@ -116,15 +116,15 @@ private[scalajs] final class ScalaJSClassEmitter(
 
   def genStaticMembers(tree: LinkedClass): js.Tree = {
     val className = tree.name.name
-    val staticMemberDefs = tree.staticMethods.map(m =>
-      genMethod(className, m.tree))
+    val staticMemberDefs = tree.staticMethods
+      .map(m => genMethod(className, m.tree))
     js.Block(staticMemberDefs)(tree.pos)
   }
 
   def genDefaultMethods(tree: LinkedClass): js.Tree = {
     val className = tree.name.name
-    val defaultMethodDefs = tree.memberMethods.map(m =>
-      genDefaultMethod(className, m.tree))
+    val defaultMethodDefs = tree.memberMethods
+      .map(m => genDefaultMethod(className, m.tree))
     js.Block(defaultMethodDefs)(tree.pos)
   }
 
@@ -135,8 +135,8 @@ private[scalajs] final class ScalaJSClassEmitter(
 
     val exportedDefs = genExportedMembers(tree)
 
-    val allDefsBlock = js.Block(typeFunctionDef +: memberDefs :+ exportedDefs)(
-      tree.pos)
+    val allDefsBlock = js
+      .Block(typeFunctionDef +: memberDefs :+ exportedDefs)(tree.pos)
 
     outputMode match {
       case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
@@ -158,8 +158,7 @@ private[scalajs] final class ScalaJSClassEmitter(
 
     val className = tree.name.name
     val classIdent = encodeClassVar(className)(outputMode, tree.name.pos)
-      .asInstanceOf[js.VarRef]
-      .ident
+      .asInstanceOf[js.VarRef].ident
 
     val parentVar = for (parentIdent <- tree.superClass) yield {
       implicit val pos = parentIdent.pos
@@ -511,8 +510,8 @@ private[scalajs] final class ScalaJSClassEmitter(
       val isAncestorOfString = AncestorsOfStringClass.contains(className)
       val isAncestorOfHijackedNumberClass = AncestorsOfHijackedNumberClasses
         .contains(className)
-      val isAncestorOfBoxedBooleanClass = AncestorsOfBoxedBooleanClass.contains(
-        className)
+      val isAncestorOfBoxedBooleanClass = AncestorsOfBoxedBooleanClass
+        .contains(className)
 
       val objParam = js.ParamDef(Ident("obj"), rest = false)
       val obj = objParam.ref
@@ -716,8 +715,8 @@ private[scalajs] final class ScalaJSClassEmitter(
     val isObjectClass =
       className == ObjectClass
     val isHijackedBoxedClass = HijackedBoxedClasses.contains(className)
-    val isAncestorOfHijackedClass = AncestorsOfHijackedClasses.contains(
-      className)
+    val isAncestorOfHijackedClass = AncestorsOfHijackedClasses
+      .contains(className)
     val isRawJSType =
       kind == ClassKind.RawJSType || kind.isJSClass
 
@@ -788,12 +787,11 @@ private[scalajs] final class ScalaJSClassEmitter(
       isArrayOfFun
     )
 
-    val prunedParams =
-      allParams.reverse.dropWhile(_.isInstanceOf[js.Undefined]).reverse
+    val prunedParams = allParams.reverse.dropWhile(_.isInstanceOf[js.Undefined])
+      .reverse
 
-    val typeData = js.Apply(
-      js.New(envField("TypeData"), Nil) DOT "initClass",
-      prunedParams)
+    val typeData = js
+      .Apply(js.New(envField("TypeData"), Nil) DOT "initClass", prunedParams)
 
     envFieldDef("d", className, typeData)
   }
@@ -855,8 +853,7 @@ private[scalajs] final class ScalaJSClassEmitter(
                 // throw new UndefinedBehaviorError(
                 //     "Initializer of $className called before completion of its" +
                 //     "super constructor")
-                val decodedName = Definitions
-                  .decodeClassName(className)
+                val decodedName = Definitions.decodeClassName(className)
                   .stripSuffix("$")
                 val msg =
                   s"Initializer of $decodedName called before completion " +

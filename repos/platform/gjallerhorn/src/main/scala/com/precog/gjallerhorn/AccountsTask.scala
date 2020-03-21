@@ -45,9 +45,8 @@ class AccountsTask(settings: Settings)
     "not create the same account twice" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
-      val body = """{ "email": "%s", "password": "%s" }""".format(
-        user,
-        pass + "xyz")
+      val body = """{ "email": "%s", "password": "%s" }"""
+        .format(user, pass + "xyz")
       val post = (accounts / "") << body
       val result = Http(post OK as.String)
 
@@ -92,8 +91,8 @@ class AccountsTask(settings: Settings)
       val grantId = (g \ "grantId").deserialize[String]
 
       val body = JObject("grantId" -> JString(grantId)).renderCompact
-      val req =
-        (accounts / accountId2 / "grants" / "").POST.as(user1, pass1) << body
+      val req = (accounts / accountId2 / "grants" / "").POST
+        .as(user1, pass1) << body
       val r = http(req)().complete()
       listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
         g)

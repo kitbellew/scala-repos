@@ -92,9 +92,7 @@ trait TimeZoneSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SString(time)) if ids.length == 1 =>
-          val newTime = ISODateTimeFormat
-            .dateTimeParser()
-            .withOffsetParsed
+          val newTime = ISODateTimeFormat.dateTimeParser().withOffsetParsed
             .parseDateTime(time)
           newTime.getMillis.toLong
       }
@@ -170,9 +168,7 @@ trait TimeZoneSpecs[M[+_]]
 
       val result2 = result collect {
         case (ids, SString(time)) if ids.length == 1 =>
-          val newTime = ISODateTimeFormat
-            .dateTimeParser()
-            .withOffsetParsed
+          val newTime = ISODateTimeFormat.dateTimeParser().withOffsetParsed
             .parseDateTime(time)
           newTime.getMillis.toLong
       }

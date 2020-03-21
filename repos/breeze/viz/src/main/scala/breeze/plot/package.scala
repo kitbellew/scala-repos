@@ -221,8 +221,7 @@ package object plot {
       for (value <- values) { counts(binner.bin(value)) += 1 }
 
       val width = (binner.splits.iterator zip binner.splits.iterator.drop(1))
-        .map(tup => tup._2 - tup._1)
-        .min
+        .map(tup => tup._2 - tup._1).min
 
       def getChartStuff(
           defaultName: (Int) => String,
@@ -250,8 +249,8 @@ package object plot {
         renderer.setSeriesOutlinePaint(0, defaultColor(0))
         renderer.setSeriesOutlineStroke(0, defaultStroke(0))
         renderer.setShadowVisible(false)
-        renderer.setBarPainter(
-          new org.jfree.chart.renderer.xy.StandardXYBarPainter())
+        renderer
+          .setBarPainter(new org.jfree.chart.renderer.xy.StandardXYBarPainter())
 
         dataset -> renderer
       }
@@ -336,8 +335,7 @@ package object plot {
 
         val staticScale = {
           if (scale == null)
-            GradientPaintScaleFactory[Double]()
-              .apply(mt.valuesIterator.toList)
+            GradientPaintScaleFactory[Double]().apply(mt.valuesIterator.toList)
               .asInstanceOf[GradientPaintScale[Double]]
           else scale
         }

@@ -28,8 +28,8 @@ abstract class JavaToScalaConversionTestBase
     import org.junit.Assert._
 
     val filePath = folderPath + getTestName(false) + ".java"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem.getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -55,8 +55,7 @@ abstract class JavaToScalaConversionTestBase
       buf += elem
     }
     var res = JavaToScala.convertPsisToText(buf.toArray)
-    val newFile = PsiFileFactory
-      .getInstance(getProjectAdapter)
+    val newFile = PsiFileFactory.getInstance(getProjectAdapter)
       .createFileFromText(
         "dummyForJavaToScala.scala",
         ScalaFileType.SCALA_LANGUAGE,

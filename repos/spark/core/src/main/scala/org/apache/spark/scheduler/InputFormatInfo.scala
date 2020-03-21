@@ -47,7 +47,8 @@ class InputFormatInfo(
   validate()
 
   override def toString: String = {
-    "InputFormatInfo " + super.toString + " .. inputFormatClazz " + inputFormatClazz + ", " +
+    "InputFormatInfo " + super
+      .toString + " .. inputFormatClazz " + inputFormatClazz + ", " +
       "path : " + path
   }
 
@@ -105,8 +106,7 @@ class InputFormatInfo(
     FileInputFormat.setInputPaths(conf, path)
 
     val instance: org.apache.hadoop.mapreduce.InputFormat[_, _] =
-      ReflectionUtils
-        .newInstance(inputFormatClazz.asInstanceOf[Class[_]], conf)
+      ReflectionUtils.newInstance(inputFormatClazz.asInstanceOf[Class[_]], conf)
         .asInstanceOf[org.apache.hadoop.mapreduce.InputFormat[_, _]]
     val job = Job.getInstance(conf)
 
@@ -130,10 +130,8 @@ class InputFormatInfo(
       .asInstanceOf[org.apache.hadoop.mapred.InputFormat[_, _]]
 
     val retval = new ArrayBuffer[SplitInfo]()
-    instance
-      .getSplits(jobConf, jobConf.getNumMapTasks())
-      .foreach(elem =>
-        retval ++= SplitInfo.toSplitInfo(inputFormatClazz, path, elem))
+    instance.getSplits(jobConf, jobConf.getNumMapTasks()).foreach(elem =>
+      retval ++= SplitInfo.toSplitInfo(inputFormatClazz, path, elem))
 
     retval.toSet
   }

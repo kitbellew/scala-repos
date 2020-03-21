@@ -17,8 +17,8 @@ class SingleAbstractMethodTest
   protected override def setUp() {
     super.setUp()
 
-    val defaultProfile =
-      ScalaCompilerConfiguration.instanceIn(getProjectAdapter).defaultProfile
+    val defaultProfile = ScalaCompilerConfiguration
+      .instanceIn(getProjectAdapter).defaultProfile
     val newSettings = defaultProfile.getSettings
     newSettings.experimental = true
     defaultProfile.setSettings(newSettings)
@@ -634,13 +634,10 @@ class SingleAbstractMethodTest
   }
 
   def parseText(@Language("Scala") s: String): ScalaFile = {
-    PsiFileFactory
-      .getInstance(getProjectAdapter)
-      .createFileFromText(
-        "foo" + ScalaFileType.DEFAULT_EXTENSION,
-        ScalaFileType.SCALA_FILE_TYPE,
-        s)
-      .asInstanceOf[ScalaFile]
+    PsiFileFactory.getInstance(getProjectAdapter).createFileFromText(
+      "foo" + ScalaFileType.DEFAULT_EXTENSION,
+      ScalaFileType.SCALA_FILE_TYPE,
+      s).asInstanceOf[ScalaFile]
   }
 
   val cannotResolveSymbol = ContainsPattern("Cannot resolve symbol")

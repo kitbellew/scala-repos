@@ -39,10 +39,9 @@ private[http] object WebSocket {
   /** The lowest layer that implements the binary protocol */
   def framing
       : BidiFlow[ByteString, FrameEvent, FrameEvent, ByteString, NotUsed] =
-    BidiFlow
-      .fromFlows(
-        Flow[ByteString].via(FrameEventParser),
-        Flow[FrameEvent].transform(() ⇒ new FrameEventRenderer))
+    BidiFlow.fromFlows(
+      Flow[ByteString].via(FrameEventParser),
+      Flow[FrameEvent].transform(() ⇒ new FrameEventRenderer))
       .named("ws-framing")
 
   /** The layer that handles masking using the rules defined in the specification */
@@ -51,9 +50,7 @@ private[http] object WebSocket {
     FrameEventOrError,
     FrameEvent,
     FrameEvent,
-    NotUsed] =
-    Masking(serverSide, maskingRandomFactory)
-      .named("ws-masking")
+    NotUsed] = Masking(serverSide, maskingRandomFactory).named("ws-masking")
 
   /**
     * The layer that implements all low-level frame handling, like handling control frames, collecting messages
@@ -68,10 +65,9 @@ private[http] object WebSocket {
     FrameOutHandler.Input,
     FrameStart,
     NotUsed] =
-    BidiFlow
-      .fromFlows(
-        FrameHandler.create(server = serverSide),
-        FrameOutHandler.create(serverSide, closeTimeout, log))
+    BidiFlow.fromFlows(
+      FrameHandler.create(server = serverSide),
+      FrameOutHandler.create(serverSide, closeTimeout, log))
       .named("ws-frame-handling")
 
   /**
@@ -112,8 +108,7 @@ private[http] object WebSocket {
     /* Collects user-level API messages from MessageDataParts */
     val collectMessage
         : Flow[MessageDataPart, Message, NotUsed] = Flow[MessageDataPart]
-      .prefixAndTail(1)
-      .mapConcat {
+      .prefixAndTail(1).mapConcat {
         // happens if we get a MessageEnd first which creates a new substream but which is then
         // filtered out by collect in `prepareMessages` below
         case (Nil, _) ⇒ Nil
@@ -123,67 +118,55 @@ private[http] object WebSocket {
               SubSource.kill(remaining)
               TextMessage.Strict(text)
             case first @ TextMessagePart(text, false) ⇒
-              TextMessage(
-                (Source.single(first) ++ remaining)
-                  .collect {
-                    case t: TextMessagePart if t.data.nonEmpty ⇒ t.data
-                  })
+              TextMessage((Source.single(first) ++ remaining).collect {
+                case t: TextMessagePart if t.data.nonEmpty ⇒ t.data
+              })
             case BinaryMessagePart(data, true) ⇒
               SubSource.kill(remaining)
               BinaryMessage.Strict(data)
             case first @ BinaryMessagePart(data, false) ⇒
-              BinaryMessage(
-                (Source.single(first) ++ remaining)
-                  .collect {
-                    case t: BinaryMessagePart if t.data.nonEmpty ⇒ t.data
-                  })
+              BinaryMessage((Source.single(first) ++ remaining).collect {
+                case t: BinaryMessagePart if t.data.nonEmpty ⇒ t.data
+              })
           }) :: Nil
       }
 
     def prepareMessages: Flow[MessagePart, Message, NotUsed] =
-      Flow[MessagePart]
-        .transform(() ⇒ new PrepareForUserHandler)
-        .splitWhen(
-          _.isMessageEnd
-        ) // FIXME using splitAfter from #16885 would simplify protocol a lot
-        .collect { case m: MessageDataPart ⇒ m }
-        .via(collectMessage)
-        .concatSubstreams
-        .named("ws-prepare-messages")
+      Flow[MessagePart].transform(() ⇒ new PrepareForUserHandler).splitWhen(
+        _.isMessageEnd
+      ) // FIXME using splitAfter from #16885 would simplify protocol a lot
+        .collect { case m: MessageDataPart ⇒ m }.via(collectMessage)
+        .concatSubstreams.named("ws-prepare-messages")
 
     def renderMessages: Flow[Message, FrameStart, NotUsed] =
-      MessageToFrameRenderer
-        .create(serverSide)
-        .named("ws-render-messages")
+      MessageToFrameRenderer.create(serverSide).named("ws-render-messages")
 
     BidiFlow.fromGraph(
-      GraphDSL
-        .create() { implicit b ⇒
-          import GraphDSL.Implicits._
+      GraphDSL.create() { implicit b ⇒
+        import GraphDSL.Implicits._
 
-          val split = b.add(BypassRouter)
-          val tick = Source.tick(closeTimeout, closeTimeout, Tick)
-          val merge = b.add(BypassMerge)
-          val messagePreparation = b.add(prepareMessages)
-          val messageRendering = b.add(renderMessages.via(LiftCompletions))
+        val split = b.add(BypassRouter)
+        val tick = Source.tick(closeTimeout, closeTimeout, Tick)
+        val merge = b.add(BypassMerge)
+        val messagePreparation = b.add(prepareMessages)
+        val messageRendering = b.add(renderMessages.via(LiftCompletions))
 
-          // user handler
-          split.out1 ~> messagePreparation
-          messageRendering.outlet ~> merge.in1
+        // user handler
+        split.out1 ~> messagePreparation
+        messageRendering.outlet ~> merge.in1
 
-          // bypass
-          split.out0 ~> merge.in0
+        // bypass
+        split.out0 ~> merge.in0
 
-          // timeout support
-          tick ~> merge.in2
+        // timeout support
+        tick ~> merge.in2
 
-          BidiShape(
-            split.in,
-            messagePreparation.out,
-            messageRendering.in,
-            merge.out)
-        }
-        .named("ws-message-api"))
+        BidiShape(
+          split.in,
+          messagePreparation.out,
+          messageRendering.in,
+          merge.out)
+      }.named("ws-message-api"))
   }
 
   private case object BypassRouter

@@ -60,10 +60,10 @@ object OneAndTest extends SpecLite {
 
   "fold1 on fold1" ! forAll { (ints: OneAnd[NonEmptyList, Int]) =>
     val lst = ints.head :: ints.tail.list
-    Foldable[OneAndNel].foldMap(ints)(_ + 1) must_=== (lst.count(_ =>
-      true) + lst.toList.sum)
-    Foldable1[OneAndNel].foldMap1(ints)(_ + 1) must_=== (lst.count(_ =>
-      true) + lst.toList.sum)
+    Foldable[OneAndNel].foldMap(ints)(_ + 1) must_=== (lst
+      .count(_ => true) + lst.toList.sum)
+    Foldable1[OneAndNel].foldMap1(ints)(_ + 1) must_=== (lst
+      .count(_ => true) + lst.toList.sum)
   }
 
   "right fold1 on fold" ! forAll { (ints: OneAnd[List, Int]) =>

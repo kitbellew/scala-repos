@@ -61,11 +61,8 @@ class ErrorFormatter(
     import error._
     if (showExpected) formatExpected(sb, error)
     if (showPosition)
-      sb.append(" (line ")
-        .append(position.line)
-        .append(", column ")
-        .append(position.column)
-        .append(')')
+      sb.append(" (line ").append(position.line).append(", column ")
+        .append(position.column).append(')')
     if (showLine) formatErrorLine(sb.append(':').append('\n'), error, input)
     if (showTraces) sb.append('\n').append('\n').append(formatTraces(error))
     else sb
@@ -88,8 +85,7 @@ class ErrorFormatter(
     if (ix < input.length) {
       val chars = mismatchLength(error)
       if (chars == 1)
-        sb.append("Invalid input '")
-          .append(CharUtils.escape(input charAt ix))
+        sb.append("Invalid input '").append(CharUtils.escape(input charAt ix))
           .append(''')
       else
         sb.append("Invalid input \"")
@@ -106,19 +102,20 @@ class ErrorFormatter(
     // to advancing the principal error location (PEL). Therefore it might be that their succeeding inner match
     // reaches further than the PEL. In these cases we want to show the complete inner match as "mismatched",
     // not just the piece up to the PEL. This is what this method corrects for.
-    error.effectiveTraces.foldLeft(
-      error.principalPosition.index - error.position.index + 1) { (len, trace) ⇒
-      import RuleTrace._
-      trace.terminal match {
-        case NotPredicate(_, x) ⇒
-          math.max(
-            trace.prefix.collectFirst {
-              case NonTerminal(Atomic, off) ⇒ off + x
-            } getOrElse x,
-            len)
-        case _ ⇒ len
+    error.effectiveTraces
+      .foldLeft(error.principalPosition.index - error.position.index + 1) {
+        (len, trace) ⇒
+          import RuleTrace._
+          trace.terminal match {
+            case NotPredicate(_, x) ⇒
+              math.max(
+                trace.prefix.collectFirst {
+                  case NonTerminal(Atomic, off) ⇒ off + x
+                } getOrElse x,
+                len)
+            case _ ⇒ len
+          }
       }
-    }
 
   /**
     * Formats what is expected at the error location into a single line String including text padding.
@@ -159,8 +156,8 @@ class ErrorFormatter(
     * Formats what is expected at the error location as a [[List]] of Strings.
     */
   def formatExpectedAsList(error: ParseError): List[String] = {
-    val distinctStrings: Set[String] = error.effectiveTraces.map(
-      formatAsExpected)(collection.breakOut)
+    val distinctStrings: Set[String] = error.effectiveTraces
+      .map(formatAsExpected)(collection.breakOut)
     distinctStrings.toList
   }
 
@@ -221,13 +218,11 @@ class ErrorFormatter(
     */
   def formatTraces(error: ParseError): String = {
     import error._
-    traces
-      .map(formatTrace(_, position.index))
-      .mkString(
-        traces.size + " rule" + (if (traces.size != 1) "s" else "") +
-          " mismatched at error location:\n  ",
-        "\n  ",
-        "\n")
+    traces.map(formatTrace(_, position.index)).mkString(
+      traces.size + " rule" + (if (traces.size != 1) "s" else "") +
+        " mismatched at error location:\n  ",
+      "\n  ",
+      "\n")
   }
 
   /**
@@ -258,9 +253,7 @@ class ErrorFormatter(
         case x :: tail ⇒
           sep(" / ").append(render(names, ":")).append(formatNonTerminal(x))
           rec(tail, Nil, doSep)
-        case Nil ⇒
-          sep(" / ")
-            .append(render(names, ":"))
+        case Nil ⇒ sep(" / ").append(render(names, ":"))
             .append(formatTerminal(trace.terminal))
       }
     rec(trace.prefix, Nil, dontSep)

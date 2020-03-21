@@ -24,8 +24,8 @@ class SbtRunner(
     customLauncher: Option[File],
     customStructureFile: Option[File]) {
   private val LauncherDir = getSbtLauncherDir
-  private val SbtLauncher = customLauncher.getOrElse(
-    LauncherDir / "sbt-launch.jar")
+  private val SbtLauncher = customLauncher
+    .getOrElse(LauncherDir / "sbt-launch.jar")
 
   private val cancellationFlag: AtomicBoolean = new AtomicBoolean(false)
 
@@ -44,8 +44,9 @@ class SbtRunner(
       resolveJavadocs.seq("resolveJavadocs") ++
       resolveSbtClassifiers.seq("resolveSbtClassifiers")
 
-    checkFilePresence.fold(read0(directory, options.mkString(", "))(listener))(
-      it => Left(new FileNotFoundException(it)))
+    checkFilePresence
+      .fold(read0(directory, options.mkString(", "))(listener))(it =>
+        Left(new FileNotFoundException(it)))
   }
 
   private def read0(directory: File, options: String)(
@@ -73,8 +74,8 @@ class SbtRunner(
       sbtVersion: String,
       options: String,
       listener: (String) => Unit) = {
-    val pluginFile = customStructureFile.getOrElse(
-      LauncherDir / s"sbt-structure-$sbtVersion.jar")
+    val pluginFile = customStructureFile
+      .getOrElse(LauncherDir / s"sbt-structure-$sbtVersion.jar")
 
     usingTempFile("sbt-structure", Some(".xml")) { structureFile =>
       val sbtCommands = Seq(
@@ -110,12 +111,10 @@ class SbtRunner(
             sbtCommands.foreach(writer.println)
             writer.flush()
             val result = handle(process, listener)
-            result
-              .map { output =>
-                (structureFile.length > 0).either(XML.load(
-                  structureFile.toURI.toURL))(SbtException.fromSbtLog(output))
-              }
-              .getOrElse(Left(new ImportCancelledException))
+            result.map { output =>
+              (structureFile.length > 0).either(XML.load(
+                structureFile.toURI.toURL))(SbtException.fromSbtLog(output))
+            }.getOrElse(Left(new ImportCancelledException))
         }
       } catch { case e: Exception => Left(e) }
     }
@@ -187,10 +186,8 @@ object SbtRunner {
   private[structure] def detectSbtVersion(
       directory: File,
       sbtLauncher: File): String =
-    sbtVersionIn(directory)
-      .orElse(sbtVersionInBootPropertiesOf(sbtLauncher))
-      .orElse(implementationVersionOf(sbtLauncher))
-      .getOrElse(Sbt.LatestVersion)
+    sbtVersionIn(directory).orElse(sbtVersionInBootPropertiesOf(sbtLauncher))
+      .orElse(implementationVersionOf(sbtLauncher)).getOrElse(Sbt.LatestVersion)
 
   private def implementationVersionOf(jar: File): Option[String] =
     readManifestAttributeFrom(jar, "Implementation-Version")
@@ -237,13 +234,10 @@ object SbtRunner {
     try {
       Option(jar.getEntry("sbt/sbt.boot.properties"))
         .fold(Map.empty[String, String]) { entry =>
-          val lines = scala.io.Source
-            .fromInputStream(jar.getInputStream(entry))
+          val lines = scala.io.Source.fromInputStream(jar.getInputStream(entry))
             .getLines()
-          val sectionLines = lines
-            .dropWhile(_.trim != s"[$sectionName]")
-            .drop(1)
-            .takeWhile(!_.trim.startsWith("["))
+          val sectionLines = lines.dropWhile(_.trim != s"[$sectionName]")
+            .drop(1).takeWhile(!_.trim.startsWith("["))
           sectionLines.flatMap(findProperty).toMap
         }
     } finally { jar.close() }

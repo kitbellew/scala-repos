@@ -36,9 +36,10 @@ Check the output:
 class Tutorial4(args: Args) extends Job(args) {
 
   //we probably don't need to bother with vals for input/output anymore
-  TextLine(args("input")).read
-    .flatMap('line -> 'word) { line: String => line.split("\\s") }
-    /**
+  TextLine(args("input")).read.flatMap('line -> 'word) { line: String =>
+    line.split("\\s")
+  }
+  /**
     To count the words, first we need to group by word.
     groupBy takes any number of fields as the group key. In this
     case we just want 'word.

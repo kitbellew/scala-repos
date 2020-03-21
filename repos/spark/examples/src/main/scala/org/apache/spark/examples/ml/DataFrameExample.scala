@@ -46,8 +46,7 @@ object DataFrameExample {
 
     val parser = new OptionParser[Params]("DataFrameExample") {
       head("DataFrameExample: an example app using DataFrame for ML.")
-      opt[String]("input")
-        .text(s"input path to dataframe")
+      opt[String]("input").text(s"input path to dataframe")
         .action((x, c) => c.copy(input = x))
       checkConfig { params => success }
     }
@@ -65,9 +64,7 @@ object DataFrameExample {
 
     // Load input data
     println(s"Loading LIBSVM file with UDT from ${params.input}.")
-    val df: DataFrame = sqlContext.read
-      .format("libsvm")
-      .load(params.input)
+    val df: DataFrame = sqlContext.read.format("libsvm").load(params.input)
       .cache()
     println("Schema from LIBSVM:")
     df.printSchema()

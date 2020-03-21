@@ -97,12 +97,8 @@ private[akka] final case class Remove(node: RoleName) extends CommandOp
 private[akka] class MsgEncoder extends OneToOneEncoder {
 
   implicit def address2proto(addr: Address): TCP.Address =
-    TCP.Address.newBuilder
-      .setProtocol(addr.protocol)
-      .setSystem(addr.system)
-      .setHost(addr.host.get)
-      .setPort(addr.port.get)
-      .build
+    TCP.Address.newBuilder.setProtocol(addr.protocol).setSystem(addr.system)
+      .setHost(addr.host.get).setPort(addr.port.get).build
 
   implicit def direction2proto(dir: Direction): TCP.Direction =
     dir match {
@@ -131,21 +127,16 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
               TCP.EnterBarrier.newBuilder.setName(name).setOp(BarrierOp.Fail))
           case ThrottleMsg(target, dir, rate) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
-                .setAddress(target)
-                .setFailure(TCP.FailType.Throttle)
-                .setDirection(dir)
+              TCP.InjectFailure.newBuilder.setAddress(target)
+                .setFailure(TCP.FailType.Throttle).setDirection(dir)
                 .setRateMBit(rate))
           case DisconnectMsg(target, abort) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
-                .setAddress(target)
-                .setFailure(
-                  if (abort) TCP.FailType.Abort else TCP.FailType.Disconnect))
+              TCP.InjectFailure.newBuilder.setAddress(target).setFailure(
+                if (abort) TCP.FailType.Abort else TCP.FailType.Disconnect))
           case TerminateMsg(Right(exitValue)) ⇒
             w.setFailure(
-              TCP.InjectFailure.newBuilder
-                .setFailure(TCP.FailType.Exit)
+              TCP.InjectFailure.newBuilder.setFailure(TCP.FailType.Exit)
                 .setExitValue(exitValue))
           case TerminateMsg(Left(false)) ⇒
             w.setFailure(

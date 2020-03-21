@@ -64,8 +64,8 @@ trait RandomLibSpecs[M[+_]]
   }
 
   "fail to observe if seed for distribution is not a long" in {
-    val uniform = dag.Morph1(UniformDistribution, Const(CDouble(4.4))(line))(
-      line)
+    val uniform = dag
+      .Morph1(UniformDistribution, Const(CDouble(4.4))(line))(line)
 
     val input = dag.Observe(Const(CString("foo"))(line), uniform)(line)
 
@@ -109,17 +109,13 @@ trait RandomLibSpecs[M[+_]]
 
     val observe = dag.Observe(numbers, uniform)(line)
 
-    val randObj = dag.Join(
-      WrapObject,
-      Cross(None),
-      Const(CString("rand"))(line),
-      observe)(line)
+    val randObj = dag
+      .Join(WrapObject, Cross(None), Const(CString("rand"))(line), observe)(
+        line)
 
-    val numbersObj = dag.Join(
-      WrapObject,
-      Cross(None),
-      Const(CString("data"))(line),
-      numbers)(line)
+    val numbersObj = dag
+      .Join(WrapObject, Cross(None), Const(CString("data"))(line), numbers)(
+        line)
 
     val input = dag.Join(JoinObject, IdentitySort, randObj, numbersObj)(line)
 

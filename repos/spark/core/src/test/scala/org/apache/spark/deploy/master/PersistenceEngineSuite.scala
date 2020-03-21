@@ -68,20 +68,15 @@ class PersistenceEngineSuite extends SparkFunSuite {
       persistenceEngine.persist("test_2", "test_2_value")
       assert(
         Set("test_1_value", "test_2_value") === persistenceEngine
-          .read[String]("test_")
-          .toSet)
+          .read[String]("test_").toSet)
       persistenceEngine.unpersist("test_1")
       assert(Seq("test_2_value") === persistenceEngine.read[String]("test_"))
       persistenceEngine.unpersist("test_2")
       assert(persistenceEngine.read[String]("test_").isEmpty)
 
       // Test deserializing objects that contain RpcEndpointRef
-      val testRpcEnv = RpcEnv.create(
-        "test",
-        "localhost",
-        12345,
-        conf,
-        new SecurityManager(conf))
+      val testRpcEnv = RpcEnv
+        .create("test", "localhost", 12345, conf, new SecurityManager(conf))
       try {
         // Create a real endpoint so that we can test RpcEndpointRef deserialization
         val workerEndpoint = testRpcEnv.setupEndpoint(
@@ -126,15 +121,13 @@ class PersistenceEngineSuite extends SparkFunSuite {
 
   private def findFreePort(conf: SparkConf): Int = {
     val candidatePort = RandomUtils.nextInt(1024, 65536)
-    Utils
-      .startServiceOnPort(
-        candidatePort,
-        (trialPort: Int) => {
-          val socket = new ServerSocket(trialPort)
-          socket.close()
-          (null, trialPort)
-        },
-        conf)
-      ._2
+    Utils.startServiceOnPort(
+      candidatePort,
+      (trialPort: Int) => {
+        val socket = new ServerSocket(trialPort)
+        socket.close()
+        (null, trialPort)
+      },
+      conf)._2
   }
 }

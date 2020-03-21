@@ -61,8 +61,8 @@ object DesktopIngestShardServer
   val caveatMessage = None
 
   val actorSystem = ActorSystem("desktopExecutorActorSystem")
-  implicit val executionContext = ExecutionContext.defaultExecutionContext(
-    actorSystem)
+  implicit val executionContext = ExecutionContext
+    .defaultExecutionContext(actorSystem)
   implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
   def runGUI(config: Configuration): Option[Future[PrecogUnit]] = {
@@ -108,8 +108,8 @@ object DesktopIngestShardServer
 
             appFrame.pack()
 
-            val iconUrl = ClassLoader.getSystemClassLoader.getResource(
-              "LargeIcon.png")
+            val iconUrl = ClassLoader.getSystemClassLoader
+              .getResource("LargeIcon.png")
             logger.debug("Loaded icon: " + iconUrl)
             appFrame.setIconImage(Toolkit.getDefaultToolkit.getImage(iconUrl))
 
@@ -182,12 +182,11 @@ object DesktopIngestShardServer
       jobManager)
 
     val stoppable = Stoppable.fromFuture {
-      platform.shutdown
-        .onComplete { _ => logger.info("Platform shutdown complete") }
-        .onFailure {
-          case t: Throwable =>
-            logger.error("Failure during platform shutdown", t)
-        }
+      platform.shutdown.onComplete { _ =>
+        logger.info("Platform shutdown complete")
+      }.onFailure {
+        case t: Throwable => logger.error("Failure during platform shutdown", t)
+      }
     }
 
     (platform, stoppable)
@@ -250,8 +249,8 @@ object DesktopIngestShardServer
 
   def startZookeeperStandalone(config: Configuration): EmbeddedZK = {
     val serverConfig = new ServerConfig
-    serverConfig.parse(
-      Array[String](config[String]("port"), config[String]("dataDir")))
+    serverConfig
+      .parse(Array[String](config[String]("port"), config[String]("dataDir")))
 
     val server = new EmbeddedZK
 
@@ -275,28 +274,22 @@ object LaunchLabcoat {
 
     val params = CommandLineArguments(args: _*).parameters
 
-    params
-      .get("configFile")
-      .map { configFile =>
-        val config = Configuration.load(configFile)
+    params.get("configFile").map { configFile =>
+      val config = Configuration.load(configFile)
 
-        // Check for launch first
-        if (params.contains("launch")) {
-          launchBrowser(config)
-          sys.exit(0)
-        } else {
-          DesktopIngestShardServer
-            .runGUI(config)
-            .map {
-              _.map { _ => launchBrowser(config); println("Launch complete") }
-            }
-            .getOrElse { sys.error("Failed to start bifrost!") }
-        }
+      // Check for launch first
+      if (params.contains("launch")) {
+        launchBrowser(config)
+        sys.exit(0)
+      } else {
+        DesktopIngestShardServer.runGUI(config).map {
+          _.map { _ => launchBrowser(config); println("Launch complete") }
+        }.getOrElse { sys.error("Failed to start bifrost!") }
       }
-      .getOrElse {
-        System.err.println("Usage: LaunchLabcoat --configFile <config file>")
-        sys.exit(1)
-      }
+    }.getOrElse {
+      System.err.println("Usage: LaunchLabcoat --configFile <config file>")
+      sys.exit(1)
+    }
   }
 
   def launchBrowser(config: Configuration): Unit = {

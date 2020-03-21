@@ -50,11 +50,11 @@ object ScalaElementPresentation {
       fast: Boolean = true,
       subst: ScSubstitutor = ScSubstitutor.empty): String = {
     val presentableText: StringBuffer = new StringBuffer
-    presentableText.append(
-      if (!function.isConstructor) function.name else "this")
+    presentableText
+      .append(if (!function.isConstructor) function.name else "this")
 
-    function.typeParametersClause.foreach(clause =>
-      presentableText.append(clause.getText))
+    function.typeParametersClause
+      .foreach(clause => presentableText.append(clause.getText))
 
     if (function.paramClauses != null)
       presentableText.append(StructureViewUtil.getParametersAsString(

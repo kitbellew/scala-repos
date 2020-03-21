@@ -31,21 +31,22 @@ class ConfigTest extends WordSpec with Matchers {
     }
     "default has serialization set" in {
       val sers = Config.default.get("io.serializations").get.split(",").toList
-      sers.last shouldBe (
-        classOf[com.twitter.chill.hadoop.KryoSerialization].getName
-      )
+      sers.last shouldBe (classOf[com.twitter.chill.hadoop.KryoSerialization]
+        .getName)
     }
     "default has chill configured" in {
-      Config.default.get(
-        com.twitter.chill.config.ConfiguredInstantiator.KEY) should not be empty
+      Config.default
+        .get(
+          com.twitter.chill.config.ConfiguredInstantiator
+            .KEY) should not be empty
     }
     "setting timestamp twice does not change it" in {
       val date = RichDate.now
       val (oldDate, newConf) = Config.empty.maybeSetSubmittedTimestamp(date)
       oldDate shouldBe empty
       newConf.getSubmittedTimestamp should contain(date)
-      val (stillOld, new2) = newConf.maybeSetSubmittedTimestamp(
-        date + Seconds(1))
+      val (stillOld, new2) = newConf
+        .maybeSetSubmittedTimestamp(date + Seconds(1))
       stillOld should contain(date)
       new2 shouldBe newConf
     }
@@ -56,15 +57,14 @@ class ConfigTest extends WordSpec with Matchers {
     }
     "Default serialization should have tokens" in {
       Config.default.getCascadingSerializationTokens should not be empty
-      Config.default.getCascadingSerializationTokens.values
-        .map(Class.forName)
+      Config.default.getCascadingSerializationTokens.values.map(Class.forName)
         .filter(c => c.isPrimitive || c.isArray) shouldBe empty
 
       Config.empty.getCascadingSerializationTokens shouldBe empty
 
       // tokenClasses are a subset that don't include primites or arrays.
-      val tokenClasses =
-        Config.default.getCascadingSerializationTokens.values.toSet
+      val tokenClasses = Config.default.getCascadingSerializationTokens.values
+        .toSet
       val kryoClasses = Config.default.getKryoRegisteredClasses.map(_.getName)
       // Tokens are a subset of Kryo registered classes
       (kryoClasses & tokenClasses) shouldBe tokenClasses
@@ -79,8 +79,7 @@ class ConfigTest extends WordSpec with Matchers {
           classOf[Long],
           classOf[Float],
           classOf[Double],
-          classOf[Char])
-          .map(_.getName)
+          classOf[Char]).map(_.getName)
 
         prim(c) || Class.forName(c).isArray
       } shouldBe true
@@ -108,11 +107,9 @@ object ConfigProps extends Properties("Config") {
       testKeys.forall { k => merged.get(k) == c2.get(k).orElse(c1.get(k)) }
   }
   property("adding many UniqueIDs works") = forAll { (l: List[String]) =>
-    val uids = l
-      .filterNot { s => s.isEmpty || s.contains(",") }
+    val uids = l.filterNot { s => s.isEmpty || s.contains(",") }
       .map(UniqueID(_))
-    (uids
-      .foldLeft(Config.empty) { (conf, id) => conf.addUniqueId(id) }
+    (uids.foldLeft(Config.empty) { (conf, id) => conf.addUniqueId(id) }
       .getUniqueIds == uids.toSet)
   }
 }

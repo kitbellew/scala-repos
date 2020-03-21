@@ -41,10 +41,8 @@ object ChiSqSelectorExample {
 
     val df = sc.parallelize(data).toDF("id", "features", "clicked")
 
-    val selector = new ChiSqSelector()
-      .setNumTopFeatures(1)
-      .setFeaturesCol("features")
-      .setLabelCol("clicked")
+    val selector = new ChiSqSelector().setNumTopFeatures(1)
+      .setFeaturesCol("features").setLabelCol("clicked")
       .setOutputCol("selectedFeatures")
 
     val result = selector.fit(df).transform(df)

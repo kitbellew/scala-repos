@@ -56,17 +56,15 @@ import slick.util.ConfigExtensionMethods._
 trait SQLServerProfile extends JdbcProfile {
 
   override protected[this] def loadProfileConfig: Config = {
-    if (!GlobalConfig
-          .profileConfig("slick.driver.SQLServer")
-          .entrySet()
+    if (!GlobalConfig.profileConfig("slick.driver.SQLServer").entrySet()
           .isEmpty)
       SlickLogger[SQLServerProfile].warn(
         "The config key 'slick.driver.SQLServer' is deprecated and not used anymore. Use 'slick.jdbc.SQLServerProfile' instead.")
     super.loadProfileConfig
   }
 
-  protected lazy val defaultStringType = profileConfig.getStringOpt(
-    "defaultStringType")
+  protected lazy val defaultStringType = profileConfig
+    .getStringOpt("defaultStringType")
 
   override protected def computeCapabilities: Set[Capability] =
     (super.computeCapabilities
@@ -113,18 +111,12 @@ trait SQLServerProfile extends JdbcProfile {
         override def rawDefault =
           super.rawDefault.map(
             _.stripPrefix("(") // jtds
-              .stripPrefix("(")
-              .stripSuffix(")")
-              .stripSuffix(")"))
+            .stripPrefix("(").stripSuffix(")").stripSuffix(")"))
         override def default =
-          rawDefault
-            .map((_, tpe))
-            .collect {
-              case ("0", "Boolean") => Some(false)
-              case ("1", "Boolean") => Some(true)
-            }
-            .map(d => Some(d))
-            .getOrElse { super.default }
+          rawDefault.map((_, tpe)).collect {
+            case ("0", "Boolean") => Some(false)
+            case ("1", "Boolean") => Some(true)
+          }.map(d => Some(d)).getOrElse { super.default }
       }
   }
 
@@ -142,8 +134,9 @@ trait SQLServerProfile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        sym.flatMap(
-          _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
+        sym
+          .flatMap(
+            _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
           case Some(l) =>
             if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
           case None => defaultStringType match {
@@ -195,8 +188,8 @@ trait SQLServerProfile extends JdbcProfile {
       n match {
         // Cast bind variables of type TIME to TIME (otherwise they're treated as TIMESTAMP)
         case c @ LiteralNode(v)
-            if c.volatileHint && jdbcTypeFor(
-              c.nodeType) == columnTypes.timeJdbcType =>
+            if c.volatileHint && jdbcTypeFor(c.nodeType) == columnTypes
+              .timeJdbcType =>
           b"cast("
           super.expr(n, skipParens)
           b" as ${columnTypes.timeJdbcType.sqlTypeName(None)})"

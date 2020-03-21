@@ -274,8 +274,8 @@ trait ListFunctions {
       case h :: t =>
         Monad[M].bind(p(h))(b =>
           if (b)
-            Monad[M].map(spanM(t)(p))((k: (List[A], List[A])) =>
-              (h :: k._1, k._2))
+            Monad[M]
+              .map(spanM(t)(p))((k: (List[A], List[A])) => (h :: k._1, k._2))
           else Monad[M].point(Nil, as))
 
     }

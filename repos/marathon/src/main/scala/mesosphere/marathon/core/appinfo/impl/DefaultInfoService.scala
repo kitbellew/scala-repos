@@ -35,9 +35,7 @@ private[appinfo] class DefaultInfoService(
       selector: AppSelector,
       embed: Set[AppInfo.Embed]): Future[Seq[AppInfo]] = {
     log.debug(s"queryAll")
-    groupManager
-      .rootGroup()
-      .map(_.transitiveApps.filter(selector.matches))
+    groupManager.rootGroup().map(_.transitiveApps.filter(selector.matches))
       .flatMap(resolveAppInfos(_, embed))
   }
 
@@ -46,10 +44,8 @@ private[appinfo] class DefaultInfoService(
       selector: AppSelector,
       embed: Set[AppInfo.Embed]): Future[Seq[AppInfo]] = {
     log.debug(s"queryAllInGroup $groupId")
-    groupManager
-      .group(groupId)
-      .map(
-        _.map(_.transitiveApps.filter(selector.matches)).getOrElse(Seq.empty))
+    groupManager.group(groupId).map(
+      _.map(_.transitiveApps.filter(selector.matches)).getOrElse(Seq.empty))
       .flatMap(resolveAppInfos(_, embed))
   }
 
@@ -104,8 +100,7 @@ private[appinfo] class DefaultInfoService(
         def apps: Option[Seq[AppInfo]] =
           if (groupEmbed(GroupInfo.Embed.Apps))
             Some(
-              ref.apps.toIndexedSeq
-                .flatMap(a => infoById.get(a.id))
+              ref.apps.toIndexedSeq.flatMap(a => infoById.get(a.id))
                 .sortBy(_.app.id))
           else None
         //if a subgroup is allowed, we also have to allow all parents implicitly
@@ -125,15 +120,13 @@ private[appinfo] class DefaultInfoService(
       embed: Set[AppInfo.Embed]): Future[Seq[AppInfo]] = {
     val baseData = newBaseData()
 
-    apps
-      .foldLeft(Future.successful(Seq.newBuilder[AppInfo])) {
-        case (builderFuture, app) => builderFuture.flatMap { builder =>
-            baseData.appInfoFuture(app, embed).map { appInfo =>
-              builder += appInfo
-              builder
-            }
+    apps.foldLeft(Future.successful(Seq.newBuilder[AppInfo])) {
+      case (builderFuture, app) => builderFuture.flatMap { builder =>
+          baseData.appInfoFuture(app, embed).map { appInfo =>
+            builder += appInfo
+            builder
           }
-      }
-      .map(_.result())
+        }
+    }.map(_.result())
   }
 }

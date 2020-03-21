@@ -141,25 +141,21 @@ class CSVIngestProcessing(
       * the header a,a,a will create objects of the form `{a:[_, _, _]}`.
       */
     def normalizeHeaders(headers: Array[String]): Array[JPath] = {
-      val positions = headers.zipWithIndex.foldLeft(
-        Map.empty[String, List[Int]]) {
-        case (hdrs, (h, i)) =>
-          val pos = i :: hdrs.getOrElse(h, Nil)
-          hdrs + (h -> pos)
-      }
-
-      positions.toList
-        .flatMap {
-          case (h, Nil)        => Nil
-          case (h, pos :: Nil) => (pos -> JPath(JPathField(h))) :: Nil
-          case (h, ps) =>
-            ps.reverse.zipWithIndex map {
-              case (pos, i) => (pos -> JPath(JPathField(h), JPathIndex(i)))
-            }
+      val positions = headers.zipWithIndex
+        .foldLeft(Map.empty[String, List[Int]]) {
+          case (hdrs, (h, i)) =>
+            val pos = i :: hdrs.getOrElse(h, Nil)
+            hdrs + (h -> pos)
         }
-        .sortBy(_._1)
-        .map(_._2)
-        .toArray
+
+      positions.toList.flatMap {
+        case (h, Nil)        => Nil
+        case (h, pos :: Nil) => (pos -> JPath(JPathField(h))) :: Nil
+        case (h, ps) =>
+          ps.reverse.zipWithIndex map {
+            case (pos, i) => (pos -> JPath(JPathField(h), JPathIndex(i)))
+          }
+      }.sortBy(_._1).map(_._2).toArray
     }
 
     def ingestSync(

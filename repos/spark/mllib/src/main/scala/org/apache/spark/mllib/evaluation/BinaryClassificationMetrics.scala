@@ -146,15 +146,13 @@ class BinaryClassificationMetrics @Since("1.3.0") (
     confusions: RDD[(Double, BinaryConfusionMatrix)]) = {
     // Create a bin for each distinct score value, count positives and negatives within each bin,
     // and then sort by score values in descending order.
-    val counts = scoreAndLabels
-      .combineByKey(
-        createCombiner =
-          (label: Double) => new BinaryLabelCounter(0L, 0L) += label,
-        mergeValue = (c: BinaryLabelCounter, label: Double) => c += label,
-        mergeCombiners =
-          (c1: BinaryLabelCounter, c2: BinaryLabelCounter) => c1 += c2
-      )
-      .sortByKey(ascending = false)
+    val counts = scoreAndLabels.combineByKey(
+      createCombiner =
+        (label: Double) => new BinaryLabelCounter(0L, 0L) += label,
+      mergeValue = (c: BinaryLabelCounter, label: Double) => c += label,
+      mergeCombiners =
+        (c1: BinaryLabelCounter, c2: BinaryLabelCounter) => c1 += c2
+    ).sortByKey(ascending = false)
 
     val binnedCounts =
       // Only down-sample if bins is > 0
@@ -188,13 +186,11 @@ class BinaryClassificationMetrics @Since("1.3.0") (
         }
       }
 
-    val agg = binnedCounts.values
-      .mapPartitions { iter =>
-        val agg = new BinaryLabelCounter()
-        iter.foreach(agg += _)
-        Iterator(agg)
-      }
-      .collect()
+    val agg = binnedCounts.values.mapPartitions { iter =>
+      val agg = new BinaryLabelCounter()
+      iter.foreach(agg += _)
+      Iterator(agg)
+    }.collect()
     val partitionwiseCumulativeCounts = agg.scanLeft(new BinaryLabelCounter())(
       (agg: BinaryLabelCounter, c: BinaryLabelCounter) => agg.clone() += c)
     val totalCount = partitionwiseCumulativeCounts.last

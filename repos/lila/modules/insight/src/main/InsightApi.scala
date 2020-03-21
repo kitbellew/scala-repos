@@ -29,17 +29,14 @@ final class InsightApi(
     }
 
   def ask[X](question: Question[X], user: User): Fu[Answer[X]] =
-    storage
-      .aggregate(pipeline(question, user.id))
-      .flatMap { res =>
-        val clusters = AggregationClusters(question, res)
-        val gameIds =
-          scala.util.Random.shuffle(clusters.flatMap(_.gameIds)) take 4
-        GameRepo.userPovsByGameIds(gameIds, user) map { povs =>
-          Answer(question, clusters, povs)
-        }
+    storage.aggregate(pipeline(question, user.id)).flatMap { res =>
+      val clusters = AggregationClusters(question, res)
+      val gameIds = scala.util.Random
+        .shuffle(clusters.flatMap(_.gameIds)) take 4
+      GameRepo.userPovsByGameIds(gameIds, user) map { povs =>
+        Answer(question, clusters, povs)
       }
-      .mon(_.insight.request.time) >>- lila.mon.insight.request.count()
+    }.mon(_.insight.request.time) >>- lila.mon.insight.request.count()
 
   def userStatus(user: User): Fu[UserStatus] =
     GameRepo lastFinishedRatedNotFromPosition user flatMap {
@@ -59,16 +56,13 @@ final class InsightApi(
       lila.mon.insight.index.count()
 
   def updateGame(g: Game) =
-    Pov(g)
-      .map { pov =>
-        pov.player.userId ?? { userId =>
-          storage find Entry.povToId(pov) flatMap {
-            _ ?? { old => indexer.update(g, userId, old) }
-          }
+    Pov(g).map { pov =>
+      pov.player.userId ?? { userId =>
+        storage find Entry.povToId(pov) flatMap {
+          _ ?? { old => indexer.update(g, userId, old) }
         }
       }
-      .sequenceFu
-      .void
+    }.sequenceFu.void
 }
 
 object InsightApi {

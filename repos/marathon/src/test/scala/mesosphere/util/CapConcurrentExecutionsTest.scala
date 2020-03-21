@@ -48,10 +48,8 @@ class CapConcurrentExecutionsTest
       maxParallel = 1,
       maxQueued = 10)
     try {
-      serialize(
-        Future.failed(
-          new IllegalStateException())).failed.futureValue.getClass should be(
-        classOf[IllegalStateException])
+      serialize(Future.failed(new IllegalStateException())).failed.futureValue
+        .getClass should be(classOf[IllegalStateException])
       val result2 = serialize(Future.successful(2)).futureValue
       result2 should be(2)
       val result3 = serialize(Future.successful(3)).futureValue
@@ -67,9 +65,8 @@ class CapConcurrentExecutionsTest
       maxParallel = 1,
       maxQueued = 10)
     try {
-      serialize(
-        throw new IllegalStateException()).failed.futureValue.getClass should be(
-        classOf[IllegalStateException])
+      serialize(throw new IllegalStateException()).failed.futureValue
+        .getClass should be(classOf[IllegalStateException])
 
       val result2 = serialize(Future.successful(2)).futureValue
       result2 should be(2)

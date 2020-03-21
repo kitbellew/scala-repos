@@ -30,15 +30,13 @@ class ThrottleModeSpec extends AkkaSpec {
       bucket1 should ===(TokenBucket(100, 100, 0, 90))
       success1 should ===(true)
 
-      val (bucket2, success2) = bucket1.tryConsumeTokens(
-        nanoTimeOfSend = 0L,
-        40)
+      val (bucket2, success2) = bucket1
+        .tryConsumeTokens(nanoTimeOfSend = 0L, 40)
       bucket2 should ===(TokenBucket(100, 100, 0, 50))
       success2 should ===(true)
 
-      val (bucket3, success3) = bucket2.tryConsumeTokens(
-        nanoTimeOfSend = 0L,
-        50)
+      val (bucket3, success3) = bucket2
+        .tryConsumeTokens(nanoTimeOfSend = 0L, 50)
       bucket3 should ===(TokenBucket(100, 100, 0, 0))
       success3 should ===(true)
 
@@ -57,21 +55,18 @@ class ThrottleModeSpec extends AkkaSpec {
       bucket1 should ===(TokenBucket(100, 100, 0, 0))
       success1 should ===(true)
 
-      val (bucket2, success2) = bucket1.tryConsumeTokens(
-        nanoTimeOfSend = halfSecond,
-        0)
+      val (bucket2, success2) = bucket1
+        .tryConsumeTokens(nanoTimeOfSend = halfSecond, 0)
       bucket2 should ===(TokenBucket(100, 100, halfSecond, 50))
       success2 should ===(true)
 
-      val (bucket3, success3) = bucket2.tryConsumeTokens(
-        nanoTimeOfSend = 2 * halfSecond,
-        0)
+      val (bucket3, success3) = bucket2
+        .tryConsumeTokens(nanoTimeOfSend = 2 * halfSecond, 0)
       bucket3 should ===(TokenBucket(100, 100, 2 * halfSecond, 100))
       success3 should ===(true)
 
-      val (bucket4, success4) = bucket3.tryConsumeTokens(
-        nanoTimeOfSend = 3 * halfSecond,
-        0)
+      val (bucket4, success4) = bucket3
+        .tryConsumeTokens(nanoTimeOfSend = 3 * halfSecond, 0)
       bucket4 should ===(TokenBucket(100, 100, 3 * halfSecond, 100))
       success4 should ===(true)
     }
@@ -86,21 +81,18 @@ class ThrottleModeSpec extends AkkaSpec {
       bucket1 should ===(TokenBucket(100, 100, 0, 10))
       success1 should ===(true)
 
-      val (bucket2, success2) = bucket1.tryConsumeTokens(
-        nanoTimeOfSend = halfSecond,
-        60)
+      val (bucket2, success2) = bucket1
+        .tryConsumeTokens(nanoTimeOfSend = halfSecond, 60)
       bucket2 should ===(TokenBucket(100, 100, halfSecond, 0))
       success2 should ===(true)
 
-      val (bucket3, success3) = bucket2.tryConsumeTokens(
-        nanoTimeOfSend = 2 * halfSecond,
-        40)
+      val (bucket3, success3) = bucket2
+        .tryConsumeTokens(nanoTimeOfSend = 2 * halfSecond, 40)
       bucket3 should ===(TokenBucket(100, 100, 2 * halfSecond, 10))
       success3 should ===(true)
 
-      val (bucket4, success4) = bucket3.tryConsumeTokens(
-        nanoTimeOfSend = 3 * halfSecond,
-        70)
+      val (bucket4, success4) = bucket3
+        .tryConsumeTokens(nanoTimeOfSend = 3 * halfSecond, 70)
       bucket4 should ===(TokenBucket(100, 100, 2 * halfSecond, 10))
       success4 should ===(false)
     }
@@ -115,21 +107,18 @@ class ThrottleModeSpec extends AkkaSpec {
       bucket1 should ===(TokenBucket(100, 100, 0, 20))
       success1 should ===(false)
 
-      val (bucket2, success2) = bucket1.tryConsumeTokens(
-        nanoTimeOfSend = halfSecond,
-        110)
+      val (bucket2, success2) = bucket1
+        .tryConsumeTokens(nanoTimeOfSend = halfSecond, 110)
       bucket2 should ===(TokenBucket(100, 100, halfSecond, -40))
       success2 should ===(true)
 
-      val (bucket3, success3) = bucket2.tryConsumeTokens(
-        nanoTimeOfSend = 2 * halfSecond,
-        20)
+      val (bucket3, success3) = bucket2
+        .tryConsumeTokens(nanoTimeOfSend = 2 * halfSecond, 20)
       bucket3 should ===(TokenBucket(100, 100, halfSecond, -40))
       success3 should ===(false)
 
-      val (bucket4, success4) = bucket3.tryConsumeTokens(
-        nanoTimeOfSend = 3 * halfSecond,
-        20)
+      val (bucket4, success4) = bucket3
+        .tryConsumeTokens(nanoTimeOfSend = 3 * halfSecond, 20)
       bucket4 should ===(TokenBucket(100, 100, 3 * halfSecond, 40))
       success4 should ===(true)
     }

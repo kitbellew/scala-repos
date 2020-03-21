@@ -10,8 +10,7 @@ class Character(private val value: scala.Char) extends Comparable[Character] {
   def charValue(): scala.Char = value
 
   override def equals(that: Any): scala.Boolean =
-    that.isInstanceOf[Character] && (value == that
-      .asInstanceOf[Character]
+    that.isInstanceOf[Character] && (value == that.asInstanceOf[Character]
       .charValue)
 
   override def compareTo(that: Character): Int =

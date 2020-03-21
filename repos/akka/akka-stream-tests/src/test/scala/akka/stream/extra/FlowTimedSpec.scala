@@ -41,11 +41,9 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
       def script = Script((1 to n) map { x ⇒ Seq(x) -> Seq(x) }: _*)
       testRuns foreach (_ ⇒
         runScript(script, settings) { flow ⇒
-          flow
-            .map(identity)
-            .timedIntervalBetween(
-              _ % measureBetweenEvery == 0,
-              onInterval = printInfo)
+          flow.map(identity).timedIntervalBetween(
+            _ % measureBetweenEvery == 0,
+            onInterval = printInfo)
         })
 
       val expectedNrOfOnIntervalCalls = testRuns.size * (
@@ -86,8 +84,7 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
     "measure time it between elements matching a predicate" in assertAllStagesStopped {
       val probe = TestProbe()
 
-      val flow: Flow[Int, Long, _] = Flow[Int]
-        .map(_.toLong)
+      val flow: Flow[Int, Long, _] = Flow[Int].map(_.toLong)
         .timedIntervalBetween(in ⇒ in % 2 == 1, d ⇒ probe.ref ! d)
 
       val c1 = TestSubscriber.manualProbe[Long]()
@@ -108,15 +105,12 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
       val probe = TestProbe()
 
       // making sure the types come out as expected
-      val flow: Flow[Int, String, _] = Flow[Int]
-        .timed(
-          _.map(_.toDouble).map(_.toInt).map(_.toString),
-          duration ⇒ probe.ref ! duration)
-        .map { s: String ⇒ s + "!" }
+      val flow: Flow[Int, String, _] = Flow[Int].timed(
+        _.map(_.toDouble).map(_.toInt).map(_.toString),
+        duration ⇒ probe.ref ! duration).map { s: String ⇒ s + "!" }
 
-      val (flowIn: Subscriber[Int], flowOut: Publisher[String]) = flow.runWith(
-        Source.asSubscriber[Int],
-        Sink.asPublisher[String](false))
+      val (flowIn: Subscriber[Int], flowOut: Publisher[String]) = flow
+        .runWith(Source.asSubscriber[Int], Sink.asPublisher[String](false))
 
       val c1 = TestSubscriber.manualProbe[String]()
       val c2 = flowOut.subscribe(c1)

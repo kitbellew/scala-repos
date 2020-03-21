@@ -99,21 +99,18 @@ private[streaming] object MasterFailureTest extends Logging {
       numBatches: Int,
       batchDuration: Duration) {
     // Input: time=1 ==> [ a ] , time=2 ==> [ a, a ] , time=3 ==> [ a, a, a ] , ...
-    val input =
-      (1 to numBatches).map(i => (1 to i).map(_ => "a").mkString(" ")).toSeq
+    val input = (1 to numBatches).map(i => (1 to i).map(_ => "a").mkString(" "))
+      .toSeq
     // Expected output: time=1 ==> [ (a, 1) ] , time=2 ==> [ (a, 3) ] , time=3 ==> [ (a,6) ] , ...
-    val expectedOutput = (1L to numBatches)
-      .map(i => (1L to i).sum)
+    val expectedOutput = (1L to numBatches).map(i => (1L to i).sum)
       .map(j => ("a", j))
 
     val operation = (st: DStream[String]) => {
       val updateFunc = (values: Seq[Long], state: Option[Long]) => {
         Some(values.foldLeft(0L)(_ + _) + state.getOrElse(0L))
       }
-      st.flatMap(_.split(" "))
-        .map(x => (x, 1L))
-        .updateStateByKey[Long](updateFunc)
-        .checkpoint(batchDuration * 5)
+      st.flatMap(_.split(" ")).map(x => (x, 1L))
+        .updateStateByKey[Long](updateFunc).checkpoint(batchDuration * 5)
     }
 
     // Run streaming operation with multiple master failures
@@ -240,11 +237,8 @@ private[streaming] object MasterFailureTest extends Logging {
 
     while (!isLastOutputGenerated && !isTimedOut) {
       // Get the output buffer
-      val outputQueue = ssc.graph
-        .getOutputStreams()
-        .head
-        .asInstanceOf[TestOutputStream[T]]
-        .output
+      val outputQueue = ssc.graph.getOutputStreams().head
+        .asInstanceOf[TestOutputStream[T]].output
       def output = outputQueue.asScala.flatten
 
       // Start the thread to kill the streaming after some time
@@ -365,8 +359,8 @@ private[streaming] class KillingThread(
     try {
       // If it is the first killing, then allow the first checkpoint to be created
       var minKillWaitTime = if (MasterFailureTest.killCount == 0) 5000 else 2000
-      val killWaitTime =
-        minKillWaitTime + math.abs(Random.nextLong % maxKillWaitTime)
+      val killWaitTime = minKillWaitTime + math
+        .abs(Random.nextLong % maxKillWaitTime)
       logInfo("Kill wait time = " + killWaitTime)
       Thread.sleep(killWaitTime)
       logInfo(
@@ -402,9 +396,10 @@ private[streaming] class FileGeneratingThread(
     var fs = testDir.getFileSystem(new Configuration())
     val maxTries = 3
     try {
-      Thread.sleep(
-        5000
-      ) // To make sure that all the streaming context has been set up
+      Thread
+        .sleep(
+          5000
+        ) // To make sure that all the streaming context has been set up
       for (i <- 0 until input.size) {
         // Write the data to a local file and then move it to the target test directory
         val localFile = new File(localTestDir, (i + 1).toString)

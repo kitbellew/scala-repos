@@ -85,8 +85,7 @@ abstract class Duplicators extends Analyzer {
               // try harder (look in outer scopes)
               // with virtpatmat, this can happen when the sym is referenced in the scope of a LabelDef but
               // is defined in the scope of an outer DefDef (e.g., in AbstractPartialFunction's andThen)
-              BodyDuplicator.super
-                .silent(_ typedType Ident(sym.name))
+              BodyDuplicator.super.silent(_ typedType Ident(sym.name))
                 .fold(NoSymbol: Symbol)(_.symbol)
             } filter (_ ne sym))
             if (sym1.exists) {
@@ -139,8 +138,8 @@ abstract class Duplicators extends Analyzer {
 
     private def invalidate(tree: Tree, owner: Symbol = NoSymbol) {
       debuglog(s"attempting to invalidate symbol = ${tree.symbol}")
-      if ((tree.isDef || tree
-            .isInstanceOf[Function]) && tree.symbol != NoSymbol) {
+      if ((tree.isDef || tree.isInstanceOf[Function]) && tree
+            .symbol != NoSymbol) {
         debuglog("invalid " + tree.symbol)
         invalidSyms(tree.symbol) = tree
 
@@ -162,7 +161,9 @@ abstract class Duplicators extends Analyzer {
             newsym.setInfo(fixType(vdef.symbol.info))
             vdef.symbol = newsym
             debuglog(
-              "newsym: " + newsym + " info: " + newsym.info + ", owner: " + newsym.owner + ", " + newsym.owner.isClass)
+              "newsym: " + newsym + " info: " + newsym
+                .info + ", owner: " + newsym.owner + ", " + newsym.owner
+                .isClass)
             if (newsym.owner.isClass) newsym.owner.info.decls enter newsym
 
           case DefDef(_, name, tparams, vparamss, _, rhs) =>
@@ -207,7 +208,8 @@ abstract class Duplicators extends Analyzer {
       debuglog("typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
       val origtreesym = tree.symbol
       if (tree.hasSymbolField && tree.symbol != NoSymbol
-          && !tree.symbol.isLabel // labels cannot be retyped by the type checker as LabelDef has no ValDef/return type trees
+          && !tree.symbol
+            .isLabel // labels cannot be retyped by the type checker as LabelDef has no ValDef/return type trees
           && invalidSyms.isDefinedAt(tree.symbol)) {
         debuglog("removed symbol " + tree.symbol)
         tree.symbol = NoSymbol
@@ -286,7 +288,8 @@ abstract class Duplicators extends Analyzer {
 
         case Ident(_) if (origtreesym ne null) && origtreesym.isLazy =>
           debuglog(
-            "Ident to a lazy val " + tree + ", " + tree.symbol + " updated to " + origtreesym)
+            "Ident to a lazy val " + tree + ", " + tree
+              .symbol + " updated to " + origtreesym)
           tree.symbol = updateSym(origtreesym)
           super.typed(tree.clearType(), mode, pt)
 

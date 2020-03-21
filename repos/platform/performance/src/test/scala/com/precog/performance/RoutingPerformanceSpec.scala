@@ -65,13 +65,11 @@ trait RoutingPerformanceSpec extends Specification with PerformanceSpec {
         Event(Path("/"), "apiKey", jval, Map())
       } map { event => EventMessage(0, seq.getAndIncrement, event) }
 
-      val metadataActor: ActorRef = system.actorOf(
-        Props(new MockMetadataActor()),
-        "mock_metadata_actor")
+      val metadataActor: ActorRef = system
+        .actorOf(Props(new MockMetadataActor()), "mock_metadata_actor")
 
-      val projectionActor: ActorRef = system.actorOf(
-        Props(new MockProjectionActor),
-        "mock_projection_actor")
+      val projectionActor: ActorRef = system
+        .actorOf(Props(new MockProjectionActor), "mock_projection_actor")
 
       val projectionActors: ActorRef = system.actorOf(
         Props(new MockProjectionActors(projectionActor)),
@@ -116,10 +114,8 @@ trait RoutingPerformanceSpec extends Specification with PerformanceSpec {
 
       try {
         println("routing actor performance")
-        val result = Performance().benchmark(
-          testIngest(),
-          benchParams,
-          benchParams)
+        val result = Performance()
+          .benchmark(testIngest(), benchParams, benchParams)
         //perfUtil.uploadResults("routing actor", result)
         //val result = Performance().profile(testIngest())
 

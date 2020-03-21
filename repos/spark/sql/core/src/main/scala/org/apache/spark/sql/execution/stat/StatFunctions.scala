@@ -94,9 +94,7 @@ private[sql] object StatFunctions extends Logging {
         sum2: Array[QuantileSummaries]): Array[QuantileSummaries] = {
       sum1.zip(sum2).map { case (s1, s2) => s1.compress().merge(s2.compress()) }
     }
-    val summaries = df
-      .select(columns: _*)
-      .rdd
+    val summaries = df.select(columns: _*).rdd
       .aggregate(emptySummaries)(apply, merge)
 
     summaries.map { summary => probabilities.map(summary.query) }
@@ -165,8 +163,8 @@ private[sql] object StatFunctions extends Logging {
       while (opsIdx < sorted.length) {
         val currentSample = sorted(opsIdx)
         // Add all the samples before the next observation.
-        while (sampleIdx < sampled.size && sampled(
-                 sampleIdx).value <= currentSample) {
+        while (sampleIdx < sampled.size && sampled(sampleIdx)
+                 .value <= currentSample) {
           newSamples.append(sampled(sampleIdx))
           sampleIdx += 1
         }
@@ -174,9 +172,8 @@ private[sql] object StatFunctions extends Logging {
         // If it is the first one to insert, of if it is the last one
         currentCount += 1
         val delta =
-          if (newSamples.isEmpty || (
-                sampleIdx == sampled.size && opsIdx == sorted.length - 1
-              )) { 0 }
+          if (newSamples.isEmpty || (sampleIdx == sampled
+                .size && opsIdx == sorted.length - 1)) { 0 }
           else { math.floor(2 * relativeError * currentCount).toInt }
 
         val tuple = Stats(currentSample, 1, delta)
@@ -424,12 +421,11 @@ private[sql] object StatFunctions extends Logging {
             s"for columns with dataType ${data.get.dataType} not supported.")
     }
     val columns = cols.map(n => Column(Cast(Column(n).expr, DoubleType)))
-    df.select(columns: _*)
-      .queryExecution
-      .toRdd
+    df.select(columns: _*).queryExecution.toRdd
       .aggregate(new CovarianceCounter)(
-        seqOp =
-          (counter, row) => { counter.add(row.getDouble(0), row.getDouble(1)) },
+        seqOp = (counter, row) => {
+          counter.add(row.getDouble(0), row.getDouble(1))
+        },
         combOp = (baseCounter, other) => { baseCounter.merge(other) })
   }
 
@@ -460,30 +456,27 @@ private[sql] object StatFunctions extends Logging {
       if (element == null) "null" else element.toString
     }
     // get the distinct values of column 2, so that we can make them the column names
-    val distinctCol2: Map[Any, Int] =
-      counts.map(e => cleanElement(e.get(1))).distinct.zipWithIndex.toMap
+    val distinctCol2: Map[Any, Int] = counts.map(e => cleanElement(e.get(1)))
+      .distinct.zipWithIndex.toMap
     val columnSize = distinctCol2.size
     require(
       columnSize < 1e4,
       s"The number of distinct values for $col2, can't " +
         s"exceed 1e4. Currently $columnSize")
-    val table = counts
-      .groupBy(_.get(0))
-      .map {
-        case (col1Item, rows) =>
-          val countsRow = new GenericMutableRow(columnSize + 1)
-          rows.foreach { (row: Row) =>
-            // row.get(0) is column 1
-            // row.get(1) is column 2
-            // row.get(2) is the frequency
-            val columnIndex = distinctCol2.get(cleanElement(row.get(1))).get
-            countsRow.setLong(columnIndex + 1, row.getLong(2))
-          }
-          // the value of col1 is the first value, the rest are the counts
-          countsRow.update(0, UTF8String.fromString(cleanElement(col1Item)))
-          countsRow
-      }
-      .toSeq
+    val table = counts.groupBy(_.get(0)).map {
+      case (col1Item, rows) =>
+        val countsRow = new GenericMutableRow(columnSize + 1)
+        rows.foreach { (row: Row) =>
+          // row.get(0) is column 1
+          // row.get(1) is column 2
+          // row.get(2) is the frequency
+          val columnIndex = distinctCol2.get(cleanElement(row.get(1))).get
+          countsRow.setLong(columnIndex + 1, row.getLong(2))
+        }
+        // the value of col1 is the first value, the rest are the counts
+        countsRow.update(0, UTF8String.fromString(cleanElement(col1Item)))
+        countsRow
+    }.toSeq
     // Back ticks can't exist in DataFrame column names, therefore drop them. To be able to accept
     // special keywords and `.`, wrap the column names in ``.
     def cleanColumnName(name: String): String = { name.replace("`", "") }
@@ -495,8 +488,7 @@ private[sql] object StatFunctions extends Logging {
     val schema = StructType(StructField(tableName, StringType) +: headerNames)
 
     Dataset
-      .newDataFrame(df.sqlContext, LocalRelation(schema.toAttributes, table))
-      .na
+      .newDataFrame(df.sqlContext, LocalRelation(schema.toAttributes, table)).na
       .fill(0.0)
   }
 }

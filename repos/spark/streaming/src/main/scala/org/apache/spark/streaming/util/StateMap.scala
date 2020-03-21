@@ -139,14 +139,12 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
       case (key, value, _) => !deltaMap.contains(key)
     }
 
-    val updatedStates = deltaMap.iterator
-      .filter {
-        case (_, stateInfo) =>
-          !stateInfo.deleted && stateInfo.updateTime < threshUpdatedTime
-      }
-      .map {
-        case (key, stateInfo) => (key, stateInfo.data, stateInfo.updateTime)
-      }
+    val updatedStates = deltaMap.iterator.filter {
+      case (_, stateInfo) =>
+        !stateInfo.deleted && stateInfo.updateTime < threshUpdatedTime
+    }.map {
+      case (key, stateInfo) => (key, stateInfo.data, stateInfo.updateTime)
+    }
     oldStates ++ updatedStates
   }
 
@@ -217,10 +215,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     val tabs =
       if (deltaChainLength > 0) { ("    " * (deltaChainLength - 1)) + "+--- " }
       else ""
-    parentStateMap.toDebugString() + "\n" + deltaMap.iterator.mkString(
-      tabs,
-      "\n" + tabs,
-      "")
+    parentStateMap.toDebugString() + "\n" + deltaMap.iterator
+      .mkString(tabs, "\n" + tabs, "")
   }
 
   override def toString(): String = {
@@ -302,9 +298,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     // First read the approximate number of records to expect and allocate properly size
     // OpenHashMap
     val parentStateMapSizeHint = inputStream.readInt()
-    val newStateMapInitialCapacity = math.max(
-      parentStateMapSizeHint,
-      DEFAULT_INITIAL_CAPACITY)
+    val newStateMapInitialCapacity = math
+      .max(parentStateMapSizeHint, DEFAULT_INITIAL_CAPACITY)
     val newParentSessionStore = new OpenHashMapBasedStateMap[K, S](
       initialCapacity = newStateMapInitialCapacity,
       deltaChainThreshold)

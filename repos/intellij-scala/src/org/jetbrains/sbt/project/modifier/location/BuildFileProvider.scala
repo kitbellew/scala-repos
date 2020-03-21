@@ -38,9 +38,7 @@ trait BuildFileProvider {
 
     findIoFile(module, elementType).flatMap {
       case BuildFileEntry(buildFile, isModuleLocal) =>
-        findVirtualFile(buildFile)
-          .map(toLightVirtualFile)
-          .flatMap(toPsiFile)
+        findVirtualFile(buildFile).map(toLightVirtualFile).flatMap(toPsiFile)
           .map(BuildFileEntry(_, isModuleLocal))
     }
   }

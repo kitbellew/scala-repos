@@ -28,16 +28,13 @@ import org.apache.spark.mllib.util.LinearDataGenerator
 class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
 
   test("logistic regression PMML export") {
-    val linearInput = LinearDataGenerator.generateLinearInput(
-      3.0,
-      Array(10.0, 10.0),
-      1,
-      17)
+    val linearInput = LinearDataGenerator
+      .generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
     val logisticRegressionModel =
       new LogisticRegressionModel(linearInput(0).features, linearInput(0).label)
 
-    val logisticModelExport = PMMLModelExportFactory.createPMMLModelExport(
-      logisticRegressionModel)
+    val logisticModelExport = PMMLModelExportFactory
+      .createPMMLModelExport(logisticRegressionModel)
 
     // assert that the PMML format is as expected
     assert(logisticModelExport.isInstanceOf[PMMLModelExport])
@@ -45,12 +42,12 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
     assert(pmml.getHeader.getDescription === "logistic regression")
     // check that the number of fields match the weights size
     assert(
-      pmml.getDataDictionary.getNumberOfFields === logisticRegressionModel.weights.size + 1)
+      pmml.getDataDictionary.getNumberOfFields === logisticRegressionModel
+        .weights.size + 1)
     // This verify that there is a model attached to the pmml object and the model is a regression
     // one.  It also verifies that the pmml model has a regression table (for target category 1)
     // with the same number of predictors of the model weights.
-    val pmmlRegressionModel = pmml.getModels
-      .get(0)
+    val pmmlRegressionModel = pmml.getModels.get(0)
       .asInstanceOf[RegressionModel]
     assert(
       pmmlRegressionModel.getRegressionTables.get(0).getTargetCategory === "1")
@@ -61,9 +58,7 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
     assert(
       pmmlRegressionModel.getRegressionTables.get(1).getTargetCategory === "0")
     assert(
-      pmmlRegressionModel.getRegressionTables
-        .get(1)
-        .getNumericPredictors
+      pmmlRegressionModel.getRegressionTables.get(1).getNumericPredictors
         .size === 0)
     // ensure logistic regression has normalization method set to LOGIT
     assert(
@@ -72,11 +67,8 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
   }
 
   test("linear SVM PMML export") {
-    val linearInput = LinearDataGenerator.generateLinearInput(
-      3.0,
-      Array(10.0, 10.0),
-      1,
-      17)
+    val linearInput = LinearDataGenerator
+      .generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
     val svmModel = new SVMModel(linearInput(0).features, linearInput(0).label)
 
     val svmModelExport = PMMLModelExportFactory.createPMMLModelExport(svmModel)
@@ -93,8 +85,7 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
     // This verify that there is a model attached to the pmml object and the model is a regression
     // one.  It also verifies that the pmml model has a regression table (for target category 1)
     // with the same number of predictors of the model weights.
-    val pmmlRegressionModel = pmml.getModels
-      .get(0)
+    val pmmlRegressionModel = pmml.getModels.get(0)
       .asInstanceOf[RegressionModel]
     assert(
       pmmlRegressionModel.getRegressionTables.get(0).getTargetCategory === "1")
@@ -105,9 +96,7 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
     assert(
       pmmlRegressionModel.getRegressionTables.get(1).getTargetCategory === "0")
     assert(
-      pmmlRegressionModel.getRegressionTables
-        .get(1)
-        .getNumericPredictors
+      pmmlRegressionModel.getRegressionTables.get(1).getNumericPredictors
         .size === 0)
     // ensure linear SVM has normalization method set to NONE
     assert(

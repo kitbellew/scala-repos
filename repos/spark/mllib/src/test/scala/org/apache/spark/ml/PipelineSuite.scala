@@ -88,15 +88,13 @@ class PipelineSuite
 
   test("pipeline with duplicate stages") {
     val estimator = mock[Estimator[MyModel]]
-    val pipeline = new Pipeline()
-      .setStages(Array(estimator, estimator))
+    val pipeline = new Pipeline().setStages(Array(estimator, estimator))
     val dataset = mock[DataFrame]
     intercept[IllegalArgumentException] { pipeline.fit(dataset) }
   }
 
   test("PipelineModel.copy") {
-    val hashingTF = new HashingTF()
-      .setNumFeatures(100)
+    val hashingTF = new HashingTF().setNumFeatures(100)
     val model = new PipelineModel("pipeline", Array[Transformer](hashingTF))
     val copied = model.copy(ParamMap(hashingTF.numFeatures -> 10))
     require(
@@ -159,13 +157,10 @@ class PipelineSuite
         stageIdx: Int,
         numStages: Int,
         expectedPrefix: String): Unit = {
-      val path = SharedReadWrite.getStagePath(
-        stageUid,
-        stageIdx,
-        numStages,
-        stagesDir)
-      val expected =
-        new Path(stagesDir, expectedPrefix + "_" + stageUid).toString
+      val path = SharedReadWrite
+        .getStagePath(stageUid, stageIdx, numStages, stagesDir)
+      val expected = new Path(stagesDir, expectedPrefix + "_" + stageUid)
+        .toString
       assert(path === expected)
     }
     testStage(0, 1, "0")
@@ -187,20 +182,15 @@ class PipelineSuite
   }
 
   test("pipeline validateParams") {
-    val df = sqlContext
-      .createDataFrame(Seq(
-        (1, Vectors.dense(0.0, 1.0, 4.0), 1.0),
-        (2, Vectors.dense(1.0, 0.0, 4.0), 2.0),
-        (3, Vectors.dense(1.0, 0.0, 5.0), 3.0),
-        (4, Vectors.dense(0.0, 0.0, 5.0), 4.0)))
-      .toDF("id", "features", "label")
+    val df = sqlContext.createDataFrame(Seq(
+      (1, Vectors.dense(0.0, 1.0, 4.0), 1.0),
+      (2, Vectors.dense(1.0, 0.0, 4.0), 2.0),
+      (3, Vectors.dense(1.0, 0.0, 5.0), 3.0),
+      (4, Vectors.dense(0.0, 0.0, 5.0), 4.0))).toDF("id", "features", "label")
 
     intercept[IllegalArgumentException] {
-      val scaler = new MinMaxScaler()
-        .setInputCol("features")
-        .setOutputCol("features_scaled")
-        .setMin(10)
-        .setMax(0)
+      val scaler = new MinMaxScaler().setInputCol("features")
+        .setOutputCol("features_scaled").setMin(10).setMax(0)
       val pipeline = new Pipeline().setStages(Array(scaler))
       pipeline.fit(df)
     }

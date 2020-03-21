@@ -413,8 +413,8 @@ sealed abstract class AsyncStream[+A] {
     this match {
       case Empty          => Future.value(z)
       case FromFuture(fa) => fa.flatMap(a => f(z, a))
-      case Cons(fa, more) =>
-        fa.flatMap(a => f(z, a)).flatMap(b => more().foldLeftF(b)(f))
+      case Cons(fa, more) => fa.flatMap(a => f(z, a))
+          .flatMap(b => more().foldLeftF(b)(f))
       case Embed(fas) => fas.flatMap(_.foldLeftF(z)(f))
     }
 

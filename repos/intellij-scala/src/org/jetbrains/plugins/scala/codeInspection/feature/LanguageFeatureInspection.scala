@@ -79,8 +79,9 @@ class LanguageFeatureInspection
           if e.getModifierList.has(ScalaTokenTypes.kIMPLICIT) &&
             e.parameters.size == 1 &&
             !e.parameterList.clauses.exists(_.isImplicit) =>
-        Option(e.getModifierList.findFirstChildByType(
-          ScalaTokenTypes.kIMPLICIT)).getOrElse(e)
+        Option(
+          e.getModifierList.findFirstChildByType(ScalaTokenTypes.kIMPLICIT))
+          .getOrElse(e)
     },
     Feature(
       "higher-kinded type",
@@ -106,8 +107,8 @@ class LanguageFeatureInspection
       "macros",
       _.macros,
       _.macros = true) {
-      case e: ScMacroDefinition =>
-        e.children.find(it => it.getText == "macro").getOrElse(e)
+      case e: ScMacroDefinition => e.children.find(it => it.getText == "macro")
+          .getOrElse(e)
     }
   )
 
@@ -115,8 +116,8 @@ class LanguageFeatureInspection
     PartialFunction.apply { e: PsiElement =>
       val module = ModuleUtilCore.findModuleForPsiElement(e)
 
-      if (module != null && module.scalaSdk.exists(
-            _.languageLevel >= Scala_2_10)) {
+      if (module != null && module.scalaSdk
+            .exists(_.languageLevel >= Scala_2_10)) {
         Features.foreach(_.process(e, holder))
       }
     }
@@ -155,11 +156,10 @@ private case class Feature(
   }
 
   private def isFlagImportedFor(e: PsiElement): Boolean = {
-    ScalaPsiElementFactory
-      .createReferenceFromText(flagName, e, e)
+    ScalaPsiElementFactory.createReferenceFromText(flagName, e, e)
       .resolve() match {
-      case e: ScReferencePattern =>
-        Option(e.containingClass).exists(_.qualifiedName == flagQualifier)
+      case e: ScReferencePattern => Option(e.containingClass)
+          .exists(_.qualifiedName == flagQualifier)
       case _ => false
     }
   }
@@ -172,9 +172,8 @@ private class ImportFeatureFlagFix(e: PsiElement, name: String, flag: String)
 
   def doApplyFix(project: Project) {
     val elem = getElement
-    val importsHolder = ScalaImportTypeFix.getImportHolder(
-      elem,
-      elem.getProject)
+    val importsHolder = ScalaImportTypeFix
+      .getImportHolder(elem, elem.getProject)
     importsHolder.addImportForPath(flag, elem)
   }
 }

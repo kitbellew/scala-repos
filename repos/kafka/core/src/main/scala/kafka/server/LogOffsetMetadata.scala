@@ -80,10 +80,13 @@ case class LogOffsetMetadata(
 
   // decide if the offset metadata only contains message offset info
   def messageOffsetOnly(): Boolean = {
-    segmentBaseOffset == LogOffsetMetadata.UnknownSegBaseOffset && relativePositionInSegment == LogOffsetMetadata.UnknownFilePosition
+    segmentBaseOffset == LogOffsetMetadata
+      .UnknownSegBaseOffset && relativePositionInSegment == LogOffsetMetadata
+      .UnknownFilePosition
   }
 
   override def toString =
-    messageOffset.toString + " [" + segmentBaseOffset + " : " + relativePositionInSegment + "]"
+    messageOffset
+      .toString + " [" + segmentBaseOffset + " : " + relativePositionInSegment + "]"
 
 }

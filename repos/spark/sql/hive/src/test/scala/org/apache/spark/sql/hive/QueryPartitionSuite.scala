@@ -34,8 +34,7 @@ class QueryPartitionSuite
   test("SPARK-5068: query data when path doesn't exist") {
     withSQLConf((SQLConf.HIVE_VERIFY_PARTITION_PATH.key, "true")) {
       val testData = sparkContext
-        .parallelize((1 to 10).map(i => TestData(i, i.toString)))
-        .toDF()
+        .parallelize((1 to 10).map(i => TestData(i, i.toString))).toDF()
       testData.registerTempTable("testData")
 
       val tmpDir = Files.createTempDir()
@@ -63,9 +62,9 @@ class QueryPartitionSuite
           ++ testData.toDF.collect ++ testData.toDF.collect)
 
       // delete the path of one partition
-      tmpDir.listFiles
-        .find { f => f.isDirectory && f.getName().startsWith("ds=") }
-        .foreach { f => Utils.deleteRecursively(f) }
+      tmpDir.listFiles.find { f =>
+        f.isDirectory && f.getName().startsWith("ds=")
+      }.foreach { f => Utils.deleteRecursively(f) }
 
       // test for after delete the path
       checkAnswer(

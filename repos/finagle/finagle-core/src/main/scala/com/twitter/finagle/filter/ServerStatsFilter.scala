@@ -58,8 +58,8 @@ private[finagle] class ServerStatsFilter[Req, Rep](
     try service(request)
     finally {
       val elapsedNs = nowNanos() - startAt
-      handletime.add(
-        TimeUnit.MICROSECONDS.convert(elapsedNs, TimeUnit.NANOSECONDS))
+      handletime
+        .add(TimeUnit.MICROSECONDS.convert(elapsedNs, TimeUnit.NANOSECONDS))
     }
   }
 }

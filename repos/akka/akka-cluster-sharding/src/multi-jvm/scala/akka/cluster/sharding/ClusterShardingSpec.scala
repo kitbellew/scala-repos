@@ -217,20 +217,20 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒
-    new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir")
+    .map(s ⇒ new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     runOn(controller) {
-      storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+      storageLocations
+        .foreach(dir ⇒ if (dir.exists) FileUtils.deleteDirectory(dir))
     }
   }
 
   override protected def afterTermination() {
     runOn(controller) {
-      storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+      storageLocations
+        .foreach(dir ⇒ if (dir.exists) FileUtils.deleteDirectory(dir))
     }
   }
 
@@ -245,8 +245,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
   def createCoordinator(): Unit = {
     val replicator = system.actorOf(
       Replicator.props(
-        ReplicatorSettings(system)
-          .withGossipInterval(1.second)
+        ReplicatorSettings(system).withGossipInterval(1.second)
           .withMaxDeltaElements(10)),
       "replicator")
 
@@ -258,23 +257,19 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         new ShardCoordinator.LeastShardAllocationStrategy(
           rebalanceThreshold = 2,
           maxSimultaneousRebalance = 1)
-      val cfg = ConfigFactory
-        .parseString(s"""
+      val cfg = ConfigFactory.parseString(s"""
       handoff-timeout = 10s
       shard-start-timeout = 10s
       rebalance-interval = ${if (rebalanceEnabled) "2s" else "3600s"}
       """)
         .withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
-      val settings = ClusterShardingSettings(cfg).withRememberEntities(
-        rememberEntities)
+      val settings = ClusterShardingSettings(cfg)
+        .withRememberEntities(rememberEntities)
       if (settings.stateStoreMode == "persistence")
         ShardCoordinator.props(typeName, settings, allocationStrategy)
       else
-        ShardCoordinator.props(
-          typeName,
-          settings,
-          allocationStrategy,
-          replicator)
+        ShardCoordinator
+          .props(typeName, settings, allocationStrategy, replicator)
     }
 
     List(
@@ -288,18 +283,16 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     ).foreach { typeName ⇒
       val rebalanceEnabled = typeName.toLowerCase.startsWith("rebalancing")
       val rememberEnabled = typeName.toLowerCase.contains("remember")
-      val singletonProps = BackoffSupervisor
-        .props(
-          childProps = coordinatorProps(
-            typeName,
-            rebalanceEnabled,
-            rememberEnabled),
-          childName = "coordinator",
-          minBackoff = 5.seconds,
-          maxBackoff = 5.seconds,
-          randomFactor = 0.1
-        )
-        .withDeploy(Deploy.local)
+      val singletonProps = BackoffSupervisor.props(
+        childProps = coordinatorProps(
+          typeName,
+          rebalanceEnabled,
+          rememberEnabled),
+        childName = "coordinator",
+        minBackoff = 5.seconds,
+        maxBackoff = 5.seconds,
+        randomFactor = 0.1
+      ).withDeploy(Deploy.local)
       system.actorOf(
         ClusterSingletonManager.props(
           singletonProps,
@@ -311,8 +304,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
   }
 
   def createRegion(typeName: String, rememberEntities: Boolean): ActorRef = {
-    val cfg = ConfigFactory
-      .parseString("""
+    val cfg = ConfigFactory.parseString("""
       retry-interval = 1s
       shard-failure-backoff = 1s
       entity-restart-backoff = 1s
@@ -459,13 +451,11 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
 
     "support proxy only mode" in within(10.seconds) {
       runOn(second) {
-        val cfg = ConfigFactory
-          .parseString("""
+        val cfg = ConfigFactory.parseString("""
           retry-interval = 1s
           buffer-size = 1000
-        """)
-          .withFallback(
-            system.settings.config.getConfig("akka.cluster.sharding"))
+        """).withFallback(
+          system.settings.config.getConfig("akka.cluster.sharding"))
         val settings = ClusterShardingSettings(cfg)
         val proxy = system.actorOf(
           ShardRegion.proxyProps(
@@ -619,9 +609,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
             for (n ← 1 to 10) {
               rebalancingRegion.tell(Get(n), probe.ref)
               probe.expectMsgType[Int]
-              if (probe.lastSender.path == rebalancingRegion.path / (
-                    n % 12
-                  ).toString / n.toString) count += 1
+              if (probe.lastSender.path == rebalancingRegion.path / (n % 12)
+                    .toString / n.toString) count += 1
             }
             count should be >= (2)
           }
@@ -663,8 +652,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     enterBarrier("extension-started")
     runOn(fifth) {
       //#counter-usage
-      val counterRegion: ActorRef = ClusterSharding(system).shardRegion(
-        "Counter")
+      val counterRegion: ActorRef = ClusterSharding(system)
+        .shardRegion("Counter")
       counterRegion ! Get(123)
       expectMsg(0)
 
@@ -673,8 +662,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       expectMsg(1)
       //#counter-usage
 
-      ClusterSharding(system)
-        .shardRegion("AnotherCounter") ! EntityEnvelope(123, Decrement)
+      ClusterSharding(system).shardRegion("AnotherCounter") ! EntityEnvelope(
+        123,
+        Decrement)
       ClusterSharding(system).shardRegion("AnotherCounter") ! Get(123)
       expectMsg(-1)
     }
@@ -684,8 +674,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     // sixth is a frontend node, i.e. proxy only
     runOn(sixth) {
       for (n ← 1000 to 1010) {
-        ClusterSharding(system)
-          .shardRegion("Counter") ! EntityEnvelope(n, Increment)
+        ClusterSharding(system).shardRegion("Counter") ! EntityEnvelope(
+          n,
+          Increment)
         ClusterSharding(system).shardRegion("Counter") ! Get(n)
         expectMsg(1)
         lastSender.path.address should not be (Cluster(system).selfAddress)
@@ -704,8 +695,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         extractEntityId = extractEntityId,
         extractShardId = extractShardId)
 
-      val counterRegionViaGet: ActorRef = ClusterSharding(system).shardRegion(
-        "ApiTest")
+      val counterRegionViaGet: ActorRef = ClusterSharding(system)
+        .shardRegion("ApiTest")
 
       counterRegionViaStart should equal(counterRegionViaGet)
     }

@@ -130,12 +130,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
           _rowIndices,
           insertPos + 1,
           used - insertPos - 1)
-        System.arraycopy(
-          data,
-          insertPos,
-          data,
-          insertPos + 1,
-          used - insertPos - 1)
+        System
+          .arraycopy(data, insertPos, data, insertPos + 1, used - insertPos - 1)
       }
 
       // assign new value

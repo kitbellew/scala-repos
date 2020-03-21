@@ -121,10 +121,8 @@ object WebSocketClientBlueprint {
                   status,
                   headers,
                   protocol = protocol)
-                Handshake.Client.validateResponse(
-                  response,
-                  subprotocol.toList,
-                  key) match {
+                Handshake.Client
+                  .validateResponse(response, subprotocol.toList, key) match {
                   case Right(NegotiatedWebSocketSettings(protocol)) ⇒
                     result.success(ValidUpgrade(response, protocol))
 
@@ -170,8 +168,8 @@ object WebSocketClientBlueprint {
       val networkIn = b.add(Flow[ByteString].transform(() ⇒ new UpgradeStage))
       val wsIn = b.add(Flow[ByteString])
 
-      val handshakeRequestSource = b.add(
-        Source.single(renderedInitialRequest) ++ valve.source)
+      val handshakeRequestSource = b
+        .add(Source.single(renderedInitialRequest) ++ valve.source)
       val httpRequestBytesAndThenWSBytes = b.add(Concat[ByteString]())
 
       handshakeRequestSource ~> httpRequestBytesAndThenWSBytes

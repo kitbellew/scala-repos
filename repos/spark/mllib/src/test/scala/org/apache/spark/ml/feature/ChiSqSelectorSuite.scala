@@ -48,22 +48,14 @@ class ChiSqSelectorSuite
       Vectors.dense(8.0),
       Vectors.dense(5.0))
 
-    val df = sc
-      .parallelize(data.zip(preFilteredData))
+    val df = sc.parallelize(data.zip(preFilteredData))
       .map(x => (x._1.label, x._1.features, x._2))
       .toDF("label", "data", "preFilteredData")
 
-    val model = new ChiSqSelector()
-      .setNumTopFeatures(1)
-      .setFeaturesCol("data")
-      .setLabelCol("label")
-      .setOutputCol("filtered")
+    val model = new ChiSqSelector().setNumTopFeatures(1).setFeaturesCol("data")
+      .setLabelCol("label").setOutputCol("filtered")
 
-    model
-      .fit(df)
-      .transform(df)
-      .select("filtered", "preFilteredData")
-      .collect()
+    model.fit(df).transform(df).select("filtered", "preFilteredData").collect()
       .foreach {
         case Row(vec1: Vector, vec2: Vector) =>
           assert(vec1 ~== vec2 absTol 1e-1)
@@ -71,10 +63,8 @@ class ChiSqSelectorSuite
   }
 
   test("ChiSqSelector read/write") {
-    val t = new ChiSqSelector()
-      .setFeaturesCol("myFeaturesCol")
-      .setLabelCol("myLabelCol")
-      .setOutputCol("myOutputCol")
+    val t = new ChiSqSelector().setFeaturesCol("myFeaturesCol")
+      .setLabelCol("myLabelCol").setOutputCol("myOutputCol")
       .setNumTopFeatures(2)
     testDefaultReadWrite(t)
   }

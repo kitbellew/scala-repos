@@ -54,8 +54,7 @@ class ReaderUtilsTest extends FunSuite {
 
     streamChunks(tr, rw)
 
-    val chunk = Await
-      .result(chunk1F, 2.seconds)
+    val chunk = Await.result(chunk1F, 2.seconds)
       .asInstanceOf[NettyHttp.HttpContent]
 
     assert(chunk.content.toString(UTF_8) == "msg1")
@@ -64,15 +63,13 @@ class ReaderUtilsTest extends FunSuite {
 
     rw.write(Buf.Utf8("msg2"))
 
-    val chunk2 = Await
-      .result(chunk2F, 2.seconds)
+    val chunk2 = Await.result(chunk2F, 2.seconds)
       .asInstanceOf[NettyHttp.HttpContent]
     assert(chunk2.content.toString(UTF_8) == "msg2")
 
     Await.ready(rw.close(), 2.seconds)
 
-    val lastChunk = Await
-      .result(write.poll(), 2.seconds)
+    val lastChunk = Await.result(write.poll(), 2.seconds)
       .asInstanceOf[NettyHttp.HttpContent]
 
     assert(lastChunk.isInstanceOf[NettyHttp.LastHttpContent])

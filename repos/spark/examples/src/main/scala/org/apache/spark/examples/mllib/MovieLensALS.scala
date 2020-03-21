@@ -58,8 +58,7 @@ object MovieLensALS {
 
     val parser = new OptionParser[Params]("MovieLensALS") {
       head("MovieLensALS: an example app for ALS on MovieLens data.")
-      opt[Int]("rank")
-        .text(s"rank, default: ${defaultParams.rank}")
+      opt[Int]("rank").text(s"rank, default: ${defaultParams.rank}")
         .action((x, c) => c.copy(rank = x))
       opt[Int]("numIterations")
         .text(s"number of iterations, default: ${defaultParams.numIterations}")
@@ -67,22 +66,17 @@ object MovieLensALS {
       opt[Double]("lambda")
         .text(s"lambda (smoothing constant), default: ${defaultParams.lambda}")
         .action((x, c) => c.copy(lambda = x))
-      opt[Unit]("kryo")
-        .text("use Kryo serialization")
+      opt[Unit]("kryo").text("use Kryo serialization")
         .action((_, c) => c.copy(kryo = true))
-      opt[Int]("numUserBlocks")
-        .text(
-          s"number of user blocks, default: ${defaultParams.numUserBlocks} (auto)")
+      opt[Int]("numUserBlocks").text(
+        s"number of user blocks, default: ${defaultParams.numUserBlocks} (auto)")
         .action((x, c) => c.copy(numUserBlocks = x))
-      opt[Int]("numProductBlocks")
-        .text(
-          s"number of product blocks, default: ${defaultParams.numProductBlocks} (auto)")
+      opt[Int]("numProductBlocks").text(
+        s"number of product blocks, default: ${defaultParams.numProductBlocks} (auto)")
         .action((x, c) => c.copy(numProductBlocks = x))
-      opt[Unit]("implicitPrefs")
-        .text("use implicit preference")
+      opt[Unit]("implicitPrefs").text("use implicit preference")
         .action((_, c) => c.copy(implicitPrefs = true))
-      arg[String]("<input>")
-        .required()
+      arg[String]("<input>").required()
         .text("input paths to a MovieLens dataset of ratings")
         .action((x, c) => c.copy(input = x))
       note(
@@ -104,8 +98,7 @@ object MovieLensALS {
   def run(params: Params) {
     val conf = new SparkConf().setAppName(s"MovieLensALS with $params")
     if (params.kryo) {
-      conf
-        .registerKryoClasses(Array(classOf[mutable.BitSet], classOf[Rating]))
+      conf.registerKryoClasses(Array(classOf[mutable.BitSet], classOf[Rating]))
         .set("spark.kryoserializer.buffer", "8m")
     }
     val sc = new SparkContext(conf)
@@ -114,29 +107,26 @@ object MovieLensALS {
 
     val implicitPrefs = params.implicitPrefs
 
-    val ratings = sc
-      .textFile(params.input)
-      .map { line =>
-        val fields = line.split("::")
-        if (implicitPrefs) {
-          /*
-           * MovieLens ratings are on a scale of 1-5:
-           * 5: Must see
-           * 4: Will enjoy
-           * 3: It's okay
-           * 2: Fairly bad
-           * 1: Awful
-           * So we should not recommend a movie if the predicted rating is less than 3.
-           * To map ratings to confidence scores, we use
-           * 5 -> 2.5, 4 -> 1.5, 3 -> 0.5, 2 -> -0.5, 1 -> -1.5. This mappings means unobserved
-           * entries are generally between It's okay and Fairly bad.
-           * The semantics of 0 in this expanded world of non-positive weights
-           * are "the same as never having interacted at all".
-           */
-          Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble - 2.5)
-        } else { Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble) }
-      }
-      .cache()
+    val ratings = sc.textFile(params.input).map { line =>
+      val fields = line.split("::")
+      if (implicitPrefs) {
+        /*
+         * MovieLens ratings are on a scale of 1-5:
+         * 5: Must see
+         * 4: Will enjoy
+         * 3: It's okay
+         * 2: Fairly bad
+         * 1: Awful
+         * So we should not recommend a movie if the predicted rating is less than 3.
+         * To map ratings to confidence scores, we use
+         * 5 -> 2.5, 4 -> 1.5, 3 -> 0.5, 2 -> -0.5, 1 -> -1.5. This mappings means unobserved
+         * entries are generally between It's okay and Fairly bad.
+         * The semantics of 0 in this expanded world of non-positive weights
+         * are "the same as never having interacted at all".
+         */
+        Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble - 2.5)
+      } else { Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble) }
+    }.cache()
 
     val numRatings = ratings.count()
     val numUsers = ratings.map(_.user).distinct().count()
@@ -156,8 +146,8 @@ object MovieLensALS {
          * the confidence. The error is the difference between prediction and either 1 or 0,
          * depending on whether r is positive or negative.
          */
-        splits(1).map(x =>
-          Rating(x.user, x.product, if (x.rating > 0) 1.0 else 0.0))
+        splits(1)
+          .map(x => Rating(x.user, x.product, if (x.rating > 0) 1.0 else 0.0))
       } else { splits(1) }.cache()
 
     val numTraining = training.count()
@@ -166,14 +156,11 @@ object MovieLensALS {
 
     ratings.unpersist(blocking = false)
 
-    val model = new ALS()
-      .setRank(params.rank)
-      .setIterations(params.numIterations)
-      .setLambda(params.lambda)
+    val model = new ALS().setRank(params.rank)
+      .setIterations(params.numIterations).setLambda(params.lambda)
       .setImplicitPrefs(params.implicitPrefs)
       .setUserBlocks(params.numUserBlocks)
-      .setProductBlocks(params.numProductBlocks)
-      .run(training)
+      .setProductBlocks(params.numProductBlocks).run(training)
 
     val rmse = computeRmse(model, test, params.implicitPrefs)
 
@@ -192,12 +179,11 @@ object MovieLensALS {
       if (implicitPrefs) math.max(math.min(r, 1.0), 0.0) else r
     }
 
-    val predictions: RDD[Rating] = model.predict(
-      data.map(x => (x.user, x.product)))
-    val predictionsAndRatings = predictions
-      .map { x => ((x.user, x.product), mapPredictedRating(x.rating)) }
-      .join(data.map(x => ((x.user, x.product), x.rating)))
-      .values
+    val predictions: RDD[Rating] = model
+      .predict(data.map(x => (x.user, x.product)))
+    val predictionsAndRatings = predictions.map { x =>
+      ((x.user, x.product), mapPredictedRating(x.rating))
+    }.join(data.map(x => ((x.user, x.product), x.rating))).values
     math.sqrt(
       predictionsAndRatings.map(x => (x._1 - x._2) * (x._1 - x._2)).mean())
   }

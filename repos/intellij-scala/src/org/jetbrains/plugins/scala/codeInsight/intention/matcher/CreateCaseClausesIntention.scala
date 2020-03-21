@@ -51,8 +51,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
         PsiDocumentManager.getInstance(project).commitAllDocuments()
         if (!FileModificationService.getInstance.prepareFileForWrite(
               element.getContainingFile)) return
-        IdeDocumentHistory
-          .getInstance(project)
+        IdeDocumentHistory.getInstance(project)
           .includeCurrentPlaceAsChangePlace()
         action(project, editor, element)
       case None =>
@@ -68,10 +67,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
       element: PsiElement) {
     val inheritors = inheritorsOf(cls)
     val (caseClauseTexts, bindTos) = inheritors.map(caseClauseText).unzip
-    val newMatchStmt = ScalaPsiElementFactory.createMatch(
-      expr.getText,
-      caseClauseTexts,
-      element.getManager)
+    val newMatchStmt = ScalaPsiElementFactory
+      .createMatch(expr.getText, caseClauseTexts, element.getManager)
     val replaced = matchStmt.replace(newMatchStmt).asInstanceOf[ScMatchStmt]
     bindReferences(replaced, bindTos)
   }
@@ -83,12 +80,10 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
     val enumConsts: Array[PsiEnumConstant] = cls.getFields.collect {
       case enumConstant: PsiEnumConstant => enumConstant
     }
-    val caseClauseTexts = enumConsts.map(ec =>
-      "case %s.%s =>".format(cls.name, ec.name))
-    val newMatchStmt = ScalaPsiElementFactory.createMatch(
-      expr.getText,
-      caseClauseTexts,
-      element.getManager)
+    val caseClauseTexts = enumConsts
+      .map(ec => "case %s.%s =>".format(cls.name, ec.name))
+    val newMatchStmt = ScalaPsiElementFactory
+      .createMatch(expr.getText, caseClauseTexts, element.getManager)
     val replaced = matchStmt.replace(newMatchStmt).asInstanceOf[ScMatchStmt]
     bindReferences(replaced, _ => cls)
   }
@@ -105,10 +100,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
       else
         Seq(
           s"\n$defaultCaseClauseText //could not find inherited objects or case classes\n")
-    val newMatchStmt = ScalaPsiElementFactory.createMatch(
-      expr.getText,
-      caseClauseTexts,
-      element.getManager)
+    val newMatchStmt = ScalaPsiElementFactory
+      .createMatch(expr.getText, caseClauseTexts, element.getManager)
     val replaced = matchStmt.replace(newMatchStmt).asInstanceOf[ScMatchStmt]
     bindReferences(replaced, bindTos)
   }
@@ -135,8 +128,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
 
   private def inheritorsOf(cls: PsiClass): Seq[ScTypeDefinition] = {
     val found: Array[ScTypeDefinition] = ClassInheritorsSearch
-      .search(cls, cls.getResolveScope, false)
-      .toArray(PsiClass.EMPTY_ARRAY)
+      .search(cls, cls.getResolveScope, false).toArray(PsiClass.EMPTY_ARRAY)
       .collect { case x: ScTypeDefinition => x }
     found.sortBy(_.getNavigationElement.getTextRange.getStartOffset)
   }

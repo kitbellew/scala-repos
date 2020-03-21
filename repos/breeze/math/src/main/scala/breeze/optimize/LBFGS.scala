@@ -89,9 +89,8 @@ class LBFGS[T](convergenceCheck: ConvergenceCheck[T], m: Int)(implicit
       maxZoomIter = 10,
       maxLineSearchIter = 10
     ) // TODO: Need good default values here.
-    val alpha = search.minimize(
-      ff,
-      if (state.iter == 0.0) 1.0 / norm(dir) else 1.0)
+    val alpha = search
+      .minimize(ff, if (state.iter == 0.0) 1.0 / norm(dir) else 1.0)
 
     if (alpha * norm(grad) < 1e-10) throw new StepSizeUnderflow
     alpha

@@ -123,8 +123,8 @@ class ScalaFunctionParameterInfoHandler
       item: LookupElement,
       context: ParameterInfoContext): Array[Object] = {
     if (!item.isInstanceOf[LookupItem[_]]) return null
-    val allElements = JavaCompletionUtil.getAllPsiElements(
-      item.asInstanceOf[LookupItem[_]])
+    val allElements = JavaCompletionUtil
+      .getAllPsiElements(item.asInstanceOf[LookupItem[_]])
 
     if (allElements != null &&
         allElements.size > 0 &&
@@ -147,8 +147,8 @@ class ScalaFunctionParameterInfoHandler
   }
 
   def updateUI(p: Any, context: ParameterInfoUIContext) {
-    if (context == null || context.getParameterOwner == null || !context.getParameterOwner.isValid)
-      return
+    if (context == null || context.getParameterOwner == null || !context
+          .getParameterOwner.isValid) return
     context.getParameterOwner match {
       case args: PsiElement =>
         val color: Color = context.getDefaultParameterColor
@@ -200,10 +200,9 @@ class ScalaFunctionParameterInfoHandler
                   buffer.append(param._2)
                 }
               }
-              if (k == index || (
-                    k == parameters.length - 1 && index >= parameters.length &&
-                    parameters.last._1.isRepeated
-                  )) { buffer.append("<b>") }
+              if (k == index || (k == parameters
+                    .length - 1 && index >= parameters.length &&
+                  parameters.last._1.isRepeated)) { buffer.append("<b>") }
               if (k < index && !isGrey) {
                 //slow checking
                 if (k >= exprs.length) { //shouldn't be
@@ -224,8 +223,8 @@ class ScalaFunctionParameterInfoHandler
                         if (namedMode) buffer.append(namedPostfix)
                         assign.getRExpression match {
                           case Some(expr: ScExpression) =>
-                            for (exprType <- expr.getType(
-                                   TypingContext.empty)) {
+                            for (exprType <- expr
+                                   .getType(TypingContext.empty)) {
                               val paramType = param._1.paramType
                               if (!exprType.conforms(paramType)) isGrey = true
                             }
@@ -255,14 +254,14 @@ class ScalaFunctionParameterInfoHandler
                   }
                 }
               }
-              if (k == index || (
-                    k == parameters.length - 1 && index >= parameters.length &&
-                    parameters.last._1.isRepeated
-                  )) { buffer.append("</b>") }
+              if (k == index || (k == parameters
+                    .length - 1 && index >= parameters.length &&
+                  parameters.last._1.isRepeated)) { buffer.append("</b>") }
               k = k + 1
               if (k != parameters.length) buffer.append(", ")
             }
-            if (!isGrey && exprs.length > parameters.length && index >= parameters.length) {
+            if (!isGrey && exprs.length > parameters
+                  .length && index >= parameters.length) {
               if (!namedMode && parameters.last._1.isRepeated) {
                 val paramType = parameters.last._1.paramType
                 while (!isGrey && k < exprs.length.min(index)) {
@@ -276,13 +275,13 @@ class ScalaFunctionParameterInfoHandler
               } else isGrey = true
             }
           } else
-            buffer.append(
-              CodeInsightBundle.message("parameter.info.no.parameters"))
+            buffer
+              .append(CodeInsightBundle.message("parameter.info.no.parameters"))
         }
         p match {
           case x: String if x == "" =>
-            buffer.append(
-              CodeInsightBundle.message("parameter.info.no.parameters"))
+            buffer
+              .append(CodeInsightBundle.message("parameter.info.no.parameters"))
           case (a: AnnotationParameters, i: Int) =>
             val seq = a.seq
             if (seq.isEmpty)
@@ -341,33 +340,30 @@ class ScalaFunctionParameterInfoHandler
                     CodeInsightBundle.message("parameter.info.no.parameters"))
                 else {
                   buffer.append(
-                    method.params
-                      .map((param: Parameter) => {
-                        val buffer: StringBuilder = new StringBuilder("")
-                        val paramType = param.paramType
-                        val name = param.name
-                        if (name != "") {
-                          buffer.append(name)
-                          buffer.append(": ")
+                    method.params.map((param: Parameter) => {
+                      val buffer: StringBuilder = new StringBuilder("")
+                      val paramType = param.paramType
+                      val name = param.name
+                      if (name != "") {
+                        buffer.append(name)
+                        buffer.append(": ")
+                      }
+                      buffer.append(ScType.presentableText(paramType))
+                      if (param.isRepeated) buffer.append("*")
+
+                      if (param.isDefault) buffer.append(" = _")
+
+                      val isBold =
+                        if (method.params.indexOf(param) == index || (param
+                              .isRepeated && method.params
+                              .indexOf(param) <= index)) true
+                        else {
+                          //todo: check type
+                          false
                         }
-                        buffer.append(ScType.presentableText(paramType))
-                        if (param.isRepeated) buffer.append("*")
-
-                        if (param.isDefault) buffer.append(" = _")
-
-                        val isBold =
-                          if (method.params.indexOf(param) == index || (
-                                param.isRepeated && method.params.indexOf(
-                                  param) <= index
-                              )) true
-                          else {
-                            //todo: check type
-                            false
-                          }
-                        val paramText = buffer.toString()
-                        if (isBold) "<b>" + paramText + "</b>" else paramText
-                      })
-                      .mkString(", "))
+                      val paramText = buffer.toString()
+                      if (isBold) "<b>" + paramText + "</b>" else paramText
+                    }).mkString(", "))
                 }
               case method: PsiMethod =>
                 val p = method.getParameterList
@@ -376,40 +372,37 @@ class ScalaFunctionParameterInfoHandler
                     CodeInsightBundle.message("parameter.info.no.parameters"))
                 else {
                   buffer.append(
-                    p.getParameters
-                      .map((param: PsiParameter) => {
-                        val buffer: StringBuilder = new StringBuilder("")
-                        val list = param.getModifierList
-                        if (list == null) return
-                        val lastSize = buffer.length
-                        for (a <- list.getAnnotations) {
-                          if (lastSize != buffer.length) buffer.append(" ")
-                          val element = a.getNameReferenceElement
-                          if (element != null)
-                            buffer.append("@").append(element.getText)
-                        }
+                    p.getParameters.map((param: PsiParameter) => {
+                      val buffer: StringBuilder = new StringBuilder("")
+                      val list = param.getModifierList
+                      if (list == null) return
+                      val lastSize = buffer.length
+                      for (a <- list.getAnnotations) {
                         if (lastSize != buffer.length) buffer.append(" ")
+                        val element = a.getNameReferenceElement
+                        if (element != null)
+                          buffer.append("@").append(element.getText)
+                      }
+                      if (lastSize != buffer.length) buffer.append(" ")
 
-                        val name = param.name
-                        if (name != null) { buffer.append(name) }
-                        buffer.append(": ")
-                        buffer.append(ScType.presentableText(
-                          subst.subst(param.exactParamType())))
-                        if (param.isVarArgs) buffer.append("*")
+                      val name = param.name
+                      if (name != null) { buffer.append(name) }
+                      buffer.append(": ")
+                      buffer.append(ScType.presentableText(
+                        subst.subst(param.exactParamType())))
+                      if (param.isVarArgs) buffer.append("*")
 
-                        val isBold =
-                          if (p.getParameters.indexOf(param) == index || (
-                                param.isVarArgs && p.getParameters.indexOf(
-                                  param) <= index
-                              )) true
-                          else {
-                            //todo: check type
-                            false
-                          }
-                        val paramText = buffer.toString()
-                        if (isBold) "<b>" + paramText + "</b>" else paramText
-                      })
-                      .mkString(", "))
+                      val isBold =
+                        if (p.getParameters.indexOf(param) == index || (param
+                              .isVarArgs && p.getParameters
+                              .indexOf(param) <= index)) true
+                        else {
+                          //todo: check type
+                          false
+                        }
+                      val paramText = buffer.toString()
+                      if (isBold) "<b>" + paramText + "</b>" else paramText
+                    }).mkString(", "))
                 }
             }
           case (constructor: ScPrimaryConstructor, subst: ScSubstitutor, i: Int)
@@ -551,8 +544,8 @@ class ScalaFunctionParameterInfoHandler
                       .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p)))
                       .toArray
                   case ptpo: PsiTypeParameterListOwner =>
-                    ptpo.getTypeParameters.map(p =>
-                      (p.name, ScalaPsiUtil.getPsiElementId(p)))
+                    ptpo.getTypeParameters
+                      .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p)))
                   case _ => return ScSubstitutor.empty
                 }
                 val typeArgs: Seq[ScTypeElement] = gen.arguments
@@ -607,7 +600,8 @@ class ScalaFunctionParameterInfoHandler
                             ScalaResolveResult(
                               function: ScFunction,
                               subst: ScSubstitutor))
-                          if function.effectiveParameterClauses.length >= count =>
+                          if function.effectiveParameterClauses
+                            .length >= count =>
                         res += (
                           (
                             new PhysicalSignature(
@@ -666,9 +660,10 @@ class ScalaFunctionParameterInfoHandler
             val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
             val typeElement = constr.typeElement
             val i = constr.arguments.indexOf(args.element)
-            ScType.extractClassType(
-              typeElement.calcType,
-              Some(file.getProject)) match {
+            ScType
+              .extractClassType(
+                typeElement.calcType,
+                Some(file.getProject)) match {
               case Some((clazz: PsiClass, subst: ScSubstitutor)) =>
                 clazz match {
                   case clazz: ScClass =>
@@ -679,8 +674,8 @@ class ScalaFunctionParameterInfoHandler
                           case gen: ScParameterizedTypeElement =>
                             val tp = clazz.typeParameters.map(p =>
                               (p.name, ScalaPsiUtil.getPsiElementId(p)))
-                            val typeArgs: Seq[ScTypeElement] =
-                              gen.typeArgList.typeArgs
+                            val typeArgs: Seq[ScTypeElement] = gen.typeArgList
+                              .typeArgs
                             val map = new collection.mutable.HashMap[
                               (String, PsiElement),
                               ScType]
@@ -710,17 +705,16 @@ class ScalaFunctionParameterInfoHandler
                     val resulting: (AnnotationParameters, Int) = (
                       AnnotationParameters(
                         clazz.getMethods.toSeq
-                          .filter(_.isInstanceOf[PsiAnnotationMethod])
-                          .map(meth =>
-                            (
-                              meth.name,
-                              ScType.create(
-                                meth.getReturnType,
-                                meth.getProject,
-                                meth.getResolveScope),
-                              meth
-                                .asInstanceOf[PsiAnnotationMethod]
-                                .getDefaultValue))),
+                          .filter(_.isInstanceOf[PsiAnnotationMethod]).map(
+                            meth =>
+                              (
+                                meth.name,
+                                ScType.create(
+                                  meth.getReturnType,
+                                  meth.getProject,
+                                  meth.getResolveScope),
+                                meth.asInstanceOf[PsiAnnotationMethod]
+                                  .getDefaultValue))),
                       i)
                     res += resulting
                   case clazz: PsiClass
@@ -728,10 +722,10 @@ class ScalaFunctionParameterInfoHandler
                     for (constructor <- clazz.getConstructors) {
                       typeElement match {
                         case gen: ScParameterizedTypeElement =>
-                          val tp = clazz.getTypeParameters.map(p =>
-                            (p.name, ScalaPsiUtil.getPsiElementId(p)))
-                          val typeArgs: Seq[ScTypeElement] =
-                            gen.typeArgList.typeArgs
+                          val tp = clazz.getTypeParameters
+                            .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p)))
+                          val typeArgs: Seq[ScTypeElement] = gen.typeArgList
+                            .typeArgs
                           val map = new collection.mutable.HashMap[
                             (String, PsiElement),
                             ScType]
@@ -783,7 +777,8 @@ class ScalaFunctionParameterInfoHandler
                     constr.clauses.map(_.clauses.length).getOrElse(1) > i
                 } {
                   if (!PsiTreeUtil.isAncestor(constr, self, true) &&
-                      constr.getTextRange.getStartOffset < self.getTextRange.getStartOffset) {
+                      constr.getTextRange.getStartOffset < self.getTextRange
+                        .getStartOffset) {
                     res += (
                       (
                         new PhysicalSignature(constr, ScSubstitutor.empty),

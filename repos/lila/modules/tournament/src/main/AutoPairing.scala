@@ -55,16 +55,13 @@ final class AutoPairing(
         source = Source.Tournament,
         pgnImport = None
       )
-      game2 = game1
-        .updatePlayer(
-          Color.White,
-          _.withUser(user1.id, PerfPicker.mainOrDefault(game1)(user1.perfs)))
+      game2 = game1.updatePlayer(
+        Color.White,
+        _.withUser(user1.id, PerfPicker.mainOrDefault(game1)(user1.perfs)))
         .updatePlayer(
           Color.Black,
           _.withUser(user2.id, PerfPicker.mainOrDefault(game1)(user2.perfs)))
-        .withTournamentId(tour.id)
-        .withId(pairing.gameId)
-        .start
+        .withTournamentId(tour.id).withId(pairing.gameId).start
       _ ← (GameRepo insertDenormalized game2) >>-
         scheduleIdleCheck(
           PovRef(game2.id, game2.turnColor),

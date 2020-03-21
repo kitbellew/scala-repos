@@ -80,9 +80,10 @@ abstract class SessionVar[T](dflt: => T)
         }
 
         if (showWarningWhenAccessedOutOfSessionScope_?)
-          logger.warn(
-            "Getting a SessionVar " + name + " outside session scope"
-          ) // added warning per issue 188
+          logger
+            .warn(
+              "Getting a SessionVar " + name + " outside session scope"
+            ) // added warning per issue 188
 
         Empty
     }
@@ -153,8 +154,8 @@ abstract class SessionVar[T](dflt: => T)
   }
 
   override protected def testWasSet(name: String, bn: String): Boolean = {
-    S.session.flatMap(_.get(name)).isDefined || (S.session.flatMap(
-      _.get(bn)) openOr false)
+    S.session.flatMap(_.get(name)).isDefined || (S.session
+      .flatMap(_.get(bn)) openOr false)
   }
 
   protected override def registerCleanupFunc(in: LiftSession => Unit): Unit =
@@ -211,18 +212,18 @@ abstract class ContainerVar[T](dflt: => T)(implicit
       }
       case _ => {
         if (showWarningWhenAccessedOutOfSessionScope_?)
-          logger.warn(
-            "Getting a SessionVar " + name + " outside session scope"
-          ) // added warning per issue 188
+          logger
+            .warn(
+              "Getting a SessionVar " + name + " outside session scope"
+            ) // added warning per issue 188
 
         Empty
       }
     }
 
   private def localSet(session: LiftSession, name: String, value: Any): Unit = {
-    for { httpSession <- session.httpSession } httpSession.setAttribute(
-      name,
-      value)
+    for { httpSession <- session.httpSession } httpSession
+      .setAttribute(name, value)
   }
 
   private def localGet(session: LiftSession, name: String): Box[Any] = {
@@ -465,8 +466,8 @@ abstract class RequestVar[T](dflt: => T)
   // no sync necessary for RequestVars... always on the same thread
 
   override protected def testWasSet(name: String, bn: String): Boolean = {
-    RequestVarHandler.get(name).isDefined || (RequestVarHandler.get(
-      bn) openOr false)
+    RequestVarHandler.get(name).isDefined || (RequestVarHandler
+      .get(bn) openOr false)
   }
 
   /**
@@ -523,9 +524,9 @@ abstract class TransientRequestVar[T](dflt: => T)
   }
 
   protected override def testWasSet(name: String, bn: String): Boolean = {
-    TransientRequestVarHandler
-      .get(name)
-      .isDefined || (TransientRequestVarHandler.get(bn) openOr false)
+    TransientRequestVarHandler.get(name).isDefined || (
+      TransientRequestVarHandler.get(bn) openOr false
+    )
   }
 
   /**
@@ -597,8 +598,8 @@ private[http] trait CoreRequestVarHandler {
         sessionThing.doWith(mySessionThing) {
           val ret: T = f()
 
-          cleanup.value.toList.foreach(clean =>
-            Helpers.tryo(clean(sessionThing.value)))
+          cleanup.value.toList
+            .foreach(clean => Helpers.tryo(clean(sessionThing.value)))
 
           ret
         }
@@ -659,14 +660,13 @@ private[http] trait CoreRequestVarHandler {
           sessionThing.doWith(session) {
             val ret: T = f
 
-            cleanup.value.toList.foreach(clean =>
-              Helpers.tryo(clean(sessionThing.value)))
+            cleanup.value.toList
+              .foreach(clean => Helpers.tryo(clean(sessionThing.value)))
 
             if (Props.devMode && LiftRules.logUnreadRequestVars) {
               vals.value.keys
                 .filter(!_.startsWith(VarConstants.varPrefix + "net.liftweb"))
-                .filter(!_.endsWith(VarConstants.initedSuffix))
-                .foreach(key =>
+                .filter(!_.endsWith(VarConstants.initedSuffix)).foreach(key =>
                   vals.value(key) match {
                     case (rv, _, true) if rv.logUnreadVal =>
                       logger.warn("RequestVar %s was set but not read".format(

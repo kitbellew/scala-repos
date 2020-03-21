@@ -10,11 +10,11 @@ private[pref] final class DataForm {
   val pref = Form(
     mapping(
       "autoQueen" -> number.verifying(Pref.AutoQueen.choices.toMap contains _),
-      "autoThreefold" -> number.verifying(
-        Pref.AutoThreefold.choices.toMap contains _),
+      "autoThreefold" -> number
+        .verifying(Pref.AutoThreefold.choices.toMap contains _),
       "takeback" -> number.verifying(Pref.Takeback.choices.toMap contains _),
-      "clockTenths" -> number.verifying(
-        Pref.ClockTenths.choices.toMap contains _),
+      "clockTenths" -> number
+        .verifying(Pref.ClockTenths.choices.toMap contains _),
       "clockBar" -> number.verifying(Set(0, 1) contains _),
       "clockSound" -> number.verifying(Set(0, 1) contains _),
       "follow" -> number.verifying(Set(0, 1) contains _),
@@ -27,11 +27,11 @@ private[pref] final class DataForm {
       "message" -> number.verifying(Pref.Message.choices.toMap contains _),
       "premove" -> number.verifying(Set(0, 1) contains _),
       "animation" -> number.verifying(Set(0, 1, 2, 3) contains _),
-      "submitMove" -> number.verifying(
-        Pref.SubmitMove.choices.toMap contains _),
+      "submitMove" -> number
+        .verifying(Pref.SubmitMove.choices.toMap contains _),
       "insightShare" -> number.verifying(Set(0, 1, 2) contains _),
-      "confirmResign" -> number.verifying(
-        Pref.ConfirmResign.choices.toMap contains _),
+      "confirmResign" -> number
+        .verifying(Pref.ConfirmResign.choices.toMap contains _),
       "captured" -> number.verifying(Set(0, 1) contains _)
     )(PrefData.apply)(PrefData.unapply))
 
@@ -114,8 +114,8 @@ private[pref] final class DataForm {
     mapping(
       "autoQueen" -> number.verifying(Pref.AutoQueen.choices.toMap contains _),
       "blindfold" -> number.verifying(Pref.Blindfold.choices.toMap contains _),
-      "clockTenths" -> number.verifying(
-        Pref.ClockTenths.choices.toMap contains _),
+      "clockTenths" -> number
+        .verifying(Pref.ClockTenths.choices.toMap contains _),
       "submitMove" -> number.verifying(Pref.SubmitMove.choices.toMap contains _)
     )(MiniPrefData.apply)(MiniPrefData.unapply))
 

@@ -134,17 +134,11 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
   // here be dragons...
 
   private def getJMethods(jClass: Class[_]): List[Method] =
-    jClass.getDeclaredMethods
-      .filterNot(javaIgnore contains _.getName)
-      .map(toMethod)
-      .filterNot(ignore)
-      .toList
+    jClass.getDeclaredMethods.filterNot(javaIgnore contains _.getName)
+      .map(toMethod).filterNot(ignore).toList
   private def getSMethods(sClass: Class[_]): List[Method] =
-    sClass.getMethods
-      .filterNot(scalaIgnore contains _.getName)
-      .map(toMethod)
-      .filterNot(ignore)
-      .toList
+    sClass.getMethods.filterNot(scalaIgnore contains _.getName).map(toMethod)
+      .filterNot(ignore).toList
 
   private def toMethod(m: java.lang.reflect.Method): Method =
     Method(
@@ -204,8 +198,9 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
 
     ignores.foldLeft(false) {
       case (acc, i) ⇒
-        acc || (i.cls(m.declaringClass) && i.name(m.name) && i.parameters(
-          m.parameterTypes.length) && i.paramTypes(m.parameterTypes))
+        acc || (i.cls(m.declaringClass) && i.name(m.name) && i
+          .parameters(m.parameterTypes.length) && i
+          .paramTypes(m.parameterTypes))
     }
   }
 
@@ -226,8 +221,8 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     case m if m.parameterTypes.size > 1 ⇒
       m.copy(
         name = m.name.filter(Character.isLetter),
-        parameterTypes = m.parameterTypes
-          .dropRight(1) :+ classOf[akka.japi.function.Function[_, _]])
+        parameterTypes = m.parameterTypes.dropRight(1) :+ classOf[
+          akka.japi.function.Function[_, _]])
     case m ⇒ m
   }
 
@@ -251,12 +246,11 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
       } else if (matches.length == 1) {
         info(
           "Matched: Scala:" + row._1.name + "(" + row._1.parameterTypes
-            .map(_.getName)
-            .mkString(",") + "): " + returnTypeString(row._1) +
+            .map(_.getName).mkString(",") + "): " + returnTypeString(row._1) +
             " == " +
             "Java:" + matches.head.j.name + "(" + matches.head.j.parameterTypes
-            .map(_.getName)
-            .mkString(",") + "): " + returnTypeString(matches.head.j))
+            .map(_.getName).mkString(",") + "): " + returnTypeString(
+            matches.head.j))
       } else {
         warnings += 1
         alert("Multiple matches for " + row._1 + "!")
@@ -326,8 +320,8 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     (sSource.isAssignableFrom(s) && jSource.isAssignableFrom(j)) ||
       (sSink.isAssignableFrom(s) && jSink.isAssignableFrom(j)) ||
       (sFlow.isAssignableFrom(s) && jFlow.isAssignableFrom(j)) ||
-      (sRunnableGraph.isAssignableFrom(s) && jRunnableGraph.isAssignableFrom(
-        j)) ||
+      (sRunnableGraph.isAssignableFrom(s) && jRunnableGraph
+        .isAssignableFrom(j)) ||
       (graph.isAssignableFrom(s) && graph.isAssignableFrom(j))
 
   def typeMatch(

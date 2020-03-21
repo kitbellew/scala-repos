@@ -59,8 +59,8 @@ class HealthCheckActor(
       app.id,
       app.version,
       healthCheck)
-    val activeTaskIds =
-      taskTracker.appTasksLaunchedSync(app.id).map(_.taskId).toSet
+    val activeTaskIds = taskTracker.appTasksLaunchedSync(app.id).map(_.taskId)
+      .toSet
     // The Map built with filterKeys wraps the original map and contains a reference to activeTaskIds.
     // Therefore we materialize it into a new map.
     taskHealth = taskHealth.filterKeys(activeTaskIds).iterator.toMap
@@ -98,8 +98,8 @@ class HealthCheckActor(
 
     // ignore failures if maxFailures == 0
     if (consecutiveFailures >= maxFailures && maxFailures > 0) {
-      log.info(
-        s"Detected unhealthy ${task.taskId} of app [${app.id}] version [${app.version}] on host ${task.agentInfo.host}")
+      log.info(s"Detected unhealthy ${task.taskId} of app [${app
+        .id}] version [${app.version}] on host ${task.agentInfo.host}")
 
       // kill the task
       marathonSchedulerDriverHolder.driver.foreach { driver =>

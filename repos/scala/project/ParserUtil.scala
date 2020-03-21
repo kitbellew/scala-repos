@@ -10,7 +10,9 @@ object ParserUtil {
     p.map(x => x._1 + x._2)
   }
 
-  def Opt(a: Parser[String]) = a.?.map(_.getOrElse(""))
+  def Opt(a: Parser[String]) =
+    a
+      .?.map(_.getOrElse(""))
 
   val StringBasicNotStartingWithDash = notStartingWith(StringBasic, '-')
   val IsDirectoryFilter = new SimpleFileFilter(_.isDirectory)
@@ -26,11 +28,8 @@ object ParserUtil {
       val parent = Option(preFile.getParentFile).getOrElse(cwd)
       if (preFile.exists) {
         if (preFile.isDirectory) {
-          preFile
-            .*(IsDirectoryFilter.&&(dirFilter) || fileFilter)
-            .get
-            .map(_.getPath)
-            .toList
+          preFile.*(IsDirectoryFilter.&&(dirFilter) || fileFilter).get
+            .map(_.getPath).toList
         } else { List(preFile).filter(fileFilter.accept).map(_.getPath) }
       } else if (parent != null) {
         def ensureSuffix(s: String, suffix: String) =
@@ -60,11 +59,11 @@ object ParserUtil {
             case Nil => displayPath
             case x :: Nil =>
               if (fileFilter.accept(file(x)))
-                Completions.strict(Set(
-                  Completion.tokenDisplay(x.stripPrefix(seen), x)))
+                Completions
+                  .strict(Set(Completion.tokenDisplay(x.stripPrefix(seen), x)))
               else
-                Completions.strict(Set(
-                  Completion.suggestion(x.stripPrefix(seen))))
+                Completions
+                  .strict(Set(Completion.suggestion(x.stripPrefix(seen))))
             case xs =>
               Completions.strict(
                 xs.map(x => Completion.tokenDisplay(x.stripPrefix(seen), x))

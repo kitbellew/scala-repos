@@ -39,43 +39,27 @@ trait WebHookService {
   /** get All WebHook informations of repository */
   def getWebHooks(owner: String, repository: String)(implicit
       s: Session): List[(WebHook, Set[WebHook.Event])] =
-    WebHooks
-      .filter(_.byRepository(owner, repository))
-      .innerJoin(WebHookEvents)
-      .on { (w, t) => t.byWebHook(w) }
-      .map { case (w, t) => w -> t.event }
-      .list
-      .groupBy(_._1)
-      .mapValues(_.map(_._2).toSet)
-      .toList
-      .sortBy(_._1.url)
+    WebHooks.filter(_.byRepository(owner, repository)).innerJoin(WebHookEvents)
+      .on { (w, t) => t.byWebHook(w) }.map { case (w, t) => w -> t.event }.list
+      .groupBy(_._1).mapValues(_.map(_._2).toSet).toList.sortBy(_._1.url)
 
   /** get All WebHook informations of repository event */
   def getWebHooksByEvent(
       owner: String,
       repository: String,
       event: WebHook.Event)(implicit s: Session): List[WebHook] =
-    WebHooks
-      .filter(_.byRepository(owner, repository))
-      .innerJoin(WebHookEvents)
-      .on { (wh, whe) => whe.byWebHook(wh) }
-      .filter { case (wh, whe) => whe.event === event.bind }
-      .map { case (wh, whe) => wh }
-      .list
-      .distinct
+    WebHooks.filter(_.byRepository(owner, repository)).innerJoin(WebHookEvents)
+      .on { (wh, whe) => whe.byWebHook(wh) }.filter {
+        case (wh, whe) => whe.event === event.bind
+      }.map { case (wh, whe) => wh }.list.distinct
 
   /** get All WebHook information from repository to url */
   def getWebHook(owner: String, repository: String, url: String)(implicit
       s: Session): Option[(WebHook, Set[WebHook.Event])] =
-    WebHooks
-      .filter(_.byPrimaryKey(owner, repository, url))
-      .innerJoin(WebHookEvents)
-      .on { (w, t) => t.byWebHook(w) }
-      .map { case (w, t) => w -> t.event }
-      .list
-      .groupBy(_._1)
-      .mapValues(_.map(_._2).toSet)
-      .headOption
+    WebHooks.filter(_.byPrimaryKey(owner, repository, url))
+      .innerJoin(WebHookEvents).on { (w, t) => t.byWebHook(w) }.map {
+        case (w, t) => w -> t.event
+      }.list.groupBy(_._1).mapValues(_.map(_._2).toSet).headOption
 
   def addWebHook(
       owner: String,
@@ -95,9 +79,7 @@ trait WebHookService {
       url: String,
       events: Set[WebHook.Event],
       token: Option[String])(implicit s: Session): Unit = {
-    WebHooks
-      .filter(_.byPrimaryKey(owner, repository, url))
-      .map(w => w.token)
+    WebHooks.filter(_.byPrimaryKey(owner, repository, url)).map(w => w.token)
       .update(token)
     WebHookEvents.filter(_.byWebHook(owner, repository, url)).delete
     events.toSet.map { event: WebHook.Event =>
@@ -139,13 +121,12 @@ trait WebHookService {
             }
           }
           try {
-            val httpClient =
-              HttpClientBuilder.create.addInterceptorLast(itcp).build
+            val httpClient = HttpClientBuilder.create.addInterceptorLast(itcp)
+              .build
             logger.debug(s"start web hook invocation for ${webHook.url}")
             val httpPost = new HttpPost(webHook.url)
-            httpPost.addHeader(
-              "Content-Type",
-              "application/x-www-form-urlencoded")
+            httpPost
+              .addHeader("Content-Type", "application/x-www-form-urlencoded")
             httpPost.addHeader("X-Github-Event", event.name)
             httpPost.addHeader(
               "X-Github-Delivery",
@@ -159,8 +140,7 @@ trait WebHookService {
 
             if (!webHook.token.isEmpty) {
               // TODO find a better way and see how to extract content from postContent
-              val contentAsBytes = URLEncodedUtils
-                .format(params, "UTF-8")
+              val contentAsBytes = URLEncodedUtils.format(params, "UTF-8")
                 .getBytes("UTF-8")
               httpPost.addHeader(
                 "X-Hub-Signature",
@@ -285,8 +265,8 @@ trait WebHookPullRequestService extends WebHookService {
       : Map[(Issue, Account, PullRequest, Account, Account), List[WebHook]] =
     (for {
       is <- Issues if is.closed === false.bind
-      pr <- PullRequests
-      if pr.byPrimaryKey(is.userName, is.repositoryName, is.issueId)
+      pr <- PullRequests if pr
+        .byPrimaryKey(is.userName, is.repositoryName, is.issueId)
       if pr.requestUserName === userName.bind
       if pr.requestRepositoryName === repositoryName.bind
       if pr.requestBranch === branch.bind
@@ -295,10 +275,8 @@ trait WebHookPullRequestService extends WebHookService {
       iu <- Accounts if iu.userName === is.openedUserName
       wh <- WebHooks if wh.byRepository(is.userName, is.repositoryName)
       wht <- WebHookEvents if wht.event === WebHook.PullRequest
-        .asInstanceOf[WebHook.Event]
-        .bind && wht.byWebHook(wh)
-    } yield { ((is, iu, pr, bu, ru), wh) }).list
-      .groupBy(_._1)
+        .asInstanceOf[WebHook.Event].bind && wht.byWebHook(wh)
+    } yield { ((is, iu, pr, bu, ru), wh) }).list.groupBy(_._1)
       .mapValues(_.map(_._2))
 
   def callPullRequestWebHookByRequestBranch(

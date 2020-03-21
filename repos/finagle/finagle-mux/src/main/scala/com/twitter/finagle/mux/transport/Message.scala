@@ -414,9 +414,8 @@ private[twitter] object Message {
 
   object Tlease {
     val MinLease = Duration.Zero
-    val MaxLease = Duration.fromMilliseconds(
-      (1L << 32) - 1
-    ) // Unsigned Int max value
+    val MaxLease = Duration
+      .fromMilliseconds((1L << 32) - 1) // Unsigned Int max value
 
     val MillisDuration: Byte = 0
 

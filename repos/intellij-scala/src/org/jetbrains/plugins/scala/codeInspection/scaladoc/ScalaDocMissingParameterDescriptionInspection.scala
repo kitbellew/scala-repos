@@ -27,8 +27,8 @@ class ScalaDocMissingParameterDescriptionInspection
       isOnTheFly: Boolean): PsiElementVisitor = {
     new ScalaElementVisitor {
       override def visitTag(s: ScDocTag) {
-        if (!ScalaDocMissingParameterDescriptionInspection.OurTags.contains(
-              s.name) || s.getValueElement == null) { return }
+        if (!ScalaDocMissingParameterDescriptionInspection.OurTags
+              .contains(s.name) || s.getValueElement == null) { return }
 
         val children = s.findChildrenByType(ScalaDocTokenType.DOC_COMMENT_DATA)
         for (child <- children) {

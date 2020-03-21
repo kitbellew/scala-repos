@@ -35,25 +35,23 @@ private[persistence] class LeveldbJournal extends {
       val readHighestSequenceNrFrom = math.max(0L, fromSequenceNr - 1)
       asyncReadHighestSequenceNr(
         tagAsPersistenceId(tag),
-        readHighestSequenceNrFrom)
-        .flatMap { highSeqNr ⇒
-          val toSeqNr = math.min(toSequenceNr, highSeqNr)
-          if (highSeqNr == 0L || fromSequenceNr > toSeqNr)
-            Future.successful(highSeqNr)
-          else {
-            asyncReplayTaggedMessages(tag, fromSequenceNr, toSeqNr, max) {
-              case ReplayedTaggedMessage(p, tag, offset) ⇒
-                adaptFromJournal(p).foreach { adaptedPersistentRepr ⇒
-                  replyTo.tell(
-                    ReplayedTaggedMessage(adaptedPersistentRepr, tag, offset),
-                    Actor.noSender)
-                }
-            }.map(_ ⇒ highSeqNr)
-          }
+        readHighestSequenceNrFrom).flatMap { highSeqNr ⇒
+        val toSeqNr = math.min(toSequenceNr, highSeqNr)
+        if (highSeqNr == 0L || fromSequenceNr > toSeqNr)
+          Future.successful(highSeqNr)
+        else {
+          asyncReplayTaggedMessages(tag, fromSequenceNr, toSeqNr, max) {
+            case ReplayedTaggedMessage(p, tag, offset) ⇒
+              adaptFromJournal(p).foreach { adaptedPersistentRepr ⇒
+                replyTo.tell(
+                  ReplayedTaggedMessage(adaptedPersistentRepr, tag, offset),
+                  Actor.noSender)
+              }
+          }.map(_ ⇒ highSeqNr)
         }
-        .map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }
-        .recover { case e ⇒ ReplayMessagesFailure(e) }
-        .pipeTo(replyTo)
+      }.map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }.recover {
+        case e ⇒ ReplayMessagesFailure(e)
+      }.pipeTo(replyTo)
 
     case SubscribePersistenceId(persistenceId: String) ⇒
       addPersistenceIdSubscriber(sender(), persistenceId)

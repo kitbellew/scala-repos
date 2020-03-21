@@ -86,8 +86,8 @@ private[parquet] class CatalystWriteSupport
     this.rootFieldWriters = schema.map(_.dataType).map(makeWriter)
 
     val messageType = new CatalystSchemaConverter(configuration).convert(schema)
-    val metadata = Map(
-      CatalystReadSupport.SPARK_METADATA_KEY -> schemaString).asJava
+    val metadata = Map(CatalystReadSupport.SPARK_METADATA_KEY -> schemaString)
+      .asJava
 
     logInfo(s"""Initialized Parquet WriteSupport with Catalyst schema:
          |${schema.prettyJson}
@@ -164,12 +164,10 @@ private[parquet] class CatalystWriteSupport
 
           // NOTE: Starting from Spark 1.5, Spark SQL `TimestampType` only has microsecond
           // precision.  Nanosecond parts of timestamp values read from INT96 are simply stripped.
-          val (julianDay, timeOfDayNanos) = DateTimeUtils.toJulianDay(
-            row.getLong(ordinal))
+          val (julianDay, timeOfDayNanos) = DateTimeUtils
+            .toJulianDay(row.getLong(ordinal))
           val buf = ByteBuffer.wrap(timestampBuffer)
-          buf
-            .order(ByteOrder.LITTLE_ENDIAN)
-            .putLong(timeOfDayNanos)
+          buf.order(ByteOrder.LITTLE_ENDIAN).putLong(timeOfDayNanos)
             .putInt(julianDay)
           recordConsumer.addBinary(Binary.fromByteArray(timestampBuffer))
         }
@@ -207,14 +205,14 @@ private[parquet] class CatalystWriteSupport
     val numBytes = minBytesForPrecision(precision)
 
     val int32Writer = (row: SpecializedGetters, ordinal: Int) => {
-      val unscaledLong =
-        row.getDecimal(ordinal, precision, scale).toUnscaledLong
+      val unscaledLong = row.getDecimal(ordinal, precision, scale)
+        .toUnscaledLong
       recordConsumer.addInteger(unscaledLong.toInt)
     }
 
     val int64Writer = (row: SpecializedGetters, ordinal: Int) => {
-      val unscaledLong =
-        row.getDecimal(ordinal, precision, scale).toUnscaledLong
+      val unscaledLong = row.getDecimal(ordinal, precision, scale)
+        .toUnscaledLong
       recordConsumer.addLong(unscaledLong)
     }
 
@@ -233,8 +231,8 @@ private[parquet] class CatalystWriteSupport
           shift -= 8
         }
 
-        recordConsumer.addBinary(
-          Binary.fromByteArray(decimalBuffer, 0, numBytes))
+        recordConsumer
+          .addBinary(Binary.fromByteArray(decimalBuffer, 0, numBytes))
       }
 
     val binaryWriterUsingUnscaledBytes =
@@ -251,11 +249,8 @@ private[parquet] class CatalystWriteSupport
             // the underlying bytes with padding sign bytes to `decimalBuffer` to form the result
             // fixed-length byte array.
             val signByte = if (bytes.head < 0) -1: Byte else 0: Byte
-            util.Arrays.fill(
-              decimalBuffer,
-              0,
-              numBytes - bytes.length,
-              signByte)
+            util.Arrays
+              .fill(decimalBuffer, 0, numBytes - bytes.length, signByte)
             System.arraycopy(
               bytes,
               0,
@@ -265,8 +260,8 @@ private[parquet] class CatalystWriteSupport
             decimalBuffer
           }
 
-        recordConsumer.addBinary(
-          Binary.fromByteArray(fixedLengthBytes, 0, numBytes))
+        recordConsumer
+          .addBinary(Binary.fromByteArray(fixedLengthBytes, 0, numBytes))
       }
 
     writeLegacyParquetFormat match {

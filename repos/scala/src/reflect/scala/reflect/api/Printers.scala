@@ -192,8 +192,8 @@ trait Printers {
     val printer = mkPrinter(writer)
     printTypes.value.map(printTypes =>
       if (printTypes) printer.withTypes else printer.withoutTypes)
-    printIds.value.map(printIds =>
-      if (printIds) printer.withIds else printer.withoutIds)
+    printIds.value
+      .map(printIds => if (printIds) printer.withIds else printer.withoutIds)
     printOwners.value.map(printOwners =>
       if (printOwners) printer.withOwners else printer.withoutOwners)
     printKinds.value.map(printKinds =>

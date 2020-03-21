@@ -48,10 +48,8 @@ private[spark] class Slf4jSink(
 
   MetricsSystem.checkMinimalPollingPeriod(pollUnit, pollPeriod)
 
-  val reporter: Slf4jReporter = Slf4jReporter
-    .forRegistry(registry)
-    .convertDurationsTo(TimeUnit.MILLISECONDS)
-    .convertRatesTo(TimeUnit.SECONDS)
+  val reporter: Slf4jReporter = Slf4jReporter.forRegistry(registry)
+    .convertDurationsTo(TimeUnit.MILLISECONDS).convertRatesTo(TimeUnit.SECONDS)
     .build()
 
   override def start() { reporter.start(pollPeriod, pollUnit) }

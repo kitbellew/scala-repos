@@ -28,9 +28,8 @@ class GenericRunnerCommand(
   // change CompilerCommand behavior
   override def shouldProcessArguments: Boolean = false
 
-  private lazy val (_ok, targetAndArguments) = settings.processArguments(
-    args,
-    processAll = false)
+  private lazy val (_ok, targetAndArguments) = settings
+    .processArguments(args, processAll = false)
   override def ok = _ok
   private def guessHowToRun(target: String): GenericRunnerCommand.HowToRun = {
     if (!ok) Error
@@ -56,9 +55,8 @@ class GenericRunnerCommand(
   val howToRun = targetAndArguments match {
     case Nil => AsRepl
     case hd :: _ =>
-      waysToRun find (
-        _.name == settings.howtorun.value
-      ) getOrElse guessHowToRun(hd)
+      waysToRun find (_.name == settings.howtorun
+        .value) getOrElse guessHowToRun(hd)
   }
 
   def shortUsageMsg =

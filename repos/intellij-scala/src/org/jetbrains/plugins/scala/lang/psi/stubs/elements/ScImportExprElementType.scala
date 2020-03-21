@@ -25,9 +25,7 @@ class ScImportExprElementType[Func <: ScImportExpr]
       "import expression") {
   def serialize(stub: ScImportExprStub, dataStream: StubOutputStream): Unit = {
     dataStream.writeName(
-      stub
-        .asInstanceOf[ScImportExprStubImpl[_ <: PsiElement]]
-        .referenceText
+      stub.asInstanceOf[ScImportExprStubImpl[_ <: PsiElement]].referenceText
         .toString)
     dataStream.writeBoolean(stub.isSingleWildcard)
   }

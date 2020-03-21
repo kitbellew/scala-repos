@@ -154,9 +154,10 @@ private[io] object SelectionHandler {
               try {
                 // Cache because the performance implications of calling this on different platforms are not clear
                 val readyOps = key.readyOps()
-                key.interestOps(
-                  key.interestOps & ~readyOps
-                ) // prevent immediate reselection by always clearing
+                key
+                  .interestOps(
+                    key.interestOps & ~readyOps
+                  ) // prevent immediate reselection by always clearing
                 val connection = key.attachment.asInstanceOf[ActorRef]
                 readyOps match {
                   case OP_READ ⇒ connection ! ChannelReadable
@@ -176,7 +177,8 @@ private[io] object SelectionHandler {
               }
             }
           }
-          keys.clear() // we need to remove the selected keys from the set, otherwise they remain selected
+          keys
+            .clear() // we need to remove the selected keys from the set, otherwise they remain selected
         }
         wakeUp.set(false)
       }
@@ -184,9 +186,10 @@ private[io] object SelectionHandler {
       override def run(): Unit =
         if (selector.isOpen)
           try super.run()
-          finally executionContext.execute(
-            this
-          ) // re-schedule select behind all currently queued tasks
+          finally executionContext
+            .execute(
+              this
+            ) // re-schedule select behind all currently queued tasks
     }
 
     executionContext.execute(select) // start selection "loop"
@@ -251,10 +254,11 @@ private[io] object SelectionHandler {
 
     private def execute(task: Task): Unit = {
       executionContext.execute(task)
-      if (wakeUp.compareAndSet(
-            false,
-            true
-          )) // if possible avoid syscall and trade off with LOCK CMPXCHG
+      if (wakeUp
+            .compareAndSet(
+              false,
+              true
+            )) // if possible avoid syscall and trade off with LOCK CMPXCHG
         selector.wakeup()
     }
 
@@ -344,9 +348,7 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
       val newName = sequenceNumber.toString
       sequenceNumber += 1
       val child = context.actorOf(
-        props = cmd
-          .childProps(registry)
-          .withDispatcher(WorkerDispatcher)
+        props = cmd.childProps(registry).withDispatcher(WorkerDispatcher)
           .withDeploy(Deploy.local),
         name = newName)
       childCount += 1

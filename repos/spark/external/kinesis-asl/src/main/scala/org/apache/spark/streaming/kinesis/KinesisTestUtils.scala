@@ -146,8 +146,7 @@ private[kinesis] class KinesisTestUtils extends Logging {
     try {
       val describeStreamRequest = new DescribeStreamRequest()
         .withStreamName(streamNameToDescribe)
-      val desc = kinesisClient
-        .describeStream(describeStreamRequest)
+      val desc = kinesisClient.describeStream(describeStreamRequest)
         .getStreamDescription()
       Some(desc)
     } catch { case rnfe: ResourceNotFoundException => None }
@@ -164,8 +163,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
 
   private def waitForStreamToBeActive(streamNameToWaitFor: String): Unit = {
     val startTime = System.currentTimeMillis()
-    val endTime =
-      startTime + TimeUnit.SECONDS.toMillis(createStreamTimeoutSeconds)
+    val endTime = startTime + TimeUnit.SECONDS
+      .toMillis(createStreamTimeoutSeconds)
     while (System.currentTimeMillis() < endTime) {
       Thread.sleep(TimeUnit.SECONDS.toMillis(describeStreamPollTimeSeconds))
       describeStream(streamNameToWaitFor).foreach { description =>
@@ -252,17 +251,14 @@ private[kinesis] class SimpleDataGenerator(client: AmazonKinesisClient)
     data.foreach { num =>
       val str = num.toString
       val data = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8))
-      val putRecordRequest = new PutRecordRequest()
-        .withStreamName(streamName)
-        .withData(data)
-        .withPartitionKey(str)
+      val putRecordRequest = new PutRecordRequest().withStreamName(streamName)
+        .withData(data).withPartitionKey(str)
 
       val putRecordResult = client.putRecord(putRecordRequest)
       val shardId = putRecordResult.getShardId
       val seqNumber = putRecordResult.getSequenceNumber()
-      val sentSeqNumbers = shardIdToSeqNumbers.getOrElseUpdate(
-        shardId,
-        new ArrayBuffer[(Int, String)]())
+      val sentSeqNumbers = shardIdToSeqNumbers
+        .getOrElseUpdate(shardId, new ArrayBuffer[(Int, String)]())
       sentSeqNumbers += ((num, seqNumber))
     }
 

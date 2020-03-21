@@ -93,8 +93,7 @@ private[spark] abstract class WebUI(
       basePath)
     attachHandler(renderHandler)
     attachHandler(renderJsonHandler)
-    pageToHandlers
-      .getOrElseUpdate(page, ArrayBuffer[ServletContextHandler]())
+    pageToHandlers.getOrElseUpdate(page, ArrayBuffer[ServletContextHandler]())
       .append(renderHandler)
   }
 
@@ -147,11 +146,9 @@ private[spark] abstract class WebUI(
       var host = Option(conf.getenv("SPARK_LOCAL_IP")).getOrElse("0.0.0.0")
       serverInfo = Some(
         startJettyServer(host, port, sslOptions, handlers, conf, name))
-      logInfo("Bound %s to %s, and started at http://%s:%d".format(
-        className,
-        host,
-        publicHostName,
-        boundPort))
+      logInfo(
+        "Bound %s to %s, and started at http://%s:%d"
+          .format(className, host, publicHostName, boundPort))
     } catch {
       case e: Exception =>
         logError("Failed to bind %s".format(className), e)

@@ -79,8 +79,8 @@ class RichPresentationCompilerSpec
       def roundtrip(label: String, expectedFullName: String) = {
         val comment = "/*" + label + "*/"
         val index = file.content.mkString.indexOf(comment)
-        val tpe =
-          cc.askTypeInfoAt(new OffsetPosition(file, index + comment.length)).get
+        val tpe = cc
+          .askTypeInfoAt(new OffsetPosition(file, index + comment.length)).get
         val fullName = tpe.fullName
         fullName should ===(expectedFullName)
 
@@ -552,9 +552,7 @@ class RichPresentationCompilerSpec
     val info = cc.askInspectTypeAt(p).get
     val sup = info.supers.find(sup => sup.tpe.name == "A").get;
     {
-      val mem = sup.tpe.members
-        .find(_.name == "banana")
-        .get
+      val mem = sup.tpe.members.find(_.name == "banana").get
         .asInstanceOf[NamedTypeMemberInfo]
       val tpe = mem.tpe.asInstanceOf[ArrowTypeInfo]
 
@@ -566,9 +564,7 @@ class RichPresentationCompilerSpec
       paramTpe.args.head.name shouldBe "String"
     }
     {
-      val mem = sup.tpe.members
-        .find(_.name == "pineapple")
-        .get
+      val mem = sup.tpe.members.find(_.name == "pineapple").get
         .asInstanceOf[NamedTypeMemberInfo]
       val tpe = mem.tpe.asInstanceOf[BasicTypeInfo]
       tpe.name shouldBe "List"
@@ -697,11 +693,11 @@ class RichPresentationCompilerSpec
           cc1.askReloadFile(usesFile)
           cc1.askLoadedTyped(usesFile)
 
-          val info =
-            cc1.askSymbolInfoAt(new OffsetPosition(usesFile, usePos)) match {
-              case Some(x) => x
-              case None    => fail(s"For $comment, askSymbolInfoAt returned None")
-            }
+          val info = cc1
+            .askSymbolInfoAt(new OffsetPosition(usesFile, usePos)) match {
+            case Some(x) => x
+            case None    => fail(s"For $comment, askSymbolInfoAt returned None")
+          }
           val declPos = info.declPos
           declPos match {
             case Some(op: OffsetSourcePosition) => assert(op.offset === defPos)

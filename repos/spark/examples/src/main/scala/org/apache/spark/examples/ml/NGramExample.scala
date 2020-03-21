@@ -31,19 +31,15 @@ object NGramExample {
     val sqlContext = new SQLContext(sc)
 
     // $example on$
-    val wordDataFrame = sqlContext
-      .createDataFrame(Seq(
-        (0, Array("Hi", "I", "heard", "about", "Spark")),
-        (1, Array("I", "wish", "Java", "could", "use", "case", "classes")),
-        (2, Array("Logistic", "regression", "models", "are", "neat"))
-      ))
-      .toDF("label", "words")
+    val wordDataFrame = sqlContext.createDataFrame(Seq(
+      (0, Array("Hi", "I", "heard", "about", "Spark")),
+      (1, Array("I", "wish", "Java", "could", "use", "case", "classes")),
+      (2, Array("Logistic", "regression", "models", "are", "neat"))
+    )).toDF("label", "words")
 
     val ngram = new NGram().setInputCol("words").setOutputCol("ngrams")
     val ngramDataFrame = ngram.transform(wordDataFrame)
-    ngramDataFrame
-      .take(3)
-      .map(_.getAs[Stream[String]]("ngrams").toList)
+    ngramDataFrame.take(3).map(_.getAs[Stream[String]]("ngrams").toList)
       .foreach(println)
     // $example off$
     sc.stop()

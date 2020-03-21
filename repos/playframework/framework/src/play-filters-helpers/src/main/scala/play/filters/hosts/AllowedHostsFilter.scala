@@ -27,8 +27,8 @@ case class AllowedHostsFilter @Inject() (
     this(config, new JavaHttpErrorHandlerAdapter(errorHandler))
   }
 
-  private val hostMatchers: Seq[HostMatcher] =
-    config.allowed map HostMatcher.apply
+  private val hostMatchers: Seq[HostMatcher] = config.allowed map HostMatcher
+    .apply
 
   override def apply(next: EssentialAction) =
     EssentialAction { req =>

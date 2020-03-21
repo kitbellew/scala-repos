@@ -35,11 +35,9 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
         result: Option[ScalaResolveResult],
         elementToHighlight: PsiElement,
         name: String) {
-      val refElement = result
-        .getOrElse(
-          return
-        )
-        .element
+      val refElement = result.getOrElse(
+        return
+      ).element
       refElement match {
         case param: ScParameter
             if result.get.isNamedParameter &&
@@ -56,8 +54,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
         case _: PsiNamedElement =>
         case _                  => return
       }
-      val context = ScalaPsiUtil.nameContext(
-        refElement.asInstanceOf[PsiNamedElement])
+      val context = ScalaPsiUtil
+        .nameContext(refElement.asInstanceOf[PsiNamedElement])
       context match {
         case doc: PsiDocCommentOwner =>
           doc match {
@@ -65,8 +63,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
             case f: PsiMethod if f.isConstructor =>
             case _                               => if (!doc.isDeprecated) return
           }
-          if (!doc.isDeprecated && !Option(doc.containingClass).exists(
-                _.isDeprecated)) return
+          if (!doc.isDeprecated && !Option(doc.containingClass)
+                .exists(_.isDeprecated)) return
         case _ => return
       }
       val message = for {

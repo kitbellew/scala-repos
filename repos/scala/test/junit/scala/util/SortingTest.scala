@@ -99,23 +99,19 @@ class SortingTest {
       v <- variety
       i <- 0 until math.min(
         100,
-        math
-          .max(
-            math.min(
-              math.floor(math.pow(v, size) / 2),
-              math.ceil(
-                workLimit / (math.log(math.max(2, size)) / math.log(
-                  2) * size))),
-            1)
-          .toInt)
+        math.max(
+          math.min(
+            math.floor(math.pow(v, size) / 2),
+            math.ceil(
+              workLimit / (math.log(math.max(2, size)) / math.log(2) * size))),
+          1).toInt)
     } runOneTest(size, v)
 
     for (size <- sizes) {
       val b = Array.fill(size)(rng.nextBoolean)
       val bfwd = Sorting.stableSort(b.clone: Seq[Boolean])
-      val bbkw = Sorting.stableSort(
-        b.clone: Seq[Boolean],
-        (x: Boolean, y: Boolean) => x && !y)
+      val bbkw = Sorting
+        .stableSort(b.clone: Seq[Boolean], (x: Boolean, y: Boolean) => x && !y)
       assertTrue(
         "All falses should be first",
         bfwd.dropWhile(_ == false).forall(_ == true))

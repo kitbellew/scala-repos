@@ -55,8 +55,7 @@ object ScalaExtendingPlay extends Specification {
 
     "adds a module" in {
       // #module-bindings
-      val application = new GuiceApplicationBuilder()
-        .bindings(new MyModule)
+      val application = new GuiceApplicationBuilder().bindings(new MyModule)
         .build()
       val myCode = application.injector.instanceOf(classOf[MyCode])
       myCode must beAnInstanceOf[MyCode]
@@ -66,8 +65,7 @@ object ScalaExtendingPlay extends Specification {
     "overrides a built-in module" in {
       // #builtin-module-overrides
       val application = new GuiceApplicationBuilder()
-        .overrides(new MyI18nModule)
-        .build()
+        .overrides(new MyI18nModule).build()
       // #builtin-module-overrides
       val messageApi = application.injector.instanceOf(classOf[MessagesApi])
       messageApi must beAnInstanceOf[MyMessagesApi]

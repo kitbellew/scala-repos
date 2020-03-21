@@ -28,13 +28,9 @@ case class Group(
     Group.fromProto(GroupDefinition.parseFrom(bytes))
 
   override def toProto: GroupDefinition = {
-    GroupDefinition.newBuilder
-      .setId(id.toString)
-      .setVersion(version.toString)
-      .addAllApps(apps.map(_.toProto))
-      .addAllGroups(groups.map(_.toProto))
-      .addAllDependencies(dependencies.map(_.toString))
-      .build()
+    GroupDefinition.newBuilder.setId(id.toString).setVersion(version.toString)
+      .addAllApps(apps.map(_.toProto)).addAllGroups(groups.map(_.toProto))
+      .addAllDependencies(dependencies.map(_.toString)).build()
   }
 
   def findGroup(fn: Group => Boolean): Option[Group] = {
@@ -130,22 +126,22 @@ case class Group(
   def makeGroup(gid: PathId): Group = {
     if (gid.isEmpty) this //group already exists
     else {
-      val (change, remaining) = groups.partition(
-        _.id.restOf(id).root == gid.root)
-      val toUpdate = change.headOption.getOrElse(
-        Group.empty.copy(id = id.append(gid.rootPath)))
+      val (change, remaining) = groups
+        .partition(_.id.restOf(id).root == gid.root)
+      val toUpdate = change.headOption
+        .getOrElse(Group.empty.copy(id = id.append(gid.rootPath)))
       this.copy(groups = remaining + toUpdate.makeGroup(gid.child))
     }
   }
 
-  lazy val transitiveApps: Set[AppDefinition] =
-    this.apps ++ groups.flatMap(_.transitiveApps)
+  lazy val transitiveApps: Set[AppDefinition] = this.apps ++ groups
+    .flatMap(_.transitiveApps)
 
-  lazy val transitiveGroups: Set[Group] =
-    groups.flatMap(_.transitiveGroups) + this
+  lazy val transitiveGroups: Set[Group] = groups
+    .flatMap(_.transitiveGroups) + this
 
-  lazy val transitiveAppGroups: Set[Group] = transitiveGroups.filter(
-    _.apps.nonEmpty)
+  lazy val transitiveAppGroups: Set[Group] = transitiveGroups
+    .filter(_.apps.nonEmpty)
 
   lazy val applicationDependencies: List[(AppDefinition, AppDefinition)] = {
     var result = List.empty[(AppDefinition, AppDefinition)]
@@ -166,8 +162,7 @@ case class Group(
       app <- group.apps
       dependencyId <- app.dependencies
       dependentApp = transitiveApps.find(_.id == dependencyId).map(a => Set(a))
-      dependentGroup = allGroups
-        .find(_.id == dependencyId)
+      dependentGroup = allGroups.find(_.id == dependencyId)
         .map(_.transitiveApps)
       dependent <- dependentApp orElse dependentGroup getOrElse Set.empty
     } result ::= app -> dependent
@@ -295,7 +290,8 @@ object Group {
             servicePorts =>
               for {
                 existingApp <- group.transitiveApps.toList
-                if existingApp.id != app.id // in case of an update, do not compare the app against itself
+                if existingApp.id != app
+                  .id // in case of an update, do not compare the app against itself
                 existingServicePort <- existingApp.portMappings.toList.flatten
                   .map(_.servicePort)
                 if existingServicePort != 0 // ignore zero ports, which will be chosen at random

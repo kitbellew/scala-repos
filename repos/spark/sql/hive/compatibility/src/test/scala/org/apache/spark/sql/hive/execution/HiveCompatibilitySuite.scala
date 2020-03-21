@@ -37,8 +37,8 @@ class HiveCompatibilitySuite extends HiveQueryFileTest with BeforeAndAfter {
   private val originalTimeZone = TimeZone.getDefault
   private val originalLocale = Locale.getDefault
   private val originalColumnBatchSize = TestHive.conf.columnBatchSize
-  private val originalInMemoryPartitionPruning =
-    TestHive.conf.inMemoryPartitionPruning
+  private val originalInMemoryPartitionPruning = TestHive.conf
+    .inMemoryPartitionPruning
 
   def testCases: Seq[(String, File)] = {
     hiveQueryDir.listFiles.map(f => f.getName.stripSuffix(".q") -> f)

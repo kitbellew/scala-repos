@@ -75,8 +75,8 @@ final class IntervalSeq[T] private (
   }
 
   override def hashCode: Int = {
-    belowAll.## * 41 + Arrays.hashCode(kinds) * 23 + Arrays.hashCode(
-      values.asInstanceOf[Array[AnyRef]])
+    belowAll.## * 41 + Arrays.hashCode(kinds) * 23 + Arrays
+      .hashCode(values.asInstanceOf[Array[AnyRef]])
   }
 
   override def equals(rhs: Any): Boolean =

@@ -39,9 +39,9 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
   def render(request: HttpServletRequest): Seq[Node] = {
     val appId = request.getParameter("appId")
     val state = master.askWithRetry[MasterStateResponse](RequestMasterState)
-    val app = state.activeApps
-      .find(_.id == appId)
-      .getOrElse({ state.completedApps.find(_.id == appId).getOrElse(null) })
+    val app = state.activeApps.find(_.id == appId).getOrElse({
+      state.completedApps.find(_.id == appId).getOrElse(null)
+    })
     if (app == null) {
       val msg = <div class="row-fluid">No running application with ID {
         appId
@@ -56,22 +56,18 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
       "Memory",
       "State",
       "Logs")
-    val allExecutors =
-      (app.executors.values ++ app.removedExecutors).toSet.toSeq
+    val allExecutors = (app.executors.values ++ app.removedExecutors).toSet
+      .toSeq
     // This includes executors that are either still running or have exited cleanly
     val executors = allExecutors.filter { exec =>
-      !ExecutorState.isFinished(
-        exec.state) || exec.state == ExecutorState.EXITED
+      !ExecutorState.isFinished(exec.state) || exec.state == ExecutorState
+        .EXITED
     }
     val removedExecutors = allExecutors.diff(executors)
-    val executorsTable = UIUtils.listingTable(
-      executorHeaders,
-      executorRow,
-      executors)
-    val removedExecutorsTable = UIUtils.listingTable(
-      executorHeaders,
-      executorRow,
-      removedExecutors)
+    val executorsTable = UIUtils
+      .listingTable(executorHeaders, executorRow, executors)
+    val removedExecutorsTable = UIUtils
+      .listingTable(executorHeaders, executorRow, removedExecutors)
 
     val content = <div class="row-fluid">
         <div class="span12">
@@ -84,10 +80,8 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
       if (app.desc.maxCores.isEmpty) {
         "Unlimited (%s granted)".format(app.coresGranted)
       } else {
-        "%s (%s granted, %s left)".format(
-          app.desc.maxCores.get,
-          app.coresGranted,
-          app.coresLeft)
+        "%s (%s granted, %s left)"
+          .format(app.desc.maxCores.get, app.coresGranted, app.coresLeft)
       }
     }
             </li>
@@ -128,18 +122,16 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
       <td>{executor.state}</td>
       <td>
         <a href={
-      "%s/logPage?appId=%s&executorId=%s&logType=stdout"
-        .format(
-          executor.worker.webUiAddress,
-          executor.application.id,
-          executor.id)
+      "%s/logPage?appId=%s&executorId=%s&logType=stdout".format(
+        executor.worker.webUiAddress,
+        executor.application.id,
+        executor.id)
     }>stdout</a>
         <a href={
-      "%s/logPage?appId=%s&executorId=%s&logType=stderr"
-        .format(
-          executor.worker.webUiAddress,
-          executor.application.id,
-          executor.id)
+      "%s/logPage?appId=%s&executorId=%s&logType=stderr".format(
+        executor.worker.webUiAddress,
+        executor.application.id,
+        executor.id)
     }>stderr</a>
       </td>
     </tr>

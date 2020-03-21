@@ -180,8 +180,8 @@ class PruningSuite extends HiveComparisonTest with BeforeAndAfter {
         actualScannedColumns === expectedScannedColumns,
         "Scanned columns mismatch")
 
-      val actualPartitions =
-        actualPartValues.map(_.asScala.mkString(",")).sorted
+      val actualPartitions = actualPartValues.map(_.asScala.mkString(","))
+        .sorted
       val expectedPartitions = expectedPartValues.map(_.mkString(",")).sorted
 
       assert(

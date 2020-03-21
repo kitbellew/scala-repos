@@ -6,8 +6,8 @@ import org.scalatra.metrics.MetricsSupportExtensions._
 import org.scalatra.test.scalatest.ScalatraFlatSpec
 
 class MetricsServletSupportSpec extends ScalatraFlatSpec {
-  servletContextHandler.addEventListener(
-    new ServletContextListener with MetricsBootstrap {
+  servletContextHandler
+    .addEventListener(new ServletContextListener with MetricsBootstrap {
       def contextDestroyed(sce: ServletContextEvent): Unit = {}
 
       def contextInitialized(sce: ServletContextEvent): Unit = {

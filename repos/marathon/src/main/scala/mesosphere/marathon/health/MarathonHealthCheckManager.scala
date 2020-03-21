@@ -117,8 +117,8 @@ class MarathonHealthCheckManager @Inject() (
       val healthChecksForVersion: Set[ActiveHealthCheck] = listActive(
         appId,
         appVersion)
-      val toRemove: Set[ActiveHealthCheck] = healthChecksForVersion.filter(
-        _.healthCheck == healthCheck)
+      val toRemove: Set[ActiveHealthCheck] = healthChecksForVersion
+        .filter(_.healthCheck == healthCheck)
       for (ahc <- toRemove) {
         log.info(
           s"Removing health check for app [$appId] and version [$appVersion]: [$healthCheck]")
@@ -157,8 +157,7 @@ class MarathonHealthCheckManager @Inject() (
 
         val tasks: Iterable[Task] = taskTracker.appTasksSync(app.id)
         val activeAppVersions: Set[Timestamp] = tasks.iterator
-          .flatMap(_.launched.map(_.appVersion))
-          .toSet + app.version
+          .flatMap(_.launched.map(_.appVersion)).toSet + app.version
 
         val healthCheckAppVersions: Set[Timestamp] = appHealthChecks.writeLock {
           ahcs =>
@@ -177,22 +176,22 @@ class MarathonHealthCheckManager @Inject() (
         // reconcile all running versions of the current app
         val appVersionsWithoutHealthChecks: Set[Timestamp] =
           activeAppVersions -- healthCheckAppVersions
-        val res: Iterator[Future[Unit]] =
-          appVersionsWithoutHealthChecks.iterator map { version =>
-            appRepository.app(app.id, version) map {
-              case None =>
-                // FIXME: If the app version of the task is not available anymore, no health check is started.
-                // We generated a new app version for every scale change. If maxVersions is configured, we
-                // throw away old versions such that we may not have the app configuration of all tasks available anymore.
-                log.warn(
-                  s"Cannot find health check configuration for [$appId] and version [$version], " +
-                    "using most recent one.")
+        val res: Iterator[Future[Unit]] = appVersionsWithoutHealthChecks
+          .iterator map { version =>
+          appRepository.app(app.id, version) map {
+            case None =>
+              // FIXME: If the app version of the task is not available anymore, no health check is started.
+              // We generated a new app version for every scale change. If maxVersions is configured, we
+              // throw away old versions such that we may not have the app configuration of all tasks available anymore.
+              log.warn(
+                s"Cannot find health check configuration for [$appId] and version [$version], " +
+                  "using most recent one.")
 
-              case Some(appVersion) =>
-                log.info(s"addAllFor [$appId] version [$version]")
-                addAllFor(appVersion)
-            }
+            case Some(appVersion) =>
+              log.info(s"addAllFor [$appId] version [$version]")
+              addAllFor(appVersion)
           }
+        }
         Future.sequence(res) map { _ => () }
     }
 
@@ -246,12 +245,10 @@ class MarathonHealthCheckManager @Inject() (
       case None => Future.successful(Nil)
       case Some(appVersion) =>
         Future.sequence(
-          listActive(appId, appVersion).iterator
-            .collect {
-              case ActiveHealthCheck(_, actor) =>
-                (actor ? GetTaskHealth(taskId)).mapTo[Health]
-            }
-            .to[Seq])
+          listActive(appId, appVersion).iterator.collect {
+            case ActiveHealthCheck(_, actor) =>
+              (actor ? GetTaskHealth(taskId)).mapTo[Health]
+          }.to[Seq])
     }
   }
 
@@ -259,8 +256,8 @@ class MarathonHealthCheckManager @Inject() (
     appHealthChecks.readLock { ahcs =>
       implicit val timeout: Timeout = Timeout(2, SECONDS)
       val futureHealths = for {
-        ActiveHealthCheck(_, actor) <- ahcs(
-          appId).values.iterator.flatten.toVector
+        ActiveHealthCheck(_, actor) <- ahcs(appId).values.iterator.flatten
+          .toVector
       } yield (actor ? GetAppHealth).mapTo[AppHealth]
 
       Future.sequence(futureHealths) flatMap { healths =>

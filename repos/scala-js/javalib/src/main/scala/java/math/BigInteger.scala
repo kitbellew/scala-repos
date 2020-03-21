@@ -81,8 +81,8 @@ object BigInteger {
     TEN
   )
 
-  private final val TWO_POWS = Array.tabulate[BigInteger](32)(i =>
-    BigInteger.valueOf(1L << i))
+  private final val TWO_POWS = Array
+    .tabulate[BigInteger](32)(i => BigInteger.valueOf(1L << i))
 
   /** The first non zero digit is either -1 if sign is zero, otherwise it is >= 0.
     *
@@ -226,9 +226,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
   def this(s: String, radix: Int) = {
     this()
     checkNotNull(s)
-    if ((radix < java.lang.Character.MIN_RADIX) || (
-          radix > java.lang.Character.MAX_RADIX
-        )) throw new NumberFormatException("Radix out of range")
+    if ((radix < java.lang.Character.MIN_RADIX) || (radix > java.lang.Character
+          .MAX_RADIX)) throw new NumberFormatException("Radix out of range")
     if (s.isEmpty) throw new NumberFormatException("Zero length BigInteger")
 
     this.setFromString(s, radix)
@@ -358,11 +357,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
           val resDigits = new Array[Int](resLength)
           val resSign = if (thisSign == divisorSign) 1 else -1
           if (divisorLen == 1) {
-            Division.divideArrayByInt(
-              resDigits,
-              digits,
-              thisLen,
-              divisor.digits(0))
+            Division
+              .divideArrayByInt(resDigits, digits, thisLen, divisor.digits(0))
           } else {
             Division.divide(
               resDigits,
@@ -592,19 +588,12 @@ class BigInteger extends Number with Comparable[BigInteger] {
       val resLength = divisorLen
       var resDigits = new Array[Int](resLength)
       if (resLength == 1) {
-        resDigits(0) = Division.remainderArrayByInt(
-          digits,
-          thisLen,
-          divisor.digits(0))
+        resDigits(0) = Division
+          .remainderArrayByInt(digits, thisLen, divisor.digits(0))
       } else {
         val qLen = thisLen - divisorLen + 1
-        resDigits = Division.divide(
-          null,
-          qLen,
-          digits,
-          thisLen,
-          divisor.digits,
-          divisorLen)
+        resDigits = Division
+          .divide(null, qLen, digits, thisLen, divisor.digits, divisorLen)
       }
       val result = new BigInteger(sign, resLength, resDigits)
       result.cutOffLeadingZeroes()

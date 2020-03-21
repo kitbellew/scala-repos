@@ -70,10 +70,10 @@ object HiveThriftServer2 extends Logging {
     listener = new HiveThriftServer2Listener(server, sqlContext.conf)
     sqlContext.sparkContext.addSparkListener(listener)
     uiTab =
-      if (sqlContext.sparkContext.getConf.getBoolean(
-            "spark.ui.enabled",
-            true)) { Some(new ThriftServerTab(sqlContext.sparkContext)) }
-      else { None }
+      if (sqlContext.sparkContext.getConf
+            .getBoolean("spark.ui.enabled", true)) {
+        Some(new ThriftServerTab(sqlContext.sparkContext))
+      } else { None }
   }
 
   def main(args: Array[String]) {
@@ -99,10 +99,10 @@ object HiveThriftServer2 extends Logging {
         new HiveThriftServer2Listener(server, SparkSQLEnv.hiveContext.conf)
       SparkSQLEnv.sparkContext.addSparkListener(listener)
       uiTab =
-        if (SparkSQLEnv.sparkContext.getConf.getBoolean(
-              "spark.ui.enabled",
-              true)) { Some(new ThriftServerTab(SparkSQLEnv.sparkContext)) }
-        else { None }
+        if (SparkSQLEnv.sparkContext.getConf
+              .getBoolean("spark.ui.enabled", true)) {
+          Some(new ThriftServerTab(SparkSQLEnv.sparkContext))
+        } else { None }
       // If application was killed before HiveThriftServer2 start successfully then SparkSubmit
       // process can not exit, so check whether if SparkContext was stopped.
       if (SparkSQLEnv.sparkContext.stopped.get()) {
@@ -165,10 +165,10 @@ object HiveThriftServer2 extends Logging {
     private var onlineSessionNum: Int = 0
     private val sessionList = new mutable.LinkedHashMap[String, SessionInfo]
     private val executionList = new mutable.LinkedHashMap[String, ExecutionInfo]
-    private val retainedStatements = conf.getConf(
-      SQLConf.THRIFTSERVER_UI_STATEMENT_LIMIT)
-    private val retainedSessions = conf.getConf(
-      SQLConf.THRIFTSERVER_UI_SESSION_LIMIT)
+    private val retainedStatements = conf
+      .getConf(SQLConf.THRIFTSERVER_UI_STATEMENT_LIMIT)
+    private val retainedSessions = conf
+      .getConf(SQLConf.THRIFTSERVER_UI_SESSION_LIMIT)
     private var totalRunning = 0
 
     def getOnlineSessionNum: Int = synchronized { onlineSessionNum }

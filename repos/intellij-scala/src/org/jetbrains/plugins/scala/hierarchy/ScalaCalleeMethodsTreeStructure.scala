@@ -32,8 +32,8 @@ class ScalaCalleeMethodsTreeStructure(
 
   protected final def buildChildren(
       descriptor: HierarchyNodeDescriptor): Array[AnyRef] = {
-    val enclosingElement: PsiMember =
-      descriptor.asInstanceOf[CallHierarchyNodeDescriptor].getEnclosingElement
+    val enclosingElement: PsiMember = descriptor
+      .asInstanceOf[CallHierarchyNodeDescriptor].getEnclosingElement
     val method: PsiMethod = enclosingElement match {
       case method: PsiMethod => method
       case _                 => return ArrayUtil.EMPTY_OBJECT_ARRAY
@@ -51,8 +51,7 @@ class ScalaCalleeMethodsTreeStructure(
         ScalaCalleeMethodsTreeStructure.visitor(body, methods)
     }
     val baseMethod: PsiMethod = getBaseDescriptor
-      .asInstanceOf[CallHierarchyNodeDescriptor]
-      .getTargetElement
+      .asInstanceOf[CallHierarchyNodeDescriptor].getTargetElement
       .asInstanceOf[PsiMethod]
     val baseClass: PsiClass = baseMethod.containingClass
     val methodToDescriptorMap
@@ -76,8 +75,7 @@ class ScalaCalleeMethodsTreeStructure(
       }
     }
     val overridingMethods: Array[PsiMethod] = OverridingMethodsSearch
-      .search(method, method.getUseScope, true)
-      .toArray(PsiMethod.EMPTY_ARRAY)
+      .search(method, method.getUseScope, true).toArray(PsiMethod.EMPTY_ARRAY)
     for (overridingMethod <- overridingMethods
          if isInScope(baseClass, overridingMethod, myScopeType)) {
       val node: CallHierarchyNodeDescriptor = new CallHierarchyNodeDescriptor(
@@ -106,8 +104,8 @@ object ScalaCalleeMethodsTreeStructure {
           case _               =>
         }
       case callExpression: PsiMethodCallExpression =>
-        val methodExpression: PsiReferenceExpression =
-          callExpression.getMethodExpression
+        val methodExpression: PsiReferenceExpression = callExpression
+          .getMethodExpression
         val method: PsiMethod = methodExpression.resolve.asInstanceOf[PsiMethod]
         if (method != null) { methods += method }
       case newExpression: PsiNewExpression =>

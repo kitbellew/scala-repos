@@ -20,8 +20,7 @@ object $update {
       upsert: Boolean = false,
       multi: Boolean = false): Funit =
     implicitly[InColl[A]].coll
-      .update(selector, update, upsert = upsert, multi = multi)
-      .void
+      .update(selector, update, upsert = upsert, multi = multi).void
 
   def doc[ID: Writes, A <: Identified[ID]: TubeInColl](id: ID)(
       op: A => JsObject): Funit =

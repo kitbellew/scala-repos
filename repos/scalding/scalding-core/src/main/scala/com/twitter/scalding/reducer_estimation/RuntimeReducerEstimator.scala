@@ -44,11 +44,10 @@ object RuntimeReducerEstimator {
 
   def getReduceTimes(history: Seq[FlowStepHistory]): Seq[Seq[Double]] =
     history.map { h =>
-      h.tasks
-        .filter { t =>
-          t.taskType == "REDUCE" && t.status == "SUCCEEDED" && t.finishTime > t.startTime
-        }
-        .map { t => (t.finishTime - t.startTime).toDouble }
+      h.tasks.filter { t =>
+        t.taskType == "REDUCE" && t.status == "SUCCEEDED" && t.finishTime > t
+          .startTime
+      }.map { t => (t.finishTime - t.startTime).toDouble }
     }
 }
 
@@ -143,9 +142,9 @@ trait InputScaledRuntimeReducerEstimator extends HistoryReducerEstimator {
     }
 
     // time-to-byte ratio for a step = time per reducer * number of reducers / number of bytes
-    val timeToByteRatios: Seq[Double] = jobTimes
-      .zip { history.map(_.hdfsBytesRead) }
-      .collect { case (Some(time), bytes) => time / bytes }
+    val timeToByteRatios: Seq[Double] = jobTimes.zip {
+      history.map(_.hdfsBytesRead)
+    }.collect { case (Some(time), bytes) => time / bytes }
 
     // time-to-byte ratio, averaged over all the steps
     val typicalTimeToByteRatio: Option[Double] = runtimeEstimationScheme
@@ -180,8 +179,8 @@ trait RuntimeReducerEstimator extends HistoryReducerEstimator {
   def estimateReducers(
       info: FlowStrategyInfo,
       history: Seq[FlowStepHistory]): Option[Int] = {
-    val estimationScheme = RuntimeReducerEstimator.getRuntimeEstimationScheme(
-      info.step.getConfig)
+    val estimationScheme = RuntimeReducerEstimator
+      .getRuntimeEstimationScheme(info.step.getConfig)
 
     val history = historyService
 
@@ -191,8 +190,8 @@ trait RuntimeReducerEstimator extends HistoryReducerEstimator {
     }
 
     val combinedEstimator =
-      if (RuntimeReducerEstimator.getRuntimeIgnoreInputSize(
-            info.step.getConfig)) { basicEstimator }
+      if (RuntimeReducerEstimator
+            .getRuntimeIgnoreInputSize(info.step.getConfig)) { basicEstimator }
       else {
         val inputScaledEstimator = new InputScaledRuntimeReducerEstimator {
           def runtimeEstimationScheme = estimationScheme

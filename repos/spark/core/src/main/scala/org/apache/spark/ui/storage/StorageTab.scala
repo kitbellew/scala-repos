@@ -88,8 +88,8 @@ class StorageListener(storageStatusListener: StorageStatusListener)
       stageCompleted: SparkListenerStageCompleted): Unit =
     synchronized {
       // Remove all partitions that are no longer cached in current completed stage
-      val completedRddIds =
-        stageCompleted.stageInfo.rddInfos.map(r => r.id).toSet
+      val completedRddIds = stageCompleted.stageInfo.rddInfos.map(r => r.id)
+        .toSet
       _rddInfoMap.retain {
         case (id, info) =>
           !completedRddIds.contains(id) || info.numCachedPartitions > 0

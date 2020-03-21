@@ -813,16 +813,14 @@ private[akka] final class FunctionRef(
 
   private def sendTerminated(ifLocal: Boolean)(watcher: ActorRef): Unit =
     if (watcher.asInstanceOf[ActorRefScope].isLocal == ifLocal)
-      watcher
-        .asInstanceOf[InternalActorRef]
+      watcher.asInstanceOf[InternalActorRef]
         .sendSystemMessage(DeathWatchNotification(
           this,
           existenceConfirmed = true,
           addressTerminated = false))
 
   private def unwatchWatched(watched: ActorRef): Unit =
-    watched
-      .asInstanceOf[InternalActorRef]
+    watched.asInstanceOf[InternalActorRef]
       .sendSystemMessage(Unwatch(watched, this))
 
   override def stop(): Unit = sendTerminated()
@@ -895,8 +893,7 @@ private[akka] final class FunctionRef(
     */
   def watch(actorRef: ActorRef): Unit = {
     watching += actorRef
-    actorRef
-      .asInstanceOf[InternalActorRef]
+    actorRef.asInstanceOf[InternalActorRef]
       .sendSystemMessage(Watch(actorRef.asInstanceOf[InternalActorRef], this))
   }
 
@@ -907,8 +904,7 @@ private[akka] final class FunctionRef(
     */
   def unwatch(actorRef: ActorRef): Unit = {
     watching -= actorRef
-    actorRef
-      .asInstanceOf[InternalActorRef]
+    actorRef.asInstanceOf[InternalActorRef]
       .sendSystemMessage(Unwatch(actorRef.asInstanceOf[InternalActorRef], this))
   }
 

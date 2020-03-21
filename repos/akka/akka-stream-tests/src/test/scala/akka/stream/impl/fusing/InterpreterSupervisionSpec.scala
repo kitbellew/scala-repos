@@ -280,9 +280,8 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
         downstream.requestOne()
         lastEvents() should be(Set(RequestOne))
-        upstream.onNext(
-          -5
-        ) // this will trigger failure of next requestOne (pull)
+        upstream
+          .onNext(-5) // this will trigger failure of next requestOne (pull)
         lastEvents() should be(Set(OnNext(99)))
 
         downstream.requestOne() // boom

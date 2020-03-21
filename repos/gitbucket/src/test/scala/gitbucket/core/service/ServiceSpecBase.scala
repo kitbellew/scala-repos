@@ -36,13 +36,8 @@ trait ServiceSpecBase {
   }
 
   def generateNewAccount(name: String)(implicit s: Session): Account = {
-    AccountService.createAccount(
-      name,
-      name,
-      name,
-      s"${name}@example.com",
-      false,
-      None)
+    AccountService
+      .createAccount(name, name, name, s"${name}@example.com", false, None)
     user(name)
   }
 
@@ -58,8 +53,7 @@ trait ServiceSpecBase {
 
   def generateNewUserWithDBRepository(userName: String, repositoryName: String)(
       implicit s: Session): Account = {
-    val ac = AccountService
-      .getAccountByUserName(userName)
+    val ac = AccountService.getAccountByUserName(userName)
       .getOrElse(generateNewAccount(userName))
     dummyService.insertRepository(repositoryName, userName, None, false)
     ac

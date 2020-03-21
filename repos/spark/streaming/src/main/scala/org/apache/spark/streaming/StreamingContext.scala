@@ -132,8 +132,7 @@ class StreamingContext private[streaming] (
     this(
       sparkContext,
       CheckpointReader
-        .read(path, sparkContext.conf, sparkContext.hadoopConfiguration)
-        .get,
+        .read(path, sparkContext.conf, sparkContext.hadoopConfiguration).get,
       null)
   }
 
@@ -155,8 +154,8 @@ class StreamingContext private[streaming] (
     }
   }
 
-  if (sc.conf.get("spark.master") == "local" || sc.conf.get(
-        "spark.master") == "local[1]") {
+  if (sc.conf.get("spark.master") == "local" || sc.conf
+        .get("spark.master") == "local[1]") {
     logWarning(
       "spark.master should be set as local[n], n > 1 in local mode if you have receivers" +
         " to get data, otherwise Spark jobs will not get resources to process the received data.")
@@ -277,11 +276,8 @@ class StreamingContext private[streaming] (
     * Note: Return statements are NOT allowed in the given body.
     */
   private[streaming] def withNamedScope[U](name: String)(body: => U): U = {
-    RDDOperationScope.withScope(
-      sc,
-      name,
-      allowNesting = false,
-      ignoreParent = false)(body)
+    RDDOperationScope
+      .withScope(sc, name, allowNesting = false, ignoreParent = false)(body)
   }
 
   /**
@@ -551,8 +547,7 @@ class StreamingContext private[streaming] (
           throw new NotSerializableException(
             "DStream checkpointing has been enabled but the DStreams with their functions " +
               "are not serializable\n" +
-              SerializationDebugger
-                .improveException(checkpoint, e)
+              SerializationDebugger.improveException(checkpoint, e)
                 .getMessage())
       }
     }
@@ -659,9 +654,9 @@ class StreamingContext private[streaming] (
     *                         started.
     */
   def stop(
-      stopSparkContext: Boolean = conf.getBoolean(
-        "spark.streaming.stopSparkContextByDefault",
-        true)): Unit = synchronized { stop(stopSparkContext, false) }
+      stopSparkContext: Boolean = conf
+        .getBoolean("spark.streaming.stopSparkContextByDefault", true)): Unit =
+    synchronized { stop(stopSparkContext, false) }
 
   /**
     * Stop the execution of the streams, with option of ensuring all received data
@@ -720,9 +715,8 @@ class StreamingContext private[streaming] (
   }
 
   private def stopOnShutdown(): Unit = {
-    val stopGracefully = conf.getBoolean(
-      "spark.streaming.stopGracefullyOnShutdown",
-      false)
+    val stopGracefully = conf
+      .getBoolean("spark.streaming.stopGracefullyOnShutdown", false)
     logInfo(s"Invoking stop(stopGracefully=$stopGracefully) from shutdown hook")
     // Do not stop SparkContext, let its own shutdown hook stop it
     stop(stopSparkContext = false, stopGracefully = stopGracefully)
@@ -741,8 +735,8 @@ object StreamingContext extends Logging {
     */
   private val ACTIVATION_LOCK = new Object()
 
-  private val SHUTDOWN_HOOK_PRIORITY =
-    ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY + 1
+  private val SHUTDOWN_HOOK_PRIORITY = ShutdownHookManager
+    .SPARK_CONTEXT_SHUTDOWN_PRIORITY + 1
 
   private val activeContext = new AtomicReference[StreamingContext](null)
 
@@ -832,13 +826,9 @@ object StreamingContext extends Logging {
       creatingFunc: () => StreamingContext,
       hadoopConf: Configuration = SparkHadoopUtil.get.conf,
       createOnError: Boolean = false): StreamingContext = {
-    val checkpointOption = CheckpointReader.read(
-      checkpointPath,
-      new SparkConf(),
-      hadoopConf,
-      createOnError)
-    checkpointOption
-      .map(new StreamingContext(null, _, null))
+    val checkpointOption = CheckpointReader
+      .read(checkpointPath, new SparkConf(), hadoopConf, createOnError)
+    checkpointOption.map(new StreamingContext(null, _, null))
       .getOrElse(creatingFunc())
   }
 
@@ -885,11 +875,8 @@ private class StreamingContextPythonHelper {
     */
   def tryRecoverFromCheckpoint(
       checkpointPath: String): Option[StreamingContext] = {
-    val checkpointOption = CheckpointReader.read(
-      checkpointPath,
-      new SparkConf(),
-      SparkHadoopUtil.get.conf,
-      false)
+    val checkpointOption = CheckpointReader
+      .read(checkpointPath, new SparkConf(), SparkHadoopUtil.get.conf, false)
     checkpointOption.map(new StreamingContext(null, _, null))
   }
 }

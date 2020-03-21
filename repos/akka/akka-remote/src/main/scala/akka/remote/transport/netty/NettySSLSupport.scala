@@ -129,8 +129,8 @@ private[akka] object NettySSLSupport {
           settings.SSLRandomNumberGenerator,
           log)
         val trustManagers: Array[TrustManager] = {
-          val trustManagerFactory = TrustManagerFactory.getInstance(
-            TrustManagerFactory.getDefaultAlgorithm)
+          val trustManagerFactory = TrustManagerFactory
+            .getInstance(TrustManagerFactory.getDefaultAlgorithm)
           trustManagerFactory.init({
             val trustStore = KeyStore.getInstance(KeyStore.getDefaultType)
             val fin = new FileInputStream(trustStorePath)
@@ -150,7 +150,8 @@ private[akka] object NettySSLSupport {
             e)
         case e: IOException ⇒
           throw new RemoteTransportException(
-            "Client SSL connection could not be established because: " + e.getMessage,
+            "Client SSL connection could not be established because: " + e
+              .getMessage,
             e)
         case e: GeneralSecurityException ⇒
           throw new RemoteTransportException(
@@ -174,8 +175,8 @@ private[akka] object NettySSLSupport {
         new SslHandler({
           val sslEngine = context.createSSLEngine
           sslEngine.setUseClientMode(true)
-          sslEngine.setEnabledCipherSuites(
-            settings.SSLEnabledAlgorithms.toArray)
+          sslEngine
+            .setEnabledCipherSuites(settings.SSLEnabledAlgorithms.toArray)
           sslEngine
         })
       case None ⇒
@@ -205,8 +206,8 @@ private[akka] object NettySSLSupport {
         val rng = initializeCustomSecureRandom(
           settings.SSLRandomNumberGenerator,
           log)
-        val factory = KeyManagerFactory.getInstance(
-          KeyManagerFactory.getDefaultAlgorithm)
+        val factory = KeyManagerFactory
+          .getInstance(KeyManagerFactory.getDefaultAlgorithm)
         factory.init(
           {
             val keyStore = KeyStore.getInstance(KeyStore.getDefaultType)
@@ -218,20 +219,20 @@ private[akka] object NettySSLSupport {
           keyPassword.toCharArray
         )
 
-        val trustManagers: Option[Array[TrustManager]] =
-          settings.SSLTrustStore map { path ⇒
-            val pwd = settings.SSLTrustStorePassword.map(_.toCharArray).orNull
-            val trustManagerFactory = TrustManagerFactory.getInstance(
-              TrustManagerFactory.getDefaultAlgorithm)
-            trustManagerFactory.init({
-              val trustStore = KeyStore.getInstance(KeyStore.getDefaultType)
-              val fin = new FileInputStream(path)
-              try trustStore.load(fin, pwd)
-              finally Try(fin.close())
-              trustStore
-            })
-            trustManagerFactory.getTrustManagers
-          }
+        val trustManagers: Option[Array[TrustManager]] = settings
+          .SSLTrustStore map { path ⇒
+          val pwd = settings.SSLTrustStorePassword.map(_.toCharArray).orNull
+          val trustManagerFactory = TrustManagerFactory
+            .getInstance(TrustManagerFactory.getDefaultAlgorithm)
+          trustManagerFactory.init({
+            val trustStore = KeyStore.getInstance(KeyStore.getDefaultType)
+            val fin = new FileInputStream(path)
+            try trustStore.load(fin, pwd)
+            finally Try(fin.close())
+            trustStore
+          })
+          trustManagerFactory.getTrustManagers
+        }
         Option(SSLContext.getInstance(protocol)) map { ctx ⇒
           ctx.init(factory.getKeyManagers, trustManagers.orNull, rng); ctx
         }
@@ -242,7 +243,8 @@ private[akka] object NettySSLSupport {
             e)
         case e: IOException ⇒
           throw new RemoteTransportException(
-            "Server SSL connection could not be established because: " + e.getMessage,
+            "Server SSL connection could not be established because: " + e
+              .getMessage,
             e)
         case e: GeneralSecurityException ⇒
           throw new RemoteTransportException(

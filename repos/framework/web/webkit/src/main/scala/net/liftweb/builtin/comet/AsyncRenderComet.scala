@@ -92,8 +92,8 @@ object AsyncRenderComet {
     * asynchronous renderer.
     */
   def completeAsyncRender(command: JsCmd): Box[Unit] = {
-    pageAsyncRenderer.is.map(
-      _ ! Render(command)) ?~! "Failed to create async renderer."
+    pageAsyncRenderer.is
+      .map(_ ! Render(command)) ?~! "Failed to create async renderer."
   }
 
   /**
@@ -106,7 +106,8 @@ object AsyncRenderComet {
     */
   def asyncRender(renderFunction: () => JsCmd): Box[Unit] = {
     for {
-      session <- S.session ?~ "Asynchronous rendering requires a session context."
+      session <- S
+        .session ?~ "Asynchronous rendering requires a session context."
       renderer <- pageAsyncRenderer.is ?~! "Failed to create async renderer."
     } yield {
       renderer ! Compute(session.buildDeferredFunction(renderFunction))

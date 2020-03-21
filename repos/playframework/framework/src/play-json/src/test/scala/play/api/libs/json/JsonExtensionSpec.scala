@@ -110,8 +110,8 @@ object JsonExtensionSpec extends Specification {
       //object User {def apply(age:Int):User = User(age,"")}
       implicit val userReads = Json.reads[User]
 
-      Json.fromJson[User](
-        Json.obj("name" -> "toto", "age" -> 45)) must beEqualTo(
+      Json
+        .fromJson[User](Json.obj("name" -> "toto", "age" -> 45)) must beEqualTo(
         JsSuccess(User(45, "toto")))
     }
 
@@ -129,8 +129,8 @@ object JsonExtensionSpec extends Specification {
 
       implicit val userFormat = Json.format[User]
 
-      Json.fromJson[User](
-        Json.obj("name" -> "toto", "age" -> 45)) must beEqualTo(
+      Json
+        .fromJson[User](Json.obj("name" -> "toto", "age" -> 45)) must beEqualTo(
         JsSuccess(User(45, "toto")))
       Json.toJson(User(45, "toto")) must beEqualTo(
         Json.obj("name" -> "toto", "age" -> 45))
@@ -297,9 +297,8 @@ object JsonExtensionSpec extends Specification {
       import play.api.libs.functional.syntax._
 
       implicit def genericFormat[A: Format]: Format[GenericCaseClass[A]] =
-        (((__ \ "obj").format[A]).inmap)(
-          GenericCaseClass[A] _,
-          unlift(GenericCaseClass.unapply[A]))
+        (((__ \ "obj").format[A])
+          .inmap)(GenericCaseClass[A] _, unlift(GenericCaseClass.unapply[A]))
 
       implicit val wrappedGenericIntFormat = Json.format[WrappedGenericInt]
 
@@ -327,8 +326,8 @@ object JsonExtensionSpec extends Specification {
 
       val genericIntString = GenericCaseClass2(obj1 = 1, obj2 = "hello")
       val genericHolder = WrappedGenericIntString(intString = genericIntString)
-      val expectedJsObj = Json.obj(
-        "intString" -> Json.obj("obj1" -> 1, "obj2" -> "hello"))
+      val expectedJsObj = Json
+        .obj("intString" -> Json.obj("obj1" -> 1, "obj2" -> "hello"))
       Json.toJson(genericHolder) must beEqualTo(expectedJsObj)
       Json.fromJson[WrappedGenericIntString](expectedJsObj).get must beEqualTo(
         genericHolder)
@@ -350,8 +349,7 @@ object JsonExtensionSpec extends Specification {
 
       "reads should be able to read valid Json and ignore invalid Json" in {
         jsObj.as[VarArgsOnly](reads) must beEqualTo(obj)
-        Json
-          .fromJson[VarArgsOnly](Json.obj("hello" -> "world"))(reads)
+        Json.fromJson[VarArgsOnly](Json.obj("hello" -> "world"))(reads)
           .isError must beTrue
       }
 
@@ -376,8 +374,7 @@ object JsonExtensionSpec extends Specification {
 
       "reads should be able to read valid Json and ignore invalid Json" in {
         jsObj.as[LastVarArg](reads) must beEqualTo(obj)
-        Json
-          .fromJson[LastVarArg](Json.obj("hello" -> "world"))(reads)
+        Json.fromJson[LastVarArg](Json.obj("hello" -> "world"))(reads)
           .isError must beTrue
       }
 
@@ -501,8 +498,7 @@ object JsonExtensionSpec extends Specification {
     }
 
     "test case single-field in companion object" in {
-      Json
-        .fromJson[Person2](Json.toJson(Person2(List("bob", "bobby"))))
+      Json.fromJson[Person2](Json.toJson(Person2(List("bob", "bobby"))))
         .get must beEqualTo(Person2(List("bob", "bobby")))
     }
 
@@ -526,8 +522,8 @@ object JsonExtensionSpec extends Specification {
 
       implicit val fmt = Json.format[CustomApply]
 
-      Json.fromJson[CustomApply](
-        Json.obj("a" -> 5, "b" -> "foo")) must beEqualTo(
+      Json
+        .fromJson[CustomApply](Json.obj("a" -> 5, "b" -> "foo")) must beEqualTo(
         JsSuccess(CustomApply(5, "foo")))
       Json.toJson(CustomApply(5, "foo")) must beEqualTo(
         Json.obj("a" -> 5, "b" -> "foo"))

@@ -22,8 +22,8 @@ object ManifestScalaType {
                java.lang.Double]) ManifestScalaType.DoubleType
     else if (mf.runtimeClass == classOf[BigInt] || mf.runtimeClass == classOf[
                java.math.BigInteger]) ManifestScalaType.BigIntType
-    else if (mf.runtimeClass == classOf[
-               BigDecimal] || mf.runtimeClass == classOf[java.math.BigDecimal])
+    else if (mf.runtimeClass == classOf[BigDecimal] || mf
+               .runtimeClass == classOf[java.math.BigDecimal])
       ManifestScalaType.BigDecimalType
     else if (mf.runtimeClass == classOf[Boolean] || mf.runtimeClass == classOf[
                java.lang.Boolean]) ManifestScalaType.BooleanType
@@ -51,9 +51,8 @@ object ManifestScalaType {
   def apply(
       erasure: Class[_],
       typeArgs: Seq[ScalaType] = Seq.empty): ScalaType = {
-    val mf = ManifestFactory.manifestOf(
-      erasure,
-      typeArgs.map(ManifestFactory.manifestOf(_)))
+    val mf = ManifestFactory
+      .manifestOf(erasure, typeArgs.map(ManifestFactory.manifestOf(_)))
     ManifestScalaType(mf)
   }
 
@@ -97,9 +96,7 @@ object ManifestScalaType {
     override def typeVars = {
       if (_typeVars == null)
         _typeVars = Map.empty[TypeVariable[_], ScalaType] ++
-          erasure.getTypeParameters
-            .map(_.asInstanceOf[TypeVariable[_]])
-            .toList
+          erasure.getTypeParameters.map(_.asInstanceOf[TypeVariable[_]]).toList
             .zip(manifest.typeArguments map (ManifestScalaType(_)))
       _typeVars
     }
@@ -145,19 +142,17 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   //    _typeArgs
   //  }
 
-  val typeArgs = manifest.typeArguments.map(ta =>
-    Reflector.scalaTypeOf(ta)) ++ (if (erasure.isArray)
-                                     List(Reflector.scalaTypeOf(
-                                       erasure.getComponentType))
-                                   else Nil)
+  val typeArgs = manifest.typeArguments
+    .map(ta => Reflector.scalaTypeOf(ta)) ++ (if (erasure.isArray)
+                                                List(Reflector.scalaTypeOf(
+                                                  erasure.getComponentType))
+                                              else Nil)
 
   private[this] var _typeVars: Map[TypeVariable[_], ScalaType] = null
   def typeVars = {
     if (_typeVars == null)
       _typeVars = Map.empty ++
-        erasure.getTypeParameters
-          .map(_.asInstanceOf[TypeVariable[_]])
-          .toList
+        erasure.getTypeParameters.map(_.asInstanceOf[TypeVariable[_]]).toList
           .zip(manifest.typeArguments map (ManifestScalaType(_)))
     _typeVars
   }
@@ -179,11 +174,10 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   lazy val simpleName: String =
     rawSimpleName + (if (typeArgs.nonEmpty)
                        typeArgs.map(_.simpleName).mkString("[", ", ", "]")
-                     else (
-                       if (typeVars.nonEmpty)
-                         typeVars.map(_._2.simpleName).mkString("[", ", ", "]")
-                       else ""
-                     ))
+                     else (if (typeVars.nonEmpty)
+                             typeVars.map(_._2.simpleName)
+                               .mkString("[", ", ", "]")
+                           else ""))
 
   lazy val fullName: String =
     rawFullName + (if (typeArgs.nonEmpty)
@@ -253,9 +247,8 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
     else if (erasure == classOf[Number]) ManifestScalaType.NumberType
     /* end optimization */
     else {
-      val mf = ManifestFactory.manifestOf(
-        erasure,
-        typeArgs.map(ManifestFactory.manifestOf(_)))
+      val mf = ManifestFactory
+        .manifestOf(erasure, typeArgs.map(ManifestFactory.manifestOf(_)))
       val st = new CopiedManifestScalaType(mf, typeVars, isPrimitive)
       if (typeArgs.isEmpty) types.replace(mf, st) else st
     }

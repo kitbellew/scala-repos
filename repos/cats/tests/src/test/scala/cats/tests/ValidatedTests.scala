@@ -38,8 +38,8 @@ class ValidatedTests extends CatsSuite {
       .applicativeError[Int, Int, Int])
   checkAll(
     "ApplicativeError[Xor, String]",
-    SerializableTests.serializable(
-      ApplicativeError[Validated[String, ?], String]))
+    SerializableTests
+      .serializable(ApplicativeError[Validated[String, ?], String]))
 
   checkAll(
     "Validated[String, Int] with Option",
@@ -81,8 +81,8 @@ class ValidatedTests extends CatsSuite {
       OrderLaws[Validated[ListWrapper[String], ListWrapper[Int]]].eqv)
     checkAll(
       "Eq[Validated[ListWrapper[String], ListWrapper[Int]]]",
-      SerializableTests.serializable(
-        Eq[Validated[ListWrapper[String], ListWrapper[Int]]]))
+      SerializableTests
+        .serializable(Eq[Validated[ListWrapper[String], ListWrapper[Int]]]))
   }
 
   test("ap2 combines failures in order") {
@@ -93,8 +93,7 @@ class ValidatedTests extends CatsSuite {
 
   test("catchOnly catches matching exceptions") {
     assert(
-      Validated
-        .catchOnly[NumberFormatException] { "foo".toInt }
+      Validated.catchOnly[NumberFormatException] { "foo".toInt }
         .isInstanceOf[Invalid[NumberFormatException]])
   }
 

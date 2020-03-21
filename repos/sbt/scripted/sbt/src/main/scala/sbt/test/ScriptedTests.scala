@@ -293,8 +293,8 @@ private[test] final class ListTests(
       log.warn("No tests in test group " + groupName)
       Set.empty
     } else {
-      val (included, skipped) = allTests.toList.partition(test =>
-        accept(ScriptedTest(groupName, test.getName)))
+      val (included, skipped) = allTests.toList
+        .partition(test => accept(ScriptedTest(groupName, test.getName)))
       if (included.isEmpty) log.warn("Test group " + groupName + " skipped.")
       else if (skipped.nonEmpty) {
         log.warn("Tests skipped in group " + group.getName + ":")

@@ -39,13 +39,11 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
 
   override def setUp(): Unit = {
     super.setUp()
-    myProject.getMessageBus
-      .connect(myTestRootDisposable)
-      .subscribe(
-        ProjectTopics.PROJECT_ROOTS,
-        new ModuleRootAdapter {
-          override def rootsChanged(event: ModuleRootEvent) { forceFSRescan() }
-        })
+    myProject.getMessageBus.connect(myTestRootDisposable).subscribe(
+      ProjectTopics.PROJECT_ROOTS,
+      new ModuleRootAdapter {
+        override def rootsChanged(event: ModuleRootEvent) { forceFSRescan() }
+      })
     CompilerTestUtil.enableExternalCompiler()
 
     addRoots()
@@ -57,16 +55,15 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
     def getOrCreateChildDir(name: String) = {
       val file = new File(getBaseDir.getCanonicalPath, name)
       if (!file.exists()) file.mkdir()
-      LocalFileSystem.getInstance.refreshAndFindFileByPath(
-        file.getCanonicalPath)
+      LocalFileSystem.getInstance
+        .refreshAndFindFileByPath(file.getCanonicalPath)
     }
 
     inWriteAction {
       val srcRoot = getOrCreateChildDir("src")
       PsiTestUtil.addSourceRoot(getModule, srcRoot, false)
       val output = getOrCreateChildDir("out")
-      CompilerProjectExtension
-        .getInstance(getProject)
+      CompilerProjectExtension.getInstance(getProject)
         .setCompilerOutputUrl(output.getUrl)
     }
   }

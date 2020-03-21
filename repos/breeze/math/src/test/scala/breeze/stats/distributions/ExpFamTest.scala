@@ -23,9 +23,7 @@ trait ExpFamTest[D <: Density[T] with Rand[T], T]
     check(Prop.forAll { (p: expFam.Parameter) =>
       try {
         val dist = expFam.distribution(p)
-        val suffstat = dist
-          .sample(10000)
-          .map(sufficientStatisticFor)
+        val suffstat = dist.sample(10000).map(sufficientStatisticFor)
           .reduce(_ + _)
         val mle = expFam.mle(suffstat)
         if (!paramsClose(mle, p)) {

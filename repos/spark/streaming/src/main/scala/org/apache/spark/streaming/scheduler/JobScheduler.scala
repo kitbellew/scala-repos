@@ -49,9 +49,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     new ConcurrentHashMap[Time, JobSet]
   private val numConcurrentJobs = ssc.conf
     .getInt("spark.streaming.concurrentJobs", 1)
-  private val jobExecutor = ThreadUtils.newDaemonFixedThreadPool(
-    numConcurrentJobs,
-    "streaming-job-executor")
+  private val jobExecutor = ThreadUtils
+    .newDaemonFixedThreadPool(numConcurrentJobs, "streaming-job-executor")
   private val jobGenerator = new JobGenerator(this)
   val clock = jobGenerator.clock
   val listenerBus = new StreamingListenerBus(ssc.sparkContext.listenerBus)
@@ -113,10 +112,11 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
       // Wait for the queued jobs to complete if indicated
       val terminated =
         if (processAllReceivedData) {
-          jobExecutor.awaitTermination(
-            1,
-            TimeUnit.HOURS
-          ) // just a very large period of time
+          jobExecutor
+            .awaitTermination(
+              1,
+              TimeUnit.HOURS
+            ) // just a very large period of time
         } else { jobExecutor.awaitTermination(2, TimeUnit.SECONDS) }
       if (!terminated) { jobExecutor.shutdownNow() }
       logDebug("Stopped job executor")
@@ -168,8 +168,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
       listenerBus.post(StreamingListenerBatchStarted(jobSet.toBatchInfo))
     }
     job.setStartTime(startTime)
-    listenerBus.post(StreamingListenerOutputOperationStarted(
-      job.toOutputOperationInfo))
+    listenerBus
+      .post(StreamingListenerOutputOperationStarted(job.toOutputOperationInfo))
     logInfo("Starting job " + job.id + " from job set of time " + jobSet.time)
   }
 

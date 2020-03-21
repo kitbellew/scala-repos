@@ -88,15 +88,14 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(implicit
       : PartialFunction[APIKeyRecord, M[v1.APIKeyDetails]] = {
     case APIKeyRecord(apiKey, name, description, issuer, grantIds, false) =>
       underlying.findAPIKeyAncestry(apiKey).flatMap { ancestors =>
-        val ancestorKeys = ancestors
-          .drop(1)
+        val ancestorKeys = ancestors.drop(1)
           .map(
             _.apiKey
           ) // The first element of ancestors is the key itself, so we drop it
         grantIds.map(underlying.findGrant).toList.sequence map { grants =>
-          val divulgedIssuers = rootKey
-            .map { rk => ancestorKeys.reverse.dropWhile(_ != rk).reverse }
-            .getOrElse(Nil)
+          val divulgedIssuers = rootKey.map { rk =>
+            ancestorKeys.reverse.dropWhile(_ != rk).reverse
+          }.getOrElse(Nil)
           logger.debug(
             "Divulging issuers %s for key %s based on root key %s and ancestors %s"
               .format(divulgedIssuers, apiKey, rootKey, ancestorKeys))
@@ -141,10 +140,11 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(implicit
       accountId: AccountId,
       keyName: Option[String] = None,
       keyDesc: Option[String] = None): M[v1.APIKeyDetails] = {
-    underlying.newStandardAPIKeyRecord(
-      accountId,
-      keyName,
-      keyDesc) flatMap recordDetails
+    underlying
+      .newStandardAPIKeyRecord(
+        accountId,
+        keyName,
+        keyDesc) flatMap recordDetails
   }
 
   def addGrant(accountKey: APIKey, grantId: GrantId): M[Boolean] = {

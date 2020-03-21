@@ -174,7 +174,8 @@ trait TimeHelpers {
       dt match {
         case Left(duration) => duration.getMillis
         case Right(period) =>
-          period.toStandardDuration.getMillis // will throw exception because it holds month or year
+          period.toStandardDuration
+            .getMillis // will throw exception because it holds month or year
       }
 
     // TODO If we choose to move away from TimeSpan, we'll need to take into
@@ -308,12 +309,10 @@ trait TimeHelpers {
       */
     def format(millis: Long): String = {
       def divideInUnits(millis: Long) =
-        scales
-          .foldLeft[(Long, List[(Long, String)])]((millis, Nil)) {
-            (total, div) =>
-              (total._1 / div._1, (total._1 % div._1, div._2) :: total._2)
-          }
-          ._2
+        scales.foldLeft[(Long, List[(Long, String)])]((millis, Nil)) {
+          (total, div) =>
+            (total._1 / div._1, (total._1 % div._1, div._2) :: total._2)
+        }._2
       def formatAmount(amountUnit: (Long, String)) =
         amountUnit match {
           case (amount, unit) if (amount == 1) => amount + " " + unit

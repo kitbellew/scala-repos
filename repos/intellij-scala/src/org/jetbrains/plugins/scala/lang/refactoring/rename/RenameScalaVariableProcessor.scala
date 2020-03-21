@@ -77,8 +77,8 @@ class RenameScalaVariableProcessor
                 val name = wrapper.getName
                 val is = name.startsWith("is")
                 val prefix = if (is) "is" else name.substring(0, 3)
-                val newBeanName = prefix + StringUtil.capitalize(
-                  ScalaNamesUtil.toJavaName(newName))
+                val newBeanName = prefix + StringUtil
+                  .capitalize(ScalaNamesUtil.toJavaName(newName))
                 allRenames.put(wrapper, newBeanName)
               })
             case _ =>
@@ -89,15 +89,12 @@ class RenameScalaVariableProcessor
 
     addBeanMethods(element, newName)
 
-    for (elem <- ScalaOverridingMemberSearcher.search(
-           namedElement,
-           deep = true)) {
+    for (elem <- ScalaOverridingMemberSearcher
+           .search(namedElement, deep = true)) {
       val overriderName = elem.name
       val baseName = namedElement.name
-      val newOverriderName = RefactoringUtil.suggestNewOverriderName(
-        overriderName,
-        baseName,
-        newName)
+      val newOverriderName = RefactoringUtil
+        .suggestNewOverriderName(overriderName, baseName, newName)
       if (newOverriderName != null) {
         allRenames.put(elem, newOverriderName)
         addBeanMethods(elem, newOverriderName)
@@ -145,10 +142,7 @@ class RenameScalaVariableProcessor
       newName: String,
       usages: Array[UsageInfo],
       listener: RefactoringElementListener) {
-    ScalaRenameUtil.doRenameGenericNamedElement(
-      element,
-      newName,
-      usages,
-      listener)
+    ScalaRenameUtil
+      .doRenameGenericNamedElement(element, newName, usages, listener)
   }
 }

@@ -70,9 +70,7 @@ object ArrayUtil {
       case x: Array[Char]    => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
       case x: Array[Byte]    => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
       case x: Array[Boolean] => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
-      case x: Array[_] =>
-        Arrays
-          .copyOf(x.asInstanceOf[Array[AnyRef]], length)
+      case x: Array[_] => Arrays.copyOf(x.asInstanceOf[Array[AnyRef]], length)
           .asInstanceOf[Array[V]]
       case _ => throw new RuntimeException("shouldn't be here!")
     }
@@ -80,25 +78,24 @@ object ArrayUtil {
 
   def copyOfRange[V, VU >: V](a: Array[V], from: Int, to: Int): Array[V] = {
     a match {
-      case x: Array[Double] =>
-        Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
-      case x: Array[Int] =>
-        Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
-      case x: Array[Float] =>
-        Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
-      case x: Array[Long] =>
-        Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
-      case x: Array[Short] =>
-        Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
-      case x: Array[Char] =>
-        Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
-      case x: Array[Byte] =>
-        Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
-      case x: Array[Boolean] =>
-        Arrays.copyOfRange(x, from, to).asInstanceOf[Array[V]]
+      case x: Array[Double] => Arrays.copyOfRange(x, from, to)
+          .asInstanceOf[Array[V]]
+      case x: Array[Int] => Arrays.copyOfRange(x, from, to)
+          .asInstanceOf[Array[V]]
+      case x: Array[Float] => Arrays.copyOfRange(x, from, to)
+          .asInstanceOf[Array[V]]
+      case x: Array[Long] => Arrays.copyOfRange(x, from, to)
+          .asInstanceOf[Array[V]]
+      case x: Array[Short] => Arrays.copyOfRange(x, from, to)
+          .asInstanceOf[Array[V]]
+      case x: Array[Char] => Arrays.copyOfRange(x, from, to)
+          .asInstanceOf[Array[V]]
+      case x: Array[Byte] => Arrays.copyOfRange(x, from, to)
+          .asInstanceOf[Array[V]]
+      case x: Array[Boolean] => Arrays.copyOfRange(x, from, to)
+          .asInstanceOf[Array[V]]
       case x: Array[_] =>
-        Arrays
-          .copyOfRange(x.asInstanceOf[Array[AnyRef]], from, to)
+        Arrays.copyOfRange(x.asInstanceOf[Array[AnyRef]], from, to)
           .asInstanceOf[Array[V]]
       case _ => throw new RuntimeException("shouldn't be here!")
     }
@@ -113,8 +110,8 @@ object ArrayUtil {
       case x: Array[Short]  => new Array[Short](length).asInstanceOf[Array[V]]
       case x: Array[Char]   => new Array[Char](length).asInstanceOf[Array[V]]
       case x: Array[Byte]   => new Array[Byte](length).asInstanceOf[Array[V]]
-      case x: Array[Boolean] =>
-        new Array[Boolean](length).asInstanceOf[Array[V]]
+      case x: Array[Boolean] => new Array[Boolean](length)
+          .asInstanceOf[Array[V]]
       case x: Array[_] =>
         implicit val man = ClassTag[V](
           x.getClass.getComponentType.asInstanceOf[Class[V]])
@@ -184,29 +181,24 @@ object ArrayUtil {
         case x: Array[Int] =>
           Arrays.equals(a.asInstanceOf[Array[Int]], b.asInstanceOf[Array[Int]])
         case x: Array[Float] =>
-          Arrays.equals(
-            a.asInstanceOf[Array[Float]],
-            b.asInstanceOf[Array[Float]])
+          Arrays
+            .equals(a.asInstanceOf[Array[Float]], b.asInstanceOf[Array[Float]])
         case x: Array[Boolean] =>
           Arrays.equals(
             a.asInstanceOf[Array[Boolean]],
             b.asInstanceOf[Array[Boolean]])
         case x: Array[Long] =>
-          Arrays.equals(
-            a.asInstanceOf[Array[Long]],
-            b.asInstanceOf[Array[Long]])
+          Arrays
+            .equals(a.asInstanceOf[Array[Long]], b.asInstanceOf[Array[Long]])
         case x: Array[Short] =>
-          Arrays.equals(
-            a.asInstanceOf[Array[Short]],
-            b.asInstanceOf[Array[Short]])
+          Arrays
+            .equals(a.asInstanceOf[Array[Short]], b.asInstanceOf[Array[Short]])
         case x: Array[Char] =>
-          Arrays.equals(
-            a.asInstanceOf[Array[Char]],
-            b.asInstanceOf[Array[Char]])
+          Arrays
+            .equals(a.asInstanceOf[Array[Char]], b.asInstanceOf[Array[Char]])
         case x: Array[Byte] =>
-          Arrays.equals(
-            a.asInstanceOf[Array[Byte]],
-            b.asInstanceOf[Array[Byte]])
+          Arrays
+            .equals(a.asInstanceOf[Array[Byte]], b.asInstanceOf[Array[Byte]])
         case x: Array[_] =>
           Arrays.equals(
             a.asInstanceOf[Array[AnyRef]],
@@ -229,7 +221,8 @@ object ArrayUtil {
     val ac = a.getClass
     val bc = b.getClass
     if (ac != bc || alength != blength) false
-    else if (aoffset == 0 && astride == 1 && alength == a.length && boffset == 0 && bstride == 1 && blength == b.length) {
+    else if (aoffset == 0 && astride == 1 && alength == a
+               .length && boffset == 0 && bstride == 1 && blength == b.length) {
       ArrayUtil.equals(a, b)
     } else {
       a match {

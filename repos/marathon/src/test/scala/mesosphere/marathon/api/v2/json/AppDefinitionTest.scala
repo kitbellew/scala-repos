@@ -302,8 +302,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
 
   private[this] def fromJson(json: String): AppDefinition = {
     import Formats._
-    Json
-      .fromJson[AppDefinition](Json.parse(json))
+    Json.fromJson[AppDefinition](Json.parse(json))
       .getOrElse(throw new RuntimeException(s"could not parse: $json"))
   }
 
@@ -344,11 +343,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       disk = 550.0,
       executor = "",
       constraints = Set(
-        Constraint.newBuilder
-          .setField("attribute")
-          .setOperator(Constraint.Operator.GROUP_BY)
-          .setValue("value")
-          .build),
+        Constraint.newBuilder.setField("attribute")
+          .setOperator(Constraint.Operator.GROUP_BY).setValue("value").build),
       storeUrls = Seq("http://my.org.com/artifacts/foo.bar"),
       portDefinitions = PortDefinitions(9001, 9002),
       requirePorts = true,
@@ -717,18 +713,20 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       id = "/test".toRootPath,
       residency = Some(Residency(
         relaunchEscalationTimeoutSeconds = 3600,
-        taskLostBehavior =
-          Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER))
+        taskLostBehavior = Protos.ResidencyDefinition.TaskLostBehavior
+          .WAIT_FOREVER))
     )
     val proto = app.toProto
 
     proto.hasResidency shouldBe true
     proto.getResidency.getRelaunchEscalationTimeoutSeconds shouldBe 3600
-    proto.getResidency.getTaskLostBehavior shouldBe Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER
+    proto.getResidency.getTaskLostBehavior shouldBe Protos.ResidencyDefinition
+      .TaskLostBehavior.WAIT_FOREVER
 
     val appAgain = AppDefinition.fromProto(proto)
     appAgain.residency should not be empty
     appAgain.residency.get.relaunchEscalationTimeoutSeconds shouldBe 3600
-    appAgain.residency.get.taskLostBehavior shouldBe Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER
+    appAgain.residency.get.taskLostBehavior shouldBe Protos.ResidencyDefinition
+      .TaskLostBehavior.WAIT_FOREVER
   }
 }

@@ -19,8 +19,7 @@ package object methodSignature {
   private def findJsAny(project: Project): Option[PsiClass] = {
     val manager = ScalaPsiManager.instance(project)
     val scope = GlobalSearchScope.allScope(project)
-    manager
-      .getCachedClasses(scope, "scala.scalajs.js.Any")
+    manager.getCachedClasses(scope, "scala.scalajs.js.Any")
       .find(_.isInstanceOf[ScTrait])
   }
 }

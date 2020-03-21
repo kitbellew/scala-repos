@@ -66,11 +66,10 @@ private[serverset2] class ZkSession(
       case None =>
         // if there was no previous value, ensure we have a gauge
         synchronized {
-          watchUpdateGauges ::= statsReceiver.addGauge(
-            "last_watch_update",
-            path) {
-            Time.now.inLongSeconds - lastGoodUpdate.getOrElse(path, 0L)
-          }
+          watchUpdateGauges ::= statsReceiver
+            .addGauge("last_watch_update", path) {
+              Time.now.inLongSeconds - lastGoodUpdate.getOrElse(path, 0L)
+            }
         }
       case _ => //gauge is already there
     }
@@ -300,15 +299,9 @@ private[serverset2] object ZkSession {
       statsReceiver: StatsReceiver)(implicit timer: Timer): ZkSession =
     new ZkSession(
       retryStream,
-      ClientBuilder()
-        .hosts(hosts)
-        .sessionTimeout(sessionTimeout)
-        .statsReceiver(
-          DefaultStatsReceiver
-            .scope("zkclient")
-            .scope(Zk2Resolver.statsOf(hosts)))
-        .readOnlyOK()
-        .reader(),
+      ClientBuilder().hosts(hosts).sessionTimeout(sessionTimeout)
+        .statsReceiver(DefaultStatsReceiver.scope("zkclient").scope(
+          Zk2Resolver.statsOf(hosts))).readOnlyOK().reader(),
       statsReceiver.scope(Zk2Resolver.statsOf(hosts)))
 
   /**
@@ -334,12 +327,10 @@ private[serverset2] object ZkSession {
       logger.info(s"Starting new zk session ${zkSession.sessionId}")
 
       // Upon initial connection, send auth info, then update `u`.
-      zkSession.state.changes
-        .filter { _ == WatchState.SessionState(SessionState.SyncConnected) }
-        .toFuture
-        .unit before zkSession.addAuthInfo(
-        "digest",
-        Buf.Utf8(authInfo)) onSuccess { _ =>
+      zkSession.state.changes.filter {
+        _ == WatchState.SessionState(SessionState.SyncConnected)
+      }.toFuture.unit before zkSession
+        .addAuthInfo("digest", Buf.Utf8(authInfo)) onSuccess { _ =>
         logger.info(
           s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
         v() = zkSession
@@ -347,17 +338,14 @@ private[serverset2] object ZkSession {
       }
 
       // Kick off a delayed reconnection on session expiration.
-      zkSession.state.changes
-        .filter { _ == WatchState.SessionState(SessionState.Expired) }
-        .toFuture()
-        .unit
-        .before {
-          val jitter = backoff.next()
-          logger.error(
-            s"Zookeeper session ${zkSession.sessionIdAsHex} has expired. Reconnecting in $jitter")
-          Future.sleep(jitter)
-        }
-        .ensure { reconnect() }
+      zkSession.state.changes.filter {
+        _ == WatchState.SessionState(SessionState.Expired)
+      }.toFuture().unit.before {
+        val jitter = backoff.next()
+        logger.error(
+          s"Zookeeper session ${zkSession.sessionIdAsHex} has expired. Reconnecting in $jitter")
+        Future.sleep(jitter)
+      }.ensure { reconnect() }
     }
 
     reconnect()

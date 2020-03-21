@@ -33,8 +33,7 @@ abstract class ScalaDocEnterActionTestBase
       transform: String => String) {
     configureFromFileTextAdapter("dummy.scala", header + footer)
     getEditorAdapter.getCaretModel.moveToOffset(header.length - 1)
-    val enterHandler = EditorActionManager
-      .getInstance()
+    val enterHandler = EditorActionManager.getInstance()
       .getActionHandler(IdeActions.ACTION_EDITOR_ENTER)
 
     enterHandler.execute(

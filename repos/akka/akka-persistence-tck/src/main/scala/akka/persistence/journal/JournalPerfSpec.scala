@@ -117,8 +117,8 @@ abstract class JournalPerfSpec(config: Config) extends JournalSpec(config) {
 
       i += 1
     }
-    info(
-      s"Average time: ${(measurements.map(_.toNanos).sum / measurementIterations).nanos.toMillis} ms")
+    info(s"Average time: ${(measurements.map(_.toNanos)
+      .sum / measurementIterations).nanos.toMillis} ms")
   }
 
   /** Override in order to customize timeouts used for expectMsg, in order to tune the awaits to your journal's perf */

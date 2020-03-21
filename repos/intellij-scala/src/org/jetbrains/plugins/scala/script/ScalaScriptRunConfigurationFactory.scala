@@ -24,8 +24,7 @@ class ScalaScriptRunConfigurationFactory(val typez: ConfigurationType)
   override def createConfiguration(
       name: String,
       template: RunConfiguration): RunConfiguration = {
-    val configuration = (super
-      .createConfiguration(name, template))
+    val configuration = (super.createConfiguration(name, template))
       .asInstanceOf[ScalaScriptRunConfiguration]
     template.getProject.anyScalaModule.foreach(configuration.setModule(_))
     configuration

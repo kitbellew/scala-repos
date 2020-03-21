@@ -427,8 +427,7 @@ class ClientBuilder[
     */
   def codec[Req1, Rep1](codec: Codec[Req1, Rep1])
       : ClientBuilder[Req1, Rep1, HasCluster, Yes, HasHostConnectionLimit] =
-    this
-      .codec(Function.const(codec)(_))
+    this.codec(Function.const(codec)(_))
       .configured(ProtocolLibrary(codec.protocolLibraryName))
 
   /**
@@ -438,8 +437,7 @@ class ClientBuilder[
     */
   def codec[Req1, Rep1](codecFactory: CodecFactory[Req1, Rep1])
       : ClientBuilder[Req1, Rep1, HasCluster, Yes, HasHostConnectionLimit] =
-    this
-      .codec(codecFactory.client)
+    this.codec(codecFactory.client)
       .configured(ProtocolLibrary(codecFactory.protocolLibraryName))
 
   /**
@@ -753,8 +751,7 @@ class ClientBuilder[
     configured((Transport.TLSClientEngine(Some({
       case inet: InetSocketAddress => Ssl.client(hostname, inet.getPort)
       case _                       => Ssl.client()
-    }))))
-      .configured(Transporter.TLSHostname(Some(hostname)))
+    })))).configured(Transporter.TLSHostname(Some(hostname)))
   }
 
   /**
@@ -781,8 +778,7 @@ class ClientBuilder[
           hostname.getOrElse(inet.getHostName),
           inet.getPort)
       case _ => Ssl.client(sslContext)
-    }))))
-      .configured(Transporter.TLSHostname(hostname))
+    })))).configured(Transporter.TLSHostname(hostname))
 
   /**
     * Do not perform TLS validation. Probably dangerous.
@@ -808,8 +804,9 @@ class ClientBuilder[
     * If this is defined concurrently with socksProxy, the order in which they are applied is undefined.
     */
   def expHttpProxy(hostName: String, port: Int): This =
-    configured(params[Transporter.HttpProxy].copy(sa = Some(
-      InetSocketAddress.createUnresolved(hostName, port))))
+    configured(
+      params[Transporter.HttpProxy]
+        .copy(sa = Some(InetSocketAddress.createUnresolved(hostName, port))))
 
   /**
     * For the http proxy use these [[Credentials]] for authentication.
@@ -836,8 +833,9 @@ class ClientBuilder[
     * If this is defined concurrently with httpProxy, the order in which they are applied is undefined.
     */
   def expSocksProxy(hostName: String, port: Int): This =
-    configured(params[Transporter.HttpProxy].copy(sa = Some(
-      InetSocketAddress.createUnresolved(hostName, port))))
+    configured(
+      params[Transporter.HttpProxy]
+        .copy(sa = Some(InetSocketAddress.createUnresolved(hostName, port))))
 
   /**
     * For the socks proxy use this username for authentication.
@@ -1132,21 +1130,17 @@ private object ClientBuilderClient {
       client0: StackBasedClient[Req, Rep],
       dest: Name,
       label: String): Service[Req, Rep] = {
-    val client = client0
-      .transformed(new Stack.Transformer {
-        def apply[Request, Response](
-            stack: Stack[ServiceFactory[Request, Response]]) =
-          stack
-            .insertBefore(
-              Retries.Role,
-              new StatsFilterModule[Request, Response])
-            .replace(
-              Retries.Role,
-              Retries.moduleWithRetryPolicy[Request, Response])
-            .prepend(new GlobalTimeoutModule[Request, Response])
-            .prepend(new ExceptionSourceFilterModule[Request, Response])
-      })
-      .configured(FactoryToService.Enabled(true))
+    val client = client0.transformed(new Stack.Transformer {
+      def apply[Request, Response](
+          stack: Stack[ServiceFactory[Request, Response]]) =
+        stack
+          .insertBefore(Retries.Role, new StatsFilterModule[Request, Response])
+          .replace(
+            Retries.Role,
+            Retries.moduleWithRetryPolicy[Request, Response])
+          .prepend(new GlobalTimeoutModule[Request, Response])
+          .prepend(new ExceptionSourceFilterModule[Request, Response])
+    }).configured(FactoryToService.Enabled(true))
 
     val factory = newClient(client, dest, label)
     val service: Service[Req, Rep] = new FactoryToService[Req, Rep](factory)
@@ -1206,11 +1200,9 @@ private case class CodecClient[Req, Rep](
     }
 
     val clientStack = {
-      val stack0 = stack
-        .replace(StackClient.Role.prepConn, prepConn)
-        .replace(
-          StackClient.Role.prepFactory,
-          (next: ServiceFactory[Req, Rep]) => codec.prepareServiceFactory(next))
+      val stack0 = stack.replace(StackClient.Role.prepConn, prepConn).replace(
+        StackClient.Role.prepFactory,
+        (next: ServiceFactory[Req, Rep]) => codec.prepareServiceFactory(next))
         .replace(TraceInitializerFilter.role, codec.newTraceInitializer)
 
       // disable failFast if the codec requests it or it is

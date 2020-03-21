@@ -64,9 +64,7 @@ class InputMetrics private (
     */
   private[executor] def this() {
     this(
-      InternalAccumulator
-        .createInputAccums()
-        .map { a => (a.name.get, a) }
+      InternalAccumulator.createInputAccums().map { a => (a.name.get, a) }
         .toMap[String, Accumulator[_]])
   }
 

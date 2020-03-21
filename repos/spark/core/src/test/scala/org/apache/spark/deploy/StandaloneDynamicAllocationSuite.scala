@@ -61,19 +61,11 @@ class StandaloneDynamicAllocationSuite
     */
   override def beforeAll(): Unit = {
     super.beforeAll()
-    masterRpcEnv = RpcEnv.create(
-      Master.SYSTEM_NAME,
-      "localhost",
-      0,
-      conf,
-      securityManager)
+    masterRpcEnv = RpcEnv
+      .create(Master.SYSTEM_NAME, "localhost", 0, conf, securityManager)
     workerRpcEnvs = (0 until numWorkers).map { i =>
-      RpcEnv.create(
-        Worker.SYSTEM_NAME + i,
-        "localhost",
-        0,
-        conf,
-        securityManager)
+      RpcEnv
+        .create(Worker.SYSTEM_NAME + i, "localhost", 0, conf, securityManager)
     }
     master = makeMaster()
     workers = makeWorkers(10, 2048)
@@ -305,9 +297,7 @@ class StandaloneDynamicAllocationSuite
 
   test("dynamic allocation with cores per executor AND max cores") {
     sc = new SparkContext(
-      appConf
-        .set("spark.executor.cores", "2")
-        .set("spark.cores.max", "8"))
+      appConf.set("spark.executor.cores", "2").set("spark.cores.max", "8"))
     val appId = sc.applicationId
     eventually(timeout(10.seconds), interval(10.millis)) {
       val apps = getApplications()
@@ -464,10 +454,8 @@ class StandaloneDynamicAllocationSuite
 
   test("initial executor limit") {
     val initialExecutorLimit = 1
-    val myConf = appConf
-      .set("spark.dynamicAllocation.enabled", "true")
-      .set("spark.shuffle.service.enabled", "true")
-      .set(
+    val myConf = appConf.set("spark.dynamicAllocation.enabled", "true")
+      .set("spark.shuffle.service.enabled", "true").set(
         "spark.dynamicAllocation.initialExecutors",
         initialExecutorLimit.toString)
     sc = new SparkContext(myConf)
@@ -487,10 +475,8 @@ class StandaloneDynamicAllocationSuite
 
   /** Return a SparkConf for applications that want to talk to our Master. */
   private def appConf: SparkConf = {
-    new SparkConf()
-      .setMaster(masterRpcEnv.address.toSparkURL)
-      .setAppName("test")
-      .set("spark.executor.memory", "256m")
+    new SparkConf().setMaster(masterRpcEnv.address.toSparkURL)
+      .setAppName("test").set("spark.executor.memory", "256m")
   }
 
   /** Make a master to which our application will send executor requests. */
@@ -577,11 +563,12 @@ class StandaloneDynamicAllocationSuite
     */
   private def syncExecutors(sc: SparkContext): Unit = {
     val driverExecutors = sc.getExecutorStorageStatus
-      .map(_.blockManagerId.executorId)
-      .filter { _ != SparkContext.DRIVER_IDENTIFIER }
+      .map(_.blockManagerId.executorId).filter {
+        _ != SparkContext.DRIVER_IDENTIFIER
+      }
     val masterExecutors = getExecutorIds(sc)
-    val missingExecutors =
-      masterExecutors.toSet.diff(driverExecutors.toSet).toSeq.sorted
+    val missingExecutors = masterExecutors.toSet.diff(driverExecutors.toSet)
+      .toSeq.sorted
     missingExecutors.foreach { id =>
       // Fake an executor registration so the driver knows about us
       val endpointRef = mock(classOf[RpcEndpointRef])

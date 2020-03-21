@@ -33,11 +33,9 @@ private[v1] class OneJobResource(ui: SparkUI) {
     val jobOpt = statusToJobs.flatMap(_._2).find { jobInfo =>
       jobInfo.jobId == jobId
     }
-    jobOpt
-      .map { job =>
-        AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
-      }
-      .getOrElse { throw new NotFoundException("unknown job: " + jobId) }
+    jobOpt.map { job =>
+      AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
+    }.getOrElse { throw new NotFoundException("unknown job: " + jobId) }
   }
 
 }

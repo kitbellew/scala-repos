@@ -161,12 +161,8 @@ object Client {
   }
 
   def apply(hosts: String): Client = {
-    val service = ClientBuilder()
-      .codec(Kestrel())
-      .hosts(hosts)
-      .hostConnectionLimit(1)
-      .daemon(true)
-      .buildFactory()
+    val service = ClientBuilder().codec(Kestrel()).hosts(hosts)
+      .hostConnectionLimit(1).daemon(true).buildFactory()
     apply(service)
   }
 
@@ -264,28 +260,27 @@ trait Client {
     val close = new Broker[Unit]
 
     def loop(handle: ReadHandle, backoffs: Stream[Duration]) {
-      Offer
-        .prioritize(
-          close.recv { _ =>
-            handle.close()
-            error ! ReadClosedException
-          },
-          // proxy messages
-          handle.messages { m =>
-            messages ! m
-            // a succesful read always resets the backoffs
-            loop(handle, retryBackoffs)
-          },
-          // retry on error
-          handle.error { t =>
-            backoffs match {
-              case delay #:: rest =>
-                timer.schedule(delay.fromNow) { loop(read(queueName), rest) }
-              case _ => error ! OutOfRetriesException
-            }
+      Offer.prioritize(
+        close.recv { _ =>
+          handle.close()
+          error ! ReadClosedException
+        },
+        // proxy messages
+        handle.messages { m =>
+          messages ! m
+          // a succesful read always resets the backoffs
+          loop(handle, retryBackoffs)
+        },
+        // retry on error
+        handle.error { t =>
+          backoffs match {
+            case delay #:: rest => timer.schedule(delay.fromNow) {
+                loop(read(queueName), rest)
+              }
+            case _ => error ! OutOfRetriesException
           }
-        )
-        .sync()
+        }
+      ).sync()
     }
 
     loop(read(queueName), retryBackoffs)
@@ -368,44 +363,40 @@ abstract protected[kestrel] class ClientBase[
         service: CommandExecutor,
         command: CommandExecutor => Future[Reply]) {
       val reply = command(service)
-      Offer
-        .prioritize(
-          close.recv { _ =>
+      Offer.prioritize(
+        close.recv { _ =>
+          service.close()
+          reply.raise(ReadClosedException)
+          error ! ReadClosedException
+        },
+        reply.toOffer {
+          case Return(r: Reply) => processResponse(r) match {
+              case Return(Some((data, id))) =>
+                val ack = new Broker[ItemId]
+                messages ! ReadMessage(data, ack.send(id), abort.send(id))
+                Offer.prioritize(
+                  close.recv { t =>
+                    service.close(); error ! ReadClosedException
+                  },
+                  ack.recv { id => recv(service, closeAndOpenCommand(id)) },
+                  abort.recv { id => recv(service, abortCommand(id)) }
+                ).sync()
+              case Return(None) => recv(service, openCommand)
+
+              case Throw(t) =>
+                service.close()
+                error ! t
+            }
+
+          case Return(_) =>
             service.close()
-            reply.raise(ReadClosedException)
-            error ! ReadClosedException
-          },
-          reply.toOffer {
-            case Return(r: Reply) => processResponse(r) match {
-                case Return(Some((data, id))) =>
-                  val ack = new Broker[ItemId]
-                  messages ! ReadMessage(data, ack.send(id), abort.send(id))
-                  Offer
-                    .prioritize(
-                      close.recv { t =>
-                        service.close(); error ! ReadClosedException
-                      },
-                      ack.recv { id => recv(service, closeAndOpenCommand(id)) },
-                      abort.recv { id => recv(service, abortCommand(id)) }
-                    )
-                    .sync()
-                case Return(None) => recv(service, openCommand)
+            error ! new IllegalArgumentException("invalid reply from kestrel")
 
-                case Throw(t) =>
-                  service.close()
-                  error ! t
-              }
-
-            case Return(_) =>
-              service.close()
-              error ! new IllegalArgumentException("invalid reply from kestrel")
-
-            case Throw(t) =>
-              service.close()
-              error ! t
-          }
-        )
-        .sync()
+          case Throw(t) =>
+            service.close()
+            error ! t
+        }
+      ).sync()
     }
 
     underlying() respond {
@@ -570,8 +561,7 @@ protected[kestrel] class ThriftConnectedClient(
       expiry: Time = Time.epoch): Future[Response] = {
     val timeout = safeLongToInt(expiry.inMilliseconds)
     withClient[Response](client =>
-      client
-        .put(queueName, List(Buf.ByteBuffer.Owned.extract(value)), timeout)
+      client.put(queueName, List(Buf.ByteBuffer.Owned.extract(value)), timeout)
         .map { _ => Stored() })
   }
 

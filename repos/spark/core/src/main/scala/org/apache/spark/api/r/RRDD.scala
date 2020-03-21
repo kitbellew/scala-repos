@@ -255,8 +255,8 @@ private class PairwiseRRDD[T: ClassTag](
     }
   }
 
-  lazy val asJavaPairRDD: JavaPairRDD[Int, Array[Byte]] = JavaPairRDD.fromRDD(
-    this)
+  lazy val asJavaPairRDD: JavaPairRDD[Int, Array[Byte]] = JavaPairRDD
+    .fromRDD(this)
 }
 
 /**
@@ -343,10 +343,9 @@ private[r] class BufferedStreamThread(
 
   def getLines(): String =
     synchronized {
-      (0 until errBufferSize)
-        .filter { x => lines((x + lineIdx) % errBufferSize) != null }
-        .map { x => lines((x + lineIdx) % errBufferSize) }
-        .mkString("\n")
+      (0 until errBufferSize).filter { x =>
+        lines((x + lineIdx) % errBufferSize) != null
+      }.map { x => lines((x + lineIdx) % errBufferSize) }.mkString("\n")
     }
 }
 
@@ -366,9 +365,7 @@ private[r] object RRDD {
       sparkEnvirMap: JMap[Object, Object],
       sparkExecutorEnvMap: JMap[Object, Object]): JavaSparkContext = {
 
-    val sparkConf = new SparkConf()
-      .setAppName(appName)
-      .setSparkHome(sparkHome)
+    val sparkConf = new SparkConf().setAppName(appName).setSparkHome(sparkHome)
 
     // Override `master` if we have a user-specified value
     if (master != "") { sparkConf.setMaster(master) }

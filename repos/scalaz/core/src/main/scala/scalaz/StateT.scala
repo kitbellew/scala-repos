@@ -72,8 +72,9 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] {
   def lift[M[_]](implicit
       F: Monad[F],
       M: Applicative[M]): IndexedStateT[λ[α => M[F[α]]], S1, S2, A] =
-    IndexedStateT.createState[λ[α => M[F[α]]], S1, S2, A](
-      (m: Monad[λ[α => M[F[α]]]]) => (s: S1) => M.point(self(s)))
+    IndexedStateT
+      .createState[λ[α => M[F[α]]], S1, S2, A]((m: Monad[λ[α => M[F[α]]]]) =>
+        (s: S1) => M.point(self(s)))
 
   import Liskov._
   def unlift[M[_], FF[_], S <: S1](implicit
@@ -81,8 +82,8 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] {
       F: Monad[λ[α => M[FF[α]]]],
       ev: this.type <~< IndexedStateT[λ[α => M[FF[α]]], S, S2, A])
       : IndexedStateT[FF, S, S2, A] =
-    IndexedStateT.createState((m: Monad[FF]) =>
-      (s: S) => { M.copoint(ev(self)(s)) })
+    IndexedStateT
+      .createState((m: Monad[FF]) => (s: S) => { M.copoint(ev(self)(s)) })
 
   def unliftId[M[_], S <: S1](implicit
       M: Comonad[M],

@@ -108,16 +108,16 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
           val bodyNode = transformBlock(body)
           bodyNode.putBooleanProp(Node.SYNTHETIC_BLOCK_PROP, true)
           val caseNode = new Node(Token.CASE, transformExpr(expr), bodyNode)
-          switchNode.addChildToBack(
-            setNodePosition(caseNode, expr.pos orElse pos))
+          switchNode
+            .addChildToBack(setNodePosition(caseNode, expr.pos orElse pos))
         }
 
         if (default != EmptyTree) {
           val bodyNode = transformBlock(default)
           bodyNode.putBooleanProp(Node.SYNTHETIC_BLOCK_PROP, true)
           val caseNode = new Node(Token.DEFAULT_CASE, bodyNode)
-          switchNode.addChildToBack(
-            setNodePosition(caseNode, default.pos orElse pos))
+          switchNode
+            .addChildToBack(setNodePosition(caseNode, default.pos orElse pos))
         }
 
         switchNode
@@ -143,9 +143,9 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
     implicit val pos = pos_in
 
     wrapTransform(tree) {
-      case Block(exprs) =>
-        exprs.map(transformExpr).reduceRight { (expr1, expr2) =>
-          setNodePosition(new Node(Token.COMMA, expr1, expr2), pos)
+      case Block(exprs) => exprs.map(transformExpr).reduceRight {
+          (expr1, expr2) =>
+            setNodePosition(new Node(Token.COMMA, expr1, expr2), pos)
         }
       case If(cond, thenp, elsep) =>
         new Node(

@@ -130,8 +130,8 @@ object Validators {
     new PredicateValidator[String](
       fieldName,
       _ == confirmationValue,
-      messageFormat.format(
-        confirmationFieldName.underscore.humanize.toLowerCase(ENGLISH)))
+      messageFormat
+        .format(confirmationFieldName.underscore.humanize.toLowerCase(ENGLISH)))
 
   /**
     * Must be greater than the min param.
@@ -221,8 +221,7 @@ object Validators {
       (allCatch opt {
         val u = URI.create(url).normalize()
         !absolute || u.isAbsolute
-      }).isDefined && (allowLocalHost || UrlValidator
-        .getInstance()
+      }).isDefined && (allowLocalHost || UrlValidator.getInstance()
         .isValid(url))
     }
     new PredicateValidator[String](fieldName, validator, messageFormat)

@@ -137,9 +137,8 @@ final class Vector[+A] private[immutable] (
   @inline
   private[this] def isDefaultCBF[A, B, That](
       bf: CanBuildFrom[Vector[A], B, That]): Boolean =
-    (bf eq IndexedSeq.ReusableCBF) || (
-      bf eq collection.immutable.Seq.ReusableCBF
-    ) || (bf eq collection.Seq.ReusableCBF)
+    (bf eq IndexedSeq.ReusableCBF) || (bf eq collection.immutable.Seq
+      .ReusableCBF) || (bf eq collection.Seq.ReusableCBF)
 
   // SeqLike api
 
@@ -250,11 +249,12 @@ final class Vector[+A] private[immutable] (
     val s = new Vector[B](startIndex, endIndex, idx)
     s.initFrom(this)
     s.dirty = dirty
-    s.gotoPosWritable(
-      focus,
-      idx,
-      focus ^ idx
-    ) // if dirty commit changes; go to new pos and prepare for writing
+    s
+      .gotoPosWritable(
+        focus,
+        idx,
+        focus ^ idx
+      ) // if dirty commit changes; go to new pos and prepare for writing
     s.display0(idx & 0x1f) = elem.asInstanceOf[AnyRef]
     s
   }
@@ -335,11 +335,12 @@ final class Vector[+A] private[immutable] (
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(0, shiftBlocks) // shift right by n elements
-            s.gotoPosWritable(
-              newFocus,
-              newBlockIndex,
-              newFocus ^ newBlockIndex
-            ) // prepare for writing
+            s
+              .gotoPosWritable(
+                newFocus,
+                newBlockIndex,
+                newFocus ^ newBlockIndex
+              ) // prepare for writing
             s.display0(shift - 1) = value.asInstanceOf[AnyRef]
             s.debug()
             s
@@ -819,35 +820,30 @@ private[immutable] trait VectorPointer[T] {
     if (xor < (1 << 5)) { // level = 0
       display0(index & 31).asInstanceOf[T]
     } else if (xor < (1 << 10)) { // level = 1
-      display1((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
+      display1((index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31)
         .asInstanceOf[T]
     } else if (xor < (1 << 15)) { // level = 2
       display2((index >> 10) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
-        .asInstanceOf[T]
+        .asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[T]
     } else if (xor < (1 << 20)) { // level = 3
       display3((index >> 15) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 10) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
-        .asInstanceOf[T]
+        .asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[T]
     } else if (xor < (1 << 25)) { // level = 4
       display4((index >> 20) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 15) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 10) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
-        .asInstanceOf[T]
+        .asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[T]
     } else if (xor < (1 << 30)) { // level = 5
       display5((index >> 25) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 20) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 15) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 10) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
-        .asInstanceOf[Array[AnyRef]](index & 31)
-        .asInstanceOf[T]
+        .asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[T]
     } else { // level = 6
       throw new IllegalArgumentException()
     }

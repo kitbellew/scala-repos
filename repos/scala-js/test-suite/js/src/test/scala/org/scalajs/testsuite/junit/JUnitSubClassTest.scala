@@ -19,8 +19,8 @@ class JUnitSubClassTestCheck {
 
   @Test
   def testSubClass0(): Unit = {
-    val boot = JUnitUtil.loadBootstrapper(
-      "org.scalajs.testsuite.junit.JUnitSubClassTest")
+    val boot = JUnitUtil
+      .loadBootstrapper("org.scalajs.testsuite.junit.JUnitSubClassTest")
     try { boot.invoke(boot.newInstance(), "test1") }
     catch {
       case e: Throwable => fail(s"Could not invoke a test: ${e.getMessage}")

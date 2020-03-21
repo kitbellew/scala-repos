@@ -32,19 +32,13 @@ trait IssuesService {
   /** @return IssueComment and commentedUser and Issue */
   def getCommentsForApi(owner: String, repository: String, issueId: Int)(
       implicit s: Session): List[(IssueComment, Account, Issue)] =
-    IssueComments
-      .filter(_.byIssue(owner, repository, issueId))
-      .filter(
-        _.action inSetBind Set("comment", "close_comment", "reopen_comment"))
-      .innerJoin(Accounts)
-      .on((t1, t2) => t1.commentedUserName === t2.userName)
-      .innerJoin(Issues)
-      .on {
+    IssueComments.filter(_.byIssue(owner, repository, issueId)).filter(
+      _.action inSetBind Set("comment", "close_comment", "reopen_comment"))
+      .innerJoin(Accounts).on((t1, t2) => t1.commentedUserName === t2.userName)
+      .innerJoin(Issues).on {
         case ((t1, t2), t3) =>
           t3.byIssue(t1.userName, t1.repositoryName, t1.issueId)
-      }
-      .map { case ((t1, t2), t3) => (t1, t2, t3) }
-      .list
+      }.map { case ((t1, t2), t3) => (t1, t2, t3) }.list
 
   def getComment(owner: String, repository: String, commentId: String)(implicit
       s: Session) =
@@ -55,12 +49,9 @@ trait IssuesService {
 
   def getIssueLabels(owner: String, repository: String, issueId: Int)(implicit
       s: Session) =
-    IssueLabels
-      .innerJoin(Labels)
-      .on { (t1, t2) => t1.byLabel(t2.userName, t2.repositoryName, t2.labelId) }
-      .filter(_._1.byIssue(owner, repository, issueId))
-      .map(_._2)
-      .list
+    IssueLabels.innerJoin(Labels).on { (t1, t2) =>
+      t1.byLabel(t2.userName, t2.repositoryName, t2.labelId)
+    }.filter(_._1.byIssue(owner, repository, issueId)).map(_._2).list
 
   def getIssueLabel(
       owner: String,
@@ -103,17 +94,14 @@ trait IssuesService {
     searchIssueQuery(
       Seq(owner -> repository),
       condition.copy(labels = Set.empty),
-      false)
-      .innerJoin(IssueLabels)
-      .on { (t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId) }
-      .innerJoin(Labels)
-      .on {
-        case ((t1, t2), t3) =>
-          t2.byLabel(t3.userName, t3.repositoryName, t3.labelId)
-      }
-      .groupBy { case ((t1, t2), t3) => t3.labelName }
-      .map { case (labelName, t) => labelName -> t.length }
-      .toMap
+      false).innerJoin(IssueLabels).on { (t1, t2) =>
+      t1.byIssue(t2.userName, t2.repositoryName, t2.issueId)
+    }.innerJoin(Labels).on {
+      case ((t1, t2), t3) =>
+        t2.byLabel(t3.userName, t3.repositoryName, t3.labelId)
+    }.groupBy { case ((t1, t2), t3) => t3.labelName }.map {
+      case (labelName, t) => labelName -> t.length
+    }.toMap
   }
 
   def getCommitStatues(issueList: Seq[(String, String, Int)])(implicit
@@ -133,11 +121,10 @@ trait IssuesService {
           }
       }
       import gitbucket.core.model.Profile.commitStateColumnType
-      val query = Q.query[Seq[
-        (
-            String,
-            String,
-            Int)], (String, String, Int, Int, Int, Option[String], Option[CommitState], Option[String], Option[String])](
+      val query = Q.query[Seq[(
+          String,
+          String,
+          Int)], (String, String, Int, Int, Int, Option[String], Option[CommitState], Option[String], Option[String])](
         s"""
         SELECT SUMM.USER_NAME, SUMM.REPOSITORY_NAME, SUMM.ISSUE_ID, CS_ALL, CS_SUCCESS
              , CSD.CONTEXT, CSD.STATE, CSD.TARGET_URL, CSD.DESCRIPTION
@@ -201,42 +188,31 @@ trait IssuesService {
       pullRequest,
       offset,
       limit,
-      repos)
-      .leftJoin(IssueLabels)
-      .on {
-        case ((t1, t2), t3) =>
-          t1.byIssue(t3.userName, t3.repositoryName, t3.issueId)
-      }
-      .leftJoin(Labels)
-      .on {
-        case (((t1, t2), t3), t4) =>
-          t3.byLabel(t4.userName, t4.repositoryName, t4.labelId)
-      }
-      .leftJoin(Milestones)
-      .on {
-        case ((((t1, t2), t3), t4), t5) =>
-          t1.byMilestone(t5.userName, t5.repositoryName, t5.milestoneId)
-      }
-      .map {
-        case ((((t1, t2), t3), t4), t5) =>
-          (
-            t1,
-            t2.commentCount,
-            t4.labelId.?,
-            t4.labelName.?,
-            t4.color.?,
-            t5.title.?)
-      }
-      .list
-      .splitWith { (c1, c2) =>
-        c1._1.userName == c2._1.userName &&
-        c1._1.repositoryName == c2._1.repositoryName &&
-        c1._1.issueId == c2._1.issueId
-      }
-    val status = getCommitStatues(
-      result
-        .map(_.head._1)
-        .map(is => (is.userName, is.repositoryName, is.issueId)))
+      repos).leftJoin(IssueLabels).on {
+      case ((t1, t2), t3) =>
+        t1.byIssue(t3.userName, t3.repositoryName, t3.issueId)
+    }.leftJoin(Labels).on {
+      case (((t1, t2), t3), t4) =>
+        t3.byLabel(t4.userName, t4.repositoryName, t4.labelId)
+    }.leftJoin(Milestones).on {
+      case ((((t1, t2), t3), t4), t5) =>
+        t1.byMilestone(t5.userName, t5.repositoryName, t5.milestoneId)
+    }.map {
+      case ((((t1, t2), t3), t4), t5) =>
+        (
+          t1,
+          t2.commentCount,
+          t4.labelId.?,
+          t4.labelName.?,
+          t4.color.?,
+          t5.title.?)
+    }.list.splitWith { (c1, c2) =>
+      c1._1.userName == c2._1.userName &&
+      c1._1.repositoryName == c2._1.repositoryName &&
+      c1._1.issueId == c2._1.issueId
+    }
+    val status = getCommitStatues(result.map(_.head._1).map(is =>
+      (is.userName, is.repositoryName, is.issueId)))
 
     result.map { issues =>
       issues.head match {
@@ -269,29 +245,20 @@ trait IssuesService {
       : List[(Issue, Account, Int, PullRequest, Repository, Account)] = {
     // get issues and comment count and labels
     searchIssueQueryBase(condition, true, offset, limit, repos)
-      .innerJoin(PullRequests)
-      .on {
+      .innerJoin(PullRequests).on {
         case ((t1, t2), t3) =>
           t3.byPrimaryKey(t1.userName, t1.repositoryName, t1.issueId)
-      }
-      .innerJoin(Repositories)
-      .on {
+      }.innerJoin(Repositories).on {
         case (((t1, t2), t3), t4) =>
           t4.byRepository(t1.userName, t1.repositoryName)
-      }
-      .innerJoin(Accounts)
-      .on {
+      }.innerJoin(Accounts).on {
         case ((((t1, t2), t3), t4), t5) => t5.userName === t1.openedUserName
-      }
-      .innerJoin(Accounts)
-      .on {
+      }.innerJoin(Accounts).on {
         case (((((t1, t2), t3), t4), t5), t6) => t6.userName === t4.userName
-      }
-      .map {
+      }.map {
         case (((((t1, t2), t3), t4), t5), t6) =>
           (t1, t5, t2.commentCount, t3, t4, t6)
-      }
-      .list
+      }.list
   }
 
   private def searchIssueQueryBase(
@@ -300,24 +267,21 @@ trait IssuesService {
       offset: Int,
       limit: Int,
       repos: Seq[(String, String)])(implicit s: Session) =
-    searchIssueQuery(repos, condition, pullRequest)
-      .innerJoin(IssueOutline)
-      .on { (t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId) }
-      .sortBy {
-        case (t1, t2) =>
-          (condition.sort match {
-            case "created"  => t1.registeredDate
-            case "comments" => t2.commentCount
-            case "updated"  => t1.updatedDate
-          }) match {
-            case sort => condition.direction match {
-                case "asc"  => sort asc
-                case "desc" => sort desc
-              }
-          }
-      }
-      .drop(offset)
-      .take(limit)
+    searchIssueQuery(repos, condition, pullRequest).innerJoin(IssueOutline).on {
+      (t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId)
+    }.sortBy {
+      case (t1, t2) =>
+        (condition.sort match {
+          case "created"  => t1.registeredDate
+          case "comments" => t2.commentCount
+          case "updated"  => t1.updatedDate
+        }) match {
+          case sort => condition.direction match {
+              case "asc"  => sort asc
+              case "desc" => sort desc
+            }
+        }
+    }.drop(offset).take(limit)
 
   /**
     * Assembles query for conditional issue searching.
@@ -327,17 +291,19 @@ trait IssuesService {
       condition: IssueSearchCondition,
       pullRequest: Boolean)(implicit s: Session) =
     Issues filter { t1 =>
-      repos
-        .map { case (owner, repository) => t1.byRepository(owner, repository) }
-        .foldLeft[Column[Boolean]](false)(_ || _) &&
+      repos.map {
+        case (owner, repository) => t1.byRepository(owner, repository)
+      }.foldLeft[Column[Boolean]](false)(_ || _) &&
       (t1.closed === (condition.state == "closed").bind) &&
       //(t1.milestoneId      === condition.milestoneId.get.get.bind, condition.milestoneId.flatten.isDefined) &&
       (t1.milestoneId.? isEmpty, condition.milestone == Some(None)) &&
       (
-        t1.assignedUserName === condition.assigned.get.bind, condition.assigned.isDefined
+        t1.assignedUserName === condition.assigned.get.bind, condition.assigned
+          .isDefined
       ) &&
       (
-        t1.openedUserName === condition.author.get.bind, condition.author.isDefined
+        t1.openedUserName === condition.author.get.bind, condition.author
+          .isDefined
       ) &&
       (t1.pullRequest === pullRequest.bind) &&
       // Milestone filter
@@ -369,13 +335,11 @@ trait IssuesService {
       (t1.userName inSetBind condition.groups, condition.groups.nonEmpty) &&
       // Mentioned filter
       (
-        (
-          t1.openedUserName === condition.mentioned.get.bind
-        ) || t1.assignedUserName === condition.mentioned.get.bind ||
+        (t1.openedUserName === condition.mentioned.get.bind) || t1
+          .assignedUserName === condition.mentioned.get.bind ||
         (IssueComments filter { t2 =>
-          (t2.byIssue(t1.userName, t1.repositoryName, t1.issueId)) && (
-            t2.commentedUserName === condition.mentioned.get.bind
-          )
+          (t2.byIssue(t1.userName, t1.repositoryName, t1.issueId)) && (t2
+            .commentedUserName === condition.mentioned.get.bind)
         } exists), condition.mentioned.isDefined
       )
     }
@@ -391,9 +355,7 @@ trait IssuesService {
       isPullRequest: Boolean = false)(implicit s: Session) =
     // next id number
     sql"SELECT ISSUE_ID + 1 FROM ISSUE_ID WHERE USER_NAME = $owner AND REPOSITORY_NAME = $repository FOR UPDATE"
-      .as[Int]
-      .firstOption
-      .filter { id =>
+      .as[Int].firstOption.filter { id =>
         Issues insert Issue(
           owner,
           repository,
@@ -409,11 +371,9 @@ trait IssuesService {
           isPullRequest)
 
         // increment issue id
-        IssueId
-          .filter(_.byPrimaryKey(owner, repository))
-          .map(_.issueId)
+        IssueId.filter(_.byPrimaryKey(owner, repository)).map(_.issueId)
           .update(id) > 0
-    } get
+      } get
 
   def registerIssueLabel(
       owner: String,
@@ -455,36 +415,30 @@ trait IssuesService {
       issueId: Int,
       title: String,
       content: Option[String])(implicit s: Session) =
-    Issues
-      .filter(_.byPrimaryKey(owner, repository, issueId))
-      .map { t => (t.title, t.content.?, t.updatedDate) }
-      .update(title, content, currentDate)
+    Issues.filter(_.byPrimaryKey(owner, repository, issueId)).map { t =>
+      (t.title, t.content.?, t.updatedDate)
+    }.update(title, content, currentDate)
 
   def updateAssignedUserName(
       owner: String,
       repository: String,
       issueId: Int,
       assignedUserName: Option[String])(implicit s: Session) =
-    Issues
-      .filter(_.byPrimaryKey(owner, repository, issueId))
-      .map(_.assignedUserName ?)
-      .update(assignedUserName)
+    Issues.filter(_.byPrimaryKey(owner, repository, issueId))
+      .map(_.assignedUserName ?).update(assignedUserName)
 
   def updateMilestoneId(
       owner: String,
       repository: String,
       issueId: Int,
       milestoneId: Option[Int])(implicit s: Session) =
-    Issues
-      .filter(_.byPrimaryKey(owner, repository, issueId))
-      .map(_.milestoneId ?)
-      .update(milestoneId)
+    Issues.filter(_.byPrimaryKey(owner, repository, issueId))
+      .map(_.milestoneId ?).update(milestoneId)
 
   def updateComment(commentId: Int, content: String)(implicit s: Session) =
-    IssueComments
-      .filter(_.byPrimaryKey(commentId))
-      .map { t => t.content -> t.updatedDate }
-      .update(content, currentDate)
+    IssueComments.filter(_.byPrimaryKey(commentId)).map { t =>
+      t.content -> t.updatedDate
+    }.update(content, currentDate)
 
   def deleteComment(commentId: Int)(implicit s: Session) =
     IssueComments filter (_.byPrimaryKey(commentId)) delete
@@ -494,10 +448,9 @@ trait IssuesService {
       repository: String,
       issueId: Int,
       closed: Boolean)(implicit s: Session) =
-    Issues
-      .filter(_.byPrimaryKey(owner, repository, issueId))
-      .map { t => t.closed -> t.updatedDate }
-      .update(closed, currentDate)
+    Issues.filter(_.byPrimaryKey(owner, repository, issueId)).map { t =>
+      t.closed -> t.updatedDate
+    }.update(closed, currentDate)
 
   /**
     * Search issues by keyword.
@@ -513,62 +466,42 @@ trait IssuesService {
     val keywords = splitWords(query.toLowerCase)
 
     // Search Issue
-    val issues = Issues
-      .filter(_.byRepository(owner, repository))
-      .innerJoin(IssueOutline)
-      .on {
+    val issues = Issues.filter(_.byRepository(owner, repository))
+      .innerJoin(IssueOutline).on {
         case (t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId)
-      }
-      .filter {
-        case (t1, t2) =>
-          keywords
-            .map { keyword =>
-              (t1.title.toLowerCase like (s"%${likeEncode(keyword)}%", '^')) ||
-              (t1.content.toLowerCase like (s"%${likeEncode(keyword)}%", '^'))
-            }
-            .reduceLeft(_ && _)
-      }
-      .map { case (t1, t2) => (t1, 0, t1.content.?, t2.commentCount) }
+      }.filter {
+        case (t1, t2) => keywords.map { keyword =>
+            (t1.title.toLowerCase like (s"%${likeEncode(keyword)}%", '^')) ||
+            (t1.content.toLowerCase like (s"%${likeEncode(keyword)}%", '^'))
+          }.reduceLeft(_ && _)
+      }.map { case (t1, t2) => (t1, 0, t1.content.?, t2.commentCount) }
 
     // Search IssueComment
-    val comments = IssueComments
-      .filter(_.byRepository(owner, repository))
-      .innerJoin(Issues)
-      .on {
+    val comments = IssueComments.filter(_.byRepository(owner, repository))
+      .innerJoin(Issues).on {
         case (t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId)
-      }
-      .innerJoin(IssueOutline)
-      .on {
+      }.innerJoin(IssueOutline).on {
         case ((t1, t2), t3) =>
           t2.byIssue(t3.userName, t3.repositoryName, t3.issueId)
-      }
-      .filter {
-        case ((t1, t2), t3) =>
-          keywords
-            .map { query =>
-              t1.content.toLowerCase like (s"%${likeEncode(query)}%", '^')
-            }
-            .reduceLeft(_ && _)
-      }
-      .map {
+      }.filter {
+        case ((t1, t2), t3) => keywords.map { query =>
+            t1.content.toLowerCase like (s"%${likeEncode(query)}%", '^')
+          }.reduceLeft(_ && _)
+      }.map {
         case ((t1, t2), t3) => (t2, t1.commentId, t1.content.?, t3.commentCount)
       }
 
-    issues
-      .union(comments)
-      .sortBy { case (issue, commentId, _, _) => issue.issueId -> commentId }
-      .list
-      .splitWith {
-        case ((issue1, _, _, _), (issue2, _, _, _)) =>
-          issue1.issueId == issue2.issueId
+    issues.union(comments).sortBy {
+      case (issue, commentId, _, _) => issue.issueId -> commentId
+    }.list.splitWith {
+      case ((issue1, _, _, _), (issue2, _, _, _)) =>
+        issue1.issueId == issue2.issueId
+    }.map {
+      _.head match {
+        case (issue, _, content, commentCount) =>
+          (issue, commentCount, content.getOrElse(""))
       }
-      .map {
-        _.head match {
-          case (issue, _, content, commentCount) =>
-            (issue, commentCount, content.getOrElse(""))
-        }
-      }
-      .toList
+    }.toList
   }
 
   def closeIssuesFromMessage(
@@ -600,9 +533,8 @@ trait IssuesService {
       val content = fromIssue.issueId + ":" + fromIssue.title
       if (getIssue(owner, repository, issueId).isDefined) {
         // Not add if refer comment already exist.
-        if (!getComments(owner, repository, issueId.toInt).exists { x =>
-              x.action == "refer" && x.content == content
-            }) {
+        if (!getComments(owner, repository, issueId.toInt)
+              .exists { x => x.action == "refer" && x.content == content }) {
           createComment(
             owner,
             repository,
@@ -653,8 +585,10 @@ object IssuesService {
       groups: Set[String] = Set.empty) {
 
     def isEmpty: Boolean = {
-      labels.isEmpty && milestone.isEmpty && author.isEmpty && assigned.isEmpty &&
-      state == "open" && sort == "created" && direction == "desc" && visibility.isEmpty
+      labels.isEmpty && milestone.isEmpty && author.isEmpty && assigned
+        .isEmpty &&
+      state == "open" && sort == "created" && direction == "desc" && visibility
+        .isEmpty
     }
 
     def nonEmpty: Boolean = !isEmpty
@@ -716,8 +650,8 @@ object IssuesService {
         name: String,
         allow: Seq[String] = Nil): Option[String] = {
       val value = request.getParameter(name)
-      if (value == null || value.isEmpty || (allow.nonEmpty && !allow.contains(
-            value))) None
+      if (value == null || value.isEmpty || (allow.nonEmpty && !allow
+            .contains(value))) None
       else Some(value)
     }
 
@@ -727,20 +661,16 @@ object IssuesService {
     def apply(
         filter: String,
         milestones: Map[String, Int]): IssueSearchCondition = {
-      val conditions = filter
-        .split("[ 　\t]+")
-        .flatMap { x =>
-          x.split(":") match {
-            case Array(key, value) => Some((key, value))
-            case _                 => None
-          }
+      val conditions = filter.split("[ 　\t]+").flatMap { x =>
+        x.split(":") match {
+          case Array(key, value) => Some((key, value))
+          case _                 => None
         }
-        .groupBy(_._1)
-        .map { case (key, values) => key -> values.map(_._2).toSeq }
+      }.groupBy(_._1).map {
+        case (key, values) => key -> values.map(_._2).toSeq
+      }
 
-      val (sort, direction) = conditions
-        .get("sort")
-        .flatMap(_.headOption)
+      val (sort, direction) = conditions.get("sort").flatMap(_.headOption)
         .getOrElse("created-desc") match {
         case "created-asc"   => ("created", "asc")
         case "comments-desc" => ("comments", "desc")
@@ -760,11 +690,8 @@ object IssuesService {
         conditions.get("author").flatMap(_.headOption),
         conditions.get("assignee").flatMap(_.headOption),
         conditions.get("mentions").flatMap(_.headOption),
-        conditions
-          .get("is")
-          .getOrElse(Seq.empty)
-          .find(x => x == "open" || x == "closed")
-          .getOrElse("open"),
+        conditions.get("is").getOrElse(Seq.empty)
+          .find(x => x == "open" || x == "closed").getOrElse("open"),
         sort,
         direction,
         conditions.get("visibility").flatMap(_.headOption),

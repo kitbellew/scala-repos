@@ -95,8 +95,8 @@ case class ScExistentialType(
       if (deep == 0) {
         ScSkolemizedType(ex.name, ex.args, types.Nothing, types.Any)
       } else {
-        val unpacked: Map[ScExistentialArgument, ScSkolemizedType] =
-          wildcards.map(w => (w, unpack(w, deep - 1))).toMap
+        val unpacked: Map[ScExistentialArgument, ScSkolemizedType] = wildcards
+          .map(w => (w, unpack(w, deep - 1))).toMap
         ScSkolemizedType(
           ex.name,
           ex.args,
@@ -216,11 +216,8 @@ case class ScExistentialType(
       case ex: ScExistentialType =>
         val simplified = ex.simplify()
         if (ex != simplified)
-          return Equivalence.equivInner(
-            this,
-            simplified,
-            undefinedSubst,
-            falseUndef)
+          return Equivalence
+            .equivInner(this, simplified, undefinedSubst, falseUndef)
         val list = wildcards.zip(ex.wildcards)
         val iterator = list.iterator
         while (iterator.hasNext) {
@@ -229,12 +226,13 @@ case class ScExistentialType(
           if (!t._1) return (false, undefinedSubst)
           undefinedSubst = t._2
         }
-        Equivalence.equivInner(
-          skolem,
-          ex.skolem,
-          undefinedSubst,
-          falseUndef
-        ) //todo: probable problems with different positions of skolemized types.
+        Equivalence
+          .equivInner(
+            skolem,
+            ex.skolem,
+            undefinedSubst,
+            falseUndef
+          ) //todo: probable problems with different positions of skolemized types.
       case _ => (false, undefinedSubst)
     }
   }
@@ -254,8 +252,8 @@ case class ScExistentialType(
           comps.foreach(checkRecursive(_, newSet))
           signatureMap.foreach {
             case (s, rt) =>
-              s.substitutedTypes.foreach(_.foreach(f =>
-                checkRecursive(f(), newSet)))
+              s.substitutedTypes
+                .foreach(_.foreach(f => checkRecursive(f(), newSet)))
               s.typeParams.foreach {
                 case tParam: TypeParameter => tParam.update {
                     case tp: ScType => checkRecursive(tp, newSet); tp
@@ -354,8 +352,8 @@ case class ScExistentialType(
           components,
           signatureMap.map {
             case (s, sctype) =>
-              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
-                _.map(f => () => updateRecursive(f(), newSet, variance)))
+              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes
+                .map(_.map(f => () => updateRecursive(f(), newSet, variance)))
               val tParams: Array[TypeParameter] =
                 if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
                 else s.typeParams.map(updateTypeParam)
@@ -596,8 +594,8 @@ case class ScExistentialType(
     val quantDepth = quantified.typeDepth
     if (wildcards.nonEmpty) {
       (wildcards.map { wildcard =>
-        val boundsDepth = wildcard.lowerBound.typeDepth.max(
-          wildcard.upperBound.typeDepth)
+        val boundsDepth = wildcard.lowerBound.typeDepth
+          .max(wildcard.upperBound.typeDepth)
         if (wildcard.args.nonEmpty) {
           (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
         } else boundsDepth

@@ -81,15 +81,15 @@ class RemoteWatcherSpec
   override def expectedTestDuration = 2.minutes
 
   val remoteSystem = ActorSystem("RemoteSystem", system.settings.config)
-  val remoteAddress =
-    remoteSystem.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+  val remoteAddress = remoteSystem.asInstanceOf[ExtendedActorSystem].provider
+    .getDefaultAddress
   def remoteAddressUid = AddressUidExtension(remoteSystem).addressUid
 
   Seq(system, remoteSystem).foreach(
     muteDeadLetters(
       akka.remote.transport.AssociationHandle.Disassociated.getClass,
-      akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying.getClass)(
-      _))
+      akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying
+        .getClass)(_))
 
   override def afterTermination() { shutdown(remoteSystem) }
 
@@ -97,8 +97,9 @@ class RemoteWatcherSpec
 
   def createRemoteActor(props: Props, name: String): InternalActorRef = {
     remoteSystem.actorOf(props, name)
-    system.actorSelection(
-      RootActorPath(remoteAddress) / "user" / name) ! Identify(name)
+    system
+      .actorSelection(RootActorPath(remoteAddress) / "user" / name) ! Identify(
+      name)
     expectMsgType[ActorIdentity].ref.get.asInstanceOf[InternalActorRef]
   }
 
@@ -112,11 +113,9 @@ class RemoteWatcherSpec
         Props(classOf[TestActorProxy], testActor),
         "monitor1")
 
-      val a1 = system
-        .actorOf(Props[MyActor], "a1")
+      val a1 = system.actorOf(Props[MyActor], "a1")
         .asInstanceOf[InternalActorRef]
-      val a2 = system
-        .actorOf(Props[MyActor], "a2")
+      val a2 = system.actorOf(Props[MyActor], "a2")
         .asInstanceOf[InternalActorRef]
       val b1 = createRemoteActor(Props[MyActor], "b1")
       val b2 = createRemoteActor(Props[MyActor], "b2")
@@ -184,8 +183,7 @@ class RemoteWatcherSpec
         Props(classOf[TestActorProxy], testActor),
         "monitor4")
 
-      val a = system
-        .actorOf(Props[MyActor], "a4")
+      val a = system.actorOf(Props[MyActor], "a4")
         .asInstanceOf[InternalActorRef]
       val b = createRemoteActor(Props[MyActor], "b4")
 
@@ -234,8 +232,7 @@ class RemoteWatcherSpec
         Props(classOf[TestActorProxy], testActor),
         "monitor5")
 
-      val a = system
-        .actorOf(Props[MyActor], "a5")
+      val a = system.actorOf(Props[MyActor], "a5")
         .asInstanceOf[InternalActorRef]
       val b = createRemoteActor(Props[MyActor], "b5")
 
@@ -276,8 +273,7 @@ class RemoteWatcherSpec
         Props(classOf[TestActorProxy], testActor),
         "monitor6")
 
-      val a = system
-        .actorOf(Props[MyActor], "a6")
+      val a = system.actorOf(Props[MyActor], "a6")
         .asInstanceOf[InternalActorRef]
       val b = createRemoteActor(Props[MyActor], "b6")
 

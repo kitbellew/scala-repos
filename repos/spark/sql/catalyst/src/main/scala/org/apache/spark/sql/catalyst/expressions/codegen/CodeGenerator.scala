@@ -105,8 +105,8 @@ class CodegenContext {
     *
     * They will be kept as member variables in generated classes like `SpecificProjection`.
     */
-  val mutableStates: mutable.ArrayBuffer[(String, String, String)] =
-    mutable.ArrayBuffer.empty[(String, String, String)]
+  val mutableStates: mutable.ArrayBuffer[(String, String, String)] = mutable
+    .ArrayBuffer.empty[(String, String, String)]
 
   def addMutableState(
       javaType: String,
@@ -116,11 +116,9 @@ class CodegenContext {
   }
 
   def declareMutableStates(): String = {
-    mutableStates
-      .map {
-        case (javaType, variableName, _) => s"private $javaType $variableName;"
-      }
-      .mkString("\n")
+    mutableStates.map {
+      case (javaType, variableName, _) => s"private $javaType $variableName;"
+    }.mkString("\n")
   }
 
   def initMutableStates(): String = { mutableStates.map(_._3).mkString("\n") }
@@ -556,8 +554,8 @@ class CodegenContext {
 
     // Get all the expressions that appear at least twice and set up the state for subexpression
     // elimination.
-    val commonExprs = equivalentExpressions.getAllEquivalentExprs.filter(
-      _.size > 1)
+    val commonExprs = equivalentExpressions.getAllEquivalentExprs
+      .filter(_.size > 1)
     commonExprs.foreach(e => {
       val expr = e.head
       val fnName = freshName("evalExpr")
@@ -633,8 +631,8 @@ abstract class GeneratedClass {
 abstract class CodeGenerator[InType <: AnyRef, OutType <: AnyRef]
     extends Logging {
 
-  protected val genericMutableRowType: String =
-    classOf[GenericMutableRow].getName
+  protected val genericMutableRowType: String = classOf[GenericMutableRow]
+    .getName
 
   /**
     * Generates a class for a given input expression.  Called when there is not cached code
@@ -679,8 +677,8 @@ object CodeGenerator extends Logging {
     val evaluator = new ClassBodyEvaluator()
     evaluator.setParentClassLoader(Utils.getContextOrSparkClassLoader)
     // Cannot be under package codegen, or fail with java.lang.InstantiationException
-    evaluator.setClassName(
-      "org.apache.spark.sql.catalyst.expressions.GeneratedClass")
+    evaluator
+      .setClassName("org.apache.spark.sql.catalyst.expressions.GeneratedClass")
     evaluator.setDefaultImports(Array(
       classOf[Platform].getName,
       classOf[InternalRow].getName,
@@ -724,9 +722,7 @@ object CodeGenerator extends Logging {
     * automatically, in order to constrain its memory footprint.  Note that this cache does not use
     * weak keys/values and thus does not respond to memory pressure.
     */
-  private val cache = CacheBuilder
-    .newBuilder()
-    .maximumSize(100)
+  private val cache = CacheBuilder.newBuilder().maximumSize(100)
     .build(new CacheLoader[String, GeneratedClass]() {
       override def load(code: String): GeneratedClass = {
         val startTime = System.nanoTime()

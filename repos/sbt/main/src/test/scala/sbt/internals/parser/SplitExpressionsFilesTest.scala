@@ -25,8 +25,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
 
   val oldSplitter: SplitExpressions.SplitExpression =
     EvaluateConfigurationsOriginal.splitExpressions
-  val newSplitter: SplitExpressions.SplitExpression =
-    EvaluateConfigurations.splitExpressions
+  val newSplitter: SplitExpressions.SplitExpression = EvaluateConfigurations
+    .splitExpressions
 
   final val REVERTED_LINES = true
   final val START_COMMENT = "/*"
@@ -81,20 +81,19 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
       case statement +: _ =>
         val openSlashAsteriskIndex = statement.indexOf(START_COMMENT, 0)
         if (openSlashAsteriskIndex == -1 || statement
-              .substring(0, openSlashAsteriskIndex)
-              .trim
-              .nonEmpty) { Some((statements, lineRange)) }
-        else {
-          val closeSlashAsteriskLine = statements.indexWhere(s =>
-            s.contains(END_COMMENT))
+              .substring(0, openSlashAsteriskIndex).trim.nonEmpty) {
+          Some((statements, lineRange))
+        } else {
+          val closeSlashAsteriskLine = statements
+            .indexWhere(s => s.contains(END_COMMENT))
           if (closeSlashAsteriskLine == -1) { Some((statements, lineRange)) }
           else {
             val newLineRange =
               if (reverted) {
                 lineRange.copy(end = lineRange.end - closeSlashAsteriskLine - 1)
               } else {
-                lineRange.copy(start =
-                  lineRange.start + closeSlashAsteriskLine + 1)
+                lineRange
+                  .copy(start = lineRange.start + closeSlashAsteriskLine + 1)
               }
             removeSlashAsterisk(
               statements.drop(closeSlashAsteriskLine + 1),
@@ -122,10 +121,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
       lines match {
         case statement +: _ =>
           val doubleSlashIndex = statement.indexOf("//")
-          if (doubleSlashIndex == -1 || statement
-                .substring(0, doubleSlashIndex)
-                .trim
-                .nonEmpty) {
+          if (doubleSlashIndex == -1 || statement.substring(0, doubleSlashIndex)
+                .trim.nonEmpty) {
             removeSlashAsterisk(lines, lineRange, REVERTED_LINES) match {
               case some @ Some((s, ln)) if ln == lineRange => some
               case Some((s, ln))                           => removeDoubleSlashReversed(s, ln)
@@ -139,8 +136,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
           }
         case _ => None
       }
-    removeDoubleSlashReversed(statements.reverse, lineRange).map(t =>
-      (t._1.reverse, t._2))
+    removeDoubleSlashReversed(statements.reverse, lineRange)
+      .map(t => (t._1.reverse, t._2))
   }
 
   def splitLines(
@@ -153,8 +150,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
 
       //TODO: Return actual contents (after making both splitter...
       //TODO: ...implementations return CharRanges instead of LineRanges)
-      val settingsAndDefWithoutComments = settingsAndDefs.flatMap(t =>
-        removeCommentFromStatement(t._1, t._2))
+      val settingsAndDefWithoutComments = settingsAndDefs
+        .flatMap(t => removeCommentFromStatement(t._1, t._2))
       scala.util.Success((
         imports.map(imp => (imp._1.trim, imp._2)),
         settingsAndDefWithoutComments))

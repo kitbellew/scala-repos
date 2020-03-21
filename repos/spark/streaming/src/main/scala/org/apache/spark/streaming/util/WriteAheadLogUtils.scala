@@ -78,9 +78,8 @@ private[streaming] object WriteAheadLogUtils extends Logging {
   }
 
   def isBatchingEnabled(conf: SparkConf, isDriver: Boolean): Boolean = {
-    isDriver && conf.getBoolean(
-      DRIVER_WAL_BATCHING_CONF_KEY,
-      defaultValue = true)
+    isDriver && conf
+      .getBoolean(DRIVER_WAL_BATCHING_CONF_KEY, defaultValue = true)
   }
 
   /**
@@ -93,9 +92,8 @@ private[streaming] object WriteAheadLogUtils extends Logging {
 
   def shouldCloseFileAfterWrite(conf: SparkConf, isDriver: Boolean): Boolean = {
     if (isDriver) {
-      conf.getBoolean(
-        DRIVER_WAL_CLOSE_AFTER_WRITE_CONF_KEY,
-        defaultValue = false)
+      conf
+        .getBoolean(DRIVER_WAL_CLOSE_AFTER_WRITE_CONF_KEY, defaultValue = false)
     } else {
       conf.getBoolean(
         RECEIVER_WAL_CLOSE_AFTER_WRITE_CONF_KEY,
@@ -141,30 +139,26 @@ private[streaming] object WriteAheadLogUtils extends Logging {
     val classNameOption =
       if (isDriver) { sparkConf.getOption(DRIVER_WAL_CLASS_CONF_KEY) }
       else { sparkConf.getOption(RECEIVER_WAL_CLASS_CONF_KEY) }
-    val wal = classNameOption
-      .map { className =>
-        try {
-          instantiateClass(
-            Utils
-              .classForName(className)
-              .asInstanceOf[Class[_ <: WriteAheadLog]],
-            sparkConf)
-        } catch {
-          case NonFatal(e) =>
-            throw new SparkException(
-              s"Could not create a write ahead log of class $className",
-              e)
-        }
+    val wal = classNameOption.map { className =>
+      try {
+        instantiateClass(
+          Utils.classForName(className).asInstanceOf[Class[_ <: WriteAheadLog]],
+          sparkConf)
+      } catch {
+        case NonFatal(e) =>
+          throw new SparkException(
+            s"Could not create a write ahead log of class $className",
+            e)
       }
-      .getOrElse {
-        new FileBasedWriteAheadLog(
-          sparkConf,
-          fileWalLogDirectory,
-          fileWalHadoopConf,
-          getRollingIntervalSecs(sparkConf, isDriver),
-          getMaxFailures(sparkConf, isDriver),
-          shouldCloseFileAfterWrite(sparkConf, isDriver))
-      }
+    }.getOrElse {
+      new FileBasedWriteAheadLog(
+        sparkConf,
+        fileWalLogDirectory,
+        fileWalHadoopConf,
+        getRollingIntervalSecs(sparkConf, isDriver),
+        getMaxFailures(sparkConf, isDriver),
+        shouldCloseFileAfterWrite(sparkConf, isDriver))
+    }
     if (isBatchingEnabled(sparkConf, isDriver)) {
       new BatchedWriteAheadLog(wal, sparkConf)
     } else { wal }

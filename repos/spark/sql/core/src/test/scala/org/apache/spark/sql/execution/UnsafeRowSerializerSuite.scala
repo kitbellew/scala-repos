@@ -67,8 +67,8 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
 
   test("basic row serialization") {
     val rows = Seq(Row("Hello", 1), Row("World", 2))
-    val unsafeRows = rows.map(row =>
-      toUnsafeRow(row, Array(StringType, IntegerType)))
+    val unsafeRows = rows
+      .map(row => toUnsafeRow(row, Array(StringType, IntegerType)))
     val serializer = new UnsafeRowSerializer(numFields = 2).newInstance()
     val baos = new ByteArrayOutputStream()
     val serializerStream = serializer.serializeStream(baos)
@@ -78,11 +78,11 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
     }
     serializerStream.close()
     val input = new ClosableByteArrayInputStream(baos.toByteArray)
-    val deserializerIter =
-      serializer.deserializeStream(input).asKeyValueIterator
+    val deserializerIter = serializer.deserializeStream(input)
+      .asKeyValueIterator
     for (expectedRow <- unsafeRows) {
-      val actualRow =
-        deserializerIter.next().asInstanceOf[(Integer, UnsafeRow)]._2
+      val actualRow = deserializerIter.next().asInstanceOf[(Integer, UnsafeRow)]
+        ._2
       assert(expectedRow.getSizeInBytes === actualRow.getSizeInBytes)
       assert(expectedRow.getString(0) === actualRow.getString(0))
       assert(expectedRow.getInt(1) === actualRow.getInt(1))
@@ -94,8 +94,8 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
   test("close empty input stream") {
     val input = new ClosableByteArrayInputStream(Array.empty)
     val serializer = new UnsafeRowSerializer(numFields = 2).newInstance()
-    val deserializerIter =
-      serializer.deserializeStream(input).asKeyValueIterator
+    val deserializerIter = serializer.deserializeStream(input)
+      .asKeyValueIterator
     assert(!deserializerIter.hasNext)
     assert(input.closed)
   }

@@ -49,8 +49,7 @@ class ScalaCompletionStatistician extends CompletionStatistician {
       location: CompletionLocation): StatisticsInfo = {
     element match {
       case member: PsiMember =>
-        val key = ScalaStatisticManager
-          .memberKey(member)
+        val key = ScalaStatisticManager.memberKey(member)
           .getOrElse(return StatisticsInfo.EMPTY)
         member match {
           case (_: ScTypeAlias) | (_: ScTypeDefinition) | (_: PsiClass) =>
@@ -58,8 +57,7 @@ class ScalaCompletionStatistician extends CompletionStatistician {
           case _ =>
             val containingClass = member.getContainingClass
             if (containingClass != null) {
-              val context = ScalaStatisticManager
-                .memberKey(containingClass)
+              val context = ScalaStatisticManager.memberKey(containingClass)
                 .getOrElse("")
               new StatisticsInfo("scalaMember#" + context, key)
             } else { StatisticsInfo.EMPTY }

@@ -14,10 +14,8 @@ trait SymbolTestMacros extends Macro {
     val tpe = weakTypeOf[T]
     val cls = symbols.newClass(tpe)
     cls.primaryConstructor match {
-      case Some(x) =>
-        x.parameterTypes[c.universe.type](c.universe)
-          .toList
-          .flatMap(_.map(_.key))
+      case Some(x) => x.parameterTypes[c.universe.type](c.universe)
+          .toList.flatMap(_.map(_.key))
       case None => Seq()
     }
   }
@@ -65,16 +63,13 @@ trait SymbolTestMacros extends Macro {
   def transientVars[T: WeakTypeTag]: Seq[String] = {
     val tpe = weakTypeOf[T]
     val cls = symbols.newClass(tpe)
-    cls.methods
-      .filter { x =>
-        //System.err.println(s"Checking var/val/param for $x")
-        x.isVar || x.isVal || x.isParamAccessor
-      }
-      .filter { x =>
-        //System.err.println(s"Checking $x for transient: ${x.isMarkedTransient}")
-        x.isMarkedTransient
-      }
-      .map(_.methodName)
+    cls.methods.filter { x =>
+      //System.err.println(s"Checking var/val/param for $x")
+      x.isVar || x.isVal || x.isParamAccessor
+    }.filter { x =>
+      //System.err.println(s"Checking $x for transient: ${x.isMarkedTransient}")
+      x.isMarkedTransient
+    }.map(_.methodName)
   }
 
   def parentClasses[T: WeakTypeTag]: Seq[String] = {

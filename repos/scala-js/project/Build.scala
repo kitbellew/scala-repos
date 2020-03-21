@@ -43,8 +43,8 @@ import sbtassembly.AssemblyPlugin.autoImport._
 
 object Build extends sbt.Build {
 
-  val isGeneratingEclipse =
-    Properties.envOrElse("GENERATING_ECLIPSE", "false").toBoolean
+  val isGeneratingEclipse = Properties.envOrElse("GENERATING_ECLIPSE", "false")
+    .toBoolean
 
   val fetchScalaSource = taskKey[File](
     "Fetches the scala source for the current scala version")
@@ -52,10 +52,10 @@ object Build extends sbt.Build {
     "Whether we should partest the current scala version (and fail if we can't)")
 
   val previousVersion = "0.6.8"
-  val previousSJSBinaryVersion = ScalaJSCrossVersion.binaryScalaJSVersion(
-    previousVersion)
-  val previousBinaryCrossVersion = CrossVersion.binaryMapped(v =>
-    s"sjs${previousSJSBinaryVersion}_$v")
+  val previousSJSBinaryVersion = ScalaJSCrossVersion
+    .binaryScalaJSVersion(previousVersion)
+  val previousBinaryCrossVersion = CrossVersion
+    .binaryMapped(v => s"sjs${previousSJSBinaryVersion}_$v")
 
   val scalaVersionsUsedForPublishing: Set[String] = Set(
     "2.10.6",
@@ -71,10 +71,8 @@ object Build extends sbt.Build {
 
   // set scalaJSSemantics in someProject ~= makeCompliant
   val makeCompliant: Semantics => Semantics = { semantics =>
-    semantics
-      .withAsInstanceOfs(CheckedBehavior.Compliant)
-      .withModuleInit(CheckedBehavior.Compliant)
-      .withStrictFloats(true)
+    semantics.withAsInstanceOfs(CheckedBehavior.Compliant)
+      .withModuleInit(CheckedBehavior.Compliant).withStrictFloats(true)
   }
 
   // set postLinkJSEnv in someProject := NodeJSEnv(args = ES6NodeArgs).value
@@ -99,12 +97,11 @@ object Build extends sbt.Build {
         /* Filter out e:info.apiURL as it expects 0.6.7-SNAPSHOT, whereas the
          * artifact we're looking for has 0.6.6 (for example).
          */
-        val prevExtraAttributes = thisProjectID.extraAttributes.filterKeys(
-          _ != "e:info.apiURL")
+        val prevExtraAttributes = thisProjectID.extraAttributes
+          .filterKeys(_ != "e:info.apiURL")
         val prevProjectID =
           (thisProjectID.organization % thisProjectID.name % previousVersion)
-            .cross(previousCrossVersion)
-            .extra(prevExtraAttributes.toSeq: _*)
+            .cross(previousCrossVersion).extra(prevExtraAttributes.toSeq: _*)
         Some(CrossVersion(scalaV, scalaBinaryV)(prevProjectID).cross(
           CrossVersion.Disabled))
       }
@@ -148,11 +145,9 @@ object Build extends sbt.Build {
     // Add Java Scaladoc mapping
     apiMappings += {
       val rtJar = {
-        System
-          .getProperty("sun.boot.class.path")
+        System.getProperty("sun.boot.class.path")
           .split(java.io.File.pathSeparator)
-          .find(_.endsWith(java.io.File.separator + "rt.jar"))
-          .get
+          .find(_.endsWith(java.io.File.separator + "rt.jar")).get
       }
 
       file(rtJar) -> url(javaDocBaseURL)
@@ -185,8 +180,8 @@ object Build extends sbt.Build {
         (root.base / "assets/additional-doc-styles.css").getCanonicalFile
 
       // Regex and replacement function for JavaDoc linking
-      val javadocAPIRe =
-        s"""\"(\\Q${javaDocBaseURL}index.html\\E)#([^"]*)\"""".r
+      val javadocAPIRe = s"""\"(\\Q${javaDocBaseURL}index.html\\E)#([^"]*)\""""
+        .r
 
       val logger = streams.value.log
       val errorsSeen = mutable.Set.empty[String]
@@ -404,40 +399,38 @@ object Build extends sbt.Build {
     settings = commonSettings ++ Seq(
       name := "Scala.js",
       publishArtifact in Compile := false,
-      clean := clean
-        .dependsOn(
-          clean in compiler,
-          clean in irProject,
-          clean in irProjectJS,
-          clean in tools,
-          clean in toolsJS,
-          clean in jsEnvs,
-          clean in testAdapter,
-          clean in plugin,
-          clean in javalanglib,
-          clean in javalib,
-          clean in scalalib,
-          clean in libraryAux,
-          clean in library,
-          clean in javalibEx,
-          clean in stubs,
-          clean in cli,
-          clean in testInterface,
-          clean in jasmineTestFramework,
-          clean in jUnitRuntime,
-          clean in jUnitPlugin,
-          clean in examples,
-          clean in helloworld,
-          clean in reversi,
-          clean in testingExample,
-          clean in testSuite,
-          clean in testSuiteJVM,
-          clean in noIrCheckTest,
-          clean in javalibExTestSuite,
-          clean in partest,
-          clean in partestSuite
-        )
-        .value,
+      clean := clean.dependsOn(
+        clean in compiler,
+        clean in irProject,
+        clean in irProjectJS,
+        clean in tools,
+        clean in toolsJS,
+        clean in jsEnvs,
+        clean in testAdapter,
+        clean in plugin,
+        clean in javalanglib,
+        clean in javalib,
+        clean in scalalib,
+        clean in libraryAux,
+        clean in library,
+        clean in javalibEx,
+        clean in stubs,
+        clean in cli,
+        clean in testInterface,
+        clean in jasmineTestFramework,
+        clean in jUnitRuntime,
+        clean in jUnitPlugin,
+        clean in examples,
+        clean in helloworld,
+        clean in reversi,
+        clean in testingExample,
+        clean in testSuite,
+        clean in testSuiteJVM,
+        clean in noIrCheckTest,
+        clean in javalibExTestSuite,
+        clean in partest,
+        clean in partestSuite
+      ).value,
       publish := {},
       publishLocal := {}
     )
@@ -470,7 +463,8 @@ object Build extends sbt.Build {
     base = file("compiler"),
     settings = commonSettings ++ publishSettings ++ Seq(
       name := "Scala.js compiler",
-      crossVersion := CrossVersion.full, // because compiler api is not binary compatible
+      crossVersion := CrossVersion
+        .full, // because compiler api is not binary compatible
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-compiler" % scalaVersion.value,
         "org.scala-lang" % "scala-reflect" % scalaVersion.value,
@@ -480,8 +474,8 @@ object Build extends sbt.Build {
         val testOutDir =
           (streams.value.cacheDirectory / "scalajs-compiler-test")
         IO.createDirectory(testOutDir)
-        sys.props("scala.scalajs.compiler.test.output") =
-          testOutDir.getAbsolutePath
+        sys.props("scala.scalajs.compiler.test.output") = testOutDir
+          .getAbsolutePath
         sys.props("scala.scalajs.compiler.test.scalajslib") =
           (packageBin in (library, Compile)).value.getAbsolutePath
         sys.props("scala.scalajs.compiler.test.scalalib") = {
@@ -598,8 +592,8 @@ object Build extends sbt.Build {
         libraryDependencies ++= Seq(
           "io.apigee" % "rhino" % "1.7R5pre4",
           "org.webjars" % "envjs" % "1.2",
-          "com.novocode" % "junit-interface" % "0.9" % "test") ++ ScalaJSPluginInternal.phantomJSJettyModules
-          .map(_ % "provided"),
+          "com.novocode" % "junit-interface" % "0.9" % "test") ++ ScalaJSPluginInternal
+          .phantomJSJettyModules.map(_ % "provided"),
         previousArtifactSetting,
         binaryIssueFilters ++= BinaryIncompatibilities.JSEnvs
       )
@@ -731,15 +725,12 @@ object Build extends sbt.Build {
         val trgDir = (artifactPath in fetchScalaSource).value
 
         val report = updateClassifiers.value
-        val scalaLibSourcesJar = report
-          .select(
-            configuration = Set("compile"),
-            module = moduleFilter(name = "scala-library"),
-            artifact = artifactFilter(`type` = "src"))
-          .headOption
-          .getOrElse {
-            sys.error(s"Could not fetch scala-library sources for version $ver")
-          }
+        val scalaLibSourcesJar = report.select(
+          configuration = Set("compile"),
+          module = moduleFilter(name = "scala-library"),
+          artifact = artifactFilter(`type` = "src")).headOption.getOrElse {
+          sys.error(s"Could not fetch scala-library sources for version $ver")
+        }
 
         FileFunction.cached(
           cacheDir / s"fetchScalaSource-$ver",
@@ -868,16 +859,16 @@ object Build extends sbt.Build {
         val filter = ("*.sjsir": NameFilter)
 
         val javalibProducts = (products in javalib).value
-        val javalibMappings = javalibProducts.flatMap(base =>
-          Path.selectSubpaths(base, filter))
-        val javalibFilteredMappings = javalibMappings.filter(
-          _._2.replace('\\', '/') != "java/lang/MathJDK8Bridge$.sjsir")
+        val javalibMappings = javalibProducts
+          .flatMap(base => Path.selectSubpaths(base, filter))
+        val javalibFilteredMappings = javalibMappings
+          .filter(_._2.replace('\\', '/') != "java/lang/MathJDK8Bridge$.sjsir")
 
         val otherProducts = ((products in javalanglib).value ++
           (products in scalalib).value ++
           (products in libraryAux).value)
-        val otherMappings = otherProducts.flatMap(base =>
-          Path.selectSubpaths(base, filter))
+        val otherMappings = otherProducts
+          .flatMap(base => Path.selectSubpaths(base, filter))
 
         libraryMappings ++ otherMappings ++ javalibFilteredMappings
       }))
@@ -903,7 +894,8 @@ object Build extends sbt.Build {
     base = file("stubs"),
     settings = commonSettings ++ publishSettings ++ Seq(
       name := "Scala.js Stubs",
-      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+      libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion
+        .value,
       previousArtifactSetting)
   )
 
@@ -965,7 +957,8 @@ object Build extends sbt.Build {
       commonSettings ++ publishSettings ++ fatalWarningsSettings ++ Seq(
         name := "Scala.js JUnit test plugin",
         crossVersion := CrossVersion.full,
-        libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+        libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion
+          .value,
         exportJars := true
       )
   )
@@ -1178,8 +1171,7 @@ object Build extends sbt.Build {
 
         val outFile = dir / "SourceMapTest.scala"
         val unitTests = (0 until i)
-          .map(i => s"@Test def workTest$i(): Unit = test($i)")
-          .mkString("; ")
+          .map(i => s"@Test def workTest$i(): Unit = test($i)").mkString("; ")
         IO.write(
           outFile,
           replaced.replace(
@@ -1213,9 +1205,8 @@ object Build extends sbt.Build {
     base = file("no-ir-check-test"),
     settings = commonSettings ++ myScalaJSSettings ++ testTagSettings ++ Seq(
       name := "Scala.js not IR checked tests",
-      scalaJSOptimizerOptions ~= (
-        _.withCheckScalaJSIR(false).withBypassLinkingErrors(true)
-      ),
+      scalaJSOptimizerOptions ~= (_.withCheckScalaJSIR(false)
+      .withBypassLinkingErrors(true)),
       publishArtifact in Compile := false
     )
   ).withScalaJSCompiler.dependsOn(library, jasmineTestFramework % "test")
@@ -1252,10 +1243,8 @@ object Build extends sbt.Build {
           IO.createDirectory(trgDir)
 
           // Clone scala source code
-          new CloneCommand()
-            .setDirectory(trgDir)
-            .setURI("https://github.com/scala/scala.git")
-            .call()
+          new CloneCommand().setDirectory(trgDir)
+            .setURI("https://github.com/scala/scala.git").call()
         }
 
         // Checkout proper ref. We do this anyway so we fail if
@@ -1311,7 +1300,8 @@ object Build extends sbt.Build {
       fork in Test := true,
       javaOptions in Test += "-Xmx1G",
       // Override the dependency of partest - see #1889
-      dependencyOverrides += "org.scala-lang" % "scala-library" % scalaVersion.value % "test",
+      dependencyOverrides += "org.scala-lang" % "scala-library" % scalaVersion
+        .value % "test",
       testFrameworks ++= {
         if (shouldPartest.value)
           Seq(new TestFramework("scala.tools.partest.scalajs.Framework"))

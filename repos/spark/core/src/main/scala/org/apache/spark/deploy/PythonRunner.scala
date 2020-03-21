@@ -76,14 +76,16 @@ object PythonRunner {
     val env = builder.environment()
     env.put("PYTHONPATH", pythonPath)
     // This is equivalent to setting the -u flag; we use it because ipython doesn't support -u:
-    env.put(
-      "PYTHONUNBUFFERED",
-      "YES"
-    ) // value is needed to be set to a non-empty string
+    env
+      .put(
+        "PYTHONUNBUFFERED",
+        "YES"
+      ) // value is needed to be set to a non-empty string
     env.put("PYSPARK_GATEWAY_PORT", "" + gatewayServer.getListeningPort)
-    builder.redirectErrorStream(
-      true
-    ) // Ugly but needed for stdout and stderr to synchronize
+    builder
+      .redirectErrorStream(
+        true
+      ) // Ugly but needed for stdout and stderr to synchronize
     try {
       val process = builder.start()
 
@@ -137,11 +139,9 @@ object PythonRunner {
   def formatPaths(
       paths: String,
       testWindows: Boolean = false): Array[String] = {
-    Option(paths)
-      .getOrElse("")
-      .split(",")
-      .filter(_.nonEmpty)
-      .map { p => formatPath(p, testWindows) }
+    Option(paths).getOrElse("").split(",").filter(_.nonEmpty).map { p =>
+      formatPath(p, testWindows)
+    }
   }
 
 }

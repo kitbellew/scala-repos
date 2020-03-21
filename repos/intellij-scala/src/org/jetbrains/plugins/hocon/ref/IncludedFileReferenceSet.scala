@@ -64,8 +64,8 @@ class IncludedFileReferenceSet(
     new Condition[PsiFileSystemItem] {
       def value(item: PsiFileSystemItem): Boolean =
         item.isDirectory ||
-          item.getName.endsWith(ConfExt) || item.getName.endsWith(
-          JsonExt) || item.getName.endsWith(PropsExt)
+          item.getName.endsWith(ConfExt) || item.getName
+          .endsWith(JsonExt) || item.getName.endsWith(PropsExt)
     }
 
   // code mostly based on similar bits in `FileReferenceSet` and `PsiFileReferenceHelper`
@@ -76,8 +76,7 @@ class IncludedFileReferenceSet(
     val cf = getContainingFile
     if (cf == null) return empty
 
-    val containingFile = Option(cf.getContext)
-      .map(_.getContainingFile)
+    val containingFile = Option(cf.getContext).map(_.getContainingFile)
       .getOrElse(cf)
 
     val proj = containingFile.getProject
@@ -99,24 +98,19 @@ class IncludedFileReferenceSet(
 
       if (pkgName == null) return empty
 
-      val allScopes = pfi
-        .getOrderEntriesForFile(parent)
-        .iterator
-        .asScala
+      val allScopes = pfi.getOrderEntriesForFile(parent).iterator.asScala
         .collect {
           case msoe: ModuleSourceOrderEntry =>
-            msoe.getOwnerModule.getModuleRuntimeScope(pfi.isInTestSourceContent(
-              parent))
+            msoe.getOwnerModule
+              .getModuleRuntimeScope(pfi.isInTestSourceContent(parent))
           case loe: LibraryOrderEntry =>
-            loe.getOwnerModule.getModuleRuntimeScope(
-              loe.getScope == DependencyScope.TEST)
+            loe.getOwnerModule
+              .getModuleRuntimeScope(loe.getScope == DependencyScope.TEST)
         }
 
       def orderEntryScope = allScopes.reduceOption(_ union _)
       def moduleScope =
-        pfi
-          .getModuleForFile(parent)
-          .toOption
+        pfi.getModuleForFile(parent).toOption
           .map(_.getModuleRuntimeScope(false))
 
       (orderEntryScope orElse moduleScope).map { scope =>
@@ -126,11 +120,8 @@ class IncludedFileReferenceSet(
         // `PackagePrefixFileSystemItem` instances, but implementation of `FileReference#innerResolveInContext`
         // straight away negates my efforts by explicitly ignoring package prefixes - not sure why.
         // TODO: possibly fix this in some other way?
-        DirectoryIndex
-          .getInstance(proj)
-          .getDirectoriesByPackageName(pkgName, false)
-          .iterator
-          .asScala
+        DirectoryIndex.getInstance(proj)
+          .getDirectoriesByPackageName(pkgName, false).iterator.asScala
           .filter(scope.contains)
           .flatMap(dir => Option(psiManager.findDirectory(dir)))
           .toJList[PsiFileSystemItem]
@@ -169,8 +160,8 @@ class IncludedFileReference(
 
   private def lacksExtension(text: String) =
     isLast && text.nonEmpty && text != "." && text != ".." && text != "/" &&
-      !text.endsWith(ConfExt) && !text.endsWith(JsonExt) && !text.endsWith(
-      PropsExt)
+      !text.endsWith(ConfExt) && !text.endsWith(JsonExt) && !text
+      .endsWith(PropsExt)
 
   override def innerResolve(
       caseSensitive: Boolean,

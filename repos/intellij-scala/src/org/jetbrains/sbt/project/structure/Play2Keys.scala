@@ -34,15 +34,14 @@ object Play2Keys {
       if (elem.isInstanceOf[Text] || elem.label == "#PCDATA") return None
 
       val keyName = elem.label
-      val children = elem.child.filterNot(_.text.forall(c =>
-        c == '\n' || c == ' '))
+      val children = elem.child
+        .filterNot(_.text.forall(c => c == '\n' || c == ' '))
 
-      if (children.forall(
-            _.child.forall { case _: Text => true; case _ => false })) {
+      if (children
+            .forall(_.child.forall { case _: Text => true; case _ => false })) {
         Some(new StringXmlKey(
           keyName,
-          children
-            .map(projectKey => (projectKey.label, projectKey.text))
+          children.map(projectKey => (projectKey.label, projectKey.text))
             .toMap))
       } else if (children.forall(_.child.forall(node =>
                    node.label == ENTRY_SEQ_NAME || node.isInstanceOf[Text]))) {

@@ -34,8 +34,7 @@ class FileUploadExamplesSpec extends RoutingSpec {
               // stream into a file as the chunks of it arrives and return a future
               // file to where it got stored
               val file = File.createTempFile("upload", "tmp")
-              b.entity.dataBytes
-                .runWith(FileIO.toFile(file))
+              b.entity.dataBytes.runWith(FileIO.toFile(file))
                 .map(_ => (b.name -> file))
 
             case b: BodyPart =>
@@ -43,8 +42,7 @@ class FileUploadExamplesSpec extends RoutingSpec {
               b.toStrict(2.seconds)
                 .map(strict => (b.name -> strict.entity.data.utf8String))
 
-          }
-          .runFold(Map.empty[String, Any])((map, tuple) => map + tuple)
+          }.runFold(Map.empty[String, Any])((map, tuple) => map + tuple)
 
         val done = allPartsF.map { allParts =>
           // You would have some better validation/unmarshalling here
@@ -70,16 +68,13 @@ class FileUploadExamplesSpec extends RoutingSpec {
 
     val csvUploads = path("metadata" / LongNumber) { id =>
       entity(as[Multipart.FormData]) { formData =>
-        val done: Future[Done] = formData.parts
-          .mapAsync(1) {
-            case b: BodyPart if b.filename.exists(_.endsWith(".csv")) =>
-              b.entity.dataBytes
-                .via(splitLines)
-                .map(_.utf8String.split(",").toVector)
-                .runForeach(csv => metadataActor ! MetadataActor.Entry(id, csv))
-            case _ => Future.successful(Done)
-          }
-          .runWith(Sink.ignore)
+        val done: Future[Done] = formData.parts.mapAsync(1) {
+          case b: BodyPart if b.filename.exists(_.endsWith(".csv")) =>
+            b.entity.dataBytes.via(splitLines)
+              .map(_.utf8String.split(",").toVector)
+              .runForeach(csv => metadataActor ! MetadataActor.Entry(id, csv))
+          case _ => Future.successful(Done)
+        }.runWith(Sink.ignore)
 
         // when processing have finished create a response for the user
         onSuccess(done) { _ => complete { "ok!" } }

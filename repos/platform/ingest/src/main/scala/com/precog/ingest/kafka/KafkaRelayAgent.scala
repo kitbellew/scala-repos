@@ -219,8 +219,10 @@ final class KafkaRelayAgent(
         }
     }
 
-    outgoing.sequence[({ type λ[α] = Validation[Error, α] })#λ, Future[
-      Authorized]] map { messageFutures =>
+    outgoing
+      .sequence[
+        ({ type λ[α] = Validation[Error, α] })#λ,
+        Future[Authorized]] map { messageFutures =>
       Future.sequence(messageFutures) map { messages: List[Authorized] =>
         val identified: List[Message] = messages.flatMap {
           case Authorized(
@@ -309,7 +311,8 @@ final class KafkaRelayAgent(
     } valueOr { error =>
       Promise successful {
         logger.error(
-          "Deserialization errors occurred reading events from Kafka: " + error.message)
+          "Deserialization errors occurred reading events from Kafka: " + error
+            .message)
       }
     }
   }

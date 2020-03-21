@@ -39,15 +39,12 @@ class TestWrappedJoinerJob(args: Args) extends Job(args) {
 class WrappedJoinerTest extends WordSpec with Matchers {
   "Methods called from a Joiner" should {
     "have access to a FlowProcess when WrappedJoiner is used" in {
-      JobTest(new TestWrappedJoinerJob(_))
-        .arg("wrapJoiner", "true")
+      JobTest(new TestWrappedJoinerJob(_)).arg("wrapJoiner", "true")
         .source(Tsv("inputA"), Seq(("1", "alpha"), ("2", "beta")))
         .source(Tsv("inputB"), Seq(("1", "first"), ("2", "second")))
         .sink[(Int, String)](Tsv("output")) { outBuf =>
           // The job will fail with an exception if the FlowProcess is unavailable.
-        }
-        .runHadoop
-        .finish
+        }.runHadoop.finish
     }
 
     "have no access to a FlowProcess when WrappedJoiner is not used" in {
@@ -57,9 +54,7 @@ class WrappedJoinerTest extends WordSpec with Matchers {
           .source(Tsv("inputB"), Seq(("1", "first"), ("2", "second")))
           .sink[(Int, String)](Tsv("output")) { outBuf =>
             // The job will fail with an exception if the FlowProcess is unavailable.
-          }
-          .runHadoop
-          .finish
+          }.runHadoop.finish
 
         fail("The test Job without WrappedJoiner should fail.")
       } catch {

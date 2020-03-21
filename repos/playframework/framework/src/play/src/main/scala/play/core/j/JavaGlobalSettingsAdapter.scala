@@ -28,8 +28,7 @@ class JavaGlobalSettingsAdapter(val underlying: play.GlobalSettings)
 
   override def onRouteRequest(request: RequestHeader): Option[Handler] = {
     val r = new play.mvc.Http.RequestImpl(request)
-    Option(underlying.onRouteRequest(r))
-      .map(Some(_))
+    Option(underlying.onRouteRequest(r)).map(Some(_))
       .getOrElse(super.onRouteRequest(request))
   }
 

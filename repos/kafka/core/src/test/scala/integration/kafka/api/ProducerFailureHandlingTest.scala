@@ -43,16 +43,14 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
 
   val overridingProps = new Properties()
   overridingProps.put(KafkaConfig.AutoCreateTopicsEnableProp, false.toString)
-  overridingProps.put(
-    KafkaConfig.MessageMaxBytesProp,
-    serverMessageMaxBytes.toString)
+  overridingProps
+    .put(KafkaConfig.MessageMaxBytesProp, serverMessageMaxBytes.toString)
   // Set a smaller value for the number of partitions for the offset commit topic (__consumer_offset topic)
   // so that the creation of that topic/partition(s) and subsequent leader assignment doesn't take relatively long
   overridingProps.put(KafkaConfig.OffsetsTopicPartitionsProp, 1.toString)
 
   def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numServers, zkConnect, false)
+    TestUtils.createBrokerConfigs(numServers, zkConnect, false)
       .map(KafkaConfig.fromProps(_, overridingProps))
 
   private var consumer1: SimpleConsumer = null
@@ -239,15 +237,14 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
   @Test
   def testCannotSendToInternalTopic() {
     val thrown = intercept[ExecutionException] {
-      producer2
-        .send(new ProducerRecord[Array[Byte], Array[Byte]](
-          TopicConstants.INTERNAL_TOPICS.iterator.next,
-          "test".getBytes,
-          "test".getBytes))
-        .get
+      producer2.send(new ProducerRecord[Array[Byte], Array[Byte]](
+        TopicConstants.INTERNAL_TOPICS.iterator.next,
+        "test".getBytes,
+        "test".getBytes)).get
     }
     assertTrue(
-      "Unexpected exception while sending to an invalid topic " + thrown.getCause,
+      "Unexpected exception while sending to an invalid topic " + thrown
+        .getCause,
       thrown.getCause.isInstanceOf[InvalidTopicException])
   }
 
@@ -257,13 +254,8 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
     val topicProps = new Properties()
     topicProps.put("min.insync.replicas", (numServers + 1).toString)
 
-    TestUtils.createTopic(
-      zkUtils,
-      topicName,
-      1,
-      numServers,
-      servers,
-      topicProps)
+    TestUtils
+      .createTopic(zkUtils, topicName, 1, numServers, servers, topicProps)
 
     val record = new ProducerRecord[Array[Byte], Array[Byte]](
       topicName,
@@ -289,13 +281,8 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
     val topicProps = new Properties()
     topicProps.put("min.insync.replicas", numServers.toString)
 
-    TestUtils.createTopic(
-      zkUtils,
-      topicName,
-      1,
-      numServers,
-      servers,
-      topicProps)
+    TestUtils
+      .createTopic(zkUtils, topicName, 1, numServers, servers, topicProps)
 
     val record = new ProducerRecord[Array[Byte], Array[Byte]](
       topicName,
@@ -319,7 +306,8 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
             !e.getCause.isInstanceOf[TimeoutException]) {
           fail(
             "Expected NotEnoughReplicasException or NotEnoughReplicasAfterAppendException when producing to topic " +
-              "with fewer brokers than min.insync.replicas, but saw " + e.getCause)
+              "with fewer brokers than min.insync.replicas, but saw " + e
+              .getCause)
         }
     }
 

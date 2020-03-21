@@ -109,8 +109,8 @@ class TungstenAggregationIterator(
 
   // Remember spill data size of this task before execute this operator so that we can
   // figure out how many bytes we spilled for this operator.
-  private val spillSizeBefore =
-    TaskContext.get().taskMetrics().memoryBytesSpilled
+  private val spillSizeBefore = TaskContext.get().taskMetrics()
+    .memoryBytesSpilled
 
   ///////////////////////////////////////////////////////////////////////////
   // Part 2: Methods and fields used by setting aggregation buffer values,
@@ -129,8 +129,7 @@ class TungstenAggregationIterator(
     // Initialize declarative aggregates' buffer values
     expressionAggInitialProjection.target(buffer)(EmptyRow)
     // Initialize imperative aggregates' buffer values
-    aggregateFunctions
-      .collect { case f: ImperativeAggregate => f }
+    aggregateFunctions.collect { case f: ImperativeAggregate => f }
       .foreach(_.initialize(buffer))
     buffer
   }
@@ -145,14 +144,12 @@ class TungstenAggregationIterator(
       val bufferAttributes = aggregateFunctions.flatMap(_.aggBufferAttributes)
       val groupingKeySchema = StructType.fromAttributes(groupingAttributes)
       val bufferSchema = StructType.fromAttributes(bufferAttributes)
-      val unsafeRowJoiner = GenerateUnsafeRowJoiner.create(
-        groupingKeySchema,
-        bufferSchema)
+      val unsafeRowJoiner = GenerateUnsafeRowJoiner
+        .create(groupingKeySchema, bufferSchema)
 
       (currentGroupingKey: UnsafeRow, currentBuffer: MutableRow) => {
-        unsafeRowJoiner.join(
-          currentGroupingKey,
-          currentBuffer.asInstanceOf[UnsafeRow])
+        unsafeRowJoiner
+          .join(currentGroupingKey, currentBuffer.asInstanceOf[UnsafeRow])
       }
     } else { super.generateResultProjection() }
   }
@@ -171,8 +168,8 @@ class TungstenAggregationIterator(
   // all groups and their corresponding aggregation buffers for hash-based aggregation.
   private[this] val hashMap = new UnsafeFixedWidthAggregationMap(
     initialAggregationBuffer,
-    StructType.fromAttributes(
-      aggregateFunctions.flatMap(_.aggBufferAttributes)),
+    StructType
+      .fromAttributes(aggregateFunctions.flatMap(_.aggBufferAttributes)),
     StructType.fromAttributes(groupingExpressions.map(_.toAttribute)),
     TaskContext.get().taskMemoryManager(),
     1024 * 16, // initial capacity
@@ -190,8 +187,8 @@ class TungstenAggregationIterator(
       // If there is no grouping expressions, we can just reuse the same buffer over and over again.
       // Note that it would be better to eliminate the hash map entirely in the future.
       val groupingKey = groupingProjection.apply(null)
-      val buffer: UnsafeRow = hashMap.getAggregationBufferFromUnsafeRow(
-        groupingKey)
+      val buffer: UnsafeRow = hashMap
+        .getAggregationBufferFromUnsafeRow(groupingKey)
       while (inputIter.hasNext) {
         val newInput = inputIter.next()
         processRow(buffer, newInput)
@@ -430,8 +427,7 @@ class TungstenAggregationIterator(
       // to just use the max of the two.
       if (!hasNext) {
         val mapMemory = hashMap.getPeakMemoryUsedBytes
-        val sorterMemory = Option(externalSorter)
-          .map(_.getPeakMemoryUsedBytes)
+        val sorterMemory = Option(externalSorter).map(_.getPeakMemoryUsedBytes)
           .getOrElse(0L)
         val peakMemory = Math.max(mapMemory, sorterMemory)
         val metrics = TaskContext.get().taskMetrics()

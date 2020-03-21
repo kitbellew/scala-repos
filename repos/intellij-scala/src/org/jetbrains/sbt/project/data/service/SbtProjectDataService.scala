@@ -59,8 +59,7 @@ object SbtProjectDataService {
       dataToImport.foreach(node => doImport(node.getData))
 
     private def doImport(data: SbtProjectData): Unit = {
-      ScalaProjectSettings
-        .getInstance(project)
+      ScalaProjectSettings.getInstance(project)
         .setBasePackages(data.basePackages.asJava)
       configureJdk(project, data)
       updateJavaCompilerOptionsIn(project, data.javacOptions)
@@ -73,12 +72,10 @@ object SbtProjectDataService {
       executeProjectChangeAction {
         val existingJdk = Option(
           ProjectRootManager.getInstance(project).getProjectSdk)
-        val projectJdk = data.jdk
-          .flatMap(SdkUtils.findProjectSdk)
-          .orElse(existingJdk)
-          .orElse(SdkUtils.allJdks.headOption)
-        projectJdk.foreach(
-          ProjectRootManager.getInstance(project).setProjectSdk)
+        val projectJdk = data.jdk.flatMap(SdkUtils.findProjectSdk)
+          .orElse(existingJdk).orElse(SdkUtils.allJdks.headOption)
+        projectJdk
+          .foreach(ProjectRootManager.getInstance(project).setProjectSdk)
       }
 
     private def setLanguageLevel(project: Project, data: SbtProjectData): Unit =
@@ -96,11 +93,8 @@ object SbtProjectDataService {
       }
 
     private def setSbtVersion(project: Project, data: SbtProjectData): Unit =
-      Option(
-        SbtSystemSettings
-          .getInstance(project)
-          .getLinkedProjectSettings(data.projectPath))
-        .foreach(s => s.sbtVersion = data.sbtVersion)
+      Option(SbtSystemSettings.getInstance(project).getLinkedProjectSettings(
+        data.projectPath)).foreach(s => s.sbtVersion = data.sbtVersion)
 
     private def updateIncrementalityType(project: Project): Unit = {
       if (getModules.exists(it =>
@@ -113,15 +107,13 @@ object SbtProjectDataService {
         project: Project,
         options: Seq[String]): Unit =
       executeProjectChangeAction {
-        val settings = JavacConfiguration.getOptions(
-          project,
-          classOf[JavacConfiguration])
+        val settings = JavacConfiguration
+          .getOptions(project, classOf[JavacConfiguration])
 
         def contains(values: String*) = values.exists(options.contains)
 
         def valueOf(name: String): Option[String] =
-          Option(options.indexOf(name))
-            .filterNot(-1 == _)
+          Option(options.indexOf(name)).filterNot(-1 == _)
             .flatMap(i => options.lift(i + 1))
 
         if (contains("-g:none")) { settings.DEBUGGING_INFO = false }
@@ -135,8 +127,7 @@ object SbtProjectDataService {
         }
 
         valueOf("-target").foreach { target =>
-          val compilerSettings = CompilerConfiguration
-            .getInstance(project)
+          val compilerSettings = CompilerConfiguration.getInstance(project)
             .asInstanceOf[CompilerConfigurationImpl]
           compilerSettings.setProjectBytecodeTarget(target)
         }

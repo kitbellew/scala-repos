@@ -90,8 +90,7 @@ trait MetaProtoExtendedSession[T <: ProtoExtendedSession[T]]
     userDidLogout(Full(uid))
     val inst = create.userId(uid.userIdAsString).saveMe
     val cookie = HTTPCookie(CookieName, inst.cookieId.get)
-      .setMaxAge(((inst.expiration.get - millis) / 1000L).toInt)
-      .setPath("/")
+      .setMaxAge(((inst.expiration.get - millis) / 1000L).toInt).setPath("/")
     S.addCookie(cookie)
   }
 

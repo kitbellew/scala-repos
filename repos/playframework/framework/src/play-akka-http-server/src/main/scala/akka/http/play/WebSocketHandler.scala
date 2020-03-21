@@ -43,8 +43,7 @@ object WebSocketHandler {
     // Each of the stages here transforms frames to an Either[Message, ?], where Message is a close message indicating
     // some sort of protocol failure. The handleProtocolFailures function then ensures that these messages skip the
     // flow that we are wrapping, are sent to the client and the close procedure is implemented.
-    Flow[FrameEvent]
-      .transform(() => aggregateFrames(bufferLimit))
+    Flow[FrameEvent].transform(() => aggregateFrames(bufferLimit))
       .via(handleProtocolFailures(
         WebSocketFlowHandler.webSocketProtocol(bufferLimit).join(flow)))
       .map(messageToFrameEvent)

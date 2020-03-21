@@ -79,9 +79,8 @@ private[mllib] object EigenValueDecomposition {
     iparam(6) = 1
 
     require(
-      n * ncv.toLong <= Integer.MAX_VALUE && ncv * (
-        ncv.toLong + 8
-      ) <= Integer.MAX_VALUE,
+      n * ncv.toLong <= Integer.MAX_VALUE && ncv * (ncv.toLong + 8) <= Integer
+        .MAX_VALUE,
       s"k = $k and/or n = $n are too large to compute an eigendecomposition")
 
     var ido = new intW(0)
@@ -197,9 +196,7 @@ private[mllib] object EigenValueDecomposition {
     // number of computed eigenvalues, might be smaller than k
     val computed = iparam(4)
 
-    val eigenPairs = java.util.Arrays
-      .copyOfRange(d, 0, computed)
-      .zipWithIndex
+    val eigenPairs = java.util.Arrays.copyOfRange(d, 0, computed).zipWithIndex
       .map { r =>
         (r._1, java.util.Arrays.copyOfRange(z, r._2 * n, r._2 * n + n))
       }

@@ -322,8 +322,8 @@ trait DocComments {
   /** Maps symbols to the variable -> replacement maps that are defined
     *  in their doc comments
     */
-  private val defs =
-    mutable.HashMap[Symbol, Map[String, String]]() withDefaultValue Map()
+  private val defs = mutable
+    .HashMap[Symbol, Map[String, String]]() withDefaultValue Map()
 
   /** Lookup definition of variable.
     *

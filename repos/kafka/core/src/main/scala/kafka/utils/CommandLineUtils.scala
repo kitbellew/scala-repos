@@ -81,8 +81,8 @@ object CommandLineUtils extends Logging {
           throw new IllegalArgumentException(s"Missing value for key ${a(0)}")
       } else if (a.length == 2) props.put(a(0), a(1))
       else {
-        System.err.println(
-          "Invalid command line properties: " + args.mkString(" "))
+        System.err
+          .println("Invalid command line properties: " + args.mkString(" "))
         System.exit(1)
       }
     }

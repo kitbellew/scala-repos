@@ -60,11 +60,10 @@ object ContravariantCoyonedaUsage extends App {
     (for {
       grps <- """([0-9]+)-([0-9]+)-([0-9]+)""".r findFirstMatchIn s
       List(y, m, d) <- grps.subgroups.traverse(_.parseInt.toOption)
-    } yield (y, Some((m, d))))
-      .orElse(for {
-        n <- """[0-9]+""".r findFirstIn s
-        yi <- n.parseInt.toOption
-      } yield (yi, None)) <\/ s
+    } yield (y, Some((m, d)))).orElse(for {
+      n <- """[0-9]+""".r findFirstIn s
+      yi <- n.parseInt.toOption
+    } yield (yi, None)) <\/ s
 
   // With sort keys in hand, we can produced contramapped `Order's all
   // on the argument type, `String', that will compare two values by
@@ -89,9 +88,7 @@ object ContravariantCoyonedaUsage extends App {
   // Schwartzian transform:
 
   def schwartzian[A, B](xs: List[A])(f: A => B)(implicit B: Order[B]): List[A] =
-    xs.map(a => (a, f(a)))
-      .sortBy(_._2)(B.toScalaOrdering)
-      .map(_._1)
+    xs.map(a => (a, f(a))).sortBy(_._2)(B.toScalaOrdering).map(_._1)
 
   def nonschwartzian[A, B](xs: List[A])(f: A => B)(implicit
       B: Order[B]): List[A] = xs.sorted(Order.orderBy(f).toScalaOrdering)

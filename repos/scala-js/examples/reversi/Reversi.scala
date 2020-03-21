@@ -86,8 +86,7 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
     val boardCanvas = jQuery(
       "<canvas width='" + BoardSizePx + "' height='" + BoardSizePx + "'></canvas>")
     val domCanvas = boardCanvas.get(0).asInstanceOf[HTMLCanvasElement]
-    val context = domCanvas
-      .getContext("2d")
+    val context = domCanvas.getContext("2d")
       .asInstanceOf[CanvasRenderingContext2D]
 
     playground.append(jQuery("<div>").append(boardCanvas))

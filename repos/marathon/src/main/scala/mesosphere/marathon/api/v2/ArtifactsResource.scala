@@ -63,11 +63,9 @@ class ArtifactsResource @Inject() (
     val item = storage.item(path)
     if (!item.exists) { notFound(s"No artifact with path $path") }
     else {
-      Response
-        .ok(item.inputStream(), mediaMime(path))
+      Response.ok(item.inputStream(), mediaMime(path))
         .lastModified(new Date(item.lastModified))
-        .header("Content-Length", item.length)
-        .build()
+        .header("Content-Length", item.length).build()
     }
   }
 

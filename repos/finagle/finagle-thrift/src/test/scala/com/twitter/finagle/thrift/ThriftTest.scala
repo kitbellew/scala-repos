@@ -55,10 +55,8 @@ trait ThriftTest {
     new {
       val server = ServerBuilder()
         .codec(ThriftServerFramedCodec(protocolFactory))
-        .bindTo(new InetSocketAddress(loopback, 0))
-        .name("thriftserver")
-        .tracer(DefaultTracer)
-        .build(ifaceToService(processor, protocolFactory))
+        .bindTo(new InetSocketAddress(loopback, 0)).name("thriftserver")
+        .tracer(DefaultTracer).build(ifaceToService(processor, protocolFactory))
 
       val boundAddr = server.boundAddress
 
@@ -73,11 +71,8 @@ trait ThriftTest {
       val serviceFactory = ClientBuilder()
         .hosts(Seq(addr.asInstanceOf[InetSocketAddress]))
         .codec(ThriftClientFramedCodec(clientIdOpt).protocolFactory(
-          protocolFactory))
-        .name("thriftclient")
-        .hostConnectionLimit(2)
-        .tracer(DefaultTracer)
-        .buildFactory()
+          protocolFactory)).name("thriftclient").hostConnectionLimit(2)
+        .tracer(DefaultTracer).buildFactory()
       val service = serviceFactory.toService
       val client = serviceToIface(service, protocolFactory)
 
@@ -86,8 +81,7 @@ trait ThriftTest {
 
   private val newAPIServer = (protocolFactory: TProtocolFactory) =>
     new {
-      val server = Thrift.server
-        .withLabel("thriftserver")
+      val server = Thrift.server.withLabel("thriftserver")
         .withProtocolFactory(protocolFactory)
         .serveIface("localhost:*", processor)
       val boundAddr = server.boundAddress
@@ -102,10 +96,10 @@ trait ThriftTest {
     new {
       implicit val cls = ifaceManifest
       val client = {
-        val thrift = clientIdOpt.foldLeft(
-          Thrift.client.withProtocolFactory(protocolFactory)) {
-          case (thrift, clientId) => thrift.withClientId(clientId)
-        }
+        val thrift = clientIdOpt
+          .foldLeft(Thrift.client.withProtocolFactory(protocolFactory)) {
+            case (thrift, clientId) => thrift.withClientId(clientId)
+          }
 
         thrift.newIface[Iface](Group(addr).named("thriftclient"))
       }
@@ -149,11 +143,9 @@ trait ThriftTest {
       (clientName, newClient) <- clients
       (serverName, newServer) <- servers
       testDef <- thriftTests
-    } test("server:%s client:%s proto:%s %s".format(
-      serverName,
-      clientName,
-      protoName,
-      testDef.label)) {
+    } test(
+      "server:%s client:%s proto:%s %s"
+        .format(serverName, clientName, protoName, testDef.label)) {
       val tracer = new BufferingTracer
       val previous = DefaultTracer.self
       DefaultTracer.self = tracer

@@ -104,8 +104,8 @@ trait SymbolTables {
         val fresh = typer.context.unit.fresh
         newTermName(fresh.newName(name))
       }
-      val bindingAttachment =
-        reification.attachments.get[ReifyBindingAttachment].get
+      val bindingAttachment = reification.attachments
+        .get[ReifyBindingAttachment].get
       add(
         ValDef(
           NoMods,
@@ -145,20 +145,19 @@ trait SymbolTables {
 
     override def toString = {
       val symtabString = symtab.keys.map(symName(_)).mkString(", ")
-      val trueAliases = aliases.distinct.filter(entry =>
-        symName(entry._1) != entry._2)
+      val trueAliases = aliases.distinct
+        .filter(entry => symName(entry._1) != entry._2)
       val aliasesString = trueAliases
-        .map(entry => s"${symName(entry._1)} -> ${entry._2}")
-        .mkString(", ")
-      s"""symtab = [$symtabString], aliases = [$aliasesString]${if (original.isDefined)
+        .map(entry => s"${symName(entry._1)} -> ${entry._2}").mkString(", ")
+      s"""symtab = [$symtabString], aliases = [$aliasesString]${if (original
+                                                                      .isDefined)
         ", has original"
       else ""}"""
     }
 
     def debugString: String = {
       val buf = new StringBuilder
-      buf
-        .append("symbol table = " + (if (syms.length == 0) "<empty>" else ""))
+      buf.append("symbol table = " + (if (syms.length == 0) "<empty>" else ""))
         .append(EOL)
       syms foreach (sym => buf.append(symDef(sym)).append(EOL))
       buf.delete(buf.length - EOL.length, buf.length)
@@ -195,10 +194,10 @@ trait SymbolTables {
       reifier.state.symtab = symtab0.asInstanceOf[reifier.SymbolTable]
       def currtab = reifier.symtab.asInstanceOf[SymbolTable]
       try {
-        val cumulativeSymtab = mutable.ArrayBuffer[Tree](
-          symtab0.symtab.values.toList: _*)
-        val cumulativeAliases = mutable.ArrayBuffer[(Symbol, TermName)](
-          symtab0.aliases: _*)
+        val cumulativeSymtab = mutable
+          .ArrayBuffer[Tree](symtab0.symtab.values.toList: _*)
+        val cumulativeAliases = mutable
+          .ArrayBuffer[(Symbol, TermName)](symtab0.aliases: _*)
 
         def fillInSymbol(sym: Symbol): Tree = {
           if (reifyDebug)

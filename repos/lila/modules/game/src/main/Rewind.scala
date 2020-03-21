@@ -47,7 +47,7 @@ object Rewind {
         newGame,
         List(
           newGame.clock.map(Event.Clock.apply),
-          newGame.playableCorrespondenceClock.map(
-            Event.CorrespondenceClock.apply)).flatten)
+          newGame.playableCorrespondenceClock
+            .map(Event.CorrespondenceClock.apply)).flatten)
     }
 }

@@ -81,6 +81,6 @@ object DataTypeTestUtils {
   /**
     * Instances of [[ArrayType]] for all [[AtomicType]]s. Arrays of these types may contain null.
     */
-  val atomicArrayTypes: Set[ArrayType] = atomicTypes.map(
-    ArrayType(_, containsNull = true))
+  val atomicArrayTypes: Set[ArrayType] = atomicTypes
+    .map(ArrayType(_, containsNull = true))
 }

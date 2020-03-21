@@ -212,9 +212,8 @@ final case class VectorClock(
   def merge(that: VectorClock): VectorClock = {
     var mergedVersions = that.versions
     for ((node, time) ← versions) {
-      val mergedVersionsCurrentTime = mergedVersions.getOrElse(
-        node,
-        Timestamp.Zero)
+      val mergedVersionsCurrentTime = mergedVersions
+        .getOrElse(node, Timestamp.Zero)
       if (time > mergedVersionsCurrentTime)
         mergedVersions = mergedVersions.updated(node, time)
     }
@@ -226,7 +225,6 @@ final case class VectorClock(
     else this
 
   override def toString =
-    versions
-      .map { case ((n, t)) ⇒ n + " -> " + t }
+    versions.map { case ((n, t)) ⇒ n + " -> " + t }
       .mkString("VectorClock(", ", ", ")")
 }

@@ -101,30 +101,25 @@ object ConfigCommand {
       else zkUtils.getAllEntitiesWithConfig(entityType)
 
     for (entityName <- entityNames) {
-      val configs = AdminUtils.fetchEntityConfig(
-        zkUtils,
+      val configs = AdminUtils
+        .fetchEntityConfig(zkUtils, entityType, entityName)
+      println("Configs for %s:%s are %s".format(
         entityType,
-        entityName)
-      println(
-        "Configs for %s:%s are %s"
-          .format(
-            entityType,
-            entityName,
-            configs.map(kv => kv._1 + "=" + kv._2).mkString(",")))
+        entityName,
+        configs.map(kv => kv._1 + "=" + kv._2).mkString(",")))
     }
   }
 
   private[admin] def parseConfigsToBeAdded(
       opts: ConfigCommandOptions): Properties = {
-    val configsToBeAdded = opts.options
-      .valuesOf(opts.addConfig)
+    val configsToBeAdded = opts.options.valuesOf(opts.addConfig)
       .map(_.split("""\s*=\s*"""))
     require(
       configsToBeAdded.forall(config => config.length == 2),
       "Invalid entity config: all configs to be added must be in the format \"key=val\".")
     val props = new Properties
-    configsToBeAdded.foreach(pair =>
-      props.setProperty(pair(0).trim, pair(1).trim))
+    configsToBeAdded
+      .foreach(pair => props.setProperty(pair(0).trim, pair(1).trim))
     if (props.containsKey(LogConfig.MessageFormatVersionProp)) {
       println(
         s"WARNING: The configuration ${LogConfig.MessageFormatVersionProp}=${props
@@ -137,8 +132,7 @@ object ConfigCommand {
   private[admin] def parseConfigsToBeDeleted(
       opts: ConfigCommandOptions): Seq[String] = {
     if (opts.options.has(opts.deleteConfig)) {
-      val configsToBeDeleted = opts.options
-        .valuesOf(opts.deleteConfig)
+      val configsToBeDeleted = opts.options.valuesOf(opts.deleteConfig)
         .map(_.trim())
       val propsToBeDeleted = new Properties
       configsToBeDeleted.foreach(propsToBeDeleted.setProperty(_, ""))
@@ -148,48 +142,35 @@ object ConfigCommand {
 
   class ConfigCommandOptions(args: Array[String]) {
     val parser = new OptionParser
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
-          "Multiple URLS can be given to allow fail-over.")
-      .withRequiredArg
-      .describedAs("urls")
-      .ofType(classOf[String])
-    val alterOpt = parser.accepts(
-      "alter",
-      "Alter the configuration for the entity.")
-    val describeOpt = parser.accepts(
-      "describe",
-      "List configs for the given entity.")
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "REQUIRED: The connection string for the zookeeper connection in the form host:port. " +
+        "Multiple URLS can be given to allow fail-over.").withRequiredArg
+      .describedAs("urls").ofType(classOf[String])
+    val alterOpt = parser
+      .accepts("alter", "Alter the configuration for the entity.")
+    val describeOpt = parser
+      .accepts("describe", "List configs for the given entity.")
     val entityType = parser
-      .accepts("entity-type", "Type of entity (topics/clients)")
-      .withRequiredArg
+      .accepts("entity-type", "Type of entity (topics/clients)").withRequiredArg
       .ofType(classOf[String])
     val entityName = parser
       .accepts("entity-name", "Name of entity (topic name/client id)")
-      .withRequiredArg
-      .ofType(classOf[String])
+      .withRequiredArg.ofType(classOf[String])
 
     val nl = System.getProperty("line.separator")
-    val addConfig = parser
-      .accepts(
-        "add-config",
-        "Key Value pairs configs to add 'k1=v1,k2=v2'. The following is a list of valid configurations: " +
-          "For entity_type '" + ConfigType.Topic + "': " + nl + LogConfig.configNames
-          .map("\t" + _)
-          .mkString(nl) + nl +
-          "For entity_type '" + ConfigType.Client + "': " + nl + "\t" + ClientConfigOverride.ProducerOverride
-          + nl + "\t" + ClientConfigOverride.ConsumerOverride
-      )
-      .withRequiredArg
-      .ofType(classOf[String])
-      .withValuesSeparatedBy(',')
+    val addConfig = parser.accepts(
+      "add-config",
+      "Key Value pairs configs to add 'k1=v1,k2=v2'. The following is a list of valid configurations: " +
+        "For entity_type '" + ConfigType.Topic + "': " + nl + LogConfig
+        .configNames.map("\t" + _).mkString(nl) + nl +
+        "For entity_type '" + ConfigType
+        .Client + "': " + nl + "\t" + ClientConfigOverride.ProducerOverride
+        + nl + "\t" + ClientConfigOverride.ConsumerOverride
+    ).withRequiredArg.ofType(classOf[String]).withValuesSeparatedBy(',')
     val deleteConfig = parser
-      .accepts("delete-config", "config keys to remove 'k1,k2'")
-      .withRequiredArg
-      .ofType(classOf[String])
-      .withValuesSeparatedBy(',')
+      .accepts("delete-config", "config keys to remove 'k1,k2'").withRequiredArg
+      .ofType(classOf[String]).withValuesSeparatedBy(',')
     val helpOpt = parser.accepts("help", "Print usage information.")
     val options = parser.parse(args: _*)
 
@@ -211,16 +192,10 @@ object ConfigCommand {
           "Command must include exactly one action: --describe, --alter")
 
       // check required args
-      CommandLineUtils.checkRequiredArgs(
-        parser,
-        options,
-        zkConnectOpt,
-        entityType)
-      CommandLineUtils.checkInvalidArgs(
-        parser,
-        options,
-        alterOpt,
-        Set(describeOpt))
+      CommandLineUtils
+        .checkRequiredArgs(parser, options, zkConnectOpt, entityType)
+      CommandLineUtils
+        .checkInvalidArgs(parser, options, alterOpt, Set(describeOpt))
       CommandLineUtils.checkInvalidArgs(
         parser,
         options,
@@ -238,8 +213,8 @@ object ConfigCommand {
             "At least one of --add-config or --delete-config must be specified with --alter")
       }
       val entityTypeVal = options.valueOf(entityType)
-      if (!entityTypeVal.equals(ConfigType.Topic) && !entityTypeVal.equals(
-            ConfigType.Client)) {
+      if (!entityTypeVal.equals(ConfigType.Topic) && !entityTypeVal
+            .equals(ConfigType.Client)) {
         throw new IllegalArgumentException(
           "--entity-type must be '%s' or '%s'".format(
             ConfigType.Topic,

@@ -144,8 +144,7 @@ class ConnectionPoolSpec
     }
 
     "be able to handle 500 pipelined requests against the test server" in new TestSetup {
-      val settings = ConnectionPoolSettings(system)
-        .withMaxConnections(4)
+      val settings = ConnectionPoolSettings(system).withMaxConnections(4)
         .withPipeliningLimit(2)
       val poolFlow = Http().cachedHostConnectionPool[Int](
         serverHostName,
@@ -154,16 +153,13 @@ class ConnectionPoolSpec
 
       val N = 500
       val requestIds = Source.fromIterator(() ⇒ Iterator.from(1)).take(N)
-      val idSum = requestIds
-        .map(id ⇒ HttpRequest(uri = s"/r$id") -> id)
-        .via(poolFlow)
-        .map {
+      val idSum = requestIds.map(id ⇒ HttpRequest(uri = s"/r$id") -> id)
+        .via(poolFlow).map {
           case (Success(response), id) ⇒
             requestUri(response) should endWith(s"/r$id")
             id
           case x ⇒ fail(x.toString)
-        }
-        .runFold(0)(_ + _)
+        }.runFold(0)(_ + _)
 
       acceptIncomingConnection()
       acceptIncomingConnection()
@@ -254,20 +250,21 @@ class ConnectionPoolSpec
     "automatically shutdown after configured timeout periods" in new TestSetup() {
       val (_, _, _, hcp) = cachedHostConnectionPool[Int](idleTimeout = 1.second)
       val gateway = Await.result(hcp.gatewayFuture, 500.millis)
-      val PoolGateway.Running(
-        _,
-        shutdownStartedPromise,
-        shutdownCompletedPromise) = gateway.currentState
+      val PoolGateway
+        .Running(_, shutdownStartedPromise, shutdownCompletedPromise) = gateway
+        .currentState
       shutdownStartedPromise.isCompleted shouldEqual false
       shutdownCompletedPromise.isCompleted shouldEqual false
-      Await.result(
-        shutdownStartedPromise.future,
-        1500.millis
-      ) // verify shutdown start (after idle)
-      Await.result(
-        shutdownCompletedPromise.future,
-        1500.millis
-      ) // verify shutdown completed
+      Await
+        .result(
+          shutdownStartedPromise.future,
+          1500.millis
+        ) // verify shutdown start (after idle)
+      Await
+        .result(
+          shutdownCompletedPromise.future,
+          1500.millis
+        ) // verify shutdown completed
     }
 
     "transparently restart after idle shutdown" in new TestSetup() {
@@ -275,12 +272,13 @@ class ConnectionPoolSpec
         cachedHostConnectionPool[Int](idleTimeout = 1.second)
 
       val gateway = Await.result(hcp.gatewayFuture, 500.millis)
-      val PoolGateway.Running(_, _, shutdownCompletedPromise) =
-        gateway.currentState
-      Await.result(
-        shutdownCompletedPromise.future,
-        1500.millis
-      ) // verify shutdown completed
+      val PoolGateway.Running(_, _, shutdownCompletedPromise) = gateway
+        .currentState
+      Await
+        .result(
+          shutdownCompletedPromise.future,
+          1500.millis
+        ) // verify shutdown completed
 
       requestIn.sendNext(HttpRequest(uri = "/") -> 42)
 
@@ -327,8 +325,8 @@ class ConnectionPoolSpec
     "produce an error if the request does not have an absolute URI" in {
       val request = HttpRequest(uri = "/foo")
       val responseFuture = Http().singleRequest(request)
-      val thrown =
-        the[IllegalUriException] thrownBy Await.result(responseFuture, 1.second)
+      val thrown = the[IllegalUriException] thrownBy Await
+        .result(responseFuture, 1.second)
       thrown should have message "Cannot determine request scheme and target endpoint as HttpMethod(GET) request to /foo doesn't have an absolute URI"
     }
   }
@@ -339,10 +337,8 @@ class ConnectionPoolSpec
       autoAccept = true) {
       val (serverEndpoint2, serverHostName2, serverPort2) = TestUtils
         .temporaryServerHostnameAndPort()
-      Http().bindAndHandleSync(
-        testServerHandler(0),
-        serverHostName2,
-        serverPort2)
+      Http()
+        .bindAndHandleSync(testServerHandler(0), serverHostName2, serverPort2)
 
       val (requestIn, responseOut, responseOutSub, hcp) = superPool[Int]()
 
@@ -384,31 +380,26 @@ class ConnectionPoolSpec
       .manualProbe[Http.IncomingConnection]
     val incomingConnectionsSub = {
       val rawBytesInjection = BidiFlow.fromFlows(
-        Flow[SslTlsOutbound]
-          .collect[ByteString] {
-            case SendBytes(x) ⇒ mapServerSideOutboundRawBytes(x)
-          }
-          .transform(StreamUtils.recover {
-            case NoErrorComplete ⇒ ByteString.empty
-          }),
+        Flow[SslTlsOutbound].collect[ByteString] {
+          case SendBytes(x) ⇒ mapServerSideOutboundRawBytes(x)
+        }.transform(StreamUtils.recover {
+          case NoErrorComplete ⇒ ByteString.empty
+        }),
         Flow[ByteString].map(SessionBytes(null, _))
       )
       val sink =
         if (autoAccept) Sink.foreach[Http.IncomingConnection](handleConnection)
         else Sink.fromSubscriber(incomingConnections)
-      Tcp()
-        .bind(
-          serverEndpoint.getHostString,
-          serverEndpoint.getPort,
-          idleTimeout = serverSettings.timeouts.idleTimeout)
-        .map { c ⇒
-          val layer = Http().serverLayer(serverSettings, log = log)
-          Http.IncomingConnection(
-            c.localAddress,
-            c.remoteAddress,
-            layer atop rawBytesInjection join c.flow)
-        }
-        .runWith(sink)
+      Tcp().bind(
+        serverEndpoint.getHostString,
+        serverEndpoint.getPort,
+        idleTimeout = serverSettings.timeouts.idleTimeout).map { c ⇒
+        val layer = Http().serverLayer(serverSettings, log = log)
+        Http.IncomingConnection(
+          c.localAddress,
+          c.remoteAddress,
+          layer atop rawBytesInjection join c.flow)
+      }.runWith(sink)
       if (autoAccept) null else incomingConnections.expectSubscription()
     }
 
@@ -437,10 +428,9 @@ class ConnectionPoolSpec
         pipeliningLimit,
         idleTimeout,
         ClientConnectionSettings(system))
-      flowTestBench(Http().cachedHostConnectionPool[T](
-        serverHostName,
-        serverPort,
-        settings))
+      flowTestBench(
+        Http()
+          .cachedHostConnectionPool[T](serverHostName, serverPort, settings))
     }
 
     def superPool[T](
@@ -465,11 +455,8 @@ class ConnectionPoolSpec
         poolFlow: Flow[(HttpRequest, T), (Try[HttpResponse], T), Mat]) = {
       val requestIn = TestPublisher.probe[(HttpRequest, T)]()
       val responseOut = TestSubscriber.manualProbe[(Try[HttpResponse], T)]
-      val hcp = Source
-        .fromPublisher(requestIn)
-        .viaMat(poolFlow)(Keep.right)
-        .to(Sink.fromSubscriber(responseOut))
-        .run()
+      val hcp = Source.fromPublisher(requestIn).viaMat(poolFlow)(Keep.right)
+        .to(Sink.fromSubscriber(responseOut)).run()
       val responseOutSub = responseOut.expectSubscription()
       (requestIn, responseOut, responseOutSub, hcp)
     }

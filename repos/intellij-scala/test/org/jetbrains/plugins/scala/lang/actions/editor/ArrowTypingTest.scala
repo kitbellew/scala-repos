@@ -17,11 +17,9 @@ class ArrowTypingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   private var settings: ScalaCodeStyleSettings = null
 
   private def convertLoadedString(str: String) =
-    str
-      .replace("$CARET_MARKER", CARET_MARKER)
-      .replace(
-        "${ScalaTypedHandler.unicodeCaseArrow}",
-        ScalaTypedHandler.unicodeCaseArrow)
+    str.replace("$CARET_MARKER", CARET_MARKER).replace(
+      "${ScalaTypedHandler.unicodeCaseArrow}",
+      ScalaTypedHandler.unicodeCaseArrow)
 
   override def getTestDataPath: String =
     TestUtils.getTestDataPath + "/actions/editor/arrows"

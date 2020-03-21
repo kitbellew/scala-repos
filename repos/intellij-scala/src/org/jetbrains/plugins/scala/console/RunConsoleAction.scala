@@ -43,18 +43,17 @@ class RunConsoleAction extends AnAction {
     file match {
       case file: ScalaFile =>
         val runManagerEx = RunManagerEx.getInstanceEx(file.getProject)
-        val configurationType = ConfigurationTypeUtil.findConfigurationType(
-          classOf[ScalaConsoleConfigurationType])
-        val settings = runManagerEx.getConfigurationSettingsList(
-          configurationType)
+        val configurationType = ConfigurationTypeUtil
+          .findConfigurationType(classOf[ScalaConsoleConfigurationType])
+        val settings = runManagerEx
+          .getConfigurationSettingsList(configurationType)
 
         def execute(setting: RunnerAndConfigurationSettings) {
           val configuration = setting.getConfiguration
             .asInstanceOf[ScalaConsoleRunConfiguration]
           runManagerEx.setSelectedConfiguration(setting)
           val runExecutor = DefaultRunExecutor.getRunExecutorInstance
-          val runner = RunnerRegistry
-            .getInstance()
+          val runner = RunnerRegistry.getInstance()
             .getRunner(runExecutor.getId, configuration)
           if (runner != null) {
             try {
@@ -74,21 +73,19 @@ class RunConsoleAction extends AnAction {
 
         import scala.collection.JavaConversions._
         for (setting <- settings) {
-          ActionRunner.runInsideReadAction(
-            new ActionRunner.InterruptibleRunnable {
+          ActionRunner
+            .runInsideReadAction(new ActionRunner.InterruptibleRunnable {
               def run() { execute(setting) }
             })
           return
         }
-        ActionRunner.runInsideReadAction(
-          new ActionRunner.InterruptibleRunnable {
+        ActionRunner
+          .runInsideReadAction(new ActionRunner.InterruptibleRunnable {
             def run() {
               val factory: ScalaConsoleRunConfigurationFactory =
-                configurationType.getConfigurationFactories
-                  .apply(0)
+                configurationType.getConfigurationFactories.apply(0)
                   .asInstanceOf[ScalaConsoleRunConfigurationFactory]
-              val setting = RunManager
-                .getInstance(project)
+              val setting = RunManager.getInstance(project)
                 .createRunConfiguration("Scala Console", factory)
 
               runManagerEx.setTemporaryConfiguration(setting)

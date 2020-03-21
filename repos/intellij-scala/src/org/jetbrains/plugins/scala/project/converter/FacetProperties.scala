@@ -28,10 +28,8 @@ private class FacetProperties(element: Element) {
     option(key).map(_.toInt).getOrElse(default)
 
   def array(key: String): Seq[String] =
-    XPath
-      .selectNodes(
-        element,
-        s"configuration/option[@name='$key']/array/option/@value")
-      .asScala
+    XPath.selectNodes(
+      element,
+      s"configuration/option[@name='$key']/array/option/@value").asScala
       .map(_.asInstanceOf[Attribute].getValue)
 }

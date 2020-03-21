@@ -82,8 +82,8 @@ class HttpServerDispatcher(
 
       case invalid =>
         eos.setDone()
-        Future.exception(new IllegalArgumentException(
-          "Invalid message " + invalid))
+        Future
+          .exception(new IllegalArgumentException("Invalid message " + invalid))
     }
 
   protected def handle(rep: Response): Future[Unit] = {
@@ -104,8 +104,7 @@ class HttpServerDispatcher(
       // interrupted in the middle of a write, or when there otherwise isn’t
       // an outstanding read (e.g. read-write race).
       f.onFailure { t =>
-        Logger
-          .get(this.getClass.getName)
+        Logger.get(this.getClass.getName)
           .debug(t, "Failed mid-stream. Terminating stream, closing connection")
         failureReceiver.counter(Throwables.mkString(t): _*).incr()
         rep.reader.discard()

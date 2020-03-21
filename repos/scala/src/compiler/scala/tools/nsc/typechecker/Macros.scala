@@ -114,7 +114,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     // Was this binding derived from a `def ... = macro ???` definition?
     def is_??? = {
       val Predef_??? = currentRun.runDefinitions.Predef_???
-      className == Predef_???.owner.javaClassName && methName == Predef_???.name.encoded
+      className == Predef_???.owner.javaClassName && methName == Predef_???.name
+        .encoded
     }
     def isWhitebox = !isBlackbox
   }
@@ -316,9 +317,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         var runtimeType = decreaseMetalevel(macroImpl.info.finalResultType)
 
         // Step II. Transform type parameters of a macro implementation into type arguments in a macro definition's body
-        runtimeType = runtimeType.substituteTypes(
-          macroImpl.typeParams,
-          targs map (_.tpe))
+        runtimeType = runtimeType
+          .substituteTypes(macroImpl.typeParams, targs map (_.tpe))
 
         // Step III. Transform c.prefix.value.XXX to this.XXX and implParam.value.YYY to defParam.YYY
         def unsigma(tpe: Type): Type =
@@ -326,8 +326,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
             macroImplRef,
             (param, tparam) => NoSymbol) match {
             case (implCtxParam :: Nil) :: implParamss =>
-              val implToDef = flatMap2(implParamss, macroDdef.vparamss)(
-                map2(_, _)((_, _))).toMap
+              val implToDef =
+                flatMap2(implParamss, macroDdef.vparamss)(map2(_, _)((_, _)))
+                  .toMap
               object UnsigmaTypeMap extends TypeMap {
                 def apply(tp: Type): Type =
                   tp match {
@@ -422,8 +423,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       val universe: self.global.type = self.global
       val callsiteTyper: universe.analyzer.Typer = typer
         .asInstanceOf[global.analyzer.Typer]
-      val expandee = universe.analyzer
-        .macroExpanderAttachment(expandeeTree)
+      val expandee = universe.analyzer.macroExpanderAttachment(expandeeTree)
         .original orElse duplicateAndKeepPositions(expandeeTree)
     } with UnaffiliatedMacroContext {
       val prefix = Expr[Nothing](prefixTree)(TypeTag.Nothing)
@@ -451,10 +451,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     val prefix = core match {
       case Select(qual, _) => qual; case _ => EmptyTree
     }
-    val context = expandee.attachments
-      .get[MacroRuntimeAttachment]
-      .flatMap(_.macroContext)
-      .getOrElse(macroContext(typer, prefix, expandee))
+    val context = expandee.attachments.get[MacroRuntimeAttachment]
+      .flatMap(_.macroContext).getOrElse(macroContext(typer, prefix, expandee))
 
     macroLogVerbose(sm"""
       |context: $context
@@ -502,9 +500,10 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                 val duplicatedArg = duplicateAndKeepPositions(arg)
                 fingerprint match {
                   case LiftedTyped =>
-                    context.Expr[Nothing](duplicatedArg)(
-                      TypeTag.Nothing
-                    ) // TODO: SI-5752
+                    context
+                      .Expr[Nothing](duplicatedArg)(
+                        TypeTag.Nothing
+                      ) // TODO: SI-5752
                   case LiftedUntyped => duplicatedArg
                   case _ =>
                     abort(
@@ -548,8 +547,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                   // doesn't work when macro def is compiled separately from its usages
                   // then targ is not a skolem and isn't equal to any of macroDef.typeParams
                   // val argPos = targ.deSkolemize.paramPos
-                  val argPos = macroDef.typeParams.indexWhere(
-                    _.name == targ.name)
+                  val argPos = macroDef.typeParams
+                    .indexWhere(_.name == targ.name)
                   targs(argPos).tpe
                 } else
                   targ.tpe.asSeenFrom(
@@ -682,7 +681,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                     finally popMacroContext()
                   if (!hasMacroExpansionAttachment(expanded1))
                     linkExpandeeAndExpanded(expandee, expanded1)
-                  if (settings.Ymacroexpand.value == settings.MacroExpand.Discard) {
+                  if (settings.Ymacroexpand.value == settings.MacroExpand
+                        .Discard) {
                     suppressMacroExpansion(expandee)
                     expandee.setType(expanded1.tpe)
                   } else expanded1
@@ -737,8 +737,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           if (macroDebugVerbose) println(s"$label (against pt = $pt): $tree")
           // `macroExpandApply` is called from `adapt`, where implicit conversions are disabled
           // therefore we need to re-enable the conversions back temporarily
-          val result = typer.context.withImplicitsEnabled(
-            typer.typed(tree, mode, pt))
+          val result = typer.context
+            .withImplicitsEnabled(typer.typed(tree, mode, pt))
           if (result.isErrorTyped && macroDebugVerbose)
             println(s"$label has failed: ${typer.context.reporter.errors}")
           result
@@ -809,8 +809,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       // we infer as much as possible (e.g. in the example above even though L is hopeless, C still can be inferred to Foo)
       // and then trigger macro expansion with the undetermined type parameters still there.
       // Thanks to that the materializer can take a look at what's going on and react accordingly.
-      val shouldInstantiate =
-        typer.context.undetparams.nonEmpty && !mode.inPolyMode
+      val shouldInstantiate = typer.context.undetparams.nonEmpty && !mode
+        .inPolyMode
       if (shouldInstantiate) {
         if (isBlackbox(expandee))
           typer.instantiatePossiblyExpectingUnit(delayed, mode, outerPt)
@@ -951,9 +951,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     */
   def macroExpandWithoutRuntime(typer: Typer, expandee: Tree): MacroStatus = {
     import typer.TyperErrorGen._
-    val fallbackSym =
-      expandee.symbol.nextOverriddenSymbol orElse MacroImplementationNotFoundError(
-        expandee)
+    val fallbackSym = expandee.symbol
+      .nextOverriddenSymbol orElse MacroImplementationNotFoundError(expandee)
     macroLogLite(s"falling back to: $fallbackSym")
 
     def mkFallbackTree(tree: Tree): Tree = {
@@ -1040,10 +1039,10 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         super.transform(tree match {
           // todo. expansion should work from the inside out
           case tree
-              if (delayed contains tree) && calculateUndetparams(
-                tree).isEmpty && !tree.isErroneous =>
-            val context =
-              tree.attachments.get[MacroRuntimeAttachment].get.typerContext
+              if (delayed contains tree) && calculateUndetparams(tree)
+                .isEmpty && !tree.isErroneous =>
+            val context = tree.attachments.get[MacroRuntimeAttachment].get
+              .typerContext
             delayed -= tree
             context.implicitsEnabled = typer.context.implicitsEnabled
             context.enrichmentEnabled = typer.context.enrichmentEnabled
@@ -1057,9 +1056,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
 object MacrosStats {
   import scala.reflect.internal.TypesStats.typerNanos
   val macroExpandCount = Statistics.newCounter("#macro expansions", "typer")
-  val macroExpandNanos = Statistics.newSubTimer(
-    "time spent in macroExpand",
-    typerNanos)
+  val macroExpandNanos = Statistics
+    .newSubTimer("time spent in macroExpand", typerNanos)
 }
 
 class Fingerprint private[Fingerprint] (val value: Int) extends AnyVal {

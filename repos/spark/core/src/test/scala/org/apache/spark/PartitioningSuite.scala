@@ -72,8 +72,8 @@ class PartitioningSuite
     // We have different behaviour of getPartition for partitions with less than 1000 and more than
     // 1000 partitions.
     val partitionSizes = List(1, 2, 10, 100, 500, 1000, 1500)
-    val partitioners = partitionSizes.map(p =>
-      (p, new RangePartitioner(p, rdd)))
+    val partitioners = partitionSizes
+      .map(p => (p, new RangePartitioner(p, rdd)))
     val decoratedRangeBounds = PrivateMethod[Array[Int]]('rangeBounds)
     partitioners.map {
       case (numPartitions, partitioner) =>
@@ -107,13 +107,10 @@ class PartitioningSuite
   }
 
   test("RangPartitioner.sketch") {
-    val rdd = sc
-      .makeRDD(0 until 20, 20)
-      .flatMap { i =>
-        val random = new java.util.Random(i)
-        Iterator.fill(i)(random.nextDouble())
-      }
-      .cache()
+    val rdd = sc.makeRDD(0 until 20, 20).flatMap { i =>
+      val random = new java.util.Random(i)
+      Iterator.fill(i)(random.nextDouble())
+    }.cache()
     val sampleSizePerPartition = 10
     val (count, sketched) = RangePartitioner.sketch(rdd, sampleSizePerPartition)
     assert(count === rdd.count())
@@ -126,8 +123,7 @@ class PartitioningSuite
 
   test("RangePartitioner.determineBounds") {
     assert(
-      RangePartitioner
-        .determineBounds(ArrayBuffer.empty[(Int, Float)], 10)
+      RangePartitioner.determineBounds(ArrayBuffer.empty[(Int, Float)], 10)
         .isEmpty,
       "Bounds on an empty candidates set should be empty.")
     val candidates = ArrayBuffer(
@@ -142,35 +138,29 @@ class PartitioningSuite
   }
 
   test("RangePartitioner should run only one job if data is roughly balanced") {
-    val rdd = sc
-      .makeRDD(0 until 20, 20)
-      .flatMap { i =>
-        val random = new java.util.Random(i)
-        Iterator.fill(5000 * i)((random.nextDouble() + i, i))
-      }
-      .cache()
+    val rdd = sc.makeRDD(0 until 20, 20).flatMap { i =>
+      val random = new java.util.Random(i)
+      Iterator.fill(5000 * i)((random.nextDouble() + i, i))
+    }.cache()
     for (numPartitions <- Seq(10, 20, 40)) {
       val partitioner = new RangePartitioner(numPartitions, rdd)
       assert(partitioner.numPartitions === numPartitions)
-      val counts =
-        rdd.keys.map(key => partitioner.getPartition(key)).countByValue().values
+      val counts = rdd.keys.map(key => partitioner.getPartition(key))
+        .countByValue().values
       assert(counts.max < 3.0 * counts.min)
     }
   }
 
   test("RangePartitioner should work well on unbalanced data") {
-    val rdd = sc
-      .makeRDD(0 until 20, 20)
-      .flatMap { i =>
-        val random = new java.util.Random(i)
-        Iterator.fill(20 * i * i * i)((random.nextDouble() + i, i))
-      }
-      .cache()
+    val rdd = sc.makeRDD(0 until 20, 20).flatMap { i =>
+      val random = new java.util.Random(i)
+      Iterator.fill(20 * i * i * i)((random.nextDouble() + i, i))
+    }.cache()
     for (numPartitions <- Seq(2, 4, 8)) {
       val partitioner = new RangePartitioner(numPartitions, rdd)
       assert(partitioner.numPartitions === numPartitions)
-      val counts =
-        rdd.keys.map(key => partitioner.getPartition(key)).countByValue().values
+      val counts = rdd.keys.map(key => partitioner.getPartition(key))
+        .countByValue().values
       assert(counts.max < 3.0 * counts.min)
     }
   }
@@ -242,11 +232,9 @@ class PartitioningSuite
   }
 
   test("partitioning Java arrays should fail") {
-    val arrs: RDD[Array[Int]] = sc
-      .parallelize(Array(1, 2, 3, 4), 2)
+    val arrs: RDD[Array[Int]] = sc.parallelize(Array(1, 2, 3, 4), 2)
       .map(x => Array(x))
-    val arrPairs: RDD[(Array[Int], Int)] = sc
-      .parallelize(Array(1, 2, 3, 4), 2)
+    val arrPairs: RDD[(Array[Int], Int)] = sc.parallelize(Array(1, 2, 3, 4), 2)
       .map(x => (Array(x), x))
 
     def verify(testFun: => Unit): Unit = {

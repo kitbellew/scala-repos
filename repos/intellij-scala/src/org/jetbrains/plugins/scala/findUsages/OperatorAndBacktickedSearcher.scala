@@ -105,14 +105,14 @@ class OperatorAndBacktickedSearcher
           checker,
           collectProcessor)
       }
-      val index: FileIndexFacade = FileIndexFacade.getInstance(
-        manager.getProject)
+      val index: FileIndexFacade = FileIndexFacade
+        .getInstance(manager.getProject)
       ContainerUtil.process(
         collectProcessor.getResults,
         new ReadActionProcessor[VirtualFile] {
           def processInReadAction(virtualFile: VirtualFile): Boolean = {
-            !index.shouldBeFound(scope, virtualFile) || processor.process(
-              virtualFile)
+            !index.shouldBeFound(scope, virtualFile) || processor
+              .process(virtualFile)
           }
         }
       )

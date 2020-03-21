@@ -25,10 +25,11 @@ class AppliedTypeLambdaCanBeSimplifiedTest
   override protected def setUp(): Unit = {
     super.setUp()
 
-    val defaultProfile =
-      ScalaCompilerConfiguration.instanceIn(getProject).defaultProfile
+    val defaultProfile = ScalaCompilerConfiguration.instanceIn(getProject)
+      .defaultProfile
     val newSettings = defaultProfile.getSettings
-    newSettings.plugins :+= "kind-projector" //only some of the tests require kind-projector
+    newSettings
+      .plugins :+= "kind-projector" //only some of the tests require kind-projector
     defaultProfile.setSettings(newSettings)
   }
 

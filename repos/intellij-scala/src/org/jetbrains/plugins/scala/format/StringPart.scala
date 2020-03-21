@@ -20,15 +20,13 @@ sealed trait StringPart
 
 case class Text(s: String) extends StringPart {
   def withEscapedPercent(manager: PsiManager): List[StringPart] = {
-    val literal = ScalaPsiElementFactory.createExpressionFromText(
-      "\"%\"",
-      manager)
+    val literal = ScalaPsiElementFactory
+      .createExpressionFromText("\"%\"", manager)
     if (s == "%") List(Text(""), Injection(literal, None), Text(""))
     else {
       val splitted = s.split('%')
       val list = splitted
-        .flatMap(text => List(Injection(literal, None), Text(text)))
-        .toList
+        .flatMap(text => List(Injection(literal, None), Text(text))).toList
       if (list.nonEmpty) list.tail else Nil
     }
   }
@@ -65,8 +63,7 @@ case class Injection(expression: ScExpression, specifier: Option[Specifier])
 
   def problem: Option[InjectionProblem] =
     specifier.flatMap { it =>
-      val _type = expressionType
-        .map(ScType.expandAliases(_))
+      val _type = expressionType.map(ScType.expandAliases(_))
         .getOrElse(new Object())
       _type match {
         case Success(result, _) => result match {

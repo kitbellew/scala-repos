@@ -117,34 +117,30 @@ class JDBCQueryExecutor(
       Future {
         path.elements.toList match {
           case dbName :: tableName :: Nil =>
-            yggConfig.dbMap
-              .get(dbName)
+            yggConfig.dbMap.get(dbName)
               .toSuccess("DB %s is not configured".format(dbName)) flatMap {
               url =>
-                Validation
-                  .fromTryCatch {
-                    val conn = DriverManager.getConnection(url)
+                Validation.fromTryCatch {
+                  val conn = DriverManager.getConnection(url)
 
-                    try {
-                      // May need refinement to get meaningful results
-                      val stmt = conn.createStatement
+                  try {
+                    // May need refinement to get meaningful results
+                    val stmt = conn.createStatement
 
-                      val query =
-                        "SELECT count(*) as count FROM " + tableName.filterNot(
-                          _ == ';')
-                      logger.debug("Querying with " + query)
+                    val query = "SELECT count(*) as count FROM " + tableName
+                      .filterNot(_ == ';')
+                    logger.debug("Querying with " + query)
 
-                      val result = stmt.executeQuery(query)
+                    val result = stmt.executeQuery(query)
 
-                      if (result.next) { JNum(result.getLong("count")) }
-                      else { JNum(0) }
-                    } finally { conn.close() }
-                  }
-                  .bimap(
-                    { t =>
-                      logger.error("Error enumerating tables", t); t.getMessage
-                    },
-                    x => x)
+                    if (result.next) { JNum(result.getLong("count")) }
+                    else { JNum(0) }
+                  } finally { conn.close() }
+                }.bimap(
+                  { t =>
+                    logger.error("Error enumerating tables", t); t.getMessage
+                  },
+                  x => x)
             }
 
           case _ => Success(JNum(0))
@@ -158,43 +154,35 @@ class JDBCQueryExecutor(
         path.elements.toList match {
           case Nil =>
             Success(
-              yggConfig.dbMap.keys.toList
-                .map { d => d + "/" }
-                .serialize
+              yggConfig.dbMap.keys.toList.map { d => d + "/" }.serialize
                 .asInstanceOf[JArray])
 
           case dbName :: Nil =>
             // A little more complicated. Need to use metadata interface to enumerate table names
-            yggConfig.dbMap
-              .get(dbName)
+            yggConfig.dbMap.get(dbName)
               .toSuccess("DB %s is not configured".format(dbName)) flatMap {
               url =>
-                Validation
-                  .fromTryCatch {
-                    val conn = DriverManager.getConnection(url)
+                Validation.fromTryCatch {
+                  val conn = DriverManager.getConnection(url)
 
-                    try {
-                      // May need refinement to get meaningful results
-                      val results = conn.getMetaData.getTables(
-                        null,
-                        null,
-                        "%",
-                        Array("TABLE"))
+                  try {
+                    // May need refinement to get meaningful results
+                    val results = conn.getMetaData
+                      .getTables(null, null, "%", Array("TABLE"))
 
-                      var tables = List.empty[String]
+                    var tables = List.empty[String]
 
-                      while (results.next) {
-                        tables ::= results.getString("TABLE_NAME") + "/"
-                      }
+                    while (results.next) {
+                      tables ::= results.getString("TABLE_NAME") + "/"
+                    }
 
-                      tables.serialize.asInstanceOf[JArray]
-                    } finally { conn.close() }
-                  }
-                  .bimap(
-                    { t =>
-                      logger.error("Error enumerating tables", t); t.getMessage
-                    },
-                    x => x)
+                    tables.serialize.asInstanceOf[JArray]
+                  } finally { conn.close() }
+                }.bimap(
+                  { t =>
+                    logger.error("Error enumerating tables", t); t.getMessage
+                  },
+                  x => x)
             }
 
           case dbName :: collectionName :: Nil => Success(JArray(Nil))

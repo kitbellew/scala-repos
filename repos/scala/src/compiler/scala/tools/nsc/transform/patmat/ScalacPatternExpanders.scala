@@ -138,7 +138,8 @@ trait ScalacPatternExpanders {
         err("Star pattern must correspond with varargs or unapplySeq")
       else if (elementArity < 0) arityError("not enough")
       else if (elementArity > 0 && !isSeq) arityError("too many")
-      else if (settings.warnStarsAlign && isSeq && productArity > 0 && elementArity > 0)
+      else if (settings
+                 .warnStarsAlign && isSeq && productArity > 0 && elementArity > 0)
         warn {
           if (isStar)
             "Sequence wildcard (_*) does not align with repeated case parameter or extracted sequence; the result may be unexpected."
@@ -181,8 +182,8 @@ trait ScalacPatternExpanders {
       def acceptMessage =
         if (extractor.isErroneous) ""
         else s" to hold ${extractor.offeringString}"
-      val requiresTupling =
-        isUnapply && patterns.totalArity == 1 && productArity > 1
+      val requiresTupling = isUnapply && patterns
+        .totalArity == 1 && productArity > 1
 
       val normalizedExtractor =
         if (requiresTupling) {

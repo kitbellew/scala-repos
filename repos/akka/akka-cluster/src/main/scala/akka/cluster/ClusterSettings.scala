@@ -42,8 +42,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
     immutableSeq(cc.getStringList("seed-nodes")).map {
       case AddressFromURIString(addr) ⇒ addr
     }.toVector
-  val SeedNodeTimeout: FiniteDuration = cc.getMillisDuration(
-    "seed-node-timeout")
+  val SeedNodeTimeout: FiniteDuration = cc
+    .getMillisDuration("seed-node-timeout")
   val RetryUnsuccessfulJoinAfter: Duration = {
     val key = "retry-unsuccessful-join-after"
     cc.getString(key).toLowerCase(Locale.ROOT) match {
@@ -54,16 +54,16 @@ final class ClusterSettings(val config: Config, val systemName: String) {
         )
     }
   }
-  val PeriodicTasksInitialDelay: FiniteDuration = cc.getMillisDuration(
-    "periodic-tasks-initial-delay")
+  val PeriodicTasksInitialDelay: FiniteDuration = cc
+    .getMillisDuration("periodic-tasks-initial-delay")
   val GossipInterval: FiniteDuration = cc.getMillisDuration("gossip-interval")
   val GossipTimeToLive: FiniteDuration = {
     cc.getMillisDuration("gossip-time-to-live")
   } requiring (_ > Duration.Zero, "gossip-time-to-live must be > 0")
-  val LeaderActionsInterval: FiniteDuration = cc.getMillisDuration(
-    "leader-actions-interval")
-  val UnreachableNodesReaperInterval: FiniteDuration = cc.getMillisDuration(
-    "unreachable-nodes-reaper-interval")
+  val LeaderActionsInterval: FiniteDuration = cc
+    .getMillisDuration("leader-actions-interval")
+  val UnreachableNodesReaperInterval: FiniteDuration = cc
+    .getMillisDuration("unreachable-nodes-reaper-interval")
   val PublishStatsInterval: Duration = {
     val key = "publish-stats-interval"
     cc.getString(key).toLowerCase(Locale.ROOT) match {
@@ -105,34 +105,30 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   )
   val MinNrOfMembersOfRole: Map[String, Int] = {
     import scala.collection.JavaConverters._
-    cc.getConfig("role")
-      .root
-      .asScala
-      .collect {
-        case (key, value: ConfigObject) ⇒
-          (key -> value.toConfig.getInt("min-nr-of-members"))
-      }
-      .toMap
+    cc.getConfig("role").root.asScala.collect {
+      case (key, value: ConfigObject) ⇒
+        (key -> value.toConfig.getInt("min-nr-of-members"))
+    }.toMap
   }
   val JmxEnabled: Boolean = cc.getBoolean("jmx.enabled")
   val UseDispatcher: String = cc.getString("use-dispatcher") match {
     case "" ⇒ Dispatchers.DefaultDispatcherId
     case id ⇒ id
   }
-  val GossipDifferentViewProbability: Double = cc.getDouble(
-    "gossip-different-view-probability")
-  val ReduceGossipDifferentViewProbability: Int = cc.getInt(
-    "reduce-gossip-different-view-probability")
-  val SchedulerTickDuration: FiniteDuration = cc.getMillisDuration(
-    "scheduler.tick-duration")
+  val GossipDifferentViewProbability: Double = cc
+    .getDouble("gossip-different-view-probability")
+  val ReduceGossipDifferentViewProbability: Int = cc
+    .getInt("reduce-gossip-different-view-probability")
+  val SchedulerTickDuration: FiniteDuration = cc
+    .getMillisDuration("scheduler.tick-duration")
   val SchedulerTicksPerWheel: Int = cc.getInt("scheduler.ticks-per-wheel")
   val MetricsEnabled: Boolean = cc.getBoolean("metrics.enabled")
   val MetricsCollectorClass: String = cc.getString("metrics.collector-class")
   val MetricsInterval: FiniteDuration = {
     cc.getMillisDuration("metrics.collect-interval")
   } requiring (_ > Duration.Zero, "metrics.collect-interval must be > 0")
-  val MetricsGossipInterval: FiniteDuration = cc.getMillisDuration(
-    "metrics.gossip-interval")
+  val MetricsGossipInterval: FiniteDuration = cc
+    .getMillisDuration("metrics.gossip-interval")
   val MetricsMovingAverageHalfLife: FiniteDuration = {
     cc.getMillisDuration("metrics.moving-average-half-life")
   } requiring (
@@ -140,8 +136,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   )
 
   object Debug {
-    val VerboseHeartbeatLogging = cc.getBoolean(
-      "debug.verbose-heartbeat-logging")
+    val VerboseHeartbeatLogging = cc
+      .getBoolean("debug.verbose-heartbeat-logging")
   }
 
 }

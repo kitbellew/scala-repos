@@ -82,45 +82,29 @@ class DriverActor(schedulerProps: Props) extends Actor {
 
   private[this] var tasks: Map[String, TaskStatus] = Map.empty.withDefault {
     taskId =>
-      TaskStatus
-        .newBuilder()
-        .setSource(TaskStatus.Source.SOURCE_SLAVE)
+      TaskStatus.newBuilder().setSource(TaskStatus.Source.SOURCE_SLAVE)
         .setTaskId(TaskID.newBuilder().setValue(taskId).build())
-        .setState(TaskState.TASK_LOST)
-        .build()
+        .setState(TaskState.TASK_LOST).build()
   }
 
   //scalastyle:off magic.number
   private[this] def offer: Offer = {
     def resource(name: String, value: Double): Resource = {
-      Resource
-        .newBuilder()
-        .setName(name)
-        .setType(Value.Type.SCALAR)
-        .setScalar(Value.Scalar.newBuilder().setValue(value))
-        .build()
+      Resource.newBuilder().setName(name).setType(Value.Type.SCALAR)
+        .setScalar(Value.Scalar.newBuilder().setValue(value)).build()
     }
-    Offer
-      .newBuilder()
+    Offer.newBuilder()
       .setId(OfferID.newBuilder().setValue(UUID.randomUUID().toString))
       .setFrameworkId(FrameworkID.newBuilder().setValue("notanidframework"))
       .setSlaveId(SlaveID.newBuilder().setValue("notanidslave"))
-      .setHostname("hostname")
-      .addAllResources(Seq(
+      .setHostname("hostname").addAllResources(Seq(
         resource("cpus", 100),
         resource("mem", 500000),
         resource("disk", 1000000000),
-        Resource
-          .newBuilder()
-          .setName("ports")
-          .setType(Value.Type.RANGES)
-          .setRanges(
-            Value.Ranges
-              .newBuilder()
-              .addRange(Value.Range.newBuilder().setBegin(10000).setEnd(20000)))
-          .build()
-      ))
-      .build()
+        Resource.newBuilder().setName("ports").setType(Value.Type.RANGES)
+          .setRanges(Value.Ranges.newBuilder().addRange(
+            Value.Range.newBuilder().setBegin(10000).setEnd(20000))).build()
+      )).build()
   }
   private[this] def offers: ResourceOffers =
     SchedulerActor.ResourceOffers((1 to numberOfOffersPerCycle).map(_ => offer))
@@ -132,8 +116,8 @@ class DriverActor(schedulerProps: Props) extends Actor {
 
     import context.dispatcher
     periodicOffers = Some(
-      context.system.scheduler.schedule(1.second, 1.seconds)(
-        scheduler ! offers))
+      context.system.scheduler
+        .schedule(1.second, 1.seconds)(scheduler ! offers))
   }
 
   override def postStop(): Unit = {
@@ -178,9 +162,7 @@ class DriverActor(schedulerProps: Props) extends Actor {
       case ReconcileTask(taskStatuses) =>
         if (taskStatuses.isEmpty) { tasks.values.foreach(scheduler ! _) }
         else {
-          taskStatuses.iterator
-            .map(_.getTaskId.getValue)
-            .map(tasks)
+          taskStatuses.iterator.map(_.getTaskId.getValue).map(tasks)
             .foreach(scheduler ! _)
         }
     }
@@ -227,8 +209,8 @@ class DriverActor(schedulerProps: Props) extends Actor {
       create: Boolean): Unit = {
     if (create || tasks.contains(status.getTaskId.getValue)) {
       status.getState match {
-        case TaskState.TASK_ERROR | TaskState.TASK_FAILED |
-            TaskState.TASK_FINISHED | TaskState.TASK_LOST =>
+        case TaskState.TASK_ERROR | TaskState.TASK_FAILED | TaskState
+              .TASK_FINISHED | TaskState.TASK_LOST =>
           tasks -= status.getTaskId.getValue
         case _ => tasks += (status.getTaskId.getValue -> status)
       }
@@ -245,12 +227,9 @@ class DriverActor(schedulerProps: Props) extends Actor {
       afterDuration: FiniteDuration,
       create: Boolean = false)(taskID: TaskID): Unit = {
 
-    val newStatus = TaskStatus
-      .newBuilder()
-      .setSource(TaskStatus.Source.SOURCE_EXECUTOR)
-      .setTaskId(taskID)
-      .setState(toState)
-      .build()
+    val newStatus = TaskStatus.newBuilder()
+      .setSource(TaskStatus.Source.SOURCE_EXECUTOR).setTaskId(taskID)
+      .setState(toState).build()
     import context.dispatcher
     context.system.scheduler
       .scheduleOnce(afterDuration, self, ChangeTaskStatus(newStatus, create))

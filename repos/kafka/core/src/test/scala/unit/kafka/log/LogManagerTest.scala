@@ -220,9 +220,7 @@ class LogManagerTest {
         "We should have created the right number of logs",
         partition + 1,
         logManager.allLogs.size)
-      val counts = logManager.allLogs
-        .groupBy(_.dir.getParent)
-        .values
+      val counts = logManager.allLogs.groupBy(_.dir.getParent).values
         .map(_.size)
       assertTrue("Load should balance evenly", counts.max <= counts.min + 1)
     }

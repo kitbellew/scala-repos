@@ -149,8 +149,9 @@ case class DirectoryFlatSourcePath(dir: File)
   private def findSourceFile(className: String): Option[AbstractFile] = {
     val relativePath = FileUtils.dirPath(className)
     val sourceFile = Stream("scala", "java")
-      .map(ext => new File(s"$dir/$relativePath.$ext"))
-      .collectFirst { case file if file.exists() => file }
+      .map(ext => new File(s"$dir/$relativePath.$ext")).collectFirst {
+        case file if file.exists() => file
+      }
 
     sourceFile.map { file =>
       val wrappedSourceFile = new scala.reflect.io.File(file)

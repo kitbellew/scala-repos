@@ -52,9 +52,8 @@ class AskSpec extends AkkaSpec {
       implicit val timeout = Timeout(5 seconds)
       val f = ask(null: ActorRef, 3.14)
       f.isCompleted should ===(true)
-      intercept[IllegalArgumentException] {
-        Await.result(f, timeout.duration)
-      }.getMessage should ===(
+      intercept[IllegalArgumentException] { Await.result(f, timeout.duration) }
+        .getMessage should ===(
         "Unsupported recipient ActorRef type, question not sent to [null]. Sender[null] sent the message of type \"java.lang.Double\".")
     }
 
@@ -66,9 +65,8 @@ class AskSpec extends AkkaSpec {
       val f = echo ? "foo"
       val expectedMsg =
         "Timeout length must not be negative, question not sent to [%s]. Sender[null] sent the message of type \"java.lang.String\"." format echo
-      intercept[IllegalArgumentException] {
-        Await.result(f, timeout.duration)
-      }.getMessage should ===(expectedMsg)
+      intercept[IllegalArgumentException] { Await.result(f, timeout.duration) }
+        .getMessage should ===(expectedMsg)
     }
 
     "return broken promises on < 0 timeout" in {
@@ -79,9 +77,8 @@ class AskSpec extends AkkaSpec {
       val f = echo ? "foo"
       val expectedMsg =
         "Timeout length must not be negative, question not sent to [%s]. Sender[null] sent the message of type \"java.lang.String\"." format echo
-      intercept[IllegalArgumentException] {
-        Await.result(f, timeout.duration)
-      }.getMessage should ===(expectedMsg)
+      intercept[IllegalArgumentException] { Await.result(f, timeout.duration) }
+        .getMessage should ===(expectedMsg)
     }
 
     "include target information in AskTimeout" in {
@@ -95,9 +92,8 @@ class AskSpec extends AkkaSpec {
     "include timeout information in AskTimeout" in {
       implicit val timeout = Timeout(0.5 seconds)
       val f = system.actorOf(Props.empty) ? "noreply"
-      intercept[AskTimeoutException] {
-        Await.result(f, 1 second)
-      }.getMessage should include(timeout.duration.toMillis.toString)
+      intercept[AskTimeoutException] { Await.result(f, 1 second) }
+        .getMessage should include(timeout.duration.toMillis.toString)
     }
 
     "include sender information in AskTimeout" in {
@@ -125,8 +121,7 @@ class AskSpec extends AkkaSpec {
         "select-echo")
       val identityFuture =
         (system.actorSelection("/user/select-echo") ? Identify(None))
-          .mapTo[ActorIdentity]
-          .map(_.ref.get)
+          .mapTo[ActorIdentity].map(_.ref.get)
 
       Await.result(identityFuture, 5 seconds) should ===(echo)
     }

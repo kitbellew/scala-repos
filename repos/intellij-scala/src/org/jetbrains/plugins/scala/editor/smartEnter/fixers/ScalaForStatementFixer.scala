@@ -21,10 +21,8 @@ class ScalaForStatementFixer extends ScalaFixer {
       editor: Editor,
       processor: ScalaSmartEnterProcessor,
       psiElement: PsiElement): OperationPerformed = {
-    val forStatement = PsiTreeUtil.getParentOfType(
-      psiElement,
-      classOf[ScForStatement],
-      false)
+    val forStatement = PsiTreeUtil
+      .getParentOfType(psiElement, classOf[ScForStatement], false)
     if (forStatement == null) return NoOperation
 
     val doc = editor.getDocument
@@ -51,8 +49,8 @@ class ScalaForStatementFixer extends ScalaFixer {
         doc.insertString(cond.getTextRange.getEndOffset, ")")
         WithReformat(0)
       case Some(cond)
-          if rightParenthesis != null && forStatement.body.exists(
-            _.isInstanceOf[ScBlockExpr]) =>
+          if rightParenthesis != null && forStatement.body
+            .exists(_.isInstanceOf[ScBlockExpr]) =>
         placeInWholeBlock(
           forStatement.body.get.asInstanceOf[ScBlockExpr],
           editor)

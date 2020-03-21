@@ -34,9 +34,7 @@ abstract class HtmlPage extends Page {
   /** The page description */
   protected def description: String =
     // unless overwritten, will display the title in a spaced format, keeping - and .
-    title
-      .replaceAll("[^a-zA-Z0-9\\.\\-]+", " ")
-      .replaceAll("\\-+", " - ")
+    title.replaceAll("[^a-zA-Z0-9\\.\\-]+", " ").replaceAll("\\-+", " - ")
       .replaceAll(" +", " ")
 
   /** The page keywords */
@@ -314,8 +312,8 @@ abstract class HtmlPage extends Page {
       }
 
     val templatePath = templateToPath(containingTemplate)
-    val url =
-      "../" * (templatePath.size - 1) + templatePath.reverse.mkString("/")
+    val url = "../" * (templatePath.size - 1) + templatePath.reverse
+      .mkString("/")
     url + signature.map("#" + _).getOrElse("")
   }
 }

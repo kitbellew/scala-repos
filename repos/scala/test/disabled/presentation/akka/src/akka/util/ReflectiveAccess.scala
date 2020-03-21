@@ -108,8 +108,7 @@ object ReflectiveAccess {
         future: Future[_]): Boolean = {
       ensureEnabled
       if (typedActorObjectInstance.get.isJoinPointAndOneWay(message)) {
-        future
-          .asInstanceOf[CompletableFuture[Option[_]]]
+        future.asInstanceOf[CompletableFuture[Option[_]]]
           .completeWithResult(None)
       }
       typedActorObjectInstance.get.isJoinPoint(message)
@@ -224,8 +223,7 @@ object ReflectiveAccess {
         val second =
           try {
             Right(
-              Thread.currentThread.getContextClassLoader
-                .loadClass(fqn)
+              Thread.currentThread.getContextClassLoader.loadClass(fqn)
                 .asInstanceOf[Class[T]])
           } catch { case c: ClassNotFoundException => Left(c) }
 

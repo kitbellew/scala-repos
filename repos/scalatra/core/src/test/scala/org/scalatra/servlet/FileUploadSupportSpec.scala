@@ -11,8 +11,7 @@ class FileUploadSupportSpecServlet
     extends ScalatraServlet
     with FileUploadSupport {
   def headersToHeaders() {
-    request.getHeaderNames
-      .filter(_.startsWith("X"))
+    request.getHeaderNames.filter(_.startsWith("X"))
       .foreach(header => response.setHeader(header, request.getHeader(header)))
   }
 
@@ -248,8 +247,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
           "Content-Type: text/plain\r\n" +
           "\r\n" +
           "föo\r\n" +
-          "--{boundary}--\r\n")
-          .replace("{boundary}", boundary)
+          "--{boundary}--\r\n").replace("{boundary}", boundary)
           .getBytes("UTF-8")
 
       post("/params", headers = multipartHeaders, body = reqBody) {

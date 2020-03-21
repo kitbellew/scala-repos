@@ -106,8 +106,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     * [[org.apache.spark.sql.catalyst.analysis.UnresolvedRelation UnresolvedRelation]]
     * should return `false`).
     */
-  lazy val resolved: Boolean =
-    expressions.forall(_.resolved) && childrenResolved
+  lazy val resolved: Boolean = expressions
+    .forall(_.resolved) && childrenResolved
 
   override protected def statePrefix = if (!resolved) "'" else super.statePrefix
 
@@ -125,16 +125,14 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     */
   def resolve(schema: StructType, resolver: Resolver): Seq[Attribute] = {
     schema.map { field =>
-      resolveQuoted(field.name, resolver)
-        .map {
-          case a: AttributeReference => a
-          case other =>
-            sys.error(s"can not handle nested schema yet...  plan $this")
-        }
-        .getOrElse {
-          throw new AnalysisException(
-            s"Unable to resolve ${field.name} given [${output.map(_.name).mkString(", ")}]")
-        }
+      resolveQuoted(field.name, resolver).map {
+        case a: AttributeReference => a
+        case other =>
+          sys.error(s"can not handle nested schema yet...  plan $this")
+      }.getOrElse {
+        throw new AnalysisException(
+          s"Unable to resolve ${field.name} given [${output.map(_.name).mkString(", ")}]")
+      }
     }
   }
 
@@ -244,8 +242,9 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
         // For example, consider "a.b.c", where "a" is resolved to an existing attribute.
         // Then this will add ExtractValue("c", ExtractValue("b", a)), and alias the final
         // expression as "c".
-        val fieldExprs = nestedFields.foldLeft(a: Expression)(
-          (expr, fieldName) => ExtractValue(expr, Literal(fieldName), resolver))
+        val fieldExprs = nestedFields
+          .foldLeft(a: Expression)((expr, fieldName) =>
+            ExtractValue(expr, Literal(fieldName), resolver))
         Some(Alias(fieldExprs, nestedFields.last)())
 
       // No matches.
@@ -285,12 +284,9 @@ abstract class UnaryNode extends LogicalPlan {
   protected def getAliasedConstraints(
       projectList: Seq[NamedExpression]): Set[Expression] = {
     projectList.flatMap {
-      case a @ Alias(e, _) =>
-        child.constraints
-          .map(_ transform {
-            case expr: Expression if expr.semanticEquals(e) => a.toAttribute
-          })
-          .union(Set(EqualNullSafe(e, a.toAttribute)))
+      case a @ Alias(e, _) => child.constraints.map(_ transform {
+          case expr: Expression if expr.semanticEquals(e) => a.toAttribute
+        }).union(Set(EqualNullSafe(e, a.toAttribute)))
       case _ => Set.empty[Expression]
     }.toSet
   }

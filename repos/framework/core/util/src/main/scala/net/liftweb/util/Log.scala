@@ -48,8 +48,8 @@ object LoggingAutoConfigurer {
   import ClassHelpers._
 
   private def findTheFile(files: String*): Box[(java.net.URL)] = {
-    val namesToTry = Props.toTry.flatMap(f =>
-      files.toList.map(file => f() + file))
+    val namesToTry = Props.toTry
+      .flatMap(f => files.toList.map(file => f() + file))
     first(namesToTry)(name =>
       tryo(getClass.getResource(name)).filter(_ ne null))
   }

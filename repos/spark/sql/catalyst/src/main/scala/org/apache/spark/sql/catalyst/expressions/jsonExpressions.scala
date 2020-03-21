@@ -348,10 +348,10 @@ case class JsonTuple(children: Seq[Expression])
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (children.length < 2) {
-      TypeCheckResult.TypeCheckFailure(
-        s"$prettyName requires at least two arguments")
-    } else if (children.forall(child =>
-                 StringType.acceptsType(child.dataType))) {
+      TypeCheckResult
+        .TypeCheckFailure(s"$prettyName requires at least two arguments")
+    } else if (children
+                 .forall(child => StringType.acceptsType(child.dataType))) {
       TypeCheckResult.TypeCheckSuccess
     } else {
       TypeCheckResult.TypeCheckFailure(

@@ -38,8 +38,7 @@ class InputStreamReader(
   def this(in: InputStream, charset: Charset) =
     this(
       in,
-      charset.newDecoder
-        .onMalformedInput(CodingErrorAction.REPLACE)
+      charset.newDecoder.onMalformedInput(CodingErrorAction.REPLACE)
         .onUnmappableCharacter(CodingErrorAction.REPLACE))
 
   def this(in: InputStream) = this(in, Charset.defaultCharset)
@@ -171,10 +170,8 @@ class InputStreamReader(
          * Further, note that we may read more bytes than strictly necessary,
          * according to the specification of InputStreamReader.
          */
-        val bytesRead = in.read(
-          inBuf.array,
-          inBuf.limit,
-          inBuf.capacity - inBuf.limit)
+        val bytesRead = in
+          .read(inBuf.array, inBuf.limit, inBuf.capacity - inBuf.limit)
 
         if (bytesRead == -1) endOfInput = true
         else inBuf.limit(inBuf.limit + bytesRead)

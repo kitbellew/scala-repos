@@ -37,8 +37,7 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
           expr match {
             case lit @ ScBooleanLiteral(_)
                 if isArgForBooleanParam(expr, argList) &&
-                  IntentionUtils
-                    .addNameToArgumentsFix(expr, onlyBoolean = true)
+                  IntentionUtils.addNameToArgumentsFix(expr, onlyBoolean = true)
                     .isDefined =>
               val descriptor = holder.getManager.createProblemDescriptor(
                 expr,
@@ -68,8 +67,7 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
 
       def isSingleParamMethodCall(mc: ScMethodCall): Boolean = {
         mc.getInvokedExpr match {
-          case ref: ScReferenceExpression =>
-            ref.bind().exists { srr =>
+          case ref: ScReferenceExpression => ref.bind().exists { srr =>
               val targets =
                 (Seq(srr.element) ++ srr.innerResolveResult.map(_.getElement))
                   .filterBy(classOf[ScFunction])

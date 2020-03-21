@@ -41,7 +41,8 @@ object EndToEndLatency {
   def main(args: Array[String]) {
     if (args.length != 5 && args.length != 6) {
       System.err.println(
-        "USAGE: java " + getClass.getName + " broker_list topic num_messages producer_acks message_size_bytes [optional] ssl_properties_file")
+        "USAGE: java " + getClass
+          .getName + " broker_list topic num_messages producer_acks message_size_bytes [optional] ssl_properties_file")
       System.exit(1)
     }
 
@@ -71,10 +72,11 @@ object EndToEndLatency {
     consumerProps.put(
       ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
       "org.apache.kafka.common.serialization.ByteArrayDeserializer")
-    consumerProps.put(
-      ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG,
-      "0"
-    ) //ensure we have no temporal batching
+    consumerProps
+      .put(
+        ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG,
+        "0"
+      ) //ensure we have no temporal batching
 
     val consumer = new KafkaConsumer[Array[Byte], Array[Byte]](consumerProps)
     consumer.subscribe(List(topic))
@@ -83,13 +85,10 @@ object EndToEndLatency {
       if (sslPropsFile.equals("")) new Properties()
       else Utils.loadProps(sslPropsFile)
     producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList)
-    producerProps.put(
-      ProducerConfig.LINGER_MS_CONFIG,
-      "0"
-    ) //ensure writes are synchronous
-    producerProps.put(
-      ProducerConfig.MAX_BLOCK_MS_CONFIG,
-      Long.MaxValue.toString)
+    producerProps
+      .put(ProducerConfig.LINGER_MS_CONFIG, "0") //ensure writes are synchronous
+    producerProps
+      .put(ProducerConfig.MAX_BLOCK_MS_CONFIG, Long.MaxValue.toString)
     producerProps.put(ProducerConfig.ACKS_CONFIG, producerAcks.toString)
     producerProps.put(
       ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,

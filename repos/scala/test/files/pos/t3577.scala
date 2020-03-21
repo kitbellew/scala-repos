@@ -21,10 +21,12 @@ object Container {
   class FlatMap[T, Repr, U, That]
 
   val Seq(fn: FoundNode[t, repr]) = Seq[FoundNode[_, _]]()
-  fn.optimize(
-    null
-  ) // was: scala.MatchError: ? (of class BoundedWildcardType) @ Variances#varianceInType
-  fn.optimize2(
-    null
-  ) // was: fatal error: bad type: ?(class scala.reflect.internal.Types$BoundedWildcardType) @ Pickle.putType
+  fn
+    .optimize(
+      null
+    ) // was: scala.MatchError: ? (of class BoundedWildcardType) @ Variances#varianceInType
+  fn
+    .optimize2(
+      null
+    ) // was: fatal error: bad type: ?(class scala.reflect.internal.Types$BoundedWildcardType) @ Pickle.putType
 }

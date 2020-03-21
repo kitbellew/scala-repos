@@ -145,18 +145,15 @@ object Actor extends ListenerManagement {
   val registry = new ActorRegistry
 
   lazy val remote: RemoteSupport = {
-    ReflectiveAccess.Remote.defaultRemoteSupport
-      .map(_())
-      .getOrElse(
-        throw new UnsupportedOperationException(
-          "You need to have akka-remote.jar on classpath"))
+    ReflectiveAccess.Remote.defaultRemoteSupport.map(_()).getOrElse(
+      throw new UnsupportedOperationException(
+        "You need to have akka-remote.jar on classpath"))
   }
 
   private[akka] val TIMEOUT =
     Duration(config.getInt("akka.actor.timeout", 5), TIME_UNIT).toMillis
-  private[akka] val SERIALIZE_MESSAGES = config.getBool(
-    "akka.actor.serialize-messages",
-    false)
+  private[akka] val SERIALIZE_MESSAGES = config
+    .getBool("akka.actor.serialize-messages", false)
 
   /** A Receive is a convenience type that defines actor message behavior currently modeled as
     *  a PartialFunction[Any, Unit].
@@ -365,7 +362,8 @@ trait Actor {
     val optRef = Actor.actorRefInCreation.get
     if (optRef.isEmpty)
       throw new ActorInitializationException(
-        "ActorRef for instance of actor [" + getClass.getName + "] is not in scope." +
+        "ActorRef for instance of actor [" + getClass
+          .getName + "] is not in scope." +
           "\n\tYou can not create an instance of an actor explicitly using 'new MyActor'." +
           "\n\tYou have to use one of the factory methods in the 'Actor' object to create a new actor." +
           "\n\tEither use:" +

@@ -101,21 +101,21 @@ class MatrixFactorizationModel @Since("0.8.0") (
       usersProducts: RDD[(Int, Int)]): (Long, Long) = {
     val zeroCounterUser = new HyperLogLogPlus(4, 0)
     val zeroCounterProduct = new HyperLogLogPlus(4, 0)
-    val aggregated = usersProducts.aggregate(
-      (zeroCounterUser, zeroCounterProduct))(
-      (hllTuple: (HyperLogLogPlus, HyperLogLogPlus), v: (Int, Int)) => {
-        hllTuple._1.offer(v._1)
-        hllTuple._2.offer(v._2)
-        hllTuple
-      },
-      (
-          h1: (HyperLogLogPlus, HyperLogLogPlus),
-          h2: (HyperLogLogPlus, HyperLogLogPlus)) => {
-        h1._1.addAll(h2._1)
-        h1._2.addAll(h2._2)
-        h1
-      }
-    )
+    val aggregated = usersProducts
+      .aggregate((zeroCounterUser, zeroCounterProduct))(
+        (hllTuple: (HyperLogLogPlus, HyperLogLogPlus), v: (Int, Int)) => {
+          hllTuple._1.offer(v._1)
+          hllTuple._2.offer(v._2)
+          hllTuple
+        },
+        (
+            h1: (HyperLogLogPlus, HyperLogLogPlus),
+            h2: (HyperLogLogPlus, HyperLogLogPlus)) => {
+          h1._1.addAll(h2._1)
+          h1._2.addAll(h2._2)
+          h1
+        }
+      )
     (aggregated._1.cardinality(), aggregated._2.cardinality())
   }
 
@@ -238,8 +238,7 @@ class MatrixFactorizationModel @Since("0.8.0") (
   @Since("1.4.0")
   def recommendProductsForUsers(num: Int): RDD[(Int, Array[Rating])] = {
     MatrixFactorizationModel
-      .recommendForAll(rank, userFeatures, productFeatures, num)
-      .map {
+      .recommendForAll(rank, userFeatures, productFeatures, num).map {
         case (user, top) =>
           val ratings = top.map {
             case (product, rating) => Rating(user, product, rating)
@@ -259,8 +258,7 @@ class MatrixFactorizationModel @Since("0.8.0") (
   @Since("1.4.0")
   def recommendUsersForProducts(num: Int): RDD[(Int, Array[Rating])] = {
     MatrixFactorizationModel
-      .recommendForAll(rank, productFeatures, userFeatures, num)
-      .map {
+      .recommendForAll(rank, productFeatures, userFeatures, num).map {
         case (product, top) =>
           val ratings = top.map {
             case (user, rating) => Rating(user, product, rating)
@@ -394,9 +392,7 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
         )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
       model.userFeatures.toDF("id", "features").write.parquet(userPath(path))
-      model.productFeatures
-        .toDF("id", "features")
-        .write
+      model.productFeatures.toDF("id", "features").write
         .parquet(productPath(path))
     }
 

@@ -27,8 +27,8 @@ import scala.annotation.tailrec
   * 5/30/13
   */
 object ComparingUnrelatedTypesInspection {
-  val inspectionName = InspectionBundle.message(
-    "comparing.unrelated.types.name")
+  val inspectionName = InspectionBundle
+    .message("comparing.unrelated.types.name")
   val inspectionId = "ComparingUnrelatedTypes"
 
   private val seqFunctions = Seq("contains", "indexOf", "lastIndexOf")
@@ -50,8 +50,7 @@ object ComparingUnrelatedTypesInspection {
     tp match {
       case Byte | Char | Short | Int | Long | Float | Double => true
       case ScDesignatorType(c: ScClass) =>
-        c.supers.headOption
-          .map(_.qualifiedName)
+        c.supers.headOption.map(_.qualifiedName)
           .contains("scala.math.ScalaNumber")
       case _ => false
     }
@@ -110,19 +109,15 @@ class ComparingUnrelatedTypesInspection
           Some(ResolvesTo(fun: ScFunction)),
           Seq(arg, _*)) if mayNeedHighlighting(fun) =>
       for {
-        ScParameterizedType(_, Seq(elemType)) <- baseExpr
-          .getType()
+        ScParameterizedType(_, Seq(elemType)) <- baseExpr.getType()
           .map(tryExtractSingletonType)
         argType <- arg.getType()
         if cannotBeCompared(elemType, argType)
       } {
-        val (elemTypeText, argTypeText) = ScTypePresentation.different(
-          elemType,
-          argType)
-        val message = InspectionBundle.message(
-          "comparing.unrelated.types.hint",
-          elemTypeText,
-          argTypeText)
+        val (elemTypeText, argTypeText) = ScTypePresentation
+          .different(elemType, argType)
+        val message = InspectionBundle
+          .message("comparing.unrelated.types.hint", elemTypeText, argTypeText)
         holder.registerProblem(
           arg,
           message,
@@ -149,9 +144,9 @@ class ComparingUnrelatedTypesInspection
   private def mayNeedHighlighting(fun: ScFunction): Boolean = {
     if (!seqFunctions.contains(fun.name)) return false
     val className = fun.containingClass.qualifiedName
-    className.startsWith("scala.collection") && className.contains(
-      "Seq") && seqFunctions.contains(fun.name) ||
-    Seq("scala.Option", "scala.Some").contains(
-      className) && fun.name == "contains"
+    className.startsWith("scala.collection") && className
+      .contains("Seq") && seqFunctions.contains(fun.name) ||
+    Seq("scala.Option", "scala.Some").contains(className) && fun
+      .name == "contains"
   }
 }

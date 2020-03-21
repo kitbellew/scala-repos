@@ -21,23 +21,16 @@ case class MediaType(
     mediaSubType: String,
     parameters: Seq[(String, Option[String])]) {
   override def toString = {
-    mediaType + "/" + mediaSubType + parameters
-      .map { param =>
-        "; " + param._1 + param._2
-          .map { value =>
-            if (MediaRangeParser
-                  .token(new CharSequenceReader(value))
-                  .next
-                  .atEnd) { "=" + value }
-            else {
-              "=\"" + value
-                .replaceAll("\\\\", "\\\\\\\\")
-                .replaceAll("\"", "\\\\\"") + "\""
-            }
-          }
-          .getOrElse("")
-      }
-      .mkString("")
+    mediaType + "/" + mediaSubType + parameters.map { param =>
+      "; " + param._1 + param._2.map { value =>
+        if (MediaRangeParser.token(new CharSequenceReader(value)).next.atEnd) {
+          "=" + value
+        } else {
+          "=\"" + value.replaceAll("\\\\", "\\\\\\\\")
+            .replaceAll("\"", "\\\\\"") + "\""
+        }
+      }.getOrElse("")
+    }.mkString("")
   }
 }
 
@@ -63,16 +56,15 @@ class MediaRange(
     */
   def accepts(mimeType: String): Boolean =
     (mediaType + "/" + mediaSubType).equalsIgnoreCase(mimeType) ||
-      (mediaSubType == "*" && mediaType.equalsIgnoreCase(
-        mimeType.takeWhile(_ != '/'))) ||
+      (mediaSubType == "*" && mediaType
+        .equalsIgnoreCase(mimeType.takeWhile(_ != '/'))) ||
       (mediaType == "*" && mediaSubType == "*")
 
   override def toString = {
     new MediaType(
       mediaType,
       mediaSubType,
-      parameters ++ qValue
-        .map(q => ("q", Some(q.toString())))
+      parameters ++ qValue.map(q => ("q", Some(q.toString())))
         .toSeq ++ acceptExtensions).toString
   }
 }
@@ -93,8 +85,8 @@ object MediaType {
       MediaRangeParser.mediaType(new CharSequenceReader(mediaType)) match {
         case MediaRangeParser.Success(mt: MediaType, next) => {
           if (!next.atEnd) {
-            logger.debug(
-              "Unable to parse part of media type '" + next.source + "'")
+            logger
+              .debug("Unable to parse part of media type '" + next.source + "'")
           }
           Some(mt)
         }
@@ -121,7 +113,8 @@ object MediaRange {
         case MediaRangeParser.Success(mrs: List[MediaRange], next) =>
           if (next.atEnd) {
             logger.debug(
-              "Unable to parse part of media range header '" + next.source + "'")
+              "Unable to parse part of media range header '" + next
+                .source + "'")
           }
           mrs.sorted
         case MediaRangeParser.NoSuccess(err, _) =>
@@ -252,8 +245,8 @@ object MediaRange {
 
     // Some clients think that '*' is a valid media range.  Spec says it isn't, but it's used widely enough that we
     // need to support it.
-    val mediaRange = (mediaType | ('*' ~> parameters.map(ps =>
-      MediaType("*", "*", ps.flatten)))) ^^ { mediaType =>
+    val mediaRange = (mediaType | ('*' ~> parameters
+      .map(ps => MediaType("*", "*", ps.flatten)))) ^^ { mediaType =>
       val (params, rest) = mediaType.parameters.span(_._1 != "q")
       val (qValueStr, acceptParams) = rest match {
         case q :: ps => (q._2, ps)

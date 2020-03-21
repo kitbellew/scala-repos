@@ -27,13 +27,8 @@ trait Trees extends api.Trees {
       if (enclosingTree eq null) "        "
       else " P#%5s".format(enclosingTree.id)
 
-    "[L%4s%8s] #%-6s %-15s %-10s // %s".format(
-      t.pos.line,
-      parent,
-      t.id,
-      t.pos.show,
-      t.shortClass,
-      treeLine(t))
+    "[L%4s%8s] #%-6s %-15s %-10s // %s"
+      .format(t.pos.line, parent, t.id, t.pos.show, t.shortClass, treeLine(t))
   }
   protected def treeSymStatus(t: Tree) = {
     val line =
@@ -729,8 +724,9 @@ trait Trees extends api.Trees {
   def TypeTree(tp: Type): TypeTree = TypeTree() setType tp
   private def TypeTreeMemberType(sym: Symbol): TypeTree = {
     // Needed for pos/t4970*.scala. See SI-7853
-    val resType = (if (sym.isLocalToBlock) sym.tpe
-                   else (sym.owner.thisType memberType sym)).finalResultType
+    val resType =
+      (if (sym.isLocalToBlock) sym.tpe else (sym.owner.thisType memberType sym))
+        .finalResultType
     atPos(sym.pos.focus)(TypeTree(resType))
   }
 
@@ -1220,10 +1216,8 @@ trait Trees extends api.Trees {
     }
 
     override def toString =
-      "Modifiers(%s, %s, %s)".format(
-        flagString,
-        annotations mkString ", ",
-        positions)
+      "Modifiers(%s, %s, %s)"
+        .format(flagString, annotations mkString ", ", positions)
   }
 
   object Modifiers extends ModifiersExtractor
@@ -1557,18 +1551,13 @@ trait Trees extends api.Trees {
             transform(rhs))
         }
       case Block(stats, expr) =>
-        treeCopy.Block(
-          tree,
-          transformStats(stats, currentOwner),
-          transform(expr))
+        treeCopy
+          .Block(tree, transformStats(stats, currentOwner), transform(expr))
       case If(cond, thenp, elsep) =>
         treeCopy.If(tree, transform(cond), transform(thenp), transform(elsep))
       case CaseDef(pat, guard, body) =>
-        treeCopy.CaseDef(
-          tree,
-          transform(pat),
-          transform(guard),
-          transform(body))
+        treeCopy
+          .CaseDef(tree, transform(pat), transform(guard), transform(body))
       case TypeApply(fun, args) =>
         treeCopy.TypeApply(tree, transform(fun), transformTrees(args))
       case AppliedTypeTree(tpt, args) =>
@@ -1629,12 +1618,13 @@ trait Trees extends api.Trees {
             transform(rhs))
         }
       case LabelDef(name, params, rhs) =>
-        treeCopy.LabelDef(
-          tree,
-          name,
-          transformIdents(params),
-          transform(rhs)
-        ) //bq: Martin, once, atOwner(...) works, also change `LambdaLifter.proxy'
+        treeCopy
+          .LabelDef(
+            tree,
+            name,
+            transformIdents(params),
+            transform(rhs)
+          ) //bq: Martin, once, atOwner(...) works, also change `LambdaLifter.proxy'
       case PackageDef(pid, stats) =>
         treeCopy.PackageDef(
           tree,
@@ -1658,11 +1648,12 @@ trait Trees extends api.Trees {
         treeCopy.Alternative(tree, transformTrees(trees))
       case Star(elem) => treeCopy.Star(tree, transform(elem))
       case UnApply(fun, args) =>
-        treeCopy.UnApply(
-          tree,
-          transform(fun),
-          transformTrees(args)
-        ) // bq: see test/.../unapplyContexts2.scala
+        treeCopy
+          .UnApply(
+            tree,
+            transform(fun),
+            transformTrees(args)
+          ) // bq: see test/.../unapplyContexts2.scala
       case ArrayValue(elemtpt, trees) =>
         treeCopy.ArrayValue(tree, transform(elemtpt), transformTrees(trees))
       case ApplyDynamic(qual, args) =>
@@ -1701,15 +1692,13 @@ trait Trees extends api.Trees {
           if (tree.symbol == oldowner) {
             // SI-5612
             if (newowner hasTransOwner oldowner)
-              log("NOT changing owner of %s because %s is nested in %s".format(
-                tree,
-                newowner,
-                oldowner))
+              log(
+                "NOT changing owner of %s because %s is nested in %s"
+                  .format(tree, newowner, oldowner))
             else {
-              log("changing owner of %s: %s => %s".format(
-                tree,
-                oldowner,
-                newowner))
+              log(
+                "changing owner of %s: %s => %s"
+                  .format(tree, oldowner, newowner))
               tree.symbol = newowner
             }
           }
@@ -1731,9 +1720,8 @@ trait Trees extends api.Trees {
       extends Transformer {
     override def transform(t: Tree): Tree = {
       if (t == from) to
-      else if (!positionAware || (
-                 t.pos includes from.pos
-               ) || t.pos.isTransparent) super.transform(t)
+      else if (!positionAware || (t.pos includes from.pos) || t.pos
+                 .isTransparent) super.transform(t)
       else t
     }
   }
@@ -1762,7 +1750,8 @@ trait Trees extends api.Trees {
           def subst(from: List[Symbol], to: List[Tree]): Tree =
             if (from.isEmpty) tree
             else if (tree.symbol == from.head)
-              to.head.shallowDuplicate // TODO: does it ever make sense *not* to perform a shallowDuplicate on `to.head`?
+              to.head
+                .shallowDuplicate // TODO: does it ever make sense *not* to perform a shallowDuplicate on `to.head`?
             else subst(from.tail, to.tail)
           subst(from, to)
         case _ => super.transform(tree)
@@ -2170,6 +2159,6 @@ trait Trees extends api.Trees {
 
 object TreesStats {
   // statistics
-  val nodeByType = Statistics.newByClass("#created tree nodes by type")(
-    Statistics.newCounter(""))
+  val nodeByType = Statistics
+    .newByClass("#created tree nodes by type")(Statistics.newCounter(""))
 }

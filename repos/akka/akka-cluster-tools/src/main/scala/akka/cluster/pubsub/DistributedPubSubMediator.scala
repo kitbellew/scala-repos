@@ -56,8 +56,8 @@ object DistributedPubSubSettings {
       },
       gossipInterval =
         config.getDuration("gossip-interval", MILLISECONDS).millis,
-      removedTimeToLive =
-        config.getDuration("removed-time-to-live", MILLISECONDS).millis,
+      removedTimeToLive = config
+        .getDuration("removed-time-to-live", MILLISECONDS).millis,
       maxDeltaElements = config.getInt("max-delta-elements"))
 
   /**
@@ -334,11 +334,8 @@ object DistributedPubSubMediator {
     trait TopicLike extends Actor {
       import context.dispatcher
       val pruneInterval: FiniteDuration = emptyTimeToLive / 2
-      val pruneTask = context.system.scheduler.schedule(
-        pruneInterval,
-        pruneInterval,
-        self,
-        Prune)
+      val pruneTask = context.system.scheduler
+        .schedule(pruneInterval, pruneInterval, self, Prune)
       var pruneDeadline: Option[Deadline] = None
 
       var subscribers = Set.empty[ActorRef]
@@ -549,20 +546,14 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   //Start periodic gossip to random nodes in cluster
   import context.dispatcher
-  val gossipTask = context.system.scheduler.schedule(
-    gossipInterval,
-    gossipInterval,
-    self,
-    GossipTick)
+  val gossipTask = context.system.scheduler
+    .schedule(gossipInterval, gossipInterval, self, GossipTick)
   val pruneInterval: FiniteDuration = removedTimeToLive / 2
-  val pruneTask = context.system.scheduler.schedule(
-    pruneInterval,
-    pruneInterval,
-    self,
-    Prune)
+  val pruneTask = context.system.scheduler
+    .schedule(pruneInterval, pruneInterval, self, Prune)
 
-  var registry: Map[Address, Bucket] = Map.empty.withDefault(a ⇒
-    Bucket(a, 0L, TreeMap.empty))
+  var registry: Map[Address, Bucket] = Map.empty
+    .withDefault(a ⇒ Bucket(a, 0L, TreeMap.empty))
   var nodes: Set[Address] = Set.empty
 
   // the version is a timestamp because it is also used when pruning removed entries
@@ -814,8 +805,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
         else {
           // exceeded the maxDeltaElements, pick the elements with lowest versions
           val sortedContent = deltaContent.toVector.sortBy(_._2.version)
-          val chunk = sortedContent.take(
-            maxDeltaElements - (count - sortedContent.size))
+          val chunk = sortedContent
+            .take(maxDeltaElements - (count - sortedContent.size))
           bucket.copy(
             content = TreeMap.empty[String, ValueHolder] ++ chunk,
             version = chunk.last._2.version)
@@ -850,8 +841,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
               if (bucket.version - version > removedTimeToLiveMillis) ⇒ key
         }
         if (oldRemoved.nonEmpty)
-          registry += owner -> bucket.copy(content =
-            bucket.content -- oldRemoved)
+          registry += owner -> bucket
+            .copy(content = bucket.content -- oldRemoved)
     }
   }
 
@@ -888,8 +879,8 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
     * mediator.
     */
   def isTerminated: Boolean =
-    Cluster(system).isTerminated || !settings.role.forall(
-      Cluster(system).selfRoles.contains)
+    Cluster(system).isTerminated || !settings.role
+      .forall(Cluster(system).selfRoles.contains)
 
   /**
     * The [[DistributedPubSubMediator]]

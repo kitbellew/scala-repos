@@ -161,11 +161,10 @@ abstract class ParallelSeqCheck[T](collName: String)
         println(ccm)
       }
       ("Nil" |: s.sameElements(Nil) == coll.sameElements(Nil)) &&
-      (
-        "toList" |: s.sameElements(s.toList) == coll.sameElements(coll.toList)
-      ) &&
-      ("identity" |: s.sameElements(s.map(e => e)) == coll.sameElements(
-        coll.map(e => e))) &&
+      ("toList" |: s.sameElements(s.toList) == coll
+        .sameElements(coll.toList)) &&
+      ("identity" |: s.sameElements(s.map(e => e)) == coll
+        .sameElements(coll.map(e => e))) &&
       ("vice-versa" |: s.sameElements(coll) == coll.sameElements(s)) &&
       ("equal" |: s.sameElements(coll)) &&
       ("modified" |: scm == ccm) &&
@@ -192,8 +191,8 @@ abstract class ParallelSeqCheck[T](collName: String)
         .startsWith(coll.tail, 1))) &&
       ("with each other" |: coll.startsWith(s)) &&
       ("modified" |: s.startsWith(collmodif) == coll.startsWith(collmodif)) &&
-      ("modified2" |: s
-        .startsWith(collmodif, pos) == coll.startsWith(collmodif, pos)) &&
+      ("modified2" |: s.startsWith(collmodif, pos) == coll
+        .startsWith(collmodif, pos)) &&
       (for (sq <- startEndSeqs) yield {
         val ss = s.startsWith(sq, pos)
         val cs = coll.startsWith(fromSeq(sq), pos)
@@ -213,9 +212,8 @@ abstract class ParallelSeqCheck[T](collName: String)
   property("endsWiths must be equal") = forAll(collectionPairsWithModified) {
     case (s, coll, collmodif) =>
       ("ends with self" |: s.endsWith(s) == coll.endsWith(s)) &&
-        ("ends with tail" |: (
-          s.length == 0 || s.endsWith(s.tail) == coll.endsWith(coll.tail)
-        )) &&
+        ("ends with tail" |: (s.length == 0 || s.endsWith(s.tail) == coll
+          .endsWith(coll.tail))) &&
         ("with each other" |: coll.endsWith(s)) &&
         ("modified" |: s.startsWith(collmodif) == coll.endsWith(collmodif)) &&
         (for (sq <- startEndSeqs) yield {
@@ -246,13 +244,12 @@ abstract class ParallelSeqCheck[T](collName: String)
   if (!isCheckingViews)
     property("patches must be equal") = forAll(collectionTripletsWith2Indices) {
       case (s, coll, pat, from, repl) =>
-        (
-          "with seq" |: s.patch(from, pat, repl) == coll.patch(from, pat, repl)
-        ) &&
-          ("with par" |: s
-            .patch(from, pat, repl) == coll.patch(from, fromSeq(pat), repl)) &&
-          ("with empty" |: s
-            .patch(from, Nil, repl) == coll.patch(from, fromSeq(Nil), repl)) &&
+        ("with seq" |: s.patch(from, pat, repl) == coll
+          .patch(from, pat, repl)) &&
+          ("with par" |: s.patch(from, pat, repl) == coll
+            .patch(from, fromSeq(pat), repl)) &&
+          ("with empty" |: s.patch(from, Nil, repl) == coll
+            .patch(from, fromSeq(Nil), repl)) &&
           ("with one" |: (s.length == 0 || s.patch(from, List(s(0)), 1) == coll
             .patch(from, fromSeq(List(coll(0))), 1)))
     }
@@ -293,8 +290,8 @@ abstract class ParallelSeqCheck[T](collName: String)
         println(sdoub)
         println(cdoub)
       }
-      ("smaller" |: s
-        .padTo(len / 2, someValue) == coll.padTo(len / 2, someValue)) &&
+      ("smaller" |: s.padTo(len / 2, someValue) == coll
+        .padTo(len / 2, someValue)) &&
       ("bigger" |: sdoub == cdoub)
   }
 
@@ -302,10 +299,10 @@ abstract class ParallelSeqCheck[T](collName: String)
     case (s, coll, modified) =>
       val modifcut = modified.toSeq.slice(0, modified.length)
       ("self" |: s.corresponds(s)(_ == _) == coll.corresponds(coll)(_ == _)) &&
-      ("modified" |: s.corresponds(modified.seq)(_ == _) == coll.corresponds(
-        modified)(_ == _)) &&
-      ("modified2" |: s.corresponds(modifcut)(_ == _) == coll.corresponds(
-        modifcut)(_ == _))
+      ("modified" |: s.corresponds(modified.seq)(_ == _) == coll
+        .corresponds(modified)(_ == _)) &&
+      ("modified2" |: s.corresponds(modifcut)(_ == _) == coll
+        .corresponds(modifcut)(_ == _))
   }
 
 }

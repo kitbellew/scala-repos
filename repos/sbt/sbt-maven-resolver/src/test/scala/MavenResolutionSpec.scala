@@ -263,9 +263,8 @@ class MavenResolutionSpec extends BaseIvySpecification {
       conf <- report.configurations
       if conf.configuration == "compile"
       m <- conf.modules
-      if (m.module.name contains "akka-actor") && !(
-        m.module.name contains "testkit"
-      )
+      if (m.module.name contains "akka-actor") && !(m.module
+        .name contains "testkit")
       (a, f) <- m.artifacts
       if a.extension == "jar"
     } yield f
@@ -273,9 +272,8 @@ class MavenResolutionSpec extends BaseIvySpecification {
       conf <- report.configurations
       if conf.configuration == "compile"
       m <- conf.modules
-      if (m.module.name contains "akka-actor") && (
-        m.module.name contains "testkit"
-      )
+      if (m.module.name contains "akka-actor") && (m.module
+        .name contains "testkit")
       (a, f) <- m.artifacts
       if a.extension == "jar"
     } yield f
@@ -348,8 +346,8 @@ class MavenResolutionSpec extends BaseIvySpecification {
       )
       val jarFile = new java.io.File(dir, "test-it-1.0-SNAPSHOT.jar")
       sbt.io.IO.touch(jarFile)
-      System.err.println(
-        s"DEBUGME - Publishing $m to ${Resolver.publishMavenLocal}")
+      System.err
+        .println(s"DEBUGME - Publishing $m to ${Resolver.publishMavenLocal}")
       ivyPublish(
         m,
         mkPublishConfiguration(
@@ -362,10 +360,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
     val baseLocalMavenDir: java.io.File = Resolver.publishMavenLocal.rootFile
     val allFiles: Seq[java.io.File] = sbt.io
       .PathFinder(new java.io.File(baseLocalMavenDir, "com/example/test-it"))
-      .allPaths
-      .get
-    val metadataFiles = allFiles.filter(
-      _.getName contains "maven-metadata-local")
+      .allPaths.get
+    val metadataFiles = allFiles
+      .filter(_.getName contains "maven-metadata-local")
     // TODO - maybe we check INSIDE the metadata, or make sure we can get a publication date on resolve...
     // We end up with 4 files, two mavne-metadata files, and 2 maven-metadata-local files.
     metadataFiles should have size 2

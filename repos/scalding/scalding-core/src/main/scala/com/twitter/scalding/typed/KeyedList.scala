@@ -125,8 +125,7 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     * Use Algebird Aggregator to do the reduction
     */
   def aggregate[B, C](agg: Aggregator[T, B, C]): This[K, C] =
-    mapValues[B](agg.prepare(_))
-      .sum[B](agg.semigroup)
+    mapValues[B](agg.prepare(_)).sum[B](agg.semigroup)
       .mapValues[C](agg.present(_))
 
   /**
@@ -223,9 +222,8 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     // cast because Ordering is not contravariant, but could be (and this cast is safe)
     val ordT: Ordering[T] = ord.asInstanceOf[Ordering[T]]
     val mon = new PriorityQueueMonoid[T](k)(ordT)
-    mapValues(mon.build(_))
-      .sum(mon) // results in a PriorityQueue
-      // scala can't infer the type, possibly due to the view bound on TypedPipe
+    mapValues(mon.build(_)).sum(mon) // results in a PriorityQueue
+    // scala can't infer the type, possibly due to the view bound on TypedPipe
       .mapValues(_.iterator.asScala.toList.sorted(ordT))
   }
 

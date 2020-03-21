@@ -76,16 +76,14 @@ object CaseClassBasedSetterImpl {
         extends SetterBuilder {
       val columns = members.map(_._2.columns).sum
       def setTree(value: Tree, offset: Int) = {
-        val setters = members
-          .scanLeft((offset, Option.empty[Tree])) {
-            case ((off, _), (access, sb)) =>
-              val cca = newTermName(c.fresh(s"access"))
-              val ccaT = q"$cca"
-              (
-                off + sb.columns,
-                Some(q"val $cca = ${access(value)}; ${sb.setTree(ccaT, off)}"))
-          }
-          .collect { case (_, Some(tree)) => tree }
+        val setters = members.scanLeft((offset, Option.empty[Tree])) {
+          case ((off, _), (access, sb)) =>
+            val cca = newTermName(c.fresh(s"access"))
+            val ccaT = q"$cca"
+            (
+              off + sb.columns,
+              Some(q"val $cca = ${access(value)}; ${sb.setTree(ccaT, off)}"))
+        }.collect { case (_, Some(tree)) => tree }
         q"""..$setters"""
       }
     }
@@ -120,16 +118,15 @@ object CaseClassBasedSetterImpl {
       }
     }
     def expandMethod(outerTpe: Type): Vector[(Tree => Tree, Type)] =
-      outerTpe.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
-        .map { accessorMethod =>
-          val fieldType = normalized(accessorMethod.returnType.asSeenFrom(
-            outerTpe,
-            outerTpe.typeSymbol.asClass))
+      outerTpe.declarations.collect {
+        case m: MethodSymbol if m.isCaseAccessor => m
+      }.map { accessorMethod =>
+        val fieldType = normalized(
+          accessorMethod.returnType
+            .asSeenFrom(outerTpe, outerTpe.typeSymbol.asClass))
 
-          ({ pTree: Tree => q"""$pTree.$accessorMethod""" }, fieldType)
-        }
-        .toVector
+        ({ pTree: Tree => q"""$pTree.$accessorMethod""" }, fieldType)
+      }.toVector
 
     // in TupleSetterImpl, the outer-most input val is called t, so we pass that in here:
     val sb = matchField(normalized(T.tpe))

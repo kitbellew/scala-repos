@@ -13,14 +13,11 @@ object Test extends App {
       ((sym.isMethod && sym.asMethod.isLazy)
         || sym.isModule)
     val forceables = tp.members.sorted.filter(isLazyAccessorOrObject)
-    forceables
-      .map { sym =>
-        val path = s"$prefix.${sym.name}"
-        "    " + (if (sym.isPrivate || sym.isProtected)
-                    s"// inaccessible: $path"
-                  else path)
-      }
-      .mkString("\n")
+    forceables.map { sym =>
+      val path = s"$prefix.${sym.name}"
+      "    " + (if (sym.isPrivate || sym.isProtected) s"// inaccessible: $path"
+                else path)
+    }.mkString("\n")
   }
 
   val code =
@@ -68,7 +65,9 @@ object Test extends App {
   import java.io.File
   val testFile = new File(sys.props("partest.test-path"))
   val actualFile = new java.io.File(
-    testFile.getParent + "/../../../src/reflect/scala/reflect/runtime/JavaUniverseForce.scala").getCanonicalFile
+    testFile
+      .getParent + "/../../../src/reflect/scala/reflect/runtime/JavaUniverseForce.scala")
+    .getCanonicalFile
   val actual = scala.io.Source.fromFile(actualFile)
   val actualLines = actual.getLines.toList
   val generatedLines = code.lines.toList

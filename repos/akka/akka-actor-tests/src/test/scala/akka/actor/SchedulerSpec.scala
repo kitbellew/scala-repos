@@ -19,14 +19,12 @@ import akka.testkit._
 import scala.util.control.NoStackTrace
 
 object SchedulerSpec {
-  val testConfRevolver = ConfigFactory
-    .parseString(
-      """
+  val testConfRevolver = ConfigFactory.parseString(
+    """
     akka.scheduler.implementation = akka.actor.LightArrayRevolverScheduler
     akka.scheduler.ticks-per-wheel = 32
     akka.actor.serialize-messages = off
-  """)
-    .withFallback(AkkaSpec.testConf)
+  """).withFallback(AkkaSpec.testConf)
 }
 
 trait SchedulerSpec
@@ -54,11 +52,9 @@ trait SchedulerSpec
         }
       }))
       // run every 50 milliseconds
-      collectCancellable(system.scheduler.schedule(
-        0 milliseconds,
-        50 milliseconds,
-        tickActor,
-        Tick))
+      collectCancellable(
+        system.scheduler
+          .schedule(0 milliseconds, 50 milliseconds, tickActor, Tick))
 
       // after max 1 second it should be executed at least the 3 times already
       expectMsg(Tock)
@@ -67,8 +63,8 @@ trait SchedulerSpec
       expectNoMsg(500 millis)
 
       collectCancellable(
-        system.scheduler.schedule(0 milliseconds, 50 milliseconds)(
-          tickActor2 ! Tick))
+        system.scheduler
+          .schedule(0 milliseconds, 50 milliseconds)(tickActor2 ! Tick))
 
       // after max 1 second it should be executed at least the 3 times already
       expectMsg(Tock)
@@ -83,11 +79,9 @@ trait SchedulerSpec
       }))
 
       // run immediately and then every 100 milliseconds
-      collectCancellable(system.scheduler.schedule(
-        0 milliseconds,
-        100 milliseconds,
-        actor,
-        "msg"))
+      collectCancellable(
+        system.scheduler
+          .schedule(0 milliseconds, 100 milliseconds, actor, "msg"))
       expectMsg("msg")
 
       // stop the actor and, hence, the continuous messaging from happening
@@ -215,15 +209,12 @@ trait SchedulerSpec
 
         override def postRestart(reason: Throwable) = restartLatch.open
       })
-      val actor = Await.result(
-        (supervisor ? props).mapTo[ActorRef],
-        timeout.duration)
+      val actor = Await
+        .result((supervisor ? props).mapTo[ActorRef], timeout.duration)
 
-      collectCancellable(system.scheduler.schedule(
-        500 milliseconds,
-        500 milliseconds,
-        actor,
-        Ping))
+      collectCancellable(
+        system.scheduler
+          .schedule(500 milliseconds, 500 milliseconds, actor, Ping))
       // appx 2 pings before crash
       EventFilter[Exception]("CRASH", occurrences = 1) intercept {
         collectCancellable(
@@ -252,10 +243,9 @@ trait SchedulerSpec
       }))
 
       (1 to 300).foreach { i ⇒
-        collectCancellable(system.scheduler.scheduleOnce(
-          20 milliseconds,
-          actor,
-          Msg(System.nanoTime)))
+        collectCancellable(
+          system.scheduler
+            .scheduleOnce(20 milliseconds, actor, Msg(System.nanoTime)))
         Thread.sleep(5)
       }
 
@@ -366,11 +356,8 @@ class LightArrayRevolverSchedulerSpec
     "reject periodic tasks scheduled too far into the future" in {
       val maxDelay = tickDuration * Int.MaxValue
       import system.dispatcher
-      system.scheduler.schedule(
-        maxDelay - tickDuration,
-        1.second,
-        testActor,
-        "OK")
+      system.scheduler
+        .schedule(maxDelay - tickDuration, 1.second, testActor, "OK")
       intercept[IllegalArgumentException] {
         system.scheduler.schedule(maxDelay, 1.second, testActor, "Too far")
       }
@@ -379,11 +366,8 @@ class LightArrayRevolverSchedulerSpec
     "reject periodic tasks scheduled with too long interval" in {
       val maxDelay = tickDuration * Int.MaxValue
       import system.dispatcher
-      system.scheduler.schedule(
-        100.millis,
-        maxDelay - tickDuration,
-        testActor,
-        "OK")
+      system.scheduler
+        .schedule(100.millis, maxDelay - tickDuration, testActor, "OK")
       expectMsg("OK")
       intercept[IllegalArgumentException] {
         system.scheduler.schedule(100.millis, maxDelay, testActor, "Too long")
@@ -427,15 +411,15 @@ class LightArrayRevolverSchedulerSpec
     }
 
     "survive vicious enqueueing" in {
-      withScheduler(config = ConfigFactory.parseString(
-        "akka.scheduler.ticks-per-wheel=2")) { (sched, driver) ⇒
+      withScheduler(config = ConfigFactory
+        .parseString("akka.scheduler.ticks-per-wheel=2")) { (sched, driver) ⇒
         import driver._
         import system.dispatcher
         val counter = new AtomicInteger
         val terminated = future {
           var rounds = 0
-          while (Try(
-                   sched.scheduleOnce(Duration.Zero)(())(localEC)).isSuccess) {
+          while (Try(sched.scheduleOnce(Duration.Zero)(())(localEC))
+                   .isSuccess) {
             Thread.sleep(1)
             driver.wakeUp(step)
             rounds += 1
@@ -485,8 +469,8 @@ class LightArrayRevolverSchedulerSpec
     }
 
     "correctly wrap around wheel rounds" in {
-      withScheduler(config = ConfigFactory.parseString(
-        "akka.scheduler.ticks-per-wheel=2")) { (sched, driver) ⇒
+      withScheduler(config = ConfigFactory
+        .parseString("akka.scheduler.ticks-per-wheel=2")) { (sched, driver) ⇒
         implicit def ec = localEC
         import driver._
         val start = step / 2
@@ -549,11 +533,9 @@ class LightArrayRevolverSchedulerSpec
         val headroom = 200
         var overrun = headroom
         val cap = 1000000
-        val (success, failure) = Iterator
-          .continually(Try(
-            sched.scheduleOnce(100.millis)(counter.incrementAndGet())))
-          .take(cap)
-          .takeWhile(_.isSuccess || { overrun -= 1; overrun >= 0 })
+        val (success, failure) = Iterator.continually(
+          Try(sched.scheduleOnce(100.millis)(counter.incrementAndGet())))
+          .take(cap).takeWhile(_.isSuccess || { overrun -= 1; overrun >= 0 })
           .partition(_.isSuccess)
         val s = success.size
         s should be < cap

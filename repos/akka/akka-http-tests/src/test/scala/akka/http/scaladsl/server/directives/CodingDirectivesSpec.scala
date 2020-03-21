@@ -79,18 +79,13 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
         ByteString("ghi"))
       val data = Source(chunks)
 
-      val defaultEntity = HttpEntity.Default(
-        `application/octet-stream`,
-        9,
-        data)
+      val defaultEntity = HttpEntity
+        .Default(`application/octet-stream`, 9, data)
 
       Post("/", defaultEntity) ~> echoDecodedEntity ~> check {
         inside(responseEntity) {
           case HttpEntity.Default(`application/octet-stream`, 9, dataChunks) ⇒
-            dataChunks
-              .grouped(1000)
-              .runWith(Sink.head)
-              .awaitResult(1.second)
+            dataChunks.grouped(1000).runWith(Sink.head).awaitResult(1.second)
               .toVector shouldEqual chunks
         }
       }
@@ -100,8 +95,7 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
       val chunks = Vector(
         ByteString("abc"),
         ByteString("def"),
-        ByteString("ghi"))
-        .map(ChunkStreamPart(_))
+        ByteString("ghi")).map(ChunkStreamPart(_))
       val data = Source(chunks)
 
       val defaultEntity = HttpEntity.Chunked(`application/octet-stream`, data)
@@ -109,10 +103,7 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
       Post("/", defaultEntity) ~> echoDecodedEntity ~> check {
         inside(responseEntity) {
           case HttpEntity.Chunked(`application/octet-stream`, dataChunks) ⇒
-            dataChunks
-              .grouped(1000)
-              .runWith(Sink.head)
-              .awaitResult(1.second)
+            dataChunks.grouped(1000).runWith(Sink.head).awaitResult(1.second)
               .toVector shouldEqual chunks
         }
       }
@@ -227,8 +218,8 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
     "leave responses with an already set Content-Encoding header unchanged" in {
       Post() ~> `Accept-Encoding`(gzip) ~> {
         encodeResponseWith(Gzip) {
-          RespondWithDirectives.respondWithHeader(
-            `Content-Encoding`(identity)) { completeOk }
+          RespondWithDirectives
+            .respondWithHeader(`Content-Encoding`(identity)) { completeOk }
         }
       } ~> check {
         response shouldEqual Ok.withHeaders(`Content-Encoding`(identity))
@@ -253,9 +244,8 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
       }
     }
     "correctly encode the chunk stream produced by an empty chunked response" in {
-      val emptyChunkedEntity = HttpEntity.Chunked(
-        ContentTypes.`text/plain(UTF-8)`,
-        Source.empty)
+      val emptyChunkedEntity = HttpEntity
+        .Chunked(ContentTypes.`text/plain(UTF-8)`, Source.empty)
 
       Post() ~> `Accept-Encoding`(gzip) ~> {
         encodeResponseWith(Gzip) { complete(emptyChunkedEntity) }
@@ -533,9 +523,7 @@ class CodingDirectivesSpec extends RoutingSpec with Inside {
 
   def hexDump(bytes: Array[Byte]) = bytes.map("%02x" format _).mkString
   def fromHexDump(dump: String) =
-    dump
-      .grouped(2)
-      .toArray
+    dump.grouped(2).toArray
       .map(chars ⇒ Integer.parseInt(new String(chars), 16).toByte)
 
   def haveNoContentEncoding: Matcher[HttpResponse] =

@@ -35,8 +35,7 @@ class RemoteInitErrorSpec extends FlatSpec with Matchers {
             }
         }
       }
-    """)
-    .resolve()
+    """).resolve()
 
   def currentThreadIds(): Set[Long] = {
     val threads = Thread.getAllStackTraces().keySet()

@@ -71,10 +71,8 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
     // This test ensures that randomSplit does not create overlapping splits even when the
     // underlying dataframe (such as the one below) doesn't guarantee a deterministic ordering of
     // rows in each partition.
-    val data = sparkContext
-      .parallelize(1 to 600, 2)
-      .mapPartitions(scala.util.Random.shuffle(_))
-      .toDF("id")
+    val data = sparkContext.parallelize(1 to 600, 2)
+      .mapPartitions(scala.util.Random.shuffle(_)).toDF("id")
     val splits = data.randomSplit(Array[Double](2, 3), seed = 1)
 
     assert(splits.length == 2, "wrong number of splits")
@@ -87,9 +85,7 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
 
     // Verify that the results are deterministic across multiple runs
     val firstRun = splits.toSeq.map(_.collect().toSeq)
-    val secondRun = data
-      .randomSplit(Array[Double](2, 3), seed = 1)
-      .toSeq
+    val secondRun = data.randomSplit(Array[Double](2, 3), seed = 1).toSeq
       .map(_.collect().toSeq)
     assert(firstRun == secondRun)
   }
@@ -118,8 +114,7 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
   }
 
   test("covariance") {
-    val df = Seq
-      .tabulate(10)(i => (i, 2.0 * i, toLetter(i)))
+    val df = Seq.tabulate(10)(i => (i, 2.0 * i, toLetter(i)))
       .toDF("singles", "doubles", "letters")
 
     val results = df.stat.cov("singles", "doubles")
@@ -129,8 +124,7 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
         .cov("singles", "letters") // doesn't accept non-numerical dataTypes
     }
     val decimalData = Seq
-      .tabulate(6)(i => (BigDecimal(i % 3), BigDecimal(i % 2)))
-      .toDF("a", "b")
+      .tabulate(6)(i => (BigDecimal(i % 3), BigDecimal(i % 2))).toDF("a", "b")
     val decimalRes = decimalData.stat.cov("a", "b")
     assert(math.abs(decimalRes) < 1e-12)
   }
@@ -147,14 +141,10 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
       val Array(single1) = df.stat.approxQuantile("singles", Array(q1), epsilon)
       val Array(double2) = df.stat.approxQuantile("doubles", Array(q2), epsilon)
       // Also make sure there is no regression by computing multiple quantiles at once.
-      val Array(d1, d2) = df.stat.approxQuantile(
-        "doubles",
-        Array(q1, q2),
-        epsilon)
-      val Array(s1, s2) = df.stat.approxQuantile(
-        "singles",
-        Array(q1, q2),
-        epsilon)
+      val Array(d1, d2) = df.stat
+        .approxQuantile("doubles", Array(q1, q2), epsilon)
+      val Array(s1, s2) = df.stat
+        .approxQuantile("singles", Array(q1, q2), epsilon)
 
       val error_single = 2 * 1000 * epsilon
       val error_double = 2 * 2000 * epsilon
@@ -237,13 +227,11 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
     // this is a regression test, where when merging partitions, we omitted values with higher
     // counts than those that existed in the map when the map was full. This test should also fail
     // if anything like SPARK-9614 is observed once again
-    val df = rows
-      .mapPartitionsWithIndex { (idx, iter) =>
-        if (idx == 3) { // must come from one of the later merges, therefore higher partition index
-          Iterator("3", "3", "3", "3", "3")
-        } else { Iterator("0", "1", "2", "3", "4") }
-      }
-      .toDF("a")
+    val df = rows.mapPartitionsWithIndex { (idx, iter) =>
+      if (idx == 3) { // must come from one of the later merges, therefore higher partition index
+        Iterator("3", "3", "3", "3", "3")
+      } else { Iterator("0", "1", "2", "3", "4") }
+    }.toDF("a")
     val results = df.stat.freqItems(Array("a"), 0.25)
     val items = results.collect().head.getSeq[String](0)
     assert(items.contains("3"))
@@ -264,45 +252,32 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
   test("countMinSketch") {
     val df = sqlContext.range(1000)
 
-    val sketch1 = df.stat.countMinSketch(
-      "id",
-      depth = 10,
-      width = 20,
-      seed = 42)
+    val sketch1 = df.stat
+      .countMinSketch("id", depth = 10, width = 20, seed = 42)
     assert(sketch1.totalCount() === 1000)
     assert(sketch1.depth() === 10)
     assert(sketch1.width() === 20)
 
-    val sketch2 = df.stat.countMinSketch(
-      $"id",
-      depth = 10,
-      width = 20,
-      seed = 42)
+    val sketch2 = df.stat
+      .countMinSketch($"id", depth = 10, width = 20, seed = 42)
     assert(sketch2.totalCount() === 1000)
     assert(sketch2.depth() === 10)
     assert(sketch2.width() === 20)
 
-    val sketch3 = df.stat.countMinSketch(
-      "id",
-      eps = 0.001,
-      confidence = 0.99,
-      seed = 42)
+    val sketch3 = df.stat
+      .countMinSketch("id", eps = 0.001, confidence = 0.99, seed = 42)
     assert(sketch3.totalCount() === 1000)
     assert(sketch3.relativeError() === 0.001)
     assert(sketch3.confidence() === 0.99 +- 5e-3)
 
-    val sketch4 = df.stat.countMinSketch(
-      $"id",
-      eps = 0.001,
-      confidence = 0.99,
-      seed = 42)
+    val sketch4 = df.stat
+      .countMinSketch($"id", eps = 0.001, confidence = 0.99, seed = 42)
     assert(sketch4.totalCount() === 1000)
     assert(sketch4.relativeError() === 0.001 +- 1e04)
     assert(sketch4.confidence() === 0.99 +- 5e-3)
 
     intercept[IllegalArgumentException] {
-      df.select('id cast DoubleType as 'id)
-        .stat
+      df.select('id cast DoubleType as 'id).stat
         .countMinSketch('id, depth = 10, width = 20, seed = 42)
     }
   }

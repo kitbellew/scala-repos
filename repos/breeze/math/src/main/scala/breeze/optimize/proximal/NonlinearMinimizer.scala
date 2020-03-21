@@ -90,93 +90,90 @@ class NonlinearMinimizer(
   }
 
   def iterations(primal: DiffFunction[BDV], init: BDV): Iterator[State] =
-    Iterator
-      .iterate(initialState(primal, init)) { state =>
-        import state._
+    Iterator.iterate(initialState(primal, init)) { state =>
+      import state._
 
-        val scale = sqrt(init.size) * abstol
-        val proxPrimal = NonlinearMinimizer.ProximalPrimal(primal, u, z, rho)
+      val scale = sqrt(init.size) * abstol
+      val proxPrimal = NonlinearMinimizer.ProximalPrimal(primal, u, z, rho)
 
-        val resultState = lbfgs.minimizeAndReturnState(proxPrimal, bfgsState.x)
-        //z-update with relaxation
+      val resultState = lbfgs.minimizeAndReturnState(proxPrimal, bfgsState.x)
+      //z-update with relaxation
 
-        //zold = (1-alpha)*z
-        //x_hat = alpha*x + zold
+      //zold = (1-alpha)*z
+      //x_hat = alpha*x + zold
 
-        zOld := z
-        zOld *= 1 - alpha
+      zOld := z
+      zOld *= 1 - alpha
 
-        xHat := resultState.x
-        xHat *= alpha
-        xHat += zOld
+      xHat := resultState.x
+      xHat *= alpha
+      xHat += zOld
 
-        //zold = z
-        zOld := z
+      //zold = z
+      zOld := z
 
-        //z = xHat + u
-        z := xHat
-        z += u
+      //z = xHat + u
+      z := xHat
+      z += u
 
-        //Apply proximal operator
-        proximal.prox(z, rho)
+      //Apply proximal operator
+      proximal.prox(z, rho)
 
-        //z has proximal(x_hat)
+      //z has proximal(x_hat)
 
-        //Dual (u) update
-        xHat -= z
-        u += xHat
+      //Dual (u) update
+      xHat -= z
+      u += xHat
 
-        //Convergence checks
-        //history.r_norm(k)  = norm(x - z)
-        residual := resultState.x
-        residual -= z
-        val residualNorm = norm(residual)
+      //Convergence checks
+      //history.r_norm(k)  = norm(x - z)
+      residual := resultState.x
+      residual -= z
+      val residualNorm = norm(residual)
 
-        //history.s_norm(k) = norm(-rho*(z - zold))
-        s := z
-        s -= zOld
-        s *= -rho
-        val sNorm = norm(s)
+      //history.s_norm(k) = norm(-rho*(z - zold))
+      s := z
+      s -= zOld
+      s *= -rho
+      val sNorm = norm(s)
 
-        //TO DO : Make sure z.muli(-1) is actually needed in norm calculation
-        residual := z
-        residual *= -1.0
+      //TO DO : Make sure z.muli(-1) is actually needed in norm calculation
+      residual := z
+      residual *= -1.0
 
-        //s = rho*u
-        s := u
-        s *= rho
+      //s = rho*u
+      s := u
+      s *= rho
 
-        val epsPrimal =
-          scale + reltol * max(norm(resultState.x), norm(residual))
-        val epsDual = scale + reltol * norm(s)
+      val epsPrimal = scale + reltol * max(norm(resultState.x), norm(residual))
+      val epsDual = scale + reltol * norm(s)
 
-        if (residualNorm < epsPrimal && sNorm < epsDual || iter > admmIters) {
-          State(
-            resultState,
-            u,
-            z,
-            xHat,
-            zOld,
-            residual,
-            s,
-            admmIters,
-            iter + 1,
-            true)
-        } else {
-          State(
-            resultState,
-            u,
-            z,
-            xHat,
-            zOld,
-            residual,
-            s,
-            admmIters,
-            iter + 1,
-            false)
-        }
+      if (residualNorm < epsPrimal && sNorm < epsDual || iter > admmIters) {
+        State(
+          resultState,
+          u,
+          z,
+          xHat,
+          zOld,
+          residual,
+          s,
+          admmIters,
+          iter + 1,
+          true)
+      } else {
+        State(
+          resultState,
+          u,
+          z,
+          xHat,
+          zOld,
+          residual,
+          s,
+          admmIters,
+          iter + 1,
+          false)
       }
-      .takeUpToWhere { _.converged }
+    }.takeUpToWhere { _.converged }
 
   def minimize(primal: DiffFunction[BDV], init: BDV): BDV = {
     minimizeAndReturnState(primal, init).z
@@ -312,9 +309,8 @@ object NonlinearMinimizer {
 
     val init = DenseVector.zeros[Double](problemSize)
     val owlqnStart = System.nanoTime()
-    val owlqnResult = owlqn.minimizeAndReturnState(
-      Cost(regularizedGram, q),
-      init)
+    val owlqnResult = owlqn
+      .minimizeAndReturnState(Cost(regularizedGram, q), init)
     val owlqnTime = System.nanoTime() - owlqnStart
 
     println("ElasticNet Formulation")
@@ -339,8 +335,7 @@ object NonlinearMinimizer {
     init := 0.0
     val projectL1Linear = ProjectL1(sparseQpL1Obj)
     val nlSparseStart = System.nanoTime()
-    val nlSparseResult = NonlinearMinimizer
-      .project(projectL1Linear)
+    val nlSparseResult = NonlinearMinimizer.project(projectL1Linear)
       .minimizeAndReturnState(quadraticCostWithL2, init)
     val nlSparseTime = System.nanoTime() - nlSparseStart
     val nlSparseL1Obj = nlSparseResult.x.foldLeft(0.0) { (agg, entry) =>
@@ -363,8 +358,8 @@ object NonlinearMinimizer {
       (agg, entry) => agg + abs(entry)
     }
 
-    println(
-      s"owlqn ${owlqnTime / 1e6} ms iters ${owlqnResult.iter} sparseQp ${sparseQpTime / 1e6} ms iters ${sparseQpResult.iter}")
+    println(s"owlqn ${owlqnTime / 1e6} ms iters ${owlqnResult
+      .iter} sparseQp ${sparseQpTime / 1e6} ms iters ${sparseQpResult.iter}")
     println(
       s"nlSparseTime ${nlSparseTime / 1e6} ms iters ${nlSparseResult.iter}")
     println(s"nlProxTime ${nlProxTime / 1e6} ms iters ${nlProxResult.iter}")
@@ -372,9 +367,8 @@ object NonlinearMinimizer {
       s"owlqnObj $owlqnObj sparseQpObj $sparseQpObj nlSparseObj $nlSparseObj nlProxObj $nlProxObj")
 
     val logisticLoss = LogisticGenerator(problemSize)
-    val elasticNetLoss = DiffFunction.withL2Regularization(
-      logisticLoss,
-      lambdaL2)
+    val elasticNetLoss = DiffFunction
+      .withL2Regularization(logisticLoss, lambdaL2)
 
     println("Linear Regression with Bounds")
 
@@ -390,10 +384,8 @@ object NonlinearMinimizer {
     val qpBoxStart = System.nanoTime()
     val qpBoxResult = qpBox.minimizeAndReturnState(regularizedGram, q)
     val qpBoxTime = System.nanoTime() - qpBoxStart
-    val qpBoxObj = QuadraticMinimizer.computeObjective(
-      regularizedGram,
-      q,
-      qpBoxResult.x)
+    val qpBoxObj = QuadraticMinimizer
+      .computeObjective(regularizedGram, q, qpBoxResult.x)
 
     println(s"qpBox ${qpBoxTime / 1e6} ms iters ${qpBoxResult.iter}")
     println(s"nlBox ${nlBoxTime / 1e6} ms iters ${nlBoxResult.iter}")
@@ -434,25 +426,23 @@ object NonlinearMinimizer {
 
     init := 0.0
     val nlLogisticSimplexStart = System.nanoTime()
-    val nlLogisticSimplexResult = nlSimplex.minimizeAndReturnState(
-      elasticNetLoss,
-      init)
+    val nlLogisticSimplexResult = nlSimplex
+      .minimizeAndReturnState(elasticNetLoss, init)
     val nlLogisticSimplexTime = System.nanoTime() - nlLogisticSimplexStart
-    val nlLogisticSimplexObj =
-      elasticNetLoss.calculate(nlLogisticSimplexResult.x)._1
+    val nlLogisticSimplexObj = elasticNetLoss
+      .calculate(nlLogisticSimplexResult.x)._1
 
     init := 0.0
 
     val nlProxSimplex = new NonlinearMinimizer(
       proximal = ProjectProbabilitySimplex(1.0))
     val nlProxLogisticSimplexStart = System.nanoTime()
-    val nlProxLogisticSimplexResult = nlProxSimplex.minimizeAndReturnState(
-      elasticNetLoss,
-      init)
-    val nlProxLogisticSimplexTime =
-      System.nanoTime() - nlProxLogisticSimplexStart
-    val nlProxLogisticSimplexObj =
-      elasticNetLoss.calculate(nlProxLogisticSimplexResult.z)._1
+    val nlProxLogisticSimplexResult = nlProxSimplex
+      .minimizeAndReturnState(elasticNetLoss, init)
+    val nlProxLogisticSimplexTime = System
+      .nanoTime() - nlProxLogisticSimplexStart
+    val nlProxLogisticSimplexObj = elasticNetLoss
+      .calculate(nlProxLogisticSimplexResult.z)._1
 
     println(
       s"Objective nl ${nlLogisticSimplexObj} admm ${nlProxLogisticSimplexObj}")
@@ -485,8 +475,8 @@ object NonlinearMinimizer {
       .minimizeAndReturnState(elasticNetLoss, init)
     val nlLogisticProjectL1Time = System.nanoTime() - nlLogisticProjectL1Start
 
-    val proximalL1Obj =
-      elasticNetLoss.calculate(nlLogisticProximalL1Result.z)._1
+    val proximalL1Obj = elasticNetLoss.calculate(nlLogisticProximalL1Result.z)
+      ._1
     val projectL1Obj = elasticNetLoss.calculate(nlLogisticProjectL1Result.x)._1
 
     println(

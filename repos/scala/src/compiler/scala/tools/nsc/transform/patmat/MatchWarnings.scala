@@ -66,7 +66,8 @@ trait MatchWarnings {
             val desc =
               if (sym.isParameter) s"parameter ${sym.nameString} of"
               else sym + " in"
-            s"\nIf you intended to match against $desc ${sym.owner}, you must use backticks, like: case `${sym.nameString}` =>"
+            s"\nIf you intended to match against $desc ${sym
+              .owner}, you must use backticks, like: case `${sym.nameString}` =>"
         }
       }
 

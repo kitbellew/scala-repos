@@ -38,8 +38,7 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
             throw new IllegalArgumentException(
               s"Cannot instantiate transport adapter [${fqn}]",
               e)
-        })
-        .get
+        }).get
     }
 
   def getAdapterProvider(name: String): TransportAdapterProvider =
@@ -114,10 +113,8 @@ abstract class AbstractTransportAdapter(
       (listenAddress, listenerPromise) ← wrappedTransport.listen
       // Enforce ordering between the signalling of "listen ready" to upstream
       // and initialization happening in interceptListen
-      _ ← listenerPromise
-        .tryCompleteWith(
-          interceptListen(listenAddress, upstreamListenerPromise.future))
-        .future
+      _ ← listenerPromise.tryCompleteWith(
+        interceptListen(listenAddress, upstreamListenerPromise.future)).future
     } yield (augmentScheme(listenAddress), upstreamListenerPromise)
   }
 

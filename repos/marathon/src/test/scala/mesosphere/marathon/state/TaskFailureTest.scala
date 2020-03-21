@@ -22,14 +22,10 @@ class TaskFailureTest extends MarathonSpec with Matchers {
 
   test("ConstructFromProto") {
     val proto = Protos.TaskFailure.newBuilder
-      .setAppId(taskFailure.appId.toString)
-      .setTaskId(taskFailure.taskId)
-      .setState(taskFailure.state)
-      .setMessage(taskFailure.message)
-      .setHost(taskFailure.host)
-      .setVersion(taskFailure.version.toString)
-      .setTimestamp(taskFailure.timestamp.toString)
-      .build
+      .setAppId(taskFailure.appId.toString).setTaskId(taskFailure.taskId)
+      .setState(taskFailure.state).setMessage(taskFailure.message)
+      .setHost(taskFailure.host).setVersion(taskFailure.version.toString)
+      .setTimestamp(taskFailure.timestamp.toString).build
 
     val taskFailureFromProto = TaskFailure(proto)
     assert(taskFailureFromProto == taskFailure)
@@ -41,14 +37,11 @@ class TaskFailureTest extends MarathonSpec with Matchers {
 
     val proto = Protos.TaskFailure.newBuilder
       .setAppId(taskFailureFixture.appId.toString)
-      .setTaskId(taskFailureFixture.taskId)
-      .setState(taskFailureFixture.state)
-      .setMessage(taskFailureFixture.message)
-      .setHost(taskFailureFixture.host)
+      .setTaskId(taskFailureFixture.taskId).setState(taskFailureFixture.state)
+      .setMessage(taskFailureFixture.message).setHost(taskFailureFixture.host)
       .setVersion(taskFailureFixture.version.toString)
       .setTimestamp(taskFailureFixture.timestamp.toString)
-      .setSlaveId(taskFailureFixture.slaveId.get)
-      .build
+      .setSlaveId(taskFailureFixture.slaveId.get).build
 
     val taskFailureFromProto = TaskFailure(proto)
     assert(taskFailureFromProto == taskFailureFixture)

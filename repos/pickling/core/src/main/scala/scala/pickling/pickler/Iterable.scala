@@ -55,9 +55,7 @@ object TravPickler {
 
   def oneArgumentTagExtractor[T](tpe: AppliedType): FastTypeTag[T] = {
     tpe.typeargs match {
-      case List(one) =>
-        FastTypeTag
-          .apply(currentMirror, one.toString)
+      case List(one) => FastTypeTag.apply(currentMirror, one.toString)
           .asInstanceOf[FastTypeTag[T]]
       // Note: This is what we do to handle
       case List() => ANY_TAG.asInstanceOf[FastTypeTag[T]]
@@ -79,19 +77,15 @@ object TravPickler {
     val elemPickler =
       if (elementType.key == ANY_TAG.key) AnyPickler
       else
-        currentRuntime.picklers
-          .lookupPickler(elementType.key)
-          .getOrElse(
-            throw new PicklingException(
-              s"Cannnot generate a pickler/unpickler for $tpe, cannot find a pickler for $elementType"))
+        currentRuntime.picklers.lookupPickler(elementType.key).getOrElse(
+          throw new PicklingException(
+            s"Cannnot generate a pickler/unpickler for $tpe, cannot find a pickler for $elementType"))
     val elemUnpickler =
       if (elementType.key == ANY_TAG.key) AnyUnpickler
       else
-        currentRuntime.picklers
-          .lookupUnpickler(elementType.key)
-          .getOrElse(
-            throw new PicklingException(
-              s"Cannnot generate a pickler/unpickler for $tpe, cannot find an unpickler for $elementType"))
+        currentRuntime.picklers.lookupUnpickler(elementType.key).getOrElse(
+          throw new PicklingException(
+            s"Cannnot generate a pickler/unpickler for $tpe, cannot find an unpickler for $elementType"))
     val colTag = FastTypeTag.apply(currentMirror, tpe.toString)
     apply[T, C](
       asTraversable,

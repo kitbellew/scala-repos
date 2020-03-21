@@ -260,8 +260,9 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
     }
 
     "not allow using actorSelection with wildcards" in {
-      system.actorOf(
-        Props(classOf[DeliverToStarSelection], name)) ! "anything, really."
+      system
+        .actorOf(
+          Props(classOf[DeliverToStarSelection], name)) ! "anything, really."
       expectMsgType[Failure[_]].toString should include("not supported")
     }
 
@@ -428,11 +429,9 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       probe.expectMsg(ReqAck)
       probe.expectMsg(ReqAck)
       probe.expectMsg(ReqAck)
-      val unconfirmed = probe
-        .receiveWhile(5.seconds) {
-          case UnconfirmedWarning(unconfirmed) ⇒ unconfirmed
-        }
-        .flatten
+      val unconfirmed = probe.receiveWhile(5.seconds) {
+        case UnconfirmedWarning(unconfirmed) ⇒ unconfirmed
+      }.flatten
       unconfirmed.map(_.destination).toSet should ===(
         Set(probeA.ref.path, probeB.ref.path))
       unconfirmed.map(_.message).toSet should be(
@@ -468,17 +467,11 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       for (n ← 1 to N) { snd.tell(Req("b-" + n), probe.ref) }
       for (n ← 1 to N) { snd.tell(Req("c-" + n), probe.ref) }
       val deliverWithin = 20.seconds
-      probeA
-        .receiveN(N, deliverWithin)
-        .map { case a: Action ⇒ a.payload }
+      probeA.receiveN(N, deliverWithin).map { case a: Action ⇒ a.payload }
         .toSet should ===((1 to N).map(n ⇒ "a-" + n).toSet)
-      probeB
-        .receiveN(N, deliverWithin)
-        .map { case a: Action ⇒ a.payload }
+      probeB.receiveN(N, deliverWithin).map { case a: Action ⇒ a.payload }
         .toSet should ===((1 to N).map(n ⇒ "b-" + n).toSet)
-      probeC
-        .receiveN(N, deliverWithin)
-        .map { case a: Action ⇒ a.payload }
+      probeC.receiveN(N, deliverWithin).map { case a: Action ⇒ a.payload }
         .toSet should ===((1 to N).map(n ⇒ "c-" + n).toSet)
     }
 

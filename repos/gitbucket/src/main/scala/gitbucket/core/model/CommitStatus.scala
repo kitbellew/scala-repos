@@ -82,8 +82,8 @@ object CommitState {
 
   val values: Vector[CommitState] = Vector(PENDING, SUCCESS, ERROR, FAILURE)
 
-  private val map: Map[String, CommitState] =
-    values.map(enum => enum.name -> enum).toMap
+  private val map: Map[String, CommitState] = values
+    .map(enum => enum.name -> enum).toMap
 
   def apply(name: String): CommitState = map(name)
 
@@ -96,8 +96,8 @@ object CommitState {
     */
   def combine(statuses: Set[CommitState]): CommitState = {
     if (statuses.isEmpty) { PENDING }
-    else if (statuses.contains(CommitState.ERROR) || statuses.contains(
-               CommitState.FAILURE)) { FAILURE }
+    else if (statuses.contains(CommitState.ERROR) || statuses
+               .contains(CommitState.FAILURE)) { FAILURE }
     else if (statuses.contains(CommitState.PENDING)) { PENDING }
     else { SUCCESS }
   }

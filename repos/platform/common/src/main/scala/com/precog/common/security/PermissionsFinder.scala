@@ -51,11 +51,9 @@ object PermissionsFinder {
       })
 
       permWriteAs.nonEmpty &&
-      writeAsAlls
-        .foldLeft(authorities.accountIds)({
-          case (remaining, s) => remaining diff s
-        })
-        .isEmpty
+      writeAsAlls.foldLeft(authorities.accountIds)({
+        case (remaining, s) => remaining diff s
+      }).isEmpty
     }
   }
 }
@@ -73,8 +71,8 @@ class PermissionsFinder[M[+_]: Monad](
       path: Path,
       at: Option[Instant]): Set[WritePermission] = {
     keyDetails.grants filter { g =>
-      (at exists { g.isValidAt _ }) || g.createdAt.isBefore(
-        timestampRequiredAfter)
+      (at exists { g.isValidAt _ }) || g.createdAt
+        .isBefore(timestampRequiredAfter)
     } flatMap {
       _.permissions collect {
         case perm @ WritePermission(path0, _)
@@ -89,16 +87,13 @@ class PermissionsFinder[M[+_]: Monad](
       at: Option[Instant]): M[Option[Authorities]] = {
     def selectWriter(
         writePermissions: Set[WritePermission]): M[Option[Authorities]] = {
-      lazy val accountWriter: M[Option[Authorities]] =
-        accountFinder.findAccountByAPIKey(apiKey) map {
-          _ map { Authorities(_) }
-        }
+      lazy val accountWriter: M[Option[Authorities]] = accountFinder
+        .findAccountByAPIKey(apiKey) map { _ map { Authorities(_) } }
       val eithers: List[M[Option[Authorities]] \/ M[Option[Authorities]]] =
         writePermissions.map({
           case WritePermission(_, WriteAsAny) => left(accountWriter)
           case WritePermission(_, WriteAsAll(accountIds)) =>
-            (Authorities
-              .ifPresent(accountIds)
+            (Authorities.ifPresent(accountIds)
               .map(a => Some(a).point[M]) \/> accountWriter)
         })(collection.breakOut)
 

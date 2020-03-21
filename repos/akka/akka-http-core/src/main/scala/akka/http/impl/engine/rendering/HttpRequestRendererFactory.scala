@@ -159,9 +159,9 @@ private[http] class HttpRequestRendererFactory(
       }
 
     def renderContentLength(contentLength: Long) =
-      if (method.isEntityAccepted && (
-            contentLength > 0 || method.requestEntityAcceptance == Expected
-          )) r ~~ `Content-Length` ~~ contentLength ~~ CrLf
+      if (method.isEntityAccepted && (contentLength > 0 || method
+            .requestEntityAcceptance == Expected))
+        r ~~ `Content-Length` ~~ contentLength ~~ CrLf
       else r
 
     def renderStreamed(
@@ -170,9 +170,7 @@ private[http] class HttpRequestRendererFactory(
       val stream = ctx.sendEntityTrigger match {
         case None ⇒ headerPart ++ body
         case Some(future) ⇒
-          val barrier = Source
-            .fromFuture(future)
-            .drop(1)
+          val barrier = Source.fromFuture(future).drop(1)
             .asInstanceOf[Source[ByteString, Any]]
           (headerPart ++ barrier ++ body).recoverWith {
             case HttpResponseParser.OneHundredContinueError ⇒ Source.empty

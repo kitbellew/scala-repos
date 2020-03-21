@@ -63,13 +63,12 @@ trait StdNames {
       * MaxNameLength can therefore be computed as follows:
       */
     val marker = "$$$$"
-    val maxSuffixLength =
-      "$.class".length + 1 // potential module class suffix and file extension
+    val maxSuffixLength = "$.class"
+      .length + 1 // potential module class suffix and file extension
     val MaxNameLength = math.min(
       settings.maxClassfileName.value - maxSuffixLength,
-      2 * (
-        settings.maxClassfileName.value - maxSuffixLength - 2 * marker.length - 32
-      ))
+      2 * (settings.maxClassfileName.value - maxSuffixLength - 2 * marker
+        .length - 32))
     def toMD5(s: String, edge: Int): String = {
       val prefix = s take edge
       val suffix = s takeRight edge
@@ -98,8 +97,8 @@ trait StdNames {
     val NAME_JOIN_STRING: String = NameTransformer.NAME_JOIN_STRING
     val MODULE_SUFFIX_STRING: String = NameTransformer.MODULE_SUFFIX_STRING
     val LOCAL_SUFFIX_STRING: String = NameTransformer.LOCAL_SUFFIX_STRING
-    val TRAIT_SETTER_SEPARATOR_STRING: String =
-      NameTransformer.TRAIT_SETTER_SEPARATOR_STRING
+    val TRAIT_SETTER_SEPARATOR_STRING: String = NameTransformer
+      .TRAIT_SETTER_SEPARATOR_STRING
 
     val SINGLETON_SUFFIX: String = ".type"
 
@@ -117,20 +116,19 @@ trait StdNames {
     val CASE_ACCESSOR: NameType = "$access"
 
     val NESTED_IN: String = "$nestedIn"
-    val NESTED_IN_ANON_CLASS: String =
-      NESTED_IN + ANON_CLASS_NAME.toString.replace("$", "")
-    val NESTED_IN_ANON_FUN: String =
-      NESTED_IN + ANON_FUN_NAME.toString.replace("$", "")
-    val NESTED_IN_LAMBDA: String =
-      NESTED_IN + DELAMBDAFY_LAMBDA_CLASS_NAME.toString.replace("$", "")
+    val NESTED_IN_ANON_CLASS: String = NESTED_IN + ANON_CLASS_NAME.toString
+      .replace("$", "")
+    val NESTED_IN_ANON_FUN: String = NESTED_IN + ANON_FUN_NAME.toString
+      .replace("$", "")
+    val NESTED_IN_LAMBDA: String = NESTED_IN + DELAMBDAFY_LAMBDA_CLASS_NAME
+      .toString.replace("$", "")
 
     /**
       * Ensures that name mangling does not accidentally make a class respond `true` to any of
       * isAnonymousClass, isAnonymousFunction, isDelambdafyFunction, e.g. by introducing "$anon".
       */
     def ensureNonAnon(name: String) = {
-      name
-        .replace(nme.ANON_CLASS_NAME.toString, NESTED_IN_ANON_CLASS)
+      name.replace(nme.ANON_CLASS_NAME.toString, NESTED_IN_ANON_CLASS)
         .replace(nme.ANON_FUN_NAME.toString, NESTED_IN_ANON_FUN)
         .replace(nme.DELAMBDAFY_LAMBDA_CLASS_NAME.toString, NESTED_IN_LAMBDA)
     }
@@ -324,8 +322,8 @@ trait StdNames {
     val BITMAP_PREFIX = "bitmap$"
     val CHECK_IF_REFUTABLE_STRING = "check$ifrefutable$"
     val DEFAULT_GETTER_STRING = "$default$"
-    val DEFAULT_GETTER_INIT_STRING =
-      NameTransformer.encode("<init>") + DEFAULT_GETTER_STRING
+    val DEFAULT_GETTER_INIT_STRING = NameTransformer
+      .encode("<init>") + DEFAULT_GETTER_STRING
     val DO_WHILE_PREFIX = "doWhile$"
     val EVIDENCE_PARAM_PREFIX = "evidence$"
     val EXCEPTION_RESULT_PREFIX = "exceptionResult"
@@ -914,9 +912,8 @@ trait StdNames {
     val toInteger: NameType = "toInteger"
 
     def newLazyValSlowComputeName(lzyValName: Name) =
-      (
-        lzyValName stripSuffix MODULE_VAR_SUFFIX append LAZY_SLOW_SUFFIX
-      ).toTermName
+      (lzyValName stripSuffix MODULE_VAR_SUFFIX append LAZY_SLOW_SUFFIX)
+        .toTermName
 
     // ASCII names for operators
     val ADD = encode("+")

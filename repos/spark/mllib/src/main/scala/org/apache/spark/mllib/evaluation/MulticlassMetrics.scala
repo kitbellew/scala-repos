@@ -41,26 +41,18 @@ class MulticlassMetrics @Since("1.1.0") (
   private[mllib] def this(predictionAndLabels: DataFrame) =
     this(predictionAndLabels.rdd.map(r => (r.getDouble(0), r.getDouble(1))))
 
-  private lazy val labelCountByClass: Map[Double, Long] =
-    predictionAndLabels.values.countByValue()
+  private lazy val labelCountByClass: Map[Double, Long] = predictionAndLabels
+    .values.countByValue()
   private lazy val labelCount: Long = labelCountByClass.values.sum
-  private lazy val tpByClass: Map[Double, Int] = predictionAndLabels
-    .map {
-      case (prediction, label) => (label, if (label == prediction) 1 else 0)
-    }
-    .reduceByKey(_ + _)
-    .collectAsMap()
-  private lazy val fpByClass: Map[Double, Int] = predictionAndLabels
-    .map {
-      case (prediction, label) =>
-        (prediction, if (prediction != label) 1 else 0)
-    }
-    .reduceByKey(_ + _)
-    .collectAsMap()
-  private lazy val confusions = predictionAndLabels
-    .map { case (prediction, label) => ((label, prediction), 1) }
-    .reduceByKey(_ + _)
-    .collectAsMap()
+  private lazy val tpByClass: Map[Double, Int] = predictionAndLabels.map {
+    case (prediction, label) => (label, if (label == prediction) 1 else 0)
+  }.reduceByKey(_ + _).collectAsMap()
+  private lazy val fpByClass: Map[Double, Int] = predictionAndLabels.map {
+    case (prediction, label) => (prediction, if (prediction != label) 1 else 0)
+  }.reduceByKey(_ + _).collectAsMap()
+  private lazy val confusions = predictionAndLabels.map {
+    case (prediction, label) => ((label, prediction), 1)
+  }.reduceByKey(_ + _).collectAsMap()
 
   /**
     * Returns confusion matrix:
@@ -76,8 +68,8 @@ class MulticlassMetrics @Since("1.1.0") (
     while (i < n) {
       var j = 0
       while (j < n) {
-        values(i + j * n) =
-          confusions.getOrElse((labels(i), labels(j)), 0).toDouble
+        values(i + j * n) = confusions.getOrElse((labels(i), labels(j)), 0)
+          .toDouble
         j += 1
       }
       i += 1

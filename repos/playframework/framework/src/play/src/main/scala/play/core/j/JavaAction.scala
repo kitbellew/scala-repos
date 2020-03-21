@@ -37,36 +37,26 @@ class JavaActionAnnotations(
   val parser: Class[_ <: JBodyParser[_]] = Seq(
     method.getAnnotation(classOf[play.mvc.BodyParser.Of]),
     controller.getAnnotation(classOf[play.mvc.BodyParser.Of]))
-    .filterNot(_ == null)
-    .headOption
-    .map(_.value)
+    .filterNot(_ == null).headOption.map(_.value)
     .getOrElse(classOf[JBodyParser.Default])
 
   val controllerAnnotations = play.api.libs.Collections
     .unfoldLeft[Seq[java.lang.annotation.Annotation], Option[Class[_]]](Option(
       controller)) { clazz =>
       clazz.map(c => (Option(c.getSuperclass), c.getDeclaredAnnotations.toSeq))
-    }
-    .flatten
+    }.flatten
 
   val actionMixins = {
     val allDeclaredAnnotations: Seq[java.lang.annotation.Annotation] =
       if (config.controllerAnnotationsFirst) {
         controllerAnnotations ++ method.getDeclaredAnnotations
       } else { method.getDeclaredAnnotations ++ controllerAnnotations }
-    allDeclaredAnnotations
-      .collect {
-        case a: play.mvc.With => a.value.map(c => (a, c)).toSeq
-        case a
-            if a.annotationType.isAnnotationPresent(classOf[play.mvc.With]) =>
-          a.annotationType
-            .getAnnotation(classOf[play.mvc.With])
-            .value
-            .map(c => (a, c))
-            .toSeq
-      }
-      .flatten
-      .reverse
+    allDeclaredAnnotations.collect {
+      case a: play.mvc.With => a.value.map(c => (a, c)).toSeq
+      case a if a.annotationType.isAnnotationPresent(classOf[play.mvc.With]) =>
+        a.annotationType.getAnnotation(classOf[play.mvc.With]).value
+          .map(c => (a, c)).toSeq
+    }.flatten.reverse
   }
 
 }
@@ -111,16 +101,15 @@ abstract class JavaAction(components: JavaHandlerComponents)
     val finalUserDeclaredAction = annotations.actionMixins
       .foldLeft[JAction[_ <: Any]](endOfChainAction) {
         case (delegate, (annotation, actionClass)) =>
-          val action = components
-            .getAction(actionClass)
+          val action = components.getAction(actionClass)
             .asInstanceOf[play.mvc.Action[Object]]
           action.configuration = annotation
           action.delegate = delegate
           action
       }
 
-    val finalAction = components.actionCreator.wrapAction(
-      if (config.executeActionCreatorActionFirst) {
+    val finalAction = components.actionCreator
+      .wrapAction(if (config.executeActionCreatorActionFirst) {
         baseAction.delegate = finalUserDeclaredAction
         baseAction
       } else { finalUserDeclaredAction })
@@ -132,10 +121,10 @@ abstract class JavaAction(components: JavaHandlerComponents)
     val actionFuture: Future[Future[JResult]] = Future {
       FutureConverters.toScala(finalAction.call(javaContext))
     }(trampolineWithContext)
-    val flattenedActionFuture: Future[JResult] = actionFuture.flatMap(identity)(
-      trampoline)
-    val resultFuture: Future[Result] = flattenedActionFuture.map(
-      createResult(javaContext, _))(trampoline)
+    val flattenedActionFuture: Future[JResult] = actionFuture
+      .flatMap(identity)(trampoline)
+    val resultFuture: Future[Result] = flattenedActionFuture
+      .map(createResult(javaContext, _))(trampoline)
     resultFuture
   }
 

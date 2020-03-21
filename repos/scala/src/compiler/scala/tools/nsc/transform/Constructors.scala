@@ -47,11 +47,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       }: _*)
       if (uninitializedVals.size > 1)
         log(
-          "Checking constructor for init order issues among: " + uninitializedVals.toList
-            .map(_.name.toString.trim)
-            .distinct
-            .sorted
-            .mkString(", "))
+          "Checking constructor for init order issues among: " + uninitializedVals
+            .toList.map(_.name.toString.trim).distinct.sorted.mkString(", "))
 
       for (stat <- stats) {
         // Checking the qualifier symbol is necessary to prevent a selection on
@@ -60,8 +57,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         def check(tree: Tree) = {
           for (t <- tree) t match {
             case t: RefTree
-                if uninitializedVals(
-                  t.symbol.accessedOrSelf) && t.qualifier.symbol == clazz =>
+                if uninitializedVals(t.symbol.accessedOrSelf) && t.qualifier
+                  .symbol == clazz =>
               reporter.warning(
                 t.pos,
                 s"Reference to uninitialized ${t.symbol.accessedOrSelf}")
@@ -84,18 +81,14 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
     override def transform(tree: Tree): Tree = {
       tree match {
         case cd @ ClassDef(mods0, name0, tparams0, impl0)
-            if !isPrimitiveValueClass(
-              cd.symbol) && cd.symbol.primaryConstructor != NoSymbol =>
+            if !isPrimitiveValueClass(cd.symbol) && cd.symbol
+              .primaryConstructor != NoSymbol =>
           if (cd.symbol eq AnyValClass) { cd }
           else {
             checkUninitializedReads(cd)
             val tplTransformer = new TemplateTransformer(unit, impl0)
-            treeCopy.ClassDef(
-              cd,
-              mods0,
-              name0,
-              tparams0,
-              tplTransformer.transformed)
+            treeCopy
+              .ClassDef(cd, mods0, name0, tparams0, tplTransformer.transformed)
           }
         case _ => super.transform(tree)
       }
@@ -211,9 +204,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       }
 
       if (omittables.nonEmpty)
-        (
-          defs.iterator ++ auxConstructors.iterator
-        ) foreach detectUsages.traverse
+        (defs.iterator ++ auxConstructors.iterator) foreach detectUsages
+          .traverse
 
       omittables.toSet
     }
@@ -384,8 +376,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       def specializedAssignFor(sym: Symbol): Option[Tree] =
         specializedStats find {
           case Assign(sel @ Select(This(_), _), _) =>
-            sel.symbol.isSpecialized && (nme.unspecializedName(
-              sel.symbol.getterName) == sym.getterName)
+            sel.symbol.isSpecialized && (nme
+              .unspecializedName(sel.symbol.getterName) == sym.getterName)
           case _ => false
         }
 
@@ -411,8 +403,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       }
 
       log(
-        "merging: " + originalStats.mkString(
-          "\n") + "\nwith\n" + specializedStats.mkString("\n"))
+        "merging: " + originalStats
+          .mkString("\n") + "\nwith\n" + specializedStats.mkString("\n"))
       for (s <- originalStats; stat = s.duplicate) yield {
         log("merge: looking at " + stat)
         val stat1 = stat match {
@@ -470,7 +462,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         //   postfix = postfix.tail
         // }
 
-        if (guardSpecializedFieldInit && usesSpecializedField && stats.nonEmpty) {
+        if (guardSpecializedFieldInit && usesSpecializedField && stats
+              .nonEmpty) {
           // save them for duplication in the specialized subclass
           guardedCtorStats(clazz) = stats
           ctorParams(clazz) = primaryConstrParams
@@ -585,8 +578,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             // outer accessors become references to $outer parameter
             if (clazz.isTrait) super.transform(tree)
             else if (canBeSupplanted(tree.symbol))
-              gen.mkAttributedIdent(
-                parameter(tree.symbol.accessed)) setPos tree.pos
+              gen.mkAttributedIdent(parameter(tree.symbol.accessed)) setPos tree
+                .pos
             else if (tree.symbol.outerSource == clazz)
               gen.mkAttributedIdent(parameterNamed(nme.OUTER)) setPos tree.pos
             else super.transform(tree)

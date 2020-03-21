@@ -69,8 +69,8 @@ private[server] class ForwardedHeaderHandler(
     // header entries. Go through the headers in reverse order because
     // the nearest proxies will be at the end of the list and we need
     // to move backwards through the list to get to the original IP.
-    val headerEntries: Iterator[ForwardedEntry] =
-      configuration.forwardedHeaders(headers).reverseIterator
+    val headerEntries: Iterator[ForwardedEntry] = configuration
+      .forwardedHeaders(headers).reverseIterator
 
     @tailrec
     def scan(prev: ConnectionInfo): ConnectionInfo = {
@@ -139,8 +139,8 @@ private[server] object ForwardedHeaderHandler {
       * Not RFC compliant. To be compliant we need proper header field parsing.
       */
     private def unquote(s: String): String = {
-      if (s.length >= 2 && s.charAt(0) == '"' && s.charAt(
-            s.length - 1) == '"') { s.substring(1, s.length - 1) }
+      if (s.length >= 2 && s.charAt(0) == '"' && s
+            .charAt(s.length - 1) == '"') { s.substring(1, s.length - 1) }
       else s
     }
 
@@ -155,23 +155,18 @@ private[server] object ForwardedHeaderHandler {
           (for {
             fhs <- headers.getAll("Forwarded")
             fh <- fhs.split(",\\s*")
-          } yield fh)
-            .map(
-              _.split(";")
-                .flatMap(s => {
-                  val splitted = s.split("=", 2)
-                  if (splitted.length < 2) Seq.empty
-                  else {
-                    // Remove surrounding quotes
-                    val name = splitted(0).toLowerCase(java.util.Locale.ENGLISH)
-                    val value = unquote(splitted(1))
-                    Seq(name -> value)
-                  }
-                })
-                .toMap)
-            .map { paramMap: Map[String, String] =>
-              ForwardedEntry(paramMap.get("for"), paramMap.get("proto"))
+          } yield fh).map(_.split(";").flatMap(s => {
+            val splitted = s.split("=", 2)
+            if (splitted.length < 2) Seq.empty
+            else {
+              // Remove surrounding quotes
+              val name = splitted(0).toLowerCase(java.util.Locale.ENGLISH)
+              val value = unquote(splitted(1))
+              Seq(name -> value)
             }
+          }).toMap).map { paramMap: Map[String, String] =>
+            ForwardedEntry(paramMap.get("for"), paramMap.get("proto"))
+          }
         case Xforwarded =>
           def h(h: Headers, key: String) =
             h.getAll(key).flatMap(s => s.split(",\\s*")).map(unquote)
@@ -204,9 +199,8 @@ private[server] object ForwardedHeaderHandler {
           nodeIdentifierParser.parseNode(addressString) match {
             case Right((Ip(address), _)) =>
               // Parsing was successful, use this connection and scan for another connection.
-              val secure = entry.protoString.fold(false)(
-                _ == "https"
-              ) // Assume insecure by default
+              val secure = entry.protoString
+                .fold(false)(_ == "https") // Assume insecure by default
               val connection = ConnectionInfo(address, secure)
               Right(connection)
             case errorOrNonIp =>

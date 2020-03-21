@@ -73,8 +73,8 @@ private[sql] class DefaultSource
     val conf = ContextUtil.getConfiguration(job)
 
     // SPARK-9849 DirectParquetOutputCommitter qualified name should be backward compatible
-    val committerClassName = conf.get(
-      SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key)
+    val committerClassName = conf
+      .get(SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key)
     if (committerClassName == "org.apache.spark.sql.parquet.DirectParquetOutputCommitter") {
       conf.set(
         SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key,
@@ -92,25 +92,25 @@ private[sql] class DefaultSource
           classOf[ParquetOutputCommitter].getCanonicalName)
     } else {
       logInfo(
-        "Using user defined output committer for Parquet: " + committerClass.getCanonicalName)
+        "Using user defined output committer for Parquet: " + committerClass
+          .getCanonicalName)
     }
 
-    val compressionCodec: Option[String] = options
-      .get("compression")
-      .map { codecName =>
+    val compressionCodec: Option[String] = options.get("compression").map {
+      codecName =>
         // Validate if given compression codec is supported or not.
-        val shortParquetCompressionCodecNames =
-          ParquetRelation.shortParquetCompressionCodecNames
-        if (!shortParquetCompressionCodecNames.contains(
-              codecName.toLowerCase)) {
-          val availableCodecs = shortParquetCompressionCodecNames.keys.map(
-            _.toLowerCase)
+        val shortParquetCompressionCodecNames = ParquetRelation
+          .shortParquetCompressionCodecNames
+        if (!shortParquetCompressionCodecNames
+              .contains(codecName.toLowerCase)) {
+          val availableCodecs = shortParquetCompressionCodecNames.keys
+            .map(_.toLowerCase)
           throw new IllegalArgumentException(
             s"Codec [$codecName] " +
               s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
         }
         codecName.toLowerCase
-      }
+    }
 
     conf.setClass(
       SQLConf.OUTPUT_COMMITTER_CLASS.key,
@@ -149,12 +149,10 @@ private[sql] class DefaultSource
     // Sets compression scheme
     conf.set(
       ParquetOutputFormat.COMPRESSION,
-      ParquetRelation.shortParquetCompressionCodecNames
-        .getOrElse(
-          compressionCodec
-            .getOrElse(sqlContext.conf.parquetCompressionCodec.toLowerCase),
-          CompressionCodecName.UNCOMPRESSED)
-        .name()
+      ParquetRelation.shortParquetCompressionCodecNames.getOrElse(
+        compressionCodec
+          .getOrElse(sqlContext.conf.parquetCompressionCodec.toLowerCase),
+        CompressionCodecName.UNCOMPRESSED).name()
     )
 
     new OutputWriterFactory {
@@ -173,14 +171,12 @@ private[sql] class DefaultSource
       parameters: Map[String, String],
       files: Seq[FileStatus]): Option[StructType] = {
     // Should we merge schemas from all Parquet part-files?
-    val shouldMergeSchemas = parameters
-      .get(ParquetRelation.MERGE_SCHEMA)
-      .map(_.toBoolean)
-      .getOrElse(sqlContext.conf.getConf(
+    val shouldMergeSchemas = parameters.get(ParquetRelation.MERGE_SCHEMA)
+      .map(_.toBoolean).getOrElse(sqlContext.conf.getConf(
         SQLConf.PARQUET_SCHEMA_MERGING_ENABLED))
 
-    val mergeRespectSummaries = sqlContext.conf.getConf(
-      SQLConf.PARQUET_SCHEMA_RESPECT_SUMMARIES)
+    val mergeRespectSummaries = sqlContext.conf
+      .getConf(SQLConf.PARQUET_SCHEMA_RESPECT_SUMMARIES)
 
     val filesByType = splitFiles(files)
 
@@ -246,8 +242,7 @@ private[sql] class DefaultSource
           // files contain conflicting user defined metadata (two or more values are associated
           // with a same key in different files).  In either case, we fall back to any of the
           // first part-file, and just assume all schemas are consistent.
-          .orElse(filesByType.data.headOption)
-          .toSeq
+          .orElse(filesByType.data.headOption).toSeq
       }
     ParquetRelation.mergeSchemasInParallel(filesToTouch, sqlContext)
   }
@@ -259,19 +254,15 @@ private[sql] class DefaultSource
 
   private def splitFiles(allFiles: Seq[FileStatus]): FileTypes = {
     // Lists `FileStatus`es of all leaf nodes (files) under all base directories.
-    val leaves = allFiles
-      .filter { f =>
-        isSummaryFile(f.getPath) ||
-        !(f.getPath.getName.startsWith("_") || f.getPath.getName.startsWith(
-          "."))
-      }
-      .toArray
-      .sortBy(_.getPath.toString)
+    val leaves = allFiles.filter { f =>
+      isSummaryFile(f.getPath) ||
+      !(f.getPath.getName.startsWith("_") || f.getPath.getName.startsWith("."))
+    }.toArray.sortBy(_.getPath.toString)
 
     FileTypes(
       data = leaves.filterNot(f => isSummaryFile(f.getPath)),
-      metadata = leaves.filter(
-        _.getPath.getName == ParquetFileWriter.PARQUET_METADATA_FILE),
+      metadata = leaves
+        .filter(_.getPath.getName == ParquetFileWriter.PARQUET_METADATA_FILE),
       commonMetadata = leaves.filter(
         _.getPath.getName == ParquetFileWriter.PARQUET_COMMON_METADATA_FILE)
     )
@@ -299,8 +290,8 @@ private[sql] class DefaultSource
     // Parquet row group size. We will use this value as the value for
     // mapreduce.input.fileinputformat.split.minsize and mapred.min.split.size if the value
     // of these flags are smaller than the parquet row group size.
-    val parquetBlockSize = ParquetOutputFormat.getLongBlockSize(
-      broadcastedConf.value.value)
+    val parquetBlockSize = ParquetOutputFormat
+      .getLongBlockSize(broadcastedConf.value.value)
 
     // Create the function to set variable Parquet confs at both driver and executor side.
     val initLocalJobFuncOpt = ParquetRelation.initializeLocalJobFunc(
@@ -316,9 +307,8 @@ private[sql] class DefaultSource
     val inputFiles = splitFiles(allFiles).data.toArray
 
     // Create the function to set input paths at the driver side.
-    val setInputPaths = ParquetRelation.initializeDriverSideJobFunc(
-      inputFiles,
-      parquetBlockSize) _
+    val setInputPaths = ParquetRelation
+      .initializeDriverSideJobFunc(inputFiles, parquetBlockSize) _
 
     Utils.withDummyCallSite(sqlContext.sparkContext) {
       new SqlNewHadoopRDD(
@@ -411,12 +401,11 @@ private[sql] class ParquetOutputWriter(
             context: TaskAttemptContext,
             extension: String): Path = {
           val configuration = context.getConfiguration
-          val uniqueWriteJobId = configuration.get(
-            "spark.sql.sources.writeJobUUID")
+          val uniqueWriteJobId = configuration
+            .get("spark.sql.sources.writeJobUUID")
           val taskAttemptId = context.getTaskAttemptID
           val split = taskAttemptId.getTaskID.getId
-          val bucketString = bucketId
-            .map(BucketingUtils.bucketIdToString)
+          val bucketString = bucketId.map(BucketingUtils.bucketIdToString)
             .getOrElse("")
           // It has the `.parquet` extension at the end because (de)compression tools
           // such as gunzip would not be able to decompress this as the compression
@@ -568,25 +557,21 @@ private[sql] object ParquetRelation extends Logging {
         // Don't throw even if we failed to parse the serialized Spark schema. Just fallback to
         // whatever is available.
         Some(
-          Try(DataType.fromJson(serializedSchema.get))
-            .recover {
-              case _: Throwable =>
-                logInfo(
-                  s"Serialized Spark schema in Parquet key-value metadata is not in JSON format, " +
-                    "falling back to the deprecated DataType.fromCaseClassString parser.")
-                LegacyTypeStringParser.parse(serializedSchema.get)
-            }
-            .recover {
-              case cause: Throwable =>
-                logWarning(s"""Failed to parse serialized Spark schema in Parquet key-value metadata:
+          Try(DataType.fromJson(serializedSchema.get)).recover {
+            case _: Throwable =>
+              logInfo(
+                s"Serialized Spark schema in Parquet key-value metadata is not in JSON format, " +
+                  "falling back to the deprecated DataType.fromCaseClassString parser.")
+              LegacyTypeStringParser.parse(serializedSchema.get)
+          }.recover {
+            case cause: Throwable =>
+              logWarning(s"""Failed to parse serialized Spark schema in Parquet key-value metadata:
                  |\t$serializedSchema
                """.stripMargin, cause)
-            }
-            .map(_.asInstanceOf[StructType])
-            .getOrElse {
-              // Falls back to Parquet schema if Spark SQL schema can't be parsed.
-              parseParquetSchema(metadata.getSchema)
-            })
+          }.map(_.asInstanceOf[StructType]).getOrElse {
+            // Falls back to Parquet schema if Spark SQL schema can't be parsed.
+            parseParquetSchema(metadata.getSchema)
+          })
       } else { None }
     }
 
@@ -662,10 +647,8 @@ private[sql] object ParquetRelation extends Logging {
       metastoreSchema: StructType,
       parquetSchema: StructType): StructType = {
     val fieldMap = metastoreSchema.map(f => f.name.toLowerCase -> f).toMap
-    val missingFields = metastoreSchema
-      .map(_.name.toLowerCase)
-      .diff(parquetSchema.map(_.name.toLowerCase))
-      .map(fieldMap(_))
+    val missingFields = metastoreSchema.map(_.name.toLowerCase)
+      .diff(parquetSchema.map(_.name.toLowerCase)).map(fieldMap(_))
       .filter(_.nullable)
     StructType(parquetSchema ++ missingFields)
   }
@@ -704,13 +687,12 @@ private[sql] object ParquetRelation extends Logging {
     // Since Parquet only relies on path and length information of those `FileStatus`es to read
     // footers, here we just extract them (which can be easily serialized), send them to executor
     // side, and resemble fake `FileStatus`es there.
-    val partialFileStatusInfo = filesToTouch.map(f =>
-      (f.getPath.toString, f.getLen))
+    val partialFileStatusInfo = filesToTouch
+      .map(f => (f.getPath.toString, f.getLen))
 
     // Issues a Spark job to read Parquet schema in parallel.
     val partiallyMergedSchemas = sqlContext.sparkContext
-      .parallelize(partialFileStatusInfo)
-      .mapPartitions { iterator =>
+      .parallelize(partialFileStatusInfo).mapPartitions { iterator =>
         // Resembles fake `FileStatus`es with serialized path and length information.
         val fakeFileStatuses = iterator.map {
           case (path, length) =>
@@ -731,12 +713,10 @@ private[sql] object ParquetRelation extends Logging {
         val skipRowGroups = true
 
         // Reads footers in multi-threaded manner within each task
-        val footers = ParquetFileReader
-          .readAllFootersInParallel(
-            serializedConf.value,
-            fakeFileStatuses.asJava,
-            skipRowGroups)
-          .asScala
+        val footers = ParquetFileReader.readAllFootersInParallel(
+          serializedConf.value,
+          fakeFileStatuses.asJava,
+          skipRowGroups).asScala
 
         // Converter used to convert Parquet `MessageType` to Spark SQL `StructType`
         val converter = new CatalystSchemaConverter(
@@ -746,9 +726,8 @@ private[sql] object ParquetRelation extends Logging {
 
         if (footers.isEmpty) { Iterator.empty }
         else {
-          var mergedSchema = ParquetRelation.readSchemaFromFooter(
-            footers.head,
-            converter)
+          var mergedSchema = ParquetRelation
+            .readSchemaFromFooter(footers.head, converter)
           footers.tail.foreach { footer =>
             val schema = ParquetRelation.readSchemaFromFooter(footer, converter)
             try { mergedSchema = mergedSchema.merge(schema) }
@@ -761,8 +740,7 @@ private[sql] object ParquetRelation extends Logging {
           }
           Iterator.single(mergedSchema)
         }
-      }
-      .collect()
+      }.collect()
 
     if (partiallyMergedSchemas.isEmpty) { None }
     else {
@@ -799,30 +777,27 @@ private[sql] object ParquetRelation extends Logging {
       schemaString: String): Option[StructType] = {
     // Tries to deserialize the schema string as JSON first, then falls back to the case class
     // string parser (data generated by older versions of Spark SQL uses this format).
-    Try(DataType.fromJson(schemaString).asInstanceOf[StructType])
-      .recover {
-        case _: Throwable =>
-          logInfo(
-            s"Serialized Spark schema in Parquet key-value metadata is not in JSON format, " +
-              "falling back to the deprecated DataType.fromCaseClassString parser.")
-          LegacyTypeStringParser.parse(schemaString).asInstanceOf[StructType]
-      }
-      .recoverWith {
-        case cause: Throwable =>
-          logWarning(
-            "Failed to parse and ignored serialized Spark schema in " +
-              s"Parquet key-value metadata:\n\t$schemaString",
-            cause)
-          Failure(cause)
-      }
-      .toOption
+    Try(DataType.fromJson(schemaString).asInstanceOf[StructType]).recover {
+      case _: Throwable =>
+        logInfo(
+          s"Serialized Spark schema in Parquet key-value metadata is not in JSON format, " +
+            "falling back to the deprecated DataType.fromCaseClassString parser.")
+        LegacyTypeStringParser.parse(schemaString).asInstanceOf[StructType]
+    }.recoverWith {
+      case cause: Throwable =>
+        logWarning(
+          "Failed to parse and ignored serialized Spark schema in " +
+            s"Parquet key-value metadata:\n\t$schemaString",
+          cause)
+        Failure(cause)
+    }.toOption
   }
 
   // JUL loggers must be held by a strong reference, otherwise they may get destroyed by GC.
   // However, the root JUL logger used by Parquet isn't properly referenced.  Here we keep
   // references to loggers in both parquet-mr <= 1.6 and >= 1.7
-  val apacheParquetLogger: JLogger = JLogger.getLogger(
-    classOf[ApacheParquetLog].getPackage.getName)
+  val apacheParquetLogger: JLogger = JLogger
+    .getLogger(classOf[ApacheParquetLog].getPackage.getName)
   val parquetLogger: JLogger = JLogger.getLogger("parquet")
 
   // Parquet initializes its own JUL logger in a static block which always prints to stdout.  Here

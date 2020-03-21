@@ -20,8 +20,7 @@ class RenameScalaPackageProcessor
       allRenames: util.Map[PsiElement, String]) {
     element match {
       case p: PsiPackage =>
-        val po = ScalaShortNamesCacheManager
-          .getInstance(element.getProject)
+        val po = ScalaShortNamesCacheManager.getInstance(element.getProject)
           .getPackageObjectByName(p.getQualifiedName, element.getResolveScope)
         if (po != null && po.name != "`package`") {
           allRenames.put(po, newName)

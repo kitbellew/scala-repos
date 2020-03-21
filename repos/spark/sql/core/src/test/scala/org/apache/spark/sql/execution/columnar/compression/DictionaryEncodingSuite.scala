@@ -37,8 +37,7 @@ class DictionaryEncodingSuite extends SparkFunSuite {
     val typeName = columnType.getClass.getSimpleName.stripSuffix("$")
 
     def buildDictionary(buffer: ByteBuffer) = {
-      (0 until buffer.getInt())
-        .map(columnType.extract(buffer) -> _.toShort)
+      (0 until buffer.getInt()).map(columnType.extract(buffer) -> _.toShort)
         .toMap
     }
 

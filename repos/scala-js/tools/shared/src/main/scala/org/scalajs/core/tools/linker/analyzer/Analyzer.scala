@@ -154,8 +154,8 @@ private final class Analyzer(
      * superclasses of classes whose data we can already reach.
      */
     for {
-      getSuperclassMethodInfo <- classClassInfo.flatMap(
-        _.methodInfos.get("getSuperclass__jl_Class"))
+      getSuperclassMethodInfo <- classClassInfo
+        .flatMap(_.methodInfos.get("getSuperclass__jl_Class"))
       if getSuperclassMethodInfo.isReachable
     } {
       // calledFrom should always be nonEmpty if isReachable, but let's be robust
@@ -399,8 +399,8 @@ private final class Analyzer(
         methodsCalledStatically = Map(
           targetOwner.encodedName -> List(methodName)))
       val m = new MethodInfo(this, syntheticInfo)
-      m.syntheticKind = MethodSyntheticKind.DefaultBridge(
-        targetOwner.encodedName)
+      m.syntheticKind = MethodSyntheticKind
+        .DefaultBridge(targetOwner.encodedName)
       methodInfos += methodName -> m
       m
     }
@@ -779,8 +779,8 @@ private final class Analyzer(
         }
       }
 
-      val methodsCalledStaticallyIterator =
-        data.methodsCalledStatically.iterator
+      val methodsCalledStaticallyIterator = data.methodsCalledStatically
+        .iterator
       while (methodsCalledStaticallyIterator.hasNext) {
         val (className, methods) = methodsCalledStaticallyIterator.next()
         val classInfo = lookupClass(className)

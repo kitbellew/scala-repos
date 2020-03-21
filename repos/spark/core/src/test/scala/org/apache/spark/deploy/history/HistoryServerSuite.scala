@@ -77,8 +77,7 @@ class HistoryServerSuite
   def init(): Unit = {
     val conf = new SparkConf()
       .set("spark.history.fs.logDirectory", logDir.getAbsolutePath)
-      .set("spark.history.fs.update.interval", "0")
-      .set("spark.testing", "true")
+      .set("spark.history.fs.update.interval", "0").set("spark.testing", "true")
     provider = new FsHistoryProvider(conf)
     provider.checkForLogs()
     val securityManager = new SecurityManager(conf)
@@ -281,8 +280,8 @@ class HistoryServerSuite
 
     // this test dir is explicitly deleted on successful runs; retained for diagnostics when
     // not
-    val logDir = Utils.createDirectory(
-      System.getProperty("java.io.tmpdir", "logs"))
+    val logDir = Utils
+      .createDirectory(System.getProperty("java.io.tmpdir", "logs"))
 
     // a new conf is used with the background thread set and running at its fastest
     // allowed refresh rate (1Hz)
@@ -291,8 +290,7 @@ class HistoryServerSuite
       .set("spark.eventLog.dir", logDir.getAbsolutePath)
       .set("spark.history.fs.update.interval", "1s")
       .set("spark.eventLog.enabled", "true")
-      .set("spark.history.cache.window", "250ms")
-      .remove("spark.testing")
+      .set("spark.history.cache.window", "250ms").remove("spark.testing")
     val provider = new FsHistoryProvider(myConf)
     val securityManager = new SecurityManager(myConf)
 
@@ -394,17 +392,15 @@ class HistoryServerSuite
       json match {
         case JNothing => Seq()
         case apps: JArray =>
-          apps
-            .filter(app => {
-              (app \ "attempts") match {
-                case attempts: JArray =>
-                  val state = (attempts.children.head \ "completed")
-                    .asInstanceOf[JBool]
-                  state.value == completed
-                case _ => false
-              }
-            })
-            .map(app => (app \ "id").asInstanceOf[JString].values)
+          apps.filter(app => {
+            (app \ "attempts") match {
+              case attempts: JArray =>
+                val state = (attempts.children.head \ "completed")
+                  .asInstanceOf[JBool]
+                state.value == completed
+              case _ => false
+            }
+          }).map(app => (app \ "id").asInstanceOf[JString].values)
         case _ => Seq()
       }
     }
@@ -485,8 +481,8 @@ class HistoryServerSuite
   def getContentAndCode(
       path: String,
       port: Int = port): (Int, Option[String], Option[String]) = {
-    HistoryServerSuite.getContentAndCode(new URL(
-      s"http://localhost:$port/api/v1/$path"))
+    HistoryServerSuite
+      .getContentAndCode(new URL(s"http://localhost:$port/api/v1/$path"))
   }
 
   def getUrl(path: String): String = {

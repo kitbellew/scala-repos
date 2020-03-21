@@ -50,10 +50,7 @@ object ReflectionUtils {
     * order they were declared.
     */
   def fieldsOf[T](c: Class[T]): List[String] =
-    c.getDeclaredFields
-      .map { f => f.getName }
-      .toList
-      .distinct
+    c.getDeclaredFields.map { f => f.getName }.toList.distinct
 
   /**
     * For a given class, give a function that takes
@@ -106,15 +103,12 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
   def methodMap =
     m.runtimeClass.getDeclaredMethods
     // Keep only methods with 0 parameter types
-      .filter { m => m.getParameterTypes.length == 0 }
-      .groupBy { _.getName }
+      .filter { m => m.getParameterTypes.length == 0 }.groupBy { _.getName }
       .mapValues { _.head }
 
   // TODO: filter by isAccessible, which somehow seems to fail
   def fieldMap =
-    m.runtimeClass.getDeclaredFields
-      .groupBy { _.getName }
-      .mapValues { _.head }
+    m.runtimeClass.getDeclaredFields.groupBy { _.getName }.mapValues { _.head }
 
   def makeSetters = {
     (0 until fields.size).map { idx =>
@@ -137,10 +131,10 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
   private def setterForFieldName(fieldName: String): (T => AnyRef) = {
     getValueFromMethod(createGetter(fieldName))
       .orElse(getValueFromMethod(fieldName))
-      .orElse(getValueFromField(fieldName))
-      .getOrElse(
+      .orElse(getValueFromField(fieldName)).getOrElse(
         throw new TupleUnpackerException(
-          "Unrecognized field: " + fieldName + " for class: " + m.runtimeClass.getName))
+          "Unrecognized field: " + fieldName + " for class: " + m.runtimeClass
+            .getName))
   }
 
   private def getValueFromField(fieldName: String): Option[(T => AnyRef)] = {

@@ -83,16 +83,16 @@ private[json] object Meta {
 
       if (choices.isEmpty) None
       else {
-        val best = choices.tail.foldLeft(
-          (choices.head, score(choices.head.args))) { (best, c) =>
-          val newScore = score(c.args)
-          if (newScore == best._2) {
-            if (countOptionals(c.args) < countOptionals(best._1.args))
-              (c, newScore)
+        val best = choices.tail
+          .foldLeft((choices.head, score(choices.head.args))) { (best, c) =>
+            val newScore = score(c.args)
+            if (newScore == best._2) {
+              if (countOptionals(c.args) < countOptionals(best._1.args))
+                (c, newScore)
+              else best
+            } else if (newScore > best._2) (c, newScore)
             else best
-          } else if (newScore > best._2) (c, newScore)
-          else best
-        }
+          }
         Some(best._1)
       }
     }
@@ -158,17 +158,16 @@ private[json] object Meta {
       def parameterizedTypeOpt(t: Type) =
         t match {
           case x: ParameterizedType =>
-            val typeArgs = x.getActualTypeArguments.toList.zipWithIndex
-              .map {
-                case (t, idx) =>
-                  if (t == classOf[java.lang.Object])
-                    ScalaSigReader.readConstructor(
-                      context.argName,
-                      context.containingClass,
-                      idx,
-                      context.allArgs.map(_._1))
-                  else t
-              }
+            val typeArgs = x.getActualTypeArguments.toList.zipWithIndex.map {
+              case (t, idx) =>
+                if (t == classOf[java.lang.Object])
+                  ScalaSigReader.readConstructor(
+                    context.argName,
+                    context.containingClass,
+                    idx,
+                    context.allArgs.map(_._1))
+                else t
+            }
             Some(mkParameterizedType(x.getRawType, typeArgs))
           case _ => None
         }
@@ -323,8 +322,7 @@ private[json] object Meta {
         context: Option[Context])
         : List[(JConstructor[_], List[(String, Type)])] =
       rawClassOf(t).getDeclaredConstructors
-        .map(c => (c, constructorArgs(t, c, names, context)))
-        .toList
+        .map(c => (c, constructorArgs(t, c, names, context))).toList
 
     def constructorArgs(
         t: Type,
@@ -340,14 +338,12 @@ private[json] object Meta {
             case (v: TypeVariable[_], idx) =>
               val arg = typeArgs.getOrElse(v, v)
               if (arg == classOf[java.lang.Object])
-                context
-                  .map(ctx =>
-                    ScalaSigReader.readConstructor(
-                      ctx.argName,
-                      ctx.containingClass,
-                      idx,
-                      ctx.allArgs.map(_._1)))
-                  .getOrElse(arg)
+                context.map(ctx =>
+                  ScalaSigReader.readConstructor(
+                    ctx.argName,
+                    ctx.containingClass,
+                    idx,
+                    ctx.allArgs.map(_._1))).getOrElse(arg)
               else arg
             case (x, _) => x
           }
@@ -360,8 +356,7 @@ private[json] object Meta {
         case p: ParameterizedType =>
           val vars =
             Map() ++ rawClassOf(p).getTypeParameters.toList
-              .map(_.asInstanceOf[TypeVariable[_]])
-              .zip(
+              .map(_.asInstanceOf[TypeVariable[_]]).zip(
                 p.getActualTypeArguments.toList
               ) // FIXME this cast should not be needed
           argsInfo(constructor, vars)
@@ -447,19 +442,17 @@ private[json] object Meta {
         .isAssignableFrom(x.asInstanceOf[AnyRef].getClass)
 
     def fields(clazz: Class[_]): List[(String, TypeInfo)] = {
-      val fs = clazz.getDeclaredFields.toList
-        .filterNot(f =>
-          Modifier.isStatic(f.getModifiers) || Modifier.isTransient(
-            f.getModifiers))
-        .map(f =>
-          (
-            f.getName,
-            TypeInfo(
-              f.getType,
-              f.getGenericType match {
-                case p: ParameterizedType => Some(p)
-                case _                    => None
-              })))
+      val fs = clazz.getDeclaredFields.toList.filterNot(f =>
+        Modifier.isStatic(f.getModifiers) || Modifier
+          .isTransient(f.getModifiers)).map(f =>
+        (
+          f.getName,
+          TypeInfo(
+            f.getType,
+            f.getGenericType match {
+              case p: ParameterizedType => Some(p)
+              case _                    => None
+            })))
       fs ::: (if (clazz.getSuperclass == null) Nil
               else fields(clazz.getSuperclass))
     }

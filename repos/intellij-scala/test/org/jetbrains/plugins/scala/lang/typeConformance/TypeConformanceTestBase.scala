@@ -32,24 +32,23 @@ abstract class TypeConformanceTestBase
     import _root_.junit.framework.Assert._
 
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem.getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
     configureFromFileTextAdapter(getTestName(false) + ".scala", fileText)
     val scalaFile = getFileAdapter.asInstanceOf[ScalaFile]
-    val expr: PsiElement = scalaFile.findLastChildByType[PsiElement](
-      ScalaElementTypes.PATTERN_DEFINITION)
+    val expr: PsiElement = scalaFile
+      .findLastChildByType[PsiElement](ScalaElementTypes.PATTERN_DEFINITION)
     assert(
       expr != null,
       "Not specified expression in range to check conformance.")
     val valueDecl = expr.asInstanceOf[ScPatternDefinition]
-    val declaredType = valueDecl.declaredType.getOrElse(sys.error(
-      "Must provide type annotation for LHS"))
+    val declaredType = valueDecl.declaredType
+      .getOrElse(sys.error("Must provide type annotation for LHS"))
 
-    valueDecl.expr
-      .getOrElse(throw new RuntimeException("Expression not found"))
+    valueDecl.expr.getOrElse(throw new RuntimeException("Expression not found"))
       .getType(TypingContext.empty) match {
       case Success(rhsType, _) =>
         val res: Boolean = Conformance.conforms(declaredType, rhsType)

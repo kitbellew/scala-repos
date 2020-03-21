@@ -33,13 +33,8 @@ object ModelSpec {
 
   def swaggerProperties[T](implicit mf: Manifest[T]) = swaggerProperty[T]("id")
   def swaggerProperty[T](name: String)(implicit mf: Manifest[T]) =
-    Swagger
-      .modelToSwagger(Reflector.scalaTypeOf[T])
-      .get
-      .properties
-      .find(_._1 == name)
-      .get
-      ._2
+    Swagger.modelToSwagger(Reflector.scalaTypeOf[T]).get.properties
+      .find(_._1 == name).get._2
 
 }
 
@@ -54,14 +49,12 @@ class ModelSpec extends Specification {
     }
 
     "convert a populated allowable values property of an ApiProperty annotation" in {
-      swaggerProperties[
-        WithAllowableValues].allowableValues must_== AllowableValuesList(
-        List("item1", "item2"))
+      swaggerProperties[WithAllowableValues]
+        .allowableValues must_== AllowableValuesList(List("item1", "item2"))
     }
     "convert a populated allowable values property of an ApiProperty annotation when it is a range" in {
-      swaggerProperties[
-        WithAllowableRangeValues].allowableValues must_== AllowableRangeValues(
-        Range.inclusive(1, 10))
+      swaggerProperties[WithAllowableRangeValues]
+        .allowableValues must_== AllowableRangeValues(Range.inclusive(1, 10))
     }
     "convert a required=false annotation of a model field" in {
       swaggerProperty[WithRequiredFalse]("name").required must beFalse

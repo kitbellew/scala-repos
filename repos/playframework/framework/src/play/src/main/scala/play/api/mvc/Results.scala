@@ -52,8 +52,8 @@ final class ResponseHeader(
   override def hashCode = (status, headers).hashCode
   override def equals(o: Any) =
     o match {
-      case ResponseHeader(s, h, r) =>
-        (s, h, r).equals((status, headers, reasonPhrase))
+      case ResponseHeader(s, h, r) => (s, h, r)
+          .equals((status, headers, reasonPhrase))
       case _ => false
     }
 }
@@ -61,8 +61,7 @@ object ResponseHeader {
   val basicDateFormatPattern = "EEE, dd MMM yyyy HH:mm:ss"
   val httpDateFormat: DateTimeFormatter = DateTimeFormat
     .forPattern(basicDateFormatPattern + " 'GMT'")
-    .withLocale(java.util.Locale.ENGLISH)
-    .withZone(DateTimeZone.UTC)
+    .withLocale(java.util.Locale.ENGLISH).withZone(DateTimeZone.UTC)
 
   def apply(
       status: Int,
@@ -239,8 +238,7 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @return The session carried by this result. Reads the request’s session if this result does not modify the session.
     */
   def session(implicit request: RequestHeader): Session =
-    Cookies
-      .fromCookieHeader(header.headers.get(SET_COOKIE))
+    Cookies.fromCookieHeader(header.headers.get(SET_COOKIE))
       .get(Session.COOKIE_NAME) match {
       case Some(cookie) => Session.decodeFromCookie(Some(cookie))
       case None         => request.session
@@ -279,9 +277,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     */
   private def shouldWarnIfNotRedirect(flash: Flash): Boolean = {
     play.api.Play.privateMaybeApplication.exists(app =>
-      (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) && (
-        header.status < 300 || header.status > 399
-      ))
+      (app.mode == play.api.Mode.Dev) && (!flash.isEmpty) && (header
+        .status < 300 || header.status > 399))
   }
 
   /**
@@ -289,10 +286,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     */
   private def logRedirectWarning(methodName: String) {
     val status = header.status
-    play.api
-      .Logger("play")
-      .warn(
-        s"You are using status code '$status' with $methodName, which should only be used with a redirect status!")
+    play.api.Logger("play").warn(
+      s"You are using status code '$status' with $methodName, which should only be used with a redirect status!")
   }
 
   /**
@@ -423,8 +418,7 @@ trait Results {
         HttpEntity.Streamed(
           file,
           Some(length),
-          play.api.libs.MimeTypes
-            .forFileName(name)
+          play.api.libs.MimeTypes.forFileName(name)
             .orElse(Some(play.api.http.ContentTypes.BINARY)))
       )
     }
@@ -442,8 +436,8 @@ trait Results {
         fileName: java.io.File => String = _.getName,
         onClose: () => Unit = () => ()): Result = {
       streamFile(
-        StreamConverters.fromInputStream(() =>
-          Files.newInputStream(content.toPath)),
+        StreamConverters
+          .fromInputStream(() => Files.newInputStream(content.toPath)),
         fileName(content),
         content.length,
         inline)
@@ -536,8 +530,7 @@ trait Results {
       Result(
         header = header,
         body = HttpEntity.Streamed(
-          Source
-            .fromPublisher(Streams.enumeratorToPublisher(content))
+          Source.fromPublisher(Streams.enumeratorToPublisher(content))
             .map(writeable.transform),
           None,
           writeable.contentType)
@@ -730,17 +723,12 @@ trait Results {
       queryString: Map[String, Seq[String]] = Map.empty,
       status: Int = SEE_OTHER) = {
     import java.net.URLEncoder
-    val fullUrl = url + Option(queryString)
-      .filterNot(_.isEmpty)
-      .map { params =>
-        (if (url.contains("?")) "&" else "?") + params.toSeq
-          .flatMap { pair =>
-            pair._2.map(value =>
-              (pair._1 + "=" + URLEncoder.encode(value, "utf-8")))
-          }
-          .mkString("&")
-      }
-      .getOrElse("")
+    val fullUrl = url + Option(queryString).filterNot(_.isEmpty).map { params =>
+      (if (url.contains("?")) "&" else "?") + params.toSeq.flatMap { pair =>
+        pair._2
+          .map(value => (pair._1 + "=" + URLEncoder.encode(value, "utf-8")))
+      }.mkString("&")
+    }.getOrElse("")
     Status(status).withHeaders(LOCATION -> fullUrl)
   }
 

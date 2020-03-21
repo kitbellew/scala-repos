@@ -63,9 +63,8 @@ object CofreeTest extends SpecLite {
       def from[A](fa: CofreeLazyOption[A]) =
         OneAnd(
           fa.head,
-          fa.tail
-            .map(s =>
-              Foldable[CofreeLazyOption].foldRight(s, Stream.empty[A])(_ #:: _))
+          fa.tail.map(s =>
+            Foldable[CofreeLazyOption].foldRight(s, Stream.empty[A])(_ #:: _))
             .getOrElse(Stream.empty))
     }
 
@@ -147,8 +146,7 @@ object CofreeTest extends SpecLite {
     val a = 1
     val b = Applicative[CofreeZip[IList, ?]].point(a)
     val size = 10
-    Foldable[Cofree[IList, ?]]
-      .toStream(Tag.unwrap(b))
+    Foldable[Cofree[IList, ?]].toStream(Tag.unwrap(b))
       .take(size) must_=== Stream.fill(size)(a)
   }
 
@@ -170,12 +168,8 @@ object CofreeTest extends SpecLite {
   "no stack overflow unfoldC, mapBranching" in {
     import syntax.foldable._
     val n = 100
-    val list = Cofree
-      .unfoldC(1)(a => Option(a + 1))
-      .mapBranching(NaturalTransformation.refl)
-      .toStream
-      .take(n)
-      .toList
+    val list = Cofree.unfoldC(1)(a => Option(a + 1))
+      .mapBranching(NaturalTransformation.refl).toStream.take(n).toList
     list must_=== (1 to n).toList
   }
 

@@ -68,8 +68,7 @@ class MigrationTo0_16Test
 
     def appProtoIsInNewFormat(version: Option[Long]): Unit = {
       def fetchAppProto(version: Option[Long]): Protos.ServiceDefinition = {
-        val suffix = version
-          .map { version => s":${Timestamp(version)}" }
+        val suffix = version.map { version => s":${Timestamp(version)}" }
           .getOrElse("")
         val entity = f.store.load(s"app:test$suffix").futureValue.get
         Protos.ServiceDefinition.parseFrom(entity.bytes.toArray)
@@ -80,8 +79,7 @@ class MigrationTo0_16Test
 
     def groupProtoIsInNewFormat(version: Option[Long]): Unit = {
       def fetchGroupProto(version: Option[Long]): Protos.GroupDefinition = {
-        val suffix = version
-          .map { version => s":${Timestamp(version)}" }
+        val suffix = version.map { version => s":${Timestamp(version)}" }
           .getOrElse("")
         val entity = f.store.load(s"group:root$suffix").futureValue.get
         Protos.GroupDefinition.parseFrom(entity.bytes.toArray)
@@ -97,9 +95,8 @@ class MigrationTo0_16Test
     f.appRepo.store(appV1).futureValue
     f.appRepo.store(appV2).futureValue
 
-    val groupWithApp = emptyGroup.copy(
-      apps = Set(appV2),
-      version = Timestamp(2))
+    val groupWithApp = emptyGroup
+      .copy(apps = Set(appV2), version = Timestamp(2))
     f.groupRepo.store(f.groupRepo.zkRootName, groupWithApp).futureValue
 
     When("migrating")
@@ -130,8 +127,8 @@ class MigrationTo0_16Test
           PathId("/test"),
           cmd = Some("true"),
           portDefinitions = PortDefinitions(1000, 1001),
-          versionInfo = AppDefinition.VersionInfo.OnlyVersion(Timestamp(
-            version)))
+          versionInfo = AppDefinition.VersionInfo
+            .OnlyVersion(Timestamp(version)))
         with DeprecatedSerialization
 
     new T()
@@ -141,8 +138,7 @@ class MigrationTo0_16Test
     override def toProto: Protos.ServiceDefinition = {
       val builder = super.toProto.toBuilder
 
-      builder.getPortDefinitionsList.asScala
-        .map(_.getNumber)
+      builder.getPortDefinitionsList.asScala.map(_.getNumber)
         .map(builder.addPorts)
       builder.clearPortDefinitions()
 

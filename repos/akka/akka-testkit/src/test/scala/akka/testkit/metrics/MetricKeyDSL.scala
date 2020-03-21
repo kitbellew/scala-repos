@@ -20,12 +20,9 @@ trait MetricKeyDSL {
 
     // todo not sure what else needs replacing, while keeping key as readable as can be
     private def sanitizeMetricKeyPart(keyPart: String) =
-      keyPart
-        .replaceAll("""\.\.\.""", "\u2026") // ... => …
-        .replaceAll("""\.""", "-")
-        .replaceAll("""[\]\[\(\)\<\>]""", "|")
-        .replaceAll(" ", "-")
-        .replaceAll("/", "-")
+      keyPart.replaceAll("""\.\.\.""", "\u2026") // ... => …
+        .replaceAll("""\.""", "-").replaceAll("""[\]\[\(\)\<\>]""", "|")
+        .replaceAll(" ", "-").replaceAll("/", "-")
   }
 
 }

@@ -75,11 +75,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           }
         case logical
               .Limit(IntegerLiteral(limit), logical.Sort(order, true, child)) =>
-          execution.TakeOrderedAndProject(
-            limit,
-            order,
-            None,
-            planLater(child)) :: Nil
+          execution
+            .TakeOrderedAndProject(limit, order, None, planLater(child)) :: Nil
         case logical.Limit(
               IntegerLiteral(limit),
               logical.Project(projectList, logical.Sort(order, true, child))) =>
@@ -162,7 +159,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       * Matches a plan whose single partition should be small enough to build a hash table.
       */
     def canBuildHashMap(plan: LogicalPlan): Boolean = {
-      plan.statistics.sizeInBytes < conf.autoBroadcastJoinThreshold * conf.numShufflePartitions
+      plan.statistics.sizeInBytes < conf.autoBroadcastJoinThreshold * conf
+        .numShufflePartitions
     }
 
     /**
@@ -385,9 +383,7 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
 
           val (functionsWithDistinct, functionsWithoutDistinct) =
             aggregateExpressions.partition(_.isDistinct)
-          if (functionsWithDistinct
-                .map(_.aggregateFunction.children)
-                .distinct
+          if (functionsWithDistinct.map(_.aggregateFunction.children).distinct
                 .length > 1) {
             // This is a sanity check. We should not reach here when we have multiple distinct
             // column sets. Our MultipleDistinctRewriter should take care this case.
@@ -414,30 +410,25 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           // Thus, we must re-write the result expressions so that their attributes match up with
           // the attributes of the final result projection's input row:
           val rewrittenResultExpressions = resultExpressions.map { expr =>
-            expr
-              .transformDown {
-                case AggregateExpression(aggregateFunction, _, isDistinct) =>
-                  // The final aggregation buffer's attributes will be `finalAggregationAttributes`,
-                  // so replace each aggregate expression by its corresponding attribute in the set:
-                  aggregateFunctionToAttribute(aggregateFunction, isDistinct)
-                case expression =>
-                  // Since we're using `namedGroupingAttributes` to extract the grouping key
-                  // columns, we need to replace grouping key expressions with their corresponding
-                  // attributes. We do not rely on the equality check at here since attributes may
-                  // differ cosmetically. Instead, we use semanticEquals.
-                  groupExpressionMap
-                    .collectFirst {
-                      case (expr, ne) if expr semanticEquals expression =>
-                        ne.toAttribute
-                    }
-                    .getOrElse(expression)
-              }
-              .asInstanceOf[NamedExpression]
+            expr.transformDown {
+              case AggregateExpression(aggregateFunction, _, isDistinct) =>
+                // The final aggregation buffer's attributes will be `finalAggregationAttributes`,
+                // so replace each aggregate expression by its corresponding attribute in the set:
+                aggregateFunctionToAttribute(aggregateFunction, isDistinct)
+              case expression =>
+                // Since we're using `namedGroupingAttributes` to extract the grouping key
+                // columns, we need to replace grouping key expressions with their corresponding
+                // attributes. We do not rely on the equality check at here since attributes may
+                // differ cosmetically. Instead, we use semanticEquals.
+                groupExpressionMap.collectFirst {
+                  case (expr, ne) if expr semanticEquals expression =>
+                    ne.toAttribute
+                }.getOrElse(expression)
+            }.asInstanceOf[NamedExpression]
           }
 
           val aggregateOperator =
-            if (aggregateExpressions
-                  .map(_.aggregateFunction)
+            if (aggregateExpressions.map(_.aggregateFunction)
                   .exists(!_.supportsPartial)) {
               if (functionsWithDistinct.nonEmpty) {
                 sys.error(
@@ -478,11 +469,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
   object BroadcastNestedLoop extends Strategy {
     def apply(plan: LogicalPlan): Seq[SparkPlan] =
       plan match {
-        case j @ logical.Join(
-              CanBroadcast(left),
-              right,
-              Inner | RightOuter,
-              condition) =>
+        case j @ logical
+              .Join(CanBroadcast(left), right, Inner | RightOuter, condition) =>
           execution.joins.BroadcastNestedLoopJoin(
             planLater(left),
             planLater(right),
@@ -538,9 +526,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       }
   }
 
-  protected lazy val singleRowRdd = sparkContext.parallelize(
-    Seq(InternalRow()),
-    1)
+  protected lazy val singleRowRdd = sparkContext
+    .parallelize(Seq(InternalRow()), 1)
 
   object InMemoryScans extends Strategy {
     def apply(plan: LogicalPlan): Seq[SparkPlan] =
@@ -577,14 +564,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         case logical.AppendColumns(f, in, out, child) =>
           execution.AppendColumns(f, in, out, planLater(child)) :: Nil
         case logical.MapGroups(f, key, in, out, grouping, data, child) =>
-          execution.MapGroups(
-            f,
-            key,
-            in,
-            out,
-            grouping,
-            data,
-            planLater(child)) :: Nil
+          execution
+            .MapGroups(f, key, in, out, grouping, data, planLater(child)) :: Nil
         case logical.CoGroup(
               f,
               keyObj,
@@ -619,10 +600,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         case logical.SortPartitions(sortExprs, child) =>
           // This sort only sorts tuples within a partition. Its requiredDistribution will be
           // an UnspecifiedDistribution.
-          execution.Sort(
-            sortExprs,
-            global = false,
-            child = planLater(child)) :: Nil
+          execution
+            .Sort(sortExprs, global = false, child = planLater(child)) :: Nil
         case logical.Sort(sortExprs, global, child) =>
           execution.Sort(sortExprs, global, planLater(child)) :: Nil
         case logical.Project(projectList, child) =>
@@ -638,12 +617,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             orderSpec,
             planLater(child)) :: Nil
         case logical.Sample(lb, ub, withReplacement, seed, child) =>
-          execution.Sample(
-            lb,
-            ub,
-            withReplacement,
-            seed,
-            planLater(child)) :: Nil
+          execution
+            .Sample(lb, ub, withReplacement, seed, planLater(child)) :: Nil
         case logical.LocalRelation(output, data) =>
           LocalTableScan(output, data) :: Nil
         case logical.LocalLimit(IntegerLiteral(limit), child) =>

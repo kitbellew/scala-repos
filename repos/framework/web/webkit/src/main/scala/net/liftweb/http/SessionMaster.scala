@@ -74,7 +74,8 @@ object SessionMaster extends LiftActor with Loggable {
           val now = millis
 
           for ((id, info @ SessionInfo(session, _, _, _, _)) <- ses.iterator) {
-            if (now - session.lastServiceTime > session.inactivityLength || session.markedForTermination) {
+            if (now - session.lastServiceTime > session
+                  .inactivityLength || session.markedForTermination) {
               logger.info(" Session " + id + " expired")
               destroyer(info)
             } else {
@@ -118,13 +119,13 @@ object SessionMaster extends LiftActor with Loggable {
 
   def getSession(id: String, otherId: Box[String]): Box[LiftSession] =
     lockAndBump {
-      val dead = killedSessions.containsKey(id) || (otherId.map(
-        killedSessions.containsKey(_)) openOr false)
+      val dead = killedSessions.containsKey(id) || (otherId
+        .map(killedSessions.containsKey(_)) openOr false)
 
       if (dead)(Failure("Dead session", Empty, Empty))
       else {
-        otherId
-          .flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions.get(id))
+        otherId.flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions
+          .get(id))
       }
     }
 
@@ -143,8 +144,8 @@ object SessionMaster extends LiftActor with Loggable {
       httpSession: => HTTPSession,
       otherId: Box[String]): Box[LiftSession] =
     lockAndBump {
-      otherId.flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions.get(
-        httpSession.sessionId))
+      otherId.flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions
+        .get(httpSession.sessionId))
     }
 
   /**
@@ -152,8 +153,8 @@ object SessionMaster extends LiftActor with Loggable {
     */
   def getSession(req: HTTPRequest, otherId: Box[String]): Box[LiftSession] =
     lockAndBump {
-      otherId.flatMap(a => Box !! nsessions.get(a)) or req.sessionId.flatMap(
-        id => Box !! nsessions.get(id))
+      otherId.flatMap(a => Box !! nsessions.get(a)) or req.sessionId
+        .flatMap(id => Box !! nsessions.get(id))
     }
 
   /**
@@ -257,8 +258,7 @@ object SessionMaster extends LiftActor with Loggable {
       /* remove dead sessions that are more than 45 minutes old */
       val now = Helpers.millis - 45.minutes
 
-      val removeKeys: Iterable[String] = killedSessions
-        .filter(_._2 < now)
+      val removeKeys: Iterable[String] = killedSessions.filter(_._2 < now)
         .map(_._1)
       removeKeys.foreach(s => killedSessions.remove(s))
 

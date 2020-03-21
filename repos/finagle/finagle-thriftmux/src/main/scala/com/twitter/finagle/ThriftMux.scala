@@ -118,8 +118,7 @@ object ThriftMux
 
   case class Client(
       muxer: StackClient[mux.Request, mux.Response] = Mux.client
-        .copy(stack = BaseClientStack)
-        .configured(ProtocolLibrary("thriftmux")))
+        .copy(stack = BaseClientStack).configured(ProtocolLibrary("thriftmux")))
       extends StackBasedClient[ThriftClientRequest, Array[Byte]]
       with Stack.Parameterized[Client]
       with Stack.Transformable[Client]
@@ -140,8 +139,8 @@ object ThriftMux
 
     override protected lazy val Stats(stats) = params[Stats]
 
-    protected val Thrift.param
-      .ProtocolFactory(protocolFactory) = params[Thrift.param.ProtocolFactory]
+    protected val Thrift.param.ProtocolFactory(protocolFactory) = params[
+      Thrift.param.ProtocolFactory]
 
     def withParams(ps: Stack.Params): Client =
       copy(muxer = muxer.withParams(ps))
@@ -163,8 +162,8 @@ object ThriftMux
     def withProtocolFactory(pf: TProtocolFactory): Client =
       configured(Thrift.param.ProtocolFactory(pf))
 
-    private[this] val Thrift.param
-      .ClientId(clientId) = params[Thrift.param.ClientId]
+    private[this] val Thrift.param.ClientId(clientId) = params[
+      Thrift.param.ClientId]
 
     private[this] object ThriftMuxToMux
         extends Filter[ThriftClientRequest, Array[
@@ -249,8 +248,7 @@ object ThriftMux
       super.configured(psp)
   }
 
-  val client: ThriftMux.Client = Client()
-    .configured(Label("thrift"))
+  val client: ThriftMux.Client = Client().configured(Label("thrift"))
     .configured(Stats(ClientStatsReceiver))
 
   protected lazy val Label(defaultClientName) = client.params[Label]
@@ -323,8 +321,8 @@ object ThriftMux
     protected def newListener(): Listener[In, Out] = {
       val Stats(sr) = params[Stats]
       val scoped = sr.scope("thriftmux")
-      val Thrift.param
-        .ProtocolFactory(pf) = params[Thrift.param.ProtocolFactory]
+      val Thrift.param.ProtocolFactory(pf) = params[
+        Thrift.param.ProtocolFactory]
 
       // Create a Listener with a pipeline that can downgrade the connection
       // to vanilla thrift.
@@ -383,10 +381,8 @@ object ThriftMux
         service(request).rescue {
           case e @ RetryPolicy.RetryableWriteException(_) => Future.exception(e)
           case e if !e.isInstanceOf[TException] =>
-            val msg = UncaughtAppExceptionFilter.writeExceptionMessage(
-              request.body,
-              e,
-              protocolFactory)
+            val msg = UncaughtAppExceptionFilter
+              .writeExceptionMessage(request.body, e, protocolFactory)
             Future.value(mux.Response(msg))
         }
     }
@@ -425,8 +421,8 @@ object ThriftMux
 
     def params: Stack.Params = muxer.params
 
-    protected val Thrift.param
-      .ProtocolFactory(protocolFactory) = params[Thrift.param.ProtocolFactory]
+    protected val Thrift.param.ProtocolFactory(protocolFactory) = params[
+      Thrift.param.ProtocolFactory]
 
     override val Thrift.param.MaxReusableBufferSize(maxThriftBufferSize) =
       params[Thrift.param.MaxReusableBufferSize]
@@ -464,9 +460,8 @@ object ThriftMux
     def serve(
         addr: SocketAddress,
         factory: ServiceFactory[Array[Byte], Array[Byte]]): ListeningServer = {
-      muxer.serve(
-        addr,
-        MuxToArrayFilter.andThen(tracingFilter).andThen(factory))
+      muxer
+        .serve(addr, MuxToArrayFilter.andThen(tracingFilter).andThen(factory))
     }
 
     // Java-friendly forwarders
@@ -492,8 +487,7 @@ object ThriftMux
       super.configured(psp)
   }
 
-  val server: Server = Server()
-    .configured(Label("thrift"))
+  val server: Server = Server().configured(Label("thrift"))
     .configured(Stats(ServerStatsReceiver))
 
   def serve(

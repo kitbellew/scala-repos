@@ -25,8 +25,8 @@ import org.scalatest.BeforeAndAfterAll
 class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   test("test resolving property file as spark conf ") {
-    val keyStorePath =
-      new File(this.getClass.getResource("/keystore").toURI).getAbsolutePath
+    val keyStorePath = new File(this.getClass.getResource("/keystore").toURI)
+      .getAbsolutePath
     val trustStorePath =
       new File(this.getClass.getResource("/truststore").toURI).getAbsolutePath
 
@@ -34,8 +34,7 @@ class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
     val sslContext = SSLContext.getInstance("TLSv1.2")
     sslContext.init(null, null, null)
     val algorithms = sslContext.getServerSocketFactory.getDefaultCipherSuites
-      .take(2)
-      .toSet
+      .take(2).toSet
 
     val conf = new SparkConf
     conf.set("spark.ssl.enabled", "true")
@@ -64,8 +63,8 @@ class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("test resolving property with defaults specified ") {
-    val keyStorePath =
-      new File(this.getClass.getResource("/keystore").toURI).getAbsolutePath
+    val keyStorePath = new File(this.getClass.getResource("/keystore").toURI)
+      .getAbsolutePath
     val trustStorePath =
       new File(this.getClass.getResource("/truststore").toURI).getAbsolutePath
 
@@ -82,10 +81,8 @@ class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
     conf.set("spark.ssl.protocol", "SSLv3")
 
     val defaultOpts = SSLOptions.parse(conf, "spark.ssl", defaults = None)
-    val opts = SSLOptions.parse(
-      conf,
-      "spark.ui.ssl",
-      defaults = Some(defaultOpts))
+    val opts = SSLOptions
+      .parse(conf, "spark.ui.ssl", defaults = Some(defaultOpts))
 
     assert(opts.enabled === true)
     assert(opts.trustStore.isDefined === true)
@@ -104,8 +101,8 @@ class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("test whether defaults can be overridden ") {
-    val keyStorePath =
-      new File(this.getClass.getResource("/keystore").toURI).getAbsolutePath
+    val keyStorePath = new File(this.getClass.getResource("/keystore").toURI)
+      .getAbsolutePath
     val trustStorePath =
       new File(this.getClass.getResource("/truststore").toURI).getAbsolutePath
 
@@ -125,10 +122,8 @@ class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
     conf.set("spark.ssl.protocol", "SSLv3")
 
     val defaultOpts = SSLOptions.parse(conf, "spark.ssl", defaults = None)
-    val opts = SSLOptions.parse(
-      conf,
-      "spark.ui.ssl",
-      defaults = Some(defaultOpts))
+    val opts = SSLOptions
+      .parse(conf, "spark.ui.ssl", defaults = Some(defaultOpts))
 
     assert(opts.enabled === false)
     assert(opts.trustStore.isDefined === true)

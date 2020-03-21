@@ -22,8 +22,7 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
   def getOfflineClient: Fu[Client] =
     getEnabledClient(Client.offline.key) getOrElse fuccess(Client.offline)
   def updateClient(client: Client): Funit =
-    clientColl
-      .update(selectClient(client.key), client, upsert = true)
+    clientColl.update(selectClient(client.key), client, upsert = true)
       .void >> clientCache.remove(client.key)
   def updateClientInstance(
       client: Client,
@@ -35,24 +34,18 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
   def deleteClient(key: Client.Key) =
     clientColl.remove(selectClient(key)) >> clientCache.remove(key)
   def enableClient(key: Client.Key, v: Boolean): Funit =
-    clientColl
-      .update(
-        selectClient(key),
-        BSONDocument("$set" -> BSONDocument("enabled" -> v)))
-      .void >> clientCache.remove(key)
+    clientColl.update(
+      selectClient(key),
+      BSONDocument("$set" -> BSONDocument("enabled" -> v))).void >> clientCache
+      .remove(key)
   def allRecentClients =
-    clientColl
-      .find(BSONDocument(
-        "instance.seenAt" -> BSONDocument(
-          "$gt" -> Client.Instance.recentSince)))
-      .cursor[Client]()
-      .collect[List]()
+    clientColl.find(BSONDocument(
+      "instance.seenAt" -> BSONDocument("$gt" -> Client.Instance.recentSince)))
+      .cursor[Client]().collect[List]()
   def lichessClients =
-    clientColl
-      .find(BSONDocument(
-        "enabled" -> true,
-        "userId" -> BSONDocument("$regex" -> "^lichess-")))
-      .cursor[Client]()
+    clientColl.find(BSONDocument(
+      "enabled" -> true,
+      "userId" -> BSONDocument("$regex" -> "^lichess-"))).cursor[Client]()
       .collect[List]()
 
   def addAnalysis(ana: Work.Analysis) = analysisColl.insert(ana).void
@@ -71,8 +64,7 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
       BSONDocument("acquired" -> BSONDocument("$exists" -> acquired)).some)
 
   def getSimilarAnalysis(work: Work.Analysis): Fu[Option[Work.Analysis]] =
-    analysisColl
-      .find(BSONDocument("game.id" -> work.game.id))
+    analysisColl.find(BSONDocument("game.id" -> work.game.id))
       .one[Work.Analysis]
 
   def selectWork(id: Work.Id) = BSONDocument("_id" -> id.value)

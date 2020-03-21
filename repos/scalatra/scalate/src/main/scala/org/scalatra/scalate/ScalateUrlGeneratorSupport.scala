@@ -11,8 +11,7 @@ trait ScalateUrlGeneratorSupport extends ScalateSupport {
   lazy val reflectRoutes: Map[String, Route] = this.getClass.getDeclaredMethods
     .filter(_.getParameterTypes.isEmpty)
     .filter(f => classOf[Route].isAssignableFrom(f.getReturnType))
-    .map(f => (f.getName, f.invoke(this).asInstanceOf[Route]))
-    .toMap
+    .map(f => (f.getName, f.invoke(this).asInstanceOf[Route])).toMap
 
   override protected def createTemplateEngine(config: ConfigT) = {
     val engine = super.createTemplateEngine(config)

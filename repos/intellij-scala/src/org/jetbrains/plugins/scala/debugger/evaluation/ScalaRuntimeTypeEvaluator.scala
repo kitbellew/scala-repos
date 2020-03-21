@@ -70,8 +70,7 @@ abstract class ScalaRuntimeTypeEvaluator(
     if (value != null) {
       inReadAction {
         Option(getCastableRuntimeType(project, value))
-          .map(new PsiImmediateClassType(_, PsiSubstitutor.EMPTY))
-          .orNull
+          .map(new PsiImmediateClassType(_, PsiSubstitutor.EMPTY)).orNull
       }
     } else
       throw EvaluationException(
@@ -81,8 +80,8 @@ abstract class ScalaRuntimeTypeEvaluator(
 
 object ScalaRuntimeTypeEvaluator {
 
-  val KEY: Key[ScExpression => ScType] = Key.create(
-    "SCALA_RUNTIME_TYPE_EVALUATOR")
+  val KEY: Key[ScExpression => ScType] = Key
+    .create("SCALA_RUNTIME_TYPE_EVALUATOR")
 
   def getCastableRuntimeType(project: Project, value: Value): PsiClass = {
     val unwrapped = DebuggerUtil.unwrapScalaRuntimeObjectRef(value)
@@ -102,9 +101,7 @@ object ScalaRuntimeTypeEvaluator {
           if (psiClass != null) { return psiClass }
         }
         import scala.collection.JavaConversions._
-        classType.interfaces
-          .map(findPsiClass(project, _))
-          .find(_ != null)
+        classType.interfaces.map(findPsiClass(project, _)).find(_ != null)
           .orNull
       case _ => null
     }
@@ -113,8 +110,7 @@ object ScalaRuntimeTypeEvaluator {
   private def findPsiClass(project: Project, jdiType: Type): PsiClass = {
     val token: AccessToken = ReadAction.start
     try {
-      ScalaPsiManager
-        .instance(project)
+      ScalaPsiManager.instance(project)
         .getCachedClass(GlobalSearchScope.allScope(project), jdiType.name())
         .orNull
     } finally { token.finish() }

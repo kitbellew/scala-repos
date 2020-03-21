@@ -143,12 +143,10 @@ trait MongoDocumentMeta[BaseDocument]
     val findOpts = opts.toList
 
     MongoDB.useCollection(connectionIdentifier, collectionName)(coll => {
-      val cur = coll
-        .find(qry)
-        .limit(
-          findOpts.find(_.isInstanceOf[Limit]).map(x => x.value).getOrElse(0))
-        .skip(
-          findOpts.find(_.isInstanceOf[Skip]).map(x => x.value).getOrElse(0))
+      val cur = coll.find(qry).limit(
+        findOpts.find(_.isInstanceOf[Limit]).map(x => x.value).getOrElse(0))
+        .skip(findOpts.find(_.isInstanceOf[Skip]).map(x => x.value).getOrElse(
+          0))
       sort.foreach(s => cur.sort(s))
 
       /** Mongo Cursors are both Iterable and Iterator,

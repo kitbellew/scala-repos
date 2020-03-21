@@ -28,12 +28,10 @@ object UnreachableNodeJoinsAgainMultiNodeConfig extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(
-    ConfigFactory
-      .parseString("""
+    ConfigFactory.parseString("""
       akka.remote.log-remote-lifecycle-events = off
-    """)
-      .withFallback(debugConfig(on = false).withFallback(
-        MultiNodeClusterSpec.clusterConfig)))
+    """).withFallback(
+      debugConfig(on = false).withFallback(MultiNodeClusterSpec.clusterConfig)))
 
   testTransport(on = true)
 
@@ -172,8 +170,8 @@ abstract class UnreachableNodeJoinsAgainSpec
       }
 
       runOn(victim) {
-        val victimAddress =
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+        val victimAddress = system.asInstanceOf[ExtendedActorSystem].provider
+          .getDefaultAddress
         Await.ready(system.whenTerminated, 10 seconds)
         // create new ActorSystem with same host:port
         val freshSystem = ActorSystem(

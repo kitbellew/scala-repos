@@ -66,23 +66,17 @@ object DebuggerTestUtil {
     import java.io._
     def isJDK(f: File) =
       f.listFiles().exists { b =>
-        b.getName == "bin" && b
-          .listFiles()
+        b.getName == "bin" && b.listFiles()
           .exists(x => x.getName == "javac.exe" || x.getName == "javac")
       }
     def inJvm(path: String, suffix: String) = {
       val postfix =
         if (path.startsWith("/Library")) "/Contents/Home"
         else "" // mac workaround
-      Option(new File(path))
-        .filter(_.exists())
-        .flatMap(
-          _.listFiles()
-            .sortBy(_.getName)
-            .reverse
-            .find(f =>
-              f.getName.contains(suffix) && isJDK(new File(f, postfix)))
-            .map(new File(_, s"$postfix/jre").getAbsolutePath))
+      Option(new File(path)).filter(_.exists()).flatMap(
+        _.listFiles().sortBy(_.getName).reverse.find(f =>
+          f.getName.contains(suffix) && isJDK(new File(f, postfix)))
+        .map(new File(_, s"$postfix/jre").getAbsolutePath))
     }
     def currentJava() = {
       sys.props.get("java.version") match {

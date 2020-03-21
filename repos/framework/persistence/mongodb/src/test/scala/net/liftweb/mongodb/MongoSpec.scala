@@ -55,9 +55,7 @@ class MongoSpec extends Specification {
   "Mongo" should {
 
     "Define DB with MongoClient instance" in {
-      val opts = MongoClientOptions.builder
-        .connectionsPerHost(12)
-        .build
+      val opts = MongoClientOptions.builder.connectionsPerHost(12).build
       passDefinitionTests(
         TestMongoIdentifier,
         new MongoClient(new ServerAddress("localhost"), opts),

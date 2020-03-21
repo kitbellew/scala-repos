@@ -44,9 +44,8 @@ object Correlations {
 
     val parser = new OptionParser[Params]("Correlations") {
       head("Correlations: an example app for computing correlations")
-      opt[String]("input")
-        .text(
-          s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
+      opt[String]("input").text(
+        s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
         .action((x, c) => c.copy(input = x))
       note(
         """

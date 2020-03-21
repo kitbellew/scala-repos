@@ -72,15 +72,13 @@ class DriverDataSource(
           if (driverObject eq null) {
             if (driverClassName ne null) {
               DriverManager.getDrivers.asScala
-                .find(_.getClass.getName == driverClassName)
-                .getOrElse {
+                .find(_.getClass.getName == driverClassName).getOrElse {
                   logger.debug(
                     s"Driver $driverClassName not already registered; trying to load it")
                   val cl = classLoader.loadClass(driverClassName)
                   registered = true
                   DriverManager.getDrivers.asScala
-                    .find(_.getClass.getName == driverClassName)
-                    .getOrElse {
+                    .find(_.getClass.getName == driverClassName).getOrElse {
                       logger.debug(
                         s"Loaded driver $driverClassName but it did not register with DriverManager; trying to instantiate directly")
                       try cl.newInstance.asInstanceOf[Driver]

@@ -50,8 +50,8 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
   private val index = new IndexService(config.cacheDir / ("index-" + version))
   private val db = new DatabaseService(config.cacheDir / ("sql-" + version))
 
-  implicit val workerEC = actorSystem.dispatchers.lookup(
-    "akka.search-service-dispatcher")
+  implicit val workerEC = actorSystem.dispatchers
+    .lookup("akka.search-service-dispatcher")
 
   private def scan(f: FileObject) =
     f.findFiles(ClassfileSelector) match {
@@ -111,8 +111,8 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
       if (!outOfDate) Future.successful(None)
       else {
         val check = FileCheck(base)
-        extractSymbolsFromClassOrJar(base).flatMap(
-          persist(check, _, commitIndex = false))
+        extractSymbolsFromClassOrJar(base)
+          .flatMap(persist(check, _, commitIndex = false))
       }
     }
 
@@ -121,16 +121,14 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
         bases: Set[FileObject],
         checks: Seq[FileCheck]): Future[Int] = {
       log.info("Indexing bases...")
-      val checksLookup: Map[String, FileCheck] =
-        checks.map(check => (check.filename -> check)).toMap
+      val checksLookup: Map[String, FileCheck] = checks
+        .map(check => (check.filename -> check)).toMap
       val basesWithChecks: Set[(FileObject, Option[FileCheck])] = bases.map {
         base => (base, checksLookup.get(base.getName().getURI()))
       }
-      Future
-        .sequence(basesWithChecks.map {
-          case (file, check) => indexBase(file, check)
-        })
-        .map(_.flatten.sum)
+      Future.sequence(basesWithChecks.map {
+        case (file, check) => indexBase(file, check)
+      }).map(_.flatten.sum)
     }
 
     def commitIndex(): Future[Unit] =
@@ -283,9 +281,8 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
    * the list of symbols is non-empty.
    */
 
-  val backlogActor = actorSystem.actorOf(
-    Props(new IndexingQueueActor(this)),
-    "ClassfileIndexer")
+  val backlogActor = actorSystem
+    .actorOf(Props(new IndexingQueueActor(this)), "ClassfileIndexer")
 
   // deletion in both Lucene and H2 is really slow, batching helps
   def deleteInBatches(
@@ -352,37 +349,34 @@ class IndexingQueueActor(searchService: SearchService)
 
       log.debug(s"Indexing ${batch.size} files")
 
-      Future
-        .sequence(batch.map {
-          case (_, f) =>
-            if (!f.exists()) Future.successful(f -> Nil)
-            else searchService.extractSymbolsFromClassOrJar(f).map(f ->)
-        })
-        .onComplete {
-          case Failure(t) =>
-            log.error(s"failed to index batch of ${batch.size} files", t)
-          case Success(indexed) =>
-            searchService
-              .delete(indexed.map(_._1)(collection.breakOut))
-              .onComplete {
-                case Failure(t) =>
-                  log.error(
-                    s"failed to remove stale entries in ${batch.size} files",
-                    t)
-                case Success(_) => indexed.collect {
-                    case (file, syms) if syms.isEmpty =>
-                    case (file, syms) =>
-                      searchService
-                        .persist(FileCheck(file), syms, commitIndex = true)
-                        .onComplete {
-                          case Failure(t) =>
-                            log.error(s"failed to persist entries in $file", t)
-                          case Success(_) =>
-                        }
-                  }
-              }
+      Future.sequence(batch.map {
+        case (_, f) =>
+          if (!f.exists()) Future.successful(f -> Nil)
+          else searchService.extractSymbolsFromClassOrJar(f).map(f ->)
+      }).onComplete {
+        case Failure(t) =>
+          log.error(s"failed to index batch of ${batch.size} files", t)
+        case Success(indexed) =>
+          searchService.delete(indexed.map(_._1)(collection.breakOut))
+            .onComplete {
+              case Failure(t) =>
+                log.error(
+                  s"failed to remove stale entries in ${batch.size} files",
+                  t)
+              case Success(_) => indexed.collect {
+                  case (file, syms) if syms.isEmpty =>
+                  case (file, syms) =>
+                    searchService
+                      .persist(FileCheck(file), syms, commitIndex = true)
+                      .onComplete {
+                        case Failure(t) =>
+                          log.error(s"failed to persist entries in $file", t)
+                        case Success(_) =>
+                      }
+                }
+            }
 
-        }
+      }
   }
 
 }

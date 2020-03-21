@@ -143,8 +143,8 @@ object Storage extends Logging {
 
   private val repositoriesPrefix = "PIO_STORAGE_REPOSITORIES"
 
-  private val repositoryNamesRegex =
-    """PIO_STORAGE_REPOSITORIES_([^_]+)_NAME""".r
+  private val repositoryNamesRegex = """PIO_STORAGE_REPOSITORIES_([^_]+)_NAME"""
+    .r
 
   private val repositoryKeys: Seq[String] = sys.env.keys.toSeq.flatMap { k =>
     repositoryNamesRegex findFirstIn k match {
@@ -166,25 +166,23 @@ object Storage extends Logging {
     }
   }
   private val repositoriesToDataObjectMeta: Map[String, DataObjectMeta] =
-    repositoryKeys
-      .map(r =>
-        try {
-          val keyedPath = repositoriesPrefixPath(r)
-          val name = sys.env(prefixPath(keyedPath, "NAME"))
-          val sourceName = sys.env(prefixPath(keyedPath, "SOURCE"))
-          if (sourceKeys.contains(sourceName)) {
-            r -> DataObjectMeta(sourceName = sourceName, namespace = name)
-          } else {
-            error(s"$sourceName is not a configured storage source.")
-            r -> DataObjectMeta("", "")
-          }
-        } catch {
-          case e: Throwable =>
-            error(e.getMessage)
-            errors += 1
-            r -> DataObjectMeta("", "")
-        })
-      .toMap
+    repositoryKeys.map(r =>
+      try {
+        val keyedPath = repositoriesPrefixPath(r)
+        val name = sys.env(prefixPath(keyedPath, "NAME"))
+        val sourceName = sys.env(prefixPath(keyedPath, "SOURCE"))
+        if (sourceKeys.contains(sourceName)) {
+          r -> DataObjectMeta(sourceName = sourceName, namespace = name)
+        } else {
+          error(s"$sourceName is not a configured storage source.")
+          r -> DataObjectMeta("", "")
+        }
+      } catch {
+        case e: Throwable =>
+          error(e.getMessage)
+          errors += 1
+          r -> DataObjectMeta("", "")
+      }).toMap
 
   if (errors > 0) {
     error(s"There were $errors configuration errors. Exiting.")
@@ -213,19 +211,13 @@ object Storage extends Logging {
       pkg: String): BaseStorageClient = {
     val className = "io.prediction.data.storage." + pkg + ".StorageClient"
     try {
-      Class
-        .forName(className)
-        .getConstructors()(0)
-        .newInstance(clientConfig)
+      Class.forName(className).getConstructors()(0).newInstance(clientConfig)
         .asInstanceOf[BaseStorageClient]
     } catch {
       case e: ClassNotFoundException =>
         val originalClassName = pkg + ".StorageClient"
-        Class
-          .forName(originalClassName)
-          .getConstructors()(0)
-          .newInstance(clientConfig)
-          .asInstanceOf[BaseStorageClient]
+        Class.forName(originalClassName).getConstructors()(0)
+          .newInstance(clientConfig).asInstanceOf[BaseStorageClient]
       case e: java.lang.reflect.InvocationTargetException => throw e.getCause
     }
   }
@@ -245,8 +237,7 @@ object Storage extends Logging {
     try {
       val keyedPath = sourcesPrefixPath(k)
       val sourceType = sys.env(prefixPath(keyedPath, "TYPE"))
-      val props = sys.env
-        .filter(t => t._1.startsWith(keyedPath))
+      val props = sys.env.filter(t => t._1.startsWith(keyedPath))
         .map(t => t._1.replace(s"${keyedPath}_", "") -> t._2)
       val clientConfig = StorageClientConfig(
         properties = props,
@@ -359,9 +350,8 @@ object Storage extends Logging {
     info("Test writing to Event Store (App Id 0)...")
     // use appId=0 for testing purpose
     eventsDb.init(0)
-    eventsDb.insert(
-      Event(event = "test", entityType = "test", entityId = "test"),
-      0)
+    eventsDb
+      .insert(Event(event = "test", entityType = "test", entityId = "test"), 0)
     eventsDb.remove(0)
     eventsDb.close()
   }
@@ -402,14 +392,11 @@ object Storage extends Logging {
   def config: Map[String, Map[String, Map[String, String]]] =
     Map("sources" -> s2cm.toMap.map {
       case (source, clientMeta) =>
-        source -> clientMeta
-          .map { cm =>
-            Map(
-              "type" -> cm.sourceType,
-              "config" -> cm.config.properties
-                .map(t => s"${t._1} -> ${t._2}")
-                .mkString(", "))
-          }
-          .getOrElse(Map.empty)
+        source -> clientMeta.map { cm =>
+          Map(
+            "type" -> cm.sourceType,
+            "config" -> cm.config.properties.map(t => s"${t._1} -> ${t._2}")
+              .mkString(", "))
+        }.getOrElse(Map.empty)
     })
 }

@@ -29,8 +29,7 @@ class HistoryServerArgumentsSuite extends SparkFunSuite {
   private val logDir = new File("src/test/resources/spark-events")
   private val conf = new SparkConf()
     .set("spark.history.fs.logDirectory", logDir.getAbsolutePath)
-    .set("spark.history.fs.updateInterval", "1")
-    .set("spark.testing", "true")
+    .set("spark.history.fs.updateInterval", "1").set("spark.testing", "true")
 
   test("No Arguments Parsing") {
     val argStrings = Array[String]()
@@ -44,24 +43,20 @@ class HistoryServerArgumentsSuite extends SparkFunSuite {
     val argStrings = Array("--dir", "src/test/resources/spark-events1")
     val hsa = new HistoryServerArguments(conf, argStrings)
     assert(
-      conf.get(
-        "spark.history.fs.logDirectory") === "src/test/resources/spark-events1")
+      conf.get("spark.history.fs.logDirectory") === "src/test/resources/spark-events1")
   }
 
   test("Directory Param can also be set directly") {
     val argStrings = Array("src/test/resources/spark-events2")
     val hsa = new HistoryServerArguments(conf, argStrings)
     assert(
-      conf.get(
-        "spark.history.fs.logDirectory") === "src/test/resources/spark-events2")
+      conf.get("spark.history.fs.logDirectory") === "src/test/resources/spark-events2")
   }
 
   test("Properties File Arguments Parsing --properties-file") {
     val tmpDir = Utils.createTempDir()
-    val outFile = File.createTempFile(
-      "test-load-spark-properties",
-      "test",
-      tmpDir)
+    val outFile = File
+      .createTempFile("test-load-spark-properties", "test", tmpDir)
     try {
       Files.write(
         "spark.test.CustomPropertyA blah\n" +

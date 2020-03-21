@@ -69,9 +69,8 @@ final class UUID private (
   def timestamp(): Long = {
     if (version() != TimeBased)
       throw new UnsupportedOperationException("Not a time-based UUID")
-    (((i2 >>> 16) | ((i2 & 0x0fff) << 16)).toLong << 32) | (
-      i1.toLong & 0xFFFFFFFFL
-    )
+    (((i2 >>> 16) | ((i2 & 0x0fff) << 16)).toLong << 32) | (i1
+      .toLong & 0xFFFFFFFFL)
   }
 
   def clockSequence(): Int = {
@@ -152,8 +151,8 @@ object UUID {
       (parseInt(his, 16) << 16) | parseInt(los, 16)
 
     if (name.length != 36 || name.charAt(8) != '-' ||
-        name.charAt(13) != '-' || name.charAt(18) != '-' || name.charAt(
-          23) != '-') fail()
+        name.charAt(13) != '-' || name.charAt(18) != '-' || name
+          .charAt(23) != '-') fail()
 
     try {
       val i1 = parseHex8(name.substring(0, 4), name.substring(4, 8))

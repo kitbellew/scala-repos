@@ -33,13 +33,11 @@ object RankingMetricsExample {
     import sqlContext.implicits._
     // $example on$
     // Read in the ratings data
-    val ratings = sc
-      .textFile("data/mllib/sample_movielens_data.txt")
-      .map { line =>
+    val ratings = sc.textFile("data/mllib/sample_movielens_data.txt").map {
+      line =>
         val fields = line.split("::")
         Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble - 2.5)
-      }
-      .cache()
+    }.cache()
 
     // Map ratings to 1 or 0, 1 indicating a movie that should be recommended
     val binarizedRatings = ratings
@@ -97,8 +95,7 @@ object RankingMetricsExample {
     }
 
     // Get predictions for each data point
-    val allPredictions = model
-      .predict(ratings.map(r => (r.user, r.product)))
+    val allPredictions = model.predict(ratings.map(r => (r.user, r.product)))
       .map(r => ((r.user, r.product), r.rating))
     val allRatings = ratings.map(r => ((r.user, r.product), r.rating))
     val predictionsAndLabels = allPredictions.join(allRatings).map {

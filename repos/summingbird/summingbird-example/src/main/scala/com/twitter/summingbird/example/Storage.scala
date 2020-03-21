@@ -38,19 +38,12 @@ object Memcache {
   val DEFAULT_TIMEOUT = 1.seconds
 
   def client = {
-    val builder = ClientBuilder()
-      .name("memcached")
-      .retries(2)
-      .tcpConnectTimeout(DEFAULT_TIMEOUT)
-      .requestTimeout(DEFAULT_TIMEOUT)
-      .connectTimeout(DEFAULT_TIMEOUT)
-      .readerIdleTimeout(DEFAULT_TIMEOUT)
-      .hostConnectionLimit(1)
-      .codec(Memcached())
+    val builder = ClientBuilder().name("memcached").retries(2)
+      .tcpConnectTimeout(DEFAULT_TIMEOUT).requestTimeout(DEFAULT_TIMEOUT)
+      .connectTimeout(DEFAULT_TIMEOUT).readerIdleTimeout(DEFAULT_TIMEOUT)
+      .hostConnectionLimit(1).codec(Memcached())
 
-    KetamaClientBuilder()
-      .clientBuilder(builder)
-      .nodes("localhost:11211")
+    KetamaClientBuilder().clientBuilder(builder).nodes("localhost:11211")
       .build()
   }
 
@@ -62,17 +55,13 @@ object Memcache {
     key: T =>
       def concat(bytes: Array[Byte]): Array[Byte] = namespace.getBytes ++ bytes
 
-      (inj
-        .andThen(concat _)
-        .andThen(HashEncoder())
-        .andThen(Bijection.connect[Array[Byte], Base64String]))(key)
-        .str
+      (inj.andThen(concat _).andThen(HashEncoder())
+        .andThen(Bijection.connect[Array[Byte], Base64String]))(key).str
   }
 
   def store[K: Codec, V: Codec](keyPrefix: String): Store[K, V] = {
     implicit val valueToBuf = Injection.connect[V, Array[Byte], ChannelBuffer]
-    MemcacheStore(client)
-      .convert(keyEncoder[K](keyPrefix))
+    MemcacheStore(client).convert(keyEncoder[K](keyPrefix))
   }
 
   def mergeable[K: Codec, V: Codec: Monoid](

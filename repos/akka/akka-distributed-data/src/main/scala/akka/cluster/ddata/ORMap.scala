@@ -175,8 +175,7 @@ final class ORMap[A <: ReplicatedData] private[akka] (
             throw new IllegalArgumentException(errMsg)
           }
           // TODO can we get rid of these (safe) casts?
-          val mergedValue = thisValue
-            .merge(thatValue.asInstanceOf[thisValue.T])
+          val mergedValue = thisValue.merge(thatValue.asInstanceOf[thisValue.T])
             .asInstanceOf[A]
           mergedValues = mergedValues.updated(key, mergedValue)
         case (Some(thisValue), None) ⇒

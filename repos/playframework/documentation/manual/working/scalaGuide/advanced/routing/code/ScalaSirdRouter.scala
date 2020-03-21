@@ -23,8 +23,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#simple
 
-      router.routes
-        .lift(FakeRequest("GET", "/hello/world")) must beSome[Handler]
+      router.routes.lift(FakeRequest("GET", "/hello/world")) must beSome[
+        Handler]
       router.routes.lift(FakeRequest("GET", "/goodbye/world")) must beNone
     }
 
@@ -36,8 +36,9 @@ object ScalaSirdRouter extends Specification {
       }
       //#full-path
 
-      router.routes.lift(
-        FakeRequest("GET", "/assets/javascripts/main.js")) must beSome[Handler]
+      router.routes
+        .lift(FakeRequest("GET", "/assets/javascripts/main.js")) must beSome[
+        Handler]
       router.routes.lift(FakeRequest("GET", "/foo/bar")) must beNone
     }
 
@@ -61,8 +62,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#required
 
-      router.routes
-        .lift(FakeRequest("GET", "/search?query=foo")) must beSome[Handler]
+      router.routes.lift(FakeRequest("GET", "/search?query=foo")) must beSome[
+        Handler]
       router.routes.lift(FakeRequest("GET", "/search")) must beNone
     }
 
@@ -76,8 +77,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#optional
 
-      router.routes
-        .lift(FakeRequest("GET", "/items?page=10")) must beSome[Handler]
+      router.routes.lift(FakeRequest("GET", "/items?page=10")) must beSome[
+        Handler]
       router.routes.lift(FakeRequest("GET", "/items")) must beSome[Handler]
     }
 
@@ -91,8 +92,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#many
 
-      router.routes
-        .lift(FakeRequest("GET", "/items?tag=a&tag=b")) must beSome[Handler]
+      router.routes.lift(FakeRequest("GET", "/items?tag=a&tag=b")) must beSome[
+        Handler]
       router.routes.lift(FakeRequest("GET", "/items")) must beSome[Handler]
     }
 
@@ -110,8 +111,9 @@ object ScalaSirdRouter extends Specification {
       }
       //#multiple
 
-      router.routes.lift(
-        FakeRequest("GET", "/items?page=10&per_page=20")) must beSome[Handler]
+      router.routes
+        .lift(FakeRequest("GET", "/items?page=10&per_page=20")) must beSome[
+        Handler]
       router.routes.lift(FakeRequest("GET", "/items")) must beSome[Handler]
     }
 
@@ -136,8 +138,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#query-int
 
-      router.routes
-        .lift(FakeRequest("GET", "/items?page=21")) must beSome[Handler]
+      router.routes.lift(FakeRequest("GET", "/items?page=21")) must beSome[
+        Handler]
       router.routes.lift(FakeRequest("GET", "/items?page=foo")) must beNone
       router.routes.lift(FakeRequest("GET", "/items")) must beSome[Handler]
     }
@@ -152,8 +154,8 @@ object ScalaSirdRouter extends Specification {
       }
       //#complex
 
-      router.routes
-        .lift(FakeRequest("GET", "/items/21?price=400")) must beSome[Handler]
+      router.routes.lift(FakeRequest("GET", "/items/21?price=400")) must beSome[
+        Handler]
       router.routes.lift(FakeRequest("GET", "/items/21?price=foo")) must beNone
       router.routes.lift(FakeRequest("GET", "/items/foo?price=400")) must beNone
     }

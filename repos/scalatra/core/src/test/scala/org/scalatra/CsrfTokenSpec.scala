@@ -53,8 +53,8 @@ object CsrfTokenSpec extends MutableScalatraSpec {
         token = ("value=\"(\\w+)\"".r findFirstMatchIn body).get.subgroups.head
       }
       get("/renderForm") {
-        val token2 =
-          ("value=\"(\\w+)\"".r findFirstMatchIn body).get.subgroups.head
+        val token2 = ("value=\"(\\w+)\"".r findFirstMatchIn body).get.subgroups
+          .head
         token must be_==(token2)
       }
       post("/renderForm", CsrfTokenSupport.DefaultKey -> token) {

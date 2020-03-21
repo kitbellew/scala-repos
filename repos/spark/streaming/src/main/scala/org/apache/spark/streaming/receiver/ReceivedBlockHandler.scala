@@ -91,11 +91,8 @@ private[streaming] class BlockManagerBasedBlockHandler(
           tellMaster = true)
       case IteratorBlock(iterator) =>
         val countIterator = new CountingIterator(iterator)
-        val putResult = blockManager.putIterator(
-          blockId,
-          countIterator,
-          storageLevel,
-          tellMaster = true)
+        val putResult = blockManager
+          .putIterator(blockId, countIterator, storageLevel, tellMaster = true)
         numRecords = countIterator.count
         putResult
       case ByteBufferBlock(byteBuffer) =>
@@ -147,8 +144,8 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
     extends ReceivedBlockHandler
     with Logging {
 
-  private val blockStoreTimeout =
-    conf.getInt("spark.streaming.receiver.blockStoreTimeout", 30).seconds
+  private val blockStoreTimeout = conf
+    .getInt("spark.streaming.receiver.blockStoreTimeout", 30).seconds
 
   private val effectiveStorageLevel = {
     if (storageLevel.deserialized) {
@@ -234,8 +231,7 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
 
     // Combine the futures, wait for both to complete, and return the write ahead log record handle
     val combinedFuture = storeInBlockManagerFuture
-      .zip(storeInWriteAheadLogFuture)
-      .map(_._2)
+      .zip(storeInWriteAheadLogFuture).map(_._2)
     val walRecordHandle = Await.result(combinedFuture, blockStoreTimeout)
     WriteAheadLogBasedStoreResult(blockId, numRecords, walRecordHandle)
   }
@@ -252,9 +248,8 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
 
 private[streaming] object WriteAheadLogBasedBlockHandler {
   def checkpointDirToLogDir(checkpointDir: String, streamId: Int): String = {
-    new Path(
-      checkpointDir,
-      new Path("receivedData", streamId.toString)).toString
+    new Path(checkpointDir, new Path("receivedData", streamId.toString))
+      .toString
   }
 }
 

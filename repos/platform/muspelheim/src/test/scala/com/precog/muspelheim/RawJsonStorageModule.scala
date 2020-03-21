@@ -92,8 +92,7 @@ trait RawJsonStorageModule[M[+_]] {
       val structure: Set[ColumnRef] = json.elements
         .foldLeft(Map.empty[ColumnRef, ArrayColumn[_]]) { (acc, jv) =>
           Slice.withIdsAndValues(jv, acc, 0, 1)
-        }
-        .keySet
+        }.keySet
       structures += (path -> structure)
     }
   }
@@ -104,8 +103,7 @@ trait RawJsonStorageModule[M[+_]] {
   import java.util.regex.Pattern
 
   val reflections = new Reflections(
-    new ConfigurationBuilder()
-      .setUrls(ClasspathHelper.forPackage("test_data"))
+    new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage("test_data"))
       .setScanners(new ResourcesScanner()))
   val jsonFiles = reflections.getResources(Pattern.compile(".*\\.json"))
   for (resource <- jsonFiles.asScala)
@@ -118,10 +116,8 @@ trait RawJsonStorageModule[M[+_]] {
         apiKey: APIKey,
         path: Path): EitherT[M, ResourceError, Set[PathMetadata]] =
       EitherT.right {
-        M.point(
-          projections.keySet
-            .filter(_.isDirectChildOf(path))
-            .map(PathMetadata(_, DataOnly(FileContent.XQuirrelData))))
+        M.point(projections.keySet.filter(_.isDirectChildOf(path)).map(
+          PathMetadata(_, DataOnly(FileContent.XQuirrelData))))
       }
 
     def pathStructure(
@@ -132,14 +128,13 @@ trait RawJsonStorageModule[M[+_]] {
       EitherT.right {
         M.point {
           val structs = structures.getOrElse(path, Set.empty[ColumnRef])
-          val types: Map[CType, Long] = structs
-            .collect {
-              // FIXME: This should use real counts
-              case ColumnRef(selector, ctype) if selector.hasPrefix(selector) =>
-                (ctype, 0L)
-            }
-            .groupBy(_._1)
-            .map { case (tpe, values) => (tpe, values.map(_._2).sum) }
+          val types: Map[CType, Long] = structs.collect {
+            // FIXME: This should use real counts
+            case ColumnRef(selector, ctype) if selector.hasPrefix(selector) =>
+              (ctype, 0L)
+          }.groupBy(_._1).map {
+            case (tpe, values) => (tpe, values.map(_._2).sum)
+          }
 
           PathStructure(types, structs.map(_.selector))
         }
@@ -196,8 +191,8 @@ trait RawJsonColumnarTableStorageModule[M[+_]]
           new CReducer[Set[Path]] {
             def reduce(schema: CSchema, range: Range): Set[Path] = {
               schema.columns(JObjectFixedT(Map("value" -> JTextT))) flatMap {
-                case s: StrColumn =>
-                  range.filter(s.isDefinedAt).map(i => Path(s(i)))
+                case s: StrColumn => range.filter(s.isDefinedAt)
+                    .map(i => Path(s(i)))
                 case _ => Set()
               }
             }

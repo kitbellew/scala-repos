@@ -57,8 +57,7 @@ object DevModeBuild {
     println(s"Connecting to server: attempt $attempts")
     try {
       val url = new java.net.URL("http://localhost:9000")
-      val connection = url
-        .openConnection()
+      val connection = url.openConnection()
         .asInstanceOf[java.net.HttpURLConnection]
       connection.connect()
       connection match {

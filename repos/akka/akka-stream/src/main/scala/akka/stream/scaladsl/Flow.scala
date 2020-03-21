@@ -76,8 +76,7 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     } else {
       val flowCopy = flow.module.carbonCopy
       new Flow(
-        module
-          .fuse(flowCopy, shape.out, flowCopy.shape.inlets.head, combine)
+        module.fuse(flowCopy, shape.out, flowCopy.shape.inlets.head, combine)
           .replaceShape(FlowShape(shape.in, flowCopy.shape.outlets.head)))
     }
 
@@ -123,14 +122,12 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
   def toMat[Mat2, Mat3](sink: Graph[SinkShape[Out], Mat2])(
       combine: (Mat, Mat2) ⇒ Mat3): Sink[In, Mat3] = {
     if (isIdentity)
-      Sink
-        .fromGraph(sink.asInstanceOf[Graph[SinkShape[In], Mat2]])
+      Sink.fromGraph(sink.asInstanceOf[Graph[SinkShape[In], Mat2]])
         .mapMaterializedValue(combine(NotUsed.asInstanceOf[Mat], _))
     else {
       val sinkCopy = sink.module.carbonCopy
       new Sink(
-        module
-          .fuse(sinkCopy, shape.out, sinkCopy.shape.inlets.head, combine)
+        module.fuse(sinkCopy, shape.out, sinkCopy.shape.inlets.head, combine)
           .replaceShape(SinkShape(shape.in)))
     }
   }
@@ -176,8 +173,7 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
       combine: (Mat, Mat2) ⇒ Mat3): RunnableGraph[Mat3] = {
     val flowCopy = flow.module.carbonCopy
     RunnableGraph(
-      module
-        .compose(flowCopy, combine)
+      module.compose(flowCopy, combine)
         .wire(shape.out, flowCopy.shape.inlets.head)
         .wire(flowCopy.shape.outlets.head, shape.in))
   }
@@ -228,11 +224,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     val ins = copy.shape.inlets
     val outs = copy.shape.outlets
     new Flow(
-      module
-        .compose(copy, combine)
-        .wire(shape.out, ins.head)
-        .wire(outs(1), shape.in)
-        .replaceShape(FlowShape(ins(1), outs.head)))
+      module.compose(copy, combine).wire(shape.out, ins.head)
+        .wire(outs(1), shape.in).replaceShape(FlowShape(ins(1), outs.head)))
   }
 
   /** INTERNAL API */
@@ -242,10 +235,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     //No need to copy here, op is a fresh instance
     if (this.isIdentity) new Flow(op).asInstanceOf[Repr[U]]
     else
-      new Flow(
-        module
-          .fuse(op, shape.out, op.inPort)
-          .replaceShape(FlowShape(shape.in, op.outPort)))
+      new Flow(module.fuse(op, shape.out, op.inPort).replaceShape(
+        FlowShape(shape.in, op.outPort)))
   }
 
   // FIXME: Only exists to keep old stuff alive
@@ -256,9 +247,8 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     if (this.isIdentity) new Flow(op).asInstanceOf[ReprMat[U, Mat2]]
     else
       new Flow[In, U, Mat2](
-        module
-          .fuse(op, shape.out, op.inPort, Keep.right)
-          .replaceShape(FlowShape(shape.in, op.outPort)))
+        module.fuse(op, shape.out, op.inPort, Keep.right).replaceShape(
+          FlowShape(shape.in, op.outPort)))
   }
 
   /**
@@ -311,22 +301,18 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     */
   def toProcessor: RunnableGraph[
     Processor[In @uncheckedVariance, Out @uncheckedVariance]] =
-    Source
-      .asSubscriber[In]
-      .via(this)
-      .toMat(Sink.asPublisher[Out](false))(
-        Keep.both[Subscriber[In], Publisher[Out]])
-      .mapMaterializedValue {
-        case (sub, pub) ⇒
-          new Processor[In, Out] {
-            override def onError(t: Throwable): Unit = sub.onError(t)
-            override def onSubscribe(s: Subscription): Unit = sub.onSubscribe(s)
-            override def onComplete(): Unit = sub.onComplete()
-            override def onNext(t: In): Unit = sub.onNext(t)
-            override def subscribe(s: Subscriber[_ >: Out]): Unit =
-              pub.subscribe(s)
-          }
-      }
+    Source.asSubscriber[In].via(this).toMat(Sink.asPublisher[Out](false))(
+      Keep.both[Subscriber[In], Publisher[Out]]).mapMaterializedValue {
+      case (sub, pub) ⇒
+        new Processor[In, Out] {
+          override def onError(t: Throwable): Unit = sub.onError(t)
+          override def onSubscribe(s: Subscription): Unit = sub.onSubscribe(s)
+          override def onComplete(): Unit = sub.onComplete()
+          override def onNext(t: In): Unit = sub.onNext(t)
+          override def subscribe(s: Subscriber[_ >: Out]): Unit =
+            pub.subscribe(s)
+        }
+    }
 
   /** Converts this Scala DSL element to it's Java DSL counterpart. */
   def asJava: javadsl.Flow[In, Out, Mat] = new javadsl.Flow(this)
@@ -1277,8 +1263,7 @@ trait FlowOps[+Out, +Mat] {
           flow: Flow[Out, T, NotUsed],
           breadth: Int): Repr[T] =
         deprecatedAndThen[Source[Out, NotUsed]](
-          GroupBy(maxSubstreams, f.asInstanceOf[Any ⇒ Any]))
-          .map(_.via(flow))
+          GroupBy(maxSubstreams, f.asInstanceOf[Any ⇒ Any])).map(_.via(flow))
           .via(new FlattenMerge(breadth))
     }
     val finish: (Sink[Out, NotUsed]) ⇒ Closed = s ⇒
@@ -1348,15 +1333,13 @@ trait FlowOps[+Out, +Mat] {
       override def apply[T](
           flow: Flow[Out, T, NotUsed],
           breadth: Int): Repr[T] =
-        via(Split.when(p, substreamCancelStrategy))
-          .map(_.via(flow))
+        via(Split.when(p, substreamCancelStrategy)).map(_.via(flow))
           .via(new FlattenMerge(breadth))
     }
 
     val finish: (Sink[Out, NotUsed]) ⇒ Closed = s ⇒
-      via(Split.when(p, substreamCancelStrategy))
-        .to(Sink.foreach(
-          _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+      via(Split.when(p, substreamCancelStrategy)).to(Sink.foreach(
+        _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
 
     new SubFlowImpl(Flow[Out], merge, finish)
   }
@@ -1422,14 +1405,12 @@ trait FlowOps[+Out, +Mat] {
       override def apply[T](
           flow: Flow[Out, T, NotUsed],
           breadth: Int): Repr[T] =
-        via(Split.after(p, substreamCancelStrategy))
-          .map(_.via(flow))
+        via(Split.after(p, substreamCancelStrategy)).map(_.via(flow))
           .via(new FlattenMerge(breadth))
     }
     val finish: (Sink[Out, NotUsed]) ⇒ Closed = s ⇒
-      via(Split.after(p, substreamCancelStrategy))
-        .to(Sink.foreach(
-          _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+      via(Split.after(p, substreamCancelStrategy)).to(Sink.foreach(
+        _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
     new SubFlowImpl(Flow[Out], merge, finish)
   }
 

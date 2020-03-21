@@ -33,8 +33,7 @@ class PCASuite
 
   test("params") {
     ParamsSuite.checkParams(new PCA)
-    val mat = Matrices
-      .dense(2, 2, Array(0.0, 1.0, 2.0, 3.0))
+    val mat = Matrices.dense(2, 2, Array(0.0, 1.0, 2.0, 3.0))
       .asInstanceOf[DenseMatrix]
     val explainedVariance = Vectors.dense(0.5, 0.5).asInstanceOf[DenseVector]
     val model = new PCAModel("pca", mat, explainedVariance)
@@ -53,15 +52,11 @@ class PCASuite
     val pc = mat.computePrincipalComponents(3)
     val expected = mat.multiply(pc).rows
 
-    val df = sqlContext
-      .createDataFrame(dataRDD.zip(expected))
+    val df = sqlContext.createDataFrame(dataRDD.zip(expected))
       .toDF("features", "expected")
 
-    val pca = new PCA()
-      .setInputCol("features")
-      .setOutputCol("pca_features")
-      .setK(3)
-      .fit(df)
+    val pca = new PCA().setInputCol("features").setOutputCol("pca_features")
+      .setK(3).fit(df)
 
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(pca)
@@ -75,9 +70,7 @@ class PCASuite
   }
 
   test("PCA read/write") {
-    val t = new PCA()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
+    val t = new PCA().setInputCol("myInputCol").setOutputCol("myOutputCol")
       .setK(3)
     testDefaultReadWrite(t)
   }

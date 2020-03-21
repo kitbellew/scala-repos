@@ -33,8 +33,7 @@ private[persistence] trait LeveldbStore
   val leveldbOptions = new Options().createIfMissing(true)
   def leveldbReadOptions =
     new ReadOptions().verifyChecksums(config.getBoolean("checksum"))
-  val leveldbWriteOptions = new WriteOptions()
-    .sync(config.getBoolean("fsync"))
+  val leveldbWriteOptions = new WriteOptions().sync(config.getBoolean("fsync"))
     .snapshot(false)
   val leveldbDir = new File(config.getString("dir"))
   var leveldb: DB = _
@@ -153,9 +152,8 @@ private[persistence] trait LeveldbStore
       batch: WriteBatch): Unit = {
     val persistentBytes = persistentToBytes(persistent)
     val nid = numericId(persistent.persistenceId)
-    batch.put(
-      keyToBytes(counterKey(nid)),
-      counterToBytes(persistent.sequenceNr))
+    batch
+      .put(keyToBytes(counterKey(nid)), counterToBytes(persistent.sequenceNr))
     batch.put(keyToBytes(Key(nid, persistent.sequenceNr, 0)), persistentBytes)
 
     tags.foreach { tag ⇒
@@ -242,8 +240,8 @@ private[persistence] trait LeveldbStore
     }
 
   override protected def newPersistenceIdAdded(id: String): Unit = {
-    if (hasAllPersistenceIdsSubscribers && !id.startsWith(
-          tagPersistenceIdPrefix)) {
+    if (hasAllPersistenceIdsSubscribers && !id
+          .startsWith(tagPersistenceIdPrefix)) {
       val added = LeveldbJournal.PersistenceIdAdded(id)
       allPersistenceIdsSubscribers.foreach(_ ! added)
     }

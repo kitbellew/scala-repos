@@ -8,9 +8,7 @@ trait LabelsService {
 
   def getLabels(owner: String, repository: String)(implicit
       s: Session): List[Label] =
-    Labels
-      .filter(_.byRepository(owner, repository))
-      .sortBy(_.labelName asc)
+    Labels.filter(_.byRepository(owner, repository)).sortBy(_.labelName asc)
       .list
 
   def getLabel(owner: String, repository: String, labelId: Int)(implicit
@@ -38,10 +36,8 @@ trait LabelsService {
       labelId: Int,
       labelName: String,
       color: String)(implicit s: Session): Unit =
-    Labels
-      .filter(_.byPrimaryKey(owner, repository, labelId))
-      .map(t => t.labelName -> t.color)
-      .update(labelName, color)
+    Labels.filter(_.byPrimaryKey(owner, repository, labelId))
+      .map(t => t.labelName -> t.color).update(labelName, color)
 
   def deleteLabel(owner: String, repository: String, labelId: Int)(implicit
       s: Session): Unit = {

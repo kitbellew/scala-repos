@@ -15,8 +15,8 @@ import MediaTypes._
 
 trait ScalaXmlSupport {
   implicit def defaultNodeSeqMarshaller: ToEntityMarshaller[NodeSeq] =
-    Marshaller.oneOf(
-      ScalaXmlSupport.nodeSeqMediaTypes.map(nodeSeqMarshaller): _*)
+    Marshaller
+      .oneOf(ScalaXmlSupport.nodeSeqMediaTypes.map(nodeSeqMarshaller): _*)
 
   def nodeSeqMarshaller(
       mediaType: MediaType.NonBinary): ToEntityMarshaller[NodeSeq] =
@@ -27,15 +27,13 @@ trait ScalaXmlSupport {
 
   def nodeSeqUnmarshaller(
       ranges: ContentTypeRange*): FromEntityUnmarshaller[NodeSeq] =
-    Unmarshaller.byteArrayUnmarshaller
-      .forContentTypes(ranges: _*)
+    Unmarshaller.byteArrayUnmarshaller.forContentTypes(ranges: _*)
       .mapWithCharset { (bytes, charset) ⇒
         if (bytes.length > 0) {
           val reader = new InputStreamReader(
             new ByteArrayInputStream(bytes),
             charset.nioCharset)
-          XML
-            .withSAXParser(createSAXParser())
+          XML.withSAXParser(createSAXParser())
             .load(reader): NodeSeq // blocking call! Ideally we'd have a `loadToFuture`
         } else NodeSeq.Empty
       }
@@ -63,10 +61,12 @@ object ScalaXmlSupport extends ScalaXmlSupport {
     import javax.xml.XMLConstants
 
     factory.setFeature(
-      Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE,
+      Constants.SAX_FEATURE_PREFIX + Constants
+        .EXTERNAL_GENERAL_ENTITIES_FEATURE,
       false)
     factory.setFeature(
-      Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_PARAMETER_ENTITIES_FEATURE,
+      Constants.SAX_FEATURE_PREFIX + Constants
+        .EXTERNAL_PARAMETER_ENTITIES_FEATURE,
       false)
     factory.setFeature(
       Constants.XERCES_FEATURE_PREFIX + Constants.DISALLOW_DOCTYPE_DECL_FEATURE,

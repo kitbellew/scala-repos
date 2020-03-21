@@ -30,8 +30,9 @@ class RichChannelBufferTest
     import ChannelBufferUtils.channelBufferToRichChannelBuffer
 
     Seq("", "abc", "123Four", "-1", "1" * 11, "2147483648")
-      .map(ChannelBuffers.copiedBuffer(_, Charsets.Utf8))
-      .foreach { cb => intercept[NumberFormatException] { cb.toInt } }
+      .map(ChannelBuffers.copiedBuffer(_, Charsets.Utf8)).foreach { cb =>
+        intercept[NumberFormatException] { cb.toInt }
+      }
   }
 
 }

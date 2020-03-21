@@ -111,8 +111,8 @@ trait GameHelper {
     Namer.player(player, withRating, withTitle)(lightUser)
 
   def playerText(player: Player, withRating: Boolean = false) =
-    player.aiLevel.fold(
-      player.userId.flatMap(lightUser).fold(player.name | "Anon.") { u =>
+    player.aiLevel
+      .fold(player.userId.flatMap(lightUser).fold(player.name | "Anon.") { u =>
         player.rating.ifTrue(withRating).fold(u.titleName) { r =>
           s"${u.titleName} ($r)"
         }
@@ -259,14 +259,18 @@ trait GameHelper {
       val lastMove = ~game.castleLastMoveTime.lastMoveString
       val variant = game.variant.key
       val tag = if (withLink) "a" else "span"
-      s"""<$tag $href $title class="mini_board mini_board_${game.id} parse_fen is2d $cssClass $variant" data-live="$live" data-color="${pov.color.name}" data-fen="$fen" data-lastmove="$lastMove">$miniBoardContent</$tag>"""
+      s"""<$tag $href $title class="mini_board mini_board_${game
+        .id} parse_fen is2d $cssClass $variant" data-live="$live" data-color="${pov
+        .color
+        .name}" data-fen="$fen" data-lastmove="$lastMove">$miniBoardContent</$tag>"""
     }
 
   def gameFenNoCtx(pov: Pov, tv: Boolean = false, blank: Boolean = false) =
     Html {
       var isLive = pov.game.isBeingPlayed
       val variant = pov.game.variant.key
-      s"""<a href="%s%s" title="%s" class="mini_board mini_board_${pov.game.id} parse_fen is2d %s $variant" data-live="%s" data-color="%s" data-fen="%s" data-lastmove="%s"%s>$miniBoardContent</a>"""
+      s"""<a href="%s%s" title="%s" class="mini_board mini_board_${pov.game
+        .id} parse_fen is2d %s $variant" data-live="%s" data-color="%s" data-fen="%s" data-lastmove="%s"%s>$miniBoardContent</a>"""
         .format(
           blank ?? netBaseUrl,
           tv.fold(

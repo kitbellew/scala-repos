@@ -198,8 +198,8 @@ abstract class DStream[T: ClassTag](
 
     // Set the checkpoint interval to be slideDuration or 10 seconds, which ever is larger
     if (mustCheckpoint && checkpointDuration == null) {
-      checkpointDuration =
-        slideDuration * math.ceil(Seconds(10) / slideDuration).toInt
+      checkpointDuration = slideDuration * math
+        .ceil(Seconds(10) / slideDuration).toInt
       logInfo(s"Checkpoint interval automatically set to $checkpointDuration")
     }
 
@@ -242,7 +242,8 @@ abstract class DStream[T: ClassTag](
     )
 
     require(
-      checkpointDuration == null || context.sparkContext.checkpointDir.isDefined,
+      checkpointDuration == null || context.sparkContext.checkpointDir
+        .isDefined,
       "The checkpoint directory has not been set. Please set it by StreamingContext.checkpoint()."
     )
 
@@ -254,8 +255,8 @@ abstract class DStream[T: ClassTag](
     )
 
     require(
-      checkpointDuration == null || checkpointDuration.isMultipleOf(
-        slideDuration),
+      checkpointDuration == null || checkpointDuration
+        .isMultipleOf(slideDuration),
       s"The checkpoint interval for ${this.getClass.getSimpleName} has been set to " +
         s" $checkpointDuration which not a multiple of its slide time ($slideDuration). " +
         s"Please set it to a multiple of $slideDuration."
@@ -316,8 +317,8 @@ abstract class DStream[T: ClassTag](
   private[streaming] def isTimeValid(time: Time): Boolean = {
     if (!isInitialized) {
       throw new SparkException(this + " has not been initialized")
-    } else if (time <= zeroTime || !(time - zeroTime).isMultipleOf(
-                 slideDuration)) {
+    } else if (time <= zeroTime || !(time - zeroTime)
+                 .isMultipleOf(slideDuration)) {
       logInfo(
         s"Time $time is invalid as zeroTime is $zeroTime" +
           s" , slideDuration is $slideDuration and difference is ${time - zeroTime}")
@@ -360,8 +361,8 @@ abstract class DStream[T: ClassTag](
               logDebug(
                 s"Persisting RDD ${newRDD.id} for time $time to $storageLevel")
             }
-            if (checkpointDuration != null && (time - zeroTime).isMultipleOf(
-                  checkpointDuration)) {
+            if (checkpointDuration != null && (time - zeroTime)
+                  .isMultipleOf(checkpointDuration)) {
               newRDD.checkpoint()
               logInfo(
                 s"Marking RDD ${newRDD.id} for time $time for checkpointing")
@@ -395,8 +396,8 @@ abstract class DStream[T: ClassTag](
       ssc.sparkContext.getLocalProperty(CallSite.SHORT_FORM),
       ssc.sparkContext.getLocalProperty(CallSite.LONG_FORM))
     val prevScope = ssc.sparkContext.getLocalProperty(scopeKey)
-    val prevScopeNoOverride = ssc.sparkContext.getLocalProperty(
-      scopeNoOverrideKey)
+    val prevScopeNoOverride = ssc.sparkContext
+      .getLocalProperty(scopeNoOverrideKey)
 
     try {
       if (displayInnerRDDOps) {
@@ -624,11 +625,9 @@ abstract class DStream[T: ClassTag](
     */
   def count(): DStream[Long] =
     ssc.withScope {
-      this
-        .map(_ => (null, 1L))
+      this.map(_ => (null, 1L))
         .transform(_.union(context.sparkContext.makeRDD(Seq((null, 0L)), 1)))
-        .reduceByKey(_ + _)
-        .map(_._2)
+        .reduceByKey(_ + _).map(_._2)
     }
 
   /**
@@ -640,8 +639,7 @@ abstract class DStream[T: ClassTag](
   def countByValue(numPartitions: Int = ssc.sc.defaultParallelism)(implicit
       ord: Ordering[T] = null): DStream[(T, Long)] =
     ssc.withScope {
-      this
-        .map(x => (x, 1L))
+      this.map(x => (x, 1L))
         .reduceByKey((x: Long, y: Long) => x + y, numPartitions)
     }
 
@@ -820,9 +818,7 @@ abstract class DStream[T: ClassTag](
       windowDuration: Duration,
       slideDuration: Duration): DStream[T] =
     ssc.withScope {
-      this
-        .reduce(reduceFunc)
-        .window(windowDuration, slideDuration)
+      this.reduce(reduceFunc).window(windowDuration, slideDuration)
         .reduce(reduceFunc)
     }
 
@@ -848,15 +844,12 @@ abstract class DStream[T: ClassTag](
       windowDuration: Duration,
       slideDuration: Duration): DStream[T] =
     ssc.withScope {
-      this
-        .map(x => (1, x))
-        .reduceByKeyAndWindow(
-          reduceFunc,
-          invReduceFunc,
-          windowDuration,
-          slideDuration,
-          1)
-        .map(_._2)
+      this.map(x => (1, x)).reduceByKeyAndWindow(
+        reduceFunc,
+        invReduceFunc,
+        windowDuration,
+        slideDuration,
+        1).map(_._2)
     }
 
   /**
@@ -873,8 +866,7 @@ abstract class DStream[T: ClassTag](
       windowDuration: Duration,
       slideDuration: Duration): DStream[Long] =
     ssc.withScope {
-      this
-        .map(_ => 1L)
+      this.map(_ => 1L)
         .reduceByWindow(_ + _, _ - _, windowDuration, slideDuration)
     }
 
@@ -896,15 +888,13 @@ abstract class DStream[T: ClassTag](
       numPartitions: Int = ssc.sc.defaultParallelism)(implicit
       ord: Ordering[T] = null): DStream[(T, Long)] =
     ssc.withScope {
-      this
-        .map(x => (x, 1L))
-        .reduceByKeyAndWindow(
-          (x: Long, y: Long) => x + y,
-          (x: Long, y: Long) => x - y,
-          windowDuration,
-          slideDuration,
-          numPartitions,
-          (x: (T, Long)) => x._2 != 0L)
+      this.map(x => (x, 1L)).reduceByKeyAndWindow(
+        (x: Long, y: Long) => x + y,
+        (x: Long, y: Long) => x - y,
+        windowDuration,
+        slideDuration,
+        numPartitions,
+        (x: (T, Long)) => x._2 != 0L)
     }
 
   /**
@@ -949,9 +939,9 @@ abstract class DStream[T: ClassTag](
         s"Slicing from $fromTime to $toTime" +
           s" (aligned to $alignedFromTime and $alignedToTime)")
 
-      alignedFromTime
-        .to(alignedToTime, slideDuration)
-        .flatMap(time => { if (time >= zeroTime) getOrCompute(time) else None })
+      alignedFromTime.to(alignedToTime, slideDuration).flatMap(time => {
+        if (time >= zeroTime) getOrCompute(time) else None
+      })
     }
 
   /**

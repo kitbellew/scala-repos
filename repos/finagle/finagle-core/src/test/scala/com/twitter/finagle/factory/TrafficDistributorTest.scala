@@ -417,10 +417,8 @@ class TrafficDistributorTest extends FunSuite {
     val sr = new CumulativeGaugeInMemoryStatsReceiver()
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
     val va = Var[Addr](Addr.Bound(addr))
-    val client = stringClient
-      .configured(param.Stats(sr))
-      .newClient(Name.Bound.singleton(va), "test")
-      .toService
+    val client = stringClient.configured(param.Stats(sr))
+      .newClient(Name.Bound.singleton(va), "test").toService
 
     // step this socket address through weight classes. Previous weight
     // classes are closed during each step. This is similar to how we
@@ -457,10 +455,8 @@ class TrafficDistributorTest extends FunSuite {
     val sr = new InMemoryStatsReceiver
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
     val va = Var[Addr](Addr.Bound(addr))
-    val client = stringClient
-      .configured(param.Stats(sr))
-      .newClient(Name.Bound.singleton(va), "test")
-      .toService
+    val client = stringClient.configured(param.Stats(sr))
+      .newClient(Name.Bound.singleton(va), "test").toService
 
     assert(Await.result(client("hello")) == "hello".reverse)
     Await.ready(client.close())

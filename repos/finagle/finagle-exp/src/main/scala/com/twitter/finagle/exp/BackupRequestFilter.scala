@@ -159,8 +159,8 @@ class BackupRequestFilter[Req, Rep] private[exp] (
 
     if (howLong == 0) return orig
 
-    val backupCountdown = Future.sleep(Duration.fromMilliseconds(howLong))(
-      timer)
+    val backupCountdown = Future
+      .sleep(Duration.fromMilliseconds(howLong))(timer)
     val backupTriggers = Array(orig, backupCountdown)
 
     Future.selectIndex(backupTriggers).flatMap { firstIndex =>

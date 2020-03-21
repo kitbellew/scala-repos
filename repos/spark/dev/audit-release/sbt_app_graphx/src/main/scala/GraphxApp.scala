@@ -26,8 +26,8 @@ import org.apache.spark.rdd.RDD
 object GraphXApp {
   def main(args: Array[String]) {
     val conf = sys.env.get("SPARK_AUDIT_MASTER") match {
-      case Some(master) =>
-        new SparkConf().setAppName("Simple GraphX App").setMaster(master)
+      case Some(master) => new SparkConf().setAppName("Simple GraphX App")
+          .setMaster(master)
       case None => new SparkConf().setAppName("Simple Graphx App")
     }
     val sc = new SparkContext(conf)

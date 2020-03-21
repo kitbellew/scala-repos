@@ -85,9 +85,10 @@ class TimestampValue(
     bw.writeByte(cal.get(Calendar.HOUR_OF_DAY))
     bw.writeByte(cal.get(Calendar.MINUTE))
     bw.writeByte(cal.get(Calendar.SECOND))
-    bw.writeInt(
-      ts.getNanos / 1000
-    ) // sub-second part is written as microseconds
+    bw
+      .writeInt(
+        ts.getNanos / 1000
+      ) // sub-second part is written as microseconds
     RawValue(Type.Timestamp, Charset.Binary, true, bytes)
   }
 

@@ -145,9 +145,8 @@ private[akkahttp] class ModelConversion(
       convertedHeaders,
       result,
       protocol)
-    val connectionHeader = ServerResultUtils.determineConnectionHeader(
-      requestHeaders,
-      result)
+    val connectionHeader = ServerResultUtils
+      .determineConnectionHeader(requestHeaders, result)
     val closeHeader = connectionHeader.header.map(Connection(_))
     HttpResponse(
       status = result.header.status,
@@ -195,16 +194,14 @@ private[akkahttp] class ModelConversion(
 
   private def convertHeaders(
       headers: Iterable[(String, String)]): immutable.Seq[HttpHeader] = {
-    headers
-      .map {
-        case (name, value) => HttpHeader.parse(name, value) match {
-            case HttpHeader.ParsingResult
-                  .Ok(header, errors /* errors are ignored if Ok */ ) => header
-            case HttpHeader.ParsingResult.Error(error) =>
-              sys.error(s"Error parsing header: $error")
-          }
-      }
-      .to[immutable.Seq]
+    headers.map {
+      case (name, value) => HttpHeader.parse(name, value) match {
+          case HttpHeader.ParsingResult
+                .Ok(header, errors /* errors are ignored if Ok */ ) => header
+          case HttpHeader.ParsingResult.Error(error) =>
+            sys.error(s"Error parsing header: $error")
+        }
+    }.to[immutable.Seq]
   }
 
   /**

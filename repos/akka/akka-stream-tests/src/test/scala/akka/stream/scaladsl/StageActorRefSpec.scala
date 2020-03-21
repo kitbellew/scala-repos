@@ -39,9 +39,7 @@ class StageActorRefSpec extends AkkaSpec with ImplicitSender {
   "A Graph Stage's ActorRef" must {
 
     "receive messages" in {
-      val (_, res) = Source
-        .maybe[Int]
-        .toMat(sumStage(testActor))(Keep.both)
+      val (_, res) = Source.maybe[Int].toMat(sumStage(testActor))(Keep.both)
         .run()
 
       val stageRef = expectMsgType[ActorRef]
@@ -54,9 +52,7 @@ class StageActorRefSpec extends AkkaSpec with ImplicitSender {
     }
 
     "be able to be replied to" in {
-      val (_, res) = Source
-        .maybe[Int]
-        .toMat(sumStage(testActor))(Keep.both)
+      val (_, res) = Source.maybe[Int].toMat(sumStage(testActor))(Keep.both)
         .run()
 
       val stageRef = expectMsgType[ActorRef]
@@ -71,9 +67,7 @@ class StageActorRefSpec extends AkkaSpec with ImplicitSender {
     }
 
     "yield the same 'self' ref each time" in {
-      val (_, res) = Source
-        .maybe[Int]
-        .toMat(sumStage(testActor))(Keep.both)
+      val (_, res) = Source.maybe[Int].toMat(sumStage(testActor))(Keep.both)
         .run()
 
       val stageRef = expectMsgType[ActorRef]
@@ -92,10 +86,8 @@ class StageActorRefSpec extends AkkaSpec with ImplicitSender {
     }
 
     "be watchable" in {
-      val (source, res) = Source
-        .maybe[Int]
-        .toMat(sumStage(testActor))(Keep.both)
-        .run()
+      val (source, res) = Source.maybe[Int]
+        .toMat(sumStage(testActor))(Keep.both).run()
 
       val stageRef = expectMsgType[ActorRef]
       watch(stageRef)
@@ -108,10 +100,8 @@ class StageActorRefSpec extends AkkaSpec with ImplicitSender {
     }
 
     "be able to become" in {
-      val (source, res) = Source
-        .maybe[Int]
-        .toMat(sumStage(testActor))(Keep.both)
-        .run()
+      val (source, res) = Source.maybe[Int]
+        .toMat(sumStage(testActor))(Keep.both).run()
 
       val stageRef = expectMsgType[ActorRef]
       watch(stageRef)
@@ -128,10 +118,8 @@ class StageActorRefSpec extends AkkaSpec with ImplicitSender {
     }
 
     "reply Terminated when terminated stage is watched" in {
-      val (source, res) = Source
-        .maybe[Int]
-        .toMat(sumStage(testActor))(Keep.both)
-        .run()
+      val (source, res) = Source.maybe[Int]
+        .toMat(sumStage(testActor))(Keep.both).run()
 
       val stageRef = expectMsgType[ActorRef]
       watch(stageRef)
@@ -148,10 +136,8 @@ class StageActorRefSpec extends AkkaSpec with ImplicitSender {
     }
 
     "be un-watchable" in {
-      val (source, res) = Source
-        .maybe[Int]
-        .toMat(sumStage(testActor))(Keep.both)
-        .run()
+      val (source, res) = Source.maybe[Int]
+        .toMat(sumStage(testActor))(Keep.both).run()
 
       val stageRef = expectMsgType[ActorRef]
       watch(stageRef)
@@ -165,10 +151,8 @@ class StageActorRefSpec extends AkkaSpec with ImplicitSender {
     }
 
     "ignore and log warnings for PoisonPill and Kill messages" in {
-      val (source, res) = Source
-        .maybe[Int]
-        .toMat(sumStage(testActor))(Keep.both)
-        .run()
+      val (source, res) = Source.maybe[Int]
+        .toMat(sumStage(testActor))(Keep.both).run()
 
       val stageRef = expectMsgType[ActorRef]
       stageRef ! Add(40)
@@ -228,7 +212,8 @@ object StageActorRefSpec {
 
       val logic = new GraphStageLogic(shape) {
         implicit def self =
-          stageActor.ref // must be a `def`; we want self to be the sender for our replies
+          stageActor
+            .ref // must be a `def`; we want self to be the sender for our replies
         var sum: Int = 0
 
         override def preStart(): Unit = {

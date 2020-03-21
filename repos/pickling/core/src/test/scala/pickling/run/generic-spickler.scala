@@ -10,14 +10,12 @@ class CustomPersonXPickler(implicit val format: PickleFormat)
   def tag: FastTypeTag[PersonX] = implicitly[FastTypeTag[PersonX]]
 
   def pickle(picklee: PersonX, builder: PBuilder) = {
-    builder
-      .beginEntry(picklee, tag)
-      .putField(
-        "name",
-        b => {
-          b.beginEntry(picklee.name, FastTypeTag.String)
-          b.endEntry()
-        })
+    builder.beginEntry(picklee, tag).putField(
+      "name",
+      b => {
+        b.beginEntry(picklee.name, FastTypeTag.String)
+        b.endEntry()
+      })
     builder.endEntry()
   }
 }

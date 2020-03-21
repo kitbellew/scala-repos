@@ -87,7 +87,8 @@ class CoronerSpec extends WordSpec with Matchers {
                 case lock :: rest ⇒ {
                   ready.release()
                   proceed.acquire()
-                  lock.lockInterruptibly() // Allows us to break deadlock and free threads
+                  lock
+                    .lockInterruptibly() // Allows us to break deadlock and free threads
                   try { recursiveLock(rest) }
                   finally { lock.unlock() }
                 }

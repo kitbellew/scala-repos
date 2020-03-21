@@ -86,8 +86,8 @@ class VectorAssembler(override val uid: String)
           } else {
             // Otherwise, treat all attributes as numeric. If we cannot get the number of attributes
             // from metadata, check the first row.
-            val numAttrs = group.numAttributes.getOrElse(
-              first.getAs[Vector](index).size)
+            val numAttrs = group.numAttributes
+              .getOrElse(first.getAs[Vector](index).size)
             Array.tabulate(numAttrs)(i =>
               NumericAttribute.defaultAttr.withName(c + "_" + i))
           }
@@ -104,8 +104,8 @@ class VectorAssembler(override val uid: String)
       schema(c).dataType match {
         case DoubleType   => dataset(c)
         case _: VectorUDT => dataset(c)
-        case _: NumericType | BooleanType =>
-          dataset(c).cast(DoubleType).as(s"${c}_double_$uid")
+        case _: NumericType | BooleanType => dataset(c).cast(DoubleType)
+            .as(s"${c}_double_$uid")
       }
     }
 

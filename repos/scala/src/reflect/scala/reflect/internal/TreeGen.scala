@@ -173,9 +173,8 @@ abstract class TreeGen {
     mkUnattributedRef(sym.fullNameAsName('.'))
 
   def mkUnattributedRef(fullName: Name): RefTree = {
-    val hd :: tl = nme.segments(
-      fullName.toString,
-      assumeTerm = fullName.isTermName)
+    val hd :: tl = nme
+      .segments(fullName.toString, assumeTerm = fullName.isTermName)
     tl.foldLeft(Ident(hd): RefTree)(Select(_, _))
   }
 
@@ -211,9 +210,8 @@ abstract class TreeGen {
 
   def mkAttributedSelect(qual: Tree, sym: Symbol): RefTree = {
     // Tests involving the repl fail without the .isEmptyPackage condition.
-    if (qual.symbol != null && (
-          qual.symbol.isEffectiveRoot || qual.symbol.isEmptyPackage
-        )) mkAttributedIdent(sym)
+    if (qual.symbol != null && (qual.symbol.isEffectiveRoot || qual.symbol
+          .isEmptyPackage)) mkAttributedIdent(sym)
     else {
       // Have to recognize anytime a selection is made on a package
       // so it can be rewritten to foo.bar.`package`.name rather than
@@ -235,7 +233,8 @@ abstract class TreeGen {
           val packageObject = qualsym.packageObject
           Select(
             qual,
-            nme.PACKAGE) setSymbol packageObject setType packageObject.typeOfThis
+            nme.PACKAGE) setSymbol packageObject setType packageObject
+            .typeOfThis
         } else qual
 
       val tree = Select(pkgQualifier, sym)
@@ -451,8 +450,8 @@ abstract class TreeGen {
             Block(lvdefs, Literal(Constant(()))))))
       } else {
         // convert (implicit ... ) to ()(implicit ... ) if it's the only parameter section
-        if (vparamss1.isEmpty || !vparamss1.head.isEmpty && vparamss1.head.head.mods.isImplicit)
-          vparamss1 = List() :: vparamss1
+        if (vparamss1.isEmpty || !vparamss1.head.isEmpty && vparamss1.head.head
+              .mods.isImplicit) vparamss1 = List() :: vparamss1
         val superCall =
           pendingSuperCall // we can't know in advance which of the parents will end up as a superclass
         // this requires knowing which of the parents is a type macro and which is not
@@ -462,9 +461,8 @@ abstract class TreeGen {
         // therefore here we emit a dummy which gets populated when the template is named and typechecked
         Some(
           atPos(
-            wrappingPos(
-              superPos,
-              lvdefs ::: vparamss1.flatten).makeTransparent)(DefDef(
+            wrappingPos(superPos, lvdefs ::: vparamss1.flatten)
+              .makeTransparent)(DefDef(
             constrMods,
             nme.CONSTRUCTOR,
             List(),
@@ -732,8 +730,8 @@ abstract class TreeGen {
     def makeClosure(pos: Position, pat: Tree, body: Tree): Tree = {
       def wrapped = wrappingPos(List(pat, body))
       def splitpos =
-        (if (pos != NoPosition) wrapped.withPoint(pos.point)
-         else pos).makeTransparent
+        (if (pos != NoPosition) wrapped.withPoint(pos.point) else pos)
+          .makeTransparent
       matchVarPattern(pat) match {
         case Some((name, tpt)) =>
           Function(

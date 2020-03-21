@@ -43,9 +43,7 @@ trait ScentrySupport[UserType <: AnyRef] extends Initializable {
 
   private def registerStrategiesFromConfig =
     _strategiesFromConfig foreach { strategyClassName ⇒
-      val strategy = Class
-        .forName(strategyClassName)
-        .newInstance
+      val strategy = Class.forName(strategyClassName).newInstance
         .asInstanceOf[ScentryStrategy[UserType]]
       strategy registerWith scentry
     }

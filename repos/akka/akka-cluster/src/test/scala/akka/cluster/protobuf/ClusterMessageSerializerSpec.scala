@@ -69,10 +69,8 @@ class ClusterMessageSerializerSpec
       val node3 = VectorClock.Node("node3")
       val node4 = VectorClock.Node("node4")
       val g1 = (Gossip(SortedSet(a1, b1, c1, d1)) :+ node1 :+ node2)
-        .seen(a1.uniqueAddress)
-        .seen(b1.uniqueAddress)
-      val g2 = (g1 :+ node3 :+ node4)
-        .seen(a1.uniqueAddress)
+        .seen(a1.uniqueAddress).seen(b1.uniqueAddress)
+      val g2 = (g1 :+ node3 :+ node4).seen(a1.uniqueAddress)
         .seen(c1.uniqueAddress)
       val reachability3 = Reachability.empty
         .unreachable(a1.uniqueAddress, e1.uniqueAddress)

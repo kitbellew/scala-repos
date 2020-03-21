@@ -35,9 +35,8 @@ class HelpersSpec extends Specification {
         "org.h2.Driver")
       inMemoryDatabaseConfiguration.get("db.test.url") must beSome.which {
         url =>
-          """^jdbc:h2:mem:play-test([0-9-]+);MODE=PostgreSQL;DB_CLOSE_DELAY=-1$""".r
-            .findFirstIn(url)
-            .isDefined
+          """^jdbc:h2:mem:play-test([0-9-]+);MODE=PostgreSQL;DB_CLOSE_DELAY=-1$"""
+            .r.findFirstIn(url).isDefined
       }
     }
   }
@@ -89,8 +88,8 @@ class HelpersSpec extends Specification {
   "contentAsJson" should {
 
     "extract the content from Result as Json" in {
-      val jsonResult = Ok("""{"play":["java","scala"]}""").as(
-        "application/json")
+      val jsonResult = Ok("""{"play":["java","scala"]}""")
+        .as("application/json")
       (contentAsJson(Future.successful(jsonResult)) \ "play")
         .as[List[String]] must_== List("java", "scala")
     }
@@ -100,8 +99,9 @@ class HelpersSpec extends Specification {
         val body: String = """{"play":["java","scala"]}"""
         val contentType: String = "application/json"
       }
-      (contentAsJson(jsonContent) \ "play")
-        .as[List[String]] must_== List("java", "scala")
+      (contentAsJson(jsonContent) \ "play").as[List[String]] must_== List(
+        "java",
+        "scala")
     }
 
   }

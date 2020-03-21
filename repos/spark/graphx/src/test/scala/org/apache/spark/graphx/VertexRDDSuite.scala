@@ -40,8 +40,7 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val n = 100
       val verts = vertices(sc, n)
-      val negatives = verts
-        .mapValues(x => -x)
+      val negatives = verts.mapValues(x => -x)
         .cache() // Allow joining b with a derived RDD of b
       assert(negatives.count === n + 1)
     }
@@ -62,10 +61,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val vertexA = VertexRDD(
         sc.parallelize(0 until 75, 2).map(i => (i.toLong, 0))).cache()
-      val vertexB: RDD[(VertexId, Int)] = sc
-        .parallelize(25 until 100, 2)
-        .map(i => (i.toLong, 1))
-        .cache()
+      val vertexB: RDD[(VertexId, Int)] = sc.parallelize(25 until 100, 2)
+        .map(i => (i.toLong, 1)).cache()
       val vertexC = vertexA.minus(vertexB)
       assert(vertexC.map(_._1).collect().toSet === (0 until 25).toSet)
     }
@@ -90,9 +87,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
       val flipEvens = verts.mapValues(x => if (x % 2 == 0) -x else x).cache()
       // diff should keep only the changed vertices
       assert(
-        verts.diff(flipEvens).map(_._2).collect().toSet === (
-          2 to n by 2
-        ).map(-_).toSet)
+        verts.diff(flipEvens).map(_._2).collect().toSet === (2 to n by 2)
+          .map(-_).toSet)
       // diff should keep the vertex values from `other`
       assert(
         flipEvens.diff(verts).map(_._2).collect().toSet === (2 to n by 2).toSet)
@@ -103,15 +99,12 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val n = 100
       val verts = vertices(sc, n).cache()
-      val flipEvens: RDD[(VertexId, Int)] = sc
-        .parallelize(0L to 100L)
-        .map(id => if (id % 2 == 0) (id, -id.toInt) else (id, id.toInt))
-        .cache()
+      val flipEvens: RDD[(VertexId, Int)] = sc.parallelize(0L to 100L)
+        .map(id => if (id % 2 == 0) (id, -id.toInt) else (id, id.toInt)).cache()
       // diff should keep only the changed vertices
       assert(
-        verts.diff(flipEvens).map(_._2).collect().toSet === (
-          2 to n by 2
-        ).map(-_).toSet)
+        verts.diff(flipEvens).map(_._2).collect().toSet === (2 to n by 2)
+          .map(-_).toSet)
     }
   }
 
@@ -134,23 +127,17 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
       val evens = verts.filter(q => ((q._2 % 2) == 0)).cache()
       // leftJoin with another VertexRDD
       assert(
-        verts
-          .leftJoin(evens) { (id, a, bOpt) => a - bOpt.getOrElse(0) }
-          .collect()
-          .toSet ===
-          (0 to n by 2).map(x => (x.toLong, 0)).toSet ++ (
-            1 to n by 2
-          ).map(x => (x.toLong, x)).toSet)
+        verts.leftJoin(evens) { (id, a, bOpt) => a - bOpt.getOrElse(0) }
+          .collect().toSet ===
+          (0 to n by 2).map(x => (x.toLong, 0)).toSet ++ (1 to n by 2)
+            .map(x => (x.toLong, x)).toSet)
       // leftJoin with an RDD
       val evensRDD = evens.map(identity)
       assert(
-        verts
-          .leftJoin(evensRDD) { (id, a, bOpt) => a - bOpt.getOrElse(0) }
-          .collect()
-          .toSet ===
-          (0 to n by 2).map(x => (x.toLong, 0)).toSet ++ (
-            1 to n by 2
-          ).map(x => (x.toLong, x)).toSet)
+        verts.leftJoin(evensRDD) { (id, a, bOpt) => a - bOpt.getOrElse(0) }
+          .collect().toSet ===
+          (0 to n by 2).map(x => (x.toLong, 0)).toSet ++ (1 to n by 2)
+            .map(x => (x.toLong, x)).toSet)
     }
   }
 
@@ -220,8 +207,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
   test("mergeFunc") {
     // test to see if the mergeFunc is working correctly
     withSpark { sc =>
-      val verts = sc.parallelize(
-        List((0L, 0), (1L, 1), (1L, 2), (2L, 3), (2L, 3), (2L, 3)))
+      val verts = sc
+        .parallelize(List((0L, 0), (1L, 1), (1L, 2), (2L, 3), (2L, 3), (2L, 3)))
       val edges = EdgeRDD.fromEdges(sc.parallelize(List.empty[Edge[Int]]))
       val rdd = VertexRDD(verts, edges, 0, (a: Int, b: Int) => a + b)
       // test merge function
@@ -232,8 +219,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
   test("cache, getStorageLevel") {
     // test to see if getStorageLevel returns correct value after caching
     withSpark { sc =>
-      val verts = sc.parallelize(
-        List((0L, 0), (1L, 1), (1L, 2), (2L, 3), (2L, 3), (2L, 3)))
+      val verts = sc
+        .parallelize(List((0L, 0), (1L, 1), (1L, 2), (2L, 3), (2L, 3), (2L, 3)))
       val edges = EdgeRDD.fromEdges(sc.parallelize(List.empty[Edge[Int]]))
       val rdd = VertexRDD(verts, edges, 0, (a: Int, b: Int) => a + b)
       assert(rdd.getStorageLevel == StorageLevel.NONE)

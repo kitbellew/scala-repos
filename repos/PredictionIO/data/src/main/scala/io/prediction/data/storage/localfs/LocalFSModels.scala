@@ -43,8 +43,7 @@ class LocalFSModels(f: File, config: StorageClientConfig, prefix: String)
         id = id,
         models = Source
           .fromFile(new File(f, s"${prefix}${id}"))(scala.io.Codec.ISO8859)
-          .map(_.toByte)
-          .toArray))
+          .map(_.toByte).toArray))
     } catch {
       case e: Throwable =>
         error(e.getMessage)

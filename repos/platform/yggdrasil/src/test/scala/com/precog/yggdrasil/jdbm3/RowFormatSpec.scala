@@ -49,13 +49,9 @@ class RowFormatSpec
   // This should generate some jpath ids, then generate CTypes for these.
   def genColumnRefs: Gen[List[ColumnRef]] =
     Gen.listOf(Gen.alphaStr filter (_.size > 0)) flatMap { paths =>
-      Gen
-        .sequence[List, List[ColumnRef]](paths.distinct.map { name =>
-          Gen.listOf(genCType) map {
-            _.distinct map (ColumnRef(CPath(name), _))
-          }
-        })
-        .map(_.flatten)
+      Gen.sequence[List, List[ColumnRef]](paths.distinct.map { name =>
+        Gen.listOf(genCType) map { _.distinct map (ColumnRef(CPath(name), _)) }
+      }).map(_.flatten)
     }
 
   def groupConsecutive[A, B](as: List[A])(f: A => B) = {

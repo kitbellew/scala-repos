@@ -37,7 +37,8 @@ case class If(
     if (predicate.dataType != BooleanType) {
       TypeCheckResult.TypeCheckFailure(
         s"type of predicate expression in If should be boolean, not ${predicate.dataType}")
-    } else if (trueValue.dataType.asNullable != falseValue.dataType.asNullable) {
+    } else if (trueValue.dataType.asNullable != falseValue.dataType
+                 .asNullable) {
       TypeCheckResult.TypeCheckFailure(
         s"differing types in '$sql' " +
           s"(${trueValue.dataType.simpleString} and ${falseValue.dataType.simpleString}).")
@@ -210,9 +211,8 @@ case class CaseWhen(
   }
 
   override def sql: String = {
-    val cases = branches.map {
-      case (c, v) => s" WHEN ${c.sql} THEN ${v.sql}"
-    }.mkString
+    val cases = branches.map { case (c, v) => s" WHEN ${c.sql} THEN ${v.sql}" }
+      .mkString
     val elseCase = elseValue.map(" ELSE " + _.sql).getOrElse("")
     "CASE" + cases + elseCase + " END"
   }
@@ -236,14 +236,10 @@ object CaseWhen {
     *                 position are branch values.
     */
   def createFromParser(branches: Seq[Expression]): CaseWhen = {
-    val cases = branches
-      .grouped(2)
-      .flatMap {
-        case cond :: value :: Nil => Some((cond, value))
-        case value :: Nil         => None
-      }
-      .toArray
-      .toSeq // force materialization to make the seq serializable
+    val cases = branches.grouped(2).flatMap {
+      case cond :: value :: Nil => Some((cond, value))
+      case value :: Nil         => None
+    }.toArray.toSeq // force materialization to make the seq serializable
     val elseValue = if (branches.size % 2 == 1) Some(branches.last) else None
     CaseWhen(cases, elseValue)
   }
@@ -255,14 +251,10 @@ object CaseWhen {
   */
 object CaseKeyWhen {
   def apply(key: Expression, branches: Seq[Expression]): CaseWhen = {
-    val cases = branches
-      .grouped(2)
-      .flatMap {
-        case cond :: value :: Nil => Some((EqualTo(key, cond), value))
-        case value :: Nil         => None
-      }
-      .toArray
-      .toSeq // force materialization to make the seq serializable
+    val cases = branches.grouped(2).flatMap {
+      case cond :: value :: Nil => Some((EqualTo(key, cond), value))
+      case value :: Nil         => None
+    }.toArray.toSeq // force materialization to make the seq serializable
     val elseValue = if (branches.size % 2 == 1) Some(branches.last) else None
     CaseWhen(cases, elseValue)
   }
@@ -338,8 +330,8 @@ case class Greatest(children: Seq[Expression]) extends Expression {
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (children.length <= 1) {
-      TypeCheckResult.TypeCheckFailure(
-        s"GREATEST requires at least 2 arguments")
+      TypeCheckResult
+        .TypeCheckFailure(s"GREATEST requires at least 2 arguments")
     } else if (children.map(_.dataType).distinct.count(_ != NullType) > 1) {
       TypeCheckResult.TypeCheckFailure(
         s"The expressions should all have the same type," +

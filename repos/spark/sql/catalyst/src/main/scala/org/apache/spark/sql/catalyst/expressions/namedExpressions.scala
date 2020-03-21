@@ -182,7 +182,8 @@ case class Alias(child: Expression, name: String)(
   override def equals(other: Any): Boolean =
     other match {
       case a: Alias =>
-        name == a.name && exprId == a.exprId && child == a.child && qualifiers == a.qualifiers &&
+        name == a.name && exprId == a.exprId && child == a
+          .child && qualifiers == a.qualifiers &&
           explicitMetadata == a.explicitMetadata
       case _ => false
     }
@@ -227,7 +228,8 @@ case class AttributeReference(
     other match {
       case ar: AttributeReference =>
         name == ar.name && dataType == ar.dataType && nullable == ar.nullable &&
-          metadata == ar.metadata && exprId == ar.exprId && qualifiers == ar.qualifiers
+          metadata == ar.metadata && exprId == ar.exprId && qualifiers == ar
+          .qualifiers
       case _ => false
     }
 

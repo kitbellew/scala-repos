@@ -22,20 +22,14 @@ class TaskOpFactoryImplTest
   test("Copy SlaveID from Offer to Task") {
     val f = new Fixture
 
-    val offer = MarathonTestHelper
-      .makeBasicOffer()
-      .setHostname("some_host")
-      .setSlaveId(SlaveID("some slave ID"))
-      .build()
+    val offer = MarathonTestHelper.makeBasicOffer().setHostname("some_host")
+      .setSlaveId(SlaveID("some slave ID")).build()
     val app: AppDefinition = AppDefinition(portDefinitions = List())
     val runningTasks: Set[Task] = Set(
       MarathonTestHelper.mininimalTask("some task ID"))
 
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      runningTasks,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, runningTasks, additionalLaunches = 1)
     val inferredTaskOp = f.taskOpFactory.buildTaskOp(request)
 
     val expectedTask = Task.LaunchedEphemeral(
@@ -60,11 +54,8 @@ class TaskOpFactoryImplTest
     val runningTasks = Nil
 
     When("We infer the taskOp")
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      runningTasks,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, runningTasks, additionalLaunches = 1)
     val taskOp = f.taskOpFactory.buildTaskOp(request)
 
     Then("None is returned because there are already 2 launched tasks")
@@ -79,11 +70,8 @@ class TaskOpFactoryImplTest
     val runningTasks = Nil
 
     When("We infer the taskOp")
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      runningTasks,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, runningTasks, additionalLaunches = 1)
     val taskOp = f.taskOpFactory.buildTaskOp(request)
 
     Then("A Launch is inferred")
@@ -98,11 +86,8 @@ class TaskOpFactoryImplTest
     val runningTasks = Nil
 
     When("We infer the taskOp")
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      runningTasks,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, runningTasks, additionalLaunches = 1)
     val taskOp = f.taskOpFactory.buildTaskOp(request)
 
     Then("None is returned")
@@ -118,11 +103,8 @@ class TaskOpFactoryImplTest
     val runningTasks = Nil
 
     When("We infer the taskOp")
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      runningTasks,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, runningTasks, additionalLaunches = 1)
     val taskOp = f.taskOpFactory.buildTaskOp(request)
 
     Then("A no is returned because there is not enough disk space")
@@ -137,11 +119,8 @@ class TaskOpFactoryImplTest
     val runningTasks = Nil
 
     When("We infer the taskOp")
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      runningTasks,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, runningTasks, additionalLaunches = 1)
     val taskOp = f.taskOpFactory.buildTaskOp(request)
 
     Then("A ReserveAndCreateVolumes is returned")
@@ -176,11 +155,8 @@ class TaskOpFactoryImplTest
       reservedTask)
 
     When("We infer the taskOp")
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      runningTasks,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, runningTasks, additionalLaunches = 1)
     val taskOp = f.taskOpFactory.buildTaskOp(request)
 
     Then("A Launch is returned")
@@ -189,9 +165,7 @@ class TaskOpFactoryImplTest
     And("the taskInfo contains the correct persistent volume")
     import scala.collection.JavaConverters._
     val taskInfoResources = taskOp.get.offerOperations.head.getLaunch
-      .getTaskInfos(0)
-      .getResourcesList
-      .asScala
+      .getTaskInfos(0).getResourcesList.asScala
     val found = taskInfoResources.find { resource =>
       resource.hasDisk && resource.getDisk.hasPersistence &&
       resource.getDisk.getPersistence.getId == localVolumeIdMatch.idString
@@ -213,16 +187,12 @@ class TaskOpFactoryImplTest
       "unwanted-persistent-volume",
       "uuid2")
     val runningTasks = Seq(f.residentLaunchedTask(app.id, usedVolumeId))
-    val offer = f.offerWithVolumes(
-      runningTasks.head.taskId.idString,
-      offeredVolumeId)
+    val offer = f
+      .offerWithVolumes(runningTasks.head.taskId.idString, offeredVolumeId)
 
     When("We infer the taskOp")
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      runningTasks,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, runningTasks, additionalLaunches = 1)
     val taskOp = f.taskOpFactory.buildTaskOp(request)
 
     Then("A None is returned because there is already a launched Task")
@@ -232,9 +202,8 @@ class TaskOpFactoryImplTest
   class Fixture {
     import mesosphere.marathon.{MarathonTestHelper => MTH}
     val taskTracker = mock[TaskTracker]
-    val config: MarathonConf = MTH.defaultConfig(
-      mesosRole = Some("test"),
-      principal = Some("principal"))
+    val config: MarathonConf = MTH
+      .defaultConfig(mesosRole = Some("test"), principal = Some("principal"))
     val clock = ConstantClock()
     val taskOpFactory: TaskOpFactory = new TaskOpFactoryImpl(config, clock)
 
@@ -248,14 +217,12 @@ class TaskOpFactoryImplTest
     def offer = MTH.makeBasicOffer().build()
     def offerWithSpaceForLocalVolume = MTH.makeBasicOffer(disk = 1025).build()
     def insufficientOffer =
-      MTH
-        .makeBasicOffer(
-          cpus = 0.01,
-          mem = 1,
-          disk = 0.01,
-          beginPort = 31000,
-          endPort = 31001)
-        .build()
+      MTH.makeBasicOffer(
+        cpus = 0.01,
+        mem = 1,
+        disk = 0.01,
+        beginPort = 31000,
+        endPort = 31001).build()
 
     def offerWithVolumes(taskId: String, localVolumeIds: LocalVolumeId*) =
       MTH.offerWithVolumes(taskId, localVolumeIds: _*)

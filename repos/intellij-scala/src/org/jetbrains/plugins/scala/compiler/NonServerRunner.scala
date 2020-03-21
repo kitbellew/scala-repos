@@ -38,8 +38,8 @@ class NonServerRunner(
       listener: String => Unit): CompilationProcess = {
     val sdk =
       Option(ProjectRootManager.getInstance(project).getProjectSdk) getOrElse {
-        val all = ProjectJdkTable.getInstance.getSdksOfType(
-          JavaSdk.getInstance())
+        val all = ProjectJdkTable.getInstance
+          .getSdksOfType(JavaSdk.getInstance())
 
         if (all.isEmpty) {
           error("No JDK available")
@@ -59,9 +59,8 @@ class NonServerRunner(
         null
       case Right(jdk) =>
         val commands =
-          ((
-            FileUtil toCanonicalPath jdk.executable.getPath
-          ) +: "-cp" +: classPath(jdk) +: jvmParameters :+
+          ((FileUtil toCanonicalPath jdk.executable
+            .getPath) +: "-cp" +: classPath(jdk) +: jvmParameters :+
             SERVER_CLASS_NAME).++(args)
 
         val builder = new ProcessBuilder(commands.asJava)

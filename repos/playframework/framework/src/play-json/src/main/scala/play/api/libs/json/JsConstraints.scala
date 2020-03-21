@@ -47,18 +47,16 @@ trait PathReads {
     */
   def nullable[A](path: JsPath)(implicit reads: Reads[A]) =
     Reads[Option[A]] { json =>
-      path
-        .applyTillLast(json)
-        .fold(
-          jserr => jserr,
-          jsres =>
-            jsres.fold(
-              _ => JsSuccess(None),
-              a =>
-                a match {
-                  case JsNull => JsSuccess(None)
-                  case js     => reads.reads(js).repath(path).map(Some(_))
-                }))
+      path.applyTillLast(json).fold(
+        jserr => jserr,
+        jsres =>
+          jsres.fold(
+            _ => JsSuccess(None),
+            a =>
+              a match {
+                case JsNull => JsSuccess(None)
+                case js     => reads.reads(js).repath(path).map(Some(_))
+              }))
     }
 
   def jsPick[A <: JsValue](path: JsPath)(implicit reads: Reads[A]): Reads[A] =
@@ -67,9 +65,7 @@ trait PathReads {
   def jsPickBranch[A <: JsValue](path: JsPath)(implicit
       reads: Reads[A]): Reads[JsObject] =
     Reads[JsObject](js =>
-      path
-        .asSingleJsResult(js)
-        .flatMap { jsv => reads.reads(jsv).repath(path) }
+      path.asSingleJsResult(js).flatMap { jsv => reads.reads(jsv).repath(path) }
         .map(jsv => JsPath.createObj(path -> jsv)))
 
   def jsPut(path: JsPath, a: => JsValue) =
@@ -82,9 +78,7 @@ trait PathReads {
   def jsUpdate[A <: JsValue](path: JsPath)(reads: Reads[A]) =
     Reads[JsObject](js =>
       js match {
-        case o: JsObject =>
-          path
-            .asSingleJsResult(o)
+        case o: JsObject => path.asSingleJsResult(o)
             .flatMap(js => reads.reads(js).repath(path))
             .map(jsv => JsPath.createObj(path -> jsv))
             .map(opath => o.deepMerge(opath))
@@ -170,7 +164,8 @@ trait ConstraintReads {
 
   def email(implicit reads: Reads[String]): Reads[String] =
     pattern(
-      """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r,
+      """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"""
+        .r,
       "error.email"
     )
 
@@ -184,8 +179,7 @@ trait ConstraintReads {
         (scala.util.control.Exception.catching(classOf[MatchError]) opt cond(t))
           .flatMap { b =>
             if (b) Some(subreads.reads(js).map(_ => t)) else None
-          }
-          .getOrElse(JsSuccess(t))
+          }.getOrElse(JsSuccess(t))
       }
     }
 
@@ -223,9 +217,8 @@ trait PathWrites {
       wrs: OWrites[JsValue]): OWrites[JsValue] =
     OWrites[JsValue] { js =>
       JsPath.createObj(
-        path -> path(js).headOption
-          .flatMap(js =>
-            js.asOpt[JsObject].map(obj => obj.deepMerge(wrs.writes(obj))))
+        path -> path(js).headOption.flatMap(js =>
+          js.asOpt[JsObject].map(obj => obj.deepMerge(wrs.writes(obj))))
           .getOrElse(JsNull))
     }
 

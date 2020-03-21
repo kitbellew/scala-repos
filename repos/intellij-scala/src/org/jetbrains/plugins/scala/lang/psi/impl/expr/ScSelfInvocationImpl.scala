@@ -84,18 +84,16 @@ class ScSelfInvocationImpl(node: ASTNode)
       i: Int): TypeResult[ScType] = {
     val (res: ScType, clazz: ScTemplateDefinition) = bindInternal match {
       case Some(c: ScMethodLike) =>
-        val methodType = ScType
-          .nested(c.methodType, i)
-          .getOrElse(
-            return Failure("Not enough parameter sections", Some(this)))
+        val methodType = ScType.nested(c.methodType, i).getOrElse(
+          return Failure("Not enough parameter sections", Some(this)))
         (methodType, c.containingClass)
       case _ =>
         return Failure("Cannot shape resolve self invocation", Some(this))
     }
     clazz match {
       case tp: ScTypeParametersOwner if tp.typeParameters.length > 0 =>
-        val params: Seq[TypeParameter] = tp.typeParameters.map(
-          new TypeParameter(_))
+        val params: Seq[TypeParameter] = tp.typeParameters
+          .map(new TypeParameter(_))
         Success(ScTypePolymorphicType(res, params), Some(this))
       case _ => Success(res, Some(this))
     }
@@ -107,13 +105,13 @@ class ScSelfInvocationImpl(node: ASTNode)
   }
 
   def shapeMultiType(i: Int): Seq[TypeResult[ScType]] = {
-    bindMultiInternal(shapeResolve = true).map(pe =>
-      workWithBindInternal(Some(pe), i))
+    bindMultiInternal(shapeResolve = true)
+      .map(pe => workWithBindInternal(Some(pe), i))
   }
 
   def multiType(i: Int): Seq[TypeResult[ScType]] = {
-    bindMultiInternal(shapeResolve = false).map(pe =>
-      workWithBindInternal(Some(pe), i))
+    bindMultiInternal(shapeResolve = false)
+      .map(pe => workWithBindInternal(Some(pe), i))
   }
 
   override def accept(visitor: ScalaElementVisitor) {

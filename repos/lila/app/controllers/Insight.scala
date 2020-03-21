@@ -46,17 +46,15 @@ object Insight extends LilaController {
     OpenBody(BodyParsers.parse.json) { implicit ctx =>
       import lila.insight.JsonQuestion, JsonQuestion._
       Accessible(username) { user =>
-        ctx.body.body
-          .validate[JsonQuestion]
-          .fold(
-            err => BadRequest(jsonError(err.toString)).fuccess,
-            qJson =>
-              qJson.question.fold(BadRequest.fuccess) { q =>
-                env.api.ask(q, user) map
-                  lila.insight.Chart.fromAnswer(Env.user.lightUser) map
-                  env.jsonView.chart.apply map { Ok(_) }
-              }
-          )
+        ctx.body.body.validate[JsonQuestion].fold(
+          err => BadRequest(jsonError(err.toString)).fuccess,
+          qJson =>
+            qJson.question.fold(BadRequest.fuccess) { q =>
+              env.api.ask(q, user) map
+                lila.insight.Chart.fromAnswer(Env.user.lightUser) map
+                env.jsonView.chart.apply map { Ok(_) }
+            }
+        )
       }
     }
 

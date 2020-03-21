@@ -201,8 +201,7 @@ class Alert(override val delegate: jfxsc.Alert)
     * @return An `Option` that contains the `result`.
     */
   def showAndWait(): Option[ButtonType] = {
-    super
-      .showAndWait((x: jfxsc.ButtonType) => new ButtonType(x))
+    super.showAndWait((x: jfxsc.ButtonType) => new ButtonType(x))
       .asInstanceOf[Option[ButtonType]]
   }
 

@@ -135,9 +135,7 @@ class DefaultIngestProcessingSelectors(
     def select(
         partialData: Array[Byte],
         request: HttpRequest[_]): Option[IngestProcessing] = {
-      request.headers
-        .header[`Content-Type`]
-        .toSeq
+      request.headers.header[`Content-Type`].toSeq
         .flatMap(_.mimeTypes) collectFirst {
         case JSON =>
           new JSONIngestProcessing(
@@ -175,13 +173,10 @@ class DefaultIngestProcessingSelectors(
     def select(
         partialData: Array[Byte],
         request: HttpRequest[_]): Option[IngestProcessing] = {
-      val (AsyncParse(errors, values), parser) = AsyncParser
-        .stream()
+      val (AsyncParse(errors, values), parser) = AsyncParser.stream()
         .apply(More(ByteBuffer.wrap(partialData)))
       if (errors.isEmpty && !values.isEmpty) {
-        request.headers
-          .header[`Content-Type`]
-          .toSeq
+        request.headers.header[`Content-Type`].toSeq
           .flatMap(_.mimeTypes) collectFirst {
           case JSON_STREAM =>
             new JSONIngestProcessing(

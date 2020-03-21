@@ -60,8 +60,8 @@ trait DefaultFiltersSpec extends FiltersSpec {
       lazy val router = testRouter
       override lazy val httpFilters: Seq[EssentialFilter] = makeFilters(
         materializer)
-      override lazy val httpErrorHandler = errorHandler.getOrElse(
-        new DefaultHttpErrorHandler(
+      override lazy val httpErrorHandler = errorHandler
+        .getOrElse(new DefaultHttpErrorHandler(
           environment,
           configuration,
           sourceMapper,
@@ -113,18 +113,15 @@ trait GlobalFiltersSpec extends FiltersSpec {
 
     import play.api.inject.bind
 
-    val app = new GuiceApplicationBuilder()
-      .configure(settings)
-      .overrides(
-        bind[Router].toInstance(testRouter),
-        bind[HttpRequestHandler].to[GlobalSettingsHttpRequestHandler])
+    val app = new GuiceApplicationBuilder().configure(settings).overrides(
+      bind[Router].toInstance(testRouter),
+      bind[HttpRequestHandler].to[GlobalSettingsHttpRequestHandler])
       .global(new WithFilters(filters: _*) {
         override def onHandlerNotFound(request: RequestHeader) = {
           errorHandler.fold(super.onHandlerNotFound(request))(
             _.onClientError(request, 404, ""))
         }
-      })
-      .build()
+      }).build()
 
     Server.withApplication(app) { implicit port =>
       import app.materializer
@@ -149,9 +146,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
       "ErrorHandlingFilter has no effect on a POST that returns a 200 OK" in withServer()(
         ErrorHandlingFilter) { ws =>
-        val response = Await.result(
-          ws.url("/ok").post(expectedOkText),
-          Duration.Inf)
+        val response = Await
+          .result(ws.url("/ok").post(expectedOkText), Duration.Inf)
         response.status must_== 200
         response.body must_== expectedOkText
       }
@@ -172,18 +168,16 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
       "ErrorHandlingFilter recovers from a POST that throws a synchronous exception" in withServer()(
         ErrorHandlingFilter) { ws =>
-        val response = Await.result(
-          ws.url("/error").post(expectedOkText),
-          Duration.Inf)
+        val response = Await
+          .result(ws.url("/error").post(expectedOkText), Duration.Inf)
         response.status must_== 500
         response.body must_== expectedOkText
       }
 
       "ErrorHandlingFilter recovers from a POST that throws an asynchronous exception" in withServer()(
         ErrorHandlingFilter) { ws =>
-        val response = Await.result(
-          ws.url("/error-async").post(expectedOkText),
-          Duration.Inf)
+        val response = Await
+          .result(ws.url("/error-async").post(expectedOkText), Duration.Inf)
         response.status must_== 500
         response.body must_== expectedOkText
       }
@@ -199,9 +193,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
       "ErrorHandlingFilter has no effect on a POST that returns a 200 OK" in withServer()(
         JavaErrorHandlingFilter) { ws =>
-        val response = Await.result(
-          ws.url("/ok").post(expectedOkText),
-          Duration.Inf)
+        val response = Await
+          .result(ws.url("/ok").post(expectedOkText), Duration.Inf)
         response.status must_== 200
         response.body must_== expectedOkText
       }
@@ -222,18 +215,16 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
       "ErrorHandlingFilter recovers from a POST that throws a synchronous exception" in withServer()(
         JavaErrorHandlingFilter) { ws =>
-        val response = Await.result(
-          ws.url("/error").post(expectedOkText),
-          Duration.Inf)
+        val response = Await
+          .result(ws.url("/error").post(expectedOkText), Duration.Inf)
         response.status must_== 500
         response.body must_== expectedOkText
       }
 
       "ErrorHandlingFilter recovers from a POST that throws an asynchronous exception" in withServer()(
         JavaErrorHandlingFilter) { ws =>
-        val response = Await.result(
-          ws.url("/error-async").post(expectedOkText),
-          Duration.Inf)
+        val response = Await
+          .result(ws.url("/error-async").post(expectedOkText), Duration.Inf)
         response.status must_== 500
         response.body must_== expectedOkText
       }
@@ -243,18 +234,16 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
       Map("play.http.context" -> "/foo"))(
       ErrorHandlingFilter,
       ThrowExceptionFilter) { ws =>
-      val response = Await.result(
-        ws.url("/ok").post(expectedOkText),
-        Duration.Inf)
+      val response = Await
+        .result(ws.url("/ok").post(expectedOkText), Duration.Inf)
       response.status must_== 200
       response.body must_== expectedOkText
     }
 
     "Filters are applied on the root of the application context" in withServer(
       Map("play.http.context" -> "/foo"))(SkipNextFilter) { ws =>
-      val response = Await.result(
-        ws.url("/foo").post(expectedOkText),
-        Duration.Inf)
+      val response = Await
+        .result(ws.url("/foo").post(expectedOkText), Duration.Inf)
       response.status must_== 200
       response.body must_== SkipNextFilter.expectedText
     }
@@ -305,8 +294,7 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
           statusCode: Int,
           message: String) = {
         Future.successful(Results.NotFound(
-          request.headers
-            .get(filterAddedHeaderKey)
+          request.headers.get(filterAddedHeaderKey)
             .getOrElse("undefined header")))
       }
       def onServerError(request: RequestHeader, exception: Throwable) =
@@ -315,9 +303,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
     "requests not matching a route should receive a RequestHeader modified by upstream filters" in withServer(
       errorHandler = Some(CustomErrorHandler))(CustomHeaderFilter) { ws =>
-      val response = Await.result(
-        ws.url("/not-a-real-route").get(),
-        Duration.Inf)
+      val response = Await
+        .result(ws.url("/not-a-real-route").get(), Duration.Inf)
       response.status must_== 404
       response.body must_== filterAddedHeaderVal
     }
@@ -350,13 +337,11 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
       new EssentialAction {
         override def apply(request: Http.RequestHeader) = {
           try {
-            next
-              .apply(request)
-              .recover(
-                new java.util.function.Function[Throwable, Result]() {
-                  def apply(t: Throwable) = getResult(t)
-                },
-                play.core.Execution.internalContext)
+            next.apply(request).recover(
+              new java.util.function.Function[Throwable, Result]() {
+                def apply(t: Throwable) = getResult(t)
+              },
+              play.core.Execution.internalContext)
           } catch { case t: Throwable => Accumulator.done(getResult(t)) }
         }
       }

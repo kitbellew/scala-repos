@@ -107,8 +107,8 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
 
   protected def createChart(data: Array[CandleStick]): CandleStickChart = {
     //Style Sheet loaded from external
-    val css =
-      this.getClass.getResource("AdvCandleStickChartSample.css").toExternalForm
+    val css = this.getClass.getResource("AdvCandleStickChartSample.css")
+      .toExternalForm
 
     val xAxis = new NumberAxis("Day", 0, 32, 1) {
       minorTickCount = 0
@@ -119,8 +119,8 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
       XYChart.Data[Number, Number](d.day, d.open, d)
     }
 
-    val series = XYChart.Series[Number, Number](ObservableBuffer(
-      seriesData.toSeq))
+    val series = XYChart
+      .Series[Number, Number](ObservableBuffer(seriesData.toSeq))
 
     new CandleStickChart(xAxis, yAxis) {
       title = "Custom Candle Stick Chart"
@@ -396,8 +396,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
     }
 
     def updateTooltip(open: Double, close: Double, high: Double, low: Double) {
-      val tooltipContent: TooltipContent = tooltip
-        .graphic()
+      val tooltipContent: TooltipContent = tooltip.graphic()
         .asInstanceOf[TooltipContent]
       tooltipContent.update(open, close, high, low)
     }

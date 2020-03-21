@@ -49,8 +49,7 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
     in.toLowerCase + "_pw" :: in.toLowerCase + "_slt" :: Nil
 
   override lazy val dbSelectString = dbColumnNames(name)
-    .map(cn => fieldOwner.getSingleton._dbTableNameLC + "." + cn)
-    .mkString(", ")
+    .map(cn => fieldOwner.getSingleton._dbTableNameLC + "." + cn).mkString(", ")
 
   def asJsonValue: Box[JsonAST.JValue] = Full(JsonAST.JNull)
 

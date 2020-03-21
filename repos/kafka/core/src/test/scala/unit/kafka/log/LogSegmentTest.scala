@@ -80,8 +80,8 @@ class LogSegmentTest {
     val seg = createSegment(40)
     val ms = messages(50, "hello", "there", "little", "bee")
     seg.append(50, ms)
-    val read =
-      seg.read(startOffset = 41, maxSize = 300, maxOffset = None).messageSet
+    val read = seg.read(startOffset = 41, maxSize = 300, maxOffset = None)
+      .messageSet
     assertEquals(ms.toList, read.toList)
   }
 
@@ -98,13 +98,10 @@ class LogSegmentTest {
     def validate(offset: Long) =
       assertEquals(
         ms.filter(_.offset == offset).toList,
-        seg
-          .read(
-            startOffset = offset,
-            maxSize = 1024,
-            maxOffset = Some(offset + 1))
-          .messageSet
-          .toList)
+        seg.read(
+          startOffset = offset,
+          maxSize = 1024,
+          maxOffset = Some(offset + 1)).messageSet.toList)
     validate(50)
     validate(51)
     validate(52)
@@ -233,8 +230,7 @@ class LogSegmentTest {
       for (i <- 0 until messagesAppended) seg.append(i, messages(i, i.toString))
       val offsetToBeginCorruption = TestUtils.random.nextInt(messagesAppended)
       // start corrupting somewhere in the middle of the chosen record all the way to the end
-      val position = seg.log
-        .searchFor(offsetToBeginCorruption, 0)
+      val position = seg.log.searchFor(offsetToBeginCorruption, 0)
         .position + TestUtils.random.nextInt(15)
       TestUtils.writeNonsenseToFile(
         seg.log.file,
@@ -323,10 +319,8 @@ class LogSegmentTest {
       true)
     segments += segReopen
 
-    val readAgain = segReopen.read(
-      startOffset = 55,
-      maxSize = 200,
-      maxOffset = None)
+    val readAgain = segReopen
+      .read(startOffset = 55, maxSize = 200, maxOffset = None)
     assertEquals(ms2.toList, readAgain.messageSet.toList)
     val size = segReopen.log.sizeInBytes()
     val position = segReopen.log.channel.position

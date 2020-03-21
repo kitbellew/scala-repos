@@ -55,9 +55,8 @@ private[sql] class SQLListener(conf: SparkConf)
     extends SparkListener
     with Logging {
 
-  private val retainedExecutions = conf.getInt(
-    "spark.sql.ui.retainedExecutions",
-    1000)
+  private val retainedExecutions = conf
+    .getInt("spark.sql.ui.retainedExecutions", 1000)
 
   private val activeExecutions = mutable.HashMap[Long, SQLExecutionUIData]()
 
@@ -91,8 +90,8 @@ private[sql] class SQLListener(conf: SparkConf)
     if (executions.size > retainedExecutions) {
       val toRemove = math.max(retainedExecutions / 10, 1)
       executions.take(toRemove).foreach { execution =>
-        for (executionUIData <- _executionIdToData.remove(
-               execution.executionId)) {
+        for (executionUIData <- _executionIdToData
+               .remove(execution.executionId)) {
           for (jobId <- executionUIData.jobs.keys) {
             _jobIdToExecutionId.remove(jobId)
           }
@@ -106,8 +105,8 @@ private[sql] class SQLListener(conf: SparkConf)
   }
 
   override def onJobStart(jobStart: SparkListenerJobStart): Unit = {
-    val executionIdString = jobStart.properties.getProperty(
-      SQLExecution.EXECUTION_ID_KEY)
+    val executionIdString = jobStart.properties
+      .getProperty(SQLExecution.EXECUTION_ID_KEY)
     if (executionIdString == null) {
       // This is not a job created by SQL
       return
@@ -139,7 +138,8 @@ private[sql] class SQLListener(conf: SparkConf)
           case JobFailed(_) =>
             executionUIData.jobs(jobId) = JobExecutionStatus.FAILED
         }
-        if (executionUIData.completionTime.nonEmpty && !executionUIData.hasRunningJobs) {
+        if (executionUIData.completionTime.nonEmpty && !executionUIData
+              .hasRunningJobs) {
           // We are the last job of this execution, so mark the execution as finished. Note that
           // `onExecutionEnd` also does this, but currently that can be called before `onJobEnd`
           // since these are called on different threads.
@@ -425,21 +425,15 @@ private[ui] class SQLExecutionUIData(
   def isFailed: Boolean = jobs.values.exists(_ == JobExecutionStatus.FAILED)
 
   def runningJobs: Seq[Long] =
-    jobs
-      .filter { case (_, status) => status == JobExecutionStatus.RUNNING }
-      .keys
-      .toSeq
+    jobs.filter { case (_, status) => status == JobExecutionStatus.RUNNING }
+      .keys.toSeq
 
   def succeededJobs: Seq[Long] =
-    jobs
-      .filter { case (_, status) => status == JobExecutionStatus.SUCCEEDED }
-      .keys
-      .toSeq
+    jobs.filter { case (_, status) => status == JobExecutionStatus.SUCCEEDED }
+      .keys.toSeq
 
   def failedJobs: Seq[Long] =
-    jobs
-      .filter { case (_, status) => status == JobExecutionStatus.FAILED }
-      .keys
+    jobs.filter { case (_, status) => status == JobExecutionStatus.FAILED }.keys
       .toSeq
 }
 
@@ -461,8 +455,8 @@ private[ui] case class SQLPlanMetric(
   */
 private[ui] class SQLStageMetrics(
     val stageAttemptId: Long,
-    val taskIdToMetricUpdates: mutable.HashMap[Long, SQLTaskMetrics] =
-      mutable.HashMap.empty)
+    val taskIdToMetricUpdates: mutable.HashMap[Long, SQLTaskMetrics] = mutable
+      .HashMap.empty)
 
 /**
   * Store all accumulatorUpdates for a Spark task.

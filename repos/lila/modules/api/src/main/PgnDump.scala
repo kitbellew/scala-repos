@@ -14,10 +14,9 @@ final class PgnDump(
 
   def apply(game: Game, initialFen: Option[String]): Pgn = {
     val pgn = dumper(game, initialFen)
-    game.tournamentId
-      .flatMap(tournamentName)
-      .orElse { game.simulId.flatMap(simulName) }
-      .fold(pgn)(pgn.withEvent)
+    game.tournamentId.flatMap(tournamentName).orElse {
+      game.simulId.flatMap(simulName)
+    }.fold(pgn)(pgn.withEvent)
   }
 
   def filename(game: Game) = dumper filename game

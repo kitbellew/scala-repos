@@ -319,11 +319,8 @@ private[serverset2] object ApacheZooKeeper {
     val timeoutInMs = config.sessionTimeout.inMilliseconds.toInt
     val statsReceiver = config.statsReceiver
     val watcher = new ApacheWatcher(statsReceiver)
-    val statsWatcher = SessionStats.watcher(
-      watcher.state,
-      statsReceiver,
-      5.seconds,
-      config.timer)
+    val statsWatcher = SessionStats
+      .watcher(watcher.state, statsReceiver, 5.seconds, config.timer)
     val zk = (config.sessionId, config.password) match {
       case (Some(id), Some(pw)) =>
         new ApacheZooKeeper(new zookeeper.ZooKeeper(

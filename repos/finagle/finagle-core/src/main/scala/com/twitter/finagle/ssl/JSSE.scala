@@ -11,8 +11,8 @@ import collection.mutable.{Map => MutableMap}
  */
 object JSSE {
   private[this] val log = Logger.getLogger(getClass.getName)
-  private[this] val contextCache: MutableMap[String, SSLContext] =
-    MutableMap.empty
+  private[this] val contextCache: MutableMap[String, SSLContext] = MutableMap
+    .empty
   private[this] val protocol = "TLS"
   private[this] lazy val defaultSSLContext: SSLContext = {
     val ctx = SSLContext.getInstance(protocol)

@@ -59,8 +59,8 @@ object ScroogeEnumOrderedBuf {
         """
 
       override def length(element: Tree): CompileTimeLengthTypes[c.type] =
-        CompileTimeLengthTypes.FastLengthCalculation(c)(
-          q"posVarIntSize($element.value)")
+        CompileTimeLengthTypes
+          .FastLengthCalculation(c)(q"posVarIntSize($element.value)")
       override val lazyOuterVariables: Map[String, ctx.Tree] = Map.empty
     }
   }

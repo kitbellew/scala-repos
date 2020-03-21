@@ -29,10 +29,8 @@ abstract class Handler(val formatter: Formatter, val level: Option[Level])
   level.foreach { x => setLevel(x) }
 
   override def toString = {
-    "<%s level=%s formatter=%s>".format(
-      getClass.getName,
-      getLevel,
-      formatter.toString)
+    "<%s level=%s formatter=%s>"
+      .format(getClass.getName, getLevel, formatter.toString)
   }
 }
 

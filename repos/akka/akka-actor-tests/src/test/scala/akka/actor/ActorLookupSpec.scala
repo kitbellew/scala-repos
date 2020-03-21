@@ -71,9 +71,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       system.actorFor(system / Seq("c2", "c21")) should ===(c21)
 
       import scala.collection.JavaConverters._
-      system.actorFor(
-        system descendant Seq("c2", "c21").asJava
-      ) // test Java API
+      system
+        .actorFor(system descendant Seq("c2", "c21").asJava) // test Java API
     }
 
     "find actors by looking up their string representation" in {
@@ -183,9 +182,10 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
 
     "find actors by looking up their path" in {
       def check(looker: ActorRef, pathOf: ActorRef, result: ActorRef) {
-        Await.result(
-          looker ? LookupPath(pathOf.path),
-          timeout.duration) should ===(result)
+        Await
+          .result(
+            looker ? LookupPath(pathOf.path),
+            timeout.duration) should ===(result)
       }
       for {
         looker ← all
@@ -252,9 +252,10 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
     "find system-generated actors" in {
       def check(target: ActorRef) {
         for (looker ← all) {
-          Await.result(
-            looker ? LookupPath(target.path),
-            timeout.duration) should ===(target)
+          Await
+            .result(
+              looker ? LookupPath(target.path),
+              timeout.duration) should ===(target)
           Await.result(
             looker ? LookupString(target.path.toString),
             timeout.duration) should ===(target)
@@ -307,18 +308,20 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       val a = expectMsgType[ActorRef]
       a.path.elements.head should ===("temp")
       Await.result(c2 ? LookupPath(a.path), timeout.duration) should ===(a)
-      Await.result(
-        c2 ? LookupString(a.path.toString),
-        timeout.duration) should ===(a)
+      Await
+        .result(
+          c2 ? LookupString(a.path.toString),
+          timeout.duration) should ===(a)
       Await.result(
         c2 ? LookupString(a.path.toStringWithoutAddress),
         timeout.duration) should ===(a)
       Await.result(
         c2 ? LookupString("../../" + a.path.elements.mkString("/")),
         timeout.duration) should ===(a)
-      Await.result(
-        c2 ? LookupString(a.path.toString + "/"),
-        timeout.duration) should ===(a)
+      Await
+        .result(
+          c2 ? LookupString(a.path.toString + "/"),
+          timeout.duration) should ===(a)
       Await.result(
         c2 ? LookupString(a.path.toStringWithoutAddress + "/"),
         timeout.duration) should ===(a)
@@ -338,10 +341,8 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
       Await.result(f, timeout.duration) should ===(42)
       // clean-up is run as onComplete callback, i.e. dispatched on another thread
       awaitCond(
-        Await
-          .result(c2 ? LookupPath(a.path), timeout.duration)
-          .asInstanceOf[ActorRef]
-          .isTerminated,
+        Await.result(c2 ? LookupPath(a.path), timeout.duration)
+          .asInstanceOf[ActorRef].isTerminated,
         1 second)
     }
 

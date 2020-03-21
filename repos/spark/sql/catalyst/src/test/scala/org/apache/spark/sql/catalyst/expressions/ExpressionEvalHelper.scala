@@ -117,8 +117,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       inputRow: InternalRow = EmptyRow): Unit = {
 
     val plan = generateProject(
-      GenerateMutableProjection.generate(
-        Alias(expression, s"Optimized($expression)")() :: Nil)(),
+      GenerateMutableProjection
+        .generate(Alias(expression, s"Optimized($expression)")() :: Nil)(),
       expression)
 
     val actual = plan(inputRow).get(0, expression.dataType)
@@ -135,8 +135,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       inputRow: InternalRow = EmptyRow): Unit = {
 
     val plan = generateProject(
-      GenerateUnsafeProjection.generate(
-        Alias(expression, s"Optimized($expression)")() :: Nil),
+      GenerateUnsafeProjection
+        .generate(Alias(expression, s"Optimized($expression)")() :: Nil),
       expression)
 
     val unsafeRow = plan(inputRow)
@@ -151,8 +151,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       }
     } else {
       val lit = InternalRow(expected)
-      val expectedRow = UnsafeProjection
-        .create(Array(expression.dataType))
+      val expectedRow = UnsafeProjection.create(Array(expression.dataType))
         .apply(lit)
       if (unsafeRow != expectedRow) {
         fail(
@@ -185,15 +184,15 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     checkEvaluationWithOptimization(expression, expected)
 
     var plan = generateProject(
-      GenerateMutableProjection.generate(
-        Alias(expression, s"Optimized($expression)")() :: Nil)(),
+      GenerateMutableProjection
+        .generate(Alias(expression, s"Optimized($expression)")() :: Nil)(),
       expression)
     var actual = plan(inputRow).get(0, expression.dataType)
     assert(checkResult(actual, expected))
 
     plan = generateProject(
-      GenerateUnsafeProjection.generate(
-        Alias(expression, s"Optimized($expression)")() :: Nil),
+      GenerateUnsafeProjection
+        .generate(Alias(expression, s"Optimized($expression)")() :: Nil),
       expression)
     actual = FromUnsafeProjection(expression.dataType :: Nil)(plan(inputRow))
       .get(0, expression.dataType)
@@ -280,8 +279,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       catch { case e: Exception => fail(s"Exception evaluating $expr", e) }
 
     val plan = generateProject(
-      GenerateMutableProjection.generate(
-        Alias(expr, s"Optimized($expr)")() :: Nil)(),
+      GenerateMutableProjection
+        .generate(Alias(expr, s"Optimized($expr)")() :: Nil)(),
       expr)
     val codegen = plan(inputRow).get(0, expr.dataType)
 

@@ -53,8 +53,7 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
   // Dummy parameters for API testing
   private val dummyEndpointUrl = defaultEndpointUrl
   private val dummyRegionName = RegionUtils
-    .getRegionByEndpoint(dummyEndpointUrl)
-    .getName()
+    .getRegionByEndpoint(dummyEndpointUrl).getName()
   private val dummyAWSAccessKey = "dummyAccessKey"
   private val dummyAWSSecretKey = "dummySecretKey"
 
@@ -63,11 +62,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
   private var sc: SparkContext = null
 
   override def beforeAll(): Unit = {
-    val conf = new SparkConf()
-      .setMaster("local[4]")
-      .setAppName(
-        "KinesisStreamSuite"
-      ) // Setting Spark app name to Kinesis app name
+    val conf = new SparkConf().setMaster("local[4]").setAppName(
+      "KinesisStreamSuite"
+    ) // Setting Spark app name to Kinesis app name
     sc = new SparkContext(conf)
 
     runIfTestsEnabled("Prepare KinesisTestUtils") {
@@ -195,8 +192,7 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     kinesisStream.createBlockRDD(time, blockInfos).partitions.foreach {
       partition =>
         assert(
-          partition
-            .asInstanceOf[KinesisBackedBlockRDDPartition]
+          partition.asInstanceOf[KinesisBackedBlockRDDPartition]
             .isBlockIdValid === false)
     }
   }
@@ -283,8 +279,7 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
   }
 
   testIfEnabled("failure recovery") {
-    val sparkConf = new SparkConf()
-      .setMaster("local[4]")
+    val sparkConf = new SparkConf().setMaster("local[4]")
       .setAppName(this.getClass.getSimpleName)
     val checkpointDir = Utils.createTempDir().getAbsolutePath
 
@@ -317,9 +312,10 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       }
     })
 
-    ssc.remember(Minutes(
-      60
-    )) // remember all the batches so that they are all saved in checkpoint
+    ssc
+      .remember(Minutes(
+        60
+      )) // remember all the batches so that they are all saved in checkpoint
     ssc.start()
 
     def numBatchesWithData: Int =
@@ -335,9 +331,10 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       testUtils.pushData(1 to 5, aggregateTestData)
       assert(isCheckpointPresent && numBatchesWithData > 10)
     }
-    ssc.stop(stopSparkContext =
-      true
-    ) // stop the SparkContext so that the blocks are not reused
+    ssc
+      .stop(stopSparkContext =
+        true
+      ) // stop the SparkContext so that the blocks are not reused
 
     // Restart the context from checkpoint and verify whether the
     logInfo("Restarting from checkpoint")
@@ -351,9 +348,7 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       val times = collectedData.keySet
       times.foreach { time =>
         val (arrayOfSeqNumRanges, data) = collectedData(time)
-        val rdd = recoveredKinesisStream
-          .getOrCompute(time)
-          .get
+        val rdd = recoveredKinesisStream.getOrCompute(time).get
           .asInstanceOf[RDD[Array[Byte]]]
         rdd shouldBe a[KinesisBackedBlockRDD[_]]
 
@@ -366,8 +361,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
         }
 
         // Verify the recovered data
-        assert(
-          rdd.map { bytes => new String(bytes).toInt }.collect().toSeq === data)
+        assert(rdd.map { bytes => new String(bytes).toInt }
+          .collect().toSeq === data)
       }
     }
     ssc.stop()

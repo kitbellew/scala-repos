@@ -79,9 +79,8 @@ abstract class MLWriter extends BaseReadWrite with Logging {
     val hadoopConf = sc.hadoopConfiguration
     val outputPath = new Path(path)
     val fs = outputPath.getFileSystem(hadoopConf)
-    val qualifiedOutputPath = outputPath.makeQualified(
-      fs.getUri,
-      fs.getWorkingDirectory)
+    val qualifiedOutputPath = outputPath
+      .makeQualified(fs.getUri, fs.getWorkingDirectory)
     if (fs.exists(qualifiedOutputPath)) {
       if (shouldOverwrite) {
         logInfo(s"Path $path already exists. It will be overwritten.")
@@ -224,9 +223,7 @@ private[ml] object DefaultParamsWriter {
       paramMap: Option[JValue] = None): Unit = {
     val uid = instance.uid
     val cls = instance.getClass.getName
-    val params = instance
-      .extractParamMap()
-      .toSeq
+    val params = instance.extractParamMap().toSeq
       .asInstanceOf[Seq[ParamPair[Any]]]
     val jsonParams = paramMap.getOrElse(render(params.map {
       case ParamPair(p, v) => p.name -> parse(p.jsonEncode(v))
@@ -258,9 +255,7 @@ private[ml] class DefaultParamsReader[T] extends MLReader[T] {
   override def load(path: String): T = {
     val metadata = DefaultParamsReader.loadMetadata(path, sc)
     val cls = Utils.classForName(metadata.className)
-    val instance = cls
-      .getConstructor(classOf[String])
-      .newInstance(metadata.uid)
+    val instance = cls.getConstructor(classOf[String]).newInstance(metadata.uid)
       .asInstanceOf[Params]
     DefaultParamsReader.getAndSetParams(instance, metadata)
     instance.asInstanceOf[T]
@@ -293,14 +288,13 @@ private[ml] object DefaultParamsReader {
       implicit val format = DefaultFormats
       params match {
         case JObject(pairs) =>
-          val values = pairs
-            .filter { case (pName, jsonValue) => pName == paramName }
-            .map(_._2)
+          val values = pairs.filter {
+            case (pName, jsonValue) => pName == paramName
+          }.map(_._2)
           assert(
             values.length == 1,
             s"Expected one instance of Param '$paramName' but found" +
-              s" ${values.length} in JSON Params: " + pairs
-              .map(_.toString)
+              s" ${values.length} in JSON Params: " + pairs.map(_.toString)
               .mkString(", "))
           values.head
         case _ =>

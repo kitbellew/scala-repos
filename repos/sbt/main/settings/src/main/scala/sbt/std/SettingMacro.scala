@@ -33,29 +33,27 @@ object InitializeConvert extends Convert {
       val i = c.Expr[Initialize[T]](in)
       val t = c.universe.reify(i.splice).tree
       Converted.Success(t)
-    } else if (nme == InputWrapper.WrapTaskName || nme == InputWrapper.WrapInitTaskName)
+    } else if (nme == InputWrapper.WrapTaskName || nme == InputWrapper
+                 .WrapInitTaskName)
       Converted.Failure(in.pos, "A setting cannot depend on a task")
     else if (nme == InputWrapper.WrapPreviousName)
-      Converted.Failure(
-        in.pos,
-        "A setting cannot depend on a task's previous value.")
+      Converted
+        .Failure(in.pos, "A setting cannot depend on a task's previous value.")
     else Converted.NotApplicable
 }
 
 object SettingMacro {
   def settingMacroImpl[T: c.WeakTypeTag](c: Context)(
       t: c.Expr[T]): c.Expr[Initialize[T]] =
-    Instance.contImpl[T, Id](
-      c,
-      InitializeInstance,
-      InitializeConvert,
-      MixedBuilder)(Left(t), Instance.idTransform[c.type])
+    Instance
+      .contImpl[T, Id](c, InitializeInstance, InitializeConvert, MixedBuilder)(
+        Left(t),
+        Instance.idTransform[c.type])
 
   def settingDynMacroImpl[T: c.WeakTypeTag](c: Context)(
       t: c.Expr[Initialize[T]]): c.Expr[Initialize[T]] =
-    Instance.contImpl[T, Id](
-      c,
-      InitializeInstance,
-      InitializeConvert,
-      MixedBuilder)(Right(t), Instance.idTransform[c.type])
+    Instance
+      .contImpl[T, Id](c, InitializeInstance, InitializeConvert, MixedBuilder)(
+        Right(t),
+        Instance.idTransform[c.type])
 }

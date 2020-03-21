@@ -168,8 +168,7 @@ private[finagle] object Handshake {
     // Since the handshake happens at the start of a session, we can safely enc/dec
     // messages without having to worry about any special features (e.g. fragments).
     val msgTrans = trans.map(Message.encode, Message.decode)
-    val handshake: Future[Transport[Message, Message]] = msgTrans
-      .read()
+    val handshake: Future[Transport[Message, Message]] = msgTrans.read()
       .transform {
         // A Tinit with a matching version
         case Return(Message.Tinit(tag, ver, clientHeaders)) if ver == version =>
@@ -182,17 +181,15 @@ private[finagle] object Handshake {
         // a failed future.
         case Return(Message.Tinit(tag, ver, _)) =>
           val msg = s"unsupported version $ver, expected $version"
-          msgTrans
-            .write(Message.Rerr(tag, msg))
-            .before { Future.exception(Failure(msg)) }
+          msgTrans.write(Message.Rerr(tag, msg)).before {
+            Future.exception(Failure(msg))
+          }
 
         // A marker Rerr that queries whether or not we can do handshaking.
         // Echo back the Rerr message to indicate that we can and recurse
         // so we can be ready to handshake again.
-        case Return(rerr @ Message.Rerr(tag, msg)) =>
-          msgTrans.write(rerr).before {
-            Future.value(server(trans, version, headers, negotiate))
-          }
+        case Return(rerr @ Message.Rerr(tag, msg)) => msgTrans.write(rerr)
+            .before { Future.value(server(trans, version, headers, negotiate)) }
 
         // Client did not start a session with handshaking but we've consumed
         // a message from the transport. Replace the message and return the

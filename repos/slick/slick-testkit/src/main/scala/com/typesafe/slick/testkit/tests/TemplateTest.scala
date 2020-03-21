@@ -40,8 +40,7 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
     val userNameByIDRangeAndProduct = for {
       (min, (max, product)) <- Parameters[(Int, (Int, String))]
       u <- users if u.id >= min && u.id <= max && orders
-        .filter(o => (u.id === o.userID) && (o.product === product))
-        .exists
+        .filter(o => (u.id === o.userID) && (o.product === product)).exists
     } yield u.first
     val q4 = userNameByIDRangeAndProduct(2, (5, "Product A"))
 
@@ -65,8 +64,8 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
       _ <- q3.result.map(_.toSet shouldBe Set("Marge", "Apu", "Carl", "Lenny"))
       _ <- q4.result.map(_.toSet shouldBe Set("Marge", "Apu"))
       _ <- q5a.result.map(_ shouldBe List("Apu"))
-      _ <- q5b.result.map(
-        _.toSet shouldBe Set("Homer", "Marge", "Apu", "Carl", "Lenny"))
+      _ <- q5b.result
+        .map(_.toSet shouldBe Set("Homer", "Marge", "Apu", "Carl", "Lenny"))
     } yield ()
   }
 
@@ -112,8 +111,8 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
       Compiled(ts.map(identity)).result.map(_ shouldBe Seq((1, "a"))),
       Compiled(ts) ++= Seq((2, "b"), (3, "c")),
       byIdAndS(1, "a").result.map(r => r.toSet shouldBe Set((1, "a"))),
-      byIdAndSC(1, "a").result.map((r: Seq[(Int, String)]) =>
-        r.toSet shouldBe Set((1, "a"))),
+      byIdAndSC(1, "a").result
+        .map((r: Seq[(Int, String)]) => r.toSet shouldBe Set((1, "a"))),
       byIdAndFixedSC(2).result.map(r => r.toSet shouldBe Set((2, "b"))),
       byIdC3.result.map(r => r.toSet shouldBe Set((3, "c"))),
       byId3.result.map(r => r.toSet shouldBe Set((3, "c"))),

@@ -33,7 +33,8 @@ object ExistentialDclSeq {
         //builder error ScalaBundle.message("wrong.existential.declaration")
         return
     }
-    while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON || builder.newlineBeforeCurrentToken) {
+    while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON || builder
+             .newlineBeforeCurrentToken) {
       if (builder.getTokenType == ScalaTokenTypes.tSEMICOLON)
         builder.advanceLexer() //Ate semi
       builder.getTokenType match {

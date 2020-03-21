@@ -76,8 +76,7 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
           bcast.out(1).map(_ + 3) ~> merge.in(1)
           merge.out.grouped(10) ~> sink.in
           ClosedShape
-        })
-        .run()
+        }).run()
 
       Await.result(resultFuture, 3.seconds).sorted should be(List(
         1, 2, 3, 4, 5, 6))
@@ -85,8 +84,8 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
 
     "support balance - merge (parallelization) layouts" in {
       val elements = 0 to 10
-      val out = RunnableGraph
-        .fromGraph(GraphDSL.create(Sink.head[Seq[Int]]) { implicit b ⇒ (sink) ⇒
+      val out = RunnableGraph.fromGraph(GraphDSL.create(Sink.head[Seq[Int]]) {
+        implicit b ⇒ (sink) ⇒
           val balance = b.add(Balance[Int](5))
           val merge = b.add(Merge[Int](5))
 
@@ -96,8 +95,7 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
 
           merge.out.grouped(elements.size * 2) ~> sink.in
           ClosedShape
-        })
-        .run()
+      }).run()
 
       Await.result(out, 3.seconds).sorted should be(elements)
     }
@@ -133,7 +131,8 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
 
             // Second layer
             m11.out ~> b11.in
-            b11.out(0).grouped(1000) ~> sink2.in // Vertex 2 is omitted since it has only one in and out
+            b11.out(0).grouped(1000) ~> sink2
+              .in // Vertex 2 is omitted since it has only one in and out
             b11.out(1) ~> m9.in(0)
             b11.out(2) ~> m10.in(1)
 
@@ -144,8 +143,7 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
             m10.out.grouped(1000) ~> sink10.in
 
             ClosedShape
-        })
-        .run()
+        }).run()
 
       Await.result(resultFuture2, 3.seconds).sorted should be(List(5, 7))
       Await.result(resultFuture9, 3.seconds).sorted should be(List(3, 5, 7, 7))
@@ -165,8 +163,7 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
           bcast.out(1).map(_ + 3) ~> merge.in(1)
           merge.out.grouped(10) ~> sink.in
           ClosedShape
-        })
-        .run()
+        }).run()
 
       Await.result(resultFuture, 3.seconds) should contain theSameElementsAs (
         Seq(2, 4, 6, 5, 7, 9))
@@ -176,12 +173,10 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
       val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
       val s = TestSubscriber.manualProbe[Int]
       val flow = Flow[Int].map(_ * 2)
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit builder ⇒
-          Source.fromPublisher(p) ~> flow ~> Sink.fromSubscriber(s)
-          ClosedShape
-        })
-        .run()
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit builder ⇒
+        Source.fromPublisher(p) ~> flow ~> Sink.fromSubscriber(s)
+        ClosedShape
+      }).run()
       val sub = s.expectSubscription()
       sub.request(10)
       s.expectNext(1 * 2)
@@ -193,28 +188,26 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
     "be possible to use as lego bricks" in {
       val shuffler = Shuffle(Flow[Int].map(_ + 1))
 
-      val f: Future[Seq[Int]] = RunnableGraph
-        .fromGraph(
-          GraphDSL.create(shuffler, shuffler, shuffler, Sink.head[Seq[Int]])(
-            (_, _, _, fut) ⇒ fut) { implicit b ⇒ (s1, s2, s3, sink) ⇒
-            val merge = b.add(Merge[Int](2))
+      val f: Future[Seq[Int]] = RunnableGraph.fromGraph(
+        GraphDSL.create(shuffler, shuffler, shuffler, Sink.head[Seq[Int]])(
+          (_, _, _, fut) ⇒ fut) { implicit b ⇒ (s1, s2, s3, sink) ⇒
+          val merge = b.add(Merge[Int](2))
 
-            Source(List(1, 2, 3)) ~> s1.in1
-            Source(List(10, 11, 12)) ~> s1.in2
+          Source(List(1, 2, 3)) ~> s1.in1
+          Source(List(10, 11, 12)) ~> s1.in2
 
-            s1.out1 ~> s2.in1
-            s1.out2 ~> s2.in2
+          s1.out1 ~> s2.in1
+          s1.out2 ~> s2.in2
 
-            s2.out1 ~> s3.in1
-            s2.out2 ~> s3.in2
+          s2.out1 ~> s3.in1
+          s2.out2 ~> s3.in2
 
-            s3.out1 ~> merge.in(0)
-            s3.out2 ~> merge.in(1)
+          s3.out1 ~> merge.in(0)
+          s3.out2 ~> merge.in(1)
 
-            merge.out.grouped(1000) ~> sink
-            ClosedShape
-          })
-        .run()
+          merge.out.grouped(1000) ~> sink
+          ClosedShape
+        }).run()
 
       val result = Await.result(f, 3.seconds)
 

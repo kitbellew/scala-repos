@@ -85,8 +85,8 @@ trait ScalaTestWholeSuiteTest
       "FeatureSpecTest.scala",
       checkConfigAndSettings(_, "FeatureSpecTest"),
       root =>
-        featureSpecTestPaths.forall(
-          checkResultTreeHasExactNamedPath(root, _: _*))
+        featureSpecTestPaths
+          .forall(checkResultTreeHasExactNamedPath(root, _: _*))
 //        checkResultTreeHasExactNamedPath(root, "[root]", "FeatureSpecTest", "Feature: Feature 1", "Scenario: Scenario A") &&
 //          checkResultTreeHasExactNamedPath(root, "[root]", "FeatureSpecTest", "Feature: Feature 1", "Scenario: Scenario B") &&
 //          checkResultTreeHasExactNamedPath(root, "[root]", "FeatureSpecTest", "Feature: Feature 2", "Scenario: Scenario C")

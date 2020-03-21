@@ -20,8 +20,8 @@ class EmpiricalHessianTest
     val f = new DiffFunction[DenseVector[Double]] {
       def calculate(x: DenseVector[Double]) = {
         val n = x.length
-        val value =
-          100 * Math.pow(x(1) - x(0) * x(0), 2) + Math.pow(1 - x(0), 2)
+        val value = 100 * Math.pow(x(1) - x(0) * x(0), 2) + Math
+          .pow(1 - x(0), 2)
         val grad = DenseVector(
           -400 * x(0) * (x(1) - x(0) * x(0)) - 2 * (1 - x(0)),
           200 * (x(1) - x(0) * x(0)))

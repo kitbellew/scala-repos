@@ -68,13 +68,10 @@ object LiftJavaScript {
         .map(fnc => AnonFunc("msg", fnc(JsVar("msg"))))
         .openOr(AnonFunc("msg", Noop)),
       "ajaxOnFailure" -> LiftRules.ajaxDefaultFailure
-        .map(fnc => AnonFunc(fnc()))
+        .map(fnc => AnonFunc(fnc())).openOr(AnonFunc(Noop)),
+      "ajaxOnStart" -> LiftRules.ajaxStart.map(fnc => AnonFunc(fnc()))
         .openOr(AnonFunc(Noop)),
-      "ajaxOnStart" -> LiftRules.ajaxStart
-        .map(fnc => AnonFunc(fnc()))
-        .openOr(AnonFunc(Noop)),
-      "ajaxOnEnd" -> LiftRules.ajaxEnd
-        .map(fnc => AnonFunc(fnc()))
+      "ajaxOnEnd" -> LiftRules.ajaxEnd.map(fnc => AnonFunc(fnc()))
         .openOr(AnonFunc(Noop))
     )
   }

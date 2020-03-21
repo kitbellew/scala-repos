@@ -28,9 +28,7 @@ class GuiceApplicationLoader(
     */
   protected def builder(
       context: ApplicationLoader.Context): GuiceApplicationBuilder = {
-    initialBuilder
-      .disableCircularProxies()
-      .in(context.environment)
+    initialBuilder.disableCircularProxies().in(context.environment)
       .loadConfig(context.initialConfiguration)
       .overrides(overrides(context): _*)
   }

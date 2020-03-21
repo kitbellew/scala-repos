@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.twitter.scalding.serialization.macros.impl.ordered_serialization.providers
+package com.twitter.scalding.serialization.macros.impl.ordered_serialization
+  .providers
 
 import scala.language.experimental.macros
 import scala.reflect.macros.Context
@@ -31,8 +32,9 @@ object CaseObjectOrderedBuf {
   def dispatch(
       c: Context)(): PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
     case tpe
-        if tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass && tpe.typeSymbol.asClass.isModuleClass && !tpe.typeConstructor.takesTypeArgs =>
-      CaseObjectOrderedBuf(c)(tpe)
+        if tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass && tpe
+          .typeSymbol.asClass.isModuleClass && !tpe.typeConstructor
+          .takesTypeArgs => CaseObjectOrderedBuf(c)(tpe)
   }
 
   def apply(c: Context)(outerType: c.Type): TreeOrderedBuf[c.type] = {

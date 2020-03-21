@@ -84,8 +84,8 @@ final class Bucketizer(override val uid: String)
   }
 
   private def prepOutputField(schema: StructType): StructField = {
-    val buckets =
-      $(splits).sliding(2).map(bucket => bucket.mkString(", ")).toArray
+    val buckets = $(splits).sliding(2).map(bucket => bucket.mkString(", "))
+      .toArray
     val attr = new NominalAttribute(
       name = Some($(outputCol)),
       isOrdinal = Some(true),

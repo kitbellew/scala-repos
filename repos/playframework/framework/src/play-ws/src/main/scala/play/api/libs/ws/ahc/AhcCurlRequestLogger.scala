@@ -32,8 +32,8 @@ class AhcCurlRequestLogger(logger: org.slf4j.Logger)
 
 object AhcCurlRequestLogger {
 
-  private val logger = LoggerFactory.getLogger(
-    "play.api.libs.ws.ahc.AhcCurlRequestLogger")
+  private val logger = LoggerFactory
+    .getLogger("play.api.libs.ws.ahc.AhcCurlRequestLogger")
 
   private val instance = new AhcCurlRequestLogger(logger)
 
@@ -90,13 +90,10 @@ trait CurlFormat {
   }
 
   protected def findCharset(request: AhcWSRequest): String = {
-    request.contentType
-      .map { ct =>
-        Option(HttpUtils.parseCharset(ct))
-          .getOrElse { StandardCharsets.UTF_8 }
-          .name()
-      }
-      .getOrElse(HttpUtils.parseCharset("UTF-8").name())
+    request.contentType.map { ct =>
+      Option(HttpUtils.parseCharset(ct)).getOrElse { StandardCharsets.UTF_8 }
+        .name()
+    }.getOrElse(HttpUtils.parseCharset("UTF-8").name())
   }
 
   def quote(unsafe: String): String = unsafe.replace("'", "'\\''")

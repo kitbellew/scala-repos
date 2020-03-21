@@ -127,8 +127,8 @@ object Literal {
       case map: MapType         => create(Map(), map)
       case struct: StructType =>
         create(
-          InternalRow.fromSeq(
-            struct.fields.map(f => default(f.dataType).value)),
+          InternalRow
+            .fromSeq(struct.fields.map(f => default(f.dataType).value)),
           struct)
       case other => throw new RuntimeException(s"no default for type $dataType")
     }
@@ -189,8 +189,8 @@ case class Literal protected (value: Any, dataType: DataType)
     other match {
       case o: Literal =>
         dataType.equals(o.dataType) &&
-          (value == null && null == o.value || value != null && value.equals(
-            o.value))
+          (value == null && null == o.value || value != null && value
+            .equals(o.value))
       case _ => false
     }
 

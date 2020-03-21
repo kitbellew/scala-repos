@@ -338,8 +338,8 @@ private[sql] case class ScalaUDAF(
 
   override val aggBufferSchema: StructType = udaf.bufferSchema
 
-  override val aggBufferAttributes: Seq[AttributeReference] =
-    aggBufferSchema.toAttributes
+  override val aggBufferAttributes: Seq[AttributeReference] = aggBufferSchema
+    .toAttributes
 
   // Note: although this simply copies aggBufferAttributes, this common code can not be placed
   // in the superclass because that will lead to initialization ordering issues.
@@ -360,8 +360,8 @@ private[sql] case class ScalaUDAF(
 
   private lazy val inputProjection = {
     val inputAttributes = childrenSchema.toAttributes
-    log.debug(
-      s"Creating MutableProj: $children, inputSchema: $inputAttributes.")
+    log
+      .debug(s"Creating MutableProj: $children, inputSchema: $inputAttributes.")
     GenerateMutableProjection.generate(children, inputAttributes)()
   }
 

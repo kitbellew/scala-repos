@@ -67,8 +67,8 @@ object StreamTTest extends SpecLite {
 
   "foldMap" ! forAll { (s: Stream[Int]) =>
     import scalaz.Scalaz._
-    StreamT.fromStream(s.some).foldMap(_.toString) must_== (s.foldMap(
-      _.toString))
+    StreamT.fromStream(s.some).foldMap(_.toString) must_== (s
+      .foldMap(_.toString))
   }
 
   checkAll(equal.laws[StreamTOpt[Int]])

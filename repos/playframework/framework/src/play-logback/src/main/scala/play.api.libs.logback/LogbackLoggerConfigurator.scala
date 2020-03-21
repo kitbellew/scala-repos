@@ -45,10 +45,8 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
 
     // application-logger.xml and logger.xml are no longer supported methods for supplying the configuration
     // Support removed in Play 2.5. This notice can be removed in future versions of Play
-    if (!env
-          .resource("application-logger.xml")
-          .orElse(env.resource("logger.xml"))
-          .isEmpty) {
+    if (!env.resource("application-logger.xml")
+          .orElse(env.resource("logger.xml")).isEmpty) {
       System.err.println(
         "application-logger.xml and logger.xml are no longer supported. Please name your file logback.xml");
     }
@@ -56,11 +54,9 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
     // logback.xml is the documented method, logback-play-default.xml is the fallback that Play uses
     // if no other file is found
     def resourceUrl =
-      env
-        .resource("logback.xml")
-        .orElse(env.resource(
-          if (env.mode == Mode.Dev) "logback-play-dev.xml"
-          else "logback-play-default.xml"))
+      env.resource("logback.xml").orElse(env.resource(
+        if (env.mode == Mode.Dev) "logback-play-dev.xml"
+        else "logback-play-default.xml"))
 
     val configUrl =
       explicitResourceUrl orElse explicitFileUrl orElse resourceUrl

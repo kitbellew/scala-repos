@@ -110,7 +110,8 @@ private[akka] object GraphInterpreter {
       val outs: Array[Outlet[_]],
       val outOwners: Array[Int]) {
     require(
-      ins.length == inOwners.length && inOwners.length == outs.length && outs.length == outOwners.length)
+      ins.length == inOwners.length && inOwners.length == outs.length && outs
+        .length == outOwners.length)
 
     def connectionCount: Int = ins.length
 
@@ -558,11 +559,9 @@ private[stream] final class GraphInterpreter(
     }
 
   private def shutdownCounters: String =
-    shutdownCounter
-      .map(x ⇒
-        if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)"
-        else x.toString)
-      .mkString(",")
+    shutdownCounter.map(x ⇒
+      if (x >= KeepGoingFlag) s"${x & KeepGoingMask}(KeepGoing)"
+      else x.toString).mkString(",")
 
   /**
     * Executes pending events until the given limit is met. If there were remaining events, isSuspended will return
@@ -690,8 +689,8 @@ private[stream] final class GraphInterpreter(
   private def dequeue(): Int = {
     val idx = queueHead & mask
     if (fuzzingMode) {
-      val swapWith = (ThreadLocalRandom.current.nextInt(
-        queueTail - queueHead) + queueHead) & mask
+      val swapWith = (ThreadLocalRandom.current
+        .nextInt(queueTail - queueHead) + queueHead) & mask
       val ev = eventQueue(swapWith)
       eventQueue(swapWith) = eventQueue(idx)
       eventQueue(idx) = ev
@@ -813,8 +812,8 @@ private[stream] final class GraphInterpreter(
   override def toString: String = {
     val builder = new StringBuilder("digraph waits {\n")
 
-    for (i ← assembly.stages.indices)
-      builder.append(s"""N$i [label="${assembly.stages(i)}"]""" + "\n")
+    for (i ← assembly.stages.indices) builder.append(s"""N$i [label="${assembly
+      .stages(i)}"]""" + "\n")
 
     def nameIn(port: Int): String = {
       val owner = assembly.inOwners(port)

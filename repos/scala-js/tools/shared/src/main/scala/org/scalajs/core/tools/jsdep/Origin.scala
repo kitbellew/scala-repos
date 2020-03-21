@@ -31,10 +31,8 @@ object Origin {
 
   implicit object OriginJSONSerializer extends JSONSerializer[Origin] {
     def serialize(x: Origin): JSON = {
-      new JSONObjBuilder()
-        .fld("moduleName", x.moduleName)
-        .fld("configuration", x.configuration)
-        .toJSON
+      new JSONObjBuilder().fld("moduleName", x.moduleName)
+        .fld("configuration", x.configuration).toJSON
     }
   }
 

@@ -52,11 +52,11 @@ class NamingParamsSearcher
                           case Some(`parameter`) =>
                             if (!consumer.process(ref)) return false
                           case Some(x: ScParameter) =>
-                            ScalaPsiUtil.parameterForSyntheticParameter(
-                              x) match {
+                            ScalaPsiUtil
+                              .parameterForSyntheticParameter(x) match {
                               case Some(realParam) =>
-                                if (realParam == parameter && !consumer.process(
-                                      ref)) return false
+                                if (realParam == parameter && !consumer
+                                      .process(ref)) return false
                               case None =>
                             }
                           case _ =>
@@ -70,8 +70,8 @@ class NamingParamsSearcher
             true
           }
         }
-        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
-          queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE
+          .getInstance(queryParameters.getProject)
         helper.processElementsWithWord(
           processor,
           scope,

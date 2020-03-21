@@ -33,7 +33,8 @@ object PlayImport {
   def anorm =
     movedExternal(
       """Anorm has been moved to an external module.
-      |See https://playframework.com/documentation/2.4.x/Migration24 for details.""".stripMargin)
+      |See https://playframework.com/documentation/2.4.x/Migration24 for details."""
+        .stripMargin)
 
   val javaCore = component("play-java")
 
@@ -42,7 +43,8 @@ object PlayImport {
   def javaEbean =
     movedExternal(
       """Play ebean module has been replaced with an external Play ebean plugin.
-      |See https://playframework.com/documentation/2.4.x/Migration24 for details.""".stripMargin)
+      |See https://playframework.com/documentation/2.4.x/Migration24 for details."""
+        .stripMargin)
 
   val javaJpa = component("play-java-jpa")
 
@@ -76,8 +78,7 @@ object PlayImport {
         val FailuresErrors = "(?s).*(\\d+) failures?, (\\d+) errors?.*".r
         new Logger {
           def filter(s: String) = {
-            val filtered = s
-              .replace("\033[32m+\033[0m", "\u2705 ")
+            val filtered = s.replace("\033[32m+\033[0m", "\u2705 ")
               .replace("\033[33mx\033[0m", "\u274C ")
               .replace("\033[31m!\033[0m", "\uD83D\uDCA5 ")
             filtered match {

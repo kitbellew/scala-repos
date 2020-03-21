@@ -218,8 +218,8 @@ object GradientDescent extends Logging {
       * For the first iteration, the regVal will be initialized as sum of weight squares
       * if it's L2 updater; for L1 updater, the same logic is followed.
       */
-    var regVal =
-      updater.compute(weights, Vectors.zeros(weights.size), 0, 1, regParam)._2
+    var regVal = updater
+      .compute(weights, Vectors.zeros(weights.size), 0, 1, regParam)._2
 
     var converged = false // indicates whether converged based on convergenceTol
     var i = 1

@@ -67,9 +67,7 @@ sealed trait SValue {
               case JPathIndex(_) => SArray.Empty
             }
 
-            obj
-              .getOrElse(name, child)
-              .set(JPath(xs), value)
+            obj.getOrElse(name, child).set(JPath(xs), value)
               .map(sv => (SObject(obj + (name -> sv))))
         }
 
@@ -82,10 +80,7 @@ sealed trait SValue {
               case JPathIndex(_) => SArray.Empty
             }
 
-            arr
-              .lift(i)
-              .getOrElse(child)
-              .set(JPath(xs), value)
+            arr.lift(i).getOrElse(child).set(JPath(xs), value)
               .map(sv => SArray(arr.padTo(i + 1, SNull).updated(i, sv)))
         }
 

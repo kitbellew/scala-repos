@@ -28,10 +28,8 @@ class ElementwiseProductSuite
     with DefaultReadWriteTest {
 
   test("read/write") {
-    val ep = new ElementwiseProduct()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setScalingVec(Vectors.dense(0.1, 0.2))
+    val ep = new ElementwiseProduct().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setScalingVec(Vectors.dense(0.1, 0.2))
     testDefaultReadWrite(ep)
   }
 }

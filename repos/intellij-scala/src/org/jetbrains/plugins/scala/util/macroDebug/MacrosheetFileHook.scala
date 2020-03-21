@@ -17,11 +17,9 @@ import org.jetbrains.plugins.scala.worksheet.runconfiguration.WorksheetViewerInf
 class MacrosheetFileHook(private val project: Project)
     extends ProjectComponent {
   override def projectOpened() {
-    project.getMessageBus
-      .connect(project)
-      .subscribe(
-        FileEditorManagerListener.FILE_EDITOR_MANAGER,
-        MacrosheetEditorListener)
+    project.getMessageBus.connect(project).subscribe(
+      FileEditorManagerListener.FILE_EDITOR_MANAGER,
+      MacrosheetEditorListener)
   }
 
   override def projectClosed() {
@@ -65,8 +63,8 @@ class MacrosheetFileHook(private val project: Project)
 
   private object MacrosheetEditorListener extends FileEditorManagerListener {
     override def fileOpened(source: FileEditorManager, file: VirtualFile) {
-      if (!ScalaMacroDebuggingUtil.isEnabled || ScalaFileType.DEFAULT_EXTENSION != file.getExtension)
-        return
+      if (!ScalaMacroDebuggingUtil.isEnabled || ScalaFileType
+            .DEFAULT_EXTENSION != file.getExtension) return
 
       val document = source getSelectedEditor file match {
         case txtEditor: TextEditor if txtEditor.getEditor != null =>
@@ -95,10 +93,11 @@ class MacrosheetFileHook(private val project: Project)
       myAlarm.addRequest(
         new Runnable {
           override def run() {
-            val sourcEditor =
-              FileEditorManager.getInstance(project).getSelectedTextEditor
+            val sourcEditor = FileEditorManager.getInstance(project)
+              .getSelectedTextEditor
             val macroEditor = WorksheetViewerInfo.getViewer(sourcEditor)
-            if (macroEditor != null && macroEditor.getDocument.getTextLength > 0) {
+            if (macroEditor != null && macroEditor.getDocument
+                  .getTextLength > 0) {
               ScalaMacroDebuggingUtil.expandMacros(sourcEditor.getProject)
             }
           }

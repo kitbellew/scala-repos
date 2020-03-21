@@ -29,15 +29,15 @@ object PersistencePluginProxy {
 
   def setTargetLocation(system: ActorSystem, address: Address): Unit = {
     Persistence(system).journalFor(null) ! TargetLocation(address)
-    if (system.settings.config.getString(
-          "akka.persistence.snapshot-store.plugin") != "")
+    if (system.settings.config
+          .getString("akka.persistence.snapshot-store.plugin") != "")
       Persistence(system).snapshotStoreFor(null) ! TargetLocation(address)
   }
 
   def start(system: ActorSystem): Unit = {
     Persistence(system).journalFor(null)
-    if (system.settings.config.getString(
-          "akka.persistence.snapshot-store.plugin") != "")
+    if (system.settings.config
+          .getString("akka.persistence.snapshot-store.plugin") != "")
       Persistence(system).snapshotStoreFor(null)
 
   }
@@ -91,14 +91,14 @@ final class PersistencePluginProxy(config: Config)
       throw new IllegalArgumentException("Unknown plugin type: " + other)
   }
 
-  private val initTimeout: FiniteDuration =
-    config.getDuration("init-timeout", MILLISECONDS).millis
+  private val initTimeout: FiniteDuration = config
+    .getDuration("init-timeout", MILLISECONDS).millis
   private val targetPluginId: String = {
     val key = s"target-${pluginType.qualifier}-plugin"
     config.getString(key).requiring(_ != "", s"$pluginId.$key must be defined")
   }
-  private val startTarget: Boolean = config.getBoolean(
-    s"start-target-${pluginType.qualifier}")
+  private val startTarget: Boolean = config
+    .getBoolean(s"start-target-${pluginType.qualifier}")
 
   override def preStart(): Unit = {
     if (startTarget) {
@@ -132,13 +132,13 @@ final class PersistencePluginProxy(config: Config)
         }
       }
 
-      context.system.scheduler.scheduleOnce(initTimeout, self, InitTimeout)(
-        context.dispatcher)
+      context.system.scheduler
+        .scheduleOnce(initTimeout, self, InitTimeout)(context.dispatcher)
     }
   }
 
-  private val selfAddress: Address =
-    context.system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+  private val selfAddress: Address = context.system
+    .asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 
   private def timeoutException() =
     new TimeoutException(
@@ -169,8 +169,8 @@ final class PersistencePluginProxy(config: Config)
   }
 
   def sendIdentify(address: Address): Unit = {
-    val sel = context.actorSelection(
-      RootActorPath(address) / "system" / targetPluginId)
+    val sel = context
+      .actorSelection(RootActorPath(address) / "system" / targetPluginId)
     log.info("Trying to identify target {} at {}", pluginType.qualifier, sel)
     sel ! Identify(targetPluginId)
   }

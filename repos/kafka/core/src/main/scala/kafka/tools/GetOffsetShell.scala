@@ -29,46 +29,29 @@ object GetOffsetShell {
 
   def main(args: Array[String]): Unit = {
     val parser = new OptionParser
-    val brokerListOpt = parser
-      .accepts(
-        "broker-list",
-        "REQUIRED: The list of hostname and port of the server to connect to.")
-      .withRequiredArg
-      .describedAs("hostname:port,...,hostname:port")
+    val brokerListOpt = parser.accepts(
+      "broker-list",
+      "REQUIRED: The list of hostname and port of the server to connect to.")
+      .withRequiredArg.describedAs("hostname:port,...,hostname:port")
       .ofType(classOf[String])
     val topicOpt = parser
       .accepts("topic", "REQUIRED: The topic to get offset from.")
-      .withRequiredArg
-      .describedAs("topic")
-      .ofType(classOf[String])
-    val partitionOpt = parser
-      .accepts(
-        "partitions",
-        "comma separated list of partition ids. If not specified, it will find offsets for all partitions")
-      .withRequiredArg
-      .describedAs("partition ids")
-      .ofType(classOf[String])
+      .withRequiredArg.describedAs("topic").ofType(classOf[String])
+    val partitionOpt = parser.accepts(
+      "partitions",
+      "comma separated list of partition ids. If not specified, it will find offsets for all partitions")
+      .withRequiredArg.describedAs("partition ids").ofType(classOf[String])
       .defaultsTo("")
-    val timeOpt = parser
-      .accepts("time", "timestamp of the offsets before that")
-      .withRequiredArg
-      .describedAs("timestamp/-1(latest)/-2(earliest)")
-      .ofType(classOf[java.lang.Long])
-      .defaultsTo(-1)
-    val nOffsetsOpt = parser
-      .accepts("offsets", "number of offsets returned")
-      .withRequiredArg
-      .describedAs("count")
-      .ofType(classOf[java.lang.Integer])
+    val timeOpt = parser.accepts("time", "timestamp of the offsets before that")
+      .withRequiredArg.describedAs("timestamp/-1(latest)/-2(earliest)")
+      .ofType(classOf[java.lang.Long]).defaultsTo(-1)
+    val nOffsetsOpt = parser.accepts("offsets", "number of offsets returned")
+      .withRequiredArg.describedAs("count").ofType(classOf[java.lang.Integer])
       .defaultsTo(1)
-    val maxWaitMsOpt = parser
-      .accepts(
-        "max-wait-ms",
-        "The max amount of time each fetch request waits.")
-      .withRequiredArg
-      .describedAs("ms")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(1000)
+    val maxWaitMsOpt = parser.accepts(
+      "max-wait-ms",
+      "The max amount of time each fetch request waits.").withRequiredArg
+      .describedAs("ms").ofType(classOf[java.lang.Integer]).defaultsTo(1000)
 
     if (args.length == 0)
       CommandLineUtils.printUsageAndDie(
@@ -77,12 +60,8 @@ object GetOffsetShell {
 
     val options = parser.parse(args: _*)
 
-    CommandLineUtils.checkRequiredArgs(
-      parser,
-      options,
-      brokerListOpt,
-      topicOpt,
-      timeOpt)
+    CommandLineUtils
+      .checkRequiredArgs(parser, options, brokerListOpt, topicOpt, timeOpt)
 
     val clientId = "GetOffsetShell"
     val brokerList = options.valueOf(brokerListOpt)
@@ -94,13 +73,11 @@ object GetOffsetShell {
     val nOffsets = options.valueOf(nOffsetsOpt).intValue
     val maxWaitMs = options.valueOf(maxWaitMsOpt).intValue()
 
-    val topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set(topic),
-        metadataTargetBrokers,
-        clientId,
-        maxWaitMs)
-      .topicsMetadata
+    val topicsMetadata = ClientUtils.fetchTopicMetadata(
+      Set(topic),
+      metadataTargetBrokers,
+      clientId,
+      maxWaitMs).topicsMetadata
     if (topicsMetadata.size != 1 || !topicsMetadata(0).topic.equals(topic)) {
       System.err.println(
         (
@@ -130,10 +107,8 @@ object GetOffsetShell {
                 topicAndPartition -> PartitionOffsetRequestInfo(
                   time,
                   nOffsets)))
-              val offsets = consumer
-                .getOffsetsBefore(request)
-                .partitionErrorAndOffsets(topicAndPartition)
-                .offsets
+              val offsets = consumer.getOffsetsBefore(request)
+                .partitionErrorAndOffsets(topicAndPartition).offsets
 
               println(
                 "%s:%d:%s".format(topic, partitionId, offsets.mkString(",")))
@@ -143,8 +118,8 @@ object GetOffsetShell {
                   .format(partitionId))
           }
         case None =>
-          System.err.println("Error: partition %d does not exist".format(
-            partitionId))
+          System.err
+            .println("Error: partition %d does not exist".format(partitionId))
       }
     }
   }

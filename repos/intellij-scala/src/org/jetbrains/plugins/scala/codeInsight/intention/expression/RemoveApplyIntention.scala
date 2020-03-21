@@ -45,10 +45,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScMethodCall],
-      false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil
+      .getParentOfType(element, classOf[ScMethodCall], false)
     if (methodCallExpr == null) return false
 
     methodCallExpr.getInvokedExpr match {
@@ -79,20 +77,15 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
       } else { HintManager.getInstance().showErrorHint(editor, hint) }
     }
 
-    val expr: ScMethodCall = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScMethodCall],
-      false)
+    val expr: ScMethodCall = PsiTreeUtil
+      .getParentOfType(element, classOf[ScMethodCall], false)
     if (expr == null || !expr.isValid) return
 
-    var start = expr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
-      .getStartOffset - 1
+    var start = expr.getInvokedExpr.asInstanceOf[ScReferenceExpression].nameId
+      .getTextRange.getStartOffset - 1
     val buf = new StringBuilder
-    var qualifier =
-      expr.getInvokedExpr.asInstanceOf[ScReferenceExpression].qualifier.get
+    var qualifier = expr.getInvokedExpr.asInstanceOf[ScReferenceExpression]
+      .qualifier.get
     buf.append(qualifier.getText)
 
     qualifier match {
@@ -168,7 +161,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
             resolve match {
               case fun: ScFunction =>
                 val clauses = fun.effectiveParameterClauses
-                if (clauses.length > 1 && clauses.last.isImplicit && clauses.length == cmc + 1) {
+                if (clauses.length > 1 && clauses.last.isImplicit && clauses
+                      .length == cmc + 1) {
                   showErrorHint(InspectionBundle.message(
                     "remove.apply.implicit.parameter",
                     resolve.asInstanceOf[PsiNamedElement].name))
@@ -189,7 +183,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
                     resolve match {
                       case con: ScPrimaryConstructor =>
                         val clauses = con.effectiveParameterClauses
-                        if (clauses.length > 1 && clauses.last.isImplicit && clauses.length == argsCount + 1) {
+                        if (clauses.length > 1 && clauses.last
+                              .isImplicit && clauses.length == argsCount + 1) {
                           showErrorHint(InspectionBundle.message(
                             "remove.apply.constructor.implicit.parameter",
                             parents.constructor.get.getText))
@@ -197,7 +192,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
                         }
                       case fun: ScFunction =>
                         val clauses = fun.effectiveParameterClauses
-                        if (clauses.length > 1 && clauses.last.isImplicit && clauses.length == argsCount + 1) {
+                        if (clauses.length > 1 && clauses.last
+                              .isImplicit && clauses.length == argsCount + 1) {
                           showErrorHint(InspectionBundle.message(
                             "remove.apply.constructor.implicit.parameter",
                             parents.constructor.get.getText))
@@ -215,9 +211,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
     }
 
     buf.append(expr.args.getText)
-    val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-      buf.toString(),
-      element.getManager)
+    val newExpr = ScalaPsiElementFactory
+      .createExpressionFromText(buf.toString(), element.getManager)
 
     inWriteAction {
       expr.replace(newExpr)

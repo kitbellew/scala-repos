@@ -30,8 +30,8 @@ object FormattedStringParser extends StringParser {
       // "%d".format(1)
       case ScMethodCall(
             ScReferenceExpression.withQualifier(literal: ScLiteral) &&
-            PsiReferenceEx.resolve(
-              (f: ScFunction) && ContainingClass(owner: ScTrait)),
+            PsiReferenceEx
+              .resolve((f: ScFunction) && ContainingClass(owner: ScTrait)),
             args)
           if literal.isString && isFormatMethod(owner.qualifiedName, f.name) =>
         (literal, args)
@@ -53,8 +53,8 @@ object FormattedStringParser extends StringParser {
       // 1.formatted("%d")
       case ScMethodCall(
             ScReferenceExpression.withQualifier(arg: ScExpression) &&
-            PsiReferenceEx.resolve(
-              (f: ScFunction) && ContainingClass(owner: ScClass)),
+            PsiReferenceEx
+              .resolve((f: ScFunction) && ContainingClass(owner: ScClass)),
             Seq(literal: ScLiteral))
           if literal.isString && isFormattedMethod(
             owner.qualifiedName,
@@ -147,9 +147,7 @@ object FormattedStringParser extends StringParser {
     }
 
     val unusedArguments = remainingArguments
-      .filterNot(refferredArguments.contains)
-      .map(UnboundExpression)
-      .toList
+      .filterNot(refferredArguments.contains).map(UnboundExpression).toList
 
     prefix ++ unusedArguments
   }

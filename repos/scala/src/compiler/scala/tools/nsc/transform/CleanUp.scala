@@ -234,8 +234,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           // and the method name should be in the primitive->structural map.
           def isJavaValueMethod =
             ((resType :: paramTypes forall isJavaValueType) && // issue #1110
-              (getPrimitiveReplacementForStructuralCall(
-                methSym.name).isDefined))
+              (getPrimitiveReplacementForStructuralCall(methSym.name)
+                .isDefined))
           // Erasure lets Unit through as Unit, but a method returning Any will have an
           // erased return type of Object and should also allow Unit.
           def isDefinitelyUnit = (resultSym == UnitClass)
@@ -284,8 +284,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           /* Normal non-Array call */
           def genDefaultCall = {
             // reflective method call machinery
-            val invokeName =
-              MethodClass.tpe member nme.invoke_ // scala.reflect.Method.invoke(...)
+            val invokeName = MethodClass.tpe member nme
+              .invoke_ // scala.reflect.Method.invoke(...)
             def cache =
               REF(
                 reflectiveMethodCache(ad.symbol.name.toString, paramTypes)
@@ -304,9 +304,10 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               ) // .invoke(qual1, ...)
 
             // exception catching machinery
-            val invokeExc = currentOwner.newValue(
-              mkTerm(""),
-              ad.pos) setInfo InvocationTargetExceptionClass.tpe
+            val invokeExc = currentOwner
+              .newValue(
+                mkTerm(""),
+                ad.pos) setInfo InvocationTargetExceptionClass.tpe
             def catchVar =
               Bind(
                 invokeExc,
@@ -361,9 +362,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
            */
           def genArrayCallWithTest =
             IF(
-              (
-                qual1() GETCLASS ()
-              ) DOT nme.isArray) THEN genArrayCall ELSE genDefaultCall
+              (qual1() GETCLASS ()) DOT nme
+                .isArray) THEN genArrayCall ELSE genDefaultCall
 
           localTyper typed (if (isMaybeBoxed && isJavaValueMethod)
                               genValueCallWithTest
@@ -405,7 +405,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
             case tpe @ OverloadedType(pre, alts) =>
               reporter.warning(
                 ad.pos,
-                s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad.symbol}\n  Overloads: $tpe\n  Arguments: " + ad.args
+                s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad
+                  .symbol}\n  Overloads: $tpe\n  Arguments: " + ad.args
                   .map(_.tpe)
               )
               alts filter (_.paramss.flatten.size == params.length) map (
@@ -423,8 +424,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
             case NoType => abort(ad.symbol.toString)
           }
           typedPos {
-            val sym =
-              currentOwner.newValue(mkTerm("qual"), ad.pos) setInfo qual0.tpe
+            val sym = currentOwner
+              .newValue(mkTerm("qual"), ad.pos) setInfo qual0.tpe
             qual = REF(sym)
 
             BLOCK(
@@ -444,9 +445,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                    |  - result type:              '${resType.toString}'"""
             case _                            => ""
           }
-          log(
-            s"""Dynamically application '$qual.${ad.symbol.name}(${paramsToString(
-              params)})' $mstr - resulting code: '$t'""")
+          log(s"""Dynamically application '$qual.${ad.symbol
+            .name}(${paramsToString(params)})' $mstr - resulting code: '$t'""")
         }
 
         /* We return the dynamic call tree, after making sure no other
@@ -539,8 +539,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
         case Apply(
               fn @ Select(qual, _),
               (arg @ Literal(Constant(symname: String))) :: Nil)
-            if treeInfo.isQualifierSafeToElide(
-              qual) && fn.symbol == Symbol_apply && !currentClass.isTrait =>
+            if treeInfo.isQualifierSafeToElide(qual) && fn
+              .symbol == Symbol_apply && !currentClass.isTrait =>
           super.transform(treeCopy.ApplyDynamic(
             tree,
             atPos(fn.pos)(
@@ -558,16 +558,16 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                   wrapRefArrayMeth,
                   List(arg @ StripCast(ArrayValue(_, _)))),
                 _))
-            if wrapRefArrayMeth.symbol == currentRun.runDefinitions.Predef_wrapRefArray && appMeth.symbol == ArrayModule_genericApply =>
-          super.transform(arg)
+            if wrapRefArrayMeth.symbol == currentRun.runDefinitions
+              .Predef_wrapRefArray && appMeth
+              .symbol == ArrayModule_genericApply => super.transform(arg)
         case Apply(
               appMeth,
               List(
                 elem0,
                 Apply(wrapArrayMeth, List(rest @ ArrayValue(elemtpt, _)))))
-            if wrapArrayMeth.symbol == Predef_wrapArray(
-              elemtpt.tpe) && appMeth.symbol == ArrayModule_apply(
-              elemtpt.tpe) =>
+            if wrapArrayMeth.symbol == Predef_wrapArray(elemtpt.tpe) && appMeth
+              .symbol == ArrayModule_apply(elemtpt.tpe) =>
           super.transform(
             treeCopy.ArrayValue(rest, rest.elemtpt, elem0 :: rest.elems))
 

@@ -57,19 +57,16 @@ class NullnessAnalyzerTest extends ClearAfterClass {
   def showAllNullnessFrames(
       analyzer: AsmAnalyzer[NullnessValue],
       method: MethodNode): String = {
-    val instrLength =
-      method.instructions.iterator.asScala.map(textify(_).length).max
+    val instrLength = method.instructions.iterator.asScala
+      .map(textify(_).length).max
     val lines = for (i <- method.instructions.iterator.asScala) yield {
       val f = analyzer.frameAt(i)
       val frameString = {
         if (f == null) "null"
         else
           (0 until (f.getLocals + f.getStackSize)).iterator
-            .map(f.getValue(_).toString)
-            .map(s => "%8s".format(s))
-            .zipWithIndex
-            .map({ case (s, i) => s"$i: $s" })
-            .mkString(", ")
+            .map(f.getValue(_).toString).map(s => "%8s".format(s)).zipWithIndex
+            .map({ case (s, i) => s"$i: $s" }).mkString(", ")
       }
       ("%" + instrLength + "s: %s").format(textify(i), frameString)
     }
@@ -89,7 +86,8 @@ class NullnessAnalyzerTest extends ClearAfterClass {
         |                                                     ALOAD 0: 0:  NotNull
         |INVOKEVIRTUAL java/lang/Object.toString ()Ljava/lang/String;: 0:  NotNull, 1:  NotNull
         |                                                     ARETURN: 0:  NotNull, 1: Unknown1
-        |                                                          L0: null""".stripMargin
+        |                                                          L0: null"""
+        .stripMargin
 //    println(showAllNullnessFrames(newNullnessAnalyzer(m), m))
     assertEquals(showAllNullnessFrames(newNullnessAnalyzer(m), m), res)
   }

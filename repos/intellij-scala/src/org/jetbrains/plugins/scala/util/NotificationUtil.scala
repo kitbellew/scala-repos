@@ -20,8 +20,8 @@ object NotificationUtil {
     private var group: String = "scala"
     private var title: String = "Warning"
     private var notificationType: NotificationType = NotificationType.WARNING
-    private var displayType: NotificationDisplayType =
-      NotificationDisplayType.BALLOON
+    private var displayType: NotificationDisplayType = NotificationDisplayType
+      .BALLOON
     private var handler: Handler = IdHandler
 
     def setGroup(group: String) = { this.group = group; this }

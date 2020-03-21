@@ -45,8 +45,7 @@ class FuturePoolTest extends FunSuite with Eventually {
   }
 
   test("does not execute interrupted tasks") {
-    val executor = Executors
-      .newFixedThreadPool(1)
+    val executor = Executors.newFixedThreadPool(1)
       .asInstanceOf[ThreadPoolExecutor]
     val pool = FuturePool(executor)
 
@@ -73,8 +72,7 @@ class FuturePoolTest extends FunSuite with Eventually {
   }
 
   test("continue to run a task if it's interrupted while running") {
-    val executor = Executors
-      .newFixedThreadPool(1)
+    val executor = Executors.newFixedThreadPool(1)
       .asInstanceOf[ThreadPoolExecutor]
     val pool = FuturePool(executor)
 

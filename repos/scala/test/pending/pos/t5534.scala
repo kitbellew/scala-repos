@@ -7,6 +7,6 @@ object Phrase extends Enumeration {
 class Entity(text: String)
 
 object Test {
-  val myMapWithPhrases =
-    Phrase.values.map(p => (p -> new Entity(p.toString))).toMap
+  val myMapWithPhrases = Phrase.values.map(p => (p -> new Entity(p.toString)))
+    .toMap
 }

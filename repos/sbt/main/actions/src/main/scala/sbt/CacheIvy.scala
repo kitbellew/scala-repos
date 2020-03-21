@@ -319,7 +319,8 @@ object CacheIvy {
   object L5 {
     implicit def inlineIvyToHL =
       (i: InlineIvyConfiguration) =>
-        i.paths :+: i.resolvers :+: i.otherResolvers :+: i.moduleConfigurations :+: i.localOnly :+: i.checksums :+: HNil
+        i.paths :+: i.resolvers :+: i.otherResolvers :+: i
+          .moduleConfigurations :+: i.localOnly :+: i.checksums :+: HNil
   }
   import L5._
 
@@ -337,16 +338,17 @@ object CacheIvy {
   object L4 {
     implicit val inlineWithExcludesToHL =
       (c: InlineConfigurationWithExcludes) =>
-        c.module :+: c.dependencies :+: c.ivyXML :+: c.configurations :+: c.defaultConfiguration
-          .map(_.name) :+:
+        c.module :+: c.dependencies :+: c.ivyXML :+: c.configurations :+: c
+          .defaultConfiguration.map(_.name) :+:
           c.ivyScala :+: c.validate :+: c.overrides :+: c.excludes :+: HNil
     implicit def moduleConfToHL =
       (m: ModuleConfiguration) =>
         m.organization :+: m.name :+: m.revision :+: m.resolver :+: HNil
     implicit def inlineToHL =
       (c: InlineConfiguration) =>
-        c.module :+: c.dependencies :+: c.ivyXML :+: c.configurations :+: c.defaultConfiguration
-          .map(_.name) :+: c.ivyScala :+: c.validate :+: c.overrides :+: HNil
+        c.module :+: c.dependencies :+: c.ivyXML :+: c.configurations :+: c
+          .defaultConfiguration.map(_.name) :+: c.ivyScala :+: c.validate :+: c
+          .overrides :+: HNil
   }
   import L4._
 
@@ -373,12 +375,15 @@ object CacheIvy {
       (c: ChainedResolver) => c.name :+: c.resolvers :+: HNil
     implicit def moduleToHL =
       (m: ModuleID) =>
-        m.organization :+: m.name :+: m.revision :+: m.configurations :+: m.isChanging :+: m.isTransitive :+: m.explicitArtifacts :+: m.exclusions :+: m.inclusions :+: m.extraAttributes :+: m.crossVersion :+: HNil
+        m.organization :+: m.name :+: m.revision :+: m.configurations :+: m
+          .isChanging :+: m.isTransitive :+: m.explicitArtifacts :+: m
+          .exclusions :+: m.inclusions :+: m.extraAttributes :+: m
+          .crossVersion :+: HNil
   }
   import L3._
 
-  implicit lazy val chainedIC: InputCache[ChainedResolver] = InputCache.lzy(
-    wrapIn)
+  implicit lazy val chainedIC: InputCache[ChainedResolver] = InputCache
+    .lzy(wrapIn)
   implicit lazy val resolverIC: InputCache[Resolver] = unionInputCache[
     Resolver,
     ChainedResolver :+: MavenRepository :+: MavenCache :+: FileRepository :+: URLRepository :+: SshRepository :+: SftpRepository :+: RawRepository :+: HNil]
@@ -406,7 +411,8 @@ object CacheIvy {
         e.organization :+: e.name :+: e.artifact :+: e.configurations :+: HNil
     implicit def sbtExclusionToHL =
       (e: SbtExclusionRule) =>
-        e.organization :+: e.name :+: e.artifact :+: e.configurations :+: e.crossVersion :+: HNil
+        e.organization :+: e.name :+: e.artifact :+: e.configurations :+: e
+          .crossVersion :+: HNil
     implicit def crossToHL = (c: CrossVersion) => crossToInt(c) :+: HNil
 
     /*		implicit def deliverConfToHL = (p: DeliverConfiguration) => p.deliverIvyPattern :+: p.status :+: p.configurations :+: HNil

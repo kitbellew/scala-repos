@@ -60,18 +60,19 @@ class CrossValidationTest
   }
 
   def splitData(k: Int, labeledPointsRDD: RDD[LabeledPoint]): Seq[Fold] = {
-    CommonHelperFunctions.splitData[
-      LabeledPoint,
-      CrossValidationTest.TrainingData,
-      CrossValidationTest.EmptyEvaluationParams,
-      CrossValidationTest.Query,
-      CrossValidationTest.ActualResult](
-      k,
-      labeledPointsRDD,
-      emptyParams,
-      CrossValidationTest.toTrainingData,
-      CrossValidationTest.toQuery,
-      CrossValidationTest.toActualResult)
+    CommonHelperFunctions
+      .splitData[
+        LabeledPoint,
+        CrossValidationTest.TrainingData,
+        CrossValidationTest.EmptyEvaluationParams,
+        CrossValidationTest.Query,
+        CrossValidationTest.ActualResult](
+        k,
+        labeledPointsRDD,
+        emptyParams,
+        CrossValidationTest.toTrainingData,
+        CrossValidationTest.toQuery,
+        CrossValidationTest.toActualResult)
   }
 
   "Fold count" should "equal evalK" in {

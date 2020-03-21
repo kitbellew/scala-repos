@@ -40,19 +40,19 @@ object NonEmptyListTest extends SpecLite {
 
   "findLeft" ! forAll { a: NonEmptyList[Int] =>
     val f = (_: Int) % 3 == 0
-    Foldable[NonEmptyList].findLeft(a)(f) must_=== Foldable[IList].findLeft(
-      a.list)(f)
+    Foldable[NonEmptyList].findLeft(a)(f) must_=== Foldable[IList]
+      .findLeft(a.list)(f)
   }
 
   "findRight" ! forAll { a: NonEmptyList[Int] =>
     val f = (_: Int) % 3 == 0
-    Foldable[NonEmptyList].findRight(a)(f) must_=== Foldable[IList].findRight(
-      a.list)(f)
+    Foldable[NonEmptyList].findRight(a)(f) must_=== Foldable[IList]
+      .findRight(a.list)(f)
   }
 
   "distinct" ! forAll { xs: NonEmptyList[Int] =>
-    Option(xs.distinct) must_=== std.list.toNel(
-      Foldable[NonEmptyList].toList(xs).distinct)
+    Option(xs.distinct) must_=== std.list
+      .toNel(Foldable[NonEmptyList].toList(xs).distinct)
   }
 
   "NonEmptyList size is correct" ! forAll { xs: NonEmptyList[Int] =>

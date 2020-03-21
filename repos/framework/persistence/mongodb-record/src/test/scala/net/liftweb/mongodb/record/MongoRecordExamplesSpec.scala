@@ -146,19 +146,16 @@ package mongotestrecords {
 
       override def setFromDBObject(
           dbo: DBObject): Box[List[Map[String, String]]] = {
-        val lst: List[Map[String, String]] = dbo.keySet.toList
-          .map(k => {
-            dbo.get(k.toString) match {
-              case bdbo: BasicDBObject
-                  if (bdbo.containsField("name") && bdbo.containsField(
-                    "type")) =>
-                Map(
-                  "name" -> bdbo.getString("name"),
-                  "type" -> bdbo.getString("type"))
-              case _ => null
-            }
-          })
-          .filter(_ != null)
+        val lst: List[Map[String, String]] = dbo.keySet.toList.map(k => {
+          dbo.get(k.toString) match {
+            case bdbo: BasicDBObject
+                if (bdbo.containsField("name") && bdbo.containsField("type")) =>
+              Map(
+                "name" -> bdbo.getString("name"),
+                "type" -> bdbo.getString("type"))
+            case _ => null
+          }
+        }).filter(_ != null)
         Full(set(lst))
       }
     }
@@ -276,13 +273,11 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
         t.person.value.address.city must_== tr.person.value.address.city
         t.person.value.children.size must_== tr.person.value.children.size
         for (i <- List.range(0, t.person.value.children.size - 1)) {
-          t.person.value.children(i).name must_== tr.person.value
-            .children(i)
+          t.person.value.children(i).name must_== tr.person.value.children(i)
             .name
           t.person.value.children(i).age must_== tr.person.value.children(i).age
           t.person.value.children(i).birthdate must_== tr.person.value
-            .children(i)
-            .birthdate
+            .children(i).birthdate
         }
       }
 
@@ -337,21 +332,17 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     RefDoc.count must_== 2
 
     // get the docs back from the db
-    MainDoc
-      .find(md1.id.get)
-      .foreach(m => {
-        m.name.value must_== md1.name.value
-        m.cnt.value must_== md1.cnt.value
-        m.refdocId.value must_== md1.refdocId.value
-        m.refuuid.value must_== md1.refuuid.value
-      })
+    MainDoc.find(md1.id.get).foreach(m => {
+      m.name.value must_== md1.name.value
+      m.cnt.value must_== md1.cnt.value
+      m.refdocId.value must_== md1.refdocId.value
+      m.refuuid.value must_== md1.refuuid.value
+    })
 
     // fetch a refdoc
     val refFromFetch = md1.refdocId.obj
     refFromFetch.isDefined must_== true
-    refFromFetch
-      .openOrThrowException("we know this is Full")
-      .id
+    refFromFetch.openOrThrowException("we know this is Full").id
       .get must_== ref1.id.get
 
     // query for a single doc with a JObject query
@@ -450,8 +441,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     ld1.objidlist.set(List(ObjectId.get, ObjectId.get))
     ld1.dtlist.set(List(now, now))
     ld1.jsonobjlist.set(List(jd1, JsonDoc("2", "jsondoc2"), jd1))
-    ld1.patternlist.set(
-      List(Pattern.compile("^Mongo"), Pattern.compile("^Mongo2")))
+    ld1.patternlist
+      .set(List(Pattern.compile("^Mongo"), Pattern.compile("^Mongo2")))
     ld1.maplist.set(List(
       Map("name" -> "map1", "type" -> "map"),
       Map("name" -> "map2", "type" -> "map")))

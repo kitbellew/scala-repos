@@ -65,7 +65,8 @@ package object codegen {
 
       // scalastyle:off println
       println(
-        s"javap -p -v -classpath ${dumpDirectory.getCanonicalPath} ${generatedClass.getName}".!!)
+        s"javap -p -v -classpath ${dumpDirectory.getCanonicalPath} ${generatedClass.getName}"
+          .!!)
       // scalastyle:on println
     }
   }

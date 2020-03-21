@@ -1,4 +1,5 @@
-package org.jetbrains.plugins.scala.testingSupport.scalatest.scala2_10.scalatest1_9_2
+package org.jetbrains.plugins.scala.testingSupport.scalatest.scala2_10
+  .scalatest1_9_2
 
 import org.jetbrains.plugins.scala.testingSupport.scalatest.ScalaTestTestCase
 import org.jetbrains.plugins.scala.util.TestUtils.ScalaSdkVersion

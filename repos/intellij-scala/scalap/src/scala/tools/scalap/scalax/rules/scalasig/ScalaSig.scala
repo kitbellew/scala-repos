@@ -289,8 +289,8 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
   )
 
   //for now, support only constants and arrays of constants
-  lazy val annotArgArray =
-    44 -~ (oneOf(constantRef, constAnnotArgRef) *).map(_.toArray)
+  lazy val annotArgArray = 44 -~ (oneOf(constantRef, constAnnotArgRef) *)
+  .map(_.toArray)
   lazy val constAnnotArgRef: Rule[Any, String] = oneOf(
     constantRef,
     refTo(annotArgArray))

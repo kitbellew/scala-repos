@@ -82,9 +82,8 @@ class LoadServiceTest extends FunSuite with MockitoSugar {
     val buf = mutable.Buffer.empty[ClassPath.Info]
     val rand = new Random()
 
-    val f = File.createTempFile(
-      "tmp",
-      "__finagle_loadservice" + rand.nextInt(10000))
+    val f = File
+      .createTempFile("tmp", "__finagle_loadservice" + rand.nextInt(10000))
     f.delete
     if (f.mkdir()) {
       f.setReadable(false)
@@ -99,9 +98,8 @@ class LoadServiceTest extends FunSuite with MockitoSugar {
     val buf = mutable.Buffer.empty[ClassPath.Info]
     val rand = new Random()
 
-    val f = File.createTempFile(
-      "tmp",
-      "__finagle_loadservice" + rand.nextInt(10000))
+    val f = File
+      .createTempFile("tmp", "__finagle_loadservice" + rand.nextInt(10000))
     f.delete
     if (f.mkdir()) {
       val subDir = new File(f.getAbsolutePath, "subdir")
@@ -120,11 +118,11 @@ class LoadServiceTest extends FunSuite with MockitoSugar {
   test("LoadService should find services on non URLClassloader") {
     val loader = new MetaInfCodedClassloader(getClass.getClassLoader)
     // Run LoadService in a different thread from the custom classloader
-    val clazz: Class[_] = loader.loadClass(
-      "com.twitter.finagle.util.LoadServiceCallable")
+    val clazz: Class[_] = loader
+      .loadClass("com.twitter.finagle.util.LoadServiceCallable")
     val executor: ExecutorService = Executors.newSingleThreadExecutor()
-    val future: concurrent.Future[Seq[Any]] = executor.submit(
-      clazz.newInstance().asInstanceOf[Callable[Seq[Any]]])
+    val future: concurrent.Future[Seq[Any]] = executor
+      .submit(clazz.newInstance().asInstanceOf[Callable[Seq[Any]]])
 
     // Get the result
     val announcers: Seq[Any] = future.get()
@@ -219,8 +217,8 @@ class MetaInfCodedClassloader(parent: ClassLoader) extends ClassLoader(parent) {
     // Totally contrived example classloader that stores "META-INF" as "HIDDEN-INF"
     // Not a good example of real-world issues, but it does the job at hiding the service definition from the
     // com.twitter.finagle.util.ClassPath code
-    val resources: util.Enumeration[URL] = super.getResources(
-      p1.replace("META-INF", "HIDDEN-INF"))
+    val resources: util.Enumeration[URL] = super
+      .getResources(p1.replace("META-INF", "HIDDEN-INF"))
     if (resources == null) { super.getResources(p1) }
     else { resources }
   }

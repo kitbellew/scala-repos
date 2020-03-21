@@ -40,8 +40,8 @@ object ResolveProcessor {
       result: ScalaResolveResult,
       place: PsiElement): String = {
     def defaultForTypeAlias(t: ScTypeAlias): String = {
-      if (t.getParent
-            .isInstanceOf[ScTemplateBody] && t.containingClass != null) {
+      if (t.getParent.isInstanceOf[ScTemplateBody] && t
+            .containingClass != null) {
         "TypeAlias:" + t.containingClass.qualifiedName + "#" + t.name
       } else null
     }
@@ -159,9 +159,8 @@ class ResolveProcessor(
       if (accessibility && !accessible) return true
       named match {
         case o: ScObject
-            if o.isPackageObject && JavaPsiFacade
-              .getInstance(element.getProject)
-              .findPackage(o.qualifiedName) != null =>
+            if o.isPackageObject && JavaPsiFacade.getInstance(
+              element.getProject).findPackage(o.qualifiedName) != null =>
         case pack: PsiPackage =>
           val resolveResult: ScalaResolveResult = new ScalaResolveResult(
             ScPackageImpl(pack),
@@ -171,10 +170,8 @@ class ResolveProcessor(
             isAccessible = accessible)
           addResult(resolveResult)
         case clazz: PsiClass
-            if !isThisOrSuperResolve || PsiTreeUtil.isContextAncestor(
-              clazz,
-              ref,
-              true) =>
+            if !isThisOrSuperResolve || PsiTreeUtil
+              .isContextAncestor(clazz, ref, true) =>
           addResult(new ScalaResolveResult(
             named,
             getSubst(state),
@@ -257,8 +254,7 @@ class ResolveProcessor(
                   _: ScTypeAlias | _: ScClass | _: ScTrait,
                   _)) =>
             rr.element.name != r.element.name ||
-              ScalaPsiUtil
-                .superTypeMembers(rr.element)
+              ScalaPsiUtil.superTypeMembers(rr.element)
                 .find(_ == r.element) == None
           case (true, _) => true
         }
@@ -270,8 +266,9 @@ class ResolveProcessor(
     def getName(state: ResolveState) = {
       val stateName = state.get(ResolverEnv.nameKey)
       val result = if (stateName == null) name else stateName
-      if (result != null && result.startsWith("`") && result.endsWith(
-            "`") && result.length > 1) result.substring(1, result.length - 1)
+      if (result != null && result.startsWith("`") && result
+            .endsWith("`") && result.length > 1)
+        result.substring(1, result.length - 1)
       else result
     }
   }

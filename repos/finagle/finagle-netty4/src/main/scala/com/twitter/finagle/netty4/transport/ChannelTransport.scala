@@ -120,21 +120,20 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
 
   override def toString = s"Transport<channel=$ch, onClose=$closed>"
 
-  ch.pipeline()
-    .addLast(
-      "finagleChannelTransport",
-      new SimpleChannelInboundHandler[Out]() {
-        override def channelRead0(
-            ctx: ChannelHandlerContext,
-            msg: Out): Unit = { queue.offer(msg) }
-
-        override def channelInactive(ctx: ChannelHandlerContext): Unit = {
-          fail(new ChannelClosedException(remoteAddress))
-        }
-
-        override def exceptionCaught(
-            ctx: ChannelHandlerContext,
-            e: Throwable): Unit = { fail(ChannelException(e, remoteAddress)) }
+  ch.pipeline().addLast(
+    "finagleChannelTransport",
+    new SimpleChannelInboundHandler[Out]() {
+      override def channelRead0(ctx: ChannelHandlerContext, msg: Out): Unit = {
+        queue.offer(msg)
       }
-    )
+
+      override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+        fail(new ChannelClosedException(remoteAddress))
+      }
+
+      override def exceptionCaught(
+          ctx: ChannelHandlerContext,
+          e: Throwable): Unit = { fail(ChannelException(e, remoteAddress)) }
+    }
+  )
 }

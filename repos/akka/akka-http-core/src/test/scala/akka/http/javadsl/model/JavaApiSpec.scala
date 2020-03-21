@@ -15,25 +15,18 @@ class JavaApiSpec extends FreeSpec with MustMatchers {
   "The Java API should work for" - {
     "work with Uris" - {
       "query" in {
-        Uri
-          .create("/abc")
+        Uri.create("/abc")
           .query(Query.create(Pair.create("name", "paul"))) must be(
           Uri.create("/abc?name=paul"))
       }
       "addSegment" in {
-        Uri
-          .create("/abc")
-          .addPathSegment("def") must be(Uri.create("/abc/def"))
+        Uri.create("/abc").addPathSegment("def") must be(Uri.create("/abc/def"))
 
-        Uri
-          .create("/abc/")
-          .addPathSegment("def") must be(Uri.create("/abc/def"))
+        Uri.create("/abc/").addPathSegment("def") must be(
+          Uri.create("/abc/def"))
       }
       "scheme/host/port" in {
-        Uri
-          .create("/abc")
-          .scheme("http")
-          .host("example.com")
+        Uri.create("/abc").scheme("http").host("example.com")
           .port(8258) must be(Uri.create("http://example.com:8258/abc"))
       }
       "toRelative" in {
@@ -41,25 +34,16 @@ class JavaApiSpec extends FreeSpec with MustMatchers {
           Uri.create("/abc"))
       }
       "pathSegments" in {
-        Uri
-          .create("/abc/def/ghi/jkl")
-          .pathSegments()
-          .asScala
+        Uri.create("/abc/def/ghi/jkl").pathSegments().asScala
           .toSeq must contain inOrderOnly ("abc", "def", "ghi", "jkl")
       }
       "access parameterMap" in {
-        Uri
-          .create("/abc?name=blub&age=28")
-          .query()
-          .toMap
+        Uri.create("/abc?name=blub&age=28").query().toMap
           .asScala must contain allOf ("name" -> "blub", "age" -> "28")
       }
       "access parameters" in {
         val Seq(param1, param2, param3) = Uri
-          .create("/abc?name=blub&age=28&name=blub2")
-          .query()
-          .toList
-          .asScala
+          .create("/abc?name=blub&age=28&name=blub2").query().toList.asScala
           .map(_.toScala)
 
         param1 must be("name" -> "blub")

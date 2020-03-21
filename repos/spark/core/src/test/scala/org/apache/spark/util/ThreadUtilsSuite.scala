@@ -30,8 +30,8 @@ import org.apache.spark.SparkFunSuite
 class ThreadUtilsSuite extends SparkFunSuite {
 
   test("newDaemonSingleThreadExecutor") {
-    val executor = ThreadUtils.newDaemonSingleThreadExecutor(
-      "this-is-a-thread-name")
+    val executor = ThreadUtils
+      .newDaemonSingleThreadExecutor("this-is-a-thread-name")
     @volatile
     var threadName = ""
     executor.submit(new Runnable {
@@ -45,8 +45,8 @@ class ThreadUtilsSuite extends SparkFunSuite {
   }
 
   test("newDaemonSingleThreadScheduledExecutor") {
-    val executor = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-      "this-is-a-thread-name")
+    val executor = ThreadUtils
+      .newDaemonSingleThreadScheduledExecutor("this-is-a-thread-name")
     try {
       val latch = new CountDownLatch(1)
       @volatile
@@ -129,19 +129,15 @@ class ThreadUtilsSuite extends SparkFunSuite {
       }
     }
     assert(
-      exception
-        .asInstanceOf[IllegalArgumentException]
+      exception.asInstanceOf[IllegalArgumentException]
         .getMessage === uniqueExceptionMessage)
     assert(
-      exception.getStackTrace
-        .mkString("\n")
-        .contains(
-          "... run in separate thread using org.apache.spark.util.ThreadUtils ...") === true,
+      exception.getStackTrace.mkString("\n").contains(
+        "... run in separate thread using org.apache.spark.util.ThreadUtils ...") === true,
       "stack trace does not contain expected place holder"
     )
     assert(
-      exception.getStackTrace
-        .mkString("\n")
+      exception.getStackTrace.mkString("\n")
         .contains("ThreadUtils.scala") === false,
       "stack trace contains unexpected references to ThreadUtils")
   }

@@ -85,8 +85,8 @@ class ScalaPatternParameterInfoHandler
       context: ParameterInfoContext): Array[Object] = null
 
   def updateUI(p: Any, context: ParameterInfoUIContext): Unit = {
-    if (context == null || context.getParameterOwner == null || !context.getParameterOwner.isValid)
-      return
+    if (context == null || context.getParameterOwner == null || !context
+          .getParameterOwner.isValid) return
     context.getParameterOwner match {
       case args: ScPatternArgumentList =>
         val color: Color = context.getDefaultParameterColor
@@ -121,33 +121,31 @@ class ScalaPatternParameterInfoHandler
                 CodeInsightBundle.message("parameter.info.no.parameters"))
             else {
               buffer.append(
-                params
-                  .map {
-                    case (param, o) =>
-                      val buffer: StringBuilder = new StringBuilder("")
-                      buffer.append(ScType.presentableText(param))
-                      val isSeq = methodName == "unapplySeq" && (ScType
-                        .extractClass(param) match {
-                        case Some(clazz) => clazz.qualifiedName == "scala.Seq"
-                        case _           => false
-                      })
-                      if (isSeq) {
-                        buffer.delete(0, buffer.indexOf("[") + 1)
-                        buffer.deleteCharAt(buffer.length - 1)
-                        buffer.append("*")
+                params.map {
+                  case (param, o) =>
+                    val buffer: StringBuilder = new StringBuilder("")
+                    buffer.append(ScType.presentableText(param))
+                    val isSeq = methodName == "unapplySeq" && (ScType
+                      .extractClass(param) match {
+                      case Some(clazz) => clazz.qualifiedName == "scala.Seq"
+                      case _           => false
+                    })
+                    if (isSeq) {
+                      buffer.delete(0, buffer.indexOf("[") + 1)
+                      buffer.deleteCharAt(buffer.length - 1)
+                      buffer.append("*")
+                    }
+                    val isBold =
+                      if (o == index || (isSeq && o <= index)) true
+                      else {
+                        //todo: check type
+                        false
                       }
-                      val isBold =
-                        if (o == index || (isSeq && o <= index)) true
-                        else {
-                          //todo: check type
-                          false
-                        }
-                      val paramTypeText = buffer.toString()
-                      val paramText = paramTextFor(sign, o, paramTypeText)
+                    val paramTypeText = buffer.toString()
+                    val paramText = paramTextFor(sign, o, paramTypeText)
 
-                      if (isBold) "<b>" + paramText + "</b>" else paramText
-                  }
-                  .mkString(", "))
+                    if (isBold) "<b>" + paramText + "</b>" else paramText
+                }.mkString(", "))
             }
           }
           case _ =>
@@ -209,11 +207,11 @@ class ScalaPatternParameterInfoHandler
         case fun: ScFunction =>
           // Look for a corresponding apply method beside the unapply method.
           // TODO also check types correspond, allowing for overloading
-          val applyParam: Option[PsiParameter] =
-            ScalaPsiUtil.getApplyMethods(fun.containingClass) match {
-              case Seq(sig) => sig.method.getParameterList.getParameters.lift(o)
-              case _        => None
-            }
+          val applyParam: Option[PsiParameter] = ScalaPsiUtil
+            .getApplyMethods(fun.containingClass) match {
+            case Seq(sig) => sig.method.getParameterList.getParameters.lift(o)
+            case _        => None
+          }
           applyParam match {
             case Some(param) => param.getName + ": " + paramTypeText
             case None        => paramTypeText
@@ -249,9 +247,8 @@ class ScalaPatternParameterInfoHandler
     val (file, offset) = (context.getFile, context.getOffset)
     val element = file.findElementAt(offset)
     if (element == null) return null
-    val args: ScPatternArgumentList = PsiTreeUtil.getParentOfType(
-      element,
-      getArgumentListClass)
+    val args: ScPatternArgumentList = PsiTreeUtil
+      .getParentOfType(element, getArgumentListClass)
     if (args != null) {
       context match {
         case context: CreateParameterInfoContext => args.getParent match {
@@ -270,19 +267,18 @@ class ScalaPatternParameterInfoHandler
                       val subst =
                         if (fun.typeParameters.length == 0) substitutor
                         else {
-                          val undefSubst = fun.typeParameters.foldLeft(
-                            ScSubstitutor.empty)((s, p) =>
-                            s.bindT(
-                              (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                              ScUndefinedType(
-                                new ScTypeParameterType(p, substitutor))))
+                          val undefSubst = fun.typeParameters
+                            .foldLeft(ScSubstitutor.empty)((s, p) =>
+                              s.bindT(
+                                (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                                ScUndefinedType(
+                                  new ScTypeParameterType(p, substitutor))))
                           val emptySubst: ScSubstitutor = fun.typeParameters
                             .foldLeft(ScSubstitutor.empty)((s, p) =>
                               s.bindT(
                                 (p.name, ScalaPsiUtil.getPsiElementId(p)),
                                 p.upperBound.getOrAny))
-                          val result = fun
-                            .parameters(0)
+                          val result = fun.parameters(0)
                             .getType(TypingContext.empty)
                           if (result.isEmpty) substitutor
                           else {

@@ -167,26 +167,19 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
   }
 
   override def get(startId: Option[Long], endId: Long): Array[(Long, T)] = {
-    val batchIds = fc
-      .util()
-      .listStatus(metadataPath, batchFilesFilter)
-      .map(_.getPath.getName.toLong)
-      .filter { batchId =>
+    val batchIds = fc.util().listStatus(metadataPath, batchFilesFilter)
+      .map(_.getPath.getName.toLong).filter { batchId =>
         batchId <= endId && (startId.isEmpty || batchId >= startId.get)
       }
-    batchIds.sorted
-      .map(batchId => (batchId, get(batchId)))
-      .filter(_._2.isDefined)
-      .map { case (batchId, metadataOption) => (batchId, metadataOption.get) }
+    batchIds.sorted.map(batchId => (batchId, get(batchId)))
+      .filter(_._2.isDefined).map {
+        case (batchId, metadataOption) => (batchId, metadataOption.get)
+      }
   }
 
   override def getLatest(): Option[(Long, T)] = {
-    val batchIds = fc
-      .util()
-      .listStatus(metadataPath, batchFilesFilter)
-      .map(_.getPath.getName.toLong)
-      .sorted
-      .reverse
+    val batchIds = fc.util().listStatus(metadataPath, batchFilesFilter)
+      .map(_.getPath.getName.toLong).sorted.reverse
     for (batchId <- batchIds) {
       val batch = get(batchId)
       if (batch.isDefined) { return Some((batchId, batch.get)) }

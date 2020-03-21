@@ -140,13 +140,9 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                 val rn = if (cn.gen eq gen) cn else cn.renewed(gen, ct)
                 val nn = rn.updatedAt(
                   pos,
-                  inode(CNode.dual(
-                    sn,
-                    sn.hc,
-                    new SNode(k, v, hc),
-                    hc,
-                    lev + 5,
-                    gen)),
+                  inode(
+                    CNode
+                      .dual(sn, sn.hc, new SNode(k, v, hc), hc, lev + 5, gen)),
                   gen)
                 GCAS(cn, nn, ct)
               }
@@ -380,9 +376,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                 else null
               }
             case sn: SNode[K, V] =>
-              if (sn.hc == hc && equal(sn.k, k, ct) && (
-                    v == null || sn.v == v
-                  )) {
+              if (sn.hc == hc && equal(sn.k, k, ct) && (v == null || sn
+                    .v == v)) {
                 val ncn = cn.removedAt(pos, flag, gen).toContracted(lev)
                 if (GCAS(cn, ncn, ct)) Some(sn.v) else null
               } else None
@@ -404,8 +399,7 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                     val sub = cn.array(pos)
                     if (sub eq this) nonlive match {
                       case tn: TNode[K, V] =>
-                        val ncn = cn
-                          .updatedAt(pos, tn.copyUntombed, gen)
+                        val ncn = cn.updatedAt(pos, tn.copyUntombed, gen)
                           .toContracted(lev - 5)
                         if (!parent.GCAS(cn, ncn, ct))
                           if (ct.readRoot().gen == startgen)
@@ -795,10 +789,8 @@ final class TrieMap[K, V] private (
 
   private def readObject(in: java.io.ObjectInputStream) {
     root = INode.newRootNode
-    rootupdater = AtomicReferenceFieldUpdater.newUpdater(
-      classOf[TrieMap[K, V]],
-      classOf[AnyRef],
-      "root")
+    rootupdater = AtomicReferenceFieldUpdater
+      .newUpdater(classOf[TrieMap[K, V]], classOf[AnyRef], "root")
 
     hashingobj = in.readObject().asInstanceOf[Hashing[K]]
     equalityobj = in.readObject().asInstanceOf[Equiv[K]]
@@ -1083,10 +1075,8 @@ final class TrieMap[K, V] private (
 }
 
 object TrieMap extends MutableMapFactory[TrieMap] {
-  val inodeupdater = AtomicReferenceFieldUpdater.newUpdater(
-    classOf[INodeBase[_, _]],
-    classOf[MainNode[_, _]],
-    "mainnode")
+  val inodeupdater = AtomicReferenceFieldUpdater
+    .newUpdater(classOf[INodeBase[_, _]], classOf[MainNode[_, _]], "mainnode")
 
   implicit def canBuildFrom[K, V]: CanBuildFrom[Coll, (K, V), TrieMap[K, V]] =
     new MapCanBuildFrom[K, V]

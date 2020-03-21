@@ -19,14 +19,10 @@ private[testadapter] object FingerprintSerializers {
       val bld = new JSONObjBuilder()
       fp match {
         case fp: AnnotatedFingerprint =>
-          bld
-            .fld("fpType", "AnnotatedFingerprint")
-            .fld("isModule", fp.isModule)
+          bld.fld("fpType", "AnnotatedFingerprint").fld("isModule", fp.isModule)
             .fld("annotationName", fp.annotationName)
         case fp: SubclassFingerprint =>
-          bld
-            .fld("fpType", "SubclassFingerprint")
-            .fld("isModule", fp.isModule)
+          bld.fld("fpType", "SubclassFingerprint").fld("isModule", fp.isModule)
             .fld("superclassName", fp.superclassName)
             .fld("requireNoArgConstructor", fp.requireNoArgConstructor)
         case _ =>

@@ -175,9 +175,9 @@ private[spark] class PythonWorkerFactory(
       } catch {
         case e: Exception =>
           // If the daemon exists, wait for it to finish and get its stderr
-          val stderr = Option(daemon)
-            .flatMap { d => Utils.getStderr(d, PROCESS_WAIT_TIMEOUT_MS) }
-            .getOrElse("")
+          val stderr = Option(daemon).flatMap { d =>
+            Utils.getStderr(d, PROCESS_WAIT_TIMEOUT_MS)
+          }.getOrElse("")
 
           stopDaemon()
 

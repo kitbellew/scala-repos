@@ -53,8 +53,8 @@ private[spark] class ClientArguments(
 
   private var driverMemory: Int = Utils.DEFAULT_DRIVER_MEM_MB // MB
   private var driverCores: Int = 1
-  private val isDynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(
-    sparkConf)
+  private val isDynamicAllocationEnabled = Utils
+    .isDynamicAllocationEnabled(sparkConf)
 
   parseArgs(args.toList)
   loadEnvironmentArgs()
@@ -63,18 +63,14 @@ private[spark] class ClientArguments(
   // Additional memory to allocate to containers
   val amMemoryOverheadEntry =
     if (isClusterMode) DRIVER_MEMORY_OVERHEAD else AM_MEMORY_OVERHEAD
-  val amMemoryOverhead = sparkConf
-    .get(amMemoryOverheadEntry)
-    .getOrElse(
-      math.max((MEMORY_OVERHEAD_FACTOR * amMemory).toLong, MEMORY_OVERHEAD_MIN))
+  val amMemoryOverhead = sparkConf.get(amMemoryOverheadEntry).getOrElse(
+    math.max((MEMORY_OVERHEAD_FACTOR * amMemory).toLong, MEMORY_OVERHEAD_MIN))
     .toInt
 
-  val executorMemoryOverhead = sparkConf
-    .get(EXECUTOR_MEMORY_OVERHEAD)
-    .getOrElse(math.max(
+  val executorMemoryOverhead =
+    sparkConf.get(EXECUTOR_MEMORY_OVERHEAD).getOrElse(math.max(
       (MEMORY_OVERHEAD_FACTOR * executorMemory).toLong,
-      MEMORY_OVERHEAD_MIN))
-    .toInt
+      MEMORY_OVERHEAD_MIN)).toInt
 
   /** Load any default arguments provided through environment variables and Spark properties. */
   private def loadEnvironmentArgs(): Unit = {
@@ -82,24 +78,16 @@ private[spark] class ClientArguments(
     // while spark.yarn.dist.{archives/files} should be resolved to file:// (SPARK-2051).
     files = Option(files)
       .orElse(sparkConf.get(FILES_TO_DISTRIBUTE).map(p => Utils.resolveURIs(p)))
-      .orElse(sys.env.get("SPARK_YARN_DIST_FILES"))
-      .orNull
-    archives = Option(archives)
-      .orElse(
-        sparkConf.get(ARCHIVES_TO_DISTRIBUTE).map(p => Utils.resolveURIs(p)))
-      .orElse(sys.env.get("SPARK_YARN_DIST_ARCHIVES"))
-      .orNull
+      .orElse(sys.env.get("SPARK_YARN_DIST_FILES")).orNull
+    archives = Option(archives).orElse(
+      sparkConf.get(ARCHIVES_TO_DISTRIBUTE).map(p => Utils.resolveURIs(p)))
+      .orElse(sys.env.get("SPARK_YARN_DIST_ARCHIVES")).orNull
     // If dynamic allocation is enabled, start at the configured initial number of executors.
     // Default to minExecutors if no initialExecutors is set.
-    numExecutors = YarnSparkHadoopUtil.getInitialTargetExecutorNumber(
-      sparkConf,
-      numExecutors)
-    principal = Option(principal)
-      .orElse(sparkConf.get(PRINCIPAL))
-      .orNull
-    keytab = Option(keytab)
-      .orElse(sparkConf.get(KEYTAB))
-      .orNull
+    numExecutors = YarnSparkHadoopUtil
+      .getInitialTargetExecutorNumber(sparkConf, numExecutors)
+    principal = Option(principal).orElse(sparkConf.get(PRINCIPAL)).orNull
+    keytab = Option(keytab).orElse(sparkConf.get(KEYTAB)).orNull
   }
 
   /**

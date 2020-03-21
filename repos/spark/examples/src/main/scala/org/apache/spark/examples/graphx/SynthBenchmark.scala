@@ -96,8 +96,7 @@ object SynthBenchmark {
       sigma,
       seed)
     // Repartition the graph
-    val graph = partitionStrategy
-      .foldLeft(unpartitionedGraph)(_.partitionBy(_))
+    val graph = partitionStrategy.foldLeft(unpartitionedGraph)(_.partitionBy(_))
       .cache()
 
     var startTime = System.currentTimeMillis()
@@ -112,8 +111,7 @@ object SynthBenchmark {
       val pos = new PrintWriter(fos)
       val hist = graph.vertices
         .leftJoin(graph.degrees)((id, _, optDeg) => optDeg.getOrElse(0))
-        .map(p => p._2)
-        .countByValue()
+        .map(p => p._2).countByValue()
       hist.foreach { case (deg, count) => pos.println(s"$deg \t $count") }
     }
 
@@ -125,10 +123,8 @@ object SynthBenchmark {
       println(s"Total PageRank = $totalPR")
     } else if (app == "cc") {
       println("Running Connected Components")
-      val numComponents = graph.connectedComponents.vertices
-        .map(_._2)
-        .distinct()
-        .count()
+      val numComponents = graph.connectedComponents.vertices.map(_._2)
+        .distinct().count()
       println(s"Number of components = $numComponents")
     }
     val runTime = System.currentTimeMillis() - startTime

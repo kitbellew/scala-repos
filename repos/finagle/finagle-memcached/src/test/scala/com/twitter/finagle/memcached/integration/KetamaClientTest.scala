@@ -41,9 +41,8 @@ class KetamaClientTest extends FunSuite with BeforeAndAfter {
   }
 
   test("doesn't blow up") {
-    val client = KetamaClientBuilder()
-      .nodes(
-        "localhost:%d,localhost:%d".format(address1.getPort, address2.getPort))
+    val client = KetamaClientBuilder().nodes(
+      "localhost:%d,localhost:%d".format(address1.getPort, address2.getPort))
       .build()
 
     Await.result(client.delete("foo"))
@@ -70,9 +69,7 @@ class KetamaClientTest extends FunSuite with BeforeAndAfter {
     val key2 = 3
     val name =
       s"twcache!localhost:${address1.getPort}:1:$key1,localhost:${address2.getPort}:1:$key2"
-    val client = KetamaClientBuilder()
-      .dest(name)
-      .build()
+    val client = KetamaClientBuilder().dest(name).build()
       .asInstanceOf[KetamaPartitionedClient]
 
     assert(client.ketamaNodeGrp().size == 2)
@@ -92,8 +89,7 @@ class KetamaClientTest extends FunSuite with BeforeAndAfter {
     val mutableGroup = Group(address1, address2).map {
       _.asInstanceOf[SocketAddress]
     }
-    val client = KetamaClientBuilder()
-      .group(CacheNodeGroup(mutableGroup, true))
+    val client = KetamaClientBuilder().group(CacheNodeGroup(mutableGroup, true))
       .build()
 
     Await.result(client.delete("foo"))
@@ -107,8 +103,7 @@ class KetamaClientTest extends FunSuite with BeforeAndAfter {
     val client = KetamaClientBuilder()
       .nodes("localhost:%d:1:key1,localhost:%d:1:key2".format(
         address1.getPort,
-        address2.getPort))
-      .build()
+        address2.getPort)).build()
 
     Await.result(client.delete("foo"))
     assert(Await.result(client.get("foo")) == None)
@@ -119,9 +114,8 @@ class KetamaClientTest extends FunSuite with BeforeAndAfter {
   }
 
   test("even in future pool") {
-    lazy val client = KetamaClientBuilder()
-      .nodes(
-        "localhost:%d,localhost:%d".format(address1.getPort, address2.getPort))
+    lazy val client = KetamaClientBuilder().nodes(
+      "localhost:%d,localhost:%d".format(address1.getPort, address2.getPort))
       .build()
 
     val futureResult = Future.value(true) flatMap { _ => client.get("foo") }

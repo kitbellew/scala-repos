@@ -31,23 +31,18 @@ object CountVectorizerExample {
     val sqlContext = new SQLContext(sc)
 
     // $example on$
-    val df = sqlContext
-      .createDataFrame(
-        Seq((0, Array("a", "b", "c")), (1, Array("a", "b", "b", "c", "a"))))
+    val df = sqlContext.createDataFrame(
+      Seq((0, Array("a", "b", "c")), (1, Array("a", "b", "b", "c", "a"))))
       .toDF("id", "words")
 
     // fit a CountVectorizerModel from the corpus
     val cvModel: CountVectorizerModel = new CountVectorizer()
-      .setInputCol("words")
-      .setOutputCol("features")
-      .setVocabSize(3)
-      .setMinDF(2)
+      .setInputCol("words").setOutputCol("features").setVocabSize(3).setMinDF(2)
       .fit(df)
 
     // alternatively, define CountVectorizerModel with a-priori vocabulary
     val cvm = new CountVectorizerModel(Array("a", "b", "c"))
-      .setInputCol("words")
-      .setOutputCol("features")
+      .setInputCol("words").setOutputCol("features")
 
     cvModel.transform(df).select("features").show()
     // $example off$

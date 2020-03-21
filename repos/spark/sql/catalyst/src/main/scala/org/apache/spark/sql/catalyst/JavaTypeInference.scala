@@ -46,14 +46,14 @@ object JavaTypeInference {
   private val iterableType = TypeToken.of(classOf[JIterable[_]])
   private val mapType = TypeToken.of(classOf[JMap[_, _]])
   private val listType = TypeToken.of(classOf[JList[_]])
-  private val iteratorReturnType =
-    classOf[JIterable[_]].getMethod("iterator").getGenericReturnType
-  private val nextReturnType =
-    classOf[JIterator[_]].getMethod("next").getGenericReturnType
-  private val keySetReturnType =
-    classOf[JMap[_, _]].getMethod("keySet").getGenericReturnType
-  private val valuesReturnType =
-    classOf[JMap[_, _]].getMethod("values").getGenericReturnType
+  private val iteratorReturnType = classOf[JIterable[_]].getMethod("iterator")
+    .getGenericReturnType
+  private val nextReturnType = classOf[JIterator[_]].getMethod("next")
+    .getGenericReturnType
+  private val keySetReturnType = classOf[JMap[_, _]].getMethod("keySet")
+    .getGenericReturnType
+  private val valuesReturnType = classOf[JMap[_, _]].getMethod("values")
+    .getGenericReturnType
 
   /**
     * Infers the corresponding SQL data type of a JavaBean class.
@@ -117,11 +117,11 @@ object JavaTypeInference {
         // TODO: we should only collect properties that have getter and setter. However, some tests
         // pass in scala case class as java bean class which doesn't have getter and setter.
         val beanInfo = Introspector.getBeanInfo(typeToken.getRawType)
-        val properties = beanInfo.getPropertyDescriptors.filterNot(
-          _.getName == "class")
+        val properties = beanInfo.getPropertyDescriptors
+          .filterNot(_.getName == "class")
         val fields = properties.map { property =>
-          val returnType =
-            typeToken.method(property.getReadMethod).getReturnType
+          val returnType = typeToken.method(property.getReadMethod)
+            .getReturnType
           val (dataType, nullable) = inferDataType(returnType)
           new StructField(property.getName, dataType, nullable)
         }
@@ -188,8 +188,7 @@ object JavaTypeInference {
 
     /** Returns the current path with a sub-field extracted. */
     def addToPath(part: String): Expression =
-      path
-        .map(p => UnresolvedExtractValue(p, expressions.Literal(part)))
+      path.map(p => UnresolvedExtractValue(p, expressions.Literal(part)))
         .getOrElse(UnresolvedAttribute(part))
 
     /** Returns the current path or `BoundReference`. */
@@ -252,8 +251,7 @@ object JavaTypeInference {
           case _                                => None
         }
 
-        primitiveMethod
-          .map { method => Invoke(getPath, method, ObjectType(c)) }
+        primitiveMethod.map { method => Invoke(getPath, method, ObjectType(c)) }
           .getOrElse {
             Invoke(
               MapObjects(

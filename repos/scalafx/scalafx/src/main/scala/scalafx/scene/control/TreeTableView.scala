@@ -342,11 +342,8 @@ object TreeTableView {
         minColumn: TableColumnBase[jfxsc.TreeItem[S], _],
         maxRow: Int,
         maxColumn: TableColumnBase[jfxsc.TreeItem[S], _]) {
-      delegate.selectRange(
-        minRow,
-        minColumn.delegate,
-        maxRow,
-        maxColumn.delegate)
+      delegate
+        .selectRange(minRow, minColumn.delegate, maxRow, maxColumn.delegate)
     }
 
     /**
@@ -704,16 +701,14 @@ class TreeTableView[S](
       delegate.columnResizePolicyProperty.value.call(features))
   def columnResizePolicy_=(
       p: TreeTableView.ResizeFeatures[_] => Boolean): Unit = {
-    delegate
-      .columnResizePolicyProperty()
-      .setValue(
-        new jfxu.Callback[jfxsc.TreeTableView.ResizeFeatures[
-          _], java.lang.Boolean] {
-          def call(
-              v: jfxsc.TreeTableView.ResizeFeatures[_]): java.lang.Boolean = {
-            p(v)
-          }
-        })
+    delegate.columnResizePolicyProperty().setValue(
+      new jfxu.Callback[jfxsc.TreeTableView.ResizeFeatures[
+        _], java.lang.Boolean] {
+        def call(
+            v: jfxsc.TreeTableView.ResizeFeatures[_]): java.lang.Boolean = {
+          p(v)
+        }
+      })
   }
   def columnResizePolicy_=(
       p: jfxu.Callback[
@@ -861,8 +856,9 @@ class TreeTableView[S](
   def onScrollToColumn_=(
       v: jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]])
       : Unit = {
-    ObjectProperty.fillProperty[jfxe.EventHandler[
-      jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]]](onScrollToColumn, v)
+    ObjectProperty
+      .fillProperty[jfxe.EventHandler[
+        jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]]](onScrollToColumn, v)
   }
 
   /**

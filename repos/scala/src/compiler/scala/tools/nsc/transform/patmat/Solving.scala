@@ -425,8 +425,8 @@ trait Solving extends Logic {
         }
 
       val tseitinSolutions = findAllModels(solvable.cnf, Nil)
-      tseitinSolutions.map(
-        _.projectToSolution(solvable.symbolMapping.symForVar))
+      tseitinSolutions
+        .map(_.projectToSolution(solvable.symbolMapping.symForVar))
     }
 
     private def withLit(res: TseitinModel, l: Lit): TseitinModel = {

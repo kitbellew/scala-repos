@@ -32,8 +32,8 @@ class SecurityTask(settings: Settings)
     "create derivative apikeys" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
-      val req = (security / "")
-        .addQueryParameter("apiKey", apiKey) << ("""
+      val req = (security / "").addQueryParameter("apiKey", apiKey) << (
+        """
 {"name":"MH Test Write",
  "description":"Foo",
  "grants":[
@@ -43,7 +43,8 @@ class SecurityTask(settings: Settings)
     {"accessType":"write",
      "path":"%sfoo/",
      "ownerAccountIds":["%s"]}]}]}
-""" format (rootPath, accountId))
+""" format (rootPath, accountId)
+      )
 
       val result = Http(req OK as.String)
       val json = JParser.parseFromString(result()).valueOr(throw _)
@@ -51,8 +52,8 @@ class SecurityTask(settings: Settings)
       (json \ "name").deserialize[String] must_== "MH Test Write"
       (json \ "description").deserialize[String] must_== "Foo"
       (json \ "apiKey").deserialize[String] must_!= apiKey
-      val perms = (json \ "grants").children.flatMap(o =>
-        (o \ "permissions").children)
+      val perms = (json \ "grants").children
+        .flatMap(o => (o \ "permissions").children)
       perms.map(_ \ "accessType") must_== List(JString("write"))
       perms.map(_ \ "path") must_== List(JString("%sfoo/" format rootPath))
     }
@@ -116,8 +117,8 @@ class SecurityTask(settings: Settings)
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
       val subPath = rootPath + "qux/"
-      val g =
-        createGrant(apiKey, ("read", subPath, accountId :: Nil) :: Nil).jvalue
+      val g = createGrant(apiKey, ("read", subPath, accountId :: Nil) :: Nil)
+        .jvalue
 
       val p = JObject(
         "schemaVersion" -> JString("1.0"),

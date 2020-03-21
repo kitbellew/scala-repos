@@ -31,10 +31,8 @@ class AkkaGraphiteReporter(
   private final val ConsoleWidth = 80
 
   val locale = Locale.getDefault
-  val dateFormat = DateFormat.getDateTimeInstance(
-    DateFormat.SHORT,
-    DateFormat.MEDIUM,
-    locale)
+  val dateFormat = DateFormat
+    .getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale)
   val clock = Clock.defaultClock()
 
   override def report(
@@ -50,10 +48,9 @@ class AkkaGraphiteReporter(
     val hdrHistograms = registry.getHdrHistograms
     val averagingGauges = registry.getAveragingGauges
 
-    val metricsCount =
-      List(gauges, counters, histograms, meters, timers).map(_.size).sum + List(
-        knownOpsInTimespanCounters,
-        hdrHistograms).map(_.size).sum
+    val metricsCount = List(gauges, counters, histograms, meters, timers)
+      .map(_.size).sum + List(knownOpsInTimespanCounters, hdrHistograms)
+      .map(_.size).sum
     sendWithBanner(
       "== AkkaGraphiteReporter @ " + dateTime + " == (" + metricsCount + " metrics)",
       '=')

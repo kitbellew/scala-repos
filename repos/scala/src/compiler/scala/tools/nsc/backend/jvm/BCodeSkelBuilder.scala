@@ -117,8 +117,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
       cnode.visitAttribute(classBType.inlineInfoAttribute.get)
 
-      if (AsmUtils.traceClassEnabled && cnode.name.contains(
-            AsmUtils.traceClassPattern)) AsmUtils.traceClass(cnode)
+      if (AsmUtils.traceClassEnabled && cnode.name
+            .contains(AsmUtils.traceClassPattern)) AsmUtils.traceClass(cnode)
 
       assert(
         cd.symbol == claszSymbol,
@@ -131,8 +131,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
     private def initJClass(jclass: asm.ClassVisitor) {
 
       val bType = classBTypeFromSymbol(claszSymbol)
-      val superClass =
-        bType.info.get.superClass.getOrElse(ObjectRef).internalName
+      val superClass = bType.info.get.superClass.getOrElse(ObjectRef)
+        .internalName
       val interfaceNames = bType.info.get.interfaces.map(_.internalName)
 
       val flags = javaFlags(claszSymbol)
@@ -147,9 +147,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         interfaceNames.toArray)
 
       if (emitSource) {
-        cnode.visitSource(
-          cunit.source.toString,
-          null /* SourceDebugExtension */ )
+        cnode
+          .visitSource(cunit.source.toString, null /* SourceDebugExtension */ )
       }
 
       enclosingMethodAttribute(
@@ -182,9 +181,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
             // it must be a top level class (name contains no $s)
             val isCandidateForForwarders = {
               exitingPickler {
-                !(
-                  lmoc.name.toString contains '$'
-                ) && lmoc.hasModuleFlag && !lmoc.isNestedClass
+                !(lmoc.name.toString contains '$') && lmoc
+                  .hasModuleFlag && !lmoc.isNestedClass
               }
             }
             if (isCandidateForForwarders) {
@@ -210,7 +208,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
      */
     private def addModuleInstanceField() {
       val fv = cnode.visitField(
-        GenBCode.PublicStaticFinal, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
+        GenBCode
+          .PublicStaticFinal, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
         strMODULE_INSTANCE_FIELD,
         "L" + thisName + ";",
         null, // no java-generic-signature
@@ -226,7 +225,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
     private def fabricateStaticInit() {
 
       val clinit: asm.MethodVisitor = cnode.visitMethod(
-        GenBCode.PublicStatic, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
+        GenBCode
+          .PublicStatic, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
         CLASS_CONSTRUCTOR_NAME,
         "()V",
         null, // no java-generic-signature
@@ -377,10 +377,11 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
      */
     object locals {
 
-      private val slots = mutable.Map.empty[
-        Symbol,
-        Local
-      ] // (local-or-param-sym -> Local(BType, name, idx, isSynth))
+      private val slots = mutable.Map
+        .empty[
+          Symbol,
+          Local
+        ] // (local-or-param-sym -> Local(BType, name, idx, isSynth))
 
       private var nxtIdx = -1 // next available index for local-var
 
@@ -567,14 +568,12 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         if (isMethSymStaticCtor) CLASS_CONSTRUCTOR_NAME else jMethodName
 
       val mdesc = methodBTypeFromSymbol(methSymbol).descriptor
-      mnode = cnode
-        .visitMethod(
-          flags,
-          bytecodeName,
-          mdesc,
-          jgensig,
-          mkArray(thrownExceptions))
-        .asInstanceOf[asm.tree.MethodNode]
+      mnode = cnode.visitMethod(
+        flags,
+        bytecodeName,
+        mdesc,
+        jgensig,
+        mkArray(thrownExceptions)).asInstanceOf[asm.tree.MethodNode]
 
       emitParamNames(mnode, params)
       emitAnnotations(mnode, others)
@@ -691,8 +690,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         // The only non-instruction nodes to be found are LabelNode and LineNumberNode.
       }
 
-      if (AsmUtils.traceMethodEnabled && mnode.name.contains(
-            AsmUtils.traceMethodPattern)) AsmUtils.traceMethod(mnode)
+      if (AsmUtils.traceMethodEnabled && mnode.name
+            .contains(AsmUtils.traceMethodPattern)) AsmUtils.traceMethod(mnode)
 
       mnode = null
     } // end of method genDefDef()
@@ -746,8 +745,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       // android creator code
       if (isCZParcelable) {
         // add a static field ("CREATOR") to this class to cache android.os.Parcelable$Creator
-        val andrFieldDescr = classBTypeFromSymbol(
-          AndroidCreatorClass).descriptor
+        val andrFieldDescr = classBTypeFromSymbol(AndroidCreatorClass)
+          .descriptor
         cnode.visitField(
           asm.Opcodes.ACC_STATIC | asm.Opcodes.ACC_FINAL,
           "CREATOR",
@@ -755,9 +754,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
           null,
           null)
         // INVOKESTATIC CREATOR(): android.os.Parcelable$Creator; -- TODO where does this Android method come from?
-        val callee = definitions.getMember(
-          claszSymbol.companionModule,
-          androidFieldName)
+        val callee = definitions
+          .getMember(claszSymbol.companionModule, androidFieldName)
         val jowner = internalName(callee.owner)
         val jname = callee.javaSimpleName.toString
         val jtype = methodBTypeFromSymbol(callee).descriptor

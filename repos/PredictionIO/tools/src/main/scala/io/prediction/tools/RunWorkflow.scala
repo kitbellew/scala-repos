@@ -34,10 +34,8 @@ object RunWorkflow extends Logging {
       em: EngineManifest,
       variantJson: File): Int = {
     // Collect and serialize PIO_* environmental variables
-    val pioEnvVars = sys.env
-      .filter(kv => kv._1.startsWith("PIO_"))
-      .map(kv => s"${kv._1}=${kv._2}")
-      .mkString(",")
+    val pioEnvVars = sys.env.filter(kv => kv._1.startsWith("PIO_"))
+      .map(kv => s"${kv._1}=${kv._2}").mkString(",")
 
     val sparkHome = ca.common.sparkHome
       .getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
@@ -73,8 +71,7 @@ object RunWorkflow extends Logging {
         } else { core.getCanonicalPath }
       }
 
-    val workMode = ca.common.evaluation
-      .map(_ => "Evaluation")
+    val workMode = ca.common.evaluation.map(_ => "Evaluation")
       .getOrElse("Training")
 
     val engineLocation = Seq(sys.env("PIO_FS_ENGINESDIR"), em.id, em.version)
@@ -118,20 +115,16 @@ object RunWorkflow extends Logging {
           em.version,
           "--engine-variant",
           if (deployMode == "cluster") {
-            hdfs
-              .makeQualified(new Path(
-                (engineLocation :+ variantJson.getName).mkString(
-                  Path.SEPARATOR)))
+            hdfs.makeQualified(new Path(
+              (engineLocation :+ variantJson.getName).mkString(Path.SEPARATOR)))
               .toString
           } else { variantJson.getCanonicalPath },
           "--verbosity",
           ca.common.verbosity.toString
         ) ++
-        ca.common.engineFactory
-          .map(x => Seq("--engine-factory", x))
+        ca.common.engineFactory.map(x => Seq("--engine-factory", x))
           .getOrElse(Seq()) ++
-        ca.common.engineParamsKey
-          .map(x => Seq("--engine-params-key", x))
+        ca.common.engineParamsKey.map(x => Seq("--engine-params-key", x))
           .getOrElse(Seq()) ++
         (if (deployMode == "cluster") Seq("--deploy-mode", "cluster")
          else Seq()) ++
@@ -143,12 +136,10 @@ object RunWorkflow extends Logging {
         (if (ca.common.stopAfterRead) Seq("--stop-after-read") else Seq()) ++
         (if (ca.common.stopAfterPrepare) { Seq("--stop-after-prepare") }
          else { Seq() }) ++
-        ca.common.evaluation
-          .map(x => Seq("--evaluation-class", x))
+        ca.common.evaluation.map(x => Seq("--evaluation-class", x))
           .getOrElse(Seq()) ++
         // If engineParamsGenerator is specified, it overrides the evaluation.
-        ca.common.engineParamsGenerator
-          .orElse(ca.common.evaluation)
+        ca.common.engineParamsGenerator.orElse(ca.common.evaluation)
           .map(x => Seq("--engine-params-generator-class", x))
           .getOrElse(Seq()) ++
         (if (ca.common.batch != "") Seq("--batch", ca.common.batch)
@@ -174,11 +165,9 @@ object RunWorkflow extends Logging {
       ca.common.variantJson.toURI.toString,
       "--verbosity",
       ca.common.verbosity.toString) ++
-      ca.common.engineFactory
-        .map(x => Seq("--engine-factory", x))
+      ca.common.engineFactory.map(x => Seq("--engine-factory", x))
         .getOrElse(Seq()) ++
-      ca.common.engineParamsKey
-        .map(x => Seq("--engine-params-key", x))
+      ca.common.engineParamsKey.map(x => Seq("--engine-params-key", x))
         .getOrElse(Seq()) ++
       (if (ca.common.batch != "") Seq("--batch", ca.common.batch) else Seq()) ++
       (if (ca.common.verbose) Seq("--verbose") else Seq()) ++
@@ -186,21 +175,15 @@ object RunWorkflow extends Logging {
       (if (ca.common.stopAfterRead) Seq("--stop-after-read") else Seq()) ++
       (if (ca.common.stopAfterPrepare) { Seq("--stop-after-prepare") }
        else { Seq() }) ++
-      ca.common.evaluation
-        .map(x => Seq("--evaluation-class", x))
+      ca.common.evaluation.map(x => Seq("--evaluation-class", x))
         .getOrElse(Seq()) ++
       // If engineParamsGenerator is specified, it overrides the evaluation.
-      ca.common.engineParamsGenerator
-        .orElse(ca.common.evaluation)
-        .map(x => Seq("--engine-params-generator-class", x))
-        .getOrElse(Seq()) ++
+      ca.common.engineParamsGenerator.orElse(ca.common.evaluation)
+        .map(x => Seq("--engine-params-generator-class", x)).getOrElse(Seq()) ++
       (if (ca.common.batch != "") Seq("--batch", ca.common.batch) else Seq()) ++
       Seq("--json-extractor", ca.common.jsonExtractor.toString)
 
-    Runner.runOnSpark(
-      "io.prediction.workflow.CreateWorkflow",
-      args,
-      ca,
-      jarFiles)
+    Runner
+      .runOnSpark("io.prediction.workflow.CreateWorkflow", args, ca, jarFiles)
   }
 }

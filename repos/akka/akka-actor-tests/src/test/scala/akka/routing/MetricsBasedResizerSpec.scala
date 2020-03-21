@@ -63,8 +63,8 @@ object MetricsBasedResizerSpec {
     def close(): Unit = msgs.foreach(_.open())
 
     def sendToAll(await: Boolean): Seq[Latches] = {
-      val sentMessages = (0 until routees.length).map(i ⇒
-        mockSend(await, routeeIdx = i))
+      val sentMessages = (0 until routees.length)
+        .map(i ⇒ mockSend(await, routeeIdx = i))
       sentMessages
     }
 
@@ -92,19 +92,19 @@ class MetricsBasedResizerSpec
     }
 
     "be false if the last resize is too close within actionInterval enough history" in {
-      val resizer = DefaultOptimalSizeExploringResizer(actionInterval =
-        10.seconds)
-      resizer.record = ResizeRecord(checkTime =
-        System.nanoTime() - 8.seconds.toNanos)
+      val resizer = DefaultOptimalSizeExploringResizer(actionInterval = 10
+        .seconds)
+      resizer.record = ResizeRecord(checkTime = System.nanoTime() - 8.seconds
+        .toNanos)
 
       resizer.isTimeForResize(100) should ===(false)
     }
 
     "be true if the last resize is before actionInterval ago" in {
-      val resizer = DefaultOptimalSizeExploringResizer(actionInterval =
-        10.seconds)
-      resizer.record = ResizeRecord(checkTime =
-        System.nanoTime() - 11.seconds.toNanos)
+      val resizer = DefaultOptimalSizeExploringResizer(actionInterval = 10
+        .seconds)
+      resizer.record = ResizeRecord(checkTime = System.nanoTime() - 11.seconds
+        .toNanos)
 
       resizer.isTimeForResize(100) should ===(true)
     }
@@ -127,9 +127,10 @@ class MetricsBasedResizerSpec
       resizer.record.totalQueueLength shouldBe 0
 
       router.sendToAll(await = true)
-      router.mockSend(await =
-        false
-      ) // test one message in mailbox and one in each ActorCell
+      router
+        .mockSend(await =
+          false
+        ) // test one message in mailbox and one in each ActorCell
 
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.record.totalQueueLength shouldBe 3
@@ -255,15 +256,17 @@ class MetricsBasedResizerSpec
       val resizer = DefaultOptimalSizeExploringResizer()
       val router = TestRouter(routees(2))
       val msgs1 = router.sendToAll(await = true)
-      val msgs2 = router.sendToAll(await =
-        false
-      ) //make sure the routees are still busy after the first batch of messages get processed.
+      val msgs2 = router
+        .sendToAll(await =
+          false
+        ) //make sure the routees are still busy after the first batch of messages get processed.
 
       val before = LocalDateTime.now
-      resizer.reportMessageCount(
-        router.routees,
-        router.msgs.size
-      ) //updates the records
+      resizer
+        .reportMessageCount(
+          router.routees,
+          router.msgs.size
+        ) //updates the records
 
       msgs1.foreach(_.second.open()) //process two messages
 
@@ -274,8 +277,7 @@ class MetricsBasedResizerSpec
 
       val after = LocalDateTime.now
       resizer.performanceLog(2).toMillis shouldBe (java.time.Duration
-        .between(before, after)
-        .toMillis / 2 +- 1)
+        .between(before, after).toMillis / 2 +- 1)
 
       router.close()
     }
@@ -289,15 +291,17 @@ class MetricsBasedResizerSpec
 
       val router = TestRouter(routees(2))
       val msgs1 = router.sendToAll(await = true)
-      val msgs2 = router.sendToAll(await =
-        false
-      ) //make sure the routees are still busy after the first batch of messages get processed.
+      val msgs2 = router
+        .sendToAll(await =
+          false
+        ) //make sure the routees are still busy after the first batch of messages get processed.
 
       val before = LocalDateTime.now
-      resizer.reportMessageCount(
-        router.routees,
-        router.msgs.size
-      ) //updates the records
+      resizer
+        .reportMessageCount(
+          router.routees,
+          router.msgs.size
+        ) //updates the records
 
       msgs1.foreach(_.second.open()) //process two messages
 
@@ -394,11 +398,8 @@ class MetricsBasedResizerSpec
   "MetricsBasedResizer" must {
 
     def poolSize(router: ActorRef): Int =
-      Await
-        .result(router ? GetRoutees, timeout.duration)
-        .asInstanceOf[Routees]
-        .routees
-        .size
+      Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[Routees]
+        .routees.size
 
     "start with lowerbound pool size" in {
 

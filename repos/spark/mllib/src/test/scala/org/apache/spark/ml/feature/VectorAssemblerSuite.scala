@@ -69,18 +69,15 @@ class VectorAssemblerSuite
   }
 
   test("VectorAssembler") {
-    val df = sqlContext
-      .createDataFrame(Seq((
-        0,
-        0.0,
-        Vectors.dense(1.0, 2.0),
-        "a",
-        Vectors.sparse(2, Array(1), Array(3.0)),
-        10L)))
-      .toDF("id", "x", "y", "name", "z", "n")
+    val df = sqlContext.createDataFrame(Seq((
+      0,
+      0.0,
+      Vectors.dense(1.0, 2.0),
+      "a",
+      Vectors.sparse(2, Array(1), Array(3.0)),
+      10L))).toDF("id", "x", "y", "name", "z", "n")
     val assembler = new VectorAssembler()
-      .setInputCols(Array("x", "y", "z", "n"))
-      .setOutputCol("features")
+      .setInputCols(Array("x", "y", "z", "n")).setOutputCol("features")
     assembler.transform(df).select("features").collect().foreach {
       case Row(v: Vector) =>
         assert(
@@ -90,28 +87,24 @@ class VectorAssemblerSuite
   }
 
   test("transform should throw an exception in case of unsupported type") {
-    val df = sqlContext
-      .createDataFrame(Seq(("a", "b", "c")))
+    val df = sqlContext.createDataFrame(Seq(("a", "b", "c")))
       .toDF("a", "b", "c")
-    val assembler = new VectorAssembler()
-      .setInputCols(Array("a", "b", "c"))
+    val assembler = new VectorAssembler().setInputCols(Array("a", "b", "c"))
       .setOutputCol("features")
     val thrown = intercept[SparkException] { assembler.transform(df) }
     assert(
-      thrown.getMessage contains "VectorAssembler does not support the StringType type")
+      thrown
+        .getMessage contains "VectorAssembler does not support the StringType type")
   }
 
   test("ML attributes") {
-    val browser = NominalAttribute.defaultAttr.withValues(
-      "chrome",
-      "firefox",
-      "safari")
+    val browser = NominalAttribute.defaultAttr
+      .withValues("chrome", "firefox", "safari")
     val hour = NumericAttribute.defaultAttr.withMin(0.0).withMax(24.0)
     val user = new AttributeGroup(
       "user",
       Array(
-        NominalAttribute.defaultAttr
-          .withName("gender")
+        NominalAttribute.defaultAttr.withName("gender")
           .withValues("male", "female"),
         NumericAttribute.defaultAttr.withName("salary")))
     val row = (
@@ -120,10 +113,8 @@ class VectorAssemblerSuite
       1,
       Vectors.dense(1.0, 1000.0),
       Vectors.sparse(2, Array(1), Array(2.0)))
-    val df = sqlContext
-      .createDataFrame(Seq(row))
-      .toDF("browser", "hour", "count", "user", "ad")
-      .select(
+    val df = sqlContext.createDataFrame(Seq(row))
+      .toDF("browser", "hour", "count", "user", "ad").select(
         col("browser").as("browser", browser.toMetadata()),
         col("hour").as("hour", hour.toMetadata()),
         col("count"), // "count" is an integer column without ML attribute
@@ -146,23 +137,17 @@ class VectorAssemblerSuite
       countOut === NumericAttribute.defaultAttr.withName("count").withIndex(2))
     val userGenderOut = features.getAttr(3)
     assert(
-      userGenderOut === user
-        .getAttr("gender")
-        .withName("user_gender")
+      userGenderOut === user.getAttr("gender").withName("user_gender")
         .withIndex(3))
     val userSalaryOut = features.getAttr(4)
     assert(
-      userSalaryOut === user
-        .getAttr("salary")
-        .withName("user_salary")
+      userSalaryOut === user.getAttr("salary").withName("user_salary")
         .withIndex(4))
     assert(
-      features.getAttr(5) === NumericAttribute.defaultAttr
-        .withIndex(5)
+      features.getAttr(5) === NumericAttribute.defaultAttr.withIndex(5)
         .withName("ad_0"))
     assert(
-      features.getAttr(6) === NumericAttribute.defaultAttr
-        .withIndex(6)
+      features.getAttr(6) === NumericAttribute.defaultAttr.withIndex(6)
         .withName("ad_1"))
   }
 

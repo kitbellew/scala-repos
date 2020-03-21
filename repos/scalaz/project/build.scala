@@ -68,8 +68,8 @@ object build extends Build {
     isJSProject := true,
     scalacOptions += {
       val a = (baseDirectory in LocalRootProject).value.toURI.toString
-      val g =
-        "https://raw.githubusercontent.com/scalaz/scalaz/" + tagOrHash.value
+      val g = "https://raw.githubusercontent.com/scalaz/scalaz/" + tagOrHash
+        .value
       s"-P:scalajs:mapSourceURI:$a->$g/"
     }
   )
@@ -127,7 +127,8 @@ object build extends Build {
         "-sourcepath",
         base,
         "-doc-source-url",
-        "https://github.com/scalaz/scalaz/tree/" + tagOrHash.value + "€{FILE_PATH}.scala")
+        "https://github.com/scalaz/scalaz/tree/" + tagOrHash
+          .value + "€{FILE_PATH}.scala")
     },
     // retronym: I was seeing intermittent heap exhaustion in scalacheck based tests, so opting for determinism.
     parallelExecution in Test := false,
@@ -139,7 +140,8 @@ object build extends Build {
         }
       Tests.Argument(TestFrameworks.ScalaCheck, scalacheckOptions: _*)
     },
-    isJSProject := isJSProject.?.value.getOrElse(false),
+    isJSProject := isJSProject
+      .?.value.getOrElse(false),
     genTypeClasses := {
       typeClasses.value.flatMap { tc =>
         val dir = name.value match {
@@ -153,22 +155,16 @@ object build extends Build {
     checkGenTypeClasses <<= genTypeClasses.map { classes =>
       if (classes.exists(_._1 != FileStatus.NoChange))
         sys.error(
-          classes
-            .groupBy(_._1)
-            .filterKeys(_ != FileStatus.NoChange)
-            .mapValues(_.map(_._2))
-            .toString)
+          classes.groupBy(_._1).filterKeys(_ != FileStatus.NoChange)
+            .mapValues(_.map(_._2)).toString)
     },
     typeClasses := Seq(),
     genToSyntax <<= typeClasses map { (tcs: Seq[TypeClass]) =>
-      val objects = tcs
-        .map(tc =>
-          "object %s extends To%sSyntax"
-            .format(Util.initLower(tc.name), tc.name))
+      val objects = tcs.map(tc =>
+        "object %s extends To%sSyntax".format(Util.initLower(tc.name), tc.name))
         .mkString("\n")
       val all = "object all extends " + tcs
-        .map(tc => "To%sSyntax".format(tc.name))
-        .mkString(" with ")
+        .map(tc => "To%sSyntax".format(tc.name)).mkString(" with ")
       objects + "\n\n" + all
     },
     typeClassTree <<= typeClasses map { tcs => tcs.map(_.doc).mkString("\n") },
@@ -270,17 +266,13 @@ object build extends Build {
   )
 
   lazy val rootJS = Project("rootJS", file("rootJS"))
-    .settings(standardSettings, notPublish)
-    .aggregate(jsProjects: _*)
+    .settings(standardSettings, notPublish).aggregate(jsProjects: _*)
 
   lazy val rootJVM = Project("rootJVM", file("rootJVM"))
-    .settings(standardSettings, notPublish)
-    .aggregate(jvmProjects: _*)
+    .settings(standardSettings, notPublish).aggregate(jvmProjects: _*)
 
-  lazy val core = crossProject
-    .crossType(ScalazCrossType)
-    .settings(standardSettings: _*)
-    .settings(
+  lazy val core = crossProject.crossType(ScalazCrossType)
+    .settings(standardSettings: _*).settings(
       name := "scalaz-core",
       sourceGenerators in Compile <+= (sourceManaged in Compile) map { dir =>
         Seq(GenerateTupleW(dir), TupleNInstances(dir))
@@ -290,9 +282,7 @@ object build extends Build {
       buildInfoObject := "ScalazBuildInfo",
       osgiExport("scalaz"),
       OsgiKeys.importPackage := Seq("javax.swing;resolution:=optional", "*")
-    )
-    .enablePlugins(sbtbuildinfo.BuildInfoPlugin)
-    .jsSettings(
+    ).enablePlugins(sbtbuildinfo.BuildInfoPlugin).jsSettings(
       scalajsProjectSettings ++ Seq(
         libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.1.0"): _*)
     .jvmSettings(
@@ -300,8 +290,7 @@ object build extends Build {
         .condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
           case Some((2, 11)) =>
             "org.scala-lang.modules" %% "scala-java8-compat" % "0.7.0"
-        }
-        .toList,
+        }.toList,
       typeClasses := TypeClass.core
     )
 
@@ -322,25 +311,20 @@ object build extends Build {
     dependencies = Seq(coreJVM, effectJVM)
   )
 
-  lazy val effect = crossProject
-    .crossType(ScalazCrossType)
-    .settings(standardSettings: _*)
-    .settings(
+  lazy val effect = crossProject.crossType(ScalazCrossType)
+    .settings(standardSettings: _*).settings(
       name := "scalaz-effect",
       osgiExport("scalaz.effect", "scalaz.std.effect", "scalaz.syntax.effect"))
-    .dependsOn(core)
-    .jsSettings(scalajsProjectSettings: _*)
+    .dependsOn(core).jsSettings(scalajsProjectSettings: _*)
     .jvmSettings(typeClasses := TypeClass.effect)
 
   lazy val effectJVM = effect.jvm
   lazy val effectJS = effect.js
 
-  lazy val iteratee = crossProject
-    .crossType(ScalazCrossType)
+  lazy val iteratee = crossProject.crossType(ScalazCrossType)
     .settings(standardSettings: _*)
     .settings(name := "scalaz-iteratee", osgiExport("scalaz.iteratee"))
-    .dependsOn(core, effect)
-    .jsSettings(scalajsProjectSettings: _*)
+    .dependsOn(core, effect).jsSettings(scalajsProjectSettings: _*)
 
   lazy val iterateeJVM = iteratee.jvm
   lazy val iterateeJS = iteratee.js
@@ -357,29 +341,23 @@ object build extends Build {
   lazy val scalacheckBinding = CrossProject(
     "scalacheck-binding",
     file("scalacheck-binding"),
-    ScalazCrossType)
-    .settings(standardSettings: _*)
-    .settings(
-      name := "scalaz-scalacheck-binding",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion.value,
-      osgiExport("scalaz.scalacheck"))
-    .dependsOn(core, iteratee)
-    .jvmConfigure(_ dependsOn concurrent)
-    .jsSettings(scalajsProjectSettings: _*)
+    ScalazCrossType).settings(standardSettings: _*).settings(
+    name := "scalaz-scalacheck-binding",
+    libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion
+      .value,
+    osgiExport("scalaz.scalacheck")).dependsOn(core, iteratee)
+    .jvmConfigure(_ dependsOn concurrent).jsSettings(scalajsProjectSettings: _*)
 
   lazy val scalacheckBindingJVM = scalacheckBinding.jvm
   lazy val scalacheckBindingJS = scalacheckBinding.js
 
-  lazy val tests = crossProject
-    .crossType(ScalazCrossType)
-    .settings(standardSettings: _*)
-    .settings(
-      name := "scalaz-tests",
-      publishArtifact := false,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion.value % "test")
-    .dependsOn(core, effect, iteratee, scalacheckBinding)
-    .jvmConfigure(_ dependsOn concurrent)
-    .jsSettings(scalajsProjectSettings: _*)
+  lazy val tests = crossProject.crossType(ScalazCrossType).settings(
+    standardSettings: _*).settings(
+    name := "scalaz-tests",
+    publishArtifact := false,
+    libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion
+      .value % "test").dependsOn(core, effect, iteratee, scalacheckBinding)
+    .jvmConfigure(_ dependsOn concurrent).jsSettings(scalajsProjectSettings: _*)
     .jsSettings(jsEnv := NodeJSEnv().value, scalaJSUseRhino in Global := false)
 
   lazy val testsJVM = tests.jvm
@@ -393,9 +371,8 @@ object build extends Build {
   }
 
   lazy val credentialsSetting = credentials += {
-    Seq(
-      "build.publish.user",
-      "build.publish.password") map sys.props.get match {
+    Seq("build.publish.user", "build.publish.password") map sys.props
+      .get match {
       case Seq(Some(user), Some(pass)) =>
         Credentials(
           "Sonatype Nexus Repository Manager",

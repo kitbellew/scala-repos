@@ -94,10 +94,8 @@ class AdminClient(
     val responseBody = send(node, ApiKeys.LIST_GROUPS, new ListGroupsRequest())
     val response = new ListGroupsResponse(responseBody)
     Errors.forCode(response.errorCode()).maybeThrow()
-    response
-      .groups()
-      .map(group => GroupOverview(group.groupId(), group.protocolType()))
-      .toList
+    response.groups()
+      .map(group => GroupOverview(group.groupId(), group.protocolType())).toList
   }
 
   private def findAllBrokers(): List[Node] = {
@@ -134,8 +132,8 @@ class AdminClient(
   }
 
   def listAllConsumerGroupsFlattened(): List[GroupOverview] = {
-    listAllGroupsFlattened.filter(
-      _.protocolType == ConsumerProtocol.PROTOCOL_TYPE)
+    listAllGroupsFlattened
+      .filter(_.protocolType == ConsumerProtocol.PROTOCOL_TYPE)
   }
 
   def describeGroup(groupId: String): GroupSummary = {
@@ -151,19 +149,16 @@ class AdminClient(
         s"Response from broker contained no metadata for group ${groupId}")
 
     Errors.forCode(metadata.errorCode()).maybeThrow()
-    val members = metadata
-      .members()
-      .map { member =>
-        val metadata = Utils.readBytes(member.memberMetadata())
-        val assignment = Utils.readBytes(member.memberAssignment())
-        MemberSummary(
-          member.memberId(),
-          member.clientId(),
-          member.clientHost(),
-          metadata,
-          assignment)
-      }
-      .toList
+    val members = metadata.members().map { member =>
+      val metadata = Utils.readBytes(member.memberMetadata())
+      val assignment = Utils.readBytes(member.memberAssignment())
+      MemberSummary(
+        member.memberId(),
+        member.clientId(),
+        member.clientHost(),
+        metadata,
+        assignment)
+    }.toList
     GroupSummary(
       metadata.state(),
       metadata.protocolType(),
@@ -187,8 +182,8 @@ class AdminClient(
 
     if (group.state == "Stable") {
       group.members.map { member =>
-        val assignment = ConsumerProtocol.deserializeAssignment(
-          ByteBuffer.wrap(member.assignment))
+        val assignment = ConsumerProtocol
+          .deserializeAssignment(ByteBuffer.wrap(member.assignment))
         new ConsumerSummary(
           member.memberId,
           member.clientId,
@@ -212,21 +207,17 @@ object AdminClient {
   val DefaultRetryBackoffMs = 100
   val AdminClientIdSequence = new AtomicInteger(1)
   val AdminConfigDef = {
-    val config = new ConfigDef()
-      .define(
-        CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG,
-        Type.LIST,
-        Importance.HIGH,
-        CommonClientConfigs.BOOSTRAP_SERVERS_DOC)
-      .define(
-        CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,
-        ConfigDef.Type.STRING,
-        CommonClientConfigs.DEFAULT_SECURITY_PROTOCOL,
-        ConfigDef.Importance.MEDIUM,
-        CommonClientConfigs.SECURITY_PROTOCOL_DOC
-      )
-      .withClientSslSupport()
-      .withClientSaslSupport()
+    val config = new ConfigDef().define(
+      CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG,
+      Type.LIST,
+      Importance.HIGH,
+      CommonClientConfigs.BOOSTRAP_SERVERS_DOC).define(
+      CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,
+      ConfigDef.Type.STRING,
+      CommonClientConfigs.DEFAULT_SECURITY_PROTOCOL,
+      ConfigDef.Importance.MEDIUM,
+      CommonClientConfigs.SECURITY_PROTOCOL_DOC
+    ).withClientSslSupport().withClientSaslSupport()
     config
   }
 
@@ -249,8 +240,8 @@ object AdminClient {
     val metadata = new Metadata
     val channelBuilder = ClientUtils.createChannelBuilder(config.values())
 
-    val brokerUrls = config.getList(
-      CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG)
+    val brokerUrls = config
+      .getList(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG)
     val brokerAddresses = ClientUtils.parseAndValidateAddresses(brokerUrls)
     val bootstrapCluster = Cluster.bootstrap(brokerAddresses)
     metadata.update(bootstrapCluster, 0)

@@ -106,11 +106,8 @@ private[history] class ApplicationCache(
     * Tagged as `protected` so as to allow subclasses in tests to access it directly
     */
   protected val appCache: LoadingCache[CacheKey, CacheEntry] = {
-    CacheBuilder
-      .newBuilder()
-      .maximumSize(retainedApplications)
-      .removalListener(removalListener)
-      .build(appLoader)
+    CacheBuilder.newBuilder().maximumSize(retainedApplications)
+      .removalListener(removalListener).build(appLoader)
   }
 
   /**
@@ -299,17 +296,15 @@ private[history] class ApplicationCache(
     time(metrics.loadTimer) {
       operations.getAppUI(appId, attemptId) match {
         case Some(LoadedAppUI(ui, updateState)) =>
-          val completed = ui.getApplicationInfoList.exists(
-            _.attempts.last.completed)
+          val completed = ui.getApplicationInfoList
+            .exists(_.attempts.last.completed)
           if (completed) {
             // completed spark UIs are attached directly
             operations.attachSparkUI(appId, attemptId, ui, completed)
           } else {
             // incomplete UIs have the cache-check filter put in front of them.
-            ApplicationCacheCheckFilterRelay.registerFilter(
-              ui,
-              appId,
-              attemptId)
+            ApplicationCacheCheckFilterRelay
+              .registerFilter(ui, appId, attemptId)
             operations.attachSparkUI(appId, attemptId, ui, completed)
           }
           // build the cache entry
@@ -323,8 +318,7 @@ private[history] class ApplicationCache(
           logInfo(s"Failed to load application attempt $appId/$attemptId")
           throw new NoSuchElementException(
             s"no application with application Id '$appId'" +
-              attemptId
-                .map { id => s" attemptId '$id'" }
+              attemptId.map { id => s" attemptId '$id'" }
                 .getOrElse(" and no attempt Id"))
       }
     }
@@ -470,8 +464,8 @@ private[history] class CacheMetrics(prefix: String) extends Source {
   override def toString: String = {
     val sb = new StringBuilder()
     counters.foreach {
-      case (name, counter) =>
-        sb.append(name).append(" = ").append(counter.getCount).append('\n')
+      case (name, counter) => sb.append(name).append(" = ")
+          .append(counter.getCount).append('\n')
     }
     sb.toString()
   }
@@ -587,8 +581,7 @@ private[history] class ApplicationCacheCheckFilter()
       // send a redirect back to the same location. This will be routed
       // to the *new* UI
       logInfo(s"Application Attempt $appId/$attemptId updated; refreshing")
-      val queryStr = Option(httpRequest.getQueryString)
-        .map("?" + _)
+      val queryStr = Option(httpRequest.getQueryString).map("?" + _)
         .getOrElse("")
       val redirectUrl = httpResponse.encodeRedirectURL(requestURI + queryStr)
       httpResponse.sendRedirect(redirectUrl)
@@ -642,8 +635,8 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
     * @param cache new cache
     */
   def setApplicationCache(cache: ApplicationCache): Unit = {
-    applicationCache.foreach(c =>
-      logWarning(s"Overwriting application cache $c"))
+    applicationCache
+      .foreach(c => logWarning(s"Overwriting application cache $c"))
     applicationCache = Some(cache)
   }
 

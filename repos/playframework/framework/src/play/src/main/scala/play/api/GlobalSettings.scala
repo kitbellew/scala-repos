@@ -183,10 +183,8 @@ trait GlobalSettings {
     * @return the result to send to the client
     */
   def onBadRequest(request: RequestHeader, error: String): Future[Result] =
-    defaultErrorHandler.onClientError(
-      request,
-      play.api.http.Status.BAD_REQUEST,
-      error)
+    defaultErrorHandler
+      .onClientError(request, play.api.http.Status.BAD_REQUEST, error)
 }
 
 /**
@@ -209,16 +207,13 @@ object GlobalSettings {
   def apply(
       configuration: Configuration,
       environment: Environment): GlobalSettings.Deprecated = {
-    val globalClass = configuration
-      .getString("application.global")
+    val globalClass = configuration.getString("application.global")
       .getOrElse("Global")
 
     def javaGlobal: Option[play.GlobalSettings] =
       try {
         Option(
-          environment.classLoader
-            .loadClass(globalClass)
-            .newInstance()
+          environment.classLoader.loadClass(globalClass).newInstance()
             .asInstanceOf[play.GlobalSettings])
       } catch {
         case e: InstantiationException => None
@@ -227,11 +222,8 @@ object GlobalSettings {
 
     def scalaGlobal: GlobalSettings =
       try {
-        environment.classLoader
-          .loadClass(globalClass + "$")
-          .getDeclaredField("MODULE$")
-          .get(null)
-          .asInstanceOf[GlobalSettings]
+        environment.classLoader.loadClass(globalClass + "$")
+          .getDeclaredField("MODULE$").get(null).asInstanceOf[GlobalSettings]
       } catch {
         case e: ClassNotFoundException
             if !configuration.getString("application.global").isDefined =>

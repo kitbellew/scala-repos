@@ -30,11 +30,10 @@ class ScalaDelegateToJavaMethodTest extends JavaCodeInsightFixtureTestCase {
     def clean(s: String): String = s.replace("\r", "").stripMargin.trim
 
     myFixture.addFileToProject("JavaClass.java", clean(javaText))
-    val scalaFile = myFixture.configureByText(
-      "ScalaDummy.scala",
-      clean(scalaText))
-    val oldSpecifyType =
-      ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY
+    val scalaFile = myFixture
+      .configureByText("ScalaDummy.scala", clean(scalaText))
+    val oldSpecifyType = ScalaApplicationSettings.getInstance
+      .SPECIFY_RETURN_TYPE_EXPLICITLY
     ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
       specifyRetType
     new ScalaGenerateDelegateHandler()

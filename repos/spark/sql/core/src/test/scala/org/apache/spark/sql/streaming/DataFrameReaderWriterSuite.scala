@@ -74,35 +74,22 @@ class DataFrameReaderWriterSuite
   after { sqlContext.streams.active.foreach(_.stop()) }
 
   test("resolve default source") {
-    sqlContext.read
-      .format("org.apache.spark.sql.streaming.test")
-      .stream()
-      .write
-      .format("org.apache.spark.sql.streaming.test")
-      .startStream()
-      .stop()
+    sqlContext.read.format("org.apache.spark.sql.streaming.test").stream().write
+      .format("org.apache.spark.sql.streaming.test").startStream().stop()
   }
 
   test("resolve full class") {
-    sqlContext.read
-      .format("org.apache.spark.sql.streaming.test.DefaultSource")
-      .stream()
-      .write
-      .format("org.apache.spark.sql.streaming.test")
-      .startStream()
-      .stop()
+    sqlContext.read.format("org.apache.spark.sql.streaming.test.DefaultSource")
+      .stream().write.format("org.apache.spark.sql.streaming.test")
+      .startStream().stop()
   }
 
   test("options") {
     val map = new java.util.HashMap[String, String]
     map.put("opt3", "3")
 
-    val df = sqlContext.read
-      .format("org.apache.spark.sql.streaming.test")
-      .option("opt1", "1")
-      .options(Map("opt2" -> "2"))
-      .options(map)
-      .stream()
+    val df = sqlContext.read.format("org.apache.spark.sql.streaming.test")
+      .option("opt1", "1").options(Map("opt2" -> "2")).options(map).stream()
 
     assert(LastOptions.parameters("opt1") == "1")
     assert(LastOptions.parameters("opt2") == "2")
@@ -110,13 +97,8 @@ class DataFrameReaderWriterSuite
 
     LastOptions.parameters = null
 
-    df.write
-      .format("org.apache.spark.sql.streaming.test")
-      .option("opt1", "1")
-      .options(Map("opt2" -> "2"))
-      .options(map)
-      .startStream()
-      .stop()
+    df.write.format("org.apache.spark.sql.streaming.test").option("opt1", "1")
+      .options(Map("opt2" -> "2")).options(map).startStream().stop()
 
     assert(LastOptions.parameters("opt1") == "1")
     assert(LastOptions.parameters("opt2") == "2")
@@ -124,64 +106,45 @@ class DataFrameReaderWriterSuite
   }
 
   test("partitioning") {
-    val df = sqlContext.read
-      .format("org.apache.spark.sql.streaming.test")
+    val df = sqlContext.read.format("org.apache.spark.sql.streaming.test")
       .stream()
 
-    df.write
-      .format("org.apache.spark.sql.streaming.test")
-      .startStream()
-      .stop()
+    df.write.format("org.apache.spark.sql.streaming.test").startStream().stop()
     assert(LastOptions.partitionColumns == Nil)
 
-    df.write
-      .format("org.apache.spark.sql.streaming.test")
-      .partitionBy("a")
-      .startStream()
-      .stop()
+    df.write.format("org.apache.spark.sql.streaming.test").partitionBy("a")
+      .startStream().stop()
     assert(LastOptions.partitionColumns == Seq("a"))
 
     withSQLConf("spark.sql.caseSensitive" -> "false") {
-      df.write
-        .format("org.apache.spark.sql.streaming.test")
-        .partitionBy("A")
-        .startStream()
-        .stop()
+      df.write.format("org.apache.spark.sql.streaming.test").partitionBy("A")
+        .startStream().stop()
       assert(LastOptions.partitionColumns == Seq("a"))
     }
 
     intercept[AnalysisException] {
-      df.write
-        .format("org.apache.spark.sql.streaming.test")
-        .partitionBy("b")
-        .startStream()
-        .stop()
+      df.write.format("org.apache.spark.sql.streaming.test").partitionBy("b")
+        .startStream().stop()
     }
   }
 
   test("stream paths") {
-    val df = sqlContext.read
-      .format("org.apache.spark.sql.streaming.test")
+    val df = sqlContext.read.format("org.apache.spark.sql.streaming.test")
       .stream("/test")
 
     assert(LastOptions.parameters("path") == "/test")
 
     LastOptions.parameters = null
 
-    df.write
-      .format("org.apache.spark.sql.streaming.test")
-      .startStream("/test")
+    df.write.format("org.apache.spark.sql.streaming.test").startStream("/test")
       .stop()
 
     assert(LastOptions.parameters("path") == "/test")
   }
 
   test("test different data types for options") {
-    val df = sqlContext.read
-      .format("org.apache.spark.sql.streaming.test")
-      .option("intOpt", 56)
-      .option("boolOpt", false)
-      .option("doubleOpt", 6.7)
+    val df = sqlContext.read.format("org.apache.spark.sql.streaming.test")
+      .option("intOpt", 56).option("boolOpt", false).option("doubleOpt", 6.7)
       .stream("/test")
 
     assert(LastOptions.parameters("intOpt") == "56")
@@ -189,12 +152,8 @@ class DataFrameReaderWriterSuite
     assert(LastOptions.parameters("doubleOpt") == "6.7")
 
     LastOptions.parameters = null
-    df.write
-      .format("org.apache.spark.sql.streaming.test")
-      .option("intOpt", 56)
-      .option("boolOpt", false)
-      .option("doubleOpt", 6.7)
-      .startStream("/test")
+    df.write.format("org.apache.spark.sql.streaming.test").option("intOpt", 56)
+      .option("boolOpt", false).option("doubleOpt", 6.7).startStream("/test")
       .stop()
 
     assert(LastOptions.parameters("intOpt") == "56")
@@ -206,22 +165,15 @@ class DataFrameReaderWriterSuite
 
     /** Start a query with a specific name */
     def startQueryWithName(name: String = ""): ContinuousQuery = {
-      sqlContext.read
-        .format("org.apache.spark.sql.streaming.test")
-        .stream("/test")
-        .write
-        .format("org.apache.spark.sql.streaming.test")
-        .queryName(name)
-        .startStream()
+      sqlContext.read.format("org.apache.spark.sql.streaming.test")
+        .stream("/test").write.format("org.apache.spark.sql.streaming.test")
+        .queryName(name).startStream()
     }
 
     /** Start a query without specifying a name */
     def startQueryWithoutName(): ContinuousQuery = {
-      sqlContext.read
-        .format("org.apache.spark.sql.streaming.test")
-        .stream("/test")
-        .write
-        .format("org.apache.spark.sql.streaming.test")
+      sqlContext.read.format("org.apache.spark.sql.streaming.test")
+        .stream("/test").write.format("org.apache.spark.sql.streaming.test")
         .startStream()
     }
 

@@ -69,8 +69,7 @@ object Test {
         })
     println(
       "Numeric Int agrees with Range: " +
-        (numericIntRanges zip ranges).forall {
-          case (ir, r) => ir.sum == r.sum
-        })
+        (numericIntRanges zip ranges)
+          .forall { case (ir, r) => ir.sum == r.sum })
   }
 }

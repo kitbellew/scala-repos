@@ -155,9 +155,10 @@ abstract class Flatten extends InfoTransform {
               val ref = gen.mkAttributedRef(sym)
               if (isQualifierSafeToElide(qual)) ref
               else
-                Block(List(qual), ref).setType(
-                  tree.tpe
-                ) // need to execute the qualifier but refer directly to the lifted module.
+                Block(List(qual), ref)
+                  .setType(
+                    tree.tpe
+                  ) // need to execute the qualifier but refer directly to the lifted module.
             }
           }
         case _ => tree

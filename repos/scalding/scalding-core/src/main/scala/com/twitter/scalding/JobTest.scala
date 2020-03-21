@@ -32,9 +32,7 @@ object JobTest {
   def apply(cons: (Args) => Job) = { new JobTest(cons) }
   def apply[T <: Job: Manifest] = {
     val cons = { (args: Args) =>
-      manifest[T].runtimeClass
-        .getConstructor(classOf[Args])
-        .newInstance(args)
+      manifest[T].runtimeClass.getConstructor(classOf[Args]).newInstance(args)
         .asInstanceOf[Job]
     }
     new JobTest(cons)
@@ -213,9 +211,8 @@ class JobTest(cons: (Args) => Job) {
     System.setProperty("cascading.update.skip", "true")
 
     // create cascading 3.0 planner trace files during tests
-    if (System.getenv.asScala.getOrElse(
-          "SCALDING_CASCADING3_DEBUG",
-          "0") == "1") {
+    if (System.getenv.asScala
+          .getOrElse("SCALDING_CASCADING3_DEBUG", "0") == "1") {
       System.setProperty(
         "cascading.planner.plan.path",
         "target/test/cascading/traceplan/" + job.name)

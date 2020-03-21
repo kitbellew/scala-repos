@@ -61,8 +61,8 @@ class LoggingReceive(source: Option[AnyRef], r: Receive, label: Option[String])(
   def isDefinedAt(o: Any): Boolean = {
     val handled = r.isDefinedAt(o)
     if (context.system.eventStream.logLevel >= Logging.DebugLevel) {
-      val (str, clazz) = LogSource.fromAnyRef(
-        source getOrElse context.asInstanceOf[ActorCell].actor)
+      val (str, clazz) = LogSource
+        .fromAnyRef(source getOrElse context.asInstanceOf[ActorCell].actor)
       context.system.eventStream.publish(Debug(
         str,
         clazz,

@@ -95,8 +95,7 @@ object WSClientAutobahnTest extends App {
   def getCaseMap(): Future[Map[String, IndexedCaseInfo]] = {
     val res = getCaseCount().flatMap { count ⇒
       println(s"Retrieving case info for $count cases...")
-      Future
-        .traverse(1 to count)(getCaseInfo)
+      Future.traverse(1 to count)(getCaseInfo)
         .map(_.map(e ⇒ e.caseInfo.id -> e).toMap)
     }
     res.foreach { res ⇒ println(s"Received info for ${res.size} cases") }
@@ -110,51 +109,44 @@ object WSClientAutobahnTest extends App {
     // run one
     val testId = args(0)
     println(s"Trying to run test $testId")
-    getCaseMap()
-      .flatMap { map ⇒
-        val info = map(testId)
-        richRunCase(info.index)
-      }
-      .onComplete {
-        case Success(res) ⇒
-          println(s"[OK] Run successfully finished!")
-          updateReportsAndShutdown()
-        case Failure(e) ⇒
-          println(s"[${RED}FAILED$RESET] Run failed with this exception: ")
-          e.printStackTrace()
-          updateReportsAndShutdown()
-      }
+    getCaseMap().flatMap { map ⇒
+      val info = map(testId)
+      richRunCase(info.index)
+    }.onComplete {
+      case Success(res) ⇒
+        println(s"[OK] Run successfully finished!")
+        updateReportsAndShutdown()
+      case Failure(e) ⇒
+        println(s"[${RED}FAILED$RESET] Run failed with this exception: ")
+        e.printStackTrace()
+        updateReportsAndShutdown()
+    }
   } else {
     println("Running complete test suite")
-    getCaseCount()
-      .flatMap { count ⇒
-        println(s"Found $count tests.")
-        Source(1 to count)
-          .mapAsyncUnordered(Parallelism)(richRunCase(_))
-          .grouped(count)
-          .runWith(Sink.head)
-      }
-      .map { results ⇒
-        val grouped = results.groupBy(_.status.behavior)
+    getCaseCount().flatMap { count ⇒
+      println(s"Found $count tests.")
+      Source(1 to count).mapAsyncUnordered(Parallelism)(richRunCase(_))
+        .grouped(count).runWith(Sink.head)
+    }.map { results ⇒
+      val grouped = results.groupBy(_.status.behavior)
 
-        println(s"${results.size} tests run.")
-        println()
-        println(s"${GREEN}OK$RESET: ${grouped.getOrElse("OK", Nil).size}")
-        val notOk = grouped.filterNot(_._1 == "OK")
-        notOk.toSeq.sortBy(_._2.size).foreach {
-          case (status, cases) ⇒ println(s"$RED$status$RESET: ${cases.size}")
-        }
-        println()
-        println("Not OK tests: ")
-        println()
-        results.filterNot(_.status.behavior == "OK").foreach { r ⇒
-          println(
-            f"$RED${r.status.behavior}%-20s$RESET $YELLOW${r.info.id}%-7s$RESET - $RESET${r.info.description}")
-        }
-
-        ()
+      println(s"${results.size} tests run.")
+      println()
+      println(s"${GREEN}OK$RESET: ${grouped.getOrElse("OK", Nil).size}")
+      val notOk = grouped.filterNot(_._1 == "OK")
+      notOk.toSeq.sortBy(_._2.size).foreach {
+        case (status, cases) ⇒ println(s"$RED$status$RESET: ${cases.size}")
       }
-      .onComplete(completion)
+      println()
+      println("Not OK tests: ")
+      println()
+      results.filterNot(_.status.behavior == "OK").foreach { r ⇒
+        println(f"$RED${r.status.behavior}%-20s$RESET $YELLOW${r.info
+          .id}%-7s$RESET - $RESET${r.info.description}")
+      }
+
+      ()
+    }.onComplete(completion)
   }
 
   def completion[T]: Try[T] ⇒ Unit = {

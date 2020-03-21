@@ -119,11 +119,8 @@ private[forum] final class TopicApi(
     TopicRepo.hide(topic.id, topic.visibleOnHome) >> {
       MasterGranter(_.ModerateForum)(mod) ?? {
         PostRepo.hideByTopic(topic.id, topic.visibleOnHome) zip
-          modLog.toggleHideTopic(
-            mod,
-            categ.name,
-            topic.name,
-            topic.visibleOnHome)
+          modLog
+            .toggleHideTopic(mod, categ.name, topic.name, topic.visibleOnHome)
       } >> env.recent.invalidate
     }
 

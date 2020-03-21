@@ -21,8 +21,7 @@ case class Info(
       best ?? (_.keysPiotr),
       variation take Info.LineMaxPlies mkString " ",
       mate ?? (_.toString),
-      score ?? (_.centipawns.toString))
-      .dropWhile(_.isEmpty)
+      score ?? (_.centipawns.toString)).dropWhile(_.isEmpty)
       .reverse mkString Info.separator
 
   def hasVariation = variation.nonEmpty

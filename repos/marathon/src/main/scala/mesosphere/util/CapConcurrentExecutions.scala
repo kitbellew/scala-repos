@@ -67,10 +67,8 @@ class CapConcurrentExecutions private (
   import CapConcurrentExecutions.log
 
   private[util] val serializeExecutionActorRef = {
-    val serializeExecutionActorProps = RestrictParallelExecutionsActor.props(
-      metrics,
-      maxParallel = maxParallel,
-      maxQueued = maxQueued)
+    val serializeExecutionActorProps = RestrictParallelExecutionsActor
+      .props(metrics, maxParallel = maxParallel, maxQueued = maxQueued)
     actorRefFactory.actorOf(serializeExecutionActorProps, actorName)
   }
 
@@ -79,9 +77,8 @@ class CapConcurrentExecutions private (
     */
   def apply[T](block: => Future[T]): Future[T] = {
     val promise = Promise[T]()
-    serializeExecutionActorRef ! RestrictParallelExecutionsActor.Execute(
-      promise,
-      () => block)
+    serializeExecutionActorRef ! RestrictParallelExecutionsActor
+      .Execute(promise, () => block)
     promise.future
   }
 
@@ -119,8 +116,8 @@ private[util] class RestrictParallelExecutionsActor(
     metrics.reset()
 
     for (execute <- queue) {
-      execute.complete(Failure(
-        new IllegalStateException(s"$self actor stopped")))
+      execute
+        .complete(Failure(new IllegalStateException(s"$self actor stopped")))
     }
 
     queue = Queue.empty

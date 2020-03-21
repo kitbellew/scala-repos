@@ -125,13 +125,13 @@ private[remote] class FailureInjectorTransportAdapter(
       statusPromise.failure(new FailureInjectorException(
         "Simulated failure of association to " + remoteAddress))
     else
-      statusPromise.completeWith(
-        wrappedTransport.associate(remoteAddress).map { handle ⇒
+      statusPromise.completeWith(wrappedTransport.associate(remoteAddress).map {
+        handle ⇒
           addressChaosTable.putIfAbsent(
             handle.remoteAddress.copy(protocol = "", system = ""),
             PassThru)
           new FailureInjectorHandle(handle, this)
-        })
+      })
   }
 
   def notify(ev: AssociationEvent): Unit =
@@ -188,8 +188,8 @@ private[remote] class FailureInjectorTransportAdapter(
     }
 
   def chaosMode(remoteAddress: Address): GremlinMode = {
-    val mode = addressChaosTable.get(
-      remoteAddress.copy(protocol = "", system = ""))
+    val mode = addressChaosTable
+      .get(remoteAddress.copy(protocol = "", system = ""))
     if (mode eq null) PassThru else mode
   }
 }
@@ -226,9 +226,8 @@ private[remote] final case class FailureInjectorHandle(
   override def disassociate(): Unit = wrappedHandle.disassociate()
 
   override def notify(ev: HandleEvent): Unit =
-    if (!gremlinAdapter.shouldDropInbound(
-          wrappedHandle.remoteAddress,
-          ev,
-          "handler.notify")) upstreamListener notify ev
+    if (!gremlinAdapter
+          .shouldDropInbound(wrappedHandle.remoteAddress, ev, "handler.notify"))
+      upstreamListener notify ev
 
 }

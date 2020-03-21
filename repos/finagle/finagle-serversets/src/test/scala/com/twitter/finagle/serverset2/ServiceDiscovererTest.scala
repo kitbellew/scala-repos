@@ -68,10 +68,10 @@ class ServiceDiscovererTest
     val serviceInstance = new ServiceInstance()
     serviceInstance.setShard(1)
     serviceInstance.setStatus(thrift.Status.ALIVE)
-    serviceInstance.setServiceEndpoint(
-      new thrift.Endpoint(s"$id.0.0.12", 32123))
-    ByteArray.Owned(
-      ServerSets.serializeServiceInstance(serviceInstance, jsonCodec))
+    serviceInstance
+      .setServiceEndpoint(new thrift.Endpoint(s"$id.0.0.12", 32123))
+    ByteArray
+      .Owned(ServerSets.serializeServiceInstance(serviceInstance, jsonCodec))
   }
 
   test("ServiceDiscoverer.zipWithWeights") {
@@ -210,10 +210,9 @@ class ServiceDiscovererTest
     gd2.res() = Throw(new Exception)
 
     Await.result(f1, 1.second) match {
-      case Activity.Failed(
-            ServiceDiscoverer.EntryLookupFailureException
-          )      => // great!
-      case other => fail(s"Expected entry lookup exception. Received $other")
+      case Activity
+            .Failed(ServiceDiscoverer.EntryLookupFailureException) => // great!
+      case other                                                   => fail(s"Expected entry lookup exception. Received $other")
     }
   }
 
@@ -228,8 +227,7 @@ class ServiceDiscovererTest
 
       val currentValue =
         new AtomicReference[Activity.State[Seq[(Entry, Double)]]]
-      sd("/foo/bar").states
-        .filter(_ != Activity.Pending)
+      sd("/foo/bar").states.filter(_ != Activity.Pending)
         .register(Witness(currentValue))
       val cache = sd.cache
 
@@ -326,8 +324,8 @@ class ServiceDiscovererTest
     val f1 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
     val f2 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
 
-    watchedZkVar.update(
-      new ZkSession(retryStream, watchedZk, NullStatsReceiver))
+    watchedZkVar
+      .update(new ZkSession(retryStream, watchedZk, NullStatsReceiver))
 
     val ew @ ExistsWatch("/foo/bar") = watchedZk.value.opq(0)
     val ewwatchv = Var[WatchState](WatchState.Pending)

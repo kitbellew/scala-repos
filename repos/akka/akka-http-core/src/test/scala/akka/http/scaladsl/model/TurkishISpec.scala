@@ -11,8 +11,7 @@ import akka.http.impl.util._
 class TurkishISpec extends WordSpec with Matchers {
   "Model" should {
     "not suffer from turkish-i problem" in {
-      val charsetCons = Class
-        .forName("akka.http.scaladsl.model.HttpCharsets$")
+      val charsetCons = Class.forName("akka.http.scaladsl.model.HttpCharsets$")
         .getDeclaredConstructor()
       charsetCons.setAccessible(true)
 
@@ -26,8 +25,7 @@ class TurkishISpec extends WordSpec with Matchers {
         // demonstrate difference between toRootLowerCase and toLowerCase(turkishLocale)
         testString.toLowerCase should not equal (testString.toRootLowerCase)
 
-        val newCharsets = charsetCons
-          .newInstance()
+        val newCharsets = charsetCons.newInstance()
           .asInstanceOf[HttpCharsets.type]
         newCharsets.getForKey("iso-8859-1") shouldEqual Some(
           newCharsets.`ISO-8859-1`)

@@ -45,8 +45,7 @@ class ReplicatorSpec
   implicit val cluster = Cluster(system)
   val replicator = system.actorOf(
     Replicator.props(
-      ReplicatorSettings(system)
-        .withGossipInterval(1.second)
+      ReplicatorSettings(system).withGossipInterval(1.second)
         .withMaxDeltaElements(10)),
     "replicator")
   val timeout = 2.seconds.dilated
@@ -392,9 +391,8 @@ class ReplicatorSpec
           for (n ← 1 to 30) {
             val KeyDn = GCounterKey("D" + n)
             replicator ! Get(KeyDn, ReadLocal)
-            expectMsgPF() {
-              case g @ GetSuccess(KeyDn, _) ⇒ g.get(KeyDn)
-            }.value should be(n)
+            expectMsgPF() { case g @ GetSuccess(KeyDn, _) ⇒ g.get(KeyDn) }
+              .value should be(n)
           }
         }
       }

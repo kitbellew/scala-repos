@@ -207,8 +207,8 @@ object CValue {
       case (CDouble(ad), CDouble(bd))   => ad.compareTo(bd)
       case (CNum(an), CNum(bn))         => an.compare(bn)
       case (CDate(ad), CDate(bd))       => ad.compareTo(bd)
-      case (CPeriod(ad), CPeriod(bd)) =>
-        (ad.toStandardDuration).compareTo(bd.toStandardDuration)
+      case (CPeriod(ad), CPeriod(bd)) => (ad.toStandardDuration)
+          .compareTo(bd.toStandardDuration)
       case (CArray(as, CArrayType(atpe)), CArray(bs, CArrayType(btpe)))
           if atpe == btpe =>
         (as.view zip bs.view) map {

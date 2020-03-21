@@ -50,8 +50,8 @@ object FileToEvents extends Logging {
     parser.parse(args, FileToEventsArgs()) map { args =>
       // get channelId
       val channels = Storage.getMetaDataChannels
-      val channelMap =
-        channels.getByAppid(args.appId).map(c => (c.name, c.id)).toMap
+      val channelMap = channels.getByAppid(args.appId).map(c => (c.name, c.id))
+        .toMap
 
       val channelId: Option[Int] = args.channel.map { ch =>
         if (!channelMap.contains(ch)) {

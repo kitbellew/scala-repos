@@ -251,8 +251,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
   override def clone(): Decimal = new Decimal().set(this)
 
   override def compare(other: Decimal): Int = {
-    if (decimalVal.eq(null) && other.decimalVal.eq(
-          null) && _scale == other._scale) {
+    if (decimalVal.eq(null) && other.decimalVal.eq(null) && _scale == other
+          ._scale) {
       if (longVal < other.longVal) -1
       else if (longVal == other.longVal) 0
       else 1
@@ -271,8 +271,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
     if (decimalVal.ne(null)) decimalVal == BIG_DEC_ZERO else longVal == 0
 
   def +(that: Decimal): Decimal = {
-    if (decimalVal.eq(null) && that.decimalVal.eq(
-          null) && scale == that.scale) {
+    if (decimalVal.eq(null) && that.decimalVal.eq(null) && scale == that
+          .scale) {
       Decimal(
         longVal + that.longVal,
         Math.max(precision, that.precision),
@@ -281,8 +281,8 @@ final class Decimal extends Ordered[Decimal] with Serializable {
   }
 
   def -(that: Decimal): Decimal = {
-    if (decimalVal.eq(null) && that.decimalVal.eq(
-          null) && scale == that.scale) {
+    if (decimalVal.eq(null) && that.decimalVal.eq(null) && scale == that
+          .scale) {
       Decimal(
         longVal - that.longVal,
         Math.max(precision, that.precision),
@@ -346,8 +346,8 @@ object Decimal {
   /** Maximum number of decimal digits a Long can represent */
   val MAX_LONG_DIGITS = 18
 
-  private val POW_10 = Array.tabulate[Long](MAX_LONG_DIGITS + 1)(i =>
-    math.pow(10, i).toLong)
+  private val POW_10 = Array
+    .tabulate[Long](MAX_LONG_DIGITS + 1)(i => math.pow(10, i).toLong)
 
   private val BIG_DEC_ZERO = BigDecimal(0)
 

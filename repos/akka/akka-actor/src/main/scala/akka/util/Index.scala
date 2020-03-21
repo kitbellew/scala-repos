@@ -133,10 +133,11 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
       set.synchronized {
         if (set.remove(value)) { //If we can remove the value
           if (set.isEmpty) //and the set becomes empty
-            container.remove(
-              key,
-              emptySet
-            ) //We try to remove the key if it's mapped to an empty set
+            container
+              .remove(
+                key,
+                emptySet
+              ) //We try to remove the key if it's mapped to an empty set
 
           true //Remove succeeded
         } else false //Remove failed
@@ -154,10 +155,11 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
     if (set ne null) {
       set.synchronized {
         container.remove(key, set)
-        val ret = collectionAsScalaIterableConverter(
-          set
-            .clone()).asScala // Make copy since we need to clear the original
-        set.clear() // Clear the original set to signal to any pending writers that there was a conflict
+        val ret =
+          collectionAsScalaIterableConverter(set.clone())
+            .asScala // Make copy since we need to clear the original
+        set
+          .clear() // Clear the original set to signal to any pending writers that there was a conflict
         Some(ret)
       }
     } else None //Remove failed
@@ -176,10 +178,11 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
         set.synchronized {
           if (set.remove(value)) { //If we can remove the value
             if (set.isEmpty) //and the set becomes empty
-              container.remove(
-                e.getKey,
-                emptySet
-              ) //We try to remove the key if it's mapped to an empty set
+              container
+                .remove(
+                  e.getKey,
+                  emptySet
+                ) //We try to remove the key if it's mapped to an empty set
           }
         }
       }

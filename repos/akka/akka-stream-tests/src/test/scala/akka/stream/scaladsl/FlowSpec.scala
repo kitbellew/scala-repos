@@ -91,8 +91,7 @@ class FlowSpec
         materializer.asInstanceOf[ActorMaterializerImpl])
 
       val props = Props(new BrokenActorInterpreter(shell, "a3"))
-        .withDispatcher("akka.test.stream-dispatcher")
-        .withDeploy(Deploy.local)
+        .withDispatcher("akka.test.stream-dispatcher").withDeploy(Deploy.local)
       val impl = system.actorOf(props, "borken-stage-actor")
 
       val subscriber =
@@ -115,10 +114,8 @@ class FlowSpec
   def toFanoutPublisher[In, Out](
       elasticity: Int): (Source[Out, _], ActorMaterializer) ⇒ Publisher[Out] =
     (f, m) ⇒
-      f.runWith(
-        Sink
-          .asPublisher(true)
-          .withAttributes(Attributes.inputBuffer(elasticity, elasticity)))(m)
+      f.runWith(Sink.asPublisher(true).withAttributes(
+        Attributes.inputBuffer(elasticity, elasticity)))(m)
 
   def materializeIntoSubscriberAndPublisher[In, Out](
       flow: Flow[In, Out, _]): (Subscriber[In], Publisher[Out]) = {
@@ -134,18 +131,16 @@ class FlowSpec
           op,
           settings.withInputBuffer(initialSize = n, maxSize = n),
           toPublisher) {
-          upstream.expectRequest(
-            upstreamSubscription,
-            settings.maxInputBufferSize)
+          upstream
+            .expectRequest(upstreamSubscription, settings.maxInputBufferSize)
         }
       }
     }
 
     "request more elements from upstream when downstream requests more elements" in {
       new ChainSetup(identity, settings, toPublisher) {
-        upstream.expectRequest(
-          upstreamSubscription,
-          settings.maxInputBufferSize)
+        upstream
+          .expectRequest(upstreamSubscription, settings.maxInputBufferSize)
         downstreamSubscription.request(1)
         upstream.expectNoMsg(100.millis)
         downstreamSubscription.request(2)
@@ -346,18 +341,14 @@ class FlowSpec
 
     "be covariant" in {
       val f1: Source[Fruit, _] = Source.fromIterator[Fruit](apples)
-      val p1: Publisher[Fruit] = Source
-        .fromIterator[Fruit](apples)
+      val p1: Publisher[Fruit] = Source.fromIterator[Fruit](apples)
         .runWith(Sink.asPublisher(false))
       val f2: SubFlow[Fruit, _, Source[Fruit, NotUsed]#Repr, _] = Source
-        .fromIterator[Fruit](apples)
-        .splitWhen(_ ⇒ true)
+        .fromIterator[Fruit](apples).splitWhen(_ ⇒ true)
       val f3: SubFlow[Fruit, _, Source[Fruit, NotUsed]#Repr, _] = Source
-        .fromIterator[Fruit](apples)
-        .groupBy(2, _ ⇒ true)
+        .fromIterator[Fruit](apples).groupBy(2, _ ⇒ true)
       val f4: Source[(immutable.Seq[Fruit], Source[Fruit, _]), _] = Source
-        .fromIterator[Fruit](apples)
-        .prefixAndTail(1)
+        .fromIterator[Fruit](apples).prefixAndTail(1)
       val d1: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] = Flow[
         String].map(_ ⇒ new Apple).splitWhen(_ ⇒ true)
       val d2: SubFlow[Fruit, _, Flow[String, Fruit, NotUsed]#Repr, _] = Flow[
@@ -391,10 +382,11 @@ class FlowSpec
         val downstream2Subscription = downstream2.expectSubscription()
 
         downstreamSubscription.request(5)
-        upstream.expectRequest(
-          upstreamSubscription,
-          1
-        ) // because initialInputBufferSize=1
+        upstream
+          .expectRequest(
+            upstreamSubscription,
+            1
+          ) // because initialInputBufferSize=1
 
         upstreamSubscription.sendNext("firstElement")
         downstream.expectNext("firstElement")
@@ -424,10 +416,11 @@ class FlowSpec
 
         downstreamSubscription.request(5)
 
-        upstream.expectRequest(
-          upstreamSubscription,
-          1
-        ) // because initialInputBufferSize=1
+        upstream
+          .expectRequest(
+            upstreamSubscription,
+            1
+          ) // because initialInputBufferSize=1
         upstreamSubscription.sendNext("element1")
         downstream.expectNext("element1")
         upstreamSubscription.expectRequest(1)
@@ -485,9 +478,10 @@ class FlowSpec
 
         upstreamSubscription.sendNext("a3")
         downstream.expectNext("a3")
-        downstream2.expectNoMsg(
-          100.millis.dilated
-        ) // as nothing was requested yet, fanOutBox needs to cache element in this case
+        downstream2
+          .expectNoMsg(
+            100.millis.dilated
+          ) // as nothing was requested yet, fanOutBox needs to cache element in this case
 
         downstream2Subscription.request(1)
         downstream2.expectNext("a3")
@@ -496,10 +490,8 @@ class FlowSpec
         // d2 now has 0 outstanding
         // buffer should be empty so we should be requesting one new element
 
-        upstream.expectRequest(
-          upstreamSubscription,
-          1
-        ) // because of buffer size 1
+        upstream
+          .expectRequest(upstreamSubscription, 1) // because of buffer size 1
       }
     }
 
@@ -570,9 +562,10 @@ class FlowSpec
         downstream.expectNext("a3")
         downstream.expectComplete()
 
-        downstream2.expectNoMsg(
-          100.millis.dilated
-        ) // as nothing was requested yet, fanOutBox needs to cache element in this case
+        downstream2
+          .expectNoMsg(
+            100.millis.dilated
+          ) // as nothing was requested yet, fanOutBox needs to cache element in this case
 
         downstream2Subscription.request(1)
         downstream2.expectNext("a3")
@@ -617,16 +610,13 @@ class FlowSpec
         val downstream2 = TestSubscriber.manualProbe[Any]()
         publisher.subscribe(downstream2)
         // IllegalStateException shut down
-        downstream2
-          .expectSubscriptionAndError()
+        downstream2.expectSubscriptionAndError()
           .isInstanceOf[IllegalStateException] should be(true)
       }
     }
 
     "should be created from a function easily" in {
-      Source(0 to 9)
-        .via(Flow.fromFunction(_ + 1))
-        .runWith(Sink.seq)
+      Source(0 to 9).via(Flow.fromFunction(_ + 1)).runWith(Sink.seq)
         .futureValue should ===(1 to 10)
     }
   }
@@ -687,8 +677,7 @@ class FlowSpec
 
     "suitably override attribute handling methods" in {
       import Attributes._
-      val f: Flow[Int, Int, NotUsed] = Flow[Int].async
-        .addAttributes(none)
+      val f: Flow[Int, Int, NotUsed] = Flow[Int].async.addAttributes(none)
         .named("")
     }
   }

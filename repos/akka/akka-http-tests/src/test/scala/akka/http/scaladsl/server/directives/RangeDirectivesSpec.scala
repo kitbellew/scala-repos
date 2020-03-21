@@ -72,8 +72,8 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
     }
 
     "be transparent to non-200 responses" in {
-      Get() ~> addHeader(Range(ByteRange(1, 2))) ~> Route.seal(
-        wrs(reject())) ~> check {
+      Get() ~> addHeader(Range(ByteRange(1, 2))) ~> Route
+        .seal(wrs(reject())) ~> check {
         status == NotFound
         headers.exists {
           case `Content-Range`(_, _) ⇒ true; case _ ⇒ false
@@ -103,8 +103,8 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
       Get() ~> addHeader(
         Range(ByteRange(0, 10), ByteRange(0, 10))) ~> completeWithRangedBytes(
         10) ~> check {
-        mediaType.withParams(
-          Map.empty) shouldEqual MediaTypes.`multipart/byteranges`
+        mediaType.withParams(Map.empty) shouldEqual MediaTypes
+          .`multipart/byteranges`
       }
     }
 
@@ -122,17 +122,17 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
           case Multipart.ByteRanges.BodyPart(range, entity, unit, headers) ⇒
             range shouldEqual ContentRange.Default(0, 2, Some(39))
             unit shouldEqual RangeUnits.Bytes
-            Await.result(
-              entity.dataBytes.utf8String,
-              100.millis) shouldEqual "Som"
+            Await
+              .result(entity.dataBytes.utf8String, 100.millis) shouldEqual "Som"
         }
         inside(parts(1)) {
           case Multipart.ByteRanges.BodyPart(range, entity, unit, headers) ⇒
             range shouldEqual ContentRange.Default(5, 10, Some(39))
             unit shouldEqual RangeUnits.Bytes
-            Await.result(
-              entity.dataBytes.utf8String,
-              100.millis) shouldEqual "random"
+            Await
+              .result(
+                entity.dataBytes.utf8String,
+                100.millis) shouldEqual "random"
         }
       }
     }

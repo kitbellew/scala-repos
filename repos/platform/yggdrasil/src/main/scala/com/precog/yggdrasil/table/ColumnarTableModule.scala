@@ -108,8 +108,8 @@ object ColumnarTableModule extends Logging {
       else if (prefix == "")
         stream ++ (CharBuffer.wrap(suffix) :: StreamT.empty[M, CharBuffer])
       else
-        CharBuffer.wrap(prefix) :: (stream ++ (CharBuffer.wrap(
-          suffix) :: StreamT.empty[M, CharBuffer]))
+        CharBuffer.wrap(prefix) :: (stream ++ (CharBuffer
+          .wrap(suffix) :: StreamT.empty[M, CharBuffer]))
     }
 
     def foldFlatMap(
@@ -584,22 +584,17 @@ trait ColumnarTableModule[M[+_]]
           case (key, spec) => spec
         }
       } yield {
-        TableIndex
-          .createFromTable(
-            source.table,
-            disjunctGroupKeyTransSpecs,
-            source.targetTrans.getOrElse(TransSpec1.Id))
-          .map { index =>
-            IndexedSource(source.groupId, index, groupKeyProjections.map(_._1))
-          }
+        TableIndex.createFromTable(
+          source.table,
+          disjunctGroupKeyTransSpecs,
+          source.targetTrans.getOrElse(TransSpec1.Id)).map { index =>
+          IndexedSource(source.groupId, index, groupKeyProjections.map(_._1))
+        }
       }).sequence.flatMap { sourceKeys =>
         val fullSchema = sourceKeys.flatMap(_.keySchema).distinct
 
-        val indicesGroupedBySource = sourceKeys
-          .groupBy(_.groupId)
-          .mapValues(_.map(y => (y.index, y.keySchema)).toSeq)
-          .values
-          .toSeq
+        val indicesGroupedBySource = sourceKeys.groupBy(_.groupId)
+          .mapValues(_.map(y => (y.index, y.keySchema)).toSeq).values.toSeq
 
         def unionOfIntersections(
             indicesGroupedBySource: Seq[Seq[(TableIndex, KeySchema)]])
@@ -683,19 +678,18 @@ trait ColumnarTableModule[M[+_]]
           val groupKeyTable = jValueFromGroupKey(groupKey, fullSchema)
 
           def map(gid: GroupId): M[Table] = {
-            val subTableProjections = (sourceKeys
-              .filter(_.groupId == gid)
-              .map { indexedSource =>
+            val subTableProjections =
+              (sourceKeys.filter(_.groupId == gid).map { indexedSource =>
                 val keySchema = indexedSource.keySchema
                 val projectedKeyIndices =
                   for (k <- fullSchema) yield keySchema.indexOf(k)
                 (indexedSource.index, projectedKeyIndices, groupKey)
-              })
-              .toList
+              }).toList
 
-            M.point(
-              TableIndex.joinSubTables(subTableProjections).normalize
-            ) // TODO: normalize necessary?
+            M
+              .point(
+                TableIndex.joinSubTables(subTableProjections).normalize
+              ) // TODO: normalize necessary?
           }
 
           nt(body(groupKeyTable, map))
@@ -725,8 +719,8 @@ trait ColumnarTableModule[M[+_]]
         new CReducer[Set[Path]] {
           def reduce(schema: CSchema, range: Range): Set[Path] = {
             schema.columns(JTextT) flatMap {
-              case s: StrColumn =>
-                range.filter(s.isDefinedAt).map(i => Path(s(i)))
+              case s: StrColumn => range.filter(s.isDefinedAt)
+                  .map(i => Path(s(i)))
               case _ => Set()
             }
           }
@@ -765,8 +759,8 @@ trait ColumnarTableModule[M[+_]]
           emptySpec,
           trans.WrapArray(joinSpec))
       } yield {
-        JoinOrder.KeyOrder -> cogrouped.transform(
-          trans.DerefArrayStatic(Leaf(Source), CPathIndex(0)))
+        JoinOrder.KeyOrder -> cogrouped
+          .transform(trans.DerefArrayStatic(Leaf(Source), CPathIndex(0)))
       }
     }
 
@@ -791,12 +785,10 @@ trait ColumnarTableModule[M[+_]]
     private final val blockReads = new java.util.concurrent.atomic.AtomicInteger
 
     val slices = StreamT(
-      StreamT
-        .Skip({
-          readStarts.getAndIncrement
-          slices0.map(s => { blockReads.getAndIncrement; s })
-        })
-        .point[M])
+      StreamT.Skip({
+        readStarts.getAndIncrement
+        slices0.map(s => { blockReads.getAndIncrement; s })
+      }).point[M])
 
     /**
       * Folds over the table to produce a single value (stored in a singleton table).
@@ -942,7 +934,8 @@ trait ColumnarTableModule[M[+_]]
           case slices =>
             val slice = Slice.concat(slices)
             if (slices.size > (slice.size / yggConfig.smallSliceSize)) {
-              slice.materialized // Deal w/ lots of small slices by materializing them.
+              slice
+                .materialized // Deal w/ lots of small slices by materializing them.
             } else { slice }
         }
 
@@ -1649,37 +1642,36 @@ trait ColumnarTableModule[M[+_]]
           // Note that this is still memory efficient, as the columns are re-used
           // between all slices.
 
-          val results = (0 until lhead.size by lrowsPerSlice).foldLeft(M.point(
-            (a0, List.empty[Slice]))) {
-            case (accM, offset) =>
-              accM flatMap {
-                case (a, acc) =>
-                  val rows = math.min(
-                    sliceSize,
-                    (lhead.size - offset) * rhead.size)
+          val results = (0 until lhead.size by lrowsPerSlice)
+            .foldLeft(M.point((a0, List.empty[Slice]))) {
+              case (accM, offset) =>
+                accM flatMap {
+                  case (a, acc) =>
+                    val rows = math
+                      .min(sliceSize, (lhead.size - offset) * rhead.size)
 
-                  val lslice = new Slice {
-                    val size = rows
-                    val columns = lhead.columns.lazyMapValues(Remap({ i =>
-                      offset + (i / rhead.size)
-                    })(_).get)
-                  }
+                    val lslice = new Slice {
+                      val size = rows
+                      val columns = lhead.columns.lazyMapValues(Remap({ i =>
+                        offset + (i / rhead.size)
+                      })(_).get)
+                    }
 
-                  val rslice = new Slice {
-                    val size = rows
-                    val columns =
-                      if (rhead.size == 0)
-                        rhead.columns.lazyMapValues(Empty(_).get)
-                      else
-                        rhead.columns.lazyMapValues(
-                          Remap(_ % rhead.size)(_).get)
-                  }
+                    val rslice = new Slice {
+                      val size = rows
+                      val columns =
+                        if (rhead.size == 0)
+                          rhead.columns.lazyMapValues(Empty(_).get)
+                        else
+                          rhead.columns
+                            .lazyMapValues(Remap(_ % rhead.size)(_).get)
+                    }
 
-                  transform.f(a, lslice, rslice) map {
-                    case (b, resultSlice) => (b, resultSlice :: acc)
-                  }
-              }
-          }
+                    transform.f(a, lslice, rslice) map {
+                      case (b, resultSlice) => (b, resultSlice :: acc)
+                    }
+                }
+            }
 
           results map {
             case (a1, slices) =>
@@ -1696,8 +1688,8 @@ trait ColumnarTableModule[M[+_]]
                 case Some((rhead, rtail0)) =>
                   val lslice = new Slice {
                     val size = rhead.size
-                    val columns = lhead.columns.lazyMapValues(
-                      Remap(i => state.position)(_).get)
+                    val columns = lhead.columns
+                      .lazyMapValues(Remap(i => state.position)(_).get)
                   }
 
                   transform.f(state.a, lslice, rhead) map {
@@ -1748,7 +1740,8 @@ trait ColumnarTableModule[M[+_]]
             right.slices.uncons flatMap {
               case Some((rhead, rtail)) =>
                 for {
-                  lempty <- ltail.isEmpty //TODO: Scalaz result here is negated from what it should be!
+                  lempty <- ltail
+                    .isEmpty //TODO: Scalaz result here is negated from what it should be!
                   rempty <- rtail.isEmpty
 
                   back <- {
@@ -1879,9 +1872,8 @@ trait ColumnarTableModule[M[+_]]
           sliceStartIndex: Int): M[StreamT[M, Slice]] =
         stream.uncons flatMap {
           case Some((head, tail)) if takenSoFar < numberToTake => {
-            val needed = head.takeRange(
-              sliceStartIndex,
-              (numberToTake - takenSoFar).toInt)
+            val needed = head
+              .takeRange(sliceStartIndex, (numberToTake - takenSoFar).toInt)
             inner(tail, takenSoFar + (head.size - (sliceStartIndex)), 0)
               .map(needed :: _)
           }
@@ -1989,8 +1981,8 @@ trait ColumnarTableModule[M[+_]]
         val groupedM = groupTable
           .map(_.transform(DerefObjectStatic(Leaf(Source), CPathField("1"))))
           .flatMap(f)
-        val groupedStream: StreamT[M, Slice] = StreamT.wrapEffect(
-          groupedM.map(_.slices))
+        val groupedStream: StreamT[M, Slice] = StreamT
+          .wrapEffect(groupedM.map(_.slices))
 
         groupedStream ++ dropAndSplit(comparatorGen, head :: tail, spanStart)
       }
@@ -2085,9 +2077,10 @@ trait ColumnarTableModule[M[+_]]
               } orElse schema
             case (None, paths) => fresh(paths, leaf)
             case (jtype, paths) =>
-              sys.error(
-                "Invalid schema."
-              ) // This shouldn't happen for any real data.
+              sys
+                .error(
+                  "Invalid schema."
+                ) // This shouldn't happen for any real data.
           }
 
         cols.foldLeft(None: Option[JType]) {
@@ -2161,9 +2154,9 @@ trait ColumnarTableModule[M[+_]]
     def slicePrinter(prelude: String)(f: Slice => String): Table = {
       Table(
         StreamT(
-          StreamT
-            .Skip({ println(prelude); slices map { s => println(f(s)); s } })
-            .point[M]),
+          StreamT.Skip({
+            println(prelude); slices map { s => println(f(s)); s }
+          }).point[M]),
         size)
     }
 
@@ -2173,17 +2166,13 @@ trait ColumnarTableModule[M[+_]]
         prelude: String = "",
         appendix: String = "")(f: Slice => String): Table = {
       val preludeEffect = StreamT(
-        StreamT
-          .Skip({
-            logger.debug(logPrefix + " " + prelude); StreamT.empty[M, Slice]
-          })
-          .point[M])
+        StreamT.Skip({
+          logger.debug(logPrefix + " " + prelude); StreamT.empty[M, Slice]
+        }).point[M])
       val appendixEffect = StreamT(
-        StreamT
-          .Skip({
-            logger.debug(logPrefix + " " + appendix); StreamT.empty[M, Slice]
-          })
-          .point[M])
+        StreamT.Skip({
+          logger.debug(logPrefix + " " + appendix); StreamT.empty[M, Slice]
+        }).point[M])
       val sliceEffect =
         if (logger.isTraceEnabled) slices map { s =>
           logger.trace(logPrefix + " " + f(s)); s

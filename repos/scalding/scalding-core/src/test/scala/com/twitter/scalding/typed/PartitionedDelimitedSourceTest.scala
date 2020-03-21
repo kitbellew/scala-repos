@@ -29,9 +29,9 @@ object PartitionedDelimitedTestSources {
 
 class PartitionedDelimitedWriteJob(args: Args) extends Job(args) {
   import PartitionedDelimitedTestSources._
-  TypedCsv[(String, String, String)]("in")
-    .map { case (v1, v2, v3) => (v1, (v2, v3)) }
-    .write(singlePartition)
+  TypedCsv[(String, String, String)]("in").map {
+    case (v1, v2, v3) => (v1, (v2, v3))
+  }.write(singlePartition)
 }
 
 class PartitionedDelimitedTest extends WordSpec with Matchers {
@@ -49,8 +49,7 @@ class PartitionedDelimitedTest extends WordSpec with Matchers {
       }
 
       JobTest(buildJob(_))
-        .source(TypedCsv[(String, String, String)]("in"), input)
-        .runHadoop
+        .source(TypedCsv[(String, String, String)]("in"), input).runHadoop
         .finish
 
       val testMode = job.mode.asInstanceOf[HadoopTest]
@@ -59,10 +58,10 @@ class PartitionedDelimitedTest extends WordSpec with Matchers {
 
       directory.listFiles().map({ _.getName() }).toSet shouldBe Set("A", "B")
 
-      val aSource = ScalaSource.fromFile(
-        new File(directory, "A/part-00000-00000"))
-      val bSource = ScalaSource.fromFile(
-        new File(directory, "B/part-00000-00001"))
+      val aSource = ScalaSource
+        .fromFile(new File(directory, "A/part-00000-00000"))
+      val bSource = ScalaSource
+        .fromFile(new File(directory, "B/part-00000-00001"))
 
       aSource.getLines.toList shouldBe Seq("X,1", "Y,2")
       bSource.getLines.toList shouldBe Seq("Z,3")

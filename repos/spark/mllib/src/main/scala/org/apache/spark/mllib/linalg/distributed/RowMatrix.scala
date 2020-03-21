@@ -291,12 +291,8 @@ class RowMatrix @Since("1.0.0") (
         require(
           k < n,
           s"k must be smaller than n in dist-eigs mode but got k=$k and n=$n.")
-        EigenValueDecomposition.symmetricEigs(
-          multiplyGramianMatrixBy,
-          n,
-          k,
-          tol,
-          maxIter)
+        EigenValueDecomposition
+          .symmetricEigs(multiplyGramianMatrixBy, n, k, tol, maxIter)
     }
 
     val sigmas: BDV[Double] = brzSqrt(sigmaSquares)
@@ -320,7 +316,8 @@ class RowMatrix @Since("1.0.0") (
     }
 
     // Warn at the end of the run as well, for increased visibility.
-    if (computeMode == SVDMode.DistARPACK && rows.getStorageLevel == StorageLevel.NONE) {
+    if (computeMode == SVDMode.DistARPACK && rows
+          .getStorageLevel == StorageLevel.NONE) {
       logWarning(
         "The input data was not directly cached, which may hurt performance if its"
           + " parent RDDs are also uncached.")
@@ -479,8 +476,8 @@ class RowMatrix @Since("1.0.0") (
       B.isInstanceOf[DenseMatrix],
       s"Only support dense matrix at this time but found ${B.getClass.getName}.")
 
-    val Bb = rows.context.broadcast(
-      B.toBreeze.asInstanceOf[BDM[Double]].toDenseVector.toArray)
+    val Bb = rows.context
+      .broadcast(B.toBreeze.asInstanceOf[BDM[Double]].toDenseVector.toArray)
     val AB = rows.mapPartitions { iter =>
       val Bi = Bb.value
       iter.map { row =>
@@ -640,71 +637,66 @@ class RowMatrix @Since("1.0.0") (
     val pBV = sc.broadcast(colMagsCorrected.map(c => sg / c))
     val qBV = sc.broadcast(colMagsCorrected.map(c => math.min(sg, c)))
 
-    val sims = rows
-      .mapPartitionsWithIndex { (indx, iter) =>
-        val p = pBV.value
-        val q = qBV.value
+    val sims = rows.mapPartitionsWithIndex { (indx, iter) =>
+      val p = pBV.value
+      val q = qBV.value
 
-        val rand = new XORShiftRandom(indx)
-        val scaled = new Array[Double](p.size)
-        iter.flatMap { row =>
-          row match {
-            case SparseVector(size, indices, values) =>
-              val nnz = indices.size
-              var k = 0
-              while (k < nnz) {
-                scaled(k) = values(k) / q(indices(k))
-                k += 1
-              }
+      val rand = new XORShiftRandom(indx)
+      val scaled = new Array[Double](p.size)
+      iter.flatMap { row =>
+        row match {
+          case SparseVector(size, indices, values) =>
+            val nnz = indices.size
+            var k = 0
+            while (k < nnz) {
+              scaled(k) = values(k) / q(indices(k))
+              k += 1
+            }
 
-              Iterator
-                .tabulate(nnz) { k =>
-                  val buf = new ListBuffer[((Int, Int), Double)]()
-                  val i = indices(k)
-                  val iVal = scaled(k)
-                  if (iVal != 0 && rand.nextDouble() < p(i)) {
-                    var l = k + 1
-                    while (l < nnz) {
-                      val j = indices(l)
-                      val jVal = scaled(l)
-                      if (jVal != 0 && rand.nextDouble() < p(j)) {
-                        buf += (((i, j), iVal * jVal))
-                      }
-                      l += 1
-                    }
+            Iterator.tabulate(nnz) { k =>
+              val buf = new ListBuffer[((Int, Int), Double)]()
+              val i = indices(k)
+              val iVal = scaled(k)
+              if (iVal != 0 && rand.nextDouble() < p(i)) {
+                var l = k + 1
+                while (l < nnz) {
+                  val j = indices(l)
+                  val jVal = scaled(l)
+                  if (jVal != 0 && rand.nextDouble() < p(j)) {
+                    buf += (((i, j), iVal * jVal))
                   }
-                  buf
+                  l += 1
                 }
-                .flatten
-            case DenseVector(values) =>
-              val n = values.size
-              var i = 0
-              while (i < n) {
-                scaled(i) = values(i) / q(i)
-                i += 1
               }
-              Iterator
-                .tabulate(n) { i =>
-                  val buf = new ListBuffer[((Int, Int), Double)]()
-                  val iVal = scaled(i)
-                  if (iVal != 0 && rand.nextDouble() < p(i)) {
-                    var j = i + 1
-                    while (j < n) {
-                      val jVal = scaled(j)
-                      if (jVal != 0 && rand.nextDouble() < p(j)) {
-                        buf += (((i, j), iVal * jVal))
-                      }
-                      j += 1
-                    }
+              buf
+            }.flatten
+          case DenseVector(values) =>
+            val n = values.size
+            var i = 0
+            while (i < n) {
+              scaled(i) = values(i) / q(i)
+              i += 1
+            }
+            Iterator.tabulate(n) { i =>
+              val buf = new ListBuffer[((Int, Int), Double)]()
+              val iVal = scaled(i)
+              if (iVal != 0 && rand.nextDouble() < p(i)) {
+                var j = i + 1
+                while (j < n) {
+                  val jVal = scaled(j)
+                  if (jVal != 0 && rand.nextDouble() < p(j)) {
+                    buf += (((i, j), iVal * jVal))
                   }
-                  buf
+                  j += 1
                 }
-                .flatten
-          }
+              }
+              buf
+            }.flatten
         }
       }
-      .reduceByKey(_ + _)
-      .map { case ((i, j), sim) => MatrixEntry(i.toLong, j.toLong, sim) }
+    }.reduceByKey(_ + _).map {
+      case ((i, j), sim) => MatrixEntry(i.toLong, j.toLong, sim)
+    }
     new CoordinateMatrix(sims, numCols(), numCols())
   }
 

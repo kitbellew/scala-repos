@@ -68,12 +68,12 @@ class ScalaBlock(
   def isIncomplete = isIncomplete(myNode)
 
   def getChildAttributes(newChildIndex: Int): ChildAttributes = {
-    val scalaSettings = mySettings.getCustomSettings(
-      classOf[ScalaCodeStyleSettings])
+    val scalaSettings = mySettings
+      .getCustomSettings(classOf[ScalaCodeStyleSettings])
     val indentSize = mySettings.getIndentSize(ScalaFileType.SCALA_FILE_TYPE)
     val parent = getNode.getPsi
-    val braceShifted =
-      mySettings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED
+    val braceShifted = mySettings.BRACE_STYLE == CommonCodeStyleSettings
+      .NEXT_LINE_SHIFTED
     def isBlockOnlyScope(scope: PsiElement) =
       !isLeaf &&
         Set(ScalaTokenTypes.tLBRACE, ScalaTokenTypes.tLPARENTHESIS)
@@ -97,7 +97,9 @@ class ScalaBlock(
         }
       case c: ScCaseClauses => new ChildAttributes(Indent.getNormalIndent, null)
       case l: ScLiteral
-          if l.isMultiLineString && scalaSettings.MULTILINE_STRING_SUPORT != ScalaCodeStyleSettings.MULTILINE_STRING_NONE =>
+          if l.isMultiLineString && scalaSettings
+            .MULTILINE_STRING_SUPORT != ScalaCodeStyleSettings
+            .MULTILINE_STRING_NONE =>
         new ChildAttributes(Indent.getSpaceIndent(3, true), null)
       case b: ScBlockExpr
           if b.lastExpr.exists(_.isInstanceOf[ScFunctionExpr]) =>
@@ -113,21 +115,17 @@ class ScalaBlock(
         new ChildAttributes(
           if (braceShifted) Indent.getNoneIndent
           else if (mySubBlocks != null && mySubBlocks.size >= newChildIndex &&
-                   mySubBlocks
-                     .get(newChildIndex - 1)
+                   mySubBlocks.get(newChildIndex - 1)
                      .isInstanceOf[ScalaBlock] &&
-                   mySubBlocks
-                     .get(newChildIndex - 1)
-                     .asInstanceOf[ScalaBlock]
-                     .getNode
-                     .getElementType == ScalaElementTypes.CASE_CLAUSES)
+                   mySubBlocks.get(newChildIndex - 1).asInstanceOf[ScalaBlock]
+                     .getNode.getElementType == ScalaElementTypes.CASE_CLAUSES)
             Indent.getSpaceIndent(2 * indentSize)
           else Indent.getNormalIndent,
           null)
       case scope if isBlockOnlyScope(scope) =>
         new ChildAttributes(
-          if (scope.getNode.getElementType == ScalaTokenTypes.tLBRACE && braceShifted)
-            Indent.getNoneIndent
+          if (scope.getNode.getElementType == ScalaTokenTypes
+                .tLBRACE && braceShifted) Indent.getNoneIndent
           else Indent.getNormalIndent,
           null)
       case p: ScPackaging if p.isExplicit =>
@@ -148,8 +146,8 @@ class ScalaBlock(
         if (x.hasExprBody) new ChildAttributes(Indent.getNoneIndent, null)
         else
           new ChildAttributes(
-            if (mySettings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED)
-              Indent.getNoneIndent
+            if (mySettings.BRACE_STYLE == CommonCodeStyleSettings
+                  .NEXT_LINE_SHIFTED) Indent.getNoneIndent
             else Indent.getNormalIndent,
             null)
       case _: ScXmlElement => new ChildAttributes(Indent.getNormalIndent, null)
@@ -167,7 +165,8 @@ class ScalaBlock(
       case _ if parent.getNode.getElementType == ScalaTokenTypes.kIF =>
         new ChildAttributes(Indent.getNormalIndent, null)
       case p: ScParameterClause
-          if scalaSettings.USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS && isConstructorArgOrMemberFunctionParameter(
+          if scalaSettings
+            .USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS && isConstructorArgOrMemberFunctionParameter(
             p) =>
         new ChildAttributes(
           Indent.getSpaceIndent(
@@ -208,7 +207,8 @@ class ScalaBlock(
     import scala.collection.JavaConversions._
     if (mySubBlocks == null) {
       mySubBlocks = getDummyBlocks(myNode, myLastNode, this).filterNot {
-        _.asInstanceOf[ScalaBlock].getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE
+        _.asInstanceOf[ScalaBlock].getNode.getElementType == ScalaTokenTypes
+          .tWHITE_SPACE_IN_LINE
       }
     }
     mySubBlocks
@@ -233,22 +233,19 @@ class ScalaBlock(
 
   def suggestedWrap: Wrap = {
     if (_suggestedWrap == null) {
-      val settings = getSettings.getCustomSettings(
-        classOf[ScalaCodeStyleSettings])
+      val settings = getSettings
+        .getCustomSettings(classOf[ScalaCodeStyleSettings])
       _suggestedWrap = ScalaWrapManager.suggestedWrap(this, settings)
     }
     _suggestedWrap
   }
 
   def getChildBlockLastNode(childNode: ASTNode) =
-    subBlocksContext
-      .flatMap(_.childrenAdditionalContexts.get(childNode))
-      .map(_.getLastNode(childNode))
-      .orNull
+    subBlocksContext.flatMap(_.childrenAdditionalContexts.get(childNode))
+      .map(_.getLastNode(childNode)).orNull
 
   def getCustomAlignment(childNode: ASTNode): Option[Alignment] =
-    subBlocksContext
-      .flatMap(_.childrenAdditionalContexts.get(childNode))
+    subBlocksContext.flatMap(_.childrenAdditionalContexts.get(childNode))
       .flatMap(_.alignment)
 }
 
@@ -260,10 +257,8 @@ class SubBlocksContext(
     getLastNode.filter(_ != firstNode).orNull
 
   private def getLastNode: Option[ASTNode] =
-    childrenAdditionalContexts
-      .map { case (_, context) => context.getLastNode }
-      .filter(_.isDefined)
-      .map(_.get) ++
+    childrenAdditionalContexts.map { case (_, context) => context.getLastNode }
+      .filter(_.isDefined).map(_.get) ++
       additionalNodes ++ childrenAdditionalContexts.map {
       case (child, _) => child
     } match {

@@ -167,10 +167,10 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
     // start another controller
     val controllerId = 2
 
-    val controllerConfig = KafkaConfig.fromProps(
-      TestUtils.createBrokerConfig(controllerId, zkConnect))
-    val brokers = servers.map(s =>
-      new Broker(s.config.brokerId, "localhost", s.boundPort()))
+    val controllerConfig = KafkaConfig
+      .fromProps(TestUtils.createBrokerConfig(controllerId, zkConnect))
+    val brokers = servers
+      .map(s => new Broker(s.config.brokerId, "localhost", s.boundPort()))
     val brokerEndPoints = brokers.map { b =>
       val brokerEndPoint = b.getBrokerEndPoint(SecurityProtocol.PLAINTEXT)
       new BrokerEndPoint(
@@ -225,10 +225,10 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
   private def staleControllerEpochCallback(
       response: AbstractRequestResponse): Unit = {
     val leaderAndIsrResponse = response.asInstanceOf[LeaderAndIsrResponse]
-    staleControllerEpochDetected =
-      Errors.forCode(leaderAndIsrResponse.errorCode) match {
-        case Errors.STALE_CONTROLLER_EPOCH => true
-        case _                             => false
-      }
+    staleControllerEpochDetected = Errors
+      .forCode(leaderAndIsrResponse.errorCode) match {
+      case Errors.STALE_CONTROLLER_EPOCH => true
+      case _                             => false
+    }
   }
 }

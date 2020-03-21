@@ -58,11 +58,8 @@ class StatsSampleClient(servicePath: String) extends Actor {
         "servicePath [%s] is not a valid relative actor path" format servicePath)
   }
   import context.dispatcher
-  val tickTask = context.system.scheduler.schedule(
-    2.seconds,
-    2.seconds,
-    self,
-    "tick")
+  val tickTask = context.system.scheduler
+    .schedule(2.seconds, 2.seconds, self, "tick")
 
   var nodes = Set.empty[Address]
 
@@ -77,10 +74,10 @@ class StatsSampleClient(servicePath: String) extends Actor {
   def receive = {
     case "tick" if nodes.nonEmpty =>
       // just pick any one
-      val address = nodes.toIndexedSeq(
-        ThreadLocalRandom.current.nextInt(nodes.size))
-      val service = context.actorSelection(
-        RootActorPath(address) / servicePathElements)
+      val address = nodes
+        .toIndexedSeq(ThreadLocalRandom.current.nextInt(nodes.size))
+      val service = context
+        .actorSelection(RootActorPath(address) / servicePathElements)
       service ! StatsJob("this is the text that will be analyzed")
     case result: StatsResult => println(result)
     case failed: JobFailed   => println(failed)

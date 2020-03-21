@@ -13,8 +13,8 @@
 object eqeq extends testing.Benchmark {
 
   def eqeqtest[T](creator: Int => T, n: Int): Int = {
-    val elems = Array.tabulate[AnyRef](n)(i =>
-      creator(i % 2).asInstanceOf[AnyRef])
+    val elems = Array
+      .tabulate[AnyRef](n)(i => creator(i % 2).asInstanceOf[AnyRef])
 
     var sum = 0
     var i = 0

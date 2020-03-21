@@ -73,8 +73,8 @@ object expand {
     import c.mirror.universe._
     annottees.head.tree match {
       case tree @ DefDef(mods, name, targs, vargs, tpt, rhs) =>
-        val (typesToExpand, typesLeftAbstract) = targs.partition(
-          shouldExpand(c)(_))
+        val (typesToExpand, typesLeftAbstract) = targs
+          .partition(shouldExpand(c)(_))
 
         val exclusions = getExclusions(c)(mods, targs.map(_.name))
         val shouldValify = checkValify(c)(mods)
@@ -83,24 +83,21 @@ object expand {
           td => (td.name: Name) -> typeMappings(c)(td)
         }.toMap
 
-        val (valsToExpand, valsToLeave) =
-          vargs.map(_.partition(shouldExpandVarg(c)(_))).unzip
+        val (valsToExpand, valsToLeave) = vargs
+          .map(_.partition(shouldExpandVarg(c)(_))).unzip
 
         val valsToExpand2 = valsToExpand.flatten
 
         val configurations = makeTypeMaps(c)(typesToUnrollAs)
           .filterNot(exclusions.toSet)
-        val valExpansions = valsToExpand2
-          .map { v => v.name -> solveSequence(c)(v, typesToUnrollAs) }
-          .asInstanceOf[List[(c.Name, (c.Name, Map[c.Type, c.Tree]))]]
-          .toMap
+        val valExpansions = valsToExpand2.map { v =>
+          v.name -> solveSequence(c)(v, typesToUnrollAs)
+        }.asInstanceOf[List[(c.Name, (c.Name, Map[c.Type, c.Tree]))]].toMap
 
         val newDefs = configurations.map { typeMap =>
           val grounded = substitute(c)(typeMap, valExpansions, rhs)
-          val newvargs = valsToLeave
-            .filterNot(_.isEmpty)
-            .map(_.map(
-              substitute(c)(typeMap, valExpansions, _).asInstanceOf[ValDef]))
+          val newvargs = valsToLeave.filterNot(_.isEmpty).map(_.map(
+            substitute(c)(typeMap, valExpansions, _).asInstanceOf[ValDef]))
           val newtpt = substitute(c)(typeMap, valExpansions, tpt)
           val newName = newTermName(mkName(c)(name, typeMap))
           if (shouldValify) {
@@ -113,8 +110,7 @@ object expand {
               c.error(
                 tree.pos,
                 "Can't valify: Not all arguments were grounded: " + newvargs
-                  .map(_.mkString(", "))
-                  .mkString("(", ")(", ")"))
+                  .map(_.mkString(", ")).mkString("(", ")(", ")"))
             ValDef(mods, newName, newtpt, grounded)
           } else {
             val newTargs = typesLeftAbstract
@@ -131,9 +127,9 @@ object expand {
 
   private def mkName(
       c: Context)(name: c.Name, typeMap: Map[c.Name, c.Type]): String = {
-    name.toString + "_" + typeMap
-      .map { case (k, v) => v.toString.reverse.takeWhile(_ != '.').reverse }
-      .mkString("_")
+    name.toString + "_" + typeMap.map {
+      case (k, v) => v.toString.reverse.takeWhile(_ != '.').reverse
+    }.mkString("_")
   }
 
   // valExpansions is a [value identifier -> (
@@ -239,27 +235,22 @@ object expand {
       mods: c.Modifiers,
       targs: Seq[c.Name]): Seq[Map[c.Name, c.Type]] = {
     import c.mirror.universe._
-    mods.annotations
-      .collect {
-        case t @ q"new expand.exclude(...$args)" =>
-          for (aa <- args)
-            if (aa.length != targs.length)
-              c.error(
-                t.pos,
-                "arguments to @exclude does not have the same arity as the type symbols!")
-          args.map(aa =>
-            (targs zip aa
-              .map(c.typeCheck(_))
-              .map(_.symbol.asModule.companionSymbol.asType.toType)).toMap)
-      }
-      .flatten
-      .toSeq
+    mods.annotations.collect {
+      case t @ q"new expand.exclude(...$args)" =>
+        for (aa <- args)
+          if (aa.length != targs.length)
+            c.error(
+              t.pos,
+              "arguments to @exclude does not have the same arity as the type symbols!")
+        args.map(aa =>
+          (targs zip aa.map(c.typeCheck(_))
+            .map(_.symbol.asModule.companionSymbol.asType.toType)).toMap)
+    }.flatten.toSeq
   }
 
   private def checkValify(c: Context)(mods: c.Modifiers) = {
     import c.mirror.universe._
-    mods.annotations
-      .collectFirst { case q"new expand.valify" => true }
+    mods.annotations.collectFirst { case q"new expand.valify" => true }
       .getOrElse(false)
   }
 

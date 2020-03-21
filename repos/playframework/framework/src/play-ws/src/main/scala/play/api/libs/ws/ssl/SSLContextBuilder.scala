@@ -111,11 +111,11 @@ class ConfigSSLContextBuilder(
 
   lazy val revocationLists = certificateRevocationList(info)
 
-  lazy val signatureConstraints =
-    info.disabledSignatureAlgorithms.map(AlgorithmConstraintsParser.apply).toSet
+  lazy val signatureConstraints = info.disabledSignatureAlgorithms
+    .map(AlgorithmConstraintsParser.apply).toSet
 
-  lazy val keySizeConstraints =
-    info.disabledKeyAlgorithms.map(AlgorithmConstraintsParser.apply).toSet
+  lazy val keySizeConstraints = info.disabledKeyAlgorithms
+    .map(AlgorithmConstraintsParser.apply).toSet
 
   lazy val algorithmChecker =
     new AlgorithmChecker(signatureConstraints, keySizeConstraints)
@@ -175,8 +175,7 @@ class ConfigSSLContextBuilder(
   // Get either a string or file based keystore builder from config.
   def keyStoreBuilder(ksc: KeyStoreConfig): KeyStoreBuilder = {
     val password = ksc.password.map(_.toCharArray)
-    ksc.filePath
-      .map { f => fileBuilder(ksc.storeType, f, password) }
+    ksc.filePath.map { f => fileBuilder(ksc.storeType, f, password) }
       .getOrElse {
         val data = ksc.data.getOrElse(
           throw new IllegalStateException("No keystore builder found!"))
@@ -389,8 +388,8 @@ class ConfigSSLContextBuilder(
     */
   def validateStore(store: KeyStore, algorithmChecker: AlgorithmChecker) {
     import scala.collection.JavaConverters._
-    logger.debug(
-      s"validateStore: type = ${store.getType}, size = ${store.size}")
+    logger
+      .debug(s"validateStore: type = ${store.getType}, size = ${store.size}")
 
     store.aliases().asScala.foreach { alias =>
       Option(store.getCertificate(alias)).map { c =>
@@ -398,11 +397,13 @@ class ConfigSSLContextBuilder(
         catch {
           case e: CertPathValidatorException =>
             logger.warn(
-              s"validateStore: Skipping certificate with weak key size in $alias: " + e.getMessage)
+              s"validateStore: Skipping certificate with weak key size in $alias: " + e
+                .getMessage)
             store.deleteEntry(alias)
           case e: Exception =>
             logger.warn(
-              s"validateStore: Skipping unknown exception $alias: " + e.getMessage)
+              s"validateStore: Skipping unknown exception $alias: " + e
+                .getMessage)
             store.deleteEntry(alias)
         }
       }

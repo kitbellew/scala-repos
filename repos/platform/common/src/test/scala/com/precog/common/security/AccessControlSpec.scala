@@ -39,8 +39,8 @@ class AccessControlSpec extends Specification {
 
     "allow user accounts to read/reduce their data on any path" in {
       val userAccountId = "user"
-      val userAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        userAccountId)
+      val userAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(userAccountId)
       val userAPIKey = userAPIKeyRecord.apiKey
 
       hasCapability(
@@ -83,8 +83,8 @@ class AccessControlSpec extends Specification {
 
     "prevent user accounts from reading/reducing others data" in {
       val userAccountId = "user"
-      val userAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        userAccountId)
+      val userAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(userAccountId)
       val userAPIKey = userAPIKeyRecord.apiKey
 
       val otherAccountId = "other"
@@ -129,8 +129,8 @@ class AccessControlSpec extends Specification {
 
     "allow user accounts to write/delete any data under their path" in {
       val userAccountId = "user"
-      val userAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        userAccountId)
+      val userAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(userAccountId)
       val userAPIKey = userAPIKeyRecord.apiKey
 
       val otherAccountId = "other"
@@ -158,8 +158,8 @@ class AccessControlSpec extends Specification {
 
     "prevent user accounts from writing/deleting any data under another accounts path" in {
       val userAccountId = "user"
-      val userAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        userAccountId)
+      val userAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(userAccountId)
       val userAPIKey = userAPIKeyRecord.apiKey
 
       val otherAccountId = "other"
@@ -190,13 +190,13 @@ class AccessControlSpec extends Specification {
 
     "allow user accounts to read/reduce others data via a grant" in {
       val userAccountId = "user"
-      val userAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        userAccountId)
+      val userAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(userAccountId)
       val userAPIKey = userAPIKeyRecord.apiKey
 
       val otherAccountId = "other"
-      val otherAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        otherAccountId)
+      val otherAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(otherAccountId)
       val otherAPIKey = otherAPIKeyRecord.apiKey
 
       hasCapability(
@@ -284,13 +284,13 @@ class AccessControlSpec extends Specification {
 
     "allow user accounts to write/delete data under another accounts path via a grant" in {
       val userAccountId = "user"
-      val userAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        userAccountId)
+      val userAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(userAccountId)
       val userAPIKey = userAPIKeyRecord.apiKey
 
       val otherAccountId = "other"
-      val otherAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        otherAccountId)
+      val otherAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(otherAccountId)
       val otherAPIKey = otherAPIKeyRecord.apiKey
 
       hasCapability(
@@ -323,14 +323,12 @@ class AccessControlSpec extends Specification {
         DeletePermission(Path("/other"), WrittenByAccount(otherAccountId))
       )
 
-      apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          otherAPIKey,
-          writeDeleteOther,
-          userAPIKey)
-        .get
+      apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        otherAPIKey,
+        writeDeleteOther,
+        userAPIKey).get
 
       hasCapability(
         userAPIKey,
@@ -358,8 +356,8 @@ class AccessControlSpec extends Specification {
       val invalidAPIKey = "not-there"
 
       val userAccountId = "user"
-      val userAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        userAccountId)
+      val userAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(userAccountId)
       val userAPIKey = userAPIKeyRecord.apiKey
 
       hasCapability(
@@ -401,13 +399,13 @@ class AccessControlSpec extends Specification {
 
     "prevent access via a revoked grant" in {
       val userAccountId = "user"
-      val userAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        userAccountId)
+      val userAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(userAccountId)
       val userAPIKey = userAPIKeyRecord.apiKey
 
       val otherAccountId = "other"
-      val otherAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        otherAccountId)
+      val otherAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(otherAccountId)
       val otherAPIKey = otherAPIKeyRecord.apiKey
 
       val accessOther = Set[Permission](
@@ -418,8 +416,7 @@ class AccessControlSpec extends Specification {
       )
 
       val accessOtherGrant = apiKeyManager
-        .deriveAndAddGrant(None, None, otherAPIKey, accessOther, userAPIKey)
-        .get
+        .deriveAndAddGrant(None, None, otherAPIKey, accessOther, userAPIKey).get
 
       hasCapability(
         userAPIKey,
@@ -474,13 +471,13 @@ class AccessControlSpec extends Specification {
 
     "prevent access via an expired grant" in {
       val userAccountId = "user"
-      val userAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        userAccountId)
+      val userAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(userAccountId)
       val userAPIKey = userAPIKeyRecord.apiKey
 
       val otherAccountId = "other"
-      val otherAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        otherAccountId)
+      val otherAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(otherAccountId)
       val otherAPIKey = otherAPIKeyRecord.apiKey
 
       val accessOther = Set[Permission](
@@ -490,15 +487,13 @@ class AccessControlSpec extends Specification {
         DeletePermission(Path("/other"), WrittenByAny)
       )
 
-      val expiredAccessOtherGrant = apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          otherAPIKey,
-          accessOther,
-          userAPIKey,
-          Some(new DateTime().minusYears(1000)))
-        .get
+      val expiredAccessOtherGrant = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        otherAPIKey,
+        accessOther,
+        userAPIKey,
+        Some(new DateTime().minusYears(1000))).get
 
       hasCapability(
         userAPIKey,
@@ -528,18 +523,18 @@ class AccessControlSpec extends Specification {
 
     "prevent access via a grant with a revoked parent" in {
       val user1AccountId = "user1"
-      val user1APIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        user1AccountId)
+      val user1APIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(user1AccountId)
       val user1APIKey = user1APIKeyRecord.apiKey
 
       val user2AccountId = "user2"
-      val user2APIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        user2AccountId)
+      val user2APIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(user2AccountId)
       val user2APIKey = user2APIKeyRecord.apiKey
 
       val otherAccountId = "other"
-      val otherAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        otherAccountId)
+      val otherAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(otherAccountId)
       val otherAPIKey = otherAPIKeyRecord.apiKey
 
       val accessOther = Set[Permission](
@@ -609,18 +604,18 @@ class AccessControlSpec extends Specification {
 
     "support addon grants sandboxed to customer paths" in {
       val addOnAccountId = "addon"
-      val addOnAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        addOnAccountId)
+      val addOnAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(addOnAccountId)
       val addOnAPIKey = addOnAPIKeyRecord.apiKey
 
       val customer1AccountId = "customer1"
-      val customer1APIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        customer1AccountId)
+      val customer1APIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(customer1AccountId)
       val customer1APIKey = customer1APIKeyRecord.apiKey
 
       val customer2AccountId = "customer2"
-      val customer2APIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        customer2AccountId)
+      val customer2APIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(customer2AccountId)
       val customer2APIKey = customer2APIKeyRecord.apiKey
 
       val readCustomer1Customer1 = Set[Permission](ReadPermission(
@@ -644,22 +639,18 @@ class AccessControlSpec extends Specification {
       hasCapability(customer2APIKey, readCustomer2AddOn) must beFalse
       hasCapability(customer2APIKey, readCustomer1AddOn) must beFalse
 
-      val customer1CanRead = apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          addOnAPIKey,
-          readCustomer1AddOn,
-          customer1APIKey)
-        .get
-      val customer2CanRead = apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          addOnAPIKey,
-          readCustomer2AddOn,
-          customer2APIKey)
-        .get
+      val customer1CanRead = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        addOnAPIKey,
+        readCustomer1AddOn,
+        customer1APIKey).get
+      val customer2CanRead = apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        addOnAPIKey,
+        readCustomer2AddOn,
+        customer2APIKey).get
 
       hasCapability(customer1APIKey, readCustomer1Customer1) must beTrue
       hasCapability(customer1APIKey, readCustomer1AddOn) must beTrue
@@ -671,18 +662,18 @@ class AccessControlSpec extends Specification {
 
     "support providers delegating services to addons" in {
       val addOnAccountId = "addon"
-      val addOnAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        addOnAccountId)
+      val addOnAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(addOnAccountId)
       val addOnAPIKey = addOnAPIKeyRecord.apiKey
 
       val providerAccountId = "provider"
-      val providerAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        providerAccountId)
+      val providerAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(providerAccountId)
       val providerAPIKey = providerAPIKeyRecord.apiKey
 
       val customerAccountId = "customer"
-      val customerAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        customerAccountId)
+      val customerAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(customerAccountId)
       val customerAPIKey = customerAPIKeyRecord.apiKey
 
       val readPerm = Set[Permission](ReadPermission(
@@ -722,13 +713,13 @@ class AccessControlSpec extends Specification {
 
     "support addons granting revokable access" in {
       val addOnAccountId = "addon"
-      val addOnAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        addOnAccountId)
+      val addOnAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(addOnAccountId)
       val addOnAPIKey = addOnAPIKeyRecord.apiKey
 
       val customerAccountId = "customer"
-      val customerAPIKeyRecord = apiKeyManager.newStandardAPIKeyRecord(
-        customerAccountId)
+      val customerAPIKeyRecord = apiKeyManager
+        .newStandardAPIKeyRecord(customerAccountId)
       val customerAPIKey = customerAPIKeyRecord.apiKey
 
       val addOnPerm = Set(

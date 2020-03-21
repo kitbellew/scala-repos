@@ -41,8 +41,7 @@ class MetricsTest extends KafkaServerTestHarness with Logging {
   overridingProps.put(KafkaConfig.NumPartitionsProp, numParts.toString)
 
   def generateConfigs() =
-    TestUtils
-      .createBrokerConfigs(numNodes, zkConnect, enableDeleteTopic = true)
+    TestUtils.createBrokerConfigs(numNodes, zkConnect, enableDeleteTopic = true)
       .map(KafkaConfig.fromProps(_, overridingProps))
 
   val nMessages = 2
@@ -68,8 +67,8 @@ class MetricsTest extends KafkaServerTestHarness with Logging {
     //this assertion is only used for creating the metrics for DelayedFetchMetrics, it should never fail, but should not be removed
     assertNotNull(DelayedFetchMetrics)
 
-    val countOfStaticMetrics =
-      Metrics.defaultRegistry().allMetrics().keySet().size
+    val countOfStaticMetrics = Metrics.defaultRegistry().allMetrics().keySet()
+      .size
 
     for (i <- 0 to 5) {
       createAndShutdownStep(
@@ -117,10 +116,8 @@ class MetricsTest extends KafkaServerTestHarness with Logging {
 
   private def checkTopicMetricsExists(topic: String): Boolean = {
     val topicMetricRegex = new Regex(".*(" + topic + ")$")
-    val metricGroups = Metrics
-      .defaultRegistry()
-      .groupedMetrics(MetricPredicate.ALL)
-      .entrySet()
+    val metricGroups = Metrics.defaultRegistry()
+      .groupedMetrics(MetricPredicate.ALL).entrySet()
     for (metricGroup <- metricGroups) {
       if (topicMetricRegex.pattern.matcher(metricGroup.getKey()).matches)
         return true

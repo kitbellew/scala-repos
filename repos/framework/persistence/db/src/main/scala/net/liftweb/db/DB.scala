@@ -84,27 +84,20 @@ trait DB extends Loggable {
         logger.trace(
           "Trying JNDI lookup on java:/comp/env followed by lookup on %s"
             .format(name.jndiName))
-        (new InitialContext)
-          .lookup("java:/comp/env")
-          .asInstanceOf[Context]
-          .lookup(name.jndiName)
-          .asInstanceOf[DataSource]
-          .getConnection
+        (new InitialContext).lookup("java:/comp/env").asInstanceOf[Context]
+          .lookup(name.jndiName).asInstanceOf[DataSource].getConnection
       },
       () => {
         logger.trace(
           "Trying JNDI lookup on java:/comp/env/%s".format(name.jndiName))
-        (new InitialContext)
-          .lookup("java:/comp/env/" + name.jndiName)
-          .asInstanceOf[DataSource]
-          .getConnection
+        (new InitialContext).lookup("java:/comp/env/" + name.jndiName)
+          .asInstanceOf[DataSource].getConnection
 
       },
       () => {
         logger.trace("Trying JNDI lookup on %s".format(name.jndiName))
-        (
-          new InitialContext
-        ).lookup(name.jndiName).asInstanceOf[DataSource].getConnection
+        (new InitialContext).lookup(name.jndiName).asInstanceOf[DataSource]
+          .getConnection
 
       }
     )
@@ -140,8 +133,8 @@ trait DB extends Loggable {
     */
   def doWithConnectionManagers[T](
       mgrs: (ConnectionIdentifier, ConnectionManager)*)(f: => T): T = {
-    val newMap = mgrs.foldLeft(threadLocalConnectionManagers.box openOr Map())(
-      _ + _)
+    val newMap = mgrs
+      .foldLeft(threadLocalConnectionManagers.box openOr Map())(_ + _)
     threadLocalConnectionManagers.doWith(newMap)(f)
   }
 
@@ -190,8 +183,7 @@ trait DB extends Loggable {
 
   private def newConnection(name: ConnectionIdentifier): SuperConnection = {
     def cmSuperConnection(cm: ConnectionManager): Box[SuperConnection] =
-      cm.newSuperConnection(name) or cm
-        .newConnection(name)
+      cm.newSuperConnection(name) or cm.newConnection(name)
         .map(c => new SuperConnection(c, () => cm.releaseConnection(c)))
 
     def jndiSuperConnection: Box[SuperConnection] =
@@ -199,19 +191,20 @@ trait DB extends Loggable {
         val uniqueId =
           if (logger.isDebugEnabled) Helpers.nextNum.toString else ""
         logger.debug(
-          "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " opened")
+          "Connection ID " + uniqueId + " for JNDI connection " + name
+            .jndiName + " opened")
         new SuperConnection(
           c,
           () => {
             logger.debug(
-              "Connection ID " + uniqueId + " for JNDI connection " + name.jndiName + " closed");
-            c.close
+              "Connection ID " + uniqueId + " for JNDI connection " + name
+                .jndiName + " closed"); c.close
           })
       })
 
     val cmConn = for {
-      connectionManager <- threadLocalConnectionManagers.box.flatMap(_.get(
-        name)) or Box(connectionManagers.get(name))
+      connectionManager <- threadLocalConnectionManagers.box
+        .flatMap(_.get(name)) or Box(connectionManagers.get(name))
       connection <- cmSuperConnection(connectionManager)
     } yield connection
 
@@ -222,7 +215,8 @@ trait DB extends Loggable {
     ret openOr {
       throw new NullPointerException(
         "Looking for Connection Identifier " + name + " but failed to find either a JNDI data source " +
-          "with the name " + name.jndiName + " or a lift connection manager with the correct name")
+          "with the name " + name
+          .jndiName + " or a lift connection manager with the correct name")
     }
   }
 
@@ -368,8 +362,8 @@ trait DB extends Loggable {
           tryo(c.releaseFunc())
           info -= name
           val rolledback = rollback | manualRollback
-          logger.trace(
-            "Invoking %d postTransaction functions. rollback=%s".format(
+          logger
+            .trace("Invoking %d postTransaction functions. rollback=%s".format(
               post.size,
               rolledback))
           post.reverse.foreach(f => tryo(f(!rolledback)))
@@ -379,9 +373,8 @@ trait DB extends Loggable {
       }
       case Some(ConnectionHolder(c, n, post, rb)) =>
         logger.trace(
-          "Did not release " + name + " on thread " + Thread.currentThread + " count " + (
-            n - 1
-          ))
+          "Did not release " + name + " on thread " + Thread
+            .currentThread + " count " + (n - 1))
         info(name) = ConnectionHolder(c, n - 1, post, rb)
       case x =>
       // ignore
@@ -399,8 +392,8 @@ trait DB extends Loggable {
     info.get(name) match {
       case Some(ConnectionHolder(c, n, post, rb)) =>
         info(name) = ConnectionHolder(c, n, func :: post, rb)
-        logger.trace(
-          "Appended postTransaction function on %s, new count=%d".format(
+        logger
+          .trace("Appended postTransaction function on %s, new count=%d".format(
             name,
             post.size + 1))
       case _ =>
@@ -796,8 +789,8 @@ trait DB extends Loggable {
     *
     * TODO : Maybe this should be refactored to allow for driver-specific reserved words
     */
-  lazy val defaultReservedWords: scala.collection.immutable.Set[String] =
-    scala.collection.immutable.HashSet(
+  lazy val defaultReservedWords: scala.collection.immutable.Set[String] = scala
+    .collection.immutable.HashSet(
       "abort",
       "accept",
       "access",
@@ -1278,9 +1271,8 @@ trait ProtoDBVendor extends ConnectionManager {
           if (pool.isEmpty && poolSize == curSize && canExpand_?) {
             tempMaxSize += 1
             logger.debug(
-              "Temporarily expanding pool. name=%s, tempMaxSize=%d".format(
-                name,
-                tempMaxSize))
+              "Temporarily expanding pool. name=%s, tempMaxSize=%d"
+                .format(name, tempMaxSize))
           }
           newConnection(name)
 

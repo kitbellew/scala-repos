@@ -36,10 +36,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
       @NotNull
       document: Document,
       quick: Boolean): Array[FoldingDescriptor] = {
-    if (!element
-          .isInstanceOf[ScalaFile] || quick || !ScalaI18nUtil.isFoldingsOn) {
-      return FoldingDescriptor.EMPTY
-    }
+    if (!element.isInstanceOf[ScalaFile] || quick || !ScalaI18nUtil
+          .isFoldingsOn) { return FoldingDescriptor.EMPTY }
     val file: ScalaFile = element.asInstanceOf[ScalaFile]
     val project: Project = file.getProject
     val result = new java.util.ArrayList[FoldingDescriptor]
@@ -59,9 +57,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
       case literal: ScLiteral =>
         return ScalaI18nUtil.getI18nMessage(element.getProject, literal)
       case methodCall: ScMethodCall =>
-        return ScalaI18nUtil.formatMethodCallExpression(
-          element.getProject,
-          methodCall)
+        return ScalaI18nUtil
+          .formatMethodCallExpression(element.getProject, methodCall)
       case _ =>
     }
     element.getText
@@ -76,9 +73,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
       expression: ScLiteral,
       result: java.util.ArrayList[FoldingDescriptor]) {
     if (ScalaI18nUtil.isI18nProperty(project, expression)) {
-      val property: IProperty = ScalaI18nUtil.getI18nProperty(
-        project,
-        expression)
+      val property: IProperty = ScalaI18nUtil
+        .getI18nProperty(project, expression)
       val set = new java.util.HashSet[AnyRef]
       if (property != null) set.add(property)
       val msg: String = ScalaI18nUtil.formatI18nProperty(expression, property)
@@ -87,8 +83,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
         case expressions: ScArgumentExprList =>
           val exprs = expressions.exprsArray
           if (!(msg == expression.getText) && (exprs(0) eq expression)) {
-            val count: Int = ScalaI18nUtil.getPropertyValueParamsMaxCount(
-              expression)
+            val count: Int = ScalaI18nUtil
+              .getPropertyValueParamsMaxCount(expression)
             val args: Array[ScExpression] = expressions.exprsArray
             if (args.length == 1 + count && parent.getParent
                   .isInstanceOf[ScMethodCall]) {

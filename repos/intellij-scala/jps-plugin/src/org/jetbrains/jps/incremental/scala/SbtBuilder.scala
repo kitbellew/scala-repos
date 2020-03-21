@@ -60,16 +60,15 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
 
     updateSharedResources(context, chunk)
 
-    context.processMessage(new ProgressMessage(
-      "Searching for compilable files..."))
+    context
+      .processMessage(new ProgressMessage("Searching for compilable files..."))
 
     val filesToCompile = collectCompilableFiles(context, chunk)
     if (filesToCompile.isEmpty) return ExitCode.NOTHING_DONE
 
     // Delete dirty class files (to handle force builds and form changes)
-    BuildOperations.cleanOutputsCorrespondingToChangedFiles(
-      context,
-      dirtyFilesHolder)
+    BuildOperations
+      .cleanOutputsCorrespondingToChangedFiles(context, dirtyFilesHolder)
 
     val sources = filesToCompile.keySet.toSeq
 
@@ -133,8 +132,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
         root.getRootFile,
         new Processor[File] {
           def process(file: File) = {
-            if (file.isFile && filter.accept(file) && !excludeIndex.isExcluded(
-                  file)) {
+            if (file.isFile && filter.accept(file) && !excludeIndex
+                  .isExcluded(file)) {
               ResourceUpdater.updateResource(context, root, file, outputRoot)
             }
             true
@@ -145,9 +144,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
   }
 
   private def isDisabled(context: CompileContext): Boolean = {
-    projectSettings(
-      context).getIncrementalityType != IncrementalityType.SBT || !isScalaProject(
-      context.getProjectDescriptor.getProject)
+    projectSettings(context).getIncrementalityType != IncrementalityType
+      .SBT || !isScalaProject(context.getProjectDescriptor.getProject)
   }
 
   private def hasDirtyFilesOrDependencies(
@@ -174,7 +172,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
       } getOrElse { dependencies.nonEmpty }
     }
 
-    if (!hasDirtyDependencies && !dirtyFilesHolder.hasDirtyFiles && !dirtyFilesHolder.hasRemovedFiles) {
+    if (!hasDirtyDependencies && !dirtyFilesHolder
+          .hasDirtyFiles && !dirtyFilesHolder.hasRemovedFiles) {
       if (targetTimestamp.isEmpty)
         timestamps.set(
           representativeTarget,
@@ -234,21 +233,17 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
       target: ModuleBuildTarget): Seq[ModuleBuildTarget] = {
     val dependencies = {
       val targetOutputIndex = {
-        val targets =
-          context.getProjectDescriptor.getBuildTargetIndex.getAllTargets
+        val targets = context.getProjectDescriptor.getBuildTargetIndex
+          .getAllTargets
         new TargetOutputIndexImpl(targets, context)
       }
-      target
-        .computeDependencies(
-          context.getProjectDescriptor.getBuildTargetIndex,
-          targetOutputIndex)
-        .asScala
+      target.computeDependencies(
+        context.getProjectDescriptor.getBuildTargetIndex,
+        targetOutputIndex).asScala
     }
 
-    dependencies
-      .filter(_.isInstanceOf[ModuleBuildTarget])
-      .map(_.asInstanceOf[ModuleBuildTarget])
-      .toSeq
+    dependencies.filter(_.isInstanceOf[ModuleBuildTarget])
+      .map(_.asInstanceOf[ModuleBuildTarget]).toSeq
   }
 
   private def logCustomSbtIncOptions(
@@ -257,7 +252,7 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
       client: Client): Unit = {
     val settings = projectSettings(context).getCompilerSettings(chunk)
     val options = settings.getSbtIncrementalOptions
-    client.debug(
-      s"Custom sbt incremental compiler options for ${chunk.getPresentableShortName}: ${options.nonDefault}")
+    client.debug(s"Custom sbt incremental compiler options for ${chunk
+      .getPresentableShortName}: ${options.nonDefault}")
   }
 }

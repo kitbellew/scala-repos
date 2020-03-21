@@ -205,15 +205,12 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
       val mergeValue = (buf: ArrayBuffer[V], v: Iterable[V]) => buf ++= v
       val mergeCombiner =
         (buf1: ArrayBuffer[V], buf2: ArrayBuffer[V]) => buf1 ++= buf2
-      self
-        .groupByKey(partitioner)
-        .window(windowDuration, slideDuration)
+      self.groupByKey(partitioner).window(windowDuration, slideDuration)
         .combineByKey[ArrayBuffer[V]](
           createCombiner,
           mergeValue,
           mergeCombiner,
-          partitioner)
-        .asInstanceOf[DStream[(K, Iterable[V])]]
+          partitioner).asInstanceOf[DStream[(K, Iterable[V])]]
     }
 
   /**
@@ -302,8 +299,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
       slideDuration: Duration,
       partitioner: Partitioner): DStream[(K, V)] =
     ssc.withScope {
-      self
-        .reduceByKey(reduceFunc, partitioner)
+      self.reduceByKey(reduceFunc, partitioner)
         .window(windowDuration, slideDuration)
         .reduceByKey(reduceFunc, partitioner)
     }

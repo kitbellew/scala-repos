@@ -101,11 +101,9 @@ object Modules {
       environment: Environment,
       configuration: Configuration): Seq[Any] = {
 
-    val includes = configuration
-      .getStringSeq("play.modules.enabled")
+    val includes = configuration.getStringSeq("play.modules.enabled")
       .getOrElse(Seq.empty)
-    val excludes = configuration
-      .getStringSeq("play.modules.disabled")
+    val excludes = configuration.getStringSeq("play.modules.disabled")
       .getOrElse(Seq.empty)
 
     val moduleClassNames = includes.toSet -- excludes
@@ -117,8 +115,7 @@ object Modules {
       else
         try {
           val defaultModuleClass = environment.classLoader
-            .loadClass(DefaultModuleName)
-            .asInstanceOf[Class[Any]]
+            .loadClass(DefaultModuleName).asInstanceOf[Class[Any]]
           Some(constructModule(
             environment,
             configuration,

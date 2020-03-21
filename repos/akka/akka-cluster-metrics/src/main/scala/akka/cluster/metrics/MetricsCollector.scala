@@ -60,13 +60,10 @@ private[metrics] object MetricsCollector {
     def create(provider: String) =
       TryNative {
         log.debug(s"Trying ${provider}.")
-        system
-          .asInstanceOf[ExtendedActorSystem]
-          .dynamicAccess
+        system.asInstanceOf[ExtendedActorSystem].dynamicAccess
           .createInstanceFor[MetricsCollector](
             provider,
-            List(classOf[ActorSystem] -> system))
-          .get
+            List(classOf[ActorSystem] -> system)).get
       }
 
     val collector =
@@ -111,8 +108,8 @@ class JmxMetricsCollector(address: Address, decayFactor: Double)
 
   private val memoryMBean: MemoryMXBean = ManagementFactory.getMemoryMXBean
 
-  private val osMBean: OperatingSystemMXBean =
-    ManagementFactory.getOperatingSystemMXBean
+  private val osMBean: OperatingSystemMXBean = ManagementFactory
+    .getOperatingSystemMXBean
 
   /**
     * Samples and collects new data points.

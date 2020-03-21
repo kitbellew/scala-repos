@@ -28,18 +28,14 @@ object RawZipkinTracer {
   private[this] def newClient(
       scribeHost: String,
       scribePort: Int): Scribe.FutureIface = {
-    val transport = ClientBuilder()
-      .name("zipkin-tracer")
+    val transport = ClientBuilder().name("zipkin-tracer")
       .hosts(new InetSocketAddress(scribeHost, scribePort))
-      .codec(ThriftClientFramedCodec())
-      .reportTo(ClientStatsReceiver)
+      .codec(ThriftClientFramedCodec()).reportTo(ClientStatsReceiver)
       .hostConnectionLimit(5)
       // using an arbitrary, but bounded number of waiters to avoid memory leaks
       .hostConnectionMaxWaiters(250)
       // somewhat arbitrary, but bounded timeouts
-      .timeout(1.second)
-      .daemon(true)
-      .build()
+      .timeout(1.second).daemon(true).build()
 
     new Scribe.FinagledClient(
       new TracelessFilter andThen transport,
@@ -74,20 +70,18 @@ object RawZipkinTracer {
 
   // Try to flush the tracers when we shut
   // down. We give it 100ms.
-  Runtime
-    .getRuntime()
-    .addShutdownHook(new Thread {
-      setName("RawZipkinTracer-ShutdownHook")
-      override def run() {
-        val tracers = RawZipkinTracer.synchronized(map.values.toSeq)
-        val joined = Future.join(tracers map (_.flush()))
-        try { Await.result(joined, 100.milliseconds) }
-        catch {
-          case _: TimeoutException =>
-            System.err.println("Failed to flush all traces before quitting")
-        }
+  Runtime.getRuntime().addShutdownHook(new Thread {
+    setName("RawZipkinTracer-ShutdownHook")
+    override def run() {
+      val tracers = RawZipkinTracer.synchronized(map.values.toSeq)
+      val joined = Future.join(tracers map (_.flush()))
+      try { Await.result(joined, 100.milliseconds) }
+      catch {
+        case _: TimeoutException =>
+          System.err.println("Failed to flush all traces before quitting")
       }
-    })
+    }
+  })
 }
 
 /**
@@ -206,14 +200,11 @@ private[thrift] class RawZipkinTracer(
     * Log the span data via Scribe.
     */
   def logSpans(spans: Seq[Span]): Future[Unit] = {
-    client
-      .log(createLogEntries(spans))
-      .respond {
-        case Return(ResultCode.Ok)       => okCounter.incr()
-        case Return(ResultCode.TryLater) => tryLaterCounter.incr()
-        case Throw(e)                    => errorReceiver.counter(e.getClass.getName).incr()
-      }
-      .unit
+    client.log(createLogEntries(spans)).respond {
+      case Return(ResultCode.Ok)       => okCounter.incr()
+      case Return(ResultCode.TryLater) => tryLaterCounter.incr()
+      case Throw(e)                    => errorReceiver.counter(e.getClass.getName).incr()
+    }.unit
   }
 
   /**
@@ -363,8 +354,8 @@ private[thrift] class RawZipkinTracer(
     */
   protected def annotate(record: Record, value: String) {
     spanMap.update(record.traceId) { span =>
-      span.addAnnotation(
-        ZipkinAnnotation(record.timestamp, value, span.endpoint))
+      span
+        .addAnnotation(ZipkinAnnotation(record.timestamp, value, span.endpoint))
     }
   }
 }

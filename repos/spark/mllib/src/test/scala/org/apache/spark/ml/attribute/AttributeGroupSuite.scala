@@ -27,8 +27,7 @@ class AttributeGroupSuite extends SparkFunSuite {
       NominalAttribute.defaultAttr,
       BinaryAttribute.defaultAttr.withIndex(0),
       NumericAttribute.defaultAttr.withName("age").withSparsity(0.8),
-      NominalAttribute.defaultAttr
-        .withName("size")
+      NominalAttribute.defaultAttr.withName("size")
         .withValues("small", "medium", "large"),
       BinaryAttribute.defaultAttr.withName("clicked").withValues("no", "yes"),
       NumericAttribute.defaultAttr,

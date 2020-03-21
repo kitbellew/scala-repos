@@ -49,8 +49,8 @@ object BuildUtil {
       data: Settings[Scope]): BuildUtil[ResolvedProject] = {
     val getp = (build: URI, project: String) =>
       Load.getProject(units, build, project)
-    val configs = (_: ResolvedProject).configurations.map(c =>
-      ConfigKey(c.name))
+    val configs = (_: ResolvedProject).configurations
+      .map(c => ConfigKey(c.name))
     val aggregates = aggregationRelation(units)
     new BuildUtil(
       keyIndex,

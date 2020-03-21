@@ -199,15 +199,13 @@ trait ApiControllerBase extends ControllerBase {
         for {
           issueId <- params("id").toIntOpt
           issue <- getIssue(repository.owner, repository.name, issueId.toString)
-          body <- extractFromJsonBody[CreateAComment].map(_.body)
-          if !body.isEmpty
-          action = params
-            .get("action")
-            .filter(_ =>
-              isEditable(
-                issue.userName,
-                issue.repositoryName,
-                issue.openedUserName))
+          body <- extractFromJsonBody[CreateAComment].map(_.body) if !body
+            .isEmpty
+          action = params.get("action").filter(_ =>
+            isEditable(
+              issue.userName,
+              issue.repositoryName,
+              issue.openedUserName))
           (issue, id) <- handleComment(issue, Some(body), repository, action)
           issueComment <- getComment(
             repository.owner,
@@ -282,10 +280,8 @@ trait ApiControllerBase extends ControllerBase {
         LockUtil.lock(RepositoryName(repository).fullName) {
           getLabel(repository.owner, repository.name, params("labelName")).map {
             label =>
-              if (getLabel(
-                    repository.owner,
-                    repository.name,
-                    data.name).isEmpty) {
+              if (getLabel(repository.owner, repository.name, data.name)
+                    .isEmpty) {
                 updateLabel(
                   repository.owner,
                   repository.name,
@@ -293,10 +289,8 @@ trait ApiControllerBase extends ControllerBase {
                   data.name,
                   data.color)
                 JsonFormat(ApiLabel(
-                  getLabel(
-                    repository.owner,
-                    repository.name,
-                    label.labelId).get,
+                  getLabel(repository.owner, repository.name, label.labelId)
+                    .get,
                   RepositoryName(repository)))
               } else {
                 // TODO ApiError should support errors field to enhance compatibility of GitHub API
@@ -392,26 +386,21 @@ trait ApiControllerBase extends ControllerBase {
     repository =>
       val owner = repository.owner
       val name = repository.name
-      params("id").toIntOpt.flatMap {
-        issueId =>
-          getPullRequest(owner, name, issueId) map {
-            case (issue, pullreq) =>
-              using(Git.open(getRepositoryDir(owner, name))) {
-                git =>
-                  val oldId = git.getRepository.resolve(pullreq.commitIdFrom)
-                  val newId = git.getRepository.resolve(pullreq.commitIdTo)
-                  val repoFullName = RepositoryName(repository)
-                  val commits = git.log
-                    .addRange(oldId, newId)
-                    .call
-                    .iterator
-                    .asScala
-                    .map(c =>
-                      ApiCommitListItem(new CommitInfo(c), repoFullName))
-                    .toList
-                  JsonFormat(commits)
-              }
-          }
+      params("id").toIntOpt.flatMap { issueId =>
+        getPullRequest(owner, name, issueId) map {
+          case (issue, pullreq) =>
+            using(Git.open(getRepositoryDir(owner, name))) {
+              git =>
+                val oldId = git.getRepository.resolve(pullreq.commitIdFrom)
+                val newId = git.getRepository.resolve(pullreq.commitIdTo)
+                val repoFullName = RepositoryName(repository)
+                val commits = git.log.addRange(oldId, newId).call.iterator
+                  .asScala
+                  .map(c => ApiCommitListItem(new CommitInfo(c), repoFullName))
+                  .toList
+                JsonFormat(commits)
+            }
+        }
       } getOrElse NotFound
   })
 

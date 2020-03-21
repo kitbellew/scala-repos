@@ -33,12 +33,10 @@ object Api extends LilaController {
   def users =
     ApiResult { implicit ctx =>
       get("team") ?? { teamId =>
-        userApi
-          .list(
-            teamId = teamId,
-            engine = getBoolOpt("engine"),
-            nb = getInt("nb"))
-          .map(_.some)
+        userApi.list(
+          teamId = teamId,
+          engine = getBoolOpt("engine"),
+          nb = getInt("nb")).map(_.some)
       }
     }
 

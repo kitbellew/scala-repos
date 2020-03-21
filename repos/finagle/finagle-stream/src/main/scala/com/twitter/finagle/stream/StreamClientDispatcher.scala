@@ -40,9 +40,7 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
     }
 
   protected def dispatch(req: Req, p: Promise[StreamResponse]) =
-    trans
-      .write(from(RT.canonize(req)): HttpRequest)
-      .rescue(wrapWriteException)
+    trans.write(from(RT.canonize(req)): HttpRequest).rescue(wrapWriteException)
       .before {
         trans.read() flatMap {
           case httpRes: HttpResponse =>

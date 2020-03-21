@@ -53,11 +53,8 @@ abstract class NumericRange[T](
   import num._
 
   // See comment in Range for why this must be lazy.
-  private lazy val numRangeElements: Int = NumericRange.count(
-    start,
-    end,
-    step,
-    isInclusive)
+  private lazy val numRangeElements: Int = NumericRange
+    .count(start, end, step, isInclusive)
 
   override def length = numRangeElements
   override def isEmpty = length == 0
@@ -197,9 +194,8 @@ abstract class NumericRange[T](
     if (isEmpty) this.num fromInt 0
     else if (numRangeElements == 1) head
     else
-      ((this.num fromInt numRangeElements) * (head + last) / (
-        this.num fromInt 2
-      ))
+      ((this.num fromInt numRangeElements) * (head + last) / (this
+        .num fromInt 2))
   }
 
   override lazy val hashCode = super.hashCode()
@@ -208,9 +204,8 @@ abstract class NumericRange[T](
       case x: NumericRange[_] =>
         (x canEqual this) && (length == x.length) && (
           (length == 0) || // all empty sequences are equal
-            (
-              start == x.start && last == x.last
-            ) // same length and same endpoints implies equality
+            (start == x.start && last == x
+              .last) // same length and same endpoints implies equality
         )
       case _ => super.equals(other)
     }
@@ -250,8 +245,8 @@ object NumericRange {
         *  overflow turn up as an empty range.
         */
       // The second condition contradicts an empty result.
-      val isOverflow =
-        longCount == 0 && num.lt(num.plus(start, step), end) == upward
+      val isOverflow = longCount == 0 && num
+        .lt(num.plus(start, step), end) == upward
 
       if (longCount > scala.Int.MaxValue || longCount < 0L || isOverflow) {
         val word = if (isInclusive) "to" else "until"

@@ -29,9 +29,7 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
           case literal: ScLiteral if literal.getText == "false" => "true"
           case id: ScReferenceExpression
               if id.getNode.getChildren(null).length == 1 &&
-                id.getNode
-                  .getChildren(null)
-                  .apply(0)
+                id.getNode.getChildren(null).apply(0)
                   .getElementType == ScalaTokenTypes.tIDENTIFIER =>
             "!" + id.getText
           case _ => super.getTemplateAsString(elements)
@@ -42,8 +40,7 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
   override def getNegatedExpression(element: PsiElement): PsiElement =
     element match {
       case expr if notSurrounder.isApplicable(Array(expr)) =>
-        var res = notSurrounder
-          .surroundPsi(Array(element))
+        var res = notSurrounder.surroundPsi(Array(element))
           .asInstanceOf[ScExpression]
         if (DoubleNegationUtil.hasDoubleNegation(res)) {
           res = DoubleNegationUtil.removeDoubleNegation(res)
@@ -54,7 +51,8 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
         res
       case _ =>
         throw new IllegalArgumentException(
-          "Attempted adding negation through template for element " + element.getText
+          "Attempted adding negation through template for element " + element
+            .getText
             + " which is not a valid boolean expression.")
     }
 
@@ -62,7 +60,6 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
       context: PsiElement,
       prefix: String,
       suffix: String): PsiElement =
-    ScalaPsiElementFactory.createExpressionFromText(
-      prefix + context.getText + suffix,
-      context)
+    ScalaPsiElementFactory
+      .createExpressionFromText(prefix + context.getText + suffix, context)
 }

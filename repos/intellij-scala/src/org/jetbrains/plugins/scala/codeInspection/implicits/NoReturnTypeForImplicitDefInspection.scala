@@ -33,7 +33,8 @@ class NoReturnTypeForImplicitDefInspection
       val descr = description
       val range = new TextRange(
         0,
-        fun.parameterList.getTextRange.getEndOffset - fun.getModifierList.getTextRange.getStartOffset)
+        fun.parameterList.getTextRange.getEndOffset - fun.getModifierList
+          .getTextRange.getStartOffset)
       holder.registerProblem(fun, range, descr, new AddReturnTypeQuickFix(fun))
   }
 }

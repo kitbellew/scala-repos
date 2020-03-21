@@ -390,7 +390,8 @@ object JumpingFrogsPuzzle extends JFXApp {
     title = TITLE
     scene = new Scene {
       content =
-        theViewValues.canvasShape :: theViewValues.stoneShapes ::: theView.frogShapes
+        theViewValues.canvasShape :: theViewValues.stoneShapes ::: theView
+          .frogShapes
     }
   }
 }

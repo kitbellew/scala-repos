@@ -34,8 +34,8 @@ object PlayRun {
   val DocsApplication = config("docs").hide
 
   val createURLClassLoader: ClassLoaderCreator = Reloader.createURLClassLoader
-  val createDelegatedResourcesClassLoader: ClassLoaderCreator =
-    Reloader.createDelegatedResourcesClassLoader
+  val createDelegatedResourcesClassLoader: ClassLoaderCreator = Reloader
+    .createDelegatedResourcesClassLoader
 
   val playDefaultRunTask = playRunTask(
     playRunHooks,
@@ -75,13 +75,8 @@ object PlayRun {
           () =>
             Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
           () =>
-            Project
-              .runTask(streamsManager in scope, state)
-              .map(_._2)
-              .get
-              .toEither
-              .right
-              .toOption
+            Project.runTask(streamsManager in scope, state).map(_._2).get
+              .toEither.right.toOption
         )
 
       val runSbtTask: String => AnyRef = (task: String) => {
@@ -174,15 +169,14 @@ object PlayRun {
       (System.in.available > 0) && (isEOF(System.in.read()) || shouldTerminate)
 
     val sourcesFinder = PathFinder { watched watchPaths state }
-    val watchState = ws.getOrElse(
-      state get ContinuousState getOrElse WatchState.empty)
+    val watchState = ws
+      .getOrElse(state get ContinuousState getOrElse WatchState.empty)
 
     val (triggered, newWatchState, newState) =
       try {
-        val (triggered, newWatchState) = SourceModificationWatch.watch(
-          sourcesFinder,
-          watched.pollInterval,
-          watchState)(shouldTerminate)
+        val (triggered, newWatchState) = SourceModificationWatch
+          .watch(sourcesFinder, watched.pollInterval, watchState)(
+            shouldTerminate)
         (triggered, newWatchState, state)
       } catch {
         case e: Exception =>
@@ -196,12 +190,7 @@ object PlayRun {
       //Then launch compile
       Project.synchronized {
         val start = System.currentTimeMillis
-        Project
-          .runTask(compile in Compile, newState)
-          .get
-          ._2
-          .toEither
-          .right
+        Project.runTask(compile in Compile, newState).get._2.toEither.right
           .map { _ =>
             val duration = System.currentTimeMillis - start
             val formatted = duration match {
@@ -284,20 +273,15 @@ object PlayRun {
         state.fail
       case Right(_) =>
         val stagingBin = Some(
-          extracted.get(stagingDirectory in Universal) / "bin" / extracted.get(
-            executableScriptName)).map { f =>
-          if (System
-                .getProperty("os.name")
-                .toLowerCase(java.util.Locale.ENGLISH)
-                .contains("win")) f.getAbsolutePath + ".bat"
+          extracted.get(stagingDirectory in Universal) / "bin" / extracted
+            .get(executableScriptName)).map { f =>
+          if (System.getProperty("os.name")
+                .toLowerCase(java.util.Locale.ENGLISH).contains("win"))
+            f.getAbsolutePath + ".bat"
           else f.getAbsolutePath
         }.get
         val javaProductionOptions = Project
-          .runTask(javaOptions in Production, state)
-          .get
-          ._2
-          .toEither
-          .right
+          .runTask(javaOptions in Production, state).get._2.toEither.right
           .getOrElse(Seq[String]())
 
         // Note that I'm unable to pass system properties along with properties... if I do then I receive:

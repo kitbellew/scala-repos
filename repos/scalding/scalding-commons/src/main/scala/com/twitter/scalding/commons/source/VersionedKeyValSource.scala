@@ -215,35 +215,30 @@ class VersionedKeyValSource[K, V](
       config: Config,
       mode: Mode): Iterator[(K, V)] = {
     val tap = createTap(Read)(mode)
-    mode
-      .openForRead(config, tap)
-      .asScala
-      .flatMap { te =>
-        val item = te.selectTuple(fields)
-        mode match {
-          case _: TestMode =>
-            val key = item.getObject(0).asInstanceOf[K]
-            val value = item.getObject(1).asInstanceOf[V]
-            Some((key, value))
-          case _ =>
-            val key = item.getObject(0).asInstanceOf[Array[Byte]]
-            val value = item.getObject(1).asInstanceOf[Array[Byte]]
-            checkedInversion((key, value))
-        }
+    mode.openForRead(config, tap).asScala.flatMap { te =>
+      val item = te.selectTuple(fields)
+      mode match {
+        case _: TestMode =>
+          val key = item.getObject(0).asInstanceOf[K]
+          val value = item.getObject(1).asInstanceOf[V]
+          Some((key, value))
+        case _ =>
+          val key = item.getObject(0).asInstanceOf[Array[Byte]]
+          val value = item.getObject(1).asInstanceOf[Array[Byte]]
+          checkedInversion((key, value))
       }
+    }
   }
 
   override def toString =
-    "%s path:%s,sourceVersion:%s,sinkVersion:%s".format(
-      getClass(),
-      path,
-      sourceVersion,
-      sinkVersion)
+    "%s path:%s,sourceVersion:%s,sinkVersion:%s"
+      .format(getClass(), path, sourceVersion, sinkVersion)
 
   override def equals(other: Any) =
     if (other.isInstanceOf[VersionedKeyValSource[_, _]]) {
       val otherSrc = other.asInstanceOf[VersionedKeyValSource[K, V]]
-      otherSrc.path == path && otherSrc.sourceVersion == sourceVersion && otherSrc.sinkVersion == sinkVersion
+      otherSrc.path == path && otherSrc
+        .sourceVersion == sourceVersion && otherSrc.sinkVersion == sinkVersion
     } else { false }
 
   override def hashCode = toString.hashCode
@@ -276,19 +271,15 @@ class TypedRichPipeEx[K: Ordering, V: Monoid](pipe: TypedPipe[(K, V)])
     val outPipe =
       if (!src.resourceExists(mode)) pipe
       else {
-        val oldPairs = TypedPipe
-          .from[(K, V)](src.read, (0, 1))
-          .map { case (k, v) => (k, v, 0) }
+        val oldPairs = TypedPipe.from[(K, V)](src.read, (0, 1)).map {
+          case (k, v) => (k, v, 0)
+        }
 
         val newPairs = pipe.sumByLocalKeys.map { case (k, v) => (k, v, 1) }
 
-        (oldPairs ++ newPairs)
-          .groupBy { _._1 }
-          .withReducers(reducers)
-          .sortBy { _._3 }
-          .mapValues { _._2 }
-          .sum
-          .toTypedPipe
+        (oldPairs ++ newPairs).groupBy { _._1 }.withReducers(reducers).sortBy {
+          _._3
+        }.mapValues { _._2 }.sum.toTypedPipe
       }
 
     outPipe.write(src)
@@ -318,10 +309,9 @@ class RichPipeEx(pipe: Pipe) extends java.io.Serializable {
         val oldPairs = appendToken(src.read, 0)
         val newPairs = appendToken(pipe, 1)
 
-        (oldPairs ++ newPairs)
-          .groupBy('key) { _.reducers(reducers).sortBy('isNew).sum[V]('value) }
-          .project(('key, 'value))
-          .rename(('key, 'value) -> fields)
+        (oldPairs ++ newPairs).groupBy('key) {
+          _.reducers(reducers).sortBy('isNew).sum[V]('value)
+        }.project(('key, 'value)).rename(('key, 'value) -> fields)
       }
 
     outPipe.write(src)

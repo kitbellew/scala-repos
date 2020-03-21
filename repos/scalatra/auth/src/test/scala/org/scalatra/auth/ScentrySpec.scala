@@ -121,8 +121,7 @@ object ScentrySpec extends Specification with Mockito {
     }
     "allow registration of global strategies" in {
       Scentry.register("Bogus", (_: ScalatraBase) => s)
-      Scentry
-        .globalStrategies("Bogus")
+      Scentry.globalStrategies("Bogus")
         .asInstanceOf[Scentry[User]#StrategyFactory](context) must be_==(s)
     }
 

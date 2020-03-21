@@ -241,10 +241,8 @@ object Prolog {
           }
           if (solutions.isEmpty) { Console.println("no") }
           else {
-            val s: Subst = solutions.head
-              .filter(b => tvs contains b.name)
-              .map(b => Binding(b.name, b.term map solutions.head))
-              .reverse;
+            val s: Subst = solutions.head.filter(b => tvs contains b.name)
+              .map(b => Binding(b.name, b.term map solutions.head)).reverse;
             if (s.isEmpty) Console.println("yes") else Console.println(s);
           }
         } else { program = program ::: List(c); }

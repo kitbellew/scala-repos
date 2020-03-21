@@ -39,9 +39,8 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
   def addEmptyParens() {
     clauses match {
       case Some(c) =>
-        val clause = ScalaPsiElementFactory.createClauseFromText(
-          "()",
-          getManager)
+        val clause = ScalaPsiElementFactory
+          .createClauseFromText("()", getManager)
         c.addClause(clause)
       case _ =>
     }
@@ -104,17 +103,15 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
           case Some(x: ScPrimaryConstructor) =>
             (if (x.parameterList.clauses.length == 1 &&
                  x.parameterList.clauses.head.isImplicit) "()"
-             else "") + x.parameterList.clauses
-              .map(c =>
-                c.parameters
-                  .map(p =>
-                    p.name + " : " +
-                      p.typeElement.fold("Any")(_.getText) +
-                      (if (p.isDefaultParam)
-                         " = " + p.getDefaultExpression.fold("{}")(_.getText)
-                       else if (p.isRepeatedParameter) "*"
-                       else ""))
-                  .mkString(if (c.isImplicit) "(implicit " else "(", ", ", ")"))
+             else "") + x.parameterList.clauses.map(c =>
+              c.parameters.map(p =>
+                p.name + " : " +
+                  p.typeElement.fold("Any")(_.getText) +
+                  (if (p.isDefaultParam)
+                     " = " + p.getDefaultExpression.fold("{}")(_.getText)
+                   else if (p.isRepeatedParameter) "*"
+                   else ""))
+                .mkString(if (c.isImplicit) "(implicit " else "(", ", ", ")"))
               .mkString("")
           case None => ""
         }

@@ -39,8 +39,8 @@ trait Variances {
       */
     @tailrec
     final def checkForEscape(sym: Symbol, site: Symbol) {
-      if (site == sym.owner || site == sym.owner.moduleClass || site.hasPackageFlag)
-        () // done
+      if (site == sym.owner || site == sym.owner.moduleClass || site
+            .hasPackageFlag) () // done
       else if (site.isTerm || site.isPrivateLocal)
         checkForEscape(sym, site.owner) // ok - recurse to owner
       else escapedLocals += sym
@@ -56,19 +56,16 @@ trait Variances {
     //  - it's a type parameter of tvar's owner.
     def shouldFlip(sym: Symbol, tvar: Symbol) =
       (sym.isParameter
-        && !(
-          tvar.isTypeParameterOrSkolem && sym.isTypeParameterOrSkolem && tvar.owner == sym.owner
-        ))
+        && !(tvar.isTypeParameterOrSkolem && sym.isTypeParameterOrSkolem && tvar
+          .owner == sym.owner))
     // return Bivariant if `sym` is local to a term
     // or is private[this] or protected[this]
     def isLocalOnly(sym: Symbol) =
-      !sym.owner.isClass || (
-        sym.isTerm // ?? shouldn't this be sym.owner.isTerm according to the comments above?
-          && (
-            sym.isLocalToThis || sym.isSuperAccessor
-          ) // super accessors are implicitly local #4345
-          && !escapedLocals(sym)
-      )
+      !sym.owner.isClass || (sym
+        .isTerm // ?? shouldn't this be sym.owner.isTerm according to the comments above?
+        && (sym.isLocalToThis || sym
+          .isSuperAccessor) // super accessors are implicitly local #4345
+        && !escapedLocals(sym))
 
     private object ValidateVarianceMap extends TypeMap(trackVariance = true) {
       private var base: Symbol = _

@@ -47,8 +47,8 @@ object Roots {
       val d = coeff.denominator.toBigInt
       acc * (d / acc.gcd(d))
     }
-    val zCoeffs = coeffs.map(n =>
-      (n.numerator * (factors / n.denominator)).toBigInt)
+    val zCoeffs = coeffs
+      .map(n => (n.numerator * (factors / n.denominator)).toBigInt)
     Polynomial.dense(zCoeffs)
   }
 
@@ -131,8 +131,8 @@ private[poly] class BigDecimalRelativeRoots(
     else {
       isolated(i) match {
         case Point(value) => value.toBigDecimal(mc)
-        case Bounded(lb, ub, _) =>
-          Algebraic.unsafeRoot(zpoly, i, lb, ub).toBigDecimal(mc)
+        case Bounded(lb, ub, _) => Algebraic.unsafeRoot(zpoly, i, lb, ub)
+            .toBigDecimal(mc)
         case _ => throw new RuntimeException("invalid isolated root interval")
       }
     }
@@ -143,8 +143,8 @@ private[poly] class BigDecimalRelativeRoots(
 // http://arxiv.org/pdf/1104.1362v3.pdf
 private[poly] class FixedRealRoots(val poly: Polynomial[Real])
     extends Roots[Real] {
-  private val zpoly: Polynomial[BigInt] = Roots.removeFractions(
-    poly.map(_.toRational))
+  private val zpoly: Polynomial[BigInt] = Roots
+    .removeFractions(poly.map(_.toRational))
   private val isolated: Vector[Interval[Rational]] = Roots.isolateRoots(zpoly)
 
   def count: Int = isolated.size
@@ -155,11 +155,8 @@ private[poly] class FixedRealRoots(val poly: Polynomial[Real])
       isolated(i) match {
         case Point(value) => Real(value)
         case Bounded(lb, ub, _) =>
-          Real(
-            Algebraic
-              .unsafeRoot(zpoly, i, lb, ub)
-              .toBigDecimal(
-                new MathContext(Real.digits, RoundingMode.HALF_EVEN)))
+          Real(Algebraic.unsafeRoot(zpoly, i, lb, ub).toBigDecimal(
+            new MathContext(Real.digits, RoundingMode.HALF_EVEN)))
         case _ => throw new RuntimeException("invalid isolated root interval")
       }
     }

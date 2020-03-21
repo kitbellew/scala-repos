@@ -27,23 +27,17 @@ class MergeToComprehensions extends Phase {
 
   def apply(state: CompilerState) =
     state.map(n =>
-      ClientSideOp
-        .mapResultSetMapping(n, keepType = false) { rsm =>
-          rsm.copy(
-            from = convert(rsm.from),
-            map = rsm.map.replace { case r: Ref => r.untyped })
-        }
-        .infer())
+      ClientSideOp.mapResultSetMapping(n, keepType = false) { rsm =>
+        rsm.copy(
+          from = convert(rsm.from),
+          map = rsm.map.replace { case r: Ref => r.untyped })
+      }.infer())
 
   def convert(tree: Node): Node = {
     // Find all references into tables so we can convert TableNodes to Comprehensions
-    val tableFields = tree
-      .collect {
-        case Select(_ :@ NominalType(t: TableIdentitySymbol, _), f) => (t, f)
-      }
-      .toSeq
-      .groupBy(_._1)
-      .mapValues(_.map(_._2).distinct.toVector)
+    val tableFields = tree.collect {
+      case Select(_ :@ NominalType(t: TableIdentitySymbol, _), f) => (t, f)
+    }.toSeq.groupBy(_._1).mapValues(_.map(_._2).distinct.toVector)
     logger.debug("Table fields: " + tableFields)
 
     /** Merge Take, Drop, Bind and CollectionCast into an existing Comprehension */
@@ -107,9 +101,8 @@ class MergeToComprehensions extends Phase {
       n match {
         case SortBy(s1, f1, b1) =>
           val (c1, replacements1) = mergeSortBy(f1, true)
-          logger.debug(
-            "Merging SortBy into Comprehension:",
-            Ellipsis(n, List(0)))
+          logger
+            .debug("Merging SortBy into Comprehension:", Ellipsis(n, List(0)))
           val b2 = b1.map {
             case (n, o) => (applyReplacements(n, replacements1, c1), o)
           }
@@ -123,9 +116,8 @@ class MergeToComprehensions extends Phase {
             if (c1.distinct.isDefined || c1.having.isDefined)
               toSubquery(c1, replacements1)
             else (c1, replacements1)
-          logger.debug(
-            "Merging Distinct into Comprehension:",
-            Ellipsis(n, List(0)))
+          logger
+            .debug("Merging Distinct into Comprehension:", Ellipsis(n, List(0)))
           val o2 = applyReplacements(o1, replacements1a, c1a)
           val c2 = c1a.copy(distinct = Some(
             ProductNode(ConstArray(o2)).flatten.infer())) :@ c1a.nodeType
@@ -157,8 +149,7 @@ class MergeToComprehensions extends Phase {
             val isParam = leakedPaths.nonEmpty && ({
               logger.debug(
                 "Leaked paths to GroupBy keys: " + leakedPaths
-                  .map(l => ("_" :: l).mkString("."))
-                  .mkString(", "))
+                  .map(l => ("_" :: l).mkString(".")).mkString(", "))
               val targets = leakedPaths.map(_.foldLeft(b2)(_ select _))
               targets.indexWhere(_.findNode {
                 case _: QueryParameter => true
@@ -189,16 +180,13 @@ class MergeToComprehensions extends Phase {
             case FwdPath(s :: ElementSymbol(1) :: rest) if s == s1 =>
               rest.foldLeft(b2a) { case (n, s) => n.select(s) }.infer()
           }
-          val c2 = c1a
-            .copy(
-              groupBy = Some(ProductNode(ConstArray(b2a)).flatten),
-              select = Pure(str2, ts2))
-            .infer()
+          val c2 = c1a.copy(
+            groupBy = Some(ProductNode(ConstArray(b2a)).flatten),
+            select = Pure(str2, ts2)).infer()
           logger.debug("Merged GroupBy into Comprehension:", c2)
           val StructNode(defs2) = str2
-          val replacements = defs2.iterator.map {
-            case (f, _) => (ts2, f) -> f
-          }.toMap
+          val replacements = defs2.iterator.map { case (f, _) => (ts2, f) -> f }
+            .toMap
           logger.debug("Replacements are: " + replacements)
           (c2, replacements)
 
@@ -246,10 +234,9 @@ class MergeToComprehensions extends Phase {
       n match {
         case t: TableNode =>
           logger.debug("Creating source from TableNode:", t)
-          val mappings = ConstArray.from(
-            tableFields
-              .getOrElse(t.identity, Seq.empty)
-              .map(f => ((t.identity: TypeSymbol, f), f :: Nil)))
+          val mappings = ConstArray
+            .from(tableFields.getOrElse(t.identity, Seq.empty).map(f =>
+              ((t.identity: TypeSymbol, f), f :: Nil)))
           logger.debug("Mappings are: " + mappings)
           Some((t, mappings))
         case p @ Pure(StructNode(defs), ts) =>
@@ -282,25 +269,23 @@ class MergeToComprehensions extends Phase {
               lmap.map { case (key, ss)   => (key, ElementSymbol(1) :: ss) } ++
                 rmap.map { case (key, ss) => (key, ElementSymbol(2) :: ss) }
             val mappingsM = mappings.iterator.toMap
-            logger.debug(
-              s"Mappings for `on` clause in Join $ls/$rs: " + mappingsM)
-            val on2 = on1
-              .replace(
-                {
-                  case p @ FwdPathOnTypeSymbol(ts, _ :: s :: Nil) =>
-                    //logger.debug(s"Finding ($ts, $s)")
-                    mappingsM.get((ts, s)) match {
-                      case Some(ElementSymbol(idx) :: ss) =>
-                        //logger.debug(s"Found $idx :: $ss")
-                        FwdPath((if (idx == 1) ls else rs) :: ss)
-                      case _ => p
-                    }
-                },
-                bottomUp = true
-              )
-              .infer(scope = Type.Scope(
-                j.leftGen -> l2.nodeType.asCollectionType.elementType) +
-                (j.rightGen -> r2.nodeType.asCollectionType.elementType))
+            logger
+              .debug(s"Mappings for `on` clause in Join $ls/$rs: " + mappingsM)
+            val on2 = on1.replace(
+              {
+                case p @ FwdPathOnTypeSymbol(ts, _ :: s :: Nil) =>
+                  //logger.debug(s"Finding ($ts, $s)")
+                  mappingsM.get((ts, s)) match {
+                    case Some(ElementSymbol(idx) :: ss) =>
+                      //logger.debug(s"Found $idx :: $ss")
+                      FwdPath((if (idx == 1) ls else rs) :: ss)
+                    case _ => p
+                  }
+              },
+              bottomUp = true
+            ).infer(scope = Type
+              .Scope(j.leftGen -> l2.nodeType.asCollectionType.elementType) +
+              (j.rightGen -> r2.nodeType.asCollectionType.elementType))
             logger.debug(s"Transformed `on` clause in Join $ls/$rs:", on2)
             val j2 = j.copy(left = l2, right = r2, on = on2).infer()
             logger.debug(s"Created source from Join $ls/$rs:", j2)
@@ -337,9 +322,8 @@ class MergeToComprehensions extends Phase {
           val c2 = c.select match {
             // Ensure that the select clause is non-empty
             case Pure(StructNode(ConstArray.empty), _) =>
-              c.copy(select = Pure(
-                  StructNode(ConstArray((new AnonSymbol, LiteralNode(1))))))
-                .infer()
+              c.copy(select = Pure(StructNode(
+                ConstArray((new AnonSymbol, LiteralNode(1)))))).infer()
             case _ => c
           }
           (c2, mappings)
@@ -422,9 +406,8 @@ class MergeToComprehensions extends Phase {
         }
         val c2 = c1.copy(select = Pure(StructNode(defs2), ts1)).infer()
         logger.debug("Merged Bind into Comprehension as 'select':", c2)
-        val replacements = defs2.iterator.map {
-          case (f, _) => (ts1, f) -> f
-        }.toMap
+        val replacements = defs2.iterator.map { case (f, _) => (ts1, f) -> f }
+          .toMap
         logger.debug("Replacements are: " + replacements)
         (c2, replacements)
 
@@ -437,11 +420,13 @@ class MergeToComprehensions extends Phase {
         val p2 = applyReplacements(p1, replacements1a, c1a)
         val c2 =
           if (c1a.groupBy.isEmpty)
-            c1a.copy(where = Some(
-              c1a.where.fold(p2)(and(_, p2)).infer())) :@ c1a.nodeType
+            c1a
+              .copy(where = Some(c1a.where.fold(p2)(and(_, p2)).infer())) :@ c1a
+              .nodeType
           else
-            c1a.copy(having = Some(
-              c1a.having.fold(p2)(and(p2, _)).infer())) :@ c1a.nodeType
+            c1a
+              .copy(having = Some(
+                c1a.having.fold(p2)(and(p2, _)).infer())) :@ c1a.nodeType
         logger.debug("Merged Filter into Comprehension:", c2)
         (c2, replacements1a)
 
@@ -478,15 +463,13 @@ class MergeToComprehensions extends Phase {
         val map1M = map1.iterator.toMap
         val map2 = defs.map {
           case (f1, p) =>
-            val sel = p
-              .findNode {
-                case Select(_ :@ NominalType(_, _), _) => true
-                case _                                 => false
-              }
-              .getOrElse(
-                throw new SlickTreeException(
-                  "Missing path on top of TypeSymbol in:",
-                  p))
+            val sel = p.findNode {
+              case Select(_ :@ NominalType(_, _), _) => true
+              case _                                 => false
+            }.getOrElse(
+              throw new SlickTreeException(
+                "Missing path on top of TypeSymbol in:",
+                p))
             val Select(_ :@ NominalType(ts2, _), f2) = sel
             (ts1, f1) -> map1M((ts2, f2))
         }

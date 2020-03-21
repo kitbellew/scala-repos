@@ -39,7 +39,8 @@ object StatsSampleSingleMasterSpecConfig extends MultiNodeConfig {
       # Enable metrics extension in akka-cluster-metrics.
       akka.extensions=["akka.cluster.metrics.ClusterMetricsExtension"]
       # Sigar native library extract location during tests.
-      akka.cluster.metrics.native-library-extract-folder=target/native/${role.name}
+      akka.cluster.metrics.native-library-extract-folder=target/native/${role
+        .name}
       """)
     }
   }
@@ -112,8 +113,8 @@ abstract class StatsSampleSingleMasterSpec
         ClusterSingletonManager.props(
           singletonProps = Props[StatsService],
           terminationMessage = PoisonPill,
-          settings = ClusterSingletonManagerSettings(system).withRole(
-            "compute")),
+          settings = ClusterSingletonManagerSettings(system)
+            .withRole("compute")),
         name = "statsService"
       )
 

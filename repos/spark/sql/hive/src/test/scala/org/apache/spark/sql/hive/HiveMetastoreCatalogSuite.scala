@@ -57,11 +57,9 @@ class DataSourceWithHiveMetastoreCatalogSuite
   import hiveContext._
   import testImplicits._
 
-  private val testDF = range(1, 3)
-    .select(
-      ('id + 0.1) cast DecimalType(10, 3) as 'd1,
-      'id cast StringType as 'd2)
-    .coalesce(1)
+  private val testDF = range(1, 3).select(
+    ('id + 0.1) cast DecimalType(10, 3) as 'd1,
+    'id cast StringType as 'd2).coalesce(1)
 
   Seq(
     "parquet" -> (
@@ -80,9 +78,7 @@ class DataSourceWithHiveMetastoreCatalogSuite
         s"Persist non-partitioned $provider relation into metastore as managed table") {
         withTable("t") {
           withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "true") {
-            testDF.write
-              .mode(SaveMode.Overwrite)
-              .format(provider)
+            testDF.write.mode(SaveMode.Overwrite).format(provider)
               .saveAsTable("t")
           }
 
@@ -110,11 +106,8 @@ class DataSourceWithHiveMetastoreCatalogSuite
             val path = dir.getCanonicalFile
 
             withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "true") {
-              testDF.write
-                .mode(SaveMode.Overwrite)
-                .format(provider)
-                .option("path", path.toString)
-                .saveAsTable("t")
+              testDF.write.mode(SaveMode.Overwrite).format(provider)
+                .option("path", path.toString).saveAsTable("t")
             }
 
             val hiveTable = sessionState.catalog.client.getTable("default", "t")

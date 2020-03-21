@@ -84,8 +84,8 @@ case class TypedAggregateExpression(
 
   override val aggBufferSchema: StructType = unresolvedBEncoder.schema
 
-  override val aggBufferAttributes: Seq[AttributeReference] =
-    aggBufferSchema.toAttributes
+  override val aggBufferAttributes: Seq[AttributeReference] = aggBufferSchema
+    .toAttributes
 
   val bEncoder = unresolvedBEncoder
     .resolve(aggBufferAttributes, OuterScopes.outerScopes)

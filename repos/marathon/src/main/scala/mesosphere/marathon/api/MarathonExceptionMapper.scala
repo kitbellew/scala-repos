@@ -27,11 +27,9 @@ class MarathonExceptionMapper extends ExceptionMapper[Exception] {
       log.warn("mapping exception to status code", exception)
     } else { log.info("mapping exception to status code", exception) }
 
-    Response
-      .status(statusCode(exception))
+    Response.status(statusCode(exception))
       .entity(Json.stringify(entity(exception)))
-      .`type`(MediaType.APPLICATION_JSON)
-      .build
+      .`type`(MediaType.APPLICATION_JSON).build
   }
 
   //scalastyle:off magic.number cyclomatic.complexity
@@ -79,8 +77,7 @@ class MarathonExceptionMapper extends ExceptionMapper[Exception] {
         //scalastyle:off null
         if (Status.fromStatusCode(e.getResponse.getStatus) != null) {
           Json.obj(
-            "message" -> Status
-              .fromStatusCode(e.getResponse.getStatus)
+            "message" -> Status.fromStatusCode(e.getResponse.getStatus)
               .getReasonPhrase)
         } else { Json.obj("message" -> e.getMessage) }
       case _ => Json.obj("message" -> exception.getMessage)

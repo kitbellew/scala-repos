@@ -64,9 +64,8 @@ object UpdateOffsetsInZK {
 
     var numParts = 0
     for (partition <- partitions) {
-      val brokerHostingPartition = zkUtils.getLeaderForPartition(
-        topic,
-        partition)
+      val brokerHostingPartition = zkUtils
+        .getLeaderForPartition(topic, partition)
 
       val broker = brokerHostingPartition match {
         case Some(b) => b
@@ -87,11 +86,8 @@ object UpdateOffsetsInZK {
           val topicAndPartition = TopicAndPartition(topic, partition)
           val request = OffsetRequest(Map(
             topicAndPartition -> PartitionOffsetRequestInfo(offsetOption, 1)))
-          val offset = consumer
-            .getOffsetsBefore(request)
-            .partitionErrorAndOffsets(topicAndPartition)
-            .offsets
-            .head
+          val offset = consumer.getOffsetsBefore(request)
+            .partitionErrorAndOffsets(topicAndPartition).offsets.head
           val topicDirs = new ZKGroupTopicDirs(config.groupId, topic)
 
           println(
@@ -111,7 +107,8 @@ object UpdateOffsetsInZK {
 
   private def usage() = {
     println(
-      "USAGE: " + UpdateOffsetsInZK.getClass.getName + " [earliest | latest] consumer.properties topic")
+      "USAGE: " + UpdateOffsetsInZK.getClass
+        .getName + " [earliest | latest] consumer.properties topic")
     System.exit(1)
   }
 }

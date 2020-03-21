@@ -57,7 +57,8 @@ object MockHttpRequestSpec extends Specification {
       testRequest.getServerName must_== "foo.com"
       testRequest.getContextPath must_== "/test"
       testRequest.getRequestURI must_== "/test/this/page"
-      testRequest.getRequestURL.toString must_== TEST_URL_BLANK_PARAMETER_SERIALIZED
+      testRequest.getRequestURL
+        .toString must_== TEST_URL_BLANK_PARAMETER_SERIALIZED
       testRequest.getQueryString must_== "a=b&b=a&c=&d="
       testRequest.getParameter("c") must_== ""
       testRequest.getParameter("d") must_== ""
@@ -79,8 +80,8 @@ object MockHttpRequestSpec extends Specification {
       testRequest.headers += IF_MODIFIED_HEADER -> List(
         "this is not a valid date")
 
-      testRequest
-        .getDateHeader(IF_MODIFIED_HEADER) must throwA[IllegalArgumentException]
+      testRequest.getDateHeader(IF_MODIFIED_HEADER) must throwA[
+        IllegalArgumentException]
     }
 
     "throw an IllegalArgumentException for an invalid context path" in {

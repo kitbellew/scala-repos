@@ -54,11 +54,8 @@ case class PoolState(
     )
 
   override def toString =
-    "PoolState(n=%d,remaining=%s[%s of %s])".format(
-      numCollections,
-      capacity - used,
-      used,
-      capacity)
+    "PoolState(n=%d,remaining=%s[%s of %s])"
+      .format(numCollections, capacity - used, used, capacity)
 }
 
 /**
@@ -159,9 +156,9 @@ trait Jvm {
           missedCollections += count - 1 - lastCount
           if (missedCollections > 0 && Time.now - lastLog > LogPeriod) {
             if (log.isLoggable(Level.FINE)) {
-              log.fine(
-                "Missed %d collections for %s due to sampling"
-                  .format(missedCollections, name))
+              log.fine("Missed %d collections for %s due to sampling".format(
+                missedCollections,
+                name))
             }
             lastLog = Time.now
             missedCollections = 0
@@ -238,9 +235,7 @@ object Jvm {
     */
   lazy val ProcessId: Option[Int] =
     try {
-      ManagementFactory.getRuntimeMXBean.getName
-        .split("@")
-        .headOption
+      ManagementFactory.getRuntimeMXBean.getName.split("@").headOption
         .map(_.toInt)
     } catch {
       case NonFatal(t) =>

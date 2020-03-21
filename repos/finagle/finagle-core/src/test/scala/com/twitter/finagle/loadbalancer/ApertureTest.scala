@@ -23,8 +23,8 @@ private trait ApertureTesting {
     protected def statsReceiver = NullStatsReceiver
     protected val minAperture = 1
 
-    protected[this] val maxEffortExhausted = statsReceiver.counter(
-      "max_effort_exhausted")
+    protected[this] val maxEffortExhausted = statsReceiver
+      .counter("max_effort_exhausted")
 
     def applyn(n: Int): Unit = {
       val factories = Await.result(Future.collect(Seq.fill(n)(apply())))

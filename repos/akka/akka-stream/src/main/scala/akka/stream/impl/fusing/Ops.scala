@@ -469,9 +469,7 @@ private[akka] final case class Batch[In, Out](
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) {
 
-      val decider = inheritedAttributes
-        .get[SupervisionStrategy]
-        .map(_.decider)
+      val decider = inheritedAttributes.get[SupervisionStrategy].map(_.decider)
         .getOrElse(Supervision.stoppingDecider)
 
       private var agg: Out = null.asInstanceOf[Out]
@@ -674,9 +672,7 @@ private[akka] final case class MapAsync[In, Out](
       override def toString = s"MapAsync.Logic(buffer=$buffer)"
 
       //FIXME Put Supervision.stoppingDecider as a SupervisionStrategy on DefaultAttributes.mapAsync?
-      val decider = inheritedAttributes
-        .get[SupervisionStrategy]
-        .map(_.decider)
+      val decider = inheritedAttributes.get[SupervisionStrategy].map(_.decider)
         .getOrElse(Supervision.stoppingDecider)
 
       var buffer: BufferImpl[Holder[Try[Out]]] = _
@@ -768,9 +764,7 @@ private[akka] final case class MapAsyncUnordered[In, Out](
       override def toString =
         s"MapAsyncUnordered.Logic(inFlight=$inFlight, buffer=$buffer)"
 
-      val decider = inheritedAttributes
-        .get[SupervisionStrategy]
-        .map(_.decider)
+      val decider = inheritedAttributes.get[SupervisionStrategy].map(_.decider)
         .getOrElse(Supervision.stoppingDecider)
 
       var inFlight = 0
@@ -1109,8 +1103,8 @@ private[stream] final class Delay[T](
         out,
         new OutHandler {
           override def onPull(): Unit = {
-            if (!isTimerActive(
-                  timerName) && !buffer.isEmpty && nextElementWaitTime() < 0)
+            if (!isTimerActive(timerName) && !buffer
+                  .isEmpty && nextElementWaitTime() < 0)
               push(out, buffer.dequeue()._2)
 
             if (!willStop && !hasBeenPulled(in)) pull(in)
@@ -1282,8 +1276,7 @@ private[stream] final class RecoverWith[T, M](
           override def onDownstreamFinish(): Unit = sinkIn.cancel()
         }
 
-        Source
-          .fromGraph(source)
+        Source.fromGraph(source)
           .runWith(sinkIn.sink)(interpreter.subFusingMaterializer)
         setHandler(out, outHandler)
         sinkIn.pull()
@@ -1307,9 +1300,7 @@ private[stream] final class StatefulMapConcat[In, Out](
 
   def createLogic(inheritedAttributes: Attributes) =
     new GraphStageLogic(shape) with InHandler with OutHandler {
-      val decider = inheritedAttributes
-        .get[SupervisionStrategy]
-        .map(_.decider)
+      val decider = inheritedAttributes.get[SupervisionStrategy].map(_.decider)
         .getOrElse(Supervision.stoppingDecider)
       var currentIterator: Iterator[Out] = _
       var plainFun = f()

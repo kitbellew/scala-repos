@@ -56,10 +56,8 @@ class ConsumerFetcherThread(
     config.socketReceiveBufferBytes,
     config.clientId)
 
-  private val fetchRequestBuilder = new FetchRequestBuilder()
-    .clientId(clientId)
-    .replicaId(Request.OrdinaryConsumerId)
-    .maxWait(config.fetchWaitMaxMs)
+  private val fetchRequestBuilder = new FetchRequestBuilder().clientId(clientId)
+    .replicaId(Request.OrdinaryConsumerId).maxWait(config.fetchWaitMaxMs)
     .minBytes(config.fetchMinBytes)
     .requestVersion(kafka.api.FetchRequest.CurrentVersion)
 

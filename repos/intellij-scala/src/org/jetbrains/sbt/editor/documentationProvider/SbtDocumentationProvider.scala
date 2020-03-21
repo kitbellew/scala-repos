@@ -51,14 +51,13 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
     }
 
   private def isElementInSbtFile(element: PsiElement): Boolean =
-    Option(element)
-      .safeMap(_.getContainingFile)
+    Option(element).safeMap(_.getContainingFile)
       .fold(false)(_.getFileType.getName != Sbt.Name)
 
   private def extractDocFromSettingKey(settingKey: ScNamedElement): String = {
     val keyDefinition = findSettingKeyDefinition(settingKey)
-    val keyDefinitionArgs = keyDefinition.fold(Seq.empty[ScExpression])(
-      getKeyDefinitionArgs)
+    val keyDefinitionArgs = keyDefinition
+      .fold(Seq.empty[ScExpression])(getKeyDefinitionArgs)
     val argStrings = keyDefinitionArgs.flatMap(argToString)
 
     val doc = keyDefinitionArgs.headOption match {
@@ -73,10 +72,8 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
 
   private def findSettingKeyDefinition(
       settingKey: ScNamedElement): Option[ScPatternDefinition] =
-    Option(settingKey.getNavigationElement)
-      .safeMap(_.getParent)
-      .safeMap(_.getParent)
-      .collect { case s: ScPatternDefinition => s }
+    Option(settingKey.getNavigationElement).safeMap(_.getParent)
+      .safeMap(_.getParent).collect { case s: ScPatternDefinition => s }
 
   private def getKeyDefinitionArgs(
       keyDefinition: ScPatternDefinition): Seq[ScExpression] =

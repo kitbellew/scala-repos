@@ -212,8 +212,8 @@ trait Parser extends RegexParsers with Filters with AST {
     (n, e)
   }
 
-  private lazy val id =
-    """[a-zA-Z]['a-zA-Z_0-9]*|_['a-zA-Z_0-9]+""".r \ keywords
+  private lazy val id = """[a-zA-Z]['a-zA-Z_0-9]*|_['a-zA-Z_0-9]+"""
+    .r \ keywords
 
   private lazy val ticId = """'[a-zA-Z_0-9]['a-zA-Z_0-9]*""".r
 
@@ -248,7 +248,8 @@ trait Parser extends RegexParsers with Filters with AST {
   private lazy val nullLiteral = """null\b""".r
 
   private lazy val keywords =
-    "new|true|false|where|with|union|intersect|difference|neg|undefined|null|import|solve|if|then|else|assert|observe".r
+    "new|true|false|where|with|union|intersect|difference|neg|undefined|null|import|solve|if|then|else|assert|observe"
+      .r
 
   override val whitespace = """([;\s]+|--.*|\(-([^\-]|-+[^)\-])*-+\))+""".r
   override val skipWhitespace = true

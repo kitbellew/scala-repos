@@ -111,12 +111,10 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "pass raw request uri to Actions even if Raw-Request-URI header is set" in {
       import akka.http.scaladsl.model.headers._
       requestFromServer("/abc?foo=bar") { request =>
-        request
-          .withHeaders(
-            ACCEPT_ENCODING -> "utf-8",
-            ACCEPT_LANGUAGE -> "en-US",
-            `Raw-Request-URI`.name -> "/foo/bar/baz")
-          .get()
+        request.withHeaders(
+          ACCEPT_ENCODING -> "utf-8",
+          ACCEPT_LANGUAGE -> "en-US",
+          `Raw-Request-URI`.name -> "/foo/bar/baz").get()
       } {
         case ("GET", "/abc") => Action { implicit request => Ok(request.uri) }
       } { response =>
@@ -174,9 +172,9 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
       PlayRunners.mutex.synchronized {
         def testStartAndStop(i: Int) = {
           val resultString = s"result-$i"
-          val app = GuiceApplicationBuilder()
-            .routes { case ("GET", "/") => Action(Ok(resultString)) }
-            .build()
+          val app = GuiceApplicationBuilder().routes {
+            case ("GET", "/") => Action(Ok(resultString))
+          }.build()
           val server = TestServer(
             testServerPort,
             app,

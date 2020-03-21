@@ -79,49 +79,34 @@ class StandardScalerSuite
   }
 
   test("Standardization with default parameter") {
-    val df0 = sqlContext
-      .createDataFrame(data.zip(resWithStd))
+    val df0 = sqlContext.createDataFrame(data.zip(resWithStd))
       .toDF("features", "expected")
 
-    val standardScaler0 = new StandardScaler()
-      .setInputCol("features")
-      .setOutputCol("standardized_features")
-      .fit(df0)
+    val standardScaler0 = new StandardScaler().setInputCol("features")
+      .setOutputCol("standardized_features").fit(df0)
 
     assertResult(standardScaler0.transform(df0))
   }
 
   test("Standardization with setter") {
-    val df1 = sqlContext
-      .createDataFrame(data.zip(resWithBoth))
+    val df1 = sqlContext.createDataFrame(data.zip(resWithBoth))
       .toDF("features", "expected")
-    val df2 = sqlContext
-      .createDataFrame(data.zip(resWithMean))
+    val df2 = sqlContext.createDataFrame(data.zip(resWithMean))
       .toDF("features", "expected")
-    val df3 = sqlContext
-      .createDataFrame(data.zip(data))
+    val df3 = sqlContext.createDataFrame(data.zip(data))
       .toDF("features", "expected")
 
-    val standardScaler1 = new StandardScaler()
-      .setInputCol("features")
-      .setOutputCol("standardized_features")
-      .setWithMean(true)
-      .setWithStd(true)
+    val standardScaler1 = new StandardScaler().setInputCol("features")
+      .setOutputCol("standardized_features").setWithMean(true).setWithStd(true)
       .fit(df1)
 
-    val standardScaler2 = new StandardScaler()
-      .setInputCol("features")
-      .setOutputCol("standardized_features")
-      .setWithMean(true)
-      .setWithStd(false)
+    val standardScaler2 = new StandardScaler().setInputCol("features")
+      .setOutputCol("standardized_features").setWithMean(true).setWithStd(false)
       .fit(df2)
 
-    val standardScaler3 = new StandardScaler()
-      .setInputCol("features")
-      .setOutputCol("standardized_features")
-      .setWithMean(false)
-      .setWithStd(false)
-      .fit(df3)
+    val standardScaler3 = new StandardScaler().setInputCol("features")
+      .setOutputCol("standardized_features").setWithMean(false)
+      .setWithStd(false).fit(df3)
 
     assertResult(standardScaler1.transform(df1))
     assertResult(standardScaler2.transform(df2))
@@ -129,11 +114,8 @@ class StandardScalerSuite
   }
 
   test("StandardScaler read/write") {
-    val t = new StandardScaler()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setWithStd(false)
-      .setWithMean(true)
+    val t = new StandardScaler().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setWithStd(false).setWithMean(true)
     testDefaultReadWrite(t)
   }
 

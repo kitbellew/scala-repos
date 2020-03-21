@@ -34,8 +34,7 @@ object KMeansExample {
     // $example on$
     // Load and parse the data
     val data = sc.textFile("data/mllib/kmeans_data.txt")
-    val parsedData = data
-      .map(s => Vectors.dense(s.split(' ').map(_.toDouble)))
+    val parsedData = data.map(s => Vectors.dense(s.split(' ').map(_.toDouble)))
       .cache()
 
     // Cluster the data into two classes using KMeans
@@ -49,9 +48,8 @@ object KMeansExample {
 
     // Save and load model
     clusters.save(sc, "target/org/apache/spark/KMeansExample/KMeansModel")
-    val sameModel = KMeansModel.load(
-      sc,
-      "target/org/apache/spark/KMeansExample/KMeansModel")
+    val sameModel = KMeansModel
+      .load(sc, "target/org/apache/spark/KMeansExample/KMeansModel")
     // $example off$
 
     sc.stop()

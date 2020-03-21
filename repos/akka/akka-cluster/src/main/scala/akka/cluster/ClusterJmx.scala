@@ -157,20 +157,17 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
               |    }""".stripMargin
           } mkString (",\n    ")
 
-          val unreachable =
-            clusterView.reachability.observersGroupedByUnreachable.toSeq
-              .sortBy(_._1)
-              .map {
-                case (subject, observers) ⇒
-                  s"""{
+          val unreachable = clusterView.reachability
+            .observersGroupedByUnreachable.toSeq.sortBy(_._1).map {
+              case (subject, observers) ⇒
+                s"""{
               |      "node": "${subject.address}",
               |      "observed-by": [
-              |        ${observers.toSeq.sorted
-                       .map(_.address)
-                       .mkString("\"", "\",\n        \"", "\"")}
+              |        ${observers.toSeq.sorted.map(_.address)
+                     .mkString("\"", "\",\n        \"", "\"")}
               |      ]
               |    }""".stripMargin
-              } mkString (",\n")
+            } mkString (",\n")
 
           s"""{
         |  "self-address": "${clusterView.selfAddress}",

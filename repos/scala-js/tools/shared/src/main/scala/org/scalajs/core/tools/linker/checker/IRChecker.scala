@@ -207,11 +207,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     } else {
       // Concrete
       val thisType = if (static) NoType else ClassType(classDef.name.name)
-      val bodyEnv = Env.fromSignature(
-        thisType,
-        params,
-        resultType,
-        isConstructor)
+      val bodyEnv = Env
+        .fromSignature(thisType, params, resultType, isConstructor)
       if (resultType == NoType) typecheckStat(body, bodyEnv)
       else typecheckExpect(body, bodyEnv, resultType)
     }
@@ -282,8 +279,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case _            => body :: Nil
     }
 
-    val (prepStats, superCallAndRest) = bodyStats.span(
-      !_.isInstanceOf[JSSuperConstructorCall])
+    val (prepStats, superCallAndRest) = bodyStats
+      .span(!_.isInstanceOf[JSSuperConstructorCall])
 
     val (superCall, restStats) = superCallAndRest match {
       case (superCall: JSSuperConstructorCall) :: restStats =>
@@ -295,11 +292,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         (JSSuperConstructorCall(Nil)(methodDef.pos), Nil)
     }
 
-    val initialEnv = Env.fromSignature(
-      NoType,
-      params,
-      NoType,
-      isConstructor = true)
+    val initialEnv = Env
+      .fromSignature(NoType, params, NoType, isConstructor = true)
 
     val preparedEnv = (initialEnv /: prepStats) { (prevEnv, stat) =>
       typecheckStat(stat, prevEnv)
@@ -464,8 +458,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case Try(block, errVar, handler, finalizer) =>
         typecheckStat(block, env)
         if (handler != EmptyTree) {
-          val handlerEnv = env.withLocal(
-            LocalDef(errVar.name, AnyType, false)(errVar.pos))
+          val handlerEnv = env
+            .withLocal(LocalDef(errVar.name, AnyType, false)(errVar.pos))
           typecheckStat(handler, handlerEnv)
         }
         if (finalizer != EmptyTree) { typecheckStat(finalizer, env) }
@@ -558,12 +552,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         typecheckExpect(body, env.withLabeledReturnType(label.name, tpe), tpe)
 
       case Return(expr, label) =>
-        env.returnTypes
-          .get(label.map(_.name))
-          .fold[Unit] {
-            reportError(s"Cannot return to label $label.")
-            typecheckExpr(expr, env)
-          } { returnType => typecheckExpect(expr, env, returnType) }
+        env.returnTypes.get(label.map(_.name)).fold[Unit] {
+          reportError(s"Cannot return to label $label.")
+          typecheckExpr(expr, env)
+        } { returnType => typecheckExpect(expr, env, returnType) }
 
       case If(cond, thenp, elsep) =>
         val tpe = tree.tpe
@@ -578,8 +570,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         val tpe = tree.tpe
         typecheckExpect(block, env, tpe)
         if (handler != EmptyTree) {
-          val handlerEnv = env.withLocal(
-            LocalDef(errVar.name, AnyType, false)(errVar.pos))
+          val handlerEnv = env
+            .withLocal(LocalDef(errVar.name, AnyType, false)(errVar.pos))
           typecheckExpect(handler, handlerEnv, tpe)
         }
         if (finalizer != EmptyTree) { typecheckStat(finalizer, env) }
@@ -811,16 +803,14 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case _: Literal =>
       // Atomic expressions
 
-      case VarRef(Ident(name, _)) =>
-        env.locals
-          .get(name)
-          .fold[Unit] { reportError(s"Cannot find variable $name in scope") } {
-            localDef =>
-              if (tree.tpe != localDef.tpe)
-                reportError(
-                  s"Variable $name of type ${localDef.tpe} " +
-                    s"typed as ${tree.tpe}")
-          }
+      case VarRef(Ident(name, _)) => env.locals.get(name).fold[Unit] {
+          reportError(s"Cannot find variable $name in scope")
+        } { localDef =>
+          if (tree.tpe != localDef.tpe)
+            reportError(
+              s"Variable $name of type ${localDef.tpe} " +
+                s"typed as ${tree.tpe}")
+        }
 
       case This() => if (!isSubtype(env.thisTpe, tree.tpe))
           reportError(s"this of type ${env.thisTpe} typed as ${tree.tpe}")
@@ -850,10 +840,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
             reportError(s"Closure parameter $name cannot be a rest parameter")
         }
 
-        val bodyEnv = Env.fromSignature(
-          AnyType,
-          captureParams ++ params,
-          AnyType)
+        val bodyEnv = Env
+          .fromSignature(AnyType, captureParams ++ params, AnyType)
         typecheckExpect(body, bodyEnv, AnyType)
 
       case _ => reportError(s"Invalid expression tree")
@@ -928,10 +916,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
   private def tryLookupClass(className: String)(implicit
       ctx: ErrorContext): Either[Infos.ClassInfo, CheckedClass] = {
-    classes
-      .get(className)
-      .fold[Either[Infos.ClassInfo, CheckedClass]](Left(lookupInfo(className)))(
-        Right(_))
+    classes.get(className).fold[Either[Infos.ClassInfo, CheckedClass]](Left(
+      lookupInfo(className)))(Right(_))
   }
 
   private def lookupClass(className: String)(implicit

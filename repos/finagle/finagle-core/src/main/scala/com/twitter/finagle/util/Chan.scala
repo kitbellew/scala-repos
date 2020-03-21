@@ -33,9 +33,7 @@ trait Proc[-T] extends Chan[T] {
       if (!closed) {
         try receiver(elem)
         catch {
-          case exc: Throwable =>
-            Logger
-              .getLogger("")
+          case exc: Throwable => Logger.getLogger("")
               .log(Level.WARNING, "Exception thrown in proc", exc)
         }
       }

@@ -18,8 +18,8 @@ object JavaRouting extends Specification {
 
   "the java router" should {
     "support simple routing with a long parameter" in {
-      contentOf(
-        FakeRequest("GET", "/clients/10")).trim must_== "showing client 10"
+      contentOf(FakeRequest("GET", "/clients/10"))
+        .trim must_== "showing client 10"
     }
     "support a static path" in {
       contentOf(FakeRequest("GET", "/clients/all")) must_== "all clients"

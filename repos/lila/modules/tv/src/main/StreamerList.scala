@@ -20,11 +20,8 @@ final class StreamerList(val store: {
 
   private[tv] def validate(text: String): (List[Streamer], List[Exception]) =
     Try {
-      ConfigFactory
-        .parseString(text)
-        .getConfigList("streamers")
-        .toList
-        .map { c =>
+      ConfigFactory.parseString(text).getConfigList("streamers").toList.map {
+        c =>
           Try {
             Streamer(
               service = c getString "service" match {
@@ -41,14 +38,13 @@ final class StreamerList(val store: {
               chat = c.getBoolean("chat")
             )
           }
-        }
-        .foldLeft(List.empty[Streamer] -> List.empty[Exception]) {
-          case ((res, err), Success(r)) => (r :: res, err)
-          case ((res, err), Failure(e: Exception)) =>
-            lila.log("tv").warn("streamer", e)
-            (res, e :: err)
-          case (_, Failure(e)) => throw e
-        }
+      }.foldLeft(List.empty[Streamer] -> List.empty[Exception]) {
+        case ((res, err), Success(r)) => (r :: res, err)
+        case ((res, err), Failure(e: Exception)) =>
+          lila.log("tv").warn("streamer", e)
+          (res, e :: err)
+        case (_, Failure(e)) => throw e
+      }
     } match {
       case Failure(e: Exception) => (Nil, List(e))
       case Failure(e)            => throw e

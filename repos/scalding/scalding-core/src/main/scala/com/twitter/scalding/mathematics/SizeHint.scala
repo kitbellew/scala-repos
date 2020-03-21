@@ -20,13 +20,11 @@ object SizeHint {
   // Return a sparsity assuming all the diagonal is present, but nothing else
   def asDiagonal(h: SizeHint): SizeHint = {
     def make(r: BigInt, c: BigInt) = {
-      h.total
-        .map { tot =>
-          val maxElements = (r min c)
-          val sparsity = 1.0 / maxElements.doubleValue
-          SparseHint(sparsity, maxElements, maxElements)
-        }
-        .getOrElse(NoClue)
+      h.total.map { tot =>
+        val maxElements = (r min c)
+        val sparsity = 1.0 / maxElements.doubleValue
+        SparseHint(sparsity, maxElements, maxElements)
+      }.getOrElse(NoClue)
     }
     h match {
       case NoClue               => NoClue
@@ -157,8 +155,7 @@ case class SparseHint(sparsity: Double, rows: BigInt, cols: BigInt)
   */
 object SizeHintOrdering extends Ordering[SizeHint] with java.io.Serializable {
   def compare(left: SizeHint, right: SizeHint): Int = {
-    left.total
-      .getOrElse(BigInt(-1L))
+    left.total.getOrElse(BigInt(-1L))
       .compare(right.total.getOrElse(BigInt(-1L)))
   }
 }

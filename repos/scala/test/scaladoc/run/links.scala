@@ -21,11 +21,8 @@ object Test extends ScaladocModelTest {
     import access._
 
     // just need to check the member exists, access methods will throw an error if there's a problem
-    val base = rootPackage
-      ._package("scala")
-      ._package("test")
-      ._package("scaladoc")
-      ._package("links")
+    val base = rootPackage._package("scala")._package("test")
+      ._package("scaladoc")._package("links")
     val TEST = base._object("TEST")
 
     val memberLinks = countLinks(

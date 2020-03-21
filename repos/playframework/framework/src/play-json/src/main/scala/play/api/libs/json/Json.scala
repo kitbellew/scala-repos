@@ -182,10 +182,9 @@ object Json {
     "Use Enumeratee.map[JsValue]((json: JsValue) => Json.fromJson(json)) ><> Enumeratee.collect[JsResult[A]] { case JsSuccess(value, _) => value } instead",
     "2.5.0")
   def fromJson[A: Reads]: Enumeratee[JsValue, A] =
-    Enumeratee.map[JsValue]((json: JsValue) =>
-      Json.fromJson(json)) ><> Enumeratee.collect[JsResult[A]] {
-      case JsSuccess(value, _) => value
-    }
+    Enumeratee
+      .map[JsValue]((json: JsValue) => Json.fromJson(json)) ><> Enumeratee
+      .collect[JsResult[A]] { case JsSuccess(value, _) => value }
 
   /**
     * Experimental JSON extensions to replace asProductXXX by generating

@@ -53,10 +53,10 @@ object ThriftResponseClassifier {
     * Categorizes responses where the '''deserialized''' response is a
     * Thrift Exception as a [[ResponseClass.NonRetryableFailure]].
     */
-  val ThriftExceptionsAsFailures: ResponseClassifier = ResponseClassifier.named(
-    "ThriftExceptionsAsFailures") {
-    case ReqRep(_, Throw(_)) => ResponseClass.NonRetryableFailure
-  }
+  val ThriftExceptionsAsFailures: ResponseClassifier = ResponseClassifier
+    .named("ThriftExceptionsAsFailures") {
+      case ReqRep(_, Throw(_)) => ResponseClass.NonRetryableFailure
+    }
 
   private[this] val NoDeserializeCtx: DeserializeCtx[Nothing] =
     new DeserializeCtx[Nothing](null, null)

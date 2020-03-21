@@ -26,12 +26,8 @@ class TaskQueueIntegrationTest
 
   test("GET /v2/queue with pending app") {
     Given("a new app with constraints that cannot be fulfilled")
-    val c = Protos.Constraint
-      .newBuilder()
-      .setField("nonExistent")
-      .setOperator(Operator.CLUSTER)
-      .setValue("na")
-      .build()
+    val c = Protos.Constraint.newBuilder().setField("nonExistent")
+      .setOperator(Operator.CLUSTER).setValue("na").build()
     val appId = testBasePath / "app"
     val app = AppDefinition(
       appId,
@@ -43,9 +39,10 @@ class TaskQueueIntegrationTest
     create.code should be(201) // Created
 
     Then("the app shows up in the task queue")
-    WaitTestSupport.waitUntil(
-      "Deployment is put in the deployment queue",
-      30.seconds) { marathon.taskQueue().value.queue.size == 1 }
+    WaitTestSupport
+      .waitUntil("Deployment is put in the deployment queue", 30.seconds) {
+        marathon.taskQueue().value.queue.size == 1
+      }
     val response = marathon.taskQueue()
     response.code should be(200)
 

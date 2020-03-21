@@ -213,10 +213,10 @@ class LAFuture[T](val scheduler: LAScheduler) {
       if (!satisfied && !aborted) {
         aborted = true
         failure = e
-        onFailure.foreach(f =>
-          LAFuture.executeWithObservers(scheduler, () => f(e)))
-        onComplete.foreach(f =>
-          LAFuture.executeWithObservers(scheduler, () => f(e)))
+        onFailure
+          .foreach(f => LAFuture.executeWithObservers(scheduler, () => f(e)))
+        onComplete
+          .foreach(f => LAFuture.executeWithObservers(scheduler, () => f(e)))
         onComplete = Nil
         onFailure = Nil
         toDo = Nil

@@ -20,7 +20,7 @@ class SbtRefreshProjectQuickFix extends AbstractIntentionAction {
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     FileDocumentManager.getInstance.saveAllDocuments()
-    ExternalSystemUtil.refreshProjects(
-      new ImportSpecBuilder(project, SbtProjectSystem.Id))
+    ExternalSystemUtil
+      .refreshProjects(new ImportSpecBuilder(project, SbtProjectSystem.Id))
   }
 }

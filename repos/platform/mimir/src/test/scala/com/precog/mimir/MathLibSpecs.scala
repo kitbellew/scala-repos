@@ -1410,8 +1410,9 @@ trait MathLibSpecs[M[+_]]
     "compute sinh" in {
       val input = dag.Operate(
         BuiltInFunction1Op(sinh),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1431,8 +1432,9 @@ trait MathLibSpecs[M[+_]]
     "compute toDegrees" in {
       val input = dag.Operate(
         BuiltInFunction1Op(toDegrees),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1452,8 +1454,9 @@ trait MathLibSpecs[M[+_]]
     "compute expm1" in {
       val input = dag.Operate(
         BuiltInFunction1Op(expm1),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1473,8 +1476,9 @@ trait MathLibSpecs[M[+_]]
     "compute getExponent" in {
       val input = dag.Operate(
         BuiltInFunction1Op(getExponent),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1489,8 +1493,9 @@ trait MathLibSpecs[M[+_]]
     "compute asin" in {
       val input = dag.Operate(
         BuiltInFunction1Op(asin),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1505,8 +1510,9 @@ trait MathLibSpecs[M[+_]]
     "compute log10" in {
       val input = dag.Operate(
         BuiltInFunction1Op(log10),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1523,8 +1529,9 @@ trait MathLibSpecs[M[+_]]
     "compute cos" in {
       val input = dag.Operate(
         BuiltInFunction1Op(cos),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1543,8 +1550,9 @@ trait MathLibSpecs[M[+_]]
     "compute exp" in {
       val input = dag.Operate(
         BuiltInFunction1Op(exp),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1564,8 +1572,9 @@ trait MathLibSpecs[M[+_]]
     "compute cbrt" in {
       val input = dag.Operate(
         BuiltInFunction1Op(cbrt),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1585,8 +1594,9 @@ trait MathLibSpecs[M[+_]]
     "compute atan" in {
       val input = dag.Operate(
         BuiltInFunction1Op(atan),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1606,8 +1616,9 @@ trait MathLibSpecs[M[+_]]
     "compute ceil" in {
       val input = dag.Operate(
         BuiltInFunction1Op(ceil),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1623,8 +1634,9 @@ trait MathLibSpecs[M[+_]]
     "compute rint" in {
       val input = dag.Operate(
         BuiltInFunction1Op(rint),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1640,8 +1652,9 @@ trait MathLibSpecs[M[+_]]
     "compute log1p" in {
       val input = dag.Operate(
         BuiltInFunction1Op(log1p),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1659,8 +1672,9 @@ trait MathLibSpecs[M[+_]]
     "compute sqrt" in {
       val input = dag.Operate(
         BuiltInFunction1Op(sqrt),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1678,8 +1692,9 @@ trait MathLibSpecs[M[+_]]
     "compute floor" in {
       val input = dag.Operate(
         BuiltInFunction1Op(floor),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1695,8 +1710,9 @@ trait MathLibSpecs[M[+_]]
     "compute toRadians" in {
       val input = dag.Operate(
         BuiltInFunction1Op(toRadians),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1716,8 +1732,9 @@ trait MathLibSpecs[M[+_]]
     "compute tanh" in {
       val input = dag.Operate(
         BuiltInFunction1Op(tanh),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1737,8 +1754,9 @@ trait MathLibSpecs[M[+_]]
     "compute round" in {
       val input = dag.Operate(
         BuiltInFunction1Op(round),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1754,8 +1772,9 @@ trait MathLibSpecs[M[+_]]
     "compute cosh" in {
       val input = dag.Operate(
         BuiltInFunction1Op(cosh),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1774,8 +1793,9 @@ trait MathLibSpecs[M[+_]]
     "compute tan" in {
       val input = dag.Operate(
         BuiltInFunction1Op(tan),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1795,8 +1815,9 @@ trait MathLibSpecs[M[+_]]
     "compute abs" in {
       val input = dag.Operate(
         BuiltInFunction1Op(abs),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1811,8 +1832,9 @@ trait MathLibSpecs[M[+_]]
     "compute sin" in {
       val input = dag.Operate(
         BuiltInFunction1Op(sin),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1832,8 +1854,9 @@ trait MathLibSpecs[M[+_]]
     "compute log" in {
       val input = dag.Operate(
         BuiltInFunction1Op(log),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1851,8 +1874,9 @@ trait MathLibSpecs[M[+_]]
     "compute signum" in {
       val input = dag.Operate(
         BuiltInFunction1Op(signum),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1867,8 +1891,9 @@ trait MathLibSpecs[M[+_]]
     "compute acos" in {
       val input = dag.Operate(
         BuiltInFunction1Op(acos),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -1883,8 +1908,9 @@ trait MathLibSpecs[M[+_]]
     "compute ulp" in {
       val input = dag.Operate(
         BuiltInFunction1Op(ulp),
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2059,8 +2085,9 @@ trait MathLibSpecs[M[+_]]
     "compute sinh" in {
       val input = dag.Operate(
         BuiltInFunction1Op(sinh),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2077,8 +2104,9 @@ trait MathLibSpecs[M[+_]]
     "compute toDegrees" in {
       val input = dag.Operate(
         BuiltInFunction1Op(toDegrees),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2095,8 +2123,9 @@ trait MathLibSpecs[M[+_]]
     "compute expm1" in {
       val input = dag.Operate(
         BuiltInFunction1Op(expm1),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2113,8 +2142,9 @@ trait MathLibSpecs[M[+_]]
     "compute getExponent" in {
       val input = dag.Operate(
         BuiltInFunction1Op(getExponent),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2129,8 +2159,9 @@ trait MathLibSpecs[M[+_]]
     "compute asin" in {
       val input = dag.Operate(
         BuiltInFunction1Op(asin),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2145,8 +2176,9 @@ trait MathLibSpecs[M[+_]]
     "compute log10" in {
       val input = dag.Operate(
         BuiltInFunction1Op(log10),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2165,8 +2197,9 @@ trait MathLibSpecs[M[+_]]
     "compute cos" in {
       val input = dag.Operate(
         BuiltInFunction1Op(cos),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2183,8 +2216,9 @@ trait MathLibSpecs[M[+_]]
     "compute exp" in {
       val input = dag.Operate(
         BuiltInFunction1Op(exp),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2201,8 +2235,9 @@ trait MathLibSpecs[M[+_]]
     "compute cbrt" in {
       val input = dag.Operate(
         BuiltInFunction1Op(cbrt),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2219,8 +2254,9 @@ trait MathLibSpecs[M[+_]]
     "compute atan" in {
       val input = dag.Operate(
         BuiltInFunction1Op(atan),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2237,8 +2273,9 @@ trait MathLibSpecs[M[+_]]
     "compute ceil" in {
       val input = dag.Operate(
         BuiltInFunction1Op(ceil),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2253,8 +2290,9 @@ trait MathLibSpecs[M[+_]]
     "compute rint" in {
       val input = dag.Operate(
         BuiltInFunction1Op(rint),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2269,8 +2307,9 @@ trait MathLibSpecs[M[+_]]
     "compute log1p" in {
       val input = dag.Operate(
         BuiltInFunction1Op(log1p),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2290,8 +2329,9 @@ trait MathLibSpecs[M[+_]]
     "compute sqrt" in {
       val input = dag.Operate(
         BuiltInFunction1Op(sqrt),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2311,8 +2351,9 @@ trait MathLibSpecs[M[+_]]
     "compute floor" in {
       val input = dag.Operate(
         BuiltInFunction1Op(floor),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2327,8 +2368,9 @@ trait MathLibSpecs[M[+_]]
     "compute toRadians" in {
       val input = dag.Operate(
         BuiltInFunction1Op(toRadians),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2345,8 +2387,9 @@ trait MathLibSpecs[M[+_]]
     "compute tanh" in {
       val input = dag.Operate(
         BuiltInFunction1Op(tanh),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2363,8 +2406,9 @@ trait MathLibSpecs[M[+_]]
     "compute round" in {
       val input = dag.Operate(
         BuiltInFunction1Op(round),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2379,8 +2423,9 @@ trait MathLibSpecs[M[+_]]
     "compute cosh" in {
       val input = dag.Operate(
         BuiltInFunction1Op(cosh),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2397,8 +2442,9 @@ trait MathLibSpecs[M[+_]]
     "compute tan" in {
       val input = dag.Operate(
         BuiltInFunction1Op(tan),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2415,8 +2461,9 @@ trait MathLibSpecs[M[+_]]
     "compute abs" in {
       val input = dag.Operate(
         BuiltInFunction1Op(abs),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2431,8 +2478,9 @@ trait MathLibSpecs[M[+_]]
     "compute sin" in {
       val input = dag.Operate(
         BuiltInFunction1Op(sin),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2449,8 +2497,9 @@ trait MathLibSpecs[M[+_]]
     "compute log" in {
       val input = dag.Operate(
         BuiltInFunction1Op(log),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2469,8 +2518,9 @@ trait MathLibSpecs[M[+_]]
     "compute signum" in {
       val input = dag.Operate(
         BuiltInFunction1Op(signum),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2485,8 +2535,9 @@ trait MathLibSpecs[M[+_]]
     "compute acos" in {
       val input = dag.Operate(
         BuiltInFunction1Op(acos),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -2501,8 +2552,9 @@ trait MathLibSpecs[M[+_]]
     "compute ulp" in {
       val input = dag.Operate(
         BuiltInFunction1Op(ulp),
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 

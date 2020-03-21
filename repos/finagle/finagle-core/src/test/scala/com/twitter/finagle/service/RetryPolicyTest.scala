@@ -97,8 +97,7 @@ class RetryPolicyTest extends FunSpec {
 
   describe("RetryPolicy.filter/filterEach") {
     val backoffs = Stream(10.milliseconds, 20.milliseconds, 30.milliseconds)
-    val policy = RetryPolicy
-      .backoff(backoffs)(iExceptionsOnly)
+    val policy = RetryPolicy.backoff(backoffs)(iExceptionsOnly)
       .filter(iGreaterThan1)
 
     it("returns None if filter rejects") {
@@ -114,8 +113,7 @@ class RetryPolicyTest extends FunSpec {
 
   describe("RetryPolicy.filterEach") {
     val backoffs = Stream(10.milliseconds, 20.milliseconds, 30.milliseconds)
-    val policy = RetryPolicy
-      .backoff(backoffs)(iExceptionsOnly)
+    val policy = RetryPolicy.backoff(backoffs)(iExceptionsOnly)
       .filterEach(iGreaterThan1)
 
     it("returns None if filterEach rejects") {

@@ -44,8 +44,8 @@ package object util {
       @throws[ClassNotFoundException]
       override def resolveClass(desc: ObjectStreamClass): Class[_] = {
         try {
-          val currentTccl: ClassLoader =
-            Thread.currentThread.getContextClassLoader
+          val currentTccl: ClassLoader = Thread.currentThread
+            .getContextClassLoader
           currentTccl.loadClass(desc.getName)
         } catch { case e: Exception => super.resolveClass(desc) }
       }
@@ -61,9 +61,8 @@ package object util {
           try { localClass = Class.forName(resultClassDescriptor.getName) }
           catch {
             case e: ClassNotFoundException =>
-              logger.error(
-                "No local class for " + resultClassDescriptor.getName,
-                e)
+              logger
+                .error("No local class for " + resultClassDescriptor.getName, e)
               return resultClassDescriptor
           }
 
@@ -151,13 +150,11 @@ package object util {
   // this should be a separate trait but Scala is freaking out
   class SeqExtras[T](s: Seq[T]) {
     def argmax(implicit ordering: Ordering[T]) = {
-      s.zipWithIndex
-        .reduceLeft((a, b) => if (ordering.gt(a._1, b._1)) a else b)
+      s.zipWithIndex.reduceLeft((a, b) => if (ordering.gt(a._1, b._1)) a else b)
         ._2
     }
     def argmin(implicit ordering: Ordering[T]) = {
-      s.zipWithIndex
-        .reduceLeft((a, b) => if (ordering.lt(a._1, b._1)) a else b)
+      s.zipWithIndex.reduceLeft((a, b) => if (ordering.lt(a._1, b._1)) a else b)
         ._2
     }
 

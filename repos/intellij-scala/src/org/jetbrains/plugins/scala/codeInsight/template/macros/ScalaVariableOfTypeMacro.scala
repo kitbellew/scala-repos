@@ -48,29 +48,24 @@ class ScalaVariableOfTypeMacro extends Macro {
     val offset = context.getStartOffset
     val editor = context.getEditor
     val array = new ArrayBuffer[LookupElement]
-    val file = PsiDocumentManager
-      .getInstance(editor.getProject)
+    val file = PsiDocumentManager.getInstance(editor.getProject)
       .getPsiFile(editor.getDocument)
-    PsiDocumentManager
-      .getInstance(editor.getProject)
+    PsiDocumentManager.getInstance(editor.getProject)
       .commitDocument(editor.getDocument)
     file match {
       case file: ScalaFile =>
         val element = file.findElementAt(offset)
-        val variants = MacroUtil
-          .getVariablesForScope(element)
-          .filter(r => {
-            val clazz = PsiTreeUtil
-              .getParentOfType(r.element, classOf[PsiClass])
-            if (clazz == null) true
-            else {
-              clazz.qualifiedName match {
-                case "scala.Predef" => false
-                case "scala"        => false
-                case _              => true
-              }
+        val variants = MacroUtil.getVariablesForScope(element).filter(r => {
+          val clazz = PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
+          if (clazz == null) true
+          else {
+            clazz.qualifiedName match {
+              case "scala.Predef" => false
+              case "scala"        => false
+              case _              => true
             }
-          })
+          }
+        })
         for (variant <- variants) {
           variant.getElement match {
             case typed: ScTypedDefinition =>
@@ -97,29 +92,24 @@ class ScalaVariableOfTypeMacro extends Macro {
     if (!validExprs(exprs)) return null
     val offset = context.getStartOffset
     val editor = context.getEditor
-    val file = PsiDocumentManager
-      .getInstance(editor.getProject)
+    val file = PsiDocumentManager.getInstance(editor.getProject)
       .getPsiFile(editor.getDocument)
-    PsiDocumentManager
-      .getInstance(editor.getProject)
+    PsiDocumentManager.getInstance(editor.getProject)
       .commitDocument(editor.getDocument)
     file match {
       case file: ScalaFile =>
         val element = file.findElementAt(offset)
-        val variants = MacroUtil
-          .getVariablesForScope(element)
-          .filter(r => {
-            val clazz = PsiTreeUtil
-              .getParentOfType(r.element, classOf[PsiClass])
-            if (clazz == null) true
-            else {
-              clazz.qualifiedName match {
-                case "scala.Predef" => false
-                case "scala"        => false
-                case _              => true
-              }
+        val variants = MacroUtil.getVariablesForScope(element).filter(r => {
+          val clazz = PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
+          if (clazz == null) true
+          else {
+            clazz.qualifiedName match {
+              case "scala.Predef" => false
+              case "scala"        => false
+              case _              => true
             }
-          })
+          }
+        })
         for (variant <- variants) {
           variant.getElement match {
             case typed: ScTypedDefinition =>
@@ -174,12 +164,11 @@ class ScalaVariableOfTypeMacro extends Macro {
             case _ => None
           }
       case _ =>
-        exprs
-          .find(expr =>
-            (ScType.extractClassType(scType, Some(project)) match {
-              case Some((x, _)) => x.qualifiedName
-              case None         => ""
-            }) == expr.calculateResult(context).toString)
+        exprs.find(expr =>
+          (ScType.extractClassType(scType, Some(project)) match {
+            case Some((x, _)) => x.qualifiedName
+            case None         => ""
+          }) == expr.calculateResult(context).toString)
           .map(_ => new TextResult(variant.getElement.name))
     }
   }
@@ -199,16 +188,14 @@ class ScalaVariableOfTypeMacro extends Macro {
         array += item
       case ScalaVariableOfTypeMacro.iterableId
           if scType.canonicalText.startsWith("_root_.scala.Array") =>
-        array += LookupElementBuilder.create(
-          variant.getElement,
-          variant.getElement.name)
+        array += LookupElementBuilder
+          .create(variant.getElement, variant.getElement.name)
       case ScalaVariableOfTypeMacro.iterableId =>
         ScType.extractClass(scType) match {
           case Some(x: ScTypeDefinition)
               if x.functionsByName("foreach").nonEmpty =>
-            array += LookupElementBuilder.create(
-              variant.getElement,
-              variant.getElement.name)
+            array += LookupElementBuilder
+              .create(variant.getElement, variant.getElement.name)
           case _ =>
         }
       case _ =>
@@ -217,9 +204,8 @@ class ScalaVariableOfTypeMacro extends Macro {
                 case Some(x) => x.qualifiedName
                 case None    => ""
               }) == expr)
-            array += LookupElementBuilder.create(
-              variant.getElement,
-              variant.getElement.name)
+            array += LookupElementBuilder
+              .create(variant.getElement, variant.getElement.name)
         }
     }
   }

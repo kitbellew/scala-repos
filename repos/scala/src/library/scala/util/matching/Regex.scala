@@ -693,10 +693,10 @@ object Regex {
     /** The number of subgroups. */
     def groupCount = matcher.groupCount
 
-    private lazy val starts: Array[Int] =
-      ((0 to groupCount) map matcher.start).toArray
-    private lazy val ends: Array[Int] =
-      ((0 to groupCount) map matcher.end).toArray
+    private lazy val starts: Array[Int] = ((0 to groupCount) map matcher.start)
+      .toArray
+    private lazy val ends: Array[Int] = ((0 to groupCount) map matcher.end)
+      .toArray
 
     /** The index of the first matched character in group `i`. */
     def start(i: Int) = starts(i)

@@ -30,12 +30,9 @@ private[round] final class Player(
     play match {
       case HumanPlay(playerId, uci, blur, lag, promiseOption) => pov match {
           case Pov(game, color) if game playableBy color =>
-            lila.mon
-              .measure(_.round.move.segment.logic)(
-                applyUci(game, uci, blur, lag))
-              .prefixFailuresWith(s"$pov ")
-              .fold(errs => fufail(ClientError(errs.shows)), fuccess)
-              .flatMap {
+            lila.mon.measure(_.round.move.segment.logic)(
+              applyUci(game, uci, blur, lag)).prefixFailuresWith(s"$pov ")
+              .fold(errs => fufail(ClientError(errs.shows)), fuccess).flatMap {
                 case (progress, moveOrDrop) =>
                   (GameRepo save progress).mon(_.round.move.segment.save) >>-
                     (pov.game.hasAi ! uciMemo.add(pov.game, moveOrDrop)) >>-
@@ -54,8 +51,9 @@ private[round] final class Player(
                             if (pov.player.isProposingTakeback)
                               round ! TakebackNo(pov.player.id)
                             moveOrDrop.left.toOption
-                              .ifTrue(pov.game.forecastable)
-                              .foreach { move => round ! ForecastPlay(move) }
+                              .ifTrue(pov.game.forecastable).foreach { move =>
+                                round ! ForecastPlay(move)
+                              }
                         } inject progress.events
                       }
                     ) >>- promiseOption.foreach(_.success(()))
@@ -76,8 +74,7 @@ private[round] final class Player(
     if (game.playable && game.player.isAi) {
       if (currentFen == FEN(Forsyth >> game.toChess))
         applyUci(game, uci, blur = false, lag = 0.millis)
-          .fold(errs => fufail(ClientError(errs.shows)), fuccess)
-          .flatMap {
+          .fold(errs => fufail(ClientError(errs.shows)), fuccess).flatMap {
             case (progress, moveOrDrop) =>
               (GameRepo save progress) >>-
                 uciMemo.add(progress.game, moveOrDrop) >>-

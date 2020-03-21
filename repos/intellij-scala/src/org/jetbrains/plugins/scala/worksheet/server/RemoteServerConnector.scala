@@ -97,8 +97,8 @@ class RemoteServerConnector(
           new NonServerRunner(project, Some(errorHandler)).buildProcess(
             encodedArgs,
             (text: String) => {
-              val event = Event.fromBytes(
-                Base64Converter.decode(text.getBytes("UTF-8")))
+              val event = Event
+                .fromBytes(Base64Converter.decode(text.getBytes("UTF-8")))
               eventClient.process(event)
             })
       }
@@ -156,8 +156,8 @@ object RemoteServerConnector {
 
       val differ =
         if (linesLength > 2) {
-          val i = lines(
-            linesLength - 2) indexOf WorksheetSourceProcessor.END_GENERATED_MARKER
+          val i = lines(linesLength - 2) indexOf WorksheetSourceProcessor
+            .END_GENERATED_MARKER
           if (i > -1) i + length else 0
         } else 0
 

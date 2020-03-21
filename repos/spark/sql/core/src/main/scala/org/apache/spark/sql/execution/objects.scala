@@ -35,9 +35,8 @@ trait ObjectOperator extends SparkPlan {
   def generateToObject(
       objExpr: Expression,
       inputSchema: Seq[Attribute]): InternalRow => Any = {
-    val objectProjection = GenerateSafeProjection.generate(
-      objExpr :: Nil,
-      inputSchema)
+    val objectProjection = GenerateSafeProjection
+      .generate(objExpr :: Nil, inputSchema)
     (i: InternalRow) => objectProjection(i).get(0, objExpr.dataType)
   }
 
@@ -180,8 +179,8 @@ case class CoGroup(
     ClusteredDistribution(leftGroup) :: ClusteredDistribution(rightGroup) :: Nil
 
   override def requiredChildOrdering: Seq[Seq[SortOrder]] =
-    leftGroup.map(SortOrder(_, Ascending)) :: rightGroup.map(
-      SortOrder(_, Ascending)) :: Nil
+    leftGroup.map(SortOrder(_, Ascending)) :: rightGroup
+      .map(SortOrder(_, Ascending)) :: Nil
 
   override protected def doExecute(): RDD[InternalRow] = {
     left.execute().zipPartitions(right.execute()) { (leftData, rightData) =>

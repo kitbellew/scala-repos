@@ -120,8 +120,7 @@ object ScalaPluginUpdater {
       branch: ScalaApplicationSettings.pluginBranch) = {
     doUpdatePluginHosts(branch)
     if (UpdateSettings.getInstance().isCheckNeeded) {
-      UpdateChecker
-        .updateAndShowResult()
+      UpdateChecker.updateAndShowResult()
         .doWhenDone(toRunnable(postCheckIdeaCompatibility(branch)))
     }
   }
@@ -150,12 +149,12 @@ object ScalaPluginUpdater {
 
     try {
       PluginInstaller.prepareToUninstall(pluginId)
-      val installedPlugins =
-        InstalledPluginsState.getInstance().getInstalledPlugins
+      val installedPlugins = InstalledPluginsState.getInstance()
+        .getInstalledPlugins
       val pluginIdString: String = pluginId.getIdString
       import scala.collection.JavaConversions._
-      while (installedPlugins.exists(
-               _.getPluginId.getIdString == pluginIdString)) {
+      while (installedPlugins
+               .exists(_.getPluginId.getIdString == pluginIdString)) {
         installedPlugins.remove(pluginIdString)
       }
     } catch { case e1: IOException => PluginManagerMain.LOG.error(e1) }
@@ -185,8 +184,7 @@ object ScalaPluginUpdater {
   def postCheckIdeaCompatibility(
       branch: ScalaApplicationSettings.pluginBranch) = {
     import scala.xml._
-    val infoImpl = ApplicationInfo
-      .getInstance()
+    val infoImpl = ApplicationInfo.getInstance()
       .asInstanceOf[ApplicationInfoImpl]
     val localBuildNumber = infoImpl.getBuild
     val url = branch match {
@@ -199,9 +197,9 @@ object ScalaPluginUpdater {
       invokeLater {
         try {
           val resp = XML.load(u)
-          val text = (
-            (resp \\ "idea-plugin").head \ "idea-version" \ "@since-build"
-          ).text
+          val text =
+            ((resp \\ "idea-plugin").head \ "idea-version" \ "@since-build")
+              .text
           val remoteBuildNumber = BuildNumber.fromString(text)
           if (localBuildNumber.compareTo(remoteBuildNumber) < 0)
             suggestIdeaUpdate(branch.toString, text)
@@ -216,20 +214,17 @@ object ScalaPluginUpdater {
     postCheckIdeaCompatibility(getScalaPluginBranch)
 
   private def suggestIdeaUpdate(branch: String, suggestedVersion: String) = {
-    val infoImpl = ApplicationInfo
-      .getInstance()
+    val infoImpl = ApplicationInfo.getInstance()
       .asInstanceOf[ApplicationInfoImpl]
     val appSettings = ScalaApplicationSettings.getInstance()
     def getPlatformUpdateResult = {
       val a = ApplicationInfoEx.getInstanceEx.getUpdateUrls.getCheckingUrl
-      val info = HttpRequests
-        .request(a)
+      val info = HttpRequests.request(a)
         .connect(new HttpRequests.RequestProcessor[Option[UpdatesInfo]] {
           def process(request: HttpRequests.Request) = {
             try {
               Some(new UpdatesInfo(
-                JDOMUtil
-                  .loadDocument(request.getInputStream)
+                JDOMUtil.loadDocument(request.getInputStream)
                   .detachRootElement))
             } catch { case e: JDOMException => LOG.info(e); None }
           }
@@ -250,8 +245,8 @@ object ScalaPluginUpdater {
     def isBetaOrEAPPlatform = infoImpl.isEAP || infoImpl.isBetaOrRC
     val notification = getPlatformUpdateResult match {
       case Some(result)
-          if isUpToDatePlatform(
-            result) && !isBetaOrEAPPlatform && appSettings.ASK_PLATFORM_UPDATE => // platform is up to date - suggest eap
+          if isUpToDatePlatform(result) && !isBetaOrEAPPlatform && appSettings
+            .ASK_PLATFORM_UPDATE => // platform is up to date - suggest eap
         val message =
           s"Your IDEA is outdated to use with $branch branch.<br/>Would you like to switch IDEA channel to EAP?" +
             s"""<p/><a href="Yes">Yes</a>\n""" +
@@ -268,8 +263,8 @@ object ScalaPluginUpdater {
               notification.expire()
               event.getDescription match {
                 case "No" => // do nothing, will ask next time
-                case "Yes" =>
-                  UpdateSettings.getInstance().setUpdateChannelType("eap")
+                case "Yes" => UpdateSettings.getInstance()
+                    .setUpdateChannelType("eap")
                 case "Ignore" => appSettings.ASK_PLATFORM_UPDATE = false
               }
             }
@@ -288,9 +283,7 @@ object ScalaPluginUpdater {
   private def scheduleUpdate(): Unit = {
     val key = "scala.last.updated"
     val lastUpdateTime = PropertiesComponent.getInstance().getOrInitLong(key, 0)
-    EditorFactory
-      .getInstance()
-      .getEventMulticaster
+    EditorFactory.getInstance().getEventMulticaster
       .removeDocumentListener(updateListener)
     if (lastUpdateTime == 0L || System
           .currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(1)) {
@@ -301,17 +294,15 @@ object ScalaPluginUpdater {
           val os = URLEncoder.encode(
             SystemInfo.OS_NAME + " " + SystemInfo.OS_VERSION,
             CharsetToolkit.UTF8)
-          val uid = UpdateChecker.getInstallationUID(
-            PropertiesComponent.getInstance())
+          val uid = UpdateChecker
+            .getInstallationUID(PropertiesComponent.getInstance())
           val url =
             s"https://plugins.jetbrains.com/plugins/list?pluginId=$scalaPluginId&build=$buildNumber&pluginVersion=$pluginVersion&os=$os&uuid=$uid"
-          PropertiesComponent
-            .getInstance()
+          PropertiesComponent.getInstance()
             .setValue(key, System.currentTimeMillis().toString)
           doneUpdating = true
           try {
-            HttpRequests
-              .request(url)
+            HttpRequests.request(url)
               .connect(new HttpRequests.RequestProcessor[Unit] {
                 override def process(request: Request) =
                   JDOMUtil.load(request.getReader())
@@ -326,9 +317,7 @@ object ScalaPluginUpdater {
     if (ApplicationManager.getApplication.isUnitTestMode) return
 
     import com.intellij.openapi.editor.EditorFactory
-    EditorFactory
-      .getInstance()
-      .getEventMulticaster
+    EditorFactory.getInstance().getEventMulticaster
       .addDocumentListener(updateListener)
   }
 
@@ -345,11 +334,10 @@ object ScalaPluginUpdater {
           case other => other
         }
     }
-    val stream = getClass.getClassLoader
-      .getResource("META-INF/plugin.xml")
+    val stream = getClass.getClassLoader.getResource("META-INF/plugin.xml")
       .openStream()
-    val document = new RuleTransformer(versionPatcher).transform(XML.load(
-      stream))
+    val document = new RuleTransformer(versionPatcher)
+      .transform(XML.load(stream))
     val tempFile = File.createTempFile("plugin", "xml")
     XML.save(tempFile.getAbsolutePath, document.head)
     pluginDescriptor.readExternal(tempFile.toURI.toURL)
@@ -360,8 +348,8 @@ object ScalaPluginUpdater {
   def patchPluginVersionReflection() = {
     // crime of reflection goes below - workaround until force updating is available
     try {
-      val hack: Field = classOf[IdeaPluginDescriptorImpl].getDeclaredField(
-        "myVersion")
+      val hack: Field = classOf[IdeaPluginDescriptorImpl]
+        .getDeclaredField("myVersion")
       hack.setAccessible(true)
       hack.set(pluginDescriptor, "0.0.0")
     } catch {
@@ -375,8 +363,7 @@ object ScalaPluginUpdater {
   }
 
   def askUpdatePluginBranch(): Unit = {
-    val infoImpl = ApplicationInfo
-      .getInstance()
+    val infoImpl = ApplicationInfo.getInstance()
       .asInstanceOf[ApplicationInfoImpl]
     val applicationSettings = ScalaApplicationSettings.getInstance()
     if ((infoImpl.isEAP || infoImpl.isBetaOrRC)

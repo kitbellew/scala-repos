@@ -34,16 +34,10 @@ class SbtFileImpl(provider: FileViewProvider)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean =
-    super[ScalaFileImpl].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place) &&
-      super[ScDeclarationSequenceHolder].processDeclarations(
-        processor,
-        state,
-        lastParent,
-        place) &&
+    super[ScalaFileImpl]
+      .processDeclarations(processor, state, lastParent, place) &&
+      super[ScDeclarationSequenceHolder]
+        .processDeclarations(processor, state, lastParent, place) &&
       processImplicitImports(processor, state, lastParent, place)
 
   private def processImplicitImports(
@@ -51,9 +45,8 @@ class SbtFileImpl(provider: FileViewProvider)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    val expressions =
-      implicitImportExpressions ++ localObjectsWithDefinitions.map(
-        _.qualifiedName + "._")
+    val expressions = implicitImportExpressions ++ localObjectsWithDefinitions
+      .map(_.qualifiedName + "._")
 
     // TODO this is a workaround, we need to find out why references stopped resolving via the chained imports
     val expressions0 = expressions.map {
@@ -74,8 +67,7 @@ class SbtFileImpl(provider: FileViewProvider)
   }
 
   private def implicitImportExpressions =
-    projectDefinitionModule
-      .orElse(fileModule)
+    projectDefinitionModule.orElse(fileModule)
       .fold(Seq.empty[String])(SbtModule.getImportsFrom)
 
   private def localObjectsWithDefinitions: Seq[PsiClass] = {
@@ -86,22 +78,19 @@ class SbtFileImpl(provider: FileViewProvider)
       val moduleWithLibrariesScope = module.getModuleWithLibrariesScope
 
       Sbt.DefinitionHolderClasses
-        .flatMap(manager.getCachedClasses(moduleWithLibrariesScope, _))
-        .flatMap(
+        .flatMap(manager.getCachedClasses(moduleWithLibrariesScope, _)).flatMap(
           ClassInheritorsSearch.search(_, moduleScope, true).findAll.asScala)
     }
   }
 
   override def getFileResolveScope: GlobalSearchScope =
-    projectDefinitionModule.fold(super.getFileResolveScope)(
-      _.getModuleWithLibrariesScope)
+    projectDefinitionModule
+      .fold(super.getFileResolveScope)(_.getModuleWithLibrariesScope)
 
   private def projectDefinitionModule: Option[Module] =
     fileModule.flatMap { module =>
-      Option(
-        ModuleManager
-          .getInstance(getProject)
-          .findModuleByName(module.getName + Sbt.BuildModuleSuffix))
+      Option(ModuleManager.getInstance(getProject).findModuleByName(
+        module.getName + Sbt.BuildModuleSuffix))
     }
 
   private def fileModule: Option[Module] =

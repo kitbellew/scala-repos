@@ -280,7 +280,8 @@ abstract class PathResolverBase[BaseClassPathType <: ClassFileLookup[
       else ""
 
     def userClassPath =
-      settings.classpath.value // default is specified by settings and can be overridden there
+      settings.classpath
+        .value // default is specified by settings and can be overridden there
 
     import classPathFactory._
 

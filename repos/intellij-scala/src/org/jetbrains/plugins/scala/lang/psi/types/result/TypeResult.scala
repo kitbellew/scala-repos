@@ -57,11 +57,9 @@ object TypeResult {
 
   def sequence[A](trs: Seq[TypeResult[A]]): TypeResult[Seq[A]] = {
     val seed: TypeResult[scala.List[A]] = Success(List[A](), None)
-    trs
-      .foldLeft(seed) { (result, tr) =>
-        result.flatMap(as => tr.map(a => a :: as))
-      }
-      .map(_.reverse)
+    trs.foldLeft(seed) { (result, tr) =>
+      result.flatMap(as => tr.map(a => a :: as))
+    }.map(_.reverse)
   }
 }
 

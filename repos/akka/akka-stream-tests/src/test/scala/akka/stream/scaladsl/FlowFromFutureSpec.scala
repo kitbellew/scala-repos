@@ -21,10 +21,8 @@ class FlowFromFutureSpec extends AkkaSpec {
   "A Flow based on a Future" must {
     "produce one element from already successful Future" in assertAllStagesStopped {
       val c = TestSubscriber.manualProbe[Int]()
-      val p = Source
-        .fromFuture(Future.successful(1))
-        .runWith(Sink.asPublisher(true))
-        .subscribe(c)
+      val p = Source.fromFuture(Future.successful(1))
+        .runWith(Sink.asPublisher(true)).subscribe(c)
       val sub = c.expectSubscription()
       c.expectNoMsg(100.millis)
       sub.request(1)
@@ -35,9 +33,7 @@ class FlowFromFutureSpec extends AkkaSpec {
     "produce error from already failed Future" in assertAllStagesStopped {
       val ex = new RuntimeException("test") with NoStackTrace
       val c = TestSubscriber.manualProbe[Int]()
-      Source
-        .fromFuture(Future.failed[Int](ex))
-        .runWith(Sink.asPublisher(false))
+      Source.fromFuture(Future.failed[Int](ex)).runWith(Sink.asPublisher(false))
         .subscribe(c)
       c.expectSubscriptionAndError(ex)
     }
@@ -45,9 +41,7 @@ class FlowFromFutureSpec extends AkkaSpec {
     "produce one element when Future is completed" in assertAllStagesStopped {
       val promise = Promise[Int]()
       val c = TestSubscriber.manualProbe[Int]()
-      Source
-        .fromFuture(promise.future)
-        .runWith(Sink.asPublisher(true))
+      Source.fromFuture(promise.future).runWith(Sink.asPublisher(true))
         .subscribe(c)
       val sub = c.expectSubscription()
       sub.request(1)
@@ -61,9 +55,7 @@ class FlowFromFutureSpec extends AkkaSpec {
     "produce one element when Future is completed but not before request" in {
       val promise = Promise[Int]()
       val c = TestSubscriber.manualProbe[Int]()
-      Source
-        .fromFuture(promise.future)
-        .runWith(Sink.asPublisher(true))
+      Source.fromFuture(promise.future).runWith(Sink.asPublisher(true))
         .subscribe(c)
       val sub = c.expectSubscription()
       promise.success(1)

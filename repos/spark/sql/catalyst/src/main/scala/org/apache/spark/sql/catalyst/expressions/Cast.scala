@@ -123,8 +123,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
     if (Cast.canCast(child.dataType, dataType)) {
       TypeCheckResult.TypeCheckSuccess
     } else {
-      TypeCheckResult.TypeCheckFailure(
-        s"cannot cast ${child.dataType} to $dataType")
+      TypeCheckResult
+        .TypeCheckFailure(s"cannot cast ${child.dataType} to $dataType")
     }
   }
 
@@ -934,15 +934,14 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
     val result = ctx.freshName("result")
     val tmpRow = ctx.freshName("tmpRow")
 
-    val fieldsEvalCode = fieldsCasts.zipWithIndex
-      .map {
-        case (cast, i) => {
-          val fromFieldPrim = ctx.freshName("ffp")
-          val fromFieldNull = ctx.freshName("ffn")
-          val toFieldPrim = ctx.freshName("tfp")
-          val toFieldNull = ctx.freshName("tfn")
-          val fromType = ctx.javaType(from.fields(i).dataType)
-          s"""
+    val fieldsEvalCode = fieldsCasts.zipWithIndex.map {
+      case (cast, i) => {
+        val fromFieldPrim = ctx.freshName("ffp")
+        val fromFieldNull = ctx.freshName("ffn")
+        val toFieldPrim = ctx.freshName("tfp")
+        val toFieldNull = ctx.freshName("tfn")
+        val fromType = ctx.javaType(from.fields(i).dataType)
+        s"""
         boolean $fromFieldNull = $tmpRow.isNullAt($i);
         if ($fromFieldNull) {
           $result.setNullAt($i);
@@ -950,13 +949,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           $fromType $fromFieldPrim =
             ${ctx.getValue(tmpRow, from.fields(i).dataType, i.toString)};
           ${castCode(
-            ctx,
-            fromFieldPrim,
-            fromFieldNull,
-            toFieldPrim,
-            toFieldNull,
-            to.fields(i).dataType,
-            cast)}
+          ctx,
+          fromFieldPrim,
+          fromFieldNull,
+          toFieldPrim,
+          toFieldNull,
+          to.fields(i).dataType,
+          cast)}
           if ($toFieldNull) {
             $result.setNullAt($i);
           } else {
@@ -964,9 +963,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           }
         }
        """
-        }
       }
-      .mkString("\n")
+    }.mkString("\n")
 
     (c, evPrim, evNull) => s"""
         final $rowClass $result = new $rowClass(${fieldsCasts.length});

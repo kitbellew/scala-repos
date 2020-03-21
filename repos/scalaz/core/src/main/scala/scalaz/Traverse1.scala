@@ -79,8 +79,8 @@ trait Traverse1[F[_]] extends Traverse[F] with Foldable1[F] {
         M: Apply[M],
         MN: Equal[M[N[F[C]]]]): Boolean = {
       type MN[A] = M[N[A]]
-      val t1: MN[F[C]] = M.map(traverse1[M, A, B](fa)(amb))(fb =>
-        traverse1[N, B, C](fb)(bnc))
+      val t1: MN[F[C]] = M
+        .map(traverse1[M, A, B](fa)(amb))(fb => traverse1[N, B, C](fb)(bnc))
       val t2: MN[F[C]] = traverse1[MN, A, C](fa)(a => M.map(amb(a))(bnc))(
         M compose N)
       MN.equal(t1, t2)

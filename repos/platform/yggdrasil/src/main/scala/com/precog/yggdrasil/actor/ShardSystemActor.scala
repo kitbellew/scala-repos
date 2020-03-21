@@ -74,7 +74,8 @@ object IngestSystem extends Logging {
       executor: ExecutionContext): Future[Unit] = {
     for {
       _ <- Future(logger.debug(
-        config.logPrefix + " Stopping " + name + " actor within " + config.stopTimeout.duration))
+        config.logPrefix + " Stopping " + name + " actor within " + config
+          .stopTimeout.duration))
       b <- gracefulStop(actor, config.stopTimeout.duration)
     } yield {
       logger.debug(

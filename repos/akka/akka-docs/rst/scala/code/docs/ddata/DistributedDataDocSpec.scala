@@ -66,11 +66,8 @@ object DistributedDataDocSpec {
     implicit val node = Cluster(context.system)
 
     import context.dispatcher
-    val tickTask = context.system.scheduler.schedule(
-      5.seconds,
-      5.seconds,
-      self,
-      Tick)
+    val tickTask = context.system.scheduler
+      .schedule(5.seconds, 5.seconds, self, Tick)
 
     val DataKey = ORSetKey[String]("key")
 

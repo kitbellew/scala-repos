@@ -35,27 +35,27 @@ case class HttpServletRequestReadOnly(
 
   override val getRemoteUser: String = originalRequest.getRemoteUser
 
-  override val getRequestedSessionId: String =
-    originalRequest.getRequestedSessionId
+  override val getRequestedSessionId: String = originalRequest
+    .getRequestedSessionId
 
   override val getRequestURI: String = originalRequest.getRequestURI
 
   override val getServletPath: String = originalRequest.getServletPath
 
-  override val isRequestedSessionIdValid: Boolean =
-    originalRequest.isRequestedSessionIdValid
+  override val isRequestedSessionIdValid: Boolean = originalRequest
+    .isRequestedSessionIdValid
 
-  override val isRequestedSessionIdFromCookie: Boolean =
-    originalRequest.isRequestedSessionIdFromCookie
+  override val isRequestedSessionIdFromCookie: Boolean = originalRequest
+    .isRequestedSessionIdFromCookie
 
-  override val isRequestedSessionIdFromURL: Boolean =
-    originalRequest.isRequestedSessionIdFromURL
+  override val isRequestedSessionIdFromURL: Boolean = originalRequest
+    .isRequestedSessionIdFromURL
 
-  override val isRequestedSessionIdFromUrl: Boolean =
-    originalRequest.isRequestedSessionIdFromUrl
+  override val isRequestedSessionIdFromUrl: Boolean = originalRequest
+    .isRequestedSessionIdFromUrl
 
-  override val getCharacterEncoding: String =
-    originalRequest.getCharacterEncoding
+  override val getCharacterEncoding: String = originalRequest
+    .getCharacterEncoding
 
   override val getContentLength: Int = originalRequest.getContentLength
 

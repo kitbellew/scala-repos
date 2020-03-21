@@ -15,8 +15,7 @@ object ClusterMetricsDisabledMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
   commonConfig(
-    ConfigFactory
-      .parseString("akka.cluster.metrics.enabled = off")
+    ConfigFactory.parseString("akka.cluster.metrics.enabled = off")
       .withFallback(
         MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }

@@ -31,12 +31,8 @@ private[lobby] final class Socket(
 
   override def preStart {
     super.preStart
-    context.system.lilaBus.subscribe(
-      self,
-      'changeFeaturedGame,
-      'streams,
-      'nbMembers,
-      'nbRounds)
+    context.system.lilaBus
+      .subscribe(self, 'changeFeaturedGame, 'streams, 'nbMembers, 'nbRounds)
   }
 
   def receiveSpecific = {
@@ -98,12 +94,10 @@ private[lobby] final class Socket(
   private def notifyPlayerStart(game: lila.game.Game, color: chess.Color) =
     notifyMember(
       "redirect",
-      Json
-        .obj(
-          "id" -> (game fullIdOf color),
-          "url" -> playerUrl(game fullIdOf color),
-          "cookie" -> AnonCookie.json(game, color))
-        .noNull) _
+      Json.obj(
+        "id" -> (game fullIdOf color),
+        "url" -> playerUrl(game fullIdOf color),
+        "cookie" -> AnonCookie.json(game, color)).noNull) _
 
   protected def shouldSkipMessageFor(message: Message, member: Member) =
     message.metadata.hook ?? { hook =>

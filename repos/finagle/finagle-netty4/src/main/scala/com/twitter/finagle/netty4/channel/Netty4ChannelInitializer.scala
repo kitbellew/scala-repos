@@ -31,8 +31,8 @@ private[netty4] class Netty4ChannelInitializer(
 
   val Logger(logger) = params[Logger]
   val Label(label) = params[Label]
-  val Transport
-    .Liveness(readTimeout, writeTimeout, _) = params[Transport.Liveness]
+  val Transport.Liveness(readTimeout, writeTimeout, _) = params[
+    Transport.Liveness]
   val Timer(timer) = params[Timer]
   val Stats(stats) = params[Stats]
 
@@ -79,8 +79,8 @@ private[netty4] class Netty4ChannelInitializer(
 
     channelSnooper.foreach(pipeline.addFirst("channelLogger", _))
     channelStatsHandler.foreach(pipeline.addFirst("channelStatsHandler", _))
-    writeCompletionTimeoutHandler.foreach(
-      pipeline.addLast("writeCompletionTimeout", _))
+    writeCompletionTimeoutHandler
+      .foreach(pipeline.addLast("writeCompletionTimeout", _))
 
     if (readTimeout.isFinite) {
       val (timeoutValue, timeoutUnit) = readTimeout.inTimeUnit
@@ -91,8 +91,8 @@ private[netty4] class Netty4ChannelInitializer(
 
     tlsConfig.foreach(initChannelTls(_, ch))
 
-    channelRequestStatsHandler.foreach(
-      pipeline.addLast("channelRequestStatsHandler", _))
+    channelRequestStatsHandler
+      .foreach(pipeline.addLast("channelRequestStatsHandler", _))
 
     pipeline.addLast("exceptionHandler", exceptionHandler)
     // The bridge handler must be last in the pipeline to ensure
@@ -162,8 +162,7 @@ private[netty4] class ChannelExceptionHandler(
       case _                         =>
     }
 
-    val remoteAddr = Option(ctx.channel.remoteAddress)
-      .map(_.toString)
+    val remoteAddr = Option(ctx.channel.remoteAddress).map(_.toString)
       .getOrElse("unknown remote address")
     val msg =
       s"Unhandled exception in connection with $remoteAddr, shutting down connection"

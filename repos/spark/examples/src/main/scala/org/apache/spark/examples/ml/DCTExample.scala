@@ -39,9 +39,7 @@ object DCTExample {
 
     val df = sqlContext.createDataFrame(data.map(Tuple1.apply)).toDF("features")
 
-    val dct = new DCT()
-      .setInputCol("features")
-      .setOutputCol("featuresDCT")
+    val dct = new DCT().setInputCol("features").setOutputCol("featuresDCT")
       .setInverse(false)
 
     val dctDf = dct.transform(df)

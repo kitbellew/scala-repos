@@ -17,17 +17,14 @@ object MapValues extends SimplificationType {
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
       case qual `.map`(`_._2`()) `.toIterator` () if isMap(qual) =>
-        val iteratorHint = InspectionBundle.message(
-          "replace.with.valuesIterator")
+        val iteratorHint = InspectionBundle
+          .message("replace.with.valuesIterator")
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "valuesIterator"))
-            .highlightFrom(qual)
-            .withHint(iteratorHint))
+          replace(expr).withText(invocationText(qual, "valuesIterator"))
+            .highlightFrom(qual).withHint(iteratorHint))
       case qual `.map`(`_._2`()) if isMap(qual) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "values"))
+          replace(expr).withText(invocationText(qual, "values"))
             .highlightFrom(qual))
       case _ => None
     }

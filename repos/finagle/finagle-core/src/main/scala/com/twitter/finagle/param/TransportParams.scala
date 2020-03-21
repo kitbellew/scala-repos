@@ -56,8 +56,8 @@ abstract class TransportParams[A <: Stack.Parameterized[A]](
     * connection/transport may not have sent any data.
     */
   def writeTimeout(timeout: Duration): A =
-    self.configured(
-      self.params[Transport.Liveness].copy(writeTimeout = timeout))
+    self
+      .configured(self.params[Transport.Liveness].copy(writeTimeout = timeout))
 
   /**
     * Makes the transport of this client or server verbose (default: disabled).

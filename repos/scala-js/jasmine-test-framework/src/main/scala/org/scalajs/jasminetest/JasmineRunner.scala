@@ -76,14 +76,12 @@ object JasmineRunner {
     js.Object.defineProperty(
       ThrowablePrototype,
       "stack",
-      js.Dynamic
-        .literal(
-          configurable = false,
-          enumerable = false,
-          get = { (self: js.Dynamic) =>
-            self.stackdata && self.stackdata.stack
-          }: js.ThisFunction)
-        .asInstanceOf[js.PropertyDescriptor]
+      js.Dynamic.literal(
+        configurable = false,
+        enumerable = false,
+        get = { (self: js.Dynamic) =>
+          self.stackdata && self.stackdata.stack
+        }: js.ThisFunction).asInstanceOf[js.PropertyDescriptor]
     )
   }
 

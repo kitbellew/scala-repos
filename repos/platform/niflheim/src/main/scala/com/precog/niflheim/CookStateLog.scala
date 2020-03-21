@@ -51,9 +51,10 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
 
   private[this] val txLog = new Logger(txLogConfig)
   txLog.open()
-  txLog.setAutoMark(
-    false
-  ) // We only mark when we're ready to write to a new raw log
+  txLog
+    .setAutoMark(
+      false
+    ) // We only mark when we're ready to write to a new raw log
 
   def close = {
     if (pendingCookIds0.size > 0) {
@@ -118,9 +119,8 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
   def completeCook(blockId: Long) = {
     assert(pendingCookIds0 contains blockId)
 
-    val completeTxKey = txLog.put(
-      TXLogEntry.toBytes(CompleteCook(blockId)),
-      true)
+    val completeTxKey = txLog
+      .put(TXLogEntry.toBytes(CompleteCook(blockId)), true)
 
     // Remove the entry from pending map and advance the mark to the
     // lowest remaining txKey, or the txKey of the completion if there

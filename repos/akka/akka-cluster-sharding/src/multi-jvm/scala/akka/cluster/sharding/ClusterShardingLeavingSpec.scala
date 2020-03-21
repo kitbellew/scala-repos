@@ -121,20 +121,20 @@ abstract class ClusterShardingLeavingSpec(
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒
-    new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir")
+    .map(s ⇒ new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     runOn(first) {
-      storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+      storageLocations
+        .foreach(dir ⇒ if (dir.exists) FileUtils.deleteDirectory(dir))
     }
   }
 
   override protected def afterTermination() {
     runOn(first) {
-      storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+      storageLocations
+        .foreach(dir ⇒ if (dir.exists) FileUtils.deleteDirectory(dir))
     }
   }
 
@@ -146,7 +146,8 @@ abstract class ClusterShardingLeavingSpec(
       startSharding()
       within(15.seconds) {
         awaitAssert(cluster.state.members.exists { m ⇒
-          m.uniqueAddress == cluster.selfUniqueAddress && m.status == MemberStatus.Up
+          m.uniqueAddress == cluster.selfUniqueAddress && m
+            .status == MemberStatus.Up
         } should be(true))
       }
     }
@@ -190,9 +191,8 @@ abstract class ClusterShardingLeavingSpec(
 
     "initialize shards" in {
       runOn(first) {
-        val shardLocations = system.actorOf(
-          Props[ShardLocations],
-          "shardLocations")
+        val shardLocations = system
+          .actorOf(Props[ShardLocations], "shardLocations")
         val locations = (for (n ← 1 to 10) yield {
           val id = n.toString
           region ! Ping(id)
@@ -213,8 +213,9 @@ abstract class ClusterShardingLeavingSpec(
       enterBarrier("stopped")
 
       runOn(second, third, fourth) {
-        system.actorSelection(
-          node(first) / "user" / "shardLocations") ! GetLocations
+        system
+          .actorSelection(
+            node(first) / "user" / "shardLocations") ! GetLocations
         val Locations(locations) = expectMsgType[Locations]
         val firstAddress = node(first).address
         awaitAssert {

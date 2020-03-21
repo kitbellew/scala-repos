@@ -160,8 +160,8 @@ trait GroupSolver
           actualErrors ++ originErrors
         }
 
-        case NaryOp(_, values) =>
-          (values map loop(dispatches)).fold(Set[Error]()) { _ ++ _ }
+        case NaryOp(_, values) => (values map loop(dispatches))
+            .fold(Set[Error]()) { _ ++ _ }
       }
 
     loop(Set())(tree)
@@ -732,8 +732,8 @@ trait GroupSolver
           sigma)
 
       case t @ TicVar(_, name)
-          if b.isDefined && (t.binding == SolveBinding(
-            b.get) || t.binding == FreeBinding(b.get)) => {
+          if b.isDefined && (t.binding == SolveBinding(b.get) || t
+            .binding == FreeBinding(b.get)) => {
         t.binding match {
           case SolveBinding(b2) => Set((Some(b2), name))
           case FreeBinding(b2)  => Set((Some(b2), name))
@@ -762,8 +762,8 @@ trait GroupSolver
         (actuals map { listTicVars(b, _, sigma) }).fold(leftSet) { _ ++ _ }
       }
 
-      case NaryOp(_, values) =>
-        (values map { listTicVars(b, _, sigma) }).fold(Set()) { _ ++ _ }
+      case NaryOp(_, values) => (values map { listTicVars(b, _, sigma) })
+          .fold(Set()) { _ ++ _ }
     }
 
   private def listSolvedVars(spec: BucketSpec): Set[TicId] =

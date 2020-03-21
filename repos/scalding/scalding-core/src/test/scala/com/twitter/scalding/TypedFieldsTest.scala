@@ -33,10 +33,8 @@ class TypedFieldsTest extends WordSpec with Matchers {
     // Now run the typed fields version
 
     "group by custom comparator correctly" in {
-      JobTest(new TypedFieldsJob(_))
-        .arg("input", "inputFile")
-        .arg("output", "outputFile")
-        .source(
+      JobTest(new TypedFieldsJob(_)).arg("input", "inputFile")
+        .arg("output", "outputFile").source(
           TextLine("inputFile"),
           List("0" -> "5,foo", "1" -> "6,bar", "2" -> "9,foo"))
         .sink[(Opaque, Int)](Tsv("outputFile")) { outputBuffer =>
@@ -46,37 +44,28 @@ class TypedFieldsTest extends WordSpec with Matchers {
           outMap should have size 2
           outMap("foo") shouldBe 14
           outMap("bar") shouldBe 6
-        }
-        .run
-        .finish
+        }.run.finish
 
     }
 
   }
 
   def untypedJob {
-    JobTest(new UntypedFieldsJob(_))
-      .arg("input", "inputFile")
-      .arg("output", "outputFile")
-      .source(
+    JobTest(new UntypedFieldsJob(_)).arg("input", "inputFile")
+      .arg("output", "outputFile").source(
         TextLine("inputFile"),
         List("0" -> "5,foo", "1" -> "6,bar", "2" -> "9,foo"))
-      .sink[(Opaque, Int)](Tsv("outputFile")) { _ => }
-      .run
-      .finish
+      .sink[(Opaque, Int)](Tsv("outputFile")) { _ => }.run.finish
   }
 
 }
 
 class UntypedFieldsJob(args: Args) extends Job(args) {
 
-  TextLine(args("input")).read
-    .map('line -> ('x, 'y)) { line: String =>
-      val split = line.split(",")
-      (split(0).toInt, new Opaque(split(1)))
-    }
-    .groupBy('y) { _.sum[Double]('x) }
-    .write(Tsv(args("output")))
+  TextLine(args("input")).read.map('line -> ('x, 'y)) { line: String =>
+    val split = line.split(",")
+    (split(0).toInt, new Opaque(split(1)))
+  }.groupBy('y) { _.sum[Double]('x) }.write(Tsv(args("output")))
 
 }
 
@@ -91,12 +80,10 @@ class TypedFieldsJob(args: Args) extends Job(args) {
   val xField = Field[String]('x)
   val yField = Field[Opaque]('y)
 
-  TextLine(args("input")).read
-    .map('line -> (xField, yField)) { line: String =>
-      val split = line.split(",")
-      (split(0).toInt, new Opaque(split(1)))
-    }
-    .groupBy(yField) { _.sum[Double](xField -> xField) }
+  TextLine(args("input")).read.map('line -> (xField, yField)) { line: String =>
+    val split = line.split(",")
+    (split(0).toInt, new Opaque(split(1)))
+  }.groupBy(yField) { _.sum[Double](xField -> xField) }
     .write(Tsv(args("output")))
 
 }

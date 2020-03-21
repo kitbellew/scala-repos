@@ -67,8 +67,7 @@ final case class ProductResultConverter[
   def update(value: T, pr: Updater) = {
     var i = 0
     while (i < len) {
-      cha(i)
-        .asInstanceOf[ResultConverter[M, Any]]
+      cha(i).asInstanceOf[ResultConverter[M, Any]]
         .update(value.productElement(i), pr)
       i += 1
     }
@@ -76,8 +75,7 @@ final case class ProductResultConverter[
   def set(value: T, pp: Writer) = {
     var i = 0
     while (i < len) {
-      cha(i)
-        .asInstanceOf[ResultConverter[M, Any]]
+      cha(i).asInstanceOf[ResultConverter[M, Any]]
         .set(value.productElement(i), pp)
       i += 1
     }
@@ -198,8 +196,8 @@ final case class OptionRebuildingResultConverter[M <: ResultConverterDomain, T](
 abstract class SimpleFastPathResultConverter[M <: ResultConverterDomain, T](
     protected[this] val rc: TypeMappingResultConverter[M, T, _])
     extends ResultConverter[M, T] {
-  private[this] val ch =
-    rc.child.asInstanceOf[ProductResultConverter[M, _]].elementConverters
+  private[this] val ch = rc.child.asInstanceOf[ProductResultConverter[M, _]]
+    .elementConverters
   private[this] var idx = -1
 
   /** Return the next specialized child `ResultConverter` for the specified type. */

@@ -40,8 +40,7 @@ class ThriftClientFinagleServerTest
     def show_me_your_dtab_size() = Future.value(0)
   }
 
-  val server = ServerBuilder()
-    .codec(ThriftServerFramedCodec())
+  val server = ServerBuilder().codec(ThriftServerFramedCodec())
     .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
     .name("ThriftServer")
     .build(new B.Service(processor, new TBinaryProtocol.Factory()))
@@ -113,12 +112,8 @@ class ThriftClientFinagleServerTest
       val statsReceiver = new InMemoryStatsReceiver
       val name = "thrift_client"
       val service: Service[ThriftClientRequest, Array[Byte]] = ClientBuilder()
-        .hosts(serverAddr)
-        .name(name)
-        .hostConnectionLimit(1)
-        .codec(ThriftClientFramedCodec())
-        .reportTo(statsReceiver)
-        .build()
+        .hosts(serverAddr).name(name).hostConnectionLimit(1)
+        .codec(ThriftClientFramedCodec()).reportTo(statsReceiver).build()
 
       val client = new B.ServiceToClient(service, new TBinaryProtocol.Factory())
       assert(Await.result(client.multiply(4, 2)) == 2)

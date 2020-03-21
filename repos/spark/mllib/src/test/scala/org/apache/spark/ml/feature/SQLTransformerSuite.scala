@@ -30,8 +30,7 @@ class SQLTransformerSuite
   test("params") { ParamsSuite.checkParams(new SQLTransformer()) }
 
   test("transform numeric data") {
-    val original = sqlContext
-      .createDataFrame(Seq((0, 1.0, 3.0), (2, 2.0, 5.0)))
+    val original = sqlContext.createDataFrame(Seq((0, 1.0, 3.0), (2, 2.0, 5.0)))
       .toDF("id", "v1", "v2")
     val sqlTrans = new SQLTransformer()
       .setStatement("SELECT *, (v1 + v2) AS v3, (v1 * v2) AS v4 FROM __THIS__")
@@ -46,8 +45,7 @@ class SQLTransformerSuite
   }
 
   test("read/write") {
-    val t = new SQLTransformer()
-      .setStatement("select * from __THIS__")
+    val t = new SQLTransformer().setStatement("select * from __THIS__")
     testDefaultReadWrite(t)
   }
 }

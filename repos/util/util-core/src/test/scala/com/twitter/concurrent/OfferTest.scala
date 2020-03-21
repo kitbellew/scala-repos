@@ -126,9 +126,8 @@ class OfferTest extends WordSpec with MockitoSugar {
         val h = new AllTxsReadyHelper
         import h._
 
-        val shuffledOffer = Offer.choose(
-          Some(new Random(Time.now.inNanoseconds)),
-          offers)
+        val shuffledOffer = Offer
+          .choose(Some(new Random(Time.now.inNanoseconds)), offers)
         val histo = new Array[Int](3)
         for (_ <- 0 until 1000) {
           for (tx <- shuffledOffer.prepare()) histo(txs.indexOf(tx)) += 1
@@ -176,8 +175,8 @@ class OfferTest extends WordSpec with MockitoSugar {
       }
 
       "retry when it aborts" in {
-        val txps =
-          new Promise[Tx[Int]] #:: new Promise[Tx[Int]] #:: Stream.empty
+        val txps = new Promise[Tx[Int]] #:: new Promise[Tx[Int]] #:: Stream
+          .empty
         val offer = spy(new SimpleOffer(txps))
         val badTx = mock[Tx[Int]]
         val result = Future.value(Abort)

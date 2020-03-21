@@ -110,19 +110,16 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
     */
   def send(producerRequest: ProducerRequest): ProducerResponse = {
     val requestSize = producerRequest.sizeInBytes
-    producerRequestStats
-      .getProducerRequestStats(config.host, config.port)
-      .requestSizeHist
-      .update(requestSize)
+    producerRequestStats.getProducerRequestStats(config.host, config.port)
+      .requestSizeHist.update(requestSize)
     producerRequestStats.getProducerRequestAllBrokersStats.requestSizeHist
       .update(requestSize)
 
     var response: NetworkReceive = null
     val specificTimer = producerRequestStats
-      .getProducerRequestStats(config.host, config.port)
+      .getProducerRequestStats(config.host, config.port).requestTimer
+    val aggregateTimer = producerRequestStats.getProducerRequestAllBrokersStats
       .requestTimer
-    val aggregateTimer =
-      producerRequestStats.getProducerRequestAllBrokersStats.requestTimer
     aggregateTimer.time {
       specificTimer.time {
         response = doSend(
@@ -132,8 +129,7 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
     }
     if (producerRequest.requiredAcks != 0) {
       val producerResponse = ProducerResponse.readFrom(response.payload)
-      producerRequestStats
-        .getProducerRequestStats(config.host, config.port)
+      producerRequestStats.getProducerRequestStats(config.host, config.port)
         .throttleTimeStats
         .update(producerResponse.throttleTime, TimeUnit.MILLISECONDS)
       producerRequestStats.getProducerRequestAllBrokersStats.throttleTimeStats

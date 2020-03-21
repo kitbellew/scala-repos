@@ -134,18 +134,15 @@ final class VectorSlicer(override val uid: String)
 
   /** Get the feature indices in order: indices, names */
   private def getSelectedFeatureIndices(schema: StructType): Array[Int] = {
-    val nameFeatures = MetadataUtils.getFeatureIndicesFromNames(
-      schema($(inputCol)),
-      $(names))
+    val nameFeatures = MetadataUtils
+      .getFeatureIndicesFromNames(schema($(inputCol)), $(names))
     val indFeatures = $(indices)
     val numDistinctFeatures = (nameFeatures ++ indFeatures).distinct.length
     lazy val errMsg = "VectorSlicer requires indices and names to be disjoint" +
       s" sets of features, but they overlap." +
       s" indices: ${indFeatures.mkString("[", ",", "]")}." +
       s" names: " +
-      nameFeatures
-        .zip($(names))
-        .map { case (i, n) => s"$i:$n" }
+      nameFeatures.zip($(names)).map { case (i, n) => s"$i:$n" }
         .mkString("[", ",", "]")
     require(
       nameFeatures.length + indFeatures.length == numDistinctFeatures,

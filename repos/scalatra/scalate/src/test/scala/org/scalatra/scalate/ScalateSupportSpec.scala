@@ -64,8 +64,7 @@ class ScalateSupportSpec extends ScalatraSpec {
       get("/mustache-params") { mustache("params", "foo" -> "Configurable") }
 
       get("/layout-strategy") {
-        templateEngine.layoutStrategy
-          .asInstanceOf[DefaultLayoutStrategy]
+        templateEngine.layoutStrategy.asInstanceOf[DefaultLayoutStrategy]
           .defaultLayouts mkString ";"
       }
 

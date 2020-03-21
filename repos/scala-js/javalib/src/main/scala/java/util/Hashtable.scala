@@ -46,8 +46,7 @@ class Hashtable[K, V] private (inner: mutable.HashMap[Box[Any], V])
   // protected def rehash(): Unit
 
   def put(key: K, value: V): V =
-    inner
-      .put(Box(key.asInstanceOf[AnyRef]), value)
+    inner.put(Box(key.asInstanceOf[AnyRef]), value)
       .getOrElse(null.asInstanceOf[V])
 
   def remove(key: Any): V = {

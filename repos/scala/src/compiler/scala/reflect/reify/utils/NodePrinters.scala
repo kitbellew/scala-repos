@@ -67,8 +67,8 @@ trait NodePrinters {
         s
       })
 
-      val isExpr =
-        reification.length > 0 && reification(0).trim.startsWith("Expr[")
+      val isExpr = reification.length > 0 && reification(0).trim
+        .startsWith("Expr[")
       var rtree = reification dropWhile (!_.trim.startsWith(
         s"val ${nme.UNIVERSE_SHORT}: U = ${nme.MIRROR_UNTYPED}.universe;"))
       rtree = rtree drop 2

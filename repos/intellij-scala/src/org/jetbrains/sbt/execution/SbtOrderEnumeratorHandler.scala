@@ -20,8 +20,8 @@ class SbtOrderEnumeratorHandler extends OrderEnumerationHandler {
       settings: OrderEnumeratorSettings): AddDependencyType = {
     (orderEntry, settings) match {
       case (library: LibraryOrderEntry, enumerator: ModuleOrderEnumerator) =>
-        val isTransitive = getModuleFromEnumerator(enumerator).fold(false)(
-          _ != library.getOwnerModule)
+        val isTransitive = getModuleFromEnumerator(enumerator)
+          .fold(false)(_ != library.getOwnerModule)
         if (isTransitive) AddDependencyType.DO_NOT_ADD
         else AddDependencyType.DEFAULT
       case _ => AddDependencyType.DEFAULT
@@ -50,8 +50,7 @@ class SbtOrderEnumeratorHandlerFactory extends OrderEnumerationHandler.Factory {
   }
 
   override def isApplicable(module: Module): Boolean = {
-    ExternalSystemApiUtil.isExternalSystemAwareModule(
-      SbtProjectSystem.Id,
-      module)
+    ExternalSystemApiUtil
+      .isExternalSystemAwareModule(SbtProjectSystem.Id, module)
   }
 }

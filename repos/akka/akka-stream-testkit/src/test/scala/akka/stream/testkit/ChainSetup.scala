@@ -35,8 +35,7 @@ class ChainSetup[In, Out, M](
 
   val upstream = TestPublisher.manualProbe[In]()
   val downstream = TestSubscriber.probe[Out]()
-  private val s = Source
-    .fromPublisher(upstream)
+  private val s = Source.fromPublisher(upstream)
     .via(stream(Flow[In].map(x ⇒ x).named("buh")))
   val publisher = toPublisher(s, materializer)
   val upstreamSubscription = upstream.expectSubscription()

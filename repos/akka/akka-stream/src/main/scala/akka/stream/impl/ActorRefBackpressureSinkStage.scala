@@ -30,8 +30,7 @@ private[akka] class ActorRefBackpressureSinkStage[In](
       implicit def self: ActorRef = stageActor.ref
 
       val maxBuffer = inheritedAttributes
-        .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
-        .max
+        .getAttribute(classOf[InputBuffer], InputBuffer(16, 16)).max
       require(maxBuffer > 0, "Buffer size must be greater than 0")
 
       val buffer: util.Deque[In] = new util.ArrayDeque[In]()

@@ -32,11 +32,8 @@ class ServerSet(
       additionalEndpoints: Map[String, InetSocketAddress] = Map.empty,
       status: CommonStatus = CommonStatus.ALIVE): Future[EndpointStatus] =
     pool {
-      underlying.join(
-        serviceEndpoint,
-        additionalEndpoints.asJava,
-        status
-      ) // blocks
+      underlying
+        .join(serviceEndpoint, additionalEndpoints.asJava, status) // blocks
     } map { new EndpointStatus(_, pool) } // wrap for async updates
 
   /**
@@ -47,9 +44,10 @@ class ServerSet(
   def monitor(): Future[Offer[Set[ServiceInstance]]] =
     pool {
       val broker = new InstanceBroker
-      underlying.monitor(
-        broker
-      ) // blocks until monitor is initialized, or throws an exception
+      underlying
+        .monitor(
+          broker
+        ) // blocks until monitor is initialized, or throws an exception
       broker.recv
     }
 }

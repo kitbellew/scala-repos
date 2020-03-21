@@ -87,8 +87,7 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
     "allow adding things to the session when a token is also added to the session" in {
       buildCsrfWithSession()(_.get()) { response =>
         val session = response.cookies
-          .find(_.name.exists(_ == Session.COOKIE_NAME))
-          .flatMap(_.value)
+          .find(_.name.exists(_ == Session.COOKIE_NAME)).flatMap(_.value)
           .map(Session.decode)
         session must beSome.which { s =>
           s.get(TokenName) must beSome[String]
@@ -104,8 +103,7 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
       import play.api.Play.current
       val returned = await(
         ws.url("http://localhost:" + testServerPort)
-          .withSession(TokenName -> token)
-          .get()).body
+          .withSession(TokenName -> token).get()).body
       crypto.compareSignedTokens(token, returned) must beTrue
     }
   }
@@ -118,8 +116,8 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
       Results.ok(CSRF.getToken.get.value)
     }
     def getToken(): Result = {
-      Results.ok(
-        Option(CSRF.getToken(Controller.request()).orElse(null)) match {
+      Results
+        .ok(Option(CSRF.getToken(Controller.request()).orElse(null)) match {
           case Some(CSRF.Token(_, value)) => value
           case None                       => ""
         })

@@ -181,16 +181,16 @@ trait TransSpecableModule[M[+_]]
           parent.flatMap(leftMap(_)(trans.WrapObject(_, field)))
 
         def DerefObjectStatic(node: Join)(parent: N[S], field: String) =
-          parent.flatMap(
-            leftMap(_)(trans.DerefObjectStatic(_, CPathField(field))))
+          parent
+            .flatMap(leftMap(_)(trans.DerefObjectStatic(_, CPathField(field))))
 
         def DerefMetadataStatic(node: Join)(parent: N[S], field: String) =
-          parent.flatMap(
-            leftMap(_)(trans.DerefMetadataStatic(_, CPathMeta(field))))
+          parent
+            .flatMap(leftMap(_)(trans.DerefMetadataStatic(_, CPathMeta(field))))
 
         def DerefArrayStatic(node: Join)(parent: N[S], index: Int) =
-          parent.flatMap(
-            leftMap(_)(trans.DerefArrayStatic(_, CPathIndex(index))))
+          parent
+            .flatMap(leftMap(_)(trans.DerefArrayStatic(_, CPathIndex(index))))
 
         def ArraySwap(node: Join)(parent: N[S], index: Int) = {
           parent.flatMap(leftMap(_)(trans.ArraySwap(_, index)))
@@ -213,10 +213,11 @@ trait TransSpecableModule[M[+_]]
                 trans.Map1(target, op.f2(MorphContext(ctx, node)).applyr(cv))
 
               case _ =>
-                trans.Typed(
-                  trans.Typed(target, JNullT),
-                  JTextT
-                ) // nuke all the things
+                trans
+                  .Typed(
+                    trans.Typed(target, JNullT),
+                    JTextT
+                  ) // nuke all the things
             }
           })
 
@@ -231,10 +232,11 @@ trait TransSpecableModule[M[+_]]
                 trans.Map1(target, op.f2(MorphContext(ctx, node)).applyl(cv))
 
               case _ =>
-                trans.Typed(
-                  trans.Typed(target, JNullT),
-                  JTextT
-                ) // nuke all the things
+                trans
+                  .Typed(
+                    trans.Typed(target, JNullT),
+                    JTextT
+                  ) // nuke all the things
             }
           })
 

@@ -41,9 +41,8 @@ class MetadataCacheTest {
   def getTopicMetadataNonExistingTopics() {
     val topic = "topic"
     val cache = new MetadataCache(1)
-    val topicMetadata = cache.getTopicMetadata(
-      Set(topic),
-      SecurityProtocol.PLAINTEXT)
+    val topicMetadata = cache
+      .getTopicMetadata(Set(topic), SecurityProtocol.PLAINTEXT)
     assertTrue(topicMetadata.isEmpty)
   }
 
@@ -164,9 +163,8 @@ class MetadataCacheTest {
       brokers.asJava)
     cache.updateCache(15, updateMetadataRequest)
 
-    val topicMetadatas = cache.getTopicMetadata(
-      Set(topic),
-      SecurityProtocol.PLAINTEXT)
+    val topicMetadatas = cache
+      .getTopicMetadata(Set(topic), SecurityProtocol.PLAINTEXT)
     assertEquals(1, topicMetadatas.size)
 
     val topicMetadata = topicMetadatas.head
@@ -219,9 +217,8 @@ class MetadataCacheTest {
       brokers.asJava)
     cache.updateCache(15, updateMetadataRequest)
 
-    val topicMetadatas = cache.getTopicMetadata(
-      Set(topic),
-      SecurityProtocol.PLAINTEXT)
+    val topicMetadatas = cache
+      .getTopicMetadata(Set(topic), SecurityProtocol.PLAINTEXT)
     assertEquals(1, topicMetadatas.size)
 
     val topicMetadata = topicMetadatas.head
@@ -273,9 +270,8 @@ class MetadataCacheTest {
       brokers.asJava)
     cache.updateCache(15, updateMetadataRequest)
 
-    val topicMetadatas = cache.getTopicMetadata(
-      Set(topic),
-      SecurityProtocol.PLAINTEXT)
+    val topicMetadatas = cache
+      .getTopicMetadata(Set(topic), SecurityProtocol.PLAINTEXT)
     assertEquals(1, topicMetadatas.size)
 
     val topicMetadata = topicMetadatas.head

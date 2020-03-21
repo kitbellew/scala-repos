@@ -34,8 +34,8 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
   * 5/30/13
   */
 object ConvertibleToMethodValueInspection {
-  val inspectionName = InspectionBundle.message(
-    "convertible.to.method.value.name")
+  val inspectionName = InspectionBundle
+    .message("convertible.to.method.value.name")
   val inspectionId = "ConvertibleToMethodValue"
 }
 
@@ -43,24 +43,22 @@ class ConvertibleToMethodValueInspection
     extends AbstractInspection(inspectionId, inspectionName) {
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case MethodRepr(expr, _, Some(ref), _)
-        if ref
-          .bind()
-          .exists(srr =>
-            srr.implicitType.nonEmpty || srr.implicitFunction.nonEmpty) =>
+        if ref.bind().exists(srr =>
+          srr.implicitType.nonEmpty || srr.implicitFunction.nonEmpty) =>
     //do nothing if implicit conversions are involved
     case MethodRepr(expr, Some(qual), Some(_), args) =>
       if (allArgsUnderscores(args) && onlyStableValuesUsed(qual))
         registerProblem(
           holder,
           expr,
-          InspectionBundle.message(
-            "convertible.to.method.value.anonymous.hint"))
+          InspectionBundle
+            .message("convertible.to.method.value.anonymous.hint"))
     case und: ScUnderscoreSection if und.bindingExpr.isDefined =>
-      val isInParameterOfParameterizedClass =
-        PsiTreeUtil.getParentOfType(und, classOf[ScClassParameter]) match {
-          case null => false
-          case cp   => cp.containingClass.hasTypeParameters
-        }
+      val isInParameterOfParameterizedClass = PsiTreeUtil
+        .getParentOfType(und, classOf[ScClassParameter]) match {
+        case null => false
+        case cp   => cp.containingClass.hasTypeParameters
+      }
       def checkStable() =
         und.bindingExpr.get match {
           case ScReferenceExpression.withQualifier(qual) =>
@@ -137,9 +135,7 @@ class ConvertibleToMethodValueInspection
         def conformsExpected(expr: ScExpression): Boolean =
           expr.getType().getOrAny conforms expectedType
         conformsExpected(oldExpr) && conformsExpected(newExpr) && oldExpr
-          .getType()
-          .getOrAny
-          .conforms(newExpr.getType().getOrNothing)
+          .getType().getOrAny.conforms(newExpr.getType().getOrNothing)
       case None if newExprText endsWith "_" =>
         (oldExpr.getType(), newExpr.getType()) match {
           case (Success(oldType, _), Success(newType, _)) =>
@@ -168,9 +164,8 @@ class ConvertibleToMethodValueQuickFix(
   def doApplyFix(project: Project) {
     val scExpr = getElement
     if (!scExpr.isValid) return
-    val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-      replacement,
-      scExpr.getManager)
+    val newExpr = ScalaPsiElementFactory
+      .createExpressionFromText(replacement, scExpr.getManager)
     scExpr.replaceExpression(newExpr, removeParenthesis = true)
   }
 }

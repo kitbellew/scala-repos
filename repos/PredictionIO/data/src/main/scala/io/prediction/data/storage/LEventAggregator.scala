@@ -37,13 +37,9 @@ object LEventAggregator {
     */
   @DeveloperApi
   def aggregateProperties(events: Iterator[Event]): Map[String, PropertyMap] = {
-    events.toList
-      .groupBy(_.entityId)
-      .mapValues(
-        _.sortBy(_.eventTime.getMillis)
-          .foldLeft[Prop](Prop())(propAggregator))
-      .filter { case (k, v) => v.dm.isDefined }
-      .mapValues { v =>
+    events.toList.groupBy(_.entityId).mapValues(
+      _.sortBy(_.eventTime.getMillis).foldLeft[Prop](Prop())(propAggregator))
+      .filter { case (k, v) => v.dm.isDefined }.mapValues { v =>
         require(
           v.firstUpdated.isDefined,
           "Unexpected Error: firstUpdated cannot be None.")
@@ -68,8 +64,7 @@ object LEventAggregator {
   @DeveloperApi
   def aggregatePropertiesSingle(
       events: Iterator[Event]): Option[PropertyMap] = {
-    val prop = events.toList
-      .sortBy(_.eventTime.getMillis)
+    val prop = events.toList.sortBy(_.eventTime.getMillis)
       .foldLeft[Prop](Prop())(propAggregator)
 
     prop.dm.map { d =>
@@ -114,11 +109,9 @@ object LEventAggregator {
         case "$set" | "$unset" | "$delete" => {
           Prop(
             dm = dataMapAggregator(p.dm, e),
-            firstUpdated = p.firstUpdated
-              .map { t => first(t, e.eventTime) }
+            firstUpdated = p.firstUpdated.map { t => first(t, e.eventTime) }
               .orElse(Some(e.eventTime)),
-            lastUpdated = p.lastUpdated
-              .map { t => last(t, e.eventTime) }
+            lastUpdated = p.lastUpdated.map { t => last(t, e.eventTime) }
               .orElse(Some(e.eventTime))
           )
         }

@@ -91,8 +91,7 @@ case class Timer(
               lastNow + (if (waitMs < 0) 0 else waitMs))
             val timedCallback = () => callback(value)
             // Lazy implementation for now.
-            futures = futures + futures
-              .get(waitTime)
+            futures = futures + futures.get(waitTime)
               .map(current => (waitTime, timedCallback :: current))
               .getOrElse((waitTime, List(timedCallback)))
           }
@@ -103,16 +102,14 @@ case class Timer(
 
   def withTimeout[T](future: Future[T], timeout: Long): Future[Timeout \/ T] = {
     val timeoutFuture = valueWait(Timeout, timeout)
-    futureNondeterminism
-      .choose(timeoutFuture, future)
+    futureNondeterminism.choose(timeoutFuture, future)
       .map(_.fold(_._1.left, _._2.right))
   }
 
   def withTimeout[T](task: Task[T], timeout: Long): Task[Timeout \/ T] = {
     val timeoutTask = new Task(
       valueWait(Timeout, timeout).map(_.right[Throwable]))
-    taskNondeterminism
-      .choose(timeoutTask, task)
+    taskNondeterminism.choose(timeoutTask, task)
       .map(_.fold(_._1.left, _._2.right))
   }
 }

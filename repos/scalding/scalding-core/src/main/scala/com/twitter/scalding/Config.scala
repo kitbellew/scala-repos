@@ -92,10 +92,8 @@ trait Config extends Serializable {
       try {
         Success(
           // Make sure we are using the class-loader for the current thread
-          Class.forName(
-            str,
-            true,
-            Thread.currentThread().getContextClassLoader))
+          Class
+            .forName(str, true, Thread.currentThread().getContextClassLoader))
       } catch { case err: Throwable => Failure(err) }
     }
 
@@ -132,14 +130,11 @@ trait Config extends Serializable {
     this + (ScaldingRequireOrderedSerialization -> (b.toString))
 
   def getRequireOrderedSerialization: Boolean =
-    get(ScaldingRequireOrderedSerialization)
-      .map(_.toBoolean)
-      .getOrElse(false)
+    get(ScaldingRequireOrderedSerialization).map(_.toBoolean).getOrElse(false)
 
   def getCascadingSerializationTokens: Map[Int, String] =
     get(Config.CascadingSerializationTokens)
-      .map(CascadingTokenUpdater.parseTokens)
-      .getOrElse(Map.empty[Int, String])
+      .map(CascadingTokenUpdater.parseTokens).getOrElse(Map.empty[Int, String])
 
   /**
     * This function gets the set of classes that have been registered to Kryo.
@@ -148,20 +143,18 @@ trait Config extends Serializable {
     */
   def getKryoRegisteredClasses: Set[Class[_]] = {
     // Get an instance of the Kryo serializer (which is populated with registrations)
-    getKryo
-      .map { kryo =>
-        val cr = kryo.newKryo.getClassResolver
+    getKryo.map { kryo =>
+      val cr = kryo.newKryo.getClassResolver
 
-        @annotation.tailrec
-        def kryoClasses(idx: Int, acc: Set[Class[_]]): Set[Class[_]] =
-          Option(cr.getRegistration(idx)) match {
-            case Some(reg) => kryoClasses(idx + 1, acc + reg.getType)
-            case None      => acc // The first null is the end of the line
-          }
+      @annotation.tailrec
+      def kryoClasses(idx: Int, acc: Set[Class[_]]): Set[Class[_]] =
+        Option(cr.getRegistration(idx)) match {
+          case Some(reg) => kryoClasses(idx + 1, acc + reg.getType)
+          case None      => acc // The first null is the end of the line
+        }
 
-        kryoClasses(0, Set[Class[_]]())
-      }
-      .getOrElse(Set())
+      kryoClasses(0, Set[Class[_]]())
+    }.getOrElse(Set())
   }
 
   /*
@@ -235,16 +228,14 @@ trait Config extends Serializable {
 
   def getScaldingVersion: Option[String] = get(Config.ScaldingVersion)
   def setScaldingVersion: Config =
-    (this
-      .+(Config.ScaldingVersion -> scaldingVersion))
-      .+(
-        // This is setting a property for cascading/driven
-        (AppProps.APP_FRAMEWORKS -> ("scalding:" + scaldingVersion.toString)))
+    (this.+(Config.ScaldingVersion -> scaldingVersion)).+(
+      // This is setting a property for cascading/driven
+      (AppProps.APP_FRAMEWORKS -> ("scalding:" + scaldingVersion.toString)))
 
   def getUniqueIds: Set[UniqueID] =
-    get(UniqueID.UNIQUE_JOB_ID)
-      .map { str => str.split(",").toSet[String].map(UniqueID(_)) }
-      .getOrElse(Set.empty)
+    get(UniqueID.UNIQUE_JOB_ID).map { str =>
+      str.split(",").toSet[String].map(UniqueID(_))
+    }.getOrElse(Set.empty)
 
   /**
     * The serialization of your data will be smaller if any classes passed between tasks in your job
@@ -292,8 +283,7 @@ trait Config extends Serializable {
    * Add this class name and the md5 hash of it into the config
    */
   def setScaldingFlowClass(clazz: Class[_]): Config =
-    this
-      .+(ScaldingFlowClassName -> clazz.getName)
+    this.+(ScaldingFlowClassName -> clazz.getName)
       .+(ScaldingFlowClassSignature -> Config.md5Identifier(clazz))
 
   def getSubmittedTimestamp: Option[RichDate] =
@@ -346,8 +336,7 @@ trait Config extends Serializable {
   def getFlowListeners: List[Try[(Mode, Config) => FlowListener]] =
     get(Config.FlowListeners).toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
-      .map(flowListenerSerializer.invert(_))
-      .toList
+      .map(flowListenerSerializer.invert(_)).toList
 
   def addFlowStepListener(
       flowListenerProvider: (Mode, Config) => FlowStepListener): Config = {
@@ -361,8 +350,7 @@ trait Config extends Serializable {
   def getFlowStepListeners: List[Try[(Mode, Config) => FlowStepListener]] =
     get(Config.FlowStepListeners).toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
-      .map(flowStepListenerSerializer.invert(_))
-      .toList
+      .map(flowStepListenerSerializer.invert(_)).toList
 
   def addFlowStepStrategy(
       flowStrategyProvider: (Mode, Config) => FlowStepStrategy[JobConf])
@@ -380,8 +368,7 @@ trait Config extends Serializable {
       : List[Try[(Mode, Config) => FlowStepStrategy[JobConf]]] =
     get(Config.FlowStepStrategies).toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
-      .map(flowStepStrategiesSerializer.invert(_))
-      .toList
+      .map(flowStepStrategiesSerializer.invert(_)).toList
 
   /** Get the number of reducers (this is the parameter Hadoop will use) */
   def getNumReducers: Option[Int] = get(Config.HadoopNumReducers).map(_.toInt)
@@ -396,9 +383,7 @@ trait Config extends Serializable {
     this + (HashJoinAutoForceRight -> (b.toString))
 
   def getHashJoinAutoForceRight: Boolean =
-    get(HashJoinAutoForceRight)
-      .map(_.toBoolean)
-      .getOrElse(false)
+    get(HashJoinAutoForceRight).map(_.toBoolean).getOrElse(false)
 
   override def hashCode = toMap.hashCode
   override def equals(that: Any) =
@@ -461,13 +446,10 @@ object Config {
    * your cluster
    */
   def default: Config =
-    empty
-      .setListSpillThreshold(100 * 1000)
-      .setMapSpillThreshold(100 * 1000)
+    empty.setListSpillThreshold(100 * 1000).setMapSpillThreshold(100 * 1000)
       .setMapSideAggregationThreshold(100 * 1000)
       .setSerialization(Right(classOf[serialization.KryoHadoop]))
-      .setScaldingVersion
-      .setHRavenHistoryUserName
+      .setScaldingVersion.setHRavenHistoryUserName
 
   /*
    * Extensions to the Default Config to tune it for unit tests
@@ -502,8 +484,7 @@ object Config {
     val (nonStrings, strings) = stringsFrom(maybeConf)
     val initConf = from(strings)
 
-    (nonStrings
-      .get(AppProps.APP_JAR_CLASS) match {
+    (nonStrings.get(AppProps.APP_JAR_CLASS) match {
       case Some(clazz) =>
         // Again, the _ causes problem with Try
         try {
@@ -572,9 +553,7 @@ object Config {
    * (or some other system that handles general instances at runtime).
    */
   def hadoopWithDefaults(conf: Configuration): Config =
-    (empty
-      .setListSpillThreshold(100 * 1000)
-      .setMapSpillThreshold(100 * 1000)
+    (empty.setListSpillThreshold(100 * 1000).setMapSpillThreshold(100 * 1000)
       .setMapSideAggregationThreshold(100 * 1000) ++ fromHadoop(conf))
       .setSerialization(Right(classOf[serialization.KryoHadoop]))
       .setScaldingVersion

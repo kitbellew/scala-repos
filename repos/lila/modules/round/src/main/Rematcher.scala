@@ -120,10 +120,7 @@ private[round] final class Rematcher(
       users: List[User]): lila.game.Player = {
     val player = lila.game.Player
       .make(color = color, aiLevel = game.opponent(color).aiLevel)
-    game
-      .player(!color)
-      .userId
-      .flatMap { id => users.find(_.id == id) }
+    game.player(!color).userId.flatMap { id => users.find(_.id == id) }
       .fold(player) { user =>
         player.withUser(user.id, PerfPicker.mainOrDefault(game)(user.perfs))
       }

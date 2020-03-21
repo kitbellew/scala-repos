@@ -73,8 +73,7 @@ object TypeConstruction {
         buffer += (
           (
             typeConstruction,
-            ScType
-              .extractClass(otherType)
+            ScType.extractClass(otherType)
               .flatMap(el => Option(el.getQualifiedName))))
         typeConstruction
     }

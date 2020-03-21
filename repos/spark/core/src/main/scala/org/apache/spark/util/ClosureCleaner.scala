@@ -233,8 +233,8 @@ private[spark] object ClosureCleaner extends Logging {
 
     // List of outer (class, object) pairs, ordered from outermost to innermost
     // Note that all outer objects but the outermost one (first one in this list) must be closures
-    var outerPairs: List[(Class[_], AnyRef)] =
-      (outerClasses zip outerObjects).reverse
+    var outerPairs: List[(Class[_], AnyRef)] = (outerClasses zip outerObjects)
+      .reverse
     var parent: AnyRef = null
     if (outerPairs.size > 0 && !isClosure(outerPairs.head._1)) {
       // The closure is ultimately nested inside a class; keep the object of that
@@ -413,23 +413,21 @@ private[util] class FieldAccessFinder(
         for (cl <- fields.keys if cl.getName == owner.replace('/', '.')) {
           // Check for calls a getter method for a variable in an interpreter wrapper object.
           // This means that the corresponding field will be accessed, so we should save it.
-          if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith(
-                "$outer")) { fields(cl) += name }
+          if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name
+                .endsWith("$outer")) { fields(cl) += name }
           // Optionally visit other methods to find fields that are transitively referenced
           if (findTransitively) {
             val m = MethodIdentifier(cl, name, desc)
             if (!visitedMethods.contains(m)) {
               // Keep track of visited methods to avoid potential infinite cycles
               visitedMethods += m
-              ClosureCleaner
-                .getClassReader(cl)
-                .accept(
-                  new FieldAccessFinder(
-                    fields,
-                    findTransitively,
-                    Some(m),
-                    visitedMethods),
-                  0)
+              ClosureCleaner.getClassReader(cl).accept(
+                new FieldAccessFinder(
+                  fields,
+                  findTransitively,
+                  Some(m),
+                  visitedMethods),
+                0)
             }
           }
         }

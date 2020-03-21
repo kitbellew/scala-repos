@@ -49,8 +49,7 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
   def mkSoftRef(expr: Tree): Tree =
     atPos(expr.pos) {
       val constructor = SoftReferenceClass.info
-        .nonPrivateMember(nme.CONSTRUCTOR)
-        .suchThat(_.paramss.flatten.size == 1)
+        .nonPrivateMember(nme.CONSTRUCTOR).suchThat(_.paramss.flatten.size == 1)
       NewFromConstructor(constructor, expr)
     }
 

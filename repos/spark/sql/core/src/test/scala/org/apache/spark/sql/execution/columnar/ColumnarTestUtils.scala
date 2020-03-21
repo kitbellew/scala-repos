@@ -67,8 +67,8 @@ object ColumnarTestUtils {
         new GenericArrayData(Array[Any](Random.nextInt(), Random.nextInt()))
       case MAP(_) =>
         ArrayBasedMapData(Map(
-          Random.nextInt() -> UTF8String.fromString(
-            Random.nextString(Random.nextInt(32)))))
+          Random.nextInt() -> UTF8String
+            .fromString(Random.nextString(Random.nextInt(32)))))
       case _ =>
         throw new IllegalArgumentException(s"Unknown column type $columnType")
     }).asInstanceOf[JvmType]
@@ -85,16 +85,10 @@ object ColumnarTestUtils {
       columnType: ColumnType[JvmType],
       count: Int): Seq[JvmType] = {
 
-    Iterator
-      .iterate(HashSet.empty[JvmType]) { set =>
-        set + Iterator
-          .continually(makeRandomValue(columnType))
-          .filterNot(set.contains)
-          .next()
-      }
-      .drop(count)
-      .next()
-      .toSeq
+    Iterator.iterate(HashSet.empty[JvmType]) { set =>
+      set + Iterator.continually(makeRandomValue(columnType))
+        .filterNot(set.contains).next()
+    }.drop(count).next().toSeq
   }
 
   def makeRandomRow(head: ColumnType[_], tail: ColumnType[_]*): InternalRow =

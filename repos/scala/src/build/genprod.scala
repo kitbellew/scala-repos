@@ -228,8 +228,7 @@ class Function(val i: Int) extends Group("Function") with Arity {
   // (x1: T1) => (x2: T2) => (x3: T3) => (x4: T4) => apply(x1,x2,x3,x4)
   def shortCurry = {
     val body = "apply" + commaXs
-    (xdefs, targs).zipped
-      .map("(%s: %s) => ".format(_, _))
+    (xdefs, targs).zipped.map("(%s: %s) => ".format(_, _))
       .mkString("", "", body)
   }
 
@@ -316,16 +315,13 @@ class Tuple(val i: Int) extends Group("Tuple") with Arity {
   private def idiomatic =
     if (i < 2) ""
     else
-      " Note that it is more idiomatic to create a %s via `(%s)`".format(
-        className,
-        constructorArgs)
+      " Note that it is more idiomatic to create a %s via `(%s)`"
+        .format(className, constructorArgs)
 
   private def params =
     (1 to i map (x =>
-      " *  @param  _%d   Element %d of this Tuple%d".format(
-        x,
-        x,
-        i))) mkString "\n"
+      " *  @param  _%d   Element %d of this Tuple%d"
+        .format(x, x, i))) mkString "\n"
 
   // prettifies it a little if it's overlong
   def mkToString() = {
@@ -400,12 +396,9 @@ class Product(val i: Int) extends Group("Product") with Arity {
     "\n" + ((xs ::: List(default)) map ("    " + _ + "\n") mkString)
   }
   def proj = {
-    (mdefs, targs).zipped
-      .map((_, _))
-      .zipWithIndex
-      .map {
-        case ((method, typeName), index) =>
-          """|  /** A projection of element %d of this Product.
+    (mdefs, targs).zipped.map((_, _)).zipWithIndex.map {
+      case ((method, typeName), index) =>
+        """|  /** A projection of element %d of this Product.
          |   *  @return   A projection of element %d.
          |   */
          |  def %s: %s

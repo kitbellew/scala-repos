@@ -25,9 +25,10 @@ object AnnotType {
     //parse Simple type
     if (SimpleType.parse(builder, isPattern, multipleSQBrackets)) {
       val annotationsMarker = builder.mark
-      while (!builder.newlineBeforeCurrentToken && Annotation.parse(
-               builder,
-               countLinesAfterAnnotation = false)) { isAnnotation = true }
+      while (!builder.newlineBeforeCurrentToken && Annotation
+               .parse(builder, countLinesAfterAnnotation = false)) {
+        isAnnotation = true
+      }
 
       if (isAnnotation) annotationsMarker.done(ScalaElementTypes.ANNOTATIONS)
       else annotationsMarker.drop()

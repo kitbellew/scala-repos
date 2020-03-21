@@ -37,8 +37,7 @@ object JNDI {
     env.put(
       PROVIDER_URL, {
         Play.privateMaybeApplication
-          .flatMap(_.configuration.getString(PROVIDER_URL))
-          .getOrElse {
+          .flatMap(_.configuration.getString(PROVIDER_URL)).getOrElse {
             System.setProperty(PROVIDER_URL, IN_MEMORY_URL)
             IN_MEMORY_URL
           }

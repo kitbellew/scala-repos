@@ -94,12 +94,9 @@ private class PoolInterfaceActor(
       Flow[HttpRequest].viaMat(connectionFlow)(Keep.right),
       new InetSocketAddress(host, port),
       settings,
-      setup.log)
-      .named("PoolFlow")
+      setup.log).named("PoolFlow")
 
-    Source
-      .fromPublisher(ActorPublisher(self))
-      .via(poolFlow)
+    Source.fromPublisher(ActorPublisher(self)).via(poolFlow)
       .runWith(Sink.fromSubscriber(ActorSubscriber[ResponseContext](self)))
   }
 
@@ -189,9 +186,8 @@ private class PoolInterfaceActor(
 
   def dispatchRequest(pr: PoolRequest): Unit = {
     val scheme = Uri.httpScheme(hcps.setup.connectionContext.isSecure)
-    val hostHeader = headers.Host(
-      hcps.host,
-      Uri.normalizePort(hcps.port, scheme))
+    val hostHeader = headers
+      .Host(hcps.host, Uri.normalizePort(hcps.port, scheme))
     val effectiveRequest = pr.request
       .withUri(pr.request.uri.toHttpRequestTargetOriginForm)
       .withDefaultHeaders(hostHeader)

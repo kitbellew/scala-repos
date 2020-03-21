@@ -22,17 +22,14 @@ class RecipeParseLines extends RecipeSpec {
 
       //#parse-lines
       import akka.stream.scaladsl.Framing
-      val linesStream = rawData
-        .via(Framing.delimiter(
-          ByteString("\r\n"),
-          maximumFrameLength = 100,
-          allowTruncation = true))
-        .map(_.utf8String)
+      val linesStream = rawData.via(Framing.delimiter(
+        ByteString("\r\n"),
+        maximumFrameLength = 100,
+        allowTruncation = true)).map(_.utf8String)
       //#parse-lines
 
-      Await.result(
-        linesStream.limit(10).runWith(Sink.seq),
-        3.seconds) should be(
+      Await
+        .result(linesStream.limit(10).runWith(Sink.seq), 3.seconds) should be(
         List("Hello World\r!", "Hello Akka!", "Hello Streams!", ""))
     }
 

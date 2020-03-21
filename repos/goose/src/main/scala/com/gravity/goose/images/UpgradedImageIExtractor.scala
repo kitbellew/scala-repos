@@ -82,9 +82,8 @@ class UpgradedImageIExtractor(
     */
   private def checkForMsnVideoHeadlineImage: Option[String] = {
     // This DOM path may be too restrictive but it's performing quite well at time of writing.
-    val dataConfig: String = article.rawDoc
-      .select(
-        "div#maincontent div#main div.primary-playback-region div.wcvideoplayer[data-metadata]")
+    val dataConfig: String = article.rawDoc.select(
+      "div#maincontent div#main div.primary-playback-region div.wcvideoplayer[data-metadata]")
       .attr("data-metadata")
 
     JSON.parseRaw(dataConfig) match {
@@ -138,7 +137,8 @@ class UpgradedImageIExtractor(
     getImageCandidates(node) match {
       case Some(goodImages) => {
         trace(
-          "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages.size + " at parent depth: " + parentDepthLevel)
+          "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages
+            .size + " at parent depth: " + parentDepthLevel)
         val scoredImages = downloadImagesAndGetResults(
           goodImages,
           parentDepthLevel)
@@ -153,7 +153,8 @@ class UpgradedImageIExtractor(
             mainImage.confidenceScore =
               if (scoredImages.size > 0) (100 / scoredImages.size) else 0
             trace(
-              "IMAGE COMPLETE: High Score Image is: " + mainImage.imageSrc + " Score is: " + highScoreImage._2)
+              "IMAGE COMPLETE: High Score Image is: " + mainImage
+                .imageSrc + " Score is: " + highScoreImage._2)
             return Some(mainImage)
           }
           case None => {
@@ -228,43 +229,40 @@ class UpgradedImageIExtractor(
     val MIN_WIDTH = 50
     val MIN_HEIGHT = 0
 
-    images
-      .take(30)
-      .foreach((image: Element) => {
-        for {
-          locallyStoredImage <- getLocallyStoredImage(
-            buildImagePath(image.attr("src")))
-          width = locallyStoredImage.width
-          if (width > MIN_WIDTH)
-          height = locallyStoredImage.height
-          if (height > MIN_HEIGHT)
-          fileExtension = locallyStoredImage.fileExtension
-          if (fileExtension != ".gif" && fileExtension != "NA")
-          imageSrc = locallyStoredImage.imgSrc
-          if ((
-            depthLevel >= 1 && locallyStoredImage.width > 300
-          ) || depthLevel < 1)
-          if (!isBannerDimensions(width, height))
-        } {
-          val sequenceScore: Float = 1.0f / cnt
-          val area: Float = width * height
-          var totalScore: Float = 0
-          if (initialArea == 0) {
-            // give the initial image a little area boost as well
-            initialArea = area * 1.48f
-            totalScore = 1
-          } else {
-            val areaDifference: Float = area / initialArea
-            totalScore = sequenceScore * areaDifference
-          }
-          trace(
-            "IMG: " + imageSrc + " Area is: " + area + " sequence score: " + sequenceScore + " totalScore: " + totalScore)
-          cnt += 1
-
-          imageResults += locallyStoredImage -> totalScore
-          cnt += 1
+    images.take(30).foreach((image: Element) => {
+      for {
+        locallyStoredImage <- getLocallyStoredImage(
+          buildImagePath(image.attr("src")))
+        width = locallyStoredImage.width
+        if (width > MIN_WIDTH)
+        height = locallyStoredImage.height
+        if (height > MIN_HEIGHT)
+        fileExtension = locallyStoredImage.fileExtension
+        if (fileExtension != ".gif" && fileExtension != "NA")
+        imageSrc = locallyStoredImage.imgSrc
+        if ((depthLevel >= 1 && locallyStoredImage
+          .width > 300) || depthLevel < 1)
+        if (!isBannerDimensions(width, height))
+      } {
+        val sequenceScore: Float = 1.0f / cnt
+        val area: Float = width * height
+        var totalScore: Float = 0
+        if (initialArea == 0) {
+          // give the initial image a little area boost as well
+          initialArea = area * 1.48f
+          totalScore = 1
+        } else {
+          val areaDifference: Float = area / initialArea
+          totalScore = sequenceScore * areaDifference
         }
-      })
+        trace(
+          "IMG: " + imageSrc + " Area is: " + area + " sequence score: " + sequenceScore + " totalScore: " + totalScore)
+        cnt += 1
+
+        imageResults += locallyStoredImage -> totalScore
+        cnt += 1
+      }
+    })
 
     imageResults
   }
@@ -493,11 +491,9 @@ class UpgradedImageIExtractor(
     if (article.rawDoc == null) return None
 
     val domain = getCleanDomain
-    customSiteMapping
-      .get(domain)
-      .foreach(classes => {
-        subDelimRegex.split(classes).foreach(c => KNOWN_IMG_DOM_NAMES += c)
-      })
+    customSiteMapping.get(domain).foreach(classes => {
+      subDelimRegex.split(classes).foreach(c => KNOWN_IMG_DOM_NAMES += c)
+    })
 
     var knownImageElem: Element = null
     trace("Checking for known images from large sites")
@@ -528,8 +524,8 @@ class UpgradedImageIExtractor(
         mainImage.imageExtractionType = "known"
         mainImage.confidenceScore = 90
 
-        getLocallyStoredImage(buildImagePath(mainImage.imageSrc)).foreach(
-          locallyStoredImage => {
+        getLocallyStoredImage(buildImagePath(mainImage.imageSrc))
+          .foreach(locallyStoredImage => {
             mainImage.bytes = locallyStoredImage.bytes
             mainImage.height = locallyStoredImage.height
             mainImage.width = locallyStoredImage.width
@@ -572,10 +568,8 @@ object UpgradedImageIExtractor {
   // custom site mapping is for major sites that we know what they generally
   // place images into, allows for higher accuracy of image extraction
   lazy val customSiteMapping = {
-    val lines = Source
-      .fromInputStream(getClass.getResourceAsStream(
-        "/com/gravity/goose/images/known-image-css.txt"))
-      .getLines()
+    val lines = Source.fromInputStream(getClass.getResourceAsStream(
+      "/com/gravity/goose/images/known-image-css.txt")).getLines()
     (for (line <- lines) yield {
       val Array(domain, css) = delimRegex.split(line)
       domain -> css

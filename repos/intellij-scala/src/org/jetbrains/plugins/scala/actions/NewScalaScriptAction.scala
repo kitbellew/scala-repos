@@ -14,14 +14,12 @@ import org.jetbrains.plugins.scala.project._
   */
 class NewScalaScriptAction
     extends CreateFromTemplateAction(
-      FileTemplateManager
-        .getDefaultInstance()
-        .getInternalTemplate("Scala Script"))
+      FileTemplateManager.getDefaultInstance().getInternalTemplate(
+        "Scala Script"))
     with DumbAware {
   override def update(e: AnActionEvent) {
     super.update(e)
-    val module: Module = e.getDataContext
-      .getData(LangDataKeys.MODULE.getName)
+    val module: Module = e.getDataContext.getData(LangDataKeys.MODULE.getName)
       .asInstanceOf[Module]
     val isEnabled: Boolean = Option(module).exists(_.hasScala)
     e.getPresentation.setEnabled(isEnabled)

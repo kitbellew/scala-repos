@@ -494,8 +494,8 @@ class TestQueryExecutor(config: Configuration, testShard: TestShard)
   override type Dataset[A] = IterableDataset[A]
 
   lazy val actorSystem = ActorSystem("testQueryExecutor")
-  implicit lazy val asyncContext = ExecutionContext.defaultExecutionContext(
-    actorSystem)
+  implicit lazy val asyncContext = ExecutionContext
+    .defaultExecutionContext(actorSystem)
   lazy val yggConfig = new JDBMQueryExecutorConfig {
     val config = TestQueryExecutor.this.config
     val sortWorkDir = scratchDir
@@ -546,8 +546,8 @@ class TestShard(config: Configuration, dataDir: File)
   lazy val yggConfig = new ProductionActorConfig {
     lazy val config = TestShard.this.config
   }
-  lazy val yggState: YggState =
-    YggState.restore(dataDir).unsafePerformIO.toOption.get
+  lazy val yggState: YggState = YggState.restore(dataDir).unsafePerformIO
+    .toOption.get
   lazy val accessControl: AccessControl = new UnlimitedAccessControl()(
     ExecutionContext.defaultExecutionContext(actorSystem))
   def waitForRoutingActorIdle() {

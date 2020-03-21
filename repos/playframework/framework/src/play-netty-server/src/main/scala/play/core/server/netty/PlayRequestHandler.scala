@@ -116,16 +116,14 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         handleAction(recovered, requestHeader, request, Some(app))
 
       case Right((ws: WebSocket, app))
-          if requestHeader.headers
-            .get(HeaderNames.UPGRADE)
+          if requestHeader.headers.get(HeaderNames.UPGRADE)
             .exists(_.equalsIgnoreCase("websocket")) =>
         logger.trace("Serving this request with: " + ws)
 
         val wsProtocol = if (requestHeader.secure) "wss" else "ws"
         val wsUrl = s"$wsProtocol://${requestHeader.host}${requestHeader.path}"
         val bufferLimit = app.configuration
-          .getBytes("play.websocket.buffer.limit")
-          .getOrElse(65536L)
+          .getBytes("play.websocket.buffer.limit").getOrElse(65536L)
           .asInstanceOf[Int]
         val factory =
           new WebSocketServerHandshakerFactory(wsUrl, "*", true, bufferLimit)
@@ -134,33 +132,29 @@ private[play] class PlayRequestHandler(val server: NettyServer)
           play.api.libs.concurrent.Execution.defaultContext)
 
         import play.api.libs.iteratee.Execution.Implicits.trampoline
-        executed
-          .flatMap(identity)
-          .flatMap {
-            case Left(result) =>
-              // WebSocket was rejected, send result
-              val action = EssentialAction(_ => Accumulator.done(result))
-              handleAction(action, requestHeader, request, Some(app))
-            case Right(flow) =>
-              import app.materializer
-              val processor = WebSocketHandler.messageFlowToFrameProcessor(
-                flow,
-                bufferLimit)
-              Future.successful(new DefaultWebSocketHttpResponse(
-                request.getProtocolVersion,
-                HttpResponseStatus.OK,
-                processor,
-                factory))
+        executed.flatMap(identity).flatMap {
+          case Left(result) =>
+            // WebSocket was rejected, send result
+            val action = EssentialAction(_ => Accumulator.done(result))
+            handleAction(action, requestHeader, request, Some(app))
+          case Right(flow) =>
+            import app.materializer
+            val processor = WebSocketHandler
+              .messageFlowToFrameProcessor(flow, bufferLimit)
+            Future.successful(new DefaultWebSocketHttpResponse(
+              request.getProtocolVersion,
+              HttpResponseStatus.OK,
+              processor,
+              factory))
 
-          }
-          .recoverWith {
-            case error =>
-              app.errorHandler.onServerError(requestHeader, error).flatMap {
-                result =>
-                  val action = EssentialAction(_ => Accumulator.done(result))
-                  handleAction(action, requestHeader, request, Some(app))
-              }
-          }
+        }.recoverWith {
+          case error =>
+            app.errorHandler.onServerError(requestHeader, error).flatMap {
+              result =>
+                val action = EssentialAction(_ => Accumulator.done(result))
+                handleAction(action, requestHeader, request, Some(app))
+            }
+        }
 
       //handle bad websocket request
       case Right((ws: WebSocket, app)) =>
@@ -276,8 +270,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
       requestHeader: RequestHeader,
       request: HttpRequest,
       app: Option[Application]): Future[HttpResponse] = {
-    implicit val mat: Materializer = app.fold(server.materializer)(
-      _.materializer)
+    implicit val mat: Materializer = app
+      .fold(server.materializer)(_.materializer)
     import play.api.libs.iteratee.Execution.Implicits.trampoline
 
     val body = modelConversion.convertRequestBody(request)
@@ -287,25 +281,19 @@ private[play] class PlayRequestHandler(val server: NettyServer)
       case Some(source) => bodyParser.run(source)
     }
 
-    resultFuture
-      .recoverWith {
-        case error =>
-          logger.error("Cannot invoke the action", error)
-          errorHandler(app).onServerError(requestHeader, error)
-      }
-      .map {
-        case result =>
-          val cleanedResult = ServerResultUtils.cleanFlashCookie(
-            requestHeader,
-            result)
-          val validated = ServerResultUtils.validateResult(
-            requestHeader,
-            cleanedResult)
-          modelConversion.convertResult(
-            validated,
-            requestHeader,
-            request.getProtocolVersion)
-      }
+    resultFuture.recoverWith {
+      case error =>
+        logger.error("Cannot invoke the action", error)
+        errorHandler(app).onServerError(requestHeader, error)
+    }.map {
+      case result =>
+        val cleanedResult = ServerResultUtils
+          .cleanFlashCookie(requestHeader, result)
+        val validated = ServerResultUtils
+          .validateResult(requestHeader, cleanedResult)
+        modelConversion
+          .convertResult(validated, requestHeader, request.getProtocolVersion)
+    }
   }
 
   /**

@@ -75,8 +75,8 @@ object WebEvent {
   /**
     * This event occurs when a script changes status line text.
     */
-  val StatusChanged: EventType[jfxsw.WebEvent[_]] =
-    jfxsw.WebEvent.STATUS_CHANGED
+  val StatusChanged: EventType[jfxsw.WebEvent[_]] = jfxsw.WebEvent
+    .STATUS_CHANGED
   @deprecated(
     "Use StatusChanged; STATUS_CHANGED will be removed in a future release",
     "8.0.60-R10")
@@ -85,8 +85,8 @@ object WebEvent {
   /**
     * This event occurs when a script changes visibility of the JavaScript window object.
     */
-  val VisibilityChanged: EventType[jfxsw.WebEvent[_]] =
-    jfxsw.WebEvent.VISIBILITY_CHANGED
+  val VisibilityChanged: EventType[jfxsw.WebEvent[_]] = jfxsw.WebEvent
+    .VISIBILITY_CHANGED
   @deprecated(
     "Use VisibilityChanged; VISIBILITY_CHANGED will be removed in a future release",
     "8.0.60-R10")

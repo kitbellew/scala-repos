@@ -361,17 +361,15 @@ package com.twitter.scalding {
     val ADAPTIVE_CACHE_KEY = "scalding.mapsidecache.adaptive"
 
     private def getCacheSize(fp: FlowProcess[_]): Int =
-      Option(fp.getStringProperty(SIZE_CONFIG_KEY))
-        .filterNot { _.isEmpty }
-        .map { _.toInt }
-        .getOrElse(DEFAULT_CACHE_SIZE)
+      Option(fp.getStringProperty(SIZE_CONFIG_KEY)).filterNot { _.isEmpty }
+        .map { _.toInt }.getOrElse(DEFAULT_CACHE_SIZE)
 
     def apply[K, V: Semigroup](
         cacheSize: Option[Int],
         flowProcess: FlowProcess[_]): MapsideCache[K, V] = {
       val size = cacheSize.getOrElse { getCacheSize(flowProcess) }
-      val adaptive = Option(
-        flowProcess.getStringProperty(ADAPTIVE_CACHE_KEY)).isDefined
+      val adaptive = Option(flowProcess.getStringProperty(ADAPTIVE_CACHE_KEY))
+        .isDefined
       if (adaptive)
         new AdaptiveMapsideCache(flowProcess, new AdaptiveCache(size))
       else new SummingMapsideCache(flowProcess, new SummingWithHitsCache(size))
@@ -845,8 +843,7 @@ package com.twitter.scalding {
     def operate(flowProcess: FlowProcess[_], call: BufferCall[Any]) {
       val oc = call.getOutputCollector
       val key = conv(call.getGroup)
-      val values = call.getArgumentsIterator.asScala
-        .map(convV(_))
+      val values = call.getArgumentsIterator.asScala.map(convV(_))
 
       // Avoiding a lambda here
       val resIter = reduceFnSer.get(key, values)

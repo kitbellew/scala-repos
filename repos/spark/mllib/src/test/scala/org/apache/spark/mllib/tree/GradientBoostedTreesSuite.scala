@@ -57,10 +57,8 @@ class GradientBoostedTreesSuite
 
         assert(gbt.trees.size === numIterations)
         try {
-          EnsembleTestHelper.validateRegressor(
-            gbt,
-            GradientBoostedTreesSuite.data,
-            0.06)
+          EnsembleTestHelper
+            .validateRegressor(gbt, GradientBoostedTreesSuite.data, 0.06)
         } catch {
           case e: java.lang.AssertionError =>
             logError(
@@ -69,8 +67,8 @@ class GradientBoostedTreesSuite
             throw e
         }
 
-        val remappedInput = rdd.map(x =>
-          new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = rdd
+          .map(x => new LabeledPoint((x.label * 2) - 1, x.features))
         val dt = DecisionTree.train(remappedInput, treeStrategy)
 
         // Make sure trees are the same.
@@ -99,11 +97,8 @@ class GradientBoostedTreesSuite
 
         assert(gbt.trees.size === numIterations)
         try {
-          EnsembleTestHelper.validateRegressor(
-            gbt,
-            GradientBoostedTreesSuite.data,
-            0.85,
-            "mae")
+          EnsembleTestHelper
+            .validateRegressor(gbt, GradientBoostedTreesSuite.data, 0.85, "mae")
         } catch {
           case e: java.lang.AssertionError =>
             logError(
@@ -112,8 +107,8 @@ class GradientBoostedTreesSuite
             throw e
         }
 
-        val remappedInput = rdd.map(x =>
-          new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = rdd
+          .map(x => new LabeledPoint((x.label * 2) - 1, x.features))
         val dt = DecisionTree.train(remappedInput, treeStrategy)
 
         // Make sure trees are the same.
@@ -143,10 +138,8 @@ class GradientBoostedTreesSuite
 
         assert(gbt.trees.size === numIterations)
         try {
-          EnsembleTestHelper.validateClassifier(
-            gbt,
-            GradientBoostedTreesSuite.data,
-            0.9)
+          EnsembleTestHelper
+            .validateClassifier(gbt, GradientBoostedTreesSuite.data, 0.9)
         } catch {
           case e: java.lang.AssertionError =>
             logError(
@@ -155,8 +148,8 @@ class GradientBoostedTreesSuite
             throw e
         }
 
-        val remappedInput = rdd.map(x =>
-          new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = rdd
+          .map(x => new LabeledPoint((x.label * 2) - 1, x.features))
         val ensembleStrategy = treeStrategy.copy
         ensembleStrategy.algo = Regression
         ensembleStrategy.impurity = Variance
@@ -180,8 +173,8 @@ class GradientBoostedTreesSuite
     val tempDir = Utils.createTempDir()
     val path = tempDir.toURI.toString
 
-    val trees =
-      Range(0, 3).map(_ => DecisionTreeSuite.createModel(Regression)).toArray
+    val trees = Range(0, 3).map(_ => DecisionTreeSuite.createModel(Regression))
+      .toArray
     val treeWeights = Array(0.1, 0.3, 1.1)
 
     Array(Classification, Regression).foreach { algo =>
@@ -230,8 +223,8 @@ class GradientBoostedTreesSuite
         val gbt = new GradientBoostedTrees(boostingStrategy).run(trainRdd)
         val (errorWithoutValidation, errorWithValidation) = {
           if (algo == Classification) {
-            val remappedRdd = validateRdd.map(x =>
-              new LabeledPoint(2 * x.label - 1, x.features))
+            val remappedRdd = validateRdd
+              .map(x => new LabeledPoint(2 * x.label - 1, x.features))
             (
               loss.computeError(gbt, remappedRdd),
               loss.computeError(gbtValidate, remappedRdd))
@@ -289,13 +282,10 @@ private object GradientBoostedTreesSuite {
     (10, 0.5, 0.75),
     (10, 0.1, 0.75))
 
-  val data = EnsembleTestHelper.generateOrderedLabeledPoints(
-    numFeatures = 10,
-    100)
-  val trainData = EnsembleTestHelper.generateOrderedLabeledPoints(
-    numFeatures = 20,
-    120)
-  val validateData = EnsembleTestHelper.generateOrderedLabeledPoints(
-    numFeatures = 20,
-    80)
+  val data = EnsembleTestHelper
+    .generateOrderedLabeledPoints(numFeatures = 10, 100)
+  val trainData = EnsembleTestHelper
+    .generateOrderedLabeledPoints(numFeatures = 20, 120)
+  val validateData = EnsembleTestHelper
+    .generateOrderedLabeledPoints(numFeatures = 20, 80)
 }

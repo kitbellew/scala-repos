@@ -65,9 +65,7 @@ trait ClassHelpers {
             classOf[ClassCastException],
             classOf[NoClassDefFoundError]);
           klass <- tryo(ignore)(
-            Class
-              .forName(fullName)
-              .asSubclass(targetType)
+            Class.forName(fullName).asSubclass(targetType)
               .asInstanceOf[Class[C]])) yield klass).headOption
 
   /**
@@ -341,8 +339,8 @@ trait ClassHelpers {
 
           val ret =
             try {
-              val classes: Array[Class[_]] =
-                ptypes openOr params.map(_.getClass)
+              val classes: Array[Class[_]] = ptypes openOr params
+                .map(_.getClass)
               List(clz.getMethod(meth, classes: _*))
             } catch {
               case e: NullPointerException  => Nil
@@ -406,8 +404,8 @@ trait ClassHelpers {
   def createInvoker[C <: AnyRef](name: String, on: C): Box[() => Box[Any]] = {
     def controllerMethods(instance: C) =
       instance.getClass.getDeclaredMethods.filter { m =>
-        m.getName == name && isPublic(
-          m.getModifiers) && m.getParameterTypes.isEmpty
+        m.getName == name && isPublic(m.getModifiers) && m.getParameterTypes
+          .isEmpty
       }
     on match {
       case null => Empty

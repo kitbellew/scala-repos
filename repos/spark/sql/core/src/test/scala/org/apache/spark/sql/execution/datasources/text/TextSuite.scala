@@ -48,8 +48,7 @@ class TextSuite extends QueryTest with SharedSQLContext {
 
   test(
     "SPARK-12562 verify write.text() can handle column name beyond `value`") {
-    val df = sqlContext.read
-      .text(testFile)
+    val df = sqlContext.read.text(testFile)
       .withColumnRenamed("value", "adwrasdf")
 
     val tempFile = Utils.createTempDir()
@@ -68,10 +67,7 @@ class TextSuite extends QueryTest with SharedSQLContext {
     intercept[AnalysisException] { df.write.text(tempFile.getCanonicalPath) }
 
     intercept[AnalysisException] {
-      sqlContext
-        .range(2)
-        .select(df("id"), df("id") + 1)
-        .write
+      sqlContext.range(2).select(df("id"), df("id") + 1).write
         .text(tempFile.getCanonicalPath)
     }
   }
@@ -87,9 +83,7 @@ class TextSuite extends QueryTest with SharedSQLContext {
       case (codecName, extension) =>
         val tempDir = Utils.createTempDir()
         val tempDirPath = tempDir.getAbsolutePath
-        testDf.write
-          .option("compression", codecName)
-          .mode(SaveMode.Overwrite)
+        testDf.write.option("compression", codecName).mode(SaveMode.Overwrite)
           .text(tempDirPath)
         val compressedFiles = new File(tempDirPath).listFiles()
         assert(compressedFiles.exists(_.getName.endsWith(s".txt$extension")))
@@ -98,9 +92,7 @@ class TextSuite extends QueryTest with SharedSQLContext {
 
     val errMsg = intercept[IllegalArgumentException] {
       val tempDirPath = Utils.createTempDir().getAbsolutePath
-      testDf.write
-        .option("compression", "illegal")
-        .mode(SaveMode.Overwrite)
+      testDf.write.option("compression", "illegal").mode(SaveMode.Overwrite)
         .text(tempDirPath)
     }
     assert(errMsg.getMessage.contains(
@@ -110,29 +102,23 @@ class TextSuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-13543 Write the output as uncompressed via option()") {
     val clonedConf = new Configuration(hadoopConfiguration)
-    hadoopConfiguration.set(
-      "mapreduce.output.fileoutputformat.compress",
-      "true")
     hadoopConfiguration
-      .set(
-        "mapreduce.output.fileoutputformat.compress.type",
-        CompressionType.BLOCK.toString)
-    hadoopConfiguration
-      .set(
-        "mapreduce.output.fileoutputformat.compress.codec",
-        classOf[GzipCodec].getName)
-    hadoopConfiguration.set("mapreduce.map.output.compress", "true")
+      .set("mapreduce.output.fileoutputformat.compress", "true")
     hadoopConfiguration.set(
-      "mapreduce.map.output.compress.codec",
+      "mapreduce.output.fileoutputformat.compress.type",
+      CompressionType.BLOCK.toString)
+    hadoopConfiguration.set(
+      "mapreduce.output.fileoutputformat.compress.codec",
       classOf[GzipCodec].getName)
+    hadoopConfiguration.set("mapreduce.map.output.compress", "true")
+    hadoopConfiguration
+      .set("mapreduce.map.output.compress.codec", classOf[GzipCodec].getName)
     withTempDir { dir =>
       try {
         val testDf = sqlContext.read.text(testFile)
         val tempDir = Utils.createTempDir()
         val tempDirPath = tempDir.getAbsolutePath
-        testDf.write
-          .option("compression", "none")
-          .mode(SaveMode.Overwrite)
+        testDf.write.option("compression", "none").mode(SaveMode.Overwrite)
           .text(tempDirPath)
         val compressedFiles = new File(tempDirPath).listFiles()
         assert(compressedFiles.exists(!_.getName.endsWith(".txt.gz")))
@@ -147,10 +133,7 @@ class TextSuite extends QueryTest with SharedSQLContext {
   }
 
   private def testFile: String = {
-    Thread
-      .currentThread()
-      .getContextClassLoader
-      .getResource("text-suite.txt")
+    Thread.currentThread().getContextClassLoader.getResource("text-suite.txt")
       .toString
   }
 

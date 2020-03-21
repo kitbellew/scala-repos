@@ -28,8 +28,8 @@ abstract class OptimizeImportsTestBase
     import _root_.junit.framework.Assert._
 
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem.getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -45,9 +45,9 @@ abstract class OptimizeImportsTestBase
       new ScalaImportOptimizer().processFile(scalaFile),
       getProjectAdapter,
       "Test")
-    res = scalaFile.getText
-      .substring(0, lastPsi.getTextOffset)
-      .trim //getImportStatements.map(_.getText()).mkString("\n")
+    res =
+      scalaFile.getText.substring(0, lastPsi.getTextOffset)
+        .trim //getImportStatements.map(_.getText()).mkString("\n")
 
     lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     val text = lastPsi.getText

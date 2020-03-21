@@ -65,9 +65,9 @@ object XmlPatterns extends ParserNode {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     def isVarId =
       builder.getTokenText.substring(0, 1).toLowerCase ==
-        builder.getTokenText.substring(0, 1) && !(builder.getTokenText.apply(
-        0) == '`' && builder.getTokenText.apply(
-        builder.getTokenText.length - 1) == '`')
+        builder.getTokenText.substring(0, 1) && !(builder.getTokenText
+        .apply(0) == '`' && builder.getTokenText
+        .apply(builder.getTokenText.length - 1) == '`')
     val args = builder.mark
     def parseSeqWildcard(withComma: Boolean): Boolean = {
       if (if (withComma)
@@ -85,8 +85,8 @@ object XmlPatterns extends ParserNode {
         val wild = builder.mark
         builder.getTokenType
         builder.advanceLexer()
-        if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && "*".equals(
-              builder.getTokenText)) {
+        if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && "*"
+              .equals(builder.getTokenText)) {
           builder.advanceLexer()
           wild.done(ScalaElementTypes.SEQ_WILDCARD)
           true
@@ -138,8 +138,9 @@ object XmlPatterns extends ParserNode {
 
     if (!parseSeqWildcard(false) && !parseSeqWildcardBinding(false) && Pattern
           .parse(builder)) {
-      while (builder.getTokenType == ScalaTokenTypes.tCOMMA && !parseSeqWildcard(
-               true) && !parseSeqWildcardBinding(true)) {
+      while (builder.getTokenType == ScalaTokenTypes
+               .tCOMMA && !parseSeqWildcard(true) && !parseSeqWildcardBinding(
+               true)) {
         builder.advanceLexer() // eat comma
         Pattern.parse(builder)
       }

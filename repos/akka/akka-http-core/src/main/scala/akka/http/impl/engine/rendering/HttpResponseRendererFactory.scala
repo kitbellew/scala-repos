@@ -124,8 +124,8 @@ private[http] class HttpResponseRendererFactory(
           val r = new ByteStringRendering(responseHeaderSizeHint)
 
           import ctx.response._
-          val noEntity =
-            entity.isKnownEmpty || ctx.requestMethod == HttpMethods.HEAD
+          val noEntity = entity.isKnownEmpty || ctx.requestMethod == HttpMethods
+            .HEAD
 
           def renderStatusLine(): Unit =
             protocol match {
@@ -138,9 +138,9 @@ private[http] class HttpResponseRendererFactory(
           def render(h: HttpHeader) = r ~~ h ~~ CrLf
 
           def mustRenderTransferEncodingChunkedHeader =
-            entity.isChunked && (
-              !entity.isKnownEmpty || ctx.requestMethod == HttpMethods.HEAD
-            ) && (ctx.requestProtocol == `HTTP/1.1`)
+            entity.isChunked && (!entity.isKnownEmpty || ctx
+              .requestMethod == HttpMethods.HEAD) && (ctx
+              .requestProtocol == `HTTP/1.1`)
 
           @tailrec
           def renderHeaders(
@@ -285,9 +285,8 @@ private[http] class HttpResponseRendererFactory(
                   // if we are prohibited to keep-alive by the spec
                   alwaysClose ||
                   // if the client wants to close and we don't override
-                  (ctx.closeRequested && (
-                    (connHeader eq null) || !connHeader.hasKeepAlive
-                  )) ||
+                  (ctx.closeRequested && ((connHeader eq null) || !connHeader
+                    .hasKeepAlive)) ||
                   // if the application wants to close explicitly
                   (protocol match {
                     case `HTTP/1.1` ⇒
@@ -301,21 +300,21 @@ private[http] class HttpResponseRendererFactory(
                 // Do we render an explicit Connection header?
                 val renderConnectionHeader =
                   protocol == `HTTP/1.0` && !close || protocol == `HTTP/1.1` && close || // if we don't follow the default behavior
-                    close != ctx.closeRequested || // if we override the client's closing request
-                    protocol != ctx.requestProtocol // if we reply with a mismatching protocol (let's be very explicit in this case)
+                    close != ctx
+                      .closeRequested || // if we override the client's closing request
+                    protocol != ctx
+                      .requestProtocol // if we reply with a mismatching protocol (let's be very explicit in this case)
 
                 if (renderConnectionHeader)
                   r ~~ Connection ~~ (if (close) CloseBytes
                                       else KeepAliveBytes) ~~ CrLf
                 else if (connHeader != null && connHeader.hasUpgrade) {
                   r ~~ connHeader ~~ CrLf
-                  headers
-                    .collectFirst {
-                      case u: UpgradeToWebSocketResponseHeader ⇒ u
-                    }
-                    .foreach { header ⇒
-                      closeMode = SwitchToWebSocket(header.handler)
-                    }
+                  headers.collectFirst {
+                    case u: UpgradeToWebSocketResponseHeader ⇒ u
+                  }.foreach { header ⇒
+                    closeMode = SwitchToWebSocket(header.handler)
+                  }
                 }
                 if (mustRenderTransferEncodingChunkedHeader && !transferEncodingSeen)
                   r ~~ `Transfer-Encoding` ~~ ChunkedBytes ~~ CrLf

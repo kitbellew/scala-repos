@@ -80,9 +80,8 @@ class TypeCheckCanBeMatchInspection
       ifStmt: ScIfStmt,
       isInstOf: ScGenericCall): Boolean = {
     val chainSize = listOfIfAndIsInstOf(ifStmt, isInstOf, onlyFirst = true).size
-    val typeCastsNumber = findAsInstOfCalls(
-      ifStmt.condition,
-      isInstOf).size + findAsInstOfCalls(ifStmt.thenBranch, isInstOf).size
+    val typeCastsNumber = findAsInstOfCalls(ifStmt.condition, isInstOf)
+      .size + findAsInstOfCalls(ifStmt.thenBranch, isInstOf).size
     chainSize > 1 || typeCastsNumber > 0
   }
 }
@@ -104,8 +103,7 @@ class TypeCheckCanBeMatchQuickFix(
       onlyFirst = true)
     for (matchStmt <- matchStmtOption) {
       val newMatch = inWriteAction {
-        ifSt
-          .replaceExpression(matchStmt, removeParenthesis = true)
+        ifSt.replaceExpression(matchStmt, removeParenthesis = true)
           .asInstanceOf[ScMatchStmt]
       }
       if (!ApplicationManager.getApplication.isUnitTestMode) {
@@ -213,9 +211,8 @@ object TypeCheckToMatchUtil {
               ifStmt.getParent))
           val name = suggestedNames(0)
           asInstOfEverywhere.foreach { c =>
-            val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-              name,
-              ifStmt.getManager)
+            val newExpr = ScalaPsiElementFactory
+              .createExpressionFromText(name, ifStmt.getManager)
             inWriteAction {
               c.replaceExpression(newExpr, removeParenthesis = true)
             }
@@ -235,12 +232,11 @@ object TypeCheckToMatchUtil {
         val patternDef = definition.get
         inWriteAction { patternDef.delete() }
         val name = definedName.get
-        val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-          name,
-          ifStmt.getManager)
+        val newExpr = ScalaPsiElementFactory
+          .createExpressionFromText(name, ifStmt.getManager)
         inWriteAction {
-          asInstOfEverywhere.foreach(
-            _.replaceExpression(newExpr, removeParenthesis = true))
+          asInstOfEverywhere
+            .foreach(_.replaceExpression(newExpr, removeParenthesis = true))
         }
         buildCaseClauseText(
           s"$name : $typeName",
@@ -271,7 +267,8 @@ object TypeCheckToMatchUtil {
       case Some(block: ScBlock) =>
         for (elem <- block.children) {
           val elementType: IElementType = elem.getNode.getElementType
-          if (elementType != ScalaTokenTypes.tLBRACE && elementType != ScalaTokenTypes.tRBRACE)
+          if (elementType != ScalaTokenTypes
+                .tLBRACE && elementType != ScalaTokenTypes.tRBRACE)
             builder.append(elem.getText)
         }
       case Some(expr: ScExpression) => builder.append(expr.getText)
@@ -417,8 +414,8 @@ object TypeCheckToMatchUtil {
       name = suggestedNames.head
     } {
       val primary = mutable.ArrayBuffer[ScNamedElement]()
-      val dependents = mutable.SortedSet()(
-        Ordering.by[ScalaPsiElement, Int](_.getTextOffset))
+      val dependents = mutable
+        .SortedSet()(Ordering.by[ScalaPsiElement, Int](_.getTextOffset))
 
       val patternVisitor = new ScalaRecursiveElementVisitor() {
         override def visitPattern(pat: ScPattern) {
@@ -459,10 +456,9 @@ object TypeCheckToMatchUtil {
     conditions match {
       case Nil => None
       case _ =>
-        val guardConditions: List[ScExpression] = conditions.filterNot(
-          equiv(_, isInstOfCall))
-        val guardConditionsText: String = guardConditions
-          .map(_.getText)
+        val guardConditions: List[ScExpression] = conditions
+          .filterNot(equiv(_, isInstOfCall))
+        val guardConditionsText: String = guardConditions.map(_.getText)
           .mkString(" && ")
         val guard = ScalaPsiElementFactory
           .createExpressionFromText(guardConditionsText, condition)

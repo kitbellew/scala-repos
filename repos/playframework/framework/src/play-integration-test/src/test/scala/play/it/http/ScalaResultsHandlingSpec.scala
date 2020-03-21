@@ -46,8 +46,7 @@ trait ScalaResultsHandlingSpec
       val port = testServerPort
       running(TestServer(
         port,
-        GuiceApplicationBuilder()
-          .routes { case _ => Action(result) }
+        GuiceApplicationBuilder().routes { case _ => Action(result) }
           .build())) { block(port) }
     }
 
@@ -79,13 +78,12 @@ trait ScalaResultsHandlingSpec
     }
 
     "chunk results for event source strategy" in makeRequest(
-      Results.Ok
-        .chunked(Source(List("a", "b")) via EventSource.flow)
+      Results.Ok.chunked(Source(List("a", "b")) via EventSource.flow)
         .as("text/event-stream")) { response =>
       response.header(CONTENT_TYPE) must beSome.like {
         case value =>
-          value.toLowerCase(
-            java.util.Locale.ENGLISH) must_== "text/event-stream"
+          value
+            .toLowerCase(java.util.Locale.ENGLISH) must_== "text/event-stream"
       }
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone
@@ -115,8 +113,8 @@ trait ScalaResultsHandlingSpec
 
     "close the HTTP 1.0 connection when requested" in withServer(
       Results.Ok.withHeaders(CONNECTION -> "close")) { port =>
-      val response = BasicHttpClient.makeRequests(port, checkClosed = true)(
-        BasicRequest(
+      val response = BasicHttpClient
+        .makeRequests(port, checkClosed = true)(BasicRequest(
           "GET",
           "/",
           "HTTP/1.0",
@@ -130,22 +128,18 @@ trait ScalaResultsHandlingSpec
 
     "close the connection when the connection close header is present" in withServer(
       Results.Ok) { port =>
-      BasicHttpClient
-        .makeRequests(port, checkClosed = true)(BasicRequest(
-          "GET",
-          "/",
-          "HTTP/1.1",
-          Map("Connection" -> "close"),
-          ""))(0)
-        .status must_== 200
+      BasicHttpClient.makeRequests(port, checkClosed = true)(BasicRequest(
+        "GET",
+        "/",
+        "HTTP/1.1",
+        Map("Connection" -> "close"),
+        ""))(0).status must_== 200
     }
 
     "close the connection when the connection when protocol is HTTP 1.0" in withServer(
       Results.Ok) { port =>
-      BasicHttpClient
-        .makeRequests(port, checkClosed = true)(
-          BasicRequest("GET", "/", "HTTP/1.0", Map(), ""))(0)
-        .status must_== 200
+      BasicHttpClient.makeRequests(port, checkClosed = true)(
+        BasicRequest("GET", "/", "HTTP/1.0", Map(), ""))(0).status must_== 200
     }
 
     "honour the keep alive header for HTTP 1.0" in withServer(Results.Ok) {
@@ -176,15 +170,9 @@ trait ScalaResultsHandlingSpec
     "close chunked connections when requested" in withServer(
       Results.Ok.chunked(Source(List("a", "b", "c")))) { port =>
       // will timeout if not closed
-      BasicHttpClient
-        .makeRequests(port, checkClosed = true)(BasicRequest(
-          "GET",
-          "/",
-          "HTTP/1.1",
-          Map("Connection" -> "close"),
-          ""))
-        .head
-        .status must_== 200
+      BasicHttpClient.makeRequests(port, checkClosed = true)(
+        BasicRequest("GET", "/", "HTTP/1.1", Map("Connection" -> "close"), ""))
+        .head.status must_== 200
     }
 
     "keep chunked connections alive by default" in withServer(
@@ -208,8 +196,8 @@ trait ScalaResultsHandlingSpec
           HttpChunk.LastChunk(new Headers(Seq("Chunks" -> "3"))))),
         None)
     )) { port =>
-      val response = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), ""))(0)
+      val response = BasicHttpClient
+        .makeRequests(port)(BasicRequest("GET", "/", "HTTP/1.1", Map(), ""))(0)
 
       response.status must_== 200
       response.body must beRight
@@ -228,8 +216,8 @@ trait ScalaResultsHandlingSpec
 
     "reject HTTP 1.0 requests for chunked results" in withServer(
       Results.Ok.chunked(Source(List("a", "b", "c")))) { port =>
-      val response = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/", "HTTP/1.0", Map(), ""))(0)
+      val response = BasicHttpClient
+        .makeRequests(port)(BasicRequest("GET", "/", "HTTP/1.0", Map(), ""))(0)
       response.status must_== HTTP_VERSION_NOT_SUPPORTED
       response.body must beLeft(
         "The response to this request is chunked and hence requires HTTP 1.1 to be sent, but this is a HTTP 1.0 request.")
@@ -248,10 +236,8 @@ trait ScalaResultsHandlingSpec
     "return a 400 error on Header value contains a prohibited character" in withServer(
       Results.Ok) { port =>
       forall(List("aaa" -> "bbb\fccc", "ddd" -> "eee\u000bfff")) { header =>
-        val response = BasicHttpClient
-          .makeRequests(port)(
-            BasicRequest("GET", "/", "HTTP/1.1", Map(header), ""))
-          .head
+        val response = BasicHttpClient.makeRequests(port)(
+          BasicRequest("GET", "/", "HTTP/1.1", Map(header), "")).head
 
         response.status must_== 400
         response.body must beLeft
@@ -270,8 +256,7 @@ trait ScalaResultsHandlingSpec
               val decodedCookieHeaders: Set[Set[Cookie]] = rawCookieHeaders
                 .map { headerValue =>
                   Cookies.decodeSetCookieHeader(headerValue).to[Set]
-                }
-                .to[Set]
+                }.to[Set]
               decodedCookieHeaders must_== (
                 Set(Set(aCookie), Set(bCookie), Set(cCookie))
               )

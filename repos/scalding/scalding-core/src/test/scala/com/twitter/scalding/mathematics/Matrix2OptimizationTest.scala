@@ -251,8 +251,8 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
     }
 
     "handle a G^5 V plan" in {
-      optimizedGraphVectorPlan shouldBe (optimize(
-        unoptimizedGraphVectorPlan)._2)
+      optimizedGraphVectorPlan shouldBe (optimize(unoptimizedGraphVectorPlan)
+        ._2)
     }
 
     "handle an optimized G^5 V plan" in {
@@ -344,11 +344,8 @@ object Matrix2Props extends Properties("Matrix2") {
     Arbitrary(genFormula(0))
 
   val genProdSeq =
-    for { v <- Gen.choose(1, 10) } yield productChainGen(
-      0,
-      v,
-      0,
-      Nil).toIndexedSeq
+    for { v <- Gen.choose(1, 10) } yield productChainGen(0, v, 0, Nil)
+      .toIndexedSeq
 
   implicit def arbSeq: Arbitrary[IndexedSeq[MatrixLiteral[Any, Any, Double]]] =
     Arbitrary(genProdSeq)
@@ -513,15 +510,14 @@ object Matrix2Props extends Properties("Matrix2") {
               right @ Product(_, _, _, _),
               _,
               _) => {
-          val (cost, pLeft, pRight) =
-            evaluateProduct(right, labels.right.get).get
+          val (cost, pLeft, pRight) = evaluateProduct(right, labels.right.get)
+            .get
           // reflects optimize when k==i: p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint)
           // diff is computed in the labeled tree - it measures "spread" of the tree
           // diff corresponds to (k - i) or (j - k - 1) in optimize: (k - i) * computeCosts(p, i, k) + (j - k - 1) * computeCosts(p, k + 1, j)
           Some(
-            labels.right.get.diff * cost + (
-              left.sizeHint * (left.sizeHint * pRight.sizeHint)
-            ).total.get,
+            labels.right.get.diff * cost + (left.sizeHint * (left
+              .sizeHint * pRight.sizeHint)).total.get,
             left,
             pRight)
         }
@@ -532,15 +528,14 @@ object Matrix2Props extends Properties("Matrix2") {
               _) => {
           val (cost, pLeft, pRight) = evaluateProduct(left, labels.left.get).get
           Some(
-            labels.left.get.diff * cost + (
-              pLeft.sizeHint * (pRight.sizeHint * right.sizeHint)
-            ).total.get,
+            labels.left.get.diff * cost + (pLeft.sizeHint * (pRight
+              .sizeHint * right.sizeHint)).total.get,
             pLeft,
             right)
         }
         case Product(left, right, _, _) => {
-          val (cost1, p1Left, p1Right) =
-            evaluateProduct(left, labels.left.get).get
+          val (cost1, p1Left, p1Right) = evaluateProduct(left, labels.left.get)
+            .get
           val (cost2, p2Left, p2Right) =
             evaluateProduct(right, labels.right.get).get
           Some(

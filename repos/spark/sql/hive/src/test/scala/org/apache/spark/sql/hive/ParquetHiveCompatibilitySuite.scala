@@ -81,8 +81,8 @@ class ParquetHiveCompatibilitySuite
             val schema = sqlContext.table("parquet_compat").schema
             val rowRDD = sqlContext.sparkContext.parallelize(rows).coalesce(1)
             sqlContext.createDataFrame(rowRDD, schema).registerTempTable("data")
-            sqlContext.sql(
-              "INSERT INTO TABLE parquet_compat SELECT * FROM data")
+            sqlContext
+              .sql("INSERT INTO TABLE parquet_compat SELECT * FROM data")
           }
         }
 

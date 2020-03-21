@@ -31,9 +31,8 @@ class WrapInOptionQuickFix(
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     if (expr.isValid) {
       val newText = "Option(" + expr.getText + ")"
-      val newExpr = ScalaPsiElementFactory.createExpressionFromText(
-        newText,
-        expr.getManager)
+      val newExpr = ScalaPsiElementFactory
+        .createExpressionFromText(newText, expr.getManager)
       expr.replaceExpression(newExpr, removeParenthesis = true)
     }
   }
@@ -56,9 +55,9 @@ object WrapInOptionQuickFix {
         case ScParameterizedType(des, Seq(typeArg)) =>
           ScType.extractClass(des) match {
             case Some(scClass: ScClass)
-                if scClass.qualifiedName == "scala.Option" && scType.conforms(
-                  typeArg) => result = true
-            case _         =>
+                if scClass.qualifiedName == "scala.Option" && scType
+                  .conforms(typeArg) => result = true
+            case _                   =>
           }
         case _ =>
       }

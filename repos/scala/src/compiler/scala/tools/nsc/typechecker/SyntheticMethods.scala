@@ -75,9 +75,8 @@ trait SyntheticMethods extends ast.TreeDSL {
       clazz0: Symbol,
       context: Context): Template = {
     val syntheticsOk = (phase.id <= currentRun.typerPhase.id) && {
-      symbolsToSynthesize(clazz0) filter (
-        _ matchingSymbol clazz0.info isSynthetic
-      ) match {
+      symbolsToSynthesize(clazz0) filter (_ matchingSymbol clazz0
+        .info isSynthetic) match {
         case Nil => true
         case syms =>
           log(
@@ -122,9 +121,8 @@ trait SyntheticMethods extends ast.TreeDSL {
     def hasOverridingImplementation(meth: Symbol) = {
       val sym = clazz.info nonPrivateMember meth.name
       sym.alternatives exists { m0 =>
-        (m0 ne meth) && !m0.isDeferred && !m0.isSynthetic && (
-          m0.owner != AnyValClass
-        ) && (typeInClazz(m0) matches typeInClazz(meth))
+        (m0 ne meth) && !m0.isDeferred && !m0.isSynthetic && (m0
+          .owner != AnyValClass) && (typeInClazz(m0) matches typeInClazz(meth))
       }
     }
     def productIteratorMethod = {
@@ -190,8 +188,8 @@ trait SyntheticMethods extends ast.TreeDSL {
      */
     def equalsCore(eqmeth: Symbol, accessors: List[Symbol]) = {
       val otherName = context.unit.freshTermName(clazz.name + "$")
-      val otherSym =
-        eqmeth.newValue(otherName, eqmeth.pos, SYNTHETIC) setInfo clazz.tpe
+      val otherSym = eqmeth
+        .newValue(otherName, eqmeth.pos, SYNTHETIC) setInfo clazz.tpe
       val pairwise = accessors map (acc =>
         fn(
           Select(mkThis, acc),
@@ -291,8 +289,8 @@ trait SyntheticMethods extends ast.TreeDSL {
 
     def specializedHashcode = {
       createMethod(nme.hashCode_, Nil, IntTpe) { m =>
-        val accumulator =
-          m.newVariable(newTermName("acc"), m.pos, SYNTHETIC) setInfo IntTpe
+        val accumulator = m
+          .newVariable(newTermName("acc"), m.pos, SYNTHETIC) setInfo IntTpe
         val valdef = ValDef(accumulator, Literal(Constant(0xcafebabe)))
         val mixes = accessors map (acc =>
           Assign(
@@ -371,9 +369,8 @@ trait SyntheticMethods extends ast.TreeDSL {
               // Without a means to suppress this warning, I've thought better of it.
               if (settings.warnValueOverrides) {
                 (clazz.info nonPrivateMember m.name) filter (m =>
-                  (m.owner != AnyClass) && (
-                    m.owner != clazz
-                  ) && !m.isDeferred) andAlso { m =>
+                  (m.owner != AnyClass) && (m.owner != clazz) && !m
+                    .isDeferred) andAlso { m =>
                   typer.context.warning(
                     clazz.pos,
                     s"Implementation of ${m.name} inherited from ${m.owner} overridden in $clazz to enforce value class semantics")
@@ -417,7 +414,8 @@ trait SyntheticMethods extends ast.TreeDSL {
         val i = original.owner.caseFieldAccessors.indexOf(original)
         def freshAccessorName = {
           devWarning(
-            s"Unable to find $original among case accessors of ${original.owner}: ${original.owner.caseFieldAccessors}")
+            s"Unable to find $original among case accessors of ${original
+              .owner}: ${original.owner.caseFieldAccessors}")
           context.unit.freshTermName(original.name + "$")
         }
         def nameSuffixedByParamIndex =
@@ -431,11 +429,10 @@ trait SyntheticMethods extends ast.TreeDSL {
         // TODO: shouldn't the next line be: `original resetFlag CASEACCESSOR`?
         ddef.symbol resetFlag CASEACCESSOR
         lb += logResult("case accessor new")(newAcc)
-        val renamedInClassMap = renamedCaseAccessors.getOrElseUpdate(
-          clazz,
-          mutable.Map() withDefault (x => x))
-        renamedInClassMap(original.name.toTermName) =
-          newAcc.symbol.name.toTermName
+        val renamedInClassMap = renamedCaseAccessors
+          .getOrElseUpdate(clazz, mutable.Map() withDefault (x => x))
+        renamedInClassMap(original.name.toTermName) = newAcc.symbol.name
+          .toTermName
       }
 
       (lb ++= templ.body ++= synthesize()).toList

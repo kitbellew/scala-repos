@@ -83,9 +83,7 @@ class HDFSMetadataLogSuite extends SparkFunSuite with SharedSQLContext {
               val metadataLog =
                 new HDFSMetadataLog[String](sqlContext, temp.getAbsolutePath)
               try {
-                var nextBatchId = metadataLog
-                  .getLatest()
-                  .map(_._1)
+                var nextBatchId = metadataLog.getLatest().map(_._1)
                   .getOrElse(-1L)
                 nextBatchId += 1
                 while (nextBatchId <= maxBatchId) {
@@ -106,8 +104,8 @@ class HDFSMetadataLogSuite extends SparkFunSuite with SharedSQLContext {
       assert(
         metadataLog.getLatest() === Some(maxBatchId -> maxBatchId.toString))
       assert(
-        metadataLog.get(None, maxBatchId) === (0 to maxBatchId).map(i =>
-          (i, i.toString)))
+        metadataLog.get(None, maxBatchId) === (0 to maxBatchId)
+          .map(i => (i, i.toString)))
     }
   }
 }

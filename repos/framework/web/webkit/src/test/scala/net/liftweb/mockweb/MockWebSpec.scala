@@ -136,8 +136,8 @@ object MockWebSpec extends Specification {
       LiftRulesMocker.devTestLiftRulesInstance.doWith(mockLiftRules) {
         useLiftRules.doWith(true) {
           testS("http://foo.com/test/stateless") {
-            S.request.foreach(
-              _.path.partPath must_== List("stateless", "works"))
+            S.request
+              .foreach(_.path.partPath must_== List("stateless", "works"))
           }
         }
       }

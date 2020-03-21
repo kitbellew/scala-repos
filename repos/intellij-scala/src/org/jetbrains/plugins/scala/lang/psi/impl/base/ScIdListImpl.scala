@@ -29,11 +29,9 @@ class ScIdListImpl private (
   def fieldIds: Seq[ScFieldId] = {
     val stub = getStub
     if (stub != null) {
-      stub
-        .getChildrenByType(
-          ScalaElementTypes.FIELD_ID,
-          JavaArrayFactoryUtil.ScFieldIdFactory)
-        .toSeq
+      stub.getChildrenByType(
+        ScalaElementTypes.FIELD_ID,
+        JavaArrayFactoryUtil.ScFieldIdFactory).toSeq
     } else findChildrenByClass(classOf[ScFieldId]).toSeq
   }
 

@@ -43,15 +43,12 @@ class FailureSuite extends SparkFunSuite with BeforeAndAfter with Logging {
 
     // Stop SparkContext if active
     SparkContext
-      .getOrCreate(new SparkConf().setMaster("local").setAppName("bla"))
-      .stop()
+      .getOrCreate(new SparkConf().setMaster("local").setAppName("bla")).stop()
   }
 
   test("multiple failures with map") {
-    MasterFailureTest.testMap(
-      directory.getAbsolutePath,
-      numBatches,
-      batchDuration)
+    MasterFailureTest
+      .testMap(directory.getAbsolutePath, numBatches, batchDuration)
   }
 
   test("multiple failures with updateStateByKey") {

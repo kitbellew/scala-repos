@@ -50,8 +50,8 @@ class B extends A {
   }
 
   def testSCL9446(): Unit = {
-    val extensionPoint = Extensions.getRootArea.getExtensionPoint(
-      SyntheticMembersInjector.EP_NAME)
+    val extensionPoint = Extensions.getRootArea
+      .getExtensionPoint(SyntheticMembersInjector.EP_NAME)
     val injector = new SCL9446Injector
     extensionPoint.registerExtension(injector)
     try {

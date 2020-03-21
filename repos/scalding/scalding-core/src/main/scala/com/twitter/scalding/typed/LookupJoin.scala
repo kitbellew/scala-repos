@@ -138,12 +138,11 @@ object LookupJoin extends Serializable {
       }
 
     val joined: TypedPipe[
-      (K, (Option[(T, JoinedV)], Option[(T, V, Option[JoinedV])]))] = left
-      .map { case (t, (k, v)) => (k, (t, Left(v): Either[V, JoinedV])) }
-      .++(right.map {
-        case (t, (k, joinedV)) => (k, (t, Right(joinedV): Either[V, JoinedV]))
-      })
-      .group
+      (K, (Option[(T, JoinedV)], Option[(T, V, Option[JoinedV])]))] = left.map {
+      case (t, (k, v)) => (k, (t, Left(v): Either[V, JoinedV]))
+    }.++(right.map {
+      case (t, (k, joinedV)) => (k, (t, Right(joinedV): Either[V, JoinedV]))
+    }).group
       .withReducers(reducers.getOrElse(-1)) // -1 means default in scalding
       .sorted
       /**
@@ -194,8 +193,7 @@ object LookupJoin extends Serializable {
             if (gate(time, oldt)) Semigroup.plus(oldJ, joined) else joined
           (Some((time, nextJoined)), None)
         }
-      }
-      .toTypedPipe
+      }.toTypedPipe
 
     // Now, get rid of residual state from the scanLeft above:
     joined.flatMap {

@@ -21,12 +21,10 @@ object MarathonSchedulerDriver {
 
     log.info(s"Create new Scheduler Driver with frameworkId: $frameworkId")
 
-    val frameworkInfoBuilder = FrameworkInfo
-      .newBuilder()
+    val frameworkInfoBuilder = FrameworkInfo.newBuilder()
       .setName(config.frameworkName())
       .setFailoverTimeout(config.mesosFailoverTimeout().toDouble)
-      .setUser(config.mesosUser())
-      .setCheckpoint(config.checkpoint())
+      .setUser(config.mesosUser()).setCheckpoint(config.checkpoint())
       .setHostname(config.hostname())
 
     // Set the role, if provided.
@@ -39,12 +37,12 @@ object MarathonSchedulerDriver {
       frameworkInfoBuilder.setWebuiUrl(config.webuiUrl())
     } else if (httpConfig.sslKeystorePath.isDefined) {
       // ssl enabled, use https
-      frameworkInfoBuilder.setWebuiUrl(
-        s"https://${config.hostname()}:${httpConfig.httpsPort()}")
+      frameworkInfoBuilder
+        .setWebuiUrl(s"https://${config.hostname()}:${httpConfig.httpsPort()}")
     } else {
       // ssl disabled, use http
-      frameworkInfoBuilder.setWebuiUrl(
-        s"http://${config.hostname()}:${httpConfig.httpPort()}")
+      frameworkInfoBuilder
+        .setWebuiUrl(s"http://${config.hostname()}:${httpConfig.httpPort()}")
     }
 
     // set the authentication principal, if provided
@@ -53,14 +51,12 @@ object MarathonSchedulerDriver {
 
     val credential: Option[Credential] = config.mesosAuthenticationPrincipal.get
       .map { principal =>
-        val credentialBuilder = Credential
-          .newBuilder()
-          .setPrincipal(principal)
+        val credentialBuilder = Credential.newBuilder().setPrincipal(principal)
 
         config.mesosAuthenticationSecretFile.get.foreach { secretFile =>
           try {
-            val secretBytes = ByteString.readFrom(new FileInputStream(
-              secretFile))
+            val secretBytes = ByteString
+              .readFrom(new FileInputStream(secretFile))
             credentialBuilder.setSecret(secretBytes.toStringUtf8)
           } catch {
             case cause: Throwable =>

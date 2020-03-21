@@ -107,14 +107,10 @@ trait AccountService {
     val needs = userNames -- map.keySet
     if (needs.isEmpty) { map }
     else {
-      map ++ Accounts
-        .filter(t =>
-          (
-            t.userName inSetBind needs
-          ) && (t.removed === false.bind, !includeRemoved))
-        .list
-        .map(a => a.userName -> a)
-        .toMap
+      map ++ Accounts.filter(t =>
+        (t.userName inSetBind needs) && (
+          t.removed === false.bind, !includeRemoved
+        )).list.map(a => a.userName -> a).toMap
     }
   }
 
@@ -154,40 +150,35 @@ trait AccountService {
     )
 
   def updateAccount(account: Account)(implicit s: Session): Unit =
-    Accounts
-      .filter { a => a.userName === account.userName.bind }
-      .map { a =>
-        (
-          a.password,
-          a.fullName,
-          a.mailAddress,
-          a.isAdmin,
-          a.url.?,
-          a.registeredDate,
-          a.updatedDate,
-          a.lastLoginDate.?,
-          a.removed)
-      }
-      .update(
-        account.password,
-        account.fullName,
-        account.mailAddress,
-        account.isAdmin,
-        account.url,
-        account.registeredDate,
-        currentDate,
-        account.lastLoginDate,
-        account.isRemoved
-      )
+    Accounts.filter { a => a.userName === account.userName.bind }.map { a =>
+      (
+        a.password,
+        a.fullName,
+        a.mailAddress,
+        a.isAdmin,
+        a.url.?,
+        a.registeredDate,
+        a.updatedDate,
+        a.lastLoginDate.?,
+        a.removed)
+    }.update(
+      account.password,
+      account.fullName,
+      account.mailAddress,
+      account.isAdmin,
+      account.url,
+      account.registeredDate,
+      currentDate,
+      account.lastLoginDate,
+      account.isRemoved
+    )
 
   def updateAvatarImage(userName: String, image: Option[String])(implicit
       s: Session): Unit =
     Accounts.filter(_.userName === userName.bind).map(_.image.?).update(image)
 
   def updateLastLoginDate(userName: String)(implicit s: Session): Unit =
-    Accounts
-      .filter(_.userName === userName.bind)
-      .map(_.lastLoginDate)
+    Accounts.filter(_.userName === userName.bind).map(_.lastLoginDate)
       .update(currentDate)
 
   def createGroup(groupName: String, url: Option[String])(implicit
@@ -209,10 +200,8 @@ trait AccountService {
 
   def updateGroup(groupName: String, url: Option[String], removed: Boolean)(
       implicit s: Session): Unit =
-    Accounts
-      .filter(_.userName === groupName.bind)
-      .map(t => t.url.? -> t.removed)
-      .update(url, removed)
+    Accounts.filter(_.userName === groupName.bind)
+      .map(t => t.url.? -> t.removed).update(url, removed)
 
   def updateGroupMembers(groupName: String, members: List[(String, Boolean)])(
       implicit s: Session): Unit = {
@@ -225,17 +214,11 @@ trait AccountService {
 
   def getGroupMembers(groupName: String)(implicit
       s: Session): List[GroupMember] =
-    GroupMembers
-      .filter(_.groupName === groupName.bind)
-      .sortBy(_.userName)
-      .list
+    GroupMembers.filter(_.groupName === groupName.bind).sortBy(_.userName).list
 
   def getGroupsByUserName(userName: String)(implicit s: Session): List[String] =
-    GroupMembers
-      .filter(_.userName === userName.bind)
-      .sortBy(_.groupName)
-      .map(_.groupName)
-      .list
+    GroupMembers.filter(_.userName === userName.bind).sortBy(_.groupName)
+      .map(_.groupName).list
 
   def removeUserRelatedData(userName: String)(implicit s: Session): Unit = {
     GroupMembers.filter(_.userName === userName.bind).delete
@@ -245,11 +228,8 @@ trait AccountService {
 
   def getGroupNames(userName: String)(implicit s: Session): List[String] = {
     List(userName) ++
-      Collaborators
-        .filter(_.collaboratorName === userName.bind)
-        .sortBy(_.userName)
-        .map(_.userName)
-        .list
+      Collaborators.filter(_.collaboratorName === userName.bind)
+        .sortBy(_.userName).map(_.userName).list
   }
 
 }

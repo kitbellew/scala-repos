@@ -14,10 +14,7 @@ class VirtualProcessorTest extends AkkaIdentityProcessorVerification[Int] {
       maxBufferSize: Int): Processor[Int, Int] = {
     implicit val materializer = ActorMaterializer()(system)
 
-    val identity = Flow[Int]
-      .map(elem ⇒ elem)
-      .named("identity")
-      .toProcessor
+    val identity = Flow[Int].map(elem ⇒ elem).named("identity").toProcessor
       .run()
     val left, right = new VirtualProcessor[Int]
     left.subscribe(identity)

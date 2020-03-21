@@ -43,10 +43,9 @@ object ExtractSuperUtil {
       file: PsiFile,
       isSuitableClass: PsiClass => Boolean)(action: => Unit) {
     try {
-      val classes = ScalaPsiUtil
-        .getParents(element, file)
-        .collect { case t: ScTemplateDefinition if isSuitableClass(t) => t }
-        .toArray[PsiClass]
+      val classes = ScalaPsiUtil.getParents(element, file).collect {
+        case t: ScTemplateDefinition if isSuitableClass(t) => t
+      }.toArray[PsiClass]
       classes.size match {
         case 0 =>
         case 1 => action
@@ -58,18 +57,16 @@ object ExtractSuperUtil {
               false
             }
           }
-          NavigationUtil
-            .getPsiElementPopup(
-              classes,
-              new PsiClassListCellRenderer() {
-                override def getElementText(element: PsiClass): String =
-                  super.getElementText(element).replace("$", "")
-              },
-              "Choose class",
-              processor,
-              selection
-            )
-            .showInBestPositionFor(editor)
+          NavigationUtil.getPsiElementPopup(
+            classes,
+            new PsiClassListCellRenderer() {
+              override def getElementText(element: PsiClass): String =
+                super.getElementText(element).replace("$", "")
+            },
+            "Choose class",
+            processor,
+            selection
+          ).showInBestPositionFor(editor)
       }
     } catch { case _: IntroduceException => return }
   }
@@ -108,9 +105,8 @@ object ExtractSuperUtil {
     val templParents = oldExtBlock.templateParents match {
       case Some(tp: ScTemplateParents) =>
         val tpText = s"${tp.getText} with $text"
-        val (_, newTp) = ScalaPsiElementFactory.createClassTemplateParents(
-          tpText,
-          clazz.getManager)
+        val (_, newTp) = ScalaPsiElementFactory
+          .createClassTemplateParents(tpText, clazz.getManager)
         tp.replace(newTp).asInstanceOf[ScTemplateParents]
       case None =>
         val (extKeyword, newTp) = ScalaPsiElementFactory
@@ -130,8 +126,8 @@ object ExtractSuperUtil {
       directories: Array[PsiDirectory]): PsiDirectory = {
     val sourceFile: VirtualFile = clazz.getContainingFile.getVirtualFile
     if (sourceFile != null) {
-      val fileIndex: ProjectFileIndex =
-        ProjectRootManager.getInstance(clazz.getProject).getFileIndex
+      val fileIndex: ProjectFileIndex = ProjectRootManager
+        .getInstance(clazz.getProject).getFileIndex
       val sourceRoot: VirtualFile = fileIndex.getSourceRootForFile(sourceFile)
       if (sourceRoot != null) {
         for (dir <- directories) {
@@ -148,8 +144,7 @@ object ExtractSuperUtil {
       targetPackageName: String,
       targetClassName: String,
       sourceClass: PsiClass): String = {
-    val pckg: PsiPackage = JavaPsiFacade
-      .getInstance(sourceClass.getProject)
+    val pckg: PsiPackage = JavaPsiFacade.getInstance(sourceClass.getProject)
       .findPackage(targetPackageName)
     if (pckg == null)
       return s"Cannot find package with name: $targetPackageName"
@@ -161,12 +156,10 @@ object ExtractSuperUtil {
     if (pckg.containsClassNamed(targetClassName))
       return s"Class with name $targetClassName already exists in the package $targetPackageName"
 
-    val dir: PsiDirectory = ExtractSuperUtil.getDirUnderSameSourceRoot(
-      sourceClass,
-      dirs)
-    val cantCreateFile: String = RefactoringMessageUtil.checkCanCreateFile(
-      dir,
-      targetClassName + ".scala")
+    val dir: PsiDirectory = ExtractSuperUtil
+      .getDirUnderSameSourceRoot(sourceClass, dirs)
+    val cantCreateFile: String = RefactoringMessageUtil
+      .checkCanCreateFile(dir, targetClassName + ".scala")
     if (cantCreateFile != null) return cantCreateFile
 
     null
@@ -174,16 +167,13 @@ object ExtractSuperUtil {
 
   def possibleMembersToExtract(
       clazz: ScTemplateDefinition): util.List[ScalaExtractMemberInfo] = {
-    clazz.members
-      .filter {
-        case m if m.isPrivate                     => false
-        case fun: ScFunction if fun.isConstructor => false
-        case td: ScTypeDefinition                 => false
-        case _: ScPrimaryConstructor              => false
-        case _                                    => true
-      }
-      .map(new ScalaExtractMemberInfo(_))
-      .asJava
+    clazz.members.filter {
+      case m if m.isPrivate                     => false
+      case fun: ScFunction if fun.isConstructor => false
+      case td: ScTypeDefinition                 => false
+      case _: ScPrimaryConstructor              => false
+      case _                                    => true
+    }.map(new ScalaExtractMemberInfo(_)).asJava
   }
 
   def declarationScope(m: ScMember): Seq[PsiElement] = {

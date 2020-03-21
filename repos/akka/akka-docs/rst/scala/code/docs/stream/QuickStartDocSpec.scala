@@ -42,8 +42,7 @@ class QuickStartDocSpec
     //#transform-source
     val factorials = source.scan(BigInt(1))((acc, next) => acc * next)
 
-    val result: Future[IOResult] = factorials
-      .map(num => ByteString(s"$num\n"))
+    val result: Future[IOResult] = factorials.map(num => ByteString(s"$num\n"))
       .runWith(FileIO.toFile(new File("factorials.txt")))
     //#transform-source
 
@@ -66,8 +65,7 @@ class QuickStartDocSpec
 
   //#transform-sink
   def lineSink(filename: String): Sink[String, Future[IOResult]] =
-    Flow[String]
-      .map(s => ByteString(s + "\n"))
+    Flow[String].map(s => ByteString(s + "\n"))
       .toMat(FileIO.toFile(new File(filename)))(Keep.right)
   //#transform-sink
 

@@ -63,14 +63,13 @@ object Mux
   }
 
   object Client {
-    val stack: Stack[ServiceFactory[mux.Request, mux.Response]] =
-      StackClient.newStack
-        .replace(
-          StackClient.Role.pool,
-          SingletonPool.module[mux.Request, mux.Response])
-        .replace(StackClient.Role.protoTracing, new ClientProtoTracing)
-        .replace(BindingFactory.role, MuxBindingFactory)
-        .prepend(PayloadSizeFilter.module(_.body.length, _.body.length))
+    val stack: Stack[ServiceFactory[mux.Request, mux.Response]] = StackClient
+      .newStack.replace(
+        StackClient.Role.pool,
+        SingletonPool.module[mux.Request, mux.Response])
+      .replace(StackClient.Role.protoTracing, new ClientProtoTracing)
+      .replace(BindingFactory.role, MuxBindingFactory)
+      .prepend(PayloadSizeFilter.module(_.body.length, _.body.length))
   }
 
   case class Client(
@@ -128,11 +127,10 @@ object Mux
       extends ProtoTracing("srv", StackServer.Role.protoTracing)
 
   object Server {
-    val stack: Stack[ServiceFactory[mux.Request, mux.Response]] =
-      StackServer.newStack
-        .remove(TraceInitializerFilter.role)
-        .replace(StackServer.Role.protoTracing, new ServerProtoTracing)
-        .prepend(PayloadSizeFilter.module(_.body.length, _.body.length))
+    val stack: Stack[ServiceFactory[mux.Request, mux.Response]] = StackServer
+      .newStack.remove(TraceInitializerFilter.role)
+      .replace(StackServer.Role.protoTracing, new ServerProtoTracing)
+      .prepend(PayloadSizeFilter.module(_.body.length, _.body.length))
   }
 
   case class Server(

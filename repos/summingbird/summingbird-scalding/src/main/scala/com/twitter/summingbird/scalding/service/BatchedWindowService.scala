@@ -72,11 +72,9 @@ trait BatchedWindowService[K, V] extends batch.BatchedService[K, V] {
 
     implicit val ord = ordering
     val win = windowSize // call this once so scala makes a smarter closure
-    LookupJoin
-      .withWindow(incoming, servStream, reducers) {
-        (l: Timestamp, r: Timestamp) => (l - r) < win
-      }
-      .map { case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv)))) }
+    LookupJoin.withWindow(incoming, servStream, reducers) {
+      (l: Timestamp, r: Timestamp) => (l - r) < win
+    }.map { case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv)))) }
   }
 
 }

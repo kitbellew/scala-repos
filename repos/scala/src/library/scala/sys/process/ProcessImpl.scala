@@ -91,8 +91,8 @@ private[process] trait ProcessImpl {
     def isAlive() = processThread.isAlive()
     def destroy() = destroyer()
     def exitValue() =
-      getExitValue._2() getOrElse scala.sys.error(
-        "No exit code: process destroyed.")
+      getExitValue._2() getOrElse scala.sys
+        .error("No exit code: process destroyed.")
     def start() = getExitValue
 
     protected lazy val (processThread, getExitValue, destroyer) = {

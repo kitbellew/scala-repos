@@ -43,8 +43,8 @@ object ClusterSingletonManagerSettings {
       role = roleOption(config.getString("role")),
       removalMargin =
         Duration.Zero, // defaults to ClusterSettins.DownRemovalMargin
-      handOverRetryInterval =
-        config.getDuration("hand-over-retry-interval", MILLISECONDS).millis)
+      handOverRetryInterval = config
+        .getDuration("hand-over-retry-interval", MILLISECONDS).millis)
 
   /**
     * Java API: Create settings from the default configuration
@@ -262,8 +262,8 @@ object ClusterSingletonManager {
       val cluster = Cluster(context.system)
       // sort by age, oldest first
       val ageOrdering = Member.ageOrdering
-      var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
-        ageOrdering)
+      var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet
+        .empty(ageOrdering)
 
       var changes = Vector.empty[AnyRef]
 
@@ -287,11 +287,10 @@ object ClusterSingletonManager {
       }
 
       def handleInitial(state: CurrentClusterState): Unit = {
-        membersByAge =
-          immutable.SortedSet.empty(ageOrdering) union state.members.filter(m ⇒
-            (
-              m.status == MemberStatus.Up || m.status == MemberStatus.Leaving
-            ) && matchingRole(m))
+        membersByAge = immutable.SortedSet.empty(ageOrdering) union state
+          .members.filter(m ⇒
+            (m.status == MemberStatus.Up || m.status == MemberStatus
+              .Leaving) && matchingRole(m))
         val safeToBeOldest = !state.members.exists { m ⇒
           (m.status == MemberStatus.Down || m.status == MemberStatus.Exiting)
         }
@@ -503,8 +502,8 @@ class ClusterSingletonManager(
 
   when(Start) {
     case Event(StartOldestChangedBuffer, _) ⇒
-      oldestChangedBuffer = context.actorOf(
-        Props(classOf[OldestChangedBuffer], role).withDispatcher(
+      oldestChangedBuffer = context
+        .actorOf(Props(classOf[OldestChangedBuffer], role).withDispatcher(
           context.props.dispatcher))
       getNextOldestChanged()
       stay
@@ -633,10 +632,9 @@ class ClusterSingletonManager(
   def scheduleDelayedMemberRemoved(m: Member): Unit = {
     if (removalMargin > Duration.Zero) {
       log.debug("Schedule DelayedMemberRemoved for [{}]", m.address)
-      context.system.scheduler.scheduleOnce(
-        removalMargin,
-        self,
-        DelayedMemberRemoved(m))(context.dispatcher)
+      context.system.scheduler
+        .scheduleOnce(removalMargin, self, DelayedMemberRemoved(m))(
+          context.dispatcher)
     } else self ! DelayedMemberRemoved(m)
   }
 

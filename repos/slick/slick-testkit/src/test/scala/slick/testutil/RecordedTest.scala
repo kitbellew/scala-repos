@@ -57,8 +57,8 @@ abstract class RecordedTest {
     check.foreach { checkData =>
       val matched = logData == checkData
       if (!matched)
-        Assert.fail(
-          "Output does not match: See " + basename + "(.check,-run.log)")
+        Assert
+          .fail("Output does not match: See " + basename + "(.check,-run.log)")
     }
   }
 

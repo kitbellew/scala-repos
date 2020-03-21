@@ -161,12 +161,10 @@ class RewriteJoins extends Phase {
     val invalid = inv1 ++ inv2
     if ((l1 eq j.left) && (r1 eq j.right)) (j, invalid)
     else {
-      val j2 = j
-        .copy(
-          left = l1,
-          right = r1,
-          on = and(p1Opt, and(p2Opt, j.on.untypeReferences(invalid))))
-        .infer()
+      val j2 = j.copy(
+        left = l1,
+        right = r1,
+        on = and(p1Opt, and(p2Opt, j.on.untypeReferences(invalid)))).infer()
       logger.debug("Hoisting join filters from:", j)
       logger.debug("Hoisted join filters in:", j2)
       (j2, invalid)
@@ -195,19 +193,20 @@ class RewriteJoins extends Phase {
             (
               p,
               (
-                pOnBGen, /*None: Option[Symbol]*/ struct1
-                  .find { case (s, n) => pOnBGen == n }
-                  .map(_._1)))
+                pOnBGen, /*None: Option[Symbol]*/ struct1.find {
+                  case (s, n) => pOnBGen == n
+                }.map(_._1)))
         }.toMap
-        logger.debug(
-          "Found references in predicate: " + foundRefs.mkString(", "))
+        logger
+          .debug("Found references in predicate: " + foundRefs.mkString(", "))
         val newDefs = foundRefs.filter(_._2._2.isEmpty).map {
           case (p, (pOnBGen, _)) => (p, (pOnBGen, new AnonSymbol))
         }
         logger.debug("New references for predicate: " + newDefs.mkString(", "))
-        val allRefs = foundRefs.collect {
-          case (p, (_, Some(s)))            => (p, s)
-        } ++ newDefs.map { case (p, (_, s)) => (p, s) }
+        val allRefs = foundRefs
+          .collect { case (p, (_, Some(s))) => (p, s) } ++ newDefs.map {
+          case (p, (_, s))                  => (p, s)
+        }
         logger.debug(
           "All reference mappings for predicate: " + allRefs.mkString(", "))
         val (sel, tss) =
@@ -223,18 +222,14 @@ class RewriteJoins extends Phase {
         val fs = new AnonSymbol
         val pred = pred1.replace {
           case p: Select =>
-            allRefs
-              .get(p)
-              .map(s =>
-                Select(
-                  Ref(fs) :@ b.nodeType.asCollectionType.elementType,
-                  s) :@ p.nodeType)
-              .getOrElse(p)
+            allRefs.get(p).map(s =>
+              Select(Ref(fs) :@ b.nodeType.asCollectionType.elementType, s) :@ p
+                .nodeType).getOrElse(p)
         }
         val res = Filter(fs, Bind(b.generator, from1, sel), pred).infer()
         logger.debug(
-          "Hoisted Filter out of Bind (invalidated: " + tss.mkString(
-            ", ") + ") in:",
+          "Hoisted Filter out of Bind (invalidated: " + tss
+            .mkString(", ") + ") in:",
           res)
         (res, tss)
       case _ => (b, Set.empty)
@@ -259,24 +254,22 @@ class RewriteJoins extends Phase {
         sn: StructNode,
         ok: TermSymbol,
         illegal: Set[TermSymbol]): (StructNode, Map[TermSymbol, Node]) = {
-      val (illegalDefs, legalDefs) = sn.elements.toSeq.partition(t =>
-        hasRefTo(t._2, illegal))
+      val (illegalDefs, legalDefs) = sn.elements.toSeq
+        .partition(t => hasRefTo(t._2, illegal))
       if (illegalDefs.isEmpty) (sn, Map.empty)
       else {
         logger.debug(
-          "Pulling refs to [" + illegal.mkString(
-            ", ") + "] with OK base " + ok + " out of:",
+          "Pulling refs to [" + illegal
+            .mkString(", ") + "] with OK base " + ok + " out of:",
           sn)
-        val requiredOkPaths = illegalDefs
-          .flatMap(
-            _._2.collect { case p @ FwdPath(s :: _) if s == ok => p }.toSeq)
-          .toSet
+        val requiredOkPaths = illegalDefs.flatMap(_._2.collect {
+          case p @ FwdPath(s :: _) if s == ok => p
+        }.toSeq).toSet
         val existingOkDefs = legalDefs.collect {
           case (s, p @ FwdPath(s2 :: _)) if s2 == ok => (p, s)
         }.toMap
         val createDefs = (requiredOkPaths -- existingOkDefs.keySet)
-          .map(p => (new AnonSymbol, p))
-          .toMap
+          .map(p => (new AnonSymbol, p)).toMap
         val sn2 = StructNode(ConstArray.from(legalDefs ++ createDefs))
         logger.debug("Pulled refs out of:", sn2)
         val replacements =
@@ -316,21 +309,19 @@ class RewriteJoins extends Phase {
     val (r1, r1m) = trChild(j.right, illegal + j.leftGen, j.rightGen)
     if (l1m.isEmpty && r1m.isEmpty) (j, Map.empty)
     else {
-      val on1 = j.on
-        .replace(
-          {
-            case p @ FwdPath(r1 :: rest)
-                if r1 == j.leftGen && l1m.contains(rest) => l1m(rest)
-            case p @ FwdPath(r1 :: rest)
-                if r1 == j.rightGen && r1m.contains(rest) => r1m(rest)
-          },
-          keepType = true,
-          bottomUp = true
-        )
-        .replace {
-          case r @ Ref(s) if s == j.leftGen || s == j.rightGen =>
-            r.untyped // Structural expansion may have changed
-        }
+      val on1 = j.on.replace(
+        {
+          case p @ FwdPath(r1 :: rest)
+              if r1 == j.leftGen && l1m.contains(rest) => l1m(rest)
+          case p @ FwdPath(r1 :: rest)
+              if r1 == j.rightGen && r1m.contains(rest) => r1m(rest)
+        },
+        keepType = true,
+        bottomUp = true
+      ).replace {
+        case r @ Ref(s) if s == j.leftGen || s == j.rightGen =>
+          r.untyped // Structural expansion may have changed
+      }
       val j2 = j.copy(left = l1, right = r1, on = on1).infer()
       logger.debug(
         "Eliminated illegal refs [" + illegal.mkString(", ") + "] in:",
@@ -372,15 +363,15 @@ class RewriteJoins extends Phase {
             JoinType.Inner,
             on1) =>
         logger.debug(
-          "Trying to rearrange join conditions (alsoPull: " + alsoPull.mkString(
-            ", ") + ") in:",
+          "Trying to rearrange join conditions (alsoPull: " + alsoPull
+            .mkString(", ") + ") in:",
           j)
         val pull = alsoPull + s1
         val j2b = rearrangeJoinConditions(j2a, pull)
-        val (on1Down, on1Keep) = splitConjunctions(on1).partition(p =>
-          hasRefTo(p, Set(s2)) && !hasRefTo(p, pull))
-        val (on2Up, on2Keep) = splitConjunctions(j2b.on).partition(p =>
-          hasRefTo(p, pull))
+        val (on1Down, on1Keep) = splitConjunctions(on1)
+          .partition(p => hasRefTo(p, Set(s2)) && !hasRefTo(p, pull))
+        val (on2Up, on2Keep) = splitConjunctions(j2b.on)
+          .partition(p => hasRefTo(p, pull))
         if (on1Down.nonEmpty || on2Up.nonEmpty) {
           val refS2 = Ref(s2) :@ j2b.nodeType.asCollectionType.elementType
           val on1b = and(

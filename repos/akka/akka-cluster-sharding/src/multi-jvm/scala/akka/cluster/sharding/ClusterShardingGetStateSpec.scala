@@ -163,8 +163,7 @@ abstract class ClusterShardingGetStateSpec
             val path =
               RootActorPath(region) / "system" / "sharding" / shardTypeName
 
-            system
-              .actorSelection(path)
+            system.actorSelection(path)
               .tell(ShardRegion.GetShardRegionState, probe.ref)
           }
           val states = probe.receiveWhile(messages = regions.size) {

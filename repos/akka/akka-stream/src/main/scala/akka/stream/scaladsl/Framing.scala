@@ -32,12 +32,8 @@ object Framing {
       delimiter: ByteString,
       maximumFrameLength: Int,
       allowTruncation: Boolean = false): Flow[ByteString, ByteString, NotUsed] =
-    Flow[ByteString]
-      .transform(() ⇒
-        new DelimiterFramingStage(
-          delimiter,
-          maximumFrameLength,
-          allowTruncation))
+    Flow[ByteString].transform(() ⇒
+      new DelimiterFramingStage(delimiter, maximumFrameLength, allowTruncation))
       .named("delimiterFraming")
 
   /**
@@ -63,14 +59,12 @@ object Framing {
     require(
       fieldLength >= 1 && fieldLength <= 4,
       "Length field length must be 1, 2, 3 or 4.")
-    Flow[ByteString]
-      .transform(() ⇒
-        new LengthFieldFramingStage(
-          fieldLength,
-          fieldOffset,
-          maximumFrameLength,
-          byteOrder))
-      .named("lengthFieldFraming")
+    Flow[ByteString].transform(() ⇒
+      new LengthFieldFramingStage(
+        fieldLength,
+        fieldOffset,
+        maximumFrameLength,
+        byteOrder)).named("lengthFieldFraming")
   }
 
   /**
@@ -192,9 +186,8 @@ object Framing {
 
     @tailrec
     private def doParse(ctx: Context[ByteString]): SyncDirective = {
-      val possibleMatchPos = buffer.indexOf(
-        firstSeparatorByte,
-        from = nextPossibleMatch)
+      val possibleMatchPos = buffer
+        .indexOf(firstSeparatorByte, from = nextPossibleMatch)
       if (possibleMatchPos > maximumLineBytes)
         ctx.fail(new FramingException(
           s"Read ${buffer.size} bytes " +

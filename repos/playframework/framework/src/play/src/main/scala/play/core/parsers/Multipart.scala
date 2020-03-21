@@ -48,35 +48,26 @@ object Multipart {
         boundary <- value
       } yield boundary
 
-      maybeBoundary
-        .map { boundary =>
-          val multipartFlow = Flow[ByteString]
-            .transform(() =>
-              new BodyPartParser(
-                boundary,
-                maxMemoryBufferSize,
-                maxHeaderBuffer))
-            .splitWhen(_.isLeft)
-            .prefixAndTail(1)
-            .map {
-              case (Seq(Left(part: FilePart[_])), body) =>
-                part.copy[Source[ByteString, _]](ref = body.collect {
-                  case Right(bytes) => bytes
-                })
-              case (Seq(Left(other)), ignored) =>
-                // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
-                // before it progresses onto the next element
-                ignored.runWith(Sink.cancelled)
-                other.asInstanceOf[Part[Nothing]]
-            }
-            .concatSubstreams
+      maybeBoundary.map { boundary =>
+        val multipartFlow = Flow[ByteString].transform(() =>
+          new BodyPartParser(boundary, maxMemoryBufferSize, maxHeaderBuffer))
+          .splitWhen(_.isLeft).prefixAndTail(1).map {
+            case (Seq(Left(part: FilePart[_])), body) =>
+              part.copy[Source[ByteString, _]](ref = body.collect {
+                case Right(bytes) => bytes
+              })
+            case (Seq(Left(other)), ignored) =>
+              // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
+              // before it progresses onto the next element
+              ignored.runWith(Sink.cancelled)
+              other.asInstanceOf[Part[Nothing]]
+          }.concatSubstreams
 
-          partHandler.through(multipartFlow)
+        partHandler.through(multipartFlow)
 
-        }
-        .getOrElse {
-          Accumulator.done(createBadResult("Missing boundary header")(request))
-        }
+      }.getOrElse {
+        Accumulator.done(createBadResult("Missing boundary header")(request))
+      }
     }
 
   /**
@@ -93,10 +84,9 @@ object Multipart {
       partParser(maxMemoryBufferSize) {
         val handleFileParts = Flow[Part[Source[ByteString, _]]].mapAsync(1) {
           case filePart: FilePart[Source[ByteString, _]] =>
-            filePartHandler(FileInfo(
-              filePart.key,
-              filePart.filename,
-              filePart.contentType)).run(filePart.ref)
+            filePartHandler(
+              FileInfo(filePart.key, filePart.filename, filePart.contentType))
+              .run(filePart.ref)
           case other: Part[Nothing] => Future.successful(other)
         }
 
@@ -116,12 +106,9 @@ object Multipart {
 
             parseError orElse bufferExceededError getOrElse {
               Future.successful(Right(MultipartFormData(
-                parts
-                  .collect { case dp: DataPart => dp }
-                  .groupBy(_.key)
-                  .map {
-                    case (key, partValues) => key -> partValues.map(_.value)
-                  },
+                parts.collect { case dp: DataPart => dp }.groupBy(_.key).map {
+                  case (key, partValues) => key -> partValues.map(_.value)
+                },
                 parts.collect { case fp: FilePart[A] => fp },
                 parts.collect { case bad: BadPart    => bad }
               )))
@@ -192,18 +179,13 @@ object Multipart {
       val KeyValue = """^([a-zA-Z_0-9]+)="?(.*?)"?$""".r
 
       for {
-        values <- headers
-          .get("content-disposition")
-          .map(
-            split(_)
-              .map(_.trim)
-              .map {
-                // unescape escaped quotes
-                case KeyValue(key, v) =>
-                  (key.trim, v.trim.replaceAll("""\\"""", "\""))
-                case key => (key.trim, "")
-              }
-              .toMap)
+        values <- headers.get("content-disposition")
+          .map(split(_).map(_.trim).map {
+            // unescape escaped quotes
+            case KeyValue(key, v) =>
+              (key.trim, v.trim.replaceAll("""\\"""", "\""))
+            case key => (key.trim, "")
+          }.toMap)
 
         _ <- values.get("form-data")
         partName <- values.get("name")
@@ -219,16 +201,11 @@ object Multipart {
       val KeyValue = """^([a-zA-Z_0-9]+)="(.*)"$""".r
 
       for {
-        values <- headers
-          .get("content-disposition")
-          .map(
-            _.split(";")
-              .map(_.trim)
-              .map {
-                case KeyValue(key, v) => (key.trim, v.trim)
-                case key              => (key.trim, "")
-              }
-              .toMap)
+        values <- headers.get("content-disposition")
+          .map(_.split(";").map(_.trim).map {
+            case KeyValue(key, v) => (key.trim, v.trim)
+            case key              => (key.trim, "")
+          }.toMap)
         _ <- values.get("form-data")
         partName <- values.get("name")
       } yield partName
@@ -239,9 +216,9 @@ object Multipart {
       msg: String,
       status: Int = BAD_REQUEST): RequestHeader => Future[Either[Result, A]] = {
     request =>
-      Play.privateMaybeApplication.fold(Future.successful(Left(
-        Results.Status(status): Result)))(
-        _.errorHandler.onClientError(request, status, msg).map(Left(_)))
+      Play.privateMaybeApplication
+        .fold(Future.successful(Left(Results.Status(status): Result)))(
+          _.errorHandler.onClientError(request, status, msg).map(Left(_)))
   }
 
   private type RawPart = Either[Part[Unit], ByteString]
@@ -286,12 +263,8 @@ object Multipart {
       array(1) = '\n'.toByte
       array(2) = '-'.toByte
       array(3) = '-'.toByte
-      System.arraycopy(
-        boundary.getBytes("US-ASCII"),
-        0,
-        array,
-        4,
-        boundary.length)
+      System
+        .arraycopy(boundary.getBytes("US-ASCII"), 0, array, 4, boundary.length)
       array
     }
 
@@ -483,9 +456,8 @@ object Multipart {
         } else { fail("Unexpected boundary") }
       } catch {
         case NotEnoughDataException =>
-          if (memoryBufferSize + (
-                input.length - partStart - needle.length
-              ) > maxMemoryBufferSize) {
+          if (memoryBufferSize + (input.length - partStart - needle
+                .length) > maxMemoryBufferSize) {
             bufferExceeded("Memory buffer full on part " + partName)
           }
           continue(input, partStart)(

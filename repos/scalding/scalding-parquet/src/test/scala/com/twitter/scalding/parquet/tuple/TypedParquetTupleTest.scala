@@ -25,16 +25,13 @@ class TypedParquetTupleTest
         .arg("output", "output1")
         .sink[SampleClassB](TypedParquet[SampleClassB](Seq("output1"))) {
           toMap(_) shouldBe toMap(values)
-        }
-        .run
+        }.run
 
       HadoopPlatformJobTest(new ReadWithFilterPredicateJob(_), cluster)
-        .arg("input", "output1")
-        .arg("output", "output2")
+        .arg("input", "output1").arg("output", "output2")
         .sink[Boolean]("output2") {
           toMap(_) shouldBe toMap(values.filter(_.string == "B1").map(_.a.bool))
-        }
-        .run
+        }.run
     }
   }
 }
@@ -127,9 +124,8 @@ class WriteToTypedParquetTupleJob(args: Args) extends Job(args) {
   * To test typed parquet tuple can bse used as source and apply filter predicate and push down correctly
   */
 class ReadWithFilterPredicateJob(args: Args) extends Job(args) {
-  val fp: FilterPredicate = FilterApi.eq(
-    binaryColumn("string"),
-    Binary.fromString("B1"))
+  val fp: FilterPredicate = FilterApi
+    .eq(binaryColumn("string"), Binary.fromString("B1"))
 
   val inputPath = args.required("input")
   val outputPath = args.required("output")

@@ -33,8 +33,8 @@ class KryoSerializerDistributedSuite
       .set("spark.kryo.registrator", classOf[AppJarRegistrator].getName)
       .set("spark.task.maxFailures", "1")
 
-    val jar = TestUtils.createJarWithClasses(List(
-      AppJarRegistrator.customClassName))
+    val jar = TestUtils
+      .createJarWithClasses(List(AppJarRegistrator.customClassName))
     conf.setJars(List(jar.getPath))
 
     sc = new SparkContext("local-cluster[2,1,1024]", "test", conf)
@@ -44,8 +44,7 @@ class KryoSerializerDistributedSuite
       Utils.getContextOrSparkClassLoader)
     SparkEnv.get.serializer.setDefaultClassLoader(loader)
 
-    val cachedRDD = sc
-      .parallelize((0 until 10).map((_, new MyCustomClass)), 3)
+    val cachedRDD = sc.parallelize((0 until 10).map((_, new MyCustomClass)), 3)
       .cache()
 
     // Randomly mix the keys so that the join below will require a shuffle with each partition

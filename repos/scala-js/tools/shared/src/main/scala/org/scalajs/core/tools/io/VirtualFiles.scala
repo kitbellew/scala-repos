@@ -167,8 +167,7 @@ trait VirtualSerializedScalaJSIRFile
     val stream = inputStream
     try {
       val (version, info) = ir.InfoSerializers.deserializeWithVersion(stream)
-      val tree = ir.Serializers
-        .deserialize(stream, version)
+      val tree = ir.Serializers.deserialize(stream, version)
         .asInstanceOf[ir.Trees.ClassDef]
       (info, tree)
     } catch {
@@ -212,12 +211,9 @@ trait VirtualJarFile extends VirtualBinaryFile {
       mkResult: (ZipEntry, InputStream) => T): Seq[T] = {
     val stream = new ZipInputStream(inputStream)
     try {
-      Iterator
-        .continually(stream.getNextEntry())
-        .takeWhile(_ != null)
+      Iterator.continually(stream.getNextEntry()).takeWhile(_ != null)
         .filter(entry => cond(entry.getName))
-        .map(entry => mkResult(entry, stream))
-        .toList
+        .map(entry => mkResult(entry, stream)).toList
     } finally { stream.close() }
   }
 

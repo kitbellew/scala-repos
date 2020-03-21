@@ -63,8 +63,7 @@ class Weights(underlying: Array[Double])
   def toChannelBuffer =
     ChannelBuffers.wrappedBuffer(toChannelBuffers.toArray: _*)
   def toChannelBuffers =
-    Weights.WEIGHTS_CB +: underlying
-      .map(w => StringToChannelBuffer(w.toString))
+    Weights.WEIGHTS_CB +: underlying.map(w => StringToChannelBuffer(w.toString))
       .toSeq
   def command = Weights.WEIGHTS
 }

@@ -30,9 +30,10 @@ class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
     //#file-source
     import akka.stream.scaladsl._
     //#file-source
-    Thread.sleep(
-      0
-    ) // needs a statement here for valid syntax and to avoid "unused" warnings
+    Thread
+      .sleep(
+        0
+      ) // needs a statement here for valid syntax and to avoid "unused" warnings
   }
 
   {
@@ -48,19 +49,14 @@ class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
     //#file-source
 
-    val foreach: Future[IOResult] = FileIO
-      .fromFile(file)
-      .to(Sink.ignore)
-      .run()
+    val foreach: Future[IOResult] = FileIO.fromFile(file).to(Sink.ignore).run()
     //#file-source
   }
 
   "configure dispatcher in code" in {
     //#custom-dispatcher-code
-    FileIO
-      .fromFile(file)
-      .withAttributes(ActorAttributes.dispatcher(
-        "custom-blocking-io-dispatcher"))
+    FileIO.fromFile(file).withAttributes(ActorAttributes.dispatcher(
+      "custom-blocking-io-dispatcher"))
     //#custom-dispatcher-code
   }
 }

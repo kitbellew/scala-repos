@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers
+package com.twitter.scalding.serialization.macros.impl.ordered_serialization
+  .runtime_helpers
 
 import com.twitter.scalding.serialization.{
   EquivSerialization,

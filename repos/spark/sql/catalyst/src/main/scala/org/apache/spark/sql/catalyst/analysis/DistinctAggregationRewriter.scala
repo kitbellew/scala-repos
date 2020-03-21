@@ -120,8 +120,7 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
     }
 
     // Extract distinct aggregate expressions.
-    val distinctAggGroups = aggExpressions
-      .filter(_.isDistinct)
+    val distinctAggGroups = aggExpressions.filter(_.isDistinct)
       .groupBy(_.aggregateFunction.children.toSet)
 
     // Aggregation strategy can handle the query with single distinct
@@ -146,8 +145,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
       // Setup unique distinct aggregate children.
       val distinctAggChildren = distinctAggGroups.keySet.flatten.toSeq.distinct
-      val distinctAggChildAttrMap = distinctAggChildren.map(
-        expressionAttributePair)
+      val distinctAggChildAttrMap = distinctAggChildren
+        .map(expressionAttributePair)
       val distinctAggChildAttrs = distinctAggChildAttrMap.map(_._2)
 
       // Setup expand & aggregate operators for distinct aggregate expressions.
@@ -176,10 +175,10 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
       // Setup expand for the 'regular' aggregate expressions.
       val regularAggExprs = aggExpressions.filter(!_.isDistinct)
-      val regularAggChildren =
-        regularAggExprs.flatMap(_.aggregateFunction.children).distinct
-      val regularAggChildAttrMap = regularAggChildren.map(
-        expressionAttributePair)
+      val regularAggChildren = regularAggExprs
+        .flatMap(_.aggregateFunction.children).distinct
+      val regularAggChildAttrMap = regularAggChildren
+        .map(expressionAttributePair)
 
       // Setup aggregates for 'regular' aggregate expressions.
       val regularGroupId = Literal(0)
@@ -253,16 +252,13 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
       val patchedAggExpressions = a.aggregateExpressions.map { e =>
         e.transformDown {
-            case e: Expression =>
-              // The same GROUP BY clauses can have different forms (different names for instance) in
-              // the groupBy and aggregate expressions of an aggregate. This makes a map lookup
-              // tricky. So we do a linear search for a semantically equal group by expression.
-              groupByMap
-                .find(ge => e.semanticEquals(ge._1))
-                .map(_._2)
-                .getOrElse(transformations.getOrElse(e, e))
-          }
-          .asInstanceOf[NamedExpression]
+          case e: Expression =>
+            // The same GROUP BY clauses can have different forms (different names for instance) in
+            // the groupBy and aggregate expressions of an aggregate. This makes a map lookup
+            // tricky. So we do a linear search for a semantically equal group by expression.
+            groupByMap.find(ge => e.semanticEquals(ge._1)).map(_._2)
+              .getOrElse(transformations.getOrElse(e, e))
+        }.asInstanceOf[NamedExpression]
       }
       Aggregate(groupByAttrs, patchedAggExpressions, firstAggregate)
     } else { a }

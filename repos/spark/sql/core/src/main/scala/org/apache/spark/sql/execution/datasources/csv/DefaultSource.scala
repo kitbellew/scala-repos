@@ -53,8 +53,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     val csvOptions = new CSVOptions(options)
 
     // TODO: Move filtering.
-    val paths = files
-      .filterNot(_.getPath.getName startsWith "_")
+    val paths = files.filterNot(_.getPath.getName startsWith "_")
       .map(_.getPath.toString)
     val rdd = baseRdd(sqlContext, csvOptions, paths)
     val firstLine = findFirstLine(csvOptions, rdd)
@@ -155,8 +154,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   private def findFirstLine(options: CSVOptions, rdd: RDD[String]): String = {
     if (options.isCommentSet) {
       val comment = options.comment.toString
-      rdd
-        .filter { line => line.trim.nonEmpty && !line.startsWith(comment) }
+      rdd.filter { line => line.trim.nonEmpty && !line.startsWith(comment) }
         .first()
     } else { rdd.filter { line => line.trim.nonEmpty }.first() }
   }

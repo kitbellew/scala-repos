@@ -38,8 +38,8 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
     val futures = (1 to 20).map { _ =>
       Future {
         GeneratePredicate.generate(EqualTo(Literal(1), Literal(1)))
-        GenerateMutableProjection.generate(
-          EqualTo(Literal(1), Literal(1)) :: Nil)
+        GenerateMutableProjection
+          .generate(EqualTo(Literal(1), Literal(1)) :: Nil)
         GenerateOrdering.generate(Add(Literal(1), Literal(1)).asc :: Nil)
       }
     }
@@ -52,8 +52,8 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
     val length = 5000
     val expressions = List.fill(length)(EqualTo(Literal(1), Literal(1)))
     val plan = GenerateMutableProjection.generate(expressions)()
-    val actual = plan(new GenericMutableRow(length)).toSeq(expressions.map(
-      _.dataType))
+    val actual = plan(new GenericMutableRow(length))
+      .toSeq(expressions.map(_.dataType))
     val expected = Seq.fill(length)(true)
 
     if (!checkResult(actual, expected)) {
@@ -69,9 +69,8 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
 
     // Generate an individual case
     def generateCase(n: Int): (Expression, Expression) = {
-      val condition = (1 to clauses)
-        .map(c =>
-          EqualTo(BoundReference(0, StringType, false), Literal(s"$c:$n")))
+      val condition = (1 to clauses).map(c =>
+        EqualTo(BoundReference(0, StringType, false), Literal(s"$c:$n")))
         .reduceLeft[Expression]((l, r) => Or(l, r))
       (condition, Literal(n))
     }

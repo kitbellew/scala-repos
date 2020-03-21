@@ -32,19 +32,14 @@ class MultilayerPerceptronClassifierSuite
 
   test(
     "XOR function learning as binary classification problem with two outputs.") {
-    val dataFrame = sqlContext
-      .createDataFrame(Seq(
-        (Vectors.dense(0.0, 0.0), 0.0),
-        (Vectors.dense(0.0, 1.0), 1.0),
-        (Vectors.dense(1.0, 0.0), 1.0),
-        (Vectors.dense(1.0, 1.0), 0.0)))
-      .toDF("features", "label")
+    val dataFrame = sqlContext.createDataFrame(Seq(
+      (Vectors.dense(0.0, 0.0), 0.0),
+      (Vectors.dense(0.0, 1.0), 1.0),
+      (Vectors.dense(1.0, 0.0), 1.0),
+      (Vectors.dense(1.0, 1.0), 0.0))).toDF("features", "label")
     val layers = Array[Int](2, 5, 2)
-    val trainer = new MultilayerPerceptronClassifier()
-      .setLayers(layers)
-      .setBlockSize(1)
-      .setSeed(11L)
-      .setMaxIter(100)
+    val trainer = new MultilayerPerceptronClassifier().setLayers(layers)
+      .setBlockSize(1).setSeed(11L).setMaxIter(100)
     val model = trainer.fit(dataFrame)
     val result = model.transform(dataFrame)
     val predictionAndLabels = result.select("prediction", "label").collect()
@@ -79,29 +74,22 @@ class MultilayerPerceptronClassifierSuite
     val numClasses = 3
     val numIterations = 100
     val layers = Array[Int](4, 5, 4, numClasses)
-    val trainer = new MultilayerPerceptronClassifier()
-      .setLayers(layers)
-      .setBlockSize(1)
-      .setSeed(11L) // currently this seed is ignored
+    val trainer = new MultilayerPerceptronClassifier().setLayers(layers)
+      .setBlockSize(1).setSeed(11L) // currently this seed is ignored
       .setMaxIter(numIterations)
     val model = trainer.fit(dataFrame)
     val numFeatures = dataFrame.select("features").first().getAs[Vector](0).size
     assert(model.numFeatures === numFeatures)
-    val mlpPredictionAndLabels = model
-      .transform(dataFrame)
-      .select("prediction", "label")
-      .rdd
-      .map { case Row(p: Double, l: Double) => (p, l) }
+    val mlpPredictionAndLabels = model.transform(dataFrame)
+      .select("prediction", "label").rdd.map {
+        case Row(p: Double, l: Double) => (p, l)
+      }
     // train multinomial logistic regression
-    val lr = new LogisticRegressionWithLBFGS()
-      .setIntercept(true)
+    val lr = new LogisticRegressionWithLBFGS().setIntercept(true)
       .setNumClasses(numClasses)
-    lr.optimizer
-      .setRegParam(0.0)
-      .setNumIterations(numIterations)
+    lr.optimizer.setRegParam(0.0).setNumIterations(numIterations)
     val lrModel = lr.run(rdd)
-    val lrPredictionAndLabels = lrModel
-      .predict(rdd.map(_.features))
+    val lrPredictionAndLabels = lrModel.predict(rdd.map(_.features))
       .zip(rdd.map(_.label))
     // MLP's predictions should not differ a lot from LR's.
     val lrMetrics = new MulticlassMetrics(lrPredictionAndLabels)

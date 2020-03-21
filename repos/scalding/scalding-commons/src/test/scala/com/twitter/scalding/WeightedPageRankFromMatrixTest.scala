@@ -49,12 +49,9 @@ class WeightedPageRankFromMatrixSpec extends WordSpec with Matchers {
 
     val expectedSolution = Array(0.28, 0.173333, 0.173333, 0.173333, 0.2)
 
-    JobTest(new WeightedPageRankFromMatrix(_))
-      .arg("d", d.toString)
-      .arg("n", n.toString)
-      .arg("convergenceThreshold", "0.0001")
-      .arg("maxIterations", "1")
-      .arg("currentIteration", "0")
+    JobTest(new WeightedPageRankFromMatrix(_)).arg("d", d.toString)
+      .arg("n", n.toString).arg("convergenceThreshold", "0.0001")
+      .arg("maxIterations", "1").arg("currentIteration", "0")
       .arg("rootDir", "root")
       .source(TypedTsv[(Int, Int, Double)]("root/edges"), edges)
       .source(TypedTsv[(Int, Double)]("root/onesVector"), onesVector)
@@ -69,32 +66,25 @@ class WeightedPageRankFromMatrixSpec extends WordSpec with Matchers {
         outputMap((2 -> 4)) shouldBe 0.13333 +- 0.00001
         outputMap((3 -> 4)) shouldBe 0.26666 +- 0.00001
         outputMap((4 -> 0)) shouldBe 0.4
-      }
-      .sink[(Int, Double)](Tsv("root/constants/priorVector")) { outputBuffer =>
+      }.sink[(Int, Double)](Tsv("root/constants/priorVector")) { outputBuffer =>
         outputBuffer should have size 5
         val expectedValue = ((1 - d) / 2) * d
         assertVectorsEqual(
           new Array[Double](5).map { v => expectedValue },
           outputBuffer.map(_._2).toArray)
-      }
-      .sink[(Int, Double)](Tsv("root/iterations/1")) { outputBuffer =>
+      }.sink[(Int, Double)](Tsv("root/iterations/1")) { outputBuffer =>
         outputBuffer should have size 5
         assertVectorsEqual(
           expectedSolution,
           outputBuffer.map(_._2).toArray,
           0.00001)
-      }
-      .typedSink(TypedTsv[Double]("root/diff")) { outputBuffer =>
+      }.typedSink(TypedTsv[Double]("root/diff")) { outputBuffer =>
         outputBuffer should have size 1
 
-        val expectedDiff = expectedSolution
-          .zip(iterationZeroVector.map(_._2))
-          .map { case (a, b) => math.abs(a - b) }
-          .sum
+        val expectedDiff = expectedSolution.zip(iterationZeroVector.map(_._2))
+          .map { case (a, b) => math.abs(a - b) }.sum
         outputBuffer.head shouldBe expectedDiff +- 0.00001
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   private def assertVectorsEqual(

@@ -167,12 +167,11 @@ trait DeathWatchSpec {
               super.handleFailure(context, child, cause, stats, children)
             }
           }
-        val supervisor = system.actorOf(
-          Props(new Supervisor(strategy)).withDeploy(Deploy.local))
+        val supervisor = system
+          .actorOf(Props(new Supervisor(strategy)).withDeploy(Deploy.local))
 
-        val failed = Await.result(
-          (supervisor ? Props.empty).mapTo[ActorRef],
-          timeout.duration)
+        val failed = Await
+          .result((supervisor ? Props.empty).mapTo[ActorRef], timeout.duration)
         val brother = Await.result(
           (supervisor ? Props(new Actor {
             context.watch(failed)
@@ -225,8 +224,7 @@ trait DeathWatchSpec {
         def receive = Actor.emptyBehavior
       }))
 
-      testActor
-        .asInstanceOf[InternalActorRef]
+      testActor.asInstanceOf[InternalActorRef]
         .sendSystemMessage(DeathWatchNotification(
           subject,
           existenceConfirmed = true,
@@ -248,9 +246,8 @@ trait DeathWatchSpec {
       }
 
       val t1, t2 = TestLatch()
-      val w = system.actorOf(
-        Props(new Watcher).withDeploy(Deploy.local),
-        "myDearWatcher")
+      val w = system
+        .actorOf(Props(new Watcher).withDeploy(Deploy.local), "myDearWatcher")
       val p = TestProbe()
       w ! W(p.ref)
       w ! Latches(t1, t2)

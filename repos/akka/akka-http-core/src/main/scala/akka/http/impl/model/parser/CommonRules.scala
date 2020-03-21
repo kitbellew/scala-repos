@@ -202,8 +202,8 @@ private[parser] trait CommonRules {
   def challenge =
     rule {
       `challenge-or-credentials` ~> { (scheme, params) ⇒
-        val (realms, otherParams) = params.partition(
-          _._1 equalsIgnoreCase "realm")
+        val (realms, otherParams) = params
+          .partition(_._1 equalsIgnoreCase "realm")
         HttpChallenge(
           scheme,
           realms.headOption.map(_._2).getOrElse(""),
@@ -326,8 +326,8 @@ private[parser] trait CommonRules {
   def `domain-value` =
     rule {
       optional('.') ~ capture(
-        oneOrMore(oneOrMore(oneOrMore(ALPHANUM)).separatedBy('-')).separatedBy(
-          '.')) ~ OWS
+        oneOrMore(oneOrMore(oneOrMore(ALPHANUM)).separatedBy('-'))
+          .separatedBy('.')) ~ OWS
     }
 
   def `path-av` =

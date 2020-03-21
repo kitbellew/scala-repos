@@ -249,10 +249,11 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
       } else Nil
 
     renderAll(
-      CurrentScreen.is.map(s =>
-        Text(
-          (s.myScreenNum + 1).toString
-        )), //currentScreenNumber: Box[NodeSeq],
+      CurrentScreen.is
+        .map(s =>
+          Text(
+            (s.myScreenNum + 1).toString
+          )), //currentScreenNumber: Box[NodeSeq],
       Full(Text(screenCount.toString)), //screenCount: Box[NodeSeq],
       wizardTop, // wizardTop: Box[Elem],
       theScreen.screenTop, //screenTop: Box[Elem],
@@ -590,8 +591,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     }
 
     override protected def testWasSet(name: String, bn: String): Boolean = {
-      WizardVarHandler.get(name).isDefined || (WizardVarHandler.get(
-        bn) openOr false)
+      WizardVarHandler.get(name).isDefined || (WizardVarHandler
+        .get(bn) openOr false)
     }
 
     /**

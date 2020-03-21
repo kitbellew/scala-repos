@@ -23,8 +23,8 @@ class KindProjectorSimplifyTypeProjectionTest
   override protected def setUp(): Unit = {
     super.setUp()
 
-    val defaultProfile =
-      ScalaCompilerConfiguration.instanceIn(getProject).defaultProfile
+    val defaultProfile = ScalaCompilerConfiguration.instanceIn(getProject)
+      .defaultProfile
     val newSettings = defaultProfile.getSettings
     newSettings.plugins :+= "kind-projector"
     defaultProfile.setSettings(newSettings)

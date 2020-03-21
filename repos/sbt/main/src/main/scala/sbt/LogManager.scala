@@ -169,8 +169,8 @@ object LogManager {
       private[this] val ref =
         new java.lang.ref.WeakReference(s.globalLogging.full)
       private[this] def slog: Logger =
-        Option(ref.get) getOrElse sys.error(
-          "Settings logger used after project was loaded.")
+        Option(ref.get) getOrElse sys
+          .error("Settings logger used after project was loaded.")
 
       override val ansiCodesSupported = slog.ansiCodesSupported
       override def trace(t: => Throwable) = slog.trace(t)

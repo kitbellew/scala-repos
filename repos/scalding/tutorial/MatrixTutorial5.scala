@@ -34,9 +34,7 @@ class ComputeJaccardJob(args: Args) extends Job(args) {
 
   val unionMat = xMat + yMat - intersectMat
   //We are guaranteed to have Double both in the intersection and in the union matrix
-  intersectMat
-    .zip(unionMat)
-    .mapValues(pair => pair._1 / pair._2)
+  intersectMat.zip(unionMat).mapValues(pair => pair._1 / pair._2)
     .write(Tsv(args("output")))
 
 }

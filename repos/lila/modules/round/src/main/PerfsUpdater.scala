@@ -21,9 +21,8 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
       black: User,
       resetGameRatings: Boolean = false): Funit =
     PerfPicker.main(game) ?? { mainPerf =>
-      (
-        game.rated && game.finished && game.accountable && !white.lame && !black.lame
-      ) ?? {
+      (game.rated && game.finished && game.accountable && !white.lame && !black
+        .lame) ?? {
         val ratingsW = mkRatings(white.perfs)
         val ratingsB = mkRatings(black.perfs)
         val result = resultOf(game)

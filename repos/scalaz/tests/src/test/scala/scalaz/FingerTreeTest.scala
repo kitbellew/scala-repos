@@ -58,36 +58,32 @@ object FingerTreeTest extends SpecLite {
     (tree: SequenceTree[Int], index: Int) =>
       val asStream = tree.toStream
       val splitTree = tree.split(_ > index)
-      (splitTree._1.toStream, splitTree._2.toStream) must_=== (asStream.splitAt(
-        index))
+      (splitTree._1.toStream, splitTree._2.toStream) must_=== (asStream
+        .splitAt(index))
   }
 
   "replacing last element works correctly" ! forAll {
     (tree: SequenceTree[Int], x: Int) =>
-      !tree.isEmpty ==> (
-        (tree :-| x).toStream must_=== (tree.toStream.init :+ x)
-      )
+      !tree.isEmpty ==> ((tree :-| x).toStream must_=== (tree.toStream
+        .init :+ x))
   }
 
   "replacing first element works correctly" ! forAll {
     (tree: SequenceTree[Int], x: Int) =>
-      !tree.isEmpty ==> (
-        (x |-: tree).toStream must_=== (x +: tree.toStream.tail)
-      )
+      !tree.isEmpty ==> ((x |-: tree).toStream must_=== (x +: tree.toStream
+        .tail))
   }
 
   "head and tail work correctly" ! forAll { (tree: SequenceTree[Int]) =>
     val asStream = tree.toStream
-    !tree.isEmpty ==> ((tree.head === tree.toStream.head) && (
-      tree.tail.toStream === tree.toStream.tail
-    ))
+    !tree.isEmpty ==> ((tree.head === tree.toStream.head) && (tree.tail
+      .toStream === tree.toStream.tail))
   }
 
   "last and init work correctly" ! forAll { (tree: SequenceTree[Int]) =>
     val asStream = tree.toStream
-    !tree.isEmpty ==> ((tree.last === tree.toStream.last) && (
-      tree.init.toStream === tree.toStream.init
-    ))
+    !tree.isEmpty ==> ((tree.last === tree.toStream.last) && (tree.init
+      .toStream === tree.toStream.init))
   }
 
   "foldLeft snoc is identity" ! forAll { (tree: SequenceTree[Int]) =>
@@ -97,8 +93,7 @@ object FingerTreeTest extends SpecLite {
   }
 
   "foldLeft cons is reverse" ! forAll { (tree: SequenceTree[Int]) =>
-    tree
-      .foldLeft(FingerTree.empty(SizeReducer[Int]))((x, y) => y +: x)
+    tree.foldLeft(FingerTree.empty(SizeReducer[Int]))((x, y) => y +: x)
       .toStream must_== (tree.toStream.reverse)
   }
 
@@ -106,8 +101,8 @@ object FingerTreeTest extends SpecLite {
 
     "apply effects in order" in {
       val s: Writer[String, FingerTree[Int, Int]] = streamToTree(
-        intStream.take(5)).traverseTree[Writer[String, ?], Int, Int](x =>
-        Writer(x.toString, x))
+        intStream.take(5))
+        .traverseTree[Writer[String, ?], Int, Int](x => Writer(x.toString, x))
       s.run must_=== ("12345", streamToTree(intStream.take(5)))
     }
 

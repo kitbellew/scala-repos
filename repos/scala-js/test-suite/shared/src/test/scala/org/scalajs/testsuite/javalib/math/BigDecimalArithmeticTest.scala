@@ -1333,16 +1333,13 @@ class BigDecimalArithmeticTest {
     assertEquals(result.scale(), 0)
     assertEquals(result.precision(), 1)
     `val` = BigDecimal.valueOf(5.43445663479765)
-    `val` = `val`
-      .setScale(`val`.scale() + 1, RoundingMode.CEILING)
+    `val` = `val`.setScale(`val`.scale() + 1, RoundingMode.CEILING)
       .round(new MathContext(1, RoundingMode.CEILING))
     `val` = BigDecimal.valueOf(5.4344566347976)
-    `val` = `val`
-      .setScale(`val`.scale() + 2, RoundingMode.CEILING)
+    `val` = `val`.setScale(`val`.scale() + 2, RoundingMode.CEILING)
       .round(new MathContext(1, RoundingMode.CEILING))
     var test = BigDecimal.valueOf(12.4344566347976)
-    test = test
-      .setScale(test.scale() + 1, RoundingMode.CEILING)
+    test = test.setScale(test.scale() + 1, RoundingMode.CEILING)
       .round(new MathContext(1, RoundingMode.CEILING))
   }
 

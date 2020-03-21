@@ -719,8 +719,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       if (length > 0)
         tasksupport.executeAndWaitResult(
           new CreateScanTree[U](0, size, z, op, splitter) mapResult { tree =>
-            tasksupport.executeAndWaitResult(
-              new ScanToArray(tree, z, op, targetarr))
+            tasksupport
+              .executeAndWaitResult(new ScanToArray(tree, z, op, targetarr))
           })
 
       // wrap the array into a parallel array

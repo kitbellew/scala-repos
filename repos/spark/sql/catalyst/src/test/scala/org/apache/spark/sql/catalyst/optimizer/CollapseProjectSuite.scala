@@ -35,35 +35,30 @@ class CollapseProjectSuite extends PlanTest {
   val testRelation = LocalRelation('a.int, 'b.int)
 
   test("collapse two deterministic, independent projects into one") {
-    val query = testRelation
-      .select(('a + 1).as('a_plus_1), 'b)
+    val query = testRelation.select(('a + 1).as('a_plus_1), 'b)
       .select('a_plus_1, ('b + 1).as('b_plus_1))
 
     val optimized = Optimize.execute(query.analyze)
     val correctAnswer = testRelation
-      .select(('a + 1).as('a_plus_1), ('b + 1).as('b_plus_1))
-      .analyze
+      .select(('a + 1).as('a_plus_1), ('b + 1).as('b_plus_1)).analyze
 
     comparePlans(optimized, correctAnswer)
   }
 
   test("collapse two deterministic, dependent projects into one") {
-    val query = testRelation
-      .select(('a + 1).as('a_plus_1), 'b)
+    val query = testRelation.select(('a + 1).as('a_plus_1), 'b)
       .select(('a_plus_1 + 1).as('a_plus_2), 'b)
 
     val optimized = Optimize.execute(query.analyze)
 
     val correctAnswer = testRelation
-      .select((('a + 1).as('a_plus_1) + 1).as('a_plus_2), 'b)
-      .analyze
+      .select((('a + 1).as('a_plus_1) + 1).as('a_plus_2), 'b).analyze
 
     comparePlans(optimized, correctAnswer)
   }
 
   test("do not collapse nondeterministic projects") {
-    val query = testRelation
-      .select(Rand(10).as('rand))
+    val query = testRelation.select(Rand(10).as('rand))
       .select(('rand + 1).as('rand1), ('rand + 2).as('rand2))
 
     val optimized = Optimize.execute(query.analyze)
@@ -73,30 +68,24 @@ class CollapseProjectSuite extends PlanTest {
   }
 
   test("collapse two nondeterministic, independent projects into one") {
-    val query = testRelation
-      .select(Rand(10).as('rand))
+    val query = testRelation.select(Rand(10).as('rand))
       .select(Rand(20).as('rand2))
 
     val optimized = Optimize.execute(query.analyze)
 
-    val correctAnswer = testRelation
-      .select(Rand(20).as('rand2))
-      .analyze
+    val correctAnswer = testRelation.select(Rand(20).as('rand2)).analyze
 
     comparePlans(optimized, correctAnswer)
   }
 
   test(
     "collapse one nondeterministic, one deterministic, independent projects into one") {
-    val query = testRelation
-      .select(Rand(10).as('rand), 'a)
+    val query = testRelation.select(Rand(10).as('rand), 'a)
       .select(('a + 1).as('a_plus_1))
 
     val optimized = Optimize.execute(query.analyze)
 
-    val correctAnswer = testRelation
-      .select(('a + 1).as('a_plus_1))
-      .analyze
+    val correctAnswer = testRelation.select(('a + 1).as('a_plus_1)).analyze
 
     comparePlans(optimized, correctAnswer)
   }

@@ -91,8 +91,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     val context = getContext
     (context.isInstanceOf[ScInfixExpr] || context.isInstanceOf[ScMethodCall]) &&
     refName.endsWith("=") &&
-    !(refName.startsWith("=") || Seq("!=", "<=", ">=").contains(
-      refName) || refName.exists(_.isLetterOrDigit))
+    !(refName.startsWith("=") || Seq("!=", "<=", ">=")
+      .contains(refName) || refName.exists(_.isLetterOrDigit))
   }
 
   def isUnaryOperator = {
@@ -232,8 +232,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                 fun.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
             //add synthetic parameter
             if (!processor.isInstanceOf[CompletionProcessor]) {
-              val state: ResolveState = ResolveState
-                .initial()
+              val state: ResolveState = ResolveState.initial()
                 .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
               processor.execute(
                 ScalaPsiElementFactory
@@ -242,11 +241,11 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             }
           case ScalaResolveResult(named, subst)
               if call.applyOrUpdateElement.exists(_.isDynamic) &&
-                call.applyOrUpdateElement.get.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
+                call.applyOrUpdateElement.get
+                  .name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED =>
             //add synthetic parameter
             if (!processor.isInstanceOf[CompletionProcessor]) {
-              val state: ResolveState = ResolveState
-                .initial()
+              val state: ResolveState = ResolveState.initial()
                 .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
               processor.execute(
                 ScalaPsiElementFactory
@@ -257,15 +256,12 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             if (!processor.isInstanceOf[CompletionProcessor]) {
               fun.getParamByName(ref.refName, invocationCount - 1) match { //todo: why -1?
                 case Some(param) =>
-                  var state = ResolveState.initial
-                    .put(ScSubstitutor.key, subst)
+                  var state = ResolveState.initial.put(ScSubstitutor.key, subst)
                     .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
-                  if (!ScalaPsiUtil.memberNamesEquals(
-                        param.name,
-                        ref.refName)) {
-                    state = state.put(
-                      ResolverEnv.nameKey,
-                      param.deprecatedName.get)
+                  if (!ScalaPsiUtil
+                        .memberNamesEquals(param.name, ref.refName)) {
+                    state = state
+                      .put(ResolverEnv.nameKey, param.deprecatedName.get)
                   }
                   processor.execute(param, state)
                 case None =>
@@ -292,9 +288,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                     method.getParameterList.getParameters foreach { p =>
                       processor.execute(
                         p,
-                        ResolveState
-                          .initial()
-                          .put(ScSubstitutor.key, subst)
+                        ResolveState.initial().put(ScSubstitutor.key, subst)
                           .put(
                             CachesUtil.NAMED_PARAM_KEY,
                             java.lang.Boolean.TRUE))
@@ -328,8 +322,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
         secondaryConstructors: (ScClass) => Seq[ScFunction]) {
       ScType.extractClassType(tp) match {
         case Some((clazz, subst))
-            if !clazz
-              .isInstanceOf[ScTemplateDefinition] && clazz.isAnnotationType =>
+            if !clazz.isInstanceOf[ScTemplateDefinition] && clazz
+              .isAnnotationType =>
           if (!baseProcessor.isInstanceOf[CompletionProcessor]) {
             for (method <- clazz.getMethods) {
               method match {
@@ -368,8 +362,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
               for (method <- methods) {
                 baseProcessor.execute(
                   method,
-                  ResolveState.initial
-                    .put(ScSubstitutor.key, subst)
+                  ResolveState.initial.put(ScSubstitutor.key, subst)
                     .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE))
               }
             }
@@ -399,19 +392,18 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             candidate match {
               case ScalaResolveResult(fun: ScFunction, subst: ScSubstitutor) =>
                 if (!baseProcessor.isInstanceOf[CompletionProcessor]) {
-                  fun.getParamByName(
-                    ref.refName,
-                    arguments.indexOf(args)) match {
+                  fun
+                    .getParamByName(
+                      ref.refName,
+                      arguments.indexOf(args)) match {
                     case Some(param) =>
                       var state = ResolveState.initial
                         .put(ScSubstitutor.key, subst)
                         .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
-                      if (!ScalaPsiUtil.memberNamesEquals(
-                            param.name,
-                            ref.refName)) {
-                        state = state.put(
-                          ResolverEnv.nameKey,
-                          param.deprecatedName.get)
+                      if (!ScalaPsiUtil
+                            .memberNamesEquals(param.name, ref.refName)) {
+                        state = state
+                          .put(ResolverEnv.nameKey, param.deprecatedName.get)
                       }
                       baseProcessor.execute(param, state)
                     case None =>
@@ -434,11 +426,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                     case Some(param) =>
                       baseProcessor.execute(
                         param,
-                        ResolveState.initial
-                          .put(ScSubstitutor.key, subst)
-                          .put(
-                            CachesUtil.NAMED_PARAM_KEY,
-                            java.lang.Boolean.TRUE))
+                        ResolveState.initial.put(ScSubstitutor.key, subst).put(
+                          CachesUtil.NAMED_PARAM_KEY,
+                          java.lang.Boolean.TRUE))
                     case None =>
                   }
                 else {
@@ -461,10 +451,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case s: ScSelfInvocation =>
         val clazz = ScalaPsiUtil.getContextOfType(s, true, classOf[ScClass])
         if (clazz == null) return
-        val tp: ScType = clazz
-          .asInstanceOf[ScClass]
-          .getType(TypingContext.empty)
-          .getOrElse(
+        val tp: ScType = clazz.asInstanceOf[ScClass]
+          .getType(TypingContext.empty).getOrElse(
             return
           )
         val typeArgs: Seq[ScTypeElement] = Seq.empty
@@ -479,13 +467,11 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
         }
         processConstructor(s, tp, typeArgs, arguments, secondaryConstructors)
       case constr: ScConstructor =>
-        val tp: ScType = constr.typeElement
-          .getType(TypingContext.empty)
+        val tp: ScType = constr.typeElement.getType(TypingContext.empty)
           .getOrElse(
             return
           )
-        val typeArgs: Seq[ScTypeElement] = constr.typeArgList
-          .map(_.typeArgs)
+        val typeArgs: Seq[ScTypeElement] = constr.typeArgList.map(_.typeArgs)
           .getOrElse(Seq())
         val arguments = constr.arguments
         val secondaryConstructors = (clazz: ScClass) =>
@@ -528,8 +514,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       for (param <- params) {
         processor.execute(
           param,
-          ResolveState.initial
-            .put(ScSubstitutor.key, subst)
+          ResolveState.initial.put(ScSubstitutor.key, subst)
             .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE))
       }
     }
@@ -594,8 +579,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case _                                 =>
     }
 
-    if (candidates.isEmpty || (!shape && candidates.forall(
-          !_.isApplicable())) ||
+    if (candidates.isEmpty || (!shape && candidates
+          .forall(!_.isApplicable())) ||
         (processor.isInstanceOf[CompletionProcessor] &&
         processor.asInstanceOf[CompletionProcessor].collectImplicits)) {
       processor match {
@@ -618,10 +603,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       reference: ScReferenceExpression,
       e: ScExpression,
       baseProcessor: BaseProcessor): BaseProcessor = {
-    val cachedClass = ScalaPsiManager
-      .instance(getProject)
-      .getCachedClass(getResolveScope, "scala.Dynamic")
-      .orNull
+    val cachedClass = ScalaPsiManager.instance(getProject)
+      .getCachedClass(getResolveScope, "scala.Dynamic").orNull
     if (cachedClass == null) return baseProcessor
     val dynamicType = ScDesignatorType(cachedClass)
 
@@ -685,14 +668,12 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
         for (res <- convertible.implicitMap()) { //todo: args?
           ProgressManager.checkCanceled()
           var state = ResolveState.initial.put(ImportUsed.key, res.importUsed)
-          state = state
-            .put(CachesUtil.IMPLICIT_FUNCTION, res.element)
+          state = state.put(CachesUtil.IMPLICIT_FUNCTION, res.element)
             .put(CachesUtil.IMPLICIT_TYPE, res.tp)
           res.getClazz match {
             case Some(cl: PsiClass) =>
-              state = state.put(
-                ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY,
-                cl)
+              state = state
+                .put(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY, cl)
             case _ =>
           }
           processor.processType(res.tp, e, state)
@@ -716,8 +697,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     }
     ProgressManager.checkCanceled()
     var state = ResolveState.initial.put(ImportUsed.key, res.importUsed)
-    state = state
-      .put(CachesUtil.IMPLICIT_FUNCTION, res.element)
+    state = state.put(CachesUtil.IMPLICIT_FUNCTION, res.element)
       .put(CachesUtil.IMPLICIT_TYPE, res.tp)
     res.getClazz match {
       case Some(cl: PsiClass) =>

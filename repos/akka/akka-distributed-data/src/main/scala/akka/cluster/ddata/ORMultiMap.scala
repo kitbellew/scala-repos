@@ -172,8 +172,8 @@ final class ORMultiMap[A] private[akka] (
       node: UniqueAddress,
       key: String,
       element: A): ORMultiMap[A] = {
-    val newUnderlying = underlying.updated(node, key, ORSet.empty[A])(
-      _.add(node, element))
+    val newUnderlying = underlying
+      .updated(node, key, ORSet.empty[A])(_.add(node, element))
     new ORMultiMap(newUnderlying)
   }
 
@@ -200,8 +200,8 @@ final class ORMultiMap[A] private[akka] (
       key: String,
       element: A): ORMultiMap[A] = {
     val newUnderlying = {
-      val u = underlying.updated(node, key, ORSet.empty[A])(
-        _.remove(node, element))
+      val u = underlying
+        .updated(node, key, ORSet.empty[A])(_.remove(node, element))
       u.get(key) match {
         case Some(s) if s.isEmpty ⇒ u.remove(node, key)
         case _ ⇒ u

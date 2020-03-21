@@ -81,8 +81,7 @@ private[spark] object JettyUtils extends Logging {
     // same origin, but allow framing for a specific named URI.
     // Example: spark.ui.allowFramingFrom = https://example.com/
     val allowFramingFrom = conf.getOption("spark.ui.allowFramingFrom")
-    val xFrameOptionsValue = allowFramingFrom
-      .map(uri => s"ALLOW-FROM $uri")
+    val xFrameOptionsValue = allowFramingFrom.map(uri => s"ALLOW-FROM $uri")
       .getOrElse("SAMEORIGIN")
 
     new HttpServlet {
@@ -95,18 +94,16 @@ private[spark] object JettyUtils extends Logging {
               "%s;charset=utf-8".format(servletParams.contentType))
             response.setStatus(HttpServletResponse.SC_OK)
             val result = servletParams.responder(request)
-            response.setHeader(
-              "Cache-Control",
-              "no-cache, no-store, must-revalidate")
+            response
+              .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
             response.setHeader("X-Frame-Options", xFrameOptionsValue)
             // scalastyle:off println
             response.getWriter.println(servletParams.extractFn(result))
             // scalastyle:on println
           } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)
-            response.setHeader(
-              "Cache-Control",
-              "no-cache, no-store, must-revalidate")
+            response
+              .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
             response.sendError(
               HttpServletResponse.SC_UNAUTHORIZED,
               "User is not authorized to access this page.")
@@ -182,9 +179,9 @@ private[spark] object JettyUtils extends Logging {
           response: HttpServletResponse): Unit = {
         beforeRedirect(request)
         // Make sure we don't end up with "//" in the middle
-        val newUrl = new URL(
-          new URL(request.getRequestURL.toString),
-          prefixedDestPath).toString
+        val newUrl =
+          new URL(new URL(request.getRequestURL.toString), prefixedDestPath)
+            .toString
         response.sendRedirect(newUrl)
       }
       // SPARK-5983 ensure TRACE is not supported
@@ -202,9 +199,8 @@ private[spark] object JettyUtils extends Logging {
       resourceBase: String,
       path: String): ServletContextHandler = {
     val contextHandler = new ServletContextHandler
-    contextHandler.setInitParameter(
-      "org.eclipse.jetty.servlet.Default.gzip",
-      "false")
+    contextHandler
+      .setInitParameter("org.eclipse.jetty.servlet.Default.gzip", "false")
     val staticHandler = new DefaultServlet
     val holder = new ServletHolder(staticHandler)
     Option(Utils.getSparkClassLoader.getResource(resourceBase)) match {
@@ -220,9 +216,7 @@ private[spark] object JettyUtils extends Logging {
 
   /** Add filters, if any, to the given list of ServletContextHandlers */
   def addFilters(handlers: Seq[ServletContextHandler], conf: SparkConf) {
-    val filters: Array[String] = conf
-      .get("spark.ui.filters", "")
-      .split(',')
+    val filters: Array[String] = conf.get("spark.ui.filters", "").split(',')
       .map(_.trim())
     filters.foreach {
       case filter: String =>
@@ -231,12 +225,8 @@ private[spark] object JettyUtils extends Logging {
           val holder: FilterHolder = new FilterHolder()
           holder.setClassName(filter)
           // Get any parameters for each filter
-          conf
-            .get("spark." + filter + ".params", "")
-            .split(',')
-            .map(_.trim())
-            .toSet
-            .foreach { param: String =>
+          conf.get("spark." + filter + ".params", "").split(',').map(_.trim())
+            .toSet.foreach { param: String =>
               if (!param.isEmpty) {
                 val parts = param.split("=")
                 if (parts.length == 2)
@@ -245,15 +235,12 @@ private[spark] object JettyUtils extends Logging {
             }
 
           val prefix = s"spark.$filter.param."
-          conf.getAll
-            .filter {
-              case (k, v) =>
-                k.length() > prefix.length() && k.startsWith(prefix)
-            }
-            .foreach {
-              case (k, v) =>
-                holder.setInitParameter(k.substring(prefix.length()), v)
-            }
+          conf.getAll.filter {
+            case (k, v) => k.length() > prefix.length() && k.startsWith(prefix)
+          }.foreach {
+            case (k, v) =>
+              holder.setInitParameter(k.substring(prefix.length()), v)
+          }
 
           val enumDispatcher = java.util.EnumSet.of(
             DispatcherType.ASYNC,

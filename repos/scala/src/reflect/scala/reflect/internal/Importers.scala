@@ -176,7 +176,8 @@ trait Importers {
         if (their == null) null
         else if (their == from.NoSymbol) NoSymbol
         else if (their.isRoot)
-          rootMirror.RootClass // !!! replace with actual mirror when we move importers to the mirror
+          rootMirror
+            .RootClass // !!! replace with actual mirror when we move importers to the mirror
         else {
           val isModuleClass = their.isModuleClass
           val isTparam = their.isTypeParameter && their.paramPos >= 0

@@ -33,8 +33,7 @@ class MulticlassClassificationEvaluatorSuite
 
   test("read/write") {
     val evaluator = new MulticlassClassificationEvaluator()
-      .setPredictionCol("myPrediction")
-      .setLabelCol("myLabel")
+      .setPredictionCol("myPrediction").setLabelCol("myLabel")
       .setMetricName("recall")
     testDefaultReadWrite(evaluator)
   }

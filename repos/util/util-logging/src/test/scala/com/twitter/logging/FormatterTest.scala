@@ -91,8 +91,8 @@ class FormatterTest extends WordSpec {
 
     "format a timestamp" in {
       assert(
-        utcFormatter.format(
-          record1) == "ERR [20080329-05:53:16.722] jobs: boo.\n")
+        utcFormatter
+          .format(record1) == "ERR [20080329-05:53:16.722] jobs: boo.\n")
     }
 
     "do lazy message evaluation" in {
@@ -113,8 +113,8 @@ class FormatterTest extends WordSpec {
 
     "format package names" in {
       assert(
-        utcFormatter.format(
-          record1) == "ERR [20080329-05:53:16.722] jobs: boo.\n")
+        utcFormatter
+          .format(record1) == "ERR [20080329-05:53:16.722] jobs: boo.\n")
       assert(
         fullPackageFormatter.format(record1) ==
           "ERR [20080329-05:53:16.722] com.example.jobs: boo.\n")
@@ -150,9 +150,8 @@ class FormatterTest extends WordSpec {
 
       def scrub(in: String) = {
         in.regexSub("""FormatterTest.scala:\d+""".r) { m =>
-            "FormatterTest.scala:NNN"
-          }
-          .regexSub("""FormatterTest\$[\w\\$]+""".r) { m => "FormatterTest$$" }
+          "FormatterTest.scala:NNN"
+        }.regexSub("""FormatterTest\$[\w\\$]+""".r) { m => "FormatterTest$$" }
       }
 
       "simple" in {

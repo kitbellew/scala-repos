@@ -38,14 +38,13 @@ object ActorFlow {
 
     val (outActor, publisher) = Source
       .actorRef[Out](bufferSize, overflowStrategy)
-      .toMat(Sink.asPublisher(false))(Keep.both)
-      .run()
+      .toMat(Sink.asPublisher(false))(Keep.both).run()
 
     Flow.fromSinkAndSource(
       Sink.actorRef(
         factory.actorOf(Props(new Actor {
-          val flowActor = context.watch(
-            context.actorOf(props(outActor), "flowActor"))
+          val flowActor = context
+            .watch(context.actorOf(props(outActor), "flowActor"))
 
           def receive = {
             case Status.Success(_) | Status.Failure(_) => flowActor ! PoisonPill

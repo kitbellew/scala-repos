@@ -14,9 +14,7 @@ object Test extends ScaladocModelTest {
     import access._
 
     // just need to check the member exists, access methods will throw an error if there's a problem
-    val base = rootPackage
-      ._package("scala")
-      ._package("test")
+    val base = rootPackage._package("scala")._package("test")
       ._package("scaladoc")
 
     // test1
@@ -53,11 +51,8 @@ object Test extends ScaladocModelTest {
           doc._value(day).resultType.refEntity(0)._1 == LinkToMember(
             doc._classMbr("Value"),
             doc),
-          doc
-            ._value(day)
-            .resultType
-            .refEntity(0)
-            ._1 + " == LinkToMember(" + doc.qualifiedName + ".Value)"
+          doc._value(day).resultType.refEntity(0)._1 + " == LinkToMember(" + doc
+            .qualifiedName + ".Value)"
         )
       }
     }
@@ -86,34 +81,20 @@ object Test extends ScaladocModelTest {
       for ((method, name, ref) <- expected) {
         assert(
           doc._method(method).valueParams(0)(0).resultType.name == name,
-          doc
-            ._method(method)
-            .valueParams(0)(0)
-            .resultType
+          doc._method(method).valueParams(0)(0).resultType
             .name + " == " + name + " (in " + doc + "." + method + ")"
         )
         assert(
           doc._method(method).valueParams(0)(0).resultType.refEntity.size == 1,
-          doc
-            ._method(method)
-            .valueParams(0)(0)
-            .resultType
-            .refEntity
+          doc._method(method).valueParams(0)(0).resultType.refEntity
             .size + " == " + 1 + " (in " + doc + "." + method + ")"
         )
         assert(
-          doc
-            ._method(method)
-            .valueParams(0)(0)
-            .resultType
-            .refEntity(0)
+          doc._method(method).valueParams(0)(0).resultType.refEntity(0)
             ._1 == LinkToMember(ref, ref.inTemplate),
-          doc
-            ._method(method)
-            .valueParams(0)(0)
-            .resultType
-            .refEntity(0)
-            ._1 + " == LinkToMember(" + ref.qualifiedName + ") (in " + doc + "." + method + ")"
+          doc._method(method).valueParams(0)(0).resultType.refEntity(0)
+            ._1 + " == LinkToMember(" + ref
+            .qualifiedName + ") (in " + doc + "." + method + ")"
         )
       }
     }
@@ -129,13 +110,9 @@ object Test extends ScaladocModelTest {
       foo.valueParams(0)(0).resultType.name + " == T")
     val bar = test3._method("bar")
     assert(
-      bar
-        .valueParams(0)(0)
-        .resultType
+      bar.valueParams(0)(0).resultType
         .name == "(AnyRef { type Lambda[X] <: Either[A,X] })#Lambda[String]",
-      bar
-        .valueParams(0)(0)
-        .resultType
+      bar.valueParams(0)(0).resultType
         .name + " == (AnyRef { type Lambda[X] <: Either[A,X] })#Lambda[String]"
     )
   }

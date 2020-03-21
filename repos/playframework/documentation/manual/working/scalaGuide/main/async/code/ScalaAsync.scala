@@ -27,8 +27,8 @@ object ScalaAsyncSpec extends PlaySpecification {
 
     "allow timing out a future" in new WithApplication() {
       status(
-        ScalaAsyncSamples.timeout(1200)(
-          FakeRequest())) must_== INTERNAL_SERVER_ERROR
+        ScalaAsyncSamples
+          .timeout(1200)(FakeRequest())) must_== INTERNAL_SERVER_ERROR
       status(ScalaAsyncSamples.timeout(10)(FakeRequest())) must_== OK
     }
   }

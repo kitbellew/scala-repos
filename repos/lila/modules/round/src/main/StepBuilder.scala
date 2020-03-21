@@ -46,14 +46,13 @@ object StepBuilder {
         }
         JsArray(
           a.fold[Seq[Step]](steps) {
-              case (pgn, analysis) => applyAnalysisAdvices(
-                  id,
-                  applyAnalysisEvals(steps, analysis),
-                  pgn,
-                  analysis,
-                  variant)
-            }
-            .map(_.toJson))
+            case (pgn, analysis) => applyAnalysisAdvices(
+                id,
+                applyAnalysisEvals(steps, analysis),
+                pgn,
+                analysis,
+                variant)
+          }.map(_.toJson))
     }
   }
 
@@ -61,14 +60,11 @@ object StepBuilder {
       steps: List[Step],
       analysis: Analysis): List[Step] =
     steps.zipWithIndex map {
-      case (step, index) =>
-        analysis.infos.lift(index - 1).fold(step) { info =>
-          step.copy(eval = Step
-            .Eval(
-              cp = info.score.map(_.ceiled.centipawns),
-              mate = info.mate,
-              best = info.best)
-            .some)
+      case (step, index) => analysis.infos.lift(index - 1).fold(step) { info =>
+          step.copy(eval = Step.Eval(
+            cp = info.score.map(_.ceiled.centipawns),
+            mate = info.mate,
+            best = info.best).some)
         }
     }
 
@@ -92,11 +88,8 @@ object StepBuilder {
             variations =
               if (ad.info.variation.isEmpty) after.variations
               else
-                makeVariation(
-                  gameId,
-                  before,
-                  ad.info,
-                  variant).toList :: after.variations
+                makeVariation(gameId, before, ad.info, variant).toList :: after
+                  .variations
           )
         )) | steps
     }
@@ -106,10 +99,8 @@ object StepBuilder {
       fromStep: Step,
       info: Info,
       variant: Variant): List[Step] = {
-    chess.Replay.gameWhileValid(
-      info.variation take 20,
-      fromStep.fen,
-      variant) match {
+    chess.Replay
+      .gameWhileValid(info.variation take 20, fromStep.fen, variant) match {
       case (games, error) =>
         error foreach logChessError(gameId)
         val lastPly = games.lastOption.??(_.turns)
@@ -133,7 +124,7 @@ object StepBuilder {
   private val logChessError = (id: String) =>
     (err: String) => {
       val path = if (id == "synthetic") "analysis" else id
-      logger.info(
-        s"http://lichess.org/$path ${err.lines.toList.headOption | "?"}")
+      logger
+        .info(s"http://lichess.org/$path ${err.lines.toList.headOption | "?"}")
     }
 }

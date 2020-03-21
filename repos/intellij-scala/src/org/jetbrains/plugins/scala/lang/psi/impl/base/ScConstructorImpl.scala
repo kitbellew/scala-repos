@@ -153,8 +153,7 @@ class ScConstructorImpl(node: ASTNode)
       }
       val res = constr match {
         case fun: ScMethodLike =>
-          val methodType = ScType
-            .nested(fun.methodType(Some(tp)), i)
+          val methodType = ScType.nested(fun.methodType(Some(tp)), i)
             .getOrElse(return FAILURE)
           subst.subst(methodType)
         case method: PsiMethod =>
@@ -198,8 +197,7 @@ class ScConstructorImpl(node: ASTNode)
                   Seq(
                     new Parameter("", None, expected, false, false, false, 0)),
                   Seq(new Expression(
-                    InferUtil
-                      .undefineSubstitutor(nonValueType.typeParameters)
+                    InferUtil.undefineSubstitutor(nonValueType.typeParameters)
                       .subst(subst.subst(tp).inferValueType))),
                   nonValueType.typeParameters,
                   shouldUndefineParameters = false,
@@ -224,8 +222,8 @@ class ScConstructorImpl(node: ASTNode)
             case r @ ScalaResolveResult(constr: PsiMethod, subst) =>
               buffer += workWithResolveResult(constr, r, subst, s, ref)
             case ScalaResolveResult(clazz: PsiClass, subst)
-                if !clazz.isInstanceOf[
-                  ScTemplateDefinition] && clazz.isAnnotationType =>
+                if !clazz.isInstanceOf[ScTemplateDefinition] && clazz
+                  .isAnnotationType =>
               val params = clazz.getMethods.flatMap {
                 case p: PsiAnnotationMethod =>
                   val paramType = subst.subst(
@@ -298,8 +296,7 @@ class ScConstructorImpl(node: ASTNode)
     } yield {
       arg match {
         case ScAssignStmt(refToParam: ScReferenceExpression, Some(expr)) =>
-          val param = paramClause
-            .find(_.getName == refToParam.refName)
+          val param = paramClause.find(_.getName == refToParam.refName)
             .orElse(refToParam.resolve().asOptionOf[ScParameter])
           param.map(p => (expr, new Parameter(p))).toSeq
         case expr =>

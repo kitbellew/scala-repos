@@ -69,8 +69,8 @@ object Template extends Logging {
           "(This is safe to ignore if you are not working on a template.)")
       TemplateMetaData()
     } else {
-      val jsonString =
-        Source.fromFile(templateJson)(scala.io.Codec.ISO8859).mkString
+      val jsonString = Source.fromFile(templateJson)(scala.io.Codec.ISO8859)
+        .mkString
       val json =
         try { parse(jsonString) }
         catch {
@@ -126,8 +126,8 @@ object Template extends Logging {
       repoFilename: String): Map[String, GitHubCache] = {
     val reposCache =
       try {
-        val cache =
-          Source.fromFile(repoFilename)(scala.io.Codec.ISO8859).mkString
+        val cache = Source.fromFile(repoFilename)(scala.io.Codec.ISO8859)
+          .mkString
         read[Map[String, GitHubCache]](cache)
       } catch { case e: Throwable => Map[String, GitHubCache]() }
     val newReposCache = reposCache ++ (try {
@@ -166,15 +166,14 @@ object Template extends Logging {
       "org" -> org)
     try {
       httpOptionalProxy("http://update.prediction.io/templates.subscribe")
-        .postData("json=" + write(data))
-        .asString
+        .postData("json=" + write(data)).asString
     } catch { case e: Throwable => error("Unable to subscribe.") }
   }
 
   def meta(repo: String, name: String, org: String): Unit = {
     try {
-      httpOptionalProxy(
-        s"http://meta.prediction.io/templates/$repo/$org/$name").asString
+      httpOptionalProxy(s"http://meta.prediction.io/templates/$repo/$org/$name")
+        .asString
     } catch { case e: Throwable => debug("Template metadata unavailable.") }
   }
 
@@ -376,11 +375,10 @@ object Template extends Logging {
       filesToModify.foreach { ftm =>
         println(s"Processing $ftm...")
         val fileContent = Source.fromFile(ftm).getLines()
-        val processedLines = fileContent.map(
-          _.replaceAllLiterally(pkgName, organization))
-        FileUtils.writeStringToFile(
-          new File(ftm),
-          processedLines.mkString("\n"))
+        val processedLines = fileContent
+          .map(_.replaceAllLiterally(pkgName, organization))
+        FileUtils
+          .writeStringToFile(new File(ftm), processedLines.mkString("\n"))
       }
     } getOrElse {
       error(

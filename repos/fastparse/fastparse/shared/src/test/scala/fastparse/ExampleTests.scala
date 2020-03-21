@@ -109,11 +109,15 @@ object ExampleTests extends TestSuite {
 
         val Parsed.Success(("aaa", "b", "c"), 5) = capture3.parse("aaabc")
 
-        val captureRep = P("a".!.rep ~ "b" ~ End)
+        val captureRep = P(
+          "a"
+            .!.rep ~ "b" ~ End)
 
         val Parsed.Success(Seq("a", "a", "a"), 4) = captureRep.parse("aaab")
 
-        val captureOpt = P("a".rep ~ "b".!.? ~ End)
+        val captureOpt = P(
+          "a".rep ~ "b"
+            .!.? ~ End)
 
         val Parsed.Success(Some("b"), 4) = captureOpt.parse("aaab")
       }
@@ -127,7 +131,9 @@ object ExampleTests extends TestSuite {
       }
 
       'lookahead {
-        val keyword = P(("hello" ~ &(" ")).!.rep)
+        val keyword = P(
+          ("hello" ~ &(" "))
+            .!.rep)
 
         val Parsed.Success(Seq("hello"), _) = keyword.parse("hello ")
         val Parsed.Success(Seq(), __) = keyword.parse("helloX")
@@ -158,7 +164,8 @@ object ExampleTests extends TestSuite {
 
         val failure = xml.parse("<abcde></edcba>").asInstanceOf[Parsed.Failure]
         assert(
-          failure.extra.traced.trace == """xml:1:1 / rightTag:1:8 / "abcde":1:10 ..."edcba>"""")
+          failure.extra.traced
+            .trace == """xml:1:1 / rightTag:1:8 / "abcde":1:10 ..."edcba>"""")
       }
       'filter {
         val digits = P(CharIn('0' to '9').rep(1).!).map(_.toInt)
@@ -167,7 +174,8 @@ object ExampleTests extends TestSuite {
         val failure = even.parse("123").asInstanceOf[Parsed.Failure]
         assert(even.toString == "digits.filter(<function1>)")
         assert(
-          failure.extra.traced.trace == "digits.filter(<function1>):1:1 ...\"123\"")
+          failure.extra.traced
+            .trace == "digits.filter(<function1>):1:1 ...\"123\"")
       }
       'opaque {
         val digit = CharIn('0' to '9')
@@ -221,7 +229,9 @@ object ExampleTests extends TestSuite {
         val Parsed.Success("123", _) = cw.parse("123 45")
       }
       'stringIn {
-        val si = P(StringIn("cow", "cattle").!.rep)
+        val si = P(
+          StringIn("cow", "cattle")
+            .!.rep)
 
         val Parsed.Success(Seq("cow", "cattle"), _) = si.parse("cowcattle")
         val Parsed.Success(Seq("cow"), _) = si.parse("cowmoo")
@@ -262,7 +272,8 @@ object ExampleTests extends TestSuite {
         val failure = stmts.parse("val abcd; val ").asInstanceOf[Parsed.Failure]
         assert(
           failure.index == 10,
-          failure.extra.traced.trace == """stmts:1:1 / (End | " "):1:11 ..."val """")
+          failure.extra.traced
+            .trace == """stmts:1:1 / (End | " "):1:11 ..."val """")
       }
       'repcut {
         val alpha = P(CharIn('a' to 'z'))
@@ -270,8 +281,8 @@ object ExampleTests extends TestSuite {
         val stmts = P(stmt.rep(1) ~ End)
 
         val Parsed.Success(Seq("abcd"), _) = stmts.parse("val abcd;")
-        val Parsed.Success(Seq("abcd", "efg"), _) = stmts.parse(
-          "val abcd; val efg;")
+        val Parsed.Success(Seq("abcd", "efg"), _) = stmts
+          .parse("val abcd; val efg;")
 
         val failure = stmts.parse("val abcd; val ").asInstanceOf[Parsed.Failure]
         assert(
@@ -281,29 +292,37 @@ object ExampleTests extends TestSuite {
       }
       'delimiternocut {
         val digits = P(CharIn('0' to '9').rep(1))
-        val tuple = P("(" ~ digits.!.rep(sep = ",") ~ ")")
+        val tuple = P(
+          "(" ~ digits
+            .!.rep(sep = ",") ~ ")")
 
         val Parsed.Success(Seq("1", "23"), _) = tuple.parse("(1,23)")
 
         val failure = tuple.parse("(1,)").asInstanceOf[Parsed.Failure]
         assert(
           failure.index == 2,
-          failure.extra.traced.trace == """tuple:1:1 / (")" | CharIn("0123456789")):1:3 ...",)"""")
+          failure.extra.traced
+            .trace == """tuple:1:1 / (")" | CharIn("0123456789")):1:3 ...",)"""")
       }
       'delimitercut {
         val digits = P(CharIn('0' to '9').rep(1))
-        val tuple = P("(" ~ digits.!.rep(sep = "," ~/ Pass) ~ ")")
+        val tuple = P(
+          "(" ~ digits
+            .!.rep(sep = "," ~/ Pass) ~ ")")
 
         val Parsed.Success(Seq("1", "23"), _) = tuple.parse("(1,23)")
 
         val failure = tuple.parse("(1,)").asInstanceOf[Parsed.Failure]
         assert(
           failure.index == 3,
-          failure.extra.traced.trace == """tuple:1:1 / digits:1:4 / CharIn("0123456789"):1:4 ...")"""")
+          failure.extra.traced
+            .trace == """tuple:1:1 / digits:1:4 / CharIn("0123456789"):1:4 ...")"""")
       }
       'endcut {
         val digits = P(CharIn('0' to '9').rep(1))
-        val tuple = P("(" ~ digits.!.rep(sep = ",".~/) ~ ")")
+        val tuple = P(
+          "(" ~ digits
+            .!.rep(sep = ",".~/) ~ ")")
 
         val Parsed.Success(Seq("1", "23"), _) = tuple.parse("(1,23)")
 
@@ -341,7 +360,8 @@ object ExampleTests extends TestSuite {
         object Foo {
           import fastparse.all._
           val plus = P("+")
-          val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
+          val num = P(CharIn('0' to '9').rep(1))
+            .!.map(_.toInt)
           val side = P("(" ~ expr ~ ")" | num)
           val expr: P[Int] = P(side ~ plus ~ side).map { case (l, r) => l + r }
         }
@@ -355,7 +375,8 @@ object ExampleTests extends TestSuite {
         object Foo {
           import fastparse.all._
           val plus = P("+")
-          val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
+          val num = P(CharIn('0' to '9').rep(1))
+            .!.map(_.toInt)
           val side = P("(" ~/ expr ~ ")" | num)
           val expr: P[Int] = P(side ~ plus ~ side).map { case (l, r) => l + r }
         }
@@ -367,10 +388,10 @@ object ExampleTests extends TestSuite {
         object Foo {
           import fastparse.all._
           val plus = P("+")
-          val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
+          val num = P(CharIn('0' to '9').rep(1))
+            .!.map(_.toInt)
           val side = P("(" ~/ expr ~ ")" | num).log()
-          val expr: P[Int] = P(side ~ plus ~ side)
-            .map { case (l, r) => l + r }
+          val expr: P[Int] = P(side ~ plus ~ side).map { case (l, r) => l + r }
             .log()
         }
 

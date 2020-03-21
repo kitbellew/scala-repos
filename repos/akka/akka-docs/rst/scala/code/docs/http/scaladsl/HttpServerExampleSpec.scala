@@ -43,8 +43,7 @@ class HttpServerExampleSpec
       .to(Sink.foreach { connection => // foreach materializes the source
         println("Accepted new connection from " + connection.remoteAddress)
         // ... and then actually handle the connection
-      })
-      .run()
+      }).run()
   }
 
   "binding-failure-high-level-example" in compileOnlySpec {
@@ -61,10 +60,8 @@ class HttpServerExampleSpec
 
     // let's say the OS won't allow us to bind to 80.
     val (host, port) = ("localhost", 80)
-    val bindingFuture: Future[ServerBinding] = Http().bindAndHandle(
-      handler,
-      host,
-      port)
+    val bindingFuture: Future[ServerBinding] = Http()
+      .bindAndHandle(handler, host, port)
 
     bindingFuture.onFailure {
       case ex: Exception =>
@@ -111,15 +108,14 @@ class HttpServerExampleSpec
     val (host, port) = ("localhost", 8080)
     val serverSource = Http().bind(host, port)
 
-    val failureMonitor: ActorRef = system.actorOf(
-      MyExampleMonitoringActor.props)
+    val failureMonitor: ActorRef = system
+      .actorOf(MyExampleMonitoringActor.props)
 
     val reactToTopLevelFailures = Flow[IncomingConnection]
       .watchTermination()((_, termination) =>
         termination.onFailure { case cause => failureMonitor ! cause })
 
-    serverSource
-      .via(reactToTopLevelFailures)
+    serverSource.via(reactToTopLevelFailures)
       .to(handleConnections) // Sink[Http.IncomingConnection, _]
       .run()
   }
@@ -132,24 +128,21 @@ class HttpServerExampleSpec
     val (host, port) = ("localhost", 8080)
     val serverSource = Http().bind(host, port)
 
-    val reactToConnectionFailure = Flow[HttpRequest]
-      .recover[HttpRequest] {
-        case ex =>
-          // handle the failure somehow
-          throw ex
-      }
+    val reactToConnectionFailure = Flow[HttpRequest].recover[HttpRequest] {
+      case ex =>
+        // handle the failure somehow
+        throw ex
+    }
 
-    val httpEcho = Flow[HttpRequest]
-      .via(reactToConnectionFailure)
-      .map { request =>
+    val httpEcho = Flow[HttpRequest].via(reactToConnectionFailure).map {
+      request =>
         // simple text "echo" response:
         HttpResponse(entity = HttpEntity(
           ContentTypes.`text/plain(UTF-8)`,
           request.entity.dataBytes))
-      }
+    }
 
-    serverSource
-      .runForeach { con => con.handleWith(httpEcho) }
+    serverSource.runForeach { con => con.handleWith(httpEcho) }
   }
 
   "full-server-example" in compileOnlySpec {
@@ -186,8 +179,7 @@ class HttpServerExampleSpec
         connection handleWithSyncHandler requestHandler
       // this is equivalent to
       // connection handleWith { Flow[HttpRequest] map requestHandler }
-      })
-      .run()
+      }).run()
   }
 
   "low-level-server-example" in compileOnlySpec {
@@ -220,15 +212,12 @@ class HttpServerExampleSpec
           case _: HttpRequest => HttpResponse(404, entity = "Unknown resource!")
         }
 
-        val bindingFuture = Http().bindAndHandleSync(
-          requestHandler,
-          "localhost",
-          8080)
+        val bindingFuture = Http()
+          .bindAndHandleSync(requestHandler, "localhost", 8080)
         println(
           s"Server online at http://localhost:8080/\nPress RETURN to stop...")
         StdIn.readLine() // let it run until user presses return
-        bindingFuture
-          .flatMap(_.unbind()) // trigger unbinding from the port
+        bindingFuture.flatMap(_.unbind()) // trigger unbinding from the port
           .onComplete(_ ⇒ system.terminate()) // and shutdown when done
 
       }

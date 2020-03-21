@@ -379,12 +379,12 @@ object H5Store {
 
   private def wrapHdf5Exception(e: HDF5LibraryException): H5StoreException = {
     H5Reg.closeAll()
-    H5StoreException("""Exception: %s
+    H5StoreException(
+      """Exception: %s
         |------------- HDF5 Stack --------------
         |%s
-        |---------------------------------------""".stripMargin.format(
-      e.getMessage,
-      e.getStackTraceString))
+        |---------------------------------------""".stripMargin
+        .format(e.getMessage, e.getStackTraceString))
   }
 
   private def openNode(parent_id: Int, path: String): Int = {
@@ -1429,30 +1429,18 @@ object H5Store {
     }
 
     val colidx = H5.H5Dopen(nodeid, "axis0", HDF5Constants.H5P_DEFAULT)
-    val dblColIdx = H5.H5Dopen(
-      nodeid,
-      "block0_items",
-      HDF5Constants.H5P_DEFAULT)
-    val intColIdx = H5.H5Dopen(
-      nodeid,
-      "block1_items",
-      HDF5Constants.H5P_DEFAULT)
-    val lngColIdx = H5.H5Dopen(
-      nodeid,
-      "block2_items",
-      HDF5Constants.H5P_DEFAULT)
-    val strColIdx = H5.H5Dopen(
-      nodeid,
-      "block3_items",
-      HDF5Constants.H5P_DEFAULT)
-    val fltColIdx = H5.H5Dopen(
-      nodeid,
-      "block4_items",
-      HDF5Constants.H5P_DEFAULT)
-    val datColIdx = H5.H5Dopen(
-      nodeid,
-      "block5_items",
-      HDF5Constants.H5P_DEFAULT)
+    val dblColIdx = H5
+      .H5Dopen(nodeid, "block0_items", HDF5Constants.H5P_DEFAULT)
+    val intColIdx = H5
+      .H5Dopen(nodeid, "block1_items", HDF5Constants.H5P_DEFAULT)
+    val lngColIdx = H5
+      .H5Dopen(nodeid, "block2_items", HDF5Constants.H5P_DEFAULT)
+    val strColIdx = H5
+      .H5Dopen(nodeid, "block3_items", HDF5Constants.H5P_DEFAULT)
+    val fltColIdx = H5
+      .H5Dopen(nodeid, "block4_items", HDF5Constants.H5P_DEFAULT)
+    val datColIdx = H5
+      .H5Dopen(nodeid, "block5_items", HDF5Constants.H5P_DEFAULT)
     assertException(colidx >= 0, "column index group is not valid")
 
     H5Reg.save(colidx, H5D)

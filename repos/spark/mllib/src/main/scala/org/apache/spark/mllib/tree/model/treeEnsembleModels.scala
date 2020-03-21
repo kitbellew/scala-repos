@@ -66,11 +66,8 @@ class RandomForestModel @Since("1.2.0") (
     */
   @Since("1.3.0")
   override def save(sc: SparkContext, path: String): Unit = {
-    TreeEnsembleModel.SaveLoadV1_0.save(
-      sc,
-      path,
-      this,
-      RandomForestModel.SaveLoadV1_0.thisClassName)
+    TreeEnsembleModel.SaveLoadV1_0
+      .save(sc, path, this, RandomForestModel.SaveLoadV1_0.thisClassName)
   }
 
   override protected def formatVersion: String = RandomForestModel.formatVersion
@@ -96,10 +93,8 @@ object RandomForestModel extends Loader[RandomForestModel] {
       case (className, "1.0") if className == classNameV1_0 =>
         val metadata = TreeEnsembleModel.SaveLoadV1_0.readMetadata(jsonMetadata)
         assert(metadata.treeWeights.forall(_ == 1.0))
-        val trees = TreeEnsembleModel.SaveLoadV1_0.loadTrees(
-          sc,
-          path,
-          metadata.treeAlgo)
+        val trees = TreeEnsembleModel.SaveLoadV1_0
+          .loadTrees(sc, path, metadata.treeAlgo)
         new RandomForestModel(Algo.fromString(metadata.algo), trees)
       case _ =>
         throw new Exception(
@@ -188,8 +183,8 @@ class GradientBoostedTreesModel @Since("1.2.0") (
           val currentTreeWeight = localTreeWeights(nTree)
           iter.map {
             case (point, (pred, error)) =>
-              val newPred =
-                pred + currentTree.predict(point.features) * currentTreeWeight
+              val newPred = pred + currentTree
+                .predict(point.features) * currentTreeWeight
               val newError = loss.computeError(newPred, point.label)
               (newPred, newError)
           }
@@ -283,10 +278,8 @@ object GradientBoostedTreesModel extends Loader[GradientBoostedTreesModel] {
       case (className, "1.0") if className == classNameV1_0 =>
         val metadata = TreeEnsembleModel.SaveLoadV1_0.readMetadata(jsonMetadata)
         assert(metadata.combiningStrategy == Sum.toString)
-        val trees = TreeEnsembleModel.SaveLoadV1_0.loadTrees(
-          sc,
-          path,
-          metadata.treeAlgo)
+        val trees = TreeEnsembleModel.SaveLoadV1_0
+          .loadTrees(sc, path, metadata.treeAlgo)
         new GradientBoostedTreesModel(
           Algo.fromString(metadata.algo),
           trees,
@@ -407,12 +400,10 @@ private[tree] sealed class TreeEnsembleModel(
     */
   def toDebugString: String = {
     val header = toString + "\n"
-    header + trees.zipWithIndex
-      .map {
-        case (tree, treeIndex) =>
-          s"  Tree $treeIndex:\n" + tree.topNode.subtreeToString(4)
-      }
-      .fold("")(_ + _)
+    header + trees.zipWithIndex.map {
+      case (tree, treeIndex) =>
+        s"  Tree $treeIndex:\n" + tree.topNode.subtreeToString(4)
+    }.fold("")(_ + _)
   }
 
   /**
@@ -465,11 +456,9 @@ private[tree] object TreeEnsembleModel extends Logging {
       // TODO: Fix this issue for real.
       val memThreshold = 768
       if (sc.isLocal) {
-        val driverMemory = sc.getConf
-          .getOption("spark.driver.memory")
+        val driverMemory = sc.getConf.getOption("spark.driver.memory")
           .orElse(Option(System.getenv("SPARK_DRIVER_MEMORY")))
-          .map(Utils.memoryStringToMb)
-          .getOrElse(Utils.DEFAULT_DRIVER_MEM_MB)
+          .map(Utils.memoryStringToMb).getOrElse(Utils.DEFAULT_DRIVER_MEM_MB)
         if (driverMemory <= memThreshold) {
           logWarning(
             s"$className.save() was called, but it may fail because of too little" +
@@ -498,14 +487,10 @@ private[tree] object TreeEnsembleModel extends Logging {
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // Create Parquet data.
-      val dataRDD = sc
-        .parallelize(model.trees.zipWithIndex)
-        .flatMap {
-          case (tree, treeId) =>
-            tree.topNode.subtreeIterator.toSeq.map(node =>
-              NodeData(treeId, node))
-        }
-        .toDF()
+      val dataRDD = sc.parallelize(model.trees.zipWithIndex).flatMap {
+        case (tree, treeId) =>
+          tree.topNode.subtreeIterator.toSeq.map(node => NodeData(treeId, node))
+      }.toDF()
       dataRDD.write.parquet(Loader.dataPath(path))
     }
 

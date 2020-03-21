@@ -93,8 +93,7 @@ object ChoiceBoxTableCell {
       converter: StringConverter[T],
       items: ObservableBuffer[T]): (TableColumn[S, T] => TableCell[S, T]) =
     (view: TableColumn[S, T]) =>
-      jfxscc.ChoiceBoxTableCell
-        .forTableColumn[S, T](converter, items)
+      jfxscc.ChoiceBoxTableCell.forTableColumn[S, T](converter, items)
         .call(view)
 
   /**
@@ -121,8 +120,7 @@ object ChoiceBoxTableCell {
       converter: StringConverter[T],
       items: T*): (TableColumn[S, T] => TableCell[S, T]) =
     (view: TableColumn[S, T]) =>
-      jfxscc.ChoiceBoxTableCell
-        .forTableColumn[S, T](converter, items: _*)
+      jfxscc.ChoiceBoxTableCell.forTableColumn[S, T](converter, items: _*)
         .call(view)
 
   /**

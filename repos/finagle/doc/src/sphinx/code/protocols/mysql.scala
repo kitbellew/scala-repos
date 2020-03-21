@@ -25,16 +25,13 @@ object ServiceFactoryExample {
   import Shared._
 
   //#client
-  val client = Mysql.client
-    .withCredentials("<user>", "<password>")
-    .withDatabase("test")
-    .configured(DefaultPool.Param(
+  val client = Mysql.client.withCredentials("<user>", "<password>")
+    .withDatabase("test").configured(DefaultPool.Param(
       low = 0,
       high = 10,
       idleTime = 5.minutes,
       bufferSize = 0,
-      maxWaiters = Int.MaxValue))
-    .newClient("127.0.0.1:3306")
+      maxWaiters = Int.MaxValue)).newClient("127.0.0.1:3306")
   //#client
 
   def main(args: Array[String]): Unit = {
@@ -59,16 +56,13 @@ object RichExample {
   import Shared._
 
   //#richClient
-  val richClient = Mysql.client
-    .withCredentials("<user>", "<password>")
-    .withDatabase("test")
-    .configured(DefaultPool.Param(
+  val richClient = Mysql.client.withCredentials("<user>", "<password>")
+    .withDatabase("test").configured(DefaultPool.Param(
       low = 0,
       high = 10,
       idleTime = 5.minutes,
       bufferSize = 0,
-      maxWaiters = Int.MaxValue))
-    .newRichClient("127.0.0.1:3306")
+      maxWaiters = Int.MaxValue)).newRichClient("127.0.0.1:3306")
   //#richClient
 
   def main(args: Array[String]): Unit = {

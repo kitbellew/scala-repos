@@ -17,20 +17,15 @@ object MemcachedProxy {
   def main(args: Array[String]) {
     assertMemcachedRunning()
 
-    val client: Service[Command, Response] = ClientBuilder()
-      .codec(Memcached())
-      .hosts(new InetSocketAddress(11211))
-      .hostConnectionLimit(1)
-      .build()
+    val client: Service[Command, Response] = ClientBuilder().codec(Memcached())
+      .hosts(new InetSocketAddress(11211)).hostConnectionLimit(1).build()
 
     val proxyService = new Service[Command, Response] {
       def apply(request: Command) = client(request)
     }
 
-    val server: Server = ServerBuilder()
-      .codec(Memcached())
-      .bindTo(new InetSocketAddress(8080))
-      .name("memcachedproxy")
+    val server: Server = ServerBuilder().codec(Memcached())
+      .bindTo(new InetSocketAddress(8080)).name("memcachedproxy")
       .build(proxyService)
   }
 

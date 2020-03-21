@@ -76,22 +76,24 @@ import slick.sql.SqlProfile
 trait SQLiteProfile extends JdbcProfile {
 
   override protected def computeCapabilities: Set[Capability] =
-    (super.computeCapabilities
-      - RelationalCapabilities.functionDatabase
-      - RelationalCapabilities.functionUser
-      - RelationalCapabilities.joinFull
-      - RelationalCapabilities.joinRight
-      - JdbcCapabilities.mutable
-      - SqlCapabilities.sequence
-      - JdbcCapabilities.returnInsertOther
-      - RelationalCapabilities.typeBigDecimal
-      - RelationalCapabilities.typeBlob
-      - RelationalCapabilities.zip
-      - JdbcCapabilities.insertOrUpdate
-      - JdbcCapabilities.defaultValueMetaData
-      - JdbcCapabilities.booleanMetaData
-      - JdbcCapabilities.supportsByte
-      - JdbcCapabilities.distinguishesIntTypes)
+    (
+      super.computeCapabilities
+        - RelationalCapabilities.functionDatabase
+        - RelationalCapabilities.functionUser
+        - RelationalCapabilities.joinFull
+        - RelationalCapabilities.joinRight
+        - JdbcCapabilities.mutable
+        - SqlCapabilities.sequence
+        - JdbcCapabilities.returnInsertOther
+        - RelationalCapabilities.typeBigDecimal
+        - RelationalCapabilities.typeBlob
+        - RelationalCapabilities.zip
+        - JdbcCapabilities.insertOrUpdate
+        - JdbcCapabilities.defaultValueMetaData
+        - JdbcCapabilities.booleanMetaData
+        - JdbcCapabilities.supportsByte
+        - JdbcCapabilities.distinguishesIntTypes
+    )
 
   class ModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       implicit ec: ExecutionContext)
@@ -110,12 +112,9 @@ trait SQLiteProfile extends JdbcProfile {
         override def length = _size
         override def varying = dbType == Some("VARCHAR")
         override def default =
-          meta.columnDef
-            .map((_, tpe))
-            .collect {
-              case ("null", _) => Some(None) // 3.7.15-M1
-            }
-            .getOrElse { super.default }
+          meta.columnDef.map((_, tpe)).collect {
+            case ("null", _) => Some(None) // 3.7.15-M1
+          }.getOrElse { super.default }
         override def tpe =
           dbType match {
             case Some("DOUBLE")    => "Double"
@@ -143,8 +142,7 @@ trait SQLiteProfile extends JdbcProfile {
     new ModelBuilder(tables, ignoreInvalidDefaults)
 
   override def defaultTables(implicit ec: ExecutionContext): DBIO[Seq[MTable]] =
-    MTable
-      .getTables(Some(""), Some(""), None, Some(Seq("TABLE")))
+    MTable.getTables(Some(""), Some(""), None, Some(Seq("TABLE")))
       .map(_.filter(_.name.name.toLowerCase != "sqlite_sequence"))
 
   override val columnTypes = new JdbcTypes
@@ -257,8 +255,8 @@ trait SQLiteProfile extends JdbcProfile {
       extends super.CountingInsertActionComposerImpl[U](compiled) {
     // SQLite cannot perform server-side insert-or-update with soft insert semantics. We don't have to do
     // the same in ReturningInsertInvoker because SQLite does not allow returning non-AutoInc keys anyway.
-    override protected val useServerSideUpsert = compiled.upsert.fields.forall(
-      fs => !fs.options.contains(ColumnOption.AutoInc))
+    override protected val useServerSideUpsert = compiled.upsert.fields
+      .forall(fs => !fs.options.contains(ColumnOption.AutoInc))
     override protected def useTransactionForUpsert = !useServerSideUpsert
   }
 
@@ -266,9 +264,9 @@ trait SQLiteProfile extends JdbcProfile {
       tmd: JdbcType[_],
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
-      case java.sql.Types.TINYINT | java.sql.Types.SMALLINT |
-          java.sql.Types.BIGINT => "INTEGER"
-      case _                    => super.defaultSqlTypeName(tmd, sym)
+      case java.sql.Types.TINYINT | java.sql.Types.SMALLINT | java.sql.Types
+            .BIGINT => "INTEGER"
+      case _        => super.defaultSqlTypeName(tmd, sym)
     }
 
   class JdbcTypes extends super.JdbcTypes {

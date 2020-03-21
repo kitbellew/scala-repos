@@ -69,15 +69,13 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
       keyType: Array[String],
       issuers: Array[Principal],
       engine: SSLEngine): String = {
-    logger.debug(
-      s"chooseEngineClientAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
+    logger.debug(s"chooseEngineClientAlias: keyType = ${keyType
+      .toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
     withKeyManagers { keyManager: X509KeyManager =>
       keyManager match {
         case extendedKeyManager: X509ExtendedKeyManager =>
-          val clientAlias = extendedKeyManager.chooseEngineClientAlias(
-            keyType,
-            issuers,
-            engine)
+          val clientAlias = extendedKeyManager
+            .chooseEngineClientAlias(keyType, issuers, engine)
           if (clientAlias != null) {
             logger.debug(
               s"chooseEngineClientAlias: using clientAlias $clientAlias with keyManager $extendedKeyManager")
@@ -94,16 +92,14 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
       keyType: String,
       issuers: Array[Principal],
       engine: SSLEngine): String = {
-    logger.debug(
-      s"chooseEngineServerAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
+    logger.debug(s"chooseEngineServerAlias: keyType = ${keyType
+      .toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
 
     withKeyManagers { keyManager: X509KeyManager =>
       keyManager match {
         case extendedKeyManager: X509ExtendedKeyManager =>
-          val clientAlias = extendedKeyManager.chooseEngineServerAlias(
-            keyType,
-            issuers,
-            engine)
+          val clientAlias = extendedKeyManager
+            .chooseEngineServerAlias(keyType, issuers, engine)
           if (clientAlias != null) {
             logger.debug(
               s"chooseEngineServerAlias: using clientAlias $clientAlias with keyManager $extendedKeyManager")

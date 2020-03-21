@@ -27,12 +27,8 @@ case class TaskFailure(
 
   override def toProto: Protos.TaskFailure = {
     val taskFailureBuilder = Protos.TaskFailure.newBuilder
-      .setAppId(appId.toString)
-      .setTaskId(taskId)
-      .setState(state)
-      .setMessage(message)
-      .setHost(host)
-      .setVersion(version.toString)
+      .setAppId(appId.toString).setTaskId(taskId).setState(state)
+      .setMessage(message).setHost(host).setVersion(version.toString)
       .setTimestamp(timestamp.toString)
     if (slaveId.isDefined) { taskFailureBuilder.setSlaveId(slaveId.get) }
     taskFailureBuilder.build

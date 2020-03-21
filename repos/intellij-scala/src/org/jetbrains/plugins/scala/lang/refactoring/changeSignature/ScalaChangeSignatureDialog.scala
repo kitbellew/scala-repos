@@ -158,10 +158,8 @@ class ScalaChangeSignatureDialog(
             val ed: TableCellEditor = parametersTable.getCellEditor
             if (ed != null) {
               val editorValue: AnyRef = ed.getCellEditorValue
-              myParametersTableModel.setValueAtWithoutUpdate(
-                editorValue,
-                row,
-                column)
+              myParametersTableModel
+                .setValueAtWithoutUpdate(editorValue, row, column)
               updateSignature()
             }
           }
@@ -228,8 +226,8 @@ class ScalaChangeSignatureDialog(
         s"class ${pc.getClassNameText} $getVisibility"
       case _ => ""
     }
-    val paramsText =
-      splittedItems.map(_.map(itemText).mkString("(", ", ", ")")).mkString
+    val paramsText = splittedItems.map(_.map(itemText).mkString("(", ", ", ")"))
+      .mkString
 
     val retTypeText = returnTypeText
 
@@ -264,19 +262,17 @@ class ScalaChangeSignatureDialog(
       (name2, idx2) <- namesWithIndices
       if name == name2 && idx < idx2
     } {
-      problems += ScalaBundle.message(
-        "change.signature.parameters.same.name.{0}",
-        name)
+      problems += ScalaBundle
+        .message("change.signature.parameters.same.name.{0}", name)
     }
     paramItems.foreach(_.updateType(problems))
 
     paramItems.foreach {
       case item
           if item.parameter.isRepeatedParameter && !splittedItems
-            .flatMap(_.lastOption)
-            .contains(item) =>
-        problems += ScalaBundle.message(
-          "change.signature.vararg.should.be.last.in.clause")
+            .flatMap(_.lastOption).contains(item) =>
+        problems += ScalaBundle
+          .message("change.signature.vararg.should.be.last.in.clause")
       case _ =>
     }
 
@@ -287,8 +283,8 @@ class ScalaChangeSignatureDialog(
     if (!getTableComponent.isEditing) {
       for {
         item <- parameterItems
-        if item.parameter.oldIndex < 0 && StringUtil.isEmpty(
-          item.defaultValueCodeFragment.getText)
+        if item.parameter.oldIndex < 0 && StringUtil
+          .isEmpty(item.defaultValueCodeFragment.getText)
       } {
         val stuff =
           if (isAddDefaultArgs) "Default arguments" else "Method calls"
@@ -350,10 +346,8 @@ class ScalaChangeSignatureDialog(
     if (myReturnTypeCodeFragment == null) StdType.ANY
     else {
       val fragment = myReturnTypeCodeFragment
-      ScalaPsiElementFactory.createTypeFromText(
-        fragment.getText,
-        fragment.getContext,
-        fragment)
+      ScalaPsiElementFactory
+        .createTypeFromText(fragment.getText, fragment.getContext, fragment)
     }
   }
 
@@ -395,8 +389,7 @@ class ScalaChangeSignatureDialog(
     addClauseButton.addCustomUpdater(new AnActionButtonUpdater {
       override def isEnabled(e: AnActionEvent): Boolean = {
         val selected = parametersTable.getSelectedRow
-        selected > 0 && !myParametersTableModel
-          .getItem(selected)
+        selected > 0 && !myParametersTableModel.getItem(selected)
           .startsNewClause
       }
     })
@@ -488,14 +481,12 @@ class ScalaChangeSignatureDialog(
 
   protected def decorateParameterTable(table: JBTable): JPanel = {
     table.setCellSelectionEnabled(true)
-    table.getSelectionModel.setSelectionMode(
-      ListSelectionModel.SINGLE_SELECTION)
+    table.getSelectionModel
+      .setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     table.getSelectionModel.setSelectionInterval(0, 0)
     table.setSurrendersFocusOnKeystroke(true)
-    val buttonsPanel: JPanel = ToolbarDecorator
-      .createDecorator(table)
-      .setMoveUpAction(upAction)
-      .setMoveDownAction(downAction)
+    val buttonsPanel: JPanel = ToolbarDecorator.createDecorator(table)
+      .setMoveUpAction(upAction).setMoveDownAction(downAction)
       .addExtraActions(createAddClauseButton(), createRemoveClauseButton())
       .createPanel
     myParametersTableModel.addTableModelListener(mySignatureUpdater)
@@ -552,8 +543,7 @@ class ScalaChangeSignatureDialog(
 
           if (item.parameter.isIntroducedParameter) {
             val fields = UIUtil
-              .findComponentsOfType(comp, classOf[EditorTextField])
-              .asScala
+              .findComponentsOfType(comp, classOf[EditorTextField]).asScala
             fields.foreach { f => f.setFont(f.getFont.deriveFont(Font.BOLD)) }
           }
 

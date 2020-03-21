@@ -61,8 +61,9 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
     * Java API: Get the last (most specific) attribute of a given `Class` or subclass thereof.
     */
   def getAttribute[T <: Attribute](c: Class[T]): Optional[T] =
-    Optional.ofNullable(attributeList.foldLeft(null.asInstanceOf[T])(
-      (acc, attr) ⇒ if (c.isInstance(attr)) c.cast(attr) else acc))
+    Optional
+      .ofNullable(attributeList.foldLeft(null.asInstanceOf[T])((acc, attr) ⇒
+        if (c.isInstance(attr)) c.cast(attr) else acc))
 
   /**
     * Java API: Get the first (least specific) attribute of a given `Class` or subclass thereof.
@@ -252,8 +253,8 @@ object Attributes {
     */
   def extractName(mod: Module, default: String): String = {
     mod match {
-      case CopiedModule(_, attr, copyOf) ⇒
-        (attr and copyOf.attributes).nameOrDefault(default)
+      case CopiedModule(_, attr, copyOf) ⇒ (attr and copyOf.attributes)
+          .nameOrDefault(default)
       case _ ⇒ mod.attributes.nameOrDefault(default)
     }
   }

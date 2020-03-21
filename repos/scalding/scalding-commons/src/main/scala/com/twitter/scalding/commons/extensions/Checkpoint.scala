@@ -135,8 +135,8 @@ object Checkpoint {
   private case class CheckpointArg(checkpointName: String, argName: String)(
       implicit args: Args) {
     val baseValue: Option[String] = args.optional("checkpoint." + argName)
-    val overrideValue: Option[String] = args.optional(
-      "checkpoint." + argName + "." + checkpointName)
+    val overrideValue: Option[String] = args
+      .optional("checkpoint." + argName + "." + checkpointName)
     def value: Option[String] =
       if (overrideValue.isDefined) { overrideValue }
       else { baseValue }
@@ -170,8 +170,7 @@ object Checkpoint {
       case Hdfs(_, _) | HadoopTest(_, _) => "sequencefile"
       case _                             => "tsv"
     }
-    CheckpointArg(checkpointName, "format").value
-      .getOrElse(defaultFormat)
+    CheckpointArg(checkpointName, "format").value.getOrElse(defaultFormat)
       .toLowerCase
   }
 
@@ -189,7 +188,7 @@ object Checkpoint {
   private def hasInput(checkpointName: String, filename: String)(implicit
       args: Args,
       mode: Mode): Boolean = {
-    !CheckpointArg(checkpointName, "clobber").isTrue && mode.fileExists(
-      filename)
+    !CheckpointArg(checkpointName, "clobber").isTrue && mode
+      .fileExists(filename)
   }
 }

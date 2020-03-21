@@ -52,12 +52,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
     val oldErr = System.err
     System.setErr(new PrintStream(bufferedLoadingErrors))
     try {
-      ServiceLoader
-        .load(classOf[PojoServiceRegistryFactory])
-        .iterator
-        .next
-        .newPojoServiceRegistry(config)
-        .getBundleContext
+      ServiceLoader.load(classOf[PojoServiceRegistryFactory]).iterator.next
+        .newPojoServiceRegistry(config).getBundleContext
     } catch {
       case e: Throwable ⇒
         oldErr.write(bufferedLoadingErrors.toByteArray); throw e
@@ -71,10 +67,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
     * Convenience method to find a bundle by symbolic name
     */
   def bundleForName(name: String) =
-    context.getBundles
-      .find(_.getSymbolicName == name)
-      .getOrElse(fail(
-        "Unable to find bundle with symbolic name %s".format(name)))
+    context.getBundles.find(_.getSymbolicName == name).getOrElse(fail(
+      "Unable to find bundle with symbolic name %s".format(name)))
 
   /**
     * Convenience method to find a service by interface.  If the service is not already available in the OSGi Service
@@ -97,8 +91,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
           if (deadline.isOverdue())
             fail("Gave up waiting for service of type %s".format(serviceType))
           else {
-            Thread.sleep(
-              (step min deadline.timeLeft max Duration.Zero).toMillis)
+            Thread
+              .sleep((step min deadline.timeLeft max Duration.Zero).toMillis)
             poll(step, deadline)
           }
         case some ⇒ some.asInstanceOf[ServiceReference[T]]

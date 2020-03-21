@@ -29,9 +29,9 @@ object Test extends App {
 
     class User {
       // Create a property with custom getter and setter
-      val firstname = Property("")
-        .get { v => v.toUpperCase() }
-        .set { v => "Mr. " + v }
+      val firstname = Property("").get { v => v.toUpperCase() }.set { v =>
+        "Mr. " + v
+      }
       val lastname = Property("<noname>")
 
       /** Scala provides syntactic sugar for calling 'apply'. Simply

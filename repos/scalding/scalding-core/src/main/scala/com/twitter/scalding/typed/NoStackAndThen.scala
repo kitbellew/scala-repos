@@ -34,8 +34,8 @@ sealed trait NoStackAndThen[-A, +B] extends java.io.Serializable {
         next: NoStackAndThen[Any, Any],
         toAndThen: ReversedStack[Any, C]): NoStackAndThen[A, C] =
       (next, toAndThen) match {
-        case (NoStackWrap(fn), EmptyStack(fn2)) =>
-          NoStackMore(front, fn).andThen(fn2)
+        case (NoStackWrap(fn), EmptyStack(fn2)) => NoStackMore(front, fn)
+            .andThen(fn2)
         case (NoStackWrap(fn), NonEmpty(h, tail)) =>
           push(NoStackMore(front, fn), NoStackAndThen.NoStackWrap(h), tail)
         case (NoStackMore(first, tail), _) =>

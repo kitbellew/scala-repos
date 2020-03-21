@@ -190,8 +190,8 @@ class SparkHadoopUtil extends Logging {
 
   private def getFileSystemThreadStatisticsMethod(
       methodName: String): Method = {
-    val statisticsDataClass = Utils.classForName(
-      "org.apache.hadoop.fs.FileSystem$Statistics$StatisticsData")
+    val statisticsDataClass = Utils
+      .classForName("org.apache.hadoop.fs.FileSystem$Statistics$StatisticsData")
     statisticsDataClass.getDeclaredMethod(methodName)
   }
 
@@ -213,8 +213,7 @@ class SparkHadoopUtil extends Logging {
       fs: FileSystem,
       baseStatus: FileStatus): Seq[FileStatus] = {
     def recurse(status: FileStatus): Seq[FileStatus] = {
-      val (directories, leaves) = fs
-        .listStatus(status.getPath)
+      val (directories, leaves) = fs.listStatus(status.getPath)
         .partition(_.isDirectory)
       leaves ++ directories.flatMap(f => listLeafStatuses(fs, f))
     }
@@ -230,8 +229,7 @@ class SparkHadoopUtil extends Logging {
       fs: FileSystem,
       baseStatus: FileStatus): Seq[FileStatus] = {
     def recurse(status: FileStatus): Seq[FileStatus] = {
-      val (directories, files) = fs
-        .listStatus(status.getPath)
+      val (directories, files) = fs.listStatus(status.getPath)
         .partition(_.isDirectory)
       val leaves =
         if (directories.isEmpty) Seq(status) else Seq.empty[FileStatus]
@@ -244,13 +242,10 @@ class SparkHadoopUtil extends Logging {
 
   def globPath(pattern: Path): Seq[Path] = {
     val fs = pattern.getFileSystem(conf)
-    Option(fs.globStatus(pattern))
-      .map { statuses =>
-        statuses
-          .map(_.getPath.makeQualified(fs.getUri, fs.getWorkingDirectory))
-          .toSeq
-      }
-      .getOrElse(Seq.empty[Path])
+    Option(fs.globStatus(pattern)).map { statuses =>
+      statuses.map(_.getPath.makeQualified(fs.getUri, fs.getWorkingDirectory))
+        .toSeq
+    }.getOrElse(Seq.empty[Path])
   }
 
   def globPathIfNecessary(pattern: Path): Seq[Path] = {
@@ -307,32 +302,28 @@ class SparkHadoopUtil extends Logging {
       credentials: Credentials): Long = {
     val now = System.currentTimeMillis()
 
-    val renewalInterval = sparkConf.getLong(
-      "spark.yarn.token.renewal.interval",
-      (24 hours).toMillis)
+    val renewalInterval = sparkConf
+      .getLong("spark.yarn.token.renewal.interval", (24 hours).toMillis)
 
     credentials.getAllTokens.asScala
-      .filter(_.getKind == DelegationTokenIdentifier.HDFS_DELEGATION_KIND)
-      .map { t =>
-        val identifier = new DelegationTokenIdentifier()
-        identifier.readFields(new DataInputStream(new ByteArrayInputStream(
-          t.getIdentifier)))
-        (identifier.getIssueDate + fraction * renewalInterval).toLong - now
-      }
-      .foldLeft(0L)(math.max)
+      .filter(_.getKind == DelegationTokenIdentifier.HDFS_DELEGATION_KIND).map {
+        t =>
+          val identifier = new DelegationTokenIdentifier()
+          identifier.readFields(new DataInputStream(new ByteArrayInputStream(
+            t.getIdentifier)))
+          (identifier.getIssueDate + fraction * renewalInterval).toLong - now
+      }.foldLeft(0L)(math.max)
   }
 
   private[spark] def getSuffixForCredentialsPath(credentialsPath: Path): Int = {
     val fileName = credentialsPath.getName
-    fileName
-      .substring(
-        fileName.lastIndexOf(
-          SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
+    fileName.substring(
+      fileName.lastIndexOf(SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
       .toInt
   }
 
-  private val HADOOP_CONF_PATTERN =
-    "(\\$\\{hadoopconf-[^\\}\\$\\s]+\\})".r.unanchored
+  private val HADOOP_CONF_PATTERN = "(\\$\\{hadoopconf-[^\\}\\$\\s]+\\})".r
+    .unanchored
 
   /**
     * Substitute variables by looking them up in Hadoop configs. Only variables that match the
@@ -344,15 +335,12 @@ class SparkHadoopUtil extends Logging {
     text match {
       case HADOOP_CONF_PATTERN(matched) => {
         logDebug(text + " matched " + HADOOP_CONF_PATTERN)
-        val key = matched.substring(
-          13,
-          matched.length() - 1
-        ) // remove ${hadoopconf- .. }
-        val eval = Option[String](hadoopConf.get(key))
-          .map { value =>
-            logDebug("Substituted " + matched + " with " + value)
-            text.replace(matched, value)
-          }
+        val key = matched
+          .substring(13, matched.length() - 1) // remove ${hadoopconf- .. }
+        val eval = Option[String](hadoopConf.get(key)).map { value =>
+          logDebug("Substituted " + matched + " with " + value)
+          text.replace(matched, value)
+        }
         if (eval.isEmpty) {
           // The variable was not found in Hadoop configs, so return text as is.
           text
@@ -398,10 +386,8 @@ object SparkHadoopUtil {
   private lazy val hadoop = new SparkHadoopUtil
   private lazy val yarn =
     try {
-      Utils
-        .classForName("org.apache.spark.deploy.yarn.YarnSparkHadoopUtil")
-        .newInstance()
-        .asInstanceOf[SparkHadoopUtil]
+      Utils.classForName("org.apache.spark.deploy.yarn.YarnSparkHadoopUtil")
+        .newInstance().asInstanceOf[SparkHadoopUtil]
     } catch {
       case e: Exception =>
         throw new SparkException("Unable to load YARN support", e)

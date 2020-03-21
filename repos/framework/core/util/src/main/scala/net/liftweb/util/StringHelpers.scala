@@ -41,8 +41,8 @@ trait StringHelpers {
     * If str is surrounded by quotes it return the content between the quotes
     */
   def unquote(str: String) = {
-    if (str != null && str.length >= 2 && str.charAt(0) == '\"' && str.charAt(
-          str.length - 1) == '\"') str.substring(1, str.length - 1)
+    if (str != null && str.length >= 2 && str.charAt(0) == '\"' && str
+          .charAt(str.length - 1) == '\"') str.substring(1, str.length - 1)
     else str
   }
 
@@ -51,13 +51,10 @@ trait StringHelpers {
     * The result is a Map[String, String]
     */
   def splitNameValuePairs(props: String): Map[String, String] = {
-    val list = props
-      .split(",")
-      .toList
-      .map(in => {
-        val pair = in.roboSplit("=")
-        (pair(0), unquote(pair(1)))
-      })
+    val list = props.split(",").toList.map(in => {
+      val pair = in.roboSplit("=")
+      (pair(0), unquote(pair(1)))
+    })
     val map: Map[String, String] = Map.empty
 
     (map /: list)((m, next) => m + (next))
@@ -89,10 +86,8 @@ trait StringHelpers {
     * @return the underscored string
     */
   def snakify(name: String) =
-    name
-      .replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
-      .replaceAll("([a-z\\d])([A-Z])", "$1_$2")
-      .toLowerCase
+    name.replaceAll("([A-Z]+)([A-Z][a-z])", "$1_$2")
+      .replaceAll("([a-z\\d])([A-Z])", "$1_$2").toLowerCase
 
   /**
     * Turns a string of format "foo_bar" into camel case "FooBar"

@@ -46,10 +46,8 @@ object ScopeSuggester {
 
     def getParent(element: PsiElement, isScriptFile: Boolean): PsiElement = {
       if (isScriptFile)
-        PsiTreeUtil.getParentOfType(
-          element,
-          classOf[ScTemplateBody],
-          classOf[ScalaFile])
+        PsiTreeUtil
+          .getParentOfType(element, classOf[ScTemplateBody], classOf[ScalaFile])
       else PsiTreeUtil.getParentOfType(element, classOf[ScTemplateBody])
     }
 
@@ -58,24 +56,21 @@ object ScopeSuggester {
         parent: PsiElement): Boolean = {
       var result = true
       for (elementOwner <- owners) {
-        val pparent = PsiTreeUtil.getParentOfType(
-          parent,
-          classOf[ScTemplateDefinition])
-        if (pparent != null && (!elementOwner.isAncestorOf(
-              pparent) || !elementOwner.isInstanceOf[ScTemplateDefinition])) {
-          result = false
-        }
+        val pparent = PsiTreeUtil
+          .getParentOfType(parent, classOf[ScTemplateDefinition])
+        if (pparent != null && (!elementOwner
+              .isAncestorOf(pparent) || !elementOwner
+              .isInstanceOf[ScTemplateDefinition])) { result = false }
       }
       result
     }
 
-    val isScriptFile = currentElement.getContainingFile
-      .asInstanceOf[ScalaFile]
+    val isScriptFile = currentElement.getContainingFile.asInstanceOf[ScalaFile]
       .isScriptFile()
 
-    val owners = ScalaRefactoringUtil.getTypeParameterOwnerList(
-      currentElement) ++ ScalaRefactoringUtil.getTypeAliasOwnersList(
-      currentElement)
+    val owners = ScalaRefactoringUtil
+      .getTypeParameterOwnerList(currentElement) ++ ScalaRefactoringUtil
+      .getTypeAliasOwnersList(currentElement)
     var parent = getParent(currentElement, isScriptFile)
 
     //forbid to work with no template definition level
@@ -86,9 +81,8 @@ object ScopeSuggester {
       val name = parent match {
         case fileType: ScalaFile => "file " + fileType.getName
         case _ =>
-          PsiTreeUtil.getParentOfType(
-            parent,
-            classOf[ScTemplateDefinition]) match {
+          PsiTreeUtil
+            .getParentOfType(parent, classOf[ScTemplateDefinition]) match {
             case classType: ScClass => "class " + classType.name
             case objectType: ScObject =>
               occInCompanionObj = getOccurrencesFromCompanionObject(
@@ -104,17 +98,15 @@ object ScopeSuggester {
       noContinue = currentElement.calcType match {
         case projectionType: ScProjectionType =>
           //we can't use typeAlias outside scope where it was defined
-          parent
-            .asInstanceOf[ScTemplateBody]
+          parent.asInstanceOf[ScTemplateBody]
             .isAncestorOf(projectionType.actualElement)
         case _ => false
       }
 
       if (!isSuitableParent(owners, parent)) { noContinue = true }
 
-      val occurrences = ScalaRefactoringUtil.getTypeElementOccurrences(
-        currentElement,
-        parent)
+      val occurrences = ScalaRefactoringUtil
+        .getTypeElementOccurrences(currentElement, parent)
       val validator = ScalaTypeValidator(
         conflictsReporter,
         project,
@@ -136,9 +128,8 @@ object ScopeSuggester {
       parent = getParent(parent, isScriptFile)
     }
 
-    val scPackage = PsiTreeUtil.getParentOfType(
-      currentElement,
-      classOf[ScPackaging])
+    val scPackage = PsiTreeUtil
+      .getParentOfType(currentElement, classOf[ScPackaging])
 
     //forbid to use typeParameter type outside the class
     if ((scPackage != null) && owners.isEmpty && !noContinue) {
@@ -151,9 +142,7 @@ object ScopeSuggester {
           resultDirectory,
           needDirectoryCreating = false,
           Array(
-            NameSuggester
-              .suggestNamesByType(currentElement.calcType)
-              .apply(0)
+            NameSuggester.suggestNamesByType(currentElement.calcType).apply(0)
               .capitalize)
         )
       }
@@ -201,17 +190,17 @@ object ScopeSuggester {
         : ArrayBuffer[(PsiPackage, PsiDirectory)] = {
 
       if (currentPackage != null && currentPackage.getName != null) {
-        val subPackages = currentPackage.getSubPackages(
-          GlobalSearchScope.moduleScope(module))
-        val filesNoRecursive = currentPackage.getFiles(
-          GlobalSearchScope.moduleScope(module))
+        val subPackages = currentPackage
+          .getSubPackages(GlobalSearchScope.moduleScope(module))
+        val filesNoRecursive = currentPackage
+          .getFiles(GlobalSearchScope.moduleScope(module))
 
         // don't choose package if ther is only one subpackage
         if ((subPackages.length != 1) || filesNoRecursive.nonEmpty) {
-          val packageDirectories = currentPackage.getDirectories(
-            GlobalSearchScope.moduleScope(module))
-          val containingDirectory = packageDirectories.intersect(
-            dirContainingFile)
+          val packageDirectories = currentPackage
+            .getDirectories(GlobalSearchScope.moduleScope(module))
+          val containingDirectory = packageDirectories
+            .intersect(dirContainingFile)
 
           val resultDirectory: PsiDirectory =
             if (containingDirectory.length > 0) { containingDirectory.apply(0) }
@@ -228,8 +217,7 @@ object ScopeSuggester {
     }
 
     val currentPackage = ScPackageImpl
-      .findPackage(typeElement.getProject, packageName)
-      .asInstanceOf[PsiPackage]
+      .findPackage(typeElement.getProject, packageName).asInstanceOf[PsiPackage]
     val directoriesContainingFile = getDirectoriesContainigfile(
       typeElement.getContainingFile)
     val module = RunWorksheetAction.getModuleFor(typeElement.getContainingFile)
@@ -270,8 +258,8 @@ object ScopeSuggester {
             }
           }
 
-          val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
-            typeElement.getProject)
+          val helper: PsiSearchHelper = PsiSearchHelper.SERVICE
+            .getInstance(typeElement.getProject)
           helper.processAllFilesWithWord(
             word,
             GlobalSearchScopesCore.directoryScope(currentDirectory, true),
@@ -292,17 +280,16 @@ object ScopeSuggester {
           intersectionResult = intersectionResult.intersect(inBuffer)
         }
 
-        resultBuffer.foreach((element: ArrayBuffer[ScalaFile]) =>
-          intersect(element))
+        resultBuffer
+          .foreach((element: ArrayBuffer[ScalaFile]) => intersect(element))
         intersectionResult.toList.reverse.toArray
       }
     }
 
-    val inPackage = ScPackageImpl.findPackage(
-      typeElement.getProject,
-      inPackageName)
-    val projectSearchScope = GlobalSearchScope.projectScope(
-      typeElement.getProject)
+    val inPackage = ScPackageImpl
+      .findPackage(typeElement.getProject, inPackageName)
+    val projectSearchScope = GlobalSearchScope
+      .projectScope(typeElement.getProject)
     val packageObject = inPackage.findPackageObject(projectSearchScope)
 
     val fileEncloser =
@@ -321,9 +308,8 @@ object ScopeSuggester {
     def handleOneFile(file: ScalaFile) {
       if (packageObject.exists((x: ScTypeDefinition) =>
             x.getContainingFile == file)) {} else {
-        val occurrences = ScalaRefactoringUtil.getTypeElementOccurrences(
-          typeElement,
-          file)
+        val occurrences = ScalaRefactoringUtil
+          .getTypeElementOccurrences(typeElement, file)
         allOcurrences += occurrences
         val parent = file match {
           case scalaFile: ScalaFile if scalaFile.isScriptFile() => file
@@ -347,9 +333,8 @@ object ScopeSuggester {
     if (needNewDir) {
       val classes = inPackage.getClasses
       for (clazz <- classes) {
-        val occurrences = ScalaRefactoringUtil.getTypeElementOccurrences(
-          typeElement,
-          clazz)
+        val occurrences = ScalaRefactoringUtil
+          .getTypeElementOccurrences(typeElement, clazz)
         allOcurrences += occurrences
 
         val parent = PsiTreeUtil.findChildOfType(clazz, classOf[ScTemplateBody])
@@ -363,8 +348,8 @@ object ScopeSuggester {
       }
     } else { collectedFiles.foreach(handleOneFile) }
 
-    val occurrences = allOcurrences.foldLeft(Array[ScTypeElement]())((a, b) =>
-      a ++ b)
+    val occurrences = allOcurrences
+      .foldLeft(Array[ScTypeElement]())((a, b) => a ++ b)
     val validator = ScalaCompositeTypeValidator(
       allValidators.toList,
       conflictsReporter,
@@ -409,8 +394,8 @@ case class SimpleScopeItem(
     extends ScopeItem(name, availableNames) {
 
   var occurrencesFromInheretors: Array[ScTypeElement] = Array[ScTypeElement]()
-  val usualOccurrencesRanges = usualOccurrences.map((x: ScTypeElement) =>
-    (x.getTextRange, x.getContainingFile))
+  val usualOccurrencesRanges = usualOccurrences
+    .map((x: ScTypeElement) => (x.getTextRange, x.getContainingFile))
   val fileEncloserRange =
     (fileEncloser.getTextRange, fileEncloser.getContainingFile)
 

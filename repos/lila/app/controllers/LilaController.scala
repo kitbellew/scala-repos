@@ -27,11 +27,11 @@ private[controllers] trait LilaController
 
   protected val logger = lila.log("controller")
 
-  protected implicit val LilaResultZero = Zero.instance[Result](
-    Results.NotFound)
+  protected implicit val LilaResultZero = Zero
+    .instance[Result](Results.NotFound)
 
-  protected implicit val LilaHtmlMonoid =
-    lila.app.templating.Environment.LilaHtmlMonoid
+  protected implicit val LilaHtmlMonoid = lila.app.templating.Environment
+    .LilaHtmlMonoid
 
   protected implicit final class LilaPimpedResult(result: Result) {
     def fuccess = scala.concurrent.Future successful result
@@ -293,8 +293,7 @@ private[controllers] trait LilaController
     Forbidden("no permission")
 
   protected def ensureSessionId(req: RequestHeader)(res: Result): Result =
-    req.session.data
-      .contains(LilaCookie.sessionId)
+    req.session.data.contains(LilaCookie.sessionId)
       .fold(res, res withCookies LilaCookie.makeSessionId(req))
 
   protected def negotiate(html: => Fu[Result], api: Int => Fu[Result])(implicit

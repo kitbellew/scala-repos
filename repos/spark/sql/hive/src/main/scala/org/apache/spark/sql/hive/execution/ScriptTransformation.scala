@@ -99,8 +99,7 @@ private[hive] case class ScriptTransformation(
       // This nullability is a performance optimization in order to avoid an Option.foreach() call
       // inside of a loop
       @Nullable
-      val (inputSerde, inputSoi) = ioschema
-        .initInputSerDe(input)
+      val (inputSerde, inputSoi) = ioschema.initInputSerDe(input)
         .getOrElse((null, null))
 
       // This new thread will consume the ScriptTransformation's input rows and write them to the
@@ -133,8 +132,8 @@ private[hive] case class ScriptTransformation(
           val scriptOutputStream = new DataInputStream(inputStream)
 
           @Nullable
-          val scriptOutputReader =
-            ioschema.recordReader(scriptOutputStream, localHiveConf).orNull
+          val scriptOutputReader = ioschema
+            .recordReader(scriptOutputStream, localHiveConf).orNull
 
           var scriptOutputWritable: Writable = null
           val reusedWritableObject: Writable =
@@ -184,17 +183,14 @@ private[hive] case class ScriptTransformation(
               curLine = reader.readLine()
               if (!ioschema.schemaLess) {
                 new GenericInternalRow(
-                  prevLine
-                    .split(
-                      ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
-                    .map(CatalystTypeConverters.convertToCatalyst))
+                  prevLine.split(
+                    ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD")).map(
+                    CatalystTypeConverters.convertToCatalyst))
               } else {
                 new GenericInternalRow(
-                  prevLine
-                    .split(
-                      ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"),
-                      2)
-                    .map(CatalystTypeConverters.convertToCatalyst))
+                  prevLine.split(
+                    ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"),
+                    2).map(CatalystTypeConverters.convertToCatalyst))
               }
             } else {
               val raw = outputSerde.deserialize(scriptOutputWritable)
@@ -264,8 +260,8 @@ private class ScriptTransformationWriterThread(
 
       val dataOutputStream = new DataOutputStream(outputStream)
       @Nullable
-      val scriptInputWriter =
-        ioschema.recordWriter(dataOutputStream, conf).orNull
+      val scriptInputWriter = ioschema.recordWriter(dataOutputStream, conf)
+        .orNull
 
       // We can't use Utils.tryWithSafeFinally here because we also need a `catch` block, so
       // let's use a variable to record whether the `finally` block was hit due to an exception
@@ -347,10 +343,10 @@ private[hive] case class HiveScriptIOSchema(
     ("TOK_TABLEROWFORMATFIELD", "\t"),
     ("TOK_TABLEROWFORMATLINES", "\n"))
 
-  val inputRowFormatMap = inputRowFormat.toMap.withDefault((k) =>
-    defaultFormat(k))
-  val outputRowFormatMap = outputRowFormat.toMap.withDefault((k) =>
-    defaultFormat(k))
+  val inputRowFormatMap = inputRowFormat.toMap
+    .withDefault((k) => defaultFormat(k))
+  val outputRowFormatMap = outputRowFormat.toMap
+    .withDefault((k) => defaultFormat(k))
 
   def initInputSerDe(
       input: Seq[Expression]): Option[(AbstractSerDe, ObjectInspector)] = {
@@ -361,8 +357,7 @@ private[hive] case class HiveScriptIOSchema(
       val objectInspector = ObjectInspectorFactory
         .getStandardStructObjectInspector(
           columns.asJava,
-          fieldObjectInspectors.asJava)
-        .asInstanceOf[ObjectInspector]
+          fieldObjectInspectors.asJava).asInstanceOf[ObjectInspector]
       (serde, objectInspector)
     }
   }
@@ -372,8 +367,7 @@ private[hive] case class HiveScriptIOSchema(
     outputSerdeClass.map { serdeClass =>
       val (columns, columnTypes) = parseAttrs(output)
       val serde = initSerDe(serdeClass, columns, columnTypes, outputSerdeProps)
-      val structObjectInspector = serde
-        .getObjectInspector()
+      val structObjectInspector = serde.getObjectInspector()
         .asInstanceOf[StructObjectInspector]
       (serde, structObjectInspector)
     }
@@ -392,13 +386,10 @@ private[hive] case class HiveScriptIOSchema(
       columnTypes: Seq[DataType],
       serdeProps: Seq[(String, String)]): AbstractSerDe = {
 
-    val serde = Utils
-      .classForName(serdeClassName)
-      .newInstance
+    val serde = Utils.classForName(serdeClassName).newInstance
       .asInstanceOf[AbstractSerDe]
 
-    val columnTypesNames = columnTypes
-      .map(_.toTypeInfo.getTypeName())
+    val columnTypesNames = columnTypes.map(_.toTypeInfo.getTypeName())
       .mkString(",")
 
     var propsMap =
@@ -416,9 +407,7 @@ private[hive] case class HiveScriptIOSchema(
       inputStream: InputStream,
       conf: Configuration): Option[RecordReader] = {
     recordReaderClass.map { klass =>
-      val instance = Utils
-        .classForName(klass)
-        .newInstance()
+      val instance = Utils.classForName(klass).newInstance()
         .asInstanceOf[RecordReader]
       val props = new Properties()
       props.putAll(outputSerdeProps.toMap.asJava)
@@ -431,9 +420,7 @@ private[hive] case class HiveScriptIOSchema(
       outputStream: OutputStream,
       conf: Configuration): Option[RecordWriter] = {
     recordWriterClass.map { klass =>
-      val instance = Utils
-        .classForName(klass)
-        .newInstance()
+      val instance = Utils.classForName(klass).newInstance()
         .asInstanceOf[RecordWriter]
       instance.initialize(outputStream, conf)
       instance
@@ -472,8 +459,7 @@ private[hive] case class HiveScriptIOSchema(
     val serdeClassSQL = serdeClass.map("'" + _ + "'").getOrElse("")
     val serdePropsSQL =
       if (serdeClass.nonEmpty) {
-        val props = serdeProps
-          .map { p => s"'${p._1}' = '${p._2}'" }
+        val props = serdeProps.map { p => s"'${p._1}' = '${p._2}'" }
           .mkString(", ")
         if (props.nonEmpty) " WITH SERDEPROPERTIES(" + props + ")" else ""
       } else { "" }

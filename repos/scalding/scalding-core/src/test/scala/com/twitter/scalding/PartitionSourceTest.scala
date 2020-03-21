@@ -38,10 +38,8 @@ object PartitionSourceTestHelpers {
     def getPathDepth(): Int = 1
 
     def toPartition(tupleEntry: TupleEntry): String =
-      "{" + Util.join(
-        tupleEntry.asIterableOf(classOf[String]),
-        "}->{",
-        true) + "}"
+      "{" + Util
+        .join(tupleEntry.asIterableOf(classOf[String]), "}->{", true) + "}"
 
     def toTuple(partition: String, tupleEntry: TupleEntry): Unit =
       throw new RuntimeException("toTuple for reading not implemented")
@@ -96,9 +94,7 @@ class DelimitedPartitionSourceTest extends WordSpec with Matchers {
         job
       }
 
-      JobTest(buildJob(_))
-        .source(Tsv("input", ('col1, 'col2)), input)
-        .runHadoop
+      JobTest(buildJob(_)).source(Tsv("input", ('col1, 'col2)), input).runHadoop
         .finish
 
       val testMode = job.mode.asInstanceOf[HadoopTest]
@@ -108,10 +104,10 @@ class DelimitedPartitionSourceTest extends WordSpec with Matchers {
 
       directory.listFiles().map({ _.getName() }).toSet shouldBe Set("A", "B")
 
-      val aSource = ScalaSource.fromFile(
-        new File(directory, "A/part-00000-00000"))
-      val bSource = ScalaSource.fromFile(
-        new File(directory, "B/part-00000-00001"))
+      val aSource = ScalaSource
+        .fromFile(new File(directory, "A/part-00000-00000"))
+      val bSource = ScalaSource
+        .fromFile(new File(directory, "B/part-00000-00001"))
 
       aSource.getLines.toSeq shouldBe Seq("A\t1", "A\t2")
       bSource.getLines.toSeq shouldBe Seq("B\t3")
@@ -133,10 +129,8 @@ class CustomPartitionSourceTest extends WordSpec with Matchers {
         job
       }
 
-      JobTest(buildJob(_))
-        .source(Tsv("input", ('col1, 'col2, 'col3)), input)
-        .runHadoop
-        .finish
+      JobTest(buildJob(_)).source(Tsv("input", ('col1, 'col2, 'col3)), input)
+        .runHadoop.finish
 
       val testMode = job.mode.asInstanceOf[HadoopTest]
 
@@ -146,10 +140,10 @@ class CustomPartitionSourceTest extends WordSpec with Matchers {
         "{A}->{x}",
         "{B}->{y}")
 
-      val aSource = ScalaSource.fromFile(
-        new File(directory, "{A}->{x}/part-00000-00000"))
-      val bSource = ScalaSource.fromFile(
-        new File(directory, "{B}->{y}/part-00000-00001"))
+      val aSource = ScalaSource
+        .fromFile(new File(directory, "{A}->{x}/part-00000-00000"))
+      val bSource = ScalaSource
+        .fromFile(new File(directory, "{B}->{y}/part-00000-00001"))
 
       aSource.getLines.toSeq shouldBe Seq("A\tx\t1", "A\tx\t2")
       bSource.getLines.toSeq shouldBe Seq("B\ty\t3")
@@ -172,10 +166,8 @@ class PartialPartitionSourceTest extends WordSpec with Matchers {
         job
       }
 
-      JobTest(buildJob(_))
-        .source(Tsv("input", ('col1, 'col2, 'col3)), input)
-        .runHadoop
-        .finish
+      JobTest(buildJob(_)).source(Tsv("input", ('col1, 'col2, 'col3)), input)
+        .runHadoop.finish
 
       val testMode = job.mode.asInstanceOf[HadoopTest]
 
@@ -183,10 +175,10 @@ class PartialPartitionSourceTest extends WordSpec with Matchers {
 
       directory.listFiles().map({ _.getName() }).toSet shouldBe Set("A", "B")
 
-      val aSource = ScalaSource.fromFile(
-        new File(directory, "A/x/part-00000-00000"))
-      val bSource = ScalaSource.fromFile(
-        new File(directory, "B/y/part-00000-00001"))
+      val aSource = ScalaSource
+        .fromFile(new File(directory, "A/x/part-00000-00000"))
+      val bSource = ScalaSource
+        .fromFile(new File(directory, "B/y/part-00000-00001"))
 
       aSource.getLines.toSeq shouldBe Seq("A\t1", "A\t2")
       bSource.getLines.toSeq shouldBe Seq("B\t3")

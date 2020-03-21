@@ -96,8 +96,8 @@ trait NormalizationHelperModule[M[+_]]
             def collectReduction(reduction: Reduction): Set[CPath] = {
               refs collect {
                 case ColumnRef(selector, ctype)
-                    if selector.hasSuffix(
-                      CPathField(reduction.name)) && ctype.isNumeric =>
+                    if selector.hasSuffix(CPathField(reduction.name)) && ctype
+                      .isNumeric =>
                   selector.take(selector.length - 1) getOrElse CPath.Identity
               }
             }
@@ -112,8 +112,8 @@ trait NormalizationHelperModule[M[+_]]
                 val augPath = path \ CPathField(reduction.name)
                 val jtype = Schema.mkType(List(ColumnRef(augPath, CNum)))
 
-                val cols =
-                  jtype map { schema.columns } getOrElse Set.empty[Column]
+                val cols = jtype map { schema.columns } getOrElse Set
+                  .empty[Column]
                 val unifiedCol = unifyNumColumns(cols.toList)
 
                 (path, unifiedCol)
@@ -155,9 +155,8 @@ trait NormalizationHelperModule[M[+_]]
             table.transform(spec)
         }
 
-        val result = resultTables reduceOption {
-          _ concat _
-        } getOrElse Table.empty
+        val result = resultTables reduceOption { _ concat _ } getOrElse Table
+          .empty
 
         M.point(result)
       }
@@ -231,15 +230,14 @@ trait NormalizationHelperModule[M[+_]]
           }
         }
 
-      lazy val alignment = MorphismAlignment.Custom(
-        IdentityPolicy.Retain.Cross,
-        alignCustom _)
+      lazy val alignment = MorphismAlignment
+        .Custom(IdentityPolicy.Retain.Cross, alignCustom _)
 
       def morph1Apply(summary: Result): Morph1Apply
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
-        val valueTable = t2.transform(
-          trans.DerefObjectStatic(trans.TransSpec1.Id, paths.Value))
+        val valueTable = t2
+          .transform(trans.DerefObjectStatic(trans.TransSpec1.Id, paths.Value))
         valueTable.reduce(reducer) map { summary => (t1, morph1Apply(summary)) }
       }
     }

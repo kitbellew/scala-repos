@@ -152,14 +152,14 @@ final class MongoJobManager(
       prevStatusId match {
         case Some(prevId) =>
           database(
-            selectAndUpdate(settings.jobs)
-              .set(JPath("status") set statusId)
+            selectAndUpdate(settings.jobs).set(JPath("status") set statusId)
               .where("id" === jobId && "status" === prevId)) flatMap {
             case Some(_) => // Success
               val status = Status(jobId, statusId, msg, progress, unit, extra)
               val message = Status.toMessage(status)
-              database(insert(message.serialize.asInstanceOf[JObject]).into(
-                settings.messages)) map { _ =>
+              database(
+                insert(message.serialize.asInstanceOf[JObject])
+                  .into(settings.messages)) map { _ =>
                 logger.trace("Job %s updated in %f ms".format(
                   jobId,
                   (System.nanoTime - start) / 1000.0))
@@ -176,12 +176,12 @@ final class MongoJobManager(
           val status = Status(jobId, statusId, msg, progress, unit, extra)
           val message = Status.toMessage(status)
           database {
-            upsert(settings.jobs)
-              .set(JPath("status") set statusId)
+            upsert(settings.jobs).set(JPath("status") set statusId)
               .where("id" === jobId)
           } flatMap { _ =>
-            database(insert(message.serialize.asInstanceOf[JObject]).into(
-              settings.messages))
+            database(
+              insert(message.serialize.asInstanceOf[JObject])
+                .into(settings.messages))
           } map { _ => Right(status) }
       }
     }
@@ -198,13 +198,11 @@ final class MongoJobManager(
 
   private def nextMessageId(jobId: JobId): Future[Long] = {
     database(
-      selectAndUpsert(settings.jobs)
-        .set(JPath("sequence") inc 1)
-        .where("id" === jobId)
-        .returnNew(true)) map {
+      selectAndUpsert(settings.jobs).set(JPath("sequence") inc 1)
+        .where("id" === jobId).returnNew(true)) map {
       case Some(obj) =>
-        (obj \ "sequence").validated[Long] getOrElse sys.error(
-          "Expected an integral sequence number.")
+        (obj \ "sequence").validated[Long] getOrElse sys
+          .error("Expected an integral sequence number.")
       case None =>
         sys.error("Sequence number doesn't exist. This shouldn't happen.")
     }
@@ -248,8 +246,7 @@ final class MongoJobManager(
           case Right(newState) =>
             val newJob = job.copy(state = newState)
             database {
-              update(settings.jobs)
-                .set(newJob.serialize.asInstanceOf[JObject])
+              update(settings.jobs).set(newJob.serialize.asInstanceOf[JObject])
                 .where("id" === job.id)
             } map { _ => Right(newJob) }
 

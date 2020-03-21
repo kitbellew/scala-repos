@@ -135,9 +135,7 @@ object Docs {
 
         val label = "Play " + version
         val apiMappings = Keys.apiMappings.value
-        val externalDocsScalacOption = Opts.doc
-          .externalAPI(apiMappings)
-          .head
+        val externalDocsScalacOption = Opts.doc.externalAPI(apiMappings).head
           .replace("-doc-external-doc:", "")
 
         val options = Seq(
@@ -215,8 +213,8 @@ object Docs {
         .map(_.map { resources =>
           (for {
             conf <- resources.filter(resource =>
-              resource.name == "reference.conf" || resource.name.endsWith(
-                ".xml"))
+              resource.name == "reference.conf" || resource.name
+                .endsWith(".xml"))
             id <- projectId.toSeq
           } yield id -> conf).distinct
         })
@@ -237,8 +235,8 @@ object Docs {
         task in conf in ref get structure.data
 
       // Get all the Scala sources (not the Java ones)
-      val filteredSources = taskFromProject(sources).map(_.map(
-        _.filter(_.name.endsWith(extension))))
+      val filteredSources = taskFromProject(sources)
+        .map(_.map(_.filter(_.name.endsWith(extension))))
 
       // Join them
       val tasks = filteredSources.toSeq
@@ -256,8 +254,7 @@ object Docs {
       val project = Project.getProject(projectRef, structure)
       val childRefs = project.toSeq.flatMap(_.aggregate)
       childRefs flatMap { childRef =>
-        val includeApiDocs = (apiDocsInclude in childRef)
-          .get(structure.data)
+        val includeApiDocs = (apiDocsInclude in childRef).get(structure.data)
           .getOrElse(false)
         if (includeApiDocs) childRef +: aggregated(childRef)
         else aggregated(childRef)

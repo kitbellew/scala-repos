@@ -16,8 +16,8 @@ class DottySdkTableModel
       new ColumnInfo[SdkChoice, String]("File") {
         override def valueOf(item: SdkChoice) = {
           item.sdk match {
-            case d: DottySdkDescriptor =>
-              d.mainDottyJar.map(_.getName).getOrElse("Unknown")
+            case d: DottySdkDescriptor => d.mainDottyJar.map(_.getName)
+                .getOrElse("Unknown")
           }
         }
 

@@ -94,10 +94,9 @@ class LogSegment(
   @nonthreadsafe
   def append(offset: Long, messages: ByteBufferMessageSet) {
     if (messages.sizeInBytes > 0) {
-      trace("Inserting %d bytes at offset %d at position %d".format(
-        messages.sizeInBytes,
-        offset,
-        log.sizeInBytes()))
+      trace(
+        "Inserting %d bytes at offset %d at position %d"
+          .format(messages.sizeInBytes, offset, log.sizeInBytes()))
       // append an entry to the index (if needed)
       if (bytesSinceLastIndexEntry > indexIntervalBytes) {
         index.append(offset, log.sizeInBytes())
@@ -182,9 +181,8 @@ class LogSegment(
           if (mapping == null)
             logSize // the max offset is off the end of the log, use the end of the file
           else mapping.position
-        min(
-          min(maxPosition, endPosition) - startPosition.position,
-          maxSize).toInt
+        min(min(maxPosition, endPosition) - startPosition.position, maxSize)
+          .toInt
       }
     }
     FetchDataInfo(offsetMetadata, log.read(startPosition.position, length))

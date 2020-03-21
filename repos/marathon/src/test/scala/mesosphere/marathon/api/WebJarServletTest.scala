@@ -29,8 +29,8 @@ class WebJarServletTest
     servlet.doGet(request, response)
 
     Then("A redirect response is send")
-    verify(response, atLeastOnce).setStatus(
-      HttpServletResponse.SC_MOVED_TEMPORARILY)
+    verify(response, atLeastOnce)
+      .setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY)
     verify(response, atLeastOnce).setHeader("Location", "ui/")
   }
 
@@ -43,8 +43,8 @@ class WebJarServletTest
     servlet.doGet(request, response)
 
     Then("A redirect response is send")
-    verify(response, atLeastOnce).setStatus(
-      HttpServletResponse.SC_MOVED_TEMPORARILY)
+    verify(response, atLeastOnce)
+      .setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY)
     verify(response, atLeastOnce).setHeader("Location", "/some/directory/")
   }
 

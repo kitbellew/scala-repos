@@ -26,8 +26,8 @@ class BasicAuthenticationFilter
     with AccountService
     with SystemSettingsService {
 
-  private val logger = LoggerFactory.getLogger(
-    classOf[BasicAuthenticationFilter])
+  private val logger = LoggerFactory
+    .getLogger(classOf[BasicAuthenticationFilter])
 
   def init(config: FilterConfig) = {}
 
@@ -44,35 +44,27 @@ class BasicAuthenticationFilter
       override def setCharacterEncoding(encoding: String) = {}
     }
 
-    val isUpdating = request.getRequestURI.endsWith(
-      "/git-receive-pack") || "service=git-receive-pack".equals(
-      request.getQueryString)
+    val isUpdating = request.getRequestURI
+      .endsWith("/git-receive-pack") || "service=git-receive-pack"
+      .equals(request.getQueryString)
     val settings = loadSystemSettings()
 
     try {
-      PluginRegistry()
-        .getRepositoryRouting(request.gitRepositoryPath)
-        .map {
-          case GitRepositoryRouting(_, _, filter) =>
-            // served by plug-ins
-            pluginRepository(
-              request,
-              wrappedResponse,
-              chain,
-              settings,
-              isUpdating,
-              filter)
-
-        }
-        .getOrElse {
-          // default repositories
-          defaultRepository(
+      PluginRegistry().getRepositoryRouting(request.gitRepositoryPath).map {
+        case GitRepositoryRouting(_, _, filter) =>
+          // served by plug-ins
+          pluginRepository(
             request,
             wrappedResponse,
             chain,
             settings,
-            isUpdating)
-        }
+            isUpdating,
+            filter)
+
+      }.getOrElse {
+        // default repositories
+        defaultRepository(request, wrappedResponse, chain, settings, isUpdating)
+      }
     } catch {
       case ex: Exception => {
         logger.error("error", ex)
@@ -121,9 +113,9 @@ class BasicAuthenticationFilter
           repositoryOwner,
           repositoryName.replaceFirst("\\.wiki\\.git$|\\.git$", "")) match {
           case Some(repository) => {
-            if (!isUpdating && !repository.repository.isPrivate && settings.allowAnonymousAccess) {
-              chain.doFilter(request, response)
-            } else {
+            if (!isUpdating && !repository.repository.isPrivate && settings
+                  .allowAnonymousAccess) { chain.doFilter(request, response) }
+            else {
               val passed = for {
                 auth <- Option(request.getHeader("Authorization"))
                 Array(username, password) = decodeAuthHeader(auth).split(":", 2)
@@ -134,9 +126,8 @@ class BasicAuthenticationFilter
                         repository.owner,
                         repository.name,
                         Some(account))) {
-                    request.setAttribute(
-                      Keys.Request.UserName,
-                      account.userName)
+                    request
+                      .setAttribute(Keys.Request.UserName, account.userName)
                     true
                   } else false
                 } else true

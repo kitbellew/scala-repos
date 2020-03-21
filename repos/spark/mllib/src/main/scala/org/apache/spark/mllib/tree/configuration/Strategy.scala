@@ -129,9 +129,7 @@ class Strategy @Since("1.3.0") (
       numClasses,
       maxBins,
       Sort,
-      categoricalFeaturesInfo
-        .asInstanceOf[java.util.Map[Int, Int]]
-        .asScala
+      categoricalFeaturesInfo.asInstanceOf[java.util.Map[Int, Int]].asScala
         .toMap)
   }
 
@@ -154,9 +152,7 @@ class Strategy @Since("1.3.0") (
         java.lang.Integer,
         java.lang.Integer]): Unit = {
     this.categoricalFeaturesInfo = categoricalFeaturesInfo
-      .asInstanceOf[java.util.Map[Int, Int]]
-      .asScala
-      .toMap
+      .asInstanceOf[java.util.Map[Int, Int]].asScala.toMap
   }
 
   /**

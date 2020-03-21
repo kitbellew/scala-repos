@@ -263,12 +263,10 @@ class ContinuousQueryManagerSuite
           var query: StreamExecution = null
           try {
             val df = ds.toDF
-            query = sqlContext.streams
-              .startQuery(
-                StreamExecution.nextName,
-                df,
-                new MemorySink(df.schema))
-              .asInstanceOf[StreamExecution]
+            query = sqlContext.streams.startQuery(
+              StreamExecution.nextName,
+              df,
+              new MemorySink(df.schema)).asInstanceOf[StreamExecution]
           } catch {
             case NonFatal(e) =>
               if (query != null) query.stop()
@@ -291,18 +289,16 @@ class ContinuousQueryManagerSuite
 
     def awaitTermFunc(): Unit = {
       if (awaitTimeout != null && awaitTimeout.toMillis > 0) {
-        val returnedValue = sqlContext.streams.awaitAnyTermination(
-          awaitTimeout.toMillis)
+        val returnedValue = sqlContext.streams
+          .awaitAnyTermination(awaitTimeout.toMillis)
         assert(
           returnedValue === expectedReturnedValue,
           "Returned value does not match expected")
       } else { sqlContext.streams.awaitAnyTermination() }
     }
 
-    AwaitTerminationTester.test(
-      expectedBehavior,
-      awaitTermFunc,
-      testBehaviorFor)
+    AwaitTerminationTester
+      .test(expectedBehavior, awaitTermFunc, testBehaviorFor)
   }
 
   /** Stop a random active query either with `stop()` or with an error */

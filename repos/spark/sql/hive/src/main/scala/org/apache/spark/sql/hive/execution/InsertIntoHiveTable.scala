@@ -61,8 +61,8 @@ private[hive] case class InsertIntoHiveTable(
     assert(valueClass != null, "Output value class not set")
     conf.value.setOutputValueClass(valueClass)
 
-    val outputFileFormatClassName =
-      fileSinkConf.getTableInfo.getOutputFileFormatClassName
+    val outputFileFormatClassName = fileSinkConf.getTableInfo
+      .getOutputFileFormatClassName
     assert(outputFileFormatClassName != null, "Output format class not set")
     conf.value.set("mapred.output.format.class", outputFileFormatClassName)
 
@@ -101,10 +101,10 @@ private[hive] case class InsertIntoHiveTable(
       // to store compression information.
       sc.hiveconf.set("mapred.output.compress", "true")
       fileSinkConf.setCompressed(true)
-      fileSinkConf.setCompressCodec(
-        sc.hiveconf.get("mapred.output.compression.codec"))
-      fileSinkConf.setCompressType(
-        sc.hiveconf.get("mapred.output.compression.type"))
+      fileSinkConf
+        .setCompressCodec(sc.hiveconf.get("mapred.output.compression.codec"))
+      fileSinkConf
+        .setCompressType(sc.hiveconf.get("mapred.output.compression.type"))
     }
 
     val numDynamicPartitions = partition.values.count(_.isEmpty)
@@ -128,8 +128,7 @@ private[hive] case class InsertIntoHiveTable(
 
       // Report error if dynamic partition strict mode is on but no static partition is found
       if (numStaticPartitions == 0 &&
-          sc.hiveconf
-            .getVar(HiveConf.ConfVars.DYNAMICPARTITIONINGMODE)
+          sc.hiveconf.getVar(HiveConf.ConfVars.DYNAMICPARTITIONINGMODE)
             .equalsIgnoreCase("strict")) {
         throw new SparkException(ErrorMsg.DYNAMIC_PARTITION_STRICT_MODE.getMsg)
       }
@@ -160,8 +159,8 @@ private[hive] case class InsertIntoHiveTable(
 
     val writerContainer =
       if (numDynamicPartitions > 0) {
-        val dynamicPartColNames = partitionColumnNames.takeRight(
-          numDynamicPartitions)
+        val dynamicPartColNames = partitionColumnNames
+          .takeRight(numDynamicPartitions)
         new SparkHiveDynamicPartitionWriterContainer(
           jobConf,
           fileSinkConf,
@@ -173,8 +172,8 @@ private[hive] case class InsertIntoHiveTable(
       }
 
     @transient
-    val outputClass =
-      writerContainer.newSerializer(table.tableDesc).getSerializedClass
+    val outputClass = writerContainer.newSerializer(table.tableDesc)
+      .getSerializedClass
     saveAsHiveFile(
       child.execute(),
       outputClass,
@@ -194,9 +193,8 @@ private[hive] case class InsertIntoHiveTable(
       // loadPartition call orders directories created on the iteration order of the this map
       val orderedPartitionSpec = new util.LinkedHashMap[String, String]()
       table.hiveQlTable.getPartCols.asScala.foreach { entry =>
-        orderedPartitionSpec.put(
-          entry.getName,
-          partitionSpec.getOrElse(entry.getName, ""))
+        orderedPartitionSpec
+          .put(entry.getName, partitionSpec.getOrElse(entry.getName, ""))
       }
 
       // inheritTableSpecs is set to true. It should be set to false for a IMPORT query

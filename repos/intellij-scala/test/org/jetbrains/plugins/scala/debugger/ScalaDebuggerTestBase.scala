@@ -91,11 +91,9 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   protected def getImlFile: File = {
-    if (testDataBasePath.exists())
-      testDataBasePath
-        .listFiles()
-        .find { _.getName.endsWith(ModuleFileType.DOT_DEFAULT_EXTENSION) }
-        .orNull
+    if (testDataBasePath.exists()) testDataBasePath.listFiles().find {
+      _.getName.endsWith(ModuleFileType.DOT_DEFAULT_EXTENSION)
+    }.orNull
     else null
   }
 
@@ -175,12 +173,10 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
 
   def md5(file: File): Array[Byte] = {
     val md = MessageDigest.getInstance("MD5")
-    val isSource =
-      file.getName.endsWith(".java") || file.getName.endsWith(".scala")
+    val isSource = file.getName.endsWith(".java") || file.getName
+      .endsWith(".scala")
     if (isSource) {
-      val text = scala.io.Source
-        .fromFile(file, "UTF-8")
-        .mkString
+      val text = scala.io.Source.fromFile(file, "UTF-8").mkString
         .replace("\r", "")
       md.digest(text.getBytes("UTF8"))
     } else { md.digest(FileUtil.loadBytes(new FileInputStream(file))) }
@@ -232,8 +228,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   private def testDataProjectIsValid(): Boolean = {
-    sameSourceFiles() && loadChecksums() && checksums.keys.forall(
-      checkFile) && getImlFile != null
+    sameSourceFiles() && loadChecksums() && checksums.keys
+      .forall(checkFile) && getImlFile != null
   }
 
   private def sameSourceFiles(): Boolean = {

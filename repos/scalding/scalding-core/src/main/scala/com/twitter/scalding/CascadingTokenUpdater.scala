@@ -23,15 +23,10 @@ object CascadingTokenUpdater {
   def parseTokens(tokClass: String): Map[Int, String] =
     if (tokClass == null || tokClass.isEmpty) Map[Int, String]()
     else
-      tokClass
-        .split(",")
-        .map(_.trim)
-        .filter(_.size > 1)
-        .toIterator
-        .map(_.split("="))
-        .filter(_.size == 2)
-        .map { ary => (ary(0).toInt, ary(1)) }
-        .toMap
+      tokClass.split(",").map(_.trim).filter(_.size > 1).toIterator
+        .map(_.split("=")).filter(_.size == 2).map { ary =>
+          (ary(0).toInt, ary(1))
+        }.toMap
 
   // does the inverse of the previous function, given a Map of index to class
   // return the cascading token format for it
@@ -49,12 +44,10 @@ object CascadingTokenUpdater {
   private def assignTokens(
       first: Int,
       names: Iterable[String]): Map[Int, String] =
-    names
-      .foldLeft((first, Map[Int, String]())) { (idMap, clz) =>
-        val (id, m) = idMap
-        (id + 1, m + (id -> clz))
-      }
-      ._2
+    names.foldLeft((first, Map[Int, String]())) { (idMap, clz) =>
+      val (id, m) = idMap
+      (id + 1, m + (id -> clz))
+    }._2
 
   def update(config: Config, clazzes: Set[Class[_]]): Config = {
     val toks = config.getCascadingSerializationTokens

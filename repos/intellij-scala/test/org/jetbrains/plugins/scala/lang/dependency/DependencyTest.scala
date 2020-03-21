@@ -257,8 +257,7 @@ class DependencyTest extends SimpleTestCase {
       expectations: (String, String, String)*) {
     val file = parseText(code)
 
-    val descriptors = Dependency
-      .dependenciesIn(file)
+    val descriptors = Dependency.dependenciesIn(file)
       .map(it => (it.source.getText, it.target.toString, it.path.asString))
 
     Assert.assertEquals(expectations.toList, descriptors.toList)

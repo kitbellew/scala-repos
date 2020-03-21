@@ -24,15 +24,15 @@ object Foldable1Usage extends App {
   assert(
     Foldable1[NonEmptyList].foldMap1(NonEmptyList(1, 2, 3))(identity) === 6)
   assert(
-    Foldable1[NonEmptyList].foldMap1(NonEmptyList("1", "2", "3"))(
-      identity) === "123")
+    Foldable1[NonEmptyList]
+      .foldMap1(NonEmptyList("1", "2", "3"))(identity) === "123")
   assert(NonEmptyList(1, 2, 3).foldMap1(identity) === 6)
   assert(NonEmptyList("1", "2", "3").foldMap1(identity) === "123")
 
   // or with a slightly less trivial function:
   assert(
-    Foldable1[NonEmptyList].foldMap1(NonEmptyList(1, 2, 3))(
-      _.toString) === "123")
+    Foldable1[NonEmptyList]
+      .foldMap1(NonEmptyList(1, 2, 3))(_.toString) === "123")
   assert(NonEmptyList(1, 2, 3).foldMap1(_.toString) === "123")
 
   // Here's a simple binary tree definition.
@@ -74,14 +74,14 @@ object Foldable1Usage extends App {
 
   assert(NonEmptyList("a", "aa", "aaa").minimumBy(_.length) === Some("a"))
   assert(
-    Foldable1[NonEmptyList].minimumBy1(NonEmptyList("a", "aa", "aaa"))(
-      _.length) === "a")
+    Foldable1[NonEmptyList]
+      .minimumBy1(NonEmptyList("a", "aa", "aaa"))(_.length) === "a")
   assert(NonEmptyList("a", "aa", "aaa").minimumBy1(_.length) === "a")
 
   assert(NonEmptyList("a", "aa", "aaa").maximumBy(_.length) === Some("aaa"))
   assert(
-    Foldable1[NonEmptyList].maximumBy1(NonEmptyList("a", "aa", "aaa"))(
-      _.length) === "aaa")
+    Foldable1[NonEmptyList]
+      .maximumBy1(NonEmptyList("a", "aa", "aaa"))(_.length) === "aaa")
   assert(NonEmptyList("a", "aa", "aaa").maximumBy1(_.length) === "aaa")
 
   // Another notable instance of Foldable1 is OneAnd. OneAnd is a

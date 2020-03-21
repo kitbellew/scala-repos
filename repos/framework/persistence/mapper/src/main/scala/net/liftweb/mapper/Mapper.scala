@@ -61,7 +61,8 @@ trait Mapper[A <: Mapper[A]]
   }
 
   def connectionIdentifier(id: ConnectionIdentifier): A = {
-    if (id != getSingleton.dbDefaultConnectionIdentifier || dbConnectionIdentifier.isDefined)
+    if (id != getSingleton
+          .dbDefaultConnectionIdentifier || dbConnectionIdentifier.isDefined)
       dbConnectionIdentifier = Full(id)
     thisToMappee(this)
   }

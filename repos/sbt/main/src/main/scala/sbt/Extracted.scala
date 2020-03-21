@@ -87,12 +87,8 @@ final case class Extracted(
     val config = extractedTaskConfig(this, structure, state)
     withStreams(structure, state) { str =>
       val nv = nodeView(state, str, rkey :: Nil)
-      val (newS, result) = EvaluateTask.runTask(
-        task,
-        state,
-        str,
-        structure.index.triggers,
-        config)(nv)
+      val (newS, result) = EvaluateTask
+        .runTask(task, state, str, structure.index.triggers, config)(nv)
       (newS, processResult(result, newS.log))
     }
   }
@@ -116,9 +112,9 @@ final case class Extracted(
   }
 
   private[this] def resolve[T](key: ScopedKey[T]): ScopedKey[T] =
-    Project.mapScope(
-      Scope.resolveScope(GlobalScope, currentRef.build, rootProject))(
-      key.scopedKey)
+    Project
+      .mapScope(Scope.resolveScope(GlobalScope, currentRef.build, rootProject))(
+        key.scopedKey)
   private def getOrError[T](
       scope: Scope,
       key: AttributeKey[_],
@@ -126,8 +122,8 @@ final case class Extracted(
     value getOrElse sys.error(display(ScopedKey(scope, key)) + " is undefined.")
   private def getOrError[T](scope: Scope, key: AttributeKey[T])(implicit
       display: Show[ScopedKey[_]]): T =
-    structure.data.get(scope, key) getOrElse sys.error(
-      display(ScopedKey(scope, key)) + " is undefined.")
+    structure.data.get(scope, key) getOrElse sys
+      .error(display(ScopedKey(scope, key)) + " is undefined.")
 
   def append(settings: Seq[Setting[_]], state: State): State = {
     val appendSettings = Load.transformSettings(
@@ -135,9 +131,8 @@ final case class Extracted(
       currentRef.build,
       rootProject,
       settings)
-    val newStructure = Load.reapply(
-      session.original ++ appendSettings,
-      structure)
+    val newStructure = Load
+      .reapply(session.original ++ appendSettings, structure)
     Project.setProject(session, newStructure, state)
   }
 }

@@ -112,8 +112,8 @@ class ScalaGlobalMembersCompletionContributor
         if (containingClass == null) return false
         val qualifiedName = containingClass.qualifiedName + "." + member.name
         for (excluded <- CodeInsightSettings.getInstance.EXCLUDED_PACKAGES) {
-          if (qualifiedName == excluded || qualifiedName.startsWith(
-                excluded + ".")) { return false }
+          if (qualifiedName == excluded || qualifiedName
+                .startsWith(excluded + ".")) { return false }
         }
         containingClass match {
           case o: ScObject if o.isStatic =>
@@ -130,8 +130,8 @@ class ScalaGlobalMembersCompletionContributor
       result: CompletionResultSet,
       originalFile: PsiFile,
       originalType: ScType) {
-    FeatureUsageTracker.getInstance.triggerFeatureUsed(
-      JavaCompletionFeatures.GLOBAL_MEMBER_NAME)
+    FeatureUsageTracker.getInstance
+      .triggerFeatureUsed(JavaCompletionFeatures.GLOBAL_MEMBER_NAME)
     val scope: GlobalSearchScope = ref.getResolveScope
     val file = ref.getContainingFile
 
@@ -209,14 +209,12 @@ class ScalaGlobalMembersCompletionContributor
         for (elem <- c.candidates) {
           val shouldImport = !elemsSetContains(elem.getElement)
           //todo: overloads?
-          val lookup: ScalaLookupItem = LookupElementManager
-            .getLookupElement(
-              elem,
-              isClassName = true,
-              isOverloadedForClassName = false,
-              shouldImport = shouldImport,
-              isInStableCodeReference = false)
-            .head
+          val lookup: ScalaLookupItem = LookupElementManager.getLookupElement(
+            elem,
+            isClassName = true,
+            isOverloadedForClassName = false,
+            shouldImport = shouldImport,
+            isInStableCodeReference = false).head
           lookup.usedImportStaticQuickfix = true
           lookup.elementToImport = next.resolveResult.getElement
           result.addElement(lookup)
@@ -230,15 +228,16 @@ class ScalaGlobalMembersCompletionContributor
       result: CompletionResultSet,
       originalFile: PsiFile,
       invocationCount: Int) {
-    FeatureUsageTracker.getInstance.triggerFeatureUsed(
-      JavaCompletionFeatures.GLOBAL_MEMBER_NAME)
+    FeatureUsageTracker.getInstance
+      .triggerFeatureUsed(JavaCompletionFeatures.GLOBAL_MEMBER_NAME)
     val matcher: PrefixMatcher = result.getPrefixMatcher
     val scope: GlobalSearchScope = ref.getResolveScope
     val file = ref.getContainingFile
 
     var hintShown: Boolean = false
     def showHint(shouldImport: Boolean) {
-      if (!hintShown && !shouldImport && CompletionService.getCompletionService.getAdvertisementText == null) {
+      if (!hintShown && !shouldImport && CompletionService.getCompletionService
+            .getAdvertisementText == null) {
         val actionId = IdeActions.ACTION_SHOW_INTENTION_ACTIONS
         val shortcut: String = KeymapUtil.getFirstKeyboardShortcutText(
           ActionManager.getInstance.getAction(actionId))
@@ -287,33 +286,28 @@ class ScalaGlobalMembersCompletionContributor
 
     val namesCache = ScalaShortNamesCacheManager.getInstance(ref.getProject)
 
-    val methodNamesIterator =
-      namesCache.getAllMethodNames.iterator ++ namesCache.getAllJavaMethodNames.iterator
+    val methodNamesIterator = namesCache.getAllMethodNames
+      .iterator ++ namesCache.getAllJavaMethodNames.iterator
 
     def isAccessible(member: PsiMember, containingClass: PsiClass): Boolean = {
-      invocationCount >= 3 || (ResolveUtils.isAccessible(
-        member,
-        ref,
-        forCompletion = true) && ResolveUtils.isAccessible(
-        containingClass,
-        ref,
-        forCompletion = true))
+      invocationCount >= 3 || (ResolveUtils
+        .isAccessible(member, ref, forCompletion = true) && ResolveUtils
+        .isAccessible(containingClass, ref, forCompletion = true))
     }
 
     while (methodNamesIterator.hasNext) {
       val methodName = methodNamesIterator.next()
       if (matcher.prefixMatches(methodName)) {
         val classes = new THashSet[PsiClass]
-        val methodsIterator =
-          namesCache.getMethodsByName(methodName, scope).iterator
+        val methodsIterator = namesCache.getMethodsByName(methodName, scope)
+          .iterator
         while (methodsIterator.hasNext) {
           val method = methodsIterator.next()
           val cClass = method.containingClass
           if (cClass != null) {
             val inheritors: Array[PsiClass] = {
               if (method.isInstanceOf[ScFunction])
-                ClassInheritorsSearch
-                  .search(cClass, scope, true)
+                ClassInheritorsSearch.search(cClass, scope, true)
                   .toArray(PsiClass.EMPTY_ARRAY)
               else Array.empty
             }
@@ -332,8 +326,8 @@ class ScalaGlobalMembersCompletionContributor
                 val overloads = containingClass match {
                   case o: ScObject => o.functionsByName(methodName)
                   case _ =>
-                    containingClass.getAllMethods.toSeq.filter(m =>
-                      m.name == methodName)
+                    containingClass.getAllMethods.toSeq
+                      .filter(m => m.name == methodName)
                 }
                 if (overloads.size == 1) {
                   result.addElement(
@@ -360,8 +354,8 @@ class ScalaGlobalMembersCompletionContributor
     while (fieldNamesIterator.hasNext) {
       val fieldName = fieldNamesIterator.next()
       if (matcher.prefixMatches(fieldName)) {
-        val fieldsIterator =
-          namesCache.getFieldsByName(fieldName, scope).iterator
+        val fieldsIterator = namesCache.getFieldsByName(fieldName, scope)
+          .iterator
         while (fieldsIterator.hasNext) {
           val field = fieldsIterator.next()
           if (isStatic(field)) {
@@ -380,16 +374,13 @@ class ScalaGlobalMembersCompletionContributor
     }
 
     val scalaFieldsIterator = ScalaShortNamesCacheManager
-      .getInstance(ref.getProject)
-      .getAllScalaFieldNames
-      .iterator
+      .getInstance(ref.getProject).getAllScalaFieldNames.iterator
 
     while (scalaFieldsIterator.hasNext) {
       val fieldName = scalaFieldsIterator.next()
       if (matcher.prefixMatches(fieldName)) {
         val fieldsIterator = ScalaShortNamesCacheManager
-          .getInstance(ref.getProject)
-          .getScalaFieldsByName(fieldName, scope)
+          .getInstance(ref.getProject).getScalaFieldsByName(fieldName, scope)
           .iterator
         while (fieldsIterator.hasNext) {
           val field = fieldsIterator.next()
@@ -431,15 +422,13 @@ class ScalaGlobalMembersCompletionContributor
       clazz: PsiClass,
       shouldImport: Boolean,
       overloaded: Boolean = false): LookupElement = {
-    LookupElementManager
-      .getLookupElement(
-        new ScalaResolveResult(member),
-        isClassName = true,
-        isOverloadedForClassName = overloaded,
-        shouldImport = shouldImport,
-        isInStableCodeReference = false,
-        containingClass = Some(clazz)
-      )
-      .head
+    LookupElementManager.getLookupElement(
+      new ScalaResolveResult(member),
+      isClassName = true,
+      isOverloadedForClassName = overloaded,
+      shouldImport = shouldImport,
+      isInStableCodeReference = false,
+      containingClass = Some(clazz)
+    ).head
   }
 }

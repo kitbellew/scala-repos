@@ -77,15 +77,12 @@ object Mod extends LilaController {
       implicit def req = ctx.body
       OptionFuResult(UserRepo named username) { user =>
         if (isGranted(_.SetEmail) && !isGranted(_.SetEmail, user))
-          Env.security.forms
-            .modEmail(user)
-            .bindFromRequest
-            .fold(
-              err => BadRequest(err.toString).fuccess,
-              email =>
-                modApi.setEmail(me.id, user.id, email) inject redirect(
-                  user.username,
-                  mod = true))
+          Env.security.forms.modEmail(user).bindFromRequest.fold(
+            err => BadRequest(err.toString).fuccess,
+            email =>
+              modApi.setEmail(me.id, user.id, email) inject redirect(
+                user.username,
+                mod = true))
         else fuccess(authorizationFailed(ctx.req))
       }
     }
@@ -108,8 +105,7 @@ object Mod extends LilaController {
       OptionFuOk(UserRepo named username) { user =>
         for {
           povs <- lila.game.GameRepo.recentPovsByUser(user, 100)
-          chats <- povs
-            .map(p => Env.chat.api.playerChat findNonEmpty p.gameId)
+          chats <- povs.map(p => Env.chat.api.playerChat findNonEmpty p.gameId)
             .sequence
           povWithChats = (povs zip chats) collect {
             case (p, Some(c)) => p -> c
@@ -121,12 +117,8 @@ object Mod extends LilaController {
           }
           publicLines <- Env.shutup.api getPublicLines user.id
           spy <- Env.security userSpy user.id
-        } yield html.mod.communication(
-          user,
-          povWithChats,
-          threads,
-          publicLines,
-          spy)
+        } yield html.mod
+          .communication(user, povWithChats, threads, publicLines, spy)
       }
     }
 
@@ -136,23 +128,18 @@ object Mod extends LilaController {
       import play.api.Play.current
       val email = "lichess.contact@gmail.com"
       val url = s"http://check.getipintel.net/check.php?ip=$ip&contact=$email"
-      WS.url(url)
-        .get()
-        .map(_.body)
-        .mon(_.security.proxy.request.time)
-        .flatMap { str =>
+      WS.url(url).get().map(_.body).mon(_.security.proxy.request.time).flatMap {
+        str =>
           parseFloatOption(str).fold[Fu[Int]](fufail(s"Invalid ratio $str")) {
-            ratio =>
-              fuccess((ratio * 100).toInt)
+            ratio => fuccess((ratio * 100).toInt)
           }
+      }.addEffects(
+        fail = _ => lila.mon.security.proxy.request.failure(),
+        succ = percent => {
+          lila.mon.security.proxy.percent(percent max 0)
+          lila.mon.security.proxy.request.success()
         }
-        .addEffects(
-          fail = _ => lila.mon.security.proxy.request.failure(),
-          succ = percent => {
-            lila.mon.security.proxy.percent(percent max 0)
-            lila.mon.security.proxy.request.success()
-          }
-        )
+      )
     },
     maxCapacity = 1024
   )

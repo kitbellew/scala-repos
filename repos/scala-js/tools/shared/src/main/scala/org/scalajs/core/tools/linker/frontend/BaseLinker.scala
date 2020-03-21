@@ -120,8 +120,8 @@ final class BaseLinker(
 
     if (checkIR) {
       logger.time("Linker: Check Infos") {
-        val infoAndTrees = infoInput.map(info =>
-          (info, getTree(info.encodedName)._1))
+        val infoAndTrees = infoInput
+          .map(info => (info, getTree(info.encodedName)._1))
         val errorCount = InfoChecker.check(infoAndTrees, logger)
         if (errorCount != 0)
           sys.error(s"There were $errorCount Info checking errors.")
@@ -182,20 +182,11 @@ final class BaseLinker(
         if (!analyzerInfo.isAnySubclassInstantiated) None
         else Some(LinkedClass.dummyParent(encodedName, Some("dummy")))
 
-      infoByName
-        .get(encodedName)
-        .map { info =>
-          val (tree, version) = getTree(encodedName)
-          val newVersion = version.map("real" + _) // avoid collision with dummy
-          linkedClassDef(
-            info,
-            tree,
-            analyzerInfo,
-            newVersion,
-            getTree,
-            analysis)
-        }
-        .orElse(optDummyParent)
+      infoByName.get(encodedName).map { info =>
+        val (tree, version) = getTree(encodedName)
+        val newVersion = version.map("real" + _) // avoid collision with dummy
+        linkedClassDef(info, tree, analyzerInfo, newVersion, getTree, analysis)
+      }.orElse(optDummyParent)
     }
 
     val linkedClassDefs = for {
@@ -268,7 +259,8 @@ final class BaseLinker(
           else memberMethods += linkedMethod(m)
         }
 
-      case m: PropertyDef => if (analyzerInfo.isAnySubclassInstantiated)
+      case m: PropertyDef =>
+        if (analyzerInfo.isAnySubclassInstantiated)
           exportedMembers += linkedProperty(m)
 
       case e: ConstructorExportDef => classExports += e
@@ -318,8 +310,8 @@ final class BaseLinker(
       }
     }
 
-    val classExportInfo = memberInfoByName.get(
-      Definitions.ExportedConstructorsName)
+    val classExportInfo = memberInfoByName
+      .get(Definitions.ExportedConstructorsName)
 
     val kind =
       if (analyzerInfo.isModuleAccessed) classDef.kind
@@ -394,8 +386,7 @@ final class BaseLinker(
 
     implicit val pos = targetMDef.pos
 
-    val targetIdent = targetMDef.name
-      .asInstanceOf[Ident]
+    val targetIdent = targetMDef.name.asInstanceOf[Ident]
       .copy() // for the new pos
     val proxyIdent = Ident(encodedName, None)
     val params = targetMDef.args.map(_.copy()) // for the new pos
@@ -434,8 +425,7 @@ final class BaseLinker(
 
     implicit val pos = targetMDef.pos
 
-    val targetIdent = targetMDef.name
-      .asInstanceOf[Ident]
+    val targetIdent = targetMDef.name.asInstanceOf[Ident]
       .copy() // for the new pos
     val bridgeIdent = targetIdent
     val params = targetMDef.args.map(_.copy()) // for the new pos
@@ -477,14 +467,12 @@ final class BaseLinker(
       methodName: String,
       getTree: TreeProvider): MethodDef = {
     val (classDef, _) = getTree(classInfo.encodedName)
-    classDef.defs
-      .collectFirst {
-        case mDef: MethodDef if !mDef.static && mDef.name.name == methodName =>
-          mDef
-      }
-      .getOrElse {
-        throw new AssertionError(
-          s"Cannot find $methodName in ${classInfo.encodedName}")
-      }
+    classDef.defs.collectFirst {
+      case mDef: MethodDef if !mDef.static && mDef.name.name == methodName =>
+        mDef
+    }.getOrElse {
+      throw new AssertionError(
+        s"Cannot find $methodName in ${classInfo.encodedName}")
+    }
   }
 }

@@ -34,7 +34,5 @@ case class CacheSize(lowerBound: Int, fuzz: Double = 0.2)
     if ((fuzz * base).toInt > 0) Random.nextInt((fuzz * base).toInt) else 0
 
   def size: Option[Int] =
-    Some(lowerBound)
-      .filter { _ > 0 }
-      .map { s => s + getFuzz(s) }
+    Some(lowerBound).filter { _ > 0 }.map { s => s + getFuzz(s) }
 }

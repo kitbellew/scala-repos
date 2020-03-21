@@ -47,9 +47,8 @@ class AsyncProducerTest {
   // One of the few cases we can just set a fixed port because the producer is mocked out here since this uses mocks
   val props = Seq(createBrokerConfig(1, "127.0.0.1:1", port = 65534))
   val configs = props.map(KafkaConfig.fromProps)
-  val brokerList = configs
-    .map(c =>
-      org.apache.kafka.common.utils.Utils.formatAddress(c.hostName, c.port))
+  val brokerList = configs.map(c =>
+    org.apache.kafka.common.utils.Utils.formatAddress(c.hostName, c.port))
     .mkString(",")
 
   @Test
@@ -108,8 +107,8 @@ class AsyncProducerTest {
       *  Send a total of 10 messages with batch size of 5. Expect 2 calls to the handler, one for each batch.
       */
     val producerDataList = getProduceData(10)
-    val mockHandler = EasyMock.createStrictMock(
-      classOf[DefaultEventHandler[String, String]])
+    val mockHandler = EasyMock
+      .createStrictMock(classOf[DefaultEventHandler[String, String]])
     mockHandler.handle(producerDataList.take(5))
     EasyMock.expectLastCall
     mockHandler.handle(producerDataList.takeRight(5))
@@ -140,8 +139,8 @@ class AsyncProducerTest {
       *  Expect 1 calls to the handler after 200ms.
       */
     val producerDataList = getProduceData(2)
-    val mockHandler = EasyMock.createStrictMock(
-      classOf[DefaultEventHandler[String, String]])
+    val mockHandler = EasyMock
+      .createStrictMock(classOf[DefaultEventHandler[String, String]])
     mockHandler.handle(producerDataList)
     EasyMock.expectLastCall
     EasyMock.replay(mockHandler)
@@ -258,8 +257,7 @@ class AsyncProducerTest {
 
   @Test
   def testSerializeEvents() {
-    val produceData = TestUtils
-      .getMsgStrings(5)
+    val produceData = TestUtils.getMsgStrings(5)
       .map(m => new KeyedMessage[String, String]("topic1", m))
     val props = new Properties()
     props.put("metadata.broker.list", brokerList)
@@ -431,9 +429,8 @@ class AsyncProducerTest {
     props.put("metadata.broker.list", brokerList)
     props.put("request.required.acks", "1")
     props.put("serializer.class", classOf[StringEncoder].getName.toString)
-    props.put(
-      "key.serializer.class",
-      classOf[NullEncoder[Int]].getName.toString)
+    props
+      .put("key.serializer.class", classOf[NullEncoder[Int]].getName.toString)
     props.put("producer.num.retries", 3.toString)
 
     val config = new ProducerConfig(props)
@@ -498,21 +495,16 @@ class AsyncProducerTest {
         ProducerResponseStatus(Errors.NONE.code, 0L))))
     val mockSyncProducer = EasyMock.createMock(classOf[SyncProducer])
     // don't care about config mock
-    EasyMock
-      .expect(mockSyncProducer.config)
-      .andReturn(EasyMock.anyObject())
+    EasyMock.expect(mockSyncProducer.config).andReturn(EasyMock.anyObject())
       .anyTimes()
-    EasyMock
-      .expect(mockSyncProducer.send(request1))
+    EasyMock.expect(mockSyncProducer.send(request1))
       .andThrow(new RuntimeException) // simulate SocketTimeoutException
     EasyMock.expect(mockSyncProducer.send(request2)).andReturn(response1)
     EasyMock.expect(mockSyncProducer.send(request3)).andReturn(response2)
     EasyMock.replay(mockSyncProducer)
 
     val producerPool = EasyMock.createMock(classOf[ProducerPool])
-    EasyMock
-      .expect(producerPool.getProducer(0))
-      .andReturn(mockSyncProducer)
+    EasyMock.expect(producerPool.getProducer(0)).andReturn(mockSyncProducer)
       .times(4)
     EasyMock.expect(producerPool.close())
     EasyMock.replay(producerPool)
@@ -529,9 +521,9 @@ class AsyncProducerTest {
       producerPool = producerPool,
       topicPartitionInfos = topicPartitionInfos,
       time = time)
-    val data =
-      msgs.map(m => new KeyedMessage[Int, String](topic1, 0, m)) ++ msgs.map(
-        m => new KeyedMessage[Int, String](topic1, 1, m))
+    val data = msgs
+      .map(m => new KeyedMessage[Int, String](topic1, 0, m)) ++ msgs
+      .map(m => new KeyedMessage[Int, String](topic1, 1, m))
     handler.handle(data)
     handler.close()
 
@@ -543,15 +535,15 @@ class AsyncProducerTest {
   def testJavaProducer() {
     val topic = "topic1"
     val msgs = TestUtils.getMsgStrings(5)
-    val scalaProducerData = msgs.map(m =>
-      new KeyedMessage[String, String](topic, m))
+    val scalaProducerData = msgs
+      .map(m => new KeyedMessage[String, String](topic, m))
     val javaProducerData: java.util.List[KeyedMessage[String, String]] = {
       import scala.collection.JavaConversions._
       scalaProducerData
     }
 
-    val mockScalaProducer = EasyMock.createMock(
-      classOf[kafka.producer.Producer[String, String]])
+    val mockScalaProducer = EasyMock
+      .createMock(classOf[kafka.producer.Producer[String, String]])
     mockScalaProducer.send(scalaProducerData.head)
     EasyMock.expectLastCall()
     mockScalaProducer.send(scalaProducerData: _*)
@@ -582,8 +574,8 @@ class AsyncProducerTest {
   def getProduceData(nEvents: Int): Seq[KeyedMessage[String, String]] = {
     val producerDataList = new ArrayBuffer[KeyedMessage[String, String]]
     for (i <- 0 until nEvents)
-      producerDataList.append(
-        new KeyedMessage[String, String]("topic1", null, "msg" + i))
+      producerDataList
+        .append(new KeyedMessage[String, String]("topic1", null, "msg" + i))
     producerDataList
   }
 

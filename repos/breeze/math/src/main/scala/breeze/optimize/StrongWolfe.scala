@@ -146,8 +146,8 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
 
       // If phi has a bounded domain, inf or nan usually indicates we took
       // too large a step.
-      if (java.lang.Double.isInfinite(c.fval) || java.lang.Double.isNaN(
-            c.fval)) {
+      if (java.lang.Double.isInfinite(c.fval) || java.lang.Double
+            .isNaN(c.fval)) {
         t /= 2.0
         logger.error(
           "Encountered bad values in function evaluation. Decreasing step size to " + t)
@@ -156,8 +156,8 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
         // Zoom if "sufficient decrease" condition is not satisfied
         if ((c.fval > fval + c1 * t * dd) ||
             (c.fval >= low.fval && i > 0)) {
-          logger.debug(
-            "Line search t: " + t + " fval: " + c.fval + " cdd: " + c.dd)
+          logger
+            .debug("Line search t: " + t + " fval: " + c.fval + " cdd: " + c.dd)
           return zoom(low, c)
         }
 

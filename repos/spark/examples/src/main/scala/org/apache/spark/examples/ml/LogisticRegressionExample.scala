@@ -70,41 +70,33 @@ object LogisticRegressionExample {
       opt[Double]("regParam")
         .text(s"regularization parameter, default: ${defaultParams.regParam}")
         .action((x, c) => c.copy(regParam = x))
-      opt[Double]("elasticNetParam")
-        .text(
-          s"ElasticNet mixing parameter. For alpha = 0, the penalty is an L2 penalty. " +
-            s"For alpha = 1, it is an L1 penalty. For 0 < alpha < 1, the penalty is a combination of " +
-            s"L1 and L2, default: ${defaultParams.elasticNetParam}")
+      opt[Double]("elasticNetParam").text(
+        s"ElasticNet mixing parameter. For alpha = 0, the penalty is an L2 penalty. " +
+          s"For alpha = 1, it is an L1 penalty. For 0 < alpha < 1, the penalty is a combination of " +
+          s"L1 and L2, default: ${defaultParams.elasticNetParam}")
         .action((x, c) => c.copy(elasticNetParam = x))
-      opt[Int]("maxIter")
-        .text(
-          s"maximum number of iterations, default: ${defaultParams.maxIter}")
+      opt[Int]("maxIter").text(
+        s"maximum number of iterations, default: ${defaultParams.maxIter}")
         .action((x, c) => c.copy(maxIter = x))
-      opt[Boolean]("fitIntercept")
-        .text(
-          s"whether to fit an intercept term, default: ${defaultParams.fitIntercept}")
+      opt[Boolean]("fitIntercept").text(
+        s"whether to fit an intercept term, default: ${defaultParams.fitIntercept}")
         .action((x, c) => c.copy(fitIntercept = x))
-      opt[Double]("tol")
-        .text(
-          s"the convergence tolerance of iterations, Smaller value will lead " +
-            s"to higher accuracy with the cost of more iterations, default: ${defaultParams.tol}")
+      opt[Double]("tol").text(
+        s"the convergence tolerance of iterations, Smaller value will lead " +
+          s"to higher accuracy with the cost of more iterations, default: ${defaultParams.tol}")
         .action((x, c) => c.copy(tol = x))
-      opt[Double]("fracTest")
-        .text(
-          s"fraction of data to hold out for testing.  If given option testInput, " +
-            s"this option is ignored. default: ${defaultParams.fracTest}")
+      opt[Double]("fracTest").text(
+        s"fraction of data to hold out for testing.  If given option testInput, " +
+          s"this option is ignored. default: ${defaultParams.fracTest}")
         .action((x, c) => c.copy(fracTest = x))
-      opt[String]("testInput")
-        .text(
-          s"input path to test dataset.  If given, option fracTest is ignored." +
-            s" default: ${defaultParams.testInput}")
+      opt[String]("testInput").text(
+        s"input path to test dataset.  If given, option fracTest is ignored." +
+          s" default: ${defaultParams.testInput}")
         .action((x, c) => c.copy(testInput = x))
       opt[String]("dataFormat")
         .text("data format: libsvm (default), dense (deprecated in Spark v1.1)")
         .action((x, c) => c.copy(dataFormat = x))
-      arg[String]("<input>")
-        .text("input path to labeled examples")
-        .required()
+      arg[String]("<input>").text("input path to labeled examples").required()
         .action((x, c) => c.copy(input = x))
       checkConfig { params =>
         if (params.fracTest < 0 || params.fracTest >= 1) {
@@ -139,19 +131,14 @@ object LogisticRegressionExample {
     // Set up Pipeline
     val stages = new mutable.ArrayBuffer[PipelineStage]()
 
-    val labelIndexer = new StringIndexer()
-      .setInputCol("label")
+    val labelIndexer = new StringIndexer().setInputCol("label")
       .setOutputCol("indexedLabel")
     stages += labelIndexer
 
-    val lor = new LogisticRegression()
-      .setFeaturesCol("features")
-      .setLabelCol("indexedLabel")
-      .setRegParam(params.regParam)
-      .setElasticNetParam(params.elasticNetParam)
-      .setMaxIter(params.maxIter)
-      .setTol(params.tol)
-      .setFitIntercept(params.fitIntercept)
+    val lor = new LogisticRegression().setFeaturesCol("features")
+      .setLabelCol("indexedLabel").setRegParam(params.regParam)
+      .setElasticNetParam(params.elasticNetParam).setMaxIter(params.maxIter)
+      .setTol(params.tol).setFitIntercept(params.fitIntercept)
 
     stages += lor
     val pipeline = new Pipeline().setStages(stages.toArray)
@@ -169,15 +156,11 @@ object LogisticRegressionExample {
       s"Weights: ${lorModel.coefficients} Intercept: ${lorModel.intercept}")
 
     println("Training data results:")
-    DecisionTreeExample.evaluateClassificationModel(
-      pipelineModel,
-      training,
-      "indexedLabel")
+    DecisionTreeExample
+      .evaluateClassificationModel(pipelineModel, training, "indexedLabel")
     println("Test data results:")
-    DecisionTreeExample.evaluateClassificationModel(
-      pipelineModel,
-      test,
-      "indexedLabel")
+    DecisionTreeExample
+      .evaluateClassificationModel(pipelineModel, test, "indexedLabel")
 
     sc.stop()
   }

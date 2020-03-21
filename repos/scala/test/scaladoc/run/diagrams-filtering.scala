@@ -49,11 +49,8 @@ object Test extends ScaladocModelTest {
 
     // base package
     // Assert we have 7 nodes and 6 edges
-    val base = rootPackage
-      ._package("scala")
-      ._package("test")
-      ._package("scaladoc")
-      ._package("diagrams")
+    val base = rootPackage._package("scala")._package("test")
+      ._package("scaladoc")._package("diagrams")
     val packDiag = base.contentDiagram.get
     assert(packDiag.nodes.length == 6)
     assert(packDiag.edges.map(_._2.length).sum == 5)
@@ -92,8 +89,8 @@ object Test extends ScaladocModelTest {
     assert(outgoingSuperclass.length == 2) // B and C
     assert(outgoingImplicit.length == 1, outgoingImplicit) // T
 
-    val (incomingSubclass, incomingImplicit) = incoming.partition(
-      _._1.isNormalNode)
+    val (incomingSubclass, incomingImplicit) = incoming
+      .partition(_._1.isNormalNode)
     assert(incomingSubclass.length == 2) // F and G
     assert(incomingImplicit.length == 0)
 

@@ -68,12 +68,8 @@ private[columnar] trait NullableColumnBuilder extends ColumnBuilder {
     nulls.limit(nullDataLen)
     nulls.rewind()
 
-    val buffer = ByteBuffer
-      .allocate(4 + nullDataLen + nonNulls.remaining())
-      .order(ByteOrder.nativeOrder())
-      .putInt(nullCount)
-      .put(nulls)
-      .put(nonNulls)
+    val buffer = ByteBuffer.allocate(4 + nullDataLen + nonNulls.remaining())
+      .order(ByteOrder.nativeOrder()).putInt(nullCount).put(nulls).put(nonNulls)
 
     buffer.rewind()
     buffer

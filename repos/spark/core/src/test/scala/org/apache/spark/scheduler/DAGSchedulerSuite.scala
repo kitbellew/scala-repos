@@ -77,12 +77,10 @@ class MyRDD(
     throw new RuntimeException("should not be reached")
 
   override def getPartitions: Array[Partition] =
-    (0 until numPartitions)
-      .map(i =>
-        new Partition {
-          override def index: Int = i
-        })
-      .toArray
+    (0 until numPartitions).map(i =>
+      new Partition {
+        override def index: Int = i
+      }).toArray
 
   override def getPreferredLocations(partition: Partition): Seq[String] = {
     if (locations.isDefinedAt(partition.index)) { locations(partition.index) }
@@ -178,10 +176,8 @@ class DAGSchedulerSuite
     override def getLocations(
         blockIds: Array[BlockId]): IndexedSeq[Seq[BlockManagerId]] = {
       blockIds.map {
-        _.asRDDId
-          .map(id => (id.rddId -> id.splitIndex))
-          .flatMap(key => cacheLocations.get(key))
-          .getOrElse(Seq())
+        _.asRDDId.map(id => (id.rddId -> id.splitIndex))
+        .flatMap(key => cacheLocations.get(key)).getOrElse(Seq())
       }.toIndexedSeq
     }
     override def removeExecutor(execId: String) {
@@ -615,9 +611,7 @@ class DAGSchedulerSuite
       Seq((Success, makeMapStatus("hostA", reduceRdd.partitions.length))))
     // we can see both result blocks now
     assert(
-      mapOutputTracker
-        .getMapSizesByExecutorId(shuffleId, 0)
-        .map(_._1.host)
+      mapOutputTracker.getMapSizesByExecutorId(shuffleId, 0).map(_._1.host)
         .toSet ===
         HashSet("hostA", "hostB"))
     complete(taskSets(3), Seq((Success, 43)))
@@ -954,9 +948,7 @@ class DAGSchedulerSuite
         (Success, makeMapStatus("hostB", reduceRdd.partitions.length))))
     // The MapOutputTracker should know about both map output locations.
     assert(
-      mapOutputTracker
-        .getMapSizesByExecutorId(shuffleId, 0)
-        .map(_._1.host)
+      mapOutputTracker.getMapSizesByExecutorId(shuffleId, 0).map(_._1.host)
         .toSet ===
         HashSet("hostA", "hostB"))
 
@@ -1008,15 +1000,11 @@ class DAGSchedulerSuite
         (Success, makeMapStatus("hostB", 2))))
     // The MapOutputTracker should know about both map output locations.
     assert(
-      mapOutputTracker
-        .getMapSizesByExecutorId(shuffleId, 0)
-        .map(_._1.host)
+      mapOutputTracker.getMapSizesByExecutorId(shuffleId, 0).map(_._1.host)
         .toSet ===
         HashSet("hostA", "hostB"))
     assert(
-      mapOutputTracker
-        .getMapSizesByExecutorId(shuffleId, 1)
-        .map(_._1.host)
+      mapOutputTracker.getMapSizesByExecutorId(shuffleId, 1).map(_._1.host)
         .toSet ===
         HashSet("hostA", "hostB"))
 
@@ -1201,8 +1189,7 @@ class DAGSchedulerSuite
     // now start completing some tasks in the shuffle map stage, under different hosts
     // and epochs, and make sure scheduler updates its state correctly
     val taskSet = taskSets(0)
-    val shuffleStage = scheduler
-      .stageIdToStage(taskSet.stageId)
+    val shuffleStage = scheduler.stageIdToStage(taskSet.stageId)
       .asInstanceOf[ShuffleMapStage]
     assert(shuffleStage.numAvailableOutputs === 0)
 
@@ -1257,7 +1244,8 @@ class DAGSchedulerSuite
     val stageFailureMessage = "Exception failure in map stage"
     failed(taskSets(0), stageFailureMessage)
     assert(
-      failure.getMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      failure
+        .getMessage === s"Job aborted due to stage failure: $stageFailureMessage")
 
     // Listener bus should get told about the map stage failing, but not the reduce stage
     // (since the reduce stage hasn't been started yet).
@@ -1528,9 +1516,11 @@ class DAGSchedulerSuite
     assert(sparkListener.failedStages.toSet === Set(0, 2))
 
     assert(
-      listener1.failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      listener1
+        .failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
     assert(
-      listener2.failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
+      listener2
+        .failureMessage === s"Job aborted due to stage failure: $stageFailureMessage")
     assertDataStructuresEmpty()
   }
 
@@ -1564,9 +1554,7 @@ class DAGSchedulerSuite
     val jobId1 = submit(finalRdd1, Array(0), properties = job1Properties)
     val jobId2 = submit(finalRdd2, Array(0), properties = job2Properties)
     assert(scheduler.activeJobs.nonEmpty)
-    val testProperty1 = scheduler
-      .jobIdToActiveJob(jobId1)
-      .properties
+    val testProperty1 = scheduler.jobIdToActiveJob(jobId1).properties
       .getProperty("testProperty")
 
     // remove job1 as an ActiveJob
@@ -1574,9 +1562,7 @@ class DAGSchedulerSuite
 
     // job2 should still be running
     assert(scheduler.activeJobs.nonEmpty)
-    val testProperty2 = scheduler
-      .jobIdToActiveJob(jobId2)
-      .properties
+    val testProperty2 = scheduler.jobIdToActiveJob(jobId2).properties
       .getProperty("testProperty")
     assert(testProperty1 != testProperty2)
     // NB: This next assert isn't necessarily the "desired" behavior; it's just to document
@@ -1931,9 +1917,7 @@ class DAGSchedulerSuite
     complete(taskSets(0), statuses)
 
     // Reducer should prefer the last 3 hosts as they have 20%, 30% and 40% of data
-    val hosts = (1 to numMapTasks)
-      .map(i => "host" + i)
-      .reverse
+    val hosts = (1 to numMapTasks).map(i => "host" + i).reverse
       .take(numMapTasks - 1)
 
     val reduceTaskSet = taskSets(1)
@@ -1969,9 +1953,9 @@ class DAGSchedulerSuite
 
   test("Spark exceptions should include call site in stack trace") {
     val e = intercept[SparkException] {
-      sc.parallelize(1 to 10, 2)
-        .map { _ => throw new RuntimeException("uh-oh!") }
-        .count()
+      sc.parallelize(1 to 10, 2).map { _ =>
+        throw new RuntimeException("uh-oh!")
+      }.count()
     }
 
     // Does not include message, ONLY stack trace.
@@ -2136,9 +2120,7 @@ class DAGSchedulerSuite
         (Success, makeMapStatus("hostA", rdd1.partitions.length)),
         (Success, makeMapStatus("hostB", rdd1.partitions.length))))
     assert(
-      mapOutputTracker
-        .getMapSizesByExecutorId(dep1.shuffleId, 0)
-        .map(_._1)
+      mapOutputTracker.getMapSizesByExecutorId(dep1.shuffleId, 0).map(_._1)
         .toSet ===
         HashSet(makeBlockManagerId("hostA"), makeBlockManagerId("hostB")))
     assert(listener1.results.size === 1)
@@ -2168,9 +2150,7 @@ class DAGSchedulerSuite
       taskSets(2),
       Seq((Success, makeMapStatus("hostC", rdd2.partitions.length))))
     assert(
-      mapOutputTracker
-        .getMapSizesByExecutorId(dep1.shuffleId, 0)
-        .map(_._1)
+      mapOutputTracker.getMapSizesByExecutorId(dep1.shuffleId, 0).map(_._1)
         .toSet ===
         HashSet(makeBlockManagerId("hostC"), makeBlockManagerId("hostB")))
     assert(
@@ -2185,9 +2165,7 @@ class DAGSchedulerSuite
         (Success, makeMapStatus("hostB", rdd2.partitions.length)),
         (Success, makeMapStatus("hostD", rdd2.partitions.length))))
     assert(
-      mapOutputTracker
-        .getMapSizesByExecutorId(dep2.shuffleId, 0)
-        .map(_._1)
+      mapOutputTracker.getMapSizesByExecutorId(dep2.shuffleId, 0).map(_._1)
         .toSet ===
         HashSet(makeBlockManagerId("hostB"), makeBlockManagerId("hostD")))
     assert(listener2.results.size === 1)
@@ -2290,8 +2268,7 @@ class DAGSchedulerSuite
     */
   private def assertLocations(taskSet: TaskSet, hosts: Seq[Seq[String]]) {
     assert(hosts.size === taskSet.tasks.size)
-    for ((taskLocs, expectedLocs) <- taskSet.tasks
-           .map(_.preferredLocations)
+    for ((taskLocs, expectedLocs) <- taskSet.tasks.map(_.preferredLocations)
            .zip(hosts)) {
       assert(taskLocs.map(_.host).toSet === expectedLocs.toSet)
     }

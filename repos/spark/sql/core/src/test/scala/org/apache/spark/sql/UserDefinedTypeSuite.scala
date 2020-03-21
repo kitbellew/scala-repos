@@ -134,16 +134,9 @@ class UserDefinedTypeSuite
     val df = Seq((1, new MyDenseVector(Array(0.1, 1.0)))).toDF("int", "vec")
     df.collect()(0).getAs[MyDenseVector](1)
     df.take(1)(0).getAs[MyDenseVector](1)
-    df.limit(1)
-      .groupBy('int)
-      .agg(first('vec))
-      .collect()(0)
+    df.limit(1).groupBy('int).agg(first('vec)).collect()(0)
       .getAs[MyDenseVector](0)
-    df.orderBy('int)
-      .limit(1)
-      .groupBy('int)
-      .agg(first('vec))
-      .collect()(0)
+    df.orderBy('int).limit(1).groupBy('int).agg(first('vec)).collect()(0)
       .getAs[MyDenseVector](0)
   }
 
@@ -174,8 +167,8 @@ class UserDefinedTypeSuite
     val toScalaConverter = CatalystTypeConverters.createToScalaConverter(udt)
     assert(toScalaConverter(null) === null)
 
-    val toCatalystConverter = CatalystTypeConverters.createToCatalystConverter(
-      udt)
+    val toCatalystConverter = CatalystTypeConverters
+      .createToCatalystConverter(udt)
     assert(toCatalystConverter(null) === null)
 
   }

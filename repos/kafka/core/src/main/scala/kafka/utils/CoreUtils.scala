@@ -179,12 +179,10 @@ object CoreUtils extends Logging {
   def parseCsvMap(str: String): Map[String, String] = {
     val map = new mutable.HashMap[String, String]
     if ("".equals(str)) return map
-    val keyVals = str
-      .split("\\s*,\\s*")
-      .map(s => {
-        val lio = s.lastIndexOf(":")
-        (s.substring(0, lio).trim, s.substring(lio + 1).trim)
-      })
+    val keyVals = str.split("\\s*,\\s*").map(s => {
+      val lio = s.lastIndexOf(":")
+      (s.substring(0, lio).trim, s.substring(lio + 1).trim)
+    })
     keyVals.toMap
   }
 
@@ -284,18 +282,15 @@ object CoreUtils extends Logging {
     * Returns a list of duplicated items
     */
   def duplicates[T](s: Traversable[T]): Iterable[T] = {
-    s.groupBy(identity)
-      .map { case (k, l) => (k, l.size) }
-      .filter { case (k, l) => (l > 1) }
-      .keys
+    s.groupBy(identity).map { case (k, l) => (k, l.size) }.filter {
+      case (k, l) => (l > 1)
+    }.keys
   }
 
   def listenerListToEndPoints(
       listeners: String): immutable.Map[SecurityProtocol, EndPoint] = {
     val listenerList = parseCsvList(listeners)
-    listenerList
-      .map(listener => EndPoint.createEndPoint(listener))
-      .map(ep => ep.protocolType -> ep)
-      .toMap
+    listenerList.map(listener => EndPoint.createEndPoint(listener))
+      .map(ep => ep.protocolType -> ep).toMap
   }
 }

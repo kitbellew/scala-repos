@@ -26,8 +26,8 @@ trait ParametersAnnotator {
         }
         cl.parameters.lastOption match {
           case Some(p)
-              if p.isRepeatedParameter && cl.parameters.exists(
-                _.isDefaultParam) =>
+              if p.isRepeatedParameter && cl.parameters
+                .exists(_.isDefaultParam) =>
             holder.createErrorAnnotation(
               cl,
               "Parameter section with *-parameter cannot have default arguments")

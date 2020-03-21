@@ -69,12 +69,12 @@ object CSVRelation extends Logging {
         requiredFields ++ schemaFields.filterNot(requiredFields.contains(_))
       } else { requiredFields }
     val safeRequiredIndices = new Array[Int](safeRequiredFields.length)
-    schemaFields.zipWithIndex
-      .filter { case (field, _) => safeRequiredFields.contains(field) }
-      .foreach {
-        case (field, index) =>
-          safeRequiredIndices(safeRequiredFields.indexOf(field)) = index
-      }
+    schemaFields.zipWithIndex.filter {
+      case (field, _) => safeRequiredFields.contains(field)
+    }.foreach {
+      case (field, index) =>
+        safeRequiredIndices(safeRequiredFields.indexOf(field)) = index
+    }
     val requiredSize = requiredFields.length
     val row = new GenericMutableRow(requiredSize)
     tokenizedRDD.flatMap { tokens =>
@@ -152,8 +152,8 @@ private[sql] class CsvOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId = configuration.get(
-          "spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration
+          .get("spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId.csv$extension")
@@ -176,9 +176,8 @@ private[sql] class CsvOutputWriter(
 
   override protected[sql] def writeInternal(row: InternalRow): Unit = {
     // TODO: Instead of converting and writing every row, we should use the univocity buffer
-    val resultString = csvWriter.writeRow(
-      rowToString(row.toSeq(dataSchema)),
-      firstRow)
+    val resultString = csvWriter
+      .writeRow(rowToString(row.toSeq(dataSchema)), firstRow)
     if (firstRow) { firstRow = false }
     text.set(resultString)
     recordWriter.write(NullWritable.get(), text)

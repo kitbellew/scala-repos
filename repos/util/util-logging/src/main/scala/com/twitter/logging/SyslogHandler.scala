@@ -160,12 +160,8 @@ class SyslogFormatter(
       case None =>
         "<%d>%s %s %s: ".format(priority | syslogLevel, date, hostname, name)
       case Some(serverName) =>
-        "<%d>%s %s [%s] %s: ".format(
-          priority | syslogLevel,
-          date,
-          hostname,
-          serverName,
-          name)
+        "<%d>%s %s [%s] %s: "
+          .format(priority | syslogLevel, date, hostname, serverName, name)
     }
   }
 }

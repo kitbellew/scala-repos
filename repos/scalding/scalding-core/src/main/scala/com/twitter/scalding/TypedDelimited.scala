@@ -160,9 +160,7 @@ class FixedPathTypedDelimited[T](
     ((p, fields, skipHeader, writeHeader, separator, mf).toString)
 
   override def equals(that: Any): Boolean =
-    Option(that)
-      .map { _.toString == this.toString }
-      .getOrElse(false)
+    Option(that).map { _.toString == this.toString }.getOrElse(false)
 
   override lazy val hashCode: Int = toString.hashCode
 }

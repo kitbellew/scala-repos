@@ -346,9 +346,8 @@ class WebSocketClientSpec
 
     val random = new Random(0)
     def settings =
-      ClientConnectionSettings(system)
-        .withUserAgentHeader(Some(
-          `User-Agent`(List(ProductVersion("akka-http", "test")))))
+      ClientConnectionSettings(system).withUserAgentHeader(Some(
+        `User-Agent`(List(ProductVersion("akka-http", "test")))))
         .withWebsocketRandomFactory(() ⇒ random)
 
     def targetUri: Uri = "ws://example.org/ws"
@@ -365,8 +364,8 @@ class WebSocketClientSpec
       val graph = RunnableGraph.fromGraph(GraphDSL.create(clientLayer) {
         implicit b ⇒ client ⇒
           import GraphDSL.Implicits._
-          Source.fromPublisher(netIn) ~> Flow[ByteString].map(
-            SessionBytes(null, _)) ~> client.in2
+          Source.fromPublisher(netIn) ~> Flow[ByteString]
+            .map(SessionBytes(null, _)) ~> client.in2
           client.out1 ~> Flow[SslTlsOutbound].collect {
             case SendBytes(x) ⇒ x
           } ~> netOut.sink
@@ -382,13 +381,10 @@ class WebSocketClientSpec
     def expectBytes(bytes: ByteString): Unit = netOut.expectBytes(bytes)
 
     def wipeDate(string: String) =
-      string
-        .fastSplit('\n')
-        .map {
-          case s if s.startsWith("Date:") ⇒ "Date: XXXX\r"
-          case s ⇒ s
-        }
-        .mkString("\n")
+      string.fastSplit('\n').map {
+        case s if s.startsWith("Date:") ⇒ "Date: XXXX\r"
+        case s ⇒ s
+      }.mkString("\n")
 
     def sendWireData(data: String): Unit =
       sendWireData(ByteString(data.stripMarginWithNewline("\r\n"), "ASCII"))

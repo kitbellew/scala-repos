@@ -15,8 +15,7 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
   private[this] val counters = AtomicLongMap.create[Seq[String]]()
 
   // Just keep all the samples.
-  private[this] val stats = CacheBuilder
-    .newBuilder()
+  private[this] val stats = CacheBuilder.newBuilder()
     .build(new CacheLoader[Seq[String], ArrayBuffer[Float]] {
       def load(k: Seq[String]) = new ArrayBuffer[Float]
     })
@@ -65,9 +64,9 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
           (k, xs)
       }
 
-      val counterLines = (counterValues map {
-        case (k, v) => (variableName(k), v.toString)
-      }).toSeq
+      val counterLines =
+        (counterValues map { case (k, v) => (variableName(k), v.toString) })
+          .toSeq
       val statLines = (statValues map {
         case (k, xs) =>
           val n = xs.length

@@ -57,14 +57,10 @@ class CrossValidatorSuite
     val lr = new LogisticRegression
     val lrParamMaps = new ParamGridBuilder()
       .addGrid(lr.regParam, Array(0.001, 1000.0))
-      .addGrid(lr.maxIter, Array(0, 10))
-      .build()
+      .addGrid(lr.maxIter, Array(0, 10)).build()
     val eval = new BinaryClassificationEvaluator
-    val cv = new CrossValidator()
-      .setEstimator(lr)
-      .setEstimatorParamMaps(lrParamMaps)
-      .setEvaluator(eval)
-      .setNumFolds(3)
+    val cv = new CrossValidator().setEstimator(lr)
+      .setEstimatorParamMaps(lrParamMaps).setEvaluator(eval).setNumFolds(3)
     val cvModel = cv.fit(dataset)
 
     // copied model must have the same paren.
@@ -91,14 +87,10 @@ class CrossValidatorSuite
     val trainer = new LinearRegression().setSolver("l-bfgs")
     val lrParamMaps = new ParamGridBuilder()
       .addGrid(trainer.regParam, Array(1000.0, 0.001))
-      .addGrid(trainer.maxIter, Array(0, 10))
-      .build()
+      .addGrid(trainer.maxIter, Array(0, 10)).build()
     val eval = new RegressionEvaluator()
-    val cv = new CrossValidator()
-      .setEstimator(trainer)
-      .setEstimatorParamMaps(lrParamMaps)
-      .setEvaluator(eval)
-      .setNumFolds(3)
+    val cv = new CrossValidator().setEstimator(trainer)
+      .setEstimatorParamMaps(lrParamMaps).setEvaluator(eval).setNumFolds(3)
     val cvModel = cv.fit(dataset)
     val parent = cvModel.bestModel.parent.asInstanceOf[LinearRegression]
     assert(parent.getRegParam === 0.001)
@@ -119,13 +111,10 @@ class CrossValidatorSuite
     val est = new MyEstimator("est")
     val eval = new MyEvaluator
     val paramMaps = new ParamGridBuilder()
-      .addGrid(est.inputCol, Array("input1", "input2"))
-      .build()
+      .addGrid(est.inputCol, Array("input1", "input2")).build()
 
-    val cv = new CrossValidator()
-      .setEstimator(est)
-      .setEstimatorParamMaps(paramMaps)
-      .setEvaluator(eval)
+    val cv = new CrossValidator().setEstimator(est)
+      .setEstimatorParamMaps(paramMaps).setEvaluator(eval)
 
     cv.transformSchema(new StructType()) // This should pass.
 
@@ -138,14 +127,10 @@ class CrossValidatorSuite
     val lr = new LogisticRegression().setMaxIter(3)
     val evaluator = new BinaryClassificationEvaluator()
       .setMetricName("areaUnderPR") // not default metric
-    val paramMaps = new ParamGridBuilder()
-      .addGrid(lr.regParam, Array(0.1, 0.2))
+    val paramMaps = new ParamGridBuilder().addGrid(lr.regParam, Array(0.1, 0.2))
       .build()
-    val cv = new CrossValidator()
-      .setEstimator(lr)
-      .setEvaluator(evaluator)
-      .setNumFolds(20)
-      .setEstimatorParamMaps(paramMaps)
+    val cv = new CrossValidator().setEstimator(lr).setEvaluator(evaluator)
+      .setNumFolds(20).setEstimatorParamMaps(paramMaps)
 
     val cv2 = testDefaultReadWrite(cv, testParams = false)
 
@@ -168,9 +153,8 @@ class CrossValidatorSuite
             s" LogisticRegression but found ${other.getClass.getName}")
     }
 
-    CrossValidatorSuite.compareParamMaps(
-      cv.getEstimatorParamMaps,
-      cv2.getEstimatorParamMaps)
+    CrossValidatorSuite
+      .compareParamMaps(cv.getEstimatorParamMaps, cv2.getEstimatorParamMaps)
   }
 
   test("read/write: CrossValidator with complex estimator") {
@@ -180,26 +164,19 @@ class CrossValidatorSuite
 
     val lr = new LogisticRegression().setMaxIter(3)
     val lrParamMaps = new ParamGridBuilder()
-      .addGrid(lr.regParam, Array(0.1, 0.2))
-      .build()
-    val lrcv = new CrossValidator()
-      .setEstimator(lr)
-      .setEvaluator(lrEvaluator)
+      .addGrid(lr.regParam, Array(0.1, 0.2)).build()
+    val lrcv = new CrossValidator().setEstimator(lr).setEvaluator(lrEvaluator)
       .setEstimatorParamMaps(lrParamMaps)
 
     val hashingTF = new HashingTF()
     val pipeline = new Pipeline().setStages(Array(hashingTF, lrcv))
     val paramMaps = new ParamGridBuilder()
       .addGrid(hashingTF.numFeatures, Array(10, 20))
-      .addGrid(lr.elasticNetParam, Array(0.0, 1.0))
-      .build()
+      .addGrid(lr.elasticNetParam, Array(0.0, 1.0)).build()
     val evaluator = new BinaryClassificationEvaluator()
 
-    val cv = new CrossValidator()
-      .setEstimator(pipeline)
-      .setEvaluator(evaluator)
-      .setNumFolds(20)
-      .setEstimatorParamMaps(paramMaps)
+    val cv = new CrossValidator().setEstimator(pipeline).setEvaluator(evaluator)
+      .setNumFolds(20).setEstimatorParamMaps(paramMaps)
 
     val cv2 = testDefaultReadWrite(cv, testParams = false)
 
@@ -209,9 +186,8 @@ class CrossValidatorSuite
     assert(cv2.getEvaluator.isInstanceOf[BinaryClassificationEvaluator])
     assert(cv.getEvaluator.uid === cv2.getEvaluator.uid)
 
-    CrossValidatorSuite.compareParamMaps(
-      cv.getEstimatorParamMaps,
-      cv2.getEstimatorParamMaps)
+    CrossValidatorSuite
+      .compareParamMaps(cv.getEstimatorParamMaps, cv2.getEstimatorParamMaps)
 
     cv2.getEstimator match {
       case pipeline2: Pipeline =>
@@ -232,9 +208,8 @@ class CrossValidatorSuite
             assert(
               lrcv2.getEvaluator.isInstanceOf[BinaryClassificationEvaluator])
             assert(lrEvaluator.uid === lrcv2.getEvaluator.uid)
-            CrossValidatorSuite.compareParamMaps(
-              lrParamMaps,
-              lrcv2.getEstimatorParamMaps)
+            CrossValidatorSuite
+              .compareParamMaps(lrParamMaps, lrcv2.getEstimatorParamMaps)
           case other =>
             throw new AssertionError(
               "Loaded Pipeline expected stages (HashingTF, CrossValidator)" +
@@ -251,13 +226,9 @@ class CrossValidatorSuite
     val lr = new LogisticRegression()
     val lr2 = new LogisticRegression()
     val evaluator = new BinaryClassificationEvaluator()
-    val paramMaps = new ParamGridBuilder()
-      .addGrid(lr.regParam, Array(0.1, 0.2))
-      .addGrid(lr2.regParam, Array(0.1, 0.2))
-      .build()
-    val cv = new CrossValidator()
-      .setEstimator(lr)
-      .setEvaluator(evaluator)
+    val paramMaps = new ParamGridBuilder().addGrid(lr.regParam, Array(0.1, 0.2))
+      .addGrid(lr2.regParam, Array(0.1, 0.2)).build()
+    val cv = new CrossValidator().setEstimator(lr).setEvaluator(evaluator)
       .setEstimatorParamMaps(paramMaps)
     withClue("CrossValidator.write failed to catch extraneous Param error") {
       intercept[IllegalArgumentException] { cv.write }
@@ -265,20 +236,16 @@ class CrossValidatorSuite
   }
 
   test("read/write: CrossValidatorModel") {
-    val lr = new LogisticRegression()
-      .setThreshold(0.6)
+    val lr = new LogisticRegression().setThreshold(0.6)
     val lrModel =
       new LogisticRegressionModel(lr.uid, Vectors.dense(1.0, 2.0), 1.2)
         .setThreshold(0.6)
     val evaluator = new BinaryClassificationEvaluator()
       .setMetricName("areaUnderPR") // not default metric
-    val paramMaps = new ParamGridBuilder()
-      .addGrid(lr.regParam, Array(0.1, 0.2))
+    val paramMaps = new ParamGridBuilder().addGrid(lr.regParam, Array(0.1, 0.2))
       .build()
     val cv = new CrossValidatorModel("cvUid", lrModel, Array(0.3, 0.6))
-    cv.set(cv.estimator, lr)
-      .set(cv.evaluator, evaluator)
-      .set(cv.numFolds, 20)
+    cv.set(cv.estimator, lr).set(cv.evaluator, evaluator).set(cv.numFolds, 20)
       .set(cv.estimatorParamMaps, paramMaps)
 
     val cv2 = testDefaultReadWrite(cv, testParams = false)
@@ -302,9 +269,8 @@ class CrossValidatorSuite
             s" LogisticRegression but found ${other.getClass.getName}")
     }
 
-    CrossValidatorSuite.compareParamMaps(
-      cv.getEstimatorParamMaps,
-      cv2.getEstimatorParamMaps)
+    CrossValidatorSuite
+      .compareParamMaps(cv.getEstimatorParamMaps, cv2.getEstimatorParamMaps)
 
     cv2.bestModel match {
       case lrModel2: LogisticRegressionModel =>

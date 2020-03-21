@@ -29,8 +29,7 @@ class ScalaCompilerConfiguration(project: Project)
   var customProfiles: Seq[ScalaCompilerSettingsProfile] = Seq.empty
 
   def getSettingsForModule(module: Module): ScalaCompilerSettings = {
-    val profile = customProfiles
-      .find(_.getModuleNames.contains(module.getName))
+    val profile = customProfiles.find(_.getModuleNames.contains(module.getName))
       .getOrElse(defaultProfile)
     profile.getSettings
   }
@@ -41,8 +40,8 @@ class ScalaCompilerConfiguration(project: Project)
       options: Seq[String]) {
     customProfiles.foreach { profile =>
       profile.removeModuleName(module.getName)
-      if (profile.getName.startsWith(
-            source) && profile.getModuleNames.isEmpty) {
+      if (profile.getName.startsWith(source) && profile.getModuleNames
+            .isEmpty) {
         customProfiles = customProfiles.filterNot(_ == profile)
       }
     }
@@ -53,10 +52,8 @@ class ScalaCompilerConfiguration(project: Project)
     customProfiles.find(_.getSettings.getState == settings.getState) match {
       case Some(profile) => profile.addModuleName(module.getName)
       case None =>
-        val profileNames = customProfiles.iterator
-          .map(_.getName)
-          .filter(_.startsWith(source))
-          .toSet
+        val profileNames = customProfiles.iterator.map(_.getName)
+          .filter(_.startsWith(source)).toSet
         @tailrec
         def firstFreeName(i: Int): String = {
           val name = source + " " + i
@@ -77,9 +74,8 @@ class ScalaCompilerConfiguration(project: Project)
     if (incrementalityType != IncrementalityType.IDEA) {
       val incrementalityTypeElement = new Element("option")
       incrementalityTypeElement.setAttribute("name", "incrementalityType")
-      incrementalityTypeElement.setAttribute(
-        "value",
-        incrementalityType.toString)
+      incrementalityTypeElement
+        .setAttribute("value", incrementalityType.toString)
       configurationElement.addContent(incrementalityTypeElement)
     }
 
@@ -89,9 +85,8 @@ class ScalaCompilerConfiguration(project: Project)
         new SkipDefaultValuesSerializationFilters())
       profileElement.setName("profile")
       profileElement.setAttribute("name", profile.getName)
-      profileElement.setAttribute(
-        "modules",
-        profile.getModuleNames.asScala.mkString(","))
+      profileElement
+        .setAttribute("modules", profile.getModuleNames.asScala.mkString(","))
 
       configurationElement.addContent(profileElement)
     }
@@ -100,15 +95,13 @@ class ScalaCompilerConfiguration(project: Project)
   }
 
   def loadState(configurationElement: Element) {
-    incrementalityType = configurationElement
-      .getChildren("option")
-      .asScala
+    incrementalityType = configurationElement.getChildren("option").asScala
       .find(_.getAttributeValue("name") == "incrementalityType")
       .map(it => IncrementalityType.valueOf(it.getAttributeValue("value")))
       .getOrElse(IncrementalityType.IDEA)
 
-    defaultProfile.setSettings(new ScalaCompilerSettings(
-      XmlSerializer.deserialize(
+    defaultProfile
+      .setSettings(new ScalaCompilerSettings(XmlSerializer.deserialize(
         configurationElement,
         classOf[ScalaCompilerSettingsState])))
 
@@ -122,9 +115,7 @@ class ScalaCompilerConfiguration(project: Project)
           classOf[ScalaCompilerSettingsState]))
         profile.setSettings(settings)
 
-        val moduleNames = profileElement
-          .getAttributeValue("modules")
-          .split(",")
+        val moduleNames = profileElement.getAttributeValue("modules").split(",")
           .filter(!_.isEmpty)
         moduleNames.foreach(profile.addModuleName)
 

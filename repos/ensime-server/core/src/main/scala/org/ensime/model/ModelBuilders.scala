@@ -47,12 +47,11 @@ trait ModelBuilders {
         val name = symbolIndexerName(sym)
         val hit = search.findUnique(name)
         logger.debug(s"search: $name = $hit")
-        hit
-          .flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
+        hit.flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
           .flatMap { sourcePos =>
             if (sourcePos.file.getName.endsWith(".scala"))
-              askLinkPos(sym, AbstractFile.getFile(sourcePos.file)).flatMap(
-                pos => OffsetSourcePositionHelper.fromPosition(pos))
+              askLinkPos(sym, AbstractFile.getFile(sourcePos.file))
+                .flatMap(pos => OffsetSourcePositionHelper.fromPosition(pos))
             else Some(sourcePos)
           }
       } else None
@@ -155,8 +154,8 @@ trait ModelBuilders {
       try {
         if (sym == RootPackage) { Some(root) }
         else if (sym.hasPackageFlag) { Some(fromSymbol(sym)) }
-        else if (!sym.nameString
-                   .contains("$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
+        else if (!sym.nameString.contains("$") && (sym != NoSymbol) && (sym
+                   .tpe != NoType)) {
           if (sym.isClass || sym.isTrait || sym.isModule ||
               sym.isModuleClass || sym.isPackageClass) {
             Some(TypeInfo(sym.tpe, PosNeededAvail))

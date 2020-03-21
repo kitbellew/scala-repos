@@ -68,11 +68,11 @@ import java.lang.management.ManagementFactory
   */
 private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
-  val totalNumberOfNodes =
-    System.getProperty("MultiJvm.akka.cluster.Stress.nrOfNodes") match {
-      case null ⇒ 13
-      case value ⇒ value.toInt requiring (_ >= 10, "nrOfNodes should be >= 10")
-    }
+  val totalNumberOfNodes = System
+    .getProperty("MultiJvm.akka.cluster.Stress.nrOfNodes") match {
+    case null ⇒ 13
+    case value ⇒ value.toInt requiring (_ >= 10, "nrOfNodes should be >= 10")
+  }
 
   for (n ← 1 to totalNumberOfNodes) role("node-" + n)
 
@@ -211,24 +211,24 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     val workBatchInterval = testConfig.getMillisDuration("work-batch-interval")
     val payloadSize = getInt("payload-size")
     val dFactor = getInt("duration-factor")
-    val joinRemoveDuration =
-      testConfig.getMillisDuration("join-remove-duration") * dFactor
-    val normalThroughputDuration =
-      testConfig.getMillisDuration("normal-throughput-duration") * dFactor
-    val highThroughputDuration =
-      testConfig.getMillisDuration("high-throughput-duration") * dFactor
-    val supervisionDuration =
-      testConfig.getMillisDuration("supervision-duration") * dFactor
-    val supervisionOneIteration =
-      testConfig.getMillisDuration("supervision-one-iteration") * dFactor
-    val idleGossipDuration =
-      testConfig.getMillisDuration("idle-gossip-duration") * dFactor
-    val expectedTestDuration =
-      testConfig.getMillisDuration("expected-test-duration") * dFactor
+    val joinRemoveDuration = testConfig
+      .getMillisDuration("join-remove-duration") * dFactor
+    val normalThroughputDuration = testConfig
+      .getMillisDuration("normal-throughput-duration") * dFactor
+    val highThroughputDuration = testConfig
+      .getMillisDuration("high-throughput-duration") * dFactor
+    val supervisionDuration = testConfig
+      .getMillisDuration("supervision-duration") * dFactor
+    val supervisionOneIteration = testConfig
+      .getMillisDuration("supervision-one-iteration") * dFactor
+    val idleGossipDuration = testConfig
+      .getMillisDuration("idle-gossip-duration") * dFactor
+    val expectedTestDuration = testConfig
+      .getMillisDuration("expected-test-duration") * dFactor
     val treeWidth = getInt("tree-width")
     val treeLevels = getInt("tree-levels")
-    val reportMetricsInterval = testConfig.getMillisDuration(
-      "report-metrics-interval")
+    val reportMetricsInterval = testConfig
+      .getMillisDuration("report-metrics-interval")
     val convergenceWithinFactor = getDouble("convergence-within-factor")
     val exerciseActors = getBoolean("exercise-actors")
 
@@ -250,10 +250,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       s"nr-of-nodes-join-remove should be <= ${totalNumberOfNodes}")
 
     override def toString: String = {
-      testConfig
-        .withFallback(
-          ConfigFactory.parseString(s"nrOfNodes=${totalNumberOfNodes}"))
-        .root
+      testConfig.withFallback(
+        ConfigFactory.parseString(s"nrOfNodes=${totalNumberOfNodes}")).root
         .render
     }
   }
@@ -300,11 +298,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     }
 
     import context.dispatcher
-    private val reportMetricsTask = context.system.scheduler.schedule(
-      reportMetricsInterval,
-      reportMetricsInterval,
-      self,
-      ReportTick)
+    private val reportMetricsTask = context.system.scheduler
+      .schedule(reportMetricsInterval, reportMetricsInterval, self, ReportTick)
 
     // subscribe to ClusterMetricsChanged, re-subscribe when restart
     override def preStart(): Unit =
@@ -332,8 +327,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
             maxDuration,
             totalGossipStats)
           if (infolog)
-            log.info(
-              s"[${title}] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
+            log.info(s"[${title}] completed in [${aggregated.duration.toMillis}] ms\n${aggregated
+              .clusterStats}\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
           reportTo foreach { _ ! aggregated }
           context stop self
         }
@@ -348,8 +343,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     def formatMetrics: String = {
       import akka.cluster.Member.addressOrdering
-      (formatMetricsHeader +: (nodeMetrics.toSeq.sortBy(
-        _.address) map formatMetricsLine)).mkString("\n")
+      (formatMetricsHeader +: (nodeMetrics.toSeq
+        .sortBy(_.address) map formatMetricsLine)).mkString("\n")
     }
 
     def formatMetricsHeader: String = "[Node]\t[Heap (MB)]\t[CPU (%)]\t[Load]"
@@ -444,8 +439,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
   class PhiObserver extends Actor with ActorLogging {
     val cluster = Cluster(context.system)
     var reportTo: Option[ActorRef] = None
-    val emptyPhiByNode = Map
-      .empty[Address, PhiValue]
+    val emptyPhiByNode = Map.empty[Address, PhiValue]
       .withDefault(address ⇒ PhiValue(address, 0, 0, 0.0))
     var phiByNode = emptyPhiByNode
     var nodes = Set.empty[Address]
@@ -461,11 +455,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       }
 
     import context.dispatcher
-    val checkPhiTask = context.system.scheduler.schedule(
-      1.second,
-      1.second,
-      self,
-      PhiTick)
+    val checkPhiTask = context.system.scheduler
+      .schedule(1.second, 1.second, self, PhiTick)
 
     // subscribe to MemberEvent, re-subscribe when restart
     override def preStart(): Unit =
@@ -565,8 +556,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       tree: Boolean)
       extends Actor {
     val workers = context.actorOf(FromConfig.props(Props[Worker]), "workers")
-    val payload = Array.fill(settings.payloadSize)(
-      ThreadLocalRandom.current.nextInt(127).toByte)
+    val payload = Array
+      .fill(settings.payloadSize)(ThreadLocalRandom.current.nextInt(127).toByte)
     val retryTimeout = 5.seconds.dilated(context.system)
     val idCounter = Iterator from 0
     var sendCounter = 0L
@@ -575,11 +566,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     var startTime = 0L
 
     import context.dispatcher
-    val resendTask = context.system.scheduler.schedule(
-      3.seconds,
-      3.seconds,
-      self,
-      RetryTick)
+    val resendTask = context.system.scheduler
+      .schedule(3.seconds, 3.seconds, self, RetryTick)
 
     override def postStop(): Unit = {
       resendTask.cancel()
@@ -662,16 +650,15 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       case SimpleJob(id, payload) ⇒ sender() ! Ack(id)
       case TreeJob(id, payload, idx, levels, width) ⇒
         // create the actors when first TreeJob message is received
-        val totalActors =
-          ((width * math.pow(width, levels) - 1) / (width - 1)).toInt
+        val totalActors = ((width * math.pow(width, levels) - 1) / (width - 1))
+          .toInt
         log.debug(
           "Creating [{}] actors in a tree structure of [{}] levels and each actor has [{}] children",
           totalActors,
           levels,
           width)
-        val tree = context.actorOf(
-          Props(classOf[TreeNode], levels, width),
-          "tree")
+        val tree = context
+          .actorOf(Props(classOf[TreeNode], levels, width), "tree")
         tree forward ((idx, SimpleJob(id, payload)))
         context.become(treeWorker(tree))
     }
@@ -857,44 +844,28 @@ abstract class StressSpec
 
     val sb = new StringBuilder
 
-    sb.append("Operating system: ")
-      .append(os.getName)
-      .append(", ")
-      .append(os.getArch)
-      .append(", ")
-      .append(os.getVersion)
+    sb.append("Operating system: ").append(os.getName).append(", ")
+      .append(os.getArch).append(", ").append(os.getVersion)
     sb.append("\n")
-    sb.append("JVM: ")
-      .append(runtime.getVmName)
-      .append(" ")
-      .append(runtime.getVmVendor)
-      .append(" ")
-      .append(runtime.getVmVersion)
+    sb.append("JVM: ").append(runtime.getVmName).append(" ")
+      .append(runtime.getVmVendor).append(" ").append(runtime.getVmVersion)
     sb.append("\n")
     sb.append("Processors: ").append(os.getAvailableProcessors)
     sb.append("\n")
     sb.append("Load average: ").append(os.getSystemLoadAverage)
     sb.append("\n")
-    sb.append("Thread count: ")
-      .append(threads.getThreadCount)
-      .append(" (")
-      .append(threads.getPeakThreadCount)
-      .append(")")
+    sb.append("Thread count: ").append(threads.getThreadCount).append(" (")
+      .append(threads.getPeakThreadCount).append(")")
     sb.append("\n")
-    sb.append("Heap: ")
-      .append((heap.getUsed.toDouble / 1024 / 1024).form)
-      .append(" (")
-      .append((heap.getInit.toDouble / 1024 / 1024).form)
-      .append(" - ")
-      .append((heap.getMax.toDouble / 1024 / 1024).form)
-      .append(")")
-      .append(" MB")
+    sb.append("Heap: ").append((heap.getUsed.toDouble / 1024 / 1024).form)
+      .append(" (").append((heap.getInit.toDouble / 1024 / 1024).form)
+      .append(" - ").append((heap.getMax.toDouble / 1024 / 1024).form)
+      .append(")").append(" MB")
     sb.append("\n")
 
     import scala.collection.JavaConverters._
     val args = runtime.getInputArguments.asScala
-      .filterNot(_.contains("classpath"))
-      .mkString("\n  ")
+      .filterNot(_.contains("classpath")).mkString("\n  ")
     sb.append("Args:\n  ").append(args)
     sb.append("\n")
 
@@ -938,8 +909,7 @@ abstract class StressSpec
   }
 
   def clusterResultAggregator: Option[ActorRef] = {
-    system
-      .actorSelection(node(roles.head) / "user" / ("result" + step))
+    system.actorSelection(node(roles.head) / "user" / ("result" + step))
       .tell(Identify(step), identifyProbe.ref)
     identifyProbe.expectMsgType[ActorIdentity].ref
   }
@@ -1046,8 +1016,7 @@ abstract class StressSpec
       }
       enterBarrier("watchee-created-" + step)
       runOn(roles.head) {
-        system
-          .actorSelection(node(removeRole) / "user" / "watchee")
+        system.actorSelection(node(removeRole) / "user" / "watchee")
           .tell(Identify("watchee"), identifyProbe.ref)
         val watchee = identifyProbe.expectMsgType[ActorIdentity].ref.get
         watch(watchee)
@@ -1125,8 +1094,8 @@ abstract class StressSpec
     val activeRoles = roles.take(numberOfNodesJoinRemove)
     val loopDuration =
       10.seconds + convergenceWithin(4.seconds, nbrUsedRoles + activeRoles.size)
-    val rounds =
-      ((duration - loopDuration).toMillis / loopDuration.toMillis).max(1).toInt
+    val rounds = ((duration - loopDuration).toMillis / loopDuration.toMillis)
+      .max(1).toInt
     val usedRoles = roles.take(nbrUsedRoles)
     val usedAddresses = usedRoles.map(address(_)).toSet
 
@@ -1163,8 +1132,8 @@ abstract class StressSpec
                 timeout = remainingOrDefault)
               awaitAllReachable()
             }
-            val nextAddresses =
-              clusterView.members.map(_.address) diff usedAddresses
+            val nextAddresses = clusterView.members
+              .map(_.address) diff usedAddresses
             runOn(usedRoles: _*) {
               nextAddresses.size should ===(numberOfNodesJoinRemove)
             }
@@ -1196,8 +1165,7 @@ abstract class StressSpec
   def masterName: String = "master-" + myself.name
 
   def master: Option[ActorRef] = {
-    system
-      .actorSelection("/user/" + masterName)
+    system.actorSelection("/user/" + masterName)
       .tell(Identify("master"), identifyProbe.ref)
     identifyProbe.expectMsgType[ActorIdentity].ref
   }
@@ -1271,8 +1239,8 @@ abstract class StressSpec
         runOn(masterRoles: _*) {
           reportResult {
             roles.take(nbrUsedRoles) foreach { r ⇒
-              supervisor ! Props[RemoteChild].withDeploy(Deploy(scope =
-                RemoteScope(address(r))))
+              supervisor ! Props[RemoteChild]
+                .withDeploy(Deploy(scope = RemoteScope(address(r))))
             }
             supervisor ! GetChildrenCount
             expectMsgType[ChildrenCount] should ===(

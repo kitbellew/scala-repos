@@ -31,11 +31,11 @@ private[ui] class PoolPage(parent: StagesTab) extends WebUIPage("pool") {
 
   def render(request: HttpServletRequest): Seq[Node] = {
     listener.synchronized {
-      val poolName = Option(request.getParameter("poolname"))
-        .map { poolname => UIUtils.decodeURLParameter(poolname) }
-        .getOrElse {
-          throw new IllegalArgumentException(s"Missing poolname parameter")
-        }
+      val poolName = Option(request.getParameter("poolname")).map { poolname =>
+        UIUtils.decodeURLParameter(poolname)
+      }.getOrElse {
+        throw new IllegalArgumentException(s"Missing poolname parameter")
+      }
 
       val poolToActiveStages = listener.poolToActiveStages
       val activeStages = poolToActiveStages.get(poolName) match {
@@ -50,23 +50,18 @@ private[ui] class PoolPage(parent: StagesTab) extends WebUIPage("pool") {
         killEnabled = parent.killEnabled)
 
       // For now, pool information is only accessible in live UIs
-      val pools = sc
-        .map(_.getPoolForName(poolName).getOrElse {
-          throw new IllegalArgumentException(s"Unknown poolname: $poolName")
-        })
-        .toSeq
+      val pools = sc.map(_.getPoolForName(poolName).getOrElse {
+        throw new IllegalArgumentException(s"Unknown poolname: $poolName")
+      }).toSeq
       val poolTable = new PoolTable(pools, parent)
 
       val content =
         <h4>Summary </h4> ++ poolTable.toNodeSeq ++
-          <h4>{
-            activeStages.size
-          } Active Stages</h4> ++ activeStagesTable.toNodeSeq
+          <h4>{activeStages.size} Active Stages</h4> ++ activeStagesTable
+          .toNodeSeq
 
-      UIUtils.headerSparkPage(
-        "Fair Scheduler Pool: " + poolName,
-        content,
-        parent)
+      UIUtils
+        .headerSparkPage("Fair Scheduler Pool: " + poolName, content, parent)
     }
   }
 }

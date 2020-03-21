@@ -78,8 +78,8 @@ class WholeTextFileRecordReaderSuite
       if (compress) {
         val codec = new GzipCodec
         val path = s"${inputDir.toString}/$fileName${codec.getDefaultExtension}"
-        codec.createOutputStream(new DataOutputStream(new FileOutputStream(
-          path)))
+        codec
+          .createOutputStream(new DataOutputStream(new FileOutputStream(path)))
       } else {
         val path = s"${inputDir.toString}/$fileName"
         new DataOutputStream(new FileOutputStream(path))
@@ -116,8 +116,8 @@ class WholeTextFileRecordReaderSuite
         WholeTextFileRecordReaderSuite.fileNames.contains(shortName),
         s"Missing file name $filename.")
       assert(
-        contents === new Text(
-          WholeTextFileRecordReaderSuite.files(shortName)).toString,
+        contents === new Text(WholeTextFileRecordReaderSuite.files(shortName))
+          .toString,
         s"file $filename contents can not match.")
     }
 
@@ -146,8 +146,8 @@ class WholeTextFileRecordReaderSuite
         WholeTextFileRecordReaderSuite.fileNames.contains(shortName),
         s"Missing file name $filename.")
       assert(
-        contents === new Text(
-          WholeTextFileRecordReaderSuite.files(shortName)).toString,
+        contents === new Text(WholeTextFileRecordReaderSuite.files(shortName))
+          .toString,
         s"file $filename contents can not match.")
     }
 
@@ -159,21 +159,15 @@ class WholeTextFileRecordReaderSuite
   * Files to be tested are defined here.
   */
 object WholeTextFileRecordReaderSuite {
-  private val testWords: IndexedSeq[Byte] = "Spark is easy to use.\n".map(
-    _.toByte)
+  private val testWords: IndexedSeq[Byte] = "Spark is easy to use.\n"
+    .map(_.toByte)
 
   private val fileNames = Array("part-00000", "part-00001", "part-00002")
   private val fileLengths = Array(10, 100, 1000)
 
-  private val files = fileLengths
-    .zip(fileNames)
-    .map {
-      case (upperBound, filename) =>
-        filename -> Stream
-          .continually(testWords.toList.toStream)
-          .flatten
-          .take(upperBound)
-          .toArray
-    }
-    .toMap
+  private val files = fileLengths.zip(fileNames).map {
+    case (upperBound, filename) =>
+      filename -> Stream.continually(testWords.toList.toStream).flatten
+        .take(upperBound).toArray
+  }.toMap
 }

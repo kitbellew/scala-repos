@@ -96,7 +96,8 @@ trait GenTrees {
         // see `Metalevels` for more info about metalevel breaches
         // and about how we deal with splices that contain them
         val isMetalevelBreach = splicee exists (sub =>
-          sub.hasSymbolField && sub.symbol != NoSymbol && sub.symbol.metalevel > 0)
+          sub.hasSymbolField && sub.symbol != NoSymbol && sub.symbol
+            .metalevel > 0)
         val isRuntimeEval =
           splicee exists (sub => sub.hasSymbolField && sub.symbol == ExprSplice)
         if (isMetalevelBreach || isRuntimeEval) {

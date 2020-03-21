@@ -152,8 +152,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
     val messageSet1 = new ByteBufferMessageSet(
       compressionCodec = NoCompressionCodec,
       messages = message1)
-    val response1 = producer.send(
-      produceRequest("test", 0, messageSet1, acks = 1))
+    val response1 = producer
+      .send(produceRequest("test", 0, messageSet1, acks = 1))
 
     assertEquals(1, response1.status.count(_._2.error != Errors.NONE.code))
     assertEquals(
@@ -161,14 +161,14 @@ class SyncProducerTest extends KafkaServerTestHarness {
       response1.status(TopicAndPartition("test", 0)).error)
     assertEquals(-1L, response1.status(TopicAndPartition("test", 0)).offset)
 
-    val safeSize = configs(
-      0).messageMaxBytes - Message.MinMessageOverhead - Message.TimestampLength - MessageSet.LogOverhead - 1
+    val safeSize = configs(0).messageMaxBytes - Message
+      .MinMessageOverhead - Message.TimestampLength - MessageSet.LogOverhead - 1
     val message2 = new Message(new Array[Byte](safeSize))
     val messageSet2 = new ByteBufferMessageSet(
       compressionCodec = NoCompressionCodec,
       messages = message2)
-    val response2 = producer.send(
-      produceRequest("test", 0, messageSet2, acks = 1))
+    val response2 = producer
+      .send(produceRequest("test", 0, messageSet2, acks = 1))
 
     assertEquals(1, response1.status.count(_._2.error != Errors.NONE.code))
     assertEquals(

@@ -58,8 +58,7 @@ class ScTypedPatternImpl(node: ASTNode)
       case Some(tp) =>
         if (tp.typeElement == null)
           return Failure("No type element for type pattern", Some(this))
-        val typeElementType: TypeResult[ScType] = tp.typeElement
-          .getType(ctx)
+        val typeElementType: TypeResult[ScType] = tp.typeElement.getType(ctx)
           .map {
             case tp: ScExistentialType =>
               val skolem = tp.skolem
@@ -92,8 +91,8 @@ class ScTypedPatternImpl(node: ASTNode)
                     case _ => tp
                   }
                 case Some((clazz: PsiClass, subst)) =>
-                  val typeParams: Array[PsiTypeParameter] =
-                    clazz.getTypeParameters
+                  val typeParams: Array[PsiTypeParameter] = clazz
+                    .getTypeParameters
                   skolem match {
                     case ScParameterizedType(des, typeArgs)
                         if typeArgs.length == typeParams.length =>
@@ -106,8 +105,8 @@ class ScTypedPatternImpl(node: ASTNode)
                             val lowerBound = arg.lower
                             val upperBound =
                               if (arg.upper.equiv(psi.types.Any)) {
-                                val listTypes: Array[PsiClassType] =
-                                  param.getExtendsListTypes
+                                val listTypes: Array[PsiClassType] = param
+                                  .getExtendsListTypes
                                 if (listTypes.isEmpty) types.Any
                                 else
                                   subst.subst(Bounds.glb(

@@ -14,7 +14,8 @@ trait ZookeeperConf extends ScallopConf {
   private val hostAndPort = """[A-z0-9-.]+(?::\d+)?"""
   private val zkNode = """[^/]+"""
   private val zkURLPattern =
-    s"""^zk://(?:$userAndPass@)?($hostAndPort(?:,$hostAndPort)*)(/$zkNode(?:/$zkNode)*)$$""".r
+    s"""^zk://(?:$userAndPass@)?($hostAndPort(?:,$hostAndPort)*)(/$zkNode(?:/$zkNode)*)$$"""
+      .r
 
   lazy val zooKeeperTimeout = opt[Long](
     "zk_timeout",

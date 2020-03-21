@@ -114,19 +114,16 @@ class DispatchersSpec
 
   def validTypes = typesAndValidators.keys.toList
 
-  val defaultDispatcherConfig = settings.config.getConfig(
-    "akka.actor.default-dispatcher")
+  val defaultDispatcherConfig = settings.config
+    .getConfig("akka.actor.default-dispatcher")
 
   lazy val allDispatchers: Map[String, MessageDispatcher] = {
-    validTypes
-      .map(t ⇒
-        (
-          t,
-          from(
-            ConfigFactory
-              .parseMap(Map(tipe -> t, id -> t).asJava)
-              .withFallback(defaultDispatcherConfig))))
-      .toMap
+    validTypes.map(t ⇒
+      (
+        t,
+        from(
+          ConfigFactory.parseMap(Map(tipe -> t, id -> t).asJava)
+            .withFallback(defaultDispatcherConfig)))).toMap
   }
 
   def assertMyDispatcherIsUsed(actor: ActorRef): Unit = {
@@ -160,9 +157,8 @@ class DispatchersSpec
     "throw ConfigurationException if type does not exist" in {
       intercept[ConfigurationException] {
         from(
-          ConfigFactory
-            .parseMap(
-              Map(tipe -> "typedoesntexist", id -> "invalid-dispatcher").asJava)
+          ConfigFactory.parseMap(
+            Map(tipe -> "typedoesntexist", id -> "invalid-dispatcher").asJava)
             .withFallback(defaultDispatcherConfig))
       }
     }
@@ -202,16 +198,16 @@ class DispatchersSpec
     "include system name and dispatcher id in thread names for pinned dispatcher" in {
       system.actorOf(Props[ThreadNameEcho].withDispatcher(
         "myapp.my-pinned-dispatcher")) ! "what's the name?"
-      val Expected =
-        "(DispatchersSpec-myapp.my-pinned-dispatcher-[1-9][0-9]*)".r
+      val Expected = "(DispatchersSpec-myapp.my-pinned-dispatcher-[1-9][0-9]*)"
+        .r
       expectMsgPF() { case Expected(x) ⇒ }
     }
 
     "include system name and dispatcher id in thread names for balancing dispatcher" in {
       system.actorOf(Props[ThreadNameEcho].withDispatcher(
         "myapp.balancing-dispatcher")) ! "what's the name?"
-      val Expected =
-        "(DispatchersSpec-myapp.balancing-dispatcher-[1-9][0-9]*)".r
+      val Expected = "(DispatchersSpec-myapp.balancing-dispatcher-[1-9][0-9]*)"
+        .r
       expectMsgPF() { case Expected(x) ⇒ }
     }
 
@@ -227,23 +223,24 @@ class DispatchersSpec
     }
 
     "use pool-dispatcher router of deployment config" in {
-      val pool = system.actorOf(
-        FromConfig.props(Props[ThreadNameEcho]),
-        name = "pool1")
+      val pool = system
+        .actorOf(FromConfig.props(Props[ThreadNameEcho]), name = "pool1")
       pool ! Identify(None)
       val routee = expectMsgType[ActorIdentity].ref.get
       routee ! "what's the name?"
       val Expected =
-        """(DispatchersSpec-akka\.actor\.deployment\./pool1\.pool-dispatcher-[1-9][0-9]*)""".r
+        """(DispatchersSpec-akka\.actor\.deployment\./pool1\.pool-dispatcher-[1-9][0-9]*)"""
+          .r
       expectMsgPF() { case Expected(x) ⇒ }
     }
 
     "use balancing-pool router with special routees mailbox of deployment config" in {
-      system.actorOf(
-        FromConfig.props(Props[ThreadNameEcho]),
-        name = "balanced") ! "what's the name?"
-      val Expected =
-        """(DispatchersSpec-BalancingPool-/balanced-[1-9][0-9]*)""".r
+      system
+        .actorOf(
+          FromConfig.props(Props[ThreadNameEcho]),
+          name = "balanced") ! "what's the name?"
+      val Expected = """(DispatchersSpec-BalancingPool-/balanced-[1-9][0-9]*)"""
+        .r
       expectMsgPF() { case Expected(x) ⇒ }
       expectMsgPF() { case Expected(x) ⇒ }
     }

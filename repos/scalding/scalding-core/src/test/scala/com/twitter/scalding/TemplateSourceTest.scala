@@ -40,9 +40,7 @@ class TemplateSourceTest extends WordSpec with Matchers {
         job
       }
 
-      JobTest(buildJob(_))
-        .source(Tsv("input", ('col1, 'col2)), input)
-        .runHadoop
+      JobTest(buildJob(_)).source(Tsv("input", ('col1, 'col2)), input).runHadoop
         .finish
 
       val testMode = job.mode.asInstanceOf[HadoopTest]

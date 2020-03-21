@@ -37,11 +37,10 @@ trait Notifier
         getCollaborators(issue.userName, issue.repositoryName) :::
         // participants
         issue.openedUserName ::
-        getComments(issue.userName, issue.repositoryName, issue.issueId).map(
-          _.commentedUserName)).distinct
-      .withFilter(
-        _ != context.loginAccount.get.userName
-      ) // the operation in person is excluded
+        getComments(issue.userName, issue.repositoryName, issue.issueId)
+          .map(_.commentedUserName)).distinct.withFilter(
+      _ != context.loginAccount.get.userName
+    ) // the operation in person is excluded
       .foreach(
         getAccountByUserName(_) filterNot (_.isGroupAccount) filterNot (LDAPUtil
           .isDummyMailAddress(_)) foreach (x => notify(x.mailAddress)))
@@ -109,13 +108,11 @@ class Mailer(private val smtp: Smtp) extends Notifier {
                   new DefaultAuthenticator(user, smtp.password.getOrElse("")))
               }
               smtp.ssl.foreach { ssl => email.setSSLOnConnect(ssl) }
-              smtp.fromAddress
-                .map(
-                  _ -> smtp.fromName.getOrElse(
-                    context.loginAccount.get.userName))
+              smtp.fromAddress.map(
+                _ -> smtp.fromName.getOrElse(context.loginAccount.get.userName))
                 .orElse(Some(
-                  "notifications@gitbucket.com" -> context.loginAccount.get.userName))
-                .foreach {
+                  "notifications@gitbucket.com" -> context.loginAccount.get
+                    .userName)).foreach {
                   case (address, name) => email.setFrom(address, name)
                 }
               email.setCharset("UTF-8")

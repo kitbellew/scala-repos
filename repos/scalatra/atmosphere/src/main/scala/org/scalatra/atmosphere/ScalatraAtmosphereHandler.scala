@@ -45,8 +45,8 @@ object ScalatraAtmosphereHandler {
     def onDisconnect(event: AtmosphereResourceEvent) {
       val disconnector =
         if (event.isCancelled) ClientDisconnected else ServerDisconnected
-      client(event.getResource) foreach (_.receive.lift(
-        Disconnected(disconnector, Option(event.throwable))))
+      client(event.getResource) foreach (_.receive
+      .lift(Disconnected(disconnector, Option(event.throwable))))
       //      if (!event.getResource.isResumed) {
       //        event.getResource.session.invalidate()
       //      } else {
@@ -60,8 +60,8 @@ object ScalatraAtmosphereHandler {
     def onSuspend(event: AtmosphereResourceEvent) {}
 
     def onThrowable(event: AtmosphereResourceEvent) {
-      client(event.getResource) foreach (_.receive.lift(Error(
-        Option(event.throwable()))))
+      client(event.getResource) foreach (_.receive
+      .lift(Error(Option(event.throwable()))))
     }
 
     def onClose(event: AtmosphereResourceEvent) {}
@@ -93,8 +93,8 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(implicit
           case (Post, _) =>
             var client: AtmosphereClient = null
             if (isNew) {
-              session =
-                AtmosphereResourceFactory.getDefault.find(resource.uuid).session
+              session = AtmosphereResourceFactory.getDefault.find(resource.uuid)
+                .session
             }
 
             client = session(org.scalatra.atmosphere.AtmosphereClientKey)

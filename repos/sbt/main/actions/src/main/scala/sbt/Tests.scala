@@ -185,15 +185,13 @@ object Tests {
           .mkString("\n\t"))
 
     def includeTest(test: TestDefinition) =
-      !excludeTestsSet.contains(test.name) && testFilters.forall(filter =>
-        filter(test.name))
+      !excludeTestsSet.contains(test.name) && testFilters
+        .forall(filter => filter(test.name))
     val filtered0 = discovered.filter(includeTest).toList.distinct
     val tests =
       if (orderedFilters.isEmpty) filtered0
       else
-        orderedFilters
-          .flatMap(f => filtered0.filter(d => f(d.name)))
-          .toList
+        orderedFilters.flatMap(f => filtered0.filter(d => f(d.name))).toList
           .distinct
     val uniqueTests = distinctBy(tests)(_.name)
     new ProcessedOptions(
@@ -243,13 +241,8 @@ object Tests {
     def partApp(actions: Iterable[ClassLoader => Unit]) =
       actions.toSeq map { a => () => a(loader) }
 
-    val (frameworkSetup, runnables, frameworkCleanup) = TestFramework.testTasks(
-      frameworks,
-      runners,
-      loader,
-      tests,
-      log,
-      testListeners)
+    val (frameworkSetup, runnables, frameworkCleanup) = TestFramework
+      .testTasks(frameworks, runners, loader, tests, log, testListeners)
 
     val setupTasks = fj(partApp(userSetup) :+ frameworkSetup)
     val mainTasks =
@@ -315,8 +308,7 @@ object Tests {
       fun: TestFunction,
       tags: Seq[(Tag, Int)]): Task[Map[String, SuiteResult]] = {
     val base = task { (name, fun.apply()) }
-    val taggedBase = base
-      .tagw(tags: _*)
+    val taggedBase = base.tagw(tags: _*)
       .tag(fun.tags.map(ConcurrentRestrictions.Tag(_)): _*)
     taggedBase flatMap {
       case (name, (result, nested)) =>

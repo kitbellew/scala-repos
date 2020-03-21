@@ -44,8 +44,7 @@ class ExecutorAllocationManagerSuite
   after { contexts.foreach(_.stop()) }
 
   test("verify min/max executors") {
-    val conf = new SparkConf()
-      .setMaster("local")
+    val conf = new SparkConf().setMaster("local")
       .setAppName("test-executor-allocation-manager")
       .set("spark.dynamicAllocation.enabled", "true")
       .set("spark.dynamicAllocation.testing", "true")
@@ -89,8 +88,8 @@ class ExecutorAllocationManagerSuite
   test("add executors") {
     sc = createSparkContext(1, 10, 1)
     val manager = sc.executorAllocationManager.get
-    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
-      createStageInfo(0, 1000)))
+    sc.listenerBus
+      .postToAll(SparkListenerStageSubmitted(createStageInfo(0, 1000)))
 
     // Keep adding until the limit is reached
     assert(numExecutorsTarget(manager) === 1)
@@ -210,10 +209,10 @@ class ExecutorAllocationManagerSuite
 
     val task2Info = createTaskInfo(1, 0, "executor-1")
     sc.listenerBus.postToAll(SparkListenerTaskStart(2, 0, task2Info))
-    sc.listenerBus.postToAll(
-      SparkListenerTaskEnd(2, 0, null, Success, task1Info, null))
-    sc.listenerBus.postToAll(
-      SparkListenerTaskEnd(2, 0, null, Success, task2Info, null))
+    sc.listenerBus
+      .postToAll(SparkListenerTaskEnd(2, 0, null, Success, task1Info, null))
+    sc.listenerBus
+      .postToAll(SparkListenerTaskEnd(2, 0, null, Success, task2Info, null))
 
     assert(adjustRequestedExecutors(manager) === -1)
   }
@@ -271,8 +270,8 @@ class ExecutorAllocationManagerSuite
   test("interleaving add and remove") {
     sc = createSparkContext(5, 10, 5)
     val manager = sc.executorAllocationManager.get
-    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
-      createStageInfo(0, 1000)))
+    sc.listenerBus
+      .postToAll(SparkListenerStageSubmitted(createStageInfo(0, 1000)))
 
     // Add a few executors
     assert(addExecutors(manager) === 1)
@@ -377,8 +376,10 @@ class ExecutorAllocationManagerSuite
     val manager = sc.executorAllocationManager.get
     manager.setClock(clock)
 
-    executorIds(manager)
-      .asInstanceOf[mutable.Set[String]] ++= List("1", "2", "3")
+    executorIds(manager).asInstanceOf[mutable.Set[String]] ++= List(
+      "1",
+      "2",
+      "3")
 
     // Starting remove timer is idempotent for each executor
     assert(removeTimes(manager).isEmpty)
@@ -399,14 +400,14 @@ class ExecutorAllocationManagerSuite
     onExecutorIdle(manager, "2")
     assert(removeTimes(manager)("2") !== firstRemoveTime) // different executor
     assert(
-      removeTimes(manager)(
-        "2") === clock.getTimeMillis + executorIdleTimeout * 1000)
+      removeTimes(manager)("2") === clock
+        .getTimeMillis + executorIdleTimeout * 1000)
     clock.advance(400L)
     onExecutorIdle(manager, "3")
     assert(removeTimes(manager)("3") !== firstRemoveTime)
     assert(
-      removeTimes(manager)(
-        "3") === clock.getTimeMillis + executorIdleTimeout * 1000)
+      removeTimes(manager)("3") === clock
+        .getTimeMillis + executorIdleTimeout * 1000)
     assert(removeTimes(manager).size === 3)
     assert(removeTimes(manager).contains("2"))
     assert(removeTimes(manager).contains("3"))
@@ -459,8 +460,8 @@ class ExecutorAllocationManagerSuite
     val clock = new ManualClock(2020L)
     val manager = sc.executorAllocationManager.get
     manager.setClock(clock)
-    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
-      createStageInfo(0, 1000)))
+    sc.listenerBus
+      .postToAll(SparkListenerStageSubmitted(createStageInfo(0, 1000)))
 
     // Scheduler queue backlogged
     onSchedulerBacklogged(manager)
@@ -582,8 +583,8 @@ class ExecutorAllocationManagerSuite
 
     // Starting a stage should start the add timer
     val numTasks = 10
-    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
-      createStageInfo(0, numTasks)))
+    sc.listenerBus
+      .postToAll(SparkListenerStageSubmitted(createStageInfo(0, numTasks)))
     assert(addTime(manager) !== NOT_SET)
 
     // Starting a subset of the tasks should not cancel the add timer
@@ -601,10 +602,10 @@ class ExecutorAllocationManagerSuite
 
     // Start two different stages
     // The add timer should be canceled only if all tasks in both stages start running
-    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
-      createStageInfo(1, numTasks)))
-    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
-      createStageInfo(2, numTasks)))
+    sc.listenerBus
+      .postToAll(SparkListenerStageSubmitted(createStageInfo(1, numTasks)))
+    sc.listenerBus
+      .postToAll(SparkListenerStageSubmitted(createStageInfo(2, numTasks)))
     assert(addTime(manager) !== NOT_SET)
     taskInfos.foreach { info =>
       sc.listenerBus.postToAll(SparkListenerTaskStart(1, 0, info))
@@ -769,8 +770,8 @@ class ExecutorAllocationManagerSuite
     adjustRequestedExecutors(manager)
     assert(numExecutorsTarget(manager) === 0)
 
-    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
-      createStageInfo(1, 1000)))
+    sc.listenerBus
+      .postToAll(SparkListenerStageSubmitted(createStageInfo(1, 1000)))
     addExecutors(manager)
     assert(numExecutorsTarget(manager) === 16)
   }
@@ -895,8 +896,8 @@ class ExecutorAllocationManagerSuite
 
     // Allocation manager is reset when adding executor requests are sent without reporting back
     // executor added.
-    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
-      createStageInfo(0, 10)))
+    sc.listenerBus
+      .postToAll(SparkListenerStageSubmitted(createStageInfo(0, 10)))
 
     assert(addExecutors(manager) === 1)
     assert(numExecutorsTarget(manager) === 2)
@@ -911,8 +912,8 @@ class ExecutorAllocationManagerSuite
     assert(executorIds(manager) === Set.empty)
 
     // Allocation manager is reset when executors are added.
-    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
-      createStageInfo(0, 10)))
+    sc.listenerBus
+      .postToAll(SparkListenerStageSubmitted(createStageInfo(0, 10)))
 
     addExecutors(manager)
     addExecutors(manager)
@@ -994,22 +995,17 @@ class ExecutorAllocationManagerSuite
       minExecutors: Int = 1,
       maxExecutors: Int = 5,
       initialExecutors: Int = 1): SparkContext = {
-    val conf = new SparkConf()
-      .setMaster("local")
+    val conf = new SparkConf().setMaster("local")
       .setAppName("test-executor-allocation-manager")
       .set("spark.dynamicAllocation.enabled", "true")
       .set("spark.dynamicAllocation.minExecutors", minExecutors.toString)
-      .set("spark.dynamicAllocation.maxExecutors", maxExecutors.toString)
-      .set(
+      .set("spark.dynamicAllocation.maxExecutors", maxExecutors.toString).set(
         "spark.dynamicAllocation.initialExecutors",
-        initialExecutors.toString)
-      .set(
+        initialExecutors.toString).set(
         "spark.dynamicAllocation.schedulerBacklogTimeout",
-        s"${schedulerBacklogTimeout.toString}s")
-      .set(
+        s"${schedulerBacklogTimeout.toString}s").set(
         "spark.dynamicAllocation.sustainedSchedulerBacklogTimeout",
-        s"${sustainedSchedulerBacklogTimeout.toString}s")
-      .set(
+        s"${sustainedSchedulerBacklogTimeout.toString}s").set(
         "spark.dynamicAllocation.executorIdleTimeout",
         s"${executorIdleTimeout.toString}s")
       .set("spark.dynamicAllocation.testing", "true")

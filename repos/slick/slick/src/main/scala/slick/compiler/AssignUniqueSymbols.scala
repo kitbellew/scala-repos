@@ -34,8 +34,8 @@ class AssignUniqueSymbols extends Phase {
           case (_: OptionFold | _: OptionApply | _: GetOrElse) =>
             hasNonPrimitiveOption = true
           case j: Join =>
-            if (j.jt == JoinType.LeftOption || j.jt == JoinType.RightOption || j.jt == JoinType.OuterOption)
-              hasNonPrimitiveOption = true
+            if (j.jt == JoinType.LeftOption || j.jt == JoinType.RightOption || j
+                  .jt == JoinType.OuterOption) hasNonPrimitiveOption = true
           case _ =>
         }
       def tr(n: Node): Node = {

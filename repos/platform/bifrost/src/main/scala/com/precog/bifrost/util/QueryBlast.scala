@@ -157,19 +157,17 @@ verboseErrors - whether to print verbose error messages (default: false)
 
   def runTest(properties: Properties) {
     val sampleSet = new QuerySampler
-    val apiUrl = properties.getProperty(
-      "baseUrl",
-      "http://localhost:30070/query")
+    val apiUrl = properties
+      .getProperty("baseUrl", "http://localhost:30070/query")
     val threads = properties.getProperty("threads", "1").toInt
     val maxQuery = properties
-      .getProperty("maxQuery", sampleSet.testQueries.size.toString)
-      .toInt
+      .getProperty("maxQuery", sampleSet.testQueries.size.toString).toInt
     val apiKey = properties.getProperty("token", "root")
     val base = properties.getProperty("queryBase", "public")
     interval = properties.getProperty("iterations", "10").toInt
     intervalDouble = interval.toDouble
-    val verboseErrors =
-      properties.getProperty("verboseErrors", "false").toBoolean
+    val verboseErrors = properties.getProperty("verboseErrors", "false")
+      .toBoolean
 
     val workQueue = new ArrayBlockingQueue[(Int, String)](1000)
 
@@ -184,10 +182,8 @@ verboseErrors - whether to print verbose error messages (default: false)
             try {
               val started = System.nanoTime()
 
-              val f: Future[HttpResponse[JValue]] = client
-                .path(apiUrl)
-                .query("apiKey", apiKey)
-                .query("q", query)
+              val f: Future[HttpResponse[JValue]] = client.path(apiUrl)
+                .query("apiKey", apiKey).query("q", query)
                 .contentType[ByteChunk](application / MimeTypes.json)
                 .get[JValue]("")
 
@@ -258,10 +254,7 @@ histogram('platform) :=
     val index = random.nextInt(maxQuery)
     (
       index,
-      testQueries(index)
-        .format(base)
-        .replace("\n", " ")
-        .replace("  ", " ")
+      testQueries(index).format(base).replace("\n", " ").replace("  ", " ")
         .trim())
   }
 }

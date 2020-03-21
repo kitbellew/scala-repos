@@ -21,8 +21,8 @@ import scala.collection.immutable
 private[stream] object Stages {
 
   object DefaultAttributes {
-    val IODispatcher = ActorAttributes.Dispatcher(
-      "akka.stream.default-blocking-io-dispatcher")
+    val IODispatcher = ActorAttributes
+      .Dispatcher("akka.stream.default-blocking-io-dispatcher")
     val inputBufferOne = inputBuffer(initial = 1, max = 1)
 
     val fused = name("fused")
@@ -140,10 +140,8 @@ private[stream] object Stages {
     // FIXME: No supervision hooked in yet.
 
     protected def supervision(attributes: Attributes): Decider =
-      attributes
-        .get[SupervisionStrategy](SupervisionStrategy(
-          Supervision.stoppingDecider))
-        .decider
+      attributes.get[SupervisionStrategy](SupervisionStrategy(
+        Supervision.stoppingDecider)).decider
 
   }
 

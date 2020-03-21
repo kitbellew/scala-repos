@@ -126,8 +126,7 @@ object CheckBoxTreeCell {
       selectedProperty: TreeItem[T] => ObservableValue[Boolean, JBoolean],
       converter: StringConverter[TreeItem[T]]): (TreeView[T]) => (TreeCell[T]) =
     (view: TreeView[T]) =>
-      jfxscc.CheckBoxTreeCell
-        .forTreeView[T](selectedProperty, converter)
+      jfxscc.CheckBoxTreeCell.forTreeView[T](selectedProperty, converter)
         .call(view)
 
   /**

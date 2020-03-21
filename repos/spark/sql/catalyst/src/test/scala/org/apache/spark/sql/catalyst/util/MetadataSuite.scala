@@ -24,38 +24,24 @@ import org.apache.spark.sql.types.{Metadata, MetadataBuilder}
 
 class MetadataSuite extends SparkFunSuite {
 
-  val baseMetadata = new MetadataBuilder()
-    .putString("purpose", "ml")
-    .putBoolean("isBase", true)
-    .build()
+  val baseMetadata = new MetadataBuilder().putString("purpose", "ml")
+    .putBoolean("isBase", true).build()
 
-  val summary = new MetadataBuilder()
-    .putLong("numFeatures", 10L)
-    .build()
+  val summary = new MetadataBuilder().putLong("numFeatures", 10L).build()
 
-  val age = new MetadataBuilder()
-    .putString("name", "age")
-    .putLong("index", 1L)
-    .putBoolean("categorical", false)
-    .putDouble("average", 45.0)
-    .build()
+  val age = new MetadataBuilder().putString("name", "age").putLong("index", 1L)
+    .putBoolean("categorical", false).putDouble("average", 45.0).build()
 
-  val gender = new MetadataBuilder()
-    .putString("name", "gender")
-    .putLong("index", 5)
-    .putBoolean("categorical", true)
-    .putStringArray("categories", Array("male", "female"))
-    .build()
+  val gender = new MetadataBuilder().putString("name", "gender")
+    .putLong("index", 5).putBoolean("categorical", true)
+    .putStringArray("categories", Array("male", "female")).build()
 
-  val metadata = new MetadataBuilder()
-    .withMetadata(baseMetadata)
+  val metadata = new MetadataBuilder().withMetadata(baseMetadata)
     .putBoolean("isBase", false) // overwrite an existing key
-    .putMetadata("summary", summary)
-    .putLongArray("long[]", Array(0L, 1L))
+    .putMetadata("summary", summary).putLongArray("long[]", Array(0L, 1L))
     .putDoubleArray("double[]", Array(3.0, 4.0))
     .putBooleanArray("boolean[]", Array(true, false))
-    .putMetadataArray("features", Array(age, gender))
-    .build()
+    .putMetadataArray("features", Array(age, gender)).build()
 
   test("metadata builder and getters") {
     assert(age.contains("summary") === false)

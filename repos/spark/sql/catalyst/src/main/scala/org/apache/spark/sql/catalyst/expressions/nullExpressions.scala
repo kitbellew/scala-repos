@@ -46,8 +46,8 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (children == Nil) {
-      TypeCheckResult.TypeCheckFailure(
-        "input to function coalesce cannot be empty")
+      TypeCheckResult
+        .TypeCheckFailure("input to function coalesce cannot be empty")
     } else {
       TypeUtils.checkForSameTypeInputExpr(
         children.map(_.dataType),
@@ -75,10 +75,9 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
       boolean ${ev.isNull} = ${firstEval.isNull};
       ${ctx.javaType(dataType)} ${ev.value} = ${firstEval.value};
     """ +
-      rest
-        .map { e =>
-          val eval = e.gen(ctx)
-          s"""
+      rest.map { e =>
+        val eval = e.gen(ctx)
+        s"""
         if (${ev.isNull}) {
           ${eval.code}
           if (!${eval.isNull}) {
@@ -87,8 +86,7 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
           }
         }
       """
-        }
-        .mkString("\n")
+      }.mkString("\n")
   }
 }
 
@@ -252,11 +250,10 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val nonnull = ctx.freshName("nonnull")
-    val code = children
-      .map { e =>
-        val eval = e.gen(ctx)
-        e.dataType match {
-          case DoubleType | FloatType => s"""
+    val code = children.map { e =>
+      val eval = e.gen(ctx)
+      e.dataType match {
+        case DoubleType | FloatType => s"""
             if ($nonnull < $n) {
               ${eval.code}
               if (!${eval.isNull} && !Double.isNaN(${eval.value})) {
@@ -264,7 +261,7 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
               }
             }
           """
-          case _                      => s"""
+        case _                      => s"""
             if ($nonnull < $n) {
               ${eval.code}
               if (!${eval.isNull}) {
@@ -272,9 +269,8 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
               }
             }
           """
-        }
       }
-      .mkString("\n")
+    }.mkString("\n")
     s"""
       int $nonnull = 0;
       $code

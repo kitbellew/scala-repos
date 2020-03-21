@@ -105,8 +105,8 @@ trait UpgradeToWebSocket extends jm.ws.UpgradeToWebSocket {
       outSource: Graph[SourceShape[jm.ws.Message], _ <: Any])
       : Graph[FlowShape[Message, Message], NotUsed] =
     JavaMapping.toScala(
-      scaladsl.Flow.fromSinkAndSourceMat(inSink, outSource)(
-        scaladsl.Keep.none): Graph[
+      scaladsl.Flow
+        .fromSinkAndSourceMat(inSink, outSource)(scaladsl.Keep.none): Graph[
         FlowShape[jm.ws.Message, jm.ws.Message],
         NotUsed])
 }

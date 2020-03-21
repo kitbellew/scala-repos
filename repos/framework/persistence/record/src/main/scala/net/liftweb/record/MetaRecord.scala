@@ -104,8 +104,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     classOf[LifecycleCallbacks].isAssignableFrom(m.getReturnType)
 
   private def isField(m: Method) = {
-    val ret =
-      !m.isSynthetic && classOf[Field[_, _]].isAssignableFrom(m.getReturnType)
+    val ret = !m.isSynthetic && classOf[Field[_, _]]
+      .isAssignableFrom(m.getReturnType)
     ret
   }
 
@@ -124,11 +124,9 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
       }
 
     // sort each list based on having the most specific type and use that method
-    val realMeth = map.values
-      .map(_.sortWith {
-        case (a, b) => !a.getReturnType.isAssignableFrom(b.getReturnType)
-      })
-      .map(_.head)
+    val realMeth = map.values.map(_.sortWith {
+      case (a, b) => !a.getReturnType.isAssignableFrom(b.getReturnType)
+    }).map(_.head)
 
     for (v <- realMeth) {
       v.invoke(rec) match {
@@ -146,9 +144,10 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
 
     val methods = rootClass.getMethods
 
-    lifecycleCallbacks = (for (v <- methods
-                               if v.getName != "meta" && isLifecycle(v))
-      yield (v.getName, v)).toList
+    lifecycleCallbacks =
+      (for (v <- methods
+            if v.getName != "meta" && isLifecycle(v)) yield (v.getName, v))
+        .toList
 
     introspect(this, methods) {
       case (v, mf) => tArray += FieldHolder(mf.name, v, mf)
@@ -295,8 +294,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     setFieldsFromJValue(inst, JsonParser.parse(json))
 
   def foreachCallback(inst: BaseRecord, f: LifecycleCallbacks => Any) {
-    lifecycleCallbacks.foreach(m =>
-      f(m._2.invoke(inst).asInstanceOf[LifecycleCallbacks]))
+    lifecycleCallbacks
+      .foreach(m => f(m._2.invoke(inst).asInstanceOf[LifecycleCallbacks]))
   }
 
   /**
@@ -327,15 +326,13 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     template match {
       case e @ <lift:field_label>{_*}</lift:field_label> =>
         e.attribute("name") match {
-          case Some(name) =>
-            fieldByName(name.toString, inst).map(_.label).openOr(NodeSeq.Empty)
+          case Some(name) => fieldByName(name.toString, inst).map(_.label)
+              .openOr(NodeSeq.Empty)
           case _ => NodeSeq.Empty
         }
 
       case e @ <lift:field>{_*}</lift:field> => e.attribute("name") match {
-          case Some(name) =>
-            fieldByName(name.toString, inst)
-              .flatMap(_.toForm)
+          case Some(name) => fieldByName(name.toString, inst).flatMap(_.toForm)
               .openOr(NodeSeq.Empty)
           case _ => NodeSeq.Empty
         }
@@ -343,12 +340,10 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
       case e @ <lift:field_msg>{_*}</lift:field_msg> =>
         e.attribute("name") match {
           case Some(name) =>
-            fieldByName(name.toString, inst)
-              .map(_.uniqueFieldId match {
-                case Full(id) => <lift:msg id={id}/>
-                case _        => NodeSeq.Empty
-              })
-              .openOr(NodeSeq.Empty)
+            fieldByName(name.toString, inst).map(_.uniqueFieldId match {
+              case Full(id) => <lift:msg id={id}/>
+              case _        => NodeSeq.Empty
+            }).openOr(NodeSeq.Empty)
           case _ => NodeSeq.Empty
         }
 

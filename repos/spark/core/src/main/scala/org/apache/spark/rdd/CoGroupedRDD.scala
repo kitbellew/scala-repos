@@ -154,20 +154,18 @@ class CoGroupedRDD[K: ClassTag](
 
       case shuffleDependency: ShuffleDependency[_, _, _] =>
         // Read map outputs of shuffle
-        val it = SparkEnv.get.shuffleManager
-          .getReader(
-            shuffleDependency.shuffleHandle,
-            split.index,
-            split.index + 1,
-            context)
-          .read()
+        val it = SparkEnv.get.shuffleManager.getReader(
+          shuffleDependency.shuffleHandle,
+          split.index,
+          split.index + 1,
+          context).read()
         rddIterators += ((it, depNum))
     }
 
     val map = createExternalMap(numRdds)
     for ((it, depNum) <- rddIterators) {
-      map.insertAll(
-        it.map(pair => (pair._1, new CoGroupValue(pair._2, depNum))))
+      map
+        .insertAll(it.map(pair => (pair._1, new CoGroupValue(pair._2, depNum))))
     }
     context.taskMetrics().incMemoryBytesSpilled(map.memoryBytesSpilled)
     context.taskMetrics().incDiskBytesSpilled(map.diskBytesSpilled)

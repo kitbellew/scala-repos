@@ -43,7 +43,8 @@ abstract class ScalaRenameTestBase
     val element = TargetElementUtil.findTargetElement(
       InjectedLanguageUtil
         .getEditorForInjectedLanguageNoCommit(getEditorAdapter, scalaFile),
-      TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil.ELEMENT_NAME_ACCEPTED
+      TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil
+        .ELEMENT_NAME_ACCEPTED
     )
     assert(element != null, "Reference is not specified.")
     val searchInComments = element.getText.contains("Comments")
@@ -55,8 +56,7 @@ abstract class ScalaRenameTestBase
     ScalaUtils.runWriteAction(
       new Runnable {
         def run() {
-          val subst = RenamePsiElementProcessor
-            .forElement(element)
+          val subst = RenamePsiElementProcessor.forElement(element)
             .substituteElementToRename(element, getEditorAdapter)
           if (subst == null) return
           new RenameProcessor(

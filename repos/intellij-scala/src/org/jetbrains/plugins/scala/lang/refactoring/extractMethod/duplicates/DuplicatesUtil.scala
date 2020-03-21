@@ -73,8 +73,8 @@ object DuplicatesUtil {
       element: PsiElement,
       size: Int): Option[Seq[PsiElement]] = {
     val siblingIterator = element.nextSiblings
-    val siblings =
-      element +: siblingIterator.withFilter(isSignificant).take(size - 1).toSeq
+    val siblings = element +: siblingIterator.withFilter(isSignificant)
+      .take(size - 1).toSeq
     if (siblings.size < size) None else Some(siblings)
   }
 
@@ -92,15 +92,14 @@ object DuplicatesUtil {
     val highlighter = new util.ArrayList[RangeHighlighter](1)
     highlightDuplicate(project, editor, duplicate, highlighter)
     val range = duplicate.textRange
-    val logicalPosition: LogicalPosition = editor.offsetToLogicalPosition(
-      range.getStartOffset)
+    val logicalPosition: LogicalPosition = editor
+      .offsetToLogicalPosition(range.getStartOffset)
     expandAllRegionsCoveringRange(project, editor, range)
     editor.getScrollingModel.scrollTo(logicalPosition, ScrollType.MAKE_VISIBLE)
 
     work
 
-    HighlightManager
-      .getInstance(project)
+    HighlightManager.getInstance(project)
       .removeSegmentHighlighter(editor, highlighter.get(0))
   }
 
@@ -199,8 +198,7 @@ object DuplicatesUtil {
       project: Project,
       editor: Editor,
       textRange: TextRange) {
-    val foldRegions: Array[FoldRegion] = CodeFoldingManager
-      .getInstance(project)
+    val foldRegions: Array[FoldRegion] = CodeFoldingManager.getInstance(project)
       .getFoldRegionsAtOffset(editor, textRange.getStartOffset)
     val anyCollapsed: Boolean = foldRegions.exists(!_.isExpanded)
     if (anyCollapsed) {
@@ -220,15 +218,13 @@ object DuplicatesUtil {
     val attributes: TextAttributes = colorsManager.getGlobalScheme
       .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
     val range = duplicate.textRange
-    HighlightManager
-      .getInstance(project)
-      .addRangeHighlight(
-        editor,
-        range.getStartOffset,
-        range.getEndOffset,
-        attributes,
-        true,
-        highlighters)
+    HighlightManager.getInstance(project).addRangeHighlight(
+      editor,
+      range.getStartOffset,
+      range.getEndOffset,
+      attributes,
+      true,
+      highlighters)
   }
 
 }

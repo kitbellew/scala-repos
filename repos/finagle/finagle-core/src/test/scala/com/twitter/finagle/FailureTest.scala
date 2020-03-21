@@ -122,7 +122,8 @@ class FailureTest
       Failure(
         "abc",
         new Exception,
-        Failure.Interrupted | Failure.Restartable | Failure.Naming | Failure.Wrapped),
+        Failure.Interrupted | Failure.Restartable | Failure.Naming | Failure
+          .Wrapped),
       Failure("abc"),
       new Exception)
     val categories = Seq(

@@ -26,9 +26,8 @@ class SingleImportInspection extends LocalInspectionTool {
         if (importExpr.selectorSet.isDefined && importExpr.selectors.length + (
               if (importExpr.singleWildcard) 1 else 0
             ) == 1) {
-          if (importExpr.selectors.length == 1 && importExpr.selectors.head.isAliasedImport) {
-            return
-          }
+          if (importExpr.selectors.length == 1 && importExpr.selectors.head
+                .isAliasedImport) { return }
           holder.registerProblem(holder.getManager.createProblemDescriptor(
             importExpr.selectorSet.get,
             InspectionBundle.message("single.import"),

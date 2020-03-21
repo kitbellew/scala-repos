@@ -15,10 +15,8 @@ class StepIntoTest_212 extends StepIntoTestBase with ScalaVersion_2_12
 
 abstract class StepIntoTestBase extends ScalaDebuggerTestCase {
   def doStepInto(): Unit = {
-    val stepIntoCommand = getDebugProcess.createStepIntoCommand(
-      suspendContext,
-      false,
-      null)
+    val stepIntoCommand = getDebugProcess
+      .createStepIntoCommand(suspendContext, false, null)
     getDebugProcess.getManagerThread.invokeAndWait(stepIntoCommand)
     waitForBreakpoint()
   }

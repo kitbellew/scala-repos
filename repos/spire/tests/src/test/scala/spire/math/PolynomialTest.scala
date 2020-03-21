@@ -274,8 +274,8 @@ class PolynomialTest extends FunSuite {
     assert(p.toDense.monic === Polynomial.dense(Array(r"2/1", r"8/1", r"1/1")))
     assert(p.toDense.derivative === Polynomial.dense(Array(r"2/1", r"1/2")))
     assert(
-      p.toDense.integral === Polynomial.dense(
-        Array(r"0", r"1/2", r"1/1", r"1/12")))
+      p.toDense.integral === Polynomial
+        .dense(Array(r"0", r"1/2", r"1/1", r"1/12")))
 
   }
 
@@ -308,10 +308,10 @@ class PolynomialTest extends FunSuite {
 
     val leg = SpecialPolynomials.legendres[Rational](5).toList
     val lag = SpecialPolynomials.laguerres[Rational](5).toList
-    val chebFirstKind =
-      SpecialPolynomials.chebyshevsFirstKind[Rational](5).toList
-    val chebSecondKind =
-      SpecialPolynomials.chebyshevsSecondKind[Rational](5).toList
+    val chebFirstKind = SpecialPolynomials.chebyshevsFirstKind[Rational](5)
+      .toList
+    val chebSecondKind = SpecialPolynomials.chebyshevsSecondKind[Rational](5)
+      .toList
     val hermProb = SpecialPolynomials.probHermites[Rational](5).toList
     val hermPhys = SpecialPolynomials.physHermites[Rational](5).toList
 

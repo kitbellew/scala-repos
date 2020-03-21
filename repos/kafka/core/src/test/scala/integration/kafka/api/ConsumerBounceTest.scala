@@ -51,10 +51,11 @@ class ConsumerBounceTest extends IntegrationTestHarness with Logging {
     "3"
   ) // don't want to lose offset
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
-  this.serverConfig.setProperty(
-    KafkaConfig.GroupMinSessionTimeoutMsProp,
-    "10"
-  ) // set small enough session timeout
+  this.serverConfig
+    .setProperty(
+      KafkaConfig.GroupMinSessionTimeoutMsProp,
+      "10"
+    ) // set small enough session timeout
   this.producerConfig.setProperty(ProducerConfig.ACKS_CONFIG, "all")
   this.consumerConfig.setProperty(ConsumerConfig.GROUP_ID_CONFIG, "my-test")
   this.consumerConfig
@@ -67,11 +68,10 @@ class ConsumerBounceTest extends IntegrationTestHarness with Logging {
     .setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   override def generateConfigs() = {
-    FixedPortTestUtils
-      .createBrokerConfigs(
-        serverCount,
-        zkConnect,
-        enableControlledShutdown = false)
+    FixedPortTestUtils.createBrokerConfigs(
+      serverCount,
+      zkConnect,
+      enableControlledShutdown = false)
       .map(KafkaConfig.fromProps(_, serverConfig))
   }
 
@@ -154,11 +154,8 @@ class ConsumerBounceTest extends IntegrationTestHarness with Logging {
     TestUtils.waitUntilTrue(
       () =>
         servers.forall(server =>
-          server.replicaManager
-            .getReplica(tp.topic(), tp.partition())
-            .get
-            .highWatermark
-            .messageOffset == numRecords),
+          server.replicaManager.getReplica(tp.topic(), tp.partition()).get
+            .highWatermark.messageOffset == numRecords),
       "Failed to update high watermark for followers after timeout"
     )
 
@@ -200,13 +197,11 @@ class ConsumerBounceTest extends IntegrationTestHarness with Logging {
 
   private def sendRecords(numRecords: Int) {
     val futures = (0 until numRecords).map { i =>
-      this
-        .producers(0)
-        .send(new ProducerRecord(
-          topic,
-          part,
-          i.toString.getBytes,
-          i.toString.getBytes))
+      this.producers(0).send(new ProducerRecord(
+        topic,
+        part,
+        i.toString.getBytes,
+        i.toString.getBytes))
     }
     futures.map(_.get)
   }

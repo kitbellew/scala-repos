@@ -132,20 +132,19 @@ trait EvaluatorTestSupport[M[+_]]
                     }
 
                     val prefix = "filesystem"
-                    val target = path.path
-                      .replaceAll("/$", ".json")
+                    val target = path.path.replaceAll("/$", ".json")
                       .replaceAll("^/" + prefix, prefix)
 
                     val src =
                       if (target startsWith prefix)
-                        io.Source.fromFile(new File(
-                          target.substring(prefix.length)))
+                        io.Source
+                          .fromFile(new File(target.substring(prefix.length)))
                       else
-                        io.Source.fromInputStream(getClass.getResourceAsStream(
-                          target))
+                        io.Source
+                          .fromInputStream(getClass.getResourceAsStream(target))
 
-                    val parsed: Stream[JValue] =
-                      src.getLines map JParser.parseUnsafe toStream
+                    val parsed: Stream[JValue] = src.getLines map JParser
+                      .parseUnsafe toStream
 
                     currentIndex += parsed.length
 
@@ -215,9 +214,8 @@ trait EvaluatorSpecs[M[+_]]
       path: Path = Path.Root,
       scriptPath: Path = Path.Root,
       optimize: Boolean = true)(test: Set[SEvent] => Result): Result = {
-    val ctx = defaultEvaluationContext.copy(
-      basePath = path,
-      scriptPath = scriptPath)
+    val ctx = defaultEvaluationContext
+      .copy(basePath = path, scriptPath = scriptPath)
     (consumeEval(graph, ctx, optimize) match {
       case Success(results) => test(results)
       case Failure(error)   => throw error
@@ -432,9 +430,8 @@ trait EvaluatorSpecs[M[+_]]
       val line = Line(1, 1, "")
 
       val numbers = dag.RelativeLoad(Const(CString("numbers"))(line))(line)
-      val numbers0 = dag.RelativeLoad(
-        Const(CString("numbers"))(line),
-        JNumberT)(line)
+      val numbers0 = dag
+        .RelativeLoad(Const(CString("numbers"))(line), JNumberT)(line)
 
       val input = Join(Add, IdentitySort, numbers, numbers0)(line)
 
@@ -491,8 +488,8 @@ trait EvaluatorSpecs[M[+_]]
     "evaluate a new mapped over numbers as no-op" in {
       val line = Line(1, 1, "")
 
-      val input = dag.New(
-        dag.AbsoluteLoad(Const(CString("/hom/numbers"))(line))(line))(line)
+      val input = dag
+        .New(dag.AbsoluteLoad(Const(CString("/hom/numbers"))(line))(line))(line)
 
       testEval(input) { result =>
         result must haveSize(5)
@@ -576,12 +573,10 @@ trait EvaluatorSpecs[M[+_]]
       val parent = dag.AbsoluteLoad(
         Const(CString("/hom/heightWeightAcrossSlices"))(line))(line)
 
-      val height = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("height"))
-      val weight = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("weight"))
+      val height = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("height"))
+      val weight = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("weight"))
       val mean = List(Mean)
       val max = List(Max)
 
@@ -606,12 +601,10 @@ trait EvaluatorSpecs[M[+_]]
       val parent = dag.AbsoluteLoad(
         Const(CString("/hom/heightWeightAcrossSlices"))(line))(line)
 
-      val height = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("height"))
-      val weight = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("weight"))
+      val height = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("height"))
+      val weight = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("weight"))
       val mean = List(Mean)
       val max = List(Max)
 
@@ -863,8 +856,8 @@ trait EvaluatorSpecs[M[+_]]
 
       "from the same path" >> {
         val line = Line(1, 1, "")
-        val heightWeight = dag.AbsoluteLoad(
-          Const(CString("/hom/heightWeight"))(line))(line)
+        val heightWeight = dag
+          .AbsoluteLoad(Const(CString("/hom/heightWeight"))(line))(line)
 
         val input = Join(
           Add,
@@ -894,8 +887,8 @@ trait EvaluatorSpecs[M[+_]]
 
       "from the same path (with a relative load)" >> {
         val line = Line(1, 1, "")
-        val heightWeight = dag.RelativeLoad(
-          Const(CString("heightWeight"))(line))(line)
+        val heightWeight = dag
+          .RelativeLoad(Const(CString("heightWeight"))(line))(line)
 
         val input = Join(
           Add,
@@ -1249,8 +1242,8 @@ trait EvaluatorSpecs[M[+_]]
       val clicks = dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line)
 
       val clicksP = dag.New(clicks)(line)
-      val input = dag.Reduce(Count, dag.IUI(false, clicksP, clicksP)(line))(
-        line)
+      val input = dag
+        .Reduce(Count, dag.IUI(false, clicksP, clicksP)(line))(line)
 
       testEval(input) { resultE =>
         val result = resultE collect { case (ids, SDecimal(d)) => d }
@@ -1789,9 +1782,8 @@ trait EvaluatorSpecs[M[+_]]
       val line = Line(1, 1, "")
 
       val parent = dag.AbsoluteLoad(Const(CString("/hom/numbers"))(line))(line)
-      val input = dag.MegaReduce(
-        List((trans.Leaf(trans.Source), List(Count, Sum))),
-        parent)
+      val input = dag
+        .MegaReduce(List((trans.Leaf(trans.Source), List(Count, Sum))), parent)
 
       // We don't optimize since MegaReduce can only be created through an optimization.
       testEval(input, optimize = false) { result =>
@@ -1811,9 +1803,8 @@ trait EvaluatorSpecs[M[+_]]
       val parent = dag.AbsoluteLoad(Const(CString("/hom/numbers"))(line))(line)
       val red = Sum
 
-      val mega = dag.MegaReduce(
-        List((trans.Leaf(trans.Source), List(red))),
-        parent)
+      val mega = dag
+        .MegaReduce(List((trans.Leaf(trans.Source), List(red))), parent)
       val input = Join(
         DerefArray,
         Cross(None),
@@ -3305,9 +3296,8 @@ trait EvaluatorSpecs[M[+_]]
     "memoize properly in a load" in {
       val line = Line(1, 1, "")
 
-      val input0 = dag.Memoize(
-        dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line),
-        1)
+      val input0 = dag
+        .Memoize(dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line), 1)
       val input1 = dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line)
 
       testEval(input0) { result0 =>
@@ -3397,8 +3387,9 @@ trait EvaluatorSpecs[M[+_]]
             WrapObject,
             Cross(None),
             Const(CString("num"))(line),
-            dag.Reduce(Count, SplitGroup(1, clicks.identities, id)(line))(
-              line))(line)
+            dag
+              .Reduce(Count, SplitGroup(1, clicks.identities, id)(line))(line))(
+            line)
         )(line),
         id
       )(line)
@@ -3490,8 +3481,9 @@ trait EvaluatorSpecs[M[+_]]
             WrapObject,
             Cross(None),
             Const(CString("num"))(line),
-            dag.Reduce(Count, SplitGroup(1, clicks.identities, id)(line))(
-              line))(line)
+            dag
+              .Reduce(Count, SplitGroup(1, clicks.identities, id)(line))(line))(
+            line)
         )(line),
         id
       )(line)
@@ -3685,8 +3677,9 @@ trait EvaluatorSpecs[M[+_]]
             WrapObject,
             Cross(None),
             Const(CString("num"))(line),
-            dag.Reduce(Count, SplitGroup(1, clicks.identities, id)(line))(
-              line))(line)
+            dag
+              .Reduce(Count, SplitGroup(1, clicks.identities, id)(line))(line))(
+            line)
         )(line),
         id
       )(line)
@@ -3754,8 +3747,9 @@ trait EvaluatorSpecs[M[+_]]
             WrapObject,
             Cross(None),
             Const(CString("num"))(line),
-            dag.Reduce(Count, SplitGroup(1, clicks.identities, id)(line))(
-              line))(line)
+            dag
+              .Reduce(Count, SplitGroup(1, clicks.identities, id)(line))(line))(
+            line)
         )(line),
         id
       )(line)

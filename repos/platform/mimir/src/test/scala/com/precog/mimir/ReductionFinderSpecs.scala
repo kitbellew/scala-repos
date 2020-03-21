@@ -78,9 +78,8 @@ trait ReductionFinderSpecs[M[+_]]
 
       val parent = dag.AbsoluteLoad(Const(CString("/foo"))(line))(line)
       val red = Count
-      val megaR = dag.MegaReduce(
-        List((trans.Leaf(trans.Source), List(red))),
-        parent)
+      val megaR = dag
+        .MegaReduce(List((trans.Leaf(trans.Source), List(red))), parent)
 
       val expected = joinDeref(megaR, 0, 0, line)
 
@@ -119,18 +118,16 @@ trait ReductionFinderSpecs[M[+_]]
             line),
           Const(CNum(12))(line))(line))(line)
 
-      val fooDerefTrans = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("foo"))
+      val fooDerefTrans = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("foo"))
       val nonEqTrans = trans.Map1(
         trans.Equal(fooDerefTrans, trans.ConstLiteral(CNum(5), fooDerefTrans)),
         Unary.Comp.f1(morphCtx))
       val objTrans = trans.WrapObject(trans.Leaf(trans.Source), "bar")
       val opTrans = op1ForUnOp(Neg).spec(morphCtx)(
         trans.DerefArrayStatic(trans.Leaf(trans.Source), CPathIndex(1)))
-      val bazDerefTrans = trans.DerefObjectStatic(
-        trans.Leaf(trans.Source),
-        CPathField("baz"))
+      val bazDerefTrans = trans
+        .DerefObjectStatic(trans.Leaf(trans.Source), CPathField("baz"))
       val filterTrans = trans.Filter(
         trans.Leaf(trans.Source),
         trans.Equal(bazDerefTrans, trans.ConstLiteral(CNum(12), bazDerefTrans)))

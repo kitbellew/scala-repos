@@ -141,19 +141,15 @@ class Slf4jLoggingFilter(
     eventStream: EventStream)
     extends LoggingFilter {
   def isErrorEnabled(logClass: Class[_], logSource: String) =
-    (eventStream.logLevel >= ErrorLevel) && Logger(
-      logClass,
-      logSource).isErrorEnabled
+    (eventStream.logLevel >= ErrorLevel) && Logger(logClass, logSource)
+      .isErrorEnabled
   def isWarningEnabled(logClass: Class[_], logSource: String) =
-    (eventStream.logLevel >= WarningLevel) && Logger(
-      logClass,
-      logSource).isWarnEnabled
+    (eventStream.logLevel >= WarningLevel) && Logger(logClass, logSource)
+      .isWarnEnabled
   def isInfoEnabled(logClass: Class[_], logSource: String) =
-    (eventStream.logLevel >= InfoLevel) && Logger(
-      logClass,
-      logSource).isInfoEnabled
+    (eventStream.logLevel >= InfoLevel) && Logger(logClass, logSource)
+      .isInfoEnabled
   def isDebugEnabled(logClass: Class[_], logSource: String) =
-    (eventStream.logLevel >= DebugLevel) && Logger(
-      logClass,
-      logSource).isDebugEnabled
+    (eventStream.logLevel >= DebugLevel) && Logger(logClass, logSource)
+      .isDebugEnabled
 }

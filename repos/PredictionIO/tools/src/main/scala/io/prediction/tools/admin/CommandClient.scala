@@ -69,8 +69,8 @@ class CommandClient(
             val r =
               if (dbInit) {
                 val accessKey = AccessKey(key = "", appid = id, events = Seq())
-                val accessKey2 = accessKeyClient.insert(
-                  AccessKey(key = "", appid = id, events = Seq()))
+                val accessKey2 = accessKeyClient
+                  .insert(AccessKey(key = "", appid = id, events = Seq()))
                 accessKey2 map { k =>
                   new AppNewResponse(
                     1,

@@ -88,9 +88,7 @@ private[finagle] case class ThriftServerPreparer(
 
       val ttwitter = new TTwitterServerFilter(serviceName, protocolFactory)
 
-      payloadSize
-        .andThen(ttwitter)
-        .andThen(uncaughtExceptionsFilter)
+      payloadSize.andThen(ttwitter).andThen(uncaughtExceptionsFilter)
         .andThen(service)
     }
 }
@@ -127,8 +125,8 @@ private[finagle] object UncaughtAppExceptionFilter {
     val name = msg.name
 
     val buffer = new OutputBuffer(protocolFactory)
-    buffer().writeMessageBegin(
-      new TMessage(name, TMessageType.EXCEPTION, msg.seqid))
+    buffer()
+      .writeMessageBegin(new TMessage(name, TMessageType.EXCEPTION, msg.seqid))
 
     // Note: The wire contents of the exception message differ from Apache's Thrift in that here,
     // e.toString is appended to the error message.

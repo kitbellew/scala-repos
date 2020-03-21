@@ -13,13 +13,8 @@ case class FetchUri(
     cache: Boolean = false) {
 
   def toProto(): mesos.CommandInfo.URI =
-    mesos.CommandInfo.URI
-      .newBuilder()
-      .setValue(uri)
-      .setExecutable(executable)
-      .setExtract(extract)
-      .setCache(cache)
-      .build()
+    mesos.CommandInfo.URI.newBuilder().setValue(uri).setExecutable(executable)
+      .setExtract(extract).setCache(cache).build()
 }
 
 object FetchUri {

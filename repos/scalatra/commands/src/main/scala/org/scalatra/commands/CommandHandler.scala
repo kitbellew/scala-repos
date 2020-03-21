@@ -16,8 +16,8 @@ trait CommandHandler {
   @transient
   private[this] val commandLogger: Logger = Logger[this.type]
   def execute[S: Manifest](cmd: ModelCommand[S]): ModelValidation[S] = {
-    commandLogger.debug(
-      "Executing [%s].\n%s" format (cmd.getClass.getName, cmd))
+    commandLogger
+      .debug("Executing [%s].\n%s" format (cmd.getClass.getName, cmd))
     if (cmd.isValid) {
       val res = (allCatch withApply (serverError(cmd.getClass.getName, _))) {
         handle.lift(cmd).map(_.map(_.asInstanceOf[S])) | ValidationError(

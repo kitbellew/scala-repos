@@ -40,24 +40,18 @@ abstract class ScTypeAliasElementType[Func <: ScTypeAlias](debugName: String)
     val lower = {
       if (!isDeclaration) ""
       else
-        psi
-          .asInstanceOf[ScTypeAliasDeclaration]
-          .lowerTypeElement
-          .map(_.getText)
+        psi.asInstanceOf[ScTypeAliasDeclaration].lowerTypeElement.map(_.getText)
           .getOrElse("")
     }
     val upper = {
       if (!isDeclaration) ""
       else
-        psi
-          .asInstanceOf[ScTypeAliasDeclaration]
-          .upperTypeElement
-          .map(_.getText)
+        psi.asInstanceOf[ScTypeAliasDeclaration].upperTypeElement.map(_.getText)
           .getOrElse("")
     }
     val containingClass = psi.containingClass
-    val isStableQualifier =
-      ScalaPsiUtil.hasStablePath(psi) && containingClass.isInstanceOf[ScObject]
+    val isStableQualifier = ScalaPsiUtil.hasStablePath(psi) && containingClass
+      .isInstanceOf[ScObject]
     new ScTypeAliasStubImpl[ParentPsi](
       parentStub,
       this,

@@ -111,10 +111,11 @@ trait Future[+T] extends Awaitable[T] {
       executor: ExecutionContext): Unit =
     onComplete {
       case Success(v) =>
-        pf.applyOrElse[T, Any](
-          v,
-          Predef.conforms[T]
-        ) // Exploiting the cached function to avoid MatchError
+        pf
+          .applyOrElse[T, Any](
+            v,
+            Predef.conforms[T]
+          ) // Exploiting the cached function to avoid MatchError
       case _ =>
     }
 
@@ -140,10 +141,11 @@ trait Future[+T] extends Awaitable[T] {
       executor: ExecutionContext): Unit =
     onComplete {
       case Failure(t) =>
-        pf.applyOrElse[Throwable, Any](
-          t,
-          Predef.conforms[Throwable]
-        ) // Exploiting the cached function to avoid MatchError
+        pf
+          .applyOrElse[Throwable, Any](
+            t,
+            Predef.conforms[Throwable]
+          ) // Exploiting the cached function to avoid MatchError
       case _ =>
     }
 
@@ -673,9 +675,8 @@ object Future {
       cbf: CanBuildFrom[M[Future[A]], A, M[A]],
       executor: ExecutionContext): Future[M[A]] = {
     in.foldLeft(successful(cbf(in))) { (fr, fa) =>
-        for (r <- fr; a <- fa) yield (r += a)
-      }
-      .map(_.result())(InternalCallbackExecutor)
+      for (r <- fr; a <- fa) yield (r += a)
+    }.map(_.result())(InternalCallbackExecutor)
   }
 
   /** Asynchronously and non-blockingly returns a new `Future` to the result of the first future
@@ -870,10 +871,9 @@ object Future {
       cbf: CanBuildFrom[M[A], B, M[B]],
       executor: ExecutionContext): Future[M[B]] =
     in.foldLeft(successful(cbf(in))) { (fr, a) =>
-        val fb = fn(a)
-        for (r <- fr; b <- fb) yield (r += b)
-      }
-      .map(_.result())
+      val fb = fn(a)
+      for (r <- fr; b <- fb) yield (r += b)
+    }.map(_.result())
 
   // This is used to run callbacks which are internal
   // to scala.concurrent; our own callbacks are only

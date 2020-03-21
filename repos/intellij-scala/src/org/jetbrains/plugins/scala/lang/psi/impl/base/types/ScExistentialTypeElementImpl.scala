@@ -46,9 +46,8 @@ class ScExistentialTypeElementImpl(node: ASTNode)
             problems += lb; problems += ub
             buff += new ScExistentialArgument(
               alias.name,
-              alias.typeParameters.map { tp =>
-                ScalaPsiManager.typeVariable(tp)
-              }.toList,
+              alias.typeParameters
+                .map { tp => ScalaPsiManager.typeVariable(tp) }.toList,
               lb.getOrNothing,
               ub.getOrAny)
           case value: ScValueDeclaration => value.typeElement match {
@@ -71,8 +70,9 @@ class ScExistentialTypeElementImpl(node: ASTNode)
     }
     q flatMap { t =>
       val failures = for (f @ Failure(_, _) <- problems) yield f
-      failures.foldLeft(Success(ScExistentialType(t, wildcards), Some(this)))(
-        _.apply(_))
+      failures
+        .foldLeft(Success(ScExistentialType(t, wildcards), Some(this)))(_.apply(
+          _))
     }
   }
 
@@ -84,8 +84,7 @@ class ScExistentialTypeElementImpl(node: ASTNode)
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     if (lastParent == quantified || (lastParent.isInstanceOf[ScalaPsiElement] &&
-        lastParent
-          .asInstanceOf[ScalaPsiElement]
+        lastParent.asInstanceOf[ScalaPsiElement]
           .getDeepSameElementInContext == quantified)) {
       for (decl <- clause.declarations) {
         decl match {

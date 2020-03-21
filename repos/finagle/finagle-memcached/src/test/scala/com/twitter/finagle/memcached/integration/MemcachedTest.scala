@@ -36,9 +36,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     server1 = TestMemcachedServer.start()
     server2 = TestMemcachedServer.start()
     if (server1.isDefined && server2.isDefined) {
-      val n = Name.bound(
-        Address(server1.get.address),
-        Address(server2.get.address))
+      val n = Name
+        .bound(Address(server1.get.address), Address(server2.get.address))
       client = Memcached.client.newRichClient(n, clientName)
     }
   }
@@ -78,8 +77,7 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
       Await.result(client.set("bazs", Buf.Utf8("xyz")))
       Await.result(client.set("bazs", Buf.Utf8("zyx")))
       val result = Await
-        .result(client.gets(Seq("foos", "bazs", "somethingelse")))
-        .map {
+        .result(client.gets(Seq("foos", "bazs", "somethingelse"))).map {
           case (key, (Buf.Utf8(value), Buf.Utf8(casUnique))) =>
             (key, (value, casUnique))
         }
@@ -196,9 +194,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
   }
 
   test("re-hash when a bad host is ejected") {
-    val n = Name.bound(
-      Address(server1.get.address),
-      Address(server2.get.address))
+    val n = Name
+      .bound(Address(server1.get.address), Address(server2.get.address))
     client = Memcached.client
       .configured(FailureAccrualFactory.Param(1, () => 10.minutes))
       .configured(Memcached.param.EjectFailedHost(true))
@@ -246,14 +243,10 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
   test("GlobalRegistry non-pipelined client") {
     val name = "not-pipelined"
     val expectedKey = Seq("client", "memcached", name, "is_pipelining")
-    KetamaClientBuilder()
-      .clientBuilder(
-        ClientBuilder()
-          .hosts(Seq(server1.get.address))
-          .name(name)
-          .codec(new com.twitter.finagle.memcached.protocol.text.Memcached())
-          .hostConnectionLimit(1))
-      .build()
+    KetamaClientBuilder().clientBuilder(
+      ClientBuilder().hosts(Seq(server1.get.address)).name(name)
+        .codec(new com.twitter.finagle.memcached.protocol.text.Memcached())
+        .hostConnectionLimit(1)).build()
 
     val isPipelining = GlobalRegistry.get.iterator.exists { e =>
       e.key == expectedKey && e.value == "false"
@@ -284,8 +277,7 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     val client = Memcached.client
       .configured(FailureAccrualFactory.Param(1, () => 10.minutes))
       .configured(Memcached.param.EjectFailedHost(true))
-      .configured(param.Timer(timer))
-      .configured(param.Stats(statsReceiver))
+      .configured(param.Timer(timer)).configured(param.Stats(statsReceiver))
       .newRichClient(
         Name.bound(Address(
           cacheServer.boundAddress.asInstanceOf[InetSocketAddress])),

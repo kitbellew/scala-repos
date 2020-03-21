@@ -99,8 +99,8 @@ class ScUnderscoreSectionImpl(node: ASTNode)
               startOffset += e.startOffsetInParent
               e = e.getContext
             }
-            val i = unders.indexWhere(
-              _.getTextRange.getStartOffset == startOffset)
+            val i = unders
+              .indexWhere(_.getTextRange.getStartOffset == startOffset)
             if (i < 0) return Failure("Not found under", None)
             var result: Option[ScType] =
               null //strange logic to handle problems with detecting type

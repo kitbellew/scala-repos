@@ -100,8 +100,8 @@ object PowerIterationClusteringModel
 
       val k = (metadata \ "k").extract[Int]
       val assignments = sqlContext.read.parquet(Loader.dataPath(path))
-      Loader.checkSchema[PowerIterationClustering.Assignment](
-        assignments.schema)
+      Loader
+        .checkSchema[PowerIterationClustering.Assignment](assignments.schema)
 
       val assignmentsRDD = assignments.rdd.map {
         case Row(id: Long, cluster: Int) =>
@@ -277,13 +277,12 @@ object PowerIterationClustering extends Logging {
       mergeMsg = _ + _,
       TripletFields.EdgeOnly
     )
-    Graph(vD, graph.edges)
-      .mapTriplets(
-        e => e.attr / math.max(e.srcAttr, MLUtils.EPSILON),
-        new TripletFields(
-          /* useSrc */ true,
-          /* useDst */ false,
-          /* useEdge */ true))
+    Graph(vD, graph.edges).mapTriplets(
+      e => e.attr / math.max(e.srcAttr, MLUtils.EPSILON),
+      new TripletFields(
+        /* useSrc */ true,
+        /* useDst */ false,
+        /* useEdge */ true))
   }
 
   /**
@@ -305,13 +304,12 @@ object PowerIterationClustering extends Logging {
       sendMsg = ctx => { ctx.sendToSrc(ctx.attr) },
       mergeMsg = _ + _,
       TripletFields.EdgeOnly)
-    Graph(vD, gA.edges)
-      .mapTriplets(
-        e => e.attr / math.max(e.srcAttr, MLUtils.EPSILON),
-        new TripletFields(
-          /* useSrc */ true,
-          /* useDst */ false,
-          /* useEdge */ true))
+    Graph(vD, gA.edges).mapTriplets(
+      e => e.attr / math.max(e.srcAttr, MLUtils.EPSILON),
+      new TripletFields(
+        /* useSrc */ true,
+        /* useDst */ false,
+        /* useEdge */ true))
   }
 
   /**
@@ -323,14 +321,12 @@ object PowerIterationClustering extends Logging {
     */
   private[clustering] def randomInit(
       g: Graph[Double, Double]): Graph[Double, Double] = {
-    val r = g.vertices
-      .mapPartitionsWithIndex(
-        (part, iter) => {
-          val random = new XORShiftRandom(part)
-          iter.map { case (id, _) => (id, random.nextGaussian()) }
-        },
-        preservesPartitioning = true)
-      .cache()
+    val r = g.vertices.mapPartitionsWithIndex(
+      (part, iter) => {
+        val random = new XORShiftRandom(part)
+        iter.map { case (id, _) => (id, random.nextGaussian()) }
+      },
+      preservesPartitioning = true).cache()
     val sum = r.values.map(math.abs).sum()
     val v0 = r.mapValues(x => x / sum)
     Graph(VertexRDD(v0), g.edges)
@@ -369,25 +365,20 @@ object PowerIterationClustering extends Logging {
     for (iter <- 0 until maxIterations if math.abs(diffDelta) > tol) {
       val msgPrefix = s"Iteration $iter"
       // multiply W by vt
-      val v = curG
-        .aggregateMessages[Double](
-          sendMsg = ctx => ctx.sendToSrc(ctx.attr * ctx.dstAttr),
-          mergeMsg = _ + _,
-          new TripletFields(
-            /* useSrc */ false,
-            /* useDst */ true,
-            /* useEdge */ true))
-        .cache()
+      val v = curG.aggregateMessages[Double](
+        sendMsg = ctx => ctx.sendToSrc(ctx.attr * ctx.dstAttr),
+        mergeMsg = _ + _,
+        new TripletFields(
+          /* useSrc */ false,
+          /* useDst */ true,
+          /* useEdge */ true)).cache()
       // normalize v
       val norm = v.values.map(math.abs).sum()
       logInfo(s"$msgPrefix: norm(v) = $norm.")
       val v1 = v.mapValues(x => x / norm)
       // compare difference
-      val delta = curG
-        .joinVertices(v1) { case (_, x, y) => math.abs(x - y) }
-        .vertices
-        .values
-        .sum()
+      val delta = curG.joinVertices(v1) { case (_, x, y) => math.abs(x - y) }
+        .vertices.values.sum()
       logInfo(s"$msgPrefix: delta = $delta.")
       diffDelta = math.abs(delta - prevDelta)
       logInfo(s"$msgPrefix: diff(delta) = $diffDelta.")
@@ -408,10 +399,7 @@ object PowerIterationClustering extends Logging {
       v: VertexRDD[Double],
       k: Int): VertexRDD[Int] = {
     val points = v.mapValues(x => Vectors.dense(x)).cache()
-    val model = new KMeans()
-      .setK(k)
-      .setSeed(0L)
-      .run(points.values)
+    val model = new KMeans().setK(k).setSeed(0L).run(points.values)
     points.mapValues(p => model.predict(p)).cache()
   }
 }

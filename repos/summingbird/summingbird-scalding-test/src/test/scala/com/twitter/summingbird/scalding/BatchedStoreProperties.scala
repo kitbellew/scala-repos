@@ -48,9 +48,7 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
     }
 
   implicit val arbTimestamp: Arbitrary[Timestamp] = Arbitrary {
-    Gen
-      .choose(1L, 100000L)
-      .map { Timestamp(_) }
+    Gen.choose(1L, 100000L).map { Timestamp(_) }
   }
 
   implicit val arbitraryPipeFactory: Arbitrary[PipeFactory[Nothing]] = {
@@ -106,8 +104,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
           mode: Mode) =>
         val (inputWithTimeStamp, batcher, testStore) =
           inputWithTimeStampAndBatcherAndStore
-        val result = testStore.readAfterLastBatch(diskPipeFactory)(
-          (interval, mode))
+        val result = testStore
+          .readAfterLastBatch(diskPipeFactory)((interval, mode))
 
         result match {
           case Right((
@@ -118,8 +116,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                   _),
                 _)) => {
             //readInterval should start from the last written interval in the store
-            val start: Timestamp = batcher.earliestTimeOf(
-              testStore.initBatch.next)
+            val start: Timestamp = batcher
+              .earliestTimeOf(testStore.initBatch.next)
             implicitly[Ordering[Timestamp]].equiv(readIntervalLower, start)
           }
           case Right(_) => false
@@ -141,8 +139,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
           mode: Mode) =>
         val (inputWithTimeStamp, batcher, testStore) =
           inputWithTimeStampAndBatcherAndStore
-        val result = testStore.readAfterLastBatch(diskPipeFactory)(
-          (interval, mode))
+        val result = testStore
+          .readAfterLastBatch(diskPipeFactory)((interval, mode))
 
         result match {
           case Right((
@@ -232,12 +230,9 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                 ExclusiveUpper(_)) = time
 
               //shrink the endTime so it does not cover a whole batch
-              val onDiskEndTime: Long = Gen
-                .choose(
-                  startRequestedTime.milliSinceEpoch,
-                  nextBatchEnding.milliSinceEpoch)
-                .sample
-                .get
+              val onDiskEndTime: Long = Gen.choose(
+                startRequestedTime.milliSinceEpoch,
+                nextBatchEnding.milliSinceEpoch).sample.get
 
               val readTime: Interval[Timestamp] =
                 if (startRequestedTime == nextBatchEnding) Empty()
@@ -248,8 +243,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
 
               val flowToPipe: FlowToPipe[(Int, Int)] = Reader {
                 (fdM: (FlowDef, Mode)) =>
-                  TypedPipe.from[(Timestamp, (Int, Int))](Seq(
-                    (Timestamp(10), (2, 3))))
+                  TypedPipe
+                    .from[(Timestamp, (Int, Int))](Seq((Timestamp(10), (2, 3))))
               }
               Right(((readTime, mode), flowToPipe))
             }

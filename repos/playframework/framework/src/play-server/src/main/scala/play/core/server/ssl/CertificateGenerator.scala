@@ -127,9 +127,8 @@ object CertificateGenerator {
       X509CertInfo.ISSUER,
       if (justName) owner else new CertificateIssuerName(owner))
     info.set(X509CertInfo.KEY, new CertificateX509Key(pair.getPublic))
-    info.set(
-      X509CertInfo.VERSION,
-      new CertificateVersion(CertificateVersion.V3))
+    info
+      .set(X509CertInfo.VERSION, new CertificateVersion(CertificateVersion.V3))
 
     var algo: AlgorithmId = new AlgorithmId(oid)
 

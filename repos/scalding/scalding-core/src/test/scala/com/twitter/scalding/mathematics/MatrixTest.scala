@@ -42,14 +42,12 @@ class MatrixBlockProd(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val mat1 = Tsv("mat1", ('x1, 'y1, 'v1))
-    .mapToBlockMatrix(('x1, 'y1, 'v1)) { (rcv: (String, Int, Double)) =>
-      (rcv._1(0), rcv._1, rcv._2, rcv._3)
-    }
+  val mat1 = Tsv("mat1", ('x1, 'y1, 'v1)).mapToBlockMatrix(('x1, 'y1, 'v1)) {
+    (rcv: (String, Int, Double)) => (rcv._1(0), rcv._1, rcv._2, rcv._3)
+  }
 
   val mat2 = Tsv("mat1", ('x1, 'y1, 'v1))
-    .toMatrix[String, Int, Double]('x1, 'y1, 'v1)
-    .toBlockMatrix(s => (s(0), s))
+    .toMatrix[String, Int, Double]('x1, 'y1, 'v1).toBlockMatrix(s => (s(0), s))
 
   val gram = mat1 dotProd mat2.transpose
   gram.pipe.write(Tsv("product"))
@@ -59,10 +57,12 @@ class MatrixSum(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val mat1 = Tsv("mat1", ('x1, 'y1, 'v1))
-    .mapToMatrix('x1, 'y1, 'v1) { rowColVal: (Int, Int, Double) => rowColVal }
-  val mat2 = Tsv("mat2", ('x2, 'y2, 'v2))
-    .mapToMatrix('x2, 'y2, 'v2) { rowColVal: (Int, Int, Double) => rowColVal }
+  val mat1 = Tsv("mat1", ('x1, 'y1, 'v1)).mapToMatrix('x1, 'y1, 'v1) {
+    rowColVal: (Int, Int, Double) => rowColVal
+  }
+  val mat2 = Tsv("mat2", ('x2, 'y2, 'v2)).mapToMatrix('x2, 'y2, 'v2) {
+    rowColVal: (Int, Int, Double) => rowColVal
+  }
 
   val sum = mat1 + mat2
   sum.pipe.write(Tsv("sum"))
@@ -443,10 +443,9 @@ class MatrixTest extends WordSpec with Matchers {
 
   "A MatrixProd job" should {
     TUtil.printStack {
-      JobTest(new MatrixProd(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new MatrixProd(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("product")) { ob =>
           "correctly compute products" in {
             toSparseMat(ob) shouldBe Map(
@@ -455,55 +454,47 @@ class MatrixTest extends WordSpec with Matchers {
               (2, 1) -> 12.0,
               (2, 2) -> 9.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A MatrixBlockProd job" should {
     TUtil.printStack {
-      JobTest(new MatrixBlockProd(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List(
-            ("alpha1", 1, 1.0),
-            ("alpha1", 2, 2.0),
-            ("beta1", 1, 5.0),
-            ("beta1", 2, 6.0),
-            ("alpha2", 1, 3.0),
-            ("alpha2", 2, 4.0),
-            ("beta2", 1, 7.0),
-            ("beta2", 2, 8.0))
-        )
-        .sink[(String, String, Double)](Tsv("product")) { ob =>
-          "correctly compute block products" in {
-            toSparseMat(ob) shouldBe Map(
-              ("alpha1", "alpha1") -> 5.0,
-              ("alpha1", "alpha2") -> 11.0,
-              ("alpha2", "alpha1") -> 11.0,
-              ("alpha2", "alpha2") -> 25.0,
-              ("beta1", "beta1") -> 61.0,
-              ("beta1", "beta2") -> 83.0,
-              ("beta2", "beta1") -> 83.0,
-              ("beta2", "beta2") -> 113.0
-            )
-          }
+      JobTest(new MatrixBlockProd(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List(
+          ("alpha1", 1, 1.0),
+          ("alpha1", 2, 2.0),
+          ("beta1", 1, 5.0),
+          ("beta1", 2, 6.0),
+          ("alpha2", 1, 3.0),
+          ("alpha2", 2, 4.0),
+          ("beta2", 1, 7.0),
+          ("beta2", 2, 8.0))
+      ).sink[(String, String, Double)](Tsv("product")) { ob =>
+        "correctly compute block products" in {
+          toSparseMat(ob) shouldBe Map(
+            ("alpha1", "alpha1") -> 5.0,
+            ("alpha1", "alpha2") -> 11.0,
+            ("alpha2", "alpha1") -> 11.0,
+            ("alpha2", "alpha2") -> 25.0,
+            ("beta1", "beta1") -> 61.0,
+            ("beta1", "beta2") -> 83.0,
+            ("beta2", "beta1") -> 83.0,
+            ("beta2", "beta2") -> 113.0
+          )
         }
-        .run
-        .finish
+      }.run.finish
     }
   }
 
   "A MatrixSum job" should {
     TUtil.printStack {
-      JobTest(new MatrixSum(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
-        .source(
-          Tsv("mat2", ('x2, 'y2, 'v2)),
-          List((1, 3, 3.0), (2, 1, 8.0), (1, 2, 4.0)))
+      JobTest(new MatrixSum(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0))).source(
+        Tsv("mat2", ('x2, 'y2, 'v2)),
+        List((1, 3, 3.0), (2, 1, 8.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("sum")) { ob =>
           "correctly compute sums" in {
             toSparseMat(ob) shouldBe Map(
@@ -513,21 +504,18 @@ class MatrixTest extends WordSpec with Matchers {
               (2, 1) -> 8.0,
               (2, 2) -> 3.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A MatrixSum job, where the Matrix contains tuples as values," should {
     TUtil.printStack {
-      JobTest("com.twitter.scalding.mathematics.MatrixSum3")
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List(
-            (1, 1, (1.0, 3.0, 5.0)),
-            (2, 2, (3.0, 2.0, 1.0)),
-            (1, 2, (4.0, 5.0, 2.0))))
+      JobTest("com.twitter.scalding.mathematics.MatrixSum3").source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List(
+          (1, 1, (1.0, 3.0, 5.0)),
+          (2, 2, (3.0, 2.0, 1.0)),
+          (1, 2, (4.0, 5.0, 2.0))))
         .sink[(Int, Int, (Double, Double, Double))](Tsv("sum")) { ob =>
           "correctly compute sums" in {
             toSparseMat(ob) shouldBe Map(
@@ -535,9 +523,7 @@ class MatrixTest extends WordSpec with Matchers {
               (2, 2) -> (6.0, 4.0, 2.0),
               (1, 2) -> (8.0, 10.0, 4.0))
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
@@ -566,23 +552,17 @@ class MatrixTest extends WordSpec with Matchers {
               (2, 2) -> 1.0)
             val grp = implicitly[Group[Map[(Int, Int), Double]]]
             // doubles are hard to compare
-            grp
-              .minus(pMap, exact)
-              .mapValues { x => x * x }
-              .map { _._2 }
+            grp.minus(pMap, exact).mapValues { x => x * x }.map { _._2 }
               .sum should be < 0.0001
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
   "A Matrix Cosine job" should {
     TUtil.printStack {
-      JobTest(new Cosine(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new Cosine(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("cosine")) { ob =>
           "correctly compute cosine similarity" in {
             toSparseMat(ob) shouldBe Map(
@@ -591,17 +571,14 @@ class MatrixTest extends WordSpec with Matchers {
               (2, 1) -> 0.9701425001453319,
               (2, 2) -> 1.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
   "A Matrix Covariance job" should {
     TUtil.printStack {
-      JobTest(new Covariance(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new Covariance(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("cov")) { ob =>
           "correctly compute matrix covariance" in {
             toSparseMat(ob) shouldBe Map(
@@ -610,45 +587,36 @@ class MatrixTest extends WordSpec with Matchers {
               (2, 1) -> -0.25,
               (2, 2) -> 0.25)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
   "A Matrix VctProd job" should {
     TUtil.printStack {
-      JobTest(new VctProd(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new VctProd(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[Double](Tsv("vctProd")) { ob =>
           "correctly compute vector inner products" in { ob(0) shouldBe 17.0 }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
   "A Matrix VctDiv job" should {
     TUtil.printStack {
-      JobTest(new VctDiv(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new VctDiv(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Double)](Tsv("vctDiv")) { ob =>
           "correctly compute vector element-wise division" in {
             oneDtoSparseMat(ob) shouldBe Map((2, 2) -> 1.3333333333333333)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
   "A Matrix ScalarOps job" should {
     TUtil.printStack {
-      JobTest(new ScalarOps(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new ScalarOps(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("times3")) { ob =>
           "correctly compute M * 3" in {
             toSparseMat(ob) shouldBe Map(
@@ -656,49 +624,42 @@ class MatrixTest extends WordSpec with Matchers {
               (2, 2) -> 9.0,
               (1, 2) -> 12.0)
           }
-        }
-        .sink[(Int, Int, Double)](Tsv("3times")) { ob =>
+        }.sink[(Int, Int, Double)](Tsv("3times")) { ob =>
           "correctly compute 3 * M" in {
             toSparseMat(ob) shouldBe Map(
               (1, 1) -> 3.0,
               (2, 2) -> 9.0,
               (1, 2) -> 12.0)
           }
-        }
-        .sink[(Int, Int, Double)](Tsv("div3")) { ob =>
+        }.sink[(Int, Int, Double)](Tsv("div3")) { ob =>
           "correctly compute M / 3" in {
             toSparseMat(ob) shouldBe Map(
               (1, 1) -> (1.0 / 3.0),
               (2, 2) -> (3.0 / 3.0),
               (1, 2) -> (4.0 / 3.0))
           }
-        }
-        .sink[(Int, Int, Double)](Tsv("timestrace")) { ob =>
+        }.sink[(Int, Int, Double)](Tsv("timestrace")) { ob =>
           "correctly compute M * Tr(M)" in {
             toSparseMat(ob) shouldBe Map(
               (1, 1) -> 4.0,
               (2, 2) -> 12.0,
               (1, 2) -> 16.0)
           }
-        }
-        .sink[(Int, Int, Double)](Tsv("tracetimes")) { ob =>
+        }.sink[(Int, Int, Double)](Tsv("tracetimes")) { ob =>
           "correctly compute Tr(M) * M" in {
             toSparseMat(ob) shouldBe Map(
               (1, 1) -> 4.0,
               (2, 2) -> 12.0,
               (1, 2) -> 16.0)
           }
-        }
-        .sink[(Int, Int, Double)](Tsv("divtrace")) { ob =>
+        }.sink[(Int, Int, Double)](Tsv("divtrace")) { ob =>
           "correctly compute M / Tr(M)" in {
             toSparseMat(ob) shouldBe Map(
               (1, 1) -> (1.0 / 4.0),
               (2, 2) -> (3.0 / 4.0),
               (1, 2) -> (4.0 / 4.0))
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
   "A Matrix Diagonal job" should {
@@ -717,30 +678,24 @@ class MatrixTest extends WordSpec with Matchers {
               (1, 2) -> 4.0,
               (2, 2) -> 9.0)
           }
-        }
-        .sink[(Int, Double)](Tsv("diag-diag")) { ob =>
+        }.sink[(Int, Double)](Tsv("diag-diag")) { ob =>
           "correctly compute diag * diag" in {
             oneDtoSparseMat(ob) shouldBe Map((1, 1) -> 1.0, (2, 2) -> 9.0)
           }
-        }
-        .sink[(Int, Int, Double)](Tsv("mat-diag")) { ob =>
+        }.sink[(Int, Int, Double)](Tsv("mat-diag")) { ob =>
           "correctly compute matrix * diag" in {
             toSparseMat(ob) shouldBe Map(
               (1, 1) -> 1.0,
               (1, 2) -> 12.0,
               (2, 2) -> 9.0)
           }
-        }
-        .sink[(Int, Double)](Tsv("diag-col")) { ob =>
+        }.sink[(Int, Double)](Tsv("diag-col")) { ob =>
           "correctly compute diag * col" in { ob.toMap shouldBe Map(1 -> 1.0) }
-        }
-        .sink[(Int, Double)](Tsv("row-diag")) { ob =>
+        }.sink[(Int, Double)](Tsv("row-diag")) { ob =>
           "correctly compute row * diag" in {
             ob.toMap shouldBe Map(1 -> 1.0, 2 -> 12.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
@@ -754,102 +709,82 @@ class MatrixTest extends WordSpec with Matchers {
          */
         .source(
           TypedTsv[(Int, Int, Int)]("graph"),
-          List((0, 1, 1), (0, 2, 1), (1, 2, 1), (2, 0, 1)))
-        .source(
+          List((0, 1, 1), (0, 2, 1), (1, 2, 1), (2, 0, 1))).source(
           TypedTsv[(Int, Double)]("row"),
-          List((0, 1.0), (1, 2.0), (2, 4.0)))
-        .source(
+          List((0, 1.0), (1, 2.0), (2, 4.0))).source(
           TypedTsv[(Int, Double)]("col"),
           List((0, 1.0), (1, 2.0), (2, 4.0)))
         .sink[(Int, Double)](Tsv("prop-col")) { ob =>
           "correctly propagate columns" in {
             ob.toMap shouldBe Map(0 -> 6.0, 1 -> 4.0, 2 -> 1.0)
           }
-        }
-        .sink[(Int, Double)](Tsv("prop-row")) { ob =>
+        }.sink[(Int, Double)](Tsv("prop-row")) { ob =>
           "correctly propagate rows" in {
             ob.toMap shouldBe Map(0 -> 4.0, 1 -> 1.0, 2 -> 3.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A MapWithIndex job" should {
-    JobTest(new MatrixMapWithVal(_))
-      .source(
-        TypedTsv[(Int, Int, Int)]("graph"),
-        List((0, 1, 1), (1, 1, 3), (0, 2, 1), (1, 2, 1), (2, 0, 1)))
-      .source(
-        TypedTsv[(Int, Double)]("row"),
-        List((0, 1.0), (1, 2.0), (2, 4.0)))
-      .sink[(Int, Double)](Tsv("first")) { ob =>
+    JobTest(new MatrixMapWithVal(_)).source(
+      TypedTsv[(Int, Int, Int)]("graph"),
+      List((0, 1, 1), (1, 1, 3), (0, 2, 1), (1, 2, 1), (2, 0, 1))).source(
+      TypedTsv[(Int, Double)]("row"),
+      List((0, 1.0), (1, 2.0), (2, 4.0))).sink[(Int, Double)](Tsv("first")) {
+      ob =>
         "correctly mapWithIndex on Row" in { ob.toMap shouldBe Map(0 -> 1.0) }
+    }.sink[(Int, Int, Int)](Tsv("diag")) { ob =>
+      "correctly mapWithIndex on Matrix" in {
+        toSparseMat(ob) shouldBe Map((1, 1) -> 3)
       }
-      .sink[(Int, Int, Int)](Tsv("diag")) { ob =>
-        "correctly mapWithIndex on Matrix" in {
-          toSparseMat(ob) shouldBe Map((1, 1) -> 3)
-        }
-      }
-      .run
-      .finish
+    }.run.finish
   }
 
   "A Matrix RowMatProd job" should {
     TUtil.printStack {
-      JobTest(new RowMatProd(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new RowMatProd(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Double)](Tsv("rowMatPrd")) { ob =>
           "correctly compute a new row vector" in {
             oneDtoSparseMat(ob) shouldBe Map((1, 1) -> 1.0, (2, 2) -> 16.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Matrix MatColProd job" should {
     TUtil.printStack {
-      JobTest(new MatColProd(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new MatColProd(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Double)](Tsv("matColPrd")) { ob =>
           "correctly compute a new column vector" in {
             oneDtoSparseMat(ob) shouldBe Map((1, 1) -> 1.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Matrix RowRowDiff job" should {
     TUtil.printStack {
-      JobTest(new RowRowDiff(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new RowRowDiff(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Double)](Tsv("rowRowDiff")) { ob =>
           "correctly subtract row vectors" in {
             oneDtoSparseMat(ob) shouldBe Map((1, 1) -> 1.0, (2, 2) -> 1.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Matrix VctOuterProd job" should {
     TUtil.printStack {
-      JobTest(new VctOuterProd(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new VctOuterProd(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Int, Double)](Tsv("outerProd")) { ob =>
           "correctly compute the outer product of a column and row vector" in {
             toSparseMat(ob) shouldBe Map(
@@ -858,245 +793,201 @@ class MatrixTest extends WordSpec with Matchers {
               (2, 1) -> 4.0,
               (2, 2) -> 16.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Matrix RowRowSum job" should {
     TUtil.printStack {
-      JobTest(new RowRowSum(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new RowRowSum(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Double)](Tsv("rowRowSum")) { ob =>
           "correctly add row vectors" in {
             oneDtoSparseMat(ob) shouldBe Map((1, 1) -> 2.0, (2, 2) -> 8.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Matrix RowRowHad job" should {
     TUtil.printStack {
-      JobTest(new RowRowHad(_))
-        .source(
-          Tsv("mat1", ('x1, 'y1, 'v1)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
+      JobTest(new RowRowHad(_)).source(
+        Tsv("mat1", ('x1, 'y1, 'v1)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
         .sink[(Int, Double)](Tsv("rowRowHad")) { ob =>
           "correctly compute a Hadamard product of row vectors" in {
             oneDtoSparseMat(ob) shouldBe Map((1, 1) -> 1.0, (2, 2) -> 16.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A FilterMatrix job" should {
     TUtil.printStack {
-      JobTest(new FilterMatrix(_))
-        .source(
-          Tsv("mat1", ('x, 'y, 'v)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0), (2, 1, 2.0)))
+      JobTest(new FilterMatrix(_)).source(
+        Tsv("mat1", ('x, 'y, 'v)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0), (2, 1, 2.0)))
         .source(Tsv("mat2", ('x, 'y, 'v)), List((1, 1, 5.0), (2, 2, 9.0)))
         .sink[(Int, Int, Double)](Tsv("removeMatrix")) { ob =>
           "correctly remove elements" in {
             toSparseMat(ob) shouldBe Map((1, 2) -> 4.0, (2, 1) -> 2.0)
           }
-        }
-        .sink[(Int, Int, Double)](Tsv("keepMatrix")) { ob =>
+        }.sink[(Int, Int, Double)](Tsv("keepMatrix")) { ob =>
           "correctly keep elements" in {
             toSparseMat(ob) shouldBe Map((1, 1) -> 1.0, (2, 2) -> 3.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A KeepRowsCols job" should {
     TUtil.printStack {
-      JobTest(new KeepRowsCols(_))
-        .source(
-          Tsv("mat1", ('x, 'y, 'v)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0), (2, 1, 2.0)))
+      JobTest(new KeepRowsCols(_)).source(
+        Tsv("mat1", ('x, 'y, 'v)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0), (2, 1, 2.0)))
         .source(Tsv("col1", ('x, 'v)), List((1, 5.0)))
         .sink[(Int, Int, Double)](Tsv("keepRows")) { ob =>
           "correctly keep row vectors" in {
             toSparseMat(ob) shouldBe Map((1, 2) -> 4.0, (1, 1) -> 1.0)
           }
-        }
-        .sink[(Int, Int, Double)](Tsv("keepCols")) { ob =>
+        }.sink[(Int, Int, Double)](Tsv("keepCols")) { ob =>
           "correctly keep col vectors" in {
             toSparseMat(ob) shouldBe Map((2, 1) -> 2.0, (1, 1) -> 1.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A RemoveRowsCols job" should {
     TUtil.printStack {
-      JobTest(new RemoveRowsCols(_))
-        .source(
-          Tsv("mat1", ('x, 'y, 'v)),
-          List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0), (2, 1, 2.0)))
+      JobTest(new RemoveRowsCols(_)).source(
+        Tsv("mat1", ('x, 'y, 'v)),
+        List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0), (2, 1, 2.0)))
         .source(Tsv("col1", ('x, 'v)), List((1, 5.0)))
         .sink[(Int, Int, Double)](Tsv("removeRows")) { ob =>
           "correctly keep row vectors" in {
             toSparseMat(ob) shouldBe Map((2, 2) -> 3.0, (2, 1) -> 2.0)
           }
-        }
-        .sink[(Int, Int, Double)](Tsv("removeCols")) { ob =>
+        }.sink[(Int, Int, Double)](Tsv("removeCols")) { ob =>
           "correctly keep col vectors" in {
             toSparseMat(ob) shouldBe Map((2, 2) -> 3.0, (1, 2) -> 4.0)
           }
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Scalar Row Right job" should {
     TUtil.printStack {
       var idx = 0
-      JobTest(new ScalarRowRight(_))
-        .source(Tsv("sca1", ('v)), List(3.0))
+      JobTest(new ScalarRowRight(_)).source(Tsv("sca1", ('v)), List(3.0))
         .source(Tsv("row1", ('x, 'v)), List((1, 1.0), (2, 2.0), (3, 6.0)))
         .sink[(Int, Double)](Tsv("scalarRowRight")) { ob =>
           s"$idx: correctly compute a new row vector" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .sink[(Int, Double)](Tsv("scalarObjRowRight")) { ob =>
+        }.sink[(Int, Double)](Tsv("scalarObjRowRight")) { ob =>
           s"$idx: correctly compute a new row vector" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Scalar Row Left job" should {
     TUtil.printStack {
       var idx = 0
-      JobTest(new ScalarRowLeft(_))
-        .source(Tsv("sca1", ('v)), List(3.0))
+      JobTest(new ScalarRowLeft(_)).source(Tsv("sca1", ('v)), List(3.0))
         .source(Tsv("row1", ('x, 'v)), List((1, 1.0), (2, 2.0), (3, 6.0)))
         .sink[(Int, Double)](Tsv("scalarRowLeft")) { ob =>
           s"$idx: correctly compute a new row vector" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .sink[(Int, Double)](Tsv("scalarObjRowLeft")) { ob =>
+        }.sink[(Int, Double)](Tsv("scalarObjRowLeft")) { ob =>
           s"$idx: correctly compute a new row vector" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Scalar Col Right job" should {
     TUtil.printStack {
       var idx = 0
-      JobTest(new ScalarColRight(_))
-        .source(Tsv("sca1", ('v)), List(3.0))
+      JobTest(new ScalarColRight(_)).source(Tsv("sca1", ('v)), List(3.0))
         .source(Tsv("col1", ('x, 'v)), List((1, 1.0), (2, 2.0), (3, 6.0)))
         .sink[(Int, Double)](Tsv("scalarColRight")) { ob =>
           s"$idx: correctly compute a new col vector" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .sink[(Int, Double)](Tsv("scalarObjColRight")) { ob =>
+        }.sink[(Int, Double)](Tsv("scalarObjColRight")) { ob =>
           s"$idx: correctly compute a new col vector" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Scalar Col Left job" should {
     TUtil.printStack {
       var idx = 0
-      JobTest(new ScalarColLeft(_))
-        .source(Tsv("sca1", ('v)), List(3.0))
+      JobTest(new ScalarColLeft(_)).source(Tsv("sca1", ('v)), List(3.0))
         .source(Tsv("col1", ('x, 'v)), List((1, 1.0), (2, 2.0), (3, 6.0)))
         .sink[(Int, Double)](Tsv("scalarColLeft")) { ob =>
           s"$idx: correctly compute a new col vector" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .sink[(Int, Double)](Tsv("scalarObjColLeft")) { ob =>
+        }.sink[(Int, Double)](Tsv("scalarObjColLeft")) { ob =>
           s"$idx: correctly compute a new col vector" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Scalar Diag Right job" should {
     TUtil.printStack {
       var idx = 0
-      JobTest(new ScalarDiagRight(_))
-        .source(Tsv("sca1", ('v)), List(3.0))
+      JobTest(new ScalarDiagRight(_)).source(Tsv("sca1", ('v)), List(3.0))
         .source(Tsv("diag1", ('x, 'v)), List((1, 1.0), (2, 2.0), (3, 6.0)))
         .sink[(Int, Double)](Tsv("scalarDiagRight")) { ob =>
           s"$idx: correctly compute a new diag matrix" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .sink[(Int, Double)](Tsv("scalarObjDiagRight")) { ob =>
+        }.sink[(Int, Double)](Tsv("scalarObjDiagRight")) { ob =>
           s"$idx: correctly compute a new diag matrix" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
   "A Scalar Diag Left job" should {
     TUtil.printStack {
       var idx = 0
-      JobTest(new ScalarDiagLeft(_))
-        .source(Tsv("sca1", ('v)), List(3.0))
+      JobTest(new ScalarDiagLeft(_)).source(Tsv("sca1", ('v)), List(3.0))
         .source(Tsv("diag1", ('x, 'v)), List((1, 1.0), (2, 2.0), (3, 6.0)))
         .sink[(Int, Double)](Tsv("scalarDiagLeft")) { ob =>
           s"$idx: correctly compute a new diag matrix" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .sink[(Int, Double)](Tsv("scalarObjDiagLeft")) { ob =>
+        }.sink[(Int, Double)](Tsv("scalarObjDiagLeft")) { ob =>
           s"$idx: correctly compute a new diag matrix" in {
             ob.toMap shouldBe Map(1 -> 3.0, 2 -> 6.0, 3 -> 18.0)
           }
           idx += 1
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
@@ -1113,8 +1004,7 @@ class MatrixTest extends WordSpec with Matchers {
               3 -> (6.0 / 3.0))
           }
           idx += 1
-        }
-        .sink[(Int, Double)](Tsv("colLOneNorm")) { ob =>
+        }.sink[(Int, Double)](Tsv("colLOneNorm")) { ob =>
           s"$idx: correctly compute a new col vector" in {
             ob.toMap shouldBe Map(
               1 -> (1.0 / 9.0),
@@ -1122,9 +1012,7 @@ class MatrixTest extends WordSpec with Matchers {
               3 -> (6.0 / 9.0))
           }
           idx += 1
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 
@@ -1151,8 +1039,7 @@ class MatrixTest extends WordSpec with Matchers {
               3 -> (6.0 / 3.0))
           }
           idx += 1
-        }
-        .sink[(Int, Double)](Tsv("rowLOneNorm")) { ob =>
+        }.sink[(Int, Double)](Tsv("rowLOneNorm")) { ob =>
           s"$idx: correctly compute a new row vector" in {
             ob.toMap shouldBe Map(
               1 -> (1.0 / 9.0),
@@ -1160,9 +1047,7 @@ class MatrixTest extends WordSpec with Matchers {
               3 -> (6.0 / 9.0))
           }
           idx += 1
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 }

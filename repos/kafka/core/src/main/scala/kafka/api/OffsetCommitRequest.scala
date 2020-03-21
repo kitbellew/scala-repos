@@ -48,7 +48,8 @@ object OffsetCommitRequest extends Logging {
     val groupGenerationId: Int =
       if (versionId >= 1) buffer.getInt
       else
-        org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_GENERATION_ID
+        org.apache.kafka.common.requests.OffsetCommitRequest
+          .DEFAULT_GENERATION_ID
 
     val memberId: String =
       if (versionId >= 1) readShortString(buffer)
@@ -59,7 +60,8 @@ object OffsetCommitRequest extends Logging {
     val retentionMs: Long =
       if (versionId >= 2) buffer.getLong
       else
-        org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_RETENTION_TIME
+        org.apache.kafka.common.requests.OffsetCommitRequest
+          .DEFAULT_RETENTION_TIME
 
     val topicCount = buffer.getInt
     val pairs = (1 to topicCount).flatMap(_ => {
@@ -72,7 +74,8 @@ object OffsetCommitRequest extends Logging {
           // version 1 specific field
           if (versionId == 1) buffer.getLong
           else
-            org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_TIMESTAMP
+            org.apache.kafka.common.requests.OffsetCommitRequest
+              .DEFAULT_TIMESTAMP
         }
         val metadata = readShortString(buffer)
 
@@ -100,12 +103,12 @@ case class OffsetCommitRequest(
     versionId: Short = OffsetCommitRequest.CurrentVersion,
     correlationId: Int = 0,
     clientId: String = OffsetCommitRequest.DefaultClientId,
-    groupGenerationId: Int =
-      org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_GENERATION_ID,
+    groupGenerationId: Int = org.apache.kafka.common.requests
+      .OffsetCommitRequest.DEFAULT_GENERATION_ID,
     memberId: String =
       org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_MEMBER_ID,
-    retentionMs: Long =
-      org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_RETENTION_TIME)
+    retentionMs: Long = org.apache.kafka.common.requests.OffsetCommitRequest
+      .DEFAULT_RETENTION_TIME)
     extends RequestOrResponse(Some(ApiKeys.OFFSET_COMMIT.id)) {
 
   assert(

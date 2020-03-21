@@ -38,11 +38,9 @@ abstract class ScFunctionImpl protected (
       case notNull => notNull
     }
     if (n == null) {
-      return ScalaPsiElementFactory
-        .createIdentifier(
-          getStub.asInstanceOf[ScFunctionStub].getName,
-          getManager)
-        .getPsi
+      return ScalaPsiElementFactory.createIdentifier(
+        getStub.asInstanceOf[ScFunctionStub].getName,
+        getManager).getPsi
     }
     n.getPsi
   }
@@ -57,18 +55,17 @@ abstract class ScFunctionImpl protected (
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     // process function's process type parameters
-    if (!super[ScTypeParametersOwner].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)) return false
+    if (!super[ScTypeParametersOwner]
+          .processDeclarations(processor, state, lastParent, place))
+      return false
 
     lazy val parameterIncludingSynthetic: Seq[ScParameter] =
       effectiveParameterClauses.flatMap(_.effectiveParameters)
     if (getStub == null) {
       returnTypeElement match {
         case Some(x)
-            if lastParent != null && x.startOffsetInParent == lastParent.startOffsetInParent =>
+            if lastParent != null && x.startOffsetInParent == lastParent
+              .startOffsetInParent =>
           for (p <- parameterIncludingSynthetic) {
             ProgressManager.checkCanceled()
             if (!processor.execute(p, state)) return false

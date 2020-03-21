@@ -32,10 +32,8 @@ object ESUtils {
     var hits = response.getHits().hits()
     results ++= hits.map(h => read[T](h.getSourceAsString))
     while (hits.size > 0) {
-      response = client
-        .prepareSearchScroll(response.getScrollId)
-        .setScroll(scrollLife)
-        .get
+      response = client.prepareSearchScroll(response.getScrollId)
+        .setScroll(scrollLife).get
       hits = response.getHits().hits()
       results ++= hits.map(h => read[T](h.getSourceAsString))
     }

@@ -86,24 +86,24 @@ trait RouteTestResultComponent {
       this
     }
 
-    private[this] lazy val entityRecreator: () ⇒ ResponseEntity =
-      rawResponse.entity match {
-        case s: HttpEntity.Strict ⇒ () ⇒ s
+    private[this] lazy val entityRecreator: () ⇒ ResponseEntity = rawResponse
+      .entity match {
+      case s: HttpEntity.Strict ⇒ () ⇒ s
 
-        case HttpEntity.Default(contentType, contentLength, data) ⇒
-          val dataChunks = awaitAllElements(data);
-          { () ⇒
-            HttpEntity.Default(contentType, contentLength, Source(dataChunks))
-          }
+      case HttpEntity.Default(contentType, contentLength, data) ⇒
+        val dataChunks = awaitAllElements(data);
+        { () ⇒
+          HttpEntity.Default(contentType, contentLength, Source(dataChunks))
+        }
 
-        case HttpEntity.CloseDelimited(contentType, data) ⇒
-          val dataChunks = awaitAllElements(data);
-          { () ⇒ HttpEntity.CloseDelimited(contentType, Source(dataChunks)) }
+      case HttpEntity.CloseDelimited(contentType, data) ⇒
+        val dataChunks = awaitAllElements(data);
+        { () ⇒ HttpEntity.CloseDelimited(contentType, Source(dataChunks)) }
 
-        case HttpEntity.Chunked(contentType, data) ⇒
-          val dataChunks = awaitAllElements(data);
-          { () ⇒ HttpEntity.Chunked(contentType, Source(dataChunks)) }
-      }
+      case HttpEntity.Chunked(contentType, data) ⇒
+        val dataChunks = awaitAllElements(data);
+        { () ⇒ HttpEntity.Chunked(contentType, Source(dataChunks)) }
+    }
 
     private def failNeitherCompletedNorRejected(): Nothing =
       failTest("Request was neither completed nor rejected within " + timeout)

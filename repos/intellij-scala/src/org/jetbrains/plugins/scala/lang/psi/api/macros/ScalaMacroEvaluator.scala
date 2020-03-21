@@ -53,8 +53,7 @@ class ScalaMacroEvaluator(project: Project)
       case f: ScMacroDefinition => Some(f)
       //todo: fix decompiler to avoid this check:
       case f: ScFunction
-          if f
-            .hasAnnotation("scala.reflect.macros.internal.macroImpl")
+          if f.hasAnnotation("scala.reflect.macros.internal.macroImpl")
             .isDefined => Some(f)
       case _           => None
     }
@@ -63,10 +62,7 @@ class ScalaMacroEvaluator(project: Project)
   override def checkMacro(
       macros: ScFunction,
       context: MacroContext): Option[ScType] = {
-    typingRules
-      .filter(_.isApplicable(macros))
-      .head
-      .typeable
+    typingRules.filter(_.isApplicable(macros)).head.typeable
       .checkMacro(macros, context)
   }
 }

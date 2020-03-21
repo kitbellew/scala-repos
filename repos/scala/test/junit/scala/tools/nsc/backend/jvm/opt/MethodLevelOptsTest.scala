@@ -34,8 +34,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
 
   def locals(c: ClassNode, m: String) =
     findAsmMethod(c, m).localVariables.asScala.toList
-      .map(l => (l.name, l.index))
-      .sortBy(_._2)
+      .map(l => (l.name, l.index)).sortBy(_._2)
 
   @Test
   def eliminateEmptyTry(): Unit = {

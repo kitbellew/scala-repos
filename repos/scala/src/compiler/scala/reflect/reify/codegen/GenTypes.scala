@@ -66,9 +66,8 @@ trait GenTypes {
   def reificationIsConcrete: Boolean = state.reificationIsConcrete
 
   def spliceType(tpe: Type): Tree = {
-    if (tpe.isSpliceable && !(
-          boundSymbolsInCallstack contains tpe.typeSymbol
-        )) {
+    if (tpe.isSpliceable && !(boundSymbolsInCallstack contains tpe
+          .typeSymbol)) {
       if (reifyDebug) println("splicing " + tpe)
 
       val tagFlavor =
@@ -76,10 +75,9 @@ trait GenTypes {
       // if this fails, it might produce the dreaded "erroneous or inaccessible type" error
       // to find out the whereabouts of the error run scalac with -Ydebug
       if (reifyDebug)
-        println("launching implicit search for %s.%s[%s]".format(
-          universe,
-          tagFlavor,
-          tpe))
+        println(
+          "launching implicit search for %s.%s[%s]"
+            .format(universe, tagFlavor, tpe))
       val result = typer.resolveTypeTag(
         defaultErrorPosition,
         universe.tpe,
@@ -101,7 +99,8 @@ trait GenTypes {
         case success =>
           if (reifyDebug)
             println("implicit search has produced a result: " + success)
-          state.reificationIsConcrete &= concrete || success.tpe <:< TypeTagClass.toTypeConstructor
+          state.reificationIsConcrete &= concrete || success
+            .tpe <:< TypeTagClass.toTypeConstructor
           Select(
             Apply(Select(success, nme.in), List(Ident(nme.MIRROR_SHORT))),
             nme.tpe)
@@ -116,9 +115,8 @@ trait GenTypes {
   private def spliceAsManifest(tpe: Type): Tree = {
     def isSynthetic(manifest: Tree) =
       manifest exists (sub =>
-        sub.symbol != null && (
-          sub.symbol == FullManifestModule || sub.symbol.owner == FullManifestModule
-        ))
+        sub.symbol != null && (sub.symbol == FullManifestModule || sub.symbol
+          .owner == FullManifestModule))
     def searchForManifest(typer: analyzer.Typer): Tree =
       analyzer.inferImplicit(
         EmptyTree,

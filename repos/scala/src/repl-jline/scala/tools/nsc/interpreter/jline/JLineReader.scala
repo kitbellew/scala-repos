@@ -129,9 +129,8 @@ private class JLineConsoleReader
             cursor: Int,
             candidates: JList[CharSequence]): Int = {
           val buf = if (_buf == null) "" else _buf
-          val Candidates(newCursor, newCandidates) = completion.complete(
-            buf,
-            cursor)
+          val Candidates(newCursor, newCandidates) = completion
+            .complete(buf, cursor)
           newCandidates foreach (candidates add _)
           newCursor
         }

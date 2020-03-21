@@ -142,20 +142,20 @@ abstract class ClusterShardingCustomShardAllocationSpec(
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒
-    new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir")
+    .map(s ⇒ new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     runOn(first) {
-      storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+      storageLocations
+        .foreach(dir ⇒ if (dir.exists) FileUtils.deleteDirectory(dir))
     }
   }
 
   override protected def afterTermination() {
     runOn(first) {
-      storageLocations.foreach(dir ⇒
-        if (dir.exists) FileUtils.deleteDirectory(dir))
+      storageLocations
+        .foreach(dir ⇒ if (dir.exists) FileUtils.deleteDirectory(dir))
     }
   }
 
@@ -224,8 +224,9 @@ abstract class ClusterShardingCustomShardAllocationSpec(
       enterBarrier("second-started")
 
       runOn(first) {
-        system.actorSelection(
-          node(second) / "system" / "sharding" / "Entity") ! Identify(None)
+        system
+          .actorSelection(
+            node(second) / "system" / "sharding" / "Entity") ! Identify(None)
         val secondRegion = expectMsgType[ActorIdentity].ref.get
         allocator ! UseRegion(secondRegion)
         expectMsg(UseRegionAck)

@@ -38,8 +38,7 @@ class ScalaPrefixPackageCompletionContributor
     extends ScalaCompletionContributor {
   extend(
     CompletionType.BASIC,
-    PlatformPatterns
-      .psiElement(ScalaTokenTypes.tIDENTIFIER)
+    PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER)
       .withParent(classOf[ScReferenceElement]),
     new CompletionProvider[CompletionParameters] {
 
@@ -74,9 +73,8 @@ object ScalaPrefixPackageCompletionContributor {
     val project = position.getProject
 
     def addPackageForCompletion(packageFqn: String): Unit = {
-      val isExcluded: Boolean =
-        CodeInsightSettings.getInstance.EXCLUDED_PACKAGES
-          .contains(packageFqn.startsWith(_: String))
+      val isExcluded: Boolean = CodeInsightSettings.getInstance
+        .EXCLUDED_PACKAGES.contains(packageFqn.startsWith(_: String))
       if (isExcluded) return
 
       if (parameters.getInvocationCount == 0) return
@@ -122,8 +120,8 @@ object ScalaPrefixPackageCompletionContributor {
       pattern.split('.').dropRight(1).mkString(".")
 
     val settings = ScalaCodeStyleSettings.getInstance(project)
-    val patterns = settings.getImportsWithPrefix.filter(
-      !_.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX))
+    val patterns = settings.getImportsWithPrefix
+      .filter(!_.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX))
     patterns.toSeq.map(stripLastWord).distinct
   }
 }

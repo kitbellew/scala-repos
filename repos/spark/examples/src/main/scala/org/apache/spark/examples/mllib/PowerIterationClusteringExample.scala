@@ -67,9 +67,8 @@ object PowerIterationClusteringExample {
       opt[Int]('k', "k")
         .text(s"number of circles (clusters), default: ${defaultParams.k}")
         .action((x, c) => c.copy(k = x))
-      opt[Int]('n', "n")
-        .text(
-          s"number of points in smallest circle, default: ${defaultParams.numPoints}")
+      opt[Int]('n', "n").text(
+        s"number of points in smallest circle, default: ${defaultParams.numPoints}")
         .action((x, c) => c.copy(numPoints = x))
       opt[Int]("maxIterations")
         .text(s"number of iterations, default: ${defaultParams.maxIterations}")
@@ -82,8 +81,7 @@ object PowerIterationClusteringExample {
   }
 
   def run(params: Params) {
-    val conf = new SparkConf()
-      .setMaster("local")
+    val conf = new SparkConf().setMaster("local")
       .setAppName(s"PowerIterationClustering with $params")
     val sc = new SparkContext(conf)
 
@@ -91,23 +89,17 @@ object PowerIterationClusteringExample {
 
     // $example on$
     val circlesRdd = generateCirclesRdd(sc, params.k, params.numPoints)
-    val model = new PowerIterationClustering()
-      .setK(params.k)
-      .setMaxIterations(params.maxIterations)
-      .setInitializationMode("degree")
+    val model = new PowerIterationClustering().setK(params.k)
+      .setMaxIterations(params.maxIterations).setInitializationMode("degree")
       .run(circlesRdd)
 
-    val clusters = model.assignments
-      .collect()
-      .groupBy(_.cluster)
+    val clusters = model.assignments.collect().groupBy(_.cluster)
       .mapValues(_.map(_.id))
     val assignments = clusters.toList.sortBy { case (k, v) => v.length }
-    val assignmentsStr = assignments
-      .map { case (k, v) => s"$k -> ${v.sorted.mkString("[", ",", "]")}" }
-      .mkString(", ")
-    val sizesStr = assignments
-      .map { _._2.length }
-      .sorted
+    val assignmentsStr = assignments.map {
+      case (k, v) => s"$k -> ${v.sorted.mkString("[", ",", "]")}"
+    }.mkString(", ")
+    val sizesStr = assignments.map { _._2.length }.sorted
       .mkString("(", ",", ")")
     println(s"Cluster assignments: $assignmentsStr\ncluster sizes: $sizesStr")
     // $example off$
@@ -126,9 +118,8 @@ object PowerIterationClusteringExample {
       sc: SparkContext,
       nCircles: Int,
       nPoints: Int): RDD[(Long, Long, Double)] = {
-    val points = (1 to nCircles).flatMap { i =>
-      generateCircle(i, i * nPoints)
-    }.zipWithIndex
+    val points = (1 to nCircles).flatMap { i => generateCircle(i, i * nPoints) }
+      .zipWithIndex
     val rdd = sc.parallelize(points)
     val distancesRdd = rdd.cartesian(rdd).flatMap {
       case (((x0, y0), i0), ((x1, y1), i1)) =>

@@ -190,8 +190,7 @@ class ClusterSingletonManagerSpec
 
   def queue: ActorRef = {
     // this is used from inside actor construction, i.e. other thread, and must therefore not call `node(controller`
-    system
-      .actorSelection(controllerRootActorPath / "user" / "queue")
+    system.actorSelection(controllerRootActorPath / "user" / "queue")
       .tell(Identify("queue"), identifyProbe.ref)
     identifyProbe.expectMsgType[ActorIdentity].ref.get
   }
@@ -212,10 +211,9 @@ class ClusterSingletonManagerSpec
         node(nodes.head).address)
     }
     runOn(nodes.head) {
-      memberProbe
-        .receiveN(nodes.size, 15.seconds)
-        .collect { case MemberUp(m) ⇒ m.address }
-        .toSet should ===(nodes.map(node(_).address).toSet)
+      memberProbe.receiveN(nodes.size, 15.seconds).collect {
+        case MemberUp(m) ⇒ m.address
+      }.toSet should ===(nodes.map(node(_).address).toSet)
     }
     enterBarrier(nodes.head.name + "-up")
   }
@@ -291,8 +289,8 @@ class ClusterSingletonManagerSpec
     }
     runOn(oldest) { expectMsg(5.seconds, msg) }
     runOn(
-      roles.filterNot(r ⇒
-        r == oldest || r == controller || r == observer): _*) {
+      roles
+        .filterNot(r ⇒ r == oldest || r == controller || r == observer): _*) {
       expectNoMsg(1 second)
     }
     enterBarrier("after-" + msg + "-verified")
@@ -394,8 +392,7 @@ class ClusterSingletonManagerSpec
       verifyProxyMsg(second, sixth, msg = msg())
 
       runOn(leaveRole) {
-        system
-          .actorSelection("/user/consumer")
+        system.actorSelection("/user/consumer")
           .tell(Identify("singleton"), identifyProbe.ref)
         identifyProbe.expectMsgPF() {
           case ActorIdentity("singleton", None) ⇒ // already terminated

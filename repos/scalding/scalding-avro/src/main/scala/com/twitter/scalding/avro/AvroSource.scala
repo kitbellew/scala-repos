@@ -36,12 +36,13 @@ trait UnpackedAvroFileScheme extends FileSource {
 
   // HadoopSchemeInstance gives compile errors in 2.10 for some reason
   override def hdfsScheme =
-    (new AvroScheme(schema.getOrElse(null))).asInstanceOf[Scheme[
-      JobConf,
-      RecordReader[_, _],
-      OutputCollector[_, _],
-      _,
-      _]]
+    (new AvroScheme(schema.getOrElse(null)))
+      .asInstanceOf[Scheme[
+        JobConf,
+        RecordReader[_, _],
+        OutputCollector[_, _],
+        _,
+        _]]
 
   override def localScheme =
     (new LAvroScheme(schema.getOrElse(null)))
@@ -54,12 +55,13 @@ trait PackedAvroFileScheme[T] extends FileSource {
 
   // HadoopSchemeInstance gives compile errors for this in 2.10 for some reason
   override def hdfsScheme =
-    (new PackedAvroScheme[T](schema)).asInstanceOf[Scheme[
-      JobConf,
-      RecordReader[_, _],
-      OutputCollector[_, _],
-      _,
-      _]]
+    (new PackedAvroScheme[T](schema))
+      .asInstanceOf[Scheme[
+        JobConf,
+        RecordReader[_, _],
+        OutputCollector[_, _],
+        _,
+        _]]
 
   override def localScheme =
     (new LPackedAvroScheme[T](schema))

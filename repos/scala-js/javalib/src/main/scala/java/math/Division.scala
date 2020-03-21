@@ -422,8 +422,8 @@ private[math] object Division {
       // Optimization for small operands
       // (op2.bitLength() < 32) implies by INV (op1.bitLength() < 32)
       if ((op2.numberLength == 1) && (op2.digits(0) > 0)) {
-        op2 = BigInteger.valueOf(
-          Division.gcdBinary(op1.intValue(), op2.intValue()))
+        op2 = BigInteger
+          .valueOf(Division.gcdBinary(op1.intValue(), op2.intValue()))
       } else {
         // Implements one step of the Euclidean algorithm
         // To reduce one operand if it's much smaller than the other one

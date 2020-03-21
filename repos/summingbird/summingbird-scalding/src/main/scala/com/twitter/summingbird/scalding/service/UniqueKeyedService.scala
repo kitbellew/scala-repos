@@ -48,9 +48,9 @@ trait UniqueKeyedService[K, V] extends SimpleService[K, V] {
       reducers.map { grouped.withReducers(_) }.getOrElse(grouped)
 
     withReducers(in.map { case (t, (k, w)) => (k, (t, w)) }.group)
-      .leftJoin(withReducers(serv.group))
-      .toTypedPipe
-      .map { case (k, ((t, w), optV)) => (t, (k, (w, optV))) }
+      .leftJoin(withReducers(serv.group)).toTypedPipe.map {
+        case (k, ((t, w), optV)) => (t, (k, (w, optV)))
+      }
   }
 
   final override def serve[W](

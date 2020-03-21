@@ -177,8 +177,8 @@ class Message(
     buffer.put(magicValue)
     val attributes: Byte =
       if (codec.codec > 0)
-        timestampType.updateAttributes(
-          (CompressionCodeMask & codec.codec).toByte)
+        timestampType
+          .updateAttributes((CompressionCodeMask & codec.codec).toByte)
       else 0
     buffer.put(attributes)
     // Only put timestamp when "magic" value is greater than 0
@@ -345,8 +345,8 @@ class Message(
     if (magic == MagicValue_V0) Message.NoTimestamp
     // Case 2
     else if (wrapperMessageTimestampType.exists(
-               _ == TimestampType.LOG_APPEND_TIME) && wrapperMessageTimestamp.isDefined)
-      wrapperMessageTimestamp.get
+               _ == TimestampType.LOG_APPEND_TIME) && wrapperMessageTimestamp
+               .isDefined) wrapperMessageTimestamp.get
     else // case 1, 3
       buffer.getLong(Message.TimestampOffset)
   }
@@ -357,16 +357,16 @@ class Message(
   def timestampType = {
     if (magic == MagicValue_V0) TimestampType.NO_TIMESTAMP_TYPE
     else
-      wrapperMessageTimestampType.getOrElse(
-        TimestampType.forAttributes(attributes))
+      wrapperMessageTimestampType
+        .getOrElse(TimestampType.forAttributes(attributes))
   }
 
   /**
     * The compression codec used with this message
     */
   def compressionCodec: CompressionCodec =
-    CompressionCodec.getCompressionCodec(
-      buffer.get(AttributesOffset) & CompressionCodeMask)
+    CompressionCodec
+      .getCompressionCodec(buffer.get(AttributesOffset) & CompressionCodeMask)
 
   /**
     * A ByteBuffer containing the content of the message
@@ -384,8 +384,8 @@ class Message(
   def toFormatVersion(toMagicValue: Byte): Message = {
     if (magic == toMagicValue) this
     else {
-      val byteBuffer = ByteBuffer.allocate(
-        size + Message.headerSizeDiff(magic, toMagicValue))
+      val byteBuffer = ByteBuffer
+        .allocate(size + Message.headerSizeDiff(magic, toMagicValue))
       // Copy bytes from old messages to new message
       convertToBuffer(toMagicValue, byteBuffer, Message.NoTimestamp)
       new Message(byteBuffer)
@@ -396,8 +396,8 @@ class Message(
       toMagicValue: Byte,
       byteBuffer: ByteBuffer,
       now: Long,
-      timestampType: TimestampType = wrapperMessageTimestampType.getOrElse(
-        TimestampType.forAttributes(attributes))) {
+      timestampType: TimestampType = wrapperMessageTimestampType
+        .getOrElse(TimestampType.forAttributes(attributes))) {
     if (byteBuffer.remaining() < size + headerSizeDiff(magic, toMagicValue))
       throw new IndexOutOfBoundsException(
         "The byte buffer does not have enough capacity to hold new message format " +

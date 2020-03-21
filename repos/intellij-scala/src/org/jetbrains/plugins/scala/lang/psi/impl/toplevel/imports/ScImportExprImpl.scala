@@ -87,8 +87,8 @@ class ScImportExprImpl private (
       val next = getNextSibling
       if (next != null) {
         def removeWhitespaceAfterComma(comma: ASTNode) {
-          if (comma.getTreeNext != null && !comma.getTreeNext.getText.contains(
-                "\n") &&
+          if (comma.getTreeNext != null && !comma.getTreeNext.getText
+                .contains("\n") &&
               comma.getTreeNext.getText.trim.isEmpty) {
             remove(comma.getTreeNext)
           }
@@ -98,7 +98,8 @@ class ScImportExprImpl private (
           removeWhitespaceAfterComma(comma)
           remove(comma)
         } else {
-          if (next.getNextSibling != null && next.getNextSibling.getText == ",") {
+          if (next.getNextSibling != null && next.getNextSibling
+                .getText == ",") {
             val comma = next.getNextSibling
             removeWhitespaceAfterComma(comma.getNode)
             remove(next.getNode)
@@ -108,9 +109,8 @@ class ScImportExprImpl private (
             if (prev != null) {
               if (prev.getText == ",") { remove(prev.getNode) }
               else {
-                if (prev.getPrevSibling != null && prev.getPrevSibling.getText == ",") {
-                  remove(prev.getPrevSibling.getNode)
-                }
+                if (prev.getPrevSibling != null && prev.getPrevSibling
+                      .getText == ",") { remove(prev.getPrevSibling.getNode) }
               }
             }
           }
@@ -120,7 +120,8 @@ class ScImportExprImpl private (
         if (prev != null) {
           if (prev.getText == ",") { remove(prev.getNode) }
           else {
-            if (prev.getPrevSibling != null && prev.getPrevSibling.getText == ",") {
+            if (prev.getPrevSibling != null && prev.getPrevSibling
+                  .getText == ",") {
               val prevSibling = prev.getPrevSibling
               remove(prev.getNode)
               remove(prevSibling.getNode)
@@ -142,8 +143,9 @@ class ScImportExprImpl private (
     val stub = getStub
     if (stub != null) stub.asInstanceOf[ScImportExprStub].reference
     else
-      getFirstChild.asOptionOf[
-        ScStableCodeReferenceElement
-      ] /*findChild(classOf[ScStableCodeReferenceElement])*/
+      getFirstChild
+        .asOptionOf[
+          ScStableCodeReferenceElement
+        ] /*findChild(classOf[ScStableCodeReferenceElement])*/
   }
 }

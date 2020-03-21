@@ -92,7 +92,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         //   if there are too many super / sub / implicit nodes, represent
         //   them by on node with a corresponding tooltip
         superClasses =
-          if (_superClasses.length > settings.docDiagramsMaxNormalClasses.value) {
+          if (_superClasses.length > settings.docDiagramsMaxNormalClasses
+                .value) {
             val superClassesTooltip = Some(
               limitSize(_superClasses.map(_.tpe.name).mkString(", ")))
             List(
@@ -112,7 +113,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           } else _subClasses
 
         incomingImplicits =
-          if (_incomingImplicits.length > settings.docDiagramsMaxImplicitClasses.value) {
+          if (_incomingImplicits.length > settings.docDiagramsMaxImplicitClasses
+                .value) {
             val incomingImplicitsTooltip = Some(
               limitSize(_incomingImplicits.map(_.tpe.name).mkString(", ")))
             List(
@@ -122,7 +124,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           } else _incomingImplicits
 
         outgoingImplicits =
-          if (_outgoingImplicits.length > settings.docDiagramsMaxImplicitClasses.value) {
+          if (_outgoingImplicits.length > settings.docDiagramsMaxImplicitClasses
+                .value) {
             val outgoingImplicitsTooltip = Some(
               limitSize(_outgoingImplicits.map(_.tpe.name).mkString(", ")))
             List(
@@ -133,8 +136,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
         thisNode = _thisNode
         nodes = List()
-        edges =
-          (thisNode -> superClasses) :: subClasses.map(_ -> List(thisNode))
+        edges = (thisNode -> superClasses) :: subClasses
+          .map(_ -> List(thisNode))
         node2Index = (
           thisNode :: subClasses ::: superClasses ::: incomingImplicits ::: outgoingImplicits
         ).zipWithIndex.toMap
@@ -163,8 +166,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               "style=\"invis\"\n" +
               incomingImplicits.reverse.map(n => node2Dot(n)).mkString +
               (if (incomingImplicits.size > 1)
-                 incomingImplicits
-                   .map(n => "node" + node2Index(n))
+                 incomingImplicits.map(n => "node" + node2Index(n))
                    .mkString(" -> ") +
                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
                else "") +
@@ -178,8 +180,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               "style=\"invis\"\n" +
               outgoingImplicits.reverse.map(n => node2Dot(n)).mkString +
               (if (outgoingImplicits.size > 1)
-                 outgoingImplicits
-                   .map(n => "node" + node2Index(n))
+                 outgoingImplicits.map(n => "node" + node2Index(n))
                    .mkString(" -> ") +
                    " [constraint=\"false\", style=\"invis\", minlen=\"0.0\"];\n"
                else "") +
@@ -187,13 +188,11 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         }
 
         // assemble clusters into another cluster
-        val incomingTooltip = incomingImplicits
-          .map(_.name)
+        val incomingTooltip = incomingImplicits.map(_.name)
           .mkString(", ") + " can be implicitly converted to " + thisNode.name
-        val outgoingTooltip =
-          thisNode.name + " can be implicitly converted to " + outgoingImplicits
-            .map(_.name)
-            .mkString(", ")
+        val outgoingTooltip = thisNode
+          .name + " can be implicitly converted to " + outgoingImplicits
+          .map(_.name).mkString(", ")
         "subgraph clusterAll {\n" +
           "style=\"invis\"\n" +
           outgoingCluster + "\n" +
@@ -235,20 +234,18 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       // inheritance edges
       edges.map {
         case (from, tos) =>
-          tos
-            .map(to => {
-              val id = "graph" + counter + "_" + node2Index(
-                to) + "_" + node2Index(from)
-              // the X -> Y edge is inverted twice to keep the diagram flowing the right way
-              // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
-              "node" + node2Index(to) + " -> node" + node2Index(from) +
-                " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
-                "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
-                                              " are subtypes of "
-                                            else " is a subtype of ") +
-                to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
-            })
-            .mkString
+          tos.map(to => {
+            val id =
+              "graph" + counter + "_" + node2Index(to) + "_" + node2Index(from)
+            // the X -> Y edge is inverted twice to keep the diagram flowing the right way
+            // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
+            "node" + node2Index(to) + " -> node" + node2Index(from) +
+              " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
+              "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
+                                            " are subtypes of "
+                                          else " is a subtype of ") +
+              to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
+          }).mkString
       }.mkString +
       "}"
 
@@ -305,8 +302,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       else ""
 
     if (!img.equals("")) {
-      img =
-        "<TD><IMG SCALE=\"TRUE\" SRC=\"" + settings.outdir.value + "/lib/" + img + "\" /></TD>"
+      img = "<TD><IMG SCALE=\"TRUE\" SRC=\"" + settings.outdir
+        .value + "/lib/" + img + "\" /></TD>"
       name = name + " "
     }
     val label = "<<TABLE BORDER=\"0\" CELLBORDER=\"0\">" +
@@ -373,14 +370,13 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
               settings.printMsg(
                 "\n\n**********************************************************************")
               settings.printMsg(
-                "Encountered an error while generating page for " + template.qualifiedName)
+                "Encountered an error while generating page for " + template
+                  .qualifiedName)
               settings.printMsg(
-                dotInput.toString
-                  .split("\n")
+                dotInput.toString.split("\n")
                   .mkString("\nDot input:\n\t", "\n\t", ""))
               settings.printMsg(
-                dotOutput.toString
-                  .split("\n")
+                dotOutput.toString.split("\n")
                   .mkString("\nDot output:\n\t", "\n\t", ""))
               settings.printMsg(exc.getStackTrace.mkString(
                 "\nException: " + exc.toString + ":\n\tat ",
@@ -390,9 +386,11 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                 "\n\n**********************************************************************")
             } else {
               settings.printMsg(
-                "\nThe diagram for " + template.qualifiedName + " could not be created due to an internal error.")
+                "\nThe diagram for " + template
+                  .qualifiedName + " could not be created due to an internal error.")
               settings.printMsg(
-                "Use " + settings.docDiagramsDebug.name + " for more information and please file this as a bug.")
+                "Use " + settings.docDiagramsDebug
+                  .name + " for more information and please file this as a bug.")
             }
             NodeSeq.Empty
         }
@@ -574,8 +572,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     "fontcolor" -> "#ffffff")
 
   private def flatten(attributes: Map[String, String]) =
-    attributes
-      .map { case (key, value) => key + "=\"" + value + "\"" }
+    attributes.map { case (key, value) => key + "=\"" + value + "\"" }
       .mkString(", ")
 
   private val graphAttributesStr = graphAttributes.map {

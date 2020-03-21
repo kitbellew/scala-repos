@@ -25,13 +25,11 @@ final class JsonView(getLightUser: String => Option[LightUser]) {
         },
         "name" -> simul.name,
         "fullName" -> simul.fullName,
-        "variants" -> simul.variants.map(variantJson(
-          chess.Speed(simul.clock.chessClock.some))),
-        "applicants" -> simul.applicants
-          .sortBy(-_.player.rating)
+        "variants" -> simul.variants
+          .map(variantJson(chess.Speed(simul.clock.chessClock.some))),
+        "applicants" -> simul.applicants.sortBy(-_.player.rating)
           .map(applicantJson),
-        "pairings" -> simul.pairings
-          .sortBy(-_.player.rating)
+        "pairings" -> simul.pairings.sortBy(-_.player.rating)
           .map(pairingJson(games, simul.hostId)),
         "isCreated" -> simul.isCreated,
         "isRunning" -> simul.isRunning,
@@ -43,23 +41,20 @@ final class JsonView(getLightUser: String => Option[LightUser]) {
   private def variantJson(speed: chess.Speed)(v: chess.variant.Variant) =
     Json.obj(
       "key" -> v.key,
-      "icon" -> lila.game.PerfPicker
-        .perfType(speed, v, none)
+      "icon" -> lila.game.PerfPicker.perfType(speed, v, none)
         .map(_.iconChar.toString),
       "name" -> v.name)
 
   private def playerJson(player: SimulPlayer) = {
     val light = getLightUser(player.user)
-    Json
-      .obj(
-        "id" -> player.user,
-        "variant" -> player.variant.key,
-        "username" -> light.map(_.name),
-        "title" -> light.map(_.title),
-        "rating" -> player.rating,
-        "provisional" -> player.provisional.filter(identity)
-      )
-      .noNull
+    Json.obj(
+      "id" -> player.user,
+      "variant" -> player.variant.key,
+      "username" -> light.map(_.name),
+      "title" -> light.map(_.title),
+      "rating" -> player.rating,
+      "provisional" -> player.provisional.filter(identity)
+    ).noNull
   }
 
   private def applicantJson(app: SimulApplicant) =

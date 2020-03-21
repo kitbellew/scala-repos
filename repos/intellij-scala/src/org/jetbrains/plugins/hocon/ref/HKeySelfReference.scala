@@ -18,8 +18,7 @@ class HKeySelfReference(key: HKey) extends PsiReference {
   def bindToElement(element: PsiElement): PsiElement = null
 
   def handleElementRename(newElementName: String): PsiElement =
-    ElementManipulators
-      .getManipulator(key)
+    ElementManipulators.getManipulator(key)
       .handleContentChange(key, newElementName)
 
   def isSoft = true

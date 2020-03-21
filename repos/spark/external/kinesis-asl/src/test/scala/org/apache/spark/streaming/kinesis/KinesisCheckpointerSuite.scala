@@ -77,8 +77,7 @@ class KinesisCheckpointerSuite
 
   test("checkpoint is called after sequence number increases") {
     when(receiverMock.getLatestSeqNumToCheckpoint(shardId))
-      .thenReturn(someSeqNum)
-      .thenReturn(someOtherSeqNum)
+      .thenReturn(someSeqNum).thenReturn(someOtherSeqNum)
     kinesisCheckpointer.invokePrivate(checkpoint(shardId, checkpointerMock))
     kinesisCheckpointer.invokePrivate(checkpoint(shardId, checkpointerMock))
 
@@ -88,8 +87,7 @@ class KinesisCheckpointerSuite
 
   test("should checkpoint if we have exceeded the checkpoint interval") {
     when(receiverMock.getLatestSeqNumToCheckpoint(shardId))
-      .thenReturn(someSeqNum)
-      .thenReturn(someOtherSeqNum)
+      .thenReturn(someSeqNum).thenReturn(someOtherSeqNum)
 
     kinesisCheckpointer.setCheckpointer(shardId, checkpointerMock)
     clock.advance(5 * checkpointInterval.milliseconds)
@@ -133,8 +131,7 @@ class KinesisCheckpointerSuite
   test(
     "if checkpointing is going on, wait until finished before removing and checkpointing") {
     when(receiverMock.getLatestSeqNumToCheckpoint(shardId))
-      .thenReturn(someSeqNum)
-      .thenReturn(someOtherSeqNum)
+      .thenReturn(someSeqNum).thenReturn(someOtherSeqNum)
     when(checkpointerMock.checkpoint(anyString)).thenAnswer(new Answer[Unit] {
       override def answer(invocations: InvocationOnMock): Unit = {
         clock.waitTillTime(

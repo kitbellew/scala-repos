@@ -47,8 +47,7 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     val minSize = 2.0
     assert(bkm.getMinDivisibleClusterSize !== minSize)
     assert(
-      bkm
-        .setMinDivisibleClusterSize(minSize)
+      bkm.setMinDivisibleClusterSize(minSize)
         .getMinDivisibleClusterSize === minSize)
     val seed = 10L
     assert(bkm.getSeed !== seed)
@@ -63,10 +62,7 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     val points = Vectors.sparse(1, Array.empty, Array.empty) +:
       (1 until 8).map(i => Vectors.dense(i))
     val data = sc.parallelize(points, 2)
-    val bkm = new BisectingKMeans()
-      .setK(4)
-      .setMaxIterations(1)
-      .setSeed(1L)
+    val bkm = new BisectingKMeans().setK(4).setMaxIterations(1).setSeed(1L)
     // The clusters should be
     // (0, 1, 2, 3, 4, 5, 6, 7)
     //   - (0, 1, 2, 3)
@@ -95,34 +91,25 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("points are the same") {
     val data = sc.parallelize(Seq.fill(8)(Vectors.dense(1.0, 1.0)), 2)
-    val bkm = new BisectingKMeans()
-      .setK(2)
-      .setMaxIterations(1)
-      .setSeed(1L)
+    val bkm = new BisectingKMeans().setK(2).setMaxIterations(1).setSeed(1L)
     val model = bkm.run(data)
     assert(model.k === 1)
   }
 
   test("more desired clusters than points") {
     val data = sc.parallelize(Seq.tabulate(4)(i => Vectors.dense(i)), 2)
-    val bkm = new BisectingKMeans()
-      .setK(8)
-      .setMaxIterations(2)
-      .setSeed(1L)
+    val bkm = new BisectingKMeans().setK(8).setMaxIterations(2).setSeed(1L)
     val model = bkm.run(data)
     assert(model.k === 4)
   }
 
   test("min divisible cluster") {
     val data = sc.parallelize(
-      Seq.tabulate(16)(i => Vectors.dense(i)) ++ Seq.tabulate(4)(i =>
-        Vectors.dense(-100.0 - i)),
+      Seq.tabulate(16)(i => Vectors.dense(i)) ++ Seq
+        .tabulate(4)(i => Vectors.dense(-100.0 - i)),
       2)
-    val bkm = new BisectingKMeans()
-      .setK(4)
-      .setMinDivisibleClusterSize(10)
-      .setMaxIterations(1)
-      .setSeed(1L)
+    val bkm = new BisectingKMeans().setK(4).setMinDivisibleClusterSize(10)
+      .setMaxIterations(1).setSeed(1L)
     val model = bkm.run(data)
     assert(model.k === 3)
     assert(
@@ -136,13 +123,10 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("larger clusters get selected first") {
     val data = sc.parallelize(
-      Seq.tabulate(16)(i => Vectors.dense(i)) ++ Seq.tabulate(4)(i =>
-        Vectors.dense(-100.0 - i)),
+      Seq.tabulate(16)(i => Vectors.dense(i)) ++ Seq
+        .tabulate(4)(i => Vectors.dense(-100.0 - i)),
       2)
-    val bkm = new BisectingKMeans()
-      .setK(3)
-      .setMaxIterations(1)
-      .setSeed(1L)
+    val bkm = new BisectingKMeans().setK(3).setMaxIterations(1).setSeed(1L)
     val model = bkm.run(data)
     assert(model.k === 3)
     assert(
@@ -167,10 +151,7 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
         else { Vectors.dense(x, y) }
     }
     val data = sc.parallelize(points, 2)
-    val bkm = new BisectingKMeans()
-      .setK(3)
-      .setMaxIterations(4)
-      .setSeed(1L)
+    val bkm = new BisectingKMeans().setK(3).setMaxIterations(4).setSeed(1L)
     val model = bkm.run(data)
     assert(model.k === 3)
     assert(model.root.center ~== Vectors.dense(8, 0) relTol 1e-12)

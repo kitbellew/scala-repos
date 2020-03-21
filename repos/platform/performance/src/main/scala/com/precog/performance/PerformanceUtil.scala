@@ -79,11 +79,8 @@ class PerformanceUtil(apiEndpoint: String, apiKey: String, path: String) {
     val content = resultsToJson(results)
 
     val client = new HttpClientXLightWeb
-    val result = client
-      .path(baseUrl)
-      .query("apiKey", apiKey)
-      .contentType(application / MimeTypes.json)
-      .post[JValue](testId)(content)
+    val result = client.path(baseUrl).query("apiKey", apiKey)
+      .contentType(application / MimeTypes.json).post[JValue](testId)(content)
 
     val r = Await.result(result, Duration(100, "seconds"))
   }

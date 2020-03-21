@@ -209,7 +209,8 @@ private[akka] trait MultiStreamOutputProcessorLike
         case Some(sub) ⇒
           if (demand < 1) // According to Reactive Streams Spec 3.9, with non-positive demand must yield onError
             sub.error(
-              ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
+              ReactiveStreamsCompliance
+                .numberOfElementsInRequestMustBePositiveException)
           else sub.enqueueOutputDemand(demand)
         case _ ⇒ // ignore...
       }
@@ -245,8 +246,8 @@ private[akka] abstract class MultiStreamOutputProcessor(
   private var _nextId = 0L
   protected def nextId(): Long = { _nextId += 1; _nextId }
 
-  override val subscriptionTimeoutSettings =
-    _settings.subscriptionTimeoutSettings
+  override val subscriptionTimeoutSettings = _settings
+    .subscriptionTimeoutSettings
 
   override protected def fail(e: Throwable): Unit = {
     failOutputs(e)
@@ -259,5 +260,6 @@ private[akka] abstract class MultiStreamOutputProcessor(
   }
 
   override def activeReceive: Receive =
-    primaryInputs.subreceive orElse primaryOutputs.subreceive orElse outputSubstreamManagement
+    primaryInputs.subreceive orElse primaryOutputs
+      .subreceive orElse outputSubstreamManagement
 }

@@ -60,8 +60,8 @@ case class SortMergeJoin(
       case LeftOuter => left.output ++ right.output.map(_.withNullability(true))
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
-      case FullOuter =>
-        (left.output ++ right.output).map(_.withNullability(true))
+      case FullOuter => (left.output ++ right.output)
+          .map(_.withNullability(true))
       case x =>
         throw new IllegalArgumentException(
           s"${getClass.getSimpleName} should not take $x as the JoinType")
@@ -106,9 +106,9 @@ case class SortMergeJoin(
 
     left.execute().zipPartitions(right.execute()) { (leftIter, rightIter) =>
       val boundCondition: (InternalRow) => Boolean = {
-        condition
-          .map { cond => newPredicate(cond, left.output ++ right.output) }
-          .getOrElse { (r: InternalRow) => true }
+        condition.map { cond =>
+          newPredicate(cond, left.output ++ right.output)
+        }.getOrElse { (r: InternalRow) => true }
       }
       // An ordering that can be used to compare keys from both sides.
       val keyOrdering = newNaturalAscendingOrdering(leftKeys.map(_.dataType))
@@ -560,9 +560,8 @@ private[joins] class SortMergeJoinScanner(
       matchJoinKey = null
       bufferedMatches.clear()
       false
-    } else if (matchJoinKey != null && keyOrdering.compare(
-                 streamedRowKey,
-                 matchJoinKey) == 0) {
+    } else if (matchJoinKey != null && keyOrdering
+                 .compare(streamedRowKey, matchJoinKey) == 0) {
       // The new streamed row has the same join key as the previous row, so return the same matches.
       true
     } else if (bufferedRow == null) {
@@ -612,9 +611,8 @@ private[joins] class SortMergeJoinScanner(
       bufferedMatches.clear()
       false
     } else {
-      if (matchJoinKey != null && keyOrdering.compare(
-            streamedRowKey,
-            matchJoinKey) == 0) {
+      if (matchJoinKey != null && keyOrdering
+            .compare(streamedRowKey, matchJoinKey) == 0) {
         // Matches the current group, so do nothing.
       } else {
         // The streamed row does not match the current group.
@@ -693,9 +691,8 @@ private[joins] class SortMergeJoinScanner(
         .copy() // need to copy mutable rows before buffering them
       advancedBufferedToRowWithNullFreeJoinKey()
     } while (
-      bufferedRow != null && keyOrdering.compare(
-        streamedRowKey,
-        bufferedRowKey) == 0
+      bufferedRow != null && keyOrdering
+        .compare(streamedRowKey, bufferedRowKey) == 0
     )
   }
 }
@@ -899,15 +896,13 @@ private class SortMergeFullOuterJoinScanner(
     leftIndex = 0
     rightIndex = 0
 
-    while (leftRowKey != null && keyOrdering.compare(
-             leftRowKey,
-             matchingKey) == 0) {
+    while (leftRowKey != null && keyOrdering
+             .compare(leftRowKey, matchingKey) == 0) {
       leftMatches += leftRow.copy()
       advancedLeft()
     }
-    while (rightRowKey != null && keyOrdering.compare(
-             rightRowKey,
-             matchingKey) == 0) {
+    while (rightRowKey != null && keyOrdering
+             .compare(rightRowKey, matchingKey) == 0) {
       rightMatches += rightRow.copy()
       advancedRight()
     }

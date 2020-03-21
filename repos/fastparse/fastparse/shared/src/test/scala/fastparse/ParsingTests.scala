@@ -43,32 +43,50 @@ object ParsingTests extends TestSuite {
     }
     'repeat {
       check(
-        "Hello".!.rep,
-        ("HelloHello!", 0),
-        Success(Seq("Hello", "Hello"), 10))
-      check("Hello".!.rep, ("HelloHello!", 2), Success(Seq(), 2))
-      check("Hello".!.rep, ("HelloHello!", 5), Success(Seq("Hello"), 10))
-      check(
-        "Hello".!.rep(1),
+        "Hello"
+          .!.rep,
         ("HelloHello!", 0),
         Success(Seq("Hello", "Hello"), 10))
       check(
-        "Hello".!.rep(1, max = 1),
+        "Hello"
+          .!.rep,
+        ("HelloHello!", 2),
+        Success(Seq(), 2))
+      check(
+        "Hello"
+          .!.rep,
+        ("HelloHello!", 5),
+        Success(Seq("Hello"), 10))
+      check(
+        "Hello"
+          .!.rep(1),
+        ("HelloHello!", 0),
+        Success(Seq("Hello", "Hello"), 10))
+      check(
+        "Hello"
+          .!.rep(1, max = 1),
         ("HelloHello!", 0),
         Success(Seq("Hello"), 5))
       check(
-        "Hello".!.rep(1, max = 2),
+        "Hello"
+          .!.rep(1, max = 2),
         ("HelloHello!", 0),
         Success(Seq("Hello", "Hello"), 10))
       check(
-        "Hello".!.rep(1, max = 2),
+        "Hello"
+          .!.rep(1, max = 2),
         ("HelloHelloHello!", 0),
         Success(Seq("Hello", "Hello"), 10))
 
-      check("Hello".!.rep(0, max = 0), ("HelloHello!", 0), Success(Seq(), 0))
+      check(
+        "Hello"
+          .!.rep(0, max = 0),
+        ("HelloHello!", 0),
+        Success(Seq(), 0))
       // identical :  check( ("Hello" | Pass).!, ("HelloHello!", 0), Success("Hello", 5))
       check(
-        "Hello".!.rep(0, max = 1),
+        "Hello"
+          .!.rep(0, max = 1),
         ("HelloHello!", 0),
         Success(Seq("Hello"), 5))
 
@@ -80,7 +98,8 @@ object ParsingTests extends TestSuite {
       check(("Hello" | "Bye").!, ("HelloBye", 5), Success("Bye", 8))
       checkFail("Hello" | "Bye", ("HelloBye", 2), 2)
       check(
-        ("Hello" | "Bye").!.rep,
+        ("Hello" | "Bye")
+          .!.rep,
         ("HelloBye", 0),
         Success(Seq("Hello", "Bye"), 8))
       check(("Hello" | "Bye").rep.!, ("HelloBye", 0), Success("HelloBye", 8))

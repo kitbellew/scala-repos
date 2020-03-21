@@ -70,9 +70,7 @@ object PageViewGenerator {
       total = total + prob
       if (total > rand) { return item }
     }
-    inputMap
-      .take(1)
-      .head
+    inputMap.take(1).head
       ._1 // Shouldn't get here if probabilities add up to 1.0
   }
 

@@ -265,9 +265,8 @@ class Range(val start: Int, val end: Int, val step: Int)
       case x: Range =>
         (x canEqual this) && (length == x.length) && (
           isEmpty || // all empty sequences are equal
-            (
-              start == x.start && last == x.last
-            ) // same length and same endpoints implies equality
+            (start == x.start && last == x
+              .last) // same length and same endpoints implies equality
         )
       case _ => super.equals(other)
     }
@@ -400,8 +399,9 @@ object Range {
       BigDecimal(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
 
     def inclusive(start: Double, end: Double, step: Double) =
-      BigDecimal
-        .inclusive(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
+      BigDecimal.inclusive(toBD(start), toBD(end), toBD(step)) mapRange (
+        _.doubleValue
+      )
   }
 
   // As there is no appealing default step size for not-really-integral ranges,

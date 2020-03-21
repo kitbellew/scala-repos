@@ -287,12 +287,8 @@ private[graphx] class EdgePartition[
         // This edge starts a new run of edges
         if (i > 0) {
           // First release the existing run to the builder
-          builder.add(
-            currSrcId,
-            currDstId,
-            currLocalSrcId,
-            currLocalDstId,
-            currAttr)
+          builder
+            .add(currSrcId, currDstId, currLocalSrcId, currLocalDstId, currAttr)
         }
         // Then start accumulating for a new run
         currSrcId = srcIds(i)
@@ -305,12 +301,8 @@ private[graphx] class EdgePartition[
     }
     // Finally, release the last accumulated run
     if (size > 0) {
-      builder.add(
-        currSrcId,
-        currDstId,
-        currLocalSrcId,
-        currLocalDstId,
-        currAttr)
+      builder
+        .add(currSrcId, currDstId, currLocalSrcId, currLocalDstId, currAttr)
     }
     builder.toEdgePartition
   }
@@ -341,10 +333,10 @@ private[graphx] class EdgePartition[
       // ... forward j to the index of the corresponding edge in `other`, and...
       while (j < other.size && other.srcIds(j) < srcId) { j += 1 }
       if (j < other.size && other.srcIds(j) == srcId) {
-        while (j < other.size && other.srcIds(j) == srcId && other.dstIds(
-                 j) < dstId) { j += 1 }
-        if (j < other.size && other.srcIds(j) == srcId && other.dstIds(
-              j) == dstId) {
+        while (j < other.size && other.srcIds(j) == srcId && other
+                 .dstIds(j) < dstId) { j += 1 }
+        if (j < other.size && other.srcIds(j) == srcId && other
+              .dstIds(j) == dstId) {
           // ... run `f` on the matching edge
           builder.add(
             srcId,

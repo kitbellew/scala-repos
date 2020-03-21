@@ -272,9 +272,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
               addToQ3(item)
             } catch {
               case e: java.lang.RuntimeException
-                  if e.getMessage != null && (
-                    e.getMessage contains "too large!"
-                  ) =>
+                  if e.getMessage != null && (e
+                    .getMessage contains "too large!") =>
                 reporter.error(
                   NoPosition,
                   s"Could not write class ${item.plain.name} because it exceeds JVM code size limits. ${e.getMessage}")
@@ -304,8 +303,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
         val beanC =
           if (bean == null) null else SubItem3(bean.name, getByteArray(bean))
 
-        if (AsmUtils.traceSerializedClassEnabled && plain.name.contains(
-              AsmUtils.traceSerializedClassPattern)) {
+        if (AsmUtils.traceSerializedClassEnabled && plain.name
+              .contains(AsmUtils.traceSerializedClassPattern)) {
           if (mirrorC != null) AsmUtils.traceClass(mirrorC.jclassBytes)
           AsmUtils.traceClass(plainC.jclassBytes)
           if (beanC != null) AsmUtils.traceClass(beanC.jclassBytes)
@@ -415,11 +414,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
             val outFile =
               if (outFolder == null) null
               else getFileForClassfile(outFolder, jclassName, ".class")
-            bytecodeWriter.writeClass(
-              jclassName,
-              jclassName,
-              jclassBytes,
-              outFile)
+            bytecodeWriter
+              .writeClass(jclassName, jclassName, jclassBytes, outFile)
           } catch {
             case e: FileConflictException => error(
                 s"error writing $jclassName: ${e.getMessage}")
@@ -474,8 +470,8 @@ object GenBCode {
   def mkFlags(args: Int*) = args.foldLeft(0)(_ | _)
 
   final val PublicStatic = asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_STATIC
-  final val PublicStaticFinal =
-    asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_STATIC | asm.Opcodes.ACC_FINAL
+  final val PublicStaticFinal = asm.Opcodes.ACC_PUBLIC | asm.Opcodes
+    .ACC_STATIC | asm.Opcodes.ACC_FINAL
 
   val CLASS_CONSTRUCTOR_NAME = "<clinit>"
   val INSTANCE_CONSTRUCTOR_NAME = "<init>"

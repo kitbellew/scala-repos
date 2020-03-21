@@ -48,7 +48,5 @@ class Tutorial6(args: Args) extends Job(args) {
   Csv("tutorial/data/phones.txt", separator = " ", fields = Schema).read
     .map((first, last) -> full) { name: (String, String) =>
       name._1 + ' ' + name._2
-    }
-    .project(full, age)
-    .write(Tsv("tutorial/data/output6.tsv"))
+    }.project(full, age).write(Tsv("tutorial/data/output6.tsv"))
 }

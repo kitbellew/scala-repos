@@ -105,8 +105,8 @@ object ResourcesSpec extends Specification {
     }
 
     "return true for a directory resource URL that contains spaces with the 'bundle' protocol" in {
-      val relativeIndex = spacesDirBundle.getAbsolutePath.indexOf(
-        "test-bundle-")
+      val relativeIndex = spacesDirBundle.getAbsolutePath
+        .indexOf("test-bundle-")
       val dir = spacesDirBundle.getAbsolutePath.substring(relativeIndex)
       val url = new URL("bundle", "325.0", 25, dir, new BundleStreamHandler)
       isDirectory(osgiClassloader, url) must beTrue

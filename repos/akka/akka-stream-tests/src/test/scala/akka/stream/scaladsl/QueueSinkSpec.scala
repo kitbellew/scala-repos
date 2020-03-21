@@ -123,17 +123,11 @@ class QueueSinkSpec extends AkkaSpec {
     "keep on sending even after the buffer has been full" in assertAllStagesStopped {
       val bufferSize = 16
       val streamElementCount = bufferSize + 4
-      val sink = Sink
-        .queue[Int]()
+      val sink = Sink.queue[Int]()
         .withAttributes(inputBuffer(bufferSize, bufferSize))
-      val (probe, queue) = Source(1 to streamElementCount)
-        .alsoToMat(
-          Flow[Int]
-            .take(bufferSize)
-            .watchTermination()(Keep.right)
-            .to(Sink.ignore))(Keep.right)
-        .toMat(sink)(Keep.both)
-        .run()
+      val (probe, queue) = Source(1 to streamElementCount).alsoToMat(
+        Flow[Int].take(bufferSize).watchTermination()(Keep.right)
+          .to(Sink.ignore))(Keep.right).toMat(sink)(Keep.both).run()
       probe.futureValue should ===(akka.Done)
       for (i ← 1 to streamElementCount) {
         queue.pull() pipeTo testActor
@@ -165,8 +159,7 @@ class QueueSinkSpec extends AkkaSpec {
 
     "fail to materialize with zero sized input buffer" in {
       an[IllegalArgumentException] shouldBe thrownBy {
-        Source
-          .single(())
+        Source.single(())
           .runWith(Sink.queue().withAttributes(inputBuffer(0, 0)))
       }
     }

@@ -257,8 +257,8 @@ object Infos {
         isAbstract = isAbstract,
         isExported = isExported,
         methodsCalled = methodsCalled.toMap.mapValues(_.toList),
-        methodsCalledStatically = methodsCalledStatically.toMap.mapValues(
-          _.toList),
+        methodsCalledStatically = methodsCalledStatically.toMap
+          .mapValues(_.toList),
         staticMethodsCalled = staticMethodsCalled.toMap.mapValues(_.toList),
         instantiatedClasses = instantiatedClasses.toList,
         accessedModules = accessedModules.toList,
@@ -270,10 +270,8 @@ object Infos {
 
   /** Generates the [[ClassInfo]] of a [[Trees.ClassDef]]. */
   def generateClassInfo(classDef: ClassDef): ClassInfo = {
-    val builder = new ClassInfoBuilder()
-      .setEncodedName(classDef.name.name)
-      .setKind(classDef.kind)
-      .setSuperClass(classDef.superClass.map(_.name))
+    val builder = new ClassInfoBuilder().setEncodedName(classDef.name.name)
+      .setKind(classDef.kind).setSuperClass(classDef.superClass.map(_.name))
       .addInterfaces(classDef.interfaces.map(_.name))
 
     var exportedConstructors: List[ConstructorExportDef] = Nil
@@ -315,9 +313,7 @@ object Infos {
     private val builder = new MethodInfoBuilder
 
     def generateMethodInfo(methodDef: MethodDef): MethodInfo = {
-      builder
-        .setEncodedName(methodDef.name.name)
-        .setIsStatic(methodDef.static)
+      builder.setEncodedName(methodDef.name.name).setIsStatic(methodDef.static)
         .setIsAbstract(methodDef.body == EmptyTree)
         .setIsExported(methodDef.name.isInstanceOf[StringLiteral])
 
@@ -328,9 +324,7 @@ object Infos {
     }
 
     def generatePropertyInfo(propertyDef: PropertyDef): MethodInfo = {
-      builder
-        .setEncodedName(propertyDef.name.name)
-        .setIsExported(true)
+      builder.setEncodedName(propertyDef.name.name).setIsExported(true)
 
       // Any of getterBody and setterBody can be EmptyTree, but that's fine
       traverse(propertyDef.getterBody)
@@ -341,9 +335,7 @@ object Infos {
 
     def generateExportedConstructorsInfo(
         constructorDefs: List[ConstructorExportDef]): MethodInfo = {
-      builder
-        .setEncodedName(ExportedConstructorsName)
-        .setIsExported(true)
+      builder.setEncodedName(ExportedConstructorsName).setIsExported(true)
 
       for (constructorDef <- constructorDefs) traverse(constructorDef.body)
 

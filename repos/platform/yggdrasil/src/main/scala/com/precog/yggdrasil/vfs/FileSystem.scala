@@ -86,9 +86,7 @@ object PathData {
         def validated(v: JValue) = {
           val mimeTypeV = v.validated[String]("mimeType").flatMap {
             mimeString =>
-              MimeTypes
-                .parseMimeTypes(mimeString)
-                .headOption
+              MimeTypes.parseMimeTypes(mimeString).headOption
                 .toSuccess(Extractor.Error.invalid(
                   "No recognized mimeType values foundin %s".format(
                     v.renderCompact)))

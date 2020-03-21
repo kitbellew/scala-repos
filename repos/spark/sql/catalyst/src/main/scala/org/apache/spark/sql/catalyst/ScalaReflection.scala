@@ -35,8 +35,8 @@ import org.apache.spark.util.Utils
   * A default version of ScalaReflection that uses the runtime universe.
   */
 object ScalaReflection extends ScalaReflection {
-  val universe: scala.reflect.runtime.universe.type =
-    scala.reflect.runtime.universe
+  val universe: scala.reflect.runtime.universe.type = scala.reflect.runtime
+    .universe
   // Since we are creating a runtime mirror using the class loader of current thread,
   // we need to use def at here. So, every time we call mirror, it is using the
   // class loader of the current thread.
@@ -159,8 +159,7 @@ object ScalaReflection extends ScalaReflection {
           ordinal: Int,
           dataType: DataType,
           walkedTypePath: Seq[String]): Expression = {
-        val newPath = path
-          .map(p => GetStructField(p, ordinal))
+        val newPath = path.map(p => GetStructField(p, ordinal))
           .getOrElse(BoundReference(ordinal, dataType, false))
         upCastToExpectedType(newPath, dataType, walkedTypePath)
       }
@@ -289,22 +288,20 @@ object ScalaReflection extends ScalaReflection {
             case _                                 => None
           }
 
-          primitiveMethod
-            .map { method =>
-              Invoke(getPath, method, arrayClassFor(elementType))
-            }
-            .getOrElse {
-              val className = getClassNameFromType(elementType)
-              val newTypePath =
-                s"""- array element class: "$className"""" +: walkedTypePath
-              Invoke(
-                MapObjects(
-                  p => constructorFor(elementType, Some(p), newTypePath),
-                  getPath,
-                  schemaFor(elementType).dataType),
-                "array",
-                arrayClassFor(elementType))
-            }
+          primitiveMethod.map { method =>
+            Invoke(getPath, method, arrayClassFor(elementType))
+          }.getOrElse {
+            val className = getClassNameFromType(elementType)
+            val newTypePath =
+              s"""- array element class: "$className"""" +: walkedTypePath
+            Invoke(
+              MapObjects(
+                p => constructorFor(elementType, Some(p), newTypePath),
+                getPath,
+                schemaFor(elementType).dataType),
+              "array",
+              arrayClassFor(elementType))
+          }
 
         case t if t <:< localTypeOf[Seq[_]] =>
           val TypeRef(_, _, Seq(elementType)) = t
@@ -408,14 +405,10 @@ object ScalaReflection extends ScalaReflection {
 
         case t
             if Utils.classIsLoadable(className) &&
-              Utils
-                .classForName(className)
+              Utils.classForName(className)
                 .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
-          val udt = Utils
-            .classForName(className)
-            .getAnnotation(classOf[SQLUserDefinedType])
-            .udt()
-            .newInstance()
+          val udt = Utils.classForName(className)
+            .getAnnotation(classOf[SQLUserDefinedType]).udt().newInstance()
           val obj = NewInstance(
             udt.userClass.getAnnotation(classOf[SQLUserDefinedType]).udt(),
             Nil,
@@ -666,14 +659,10 @@ object ScalaReflection extends ScalaReflection {
 
           case t
               if Utils.classIsLoadable(className) &&
-                Utils
-                  .classForName(className)
+                Utils.classForName(className)
                   .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
-            val udt = Utils
-              .classForName(className)
-              .getAnnotation(classOf[SQLUserDefinedType])
-              .udt()
-              .newInstance()
+            val udt = Utils.classForName(className)
+              .getAnnotation(classOf[SQLUserDefinedType]).udt().newInstance()
             val obj = NewInstance(
               udt.userClass.getAnnotation(classOf[SQLUserDefinedType]).udt(),
               Nil,
@@ -776,18 +765,14 @@ trait ScalaReflection {
 
         case t
             if Utils.classIsLoadable(className) &&
-              Utils
-                .classForName(className)
+              Utils.classForName(className)
                 .isAnnotationPresent(classOf[SQLUserDefinedType]) =>
           // Note: We check for classIsLoadable above since Utils.classForName uses Java reflection,
           //       whereas className is from Scala reflection.  This can make it hard to find classes
           //       in some cases, such as when a class is enclosed in an object (in which case
           //       Java appends a '$' to the object name but Scala does not).
-          val udt = Utils
-            .classForName(className)
-            .getAnnotation(classOf[SQLUserDefinedType])
-            .udt()
-            .newInstance()
+          val udt = Utils.classForName(className)
+            .getAnnotation(classOf[SQLUserDefinedType]).udt().newInstance()
           Schema(udt, nullable = true)
         case t if t <:< localTypeOf[Option[_]] =>
           val TypeRef(_, _, Seq(optType)) = t
@@ -897,8 +882,8 @@ trait ScalaReflection {
     * Returns classes of input parameters of scala function object.
     */
   def getParameterTypes(func: AnyRef): Seq[Class[_]] = {
-    val methods = func.getClass.getMethods.filter(m =>
-      m.getName == "apply" && !m.isBridge)
+    val methods = func.getClass.getMethods
+      .filter(m => m.getName == "apply" && !m.isBridge)
     assert(methods.length == 1)
     methods.head.getParameterTypes
   }
@@ -924,9 +909,8 @@ trait ScalaReflection {
       if (constructorSymbol.isMethod) { constructorSymbol.asMethod.paramss }
       else {
         // Find the primary constructor, and use its parameter ordering.
-        val primaryConstructorSymbol: Option[Symbol] =
-          constructorSymbol.asTerm.alternatives.find(s =>
-            s.isMethod && s.asMethod.isPrimaryConstructor)
+        val primaryConstructorSymbol: Option[Symbol] = constructorSymbol.asTerm
+          .alternatives.find(s => s.isMethod && s.asMethod.isPrimaryConstructor)
         if (primaryConstructorSymbol.isEmpty) {
           sys.error(
             "Internal SQL error: Product object did not have a primary constructor.")

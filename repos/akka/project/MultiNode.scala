@@ -17,18 +17,17 @@ object MultiNode extends AutoPlugin {
     val multiNode = CliOption("akka.test.multi-node", false)
     val sbtLogNoFormat = CliOption("sbt.log.noformat", false)
 
-    val hostsFileName =
-      sys.props.get("akka.test.multi-node.hostsFileName").toSeq
+    val hostsFileName = sys.props.get("akka.test.multi-node.hostsFileName")
+      .toSeq
     val javaName = sys.props.get("akka.test.multi-node.java").toSeq
-    val targetDirName =
-      sys.props.get("akka.test.multi-node.targetDirName").toSeq
+    val targetDirName = sys.props.get("akka.test.multi-node.targetDirName")
+      .toSeq
   }
 
   val multiExecuteTests = CliOptions.multiNode
     .ifTrue(multiNodeExecuteTests in MultiJvm)
     .getOrElse(executeTests in MultiJvm)
-  val multiTest = CliOptions.multiNode
-    .ifTrue(multiNodeTest in MultiJvm)
+  val multiTest = CliOptions.multiNode.ifTrue(multiNodeTest in MultiJvm)
     .getOrElse(test in MultiJvm)
 
   override def trigger = noTrigger
@@ -54,8 +53,7 @@ object MultiNode extends AutoPlugin {
       }
 
     "-Xmx256m" :: akkaProperties ::: CliOptions.sbtLogNoFormat
-      .ifTrue("-Dakka.test.nocolor=true")
-      .toList
+      .ifTrue("-Dakka.test.nocolor=true").toList
   }
 
   private val multiJvmSettings =
@@ -99,9 +97,8 @@ object MultiNodeScalaTest extends AutoPlugin {
   override lazy val projectSettings = Seq(
     extraOptions in MultiJvm <<= (sourceDirectory in MultiJvm) {
       src => (name: String) =>
-        (
-          src ** (name + ".conf")
-        ).get.headOption.map("-Dakka.config=" + _.absolutePath).toSeq
+        (src ** (name + ".conf")).get.headOption
+          .map("-Dakka.config=" + _.absolutePath).toSeq
     },
     scalatestOptions in MultiJvm := {
       Seq("-C", "org.scalatest.extra.QuietReporter") ++

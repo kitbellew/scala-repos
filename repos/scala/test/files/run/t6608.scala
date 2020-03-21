@@ -8,8 +8,7 @@ class C {
 
 object Test extends App {
   import universe._
-  val access = typeOf[C].decls.toList
-    .filter(_.name.toString.endsWith("yyy"))
+  val access = typeOf[C].decls.toList.filter(_.name.toString.endsWith("yyy"))
     .map(x => (x.name, x.isPrivate))
   println(access.head)
 }

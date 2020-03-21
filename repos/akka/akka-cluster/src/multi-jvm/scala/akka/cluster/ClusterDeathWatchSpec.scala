@@ -51,8 +51,8 @@ abstract class ClusterDeathWatchSpec
     super.atStartup()
     if (!log.isDebugEnabled) {
       muteMarkingAsUnreachable()
-      system.eventStream.publish(Mute(
-        EventFilter[java.net.UnknownHostException]()))
+      system.eventStream
+        .publish(Mute(EventFilter[java.net.UnknownHostException]()))
     }
   }
 
@@ -107,8 +107,9 @@ abstract class ClusterDeathWatchSpec
           clusterView.members.map(_.address) should not contain (address(
             third)))
         awaitAssert(
-          clusterView.unreachableMembers
-            .map(_.address) should not contain (address(third)))
+          clusterView.unreachableMembers.map(_.address) should not contain (
+            address(third)
+          ))
         expectMsg(path3)
         enterBarrier("third-terminated")
 
@@ -133,8 +134,9 @@ abstract class ClusterDeathWatchSpec
             clusterView.members.map(_.address) should not contain (address(
               second)))
           awaitAssert(
-            clusterView.unreachableMembers
-              .map(_.address) should not contain (address(second)))
+            clusterView.unreachableMembers.map(_.address) should not contain (
+              address(second)
+            ))
         }
         enterBarrier("second-terminated")
         enterBarrier("third-terminated")
@@ -180,8 +182,9 @@ abstract class ClusterDeathWatchSpec
       enterBarrier("subjected-started")
 
       runOn(first) {
-        system.actorSelection(
-          RootActorPath(fifth) / "user" / "subject5") ! Identify("subject5")
+        system
+          .actorSelection(
+            RootActorPath(fifth) / "user" / "subject5") ! Identify("subject5")
         val subject5 = expectMsgType[ActorIdentity].ref.get
         watch(subject5)
 
@@ -219,8 +222,9 @@ abstract class ClusterDeathWatchSpec
         cluster.down(fifth)
         // removed
         awaitAssert(
-          clusterView.unreachableMembers
-            .map(_.address) should not contain (address(fifth)))
+          clusterView.unreachableMembers.map(_.address) should not contain (
+            address(fifth)
+          ))
         awaitAssert(
           clusterView.members.map(_.address) should not contain (address(
             fifth)))
@@ -258,8 +262,9 @@ abstract class ClusterDeathWatchSpec
         cluster.down(first)
         // removed
         awaitAssert(
-          clusterView.unreachableMembers
-            .map(_.address) should not contain (address(first)))
+          clusterView.unreachableMembers.map(_.address) should not contain (
+            address(first)
+          ))
         awaitAssert(
           clusterView.members.map(_.address) should not contain (address(
             first)))

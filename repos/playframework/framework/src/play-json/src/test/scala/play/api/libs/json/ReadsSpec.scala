@@ -31,9 +31,8 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     def dateTime(input: String) =
       LocalDateTime.parse(input, DateTimeFormatter.ISO_DATE_TIME)
 
-    lazy val correctedReads = Reads.localDateTimeReads(
-      DateTimeFormatter.ISO_DATE_TIME,
-      _.drop(1))
+    lazy val correctedReads = Reads
+      .localDateTimeReads(DateTimeFormatter.ISO_DATE_TIME, _.drop(1))
 
     val CustomReads2 = Reads.localDateTimeReads(
       DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss"),
@@ -76,8 +75,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     }
 
     "be successfully read with custom pattern from '03/12/2011, 10:15:30'" in {
-      CustomReads1
-        .reads(JsString("03/12/2011, 10:15:30"))
+      CustomReads1.reads(JsString("03/12/2011, 10:15:30"))
         .aka("read date") must_== JsSuccess(dateTime("2011-12-03T10:15:30"))
     }
 
@@ -109,14 +107,12 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       lazy val time = dateTime("2011-12-03T10:15:30")
 
       "with default implicit" in {
-        correctedReads
-          .reads(JsString("_2011-12-03T10:15:30"))
+        correctedReads.reads(JsString("_2011-12-03T10:15:30"))
           .aka("read date") must_== JsSuccess(time)
       }
 
       "with custom formatter" in {
-        CustomReads2
-          .reads(JsString("# 03/12/2011, 10:15:30"))
+        CustomReads2.reads(JsString("# 03/12/2011, 10:15:30"))
           .aka("read date") must_== JsSuccess(time)
       }
     }
@@ -131,9 +127,8 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     @inline
     def dateTime(input: String) = OffsetDateTime.parse(input)
 
-    lazy val correctedReads = Reads.offsetDateTimeReads(
-      DateTimeFormatter.ISO_OFFSET_DATE_TIME,
-      _.drop(1))
+    lazy val correctedReads = Reads
+      .offsetDateTimeReads(DateTimeFormatter.ISO_OFFSET_DATE_TIME, _.drop(1))
 
     val CustomReads2 = Reads.offsetDateTimeReads(
       DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss ZZZ"),
@@ -164,14 +159,14 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     "be successfully read with default implicit" >> {
       "from '2011-12-03T10:15:30-05:00'" in {
-        reads(JsString("2011-12-03T10:15:30-05:00")).aka(
-          "read date") must_== JsSuccess(dateTime("2011-12-03T10:15:30-05:00"))
+        reads(JsString("2011-12-03T10:15:30-05:00"))
+          .aka("read date") must_== JsSuccess(
+          dateTime("2011-12-03T10:15:30-05:00"))
       }
     }
 
     "be successfully read with custom pattern from '03/12/2011, 10:15:30'" in {
-      CustomReads1
-        .reads(JsString("03/12/2011, 10:15:30-05:00"))
+      CustomReads1.reads(JsString("03/12/2011, 10:15:30-05:00"))
         .aka("read date") must_== JsSuccess(
         dateTime("2011-12-03T10:15:30-05:00"))
     }
@@ -204,14 +199,12 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       lazy val time = dateTime("2011-12-03T10:15:30-05:00")
 
       "with default implicit" in {
-        correctedReads
-          .reads(JsString("_2011-12-03T10:15:30-05:00"))
+        correctedReads.reads(JsString("_2011-12-03T10:15:30-05:00"))
           .aka("read date") must_== JsSuccess(time)
       }
 
       "with custom formatter" in {
-        CustomReads2
-          .reads(JsString("# 03/12/2011, 10:15:30 -0500"))
+        CustomReads2.reads(JsString("# 03/12/2011, 10:15:30 -0500"))
           .aka("read date") must_== JsSuccess(time)
       }
     }
@@ -226,9 +219,8 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     @inline
     def dateTime(input: String) = ZonedDateTime.parse(input)
 
-    lazy val correctedReads = Reads.zonedDateTimeReads(
-      DateTimeFormatter.ISO_DATE_TIME,
-      _.drop(1))
+    lazy val correctedReads = Reads
+      .zonedDateTimeReads(DateTimeFormatter.ISO_DATE_TIME, _.drop(1))
 
     val CustomReads2 = Reads.zonedDateTimeReads(
       DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ssVV"),
@@ -266,8 +258,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     }
 
     "be successfully read with custom pattern from '03/12/2011, 10:15:30+08:00'" in {
-      CustomReads1
-        .reads(JsString("03/12/2011, 10:15:30+08:00"))
+      CustomReads1.reads(JsString("03/12/2011, 10:15:30+08:00"))
         .aka("read date") must_== JsSuccess(
         dateTime("2011-12-03T10:15:30+08:00"))
     }
@@ -300,14 +291,12 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       lazy val time = dateTime("2011-12-03T10:15:30+08:00")
 
       "with default implicit" in {
-        correctedReads
-          .reads(JsString("_2011-12-03T10:15:30+08:00"))
+        correctedReads.reads(JsString("_2011-12-03T10:15:30+08:00"))
           .aka("read date") must_== JsSuccess(time)
       }
 
       "with custom formatter" in {
-        CustomReads2
-          .reads(JsString("# 03/12/2011, 10:15:30+08:00"))
+        CustomReads2.reads(JsString("# 03/12/2011, 10:15:30+08:00"))
           .aka("read date") must_== JsSuccess(time)
       }
     }
@@ -322,13 +311,11 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     @inline
     def date(input: String) = LocalDate.parse(input)
 
-    lazy val correctedReads = Reads.localDateReads(
-      DateTimeFormatter.ISO_DATE,
-      _.drop(1))
+    lazy val correctedReads = Reads
+      .localDateReads(DateTimeFormatter.ISO_DATE, _.drop(1))
 
-    val CustomReads2 = Reads.localDateReads(
-      DateTimeFormatter.ofPattern("dd/MM/yyyy"),
-      _.drop(2))
+    val CustomReads2 = Reads
+      .localDateReads(DateTimeFormatter.ofPattern("dd/MM/yyyy"), _.drop(2))
 
     "be successfully read from number" in {
       val beforeMidnight = Instant.parse("1970-01-01T23:55:00Z")
@@ -355,8 +342,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     }
 
     "be successfully read with custom pattern from '03/12/2011'" in {
-      CustomReads1
-        .reads(JsString("03/12/2011"))
+      CustomReads1.reads(JsString("03/12/2011"))
         .aka("read date") must_== JsSuccess(date("2011-12-03"))
     }
 
@@ -388,14 +374,12 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       lazy val d = date("2011-12-03")
 
       "with default implicit" in {
-        correctedReads
-          .reads(JsString("_2011-12-03"))
+        correctedReads.reads(JsString("_2011-12-03"))
           .aka("read date") must_== JsSuccess(d)
       }
 
       "with custom formatter" in {
-        CustomReads2
-          .reads(JsString("# 03/12/2011"))
+        CustomReads2.reads(JsString("# 03/12/2011"))
           .aka("read date") must_== JsSuccess(d)
       }
     }
@@ -412,8 +396,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       _.drop(1))
 
     val CustomReads2 = Reads.instantReads(
-      DateTimeFormatter
-        .ofPattern("dd/MM/yyyy, HH:mm:ss")
+      DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss")
         .withZone(ZoneOffset.UTC),
       _.drop(2))
 
@@ -435,13 +418,15 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     "be successfully read with default implicit" >> {
       "from '2015-05-01T13:00:00Z' (with zeros)" in {
-        reads(JsString("2015-05-01T00:00:00Z")).aka(
-          "read data") must_== JsSuccess(Instant.parse("2015-05-01T00:00:00Z"))
+        reads(JsString("2015-05-01T00:00:00Z"))
+          .aka("read data") must_== JsSuccess(
+          Instant.parse("2015-05-01T00:00:00Z"))
       }
 
       "from '2011-12-03T10:15:30Z'" in {
-        reads(JsString("2011-12-03T10:15:30Z")).aka(
-          "read date") must_== JsSuccess(Instant.parse("2011-12-03T10:15:30Z"))
+        reads(JsString("2011-12-03T10:15:30Z"))
+          .aka("read date") must_== JsSuccess(
+          Instant.parse("2011-12-03T10:15:30Z"))
       }
 
       "from '2015-05-01T13:00:00+02:00' (with TZ offset and zeros)" in {
@@ -469,8 +454,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     }
 
     "be successfully read with custom pattern from '03/12/2011, 10:15:30 Z'" in {
-      CustomReads1
-        .reads(JsString("03/12/2011, 10:15:30 Z"))
+      CustomReads1.reads(JsString("03/12/2011, 10:15:30 Z"))
         .aka("read date") must_== JsSuccess(
         Instant.parse("2011-12-03T10:15:30Z"))
     }
@@ -503,14 +487,12 @@ object ReadsSpec extends org.specs2.mutable.Specification {
       lazy val time = Instant.parse("2011-12-03T10:15:30Z")
 
       "with default implicit" in {
-        correctedReads
-          .reads(JsString("_2011-12-03T10:15:30"))
+        correctedReads.reads(JsString("_2011-12-03T10:15:30"))
           .aka("read date") must_== JsSuccess(time)
       }
 
       "with custom formatter" in {
-        CustomReads2
-          .reads(JsString("# 03/12/2011, 10:15:30"))
+        CustomReads2.reads(JsString("# 03/12/2011, 10:15:30"))
           .aka("read date") must_== JsSuccess(time)
       }
     }
@@ -525,19 +507,14 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
       "in case of success" in {
         val flatMappedReads = readsA.flatMap(_ => readsA)
-        aJson
-          .validate(flatMappedReads)
-          .aka("read a")
+        aJson.validate(flatMappedReads).aka("read a")
           .must_==(JsSuccess(value, aPath))
       }
       "in case of failure" in {
         val readsAFail = aPath.read[Int]
         val flatMappedReads = readsA.flatMap(_ => readsAFail)
-        aJson
-          .validate(flatMappedReads)
-          .aka("read a")
-          .must_==(JsError(
-            List((aPath, List(ValidationError("error.expected.jsnumber"))))))
+        aJson.validate(flatMappedReads).aka("read a").must_==(JsError(
+          List((aPath, List(ValidationError("error.expected.jsnumber"))))))
       }
     }
   }

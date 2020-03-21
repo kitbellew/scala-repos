@@ -42,11 +42,8 @@ private[kinesis] class KPLDataGenerator(regionName: String)
     extends KinesisDataGenerator {
 
   private lazy val producer: KPLProducer = {
-    val conf = new KinesisProducerConfiguration()
-      .setRecordMaxBufferedTime(1000)
-      .setMaxConnections(1)
-      .setRegion(regionName)
-      .setMetricsLevel("none")
+    val conf = new KinesisProducerConfiguration().setRecordMaxBufferedTime(1000)
+      .setMaxConnections(1).setRegion(regionName).setMetricsLevel("none")
 
     new KPLProducer(conf)
   }
@@ -66,9 +63,8 @@ private[kinesis] class KPLDataGenerator(regionName: String)
         override def onSuccess(result: UserRecordResult): Unit = {
           val shardId = result.getShardId
           val seqNumber = result.getSequenceNumber()
-          val sentSeqNumbers = shardIdToSeqNumbers.getOrElseUpdate(
-            shardId,
-            new ArrayBuffer[(Int, String)]())
+          val sentSeqNumbers = shardIdToSeqNumbers
+            .getOrElseUpdate(shardId, new ArrayBuffer[(Int, String)]())
           sentSeqNumbers += ((num, seqNumber))
         }
       }

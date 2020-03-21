@@ -43,9 +43,7 @@ object MulticlassMetricsExample {
     training.cache()
 
     // Run training algorithm to build the model
-    val model = new LogisticRegressionWithLBFGS()
-      .setNumClasses(3)
-      .run(training)
+    val model = new LogisticRegressionWithLBFGS().setNumClasses(3).run(training)
 
     // Compute raw scores on the test set
     val predictionAndLabels = test.map {

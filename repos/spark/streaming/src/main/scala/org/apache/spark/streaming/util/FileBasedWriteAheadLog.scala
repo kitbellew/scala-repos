@@ -65,8 +65,8 @@ private[streaming] class FileBasedWriteAheadLog(
     "WriteAheadLogManager" + callerName.map(c => s" for $c").getOrElse("")
   }
   private val forkJoinPool = ThreadUtils.newForkJoinPool(threadpoolName, 20)
-  private val executionContext = ExecutionContext.fromExecutorService(
-    forkJoinPool)
+  private val executionContext = ExecutionContext
+    .fromExecutorService(forkJoinPool)
 
   override protected def logName = {
     getClass.getName.stripSuffix("$") +
@@ -240,9 +240,8 @@ private[streaming] class FileBasedWriteAheadLog(
   private def initializeOrRecover(): Unit =
     synchronized {
       val logDirectoryPath = new Path(logDirectory)
-      val fileSystem = HdfsUtils.getFileSystemForPath(
-        logDirectoryPath,
-        hadoopConf)
+      val fileSystem = HdfsUtils
+        .getFileSystemForPath(logDirectoryPath, hadoopConf)
 
       if (fileSystem.exists(logDirectoryPath) &&
           fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
@@ -278,27 +277,22 @@ private[streaming] object FileBasedWriteAheadLog {
 
   def getCallerName(): Option[String] = {
     val blacklist = Seq("WriteAheadLog", "Logging", "java.lang", "scala.")
-    Thread.currentThread
-      .getStackTrace()
-      .map(_.getClassName)
-      .find { c => !blacklist.exists(c.contains) }
-      .flatMap(_.split("\\.").lastOption)
-      .flatMap(_.split("\\$\\$").headOption)
+    Thread.currentThread.getStackTrace().map(_.getClassName).find { c =>
+      !blacklist.exists(c.contains)
+    }.flatMap(_.split("\\.").lastOption).flatMap(_.split("\\$\\$").headOption)
   }
 
   /** Convert a sequence of files to a sequence of sorted LogInfo objects */
   def logFilesTologInfo(files: Seq[Path]): Seq[LogInfo] = {
-    files
-      .flatMap { file =>
-        logFileRegex.findFirstIn(file.getName()) match {
-          case Some(logFileRegex(startTimeStr, stopTimeStr)) =>
-            val startTime = startTimeStr.toLong
-            val stopTime = stopTimeStr.toLong
-            Some(LogInfo(startTime, stopTime, file.toString))
-          case None => None
-        }
+    files.flatMap { file =>
+      logFileRegex.findFirstIn(file.getName()) match {
+        case Some(logFileRegex(startTimeStr, stopTimeStr)) =>
+          val startTime = startTimeStr.toLong
+          val stopTime = stopTimeStr.toLong
+          Some(LogInfo(startTime, stopTime, file.toString))
+        case None => None
       }
-      .sortBy { _.startTime }
+    }.sortBy { _.startTime }
   }
 
   /**
@@ -314,13 +308,10 @@ private[streaming] object FileBasedWriteAheadLog {
       handler: I => Iterator[O]): Iterator[O] = {
     val taskSupport = new ExecutionContextTaskSupport(executionContext)
     val groupSize = taskSupport.parallelismLevel.max(8)
-    source
-      .grouped(groupSize)
-      .flatMap { group =>
-        val parallelCollection = group.par
-        parallelCollection.tasksupport = taskSupport
-        parallelCollection.map(handler)
-      }
-      .flatten
+    source.grouped(groupSize).flatMap { group =>
+      val parallelCollection = group.par
+      parallelCollection.tasksupport = taskSupport
+      parallelCollection.map(handler)
+    }.flatten
   }
 }

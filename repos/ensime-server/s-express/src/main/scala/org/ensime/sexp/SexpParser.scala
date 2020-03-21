@@ -17,9 +17,8 @@ object SexpParser {
     parser.SexpP.run() match {
       case Success(d) => d
       case Failure(error: ParseError) =>
-        val msg = parser.formatError(
-          error,
-          new ErrorFormatter(showTraces = true))
+        val msg = parser
+          .formatError(error, new ErrorFormatter(showTraces = true))
         throw new Exception("Failed to parse sexp: " + msg)
       case Failure(other) =>
         throw new Exception("Failed to parse sexp: ", other)

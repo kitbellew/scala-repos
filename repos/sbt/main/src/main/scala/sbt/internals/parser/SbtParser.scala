@@ -117,7 +117,8 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
       // Issue errors
       val positionLine = badTree.pos.line
       throw new MessageOnlyException(
-        s"""[$fileName]:$positionLine: Pattern matching in val statements is not supported""".stripMargin)
+        s"""[$fileName]:$positionLine: Pattern matching in val statements is not supported"""
+          .stripMargin)
     }
 
     val (imports, statements) = parsedTrees partition {
@@ -150,9 +151,8 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
       t.pos match {
         case NoPosition => None
         case position =>
-          val originalStatement = content.substring(
-            position.start,
-            position.end)
+          val originalStatement = content
+            .substring(position.start, position.end)
           val statement = parseStatementAgain(t, originalStatement)
           val numberLines = countLines(statement)
           Some((
@@ -243,8 +243,8 @@ private[sbt] object MissingBracketHandler {
       case Some(index) =>
         val text = content.substring(positionEnd, index + 1)
         val textWithoutBracket = text.substring(0, text.length - 1)
-        scala.util.Try(
-          SbtParser(FAKE_FILE, textWithoutBracket.lines.toSeq)) match {
+        scala.util
+          .Try(SbtParser(FAKE_FILE, textWithoutBracket.lines.toSeq)) match {
           case scala.util.Success(_) => text
           case scala.util.Failure(th) =>
             findMissingText(
@@ -256,7 +256,8 @@ private[sbt] object MissingBracketHandler {
         }
       case _ =>
         throw new MessageOnlyException(
-          s"""[$fileName]:$positionLine: ${originalException.getMessage}""".stripMargin)
+          s"""[$fileName]:$positionLine: ${originalException.getMessage}"""
+            .stripMargin)
     }
   }
 

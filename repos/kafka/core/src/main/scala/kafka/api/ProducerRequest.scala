@@ -74,8 +74,8 @@ case class ProducerRequest(
     * Partitions the data into a map of maps (one for each topic).
     */
   private lazy val dataGroupedByTopic = data.groupBy(_._1.topic)
-  val topicPartitionMessageSizeMap =
-    data.map(r => r._1 -> r._2.sizeInBytes).toMap
+  val topicPartitionMessageSizeMap = data.map(r => r._1 -> r._2.sizeInBytes)
+    .toMap
 
   def this(
       correlationId: Int,

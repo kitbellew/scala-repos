@@ -132,9 +132,9 @@ object MapParamMap {
 
   private[http] def tuplesToMultiMap(
       tuples: Seq[Tuple2[String, String]]): Map[String, Seq[String]] = {
-    tuples
-      .groupBy { case (k, v) => k }
-      .mapValues { case values => values.map { _._2 } }
+    tuples.groupBy { case (k, v) => k }.mapValues {
+      case values => values.map { _._2 }
+    }
   }
 }
 

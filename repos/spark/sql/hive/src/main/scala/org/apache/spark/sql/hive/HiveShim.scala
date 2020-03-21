@@ -57,9 +57,8 @@ private[hive] object HiveShim {
    * This function in hive-0.13 become private, but we have to do this to walkaround hive bug
    */
   private def appendReadColumnNames(conf: Configuration, cols: Seq[String]) {
-    val old: String = conf.get(
-      ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR,
-      "")
+    val old: String = conf
+      .get(ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR, "")
     val result: StringBuilder = new StringBuilder(old)
     var first: Boolean = old.isEmpty
 
@@ -97,11 +96,11 @@ private[hive] object HiveShim {
         // In Hive 1.1, the record's schema may need to be initialized manually or a NPE will
         // be thrown.
         if (w.getFileSchema() == null) {
-          serDeProps
-            .find(
-              _._1 == AvroSerdeUtils.AvroTableProperties.SCHEMA_LITERAL
-                .getPropName())
-            .foreach { kv => w.setFileSchema(new Schema.Parser().parse(kv._2)) }
+          serDeProps.find(
+            _._1 == AvroSerdeUtils.AvroTableProperties.SCHEMA_LITERAL
+              .getPropName()).foreach { kv =>
+            w.setFileSchema(new Schema.Parser().parse(kv._2))
+          }
         }
       case _ =>
     }
@@ -185,8 +184,7 @@ private[hive] object HiveShim {
       deserializeObjectByKryo(
         Utilities.runtimeSerializationKryo.get(),
         is,
-        clazz)
-        .asInstanceOf[UDFType]
+        clazz).asInstanceOf[UDFType]
     }
 
     def serializePlan(function: AnyRef, out: java.io.OutputStream): Unit = {
@@ -237,9 +235,7 @@ private[hive] object HiveShim {
       if (instance != null) { instance.asInstanceOf[UDFType] }
       else {
         val func = Utils.getContextOrSparkClassLoader
-          .loadClass(functionClassName)
-          .newInstance
-          .asInstanceOf[UDFType]
+          .loadClass(functionClassName).newInstance.asInstanceOf[UDFType]
         if (!func.isInstanceOf[UDF]) {
           // We cache the function if it's no the Simple UDF,
           // as we always have to create new instance for Simple UDF

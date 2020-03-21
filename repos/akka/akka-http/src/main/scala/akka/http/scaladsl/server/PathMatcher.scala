@@ -322,12 +322,9 @@ trait ImplicitPathMatcherConstruction {
       valueMap: Map[String, T]): PathMatcher1[T] =
     if (valueMap.isEmpty) PathMatchers.nothingMatcher
     else
-      valueMap
-        .map {
-          case (prefix, value) ⇒
-            stringExtractionPair2PathMatcher((prefix, value))
-        }
-        .reduceLeft(_ | _)
+      valueMap.map {
+        case (prefix, value) ⇒ stringExtractionPair2PathMatcher((prefix, value))
+      }.reduceLeft(_ | _)
 }
 
 trait PathMatchers {
@@ -487,10 +484,10 @@ trait PathMatchers {
     */
   val JavaUUID: PathMatcher1[UUID] =
     PathMatcher(
-      """[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}""".r) flatMap {
-      string ⇒
-        try Some(UUID.fromString(string))
-        catch { case _: IllegalArgumentException ⇒ None }
+      """[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"""
+        .r) flatMap { string ⇒
+      try Some(UUID.fromString(string))
+      catch { case _: IllegalArgumentException ⇒ None }
     }
 
   /**

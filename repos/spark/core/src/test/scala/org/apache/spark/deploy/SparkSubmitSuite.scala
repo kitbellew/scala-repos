@@ -674,8 +674,8 @@ class SparkSubmitSuite
   }
 
   test("user classpath first in driver") {
-    val systemJar = TestUtils.createJarWithFiles(Map(
-      "test.resource" -> "SYSTEM"))
+    val systemJar = TestUtils
+      .createJarWithFiles(Map("test.resource" -> "SYSTEM"))
     val userJar = TestUtils.createJarWithFiles(Map("test.resource" -> "USER"))
     val args = Seq(
       "--class",
@@ -759,21 +759,18 @@ object JarCreationTest extends Logging {
     Utils.configTestLog4j("INFO")
     val conf = new SparkConf()
     val sc = new SparkContext(conf)
-    val result = sc
-      .makeRDD(1 to 100, 10)
-      .mapPartitions { x =>
-        var exception: String = null
-        try {
-          Utils.classForName(args(0))
-          Utils.classForName(args(1))
-        } catch {
-          case t: Throwable =>
-            exception = t + "\n" + Utils.exceptionString(t)
-            exception = exception.replaceAll("\n", "\n\t")
-        }
-        Option(exception).toSeq.iterator
+    val result = sc.makeRDD(1 to 100, 10).mapPartitions { x =>
+      var exception: String = null
+      try {
+        Utils.classForName(args(0))
+        Utils.classForName(args(1))
+      } catch {
+        case t: Throwable =>
+          exception = t + "\n" + Utils.exceptionString(t)
+          exception = exception.replaceAll("\n", "\n\t")
       }
-      .collect()
+      Option(exception).toSeq.iterator
+    }.collect()
     if (result.nonEmpty) {
       throw new Exception("Could not load user class from jar:\n" + result(0))
     }
@@ -789,11 +786,8 @@ object SimpleApplicationTest {
     val configs = Seq("spark.master", "spark.app.name")
     for (config <- configs) {
       val masterValue = conf.get(config)
-      val executorValues = sc
-        .makeRDD(1 to 100, 10)
-        .map(x => SparkEnv.get.conf.get(config))
-        .collect()
-        .distinct
+      val executorValues = sc.makeRDD(1 to 100, 10)
+        .map(x => SparkEnv.get.conf.get(config)).collect().distinct
       if (executorValues.size != 1) {
         throw new SparkException(
           s"Inconsistent values for $config: $executorValues")

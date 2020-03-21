@@ -40,10 +40,8 @@ private[finagle] object TimerStats {
         hwt.newTimeout(this, tickDuration.inMilliseconds, TimeUnit.MILLISECONDS)
       }
     }
-    hwt.newTimeout(
-      timerTask,
-      tickDuration.inMilliseconds,
-      TimeUnit.MILLISECONDS)
+    hwt
+      .newTimeout(timerTask, tickDuration.inMilliseconds, TimeUnit.MILLISECONDS)
   }
 
   /**
@@ -83,25 +81,22 @@ private[finagle] object TimerStats {
     }
 
     def bucketTimeouts(hashedWheelBucket: Object): Int = {
-      bucketHeadField
-        .map { headField =>
-          val head = headField.get(
-            hashedWheelBucket
-          ) // this is a HashedWheelTimeout
-          if (head == null) { 0 }
-          else {
-            val nextField = head.getClass.getDeclaredField("next")
-            nextField.setAccessible(true)
-            var num = 1 // count the one we've started with.
-            var next = nextField.get(head)
-            while (next != null) {
-              num += 1
-              next = nextField.get(next)
-            }
-            num
+      bucketHeadField.map { headField =>
+        val head = headField
+          .get(hashedWheelBucket) // this is a HashedWheelTimeout
+        if (head == null) { 0 }
+        else {
+          val nextField = head.getClass.getDeclaredField("next")
+          nextField.setAccessible(true)
+          var num = 1 // count the one we've started with.
+          var next = nextField.get(head)
+          while (next != null) {
+            num += 1
+            next = nextField.get(next)
           }
+          num
         }
-        .getOrElse(0)
+      }.getOrElse(0)
     }
 
     def wheelTimeouts: Try[Int] =
@@ -115,8 +110,8 @@ private[finagle] object TimerStats {
           wTimeouts <- wheelTimeouts
         } { pendingTimeouts.add(qTimeouts.size() + wTimeouts) }
 
-        val elapsedMicros = TimeUnit.NANOSECONDS.toMicros(
-          System.nanoTime() - startAt)
+        val elapsedMicros = TimeUnit.NANOSECONDS
+          .toMicros(System.nanoTime() - startAt)
         if (log.isLoggable(Level.TRACE))
           log.trace(s"hashedWheelTimerInternals.run took $elapsedMicros us")
         hwt.newTimeout(this, nextRunAt().inMilliseconds, TimeUnit.MILLISECONDS)

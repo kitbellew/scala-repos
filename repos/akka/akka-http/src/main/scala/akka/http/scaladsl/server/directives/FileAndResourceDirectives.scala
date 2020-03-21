@@ -56,8 +56,7 @@ trait FileAndResourceDirectives {
                   HttpEntity.Default(
                     contentType,
                     file.length,
-                    FileIO
-                      .fromFile(file)
+                    FileIO.fromFile(file)
                       .withAttributes(ActorAttributes.dispatcher(
                         settings.fileIODispatcher)))
                 }
@@ -94,9 +93,8 @@ trait FileAndResourceDirectives {
       contentType: ContentType,
       classLoader: ClassLoader = defaultClassLoader): Route =
     if (!resourceName.endsWith("/")) get {
-      Option(
-        classLoader.getResource(
-          resourceName)) flatMap ResourceFile.apply match {
+      Option(classLoader.getResource(resourceName)) flatMap ResourceFile
+        .apply match {
         case Some(ResourceFile(url, length, lastModified)) ⇒
           conditionalFor(length, lastModified) {
             if (length > 0) {
@@ -106,8 +104,7 @@ trait FileAndResourceDirectives {
                     HttpEntity.Default(
                       contentType,
                       length,
-                      StreamConverters
-                        .fromInputStream(() ⇒ url.openStream())
+                      StreamConverters.fromInputStream(() ⇒ url.openStream())
                         .withAttributes(ActorAttributes.dispatcher(
                           settings.fileIODispatcher
                         ))
@@ -263,8 +260,8 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
           else Some(ResourceFile(url, file.length(), file.lastModified()))
         case "jar" ⇒
           val path =
-            new URI(
-              url.getPath).getPath // remove "file:" prefix and normalize whitespace
+            new URI(url.getPath)
+              .getPath // remove "file:" prefix and normalize whitespace
           val bangIndex = path.indexOf('!')
           val filePath = path.substring(0, bangIndex)
           val resourcePath = path.substring(bangIndex + 2)
@@ -279,9 +276,10 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
         case _ ⇒
           val conn = url.openConnection()
           try {
-            conn.setUseCaches(
-              false
-            ) // otherwise the JDK will keep the connection open when we close!
+            conn
+              .setUseCaches(
+                false
+              ) // otherwise the JDK will keep the connection open when we close!
             val len = conn.getContentLength
             val lm = conn.getLastModified
             Some(ResourceFile(url, len, lm))
@@ -383,23 +381,19 @@ object DirectoryListing {
           case (fan @ (file, name), ix) ⇒
             if (ix == 0 || filesAndNames(ix - 1)._2 != name) Some(fan) else None
         }
-        val (directoryFilesAndNames, fileFilesAndNames) = deduped.partition(
-          _._1.isDirectory)
+        val (directoryFilesAndNames, fileFilesAndNames) = deduped
+          .partition(_._1.isDirectory)
         def maxNameLength(seq: Seq[(File, String)]) =
           if (seq.isEmpty) 0 else seq.map(_._2.length).max
         val maxNameLen = math.max(
           maxNameLength(directoryFilesAndNames) + 1,
           maxNameLength(fileFilesAndNames))
         val sb = new java.lang.StringBuilder
-        sb.append(html(0))
-          .append(path)
-          .append(html(1))
-          .append(path)
+        sb.append(html(0)).append(path).append(html(1)).append(path)
           .append(html(2))
         if (!isRoot) {
-          val secondToLastSlash = path.lastIndexOf(
-            '/',
-            path.lastIndexOf('/', path.length - 1) - 1)
+          val secondToLastSlash = path
+            .lastIndexOf('/', path.lastIndexOf('/', path.length - 1) - 1)
           sb.append(
             "<a href=\"%s/\">../</a>\n" format path
               .substring(0, secondToLastSlash))
@@ -407,23 +401,16 @@ object DirectoryListing {
         def lastModified(file: File) =
           DateTime(file.lastModified).toIsoLikeDateTimeString
         def start(name: String) =
-          sb.append("<a href=\"")
-            .append(path + name)
-            .append("\">")
-            .append(name)
-            .append("</a>")
-            .append(" " * (maxNameLen - name.length))
+          sb.append("<a href=\"").append(path + name).append("\">").append(name)
+            .append("</a>").append(" " * (maxNameLen - name.length))
         def renderDirectory(file: File, name: String) =
-          start(name + '/')
-            .append("        ")
-            .append(lastModified(file))
+          start(name + '/').append("        ").append(lastModified(file))
             .append('\n')
         def renderFile(file: File, name: String) = {
           val size = akka.http.impl.util
             .humanReadableByteCount(file.length, si = true)
           start(name).append("        ").append(lastModified(file))
-          sb.append("                ".substring(size.length))
-            .append(size)
+          sb.append("                ".substring(size.length)).append(size)
             .append('\n')
         }
         for ((file, name) ← directoryFilesAndNames) renderDirectory(file, name)
@@ -431,8 +418,7 @@ object DirectoryListing {
         if (isRoot && files.isEmpty) sb.append("(no files)\n")
         sb.append(html(3))
         if (renderVanityFooter)
-          sb.append(html(4))
-            .append(DateTime.now.toIsoLikeDateTimeString)
+          sb.append(html(4)).append(DateTime.now.toIsoLikeDateTimeString)
             .append(html(5))
         sb.append(html(6)).toString
     }

@@ -48,21 +48,21 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
     }
     val isSFC = psi.isScriptFileClass
 
-    val isDepr =
-      psi.isInstanceOf[ScTypeDefinition] && psi.getModifierList != null &&
-        !psi.getModifierList.getAnnotations.forall(p =>
-          p match {
-            case a: ScAnnotation => {
-              val typeText = a.constructor.typeElement.getText
-              typeText != "deprecated" && typeText != "scala.deprecated"
-            }
-            case _ => true
-          })
+    val isDepr = psi.isInstanceOf[ScTypeDefinition] && psi
+      .getModifierList != null &&
+      !psi.getModifierList.getAnnotations.forall(p =>
+        p match {
+          case a: ScAnnotation => {
+            val typeText = a.constructor.typeElement.getText
+            typeText != "deprecated" && typeText != "scala.deprecated"
+          }
+          case _ => true
+        })
 
-    val isImplicitObject =
-      psi.isInstanceOf[ScObject] && psi.hasModifierProperty("implicit")
-    val isImplicitClass =
-      psi.isInstanceOf[ScClass] && psi.hasModifierProperty("implicit")
+    val isImplicitObject = psi.isInstanceOf[ScObject] && psi
+      .hasModifierProperty("implicit")
+    val isImplicitClass = psi.isInstanceOf[ScClass] && psi
+      .hasModifierProperty("implicit")
 
     val javaName = psi.getName
     val additionalJavaNames = psi.additionalJavaNames

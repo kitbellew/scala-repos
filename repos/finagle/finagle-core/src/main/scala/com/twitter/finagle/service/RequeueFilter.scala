@@ -49,8 +49,8 @@ private[finagle] class RequeueFilter[Req, Rep](
     s"maxRetriesPerReq must be non-negative: $maxRetriesPerReq")
 
   private[this] val requeueCounter = statsReceiver.counter("requeues")
-  private[this] val budgetExhaustCounter = statsReceiver.counter(
-    "budget_exhausted")
+  private[this] val budgetExhaustCounter = statsReceiver
+    .counter("budget_exhausted")
   private[this] val requestLimitCounter = statsReceiver.counter("request_limit")
   private[this] val requeueStat = statsReceiver.stat("requeues_per_request")
   private[this] val canNotRetryCounter = statsReceiver.counter("cannot_retry")
@@ -84,17 +84,15 @@ private[finagle] class RequeueFilter[Req, Rep](
                 rest)
             case delay #:: rest =>
               // Delay and then retry.
-              timer
-                .doLater(delay) {
-                  requeueCounter.incr()
-                  applyService(
-                    req,
-                    service,
-                    attempt + 1,
-                    retriesRemaining - 1,
-                    rest)
-                }
-                .flatten
+              timer.doLater(delay) {
+                requeueCounter.incr()
+                applyService(
+                  req,
+                  service,
+                  attempt + 1,
+                  retriesRemaining - 1,
+                  rest)
+              }.flatten
             case _ =>
               // Schedule has run out of entries. Budget is empty.
               budgetExhaustCounter.incr()

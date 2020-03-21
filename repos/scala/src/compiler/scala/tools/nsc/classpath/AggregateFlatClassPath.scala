@@ -33,16 +33,15 @@ case class AggregateFlatClassPath(aggregates: Seq[FlatClassPath])
 
   override def findClass(
       className: String): Option[ClassRepresentation[AbstractFile]] = {
-    val (pkg, simpleClassName) = PackageNameUtils.separatePkgAndClassNames(
-      className)
+    val (pkg, simpleClassName) = PackageNameUtils
+      .separatePkgAndClassNames(className)
 
     @tailrec
     def findEntry[T <: ClassRepClassPathEntry](
         aggregates: Seq[FlatClassPath],
         getEntries: FlatClassPath => Seq[T]): Option[T] =
       if (aggregates.nonEmpty) {
-        val entry = getEntries(aggregates.head)
-          .find(_.name == simpleClassName)
+        val entry = getEntries(aggregates.head).find(_.name == simpleClassName)
         if (entry.isDefined) entry else findEntry(aggregates.tail, getEntries)
       } else None
 

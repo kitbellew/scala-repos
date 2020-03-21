@@ -152,15 +152,12 @@ object HB_0_8_0 {
     val targetEntityType = getOptStringCol("targetEntityType")
     val targetEntityId = getOptStringCol("targetEntityId")
     val properties: DataMap = getOptStringCol("properties")
-      .map(s => DataMap(read[JObject](s)))
-      .getOrElse(DataMap())
+      .map(s => DataMap(read[JObject](s))).getOrElse(DataMap())
     val prId = getOptStringCol("prId")
     val eventTimeZone = getOptStringCol("eventTimeZone")
-      .map(DateTimeZone.forID(_))
-      .getOrElse(EventValidation.defaultTimeZone)
+      .map(DateTimeZone.forID(_)).getOrElse(EventValidation.defaultTimeZone)
     val creationTimeZone = getOptStringCol("creationTimeZone")
-      .map(DateTimeZone.forID(_))
-      .getOrElse(EventValidation.defaultTimeZone)
+      .map(DateTimeZone.forID(_)).getOrElse(EventValidation.defaultTimeZone)
 
     val creationTime: DateTime =
       new DateTime(getTimestamp("event"), creationTimeZone)

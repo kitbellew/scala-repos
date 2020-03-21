@@ -25,9 +25,8 @@ object LookupApplication {
     val system = ActorSystem("LookupSystem", ConfigFactory.load("remotelookup"))
     val remotePath =
       "akka.tcp://CalculatorSystem@127.0.0.1:2552/user/calculator"
-    val actor = system.actorOf(
-      Props(classOf[LookupActor], remotePath),
-      "lookupActor")
+    val actor = system
+      .actorOf(Props(classOf[LookupActor], remotePath), "lookupActor")
 
     println("Started LookupSystem")
     import system.dispatcher

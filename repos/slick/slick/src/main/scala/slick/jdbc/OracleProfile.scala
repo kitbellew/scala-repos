@@ -116,17 +116,15 @@ trait OracleProfile extends JdbcProfile {
       tables <- SQLActionBuilder(
         Seq("select TABLE_NAME from all_tables where OWNER = ?"),
         implicitly[SetParameter[String]].applied(user)).as[String]
-      mtables <- MTable
-        .getTables(None, None, None, Some(Seq("TABLE")))
-        .map(
-          _.filter(t => tables contains t.name.name)
-        ) // FIXME: this should check schema and maybe more
+      mtables <- MTable.getTables(None, None, None, Some(Seq("TABLE")))
+        .map(_.filter(t =>
+          tables contains t.name
+            .name)) // FIXME: this should check schema and maybe more
     } yield mtables
   }
 
   override protected def computeQueryCompiler =
-    (super.computeQueryCompiler
-      .addAfter(Phase.removeTakeDrop, Phase.expandSums)
+    (super.computeQueryCompiler.addAfter(Phase.removeTakeDrop, Phase.expandSums)
       .replace(Phase.resolveZipJoinsRownumStyle)
       - Phase.fixRowNumberOrdering
       + Phase.rewriteBooleans + new RemoveSubqueryOrdering)
@@ -149,8 +147,8 @@ trait OracleProfile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        val size = sym.flatMap(
-          _.findColumnOption[RelationalProfile.ColumnOption.Length])
+        val size = sym
+          .flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR2(254)")(l =>
           if (l.varying) s"VARCHAR2(${l.length})" else s"CHAR(${l.length})")
       case java.sql.Types.INTEGER  => "NUMBER(10)"
@@ -187,14 +185,16 @@ trait OracleProfile extends JdbcProfile {
           b"\("
           val cols = (left.children zip right.children).force
           b.sep(cols, " and ") {
-            case (l, r) => expr(Library.==.typed[Boolean](l, r))
+            case (l, r) =>
+              expr(
+                Library
+                  .==.typed[Boolean](l, r))
           }
           b"\)"
         case Library.==(l, r)
-            if (l.nodeType != UnassignedType) && jdbcTypeFor(
-              l.nodeType).sqlType == Types.BLOB =>
-          b"\(dbms_lob.compare($l, $r) = 0\)"
-        case _ => super.expr(c, skipParens)
+            if (l.nodeType != UnassignedType) && jdbcTypeFor(l.nodeType)
+              .sqlType == Types.BLOB => b"\(dbms_lob.compare($l, $r) = 0\)"
+        case _                       => super.expr(c, skipParens)
       }
   }
 

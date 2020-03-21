@@ -25,7 +25,8 @@ class ScalaDocUnknownTagInspection extends LocalInspectionTool {
         val tagNameElement = s.getFirstChild
         assert(tagNameElement != null)
         assert(
-          tagNameElement.getNode.getElementType == ScalaDocTokenType.DOC_TAG_NAME)
+          tagNameElement.getNode.getElementType == ScalaDocTokenType
+            .DOC_TAG_NAME)
 
         if (!MyScaladocParsing.allTags.contains(tagNameElement.getText)) {
           holder.registerProblem(holder.getManager.createProblemDescriptor(
@@ -35,10 +36,12 @@ class ScalaDocUnknownTagInspection extends LocalInspectionTool {
             ProblemHighlightType.GENERIC_ERROR,
             isOnTheFly,
             new ScalaDocDeleteUnknownTagInspection(s)))
-        } else if (MyScaladocParsing.tagsWithParameters.contains(
-                     tagNameElement.getText) &&
+        } else if (MyScaladocParsing.tagsWithParameters
+                     .contains(tagNameElement.getText) &&
                    (tagNameElement.getNextSibling.getNextSibling == null ||
-                   tagNameElement.getNextSibling.getNextSibling.getNode.getElementType != ScalaDocTokenType.DOC_TAG_VALUE_TOKEN)) {
+                   tagNameElement.getNextSibling.getNextSibling.getNode
+                     .getElementType != ScalaDocTokenType
+                     .DOC_TAG_VALUE_TOKEN)) {
           holder.registerProblem(holder.getManager.createProblemDescriptor(
             tagNameElement,
             "Missing Tag Parameter",

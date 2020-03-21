@@ -61,8 +61,7 @@ private[streaming] class Checkpoint(
     )
 
     val newSparkConf = new SparkConf(loadDefaults = false)
-      .setAll(sparkConfPairs)
-      .remove("spark.driver.host")
+      .setAll(sparkConfPairs).remove("spark.driver.host")
       .remove("spark.driver.port")
     val newReloadConf = new SparkConf(loadDefaults = true)
     propertiesToReload.foreach { prop =>
@@ -213,12 +212,10 @@ private[streaming] class CheckpointWriter(
       //
       // Note: there is only one thread writing the checkpoint files, so we don't need to worry
       // about thread-safety.
-      val checkpointFile = Checkpoint.checkpointFile(
-        checkpointDir,
-        latestCheckpointTime)
-      val backupFile = Checkpoint.checkpointBackupFile(
-        checkpointDir,
-        latestCheckpointTime)
+      val checkpointFile = Checkpoint
+        .checkpointFile(checkpointDir, latestCheckpointTime)
+      val backupFile = Checkpoint
+        .checkpointBackupFile(checkpointDir, latestCheckpointTime)
 
       while (attempts < MAX_ATTEMPTS && !stopped) {
         attempts += 1
@@ -252,12 +249,10 @@ private[streaming] class CheckpointWriter(
           }
 
           // Delete old checkpoint files
-          val allCheckpointFiles = Checkpoint.getCheckpointFiles(
-            checkpointDir,
-            Some(fs))
+          val allCheckpointFiles = Checkpoint
+            .getCheckpointFiles(checkpointDir, Some(fs))
           if (allCheckpointFiles.size > 10) {
-            allCheckpointFiles
-              .take(allCheckpointFiles.size - 10)
+            allCheckpointFiles.take(allCheckpointFiles.size - 10)
               .foreach(file => {
                 logInfo("Deleting " + file)
                 fs.delete(file, true)
@@ -271,9 +266,8 @@ private[streaming] class CheckpointWriter(
               "', took " + bytes.length + " bytes and " + (
               finishTime - startTime
             ) + " ms")
-          jobGenerator.onCheckpointCompletion(
-            checkpointTime,
-            clearCheckpointDataLater)
+          jobGenerator
+            .onCheckpointCompletion(checkpointTime, clearCheckpointDataLater)
           return
         } catch {
           case ioe: IOException =>
@@ -298,7 +292,8 @@ private[streaming] class CheckpointWriter(
         bytes,
         clearCheckpointDataLater))
       logInfo(
-        "Submitted checkpoint of time " + checkpoint.checkpointTime + " writer queue")
+        "Submitted checkpoint of time " + checkpoint
+          .checkpointTime + " writer queue")
     } catch {
       case rej: RejectedExecutionException =>
         logError(
@@ -313,9 +308,8 @@ private[streaming] class CheckpointWriter(
 
       executor.shutdown()
       val startTime = System.currentTimeMillis()
-      val terminated = executor.awaitTermination(
-        10,
-        java.util.concurrent.TimeUnit.SECONDS)
+      val terminated = executor
+        .awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)
       if (!terminated) { executor.shutdownNow() }
       val endTime = System.currentTimeMillis()
       logInfo(
@@ -365,8 +359,8 @@ private[streaming] object CheckpointReader extends Logging {
     def fs: FileSystem = checkpointPath.getFileSystem(hadoopConf)
 
     // Try to find the checkpoint files
-    val checkpointFiles =
-      Checkpoint.getCheckpointFiles(checkpointDir, Some(fs)).reverse
+    val checkpointFiles = Checkpoint.getCheckpointFiles(checkpointDir, Some(fs))
+      .reverse
     if (checkpointFiles.isEmpty) { return None }
 
     // Try to read the checkpoint files in the order

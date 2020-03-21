@@ -82,8 +82,8 @@ abstract class ShuffleSuite
         b,
         new HashPartitioner(NUM_BLOCKS))
     c.setSerializer(new KryoSerializer(conf))
-    val shuffleId =
-      c.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]].shuffleId
+    val shuffleId = c.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]]
+      .shuffleId
 
     assert(c.count === 10)
 
@@ -125,8 +125,8 @@ abstract class ShuffleSuite
     val c = new ShuffledRDD[Int, Int, Int](b, new HashPartitioner(NUM_BLOCKS))
       .setSerializer(new KryoSerializer(conf))
 
-    val shuffleId =
-      c.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]].shuffleId
+    val shuffleId = c.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]]
+      .shuffleId
     assert(c.count === 4)
 
     val blockSizes = (0 until NUM_BLOCKS).flatMap { id =>
@@ -152,8 +152,8 @@ abstract class ShuffleSuite
     // NOTE: The default Java serializer should create zero-sized blocks
     val c = new ShuffledRDD[Int, Int, Int](b, new HashPartitioner(NUM_BLOCKS))
 
-    val shuffleId =
-      c.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]].shuffleId
+    val shuffleId = c.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]]
+      .shuffleId
     assert(c.count === 4)
 
     val blockSizes = (0 until NUM_BLOCKS).flatMap { id =>
@@ -188,8 +188,7 @@ abstract class ShuffleSuite
     val pairs: RDD[MutablePair[Int, Int]] = sc.parallelize(data, 2)
     val results =
       new OrderedRDDFunctions[Int, Int, MutablePair[Int, Int]](pairs)
-        .sortByKey()
-        .collect()
+        .sortByKey().collect()
     results(0) should be((1, 11))
     results(1) should be((2, 22))
     results(2) should be((3, 33))
@@ -206,8 +205,7 @@ abstract class ShuffleSuite
     val pairs2: RDD[MutablePair[Int, String]] = sc.parallelize(data2, 2)
     val results =
       new CoGroupedRDD[Int](Seq(pairs1, pairs2), new HashPartitioner(2))
-        .map(p => (p._1, p._2.map(_.toArray)))
-        .collectAsMap()
+        .map(p => (p._1, p._2.map(_.toArray))).collectAsMap()
 
     assert(results(1)(0).length === 3)
     assert(results(1)(0).contains(1))
@@ -241,8 +239,7 @@ abstract class ShuffleSuite
 
   test("sort with Java non serializable class - Kryo") {
     // Use a local cluster with 2 processes to make sure there are both local and remote blocks
-    val myConf = conf
-      .clone()
+    val myConf = conf.clone()
       .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
     sc = new SparkContext("local-cluster[2,1,1024]", "test", myConf)
     val a = sc.parallelize(1 to 10, 2)
@@ -268,10 +265,7 @@ abstract class ShuffleSuite
   test("shuffle with different compression settings (SPARK-3426)") {
     for (shuffleSpillCompress <- Set(true, false);
          shuffleCompress <- Set(true, false)) {
-      val myConf = conf
-        .clone()
-        .setAppName("test")
-        .setMaster("local")
+      val myConf = conf.clone().setAppName("test").setMaster("local")
         .set("spark.shuffle.spill.compress", shuffleSpillCompress.toString)
         .set("spark.shuffle.compress", shuffleCompress.toString)
       resetSparkContext()
@@ -317,9 +311,7 @@ abstract class ShuffleSuite
     val numRecords = 10000
 
     val metrics = ShuffleSuite.runAndReturnMetrics(sc) {
-      sc.parallelize(1 to numRecords, 4)
-        .map(key => (key, 1))
-        .groupByKey()
+      sc.parallelize(1 to numRecords, 4).map(key => (key, 1)).groupByKey()
         .collect()
     }
 
@@ -335,8 +327,7 @@ abstract class ShuffleSuite
 
     val metrics = ShuffleSuite.runAndReturnMetrics(sc) {
       sc.parallelize(1 to numRecords, 4)
-        .flatMap(key => Array.fill(100)((key, 1)))
-        .countByKey()
+        .flatMap(key => Array.fill(100)((key, 1))).countByKey()
     }
 
     assert(metrics.recordsRead === numRecords)

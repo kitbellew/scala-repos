@@ -25,8 +25,8 @@ class RecipeWorkerPool extends RecipeSpec {
         import GraphDSL.Implicits._
 
         Flow.fromGraph(GraphDSL.create() { implicit b =>
-          val balancer = b.add(
-            Balance[In](workerCount, waitForAllDownstreams = true))
+          val balancer = b
+            .add(Balance[In](workerCount, waitForAllDownstreams = true))
           val merge = b.add(Merge[Out](workerCount))
 
           for (_ <- 1 to workerCount) {
@@ -39,12 +39,11 @@ class RecipeWorkerPool extends RecipeSpec {
         })
       }
 
-      val processedJobs: Source[Result, NotUsed] = myJobs.via(
-        balancer(worker, 3))
+      val processedJobs: Source[Result, NotUsed] = myJobs
+        .via(balancer(worker, 3))
       //#worker-pool
 
-      Await
-        .result(processedJobs.limit(10).runWith(Sink.seq), 3.seconds)
+      Await.result(processedJobs.limit(10).runWith(Sink.seq), 3.seconds)
         .toSet should be(Set("1 done", "2 done", "3 done", "4 done", "5 done"))
 
     }

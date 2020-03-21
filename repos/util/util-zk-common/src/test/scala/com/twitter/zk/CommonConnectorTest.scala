@@ -46,8 +46,8 @@ class CommonConnectorTest extends WordSpec with BeforeAndAfter {
       "A live server @ %s".format(connectString) should {
         val commonClient: ZooKeeperClient =
           new ZooKeeperClient(timeout.toIntAmount, address)
-        val zkClient = commonClient.toZkClient(timeout)(
-          FuturePool.immediatePool)
+        val zkClient = commonClient
+          .toZkClient(timeout)(FuturePool.immediatePool)
 
         after { Await.ready(zkClient.release()) }
 

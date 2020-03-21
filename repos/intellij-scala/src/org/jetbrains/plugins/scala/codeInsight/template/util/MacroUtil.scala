@@ -34,11 +34,8 @@ object MacroUtil {
   def getVariablesForScope(element: PsiElement): Array[ScalaResolveResult] = {
     val completionProcessor = new VariablesCompletionProcessor(
       StdKinds.valuesRef)
-    PsiTreeUtil.treeWalkUp(
-      completionProcessor,
-      element,
-      null,
-      ResolveState.initial)
+    PsiTreeUtil
+      .treeWalkUp(completionProcessor, element, null, ResolveState.initial)
     completionProcessor.candidates
   }
 
@@ -46,15 +43,10 @@ object MacroUtil {
       result: Result,
       context: ExpressionContext): Option[ScExpression] =
     try {
-      Option(
-        PsiDocumentManager
-          .getInstance(context.getProject)
-          .getPsiFile(context.getEditor.getDocument))
-        .map(_.findElementAt(context.getStartOffset))
-        .filter(_ != null)
-        .map(
-          ScalaPsiElementFactory
-            .createExpressionFromText(result.toString, _)
+      Option(PsiDocumentManager.getInstance(context.getProject).getPsiFile(
+        context.getEditor.getDocument))
+        .map(_.findElementAt(context.getStartOffset)).filter(_ != null).map(
+          ScalaPsiElementFactory.createExpressionFromText(result.toString, _)
             .asInstanceOf[ScExpression])
     } catch { case _: IncorrectOperationException => None }
 
@@ -70,10 +62,8 @@ object MacroUtil {
   def getTypeLookupItem(
       scType: ScType,
       project: Project): Option[ScalaLookupItem] = {
-    ScType
-      .extractClass(scType, Some(project))
-      .filter(_.isInstanceOf[ScTypeDefinition])
-      .map {
+    ScType.extractClass(scType, Some(project))
+      .filter(_.isInstanceOf[ScTypeDefinition]).map {
         case typeDef: ScTypeDefinition =>
           val lookupItem = new ScalaLookupItem(
             typeDef,
@@ -87,27 +77,20 @@ object MacroUtil {
   def getPrimaryConbstructorParams(context: ExpressionContext) =
     Option(PsiTreeUtil.getParentOfType(
       context.getPsiElementAtStartOffset,
-      classOf[PsiClass]))
-      .map {
-        case obj: ScObject => obj.fakeCompanionClassOrCompanionClass
-        case other         => other
-      }
-      .filter(_.isInstanceOf[ScClass])
-      .flatMap(_.asInstanceOf[ScClass].constructor)
-      .map(_.parameterList)
+      classOf[PsiClass])).map {
+      case obj: ScObject => obj.fakeCompanionClassOrCompanionClass
+      case other         => other
+    }.filter(_.isInstanceOf[ScClass])
+      .flatMap(_.asInstanceOf[ScClass].constructor).map(_.parameterList)
 
   def paramPairs(params: String): List[(String, String)] =
     if (params.length < 2) List()
     else
-      params
-        .substring(1, params.length - 1)
-        .split(",")
-        .map(l =>
-          l.split(":").map(_.trim).toList match {
-            case a :: b :: Nil => (a, b)
-            case _             => ("", "")
-          })
-        .toList
+      params.substring(1, params.length - 1).split(",").map(l =>
+        l.split(":").map(_.trim).toList match {
+          case a :: b :: Nil => (a, b)
+          case _             => ("", "")
+        }).toList
 
   val scalaIdPrefix = "scala_"
   val scalaPresentablePrefix = "scala_"

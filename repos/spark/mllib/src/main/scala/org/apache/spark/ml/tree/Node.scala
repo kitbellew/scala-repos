@@ -334,9 +334,8 @@ private[tree] class LearningNode(
     else {
       val split = this.split.get
       val featureIndex = split.featureIndex
-      val splitLeft = split.shouldGoLeft(
-        binnedFeatures(featureIndex),
-        splits(featureIndex))
+      val splitLeft = split
+        .shouldGoLeft(binnedFeatures(featureIndex), splits(featureIndex))
       if (this.leftChild.isEmpty) {
         // Not yet split. Return next layer of nodes to train
         if (splitLeft) { LearningNode.leftChildIndex(this.id) }

@@ -226,40 +226,42 @@ trait IssuesControllerBase extends ControllerBase {
   post("/:owner/:repository/issue_comments/new", commentForm)(
     readableUsersOnly { (form, repository) =>
       getIssue(repository.owner, repository.name, form.issueId.toString)
-        .flatMap { issue =>
-          val actionOpt = params
-            .get("action")
-            .filter(_ =>
+        .flatMap {
+          issue =>
+            val actionOpt = params.get("action").filter(_ =>
               isEditable(
                 issue.userName,
                 issue.repositoryName,
                 issue.openedUserName))
-          handleComment(issue, Some(form.content), repository, actionOpt) map {
-            case (issue, id) =>
-              redirect(
-                s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
-                else "issues"}/${form.issueId}#comment-${id}")
-          }
+            handleComment(
+              issue,
+              Some(form.content),
+              repository,
+              actionOpt) map {
+              case (issue, id) =>
+                redirect(
+                  s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
+                  else "issues"}/${form.issueId}#comment-${id}")
+            }
         } getOrElse NotFound
     })
 
   post("/:owner/:repository/issue_comments/state", issueStateForm)(
     readableUsersOnly { (form, repository) =>
       getIssue(repository.owner, repository.name, form.issueId.toString)
-        .flatMap { issue =>
-          val actionOpt = params
-            .get("action")
-            .filter(_ =>
+        .flatMap {
+          issue =>
+            val actionOpt = params.get("action").filter(_ =>
               isEditable(
                 issue.userName,
                 issue.repositoryName,
                 issue.openedUserName))
-          handleComment(issue, form.content, repository, actionOpt) map {
-            case (issue, id) =>
-              redirect(
-                s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
-                else "issues"}/${form.issueId}#comment-${id}")
-          }
+            handleComment(issue, form.content, repository, actionOpt) map {
+              case (issue, id) =>
+                redirect(
+                  s"/${repository.owner}/${repository.name}/${if (issue.isPullRequest) "pull"
+                  else "issues"}/${form.issueId}#comment-${id}")
+            }
         } getOrElse NotFound
     })
 
@@ -356,8 +358,8 @@ trait IssuesControllerBase extends ControllerBase {
   ajaxPost("/:owner/:repository/issues/new/label")(collaboratorsOnly {
     repository =>
       val labelNames = params("labelNames").split(",")
-      val labels = getLabels(repository.owner, repository.name).filter(x =>
-        labelNames.contains(x.labelName))
+      val labels = getLabels(repository.owner, repository.name)
+        .filter(x => labelNames.contains(x.labelName))
       html.labellist(labels)
   })
 
@@ -369,8 +371,8 @@ trait IssuesControllerBase extends ControllerBase {
           repository.name,
           issueId,
           params("labelId").toInt)
-        html.labellist(
-          getIssueLabels(repository.owner, repository.name, issueId))
+        html
+          .labellist(getIssueLabels(repository.owner, repository.name, issueId))
       }
   })
 
@@ -382,8 +384,8 @@ trait IssuesControllerBase extends ControllerBase {
           repository.name,
           issueId,
           params("labelId").toInt)
-        html.labellist(
-          getIssueLabels(repository.owner, repository.name, issueId))
+        html
+          .labellist(getIssueLabels(repository.owner, repository.name, issueId))
       }
   })
 
@@ -404,15 +406,13 @@ trait IssuesControllerBase extends ControllerBase {
         repository.name,
         params("id").toInt,
         milestoneId("milestoneId"))
-      milestoneId("milestoneId").map {
-        milestoneId =>
-          getMilestonesWithIssueCount(repository.owner, repository.name)
-            .find(_._1.milestoneId == milestoneId)
-            .map {
-              case (_, openCount, closeCount) =>
-                gitbucket.core.issues.milestones.html
-                  .progress(openCount + closeCount, closeCount)
-            } getOrElse NotFound
+      milestoneId("milestoneId").map { milestoneId =>
+        getMilestonesWithIssueCount(repository.owner, repository.name)
+          .find(_._1.milestoneId == milestoneId).map {
+            case (_, openCount, closeCount) =>
+              gitbucket.core.issues.milestones.html
+                .progress(openCount + closeCount, closeCount)
+          } getOrElse NotFound
       } getOrElse Ok()
   })
 
@@ -525,12 +525,10 @@ trait IssuesControllerBase extends ControllerBase {
               IssueSearchCondition(
                 q,
                 getMilestones(owner, repoName)
-                  .map(x => (x.title, x.milestoneId))
-                  .toMap)
+                  .map(x => (x.title, x.milestoneId)).toMap)
             }
           } else
-            session
-              .getAs[IssueSearchCondition](sessionKey)
+            session.getAs[IssueSearchCondition](sessionKey)
               .getOrElse(IssueSearchCondition())
         )
 

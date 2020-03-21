@@ -90,8 +90,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
             Result(header, HttpEntity.Chunked(gzipped, contentType)))
 
         case HttpEntity.Chunked(chunks, contentType) =>
-          val gzipFlow = Flow.fromGraph(
-            GraphDSL.create[FlowShape[HttpChunk, HttpChunk]]() {
+          val gzipFlow = Flow
+            .fromGraph(GraphDSL.create[FlowShape[HttpChunk, HttpChunk]]() {
               implicit builder =>
                 import GraphDSL.Implicits._
 
@@ -113,8 +113,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
                 // Broadcast the stream through two separate flows, one that collects chunks and turns them into
                 // ByteStrings, sends those ByteStrings through the Gzip flow, and then turns them back into chunks,
                 // the other that just allows the last chunk through. Then concat those two flows together.
-                broadcast.out(0) ~> extractChunks ~> GzipFlow.gzip(
-                  config.bufferSize) ~> createChunks ~> concat.in(0)
+                broadcast.out(0) ~> extractChunks ~> GzipFlow
+                  .gzip(config.bufferSize) ~> createChunks ~> concat.in(0)
                 broadcast.out(1) ~> filterLastChunk ~> concat.in(1)
 
                 new FlowShape(broadcast.in, concat.out)
@@ -244,8 +244,8 @@ object GzipFilterConfig {
 
     GzipFilterConfig(
       bufferSize = config.get[ConfigMemorySize]("bufferSize").toBytes.toInt,
-      chunkedThreshold =
-        config.get[ConfigMemorySize]("chunkedThreshold").toBytes.toInt)
+      chunkedThreshold = config.get[ConfigMemorySize]("chunkedThreshold")
+        .toBytes.toInt)
   }
 }
 

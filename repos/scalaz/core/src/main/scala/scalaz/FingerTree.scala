@@ -1037,8 +1037,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
       _ => Iterator.empty,
       (_, x) => Iterator.single(x),
       (_, pr, m, sf) =>
-        sf.reverseIterator ++ m.reverseIterator.flatMap(
-          _.reverseIterator) ++ pr.reverseIterator)
+        sf.reverseIterator ++ m.reverseIterator.flatMap(_.reverseIterator) ++ pr
+          .reverseIterator)
 
   /** Convert the leaves of the tree to a `scala.Stream` */
   def toStream: Stream[A] = map(x => x)(Reducer.StreamReducer[A]).measure
@@ -1061,10 +1061,11 @@ sealed abstract class FingerTreeInstances {
       s: Functor[S]): Functor[ViewL[S, ?]] =
     new Functor[ViewL[S, ?]] {
       def map[A, B](t: ViewL[S, A])(f: A => B): ViewL[S, B] =
-        t.fold(
-          EmptyL[S, B],
-          (x, xs) => OnL(f(x), s.map(xs)(f))
-        ) //TODO define syntax for &: and :&
+        t
+          .fold(
+            EmptyL[S, B],
+            (x, xs) => OnL(f(x), s.map(xs)(f))
+          ) //TODO define syntax for &: and :&
     }
 
   implicit def viewRFunctor[S[_]](implicit
@@ -1316,11 +1317,7 @@ final class IndSeq[A](val self: FingerTree[Int, A]) {
 
   implicit def sizer[A] = UnitReducer((a: A) => 1)
   def apply(i: Int): A =
-    self
-      .split(_ > i)
-      ._2
-      .viewl
-      .headOption
+    self.split(_ > i)._2.viewl.headOption
       .getOrElse(sys.error("Index " + i + " > " + self.measure))
   def replace(i: Int, a: => A): IndSeq[A] = {
     val (l, r) = self.split(_ > i)
@@ -1411,9 +1408,9 @@ sealed abstract class OrdSeq[A] extends Ops[FingerTree[LastOption[A], A]] {
     *                                priority than `a`, and of lower or equal priority respectively.
     */
   def partition(a: A): (OrdSeq[A], OrdSeq[A]) =
-    function1Instance.product(
-      OrdSeq.ordSeq[A](_: FingerTree[LastOption[A], A]))(self.split(a1 =>
-      Order[LastOption[A]].greaterThanOrEqual(a1, Tags.Last(some(a)))))
+    function1Instance
+      .product(OrdSeq.ordSeq[A](_: FingerTree[LastOption[A], A]))(self.split(
+        a1 => Order[LastOption[A]].greaterThanOrEqual(a1, Tags.Last(some(a)))))
 
   /** Insert `a` at a the first point that all elements to the left are of higher priority */
   def insert(a: A): OrdSeq[A] =

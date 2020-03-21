@@ -55,12 +55,10 @@ trait IntegrationTestHarness extends KafkaServerTestHarness {
 
   @Before
   override def setUp() {
-    val producerSecurityProps = TestUtils.producerSecurityConfigs(
-      securityProtocol,
-      trustStoreFile)
-    val consumerSecurityProps = TestUtils.consumerSecurityConfigs(
-      securityProtocol,
-      trustStoreFile)
+    val producerSecurityProps = TestUtils
+      .producerSecurityConfigs(securityProtocol, trustStoreFile)
+    val consumerSecurityProps = TestUtils
+      .consumerSecurityConfigs(securityProtocol, trustStoreFile)
     super.setUp()
     producerConfig.put(
       ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
@@ -95,8 +93,7 @@ trait IntegrationTestHarness extends KafkaServerTestHarness {
       zkUtils,
       TopicConstants.GROUP_METADATA_TOPIC_NAME,
       serverConfig.getProperty(KafkaConfig.OffsetsTopicPartitionsProp).toInt,
-      serverConfig
-        .getProperty(KafkaConfig.OffsetsTopicReplicationFactorProp)
+      serverConfig.getProperty(KafkaConfig.OffsetsTopicReplicationFactorProp)
         .toInt,
       servers,
       servers(0).consumerCoordinator.offsetsTopicConfigs

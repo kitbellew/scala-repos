@@ -7,10 +7,7 @@ class IOTest extends MarathonSpec with GivenWhenThen with Matchers {
 
   test("Compress / unCompress works") {
     Given("A byte array")
-    val hello = 1
-      .to(100)
-      .map(num => s"Hello number $num!")
-      .mkString(", ")
+    val hello = 1.to(100).map(num => s"Hello number $num!").mkString(", ")
       .getBytes("UTF-8")
 
     When("compress and decompress")

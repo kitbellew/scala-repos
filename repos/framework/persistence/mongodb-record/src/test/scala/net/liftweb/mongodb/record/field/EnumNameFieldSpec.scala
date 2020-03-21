@@ -96,10 +96,8 @@ object EnumNameFieldSpec extends Specification with MongoTestKit {
     "work with set values" in {
       checkMongoIsRunning
 
-      val er = EnumNameRec.createRecord
-        .dow(WeekDay.Tue)
-        .jsonobj(JsonObj(WeekDay.Sun))
-        .save()
+      val er = EnumNameRec.createRecord.dow(WeekDay.Tue)
+        .jsonobj(JsonObj(WeekDay.Sun)).save()
 
       val erFromDb = EnumNameRec.find(er.id.get)
       erFromDb must beLike {

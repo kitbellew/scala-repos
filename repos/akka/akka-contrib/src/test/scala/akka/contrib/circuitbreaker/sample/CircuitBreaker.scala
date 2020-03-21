@@ -65,14 +65,12 @@ class CircuitBreaker(potentiallyFailingService: ActorRef)
     CircuitBreakerPropsBuilder(
       maxFailures = 3,
       callTimeout = 2.seconds,
-      resetTimeout = 30.seconds)
-      .copy(failureDetector = {
-        _ match {
-          case Response(Left(_)) ⇒ true
-          case _ ⇒ false
-        }
-      })
-      .props(potentiallyFailingService),
+      resetTimeout = 30.seconds).copy(failureDetector = {
+      _ match {
+        case Response(Left(_)) ⇒ true
+        case _ ⇒ false
+      }
+    }).props(potentiallyFailingService),
     "serviceCircuitBreaker"
   )
 
@@ -111,17 +109,14 @@ class CircuitBreakerAsk(potentiallyFailingService: ActorRef)
     CircuitBreakerPropsBuilder(
       maxFailures = 3,
       callTimeout = askTimeout,
-      resetTimeout = 30.seconds)
-      .copy(failureDetector = {
-        _ match {
-          case Response(Left(_)) ⇒ true
-          case _ ⇒ false
-        }
-      })
-      .copy(openCircuitFailureConverter = { failure ⇒
-        Left(s"Circuit open when processing ${failure.failedMsg}")
-      })
-      .props(potentiallyFailingService),
+      resetTimeout = 30.seconds).copy(failureDetector = {
+      _ match {
+        case Response(Left(_)) ⇒ true
+        case _ ⇒ false
+      }
+    }).copy(openCircuitFailureConverter = { failure ⇒
+      Left(s"Circuit open when processing ${failure.failedMsg}")
+    }).props(potentiallyFailingService),
     "serviceCircuitBreaker"
   )
 
@@ -130,8 +125,7 @@ class CircuitBreakerAsk(potentiallyFailingService: ActorRef)
   override def receive: Receive = {
     case AskFor(requestToForward) ⇒
       (serviceCircuitBreaker ? Request(requestToForward))
-        .mapTo[Either[String, String]]
-        .onComplete {
+        .mapTo[Either[String, String]].onComplete {
           case Success(Right(successResponse)) ⇒
             //handle response
             log.info("Got successful response {}", successResponse)
@@ -163,8 +157,7 @@ class CircuitBreakerAskWithFailure(potentiallyFailingService: ActorRef)
     CircuitBreakerPropsBuilder(
       maxFailures = 3,
       callTimeout = askTimeout,
-      resetTimeout = 30.seconds)
-      .props(target = potentiallyFailingService),
+      resetTimeout = 30.seconds).props(target = potentiallyFailingService),
     "serviceCircuitBreaker"
   )
 
@@ -173,8 +166,7 @@ class CircuitBreakerAskWithFailure(potentiallyFailingService: ActorRef)
   override def receive: Receive = {
     case AskFor(requestToForward) ⇒
       (serviceCircuitBreaker ? Request(requestToForward)).failForOpenCircuit
-        .mapTo[String]
-        .onComplete {
+        .mapTo[String].onComplete {
           case Success(successResponse) ⇒
             //handle response
             log.info("Got successful response {}", successResponse)
@@ -201,8 +193,7 @@ class CircuitBreakerAskWithCircuitBreaker(potentiallyFailingService: ActorRef)
     CircuitBreakerPropsBuilder(
       maxFailures = 3,
       callTimeout = askTimeout,
-      resetTimeout = 30.seconds)
-      .props(target = potentiallyFailingService),
+      resetTimeout = 30.seconds).props(target = potentiallyFailingService),
     "serviceCircuitBreaker"
   )
 
@@ -210,10 +201,8 @@ class CircuitBreakerAskWithCircuitBreaker(potentiallyFailingService: ActorRef)
 
   override def receive: Receive = {
     case AskFor(requestToForward) ⇒
-      serviceCircuitBreaker
-        .askWithCircuitBreaker(Request(requestToForward))
-        .mapTo[String]
-        .onComplete {
+      serviceCircuitBreaker.askWithCircuitBreaker(Request(requestToForward))
+        .mapTo[String].onComplete {
           case Success(successResponse) ⇒
             //handle response
             log.info("Got successful response {}", successResponse)

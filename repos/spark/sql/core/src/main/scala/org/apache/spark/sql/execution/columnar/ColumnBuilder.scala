@@ -83,8 +83,7 @@ private[columnar] class BasicColumnBuilder[JvmType](
   override def build(): ByteBuffer = {
     if (buffer.capacity() > buffer.position() * 1.1) {
       // trim the buffer
-      buffer = ByteBuffer
-        .allocate(buffer.position())
+      buffer = ByteBuffer.allocate(buffer.position())
         .order(ByteOrder.nativeOrder())
         .put(buffer.array(), 0, buffer.position())
     }
@@ -172,9 +171,7 @@ private[columnar] object ColumnBuilder {
       val newSize = capacity + size.max(capacity)
       val pos = orig.position()
 
-      ByteBuffer
-        .allocate(newSize)
-        .order(ByteOrder.nativeOrder())
+      ByteBuffer.allocate(newSize).order(ByteOrder.nativeOrder())
         .put(orig.array(), 0, pos)
     }
   }

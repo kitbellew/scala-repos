@@ -73,8 +73,7 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
             if setterSuffixes.exists(fakeMethod.getName.endsWith) =>
           fakeMethod.navElement match {
             case refPattern: ScReferencePattern
-                if ScalaPsiUtil
-                  .nameContext(refPattern)
+                if ScalaPsiUtil.nameContext(refPattern)
                   .isInstanceOf[ScVariable] => Some(refPattern)
             case _                          => None
           }
@@ -91,8 +90,7 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
             if wrapper.getName endsWith setterSuffix =>
           wrapper.typedDefinition match {
             case refPattern: ScReferencePattern
-                if ScalaPsiUtil
-                  .nameContext(refPattern)
+                if ScalaPsiUtil.nameContext(refPattern)
                   .isInstanceOf[ScVariable] => Some(refPattern)
             case _                          => None
           }
@@ -128,8 +126,8 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
       text: CharSequence,
       offset: Int): Boolean = {
     val child: PsiElement = file.findElementAt(offset)
-    child != null && child.getNode != null && ScalaTokenTypes.IDENTIFIER_TOKEN_SET
-      .contains(child.getNode.getElementType)
+    child != null && child.getNode != null && ScalaTokenTypes
+      .IDENTIFIER_TOKEN_SET.contains(child.getNode.getElementType)
   }
 
   private def addClassParameterForSyntheticApply(
@@ -143,8 +141,7 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
               case obj: ScObject =>
                 obj.fakeCompanionClassOrCompanionClass match {
                   case cl: ScClass if cl.isCase =>
-                    cl.parameters
-                      .filter(_.name == p.name)
+                    cl.parameters.filter(_.name == p.name)
                       .foreach(allRenames.put(_, newName))
                   case _ =>
                 }

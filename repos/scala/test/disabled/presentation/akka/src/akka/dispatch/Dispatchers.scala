@@ -50,9 +50,8 @@ object Dispatchers {
     .getLong("akka.actor.dispatcher-shutdown-timeout")
     .map(time => Duration(time, TIME_UNIT))
     .getOrElse(Duration(1000, TimeUnit.MILLISECONDS))
-  val MAILBOX_CAPACITY = config.getInt(
-    "akka.actor.default-dispatcher.mailbox-capacity",
-    -1)
+  val MAILBOX_CAPACITY = config
+    .getInt("akka.actor.default-dispatcher.mailbox-capacity", -1)
   val MAILBOX_PUSH_TIME_OUT = Duration(
     config
       .getInt("akka.actor.default-dispatcher.mailbox-push-timeout-time", 10),
@@ -65,9 +64,7 @@ object Dispatchers {
     if (MAILBOX_CAPACITY < 1) UnboundedMailbox() else BoundedMailbox()
 
   lazy val defaultGlobalDispatcher = {
-    config
-      .getSection("akka.actor.default-dispatcher")
-      .flatMap(from)
+    config.getSection("akka.actor.default-dispatcher").flatMap(from)
       .getOrElse(globalExecutorBasedEventDrivenDispatcher)
   }
 

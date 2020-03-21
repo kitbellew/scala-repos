@@ -35,8 +35,9 @@ class ServerBuilderTest
 
     val m = new MockChannel
     when(
-      m.codec.prepareConnFactory(
-        any[ServiceFactory[String, String]])) thenReturn preparedFactory
+      m.codec
+        .prepareConnFactory(
+          any[ServiceFactory[String, String]])) thenReturn preparedFactory
   }
 
   val svc: Service[String, String] = Service.const(Future.value("hi"))
@@ -49,8 +50,8 @@ class ServerBuilderTest
         val server = build
 
         val entries = GlobalRegistry.get.toSet
-        val unspecified = entries.count(
-          _.key.startsWith(Seq("server", "not-specified")))
+        val unspecified = entries
+          .count(_.key.startsWith(Seq("server", "not-specified")))
         assert(
           unspecified == 0,
           "saw registry keys with 'not-specified' protocol")
@@ -69,8 +70,8 @@ class ServerBuilderTest
         val server = build
 
         val entries = GlobalRegistry.get.toSet
-        val specified = entries.filter(
-          _.key.startsWith(Seq("server", expected)))
+        val specified = entries
+          .filter(_.key.startsWith(Seq("server", expected)))
         // Entries are in the form: Entry(List(server, fancy, test, /127.0.0.1:58904, RequestStats, unit),MILLISECONDS)
         val entry =
           specified.head // data is repeated as entry.key, just take the first
@@ -89,11 +90,7 @@ class ServerBuilderTest
     val ctx = new ServerBuilderHelper {}
     when(ctx.m.codec.protocolLibraryName).thenReturn("fancy")
 
-    ServerBuilder()
-      .name("test")
-      .codec(ctx.m.codec)
-      .bindTo(loopback)
-      .build(svc)
+    ServerBuilder().name("test").codec(ctx.m.codec).bindTo(loopback).build(svc)
   }
 
   verifyProtocolRegistry("#codec(CodecFactory)", expected = "fancy") {
@@ -104,11 +101,7 @@ class ServerBuilderTest
       override def protocolLibraryName = "fancy"
     }
 
-    ServerBuilder()
-      .name("test")
-      .codec(cf)
-      .bindTo(loopback)
-      .build(svc)
+    ServerBuilder().name("test").codec(cf).bindTo(loopback).build(svc)
   }
 
   verifyProtocolRegistry("#codec(CodecFactory#Server)", expected = "fancy") {
@@ -119,11 +112,7 @@ class ServerBuilderTest
       (_: ServerCodecConfig) => ctx.m.codec
     }
 
-    ServerBuilder()
-      .name("test")
-      .codec(cfServer)
-      .bindTo(loopback)
-      .build(svc)
+    ServerBuilder().name("test").codec(cfServer).bindTo(loopback).build(svc)
   }
 
   verifyProtocolRegistry(
@@ -143,10 +132,7 @@ class ServerBuilderTest
       }
       override val protocolLibraryName: String = "fancy"
     }
-    ServerBuilder()
-      .codec(new FancyCodec)
-      .bindTo(loopback)
-      .name("test")
+    ServerBuilder().codec(new FancyCodec).bindTo(loopback).name("test")
       .build(svc)
   }
 
@@ -167,10 +153,8 @@ class ServerBuilderTest
       }
       override val protocolLibraryName: String = "fancy"
     }
-    ServerBuilder()
-      .codec(new FancyCodec)
+    ServerBuilder().codec(new FancyCodec)
       .bindTo(loopback) // loopback is configured to port 0
-      .name("test")
-      .build(svc)
+      .name("test").build(svc)
   }
 }

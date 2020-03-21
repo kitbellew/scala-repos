@@ -38,8 +38,7 @@ class RepositoryServiceSpec
       renameRepository("root", "repo", "tester", "repo2")
 
       val neo = service
-        .getCommitStatus("tester", "repo2", org.commitId, org.context)
-        .get
+        .getCommitStatus("tester", "repo2", org.commitId, org.context).get
       assert(
         neo == org.copy(
           commitStatusId = neo.commitStatusId,

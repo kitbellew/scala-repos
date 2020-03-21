@@ -94,15 +94,11 @@ private[ml] trait TreeEnsembleModel {
   /** Full description of model */
   def toDebugString: String = {
     val header = toString + "\n"
-    header + trees
-      .zip(treeWeights)
-      .zipWithIndex
-      .map {
-        case ((tree, weight), treeIndex) =>
-          s"  Tree $treeIndex (weight $weight):\n" + tree.rootNode
-            .subtreeToString(4)
-      }
-      .fold("")(_ + _)
+    header + trees.zip(treeWeights).zipWithIndex.map {
+      case ((tree, weight), treeIndex) =>
+        s"  Tree $treeIndex (weight $weight):\n" + tree.rootNode
+          .subtreeToString(4)
+    }.fold("")(_ + _)
   }
 
   /** Number of trees in ensemble */
@@ -249,9 +245,8 @@ private[ml] object DecisionTreeModelReadWrite {
     val finalNodes = new Array[Node](nodes.length)
     nodes.reverseIterator.foreach {
       case n: NodeData =>
-        val impurityStats = ImpurityCalculator.getCalculator(
-          impurityType,
-          n.impurityStats)
+        val impurityStats = ImpurityCalculator
+          .getCalculator(impurityType, n.impurityStats)
         val node =
           if (n.leftChild != -1) {
             val leftChild = finalNodes(n.leftChild)

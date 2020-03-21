@@ -13,8 +13,8 @@ import org.jetbrains.plugins.scala.testingSupport.test.AbstractTestFramework
 class ScalaTestTestFramework extends AbstractTestFramework {
 
   def getDefaultSuperClass: String = {
-    val project = CommonDataKeys.PROJECT.getData(
-      DataManager.getInstance().getDataContext())
+    val project = CommonDataKeys.PROJECT
+      .getData(DataManager.getInstance().getDataContext())
     val scalaProjectSettings = ScalaProjectSettings.getInstance(project)
     scalaProjectSettings.getScalaTestDefaultSuperClass
   }

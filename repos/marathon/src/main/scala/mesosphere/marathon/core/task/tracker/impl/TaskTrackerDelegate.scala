@@ -38,8 +38,7 @@ private[tracker] class TaskTrackerDelegate(
       ec: ExecutionContext): Future[TaskTracker.TasksByApp] = {
     import akka.pattern.ask
     def futureCall(): Future[TaskTracker.TasksByApp] =
-      (taskTrackerRef ? TaskTrackerActor.List)
-        .mapTo[TaskTracker.TasksByApp]
+      (taskTrackerRef ? TaskTrackerActor.List).mapTo[TaskTracker.TasksByApp]
         .recover {
           case e: AskTimeoutException =>
             throw new TimeoutException(
@@ -82,7 +81,7 @@ private[tracker] class TaskTrackerDelegate(
   private[this] val tasksByAppTimer = metrics.map(metrics =>
     metrics.timer(metrics.name(MetricPrefixes.SERVICE, getClass, "tasksByApp")))
 
-  private[this] implicit val taskTrackerQueryTimeout: Timeout =
-    config.internalTaskTrackerRequestTimeout().milliseconds
+  private[this] implicit val taskTrackerQueryTimeout: Timeout = config
+    .internalTaskTrackerRequestTimeout().milliseconds
 
 }

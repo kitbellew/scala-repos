@@ -26,8 +26,8 @@ class LoggingFilter @Inject() (implicit ec: ExecutionContext)
           val endTime = System.currentTimeMillis
           val requestTime = endTime - startTime
 
-          Logger.info(
-            s"${requestHeader.method} ${requestHeader.uri} took ${requestTime}ms and returned ${result.header.status}")
+          Logger.info(s"${requestHeader.method} ${requestHeader
+            .uri} took ${requestTime}ms and returned ${result.header.status}")
           result.withHeaders("Request-Time" -> requestTime.toString)
 
         }

@@ -684,10 +684,8 @@ trait BaseCometActor
     */
   def jsonToIncludeInCode: JsCmd = _jsonToIncludeCode
 
-  private lazy val (_sendJson, _jsonToIncludeCode) = S.createJsonFunc(
-    Full(_defaultPrefix),
-    onJsonError,
-    receiveJson _)
+  private lazy val (_sendJson, _jsonToIncludeCode) = S
+    .createJsonFunc(Full(_defaultPrefix), onJsonError, receiveJson _)
 
   /**
     * Set this method to true to have the Json call code included in the Comet output
@@ -728,10 +726,8 @@ trait BaseCometActor
                 if (updatedJs.nonEmpty) { partialUpdate(updatedJs) }
 
                 if (S.functionMap.size > 0) {
-                  theSession.updateFunctionMap(
-                    S.functionMap,
-                    uniqueId,
-                    lastRenderTime)
+                  theSession
+                    .updateFunctionMap(S.functionMap, uniqueId, lastRenderTime)
                   S.clearFunctionMap
                 }
               }
@@ -1406,11 +1402,11 @@ private[http] class XmlOrJsCmd(
       notices)
 
   val xml = _xml.flatMap(content =>
-    S.session.map(s =>
-      s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
+    S.session
+      .map(s => s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
   val fixedXhtml = _fixedXhtml.flatMap(content =>
-    S.session.map(s =>
-      s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
+    S.session
+      .map(s => s.processSurroundAndInclude("JS SetHTML id: " + id, content)))
 
   /**
     * Returns the JsCmd that will be sent to client
@@ -1426,8 +1422,8 @@ private[http] class XmlOrJsCmd(
         case (Full(xml), Full(js), true) =>
           LiftRules.jsArtifacts.setHtml(
             id + "_outer",
-            (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(
-              Text("")))) & JsCmds.JsTry(js, false)
+            (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml
+              .openOr(Text("")))) & JsCmds.JsTry(js, false)
         case (Full(xml), _, true) =>
           LiftRules.jsArtifacts.setHtml(
             id + "_outer",
@@ -1449,9 +1445,8 @@ private[http] class XmlOrJsCmd(
       fullUpdateJs &
       JsCmds.JsTry(
         JsCmds.Run(
-          "destroy_" + id + " = function() {" + (
-            destroy.openOr(JsCmds.Noop).toJsCmd
-          ) + "};"),
+          "destroy_" + id + " = function() {" + (destroy.openOr(JsCmds.Noop)
+            .toJsCmd) + "};"),
         false)
 
     S.appendNotices(notices)
@@ -1464,9 +1459,8 @@ private[http] class XmlOrJsCmd(
 
   def outSpan: NodeSeq =
     Script(Run(
-      "var destroy_" + id + " = function() {" + (
-        destroy.openOr(JsCmds.Noop).toJsCmd
-      ) + "}")) ++
+      "var destroy_" + id + " = function() {" + (destroy.openOr(JsCmds.Noop)
+        .toJsCmd) + "}")) ++
       fixedXhtml.openOr(Text(""))
 }
 

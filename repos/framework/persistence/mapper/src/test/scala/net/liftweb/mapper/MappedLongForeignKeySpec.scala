@@ -42,8 +42,8 @@ object MappedLongForeignKeySpec
     (try { provider.setupDB }
     catch {
       case e if !provider.required_? =>
-        1 must be_==(2).orSkip(
-          "Provider %s not available: %s".format(provider, e))
+        1 must be_==(2)
+          .orSkip("Provider %s not available: %s".format(provider, e))
     }) must not(throwA[Exception]).orSkip
 
     "Not allow comparison to another FK" in {

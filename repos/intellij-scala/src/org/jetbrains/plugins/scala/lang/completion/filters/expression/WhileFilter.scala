@@ -24,8 +24,8 @@ class WhileFilter extends ElementFilter {
         val doStmt = parent.getPrevSibling match {
           case x: ScDoStmt => x
           case x
-              if x.isInstanceOf[
-                PsiWhiteSpace] || x.getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE =>
+              if x.isInstanceOf[PsiWhiteSpace] || x.getNode
+                .getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE =>
             x.getPrevSibling match {
               case x: ScDoStmt => x
               case _           => null
@@ -38,10 +38,8 @@ class WhileFilter extends ElementFilter {
             parent = parent.getParent
           if (parent == null) return false
           text = parent.getText
-          text = Pattern
-            .compile(DUMMY_IDENTIFIER, Pattern.LITERAL)
-            .matcher(text)
-            .replaceAll(Matcher.quoteReplacement(" while (true)"))
+          text = Pattern.compile(DUMMY_IDENTIFIER, Pattern.LITERAL)
+            .matcher(text).replaceAll(Matcher.quoteReplacement(" while (true)"))
         } else { text = doStmt.getText + " while (true)" }
         return checkDoWith(text, parent.getManager)
       }

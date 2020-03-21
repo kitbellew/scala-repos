@@ -59,8 +59,8 @@ class FilterTest extends FunSuite {
   test("filterMedian") {
     val dataSmall = DenseVector.tabulate[Int](15)(p => p)
     val result1 = filterMedian(dataSmall, 5, OptOverhang.None).toScalaVector
-    val result2 =
-      filterMedian(dataSmall, 5, OptOverhang.PreserveLength).toScalaVector
+    val result2 = filterMedian(dataSmall, 5, OptOverhang.PreserveLength)
+      .toScalaVector
 
     println(result1)
     println(result2)
@@ -73,8 +73,8 @@ class FilterTest extends FunSuite {
 
     val dataLarge = DenseVector.tabulate[Float](100000)(p => p.toFloat)
     val result3 = filterMedian(dataLarge, 5, OptOverhang.None).toScalaVector
-    val result4 =
-      filterMedian(dataLarge, 5, OptOverhang.PreserveLength).toScalaVector
+    val result4 = filterMedian(dataLarge, 5, OptOverhang.PreserveLength)
+      .toScalaVector
     assert(
       result3 == Array.tabulate[Float](100000 - 4)(_ + 2).toVector,
       "median filter failed for large data and OptOverhang.None")

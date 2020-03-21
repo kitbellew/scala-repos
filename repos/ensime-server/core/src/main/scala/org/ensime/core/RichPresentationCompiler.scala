@@ -91,8 +91,7 @@ trait RichCompilerControl
 
   def askDocSignatureAtPoint(p: Position): Option[DocSigPair] =
     askOption {
-      symbolAt(p)
-        .orElse(typeAt(p).map(_.typeSymbol))
+      symbolAt(p).orElse(typeAt(p).map(_.typeSymbol))
         .flatMap(docSignature(_, Some(p)))
     }.flatten
 
@@ -101,8 +100,8 @@ trait RichCompilerControl
       memberName: Option[String],
       signatureString: Option[String]): Option[DocSigPair] =
     askOption {
-      symbolMemberByName(typeFullName, memberName, signatureString).flatMap(
-        docSignature(_, None))
+      symbolMemberByName(typeFullName, memberName, signatureString)
+        .flatMap(docSignature(_, None))
     }.flatten
 
   def askSymbolInfoAt(p: Position): Option[SymbolInfo] =
@@ -112,8 +111,9 @@ trait RichCompilerControl
       fqn: String,
       memberName: Option[String],
       signatureString: Option[String]): Option[SymbolInfo] =
-    askOption(symbolMemberByName(fqn, memberName, signatureString).map(
-      SymbolInfo(_))).flatten
+    askOption(
+      symbolMemberByName(fqn, memberName, signatureString).map(SymbolInfo(_)))
+      .flatten
 
   def askTypeInfoAt(p: Position): Option[TypeInfo] =
     askOption(typeAt(p).map(TypeInfo(_, PosNeededYes))).flatten
@@ -249,8 +249,7 @@ trait RichCompilerControl
     askOption(linkPos(sym, createSourceFile(path)))
 
   def askStructure(fileInfo: SourceFile): List[StructureViewMember] =
-    askOption(structureView(fileInfo))
-      .getOrElse(List.empty)
+    askOption(structureView(fileInfo)).getOrElse(List.empty)
 
 }
 
@@ -372,17 +371,15 @@ class RichPresentationCompiler(
   }
 
   protected def inspectTypeAt(p: Position): Option[TypeInspectInfo] = {
-    typeAt(p)
-      .map(tpe => {
-        val members = getMembersForTypeAt(tpe, p)
-        val parents = tpe.parents
-        val preparedMembers = prepareSortedInterfaceInfo(members, parents)
-        new TypeInspectInfo(TypeInfo(tpe, PosNeededAvail), preparedMembers)
-      })
-      .orElse {
-        logger.error("ERROR: Failed to get any type information :(  ")
-        None
-      }
+    typeAt(p).map(tpe => {
+      val members = getMembersForTypeAt(tpe, p)
+      val parents = tpe.parents
+      val preparedMembers = prepareSortedInterfaceInfo(members, parents)
+      new TypeInspectInfo(TypeInfo(tpe, PosNeededAvail), preparedMembers)
+    }).orElse {
+      logger.error("ERROR: Failed to get any type information :(  ")
+      None
+    }
   }
 
   private def typeOfTree(t: Tree): Option[Type] = {
@@ -418,21 +415,18 @@ class RichPresentationCompiler(
       memberName: Option[String],
       signatureString: Option[String]): Option[Symbol] = {
     symbolByName(fqn).flatMap { owner =>
-      memberName
-        .flatMap { rawName =>
-          val module = rawName.endsWith("$")
-          val nm = if (module) rawName.dropRight(1) else rawName
-          val candidates = owner.info.members.filter { s =>
-            s.nameString == nm && ((module && s.isModule) || (
-              !module && (!s.isModule || s.hasPackageFlag)
-            ))
-          }
-          val exact = signatureString.flatMap { s =>
-            candidates.find(_.signatureString == s)
-          }
-          exact.orElse(candidates.headOption)
+      memberName.flatMap { rawName =>
+        val module = rawName.endsWith("$")
+        val nm = if (module) rawName.dropRight(1) else rawName
+        val candidates = owner.info.members.filter { s =>
+          s.nameString == nm && ((module && s.isModule) || (!module && (!s
+            .isModule || s.hasPackageFlag)))
         }
-        .orElse(Some(owner))
+        val exact = signatureString.flatMap { s =>
+          candidates.find(_.signatureString == s)
+        }
+        exact.orElse(candidates.headOption)
+      }.orElse(Some(owner))
     }
   }
 
@@ -453,7 +447,8 @@ class RichPresentationCompiler(
 
   private def noDefinitionFound(tree: Tree) = {
     logger.warn(
-      "No definition found. Please report to https://github.com/ensime/ensime-server/issues/492 with description of what did you expected. symbolAt for " + tree.getClass + ": " + tree)
+      "No definition found. Please report to https://github.com/ensime/ensime-server/issues/492 with description of what did you expected. symbolAt for " + tree
+        .getClass + ": " + tree)
     Nil
   }
 
@@ -474,9 +469,7 @@ class RichPresentationCompiler(
             }
           List(locate(pos, expr))
         } else {
-          selectors
-            .filter(_.namePos <= pos.point)
-            .sortBy(_.namePos)
+          selectors.filter(_.namePos <= pos.point).sortBy(_.namePos)
             .lastOption map { sel =>
             val tpe = stabilizedType(expr)
             List(tpe.member(sel.name), tpe.member(sel.name.toTypeName))

@@ -33,8 +33,8 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
     if (element.getContainingFile.getFileType.getName != Sbt.Name)
       return Array.empty
     extractSubprojectPath(element).flatMap { path =>
-      findBuildFile(path, element.getProject).map(
-        new SbtSubprojectReference(element, _))
+      findBuildFile(path, element.getProject)
+        .map(new SbtSubprojectReference(element, _))
     }.toArray
   }
 
@@ -44,12 +44,11 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
     FilenameIndex
       .getFilesByName(project, "build.sbt", GlobalSearchScope.allScope(project))
       .find { file =>
-        val relativeToProjectPath =
-          project.getBasePath + File.separator + subprojectPath
+        val relativeToProjectPath = project.getBasePath + File
+          .separator + subprojectPath
         val absolutePath = FileUtil.toSystemIndependentName(
           FileUtil.toCanonicalPath(relativeToProjectPath))
-        Option(file.getParent)
-          .map(_.getVirtualFile.getPath)
+        Option(file.getParent).map(_.getVirtualFile.getPath)
           .fold(false)(FileUtil.comparePaths(_, absolutePath) == 0)
       }
   }
@@ -101,8 +100,8 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
         }.flatten
       case expr @ ScInfixExpr(_, op, _) if op.getText == "/" =>
         extractPathFromConcatenation(expr)
-      case expr: ScReferenceExpression =>
-        Option(expr.resolve()).flatMap(extractPathFromReference)
+      case expr: ScReferenceExpression => Option(expr.resolve())
+          .flatMap(extractPathFromReference)
       case ScMethodCall(expr, ScLiteralImpl.string(path) :: _)
           if expr.getText == "file" => Option(path)
       case _                        => None

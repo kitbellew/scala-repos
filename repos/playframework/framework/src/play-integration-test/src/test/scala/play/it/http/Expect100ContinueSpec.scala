@@ -64,8 +64,8 @@ trait Expect100ContinueSpec
     // See https://issues.jboss.org/browse/NETTY-390 for more details.
     "close the connection after rejecting a Expect: 100-continue body" in withServer(
       EssentialAction(_ => Accumulator.done(Results.Ok))) { port =>
-      val responses = BasicHttpClient.makeRequests(port, checkClosed = true)(
-        BasicRequest(
+      val responses = BasicHttpClient
+        .makeRequests(port, checkClosed = true)(BasicRequest(
           "POST",
           "/",
           "HTTP/1.1",

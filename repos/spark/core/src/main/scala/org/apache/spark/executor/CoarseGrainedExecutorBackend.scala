@@ -58,31 +58,27 @@ private[spark] class CoarseGrainedExecutorBackend(
 
   override def onStart() {
     logInfo("Connecting to driver: " + driverUrl)
-    rpcEnv
-      .asyncSetupEndpointRefByURI(driverUrl)
-      .flatMap { ref =>
-        // This is a very fast action so we can use "ThreadUtils.sameThread"
-        driver = Some(ref)
-        ref.ask[RegisterExecutorResponse](
-          RegisterExecutor(executorId, self, cores, extractLogUrls))
-      }(ThreadUtils.sameThread)
-      .onComplete {
-        // This is a very fast action so we can use "ThreadUtils.sameThread"
-        case Success(msg) => Utils.tryLogNonFatalError {
-            Option(self)
-              .foreach(_.send(msg)) // msg must be RegisterExecutorResponse
-          }
-        case Failure(e) => {
-          logError(s"Cannot register with driver: $driverUrl", e)
-          System.exit(1)
+    rpcEnv.asyncSetupEndpointRefByURI(driverUrl).flatMap { ref =>
+      // This is a very fast action so we can use "ThreadUtils.sameThread"
+      driver = Some(ref)
+      ref.ask[RegisterExecutorResponse](
+        RegisterExecutor(executorId, self, cores, extractLogUrls))
+    }(ThreadUtils.sameThread).onComplete {
+      // This is a very fast action so we can use "ThreadUtils.sameThread"
+      case Success(msg) => Utils.tryLogNonFatalError {
+          Option(self)
+            .foreach(_.send(msg)) // msg must be RegisterExecutorResponse
         }
-      }(ThreadUtils.sameThread)
+      case Failure(e) => {
+        logError(s"Cannot register with driver: $driverUrl", e)
+        System.exit(1)
+      }
+    }(ThreadUtils.sameThread)
   }
 
   def extractLogUrls: Map[String, String] = {
     val prefix = "SPARK_LOG_URL_"
-    sys.env
-      .filterKeys(_.startsWith(prefix))
+    sys.env.filterKeys(_.startsWith(prefix))
       .map(e => (e._1.substring(prefix.length).toLowerCase, e._2))
   }
 
@@ -178,9 +174,9 @@ private[spark] object CoarseGrainedExecutorBackend extends Logging {
         new SecurityManager(executorConf),
         clientMode = true)
       val driver = fetcher.setupEndpointRefByURI(driverUrl)
-      val props =
-        driver.askWithRetry[Seq[(String, String)]](RetrieveSparkProps) ++
-          Seq[(String, String)](("spark.app.id", appId))
+      val props = driver
+        .askWithRetry[Seq[(String, String)]](RetrieveSparkProps) ++
+        Seq[(String, String)](("spark.app.id", appId))
       fetcher.shutdown()
 
       // Create SparkEnv using properties we fetched from the driver.

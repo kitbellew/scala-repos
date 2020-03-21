@@ -111,12 +111,8 @@ private[akka] class DistributedPubSubMessageSerializer(
   private def addressToProto(address: Address): dm.Address.Builder =
     address match {
       case Address(protocol, system, Some(host), Some(port)) ⇒
-        dm.Address
-          .newBuilder()
-          .setSystem(system)
-          .setHostname(host)
-          .setPort(port)
-          .setProtocol(protocol)
+        dm.Address.newBuilder().setSystem(system).setHostname(host)
+          .setPort(port).setProtocol(protocol)
       case _ ⇒
         throw new IllegalArgumentException(
           s"Address [${address}] could not be serialized: host or port missing.")
@@ -130,17 +126,10 @@ private[akka] class DistributedPubSubMessageSerializer(
       address.getPort)
 
   private def statusToProto(status: Status): dm.Status = {
-    val versions = status.versions
-      .map {
-        case (a, v) ⇒
-          dm.Status.Version
-            .newBuilder()
-            .setAddress(addressToProto(a))
-            .setTimestamp(v)
-            .build()
-      }
-      .toVector
-      .asJava
+    val versions = status.versions.map {
+      case (a, v) ⇒ dm.Status.Version.newBuilder().setAddress(addressToProto(a))
+          .setTimestamp(v).build()
+    }.toVector.asJava
     dm.Status.newBuilder().addAllVersions(versions).build()
   }
 
@@ -153,31 +142,18 @@ private[akka] class DistributedPubSubMessageSerializer(
         addressFromProto(v.getAddress) -> v.getTimestamp)(breakOut))
 
   private def deltaToProto(delta: Delta): dm.Delta = {
-    val buckets = delta.buckets
-      .map { b ⇒
-        val entries = b.content
-          .map {
-            case (key, value) ⇒
-              val b = dm.Delta.Entry
-                .newBuilder()
-                .setKey(key)
-                .setVersion(value.version)
-              value.ref.foreach(r ⇒
-                b.setRef(Serialization.serializedActorPath(r)))
-              b.build()
-          }
-          .toVector
-          .asJava
+    val buckets = delta.buckets.map { b ⇒
+      val entries = b.content.map {
+        case (key, value) ⇒
+          val b = dm.Delta.Entry.newBuilder().setKey(key)
+            .setVersion(value.version)
+          value.ref.foreach(r ⇒ b.setRef(Serialization.serializedActorPath(r)))
+          b.build()
+      }.toVector.asJava
 
-        dm.Delta.Bucket
-          .newBuilder()
-          .setOwner(addressToProto(b.owner))
-          .setVersion(b.version)
-          .addAllContent(entries)
-          .build()
-      }
-      .toVector
-      .asJava
+      dm.Delta.Bucket.newBuilder().setOwner(addressToProto(b.owner))
+        .setVersion(b.version).addAllContent(entries).build()
+    }.toVector.asJava
     dm.Delta.newBuilder().addAllBuckets(buckets).build()
   }
 
@@ -200,12 +176,8 @@ private[akka] class DistributedPubSubMessageSerializer(
   }
 
   private def sendToProto(send: Send): dm.Send = {
-    dm.Send
-      .newBuilder()
-      .setPath(send.path)
-      .setLocalAffinity(send.localAffinity)
-      .setPayload(payloadToProto(send.msg))
-      .build()
+    dm.Send.newBuilder().setPath(send.path).setLocalAffinity(send.localAffinity)
+      .setPayload(payloadToProto(send.msg)).build()
   }
 
   private def sendFromBinary(bytes: Array[Byte]): Send =
@@ -215,12 +187,9 @@ private[akka] class DistributedPubSubMessageSerializer(
     Send(send.getPath, payloadFromProto(send.getPayload), send.getLocalAffinity)
 
   private def sendToAllToProto(sendToAll: SendToAll): dm.SendToAll = {
-    dm.SendToAll
-      .newBuilder()
-      .setPath(sendToAll.path)
+    dm.SendToAll.newBuilder().setPath(sendToAll.path)
       .setAllButSelf(sendToAll.allButSelf)
-      .setPayload(payloadToProto(sendToAll.msg))
-      .build()
+      .setPayload(payloadToProto(sendToAll.msg)).build()
   }
 
   private def sendToAllFromBinary(bytes: Array[Byte]): SendToAll =
@@ -233,11 +202,8 @@ private[akka] class DistributedPubSubMessageSerializer(
       sendToAll.getAllButSelf)
 
   private def publishToProto(publish: Publish): dm.Publish = {
-    dm.Publish
-      .newBuilder()
-      .setTopic(publish.topic)
-      .setPayload(payloadToProto(publish.msg))
-      .build()
+    dm.Publish.newBuilder().setTopic(publish.topic)
+      .setPayload(payloadToProto(publish.msg)).build()
   }
 
   private def publishFromBinary(bytes: Array[Byte]): Publish =
@@ -249,8 +215,7 @@ private[akka] class DistributedPubSubMessageSerializer(
   private def payloadToProto(msg: Any): dm.Payload = {
     val m = msg.asInstanceOf[AnyRef]
     val msgSerializer = serialization.findSerializerFor(m)
-    val builder = dm.Payload
-      .newBuilder()
+    val builder = dm.Payload.newBuilder()
       .setEnclosedMessage(ByteString.copyFrom(msgSerializer.toBinary(m)))
       .setSerializerId(msgSerializer.identifier)
 
@@ -260,8 +225,8 @@ private[akka] class DistributedPubSubMessageSerializer(
         if (manifest != "")
           builder.setMessageManifest(ByteString.copyFromUtf8(manifest))
       case _ ⇒ if (msgSerializer.includeManifest)
-          builder.setMessageManifest(
-            ByteString.copyFromUtf8(m.getClass.getName))
+          builder
+            .setMessageManifest(ByteString.copyFromUtf8(m.getClass.getName))
     }
 
     builder.build()
@@ -271,12 +236,10 @@ private[akka] class DistributedPubSubMessageSerializer(
     val manifest =
       if (payload.hasMessageManifest) payload.getMessageManifest.toStringUtf8
       else ""
-    serialization
-      .deserialize(
-        payload.getEnclosedMessage.toByteArray,
-        payload.getSerializerId,
-        manifest)
-      .get
+    serialization.deserialize(
+      payload.getEnclosedMessage.toByteArray,
+      payload.getSerializerId,
+      manifest).get
   }
 
 }

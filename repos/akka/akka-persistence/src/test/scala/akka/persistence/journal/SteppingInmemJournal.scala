@@ -116,8 +116,8 @@ final class SteppingInmemJournal extends InmemJournal {
     val promise = Promise[Unit]()
     val future = promise.future
     doOrEnqueue { () ⇒
-      promise.completeWith(
-        super.asyncDeleteMessagesTo(persistenceId, toSequenceNr))
+      promise
+        .completeWith(super.asyncDeleteMessagesTo(persistenceId, toSequenceNr))
       future
     }
     future

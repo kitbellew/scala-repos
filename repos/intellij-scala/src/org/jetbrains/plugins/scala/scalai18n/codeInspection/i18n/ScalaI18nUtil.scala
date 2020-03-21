@@ -90,9 +90,8 @@ object ScalaI18nUtil {
     if (property == NULL) return false
     if (property != null) return true
     val annotationParams = new mutable.HashMap[String, AnyRef]
-    annotationParams.put(
-      AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
-      null)
+    annotationParams
+      .put(AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER, null)
     val isI18n: Boolean = mustBePropertyKey(project, expr, annotationParams)
     if (!isI18n) { expr.putUserData(CACHE, NULL) }
     isI18n
@@ -133,8 +132,8 @@ object ScalaI18nUtil {
     val parent: PsiElement = expression.getParent
     if (!parent.isInstanceOf[ScArgumentExprList]) return false
     var idx: Int = -1
-    val args: Array[ScExpression] =
-      parent.asInstanceOf[ScArgumentExprList].exprsArray
+    val args: Array[ScExpression] = parent.asInstanceOf[ScArgumentExprList]
+      .exprsArray
     var i: Int = 0
     var flag = true
     while (i < args.length && flag) {
@@ -178,8 +177,7 @@ object ScalaI18nUtil {
       expression: ScExpression): ScExpression = {
     if (expression.isInstanceOf[PsiBinaryExpression] || expression.getParent
           .isInstanceOf[PsiBinaryExpression]) {
-      return CachedValuesManager
-        .getManager(project)
+      return CachedValuesManager.getManager(project)
         .getParameterizedCachedValue(
           expression,
           TOP_LEVEL_EXPRESSION,
@@ -245,8 +243,8 @@ object ScalaI18nUtil {
     val annotation: PsiAnnotation = AnnotationUtil.findAnnotation(param, annFqn)
     if (annotation != null) {
       if (annotationAttributeValues != null) {
-        val parameterList: PsiAnnotationParameterList =
-          annotation.getParameterList
+        val parameterList: PsiAnnotationParameterList = annotation
+          .getParameterList
         val attributes: Array[PsiNameValuePair] = parameterList.getAttributes
         for (attribute <- attributes) {
           val name: String = attribute.getName
@@ -276,8 +274,7 @@ object ScalaI18nUtil {
       key: String,
       resourceBundleName: String): Boolean = {
     if (resourceBundleName == null) {
-      !PropertiesImplUtil
-        .findPropertiesByKey(expression.getProject, key)
+      !PropertiesImplUtil.findPropertiesByKey(expression.getProject, key)
         .isEmpty
     } else {
       val propertiesFiles = propertiesFilesByBundleName(
@@ -286,8 +283,8 @@ object ScalaI18nUtil {
       var containedInPropertiesFile: Boolean = false
       import scala.collection.JavaConversions._
       for (propertiesFile <- propertiesFiles) {
-        containedInPropertiesFile |= propertiesFile.findPropertyByKey(
-          key) != null
+        containedInPropertiesFile |= propertiesFile
+          .findPropertyByKey(key) != null
       }
       containedInPropertiesFile
     }
@@ -307,9 +304,7 @@ object ScalaI18nUtil {
     }
     if (virtualFile != null) {
       val project: Project = containingFile.getProject
-      val module: Module = ProjectRootManager
-        .getInstance(project)
-        .getFileIndex
+      val module: Module = ProjectRootManager.getInstance(project).getFileIndex
         .getModuleForFile(virtualFile)
       if (module != null) {
         val refManager: PropertiesReferenceManager = PropertiesReferenceManager
@@ -389,8 +384,8 @@ object ScalaI18nUtil {
             var flag = true
             if (result.isValidResult && result.getElement
                   .isInstanceOf[IProperty]) {
-              val value: String =
-                result.getElement.asInstanceOf[IProperty].getValue
+              val value: String = result.getElement.asInstanceOf[IProperty]
+                .getValue
               var format: MessageFormat = null
               try { format = new MessageFormat(value) }
               catch { case e: Exception => { flag = false } }
@@ -462,16 +457,14 @@ object ScalaI18nUtil {
       @NotNull
       outResourceBundle: Ref[String]): Boolean = {
     val annotationAttributeValues = new mutable.HashMap[String, AnyRef]
-    annotationAttributeValues.put(
-      AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
-      null)
+    annotationAttributeValues
+      .put(AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER, null)
     if (mustBePropertyKey(project, expression, annotationAttributeValues)) {
-      annotationAttributeValues get AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER exists {
+      annotationAttributeValues get AnnotationUtil
+        .PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER exists {
         case bundleName: PsiElement =>
-          val result = JavaPsiFacade
-            .getInstance(bundleName.getProject)
-            .getConstantEvaluationHelper
-            .computeConstantExpression(bundleName)
+          val result = JavaPsiFacade.getInstance(bundleName.getProject)
+            .getConstantEvaluationHelper.computeConstantExpression(bundleName)
           if (result == null) false
           else {
             val bundleName = result.toString
@@ -490,10 +483,10 @@ object ScalaI18nUtil {
       value: String) {
     import scala.collection.JavaConversions._
     for (file <- propertiesFiles) {
-      val documentManager: PsiDocumentManager = PsiDocumentManager.getInstance(
-        project)
-      documentManager.commitDocument(
-        documentManager.getDocument(file.getContainingFile))
+      val documentManager: PsiDocumentManager = PsiDocumentManager
+        .getInstance(project)
+      documentManager
+        .commitDocument(documentManager.getDocument(file.getContainingFile))
       val existingProperty: IProperty = file.findPropertyByKey(key)
       if (existingProperty == null) { file.addProperty(key, value) }
     }
@@ -508,8 +501,8 @@ object ScalaI18nUtil {
         editor.getSelectionModel.getSelectionStart,
         editor.getSelectionModel.getSelectionEnd)
     }
-    val psiElement: PsiElement = psiFile.findElementAt(
-      editor.getCaretModel.getOffset)
+    val psiElement: PsiElement = psiFile
+      .findElementAt(editor.getCaretModel.getOffset)
     if (psiElement == null || psiElement.isInstanceOf[PsiWhiteSpace])
       return null
     psiElement.getTextRange

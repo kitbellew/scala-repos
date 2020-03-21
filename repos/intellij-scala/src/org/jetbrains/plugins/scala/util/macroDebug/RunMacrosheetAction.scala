@@ -28,30 +28,25 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
       defaultText: String = "",
       lang: Language = StdLanguages.TEXT): Editor = {
     val editor = EditorFactory.getInstance.createViewer(
-      PsiDocumentManager
-        .getInstance(project)
-        .getDocument(
-          PsiFileFactory
-            .getInstance(project)
-            .createFileFromText("dummy", lang, defaultText)),
+      PsiDocumentManager.getInstance(project).getDocument(
+        PsiFileFactory.getInstance(project)
+          .createFileFromText("dummy", lang, defaultText)),
       project)
     editor setBorder null
     editor
   }
 
   def actionPerformed(e: AnActionEvent) {
-    val editor =
-      FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
+    val editor = FileEditorManager.getInstance(e.getProject)
+      .getSelectedTextEditor
     if (editor == null) return
 
-    val psiFile: PsiFile = PsiDocumentManager
-      .getInstance(e.getProject)
+    val psiFile: PsiFile = PsiDocumentManager.getInstance(e.getProject)
       .getPsiFile(editor.getDocument)
     psiFile match {
       case file: ScalaFile =>
         val viewer = WorksheetEditorPrinter
-          .newMacrosheetUiFor(editor, file.getVirtualFile)
-          .getViewerEditor
+          .newMacrosheetUiFor(editor, file.getVirtualFile).getViewerEditor
 
         val project = e.getProject
 
@@ -71,8 +66,8 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
         }
 
         ScalaMacroDebuggingUtil.macrosToExpand.clear()
-        ScalaMacroDebuggingUtil.allMacroCalls.foreach(
-          ScalaMacroDebuggingUtil.macrosToExpand.add)
+        ScalaMacroDebuggingUtil.allMacroCalls
+          .foreach(ScalaMacroDebuggingUtil.macrosToExpand.add)
         ScalaMacroDebuggingUtil.expandMacros(project)
 
       case _ =>

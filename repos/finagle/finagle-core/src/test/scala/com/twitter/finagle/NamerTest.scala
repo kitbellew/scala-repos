@@ -146,16 +146,13 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
   test("NameTree.bind: Alt with Fail/Empty")(new Ctx {
     assert(
-      namer
-        .bind(NameTree.read("(! | /test/1 | /test/2)"))
-        .sample() == NameTree.Fail)
+      namer.bind(NameTree.read("(! | /test/1 | /test/2)")).sample() == NameTree
+        .Fail)
     assert(
-      namer
-        .bind(NameTree.read("(~ | /$/fail | /test/1)"))
-        .sample() == NameTree.Fail)
+      namer.bind(NameTree.read("(~ | /$/fail | /test/1)")).sample() == NameTree
+        .Fail)
     assert(
-      namer
-        .bind(NameTree.read("(/$/nil | /$/fail | /test/1)"))
+      namer.bind(NameTree.read("(/$/nil | /$/fail | /test/1)"))
         .sample() == NameTree.Empty)
   })
 
@@ -175,8 +172,7 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
       Namer.global.lookup(Path.read("/$/inet")).sample()
     }
 
-    Namer.global
-      .lookup(Path.read("/$/inet/127.0.0.1/1234/foobar"))
+    Namer.global.lookup(Path.read("/$/inet/127.0.0.1/1234/foobar"))
       .sample() match {
       case NameTree.Leaf(bound: Name.Bound) =>
         assert(bound.addr.sample() == Addr.Bound(Address("127.0.0.1", 1234)))
@@ -216,8 +212,7 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
 
   test("Namer.global: /$/{className}") {
     assert(
-      Namer.global
-        .lookup(Path.read("/$/com.twitter.finagle.TestNamer/foo"))
+      Namer.global.lookup(Path.read("/$/com.twitter.finagle.TestNamer/foo"))
         .sample()
         == NameTree.Leaf(Name.Path(Path.Utf8("bar"))))
   }

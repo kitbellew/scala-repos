@@ -12,8 +12,8 @@ object Macros {
       def fullyInitializeSymbol(sym: Symbol): Unit = {
         val internal = c.universe
           .asInstanceOf[scala.reflect.internal.SymbolTable]
-        internal.definitions.fullyInitializeSymbol(
-          sym.asInstanceOf[internal.Symbol])
+        internal.definitions
+          .fullyInitializeSymbol(sym.asInstanceOf[internal.Symbol])
       }
       def defString(sym: Symbol): String = {
         val internal = c.universe
@@ -28,8 +28,7 @@ object Macros {
       sym.info
       println(sym.toString)
       println(s"primary constructor: ${showCtor(sym.primaryConstructor)}")
-      val ctors = sym.info.members
-        .filter(_.name == termNames.CONSTRUCTOR)
+      val ctors = sym.info.members.filter(_.name == termNames.CONSTRUCTOR)
         .map(sym => showCtor(sym))
       ctors.toList.sorted.foreach(println)
     }

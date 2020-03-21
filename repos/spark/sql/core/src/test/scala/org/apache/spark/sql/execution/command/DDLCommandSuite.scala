@@ -531,11 +531,9 @@ class DDLCommandSuite extends PlanTest {
       """.stripMargin
     val parsed1 = parser.parsePlan(sql1)
     val parsed2 = parser.parsePlan(sql2)
-    val meta1 = new MetadataBuilder()
-      .putString("comment", "test_comment")
+    val meta1 = new MetadataBuilder().putString("comment", "test_comment")
       .build()
-    val meta2 = new MetadataBuilder()
-      .putString("comment", "test_comment2")
+    val meta2 = new MetadataBuilder().putString("comment", "test_comment2")
       .build()
     val tableIdent = TableIdentifier("table_name", None)
     val expected1 = AlterTableAddCol(

@@ -102,8 +102,7 @@ class SimpleCatalog(val conf: CatalystConf) extends Catalog {
 
     // If an alias was specified by the lookup, wrap the plan in a subquery so that attributes are
     // properly qualified with this alias.
-    alias
-      .map(a => SubqueryAlias(a, tableWithQualifiers))
+    alias.map(a => SubqueryAlias(a, tableWithQualifiers))
       .getOrElse(tableWithQualifiers)
   }
 
@@ -149,8 +148,7 @@ trait OverrideCatalog extends Catalog {
 
         // If an alias was specified by the lookup, wrap the plan in a sub-query so that attributes
         // are properly qualified with this alias.
-        alias
-          .map(a => SubqueryAlias(a, tableWithQualifiers))
+        alias.map(a => SubqueryAlias(a, tableWithQualifiers))
           .getOrElse(tableWithQualifiers)
 
       case None => super.lookupRelation(tableIdent, alias)
@@ -159,8 +157,8 @@ trait OverrideCatalog extends Catalog {
 
   abstract override def getTables(
       databaseName: Option[String]): Seq[(String, Boolean)] = {
-    overrides.keySet().asScala.map(_ -> true).toSeq ++ super.getTables(
-      databaseName)
+    overrides.keySet().asScala.map(_ -> true).toSeq ++ super
+      .getTables(databaseName)
   }
 
   override def registerTable(

@@ -26,8 +26,8 @@ object Multipart {
   private[this] def CrLf = "\r\n"
 
   private[this] val alphabet =
-    "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".getBytes(
-      US_ASCII)
+    "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      .getBytes(US_ASCII)
 
   /**
     * Transforms a `Source[MultipartFormData.Part]` to a `Source[ByteString]`
@@ -174,12 +174,10 @@ object Multipart {
         val (key, filename, contentType) = bodyPart match {
           case MultipartFormData.DataPart(innerKey, _) =>
             (innerKey, None, Option("text/plain"))
-          case MultipartFormData.FilePart(
-                innerKey,
-                innerFilename,
-                innerContentType,
-                _) => (innerKey, Option(innerFilename), innerContentType)
-          case _   => throw new UnsupportedOperationException()
+          case MultipartFormData
+                .FilePart(innerKey, innerFilename, innerContentType, _) =>
+            (innerKey, Option(innerFilename), innerContentType)
+          case _ => throw new UnsupportedOperationException()
         }
         renderDisposition(f, key, filename)
         contentType.foreach { ct => renderContentType(f, ct) }

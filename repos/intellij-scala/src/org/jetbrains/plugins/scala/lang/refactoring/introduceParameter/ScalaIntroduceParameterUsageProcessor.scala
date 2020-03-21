@@ -27,15 +27,13 @@ class ScalaIntroduceParameterUsageProcessor
       case isIntroduceParameter(data) if data.replaceAll =>
         for { occ <- data.occurrences } yield {
           val file = data.methodToSearchFor.getContainingFile
-          val doc = PsiDocumentManager
-            .getInstance(data.getProject)
+          val doc = PsiDocumentManager.getInstance(data.getProject)
             .getDocument(file)
           TextRangeUsageInfo(file, doc.createRangeMarker(occ))
         }
       case isIntroduceParameter(data) =>
         val file = data.methodToSearchFor.getContainingFile
-        val doc = PsiDocumentManager
-          .getInstance(data.getProject)
+        val doc = PsiDocumentManager.getInstance(data.getProject)
           .getDocument(file)
         Array(TextRangeUsageInfo(file, doc.createRangeMarker(data.mainOcc)))
       case _ => Array.empty
@@ -59,8 +57,8 @@ class ScalaIntroduceParameterUsageProcessor
         val file = textRangeUsages.head.file
 
         val manager = PsiDocumentManager.getInstance(file.getProject)
-        manager.doPostponedOperationsAndUnblockDocument(
-          manager.getDocument(file))
+        manager
+          .doPostponedOperationsAndUnblockDocument(manager.getDocument(file))
 
         ScalaRefactoringUtil.replaceOccurences(
           textRangeUsages.map(usage => TextRange.create(usage.range)),

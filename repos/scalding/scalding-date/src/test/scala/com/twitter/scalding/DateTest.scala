@@ -120,8 +120,8 @@ class DateTest extends WordSpec {
       val start_str = "2011-10-24 20:03:00"
       //string -> date -> string
       assert(
-        RichDate(start_str).toString(
-          DateOps.DATETIME_HMS_WITH_DASH) === start_str)
+        RichDate(start_str)
+          .toString(DateOps.DATETIME_HMS_WITH_DASH) === start_str)
       //long -> date == date -> long -> date
       val long_val = 1319511818135L
       val date = RichDate(long_val)
@@ -194,45 +194,38 @@ class DateTest extends WordSpec {
       assert(DateRange("2010-10-01", "2010-10-10").each(Days(1)).size === 10)
       assert(
         DateRange("201010010000", RichDate("2010-10-02") - Millisecs(1))
-          .each(Hours(1))
-          .size === 24)
+          .each(Hours(1)).size === 24)
       assert(
         DateRange("2010-10-01 00:00", RichDate("2010-10-02") - Millisecs(1))
-          .each(Hours(1))
-          .size === 24)
+          .each(Hours(1)).size === 24)
       assert(
         DateRange("2010-10-01 00:00", RichDate("2010-10-02") + Millisecs(1))
-          .each(Hours(1))
-          .size === 25)
+          .each(Hours(1)).size === 25)
       assert(
-        DateRange("2010-10-01", RichDate.upperBound("2010-10-20"))
-          .each(Days(1))
+        DateRange("2010-10-01", RichDate.upperBound("2010-10-20")).each(Days(1))
           .size === 20)
       assert(
         DateRange("2010-10-01", RichDate.upperBound("2010-10-01"))
-          .each(Hours(1))
-          .size === 24)
+          .each(Hours(1)).size === 24)
       assert(
         DateRange("2010-10-31", RichDate.upperBound("2010-10-31"))
-          .each(Hours(1))
-          .size === 24)
+          .each(Hours(1)).size === 24)
       assert(
-        DateRange("2010-10-31", RichDate.upperBound("2010-10-31"))
-          .each(Days(1))
+        DateRange("2010-10-31", RichDate.upperBound("2010-10-31")).each(Days(1))
           .size === 1)
       assert(
         DateRange("2010-10-31 12:00", RichDate.upperBound("2010-10-31 13"))
-          .each(Minutes(1))
-          .size === 120)
+          .each(Minutes(1)).size === 120)
     }
     "have each partition disjoint and adjacent" in {
       def eachIsDisjoint(d: DateRange, dur: Duration) {
         val dl = d.each(dur)
-        assert(dl.zip(dl.tail).forall {
-          case (da, db) =>
-            da.isBefore(db.start) && db
-              .isAfter(da.end) && ((da.end + Millisecs(1)) == db.start)
-        })
+        assert(
+          dl.zip(dl.tail).forall {
+            case (da, db) =>
+              da.isBefore(db.start) && db.isAfter(da.end) && ((da
+                .end + Millisecs(1)) == db.start)
+          })
       }
       eachIsDisjoint(DateRange("2010-10-01", "2010-10-03"), Days(1))
       eachIsDisjoint(DateRange("2010-10-01", "2010-10-03"), Weeks(1))
@@ -360,8 +353,8 @@ class DateTest extends WordSpec {
       hourlyTestCases.foreach { dr =>
         val resultantDR = globifierOps.hourlyRtGlobifier(dr)
         assert(
-          globifierOps.normalizeHrDr(dr) === globifierOps.normalizeHrDr(
-            resultantDR))
+          globifierOps.normalizeHrDr(dr) === globifierOps
+            .normalizeHrDr(resultantDR))
       }
 
       val dailyTestCases = List(
@@ -375,8 +368,8 @@ class DateTest extends WordSpec {
       dailyTestCases.foreach { dr =>
         val resultantDR = globifierOps.dailyRtGlobifier(dr)
         assert(
-          globifierOps.normalizeDayDr(dr) === globifierOps.normalizeDayDr(
-            resultantDR))
+          globifierOps.normalizeDayDr(dr) === globifierOps
+            .normalizeDayDr(resultantDR))
       }
     }
 
@@ -387,10 +380,9 @@ class DateTest extends WordSpec {
     }
     def bruteForce(pattern: String, dr: DateRange, dur: Duration)(implicit
         tz: java.util.TimeZone) = {
-      dr.each(dur)
-        .map { (dr: DateRange) =>
-          String.format(pattern, dr.start.toCalendar(tz))
-        }
+      dr.each(dur).map { (dr: DateRange) =>
+        String.format(pattern, dr.start.toCalendar(tz))
+      }
     }
 
     "handle random test cases" in {
@@ -401,8 +393,8 @@ class DateTest extends WordSpec {
 
       val r = new java.util.Random()
       (0 until 100) foreach { step =>
-        val start =
-          RichDate("2011-08-03").value.getTime + r.nextInt(Int.MaxValue)
+        val start = RichDate("2011-08-03").value.getTime + r
+          .nextInt(Int.MaxValue)
         val dr = DateRange(start, start + r.nextInt(Int.MaxValue))
         val splits = bruteForce(pattern, dr, Hours(1))
         val globed = t1.globify(dr)
@@ -410,8 +402,7 @@ class DateTest extends WordSpec {
         assert(eachElementDistinct(globed))
         //See that each path is matched by exactly one glob:
         assert(
-          splits
-            .map { path => globed.filter { globMatchesDate(_)(path) }.size }
+          splits.map { path => globed.filter { globMatchesDate(_)(path) }.size }
             .forall { _ == 1 })
       }
     }

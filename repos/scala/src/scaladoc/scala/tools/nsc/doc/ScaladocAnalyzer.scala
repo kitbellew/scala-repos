@@ -31,8 +31,10 @@ trait ScaladocAnalyzer extends Analyzer {
 
     override protected def macroImplementationNotFoundMessage(
         name: Name): String =
-      (super.macroImplementationNotFoundMessage(name)
-        + "\nWhen generating scaladocs for multiple projects at once, consider using -Ymacro-no-expand to disable macro expansions altogether.")
+      (
+        super.macroImplementationNotFoundMessage(name)
+          + "\nWhen generating scaladocs for multiple projects at once, consider using -Ymacro-no-expand to disable macro expansions altogether."
+      )
 
     override def typedDocDef(docDef: DocDef, mode: Mode, pt: Type): Tree = {
       val sym = docDef.symbol
@@ -43,8 +45,9 @@ trait ScaladocAnalyzer extends Analyzer {
         comment.defineVariables(sym)
         val typer1 = newTyper(context.makeNewScope(docDef, context.owner))
         for (useCase <- comment.useCases) {
-          typer1.silent(
-            _.asInstanceOf[ScaladocTyper].defineUseCases(useCase)) match {
+          typer1
+            .silent(
+              _.asInstanceOf[ScaladocTyper].defineUseCases(useCase)) match {
             case SilentTypeError(err) =>
               reporter.warning(useCase.pos, err.errMsg)
             case _ =>
@@ -53,7 +56,9 @@ trait ScaladocAnalyzer extends Analyzer {
             if (sym.name != useCaseSym.name)
               reporter.warning(
                 useCase.pos,
-                "@usecase " + useCaseSym.name.decode + " does not match commented symbol: " + sym.name.decode)
+                "@usecase " + useCaseSym.name
+                  .decode + " does not match commented symbol: " + sym.name
+                  .decode)
           }
         }
       }
@@ -80,9 +85,8 @@ trait ScaladocAnalyzer extends Analyzer {
              repl =>
                silent(_.typedTypeConstructor(stringParser(repl).typ())) map {
                  tpt =>
-                   val alias = enclClass.newAliasType(
-                     name.toTypeName,
-                     useCase.pos)
+                   val alias = enclClass
+                     .newAliasType(name.toTypeName, useCase.pos)
                    val tparams = cloneSymbolsAtOwner(
                      tpt.tpe.typeSymbol.typeParams,
                      alias)
@@ -203,7 +207,8 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
       // tags that make a local double-star comment look unclean, as though it were API
       def unclean(comment: Comment): Boolean = {
         import comment._
-        authors.nonEmpty || result.nonEmpty || throws.nonEmpty || valueParams.nonEmpty ||
+        authors.nonEmpty || result.nonEmpty || throws.nonEmpty || valueParams
+          .nonEmpty ||
         typeParams.nonEmpty || version.nonEmpty || since.nonEmpty
       }
       def isDirty = unclean(unmooredParser parseComment doc)

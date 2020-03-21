@@ -124,9 +124,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
       var loader = conf.getClassLoader
       val auxJars = HiveConf.getVar(conf, HiveConf.ConfVars.HIVEAUXJARS)
       if (StringUtils.isNotBlank(auxJars)) {
-        loader = Utilities.addToClassPath(
-          loader,
-          StringUtils.split(auxJars, ","))
+        loader = Utilities
+          .addToClassPath(loader, StringUtils.split(auxJars, ","))
       }
       conf.setClassLoader(loader)
       Thread.currentThread().setContextClassLoader(loader)
@@ -201,7 +200,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
           catch {
             case e: IOException =>
               logWarning(
-                "WARNING: Failed to write command history file: " + e.getMessage)
+                "WARNING: Failed to write command history file: " + e
+                  .getMessage)
           }
         case _ =>
       }
@@ -327,8 +327,8 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
           if (ret != 0) {
             // For analysis exception, only the error is printed out to the console.
             rc.getException() match {
-              case e: AnalysisException =>
-                err.println(s"""Error in query: ${e.getMessage}""")
+              case e: AnalysisException => err.println(s"""Error in query: ${e
+                  .getMessage}""")
               case _ => err.println(rc.getErrorMessage())
             }
             driver.close()
@@ -337,9 +337,8 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
 
           val res = new JArrayList[String]()
 
-          if (HiveConf.getBoolVar(
-                conf,
-                HiveConf.ConfVars.HIVE_CLI_PRINT_HEADER)) {
+          if (HiveConf
+                .getBoolVar(conf, HiveConf.ConfVars.HIVE_CLI_PRINT_HEADER)) {
             // Print the column names.
             Option(driver.getSchema.getFieldSchemas).foreach { fields =>
               out.println(fields.asScala.map(_.getName).mkString("\t"))
@@ -357,8 +356,8 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
             }
           } catch {
             case e: IOException =>
-              console.printError(
-                s"""Failed with exception ${e.getClass.getName}: ${e.getMessage}
+              console.printError(s"""Failed with exception ${e.getClass
+                                      .getName}: ${e.getMessage}
                    |${org.apache.hadoop.util.StringUtils.stringifyException(e)}
                  """.stripMargin)
               ret = 1

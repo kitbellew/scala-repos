@@ -198,20 +198,14 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     sc.addSparkListener(listener)
     // Each stage creates its own set of internal accumulators so the
     // values for the same metric should not be mixed up across stages
-    val rdd = sc
-      .parallelize(1 to 100, numPartitions)
-      .map { i => (i, i) }
+    val rdd = sc.parallelize(1 to 100, numPartitions).map { i => (i, i) }
       .mapPartitions { iter =>
         TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1
         iter
-      }
-      .reduceByKey { case (x, y) => x + y }
-      .mapPartitions { iter =>
+      }.reduceByKey { case (x, y) => x + y }.mapPartitions { iter =>
         TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 10
         iter
-      }
-      .repartition(numPartitions * 2)
-      .mapPartitions { iter =>
+      }.repartition(numPartitions * 2).mapPartitions { iter =>
         TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 100
         iter
       }
@@ -244,24 +238,19 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     // 2 stages. On the second stage, we trigger a fetch failure on the first stage attempt.
     // This should retry both stages in the scheduler. Note that we only want to fail the
     // first stage attempt because we want the stage to eventually succeed.
-    val x = sc
-      .parallelize(1 to 100, numPartitions)
-      .mapPartitions { iter =>
-        TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1; iter
-      }
-      .groupBy(identity)
-    val sid = x.dependencies.head
-      .asInstanceOf[ShuffleDependency[_, _, _]]
-      .shuffleHandle
-      .shuffleId
+    val x = sc.parallelize(1 to 100, numPartitions).mapPartitions { iter =>
+      TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 1; iter
+    }.groupBy(identity)
+    val sid = x.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]]
+      .shuffleHandle.shuffleId
     val rdd = x.mapPartitionsWithIndex {
       case (i, iter) =>
         // Fail the first stage attempt. Here we use the task attempt ID to determine this.
         // This job runs 2 stages, and we're in the second stage. Therefore, any task attempt
         // ID that's < 2 * numPartitions belongs to the first attempt of this stage.
         val taskContext = TaskContext.get()
-        val isFirstStageAttempt =
-          taskContext.taskAttemptId() < numPartitions * 2
+        val isFirstStageAttempt = taskContext
+          .taskAttemptId() < numPartitions * 2
         if (isFirstStageAttempt) {
           throw new FetchFailedException(
             SparkEnv.get.blockManager.blockManagerId,

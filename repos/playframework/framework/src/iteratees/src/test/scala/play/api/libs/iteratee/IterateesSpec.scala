@@ -138,8 +138,7 @@ object IterateesSpec
     "flatMap directly to result when no remaining input" in {
       mustExecute(1) { flatMapEC =>
         await(
-          Done(3)
-            .flatMap((x: Int) => Done[Int, Int](x * 2))(flatMapEC)
+          Done(3).flatMap((x: Int) => Done[Int, Int](x * 2))(flatMapEC)
             .unflatten) must equalTo(Step.Done(6, Input.Empty))
       }
     }
@@ -156,9 +155,8 @@ object IterateesSpec
     "flatMap result and process remaining input with Cont" in {
       mustExecute(1) { flatMapEC =>
         await(
-          Done(3, Input.El("remaining"))
-            .flatMap((x: Int) => Cont(in => Done[String, Int](x * 2, in)))(
-              flatMapEC)
+          Done(3, Input.El("remaining")).flatMap((x: Int) =>
+            Cont(in => Done[String, Int](x * 2, in)))(flatMapEC)
             .unflatten) must equalTo(Step.Done(6, Input.El("remaining")))
       }
     }
@@ -189,16 +187,14 @@ object IterateesSpec
     "concatenate unused input with flatMapTraversable" in {
       mustExecute(1) { flatMapEC =>
         await(
-          Done(3, Input.El(List(1, 2)))
-            .flatMapTraversable(_ =>
-              Done[List[Int], Int](4, Input.El(List(3, 4))))(
-              implicitly[
-                List[Int] => scala.collection.TraversableLike[Int, List[Int]]],
-              implicitly[scala.collection.generic.CanBuildFrom[List[
-                Int], Int, List[Int]]],
-              flatMapEC
-            )
-            .unflatten) must equalTo(Step.Done(4, Input.El(List(1, 2, 3, 4))))
+          Done(3, Input.El(List(1, 2))).flatMapTraversable(_ =>
+            Done[List[Int], Int](4, Input.El(List(3, 4))))(
+            implicitly[
+              List[Int] => scala.collection.TraversableLike[Int, List[Int]]],
+            implicitly[
+              scala.collection.generic.CanBuildFrom[List[Int], Int, List[Int]]],
+            flatMapEC
+          ).unflatten) must equalTo(Step.Done(4, Input.El(List(1, 2, 3, 4))))
       }
     }
 
@@ -224,11 +220,9 @@ object IterateesSpec
     "flatMap recursively" in {
       mustExecute(1) { flatMapEC =>
         await(
-          Iteratee
-            .flatten(
-              Cont[Int, Int](_ => Done(3))
-                .flatMap((x: Int) => Done[Int, Int](x * 2))(flatMapEC)
-                .feed(Input.El(11)))
+          Iteratee.flatten(
+            Cont[Int, Int](_ => Done(3)).flatMap((x: Int) =>
+              Done[Int, Int](x * 2))(flatMapEC).feed(Input.El(11)))
             .unflatten) must equalTo(Step.Done(6, Input.Empty))
       }
     }
@@ -293,8 +287,7 @@ object IterateesSpec
     "map the final iteratee's result (with map)" in {
       mustExecute(4, 1) { (foldEC, mapEC) =>
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee
-            .fold[Int, Int](0)(_ + _)(foldEC)
+          Enumerator(1, 2, 3, 4) |>>> Iteratee.fold[Int, Int](0)(_ + _)(foldEC)
             .map(_ * 2)(mapEC)) must equalTo(20)
       }
     }
@@ -302,8 +295,7 @@ object IterateesSpec
     "map the final iteratee's result (with mapM)" in {
       mustExecute(4, 1) { (foldEC, mapEC) =>
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee
-            .fold[Int, Int](0)(_ + _)(foldEC)
+          Enumerator(1, 2, 3, 4) |>>> Iteratee.fold[Int, Int](0)(_ + _)(foldEC)
             .mapM(x => Future.successful(x * 2))(mapEC)) must equalTo(20)
       }
     }
@@ -315,8 +307,8 @@ object IterateesSpec
     "fold input" in {
       mustExecute(4) { foldEC =>
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee.fold[Int, Int](0)(_ + _)(
-            foldEC)) must equalTo(10)
+          Enumerator(1, 2, 3, 4) |>>> Iteratee
+            .fold[Int, Int](0)(_ + _)(foldEC)) must equalTo(10)
       }
     }
 
@@ -340,8 +332,8 @@ object IterateesSpec
       mustExecute(4) { foldEC =>
         val folder = (x: Int, y: Int) => Future.successful((x + y, false))
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee.fold2[Int, Int](0)(folder)(
-            foldEC)) must equalTo(10)
+          Enumerator(1, 2, 3, 4) |>>> Iteratee
+            .fold2[Int, Int](0)(folder)(foldEC)) must equalTo(10)
       }
     }
 
@@ -349,8 +341,8 @@ object IterateesSpec
       mustExecute(3) { foldEC =>
         val folder = (x: Int, y: Int) => Future.successful((x + y, y > 2))
         await(
-          Enumerator(1, 2, 3, 4) |>>> Iteratee.fold2[Int, Int](0)(folder)(
-            foldEC)) must equalTo(6)
+          Enumerator(1, 2, 3, 4) |>>> Iteratee
+            .fold2[Int, Int](0)(folder)(foldEC)) must equalTo(6)
       }
     }
 
@@ -475,10 +467,9 @@ object IterateesSpec
       mustExecute(5) { implicit foldEC =>
         val it = delayed(cont(input1 =>
           delayed(cont(input2 =>
-            delayed(cont(input3 =>
-              delayed(error(input1 + input2 + input3)))))))).recover {
-          case t: Throwable => expected
-        }
+            delayed(
+              cont(input3 => delayed(error(input1 + input2 + input3))))))))
+          .recover { case t: Throwable => expected }
         val actual = await(
           Enumerator(unexpected, unexpected, unexpected) |>>> it)
         actual must equalTo(expected)
@@ -656,8 +647,8 @@ object IterateesSpec
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(
-        Input.Empty) >>> Enumerator(3, 4)
+      val enum = Enumerator(1, 2) >>> Enumerator
+        .enumInput(Input.Empty) >>> Enumerator(3, 4)
       await(enum |>>> takenAndNotTaken(3)) must equalTo((Seq(1, 2, 3), Seq(4)))
     }
 
@@ -733,8 +724,8 @@ object IterateesSpec
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(
-        Input.Empty) >>> Enumerator(3, 4)
+      val enum = Enumerator(1, 2) >>> Enumerator
+        .enumInput(Input.Empty) >>> Enumerator(3, 4)
       await(enum |>>> process(3)) must equalTo((Seq(1, 2, 3), false, Seq(4)))
     }
 
@@ -746,8 +737,7 @@ object IterateesSpec
       // Work out how many arrays we'd need to create to trigger an OutOfMemoryError
       val arraySize = 1000000
       val tooManyArrays = (Runtime.getRuntime.maxMemory / arraySize).toInt + 1
-      val iterator = Iterator
-        .range(0, tooManyArrays)
+      val iterator = Iterator.range(0, tooManyArrays)
         .map(_ => new Array[Byte](arraySize))
       import play.api.libs.iteratee.Execution.Implicits.defaultExecutionContext
       await(

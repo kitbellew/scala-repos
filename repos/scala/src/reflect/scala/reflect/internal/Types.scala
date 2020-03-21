@@ -98,10 +98,10 @@ trait Types
   /** In case anyone wants to turn on type parameter bounds being used
     *  to seed type constraints.
     */
-  private final val propagateParameterBoundsToTypeVars =
-    sys.props contains "scalac.debug.prop-constraints"
-  private final val sharperSkolems =
-    sys.props contains "scalac.experimental.sharper-skolems"
+  private final val propagateParameterBoundsToTypeVars = sys
+    .props contains "scalac.debug.prop-constraints"
+  private final val sharperSkolems = sys
+    .props contains "scalac.experimental.sharper-skolems"
 
   protected val enableTypeVarExperimentals = settings.Xexperimental.value
 
@@ -267,8 +267,8 @@ trait Types
     // the only thingies that we want to splice are: 1) type parameters, 2) abstract type members
     // the thingies that we don't want to splice are: 1) concrete types (obviously), 2) existential skolems
     def isSpliceable = {
-      this.isInstanceOf[
-        TypeRef] && typeSymbol.isAbstractType && !typeSymbol.isExistential
+      this.isInstanceOf[TypeRef] && typeSymbol.isAbstractType && !typeSymbol
+        .isExistential
     }
 
     def companion = {
@@ -1093,9 +1093,8 @@ trait Types
           case ExistentialType(quantified, qtpe) =>
             boundSyms = boundSyms ::: quantified
           case TypeRef(_, sym, _) =>
-            if ((
-                  sym.isExistentialSkolem || sym.isGADTSkolem
-                ) && // treat GADT skolems like existential skolems
+            if ((sym.isExistentialSkolem || sym
+                  .isGADTSkolem) && // treat GADT skolems like existential skolems
                 !((boundSyms contains sym) || (skolems contains sym)))
               skolems = sym :: skolems
           case _ =>
@@ -1526,7 +1525,8 @@ trait Types
 
   protected def computeBaseClasses(tpe: Type): List[Symbol] = {
     val parents =
-      tpe.parents // adriaan says tpe.parents does work sometimes, so call it only once
+      tpe
+        .parents // adriaan says tpe.parents does work sometimes, so call it only once
     val baseTail =
       (if (parents.isEmpty || parents.head.isInstanceOf[PackageTypeRef]) Nil
        else {
@@ -1683,8 +1683,8 @@ trait Types
           else null
         try {
           tpe.baseClassesCache = null
-          tpe.baseClassesCache = tpe.memo(computeBaseClasses(tpe))(
-            tpe.typeSymbol :: _.baseClasses.tail)
+          tpe.baseClassesCache = tpe
+            .memo(computeBaseClasses(tpe))(tpe.typeSymbol :: _.baseClasses.tail)
         } finally {
           if (Statistics.canEnable) Statistics.popTimer(typeOpsStack, start)
         }
@@ -2285,9 +2285,9 @@ trait Types
     //  to true, as ErrorType is always a sub/super type....)
     final def relativize(tp: Type): Type =
       if (tp.isTrivial) tp
-      else if (args.isEmpty && (
-                 phase.erasedTypes || !isHigherKinded || isRawIfWithoutArgs(sym)
-               )) tp.asSeenFrom(pre, sym.owner)
+      else if (args.isEmpty && (phase
+                 .erasedTypes || !isHigherKinded || isRawIfWithoutArgs(sym)))
+        tp.asSeenFrom(pre, sym.owner)
       else {
         // The type params and type args should always match in length,
         // though a mismatch can arise when a typevar is encountered for which
@@ -2503,8 +2503,8 @@ trait Types
               case xs => xs.init.mkString("(", ", ", ")") + " => " + xs.last
             }
           } else if (isTupleTypeDirect(this)) tupleTypeString
-          else if (sym.isAliasType && prefixChain.exists(
-                     _.termSymbol.isSynthetic) && (this ne dealias))
+          else if (sym.isAliasType && prefixChain
+                     .exists(_.termSymbol.isSynthetic) && (this ne dealias))
             "" + dealias
           else ""
       }
@@ -2675,8 +2675,8 @@ trait Types
     }
 
     override def atOwner(owner: Symbol) =
-      if (!allSymbolsHaveOwner(params, owner) || (resultType.atOwner(
-            owner) ne resultType)) cloneInfo(owner)
+      if (!allSymbolsHaveOwner(params, owner) || (resultType
+            .atOwner(owner) ne resultType)) cloneInfo(owner)
       else this
 
     override def kind = "MethodType"
@@ -2776,8 +2776,8 @@ trait Types
     }
 
     override def atOwner(owner: Symbol) =
-      if (!allSymbolsHaveOwner(typeParams, owner) || (resultType.atOwner(
-            owner) ne resultType)) cloneInfo(owner)
+      if (!allSymbolsHaveOwner(typeParams, owner) || (resultType
+            .atOwner(owner) ne resultType)) cloneInfo(owner)
       else this
 
     override def kind = "PolyType"
@@ -2895,9 +2895,8 @@ trait Types
           origin)
       }
 
-      val canSharpenBounds = (
-        underlying.typeSymbol.isJavaDefined || sharperSkolems
-      ) && isStraightApplication
+      val canSharpenBounds = (underlying.typeSymbol
+        .isJavaDefined || sharperSkolems) && isStraightApplication
 
       if (canSharpenBounds)
         deriveType2(quantified, tpars, newSharpenedSkolem)(underlying)
@@ -2927,9 +2926,8 @@ trait Types
         case TypeRef(pre, sym, args) =>
           def isQuantified(tpe: Type): Boolean = {
             (tpe exists (t => qset contains t.typeSymbol)) ||
-            tpe.typeSymbol.isRefinementClass && (
-              tpe.parents exists isQuantified
-            )
+            tpe.typeSymbol.isRefinementClass && (tpe
+              .parents exists isQuantified)
           }
           val (wildcardArgs, otherArgs) =
             args partition (arg => qset contains arg.typeSymbol)
@@ -2976,10 +2974,11 @@ trait Types
     def withTypeVars(op: Type => Boolean, depth: Depth): Boolean = {
       val quantifiedFresh = cloneSymbols(quantified)
       val tvars = quantifiedFresh map (tparam => TypeVar(tparam))
-      val underlying1 = underlying.instantiateTypeParams(
-        quantified,
-        tvars
-      ) // fuse subst quantified -> quantifiedFresh -> tvars
+      val underlying1 = underlying
+        .instantiateTypeParams(
+          quantified,
+          tvars
+        ) // fuse subst quantified -> quantifiedFresh -> tvars
       op(underlying1) && {
         solve(
           tvars,
@@ -3252,8 +3251,8 @@ trait Types
          tv.linkSuspended(this)
          TypeVar.trace(
            "applyArgs",
-           "In " + originLocation + ", apply args " + newArgs.mkString(
-             ", ") + " to " + originName)(tv)
+           "In " + originLocation + ", apply args " + newArgs
+             .mkString(", ") + " to " + originName)(tv)
        } else TypeVar(typeSymbol).setInst(ErrorType))
     // newArgs.length may differ from args.length (could've been empty before)
     //
@@ -3335,7 +3334,8 @@ trait Types
     protected final def sharesConstraints(other: Type): Boolean =
       other match {
         case other: TypeVar =>
-          constr == other.constr // SI-8237 avoid cycles. Details in pos/t8237.scala
+          constr == other
+            .constr // SI-8237 avoid cycles. Details in pos/t8237.scala
         case _ => false
       }
     private[Types] def suspended_=(b: Boolean): Unit =
@@ -3460,9 +3460,8 @@ trait Types
             isLowerBound && ((tp.parents exists unifyFull) || (
               // @PP: Is it going to be faster to filter out the parents we just checked?
               // That's what's done here but I'm not sure it matters.
-              tp.baseTypeSeq.toList.tail filterNot (
-                tp.parents contains _
-              ) exists unifyFull)))
+              tp.baseTypeSeq.toList.tail filterNot (tp
+                .parents contains _) exists unifyFull)))
         }
     }
 
@@ -3544,9 +3543,8 @@ trait Types
       List(
         Some(encl.enclClass),
         if (encl.isMethod) Some(encl) else None,
-        if (sym.owner.isTerm && (sym.owner != encl)) Some(sym.owner)
-        else
-          None).flatten map (s => s.decodedName + tparamsOfSym(s)) mkString "#"
+        if (sym.owner.isTerm && (sym.owner != encl)) Some(sym.owner) else None)
+        .flatten map (s => s.decodedName + tparamsOfSym(s)) mkString "#"
     }
     private def levelString = if (settings.explaintypes) level else ""
     override def safeToString =
@@ -3732,8 +3730,8 @@ trait Types
   abstract class LazyPolyType(override val typeParams: List[Symbol])
       extends LazyType {
     override def safeToString =
-      (if (typeParams.isEmpty) ""
-       else typeParamsString(this)) + super.safeToString
+      (if (typeParams.isEmpty) "" else typeParamsString(this)) + super
+        .safeToString
   }
 
 // Creators ---------------------------------------------------------------
@@ -3748,9 +3746,8 @@ trait Types
         //         Here, we exclude the module symbol, which allows us to bind to the accessor.
         // SI-8054 We must only do this after refchecks, otherwise we exclude the module symbol which does not yet have an accessor!
         val isModuleWithAccessor = phase.refChecked && sym.isModuleNotMethod
-        sym.isType || (
-          !isModuleWithAccessor && sym.isStable && !sym.hasVolatileType
-        )
+        sym.isType || (!isModuleWithAccessor && sym.isStable && !sym
+          .hasVolatileType)
       } orElse sym
   }
 
@@ -3826,9 +3823,8 @@ trait Types
     val sym1 = if (sym.isAbstractType) rebind(pre, sym) else sym
     // don't expand cyclical type alias
     // we require that object is initialized, thus info.typeParams instead of typeParams.
-    if (sym1.isAliasType && sameLength(
-          sym1.info.typeParams,
-          args) && !sym1.lockOK) throw new RecoverableCyclicReference(sym1)
+    if (sym1.isAliasType && sameLength(sym1.info.typeParams, args) && !sym1
+          .lockOK) throw new RecoverableCyclicReference(sym1)
 
     val pre1 = pre match {
       case x: SuperType if sym1.isEffectivelyFinal || sym1.isDeferred =>
@@ -3845,9 +3841,8 @@ trait Types
   def copyTypeRef(tp: Type, pre: Type, sym: Symbol, args: List[Type]): Type =
     tp match {
       case TypeRef(pre0, sym0, _) if pre == pre0 && sym0.name == sym.name =>
-        if (sym.isAliasType && sameLength(
-              sym.info.typeParams,
-              args) && !sym.lockOK) throw new RecoverableCyclicReference(sym)
+        if (sym.isAliasType && sameLength(sym.info.typeParams, args) && !sym
+              .lockOK) throw new RecoverableCyclicReference(sym)
 
         TypeRef(pre, sym, args)
       case _ => typeRef(pre, sym, args)
@@ -4165,9 +4160,8 @@ trait Types
       clazz: Symbol,
       tparams: List[Symbol]): List[Symbol] = {
     val eparams = mapWithIndex(tparams)((tparam, i) =>
-      clazz.newExistential(
-        newTypeName("?" + i),
-        clazz.pos) setInfo tparam.info.bounds)
+      clazz.newExistential(newTypeName("?" + i), clazz.pos) setInfo tparam.info
+        .bounds)
 
     eparams map (_ substInfo (tparams, eparams))
   }
@@ -4595,9 +4589,8 @@ trait Types
       if (symHi.isTerm)
         (isSubType(tpLo, tpHi, depth) &&
         (!symHi.isStable || symLo.isStable) && // sub-member must remain stable
-        (
-          !symLo.hasVolatileType || symHi.hasVolatileType || tpHi.isWildcard
-        )) // sub-member must not introduce volatility
+        (!symLo.hasVolatileType || symHi.hasVolatileType || tpHi
+          .isWildcard)) // sub-member must not introduce volatility
       else if (symHi.isAbstractType)
         ((tpHi.bounds containsType tpLo) &&
         kindsConform(symHi :: Nil, tpLo :: Nil, preLo, symLo.owner))
@@ -4747,11 +4740,11 @@ trait Types
           case sym2 :: rest2 =>
             val tp1 = sym1.tpe
             val tp2 = sym2.tpe
-            (
-              tp1 =:= tp2 ||
-              syms1isJava && tp2.typeSymbol == ObjectClass && tp1.typeSymbol == AnyClass ||
-              syms2isJava && tp1.typeSymbol == ObjectClass && tp2.typeSymbol == AnyClass
-            ) &&
+            (tp1 =:= tp2 ||
+            syms1isJava && tp2.typeSymbol == ObjectClass && tp1
+              .typeSymbol == AnyClass ||
+            syms2isJava && tp1.typeSymbol == ObjectClass && tp2
+              .typeSymbol == AnyClass) &&
             matchingParams(rest1, rest2, syms1isJava, syms2isJava)
         }
     }
@@ -4775,10 +4768,8 @@ trait Types
       tparams: List[Symbol],
       targs: List[Type]): List[TypeBounds] =
     mapList(tparams)(
-      _.info
-        .asSeenFrom(pre, owner)
-        .instantiateTypeParams(tparams, targs)
-        .bounds)
+      _.info.asSeenFrom(pre, owner).instantiateTypeParams(tparams, targs)
+      .bounds)
 
   def elimAnonymousClass(t: Type) =
     t match {
@@ -4828,9 +4819,8 @@ trait Types
         val pres = tps map (_.prefix) // prefix normalizes automatically
         val pre =
           if (variance.isPositive) lub(pres, depth) else glb(pres, depth)
-        val argss = tps map (
-          _.normalize.typeArgs
-        ) // symbol equality (of the tp in tps) was checked using typeSymbol, which normalizes, so should normalize before retrieving arguments
+        val argss = tps map (_.normalize
+        .typeArgs) // symbol equality (of the tp in tps) was checked using typeSymbol, which normalizes, so should normalize before retrieving arguments
         val capturedParams = new ListBuffer[Symbol]
         try {
           if (sym == ArrayClass && phase.erasedTypes) {
@@ -4861,9 +4851,8 @@ trait Types
                   if (as.size == 1) as.head
                   else if (depth.isZero) {
                     log(
-                      "Giving up merging args: can't unify %s under %s".format(
-                        as.mkString(", "),
-                        tparam.fullLocationString))
+                      "Giving up merging args: can't unify %s under %s"
+                        .format(as.mkString(", "), tparam.fullLocationString))
                     // Don't return "Any" (or "Nothing") when we have to give up due to
                     // recursion depth. Return NoType, which prevents us from poisoning
                     // lublist's results. It can recognize the recursion and deal with it, but
@@ -5189,41 +5178,30 @@ object TypesStats {
   val nestedLubCount = Statistics.newCounter("#all lubs/glbs")
   val findMemberCount = Statistics.newCounter("#findMember ops")
   val findMembersCount = Statistics.newCounter("#findMembers ops")
-  val noMemberCount = Statistics.newSubCounter(
-    "  of which not found",
-    findMemberCount)
-  val multMemberCount = Statistics.newSubCounter(
-    "  of which multiple overloaded",
-    findMemberCount)
+  val noMemberCount = Statistics
+    .newSubCounter("  of which not found", findMemberCount)
+  val multMemberCount = Statistics
+    .newSubCounter("  of which multiple overloaded", findMemberCount)
   val typerNanos = Statistics.newTimer("time spent typechecking", "typer")
   val lubNanos = Statistics.newStackableTimer("time spent in lubs", typerNanos)
-  val subtypeNanos = Statistics.newStackableTimer(
-    "time spent in <:<",
-    typerNanos)
-  val findMemberNanos = Statistics.newStackableTimer(
-    "time spent in findmember",
-    typerNanos)
-  val findMembersNanos = Statistics.newStackableTimer(
-    "time spent in findmembers",
-    typerNanos)
-  val asSeenFromNanos = Statistics.newStackableTimer(
-    "time spent in asSeenFrom",
-    typerNanos)
-  val baseTypeSeqNanos = Statistics.newStackableTimer(
-    "time spent in baseTypeSeq",
-    typerNanos)
-  val baseClassesNanos = Statistics.newStackableTimer(
-    "time spent in baseClasses",
-    typerNanos)
-  val compoundBaseTypeSeqCount = Statistics.newSubCounter(
-    "  of which for compound types",
-    baseTypeSeqCount)
-  val typerefBaseTypeSeqCount = Statistics.newSubCounter(
-    "  of which for typerefs",
-    baseTypeSeqCount)
-  val singletonBaseTypeSeqCount = Statistics.newSubCounter(
-    "  of which for singletons",
-    baseTypeSeqCount)
+  val subtypeNanos = Statistics
+    .newStackableTimer("time spent in <:<", typerNanos)
+  val findMemberNanos = Statistics
+    .newStackableTimer("time spent in findmember", typerNanos)
+  val findMembersNanos = Statistics
+    .newStackableTimer("time spent in findmembers", typerNanos)
+  val asSeenFromNanos = Statistics
+    .newStackableTimer("time spent in asSeenFrom", typerNanos)
+  val baseTypeSeqNanos = Statistics
+    .newStackableTimer("time spent in baseTypeSeq", typerNanos)
+  val baseClassesNanos = Statistics
+    .newStackableTimer("time spent in baseClasses", typerNanos)
+  val compoundBaseTypeSeqCount = Statistics
+    .newSubCounter("  of which for compound types", baseTypeSeqCount)
+  val typerefBaseTypeSeqCount = Statistics
+    .newSubCounter("  of which for typerefs", baseTypeSeqCount)
+  val singletonBaseTypeSeqCount = Statistics
+    .newSubCounter("  of which for singletons", baseTypeSeqCount)
   val typeOpsStack = Statistics.newTimerStack()
 
   /* Commented out, because right now this does not inline, so creates a closure which will distort statistics

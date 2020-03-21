@@ -39,10 +39,10 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
         val debugging = Flow[Int].log("my-debug")
         Source(1 to 2).via(debugging).runWith(Sink.ignore)
 
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[my-debug] Element: 1"))
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[my-debug] Element: 2"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[my-debug] Element: 1"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[my-debug] Element: 2"))
         logProbe.expectMsg(
           Logging.Debug(LogSrc, LogClazz, "[my-debug] Upstream finished."))
       }
@@ -54,9 +54,7 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
           onFailure = Logging.DebugLevel)
 
         val debugging = Flow[Int].log("my-debug")
-        Source(1 to 2)
-          .via(debugging)
-          .withAttributes(disableElementLogging)
+        Source(1 to 2).via(debugging).withAttributes(disableElementLogging)
           .runWith(Sink.ignore)
 
         logProbe.expectMsg(
@@ -70,24 +68,18 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
         val log = Logging(system, "com.example.ImportantLogger")
 
         val debugging: javadsl.Flow[Integer, Integer, NotUsed] = javadsl.Flow
-          .of(classOf[Integer])
-          .log("log-1")
-          .log(
+          .of(classOf[Integer]).log("log-1").log(
             "log-2",
             new akka.japi.function.Function[Integer, Integer] {
               def apply(i: Integer) = i
-            })
-          .log(
+            }).log(
             "log-3",
             new akka.japi.function.Function[Integer, Integer] {
               def apply(i: Integer) = i
             },
-            log)
-          .log("log-4", log)
+            log).log("log-4", log)
 
-        javadsl.Source
-          .single[Integer](1)
-          .via(debugging)
+        javadsl.Source.single[Integer](1).via(debugging)
           .runWith(javadsl.Sink.ignore(), mat)
 
         var counter = 0
@@ -110,10 +102,10 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
       "debug each element" in {
         Source(1 to 2).log("flow-s2").runWith(Sink.ignore)
 
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[flow-s2] Element: 1"))
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[flow-s2] Element: 2"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[flow-s2] Element: 1"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[flow-s2] Element: 2"))
         logProbe.expectMsg(
           Logging.Debug(LogSrc, LogClazz, "[flow-s2] Upstream finished."))
       }
@@ -122,8 +114,8 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
         case class Complex(a: Int, b: String)
         Source.single(Complex(1, "42")).log("flow-s3", _.b).runWith(Sink.ignore)
 
-        logProbe.expectMsg(
-          Logging.Debug(LogSrc, LogClazz, "[flow-s3] Element: 42"))
+        logProbe
+          .expectMsg(Logging.Debug(LogSrc, LogClazz, "[flow-s3] Element: 42"))
         logProbe.expectMsg(
           Logging.Debug(LogSrc, LogClazz, "[flow-s3] Upstream finished."))
       }
@@ -143,8 +135,8 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
         val src = "com.example.ImportantLogger(akka://FlowLogSpec)"
         val clazz = classOf[DummyClassForStringSources]
         logProbe.expectMsg(Logging.Debug(src, clazz, "[flow-5] Element: 42"))
-        logProbe.expectMsg(
-          Logging.Debug(src, clazz, "[flow-5] Upstream finished."))
+        logProbe
+          .expectMsg(Logging.Debug(src, clazz, "[flow-5] Upstream finished."))
       }
 
       "allow configuring log levels via Attributes" in {
@@ -153,25 +145,18 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
           onFinish = Logging.InfoLevel,
           onFailure = Logging.DebugLevel)
 
-        Source
-          .single(42)
-          .log("flow-6")
-          .withAttributes(Attributes.logLevels(
-            onElement = Logging.WarningLevel,
-            onFinish = Logging.InfoLevel,
-            onFailure = Logging.DebugLevel))
-          .runWith(Sink.ignore)
+        Source.single(42).log("flow-6").withAttributes(Attributes.logLevels(
+          onElement = Logging.WarningLevel,
+          onFinish = Logging.InfoLevel,
+          onFailure = Logging.DebugLevel)).runWith(Sink.ignore)
 
-        logProbe.expectMsg(
-          Logging.Warning(LogSrc, LogClazz, "[flow-6] Element: 42"))
+        logProbe
+          .expectMsg(Logging.Warning(LogSrc, LogClazz, "[flow-6] Element: 42"))
         logProbe.expectMsg(
           Logging.Info(LogSrc, LogClazz, "[flow-6] Upstream finished."))
 
         val cause = new TestException
-        Source
-          .failed(cause)
-          .log("flow-6e")
-          .withAttributes(logAttrs)
+        Source.failed(cause).log("flow-6e").withAttributes(logAttrs)
           .runWith(Sink.ignore)
         logProbe.expectMsg(Logging.Debug(
           LogSrc,
@@ -181,8 +166,7 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
 
       "follow supervision strategy when exception thrown" in {
         val ex = new RuntimeException() with NoStackTrace
-        val future = Source(1 to 5)
-          .log("hi", n ⇒ throw ex)
+        val future = Source(1 to 5).log("hi", n ⇒ throw ex)
           .withAttributes(supervisionStrategy(resumingDecider))
           .runWith(Sink.fold(0)(_ + _))
         Await.result(future, 500.millis) shouldEqual 0
@@ -193,22 +177,16 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
       "debug each element" in {
         val log = Logging(system, "com.example.ImportantLogger")
 
-        javadsl.Source
-          .single[Integer](1)
-          .log("log-1")
-          .log(
-            "log-2",
-            new akka.japi.function.Function[Integer, Integer] {
-              def apply(i: Integer) = i
-            })
-          .log(
-            "log-3",
-            new akka.japi.function.Function[Integer, Integer] {
-              def apply(i: Integer) = i
-            },
-            log)
-          .log("log-4", log)
-          .runWith(javadsl.Sink.ignore(), mat)
+        javadsl.Source.single[Integer](1).log("log-1").log(
+          "log-2",
+          new akka.japi.function.Function[Integer, Integer] {
+            def apply(i: Integer) = i
+          }).log(
+          "log-3",
+          new akka.japi.function.Function[Integer, Integer] {
+            def apply(i: Integer) = i
+          },
+          log).log("log-4", log).runWith(javadsl.Sink.ignore(), mat)
 
         var counter = 1
         import scala.concurrent.duration._

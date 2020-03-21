@@ -31,8 +31,8 @@ abstract class CompletionTestBase
   override def loadFile = {
     val fileName = getTestName(false) + testFileExt
     val filePath = folderPath + fileName
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem.getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText =
       Sbt.DefaultImplicitImports.map("import " + _).mkString("\n") + "\n" +
@@ -61,10 +61,8 @@ abstract class CompletionTestBase
     super.setUpWithoutScalaLib()
     addSbtAsModuleDependency(getModuleAdapter)
     inWriteAction(
-      StartupManager
-        .getInstance(getProjectAdapter)
-        .asInstanceOf[StartupManagerImpl]
-        .startCacheUpdate())
+      StartupManager.getInstance(getProjectAdapter)
+        .asInstanceOf[StartupManagerImpl].startCacheUpdate())
     FileUtil.delete(SbtResolverIndexesManager.DEFAULT_INDEXES_DIR)
   }
 

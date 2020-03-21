@@ -140,8 +140,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       case Nil => echo(cmd + ": no such command.  Type :help for help.")
       case xs =>
         echo(
-          cmd + " is ambiguous: did you mean " + xs
-            .map(":" + _.name)
+          cmd + " is ambiguous: did you mean " + xs.map(":" + _.name)
             .mkString(" or ") + "?")
     }
     Result(keepRunning = true, None)
@@ -464,10 +463,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   // return false if repl should exit
   def processLine(line: String): Boolean = {
     import scala.concurrent.duration._
-    Await.ready(
-      globalFuture,
-      10.minutes
-    ) // Long timeout here to avoid test failures under heavy load.
+    Await
+      .ready(
+        globalFuture,
+        10.minutes
+      ) // Long timeout here to avoid test failures under heavy load.
 
     command(line) match {
       case Result(false, _)      => false
@@ -550,8 +550,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       }
       if (intp.namedDefinedTerms.nonEmpty)
         echo(
-          "Forgetting all expression results and named terms: " + intp.namedDefinedTerms
-            .mkString(", "))
+          "Forgetting all expression results and named terms: " + intp
+            .namedDefinedTerms.mkString(", "))
       if (intp.definedTypes.nonEmpty)
         echo("Forgetting defined types: " + intp.definedTypes.mkString(", "))
       if (destructive) createInterpreter() else reset()
@@ -743,9 +743,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     }
     def alreadyDefined(clsName: String) =
       intp.classLoader.tryToLoadClass(clsName).isDefined
-    val exists = entries
-      .filter(_.hasExtension("class"))
-      .map(classNameOf)
+    val exists = entries.filter(_.hasExtension("class")).map(classNameOf)
       .exists(alreadyDefined)
 
     if (!f.exists) echo(s"The path '$f' doesn't seem to exist.")
@@ -921,8 +919,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       case ""            => None
       case lineComment() => None // line comment, do nothing
       case paste() if !paste.running =>
-        paste.transcript(
-          Iterator(code) ++ readWhile(!paste.isPromptOnly(_))) match {
+        paste
+          .transcript(
+            Iterator(code) ++ readWhile(!paste.isPromptOnly(_))) match {
           case Some(s) => interpretStartingWith(s)
           case _       => None
         }
@@ -982,11 +981,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           if (settings.debug)
             Console.println(
               s"Trying to instantiate an InteractiveReader from $className")
-          Class
-            .forName(className)
-            .getConstructor(classOf[Completer])
-            .newInstance(completer)
-            .asInstanceOf[InteractiveReader]
+          Class.forName(className).getConstructor(classOf[Completer])
+            .newInstance(completer).asInstanceOf[InteractiveReader]
         }
 
       def mkReader(maker: ReaderMaker) =
@@ -1024,8 +1020,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   private def loopPostInit() {
     // Bind intp somewhere out of the regular namespace where
     // we can get at it in generated code.
-    intp.quietBind(
-      NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
+    intp
+      .quietBind(NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
     // Auto-run code via some setting.
     (replProps.replAutorunCode.option
       flatMap (f => io.File(f).safeSlurp())

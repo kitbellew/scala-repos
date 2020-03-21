@@ -28,22 +28,19 @@ class InjectorReviewDialog(
   var editorsPanel: JPanel = null
   val editors: Seq[Editor] = {
     val containingJar = manifest._1.jarPath
-    val files = manifest._2
-      .flatMap { injectorDescriptor =>
-        injectorDescriptor.sources
-          .flatMap { source =>
-            val file = VirtualFileManager
-              .getInstance()
-              .findFileByUrl(s"jar://$containingJar!/$source")
-            if (file.isValid) {
-              if (file.isDirectory) file.getChildren else Seq(file)
-            } else {
-              LOG.warn(
-                s"Source root '$source' is broken, check your library - $containingJar")
-              Seq.empty
-            }
-          }
+    val files = manifest._2.flatMap { injectorDescriptor =>
+      injectorDescriptor.sources.flatMap { source =>
+        val file = VirtualFileManager.getInstance()
+          .findFileByUrl(s"jar://$containingJar!/$source")
+        if (file.isValid) {
+          if (file.isDirectory) file.getChildren else Seq(file)
+        } else {
+          LOG.warn(
+            s"Source root '$source' is broken, check your library - $containingJar")
+          Seq.empty
+        }
       }
+    }
     val psiManager = PsiManager.getInstance(project)
     val psiDocumentManager = PsiDocumentManager.getInstance(project)
     val psiFiles = files.map(psiManager.findFile)
@@ -52,11 +49,9 @@ class InjectorReviewDialog(
   }
 
   private val highlighterFactory = EditorHighlighterFactory.getInstance
-  editors
-    .foreach(_.asInstanceOf[EditorEx].setHighlighter(
-      highlighterFactory.createEditorHighlighter(
-        project,
-        ScalaFileType.SCALA_FILE_TYPE)))
+  editors.foreach(_.asInstanceOf[EditorEx].setHighlighter(
+    highlighterFactory
+      .createEditorHighlighter(project, ScalaFileType.SCALA_FILE_TYPE)))
   setTitle(s"Library '${manifest._1.jarPath}' Injectors Source Review")
   setOKButtonText("Accept")
   setCancelButtonText("Reject")

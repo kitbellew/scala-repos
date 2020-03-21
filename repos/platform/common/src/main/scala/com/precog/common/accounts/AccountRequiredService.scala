@@ -59,8 +59,8 @@ class AccountRequiredService[A, B](
         accountFinder.findAccountByAPIKey(apiKey) flatMap {
           case Some(accountId) => f(apiKey, path, accountId)
           case None =>
-            logger.warn(
-              "Unable to determine account Id from api key: " + apiKey)
+            logger
+              .warn("Unable to determine account Id from api key: " + apiKey)
             Future(err(
               BadRequest,
               "Unable to identify target account from apiKey " + apiKey))

@@ -133,25 +133,25 @@ private[finagle] class FailFastFactory[Req, Rep](
 
   private[this] val futureExc = Future.exception(exc)
 
-  private[this] val markedAvailableCounter = statsReceiver.counter(
-    "marked_available")
+  private[this] val markedAvailableCounter = statsReceiver
+    .counter("marked_available")
   private[this] val markedDeadCounter = statsReceiver.counter("marked_dead")
 
-  private[this] val unhealthyForMsGauge = statsReceiver.addGauge(
-    "unhealthy_for_ms") {
-    state match {
-      case r: Retrying => r.since.untilNow.inMilliseconds
-      case _           => 0
+  private[this] val unhealthyForMsGauge = statsReceiver
+    .addGauge("unhealthy_for_ms") {
+      state match {
+        case r: Retrying => r.since.untilNow.inMilliseconds
+        case _           => 0
+      }
     }
-  }
 
-  private[this] val unhealthyNumRetriesGauge = statsReceiver.addGauge(
-    "unhealthy_num_tries") {
-    state match {
-      case r: Retrying => r.ntries
-      case _           => 0
+  private[this] val unhealthyNumRetriesGauge = statsReceiver
+    .addGauge("unhealthy_num_tries") {
+      state match {
+        case r: Retrying => r.ntries
+        case _           => 0
+      }
     }
-  }
 
   private[this] def getBackoffs(): Stream[Duration] =
     backoffs map { duration =>
@@ -188,7 +188,8 @@ private[finagle] class FailFastFactory[Req, Rep](
           if (logger.isLoggable(Level.DEBUG))
             logger.log(
               Level.DEBUG,
-              s"""FailFastFactory marking connection to "$label" as dead. Remote Address: ${endpoint.toString}""")
+              s"""FailFastFactory marking connection to "$label" as dead. Remote Address: ${endpoint
+                .toString}""")
 
           state = Retrying(now, task, 0, rest)
 

@@ -58,8 +58,8 @@ class AppRepositoryTest extends MarathonSpec {
 
   test("AppIds") {
     val store = mock[MarathonStore[AppDefinition]]
-    val future = Future.successful(
-      Seq("app1", "app2", "app1:version", "app2:version"))
+    val future = Future
+      .successful(Seq("app1", "app2", "app1:version", "app2:version"))
 
     when(store.names()).thenReturn(future)
 
@@ -86,10 +86,10 @@ class AppRepositoryTest extends MarathonSpec {
       Seq("app1", "app2") ++ allApps.map(x => s"${x.id}:${x.version}"))
 
     when(store.names()).thenReturn(future)
-    when(store.fetch(appDef1.id.toString)).thenReturn(Future.successful(Some(
-      appDef1)))
-    when(store.fetch(appDef2.id.toString)).thenReturn(Future.successful(Some(
-      appDef2)))
+    when(store.fetch(appDef1.id.toString))
+      .thenReturn(Future.successful(Some(appDef1)))
+    when(store.fetch(appDef2.id.toString))
+      .thenReturn(Future.successful(Some(appDef2)))
 
     val repo = new AppRepository(store, None, metrics)
     val res = repo.apps()
@@ -158,10 +158,11 @@ class AppRepositoryTest extends MarathonSpec {
     assert(res.forall(identity), "Should succeed")
 
     verify(store).names()
-    verify(store).expunge(
-      "app1",
-      null
-    ) //the null is due to mockito and default arguments in scala
+    verify(store)
+      .expunge(
+        "app1",
+        null
+      ) //the null is due to mockito and default arguments in scala
     for {
       app <- allApps
       if app.id.toString == "app1"

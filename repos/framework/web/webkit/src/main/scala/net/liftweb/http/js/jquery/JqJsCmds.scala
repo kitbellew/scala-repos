@@ -218,12 +218,10 @@ object JqJE {
   case class JqKeypress(what: (Char, JsCmd)*) extends JsExp with JsMember {
     override def toJsCmd =
       "keypress(function(e) {" +
-        what
-          .map {
-            case (chr, cmd) =>
-              "if (e.which == " + chr.toInt + ") {" + cmd.toJsCmd + "}"
-          }
-          .mkString(" else \n") +
+        what.map {
+          case (chr, cmd) =>
+            "if (e.which == " + chr.toInt + ") {" + cmd.toJsCmd + "}"
+        }.mkString(" else \n") +
         "})"
   }
 
@@ -498,8 +496,8 @@ object JqJsCmds {
     * Replaces the content of the node with the provided id with the markup given by content
     */
   case class JqReplace(uid: String, content: NodeSeq) extends JsCmd {
-    val toJsCmd =
-      (JqJE.JqId(JE.Str(uid)) ~> JqJE.JqReplace(content)).cmd.toJsCmd
+    val toJsCmd = (JqJE.JqId(JE.Str(uid)) ~> JqJE.JqReplace(content)).cmd
+      .toJsCmd
   }
 
   /**
@@ -545,9 +543,8 @@ object JqJsCmds {
       extends JsCmd
       with HasTime {
     def toJsCmd =
-      "try{jQuery(" + (
-        "#" + uid
-      ).encJs + ").show(" + timeStr + ");} catch (e) {}"
+      "try{jQuery(" + ("#" + uid)
+        .encJs + ").show(" + timeStr + ");} catch (e) {}"
   }
 
   /**
@@ -578,9 +575,8 @@ object JqJsCmds {
       extends JsCmd
       with HasTime {
     def toJsCmd =
-      "try{jQuery(" + (
-        "#" + uid
-      ).encJs + ").hide(" + timeStr + ");} catch (e) {}"
+      "try{jQuery(" + ("#" + uid)
+        .encJs + ").hide(" + timeStr + ");} catch (e) {}"
   }
 
   /**

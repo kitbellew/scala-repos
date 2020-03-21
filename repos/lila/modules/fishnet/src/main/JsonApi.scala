@@ -15,11 +15,8 @@ object JsonApi {
     val engine: Request.Engine
 
     def instance(ip: Client.IpAddress) =
-      Client.Instance(
-        fishnet.version,
-        Client.Engine(engine.name),
-        ip,
-        DateTime.now)
+      Client
+        .Instance(fishnet.version, Client.Engine(engine.name), ip, DateTime.now)
   }
 
   object Request {
@@ -110,8 +107,7 @@ object JsonApi {
     }
 
   object readers {
-    implicit val ClientVersionReads = Reads
-      .of[String]
+    implicit val ClientVersionReads = Reads.of[String]
       .map(new Client.Version(_))
     implicit val ClientKeyReads = Reads.of[String].map(new Client.Key(_))
     implicit val EngineOptionsReads = Json.reads[Request.EngineOptions]

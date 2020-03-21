@@ -181,23 +181,15 @@ object RecordSpec extends Specification {
       val cal = Calendar.getInstance
       val dt: DateTime = DateTime.now
 
-      val fttr = FieldTypeTestRecord.createRecord
-        .mandatoryBinaryField(gu)
-        .mandatoryBooleanField(false)
-        .mandatoryCountryField(Countries.USA)
-        .mandatoryDateTimeField(cal)
-        .mandatoryDecimalField(BigDecimal("3.14"))
-        .mandatoryDoubleField(1999)
-        .mandatoryEmailField("test@liftweb.net")
-        .mandatoryEnumField(MyTestEnum.ONE)
-        .mandatoryIntField(99)
-        .mandatoryLocaleField("en_US")
-        .mandatoryLongField(100L)
-        .mandatoryPostalCodeField("55401")
-        .mandatoryStringField("foobar")
+      val fttr = FieldTypeTestRecord.createRecord.mandatoryBinaryField(gu)
+        .mandatoryBooleanField(false).mandatoryCountryField(Countries.USA)
+        .mandatoryDateTimeField(cal).mandatoryDecimalField(BigDecimal("3.14"))
+        .mandatoryDoubleField(1999).mandatoryEmailField("test@liftweb.net")
+        .mandatoryEnumField(MyTestEnum.ONE).mandatoryIntField(99)
+        .mandatoryLocaleField("en_US").mandatoryLongField(100L)
+        .mandatoryPostalCodeField("55401").mandatoryStringField("foobar")
         .mandatoryTextareaField("foobar")
-        .mandatoryTimeZoneField("America/Chicago")
-        .mandatoryJodaTimeField(dt)
+        .mandatoryTimeZoneField("America/Chicago").mandatoryJodaTimeField(dt)
 
       val fttrJValue: JValue =
         ("mandatoryBooleanField" -> false) ~

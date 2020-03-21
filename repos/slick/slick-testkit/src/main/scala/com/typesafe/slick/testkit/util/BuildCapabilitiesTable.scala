@@ -38,10 +38,7 @@ object BuildCapabilitiesTable extends App {
       )
 
   val profiles = profileNames.map { n =>
-    Class
-      .forName(n + "$")
-      .getField("MODULE$")
-      .get(null)
+    Class.forName(n + "$").getField("MODULE$").get(null)
       .asInstanceOf[BasicProfile]
   }
 
@@ -53,8 +50,8 @@ object BuildCapabilitiesTable extends App {
 
   val capabilities = for {
     (caps, linkBase) <- profileCapabilities
-    cap <- caps.toVector.sortBy(c =>
-      if (c.toString.endsWith(".other")) "" else c.toString)
+    cap <- caps.toVector
+      .sortBy(c => if (c.toString.endsWith(".other")) "" else c.toString)
   } yield (
     cap,
     linkBase + cap.toString
@@ -69,8 +66,7 @@ object BuildCapabilitiesTable extends App {
     for ((cap, link) <- capabilities) {
       val flags = profiles.map(d => d.capabilities.contains(cap))
       wr.println(
-        s":api:`$cap <$link>`," + flags
-          .map(b => if (b) "Yes" else "")
+        s":api:`$cap <$link>`," + flags.map(b => if (b) "Yes" else "")
           .mkString(","))
     }
     wr.flush()

@@ -43,11 +43,9 @@ class ScMacroDefinitionImpl private (
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     //process function's parameters for dependent method types, and process type parameters
-    if (!super[ScFunctionImpl].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)) return false
+    if (!super[ScFunctionImpl]
+          .processDeclarations(processor, state, lastParent, place))
+      return false
 
     //do not process parameters for default parameters, only for function body
     //processing parameters for default parameters in ScParameters
@@ -110,9 +108,7 @@ class ScMacroDefinitionImpl private (
     name match {
       case "doMacro" =>
         ScalaPsiElementFactory
-          .createTypeElementFromText("(Int, String)", getManager)
-          .getType()
-          .get
+          .createTypeElementFromText("(Int, String)", getManager).getType().get
       case _ => Any
     }
   }

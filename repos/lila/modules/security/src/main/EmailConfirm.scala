@@ -38,8 +38,7 @@ final class EmailConfirmMailGun(
     tokener make user flatMap { token =>
       lila.mon.email.confirmation()
       val url = s"$baseUrl/signup/confirm/$token"
-      WS.url(s"$apiUrl/messages")
-        .withAuth("api", apiKey, WSAuthScheme.BASIC)
+      WS.url(s"$apiUrl/messages").withAuth("api", apiKey, WSAuthScheme.BASIC)
         .post(Map(
           "from" -> Seq(sender),
           "to" -> Seq(email),
@@ -55,8 +54,7 @@ $url
 
 Please do not reply to this message; it was sent from an unmonitored email address. This message is a service email related to your use of lichess.org.
 """)
-        ))
-        .void
+        )).void
     }
 
   def confirm(token: String): Fu[Option[User]] =

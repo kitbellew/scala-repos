@@ -53,15 +53,15 @@ object ScriptedPlugin extends Plugin {
 
   private def scriptedParser(scriptedBase: File): Parser[Seq[String]] = {
     import DefaultParsers._
-    val pairs =
-      (scriptedBase * AllPassFilter * AllPassFilter * "test").get map {
-        (f: File) =>
-          val p = f.getParentFile
-          (p.getParentFile.getName, p.getName)
-      }
+    val pairs = (scriptedBase * AllPassFilter * AllPassFilter * "test")
+      .get map { (f: File) =>
+      val p = f.getParentFile
+      (p.getParentFile.getName, p.getName)
+    }
     val pairMap = pairs.groupBy(_._1).mapValues(_.map(_._2).toSet)
 
-    val id = charClass(c => !c.isWhitespace && c != '/').+.string
+    val id = charClass(c => !c.isWhitespace && c != '/')
+      .+.string
     val groupP = token(id.examples(pairMap.keySet)) <~ token('/')
     def nameP(group: String) = token("*".id | id.examples(pairMap(group)))
     val testID = for (group <- groupP; name <- nameP(group)) yield (group, name)
@@ -91,8 +91,10 @@ object ScriptedPlugin extends Plugin {
     sbtLauncher <<= getJars(scriptedLaunchConf).map(_.get.head),
     sbtTestDirectory := sourceDirectory.value / "sbt-test",
     libraryDependencies ++= Seq(
-      "org.scala-sbt" % "scripted-sbt" % scriptedSbt.value % scriptedConf.toString,
-      "org.scala-sbt" % "sbt-launch" % scriptedSbt.value % scriptedLaunchConf.toString),
+      "org.scala-sbt" % "scripted-sbt" % scriptedSbt.value % scriptedConf
+        .toString,
+      "org.scala-sbt" % "sbt-launch" % scriptedSbt.value % scriptedLaunchConf
+        .toString),
     scriptedBufferLog := true,
     scriptedClasspath := getJars(scriptedConf).value,
     scriptedTests <<= scriptedTestsTask,
@@ -107,8 +109,7 @@ object ScriptedPlugin extends Plugin {
       config: Configuration): Initialize[Task[PathFinder]] =
     Def.task {
       PathFinder(
-        Classpaths
-          .managedJars(config, classpathTypes.value, update.value)
+        Classpaths.managedJars(config, classpathTypes.value, update.value)
           .map(_.data))
     }
 }

@@ -116,9 +116,8 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus = backend.getResource(
-      taskInfos.iterator().next().getResourcesList,
-      "cpus")
+    val cpus = backend
+      .getResource(taskInfos.iterator().next().getResourcesList, "cpus")
     assert(cpus == executorCores)
   }
 
@@ -132,9 +131,8 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus = backend.getResource(
-      taskInfos.iterator().next().getResourcesList,
-      "cpus")
+    val cpus = backend
+      .getResource(taskInfos.iterator().next().getResourcesList, "cpus")
     assert(cpus == offerCores)
   }
 
@@ -148,9 +146,8 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus = backend.getResource(
-      taskInfos.iterator().next().getResourcesList,
-      "cpus")
+    val cpus = backend
+      .getResource(taskInfos.iterator().next().getResourcesList, "cpus")
     assert(cpus == maxCores)
   }
 
@@ -279,8 +276,8 @@ class CoarseMesosSchedulerBackendSuite
 
   private def verifyTaskLaunched(
       offerId: String): java.util.Collection[TaskInfo] = {
-    val captor = ArgumentCaptor.forClass(
-      classOf[java.util.Collection[TaskInfo]])
+    val captor = ArgumentCaptor
+      .forClass(classOf[java.util.Collection[TaskInfo]])
     verify(driver, times(1)).launchTasks(
       Matchers.eq(Collections.singleton(createOfferId(offerId))),
       captor.capture())
@@ -291,12 +288,10 @@ class CoarseMesosSchedulerBackendSuite
       taskId: String,
       slaveId: String,
       state: TaskState): TaskStatus = {
-    TaskStatus
-      .newBuilder()
+    TaskStatus.newBuilder()
       .setTaskId(TaskID.newBuilder().setValue(taskId).build())
       .setSlaveId(SlaveID.newBuilder().setValue(slaveId).build())
-      .setState(state)
-      .build
+      .setState(state).build
   }
 
   private def createOfferId(offerId: String): OfferID = {
@@ -321,25 +316,14 @@ class CoarseMesosSchedulerBackendSuite
       mem: Int,
       cpu: Int): Offer = {
     val builder = Offer.newBuilder()
-    builder
-      .addResourcesBuilder()
-      .setName("mem")
-      .setType(Value.Type.SCALAR)
+    builder.addResourcesBuilder().setName("mem").setType(Value.Type.SCALAR)
       .setScalar(Scalar.newBuilder().setValue(mem))
-    builder
-      .addResourcesBuilder()
-      .setName("cpus")
-      .setType(Value.Type.SCALAR)
+    builder.addResourcesBuilder().setName("cpus").setType(Value.Type.SCALAR)
       .setScalar(Scalar.newBuilder().setValue(cpu))
-    builder
-      .setId(createOfferId(offerId))
-      .setFrameworkId(
-        FrameworkID
-          .newBuilder()
-          .setValue("f1"))
+    builder.setId(createOfferId(offerId))
+      .setFrameworkId(FrameworkID.newBuilder().setValue("f1"))
       .setSlaveId(SlaveID.newBuilder().setValue(slaveId))
-      .setHostname(s"host${slaveId}")
-      .build()
+      .setHostname(s"host${slaveId}").build()
   }
 
   private def createSchedulerBackend(
@@ -383,10 +367,8 @@ class CoarseMesosSchedulerBackendSuite
   }
 
   private def setBackend(sparkConfVars: Map[String, String] = null) {
-    sparkConf = (new SparkConf)
-      .setMaster("local[*]")
-      .setAppName("test-mesos-dynamic-alloc")
-      .setSparkHome("/path")
+    sparkConf = (new SparkConf).setMaster("local[*]")
+      .setAppName("test-mesos-dynamic-alloc").setSparkHome("/path")
       .set("spark.mesos.driver.webui.url", "http://webui")
 
     if (sparkConfVars != null) {

@@ -34,9 +34,8 @@ class HashJoiner[K, V, W, R](
     // The left one cannot be iterated multiple times on Hadoop:
     val leftIt = jc.getIterator(0).asScala // should only be 0 or 1 here
     if (leftIt.isEmpty) {
-      (
-        Iterator.empty: Iterator[CTuple]
-      ).asJava // java is not covariant so we need this
+      (Iterator.empty: Iterator[CTuple])
+        .asJava // java is not covariant so we need this
     } else {
       val left = leftIt.buffered
       // There must be at least one item on the left in a hash-join
@@ -50,15 +49,14 @@ class HashJoiner[K, V, W, R](
       left.flatMap { kv =>
         val leftV = kv.getObject(1).asInstanceOf[V] // get just the Vs
 
-        joiner(key, leftV, rightIterable)
-          .map { rval =>
-            // There always has to be four resulting fields
-            // or otherwise the flow planner will throw
-            val res = CTuple.size(4)
-            res.set(0, key)
-            res.set(1, rval)
-            res
-          }
+        joiner(key, leftV, rightIterable).map { rval =>
+          // There always has to be four resulting fields
+          // or otherwise the flow planner will throw
+          val res = CTuple.size(4)
+          res.set(0, key)
+          res.set(1, rval)
+          res
+        }
       }.asJava
     }
   }

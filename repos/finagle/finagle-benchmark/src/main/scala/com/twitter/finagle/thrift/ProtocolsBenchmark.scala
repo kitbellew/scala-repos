@@ -40,8 +40,7 @@ class ProtocolsBenchmark extends StdBenchAnnotations {
   def setup(): Unit = {
     baselineProtocol = new TBinaryProtocol(ttransport)
     protocolsProtocol = Protocols
-      .binaryFactory(statsReceiver = NullStatsReceiver)
-      .getProtocol(ttransport)
+      .binaryFactory(statsReceiver = NullStatsReceiver).getProtocol(ttransport)
   }
 
   private[this] def writeStrings(

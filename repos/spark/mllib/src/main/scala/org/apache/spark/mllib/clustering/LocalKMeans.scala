@@ -48,10 +48,9 @@ private[mllib] object LocalKMeans extends Logging {
     for (i <- 1 until k) {
       // Pick the next center with a probability proportional to cost under current centers
       val curCenters = centers.view.take(i)
-      val sum = points.view
-        .zip(weights)
-        .map { case (p, w) => w * KMeans.pointCost(curCenters, p) }
-        .sum
+      val sum = points.view.zip(weights).map {
+        case (p, w) => w * KMeans.pointCost(curCenters, p)
+      }.sum
       val r = rand.nextDouble() * sum
       var cumulativeScore = 0.0
       var j = 0

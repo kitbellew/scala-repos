@@ -12,16 +12,16 @@ object Sxr {
 
   def baseSettings =
     Seq(
-      libraryDependencies += "org.scala-sbt.sxr" % "sxr_2.10" % "0.3.0" % sxrConf.name)
+      libraryDependencies += "org.scala-sbt.sxr" % "sxr_2.10" % "0.3.0" % sxrConf
+        .name)
   def inSxrSettings =
     Seq(
       managedClasspath := update.value
-        .matching(configurationFilter(sxrConf.name))
-        .classpath,
-      scalacOptions += "-P:sxr:base-directory:" + sourceDirectories.value.absString,
-      scalacOptions += "-Xplugin:" + managedClasspath.value.files
-        .filter(_.getName.contains("sxr"))
+        .matching(configurationFilter(sxrConf.name)).classpath,
+      scalacOptions += "-P:sxr:base-directory:" + sourceDirectories.value
         .absString,
+      scalacOptions += "-Xplugin:" + managedClasspath.value.files
+        .filter(_.getName.contains("sxr")).absString,
       scalacOptions += "-Ystop-after:sxr",
       target := target.in(taskGlobal).value / "browse",
       sxr in taskGlobal <<= sxrTask
@@ -39,8 +39,8 @@ object Sxr {
       val cache = s.cacheDirectory
       val outputDir = out.getParentFile / (out.getName + ".sxr")
       val f = FileFunction.cached(cache / "sxr", FilesInfo.hash) { in =>
-        s.log.info(
-          "Generating sxr output in " + outputDir.getAbsolutePath + "...")
+        s.log
+          .info("Generating sxr output in " + outputDir.getAbsolutePath + "...")
         IO.delete(out)
         IO.createDirectory(out)
         val comp = new compiler.RawCompiler(si, cpOpts, s.log)

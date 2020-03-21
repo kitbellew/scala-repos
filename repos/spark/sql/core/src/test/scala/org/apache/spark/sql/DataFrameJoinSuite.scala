@@ -36,11 +36,9 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
   }
 
   test("join - join using multiple columns") {
-    val df = Seq(1, 2, 3)
-      .map(i => (i, i + 1, i.toString))
+    val df = Seq(1, 2, 3).map(i => (i, i + 1, i.toString))
       .toDF("int", "int2", "str")
-    val df2 = Seq(1, 2, 3)
-      .map(i => (i, i + 1, (i + 1).toString))
+    val df2 = Seq(1, 2, 3).map(i => (i, i + 1, (i + 1).toString))
       .toDF("int", "int2", "str")
 
     checkAnswer(
@@ -49,23 +47,19 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
   }
 
   test("join - sorted columns not in join's outputSet") {
-    val df = Seq((1, 2, "1"), (3, 4, "3"))
-      .toDF("int", "int2", "str_sort")
+    val df = Seq((1, 2, "1"), (3, 4, "3")).toDF("int", "int2", "str_sort")
       .as('df1)
     val df2 = Seq((1, 3, "1"), (5, 6, "5")).toDF("int", "int2", "str").as('df2)
     val df3 = Seq((1, 3, "1"), (5, 6, "5")).toDF("int", "int2", "str").as('df3)
 
     checkAnswer(
       df.join(df2, $"df1.int" === $"df2.int", "outer")
-        .select($"df1.int", $"df2.int2")
-        .orderBy('str_sort.asc, 'str.asc),
+        .select($"df1.int", $"df2.int2").orderBy('str_sort.asc, 'str.asc),
       Row(null, 6) :: Row(1, 3) :: Row(3, null) :: Nil)
 
     checkAnswer(
-      df2
-        .join(df3, $"df2.int" === $"df3.int", "inner")
-        .select($"df2.int", $"df3.int")
-        .orderBy($"df2.str".desc),
+      df2.join(df3, $"df2.int" === $"df3.int", "inner")
+        .select($"df2.int", $"df3.int").orderBy($"df2.str".desc),
       Row(5, 5) :: Row(1, 1) :: Nil)
   }
 
@@ -111,8 +105,7 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
       df1.join(df2, $"df1.key" === $"df2.key"),
       sql(
         "SELECT a.key, b.key FROM testData a JOIN testData b ON a.key = b.key")
-        .collect()
-        .toSeq)
+        .collect().toSeq)
   }
 
   test("join - using aliases after self join") {
@@ -175,8 +168,7 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
     val df2 = Seq((1, 3, "1"), (5, 6, "5")).toDF("int", "int2", "str").as("b")
 
     // outer -> left
-    val outerJoin2Left = df
-      .join(df2, $"a.int" === $"b.int", "outer")
+    val outerJoin2Left = df.join(df2, $"a.int" === $"b.int", "outer")
       .where($"a.int" === 3)
     assert(outerJoin2Left.queryExecution.optimizedPlan.collect {
       case j @ Join(_, _, LeftOuter, _) => j
@@ -184,8 +176,7 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
     checkAnswer(outerJoin2Left, Row(3, 4, "3", null, null, null) :: Nil)
 
     // outer -> right
-    val outerJoin2Right = df
-      .join(df2, $"a.int" === $"b.int", "outer")
+    val outerJoin2Right = df.join(df2, $"a.int" === $"b.int", "outer")
       .where($"b.int" === 5)
     assert(outerJoin2Right.queryExecution.optimizedPlan.collect {
       case j @ Join(_, _, RightOuter, _) => j
@@ -193,8 +184,7 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
     checkAnswer(outerJoin2Right, Row(null, null, null, 5, 6, "5") :: Nil)
 
     // outer -> inner
-    val outerJoin2Inner = df
-      .join(df2, $"a.int" === $"b.int", "outer")
+    val outerJoin2Inner = df.join(df2, $"a.int" === $"b.int", "outer")
       .where($"a.int" === 1 && $"b.int2" === 3)
     assert(outerJoin2Inner.queryExecution.optimizedPlan.collect {
       case j @ Join(_, _, Inner, _) => j
@@ -202,8 +192,7 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
     checkAnswer(outerJoin2Inner, Row(1, 2, "1", 1, 3, "1") :: Nil)
 
     // right -> inner
-    val rightJoin2Inner = df
-      .join(df2, $"a.int" === $"b.int", "right")
+    val rightJoin2Inner = df.join(df2, $"a.int" === $"b.int", "right")
       .where($"a.int" === 1)
     assert(rightJoin2Inner.queryExecution.optimizedPlan.collect {
       case j @ Join(_, _, Inner, _) => j
@@ -211,8 +200,7 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
     checkAnswer(rightJoin2Inner, Row(1, 2, "1", 1, 3, "1") :: Nil)
 
     // left -> inner
-    val leftJoin2Inner = df
-      .join(df2, $"a.int" === $"b.int", "left")
+    val leftJoin2Inner = df.join(df2, $"a.int" === $"b.int", "left")
       .where($"b.int2" === 3)
     assert(leftJoin2Inner.queryExecution.optimizedPlan.collect {
       case j @ Join(_, _, Inner, _) => j

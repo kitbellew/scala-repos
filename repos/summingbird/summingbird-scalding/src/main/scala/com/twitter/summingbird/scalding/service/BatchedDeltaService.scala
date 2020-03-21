@@ -62,8 +62,8 @@ class BatchedDeltaService[K, V: Semigroup](
     def flatOpt[T](o: Option[Option[T]]): Option[T] = o.flatMap(identity)
 
     implicit val ord = ordering
-    LookupJoin
-      .rightSumming(incoming, servStream, reducers)
-      .map { case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv)))) }
+    LookupJoin.rightSumming(incoming, servStream, reducers).map {
+      case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv))))
+    }
   }
 }

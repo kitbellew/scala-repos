@@ -71,12 +71,8 @@ object Namer {
     private[this] object InetPath {
       def unapply(path: Path): Option[(Address, Path)] =
         path match {
-          case Path.Utf8(
-                "$",
-                "inet",
-                host,
-                IntegerString(port),
-                residual @ _*) =>
+          case Path
+                .Utf8("$", "inet", host, IntegerString(port), residual @ _*) =>
             Some((
               Address(new InetSocketAddress(host, port)),
               Path.Utf8(residual: _*)))
@@ -114,8 +110,8 @@ object Namer {
         // back to the same Name.Bound.
         case InetPath(addr, residual) =>
           val id = path.take(path.size - residual.size)
-          Activity.value(Leaf(
-            Name.Bound(Var.value(Addr.Bound(addr)), id, residual)))
+          Activity
+            .value(Leaf(Name.Bound(Var.value(Addr.Bound(addr)), id, residual)))
 
         case FailPath()             => Activity.value(Fail)
         case NilPath()              => Activity.value(Empty)
@@ -187,18 +183,17 @@ object Namer {
     }
 
     val stateVar: Var[Activity.State[NameTree[Name.Bound]]] = Var
-      .collect(weightedTreeVars)
-      .map { seq: Seq[Activity.State[NameTree.Weighted[Name.Bound]]] =>
-        // - if there's at least one activity in Ok state, return the union of them
-        // - if all activities are pending, the union is pending.
-        // - if no subtree is Ok, and there are failures, retain the first failure.
+      .collect(weightedTreeVars).map {
+        seq: Seq[Activity.State[NameTree.Weighted[Name.Bound]]] =>
+          // - if there's at least one activity in Ok state, return the union of them
+          // - if all activities are pending, the union is pending.
+          // - if no subtree is Ok, and there are failures, retain the first failure.
 
-        val oks = seq.collect { case Activity.Ok(t) => t }
-        if (oks.isEmpty) {
-          seq
-            .collectFirst { case f @ Activity.Failed(_) => f }
-            .getOrElse(Activity.Pending)
-        } else { Activity.Ok(Union.fromSeq(oks).simplified) }
+          val oks = seq.collect { case Activity.Ok(t) => t }
+          if (oks.isEmpty) {
+            seq.collectFirst { case f @ Activity.Failed(_) => f }
+              .getOrElse(Activity.Pending)
+          } else { Activity.Ok(Union.fromSeq(oks).simplified) }
       }
     new Activity(stateVar)
   }
@@ -210,12 +205,12 @@ object Namer {
       weight: Option[Double])(
       tree: NameTree[Name]): Activity[NameTree[Name.Bound]] =
     if (depth > MaxDepth)
-      Activity.exception(new IllegalArgumentException(
-        "Max recursion level reached."))
+      Activity
+        .exception(new IllegalArgumentException("Max recursion level reached."))
     else
       tree match {
-        case Leaf(Name.Path(path)) =>
-          lookup(path).flatMap(bind(lookup, depth + 1, weight))
+        case Leaf(Name.Path(path)) => lookup(path)
+            .flatMap(bind(lookup, depth + 1, weight))
         case Leaf(bound @ Name.Bound(addr)) =>
           // Add the weight of the parent to the addr's metadata
           // Note: this assumes a single level of tree weights

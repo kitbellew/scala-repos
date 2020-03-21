@@ -109,8 +109,8 @@ final class Binarizer(override val uid: String)
     val outputColName = $(outputCol)
 
     val outCol: StructField = inputType match {
-      case DoubleType =>
-        BinaryAttribute.defaultAttr.withName(outputColName).toStructField()
+      case DoubleType => BinaryAttribute.defaultAttr.withName(outputColName)
+          .toStructField()
       case _: VectorUDT => new StructField(outputColName, new VectorUDT, true)
       case other =>
         throw new IllegalArgumentException(

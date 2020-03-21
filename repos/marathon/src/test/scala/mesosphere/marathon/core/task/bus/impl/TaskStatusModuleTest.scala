@@ -15,10 +15,10 @@ class TaskStatusModuleTest extends FunSuite with BeforeAndAfter {
   test("observable forAll includes all app status updates") {
     var received = List.empty[TaskStatusUpdate]
     module.taskStatusObservables.forAll.foreach(received :+= _)
-    val aa: TaskStatusUpdate =
-      TaskStatusUpdateTestHelper.running.withAppId("/a/a").wrapped
-    val ab: TaskStatusUpdate =
-      TaskStatusUpdateTestHelper.running.withAppId("/a/b").wrapped
+    val aa: TaskStatusUpdate = TaskStatusUpdateTestHelper.running
+      .withAppId("/a/a").wrapped
+    val ab: TaskStatusUpdate = TaskStatusUpdateTestHelper.running
+      .withAppId("/a/b").wrapped
     module.taskStatusEmitter.publish(aa)
     module.taskStatusEmitter.publish(ab)
     assert(received == List(aa, ab))
@@ -29,21 +29,20 @@ class TaskStatusModuleTest extends FunSuite with BeforeAndAfter {
     val subscription = module.taskStatusObservables.forAll
       .subscribe(received :+= _)
     subscription.unsubscribe()
-    val aa: TaskStatusUpdate =
-      TaskStatusUpdateTestHelper.running.withAppId("/a/a").wrapped
+    val aa: TaskStatusUpdate = TaskStatusUpdateTestHelper.running
+      .withAppId("/a/a").wrapped
     module.taskStatusEmitter.publish(aa)
     assert(received == List.empty)
   }
 
   test("observable forAppId includes only app status updates") {
     var received = List.empty[TaskStatusUpdate]
-    module.taskStatusObservables
-      .forAppId(PathId("/a/a"))
+    module.taskStatusObservables.forAppId(PathId("/a/a"))
       .foreach(received :+= _)
-    val aa: TaskStatusUpdate =
-      TaskStatusUpdateTestHelper.running.withAppId("/a/a").wrapped
-    val ab: TaskStatusUpdate =
-      TaskStatusUpdateTestHelper.running.withAppId("/a/b").wrapped
+    val aa: TaskStatusUpdate = TaskStatusUpdateTestHelper.running
+      .withAppId("/a/a").wrapped
+    val ab: TaskStatusUpdate = TaskStatusUpdateTestHelper.running
+      .withAppId("/a/b").wrapped
     module.taskStatusEmitter.publish(aa)
     module.taskStatusEmitter.publish(ab)
     assert(received == List(aa))
@@ -51,12 +50,11 @@ class TaskStatusModuleTest extends FunSuite with BeforeAndAfter {
 
   test("observable forAppId unsubscribe works") {
     var received = List.empty[TaskStatusUpdate]
-    val subscription = module.taskStatusObservables
-      .forAppId(PathId("/a/a"))
+    val subscription = module.taskStatusObservables.forAppId(PathId("/a/a"))
       .subscribe(received :+= _)
     subscription.unsubscribe()
-    val aa: TaskStatusUpdate =
-      TaskStatusUpdateTestHelper.running.withAppId("/a/a").wrapped
+    val aa: TaskStatusUpdate = TaskStatusUpdateTestHelper.running
+      .withAppId("/a/a").wrapped
     module.taskStatusEmitter.publish(aa)
     assert(received == List.empty)
   }

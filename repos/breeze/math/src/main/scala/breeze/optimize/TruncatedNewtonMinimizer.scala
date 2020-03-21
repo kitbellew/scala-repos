@@ -160,18 +160,15 @@ class TruncatedNewtonMinimizer[T, H](
               (math.abs(actualReduction) <= math.abs(adjFval) * 1.0e-12 && math
                 .abs(predictedReduction) <= math.abs(adjFval) * 1.0e-12)) true
           else false
-        logger.info(
-          "Reject %d d=%.2f resNorm=%.2f pred=%.2f actual=%.2f".format(
+        logger
+          .info("Reject %d d=%.2f resNorm=%.2f pred=%.2f actual=%.2f".format(
             iter,
             delta,
             norm(residual),
             predictedReduction,
             actualReduction))
-        state.copy(
-          this_iter,
-          delta = newDelta,
-          stop = stop_cond,
-          accept = false)
+        state
+          .copy(this_iter, delta = newDelta, stop = stop_cond, accept = false)
       }
 
     }

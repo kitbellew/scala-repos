@@ -69,10 +69,8 @@ object GaussMixtureTransform {
       samples: Iterable[DenseVector[Double]],
       centers: DenseVector[Double],
       gamma: Double): Double = {
-    samples
-      .map((sample: DenseVector[Double]) =>
-        sampleTransform(sample, centers, gamma))
-      .sum
+    samples.map((sample: DenseVector[Double]) =>
+      sampleTransform(sample, centers, gamma)).sum
   }
 
   def samplesTransform(

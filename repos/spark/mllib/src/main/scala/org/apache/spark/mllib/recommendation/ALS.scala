@@ -86,8 +86,8 @@ class ALS private (
   private var nonnegative = false
 
   /** storage level for user/product in/out links */
-  private var intermediateRDDStorageLevel: StorageLevel =
-    StorageLevel.MEMORY_AND_DISK
+  private var intermediateRDDStorageLevel: StorageLevel = StorageLevel
+    .MEMORY_AND_DISK
   private var finalRDDStorageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK
 
   /** checkpoint interval */
@@ -235,8 +235,8 @@ class ALS private (
       } else { this.numProductBlocks }
 
     val (floatUserFactors, floatProdFactors) = NewALS.train[Int](
-      ratings = ratings.map(r =>
-        NewALS.Rating(r.user, r.product, r.rating.toFloat)),
+      ratings = ratings
+        .map(r => NewALS.Rating(r.user, r.product, r.rating.toFloat)),
       rank = rank,
       numUserBlocks = numUserBlocks,
       numItemBlocks = numProductBlocks,
@@ -251,14 +251,10 @@ class ALS private (
       seed = seed
     )
 
-    val userFactors = floatUserFactors
-      .mapValues(_.map(_.toDouble))
-      .setName("users")
-      .persist(finalRDDStorageLevel)
-    val prodFactors = floatProdFactors
-      .mapValues(_.map(_.toDouble))
-      .setName("products")
-      .persist(finalRDDStorageLevel)
+    val userFactors = floatUserFactors.mapValues(_.map(_.toDouble))
+      .setName("users").persist(finalRDDStorageLevel)
+    val prodFactors = floatProdFactors.mapValues(_.map(_.toDouble))
+      .setName("products").persist(finalRDDStorageLevel)
     if (finalRDDStorageLevel != StorageLevel.NONE) {
       userFactors.count()
       prodFactors.count()

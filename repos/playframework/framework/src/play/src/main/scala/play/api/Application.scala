@@ -292,18 +292,17 @@ trait BuiltInComponents {
     actorSystem,
     materializer)
 
-  lazy val actorSystem: ActorSystem = new ActorSystemProvider(
-    environment,
-    configuration,
-    applicationLifecycle).get
+  lazy val actorSystem: ActorSystem =
+    new ActorSystemProvider(environment, configuration, applicationLifecycle)
+      .get
   implicit lazy val materializer: Materializer = ActorMaterializer()(
     actorSystem)
 
   lazy val cryptoConfig: CryptoConfig =
     new CryptoConfigParser(environment, configuration).get
 
-  lazy val cookieSigner: CookieSigner = new CookieSignerProvider(
-    cryptoConfig).get
+  lazy val cookieSigner: CookieSigner = new CookieSignerProvider(cryptoConfig)
+    .get
   lazy val csrfTokenSigner: CSRFTokenSigner = new CSRFTokenSignerProvider(
     cookieSigner).get
   lazy val aesCrypter: AESCrypter = new AESCrypterProvider(cryptoConfig).get

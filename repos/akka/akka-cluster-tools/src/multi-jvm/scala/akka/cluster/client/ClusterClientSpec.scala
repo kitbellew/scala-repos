@@ -112,9 +112,8 @@ class ClusterClientSpec
       join(third, first)
       join(fourth, first)
       runOn(fourth) {
-        val service = system.actorOf(
-          Props(classOf[TestService], testActor),
-          "testService")
+        val service = system
+          .actorOf(Props(classOf[TestService], testActor), "testService")
         ClusterClientReceptionist(system).registerService(service)
       }
       runOn(first, second, third, fourth) { awaitCount(1) }
@@ -128,10 +127,8 @@ class ClusterClientSpec
           ClusterClient.props(
             ClusterClientSettings(system).withInitialContacts(initialContacts)),
           "client1")
-        c ! ClusterClient.Send(
-          "/user/testService",
-          "hello",
-          localAffinity = true)
+        c ! ClusterClient
+          .Send("/user/testService", "hello", localAffinity = true)
         expectMsgType[Reply].msg should be("hello-ack")
         system.stop(c)
       }
@@ -179,10 +176,10 @@ class ClusterClientSpec
       lazy val docOnly = { //not used, only demo
         //#initialContacts
         val initialContacts = Set(
-          ActorPath.fromString(
-            "akka.tcp://OtherSys@host1:2552/system/receptionist"),
-          ActorPath.fromString(
-            "akka.tcp://OtherSys@host2:2552/system/receptionist"))
+          ActorPath
+            .fromString("akka.tcp://OtherSys@host1:2552/system/receptionist"),
+          ActorPath
+            .fromString("akka.tcp://OtherSys@host2:2552/system/receptionist"))
         val settings = ClusterClientSettings(system)
           .withInitialContacts(initialContacts)
         //#initialContacts
@@ -196,9 +193,8 @@ class ClusterClientSpec
     "re-establish connection to another receptionist when server is shutdown" in within(
       30 seconds) {
       runOn(first, second, third, fourth) {
-        val service2 = system.actorOf(
-          Props(classOf[TestService], testActor),
-          "service2")
+        val service2 = system
+          .actorOf(Props(classOf[TestService], testActor), "service2")
         ClusterClientReceptionist(system).registerService(service2)
         awaitCount(8)
       }
@@ -210,10 +206,8 @@ class ClusterClientSpec
             ClusterClientSettings(system).withInitialContacts(initialContacts)),
           "client2")
 
-        c ! ClusterClient.Send(
-          "/user/service2",
-          "bonjour",
-          localAffinity = true)
+        c ! ClusterClient
+          .Send("/user/service2", "bonjour", localAffinity = true)
         val reply = expectMsgType[Reply]
         reply.msg should be("bonjour-ack")
         val receptionistRoleName = roleName(reply.node) match {
@@ -224,10 +218,8 @@ class ClusterClientSpec
         remainingServerRoleNames -= receptionistRoleName
         within(remaining - 3.seconds) {
           awaitAssert {
-            c ! ClusterClient.Send(
-              "/user/service2",
-              "hi again",
-              localAffinity = true)
+            c ! ClusterClient
+              .Send("/user/service2", "hi again", localAffinity = true)
             expectMsgType[Reply](1 second).msg should be("hi again-ack")
           }
         }
@@ -249,10 +241,8 @@ class ClusterClientSpec
             ClusterClientSettings(system).withInitialContacts(initialContacts)),
           "client3")
 
-        c ! ClusterClient.Send(
-          "/user/service2",
-          "bonjour2",
-          localAffinity = true)
+        c ! ClusterClient
+          .Send("/user/service2", "bonjour2", localAffinity = true)
         val reply = expectMsgType[Reply]
         reply.msg should be("bonjour2-ack")
         val receptionistRoleName = roleName(reply.node) match {
@@ -265,16 +255,14 @@ class ClusterClientSpec
         }
         remainingServerRoleNames = Set(receptionistRoleName)
         // network partition between client and server
-        testConductor
-          .blackhole(client, receptionistRoleName, Direction.Both)
+        testConductor.blackhole(client, receptionistRoleName, Direction.Both)
           .await
         c ! ClusterClient.Send("/user/service2", "ping", localAffinity = true)
         // if we would use remote watch the failure detector would trigger and
         // connection quarantined
         expectNoMsg(5 seconds)
 
-        testConductor
-          .passThrough(client, receptionistRoleName, Direction.Both)
+        testConductor.passThrough(client, receptionistRoleName, Direction.Both)
           .await
 
         val expectedAddress = node(receptionistRoleName).address
@@ -306,10 +294,8 @@ class ClusterClientSpec
             remainingContacts)),
           "client4")
 
-        c ! ClusterClient.Send(
-          "/user/service2",
-          "bonjour4",
-          localAffinity = true)
+        c ! ClusterClient
+          .Send("/user/service2", "bonjour4", localAffinity = true)
         expectMsg(
           10.seconds,
           Reply("bonjour4-ack", remainingContacts.head.address))
@@ -330,13 +316,12 @@ class ClusterClientSpec
           }
         }
 
-        c ! ClusterClient.Send(
-          "/user/service2",
-          "shutdown",
-          localAffinity = true)
-        Thread.sleep(
-          2000
-        ) // to ensure that it is sent out before shutting down system
+        c ! ClusterClient
+          .Send("/user/service2", "shutdown", localAffinity = true)
+        Thread
+          .sleep(
+            2000
+          ) // to ensure that it is sent out before shutting down system
       }
 
       // There is only one client JVM and one server JVM left. The other JVMs have been exited
@@ -347,15 +332,12 @@ class ClusterClientSpec
         // start new system on same port
         val sys2 = ActorSystem(
           system.name,
-          ConfigFactory
-            .parseString(
-              "akka.remote.netty.tcp.port=" + Cluster(
-                system).selfAddress.port.get)
-            .withFallback(system.settings.config))
+          ConfigFactory.parseString(
+            "akka.remote.netty.tcp.port=" + Cluster(system).selfAddress.port
+              .get).withFallback(system.settings.config))
         Cluster(sys2).join(Cluster(sys2).selfAddress)
-        val service2 = sys2.actorOf(
-          Props(classOf[TestService], testActor),
-          "service2")
+        val service2 = sys2
+          .actorOf(Props(classOf[TestService], testActor), "service2")
         ClusterClientReceptionist(sys2).registerService(service2)
         Await.ready(sys2.whenTerminated, 20.seconds)
       }

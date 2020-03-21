@@ -86,22 +86,16 @@ class ScalaCodeFragment(project: Project, text: String) extends {
     val project: Project = myManager.getProject
     val psiDocumentManager = PsiDocumentManager.getInstance(project)
     val document: Document = psiDocumentManager.getDocument(this)
-    UndoManager
-      .getInstance(project)
-      .undoableActionPerformed(new ScalaCodeFragment.ImportClassUndoableAction(
-        path,
-        document,
-        imports))
+    UndoManager.getInstance(project).undoableActionPerformed(
+      new ScalaCodeFragment.ImportClassUndoableAction(path, document, imports))
     val newRef = ref match {
       case st: ScStableCodeReferenceElement if st.resolve() == null =>
-        Some(ScalaPsiElementFactory.createReferenceFromText(
-          st.getText,
-          st.getParent,
-          st))
-      case expr: ScReferenceExpression if expr.resolve() == null =>
         Some(
           ScalaPsiElementFactory
-            .createExpressionFromText(expr.getText, expr)
+            .createReferenceFromText(st.getText, st.getParent, st))
+      case expr: ScReferenceExpression if expr.resolve() == null =>
+        Some(
+          ScalaPsiElementFactory.createExpressionFromText(expr.getText, expr)
             .asInstanceOf[ScReferenceExpression])
       case _ => None
     }
@@ -123,10 +117,8 @@ class ScalaCodeFragment(project: Project, text: String) extends {
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     for (qName <- imports) {
-      val imp = ScalaPsiElementFactory.createImportFromTextWithContext(
-        "import _root_." + qName,
-        this,
-        this)
+      val imp = ScalaPsiElementFactory
+        .createImportFromTextWithContext("import _root_." + qName, this, this)
       if (!imp.processDeclarations(processor, state, lastParent, place))
         return false
     }

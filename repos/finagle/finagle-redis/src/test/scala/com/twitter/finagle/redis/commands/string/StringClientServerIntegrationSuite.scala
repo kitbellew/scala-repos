@@ -34,8 +34,9 @@ final class StringClientServerIntegrationSuite
       assert(Await.result(client(Set("bitcount", "bar"))) == StatusReply("OK"))
       assert(Await.result(client(BitCount("bitcount"))) == IntegerReply(10L))
       assert(
-        Await.result(
-          client(BitCount("bitcount", Some(2), Some(4)))) == IntegerReply(4L))
+        Await
+          .result(
+            client(BitCount("bitcount", Some(2), Some(4)))) == IntegerReply(4L))
     }
   }
 
@@ -54,8 +55,8 @@ final class StringClientServerIntegrationSuite
       assert(Await.result(client(GetBit("bitop3", 3))) == IntegerReply(1L))
 
       assert(
-        Await.result(
-          client(BitOp(BitOp.Or, "bitop3", Seq("bitop1", "bitop2")))) ==
+        Await
+          .result(client(BitOp(BitOp.Or, "bitop3", Seq("bitop1", "bitop2")))) ==
           IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 0))) == IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 1))) == IntegerReply(0L))
@@ -68,8 +69,9 @@ final class StringClientServerIntegrationSuite
       assert(Await.result(client(GetBit("bitop3", 1))) == IntegerReply(0L))
 
       assert(
-        Await.result(
-          client(BitOp(BitOp.Not, "bitop3", Seq("bitop1")))) == IntegerReply(
+        Await
+          .result(
+            client(BitOp(BitOp.Not, "bitop3", Seq("bitop1")))) == IntegerReply(
           1L))
       assert(Await.result(client(GetBit("bitop3", 0))) == IntegerReply(0L))
       assert(Await.result(client(GetBit("bitop3", 1))) == IntegerReply(1L))
@@ -237,8 +239,9 @@ final class StringClientServerIntegrationSuite
         Await.result(client(PSetEx("psetex1", 0L, "value")))
       }
       assert(
-        Await.result(
-          client(PSetEx("psetex1", 300000L, "value"))) == StatusReply("OK"))
+        Await
+          .result(client(PSetEx("psetex1", 300000L, "value"))) == StatusReply(
+          "OK"))
     }
   }
 

@@ -99,8 +99,7 @@ class ScalaInplaceVariableIntroducer(
         val range = new TextRange(
           myCaretRangeMarker.getStartOffset,
           myCaretRangeMarker.getEndOffset)
-        if (range.getLength == 0 && UndoManager
-              .getInstance(myProject)
+        if (range.getLength == 0 && UndoManager.getInstance(myProject)
               .isUndoInProgress) {} else {
           val input = myCaretRangeMarker.getDocument.getText(range)
           val numberOfSpaces = input.lastIndexOf(' ') + 1
@@ -146,8 +145,7 @@ class ScalaInplaceVariableIntroducer(
   }
 
   private def commitDocument(): Unit = {
-    PsiDocumentManager
-      .getInstance(myProject)
+    PsiDocumentManager.getInstance(myProject)
       .commitDocument(myEditor.getDocument)
   }
 
@@ -213,16 +211,16 @@ class ScalaInplaceVariableIntroducer(
           val greedyToRight = mutable.WeakHashMap[RangeHighlighter, Boolean]()
 
           def setGreedyToRightToFalse(): Unit = {
-            val highlighters: Array[RangeHighlighter] =
-              myEditor.getMarkupModel.getAllHighlighters
+            val highlighters: Array[RangeHighlighter] = myEditor.getMarkupModel
+              .getAllHighlighters
             for (highlighter <- highlighters; if checkRange(
                    highlighter.getStartOffset,
                    highlighter.getEndOffset))
               greedyToRight += (highlighter -> highlighter.isGreedyToRight)
           }
           def resetGreedyToRightBack(): Unit = {
-            val highlighters: Array[RangeHighlighter] =
-              myEditor.getMarkupModel.getAllHighlighters
+            val highlighters: Array[RangeHighlighter] = myEditor.getMarkupModel
+              .getAllHighlighters
             for (highlighter <- highlighters; if checkRange(
                    highlighter.getStartOffset,
                    highlighter.getEndOffset))
@@ -255,12 +253,12 @@ class ScalaInplaceVariableIntroducer(
                       "",
                       manager,
                       isPresentableText = false)
-                  val first = fakeDeclaration.findFirstChildByType(
-                    ScalaTokenTypes.tCOLON)
-                  val last = fakeDeclaration.findFirstChildByType(
-                    ScalaTokenTypes.tASSIGN)
-                  val assign = declarationCopy.findFirstChildByType(
-                    ScalaTokenTypes.tASSIGN)
+                  val first = fakeDeclaration
+                    .findFirstChildByType(ScalaTokenTypes.tCOLON)
+                  val last = fakeDeclaration
+                    .findFirstChildByType(ScalaTokenTypes.tASSIGN)
+                  val assign = declarationCopy
+                    .findFirstChildByType(ScalaTokenTypes.tASSIGN)
                   declarationCopy.addRangeAfter(first, last, assign)
                   assign.delete()
                   val replaced = getDeclaration.replace(declarationCopy)
@@ -273,10 +271,10 @@ class ScalaInplaceVariableIntroducer(
             private def removeTypeAnnotation(): Unit = {
               getDeclaration match {
                 case holder: ScDeclaredElementsHolder =>
-                  val colon = holder.findFirstChildByType(
-                    ScalaTokenTypes.tCOLON)
-                  val assign = holder.findFirstChildByType(
-                    ScalaTokenTypes.tASSIGN)
+                  val colon = holder
+                    .findFirstChildByType(ScalaTokenTypes.tCOLON)
+                  val assign = holder
+                    .findFirstChildByType(ScalaTokenTypes.tASSIGN)
                   val whiteSpace = ScalaPsiElementFactory
                     .createExpressionFromText("1 + 1", myFile.getManager)
                     .findElementAt(1)
@@ -287,8 +285,8 @@ class ScalaInplaceVariableIntroducer(
                   commitDocument()
                 case enum: ScEnumerator
                     if enum.pattern.isInstanceOf[ScTypedPattern] =>
-                  val colon = enum.pattern.findFirstChildByType(
-                    ScalaTokenTypes.tCOLON)
+                  val colon = enum.pattern
+                    .findFirstChildByType(ScalaTokenTypes.tCOLON)
                   enum.pattern.getNode.removeRange(colon.getNode, null)
                   setDeclaration(enum)
                   commitDocument()
@@ -361,27 +359,24 @@ class ScalaInplaceVariableIntroducer(
           val startOffset: Int = myExprMarker.getStartOffset
           val elementAt: PsiElement = myFile.findElementAt(startOffset)
           if (elementAt != null) {
-            myEditor.getCaretModel.moveToOffset(
-              elementAt.getTextRange.getEndOffset)
+            myEditor.getCaretModel
+              .moveToOffset(elementAt.getTextRange.getEndOffset)
           } else {
             myEditor.getCaretModel.moveToOffset(myExprMarker.getEndOffset)
           }
         } else if (getDeclaration != null) {
           val declaration = getDeclaration
-          myEditor.getCaretModel.moveToOffset(
-            declaration.getTextRange.getEndOffset)
+          myEditor.getCaretModel
+            .moveToOffset(declaration.getTextRange.getEndOffset)
         }
-      } else if (getDeclaration != null && !UndoManager
-                   .getInstance(myProject)
+      } else if (getDeclaration != null && !UndoManager.getInstance(myProject)
                    .isUndoInProgress) {
-        val revertInfo = myEditor.getUserData(
-          ScalaIntroduceVariableHandler.REVERT_INFO)
+        val revertInfo = myEditor
+          .getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
         if (revertInfo != null) {
           extensions.inWriteAction {
-            myEditor.getDocument.replaceString(
-              0,
-              myFile.getTextLength,
-              revertInfo.fileText)
+            myEditor.getDocument
+              .replaceString(0, myFile.getTextLength, revertInfo.fileText)
           }
           myEditor.getCaretModel.moveToOffset(revertInfo.caretOffset)
           myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
@@ -423,8 +418,8 @@ class ScalaInplaceVariableIntroducer(
 
     try {
       val named = namedElement(getDeclaration).orNull
-      val templateState: TemplateState = TemplateManagerImpl.getTemplateState(
-        myEditor)
+      val templateState: TemplateState = TemplateManagerImpl
+        .getTemplateState(myEditor)
       if (named != null && templateState != null) {
         val occurrences = (for (i <- 0 to templateState.getSegmentsCount - 1)
           yield templateState.getSegmentRange(i)).toArray

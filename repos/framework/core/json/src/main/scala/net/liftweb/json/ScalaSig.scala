@@ -26,8 +26,8 @@ private[json] object ScalaSigReader {
       typeArgIndex: Int,
       argNames: List[String]): Class[_] = {
     val cl = findClass(clazz)
-    val cstr = findConstructor(cl, argNames).getOrElse(Meta.fail(
-      "Can't find constructor for " + clazz))
+    val cstr = findConstructor(cl, argNames)
+      .getOrElse(Meta.fail("Can't find constructor for " + clazz))
     findArgType(cstr, argNames.indexOf(argName), typeArgIndex)
   }
 
@@ -36,26 +36,23 @@ private[json] object ScalaSigReader {
       if (current == null)
         Meta.fail("Can't find field " + name + " from " + clazz)
       else
-        findField(findClass(current), name).getOrElse(read(
-          current.getSuperclass))
+        findField(findClass(current), name)
+          .getOrElse(read(current.getSuperclass))
     }
     findArgTypeForField(read(clazz), typeArgIndex)
   }
 
   private def findClass(clazz: Class[_]): ClassSymbol = {
-    val sig = findScalaSig(clazz).getOrElse(Meta.fail(
-      "Can't find ScalaSig for " + clazz))
-    findClass(sig, clazz).getOrElse(Meta.fail(
-      "Can't find " + clazz + " from parsed ScalaSig"))
+    val sig = findScalaSig(clazz)
+      .getOrElse(Meta.fail("Can't find ScalaSig for " + clazz))
+    findClass(sig, clazz)
+      .getOrElse(Meta.fail("Can't find " + clazz + " from parsed ScalaSig"))
   }
 
   private def findClass(sig: ScalaSig, clazz: Class[_]): Option[ClassSymbol] = {
-    sig.symbols
-      .collect { case c: ClassSymbol if !c.isModule => c }
-      .find(_.name == clazz.getSimpleName)
-      .orElse {
-        sig.topLevelClasses
-          .find(_.symbolInfo.name == clazz.getSimpleName)
+    sig.symbols.collect { case c: ClassSymbol if !c.isModule => c }
+      .find(_.name == clazz.getSimpleName).orElse {
+        sig.topLevelClasses.find(_.symbolInfo.name == clazz.getSimpleName)
           .orElse {
             sig.topLevelObjects.map { obj =>
               val t = obj.infoType.asInstanceOf[TypeRefType]
@@ -77,9 +74,8 @@ private[json] object ScalaSigReader {
   }
 
   private def findField(c: ClassSymbol, name: String): Option[MethodSymbol] =
-    (c.children collect {
-      case m: MethodSymbol if m.name == name => m
-    }).headOption
+    (c.children collect { case m: MethodSymbol if m.name == name => m })
+      .headOption
 
   private def findArgType(
       s: MethodSymbol,

@@ -62,13 +62,15 @@ object PlayForkRun extends AutoPlugin {
   override def projectSettings =
     Seq(
       ivyConfigurations += ForkRun,
-      libraryDependencies += "com.typesafe.play" %% "fork-run" % play.core.PlayVersion.current % ForkRun.name,
+      libraryDependencies += "com.typesafe.play" %% "fork-run" % play.core
+        .PlayVersion.current % ForkRun.name,
       PlaySettings.manageClasspath(ForkRun),
       playRun <<= PlayRun.playDefaultRunTask,
       playForkOptions <<= forkOptionsTask,
       playForkRun <<= forkRunTask,
       run in Compile <<= selectRunTask,
-      BackgroundJobServiceKeys.backgroundRun in Compile <<= backgroundForkRunTask,
+      BackgroundJobServiceKeys
+        .backgroundRun in Compile <<= backgroundForkRunTask,
       playForkLogSbtEvents := true,
       playForkCompileTimeout := 5.minutes,
       playForkShutdownTimeout := 10.seconds,
@@ -82,7 +84,11 @@ object PlayForkRun extends AutoPlugin {
 
   val allInput: Parser[String] = {
     import sbt.complete.DefaultParsers._
-    (token(Space) ~> token(any.*.string, "<arg>")).?.map(_.fold("")(" ".+))
+    (token(Space) ~> token(
+      any
+        .*.string,
+      "<arg>"))
+      .?.map(_.fold("")(" ".+))
   }
 
   def selectRunTask =
@@ -100,8 +106,8 @@ object PlayForkRun extends AutoPlugin {
         jvmOptions = (javaOptions in (Compile, run)).value,
         classpath = (managedClasspath in ForkRun).value.files,
         baseDirectory = (baseDirectory in ThisBuild).value,
-        configKey =
-          thisProjectRef.value.project + "/" + playForkConfig.key.label,
+        configKey = thisProjectRef.value.project + "/" + playForkConfig.key
+          .label,
         logLevel = ((logLevel in (Compile, run)) ?? Level.Info).value,
         logSbtEvents = playForkLogSbtEvents.value,
         shutdownTimeout = playForkShutdownTimeout.value
@@ -148,15 +154,15 @@ object PlayForkRun extends AutoPlugin {
         devSettings = PlayKeys.devSettings.value,
         defaultHttpPort = PlayKeys.playDefaultPort.value,
         defaultHttpAddress = PlayKeys.playDefaultAddress.value,
-        watchService = ForkConfig.identifyWatchService(
-          PlayKeys.fileWatchService.value),
+        watchService = ForkConfig
+          .identifyWatchService(PlayKeys.fileWatchService.value),
         monitoredFiles = PlayKeys.playMonitoredFiles.value,
         targetDirectory = target.value,
         pollInterval = pollInterval.value,
-        notifyKey =
-          thisProjectRef.value.project + "/" + playForkNotifyStart.key.label,
-        reloadKey =
-          thisProjectRef.value.project + "/" + playForkReload.key.label,
+        notifyKey = thisProjectRef.value.project + "/" + playForkNotifyStart.key
+          .label,
+        reloadKey = thisProjectRef.value.project + "/" + playForkReload.key
+          .label,
         compileTimeout = playForkCompileTimeout.value.toMillis,
         mainClass = (mainClass in (Compile, run)).value.get
       )
@@ -170,8 +176,8 @@ object PlayForkRun extends AutoPlugin {
 
   def publishUrlTask =
     Def.task[String => Unit] { url =>
-      SendEventServiceKeys.sendEventService.value.sendEvent(PlayServerStarted(
-        url))(Serializers.playServerStartedPickler)
+      SendEventServiceKeys.sendEventService.value
+        .sendEvent(PlayServerStarted(url))(Serializers.playServerStartedPickler)
     }
 
   def compileTask =

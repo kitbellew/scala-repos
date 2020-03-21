@@ -77,8 +77,8 @@ class AllProjectHighlightingTest
     importProject()
 
     extensions.inWriteAction {
-      val internalSdk =
-        JavaAwareProjectJdkTableImpl.getInstanceEx.getInternalJdk
+      val internalSdk = JavaAwareProjectJdkTableImpl.getInstanceEx
+        .getInternalJdk
       val sdk =
         if (internalSdk == null) IdeaTestUtil.getMockJdk17 else internalSdk
 
@@ -94,8 +94,7 @@ class AllProjectHighlightingTest
 
   def doRunHighlighting(): Unit = {
     val inspectionManagerEx: InspectionManagerEx = InspectionManager
-      .getInstance(myProject)
-      .asInstanceOf[InspectionManagerEx]
+      .getInstance(myProject).asInstanceOf[InspectionManagerEx]
 
     val searchScope = new SourceFilterScope(
       GlobalSearchScope.getScopeRestrictedByFileTypes(
@@ -104,16 +103,13 @@ class AllProjectHighlightingTest
         JavaFileType.INSTANCE),
       myProject)
 
-    val files: util.Collection[VirtualFile] = FileTypeIndex.getFiles(
-      ScalaFileType.SCALA_FILE_TYPE,
-      searchScope)
+    val files: util.Collection[VirtualFile] = FileTypeIndex
+      .getFiles(ScalaFileType.SCALA_FILE_TYPE, searchScope)
 
     LocalFileSystem.getInstance().refreshFiles(files)
 
-    val fileManager = PsiManager
-      .getInstance(myProject)
-      .asInstanceOf[PsiManagerEx]
-      .getFileManager
+    val fileManager = PsiManager.getInstance(myProject)
+      .asInstanceOf[PsiManagerEx].getFileManager
     val annotator = new ScalaAnnotator
 
     import scala.collection.JavaConversions._
@@ -172,8 +168,8 @@ class AllProjectHighlightingTest
     super.setUpInWriteAction()
     val projectDir: File = new File(getRootDir, getTestName(false))
     if (!projectDir.exists()) return
-    myProjectRoot = LocalFileSystem.getInstance.refreshAndFindFileByIoFile(
-      projectDir)
+    myProjectRoot = LocalFileSystem.getInstance
+      .refreshAndFindFileByIoFile(projectDir)
     setUpSbtLauncherAndStructure(myProject)
   }
 }

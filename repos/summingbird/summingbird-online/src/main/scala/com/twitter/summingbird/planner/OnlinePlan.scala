@@ -26,8 +26,7 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
 
   private val depData = Dependants(tail)
   private val forkedNodes = depData.nodes
-    .filter(depData.fanOut(_).exists(_ > 1))
-    .toSet
+    .filter(depData.fanOut(_).exists(_ > 1)).toSet
   private def distinctAddToList[T](l: List[T], n: T): List[T] =
     if (l.contains(n)) l else (n :: l)
 
@@ -71,27 +70,19 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
   private def noOpNode(c: CNode): Boolean = c.members.forall(noOpProducer)
 
   private def hasSummerAsDependantProducer(p: Prod[_]): Boolean =
-    depData
-      .dependantsOf(p)
-      .get
-      .collect { case s: Summer[_, _, _] => s }
-      .headOption
-      .isDefined
+    depData.dependantsOf(p).get.collect { case s: Summer[_, _, _] => s }
+      .headOption.isDefined
 
   private def dependsOnSummerProducer(p: Prod[_]): Boolean =
-    Producer
-      .dependenciesOf(p)
-      .collect { case s: Summer[_, _, _] => s }
-      .headOption
-      .isDefined
+    Producer.dependenciesOf(p).collect { case s: Summer[_, _, _] => s }
+      .headOption.isDefined
 
   /*
    * Note that this is transitive: we check on p, then we call this fn
    * for all dependencies of p
    */
   private def allTransDepsMergeableWithSource(p: Prod[_]): Boolean =
-    mergableWithSource(p) && Producer
-      .dependenciesOf(p)
+    mergableWithSource(p) && Producer.dependenciesOf(p)
       .forall(allTransDepsMergeableWithSource)
 
   /**
@@ -287,8 +278,7 @@ object OnlinePlan {
     // The nodes are added in a source -> summer way with how we do list prepends
     // but its easier to look at laws in a summer -> source manner
     // We also drop all Nodes with no members(may occur when we visit a node already seen and its the first in that Node)
-    val reversedNodeSet = nodesSet
-      .filter(_.members.size > 0)
+    val reversedNodeSet = nodesSet.filter(_.members.size > 0)
       .foldLeft(List[Node[P]]()) { (nodes, n) => n.reverse :: nodes }
     Dag(tail, nameMap, strippedTail, reversedNodeSet)
   }

@@ -106,9 +106,7 @@ object TestPublisher {
       * Expect a subscription.
       */
     def expectSubscription(): PublisherProbeSubscription[I] =
-      probe
-        .expectMsgType[Subscribe]
-        .subscription
+      probe.expectMsgType[Subscribe].subscription
         .asInstanceOf[PublisherProbeSubscription[I]]
 
     /**
@@ -283,8 +281,8 @@ object TestSubscriber {
       * Expect and return a stream element.
       */
     def expectNext(): I = {
-      val t = probe.remainingOr(
-        probe.testKitSettings.SingleExpectDefaultTimeout.dilated)
+      val t = probe
+        .remainingOr(probe.testKitSettings.SingleExpectDefaultTimeout.dilated)
       probe.receiveOne(t) match {
         case null ⇒
           throw new AssertionError(
@@ -590,12 +588,10 @@ object TestSubscriber {
     def receiveWithin(
         max: FiniteDuration,
         messages: Int = Int.MaxValue): immutable.Seq[I] =
-      probe
-        .receiveWhile(max, max, messages) {
-          case OnNext(i) ⇒ Some(i.asInstanceOf[I])
-          case _ ⇒ None
-        }
-        .flatten
+      probe.receiveWhile(max, max, messages) {
+        case OnNext(i) ⇒ Some(i.asInstanceOf[I])
+        case _ ⇒ None
+      }.flatten
 
     /**
       * Attempt to drain the stream into a strict collection (by requesting `Long.MaxValue` elements).

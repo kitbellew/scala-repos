@@ -89,8 +89,8 @@ private[akka] final case class TailChoppingRoutees(
       }
     }
 
-    val sendTimeout = scheduler.scheduleOnce(within)(promise.tryFailure(
-      new AskTimeoutException(
+    val sendTimeout = scheduler
+      .scheduleOnce(within)(promise.tryFailure(new AskTimeoutException(
         s"Ask timed out on [$sender] after [$within.toMillis} ms]")))
 
     val f = promise.future
@@ -154,8 +154,8 @@ final case class TailChoppingPool(
     override val resizer: Option[Resizer] = None,
     within: FiniteDuration,
     interval: FiniteDuration,
-    override val supervisorStrategy: SupervisorStrategy =
-      Pool.defaultSupervisorStrategy,
+    override val supervisorStrategy: SupervisorStrategy = Pool
+      .defaultSupervisorStrategy,
     override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
     override val usePoolDispatcher: Boolean = false)
     extends Pool

@@ -59,8 +59,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
   }
 
   def getVariants: Array[Object] = {
-    val isInImport: Boolean =
-      ScalaPsiUtil.getParentOfType(this, classOf[ScImportStmt]) != null
+    val isInImport: Boolean = ScalaPsiUtil
+      .getParentOfType(this, classOf[ScImportStmt]) != null
     doResolve(this, new CompletionProcessor(getKinds(incomplete = true), this))
       .flatMap {
         case res: ScalaResolveResult =>
@@ -142,7 +142,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
       case _                                        => stableQualRef
     }
     if (completion)
-      result + ResolveTargets.PACKAGE + ResolveTargets.OBJECT + ResolveTargets.VAL
+      result + ResolveTargets.PACKAGE + ResolveTargets.OBJECT + ResolveTargets
+        .VAL
     else result
   }
 
@@ -153,9 +154,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
   def bindToElement(element: PsiElement): PsiElement = {
     if (isReferenceTo(element)) this
     else {
-      val aliasedRef: Option[ScReferenceElement] = ScalaPsiUtil.importAliasFor(
-        element,
-        this)
+      val aliasedRef: Option[ScReferenceElement] = ScalaPsiUtil
+        .importAliasFor(element, this)
       if (aliasedRef.isDefined) { this.replace(aliasedRef.get) }
       else {
         def bindToType(c: ScalaImportTypeFix.TypeToImport): PsiElement = {
@@ -172,49 +172,41 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
                 else getText
               })
           if (nameId.getText != c.name) {
-            val ref = ScalaPsiElementFactory.createReferenceFromText(
-              c.name,
-              getManager)
-            return this
-              .replace(ref)
-              .asInstanceOf[ScStableCodeReferenceElement]
+            val ref = ScalaPsiElementFactory
+              .createReferenceFromText(c.name, getManager)
+            return this.replace(ref).asInstanceOf[ScStableCodeReferenceElement]
               .bindToElement(element)
           }
           val qname = c.qualifiedName
-          val isPredefined = ScalaCodeStyleSettings
-            .getInstance(getProject)
+          val isPredefined = ScalaCodeStyleSettings.getInstance(getProject)
             .hasImportWithPrefix(qname)
           if (qualifier.isDefined && !isPredefined) {
-            val ref = ScalaPsiElementFactory.createReferenceFromText(
-              c.name,
-              getContext,
-              this)
+            val ref = ScalaPsiElementFactory
+              .createReferenceFromText(c.name, getContext, this)
             if (ref.isReferenceTo(element)) {
-              val ref = ScalaPsiElementFactory.createReferenceFromText(
-                c.name,
-                getManager)
+              val ref = ScalaPsiElementFactory
+                .createReferenceFromText(c.name, getManager)
               return this.replace(ref)
             }
           }
           if (qname != null) {
-            val selector: ScImportSelector = PsiTreeUtil.getParentOfType(
-              this,
-              classOf[ScImportSelector])
+            val selector: ScImportSelector = PsiTreeUtil
+              .getParentOfType(this, classOf[ScImportSelector])
             if (selector != null) {
-              val importExpr = PsiTreeUtil.getParentOfType(
-                this,
-                classOf[ScImportExpr])
+              val importExpr = PsiTreeUtil
+                .getParentOfType(this, classOf[ScImportExpr])
               selector
                 .deleteSelector() //we can't do anything here, so just simply delete it
-              return importExpr.reference.get //todo: what we should return exactly?
+              return importExpr.reference
+                .get //todo: what we should return exactly?
               //              }
             } else
               getParent match {
                 case importExpr: ScImportExpr
-                    if !importExpr.singleWildcard && !importExpr.selectorSet.isDefined =>
-                  val holder = PsiTreeUtil.getParentOfType(
-                    this,
-                    classOf[ScImportsHolder])
+                    if !importExpr.singleWildcard && !importExpr.selectorSet
+                      .isDefined =>
+                  val holder = PsiTreeUtil
+                    .getParentOfType(this, classOf[ScImportsHolder])
                   importExpr.deleteExpr()
                   c match {
                     case ClassTypeToImport(clazz) =>
@@ -247,9 +239,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
                     if (qualifier != None) {
                       //let's make our reference unqualified
                       val ref: ScStableCodeReferenceElement =
-                        ScalaPsiElementFactory.createReferenceFromText(
-                          c.name,
-                          getManager)
+                        ScalaPsiElementFactory
+                          .createReferenceFromText(c.name, getManager)
                       this.replace(ref).asInstanceOf[ScReferenceElement]
                     }
                     this

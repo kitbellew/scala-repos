@@ -44,8 +44,8 @@ class RenameScalaClassProcessor
   }
 
   override def findReferences(element: PsiElement) =
-    ScalaRenameUtil.replaceImportClassReferences(
-      ScalaRenameUtil.findReferences(element))
+    ScalaRenameUtil
+      .replaceImportClassReferences(ScalaRenameUtil.findReferences(element))
 
   override def prepareRenaming(
       element: PsiElement,
@@ -55,8 +55,7 @@ class RenameScalaClassProcessor
       case td: ScTypeDefinition =>
         ScalaPsiUtil.getCompanionModule(td) match {
           case Some(companion)
-              if ScalaApplicationSettings
-                .getInstance()
+              if ScalaApplicationSettings.getInstance()
                 .RENAME_COMPANION_MODULE => allRenames.put(companion, newName)
           case _                         =>
         }
@@ -69,18 +68,16 @@ class RenameScalaClassProcessor
           }
         }
         val file = td.getContainingFile
-        if (file != null && isTop(
-              element.getContext) && file.name == td.name + ".scala") {
-          allRenames.put(file, newName + ".scala")
-        }
+        if (file != null && isTop(element.getContext) && file.name == td
+              .name + ".scala") { allRenames.put(file, newName + ".scala") }
       case docTagParam: ScTypeParam => docTagParam.owner match {
           case commentOwner: ScDocCommentOwner =>
             commentOwner.getDocComment match {
               case comment: ScDocComment =>
-                comment
-                  .findTagsByName(MyScaladocParsing.TYPE_PARAM_TAG)
+                comment.findTagsByName(MyScaladocParsing.TYPE_PARAM_TAG)
                   .foreach { b =>
-                    if (b.getValueElement != null && b.getValueElement.getText == docTagParam.name)
+                    if (b.getValueElement != null && b.getValueElement
+                          .getText == docTagParam.name)
                       allRenames.put(b.getValueElement, newName)
                   }
               case _ =>
@@ -134,11 +131,8 @@ class RenameScalaClassProcessor
       newName: String,
       usages: Array[UsageInfo],
       listener: RefactoringElementListener) {
-    ScalaRenameUtil.doRenameGenericNamedElement(
-      element,
-      newName,
-      usages,
-      listener)
+    ScalaRenameUtil
+      .doRenameGenericNamedElement(element, newName, usages, listener)
   }
 }
 
@@ -172,8 +166,8 @@ class ScalaClassRenameDialog(
       chbRenameCompanion.setText(
         ScalaBundle.message("rename.companion.module", companionType.get))
       chbRenameCompanion.setSelected(true)
-      val panel = Option(super.createCenterPanel()).getOrElse(new JPanel(
-        new BorderLayout()))
+      val panel = Option(super.createCenterPanel())
+        .getOrElse(new JPanel(new BorderLayout()))
       panel.add(chbRenameCompanion, BorderLayout.WEST)
       panel
     } else null

@@ -23,12 +23,10 @@ class StaticPsiTypedDefinitionWrapper(
     role: PsiTypedDefinitionWrapper.DefinitionRole.DefinitionRole,
     containingClass: PsiClassWrapper)
     extends {
-  val elementFactory =
-    JavaPsiFacade.getInstance(typedDefinition.getProject).getElementFactory
-  val methodText = StaticPsiTypedDefinitionWrapper.methodText(
-    typedDefinition,
-    role,
-    containingClass)
+  val elementFactory = JavaPsiFacade.getInstance(typedDefinition.getProject)
+    .getElementFactory
+  val methodText = StaticPsiTypedDefinitionWrapper
+    .methodText(typedDefinition, role, containingClass)
   val method: PsiMethod = {
     try { elementFactory.createMethodFromText(methodText, containingClass) }
     catch {

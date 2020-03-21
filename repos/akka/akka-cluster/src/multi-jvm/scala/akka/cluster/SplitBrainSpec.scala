@@ -24,15 +24,14 @@ final case class SplitBrainMultiNodeConfig(failureDetectorPuppet: Boolean)
   val fifth = role("fifth")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      """
         akka.remote.retry-gate-closed-for = 3 s
         akka.cluster {
           auto-down-unreachable-after = 1s
           failure-detector.threshold = 4
-        }"""))
-      .withFallback(MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
+        }""")).withFallback(MultiNodeClusterSpec.clusterConfig(
+      failureDetectorPuppet)))
 
   testTransport(on = true)
 }

@@ -19,9 +19,7 @@ class FlowIntersperseSpec extends AkkaSpec {
 
   "A Intersperse" must {
     "inject element between existing elements" in {
-      val probe = Source(List(1, 2, 3))
-        .map(_.toString)
-        .intersperse(",")
+      val probe = Source(List(1, 2, 3)).map(_.toString).intersperse(",")
         .runWith(TestSink.probe)
 
       probe.expectSubscription()
@@ -30,19 +28,15 @@ class FlowIntersperseSpec extends AkkaSpec {
     }
 
     "inject element between existing elements, when downstream is fold" in {
-      val concated = Source(List(1, 2, 3))
-        .map(_.toString)
-        .intersperse(",")
+      val concated = Source(List(1, 2, 3)).map(_.toString).intersperse(",")
         .runFold("")(_ + _)
 
       concated.futureValue should ===("1,2,3")
     }
 
     "inject element between existing elements, and surround with []" in {
-      val probe = Source(List(1, 2, 3))
-        .map(_.toString)
-        .intersperse("[", ",", "]")
-        .runWith(TestSink.probe)
+      val probe = Source(List(1, 2, 3)).map(_.toString)
+        .intersperse("[", ",", "]").runWith(TestSink.probe)
 
       probe.toStrict(1.second).mkString("") should ===(
         List(1, 2, 3).mkString("[", ",", "]"))
@@ -58,9 +52,7 @@ class FlowIntersperseSpec extends AkkaSpec {
     }
 
     "surround empty stream with []" in {
-      val probe = Source(List())
-        .map(_.toString)
-        .intersperse("[", ",", "]")
+      val probe = Source(List()).map(_.toString).intersperse("[", ",", "]")
         .runWith(TestSink.probe)
 
       probe.expectSubscription()
@@ -69,9 +61,7 @@ class FlowIntersperseSpec extends AkkaSpec {
     }
 
     "surround single element stream with []" in {
-      val probe = Source(List(1))
-        .map(_.toString)
-        .intersperse("[", ",", "]")
+      val probe = Source(List(1)).map(_.toString).intersperse("[", ",", "]")
         .runWith(TestSink.probe)
 
       probe.expectSubscription()
@@ -80,33 +70,19 @@ class FlowIntersperseSpec extends AkkaSpec {
     }
 
     "complete the stage when the Source has been completed" in {
-      val (p1, p2) = TestSource
-        .probe[String]
-        .intersperse(",")
-        .toMat(TestSink.probe[String])(Keep.both)
-        .run
+      val (p1, p2) = TestSource.probe[String].intersperse(",")
+        .toMat(TestSink.probe[String])(Keep.both).run
       p2.request(10)
-      p1.sendNext("a")
-        .sendNext("b")
-        .sendComplete()
-      p2.expectNext("a")
-        .expectNext(",")
-        .expectNext("b")
-        .expectComplete()
+      p1.sendNext("a").sendNext("b").sendComplete()
+      p2.expectNext("a").expectNext(",").expectNext("b").expectComplete()
     }
 
     "complete the stage when the Sink has been cancelled" in {
-      val (p1, p2) = TestSource
-        .probe[String]
-        .intersperse(",")
-        .toMat(TestSink.probe[String])(Keep.both)
-        .run
+      val (p1, p2) = TestSource.probe[String].intersperse(",")
+        .toMat(TestSink.probe[String])(Keep.both).run
       p2.request(10)
-      p1.sendNext("a")
-        .sendNext("b")
-      p2.expectNext("a")
-        .expectNext(",")
-        .cancel()
+      p1.sendNext("a").sendNext("b")
+      p2.expectNext("a").expectNext(",").cancel()
       p1.expectCancellation()
     }
   }

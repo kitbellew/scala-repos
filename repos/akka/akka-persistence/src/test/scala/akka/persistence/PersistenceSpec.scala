@@ -58,8 +58,7 @@ object PersistenceSpec {
       test: String,
       serialization: String = "on",
       extraConfig: Option[String] = None) =
-    extraConfig
-      .map(ConfigFactory.parseString(_))
+    extraConfig.map(ConfigFactory.parseString(_))
       .getOrElse(ConfigFactory.empty())
       .withFallback(ConfigFactory.parseString(s"""
       akka.actor.serialize-creators = ${serialization}
@@ -79,8 +78,8 @@ trait Cleanup {
   val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒
-    new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir")
+    .map(s ⇒ new File(system.settings.config.getString(s)))
 
   override protected def atStartup() {
     storageLocations.foreach(FileUtils.deleteDirectory)
@@ -112,9 +111,10 @@ trait PersistenceMatchers {
       extends Matcher[immutable.Seq[Any]] {
     override def apply(_left: immutable.Seq[Any]) = {
       val left = _left.map(_.toString)
-      val mapped = left.groupBy(l ⇒
-        prefixes
-          .indexWhere(p ⇒ l.startsWith(p))) - (-1) // ignore other messages
+      val mapped = left
+        .groupBy(l ⇒ prefixes.indexWhere(p ⇒ l.startsWith(p))) - (
+        -1
+      ) // ignore other messages
       val results = for {
         (pos, seq) ← mapped
         nrs = seq.map(_.replaceFirst(prefixes(pos), "").toInt)

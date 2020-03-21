@@ -179,9 +179,8 @@ class GaussianMixture private (
     // Get length of the input vectors
     val d = breezeData.first().length
 
-    val shouldDistributeGaussians = GaussianMixture.shouldDistributeGaussians(
-      k,
-      d)
+    val shouldDistributeGaussians = GaussianMixture
+      .shouldDistributeGaussians(k, d)
 
     // Determine initial weights and corresponding Gaussians.
     // If the user supplied an initial GMM, we use those values, otherwise
@@ -192,10 +191,8 @@ class GaussianMixture private (
       case Some(gmm) => (gmm.weights, gmm.gaussians)
 
       case None => {
-        val samples = breezeData.takeSample(
-          withReplacement = true,
-          k * nSamples,
-          seed)
+        val samples = breezeData
+          .takeSample(withReplacement = true, k * nSamples, seed)
         (
           Array.fill(k)(1.0 / k),
           Array.tabulate(k) { i =>
@@ -223,16 +220,12 @@ class GaussianMixture private (
 
       if (shouldDistributeGaussians) {
         val numPartitions = math.min(k, 1024)
-        val tuples = Seq.tabulate(k)(i =>
-          (sums.means(i), sums.sigmas(i), sums.weights(i)))
-        val (ws, gs) = sc
-          .parallelize(tuples, numPartitions)
-          .map {
-            case (mean, sigma, weight) =>
-              updateWeightsAndGaussians(mean, sigma, weight, sumWeights)
-          }
-          .collect()
-          .unzip
+        val tuples = Seq
+          .tabulate(k)(i => (sums.means(i), sums.sigmas(i), sums.weights(i)))
+        val (ws, gs) = sc.parallelize(tuples, numPartitions).map {
+          case (mean, sigma, weight) =>
+            updateWeightsAndGaussians(mean, sigma, weight, sumWeights)
+        }.collect().unzip
         Array.copy(ws.toArray, 0, weights, 0, ws.length)
         Array.copy(gs.toArray, 0, gaussians, 0, gs.length)
       } else {

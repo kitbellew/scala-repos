@@ -33,8 +33,8 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
       group,
       ActionPlaces.CALL_HIERARCHY_VIEW_POPUP,
       ActionManager.getInstance)
-    val forName: Class[_] = Class.forName(
-      "com.intellij.ide.hierarchy.CallHierarchyBrowserBase")
+    val forName: Class[_] = Class
+      .forName("com.intellij.ide.hierarchy.CallHierarchyBrowserBase")
     val classes = forName.getDeclaredClasses
     var baseClass: Class[_] = null
     for (clazz <- classes if clazz.getName endsWith "BaseOnThisMethodAction")
@@ -48,8 +48,7 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
       classOf[JComponent])
     method.invoke(
       inst,
-      ActionManager.getInstance
-        .getAction(IdeActions.ACTION_CALL_HIERARCHY)
+      ActionManager.getInstance.getAction(IdeActions.ACTION_CALL_HIERARCHY)
         .getShortcutSet,
       tree1)
     type2TreeMap.put(CALLEE_TYPE, tree1)
@@ -61,8 +60,7 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
       ActionManager.getInstance)
     method.invoke(
       inst,
-      ActionManager.getInstance
-        .getAction(IdeActions.ACTION_CALL_HIERARCHY)
+      ActionManager.getInstance.getAction(IdeActions.ACTION_CALL_HIERARCHY)
         .getShortcutSet,
       tree2)
     type2TreeMap.put(CALLER_TYPE, tree2)

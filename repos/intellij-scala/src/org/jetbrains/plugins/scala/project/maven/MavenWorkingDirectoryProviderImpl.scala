@@ -14,7 +14,6 @@ class MavenWorkingDirectoryProviderImpl
     else {
       Option(
         MavenProjectsManager.getInstance(module.getProject).findProject(module))
-        .map(_.getDirectory)
-        .orNull
+        .map(_.getDirectory).orNull
     }
 }

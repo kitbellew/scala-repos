@@ -336,9 +336,8 @@ trait Mailer extends SimpleInjector {
         val relatedMultipart = new MimeMultipart("related")
 
         val htmlBodyPart = new MimeBodyPart
-        htmlBodyPart.setContent(
-          encodeHtmlBodyPart(html),
-          "text/html; charset=" + charSet)
+        htmlBodyPart
+          .setContent(encodeHtmlBodyPart(html), "text/html; charset=" + charSet)
         relatedMultipart.addBodyPart(htmlBodyPart)
 
         images.foreach { image =>

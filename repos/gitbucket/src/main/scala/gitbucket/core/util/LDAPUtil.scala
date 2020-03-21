@@ -94,8 +94,7 @@ object LDAPUtil {
                 ldapSettings.userNameAttribute,
                 userName,
                 fullNameAttribute)
-            }
-            .getOrElse(userName),
+            }.getOrElse(userName),
           mailAddress = createDummyMailAddress(userName)
         ))
       } else {
@@ -115,8 +114,7 @@ object LDAPUtil {
                     ldapSettings.userNameAttribute,
                     userName,
                     fullNameAttribute)
-                }
-                .getOrElse(userName),
+                }.getOrElse(userName),
               mailAddress = mailAddress
             ))
           case None => Left("Can't find mail address.")

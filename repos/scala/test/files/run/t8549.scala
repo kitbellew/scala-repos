@@ -10,8 +10,7 @@ import scala.reflect.io.File
 //
 // Use this to re-establish a baseline for serialization compatibility.
 object Test extends App {
-  val overwrite: Option[File] = sys.props
-    .get("overwrite.source")
+  val overwrite: Option[File] = sys.props.get("overwrite.source")
     .map(s => new File(new java.io.File(s)))
 
   def serialize(o: AnyRef): String = {
@@ -27,17 +26,14 @@ object Test extends App {
 
   def patch(file: File, line: Int, prevResult: String, result: String) {
     amend(file) { content =>
-      content.lines.toList.zipWithIndex
-        .map {
-          case (content, i) if i == line - 1 =>
-            val newContent = content.replaceAllLiterally(
-              quote(prevResult),
-              quote(result))
-            if (newContent != content) println(s"- $content\n+ $newContent\n")
-            newContent
-          case (content, _) => content
-        }
-        .mkString("\n")
+      content.lines.toList.zipWithIndex.map {
+        case (content, i) if i == line - 1 =>
+          val newContent = content
+            .replaceAllLiterally(quote(prevResult), quote(result))
+          if (newContent != content) println(s"- $content\n+ $newContent\n")
+          newContent
+        case (content, _) => content
+      }.mkString("\n")
     }
   }
 
@@ -50,9 +46,9 @@ object Test extends App {
     val newComment =
       s"  // Generated on $timestamp with Scala ${scala.util.Properties.versionString})"
     amend(file) { content =>
-      content.lines.toList
-        .map { f => f.replaceAll("""^ +// Generated on.*""", newComment) }
-        .mkString("\n")
+      content.lines.toList.map { f =>
+        f.replaceAll("""^ +// Generated on.*""", newComment)
+      }.mkString("\n")
     }
   }
 
@@ -73,8 +69,8 @@ object Test extends App {
     val result = serialize(instance)
     overwrite match {
       case Some(f) =>
-        val lineNumberOfLiteralString =
-          Thread.currentThread.getStackTrace.apply(2).getLineNumber
+        val lineNumberOfLiteralString = Thread.currentThread.getStackTrace
+          .apply(2).getLineNumber
         patch(f, lineNumberOfLiteralString, prevResult, result)
       case None =>
         checkRoundTrip(instance)(f)
@@ -83,7 +79,8 @@ object Test extends App {
           s"$instance != f(deserialize(prevResult))")
         assert(
           prevResult == result,
-          s"instance = $instance : ${instance.getClass}\n serialization unstable: ${prevResult}\n   found: ${result}")
+          s"instance = $instance : ${instance
+            .getClass}\n serialization unstable: ${prevResult}\n   found: ${result}")
     }
   }
 

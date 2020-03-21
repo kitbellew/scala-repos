@@ -42,13 +42,13 @@ package scalaguide.forms.scalaforms {
     "password check" should {
 
       "return invalid with all letters" in {
-        passwordCheckConstraint("abcdef").must(be_==(
-          Invalid(ValidationError("Password is all letters"))))
+        passwordCheckConstraint("abcdef")
+          .must(be_==(Invalid(ValidationError("Password is all letters"))))
       }
 
       "return invalid with all numbers" in {
-        passwordCheckConstraint("12324").must(be_==(
-          Invalid(ValidationError("Password is all numbers"))))
+        passwordCheckConstraint("12324")
+          .must(be_==(Invalid(ValidationError("Password is all numbers"))))
       }
 
       "return valid with both letters and numbers" in {

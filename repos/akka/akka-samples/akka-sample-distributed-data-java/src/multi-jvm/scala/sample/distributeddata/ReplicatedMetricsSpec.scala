@@ -40,8 +40,8 @@ class ReplicatedMetricsSpec
   override def initialParticipants = roles.size
 
   val cluster = Cluster(system)
-  val replicatedMetrics = system.actorOf(
-    ReplicatedMetrics.props(1.second, 3.seconds))
+  val replicatedMetrics = system
+    .actorOf(ReplicatedMetrics.props(1.second, 3.seconds))
 
   def join(from: RoleName, to: RoleName): Unit = {
     runOn(from) { cluster join node(to).address }
@@ -82,10 +82,7 @@ class ReplicatedMetricsSpec
           probe.expectMsgType[UsedHeap](1.second).percentPerNode.size should be(
             2)
         }
-        probe
-          .expectMsgType[UsedHeap]
-          .percentPerNode
-          .asScala
+        probe.expectMsgType[UsedHeap].percentPerNode.asScala
           .toMap should not contain (nodeKey(node3Address))
       }
       enterBarrier("after-3")

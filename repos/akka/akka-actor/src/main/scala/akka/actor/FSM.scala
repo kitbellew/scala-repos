@@ -422,9 +422,10 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     * @return descriptor for staying in current state
     */
   final def stay(): State =
-    goto(currentState.stateName).withNotification(
-      false
-    ) // cannot directly use currentState because of the timeout field
+    goto(currentState.stateName)
+      .withNotification(
+        false
+      ) // cannot directly use currentState because of the timeout field
 
   /**
     * Produce change descriptor to stop this FSM actor with reason "Normal".
@@ -741,10 +742,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 
       def scheduleTimeout(d: FiniteDuration): Some[Cancellable] = {
         import context.dispatcher
-        Some(context.system.scheduler.scheduleOnce(
-          d,
-          self,
-          TimeoutMarker(generation)))
+        Some(
+          context.system.scheduler
+            .scheduleOnce(d, self, TimeoutMarker(generation)))
       }
 
       currentState.timeout match {

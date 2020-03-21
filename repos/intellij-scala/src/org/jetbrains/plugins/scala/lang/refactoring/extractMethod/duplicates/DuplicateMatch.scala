@@ -90,9 +90,8 @@ class DuplicateMatch(
           if pattern.paramOccurences.contains(ref) =>
         val p = pattern.paramOccurences(ref)
         val paramValue = parameterValues.getOrElseUpdate(p, expr)
-        PsiEquivalenceUtil.areElementsEquivalent(
-          paramValue,
-          expr) && typesEquiv(ref, expr)
+        PsiEquivalenceUtil
+          .areElementsEquivalent(paramValue, expr) && typesEquiv(ref, expr)
       case Both(
             (ref1: ScReferenceExpression, ref2: ScReferenceExpression),
             (

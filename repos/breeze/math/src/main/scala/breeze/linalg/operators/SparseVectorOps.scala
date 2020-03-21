@@ -652,11 +652,8 @@ trait SparseVectorOps {
           while (aoff < asize) {
             val aind: Int = a.indexAt(aoff)
             // the min reflects the invariant that index aind must be in the first aind active indices in b's index.
-            boff = util.Arrays.binarySearch(
-              b.index,
-              boff,
-              math.min(bsize, aind + 1),
-              aind)
+            boff = util.Arrays
+              .binarySearch(b.index, boff, math.min(bsize, aind + 1), aind)
             if (boff < 0) {
               boff = ~boff
               if (boff == bsize) {
@@ -665,19 +662,16 @@ trait SparseVectorOps {
               } else {
                 // fast forward a until we get to the b we just got to
                 val bind = b.indexAt(boff)
-                var newAoff = util.Arrays.binarySearch(
-                  a.index,
-                  aoff,
-                  math.min(asize, bind + 1),
-                  bind)
+                var newAoff = util.Arrays
+                  .binarySearch(a.index, aoff, math.min(asize, bind + 1), bind)
                 if (newAoff < 0) {
                   newAoff = ~newAoff
                   boff += 1
                 }
                 assert(
                   newAoff > aoff,
-                  bind + " " + aoff + " " + newAoff + " " + a.index(
-                    aoff) + " " + a.index(newAoff) + " " + a + " " + b)
+                  bind + " " + aoff + " " + newAoff + " " + a
+                    .index(aoff) + " " + a.index(newAoff) + " " + a + " " + b)
                 aoff = newAoff
               }
             } else {
@@ -1032,11 +1026,8 @@ trait SparseVectorOps {
 //              bLastInd = bind
 //              val aMax = math.min(asize, aoff + bind  - aind + 1)
               val aMax = math.min(asize, bind + 1)
-              var newAoff: Int = ArrayUtil.gallopSearch(
-                a.index,
-                aoff,
-                aMax,
-                bind)
+              var newAoff: Int = ArrayUtil
+                .gallopSearch(a.index, aoff, aMax, bind)
               if (newAoff < 0) {
                 newAoff = ~newAoff
                 boff += 1
@@ -1082,11 +1073,8 @@ trait SparseVectorOps {
           // b moves to catch up with a, then a takes a step (possibly bringing b along)
           while (aoff < asize) {
             val aind: Int = a.indexAt(aoff)
-            boff = util.Arrays.binarySearch(
-              b.index,
-              boff,
-              math.min(bsize, aind + 1),
-              aind)
+            boff = util.Arrays
+              .binarySearch(b.index, boff, math.min(bsize, aind + 1), aind)
             if (boff < 0) {
               boff = ~boff
               if (boff == bsize) {
@@ -1095,11 +1083,8 @@ trait SparseVectorOps {
               } else {
                 // fast forward a until we get to the b we just got to
                 val bind: Int = b.indexAt(boff)
-                var newAoff: Int = util.Arrays.binarySearch(
-                  a.index,
-                  aoff,
-                  math.min(asize, bind + 1),
-                  bind)
+                var newAoff: Int = util.Arrays
+                  .binarySearch(a.index, aoff, math.min(asize, bind + 1), bind)
                 if (newAoff < 0) {
                   newAoff = ~newAoff
                   boff += 1
@@ -1331,15 +1316,15 @@ trait SparseVectorOps {
         val vb = new VectorBuilder[RV](from.length)
         var off1, off2 = 0
         while (off1 < from.activeSize) {
-          while (off2 < from2.activeSize && from2.indexAt(off2) < from.indexAt(
-                   off1)) {
+          while (off2 < from2.activeSize && from2.indexAt(off2) < from
+                   .indexAt(off1)) {
             val index = from2.indexAt(off2)
             vb.add(index, fn(from.default, from2.valueAt(off2)))
             off2 += 1
           }
 
-          if (off2 < from2.activeSize && from.indexAt(off1) == from2.indexAt(
-                off2)) {
+          if (off2 < from2.activeSize && from.indexAt(off1) == from2
+                .indexAt(off2)) {
             val index = from2.indexAt(off2)
             vb.add(index, fn(from.valueAt(off1), from2.valueAt(off2)))
             off2 += 1
@@ -1405,15 +1390,15 @@ trait SparseVectorOps {
       val vb = new VectorBuilder[RV](from.length)
       var off1, off2 = 0
       while (off1 < from.activeSize) {
-        while (off2 < from2.activeSize && from2.indexAt(off2) < from.indexAt(
-                 off1)) {
+        while (off2 < from2.activeSize && from2.indexAt(off2) < from
+                 .indexAt(off1)) {
           val index = from2.indexAt(off2)
           vb.add(index, fn(index, from.default, from2.valueAt(off2)))
           off2 += 1
         }
 
-        if (off2 < from2.activeSize && from.indexAt(off1) == from2.indexAt(
-              off2)) {
+        if (off2 < from2.activeSize && from.indexAt(off1) == from2
+              .indexAt(off2)) {
           val index = from2.indexAt(off2)
           vb.add(index, fn(index, from.valueAt(off1), from2.valueAt(off2)))
           off2 += 1

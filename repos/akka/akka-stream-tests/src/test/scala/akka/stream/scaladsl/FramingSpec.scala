@@ -62,8 +62,7 @@ class FramingSpec extends AkkaSpec {
     }
   }
 
-  val rechunk = Flow[ByteString]
-    .transform(() ⇒ new Rechunker)
+  val rechunk = Flow[ByteString].transform(() ⇒ new Rechunker)
     .named("rechunker")
 
   "Delimiter bytes based framing" must {
@@ -76,10 +75,8 @@ class FramingSpec extends AkkaSpec {
         delimiter: String,
         maximumBytes: Int,
         allowTruncation: Boolean = true) =
-      Framing
-        .delimiter(ByteString(delimiter), maximumBytes, allowTruncation)
-        .map(_.utf8String)
-        .named("lineFraming")
+      Framing.delimiter(ByteString(delimiter), maximumBytes, allowTruncation)
+        .map(_.utf8String).named("lineFraming")
 
     def completeTestSequences(
         delimiter: ByteString): immutable.Iterable[ByteString] =
@@ -88,11 +85,8 @@ class FramingSpec extends AkkaSpec {
 
     "work with various delimiters and test sequences" in {
       for (delimiter ← delimiterBytes; _ ← 1 to 100) {
-        val f = Source(completeTestSequences(delimiter))
-          .map(_ ++ delimiter)
-          .via(rechunk)
-          .via(Framing.delimiter(delimiter, 256))
-          .grouped(1000)
+        val f = Source(completeTestSequences(delimiter)).map(_ ++ delimiter)
+          .via(rechunk).via(Framing.delimiter(delimiter, 256)).grouped(1000)
           .runWith(Sink.head)
 
         Await.result(f, 3.seconds) should be(completeTestSequences(delimiter))
@@ -102,19 +96,13 @@ class FramingSpec extends AkkaSpec {
     "Respect maximum line settings" in {
       // The buffer will contain more than 1 bytes, but the individual frames are less
       Await.result(
-        Source
-          .single(ByteString("a\nb\nc\nd\n"))
-          .via(simpleLines("\n", 1))
-          .limit(100)
-          .runWith(Sink.seq),
+        Source.single(ByteString("a\nb\nc\nd\n")).via(simpleLines("\n", 1))
+          .limit(100).runWith(Sink.seq),
         3.seconds) should ===(List("a", "b", "c", "d"))
 
       an[FramingException] should be thrownBy {
         Await.result(
-          Source
-            .single(ByteString("ab\n"))
-            .via(simpleLines("\n", 1))
-            .limit(100)
+          Source.single(ByteString("ab\n")).via(simpleLines("\n", 1)).limit(100)
             .runWith(Sink.seq),
           3.seconds)
       }
@@ -122,8 +110,7 @@ class FramingSpec extends AkkaSpec {
 
     "work with empty streams" in {
       Await.result(
-        Source.empty
-          .via(simpleLines("\n", 256))
+        Source.empty.via(simpleLines("\n", 256))
           .runFold(Vector.empty[String])(_ :+ _),
         3.seconds) should ===(Vector.empty)
     }
@@ -131,10 +118,8 @@ class FramingSpec extends AkkaSpec {
     "report truncated frames" in {
       an[FramingException] should be thrownBy {
         Await.result(
-          Source
-            .single(ByteString("I have no end"))
-            .via(simpleLines("\n", 256, allowTruncation = false))
-            .grouped(1000)
+          Source.single(ByteString("I have no end"))
+            .via(simpleLines("\n", 256, allowTruncation = false)).grouped(1000)
             .runWith(Sink.head),
           3.seconds)
       }
@@ -142,10 +127,8 @@ class FramingSpec extends AkkaSpec {
 
     "allow truncated frames if configured so" in {
       Await.result(
-        Source
-          .single(ByteString("I have no end"))
-          .via(simpleLines("\n", 256, allowTruncation = true))
-          .grouped(1000)
+        Source.single(ByteString("I have no end"))
+          .via(simpleLines("\n", 256, allowTruncation = true)).grouped(1000)
           .runWith(Sink.head),
         3.seconds) should ===(List("I have no end"))
     }
@@ -187,23 +170,18 @@ class FramingSpec extends AkkaSpec {
         fieldLength ← fieldLengths
       } {
 
-        val encodedFrames = frameLengths
-          .filter(_ < (1L << (fieldLength * 8)))
+        val encodedFrames = frameLengths.filter(_ < (1L << (fieldLength * 8)))
           .map { length ⇒
             val payload = referenceChunk.take(length)
             encode(payload, fieldOffset, fieldLength, byteOrder)
           }
 
         Await.result(
-          Source(encodedFrames)
-            .via(rechunk)
-            .via(Framing.lengthField(
-              fieldLength,
-              fieldOffset,
-              Int.MaxValue,
-              byteOrder))
-            .grouped(10000)
-            .runWith(Sink.head),
+          Source(encodedFrames).via(rechunk).via(Framing.lengthField(
+            fieldLength,
+            fieldOffset,
+            Int.MaxValue,
+            byteOrder)).grouped(10000).runWith(Sink.head),
           3.seconds
         ) should ===(encodedFrames)
       }
@@ -221,9 +199,8 @@ class FramingSpec extends AkkaSpec {
     "report oversized frames" in {
       an[FramingException] should be thrownBy {
         Await.result(
-          Source
-            .single(
-              encode(referenceChunk.take(100), 0, 1, ByteOrder.BIG_ENDIAN))
+          Source.single(
+            encode(referenceChunk.take(100), 0, 1, ByteOrder.BIG_ENDIAN))
             .via(Framing.lengthField(1, 0, 99, ByteOrder.BIG_ENDIAN))
             .runFold(Vector.empty[ByteString])(_ :+ _),
           3.seconds
@@ -232,9 +209,8 @@ class FramingSpec extends AkkaSpec {
 
       an[FramingException] should be thrownBy {
         Await.result(
-          Source
-            .single(
-              encode(referenceChunk.take(100), 49, 1, ByteOrder.BIG_ENDIAN))
+          Source.single(
+            encode(referenceChunk.take(100), 49, 1, ByteOrder.BIG_ENDIAN))
             .via(Framing.lengthField(1, 0, 100, ByteOrder.BIG_ENDIAN))
             .runFold(Vector.empty[ByteString])(_ :+ _),
           3.seconds
@@ -261,15 +237,12 @@ class FramingSpec extends AkkaSpec {
 
         an[FramingException] should be thrownBy {
           Await.result(
-            Source(List(fullFrame, partialFrame))
-              .via(rechunk)
+            Source(List(fullFrame, partialFrame)).via(rechunk)
               .via(Framing.lengthField(
                 fieldLength,
                 fieldOffset,
                 Int.MaxValue,
-                byteOrder))
-              .grouped(10000)
-              .runWith(Sink.head),
+                byteOrder)).grouped(10000).runWith(Sink.head),
             3.seconds
           )
         }
@@ -278,14 +251,12 @@ class FramingSpec extends AkkaSpec {
 
     "support simple framing adapter" in {
       val rechunkBidi = BidiFlow.fromFlowsMat(rechunk, rechunk)(Keep.left)
-      val codecFlow = Framing
-        .simpleFramingProtocol(1024)
-        .atop(rechunkBidi)
+      val codecFlow = Framing.simpleFramingProtocol(1024).atop(rechunkBidi)
         .atop(Framing.simpleFramingProtocol(1024).reversed)
         .join(Flow[ByteString]) // Loopback
 
-      val testMessages = List.fill(100)(referenceChunk.take(
-        Random.nextInt(1024)))
+      val testMessages = List
+        .fill(100)(referenceChunk.take(Random.nextInt(1024)))
       Await.result(
         Source(testMessages).via(codecFlow).limit(1000).runWith(Sink.seq),
         3.seconds) should ===(testMessages)

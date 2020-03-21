@@ -42,11 +42,11 @@ trait ZookeeperStateMonitor {
   import ZookeeperStateMonitor._
 
   private[this] val zkWorkFailedCounter = statsReceiver.counter("zkWork.failed")
-  private[this] val zkWorkSucceededCounter = statsReceiver.counter(
-    "zkWork.succeeded")
+  private[this] val zkWorkSucceededCounter = statsReceiver
+    .counter("zkWork.succeeded")
   private[this] val loadZKDataCounter = statsReceiver.counter("loadZKData")
-  private[this] val loadZKChildrenCounter = statsReceiver.counter(
-    "loadZKChildren")
+  private[this] val loadZKChildrenCounter = statsReceiver
+    .counter("loadZKChildren")
   private[this] val reconnectZKCounter = statsReceiver.counter("reconnectZK")
 
   private[this] val zookeeperWorkQueue = new Broker[() => Unit]
@@ -123,9 +123,8 @@ trait ZookeeperStateMonitor {
         loadZKDataCounter.incr()
 
         // read cache pool config data and leave a node data watch
-        val data = zkClient
-          .get(
-            Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
+        val data = zkClient.get(
+          Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
           .getData(zkPath, true, null)
 
         applyZKData(data)
@@ -142,9 +141,8 @@ trait ZookeeperStateMonitor {
         loadZKChildrenCounter.incr()
 
         // get children list and leave a node children watch
-        val children = zkClient
-          .get(
-            Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
+        val children = zkClient.get(
+          Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
           .getChildren(zkPath, true, null)
 
         applyZKChildren(children.toList)
@@ -160,13 +158,11 @@ trait ZookeeperStateMonitor {
         reconnectZKCounter.incr()
 
         // reset watch for node data and children
-        val data = zkClient
-          .get(
-            Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
+        val data = zkClient.get(
+          Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
           .getData(zkPath, true, null)
-        val children = zkClient
-          .get(
-            Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
+        val children = zkClient.get(
+          Amount.of(DefaultZKWaitTimeout.inMilliseconds, Time.MILLISECONDS))
           .getChildren(zkPath, true, null)
       }
 

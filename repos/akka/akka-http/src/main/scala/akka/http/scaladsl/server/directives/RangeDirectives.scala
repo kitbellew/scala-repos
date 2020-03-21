@@ -71,8 +71,8 @@ trait RangeDirectives {
       // See comment of the `range-coalescing-threshold` setting in `reference.conf` for the rationale of this behavior.
       def coalesceRanges(iRanges: Seq[IndexRange]): Seq[IndexRange] =
         iRanges.foldLeft(Seq.empty[IndexRange]) { (acc, iRange) ⇒
-          val (mergeCandidates, otherCandidates) = acc.partition(
-            _.distance(iRange) <= rangeCoalescingThreshold)
+          val (mergeCandidates, otherCandidates) = acc
+            .partition(_.distance(iRange) <= rangeCoalescingThreshold)
           val merged = mergeCandidates.foldLeft(iRange)(_ mergeWith _)
           otherCandidates :+ merged
         }
@@ -92,9 +92,8 @@ trait RangeDirectives {
           case 0 ⇒ Source.empty
           case 1 ⇒
             val range = coalescedRanges.head
-            val flow = StreamUtils.sliceBytesTransformer(
-              range.start,
-              range.length)
+            val flow = StreamUtils
+              .sliceBytesTransformer(range.start, range.length)
             val bytes = entity.dataBytes.via(flow)
             val part = Multipart.ByteRanges.BodyPart(
               range.contentRange(length),
@@ -106,13 +105,10 @@ trait RangeDirectives {
               val bcast = b.add(Broadcast[ByteString](n))
               val merge = b.add(Concat[Multipart.ByteRanges.BodyPart](n))
               for (range ← coalescedRanges) {
-                val flow = StreamUtils.sliceBytesTransformer(
-                  range.start,
-                  range.length)
-                bcast ~> flow
-                  .buffer(16, OverflowStrategy.backpressure)
-                  .prefixAndTail(0)
-                  .map {
+                val flow = StreamUtils
+                  .sliceBytesTransformer(range.start, range.length)
+                bcast ~> flow.buffer(16, OverflowStrategy.backpressure)
+                  .prefixAndTail(0).map {
                     case (_, bytes) ⇒
                       Multipart.ByteRanges.BodyPart(
                         range.contentRange(length),
@@ -174,9 +170,10 @@ trait RangeDirectives {
                   }
                 case None ⇒
                   // Ranges not supported for Chunked or CloseDelimited responses
-                  ctx.reject(
-                    UnsatisfiableRangeRejection(ranges, -1)
-                  ) // FIXME: provide better error
+                  ctx
+                    .reject(
+                      UnsatisfiableRangeRejection(ranges, -1)
+                    ) // FIXME: provide better error
               }
           }
         }
@@ -188,11 +185,12 @@ trait RangeDirectives {
       extract(rangeHeaderOfGetRequests).flatMap {
         case Some(Range(RangeUnits.Bytes, ranges)) ⇒
           if (ranges.size <= rangeCountLimit)
-            applyRanges(
-              ranges) & RangeDirectives.respondWithAcceptByteRangesHeader
+            applyRanges(ranges) & RangeDirectives
+              .respondWithAcceptByteRangesHeader
           else reject(TooManyRangesRejection(rangeCountLimit))
         case _ ⇒
-          MethodDirectives.get & RangeDirectives.respondWithAcceptByteRangesHeader | pass
+          MethodDirectives.get & RangeDirectives
+            .respondWithAcceptByteRangesHeader | pass
       }
     }
 }

@@ -26,8 +26,7 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
 
   implicit def ArbNonZero[A: Ring: Eq: Arbitrary]: Arbitrary[NonZero[A]] = {
     Arbitrary(
-      arbitrary[A]
-        .map { a => if (a === Ring[A].zero) Ring[A].one else a }
+      arbitrary[A].map { a => if (a === Ring[A].zero) Ring[A].one else a }
         .map(NonZero[A](_)))
   }
 
@@ -36,10 +35,8 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   implicit
   def ArbPositive[A: Ring: Eq: Signed: Arbitrary]: Arbitrary[Positive[A]] = {
     Arbitrary(
-      arbitrary[A]
-        .map { a => if (a === Ring[A].zero) Ring[A].one else a.abs }
-        .filter(_.sign == Sign.Positive)
-        .map(Positive(_)))
+      arbitrary[A].map { a => if (a === Ring[A].zero) Ring[A].one else a.abs }
+        .filter(_.sign == Sign.Positive).map(Positive(_)))
   }
 
   implicit def ArbVector[A: Arbitrary]: Arbitrary[Vector[A]] =
@@ -490,8 +487,7 @@ class PartialOrderSyntaxTest extends SpireProperties {
     forAll { (posSeq: Seq[PosInt]) =>
       val seq = posSeq.map(_.x)
       val result = seq.pmax(IntDivisibility).toSet
-      result shouldBe Searching
-        .minimalElements(seq)(IntDivisibility.reverse)
+      result shouldBe Searching.minimalElements(seq)(IntDivisibility.reverse)
         .toSet
       result shouldBe seq.filter(i => isMaximal(seq, i)).toSet
     }

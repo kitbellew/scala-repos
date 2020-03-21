@@ -41,22 +41,19 @@ case class Form[T](
   /**
     * Constraints associated with this form, indexed by field name.
     */
-  val constraints: Map[String, Seq[(String, Seq[Any])]] = mapping.mappings
-    .map { m =>
+  val constraints: Map[String, Seq[(String, Seq[Any])]] = mapping.mappings.map {
+    m =>
       m.key -> m.constraints.collect {
         case Constraint(Some(name), args) => name -> args
       }
-    }
-    .filterNot(_._2.isEmpty)
-    .toMap
+  }.filterNot(_._2.isEmpty).toMap
 
   /**
     * Formats associated to this form, indexed by field name. *
     */
-  val formats: Map[String, (String, Seq[Any])] = mapping.mappings
-    .map { m => m.key -> m.format }
-    .collect { case (k, Some(f)) => k -> f }
-    .toMap
+  val formats: Map[String, (String, Seq[Any])] = mapping.mappings.map { m =>
+    m.key -> m.format
+  }.collect { case (k, Some(f)) => k -> f }.toMap
 
   /**
     * Binds data to this form, i.e. handles form submission.
@@ -65,12 +62,10 @@ case class Form[T](
     * @return a copy of this form, filled with the new data
     */
   def bind(data: Map[String, String]): Form[T] =
-    mapping
-      .bind(data)
-      .fold(
-        newErrors =>
-          this.copy(data = data, errors = errors ++ newErrors, value = None),
-        value => this.copy(data = data, errors = errors, value = Some(value)))
+    mapping.bind(data).fold(
+      newErrors =>
+        this.copy(data = data, errors = errors ++ newErrors, value = None),
+      value => this.copy(data = data, errors = errors, value = Some(value)))
 
   /**
     * Binds data to this form, i.e. handles form submission.
@@ -252,8 +247,8 @@ case class Form[T](
     import play.api.libs.json._
 
     Json.toJson(errors.groupBy(_.key).mapValues { errors =>
-      errors.map(e =>
-        messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
+      errors
+        .map(e => messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
     })
 
   }
@@ -320,8 +315,8 @@ case class Field(
   /**
     * The field ID - the same as the field name but with '.' replaced by '_'.
     */
-  lazy val id
-      : String = name.replace('.', '_').replace('[', '_').replace("]", "")
+  lazy val id: String = name.replace('.', '_').replace('[', '_')
+    .replace("]", "")
 
   /**
     * Returns the first error associated with this field, if it exists.
@@ -342,10 +337,8 @@ case class Field(
     */
   def apply(key: String): Field = {
     form(
-      Option(name)
-        .filterNot(_.isEmpty)
-        .map(_ + (if (key(0) == '[') "" else "."))
-        .getOrElse("") + key)
+      Option(name).filterNot(_.isEmpty)
+        .map(_ + (if (key(0) == '[') "" else ".")).getOrElse("") + key)
   }
 
   /**
@@ -422,22 +415,18 @@ private[data] object FormUtils {
   def fromJson(prefix: String = "", js: JsValue): Map[String, String] =
     js match {
       case JsObject(fields) => {
-        fields
-          .map {
-            case (key, value) =>
-              fromJson(
-                Option(prefix)
-                  .filterNot(_.isEmpty)
-                  .map(_ + ".")
-                  .getOrElse("") + key,
-                value)
-          }
-          .foldLeft(Map.empty[String, String])(_ ++ _)
+        fields.map {
+          case (key, value) =>
+            fromJson(
+              Option(prefix).filterNot(_.isEmpty).map(_ + ".")
+                .getOrElse("") + key,
+              value)
+        }.foldLeft(Map.empty[String, String])(_ ++ _)
       }
       case JsArray(values) => {
-        values.zipWithIndex
-          .map { case (value, i) => fromJson(prefix + "[" + i + "]", value) }
-          .foldLeft(Map.empty[String, String])(_ ++ _)
+        values.zipWithIndex.map {
+          case (value, i) => fromJson(prefix + "[" + i + "]", value)
+        }.foldLeft(Map.empty[String, String])(_ ++ _)
       }
       case JsNull           => Map.empty
       case JsUndefined()    => Map.empty
@@ -607,8 +596,7 @@ trait Mapping[T] {
   // Internal utilities
 
   protected def addPrefix(prefix: String) = {
-    Option(prefix)
-      .filterNot(_.isEmpty)
+    Option(prefix).filterNot(_.isEmpty)
       .map(p => p + Option(key).filterNot(_.isEmpty).map("." + _).getOrElse(""))
   }
 
@@ -619,11 +607,8 @@ trait Mapping[T] {
   }
 
   protected def collectErrors(t: T): Seq[FormError] = {
-    constraints
-      .map(_(t))
-      .collect { case Invalid(errors) => errors.toSeq }
-      .flatten
-      .map(ve => FormError(key, ve.messages, ve.args))
+    constraints.map(_(t)).collect { case Invalid(errors) => errors.toSeq }
+      .flatten.map(ve => FormError(key, ve.messages, ve.args))
   }
 
 }
@@ -732,9 +717,7 @@ object RepeatedMapping {
   def indexes(key: String, data: Map[String, String]): Seq[Int] = {
     val KeyPattern =
       ("^" + java.util.regex.Pattern.quote(key) + """\[(\d+)\].*$""").r
-    data.toSeq
-      .collect { case (KeyPattern(index), _) => index.toInt }
-      .sorted
+    data.toSeq.collect { case (KeyPattern(index), _) => index.toInt }.sorted
       .distinct
   }
 
@@ -814,8 +797,8 @@ case class RepeatedMapping[T](
   def unbindAndValidate(
       value: List[T]): (Map[String, String], Seq[FormError]) = {
     val (datas, errors) = value.zipWithIndex.map {
-      case (t, i) =>
-        wrapped.withPrefix(key + "[" + i + "]").unbindAndValidate(t)
+      case (t, i) => wrapped.withPrefix(key + "[" + i + "]")
+          .unbindAndValidate(t)
     }.unzip
     (
       datas.foldLeft(Map.empty[String, String])(_ ++ _),
@@ -881,16 +864,12 @@ case class OptionalMapping[T](
     * @return either a concrete value of type `T` or a set of error if the binding failed
     */
   def bind(data: Map[String, String]): Either[Seq[FormError], Option[T]] = {
-    data.keys
-      .filter(p =>
-        p == key || p.startsWith(key + ".") || p.startsWith(key + "["))
-      .map(k => data.get(k).filterNot(_.isEmpty))
-      .collect { case Some(v) => v }
-      .headOption
-      .map { _ => wrapped.bind(data).right.map(Some(_)) }
-      .getOrElse { Right(None) }
-      .right
-      .flatMap(applyConstraints)
+    data.keys.filter(p =>
+      p == key || p.startsWith(key + ".") || p.startsWith(key + "["))
+      .map(k => data.get(k).filterNot(_.isEmpty)).collect { case Some(v) => v }
+      .headOption.map { _ => wrapped.bind(data).right.map(Some(_)) }.getOrElse {
+        Right(None)
+      }.right.flatMap(applyConstraints)
   }
 
   /**
@@ -912,9 +891,7 @@ case class OptionalMapping[T](
   def unbindAndValidate(
       value: Option[T]): (Map[String, String], Seq[FormError]) = {
     val errors = collectErrors(value)
-    value
-      .map(wrapped.unbindAndValidate)
-      .map(r => r._1 -> (r._2 ++ errors))
+    value.map(wrapped.unbindAndValidate).map(r => r._1 -> (r._2 ++ errors))
       .getOrElse(Map.empty -> errors)
   }
 
@@ -1046,8 +1023,8 @@ trait ObjectMapping {
     */
   def merge(results: Either[Seq[FormError], Any]*)
       : Either[Seq[FormError], Seq[Any]] = {
-    val all: Seq[Either[Seq[FormError], Seq[Any]]] = results.map(
-      _.right.map(Seq(_)))
+    val all: Seq[Either[Seq[FormError], Seq[Any]]] = results
+      .map(_.right.map(Seq(_)))
     all.fold(Right(Nil)) { (s, i) => merge2(s, i) }
   }
 

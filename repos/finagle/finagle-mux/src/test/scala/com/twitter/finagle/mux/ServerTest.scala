@@ -149,25 +149,16 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
 
     val trans = mock[Transport[Message, Message]]
 
-    when(trans.onClose)
-      .thenReturn(new Promise[Throwable])
+    when(trans.onClose).thenReturn(new Promise[Throwable])
 
-    when(trans.read())
-      .thenReturn(Future.value(msg))
-      .thenReturn(Future.never)
+    when(trans.read()).thenReturn(Future.value(msg)).thenReturn(Future.never)
 
-    when(trans.write(any[Message]))
-      .thenReturn(Future.Done)
+    when(trans.write(any[Message])).thenReturn(Future.Done)
 
-    when(trans.peerCertificate)
-      .thenReturn(None)
+    when(trans.peerCertificate).thenReturn(None)
 
-    val dispatcher = ServerDispatcher.newRequestResponse(
-      trans,
-      svc,
-      Lessor.nil,
-      NullTracer,
-      NullStatsReceiver)
+    val dispatcher = ServerDispatcher
+      .newRequestResponse(trans, svc, Lessor.nil, NullTracer, NullStatsReceiver)
     assert(dispatcher.npending() == 1)
 
     p.updateIfEmpty(Throw(new RuntimeException("welp")))
@@ -221,13 +212,12 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
           p
         })
 
-      clientToServer.offer(
-        Message.Tdispatch(0, Seq.empty, Path.empty, Dtab.empty, buf))
+      clientToServer
+        .offer(Message.Tdispatch(0, Seq.empty, Path.empty, Dtab.empty, buf))
       // one outstanding request
 
-      val drain = server.close(
-        Time.Top
-      ) // synchronously sends drain request to client
+      val drain = server
+        .close(Time.Top) // synchronously sends drain request to client
 
       clientToServer.offer(Message.Rdrain(1)) // client draining
 
@@ -271,9 +261,8 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
         ChannelBuffers.EMPTY_BUFFER))
       // two outstanding requests
 
-      val drain = server.close(
-        Time.Top
-      ) // synchronously sends drain request to client
+      val drain = server
+        .close(Time.Top) // synchronously sends drain request to client
 
       clientToServer.offer(Message.Rdrain(1)) // client draining
 
@@ -299,13 +288,11 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
       val transport =
         new QueueTransport(writeq = serverToClient, readq = clientToServer)
 
-      val server = ServerDispatcher.newRequestResponse(
-        transport,
-        Service.mk(req => Future.???))
+      val server = ServerDispatcher
+        .newRequestResponse(transport, Service.mk(req => Future.???))
 
-      val drain = server.close(
-        Time.Top
-      ) // synchronously sends drain request to client
+      val drain = server
+        .close(Time.Top) // synchronously sends drain request to client
 
       val Some(Return(tdrain)) = serverToClient.poll.poll
       val Message.Tdrain(tag) = tdrain
@@ -352,9 +339,8 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
           ChannelBuffers.EMPTY_BUFFER))
       assert(server.read().isDefined)
 
-      val drain = server.server.close(
-        Time.Top
-      ) // synchronously sends drain request to client
+      val drain = server.server
+        .close(Time.Top) // synchronously sends drain request to client
 
       val Some(Return(tdrain)) = server.read().poll
       val Tdrain(tag) = tdrain
@@ -471,12 +457,8 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
     val sr = new InMemoryStatsReceiver
 
     val svc = Service.mk { req: Request => Future.value(Response.empty) }
-    val server = ServerDispatcher.newRequestResponse(
-      transport,
-      svc,
-      Lessor.nil,
-      NullTracer,
-      sr)
+    val server = ServerDispatcher
+      .newRequestResponse(transport, svc, Lessor.nil, NullTracer, sr)
 
     val msg = Message.Tdispatch(
       tag = 10,

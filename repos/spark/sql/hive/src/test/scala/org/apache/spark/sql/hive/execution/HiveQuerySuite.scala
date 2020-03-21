@@ -226,8 +226,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("constant null testing timestamp") {
     val r1 = sql(
       "SELECT IF(FALSE, CAST(NULL AS TIMESTAMP), CAST(1 AS TIMESTAMP)) AS COL20")
-      .collect()
-      .head
+      .collect().head
     assert(new Timestamp(1000) == r1.getTimestamp(0))
   }
 
@@ -294,10 +293,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   // Jdk version leads to different query output for double, so not use createQueryTest here
   test("division") {
     val res = sql("SELECT 2 / 1, 1 / 2, 1 / 3, 1 / COUNT(*) FROM src LIMIT 1")
-      .collect()
-      .head
-    Seq(2.0, 0.5, 0.3333333333333333, 0.002)
-      .zip(res.toSeq)
+      .collect().head
+    Seq(2.0, 0.5, 0.3333333333333333, 0.002).zip(res.toSeq)
       .foreach(x => assert(x._1 == x._2.asInstanceOf[Double]))
   }
 
@@ -634,8 +631,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("timestamp cast #1") {
     val res =
       sql("SELECT CAST(CAST(1 AS TIMESTAMP) AS DOUBLE) FROM src LIMIT 1")
-        .collect()
-        .head
+        .collect().head
     assert(1 == res.getDouble(0))
   }
 
@@ -646,8 +642,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("timestamp cast #3") {
     val res =
       sql("SELECT CAST(CAST(1200 AS TIMESTAMP) AS INT) FROM src LIMIT 1")
-        .collect()
-        .head
+        .collect().head
     assert(1200 == res.getInt(0))
   }
 
@@ -658,8 +653,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("timestamp cast #5") {
     val res =
       sql("SELECT CAST(CAST(-1 AS TIMESTAMP) AS DOUBLE) FROM src LIMIT 1")
-        .collect()
-        .head
+        .collect().head
     assert(-1 == res.get(0))
   }
 
@@ -670,8 +664,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("timestamp cast #7") {
     val res =
       sql("SELECT CAST(CAST(-1200 AS TIMESTAMP) AS INT) FROM src LIMIT 1")
-        .collect()
-        .head
+        .collect().head
     assert(-1200 == res.getInt(0))
   }
 
@@ -773,14 +766,10 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test("implement identity function using case statement") {
     val actual = sql("SELECT (CASE key WHEN key THEN key END) FROM src").rdd
-      .map { case Row(i: Int) => i }
-      .collect()
-      .toSet
+      .map { case Row(i: Int) => i }.collect().toSet
 
-    val expected = sql("SELECT key FROM src").rdd
-      .map { case Row(i: Int) => i }
-      .collect()
-      .toSet
+    val expected = sql("SELECT key FROM src").rdd.map { case Row(i: Int) => i }
+      .collect().toSet
 
     assert(actual === expected)
   }
@@ -828,21 +817,15 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("SPARK-2180: HAVING support in GROUP BY clauses (positive)") {
-    val fixture = List(
-      ("foo", 2),
-      ("bar", 1),
-      ("foo", 4),
-      ("bar", 3)).zipWithIndex.map {
-      case ((value, attr), key) => HavingRow(key, value, attr)
-    }
-    TestHive.sparkContext
-      .parallelize(fixture)
-      .toDF()
+    val fixture = List(("foo", 2), ("bar", 1), ("foo", 4), ("bar", 3))
+      .zipWithIndex.map {
+        case ((value, attr), key) => HavingRow(key, value, attr)
+      }
+    TestHive.sparkContext.parallelize(fixture).toDF()
       .registerTempTable("having_test")
     val results = sql(
       "SELECT value, max(attr) AS attr FROM having_test GROUP BY value HAVING attr > 3")
-      .collect()
-      .map(x => (x.getString(0), x.getInt(1)))
+      .collect().map(x => (x.getString(0), x.getInt(1)))
 
     assert(results === Array(("foo", 4)))
     TestHive.reset()
@@ -877,13 +860,11 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   test("SPARK-5383 alias for udfs with multi output columns") {
     assert(
       sql("select stack(2, key, value, key, value) as (a, b) from src limit 5")
-        .collect()
-        .size == 5)
+        .collect().size == 5)
 
     assert(
       sql("select a, b from (select stack(2, key, value, key, value) as (a, b) from src) t limit 5")
-        .collect()
-        .size == 5)
+        .collect().size == 5)
   }
 
   test("SPARK-5367: resolve star expression in udf") {
@@ -901,10 +882,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     assertResult(0) { sql(s"CREATE DATABASE $databaseName").count() }
 
     assert(
-      sql("SHOW DATABASES")
-        .select('result)
-        .collect()
-        .map(_.getString(0))
+      sql("SHOW DATABASES").select('result).collect().map(_.getString(0))
         .contains(databaseName))
 
     assert(
@@ -943,8 +921,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       Row("dt", "string", null)
     )) {
       sql("DESCRIBE test_describe_commands1")
-        .select('col_name, 'data_type, 'comment)
-        .collect()
+        .select('col_name, 'data_type, 'comment).collect()
     }
 
     // Describe a table with a fully qualified table name
@@ -957,24 +934,19 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       Row("dt", "string", null)
     )) {
       sql("DESCRIBE default.test_describe_commands1")
-        .select('col_name, 'data_type, 'comment)
-        .collect()
+        .select('col_name, 'data_type, 'comment).collect()
     }
 
     // Describe a column is a native command
     assertResult(Array(Array("value", "string", "from deserializer"))) {
-      sql("DESCRIBE test_describe_commands1 value")
-        .select('result)
-        .collect()
+      sql("DESCRIBE test_describe_commands1 value").select('result).collect()
         .map(_.getString(0).split("\t").map(_.trim))
     }
 
     // Describe a column is a native command
     assertResult(Array(Array("value", "string", "from deserializer"))) {
-      sql("DESCRIBE default.test_describe_commands1 value")
-        .select('result)
-        .collect()
-        .map(_.getString(0).split("\t").map(_.trim))
+      sql("DESCRIBE default.test_describe_commands1 value").select('result)
+        .collect().map(_.getString(0).split("\t").map(_.trim))
     }
 
     // Describe a partition is a native command
@@ -989,8 +961,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       Array("dt", "string")
     )) {
       sql("DESCRIBE test_describe_commands1 PARTITION (dt='2008-06-08')")
-        .select('result)
-        .collect()
+        .select('result).collect()
         .map(_.getString(0).replaceAll("None", "").trim.split("\t").map(_.trim))
     }
 
@@ -1002,18 +973,15 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
     assertResult(Array(Row("a", "int", ""), Row("b", "string", ""))) {
       sql("DESCRIBE test_describe_commands2")
-        .select('col_name, 'data_type, 'comment)
-        .collect()
+        .select('col_name, 'data_type, 'comment).collect()
     }
   }
 
   test("SPARK-2263: Insert Map<K, V> values") {
     sql("CREATE TABLE m(value MAP<INT, STRING>)")
     sql("INSERT OVERWRITE TABLE m SELECT MAP(key, value) FROM src LIMIT 10")
-    sql("SELECT * FROM m")
-      .collect()
-      .zip(sql("SELECT * FROM src LIMIT 10").collect())
-      .foreach {
+    sql("SELECT * FROM m").collect()
+      .zip(sql("SELECT * FROM src LIMIT 10").collect()).foreach {
         case (Row(map: Map[_, _]), Row(key: Int, value: String)) =>
           assert(map.size === 1)
           assert(map.head === (key, value))
@@ -1021,8 +989,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("ADD JAR command") {
-    val testJar =
-      TestHive.getHiveFile("data/files/TestSerDe.jar").getCanonicalPath
+    val testJar = TestHive.getHiveFile("data/files/TestSerDe.jar")
+      .getCanonicalPath
     sql("CREATE TABLE alter1(a INT, b INT)")
     intercept[Exception] {
       sql("""ALTER TABLE alter1 SET SERDE 'org.apache.hadoop.hive.serde2.TestSerDe'
@@ -1034,13 +1002,15 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test("ADD JAR command 2") {
     // this is a test case from mapjoin_addjar.q
-    val testJar =
-      TestHive.getHiveFile("hive-hcatalog-core-0.13.1.jar").getCanonicalPath
-    val testData =
-      TestHive.getHiveFile("data/files/sample.json").getCanonicalPath
+    val testJar = TestHive.getHiveFile("hive-hcatalog-core-0.13.1.jar")
+      .getCanonicalPath
+    val testData = TestHive.getHiveFile("data/files/sample.json")
+      .getCanonicalPath
     sql(s"ADD JAR $testJar")
-    sql("""CREATE TABLE t1(a string, b string)
-      |ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'""".stripMargin)
+    sql(
+      """CREATE TABLE t1(a string, b string)
+      |ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'"""
+        .stripMargin)
     sql(s"""LOAD DATA LOCAL INPATH "$testData" INTO TABLE t1""")
     sql("select * from src join t1 on src.key = t1.a")
     sql("DROP TABLE t1")
@@ -1114,15 +1084,12 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
            |SELECT $value, ${parts.mkString(", ")} FROM src WHERE key=150
          """.stripMargin)
 
-        val partFolder = Seq("partcol1", "partcol2")
-          .zip(parts)
-          .map {
-            case (k, v) =>
-              if (v == "NULL") {
-                s"$k=${ConfVars.DEFAULTPARTITIONNAME.defaultStrVal}"
-              } else { s"$k=$v" }
-          }
-          .mkString("/")
+        val partFolder = Seq("partcol1", "partcol2").zip(parts).map {
+          case (k, v) =>
+            if (v == "NULL") {
+              s"$k=${ConfVars.DEFAULTPARTITIONNAME.defaultStrVal}"
+            } else { s"$k=$v" }
+        }.mkString("/")
 
         // Loads partition data to a temporary table to verify contents
         val path = s"$warehousePath/dynamic_part_table/$partFolder/part-00000"
@@ -1179,13 +1146,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test(
     "SPARK-3414 regression: should store analyzed logical plan when registering a temp table") {
-    sparkContext
-      .makeRDD(Seq.empty[LogEntry])
-      .toDF()
+    sparkContext.makeRDD(Seq.empty[LogEntry]).toDF()
       .registerTempTable("rawLogs")
-    sparkContext
-      .makeRDD(Seq.empty[LogFile])
-      .toDF()
+    sparkContext.makeRDD(Seq.empty[LogFile]).toDF()
       .registerTempTable("logFiles")
 
     sql("""
@@ -1208,7 +1171,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       sql("DROP TABLE IF EXISTS withparts")
       sql("CREATE TABLE withparts LIKE srcpart")
       sql(
-        "INSERT INTO TABLE withparts PARTITION(ds='1', hr='2') SELECT key, value FROM src").queryExecution.analyzed
+        "INSERT INTO TABLE withparts PARTITION(ds='1', hr='2') SELECT key, value FROM src")
+        .queryExecution.analyzed
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
@@ -1225,7 +1189,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
       sql("CREATE TABLE IF NOT EXISTS withparts LIKE srcpart")
       sql(
-        "INSERT INTO TABLE withparts PARTITION(ds, hr) SELECT key, value FROM src").queryExecution.analyzed
+        "INSERT INTO TABLE withparts PARTITION(ds, hr) SELECT key, value FROM src")
+        .queryExecution.analyzed
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
@@ -1259,13 +1224,11 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     val testVal = "test.val.0"
     val nonexistentKey = "nonexistent"
     def collectResults(df: DataFrame): Set[Any] =
-      df.collect()
-        .map {
-          case Row(key: String, value: String) => key -> value
-          case Row(key: String, defaultValue: String, doc: String) =>
-            (key, defaultValue, doc)
-        }
-        .toSet
+      df.collect().map {
+        case Row(key: String, value: String) => key -> value
+        case Row(key: String, defaultValue: String, doc: String) =>
+          (key, defaultValue, doc)
+      }.toSet
     conf.clear()
 
     val expectedConfs = conf.getAllDefinedConfs.toSet

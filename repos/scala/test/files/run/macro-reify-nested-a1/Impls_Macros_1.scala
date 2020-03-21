@@ -31,10 +31,9 @@ object QueryableMacros {
       gen.mkRuntimeUniverseRef,
       EmptyTree,
       c.typecheck(
-        Utils[c.type](c)
-          .removeDoubleReify(
-            Apply(Select(c.prefix.tree, TermName(name)), List(projection.tree)))
-          .asInstanceOf[Tree])
+        Utils[c.type](c).removeDoubleReify(Apply(
+          Select(c.prefix.tree, TermName(name)),
+          List(projection.tree))).asInstanceOf[Tree])
     ))
     c.universe.reify { Queryable.factory[S](foo.splice) }
   }

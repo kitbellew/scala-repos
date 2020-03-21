@@ -28,17 +28,15 @@ class ScalaIterableComponentTypeMacro extends Macro {
               case _                                       => None
             }
         }
-      })
-      .map(new ScalaTypeResult(_))
-      .orNull
+      }).map(new ScalaTypeResult(_)).orNull
   }
 
   override def getName: String =
     MacroUtil.scalaIdPrefix + "iterableComponentType"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle.message(
-      "macro.iterable.component.type")
+    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
+      .message("macro.iterable.component.type")
 
   override def calculateQuickResult(
       params: Array[Expression],

@@ -37,8 +37,8 @@ import akka.http.scaladsl.util.FastFuture
 import akka.http.scaladsl.util.FastFuture._
 
 class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING
     akka.http.parsing.max-header-value-length = 32
@@ -304,9 +304,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         val parser = newParser
         val result = multiParse(newParser)(Seq(prep(start + manyChunks)))
         val HttpEntity.Chunked(_, chunks) = result.head.right.get.req.entity
-        val strictChunks = chunks
-          .limit(100000)
-          .runWith(Sink.seq)
+        val strictChunks = chunks.limit(100000).runWith(Sink.seq)
           .awaitResult(awaitAtMost)
         strictChunks.size shouldEqual numChunks
       }
@@ -597,12 +595,9 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         : Seq[Either[RequestOutput, StrictEqualHttpRequest]] =
       Source(input.toList)
         .map(bytes ⇒ SessionBytes(TLSPlacebo.dummySession, ByteString(bytes)))
-        .transform(() ⇒ parser.stage)
-        .named("parser")
-        .splitWhen(x ⇒
+        .transform(() ⇒ parser.stage).named("parser").splitWhen(x ⇒
           x.isInstanceOf[MessageStart] || x.isInstanceOf[EntityStreamError])
-        .prefixAndTail(1)
-        .collect {
+        .prefixAndTail(1).collect {
           case (
                 Seq(
                   RequestStart(
@@ -626,21 +621,16 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
                 rest) ⇒
             rest.runWith(Sink.cancelled)
             Left(x)
-        }
-        .concatSubstreams
-        .flatMapConcat { x ⇒
+        }.concatSubstreams.flatMapConcat { x ⇒
           Source.fromFuture {
             x match {
               case Right(request) ⇒
-                compactEntity(request.entity).fast.map(x ⇒
-                  Right(request.withEntity(x)))
+                compactEntity(request.entity).fast
+                  .map(x ⇒ Right(request.withEntity(x)))
               case Left(error) ⇒ FastFuture.successful(Left(error))
             }
           }
-        }
-        .map(strictEqualify)
-        .limit(100000)
-        .runWith(Sink.seq)
+        }.map(strictEqualify).limit(100000).runWith(Sink.seq)
         .awaitResult(awaitAtMost)
 
     protected def parserSettings: ParserSettings = ParserSettings(system)
@@ -653,8 +643,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     private def compactEntity(entity: RequestEntity): Future[RequestEntity] =
       entity match {
         case x: Chunked ⇒
-          compactEntityChunks(x.chunks).fast.map(compacted ⇒
-            x.copy(chunks = source(compacted: _*)))
+          compactEntityChunks(x.chunks).fast
+            .map(compacted ⇒ x.copy(chunks = source(compacted: _*)))
         case _ ⇒ entity.toStrict(awaitAtMost)
       }
 

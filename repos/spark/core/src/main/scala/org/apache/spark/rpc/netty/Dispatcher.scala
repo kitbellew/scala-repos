@@ -215,9 +215,8 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
     val numThreads = nettyEnv.conf.getInt(
       "spark.rpc.netty.dispatcher.numThreads",
       math.max(2, Runtime.getRuntime.availableProcessors()))
-    val pool = ThreadUtils.newDaemonFixedThreadPool(
-      numThreads,
-      "dispatcher-event-loop")
+    val pool = ThreadUtils
+      .newDaemonFixedThreadPool(numThreads, "dispatcher-event-loop")
     for (i <- 0 until numThreads) { pool.execute(new MessageLoop) }
     pool
   }

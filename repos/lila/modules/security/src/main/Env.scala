@@ -111,9 +111,9 @@ final class Env(
     busOption = system.lilaBus.some)
 
   scheduler.once(10 seconds)(disposableEmailDomain.refresh)
-  scheduler.effect(
-    DisposableEmailRefreshDelay,
-    "Refresh disposable email domains")(disposableEmailDomain.refresh)
+  scheduler
+    .effect(DisposableEmailRefreshDelay, "Refresh disposable email domains")(
+      disposableEmailDomain.refresh)
 
   lazy val tor = new Tor(TorProviderUrl)
   scheduler.once(30 seconds)(tor.refresh(_ => funit))

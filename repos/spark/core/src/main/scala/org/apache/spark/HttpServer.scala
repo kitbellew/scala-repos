@@ -96,8 +96,7 @@ private[spark] class HttpServer(
     val server = new Server()
 
     val connector = securityManager.fileServerSSLOptions
-      .createJettySslContextFactory()
-      .map(new SslSocketConnector(_))
+      .createJettySslContextFactory().map(new SslSocketConnector(_))
       .getOrElse(new SocketConnector)
 
     connector.setMaxIdleTime(60 * 1000)

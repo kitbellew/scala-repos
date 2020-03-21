@@ -52,8 +52,7 @@ private[tournament] final class TournamentApi(
       `private` = setup.`private`.isDefined,
       system = System.Arena,
       variant = variant,
-      position = StartingPosition
-        .byEco(setup.position)
+      position = StartingPosition.byEco(setup.position)
         .ifTrue(variant.standard) | StartingPosition.initial
     )
     TournamentRepo.insert(tour) >>- join(tour.id, me) inject tour
@@ -71,8 +70,9 @@ private[tournament] final class TournamentApi(
         tour.system.pairingSystem.createPairings(tour, users, ranking).flatMap {
           case Nil => funit
           case pairings if nowMillis - startAt > 1000 =>
-            pairingLogger.warn(
-              s"Give up making http://lichess.org/tournament/${tour.id} ${pairings.size} pairings in ${nowMillis - startAt}ms")
+            pairingLogger
+              .warn(s"Give up making http://lichess.org/tournament/${tour
+                .id} ${pairings.size} pairings in ${nowMillis - startAt}ms")
             funit
           case pairings =>
             pairings.map { pairing =>
@@ -100,14 +100,11 @@ private[tournament] final class TournamentApi(
       ranking: Ranking): Funit =
     tour.featuredId.ifTrue(pairings.nonEmpty) ?? PairingRepo.byId map2
       RankedPairing(ranking) map (_.flatten) flatMap { curOption =>
-      pairings
-        .flatMap(RankedPairing(ranking))
-        .sortBy(_.bestRank)
+      pairings.flatMap(RankedPairing(ranking)).sortBy(_.bestRank)
         .headOption ?? { bestCandidate =>
         def switch =
-          TournamentRepo.setFeaturedGameId(
-            tour.id,
-            bestCandidate.pairing.gameId)
+          TournamentRepo
+            .setFeaturedGameId(tour.id, bestCandidate.pairing.gameId)
         curOption.filter(_.pairing.playing) match {
           case Some(current) if bestCandidate.bestRank < current.bestRank =>
             switch
@@ -278,15 +275,13 @@ private[tournament] final class TournamentApi(
         PairingRepo.finishedByPlayerChronological(tour.id, userId) map {
           pairings =>
             val sheet = tour.system.scoringSystem.sheet(tour, userId, pairings)
-            player
-              .copy(
-                score = sheet.total,
-                fire = sheet.onFire,
-                ratingDiff = perf.fold(player.ratingDiff)(
-                  _.intRating - player.rating),
-                provisional = perf.fold(player.provisional)(_.provisional)
-              )
-              .recomputeMagicScore
+            player.copy(
+              score = sheet.total,
+              fire = sheet.onFire,
+              ratingDiff = perf
+                .fold(player.ratingDiff)(_.intRating - player.rating),
+              provisional = perf.fold(player.provisional)(_.provisional)
+            ).recomputeMagicScore
         }
       }
     }
@@ -307,8 +302,8 @@ private[tournament] final class TournamentApi(
         tour.isStarted.?? {
           PairingRepo.opponentsOf(tour.id, userId).flatMap { uids =>
             PairingRepo.removeByTourAndUserId(tour.id, userId) >>
-              lila.common.Future.applySequentially(uids.toList)(updatePlayer(
-                tour))
+              lila.common.Future
+                .applySequentially(uids.toList)(updatePlayer(tour))
           }
         } >>
         updateNbPlayers(tour.id) >>-

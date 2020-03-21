@@ -140,9 +140,7 @@ trait AkkaGuiceSupport {
   def bindActor[T <: Actor: ClassTag](
       name: String,
       props: Props => Props = identity): Unit = {
-    accessBinder
-      .bind(classOf[ActorRef])
-      .annotatedWith(Names.named(name))
+    accessBinder.bind(classOf[ActorRef]).annotatedWith(Names.named(name))
       .toProvider(Providers.guicify(Akka.providerOf[T](name, props)))
       .asEagerSingleton()
   }
@@ -199,11 +197,10 @@ trait AkkaGuiceSupport {
   def bindActorFactory[ActorClass <: Actor: ClassTag, FactoryClass: ClassTag]
       : Unit = {
     accessBinder.install(
-      new FactoryModuleBuilder()
-        .implement(
-          classOf[Actor],
-          implicitly[ClassTag[ActorClass]].runtimeClass
-            .asInstanceOf[Class[_ <: Actor]])
+      new FactoryModuleBuilder().implement(
+        classOf[Actor],
+        implicitly[ClassTag[ActorClass]].runtimeClass
+          .asInstanceOf[Class[_ <: Actor]])
         .build(implicitly[ClassTag[FactoryClass]].runtimeClass))
   }
 
@@ -261,10 +258,9 @@ trait AkkaComponents {
   def configuration: Configuration
   def applicationLifecycle: ApplicationLifecycle
 
-  lazy val actorSystem: ActorSystem = new ActorSystemProvider(
-    environment,
-    configuration,
-    applicationLifecycle).get
+  lazy val actorSystem: ActorSystem =
+    new ActorSystemProvider(environment, configuration, applicationLifecycle)
+      .get
 }
 
 /**
@@ -280,9 +276,8 @@ class ActorSystemProvider @Inject() (
   private val logger = Logger(classOf[ActorSystemProvider])
 
   lazy val get: ActorSystem = {
-    val (system, stopHook) = ActorSystemProvider.start(
-      environment.classLoader,
-      configuration)
+    val (system, stopHook) = ActorSystemProvider
+      .start(environment.classLoader, configuration)
     applicationLifecycle.addStopHook(stopHook)
     system
   }

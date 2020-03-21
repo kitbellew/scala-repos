@@ -169,20 +169,11 @@ object TimeHelpersSpec
     "provide a millisToDays function returning the number of days since the epoch time" in forAllTimeZones {
       millisToDays(new Date(0).getTime) must_== 0
       millisToDays(
-        today
-          .setYear(1970)
-          .setMonth(0)
-          .setDay(1)
-          .getTime
+        today.setYear(1970).setMonth(0).setDay(1).getTime
           .getTime) must_== 0 // the epoch time
       // on the 3rd day after the epoch time, 2 days are passed
       millisToDays(
-        today
-          .setTimezone(utc)
-          .setYear(1970)
-          .setMonth(0)
-          .setDay(3)
-          .getTime
+        today.setTimezone(utc).setYear(1970).setMonth(0).setDay(3).getTime
           .getTime) must_== 2
     }
     "provide a daysSinceEpoch function returning the number of days since the epoch time" in forAllTimeZones {
@@ -214,10 +205,8 @@ object TimeHelpersSpec
     }
 
     "provide a parseInternetDate function to parse a string formatted using the internet format" in forAllTimeZones {
-      parseInternetDate(
-        internetDateFormatter.format(now)).getTime.toLong must beCloseTo(
-        now.getTime.toLong,
-        1000L)
+      parseInternetDate(internetDateFormatter.format(now)).getTime
+        .toLong must beCloseTo(now.getTime.toLong, 1000L)
     }
     "provide a parseInternetDate function returning new Date(0) if the input date cant be parsed" in forAllTimeZones {
       parseInternetDate("unparsable") must_== new Date(0)
@@ -270,8 +259,7 @@ object forAllTimeZones extends Around {
         (TimeZone.getAvailableIDs.toSet & DateTimeZone.getAvailableIDs.toSet)
           .filter { timeZoneId =>
             TimeZone.getTimeZone(timeZoneId).getOffset(millis) == DateTimeZone
-              .forID(timeZoneId)
-              .getOffset(millis)
+              .forID(timeZoneId).getOffset(millis)
           }
       val tzBefore = TimeZone.getDefault
       val dtzBefore = DateTimeZone.getDefault
@@ -300,8 +288,8 @@ trait TimeAmountsGen {
     s <- choose(0, 59)
     ml <- choose(0, 999)
   } yield (
-    TimeSpan(
-      weeks(w) + days(d) + hours(h) + minutes(m) + seconds(s) + ml).toString,
+    TimeSpan(weeks(w) + days(d) + hours(h) + minutes(m) + seconds(s) + ml)
+      .toString,
     (w, "week") :: (d, "day") :: (h, "hour") :: (m, "minute") :: (
       s,
       "second") :: (ml, "milli") :: Nil)

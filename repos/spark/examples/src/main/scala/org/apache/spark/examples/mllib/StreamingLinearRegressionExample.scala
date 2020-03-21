@@ -39,9 +39,7 @@ object StreamingLinearRegressionExample {
     val ssc = new StreamingContext(conf, Seconds(1))
 
     // $example on$
-    val trainingData = ssc
-      .textFileStream(args(0))
-      .map(LabeledPoint.parse)
+    val trainingData = ssc.textFileStream(args(0)).map(LabeledPoint.parse)
       .cache()
     val testData = ssc.textFileStream(args(1)).map(LabeledPoint.parse)
 

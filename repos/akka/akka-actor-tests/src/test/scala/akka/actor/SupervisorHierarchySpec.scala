@@ -160,9 +160,10 @@ object SupervisorHierarchySpec {
         val log = l :+ Event("Failed in constructor", identityHashCode(this))
         stateCache.put(
           self.path,
-          hs.copy(
-            log = log,
-            failConstr = f.copy(failConstr = f.failConstr - 1)))
+          hs
+            .copy(
+              log = log,
+              failConstr = f.copy(failConstr = f.failConstr - 1)))
         throw f
       case _ ⇒
     }
@@ -264,8 +265,8 @@ object SupervisorHierarchySpec {
           "unhandled exception from " + sender() + Logging.stackTraceFor(x),
           identityHashCode(this))
         sender() ! Dump(0)
-        context.system.scheduler.scheduleOnce(1 second, self, Dump(0))(
-          context.dispatcher)
+        context.system.scheduler
+          .scheduleOnce(1 second, self, Dump(0))(context.dispatcher)
         Resume
     })
 
@@ -288,7 +289,8 @@ object SupervisorHierarchySpec {
       }
       if (context.children.size != state.kids.size) {
         abort(
-          "invariant violated: " + state.kids.size + " != " + context.children.size)
+          "invariant violated: " + state.kids.size + " != " + context.children
+            .size)
       }
       cause match {
         case f: Failure if f.failPost > 0 ⇒ { f.failPost -= 1; throw f }
@@ -319,10 +321,11 @@ object SupervisorHierarchySpec {
       } else if (context.asInstanceOf[ActorCell].mailbox.isSuspended) {
         abort("processing message while suspended")
         false
-      } else if (!Thread.currentThread.getName.startsWith(
-                   "SupervisorHierarchySpec-hierarchy")) {
+      } else if (!Thread.currentThread.getName
+                   .startsWith("SupervisorHierarchySpec-hierarchy")) {
         abort(
-          "running on wrong thread " + Thread.currentThread + " dispatcher=" + context.props.dispatcher + "=>" +
+          "running on wrong thread " + Thread
+            .currentThread + " dispatcher=" + context.props.dispatcher + "=>" +
             context.asInstanceOf[ActorCell].dispatcher.id)
         false
       } else true
@@ -497,8 +500,8 @@ object SupervisorHierarchySpec {
         Ping(ref)
       case x ⇒
         // fail one child
-        val pick =
-          ((if (x >= 0.25) x - 0.25 else x) * 4 * activeChildren.size).toInt
+        val pick = ((if (x >= 0.25) x - 0.25 else x) * 4 * activeChildren.size)
+          .toInt
         Fail(activeChildren(pick), if (x > 0.25) Restart else Resume)
     })
 
@@ -572,8 +575,8 @@ object SupervisorHierarchySpec {
 
     when(Stress) {
       case Event(Work, _) if idleChildren.isEmpty ⇒
-        context.system.scheduler.scheduleOnce(workSchedule, self, Work)(
-          context.dispatcher)
+        context.system.scheduler
+          .scheduleOnce(workSchedule, self, Work)(context.dispatcher)
         stay
       case Event(Work, x) if x > 0 ⇒
         nextJob.next match {
@@ -596,8 +599,8 @@ object SupervisorHierarchySpec {
         }
         if (idleChildren.nonEmpty) self ! Work
         else
-          context.system.scheduler.scheduleOnce(workSchedule, self, Work)(
-            context.dispatcher)
+          context.system.scheduler
+            .scheduleOnce(workSchedule, self, Work)(context.dispatcher)
         stay using (x - 1)
       case Event(Work, _) ⇒
         if (pingChildren.isEmpty) goto(LastPing) else goto(Finishing)
@@ -611,7 +614,8 @@ object SupervisorHierarchySpec {
       case Event(StateTimeout, todo) ⇒
         log.info("dumping state due to StateTimeout")
         log.info(
-          "children: " + children.size + " pinged: " + pingChildren.size + " idle: " + idleChildren.size + " work: " + todo)
+          "children: " + children.size + " pinged: " + pingChildren
+            .size + " idle: " + idleChildren.size + " work: " + todo)
         pingChildren foreach println
         println(system.asInstanceOf[ActorSystemImpl].printTree)
         pingChildren foreach getErrorsUp
@@ -795,11 +799,8 @@ object SupervisorHierarchySpec {
         }
       case Event(StateTimeout, _) ⇒
         println(
-          "pingChildren:\n" + pingChildren.view
-            .map(_.path.toString)
-            .toSeq
-            .sorted
-            .mkString("\n"))
+          "pingChildren:\n" + pingChildren.view.map(_.path.toString).toSeq
+            .sorted.mkString("\n"))
         ignoreNotResumedLogs = false
         // make sure that we get the logs of the remaining pingChildren
         pingChildren.foreach(getErrorsUp)
@@ -838,15 +839,13 @@ class SupervisorHierarchySpec
 
       val managerProps = Props(
         new CountDownActor(countDown, AllForOneStrategy()(List())))
-      val manager = Await.result(
-        (boss ? managerProps).mapTo[ActorRef],
-        timeout.duration)
+      val manager = Await
+        .result((boss ? managerProps).mapTo[ActorRef], timeout.duration)
 
       val workerProps = Props(
         new CountDownActor(countDown, SupervisorStrategy.defaultStrategy))
-      val workerOne, workerTwo, workerThree = Await.result(
-        (manager ? workerProps).mapTo[ActorRef],
-        timeout.duration)
+      val workerOne, workerTwo, workerThree = Await
+        .result((manager ? workerProps).mapTo[ActorRef], timeout.duration)
 
       filterException[ActorKilledException] {
         workerOne ! Kill

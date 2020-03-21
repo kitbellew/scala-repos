@@ -26,17 +26,14 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
 
     def iterateClasses(suffix: String)(fun: PsiClass => Unit) {
       if (!qualifiedName.endsWith(suffix)) return
-      val nameWithoutDollar = qualifiedName.substring(
-        0,
-        qualifiedName.length() - suffix.length)
-      val classes = ScalaShortNamesCacheManager
-        .getInstance(project)
+      val nameWithoutDollar = qualifiedName
+        .substring(0, qualifiedName.length() - suffix.length)
+      val classes = ScalaShortNamesCacheManager.getInstance(project)
         .getClassesByFQName(nameWithoutDollar, scope)
       (if (classes.isEmpty) {
          val converted = ScalaPsiUtil.convertMemberName(nameWithoutDollar)
          if (nameWithoutDollar != converted)
-           ScalaShortNamesCacheManager
-             .getInstance(project)
+           ScalaShortNamesCacheManager.getInstance(project)
              .getClassesByFQName(converted, scope)
          else classes
        } else classes).foreach(fun)
@@ -77,8 +74,7 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
   override def getClassNames(
       psiPackage: PsiPackage,
       scope: GlobalSearchScope): util.Set[String] = {
-    ScalaPsiManager
-      .instance(project)
+    ScalaPsiManager.instance(project)
       .getJavaPackageClassNames(psiPackage, scope)
   }
 
@@ -90,8 +86,7 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
     import scala.collection.JavaConversions._
     for (clazzName <- otherClassNames) {
       val qualName = psiPackage.getQualifiedName + "." + clazzName
-      result ++= ScalaPsiManager
-        .instance(project)
+      result ++= ScalaPsiManager.instance(project)
         .getCachedClasses(scope, qualName)
       result ++= findClasses(qualName, scope)
     }

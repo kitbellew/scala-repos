@@ -40,10 +40,7 @@ trait RouteTest
     ActorSystem(actorSystemNameFrom(getClass), testConfig)
 
   def actorSystemNameFrom(clazz: Class[_]) =
-    clazz.getName
-      .replace('.', '-')
-      .replace('_', '-')
-      .filter(_ != '$')
+    clazz.getName.replace('.', '-').replace('_', '-').filter(_ != '$')
 
   def testConfigSource: String = ""
   def testConfig: Config = {
@@ -126,8 +123,8 @@ trait RouteTest
   }
 
   def isWebSocketUpgrade: Boolean =
-    status == StatusCodes.SwitchingProtocols && header[Upgrade].exists(
-      _.hasWebSocket)
+    status == StatusCodes.SwitchingProtocols && header[Upgrade]
+      .exists(_.hasWebSocket)
 
   /**
     * Asserts that the received response is a WebSocket upgrade response and the extracts
@@ -201,8 +198,8 @@ trait RouteTest
           val semiSealedRoute = // sealed for exceptions but not for rejections
             Directives.handleExceptions(sealedExceptionHandler)(route)
           val deferrableRouteResult = semiSealedRoute(ctx)
-          deferrableRouteResult.fast.foreach(routeTestResult.handleResult)(
-            executionContext)
+          deferrableRouteResult.fast
+            .foreach(routeTestResult.handleResult)(executionContext)
           routeTestResult
         }
       }

@@ -36,8 +36,8 @@ private[streaming] object RawTextSender extends Logging {
   def main(args: Array[String]) {
     if (args.length != 4) {
       // scalastyle:off println
-      System.err.println(
-        "Usage: RawTextSender <port> <file> <blockSize> <bytesPerSec>")
+      System.err
+        .println("Usage: RawTextSender <port> <file> <blockSize> <bytesPerSec>")
       // scalastyle:on println
       System.exit(1)
     }

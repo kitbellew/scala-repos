@@ -29,23 +29,20 @@ object GettingStartedOverview extends App {
 
   val f1 =
 //#quick-query
-    Database
-      .forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver")
-      .run(
+    Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver").run(
 //#quick-query
-        coffees.schema.create andThen
+      coffees.schema.create andThen
 //#quick-query
-          (for (c <- coffees; if c.price < 10.0) yield c.name).result
+        (for (c <- coffees; if c.price < 10.0) yield c.name).result
 //#quick-query
-          andThen
+        andThen
 //#quick-query
-            // or
-            coffees.filter(_.price < 10.0).map(_.name).result)
+          // or
+          coffees.filter(_.price < 10.0).map(_.name).result)
 //#quick-query
   Await.result(f1, Duration.Inf)
 
-  val f2 = Database
-    .forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver")
+  val f2 = Database.forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver")
     .run(coffees.schema.create andThen {
       //#what-is-slick-micro-example
       val limit = 10.0

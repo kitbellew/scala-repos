@@ -43,8 +43,8 @@ class AnnouncerTest extends FunSuite {
   }
 
   test("get an announcer instance") {
-    val anmt = Await.result(
-      Announcer.get(classOf[TestAnnouncer]).get.announce(addr, "foo"))
+    val anmt = Await
+      .result(Announcer.get(classOf[TestAnnouncer]).get.announce(addr, "foo"))
     assert(anmt == TestAnnouncement(addr, "foo"))
   }
 }

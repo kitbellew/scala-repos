@@ -76,15 +76,11 @@ class DefaultTracingTest extends FunSuite with StringClient with StringServer {
 
   test("core events are traced in the stack client/server") {
     testCoreTraces { (serverTracer, clientTracer) =>
-      val svc = stringServer
-        .configured(fparam.Tracer(serverTracer))
-        .configured(fparam.Label("theServer"))
-        .serve("localhost:*", Svc)
+      val svc = stringServer.configured(fparam.Tracer(serverTracer))
+        .configured(fparam.Label("theServer")).serve("localhost:*", Svc)
 
-      stringClient
-        .configured(fparam.Tracer(clientTracer))
-        .configured(fparam.Label("theClient"))
-        .newService(svc)
+      stringClient.configured(fparam.Tracer(clientTracer))
+        .configured(fparam.Label("theClient")).newService(svc)
     }
   }
 
@@ -111,19 +107,13 @@ class DefaultTracingTest extends FunSuite with StringClient with StringServer {
 
   test("core events are traced in the ClientBuilder/ServerBuilder") {
     testCoreTraces { (serverTracer, clientTracer) =>
-      val svc = ServerBuilder()
-        .name("theServer")
+      val svc = ServerBuilder().name("theServer")
         .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        .codec(StringServerCodec)
-        .tracer(serverTracer)
-        .build(Svc)
+        .codec(StringServerCodec).tracer(serverTracer).build(Svc)
 
-      ClientBuilder()
-        .name("theClient")
+      ClientBuilder().name("theClient")
         .hosts(svc.boundAddress.asInstanceOf[InetSocketAddress])
-        .codec(StringClientCodec)
-        .hostConnectionLimit(1)
-        .tracer(clientTracer)
+        .codec(StringClientCodec).hostConnectionLimit(1).tracer(clientTracer)
         .build()
     }
   }

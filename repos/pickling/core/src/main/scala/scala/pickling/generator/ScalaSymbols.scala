@@ -42,9 +42,10 @@ private[pickling] class IrScalaSymbols[
       if (tools.treatAsSealed(classSym)) {
         tools.directSubclasses(classSym).flatMap(cl => whyNotClosed(cl.asType))
       } else {
-        List(s"'${sym.fullName}' allows unknown subclasses (it is not sealed or final isCaseClass=${isCaseClass(
-          sym.asInstanceOf[u.TypeSymbol])} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym.isSealed} directSubclasses=${tools
-          .directSubclasses(classSym)})")
+        List(
+          s"'${sym.fullName}' allows unknown subclasses (it is not sealed or final isCaseClass=${isCaseClass(
+            sym.asInstanceOf[u.TypeSymbol])} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym
+            .isSealed} directSubclasses=${tools.directSubclasses(classSym)})")
       }
     } else { List(s"'${sym.fullName}' is not a class or trait") }
   }
@@ -90,14 +91,12 @@ private[pickling] class IrScalaSymbols[
 
     // TODO - Should we iterate down ALL of the hierarchy here for members, or make the algorithms do it later...
     private val allMethods = {
-      val constructorArgs = tpe.members
-        .collect { case meth: MethodSymbol => meth }
-        .toList
-        .filter { x =>
-          //System.err.println(s"$x - param: ${x.isParamAccessor}, var: ${x.isVar}, val: ${x.isVal}, owner: ${x.owner}, owner-constructor: ${x.owner.isConstructor}")
-          (x.owner == tpe.typeSymbol) && (x.isParamAccessor)
-        }
-        .toList
+      val constructorArgs = tpe.members.collect {
+        case meth: MethodSymbol => meth
+      }.toList.filter { x =>
+        //System.err.println(s"$x - param: ${x.isParamAccessor}, var: ${x.isVar}, val: ${x.isVal}, owner: ${x.owner}, owner-constructor: ${x.owner.isConstructor}")
+        (x.owner == tpe.typeSymbol) && (x.isParamAccessor)
+      }.toList
       //System.err.println(s"$tpe has constructor args:\n - ${constructorArgs.mkString("\n - ")}")
       // NOTE - This will only collect memeber vals/vals.  It's possible some things come from the constructor.
       val declaredVars = (tpe.declarations).collect {
@@ -124,12 +123,8 @@ private[pickling] class IrScalaSymbols[
         // x.owner.isConstructor
         x.owner.name == nme.CONSTRUCTOR
       }
-      tpe.members
-        .filter(_.isTerm)
-        .map(_.asTerm)
-        .filter(x => x.isVal || x.isVar)
-        .map(x => new ScalaIrField(x, this))
-        .toList
+      tpe.members.filter(_.isTerm).map(_.asTerm).filter(x => x.isVal || x.isVar)
+        .map(x => new ScalaIrField(x, this)).toList
     }
     override def companion: Option[IrClass] = {
       if (tpe.typeSymbol.isType) {
@@ -206,12 +201,9 @@ private[pickling] class IrScalaSymbols[
 
     /** This is part of a workaround for issues discovering transient annotations on fields. */
     private[IrScalaSymbols] val transientArgNames: Set[String] = {
-      IrSymbol
-        .allDeclaredMethodIncludingSubclasses(this)
+      IrSymbol.allDeclaredMethodIncludingSubclasses(this)
         .filter(x => x.isParamAccessor || x.isVar || x.isVal)
-        .filter(_.isMarkedTransient)
-        .map(_.methodName)
-        .toSet
+        .filter(_.isMarkedTransient).map(_.methodName).toSet
     }
 
   }
@@ -244,8 +236,7 @@ private[pickling] class IrScalaSymbols[
       }
     override def fieldName: String = removeTrailingSpace(field.name.toString)
     override def tpe[U <: Universe with Singleton](u: U): u.Type =
-      field.typeSignature
-        .asSeenFrom(owner.tpe, owner.tpe.typeSymbol)
+      field.typeSignature.asSeenFrom(owner.tpe, owner.tpe.typeSymbol)
         .asInstanceOf[u.Type]
     override def isPublic: Boolean = field.isPublic
     override def isStatic: Boolean = field.isStatic
@@ -277,8 +268,8 @@ private[pickling] class IrScalaSymbols[
         u: U): List[List[u.Type]] = {
       mthd.paramss.map(
         _.map(x =>
-          fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol)).map(
-          _.asInstanceOf[u.Type]))
+          fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol))
+        .map(_.asInstanceOf[u.Type]))
     }
 
     override def isMarkedTransient: Boolean = {
@@ -348,16 +339,14 @@ private[pickling] class IrScalaSymbols[
     override def isVal: Boolean = mthd.isVal
     override def isVar: Boolean =
       (mthd.getter != NoSymbol) && (mthd.setter != NoSymbol) &&
-        (
-          mthd.setter != mthd
-        ) // THis is  hack so the setter doesn't show up in our list of vars.
+        (mthd
+          .setter != mthd) // THis is  hack so the setter doesn't show up in our list of vars.
     override def returnType[U <: Universe with Singleton](u: Universe): u.Type =
       // TODO - We need to fill in generic parameters of our owner class so that this actually works.  If we fail to do so,
       //        We wind up delegating to runtime picklers when we DO know the static types.
       //fillParameters(mthd.returnType.typeSymbol).asInstanceOf[u.Type]
       //fillParameters(mthd).resultType.asInstanceOf[u.Type]
-      mthd.returnType
-        .asSeenFrom(owner.tpe, owner.tpe.typeSymbol)
+      mthd.returnType.asSeenFrom(owner.tpe, owner.tpe.typeSymbol)
         .asInstanceOf[u.Type]
     override def setter: Option[IrMethod] = {
       mthd.setter match {

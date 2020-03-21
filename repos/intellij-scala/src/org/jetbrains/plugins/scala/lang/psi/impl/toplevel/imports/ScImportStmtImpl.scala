@@ -93,8 +93,8 @@ class ScImportStmtImpl private (
           importExpr.selectorSet match {
             case Some(set) =>
               set.selectors.exists(selector =>
-                ScalaPsiUtil.convertMemberName(
-                  selector.reference.refName) == decodedName)
+                ScalaPsiUtil
+                  .convertMemberName(selector.reference.refName) == decodedName)
             case None =>
               if (ScalaPsiUtil.convertMemberName(ref.refName) != decodedName)
                 return true
@@ -106,23 +106,21 @@ class ScImportStmtImpl private (
             r.checkWildcardImports()
           case _ => true
         }
-        val exprQual: ScStableCodeReferenceElement =
-          importExpr.selectorSet match {
-            case Some(_)                           => ref
-            case None if importExpr.singleWildcard => ref
-            case None                              => ref.qualifier.getOrElse(return true)
-          }
+        val exprQual: ScStableCodeReferenceElement = importExpr
+          .selectorSet match {
+          case Some(_)                           => ref
+          case None if importExpr.singleWildcard => ref
+          case None                              => ref.qualifier.getOrElse(return true)
+        }
 
         val resolve: Array[ResolveResult] = processor match {
           case p: ResolveProcessor => ref match {
               // do not process methodrefs when importing a type from a type
               case ref: ResolvableStableCodeReferenceElement
                   if p.kinds.contains(ResolveTargets.CLASS) &&
-                    ref
-                      .getKinds(incomplete = false)
+                    ref.getKinds(incomplete = false)
                       .contains(ResolveTargets.CLASS) &&
-                    ref
-                      .getKinds(incomplete = false)
+                    ref.getKinds(incomplete = false)
                       .contains(ResolveTargets.METHOD) =>
                 ref.resolveTypesOnly(false)
               case ref: ResolvableStableCodeReferenceElement
@@ -138,24 +136,20 @@ class ScImportStmtImpl private (
           exprQual.bind() match {
             case Some(ScalaResolveResult(p: PsiPackage, _)) =>
               Option(
-                ScalaShortNamesCacheManager
-                  .getInstance(getProject)
+                ScalaShortNamesCacheManager.getInstance(getProject)
                   .getPackageObjectByName(p.getQualifiedName, getResolveScope))
             case _ => None
           }
 
         val exprQualRefType = () =>
-          ScSimpleTypeElementImpl.calculateReferenceType(
-            exprQual,
-            shapesOnly = false)
+          ScSimpleTypeElementImpl
+            .calculateReferenceType(exprQual, shapesOnly = false)
 
         def checkResolve(resolve: ResolveResult): Boolean = {
           resolve match {
             case ScalaResolveResult(elem, _) =>
-              PsiTreeUtil.getContextOfType(
-                elem,
-                true,
-                classOf[ScTypeDefinition]) match {
+              PsiTreeUtil
+                .getContextOfType(elem, true, classOf[ScTypeDefinition]) match {
                 case obj: ScObject if obj.isPackageObject => true
                 case _                                    => false
               }
@@ -189,8 +183,7 @@ class ScImportStmtImpl private (
               }
               (
                 s.getElement,
-                getFirstReference(exprQual)
-                  .bind()
+                getFirstReference(exprQual).bind()
                   .fold(s.importsUsed)(r => r.importsUsed ++ s.importsUsed),
                 s.substitutor)
             case r: ResolveResult =>
@@ -211,13 +204,13 @@ class ScImportStmtImpl private (
                     s.lastIndexOf(".")) == pack.getQualifiedName)
               val names = new mutable.HashSet[String]()
               for (prefixImport <- prefixImports) {
-                names += prefixImport.substring(
-                  prefixImport.lastIndexOf('.') + 1)
+                names += prefixImport
+                  .substring(prefixImport.lastIndexOf('.') + 1)
               }
               val excludeNames = new mutable.HashSet[String]()
               for (prefixImport <- excludeImports) {
-                excludeNames += prefixImport.substring(
-                  prefixImport.lastIndexOf('.') + 1)
+                excludeNames += prefixImport
+                  .substring(prefixImport.lastIndexOf('.') + 1)
               }
               val wildcard = names.contains("_")
               def isOK(name: String): Boolean = {
@@ -247,11 +240,8 @@ class ScImportStmtImpl private (
               )
             case _ =>
           }
-          val subst = state
-            .get(ScSubstitutor.key)
-            .toOption
-            .getOrElse(ScSubstitutor.empty)
-            .followed(s)
+          val subst = state.get(ScSubstitutor.key).toOption
+            .getOrElse(ScSubstitutor.empty).followed(s)
           ProgressManager.checkCanceled()
           importExpr.selectorSet match {
             case None =>
@@ -294,19 +284,17 @@ class ScImportStmtImpl private (
                 val selectorResolve: Array[ResolveResult] = selector.reference
                   .multiResolve(false)
                 selectorResolve foreach { result =>
-                  if (selector.isAliasedImport && selector.importedName != selector.reference.refName) {
+                  if (selector.isAliasedImport && selector
+                        .importedName != selector.reference.refName) {
                     //Resolve the name imported by selector
                     //Collect shadowed elements
                     shadowed += ((selector, result.getElement))
                     var newState: ResolveState = state
-                    newState = state.put(
-                      ResolverEnv.nameKey,
-                      selector.importedName)
-                    newState = newState
-                      .put(
-                        ImportUsed.key,
-                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
-                          selector))
+                    newState = state
+                      .put(ResolverEnv.nameKey, selector.importedName)
+                    newState = newState.put(
+                      ImportUsed.key,
+                      Set(importsUsed.toSeq: _*) + ImportSelectorUsed(selector))
                       .put(ScSubstitutor.key, subst)
                     calculateRefType(checkResolve(result)).foreach { tp =>
                       newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
@@ -363,9 +351,8 @@ class ScImportStmtImpl private (
                           }
                         }
                         calculateRefType(isElementInPo).foreach { tp =>
-                          newState = newState.put(
-                            BaseProcessor.FROM_TYPE_KEY,
-                            tp)
+                          newState = newState
+                            .put(BaseProcessor.FROM_TYPE_KEY, tp)
                         }
 
                         processor.execute(element, newState)
@@ -383,9 +370,8 @@ class ScImportStmtImpl private (
                       case (cl: PsiClass, processor: BaseProcessor)
                           if !cl.isInstanceOf[ScTemplateDefinition] =>
                         calculateRefType(checkResolve(next)).foreach { tp =>
-                          newState = newState.put(
-                            BaseProcessor.FROM_TYPE_KEY,
-                            tp)
+                          newState = newState
+                            .put(BaseProcessor.FROM_TYPE_KEY, tp)
                         }
                         if (!processor.processType(
                               new ScDesignatorType(cl, true),
@@ -410,16 +396,15 @@ class ScImportStmtImpl private (
                   .multiResolve(false)
                 selectorResolve foreach { result =>
                   var newState: ResolveState = state
-                  if (!selector.isAliasedImport || selector.importedName == selector.reference.refName) {
+                  if (!selector.isAliasedImport || selector
+                        .importedName == selector.reference.refName) {
                     val rSubst = result match {
                       case result: ScalaResolveResult => result.substitutor
                       case _                          => ScSubstitutor.empty
                     }
-                    newState = newState
-                      .put(
-                        ImportUsed.key,
-                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
-                          selector))
+                    newState = newState.put(
+                      ImportUsed.key,
+                      Set(importsUsed.toSeq: _*) + ImportSelectorUsed(selector))
                       .put(ScSubstitutor.key, subst.followed(rSubst))
                     calculateRefType(checkResolve(result)).foreach { tp =>
                       newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)

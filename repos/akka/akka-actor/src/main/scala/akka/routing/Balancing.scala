@@ -68,8 +68,8 @@ private[akka] final class BalancingRoutingLogic extends RoutingLogic {
 @SerialVersionUID(1L)
 final case class BalancingPool(
     override val nrOfInstances: Int,
-    override val supervisorStrategy: SupervisorStrategy =
-      Pool.defaultSupervisorStrategy,
+    override val supervisorStrategy: SupervisorStrategy = Pool
+      .defaultSupervisorStrategy,
     override val routerDispatcher: String = Dispatchers.DefaultDispatcherId)
     extends Pool {
 
@@ -107,11 +107,10 @@ final case class BalancingPool(
       routeeProps: Props,
       context: ActorContext): Routee = {
 
-    val rawDeployPath = context.self.path.elements
-      .drop(1)
+    val rawDeployPath = context.self.path.elements.drop(1)
       .mkString("/", "/", "")
-    val deployPath = BalancingPoolDeploy.invalidConfigKeyChars.foldLeft(
-      rawDeployPath) { (replaced, c) ⇒ replaced.replace(c, '_') }
+    val deployPath = BalancingPoolDeploy.invalidConfigKeyChars
+      .foldLeft(rawDeployPath) { (replaced, c) ⇒ replaced.replace(c, '_') }
     val dispatcherId = s"BalancingPool-$deployPath"
     def dispatchers = context.system.dispatchers
 

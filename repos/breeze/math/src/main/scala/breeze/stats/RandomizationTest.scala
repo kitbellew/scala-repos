@@ -40,8 +40,7 @@ class RandomizationTest[L](
     assume(labeling1.length == labeling2.length);
     // git rid of any overlapping labels
     val lpairs = (labeling1.iterator zip labeling2.iterator)
-      .filter(a => a._1 != a._2)
-      .toSeq;
+      .filter(a => a._1 != a._2).toSeq;
     val baseDiff = diff(lpairs.view.map(_._1), lpairs.view.map(_._2));
     var numBetter = 0;
     for (i <- 1 to numSamples) {

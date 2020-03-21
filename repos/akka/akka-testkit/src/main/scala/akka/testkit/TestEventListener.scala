@@ -340,9 +340,8 @@ final case class ErrorFilter(
   def matches(event: LogEvent) = {
     event match {
       case Error(cause, src, _, msg) if throwable isInstance cause ⇒
-        (
-          msg == null && cause.getMessage == null && cause.getStackTrace.length == 0
-        ) ||
+        (msg == null && cause.getMessage == null && cause.getStackTrace
+          .length == 0) ||
           doMatch(src, msg) || doMatch(src, cause.getMessage)
       case _ ⇒ false
     }

@@ -92,18 +92,14 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
         val x = takeStep(state, dir, stepSize)
         val (value, grad) = calculateObjective(adjustedFun, x, state.history)
         val (adjValue, adjGrad) = adjust(x, grad, value)
-        val oneOffImprovement = (state.adjustedValue - adjValue) / (
-          state.adjustedValue.abs max adjValue.abs max 1e-6 * state.initialAdjVal.abs
-        )
+        val oneOffImprovement =
+          (state.adjustedValue - adjValue) / (state.adjustedValue
+            .abs max adjValue.abs max 1e-6 * state.initialAdjVal.abs)
         logger.info(
           f"Val and Grad Norm: $adjValue%.6g (rel: $oneOffImprovement%.3g) ${norm(adjGrad)}%.6g")
         val history = updateHistory(x, grad, value, adjustedFun, state)
-        val newCInfo = convergenceCheck.update(
-          x,
-          grad,
-          value,
-          state,
-          state.convergenceInfo)
+        val newCInfo = convergenceCheck
+          .update(x, grad, value, state, state.convergenceInfo)
         failedOnce = false
         FirstOrderMinimizer.State(
           x,
@@ -249,10 +245,9 @@ object FirstOrderMinimizer {
         state: State[T, _, _],
         info: IndexedSeq[ConvergenceCheck[T]#Info])
         : Option[ConvergenceReason] = {
-      (checks zip info).iterator
-        .flatMap { case (c, i) => c(state, i.asInstanceOf[c.Info]) }
-        .toStream
-        .headOption
+      (checks zip info).iterator.flatMap {
+        case (c, i) => c(state, i.asInstanceOf[c.Info])
+      }.toStream.headOption
     }
   }
 
@@ -310,9 +305,8 @@ object FirstOrderMinimizer {
     override def apply(
         state: State[T, _, _],
         info: IndexedSeq[Double]): Option[ConvergenceReason] = {
-      if (info.length >= 2 && (
-            state.adjustedValue - info.max
-          ).abs <= tolerance * (if (relative) state.initialAdjVal else 1.0)) {
+      if (info.length >= 2 && (state.adjustedValue - info.max)
+            .abs <= tolerance * (if (relative) state.initialAdjVal else 1.0)) {
         Some(FunctionValuesConverged)
       } else { None }
     }
@@ -325,9 +319,9 @@ object FirstOrderMinimizer {
     import space.normImpl
     ConvergenceCheck.fromPartialFunction[T] {
       case s: State[T, _, _]
-          if (norm(s.adjustedGradient) <= math.max(
-            tolerance * (if (relative) s.adjustedValue else 1.0),
-            1e-8)) => GradientConverged
+          if (norm(s.adjustedGradient) <= math
+            .max(tolerance * (if (relative) s.adjustedValue else 1.0), 1e-8)) =>
+        GradientConverged
     }
   }
 
@@ -463,8 +457,9 @@ object FirstOrderMinimizer {
           this.iterations(f.withRandomBatches(batchSize), init)(space)
         } else { iterations(f: DiffFunction[T], init) }
 
-      it.asInstanceOf[Iterator[
-        FirstOrderMinimizer[T, BatchDiffFunction[T]]#State]]
+      it
+        .asInstanceOf[Iterator[
+          FirstOrderMinimizer[T, BatchDiffFunction[T]]#State]]
     }
 
     @deprecated(
@@ -498,9 +493,10 @@ object FirstOrderMinimizer {
         new OWLQN[K, T](maxIterations, 5, regularization, tolerance)(space)
           .iterations(f, init)
       else
-        (
-          new LBFGS[T](maxIterations, 5, tolerance = tolerance)(space)
-        ).iterations(DiffFunction.withL2Regularization(f, regularization), init)
+        (new LBFGS[T](maxIterations, 5, tolerance = tolerance)(space))
+          .iterations(
+            DiffFunction.withL2Regularization(f, regularization),
+            init)
     }
   }
 }

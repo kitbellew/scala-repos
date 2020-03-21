@@ -43,12 +43,12 @@ private[netty3] class ChannelConnector[In, Out](
     newTransport: Channel => Transport[In, Out],
     statsReceiver: StatsReceiver)
     extends (SocketAddress => Future[Transport[In, Out]]) {
-  private[this] val connectLatencyStat = statsReceiver.stat(
-    "connect_latency_ms")
-  private[this] val failedConnectLatencyStat = statsReceiver.stat(
-    "failed_connect_latency_ms")
-  private[this] val cancelledConnects = statsReceiver.counter(
-    "cancelled_connects")
+  private[this] val connectLatencyStat = statsReceiver
+    .stat("connect_latency_ms")
+  private[this] val failedConnectLatencyStat = statsReceiver
+    .stat("failed_connect_latency_ms")
+  private[this] val cancelledConnects = statsReceiver
+    .counter("cancelled_connects")
 
   def apply(addr: SocketAddress): Future[Transport[In, Out]] = {
     require(addr != null)
@@ -145,17 +145,17 @@ object Netty3Transporter {
     // transport and transporter params
     val ChannelFactory(cf) = params[ChannelFactory]
     val TransportFactory(newTransport) = params[TransportFactory]
-    val Transporter
-      .ConnectTimeout(connectTimeout) = params[Transporter.ConnectTimeout]
-    val LatencyCompensation
-      .Compensation(compensation) = params[LatencyCompensation.Compensation]
+    val Transporter.ConnectTimeout(connectTimeout) = params[
+      Transporter.ConnectTimeout]
+    val LatencyCompensation.Compensation(compensation) = params[
+      LatencyCompensation.Compensation]
     val Transporter.TLSHostname(tlsHostname) = params[Transporter.TLSHostname]
     val Transporter.HttpProxy(httpProxy, httpProxyCredentials) = params[
       Transporter.HttpProxy]
-    val Transporter
-      .SocksProxy(socksProxy, socksCredentials) = params[Transporter.SocksProxy]
-    val Transport
-      .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
+    val Transporter.SocksProxy(socksProxy, socksCredentials) = params[
+      Transporter.SocksProxy]
+    val Transport.BufferSizes(sendBufSize, recvBufSize) = params[
+      Transport.BufferSizes]
     val Transport.TLSClientEngine(tls) = params[Transport.TLSClientEngine]
     val Transport.Liveness(readerTimeout, writerTimeout, keepAlive) = params[
       Transport.Liveness]
@@ -167,9 +167,8 @@ object Netty3Transporter {
     val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
 
     val opts = new mutable.HashMap[String, Object]()
-    opts += "connectTimeoutMillis" -> (
-      (connectTimeout + compensation).inMilliseconds: java.lang.Long
-    )
+    opts += "connectTimeoutMillis" -> ((connectTimeout + compensation)
+      .inMilliseconds: java.lang.Long)
     opts += "tcpNoDelay" -> (noDelay: java.lang.Boolean)
     opts += "reuseAddress" -> (reuseAddr: java.lang.Boolean)
     for (v <- keepAlive) opts += "keepAlive" -> (v: java.lang.Boolean)
@@ -296,13 +295,13 @@ case class Netty3Transporter[In, Out](
     tlsConfig: Option[Netty3TransporterTLSConfig] = None,
     httpProxy: Option[SocketAddress] = None,
     socksProxy: Option[SocketAddress] = SocksProxyFlags.socksProxy,
-    socksUsernameAndPassword: Option[(String, String)] =
-      SocksProxyFlags.socksUsernameAndPassword,
+    socksUsernameAndPassword: Option[(String, String)] = SocksProxyFlags
+      .socksUsernameAndPassword,
     channelReaderTimeout: Duration = Duration.Top,
     channelWriterTimeout: Duration = Duration.Top,
     channelSnooper: Option[ChannelSnooper] = None,
-    channelOptions: Map[String, Object] =
-      Netty3Transporter.defaultChannelOptions,
+    channelOptions: Map[String, Object] = Netty3Transporter
+      .defaultChannelOptions,
     httpProxyCredentials: Option[Transporter.Credentials] = None)
     extends ((SocketAddress, StatsReceiver) => Future[Transport[In, Out]]) {
   private[this] val statsHandlers =
@@ -353,8 +352,7 @@ case class Netty3Transporter[In, Out](
       engine.self.setUseClientMode(true)
       engine.self.setEnableSessionCreation(true)
 
-      val verifier = verifyHost
-        .map(SslConnectHandler.sessionHostnameVerifier)
+      val verifier = verifyHost.map(SslConnectHandler.sessionHostnameVerifier)
         .getOrElse { Function.const(None) _ }
 
       val sslHandler = new SslHandler(engine.self)
@@ -374,8 +372,8 @@ case class Netty3Transporter[In, Out](
       //
       // [1]: https://github.com/netty/netty/issues/137
       // [2]: https://github.com/netty/netty/blob/3.10/src/main/java/org/jboss/netty/handler/ssl/SslHandler.java#L119
-      sslHandler.getSSLEngineInboundCloseFuture.addListener(
-        FireChannelClosedLater)
+      sslHandler.getSSLEngineInboundCloseFuture
+        .addListener(FireChannelClosedLater)
     }
 
     (socksProxy, addr) match {
@@ -388,11 +386,8 @@ case class Netty3Transporter[In, Out](
               UsernamePassAuthenticationSetting(username, password)
             case _ => Unauthenticated
           }
-          SocksConnectHandler.addHandler(
-            proxyAddr,
-            inetSockAddr,
-            Seq(authentication),
-            pipeline)
+          SocksConnectHandler
+            .addHandler(proxyAddr, inetSockAddr, Seq(authentication), pipeline)
         }
       case _ =>
     }
@@ -400,11 +395,8 @@ case class Netty3Transporter[In, Out](
     (httpProxy, addr) match {
       case (Some(proxyAddr), inetAddr: InetSocketAddress)
           if !inetAddr.isUnresolved =>
-        HttpConnectHandler.addHandler(
-          proxyAddr,
-          inetAddr,
-          pipeline,
-          httpProxyCredentials)
+        HttpConnectHandler
+          .addHandler(proxyAddr, inetAddr, pipeline, httpProxyCredentials)
       case _ =>
     }
 

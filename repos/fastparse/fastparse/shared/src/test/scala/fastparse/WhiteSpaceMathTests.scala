@@ -24,7 +24,9 @@ object WhiteSpaceMathTests extends TestSuite {
         }
     }
   }
-  val number: P[Int] = P(CharIn('0' to '9').rep(1).!.map(_.toInt))
+  val number: P[Int] = P(
+    CharIn('0' to '9').rep(1)
+      .!.map(_.toInt))
   val parens: P[Int] = P("(" ~/ addSub ~ ")")
   val factor: P[Int] = P(number | parens)
 

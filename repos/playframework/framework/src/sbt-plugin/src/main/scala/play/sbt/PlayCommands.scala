@@ -24,9 +24,9 @@ object PlayCommands {
     val extracted = Project.extract(state)
     import extracted._
 
-    (name in currentRef get structure.data)
-      .map { name => "[" + Colors.cyan(name) + "] $ " }
-      .getOrElse("> ")
+    (name in currentRef get structure.data).map { name =>
+      "[" + Colors.cyan(name) + "] $ "
+    }.getOrElse("> ")
 
   }
 
@@ -65,19 +65,18 @@ object PlayCommands {
 
   val playCompileEverythingTask = Def.taskDyn {
     // Run playAssetsWithCompilation, or, if it doesn't exist (because it's not a Play project), just the compile task
-    val compileTask = Def.taskDyn(
-      playAssetsWithCompilation ?? (compile in Compile).value)
+    val compileTask = Def
+      .taskDyn(playAssetsWithCompilation ?? (compile in Compile).value)
 
     compileTask.all(ScopeFilter(inDependencies(thisProjectRef.value)))
   }
 
   val h2Command = Command.command("h2-browser") { state: State =>
     try {
-      val commonLoader =
-        Project.runTask(playCommonClassloader, state).get._2.toEither.right.get
+      val commonLoader = Project.runTask(playCommonClassloader, state).get._2
+        .toEither.right.get
       val h2ServerClass = commonLoader.loadClass("org.h2.tools.Server")
-      h2ServerClass
-        .getMethod("main", classOf[Array[String]])
+      h2ServerClass.getMethod("main", classOf[Array[String]])
         .invoke(null, Array.empty[String])
     } catch { case e: Exception => e.printStackTrace }
     state
@@ -100,13 +99,12 @@ object PlayCommands {
       // Filter out directories that are sub paths of each other, by sorting them lexicographically, then folding, excluding
       // entries if the previous entry is a sub path of the current
       val distinctDirectories = existingDirectories
-        .map(_.getCanonicalFile.toPath)
-        .sorted
-        .foldLeft(List.empty[Path]) { (result, next) =>
-          result.headOption match {
-            case Some(previous) if next.startsWith(previous) => result
-            case _                                           => next :: result
-          }
+        .map(_.getCanonicalFile.toPath).sorted.foldLeft(List.empty[Path]) {
+          (result, next) =>
+            result.headOption match {
+              case Some(previous) if next.startsWith(previous) => result
+              case _                                           => next :: result
+            }
         }
 
       distinctDirectories.map(_.toFile)

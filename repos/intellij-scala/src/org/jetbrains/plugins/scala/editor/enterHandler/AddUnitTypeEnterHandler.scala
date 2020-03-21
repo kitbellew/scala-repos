@@ -36,11 +36,8 @@ class AddUnitTypeEnterHandler extends EnterHandlerDelegateAdapter {
     @inline
     def checkBlock2(block: ScBlockExpr) = {
       val children: Array[PsiElement] = block.getChildren
-      children.length == 3 && children
-        .apply(1)
-        .isInstanceOf[PsiWhiteSpace] && children
-        .apply(1)
-        .getText
+      children.length == 3 && children.apply(1)
+        .isInstanceOf[PsiWhiteSpace] && children.apply(1).getText
         .count(_ == '\n') == 2
     }
 
@@ -50,9 +47,8 @@ class AddUnitTypeEnterHandler extends EnterHandlerDelegateAdapter {
           case (funDef: ScFunctionDefinition, prev: ScalaPsiElement) =>
             if (funDef.findFirstChildByType(ScalaTokenTypes.tASSIGN) == null)
               extensions.inWriteAction {
-                document.insertString(
-                  prev.getTextRange.getEndOffset,
-                  ": Unit =")
+                document
+                  .insertString(prev.getTextRange.getEndOffset, ": Unit =")
                 PsiDocumentManager.getInstance(project).commitDocument(document)
               }
           case _ =>

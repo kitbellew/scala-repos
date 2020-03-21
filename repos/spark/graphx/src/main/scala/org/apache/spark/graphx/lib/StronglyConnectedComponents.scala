@@ -46,8 +46,7 @@ object StronglyConnectedComponents {
     // the graph we update with final SCC ids, and the graph we return at the end
     var sccGraph = graph.mapVertices { case (vid, _) => vid }
     // graph we are going to work with in our iterations
-    var sccWorkGraph = graph
-      .mapVertices { case (vid, _) => (vid, false) }
+    var sccWorkGraph = graph.mapVertices { case (vid, _) => (vid, false) }
       .cache()
 
     var numVertices = sccWorkGraph.numVertices
@@ -56,28 +55,24 @@ object StronglyConnectedComponents {
       iter += 1
       do {
         numVertices = sccWorkGraph.numVertices
-        sccWorkGraph = sccWorkGraph
-          .outerJoinVertices(sccWorkGraph.outDegrees) {
-            (vid, data, degreeOpt) =>
-              if (degreeOpt.isDefined) data else (vid, true)
-          }
-          .outerJoinVertices(sccWorkGraph.inDegrees) { (vid, data, degreeOpt) =>
+        sccWorkGraph = sccWorkGraph.outerJoinVertices(sccWorkGraph.outDegrees) {
+          (vid, data, degreeOpt) =>
             if (degreeOpt.isDefined) data else (vid, true)
-          }
-          .cache()
+        }.outerJoinVertices(sccWorkGraph.inDegrees) { (vid, data, degreeOpt) =>
+          if (degreeOpt.isDefined) data else (vid, true)
+        }.cache()
 
         // get all vertices to be removed
-        val finalVertices = sccWorkGraph.vertices
-          .filter { case (vid, (scc, isFinal)) => isFinal }
-          .mapValues { (vid, data) => data._1 }
+        val finalVertices = sccWorkGraph.vertices.filter {
+          case (vid, (scc, isFinal)) => isFinal
+        }.mapValues { (vid, data) => data._1 }
 
         // write values to sccGraph
         sccGraph = sccGraph.outerJoinVertices(finalVertices) {
           (vid, scc, opt) => opt.getOrElse(scc)
         }
         // only keep vertices that are not final
-        sccWorkGraph = sccWorkGraph
-          .subgraph(vpred = (vid, data) => !data._2)
+        sccWorkGraph = sccWorkGraph.subgraph(vpred = (vid, data) => !data._2)
           .cache()
       } while (sccWorkGraph.numVertices < numVertices)
 

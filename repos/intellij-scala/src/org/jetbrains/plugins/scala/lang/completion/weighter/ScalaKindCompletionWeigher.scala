@@ -23,8 +23,8 @@ class ScalaKindCompletionWeigher extends CompletionWeigher {
   override def weigh(
       element: LookupElement,
       location: CompletionLocation): Comparable[_] = {
-    val position = ScalaCompletionUtil.positionFromParameters(
-      location.getCompletionParameters)
+    val position = ScalaCompletionUtil
+      .positionFromParameters(location.getCompletionParameters)
 
     import KindWeights._
 

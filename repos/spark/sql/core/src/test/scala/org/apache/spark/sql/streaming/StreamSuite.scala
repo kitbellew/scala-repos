@@ -46,9 +46,7 @@ class StreamSuite extends StreamTest with SharedSQLContext {
 
     // Join the input stream with a table.
     val inputData = MemoryStream[Int]
-    val joined = inputData
-      .toDS()
-      .toDF()
+    val joined = inputData.toDS().toDF()
       .join(smallTable, $"value" === $"number")
 
     testStream(joined)(

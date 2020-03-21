@@ -33,8 +33,7 @@ object SideEffectsUtil {
   private val immutableClasses = listImmutableClasses
 
   private val methodsFromObjectWithSideEffects =
-    Seq("wait", "finalize", "notifyAll", "notify")
-      .map("java.lang.Object." + _)
+    Seq("wait", "finalize", "notifyAll", "notify").map("java.lang.Object." + _)
       .toArray
 
   def hasNoSideEffects(expr: ScExpression): Boolean =
@@ -83,8 +82,8 @@ object SideEffectsUtil {
             methodHasNoSideEffects(m, baseExpr.getType().toOption)
           case _ => false
         }
-        checkOperation && hasNoSideEffects(baseExpr) && args.forall(
-          hasNoSideEffects)
+        checkOperation && hasNoSideEffects(baseExpr) && args
+          .forall(hasNoSideEffects)
       case ScMethodCall(baseExpr, args) =>
         val (checkQual, typeOfQual) = baseExpr match {
           case ScReferenceExpression.withQualifier(qual) =>
@@ -97,8 +96,7 @@ object SideEffectsUtil {
           case ResolvesTo(_: ScSyntheticFunction)   => true
           case ResolvesTo(td: ScTypedDefinition) =>
             val withApplyText = baseExpr.getText + ".apply" + args
-              .map(_.getText)
-              .mkString("(", ", ", ")")
+              .map(_.getText).mkString("(", ", ", ")")
             val withApply = ScalaPsiElementFactory
               .createExpressionWithContextFromText(
                 withApplyText,
@@ -116,8 +114,8 @@ object SideEffectsUtil {
     }
 
   private def listImmutableClasses = {
-    val excludeNonString = Seq("StringBuffer._", "StringBuilder._").map(
-      "exclude:java.lang." + _)
+    val excludeNonString = Seq("StringBuffer._", "StringBuilder._")
+      .map("exclude:java.lang." + _)
 
     val javaWrappers = Seq(
       "Integer",
@@ -127,8 +125,7 @@ object SideEffectsUtil {
       "Boolean",
       "Long",
       "Double",
-      "Float")
-      .map(name => s"java.lang.$name._")
+      "Float").map(name => s"java.lang.$name._")
 
     val otherJavaClasses = Seq(
       "java.lang.String._",
@@ -144,8 +141,7 @@ object SideEffectsUtil {
       "Float",
       "Int",
       "Lont",
-      "Unit")
-      .map(name => s"scala.$name._")
+      "Unit").map(name => s"scala.$name._")
 
     val otherFromScalaPackage = Seq("Option._", "Some._", "Tuple._", "Symbol._")
       .map("scala." + _)
@@ -156,24 +152,22 @@ object SideEffectsUtil {
       "Left",
       "Right",
       "Success",
-      "Try")
-      .map(name => s"scala.util.$name._")
+      "Try").map(name => s"scala.util.$name._")
 
     val fromScalaMath = Seq("scala.math.BigInt._", "scala.math.BigDecimal._")
 
     val immutableCollections = Seq("scala.collection.immutable._")
 
     (excludeNonString ++: javaWrappers ++: otherJavaClasses ++:
-      scalaValueClasses ++: otherFromScalaPackage ++: fromScalaUtil ++: fromScalaMath ++: immutableCollections).toArray
+      scalaValueClasses ++: otherFromScalaPackage ++: fromScalaUtil ++: fromScalaMath ++: immutableCollections)
+      .toArray
   }
 
   private def hasImplicitConversion(refExpr: ScExpression) = {
     refExpr match {
       case ref: ScReferenceExpression =>
-        ref
-          .bind()
-          .exists(rr =>
-            rr.implicitConversionClass.isDefined || rr.implicitFunction.isDefined)
+        ref.bind().exists(rr =>
+          rr.implicitConversionClass.isDefined || rr.implicitFunction.isDefined)
       case _ => false
     }
   }
@@ -186,14 +180,13 @@ object SideEffectsUtil {
     methodClazzName match {
       case Some(fqn) =>
         val name = fqn + "." + m.name
-        if (ScalaCodeStyleSettings.nameFitToPatterns(
-              name,
-              methodsFromObjectWithSideEffects)) return false
+        if (ScalaCodeStyleSettings
+              .nameFitToPatterns(name, methodsFromObjectWithSideEffects))
+          return false
       case _ =>
     }
 
-    val clazzName = typeOfQual
-      .flatMap(ScType.extractDesignatorSingletonType)
+    val clazzName = typeOfQual.flatMap(ScType.extractDesignatorSingletonType)
       .orElse(typeOfQual) match {
       case Some(tp) => ScType.extractClass(tp).map(_.qualifiedName)
       case None     => methodClazzName

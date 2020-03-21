@@ -11,17 +11,11 @@ class MarathonTaskFormatTest extends MarathonSpec {
 
   class Fixture {
     val time = Timestamp(1024)
-    val network = MesosProtos.NetworkInfo
-      .newBuilder()
-      .addIpAddresses(
-        MesosProtos.NetworkInfo.IPAddress
-          .newBuilder()
-          .setIpAddress("123.123.123.123"))
-      .addIpAddresses(
-        MesosProtos.NetworkInfo.IPAddress
-          .newBuilder()
-          .setIpAddress("123.123.123.124"))
-      .build()
+    val network = MesosProtos.NetworkInfo.newBuilder().addIpAddresses(
+      MesosProtos.NetworkInfo.IPAddress.newBuilder()
+        .setIpAddress("123.123.123.123")).addIpAddresses(
+      MesosProtos.NetworkInfo.IPAddress.newBuilder()
+        .setIpAddress("123.123.123.124")).build()
 
     val taskWithoutIp = new Task.LaunchedEphemeral(
       taskId = Task.Id("/foo/bar"),
@@ -65,8 +59,7 @@ class MarathonTaskFormatTest extends MarathonSpec {
         |  "slaveId": "abcd-1234"
         |}
       """.stripMargin
-    JsonTestHelper
-      .assertThatJsonOf(f.taskWithoutIp)
+    JsonTestHelper.assertThatJsonOf(f.taskWithoutIp)
       .correspondsToJsonString(json)
   }
 
@@ -93,8 +86,7 @@ class MarathonTaskFormatTest extends MarathonSpec {
         |  "slaveId": "abcd-1234"
         |}
       """.stripMargin
-    JsonTestHelper
-      .assertThatJsonOf(f.taskWithMultipleIPs)
+    JsonTestHelper.assertThatJsonOf(f.taskWithMultipleIPs)
       .correspondsToJsonString(json)
   }
 
@@ -118,8 +110,7 @@ class MarathonTaskFormatTest extends MarathonSpec {
         |  ]
         |}
       """.stripMargin
-    JsonTestHelper
-      .assertThatJsonOf(f.taskWithLocalVolumes)
+    JsonTestHelper.assertThatJsonOf(f.taskWithLocalVolumes)
       .correspondsToJsonString(json)
   }
 }

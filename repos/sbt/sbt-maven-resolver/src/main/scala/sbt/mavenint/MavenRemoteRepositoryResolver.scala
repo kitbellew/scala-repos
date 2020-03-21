@@ -41,9 +41,8 @@ class MavenRemoteRepositoryResolver(
   private val localRepo =
     new java.io.File(settings.getDefaultIvyUserDir, s"maven-cache")
   sbt.io.IO.createDirectory(localRepo)
-  protected val session = MavenRepositorySystemFactory.newSessionImpl(
-    system,
-    localRepo)
+  protected val session = MavenRepositorySystemFactory
+    .newSessionImpl(system, localRepo)
   private val aetherRepository = {
     new org.eclipse.aether.repository.RemoteRepository.Builder(
       repo.name,
@@ -52,11 +51,8 @@ class MavenRemoteRepositoryResolver(
   }
   // TODO - Check if isUseCacheOnly is used correctly.
   private def isUseCacheOnly: Boolean =
-    Option(IvyContext.getContext)
-      .flatMap(x => Option(x.getResolveData))
-      .flatMap(x => Option(x.getOptions))
-      .map(_.isUseCacheOnly)
-      .getOrElse(false)
+    Option(IvyContext.getContext).flatMap(x => Option(x.getResolveData))
+      .flatMap(x => Option(x.getOptions)).map(_.isUseCacheOnly).getOrElse(false)
   protected def addRepositories(
       request: AetherDescriptorRequest): AetherDescriptorRequest =
     if (isUseCacheOnly) request else request.addRepository(aetherRepository)
@@ -89,8 +85,7 @@ class MavenRemoteRepositoryResolver(
     val metadataResultOpt =
       try system
         .resolveMetadata(session, java.util.Arrays.asList(metadataRequest))
-        .asScala
-        .headOption
+        .asScala.headOption
       catch {
         case e: org.eclipse.aether.resolution.ArtifactResolutionException =>
           None

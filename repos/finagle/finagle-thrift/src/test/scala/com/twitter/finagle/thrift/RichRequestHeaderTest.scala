@@ -16,8 +16,7 @@ class RichRequestHeaderTest extends FunSuite {
   }
 
   test("None if clientId.name is not set") {
-    val header = (new thrift.RequestHeader)
-      .setClient_id(new thrift.ClientId)
+    val header = (new thrift.RequestHeader).setClient_id(new thrift.ClientId)
 
     val richHeader = new RichRequestHeader(header)
     assert(None == richHeader.clientId)
@@ -38,8 +37,7 @@ class RichRequestHeaderTest extends FunSuite {
   }
 
   test("path if dest is non-null") {
-    val header = (new thrift.RequestHeader)
-      .setDest("/foo")
+    val header = (new thrift.RequestHeader).setDest("/foo")
 
     val richHeader = new RichRequestHeader(header)
     assert(Path.read("/foo") == richHeader.dest)
@@ -55,8 +53,7 @@ class RichRequestHeaderTest extends FunSuite {
     val delegations = new ArrayList[thrift.Delegation]
     delegations.add(new thrift.Delegation("/foo", "/bar"))
 
-    val header = (new thrift.RequestHeader)
-      .setDelegations(delegations)
+    val header = (new thrift.RequestHeader).setDelegations(delegations)
 
     val richHeader = new RichRequestHeader(header)
     assert(Dtab.read("/foo=>/bar") == richHeader.dtab)
@@ -66,21 +63,13 @@ class RichRequestHeaderTest extends FunSuite {
     val header = new thrift.RequestHeader
     val richHeader = new RichRequestHeader(header)
     assert(
-      TraceId(
-        Some(SpanId(0)),
-        None,
-        SpanId(0),
-        None,
-        Flags()) == richHeader.traceId)
+      TraceId(Some(SpanId(0)), None, SpanId(0), None, Flags()) == richHeader
+        .traceId)
   }
 
   test("non-default traceId") {
-    val header = (new thrift.RequestHeader)
-      .setTrace_id(0)
-      .setParent_span_id(1)
-      .setSpan_id(2)
-      .setSampled(true)
-      .setFlags(4)
+    val header = (new thrift.RequestHeader).setTrace_id(0).setParent_span_id(1)
+      .setSpan_id(2).setSampled(true).setFlags(4)
 
     val richHeader = new RichRequestHeader(header)
     val expected = TraceId(

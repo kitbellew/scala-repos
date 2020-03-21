@@ -46,32 +46,28 @@ class ActorConfigurationVerificationSpec
     "fail verification with a ConfigurationException if also configured with a RoundRobinPool" in {
       intercept[ConfigurationException] {
         system.actorOf(
-          RoundRobinPool(2)
-            .withDispatcher("balancing-dispatcher")
+          RoundRobinPool(2).withDispatcher("balancing-dispatcher")
             .props(Props[TestActor]))
       }
     }
     "fail verification with a ConfigurationException if also configured with a BroadcastPool" in {
       intercept[ConfigurationException] {
         system.actorOf(
-          BroadcastPool(2)
-            .withDispatcher("balancing-dispatcher")
+          BroadcastPool(2).withDispatcher("balancing-dispatcher")
             .props(Props[TestActor]))
       }
     }
     "fail verification with a ConfigurationException if also configured with a RandomPool" in {
       intercept[ConfigurationException] {
-        system.actorOf(
-          RandomPool(2)
-            .withDispatcher("balancing-dispatcher")
-            .props(Props[TestActor]))
+        system
+          .actorOf(RandomPool(2).withDispatcher("balancing-dispatcher").props(
+            Props[TestActor]))
       }
     }
     "fail verification with a ConfigurationException if also configured with a SmallestMailboxPool" in {
       intercept[ConfigurationException] {
         system.actorOf(
-          SmallestMailboxPool(2)
-            .withDispatcher("balancing-dispatcher")
+          SmallestMailboxPool(2).withDispatcher("balancing-dispatcher")
             .props(Props[TestActor]))
       }
     }
@@ -79,8 +75,7 @@ class ActorConfigurationVerificationSpec
       intercept[ConfigurationException] {
         system.actorOf(
           ScatterGatherFirstCompletedPool(nrOfInstances = 2, within = 2 seconds)
-            .withDispatcher("balancing-dispatcher")
-            .props(Props[TestActor]))
+            .withDispatcher("balancing-dispatcher").props(Props[TestActor]))
       }
     }
     "not fail verification with a ConfigurationException also not configured with a Router" in {
@@ -101,8 +96,8 @@ class ActorConfigurationVerificationSpec
 
     "fail verification if the dispatcher cannot be found for the head of a router" in {
       intercept[ConfigurationException] {
-        system.actorOf(
-          RoundRobinPool(1, routerDispatcher = "does not exist").props(
+        system
+          .actorOf(RoundRobinPool(1, routerDispatcher = "does not exist").props(
             Props[TestActor]))
       }
     }

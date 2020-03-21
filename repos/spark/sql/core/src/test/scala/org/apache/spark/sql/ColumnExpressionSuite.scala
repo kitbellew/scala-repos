@@ -90,9 +90,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val origCol = $"a".as("b", metadata.build())
     val newCol = origCol.as("c")
     assert(
-      newCol.expr
-        .asInstanceOf[NamedExpression]
-        .metadata
+      newCol.expr.asInstanceOf[NamedExpression].metadata
         .getString("key") === "value")
   }
 
@@ -213,9 +211,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       testData2.select($"a" / $"b"),
-      testData2
-        .collect()
-        .toSeq
+      testData2.collect().toSeq
         .map(r => Row(r.getInt(0).toDouble / r.getInt(1))))
   }
 
@@ -410,18 +406,14 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
   }
 
   test("between") {
-    val testData = sparkContext
-      .parallelize(
-        (0, 1, 2) ::
-          (1, 2, 3) ::
-          (2, 1, 0) ::
-          (2, 2, 4) ::
-          (3, 1, 6) ::
-          (3, 2, 0) :: Nil)
-      .toDF("a", "b", "c")
-    val expectAnswer = testData
-      .collect()
-      .toSeq
+    val testData = sparkContext.parallelize(
+      (0, 1, 2) ::
+        (1, 2, 3) ::
+        (2, 1, 0) ::
+        (2, 2, 4) ::
+        (3, 1, 6) ::
+        (3, 2, 0) :: Nil).toDF("a", "b", "c")
+    val expectAnswer = testData.collect().toSeq
       .filter(r => r.getInt(0) >= r.getInt(1) && r.getInt(0) <= r.getInt(2))
 
     checkAnswer(testData.filter($"a".between($"b", $"c")), expectAnswer)
@@ -440,18 +432,15 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
       df.collect().toSeq.filter(r => r.getInt(0) == 3 || r.getInt(0) == 1))
     checkAnswer(
       df.filter($"b".isin("y", "x")),
-      df.collect()
-        .toSeq
+      df.collect().toSeq
         .filter(r => r.getString(1) == "y" || r.getString(1) == "x"))
     checkAnswer(
       df.filter($"b".isin("z", "x")),
-      df.collect()
-        .toSeq
+      df.collect().toSeq
         .filter(r => r.getString(1) == "z" || r.getString(1) == "x"))
     checkAnswer(
       df.filter($"b".isin("z", "y")),
-      df.collect()
-        .toSeq
+      df.collect().toSeq
         .filter(r => r.getString(1) == "z" || r.getString(1) == "y"))
 
     val df2 = Seq((1, Seq(1)), (2, Seq(2)), (3, Seq(3))).toDF("a", "b")
@@ -485,15 +474,15 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val testData = (1 to 3).map(i => (i, i.toString)).toDF("key", "value")
 
     checkAnswer(
-      testData.select(
-        when($"key" === 1, -1).when($"key" === 2, -2).otherwise(0)),
+      testData
+        .select(when($"key" === 1, -1).when($"key" === 2, -2).otherwise(0)),
       Seq(Row(-1), Row(-2), Row(0)))
 
     // Without the ending otherwise, return null for unmatched conditions.
     // Also test putting a non-literal value in the expression.
     checkAnswer(
-      testData.select(
-        when($"key" === 1, lit(0) - $"key").when($"key" === 2, -2)),
+      testData
+        .select(when($"key" === 1, lit(0) - $"key").when($"key" === 2, -2)),
       Seq(Row(-1), Row(-2), Row(null)))
 
     // Test error handling for invalid expressions.
@@ -552,10 +541,9 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
 
   test("monotonicallyIncreasingId") {
     // Make sure we have 2 partitions, each with 2 records.
-    val df = sparkContext
-      .parallelize(Seq[Int](), 2)
-      .mapPartitions { _ => Iterator(Tuple1(1), Tuple1(2)) }
-      .toDF("a")
+    val df = sparkContext.parallelize(Seq[Int](), 2).mapPartitions { _ =>
+      Iterator(Tuple1(1), Tuple1(2))
+    }.toDF("a")
     checkAnswer(
       df.select(monotonicallyIncreasingId()),
       Row(0L) :: Row(1L) :: Row((1L << 33) + 0L) :: Row((1L << 33) + 1L) :: Nil)
@@ -566,10 +554,9 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
 
   test("spark_partition_id") {
     // Make sure we have 2 partitions, each with 2 records.
-    val df = sparkContext
-      .parallelize(Seq[Int](), 2)
-      .mapPartitions { _ => Iterator(Tuple1(1), Tuple1(2)) }
-      .toDF("a")
+    val df = sparkContext.parallelize(Seq[Int](), 2).mapPartitions { _ =>
+      Iterator(Tuple1(1), Tuple1(2))
+    }.toDF("a")
     checkAnswer(
       df.select(spark_partition_id()),
       Row(0) :: Row(0) :: Row(1) :: Row(1) :: Nil)
@@ -579,11 +566,8 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     withTempPath { dir =>
       val data = sparkContext.parallelize(0 to 10).toDF("id")
       data.write.parquet(dir.getCanonicalPath)
-      val answer = sqlContext.read
-        .parquet(dir.getCanonicalPath)
-        .select(input_file_name())
-        .head
-        .getString(0)
+      val answer = sqlContext.read.parquet(dir.getCanonicalPath)
+        .select(input_file_name()).head.getString(0)
       assert(answer.contains(dir.getCanonicalPath))
 
       checkAnswer(data.select(input_file_name()).limit(1), Row(""))
@@ -596,12 +580,9 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
   }
 
   test("alias with metadata") {
-    val metadata = new MetadataBuilder()
-      .putString("originName", "value")
+    val metadata = new MetadataBuilder().putString("originName", "value")
       .build()
-    val schema = testData
-      .select($"*", col("value").as("abc", metadata))
-      .schema
+    val schema = testData.select($"*", col("value").as("abc", metadata)).schema
     assert(schema("value").metadata === Metadata.empty)
     assert(schema("abc").metadata === metadata)
   }
@@ -629,8 +610,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     // Because Rand function is not deterministic, the column rand is not deterministic.
     // So, in the optimizer, we will not collapse Project [rand + 1 AS rand1, rand - 1 AS rand2]
     // and Project [key, Rand 5 AS rand]. The final plan still has two Projects.
-    val dfWithTwoProjects = testData
-      .select($"key", (rand(5L) + 1).as("rand"))
+    val dfWithTwoProjects = testData.select($"key", (rand(5L) + 1).as("rand"))
       .select(($"rand" + 1).as("rand1"), ($"rand" - 1).as("rand2"))
     checkNumProjects(dfWithTwoProjects, 2)
 

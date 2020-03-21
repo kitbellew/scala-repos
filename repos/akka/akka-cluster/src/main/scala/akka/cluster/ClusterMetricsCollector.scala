@@ -717,8 +717,8 @@ class JmxMetricsCollector(address: Address, decayFactor: Double)
 
   private val memoryMBean: MemoryMXBean = ManagementFactory.getMemoryMXBean
 
-  private val osMBean: OperatingSystemMXBean =
-    ManagementFactory.getOperatingSystemMXBean
+  private val osMBean: OperatingSystemMXBean = ManagementFactory
+    .getOperatingSystemMXBean
 
   /**
     * Samples and collects new data points.
@@ -827,8 +827,7 @@ class SigarMetricsCollector(
         cluster.settings.MetricsMovingAverageHalfLife,
         cluster.settings.MetricsInterval),
       cluster.system.dynamicAccess
-        .createInstanceFor[AnyRef]("org.hyperic.sigar.Sigar", Nil)
-        .get)
+        .createInstanceFor[AnyRef]("org.hyperic.sigar.Sigar", Nil).get)
 
   /**
     * This constructor is used when creating an instance from configured FQCN
@@ -880,9 +879,7 @@ class SigarMetricsCollector(
     Metric.create(
       name = SystemLoadAverage,
       value = Try(
-        LoadAverage.get
-          .invoke(sigar)
-          .asInstanceOf[Array[AnyRef]](0)
+        LoadAverage.get.invoke(sigar).asInstanceOf[Array[AnyRef]](0)
           .asInstanceOf[Number]),
       decayFactor = None) orElse super.systemLoadAverage
 
@@ -942,16 +939,14 @@ private[cluster] object MetricsCollector {
       }
 
     } else {
-      system.dynamicAccess
-        .createInstanceFor[MetricsCollector](
-          fqcn,
-          List(classOf[ActorSystem] -> system))
-        .recover {
-          case e ⇒
-            throw new ConfigurationException(
-              "Could not create custom metrics collector [" + fqcn + "] due to:" + e.toString)
-        }
-        .get
+      system.dynamicAccess.createInstanceFor[MetricsCollector](
+        fqcn,
+        List(classOf[ActorSystem] -> system)).recover {
+        case e ⇒
+          throw new ConfigurationException(
+            "Could not create custom metrics collector [" + fqcn + "] due to:" + e
+              .toString)
+      }.get
     }
   }
 }

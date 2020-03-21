@@ -40,19 +40,14 @@ object ScroogeBinaryConverter {
   private[this] def codecForNormal[T <: ThriftStruct](
       thriftStructClass: Class[T]): Try[ThriftStructCodec[T]] =
     Try(
-      Class
-        .forName(thriftStructClass.getName + "$")
-        .getField("MODULE$")
-        .get(null))
-      .map(_.asInstanceOf[ThriftStructCodec[T]])
+      Class.forName(thriftStructClass.getName + "$").getField("MODULE$")
+        .get(null)).map(_.asInstanceOf[ThriftStructCodec[T]])
 
   private[this] def codecForUnion[T <: ThriftStruct](
       maybeUnion: Class[T]): Try[ThriftStructCodec[T]] =
     Try(
-      Class
-        .forName(maybeUnion.getName.reverse.dropWhile(_ != '$').reverse)
-        .getField("MODULE$")
-        .get(null))
+      Class.forName(maybeUnion.getName.reverse.dropWhile(_ != '$').reverse)
+        .getField("MODULE$").get(null))
       .map(_.asInstanceOf[ThriftStructCodec[T]])
 
   def apply[T <: ThriftStruct: ClassTag]: BinaryConverter[T] = {

@@ -105,10 +105,7 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
     * Get the list of namenodes the user may access.
     */
   def getNameNodesToAccess(sparkConf: SparkConf): Set[Path] = {
-    sparkConf
-      .get(NAMENODES_TO_ACCESS)
-      .map(new Path(_))
-      .toSet
+    sparkConf.get(NAMENODES_TO_ACCESS).map(new Path(_)).toSet
   }
 
   def getTokenRenewer(conf: Configuration): String = {
@@ -148,9 +145,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       sparkConf: SparkConf,
       conf: Configuration,
       credentials: Credentials) {
-    if (shouldGetTokens(
-          sparkConf,
-          "hive") && UserGroupInformation.isSecurityEnabled) {
+    if (shouldGetTokens(sparkConf, "hive") && UserGroupInformation
+          .isSecurityEnabled) {
       YarnSparkHadoopUtil.get.obtainTokenForHiveMetastore(conf).foreach {
         credentials.addToken(new Text("hive.server2.delegation.token"), _)
       }
@@ -164,9 +160,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       sparkConf: SparkConf,
       conf: Configuration,
       credentials: Credentials): Unit = {
-    if (shouldGetTokens(
-          sparkConf,
-          "hbase") && UserGroupInformation.isSecurityEnabled) {
+    if (shouldGetTokens(sparkConf, "hbase") && UserGroupInformation
+          .isSecurityEnabled) {
       YarnSparkHadoopUtil.get.obtainTokenForHBase(conf).foreach { token =>
         credentials.addToken(token.getService, token)
         logInfo("Added HBase security token to credentials.")
@@ -194,8 +189,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
   }
 
   private[spark] def getContainerId: ContainerId = {
-    val containerIdString = System.getenv(
-      ApplicationConstants.Environment.CONTAINER_ID.name())
+    val containerIdString = System
+      .getenv(ApplicationConstants.Environment.CONTAINER_ID.name())
     ConverterUtils.toContainerId(containerIdString)
   }
 
@@ -229,15 +224,13 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
 
     // the hive configuration class is a subclass of Hadoop Configuration, so can be cast down
     // to a Configuration and used without reflection
-    val hiveConfClass = mirror.classLoader.loadClass(
-      "org.apache.hadoop.hive.conf.HiveConf")
+    val hiveConfClass = mirror.classLoader
+      .loadClass("org.apache.hadoop.hive.conf.HiveConf")
     // using the (Configuration, Class) constructor allows the current configuration to be included
     // in the hive config.
-    val ctor = hiveConfClass.getDeclaredConstructor(
-      classOf[Configuration],
-      classOf[Object].getClass)
-    val hiveConf = ctor
-      .newInstance(conf, hiveConfClass)
+    val ctor = hiveConfClass
+      .getDeclaredConstructor(classOf[Configuration], classOf[Object].getClass)
+    val hiveConf = ctor.newInstance(conf, hiveConfClass)
       .asInstanceOf[Configuration]
     val metastoreUri = hiveConf.getTrimmed("hive.metastore.uris", "")
 
@@ -250,15 +243,13 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       logDebug(
         s"Getting Hive delegation token for ${currentUser.getUserName()} against " +
           s"$principal at $metastoreUri")
-      val hiveClass = mirror.classLoader.loadClass(
-        "org.apache.hadoop.hive.ql.metadata.Hive")
+      val hiveClass = mirror.classLoader
+        .loadClass("org.apache.hadoop.hive.ql.metadata.Hive")
       val closeCurrent = hiveClass.getMethod("closeCurrent")
       try {
         // get all the instance methods before invoking any
-        val getDelegationToken = hiveClass.getMethod(
-          "getDelegationToken",
-          classOf[String],
-          classOf[String])
+        val getDelegationToken = hiveClass
+          .getMethod("getDelegationToken", classOf[String], classOf[String])
         val getHive = hiveClass.getMethod("get", hiveConfClass)
 
         doAsRealUser {
@@ -321,8 +312,7 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
     if ("kerberos" == hbaseConf.get("hbase.security.authentication")) {
       logDebug("Attempting to fetch HBase security token.")
       Some(
-        obtainToken
-          .invoke(null, hbaseConf)
+        obtainToken.invoke(null, hbaseConf)
           .asInstanceOf[Token[TokenIdentifier]])
     } else { None }
   }
@@ -538,10 +528,8 @@ object YarnSparkHadoopUtil {
 
       initialNumExecutors
     } else {
-      val targetNumExecutors = sys.env
-        .get("SPARK_EXECUTOR_INSTANCES")
-        .map(_.toInt)
-        .getOrElse(numExecutors)
+      val targetNumExecutors = sys.env.get("SPARK_EXECUTOR_INSTANCES")
+        .map(_.toInt).getOrElse(numExecutors)
       // System property can override environment variable.
       conf.get(EXECUTOR_INSTANCES).getOrElse(targetNumExecutors)
     }

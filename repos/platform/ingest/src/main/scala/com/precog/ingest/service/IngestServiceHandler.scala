@@ -156,8 +156,8 @@ class IngestServiceHandler(
       : EitherT[Future, NonEmptyList[String], IngestResult] =
     right(chooseProcessing(apiKey, path, authorities, request)) flatMap {
       case Some(processing) => EitherT {
-          (processing.forRequest(request) tuple request.content.toSuccess(nels(
-            "Ingest request missing body content."))) traverse {
+          (processing.forRequest(request) tuple request.content
+            .toSuccess(nels("Ingest request missing body content."))) traverse {
             case (processor, data) =>
               processor.ingest(durability, errorHandling, storeMode, data)
           } map { _.disjunction }
@@ -175,8 +175,7 @@ class IngestServiceHandler(
       message: String): EitherT[Future, String, PrecogUnit] =
     durability match {
       case GlobalDurability(jobId) =>
-        jobManager
-          .addMessage(jobId, channel, JString(message))
+        jobManager.addMessage(jobId, channel, JString(message))
           .map(_ => PrecogUnit)
       case LocalDurability => right(Promise successful PrecogUnit)
     }
@@ -198,14 +197,12 @@ class IngestServiceHandler(
         {
           val timestamp = clock.now()
           def createJob: EitherT[Future, String, JobId] =
-            jobManager
-              .createJob(
-                apiKey,
-                "ingest-" + path,
-                "ingest",
-                None,
-                Some(timestamp))
-              .map(_.id)
+            jobManager.createJob(
+              apiKey,
+              "ingest-" + path,
+              "ingest",
+              None,
+              Some(timestamp)).map(_.id)
 
           findRequestWriteAuthorities(
             request,
@@ -219,8 +216,7 @@ class IngestServiceHandler(
               import Validation._
 
               val errorHandling =
-                if (request.parameters
-                      .get('mode)
+                if (request.parameters.get('mode)
                       .exists(_ equalsIgnoreCase "batch")) IngestAllPossible
                 else StopOnFirstError
 
@@ -237,7 +233,8 @@ class IngestServiceHandler(
                 case _ =>
                   left[Future, String, (Durability, WriteMode)](
                     Promise.successful(
-                      "HTTP method " + request.method + " not supported for data ingest."))
+                      "HTTP method " + request
+                        .method + " not supported for data ingest."))
               }
 
               durabilityM flatMap {
@@ -309,8 +306,7 @@ class IngestServiceHandler(
                               "line" -> JNum(line),
                               "reason" -> JString(msg))
                         }: _*),
-                        "ingestId" -> durability.jobId
-                          .map(JString(_))
+                        "ingestId" -> durability.jobId.map(JString(_))
                           .getOrElse(JUndefined)
                       )
 

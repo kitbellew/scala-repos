@@ -57,9 +57,7 @@ object ContentFactory {
       if (cache.get(fullClassName).isDefined) {
         cache(fullClassName).getContent
       } else {
-        val inst = Class
-          .forName(fullClassName)
-          .newInstance()
+        val inst = Class.forName(fullClassName).newInstance()
           .asInstanceOf[EnsembleExample]
         cache = cache.+((fullClassName, inst))
         inst.getContent
@@ -132,8 +130,7 @@ object ContentFactory {
       </html>
 
     // Inject SyntaxHighlighter scripts
-    val htmlSource = html.mkString
-      .replace("@@shCoreJs@@", shCoreJs)
+    val htmlSource = html.mkString.replace("@@shCoreJs@@", shCoreJs)
       .replace("@@shBrushScala@@", shBrushScala)
       .replace("@@shCoreDefaultCss@@", shCoreDefaultCss)
 
@@ -160,8 +157,8 @@ object ContentFactory {
                   case Some(projectDir) =>
                     SBTProjectBuilder
                       .createSampleProject(projectDir, exampleInfo)
-                    SBTProjectBuilder.parentDir =
-                      projectDir.getCanonicalFile.getParentFile
+                    SBTProjectBuilder.parentDir = projectDir.getCanonicalFile
+                      .getParentFile
                   case _ =>
                 }
               } catch {

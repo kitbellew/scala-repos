@@ -41,9 +41,10 @@ object Challenge extends LilaController {
       negotiate(
         html = fuccess {
           Ok(
-            mine.fold(
-              html.challenge.mine.apply _,
-              html.challenge.theirs.apply _)(c, json))
+            mine
+              .fold(html.challenge.mine.apply _, html.challenge.theirs.apply _)(
+                c,
+                json))
         },
         api = _ => Ok(json).fuccess) flatMap withChallengeAnonCookie(
         mine && c.challengerIsAnon,
@@ -66,8 +67,8 @@ object Challenge extends LilaController {
         isForMe(c) ?? env.api.accept(c, ctx.me).flatMap {
           case Some(pov) =>
             negotiate(
-              html =
-                Redirect(routes.Round.watcher(pov.game.id, "white")).fuccess,
+              html = Redirect(routes.Round.watcher(pov.game.id, "white"))
+                .fuccess,
               api = apiVersion =>
                 Env.api.roundApi.player(pov, apiVersion) map {
                   Ok(_)
@@ -114,14 +115,13 @@ object Challenge extends LilaController {
   def rematchOf(gameId: String) =
     Auth { implicit ctx => me =>
       OptionFuResult(GameRepo game gameId) { g =>
-        Pov
-          .opponentOfUserId(g, me.id)
-          .flatMap(_.userId) ?? UserRepo.byId flatMap {
+        Pov.opponentOfUserId(g, me.id).flatMap(_.userId) ?? UserRepo
+          .byId flatMap {
           _ ?? { opponent =>
             restriction(opponent) flatMap {
               case Some(r) =>
-                BadRequest(
-                  jsonError(r.replace("{{user}}", opponent.username))).fuccess
+                BadRequest(jsonError(r.replace("{{user}}", opponent.username)))
+                  .fuccess
               case _ =>
                 env.api.rematchOf(g, me) map {
                   _.fold(

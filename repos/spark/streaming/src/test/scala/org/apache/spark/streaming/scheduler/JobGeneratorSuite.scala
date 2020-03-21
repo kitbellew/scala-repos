@@ -90,9 +90,8 @@ class JobGeneratorSuite extends TestSuiteBase {
 
       // Get the blocks belonging to a batch
       def getBlocksOfBatch(batchTime: Long): Seq[ReceivedBlockInfo] = {
-        receiverTracker.getBlocksOfBatchAndStream(
-          Time(batchTime),
-          inputStream.id)
+        receiverTracker
+          .getBlocksOfBatchAndStream(Time(batchTime), inputStream.id)
       }
 
       // Wait for new blocks to be received
@@ -114,8 +113,7 @@ class JobGeneratorSuite extends TestSuiteBase {
 
       // Wait for 3rd batch to start
       eventually(testTimeout) {
-        ssc.scheduler
-          .getPendingTimes()
+        ssc.scheduler.getPendingTimes()
           .contains(Time(numBatches * batchDuration.milliseconds))
       }
 

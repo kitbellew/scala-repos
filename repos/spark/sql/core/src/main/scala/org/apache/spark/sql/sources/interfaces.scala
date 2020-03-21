@@ -385,8 +385,7 @@ abstract class OutputWriter {
   private var converter: InternalRow => Row = _
 
   protected[sql] def initConverter(dataSchema: StructType) = {
-    converter = CatalystTypeConverters
-      .createToScalaConverter(dataSchema)
+    converter = CatalystTypeConverters.createToScalaConverter(dataSchema)
       .asInstanceOf[InternalRow => Row]
   }
 
@@ -593,8 +592,7 @@ class HDFSFileCatalog(
     }
 
     if (partitionPruningPredicates.nonEmpty) {
-      val predicate = partitionPruningPredicates
-        .reduceOption(expressions.And)
+      val predicate = partitionPruningPredicates.reduceOption(expressions.And)
         .getOrElse(Literal(true))
 
       val boundPredicate = InterpretedPredicate.create(predicate.transform {
@@ -627,26 +625,22 @@ class HDFSFileCatalog(
   private def listLeafFiles(
       paths: Seq[Path]): mutable.LinkedHashSet[FileStatus] = {
     if (paths.length >= sqlContext.conf.parallelPartitionDiscoveryThreshold) {
-      HadoopFsRelation.listLeafFilesInParallel(
-        paths,
-        hadoopConf,
-        sqlContext.sparkContext)
+      HadoopFsRelation
+        .listLeafFilesInParallel(paths, hadoopConf, sqlContext.sparkContext)
     } else {
-      val statuses = paths
-        .flatMap { path =>
-          val fs = path.getFileSystem(hadoopConf)
-          logInfo(s"Listing $path on driver")
-          // Dummy jobconf to get to the pathFilter defined in configuration
-          val jobConf = new JobConf(hadoopConf, this.getClass())
-          val pathFilter = FileInputFormat.getInputPathFilter(jobConf)
-          if (pathFilter != null) {
-            Try(fs.listStatus(path, pathFilter)).getOrElse(Array.empty)
-          } else { Try(fs.listStatus(path)).getOrElse(Array.empty) }
-        }
-        .filterNot { status =>
-          val name = status.getPath.getName
-          HadoopFsRelation.shouldFilterOut(name)
-        }
+      val statuses = paths.flatMap { path =>
+        val fs = path.getFileSystem(hadoopConf)
+        logInfo(s"Listing $path on driver")
+        // Dummy jobconf to get to the pathFilter defined in configuration
+        val jobConf = new JobConf(hadoopConf, this.getClass())
+        val pathFilter = FileInputFormat.getInputPathFilter(jobConf)
+        if (pathFilter != null) {
+          Try(fs.listStatus(path, pathFilter)).getOrElse(Array.empty)
+        } else { Try(fs.listStatus(path)).getOrElse(Array.empty) }
+      }.filterNot { status =>
+        val name = status.getPath.getName
+        HadoopFsRelation.shouldFilterOut(name)
+      }
 
       val (dirs, files) = statuses.partition(_.isDirectory)
 
@@ -705,19 +699,16 @@ class HDFSFileCatalog(
     * DataFrame will have the column of `something`.
     */
   private def basePaths: Set[Path] = {
-    val userDefinedBasePath = parameters
-      .get("basePath")
+    val userDefinedBasePath = parameters.get("basePath")
       .map(basePath => Set(new Path(basePath)))
-    userDefinedBasePath
-      .getOrElse {
-        // If the user does not provide basePath, we will just use paths.
-        paths.toSet
-      }
-      .map { hdfsPath =>
-        // Make the path qualified (consistent with listLeafFiles and listLeafFilesInParallel).
-        val fs = hdfsPath.getFileSystem(hadoopConf)
-        hdfsPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
-      }
+    userDefinedBasePath.getOrElse {
+      // If the user does not provide basePath, we will just use paths.
+      paths.toSet
+    }.map { hdfsPath =>
+      // Make the path qualified (consistent with listLeafFiles and listLeafFilesInParallel).
+      val fs = hdfsPath.getFileSystem(hadoopConf)
+      hdfsPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
+    }
   }
 
   def refresh(): Unit = {
@@ -752,8 +743,8 @@ private[sql] object HadoopFsRelation extends Logging {
     // The only reason that we are not doing it now is that Parquet needs to find those
     // metadata files from leaf files returned by this methods. We should refactor
     // this logic to not mix metadata files with data files.
-    pathName == "_SUCCESS" || pathName == "_temporary" || pathName.startsWith(
-      ".")
+    pathName == "_SUCCESS" || pathName == "_temporary" || pathName
+      .startsWith(".")
   }
 
   // We don't filter files/directories whose name start with "_" except "_temporary" here, as
@@ -771,13 +762,11 @@ private[sql] object HadoopFsRelation extends Logging {
       val pathFilter = FileInputFormat.getInputPathFilter(jobConf)
       val statuses =
         if (pathFilter != null) {
-          val (dirs, files) = fs
-            .listStatus(status.getPath, pathFilter)
+          val (dirs, files) = fs.listStatus(status.getPath, pathFilter)
             .partition(_.isDirectory)
           files ++ dirs.flatMap(dir => listLeafFiles(fs, dir))
         } else {
-          val (dirs, files) = fs
-            .listStatus(status.getPath)
+          val (dirs, files) = fs.listStatus(status.getPath)
             .partition(_.isDirectory)
           files ++ dirs.flatMap(dir => listLeafFiles(fs, dir))
         }
@@ -808,14 +797,11 @@ private[sql] object HadoopFsRelation extends Logging {
     val serializableConfiguration = new SerializableConfiguration(hadoopConf)
     val serializedPaths = paths.map(_.toString)
 
-    val fakeStatuses = sparkContext
-      .parallelize(serializedPaths)
-      .map(new Path(_))
-      .flatMap { path =>
+    val fakeStatuses = sparkContext.parallelize(serializedPaths)
+      .map(new Path(_)).flatMap { path =>
         val fs = path.getFileSystem(serializableConfiguration.value)
         Try(listLeafFiles(fs, fs.getFileStatus(path))).getOrElse(Array.empty)
-      }
-      .map { status =>
+      }.map { status =>
         FakeFileStatus(
           status.getPath.toString,
           status.getLen,
@@ -824,8 +810,7 @@ private[sql] object HadoopFsRelation extends Logging {
           status.getBlockSize,
           status.getModificationTime,
           status.getAccessTime)
-      }
-      .collect()
+      }.collect()
 
     val hadoopFakeStatuses = fakeStatuses.map { f =>
       new FileStatus(

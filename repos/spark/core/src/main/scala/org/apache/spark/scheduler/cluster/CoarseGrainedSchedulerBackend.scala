@@ -57,14 +57,12 @@ private[spark] class CoarseGrainedSchedulerBackend(
   private val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
   // Submit tasks only after (registered resources / total expected resources)
   // is equal to at least this value, that is double between 0 and 1.
-  var minRegisteredRatio = math.min(
-    1,
-    conf.getDouble("spark.scheduler.minRegisteredResourcesRatio", 0))
+  var minRegisteredRatio = math
+    .min(1, conf.getDouble("spark.scheduler.minRegisteredResourcesRatio", 0))
   // Submit tasks after maxRegisteredWaitingTime milliseconds
   // if minRegisteredRatio has not yet been reached
-  val maxRegisteredWaitingTimeMs = conf.getTimeAsMs(
-    "spark.scheduler.maxRegisteredResourcesWaitingTime",
-    "30s")
+  val maxRegisteredWaitingTimeMs = conf
+    .getTimeAsMs("spark.scheduler.maxRegisteredResourcesWaitingTime", "30s")
   val createTime = System.currentTimeMillis()
 
   private val executorDataMap = new HashMap[String, ExecutorData]
@@ -108,9 +106,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
 
     override def onStart() {
       // Periodically revive offers to allow delay scheduling to work
-      val reviveIntervalMs = conf.getTimeAsMs(
-        "spark.scheduler.revive.interval",
-        "1s")
+      val reviveIntervalMs = conf
+        .getTimeAsMs("spark.scheduler.revive.interval", "1s")
 
       reviveThread.scheduleAtFixedRate(
         new Runnable {
@@ -213,8 +210,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
         // We will remove the executor's state and cannot restore it. However, the connection
         // between the driver and the executor may be still alive so that the executor won't exit
         // automatically, so try to tell the executor to stop itself. See SPARK-13519.
-        executorDataMap
-          .get(executorId)
+        executorDataMap.get(executorId)
           .foreach(_.executorEndpoint.send(StopExecutor))
         removeExecutor(executorId, reason)
         context.reply(true)
@@ -234,15 +230,13 @@ private[spark] class CoarseGrainedSchedulerBackend(
     }
 
     override def onDisconnected(remoteAddress: RpcAddress): Unit = {
-      addressToExecutorId
-        .get(remoteAddress)
-        .foreach(removeExecutor(
-          _,
-          SlaveLost(
-            "Remote RPC client disassociated. Likely due to " +
-              "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
-              "messages.")
-        ))
+      addressToExecutorId.get(remoteAddress).foreach(removeExecutor(
+        _,
+        SlaveLost(
+          "Remote RPC client disassociated. Likely due to " +
+            "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
+            "messages.")
+      ))
     }
 
     // Make fake resource offers on just one executor
@@ -293,8 +287,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
             s"Launching task ${task.taskId} on executor id: ${task.executorId} hostname: " +
               s"${executorData.executorHost}.")
 
-          executorData.executorEndpoint.send(LaunchTask(
-            new SerializableBuffer(serializedTask)))
+          executorData.executorEndpoint
+            .send(LaunchTask(new SerializableBuffer(serializedTask)))
         }
       }
     }
@@ -313,9 +307,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
           }
           totalCoreCount.addAndGet(-executorInfo.totalCores)
           totalRegisteredExecutors.addAndGet(-1)
-          scheduler.executorLost(
-            executorId,
-            if (killed) ExecutorKilled else reason)
+          scheduler
+            .executorLost(executorId, if (killed) ExecutorKilled else reason)
           listenerBus.post(SparkListenerExecutorRemoved(
             System.currentTimeMillis(),
             executorId,
@@ -494,7 +487,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
       numPendingExecutors += numAdditionalExecutors
       // Account for executors pending to be added or removed
       val newTotal =
-        numExistingExecutors + numPendingExecutors - executorsPendingToRemove.size
+        numExistingExecutors + numPendingExecutors - executorsPendingToRemove
+          .size
       doRequestTotalExecutors(newTotal)
     }
 
@@ -573,17 +567,17 @@ private[spark] class CoarseGrainedSchedulerBackend(
       force: Boolean): Boolean =
     synchronized {
       logInfo(s"Requesting to kill executor(s) ${executorIds.mkString(", ")}")
-      val (knownExecutors, unknownExecutors) = executorIds.partition(
-        executorDataMap.contains)
+      val (knownExecutors, unknownExecutors) = executorIds
+        .partition(executorDataMap.contains)
       unknownExecutors.foreach { id =>
         logWarning(s"Executor to kill $id does not exist!")
       }
 
       // If an executor is already pending to be removed, do not kill it again (SPARK-9795)
       // If this executor is busy, do not kill it unless we are told to force kill it (SPARK-9552)
-      val executorsToKill = knownExecutors
-        .filter { id => !executorsPendingToRemove.contains(id) }
-        .filter { id => force || !scheduler.isExecutorBusy(id) }
+      val executorsToKill = knownExecutors.filter { id =>
+        !executorsPendingToRemove.contains(id)
+      }.filter { id => force || !scheduler.isExecutorBusy(id) }
       executorsToKill.foreach { id => executorsPendingToRemove(id) = !replace }
 
       // If we do not wish to replace the executors we kill, sync the target number of executors
@@ -591,7 +585,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
       // take into account executors that are pending to be added or removed.
       if (!replace) {
         doRequestTotalExecutors(
-          numExistingExecutors + numPendingExecutors - executorsPendingToRemove.size)
+          numExistingExecutors + numPendingExecutors - executorsPendingToRemove
+            .size)
       } else { numPendingExecutors += knownExecutors.size }
 
       !executorsToKill.isEmpty && doKillExecutors(executorsToKill)

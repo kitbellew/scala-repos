@@ -216,8 +216,8 @@ class AFTSurvivalRegression @Since("1.6.0") (
     val costFun = new AFTCostFun(instances, $(fitIntercept))
     val optimizer = new BreezeLBFGS[BDV[Double]]($(maxIter), 10, $(tol))
 
-    val numFeatures =
-      dataset.select($(featuresCol)).take(1)(0).getAs[Vector](0).size
+    val numFeatures = dataset.select($(featuresCol)).take(1)(0).getAs[Vector](0)
+      .size
     /*
        The parameters vector has three parts:
        the first element: Double, log(sigma), the log of scale parameter
@@ -328,8 +328,7 @@ class AFTSurvivalRegressionModel private[ml] (
       predictQuantiles(features)
     }
     if (hasQuantilesCol) {
-      dataset
-        .withColumn($(predictionCol), predictUDF(col($(featuresCol))))
+      dataset.withColumn($(predictionCol), predictUDF(col($(featuresCol))))
         .withColumn($(quantilesCol), predictQuantilesUDF(col($(featuresCol))))
     } else {
       dataset.withColumn($(predictionCol), predictUDF(col($(featuresCol))))
@@ -345,8 +344,7 @@ class AFTSurvivalRegressionModel private[ml] (
   override def copy(extra: ParamMap): AFTSurvivalRegressionModel = {
     copyValues(
       new AFTSurvivalRegressionModel(uid, coefficients, intercept, scale),
-      extra)
-      .setParent(parent)
+      extra).setParent(parent)
   }
 
   @Since("1.6.0")
@@ -382,10 +380,7 @@ object AFTSurvivalRegressionModel
       // Save model data: coefficients, intercept, scale
       val data = Data(instance.coefficients, instance.intercept, instance.scale)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -400,10 +395,8 @@ object AFTSurvivalRegressionModel
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("coefficients", "intercept", "scale")
-        .head()
+      val data = sqlContext.read.parquet(dataPath)
+        .select("coefficients", "intercept", "scale").head()
       val coefficients = data.getAs[Vector](0)
       val intercept = data.getDouble(1)
       val scale = data.getDouble(2)
@@ -569,17 +562,17 @@ private class AFTCostFun(data: RDD[AFTPoint], fitIntercept: Boolean)
 
   override def calculate(parameters: BDV[Double]): (Double, BDV[Double]) = {
 
-    val aftAggregator = data.treeAggregate(
-      new AFTAggregator(parameters, fitIntercept))(
-      seqOp = (c, v) =>
-        (c, v) match {
-          case (aggregator, instance) => aggregator.add(instance)
-        },
-      combOp = (c1, c2) =>
-        (c1, c2) match {
-          case (aggregator1, aggregator2) => aggregator1.merge(aggregator2)
-        }
-    )
+    val aftAggregator = data
+      .treeAggregate(new AFTAggregator(parameters, fitIntercept))(
+        seqOp = (c, v) =>
+          (c, v) match {
+            case (aggregator, instance) => aggregator.add(instance)
+          },
+        combOp = (c1, c2) =>
+          (c1, c2) match {
+            case (aggregator1, aggregator2) => aggregator1.merge(aggregator2)
+          }
+      )
 
     (aftAggregator.loss, aftAggregator.gradient)
   }

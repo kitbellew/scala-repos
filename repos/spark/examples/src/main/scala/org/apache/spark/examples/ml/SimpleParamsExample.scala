@@ -56,8 +56,7 @@ object SimpleParamsExample {
     println("LogisticRegression parameters:\n" + lr.explainParams() + "\n")
 
     // We may set parameters using setter methods.
-    lr.setMaxIter(10)
-      .setRegParam(0.01)
+    lr.setMaxIter(10).setRegParam(0.01)
 
     // Learn a LogisticRegression model.  This uses the parameters stored in lr.
     val model1 = lr.fit(training.toDF())
@@ -71,14 +70,16 @@ object SimpleParamsExample {
     // We may alternatively specify parameters using a ParamMap,
     // which supports several methods for specifying parameters.
     val paramMap = ParamMap(lr.maxIter -> 20)
-    paramMap.put(
-      lr.maxIter,
-      30
-    ) // Specify 1 Param.  This overwrites the original maxIter.
-    paramMap.put(
-      lr.regParam -> 0.1,
-      lr.thresholds -> Array(0.45, 0.55)
-    ) // Specify multiple Params.
+    paramMap
+      .put(
+        lr.maxIter,
+        30
+      ) // Specify 1 Param.  This overwrites the original maxIter.
+    paramMap
+      .put(
+        lr.regParam -> 0.1,
+        lr.thresholds -> Array(0.45, 0.55)
+      ) // Specify multiple Params.
 
     // One can also combine ParamMaps.
     val paramMap2 = ParamMap(
@@ -102,10 +103,8 @@ object SimpleParamsExample {
     // LogisticRegressionModel.transform will only use the 'features' column.
     // Note that model2.transform() outputs a 'myProbability' column instead of the usual
     // 'probability' column since we renamed the lr.probabilityCol parameter previously.
-    model2
-      .transform(test.toDF())
-      .select("features", "label", "myProbability", "prediction")
-      .collect()
+    model2.transform(test.toDF())
+      .select("features", "label", "myProbability", "prediction").collect()
       .foreach {
         case Row(
               features: Vector,

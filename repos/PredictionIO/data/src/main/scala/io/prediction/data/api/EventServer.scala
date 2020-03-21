@@ -93,45 +93,32 @@ class EventServiceActor(
       val channelParamOpt = ctx.request.uri.query.get("channel")
       Future {
         // with accessKey in query, return appId if succeed
-        accessKeyParamOpt
-          .map { accessKeyParam =>
-            accessKeysClient
-              .get(accessKeyParam)
-              .map { k =>
-                channelParamOpt
-                  .map { ch =>
-                    val channelMap = channelsClient
-                      .getByAppid(k.appid)
-                      .map(c => (c.name, c.id))
-                      .toMap
-                    if (channelMap.contains(ch)) {
-                      Right(AuthData(k.appid, Some(channelMap(ch)), k.events))
-                    } else { Left(ChannelRejection(s"Invalid channel '$ch'.")) }
-                  }
-                  .getOrElse { Right(AuthData(k.appid, None, k.events)) }
-              }
-              .getOrElse(FailedAuth)
-          }
-          .getOrElse {
-            // with accessKey in header, return appId if succeed
-            ctx.request.headers
-              .find(_.name == "Authorization")
-              .map { authHeader ⇒
-                authHeader.value.split("Basic ") match {
-                  case Array(_, value) ⇒
-                    val appAccessKey =
-                      new String(base64Decoder.decodeBuffer(value)).trim
-                        .split(":")(0)
-                    accessKeysClient.get(appAccessKey) match {
-                      case Some(k) ⇒ Right(AuthData(k.appid, None, k.events))
-                      case None ⇒ FailedAuth
-                    }
-
-                  case _ ⇒ FailedAuth
+        accessKeyParamOpt.map { accessKeyParam =>
+          accessKeysClient.get(accessKeyParam).map { k =>
+            channelParamOpt.map { ch =>
+              val channelMap = channelsClient.getByAppid(k.appid)
+                .map(c => (c.name, c.id)).toMap
+              if (channelMap.contains(ch)) {
+                Right(AuthData(k.appid, Some(channelMap(ch)), k.events))
+              } else { Left(ChannelRejection(s"Invalid channel '$ch'.")) }
+            }.getOrElse { Right(AuthData(k.appid, None, k.events)) }
+          }.getOrElse(FailedAuth)
+        }.getOrElse {
+          // with accessKey in header, return appId if succeed
+          ctx.request.headers.find(_.name == "Authorization").map { authHeader ⇒
+            authHeader.value.split("Basic ") match {
+              case Array(_, value) ⇒
+                val appAccessKey = new String(base64Decoder.decodeBuffer(value))
+                  .trim.split(":")(0)
+                accessKeysClient.get(appAccessKey) match {
+                  case Some(k) ⇒ Right(AuthData(k.appid, None, k.events))
+                  case None ⇒ FailedAuth
                 }
-              }
-              .getOrElse(MissedAuth)
-          }
+
+              case _ ⇒ FailedAuth
+            }
+          }.getOrElse(MissedAuth)
+        }
       }
   }
 
@@ -144,8 +131,8 @@ class EventServiceActor(
     List()))
 
   lazy val statsActorRef = actorRefFactory.actorSelection("/user/StatsActor")
-  lazy val pluginsActorRef = actorRefFactory.actorSelection(
-    "/user/PluginsActor")
+  lazy val pluginsActorRef = actorRefFactory
+    .actorSelection("/user/PluginsActor")
 
   val route: Route =
     pathSingleSlash {
@@ -194,12 +181,10 @@ class EventServiceActor(
                   val pluginName = segments(1)
                   pluginType match {
                     case EventServerPlugin.inputBlocker =>
-                      pluginContext
-                        .inputBlockers(pluginName)
-                        .handleREST(
-                          authData.appId,
-                          authData.channelId,
-                          pluginArgs)
+                      pluginContext.inputBlockers(pluginName).handleREST(
+                        authData.appId,
+                        authData.channelId,
+                        pluginArgs)
                     case EventServerPlugin.inputSniffer =>
                       pluginsActorRef ? PluginsActor.HandleREST(
                         appId = authData.appId,
@@ -225,11 +210,9 @@ class EventServiceActor(
                 respondWithMediaType(MediaTypes.`application/json`) {
                   complete {
                     logger.debug(s"GET event ${eventId}.")
-                    val data = eventClient
-                      .futureGet(eventId, appId, channelId)
+                    val data = eventClient.futureGet(eventId, appId, channelId)
                       .map { eventOpt =>
-                        eventOpt
-                          .map(event => (StatusCodes.OK, event))
+                        eventOpt.map(event => (StatusCodes.OK, event))
                           .getOrElse((
                             StatusCodes.NotFound,
                             Map("message" -> "Not Found")))
@@ -251,8 +234,7 @@ class EventServiceActor(
                     complete {
                       logger.debug(s"DELETE event ${eventId}.")
                       val data = eventClient
-                        .futureDelete(eventId, appId, channelId)
-                        .map { found =>
+                        .futureDelete(eventId, appId, channelId).map { found =>
                           if (found) {
                             (StatusCodes.OK, Map("message" -> "Found"))
                           } else {
@@ -282,8 +264,8 @@ class EventServiceActor(
                 val events = authData.events
                 entity(as[Event]) { event =>
                   complete {
-                    if (events.isEmpty || authData.events.contains(
-                          event.event)) {
+                    if (events.isEmpty || authData.events
+                          .contains(event.event)) {
                       pluginContext.inputBlockers.values.foreach(_.process(
                         EventInfo(
                           appId = appId,
@@ -291,8 +273,7 @@ class EventServiceActor(
                           event = event),
                         pluginContext))
                       val data = eventClient
-                        .futureInsert(event, appId, channelId)
-                        .map { id =>
+                        .futureInsert(event, appId, channelId).map { id =>
                           pluginsActorRef ! EventInfo(
                             appId = appId,
                             channelId = channelId,
@@ -360,49 +341,44 @@ class EventServiceActor(
                           )
 
                           val parseTime = Future {
-                            val startTime = startTimeStr.map(
-                              Utils.stringToDateTime(_))
-                            val untilTime = untilTimeStr.map(
-                              Utils.stringToDateTime(_))
+                            val startTime = startTimeStr
+                              .map(Utils.stringToDateTime(_))
+                            val untilTime = untilTimeStr
+                              .map(Utils.stringToDateTime(_))
                             (startTime, untilTime)
                           }
 
-                          parseTime
-                            .flatMap {
-                              case (startTime, untilTime) =>
-                                val data = eventClient
-                                  .futureFind(
-                                    appId = appId,
-                                    channelId = channelId,
-                                    startTime = startTime,
-                                    untilTime = untilTime,
-                                    entityType = entityType,
-                                    entityId = entityId,
-                                    eventNames = eventName.map(List(_)),
-                                    targetEntityType = targetEntityType.map(
-                                      Some(_)),
-                                    targetEntityId = targetEntityId.map(Some(
-                                      _)),
-                                    limit = limit.orElse(Some(20)),
-                                    reversed = reversed
-                                  )
-                                  .map { eventIter =>
-                                    if (eventIter.hasNext) {
-                                      (StatusCodes.OK, eventIter.toArray)
-                                    } else {
-                                      (
-                                        StatusCodes.NotFound,
-                                        Map("message" -> "Not Found"))
-                                    }
-                                  }
-                                data
-                            }
-                            .recover {
-                              case e: Exception =>
-                                (
-                                  StatusCodes.BadRequest,
-                                  Map("message" -> s"${e}"))
-                            }
+                          parseTime.flatMap {
+                            case (startTime, untilTime) =>
+                              val data = eventClient.futureFind(
+                                appId = appId,
+                                channelId = channelId,
+                                startTime = startTime,
+                                untilTime = untilTime,
+                                entityType = entityType,
+                                entityId = entityId,
+                                eventNames = eventName.map(List(_)),
+                                targetEntityType = targetEntityType
+                                  .map(Some(_)),
+                                targetEntityId = targetEntityId.map(Some(_)),
+                                limit = limit.orElse(Some(20)),
+                                reversed = reversed
+                              ).map { eventIter =>
+                                if (eventIter.hasNext) {
+                                  (StatusCodes.OK, eventIter.toArray)
+                                } else {
+                                  (
+                                    StatusCodes.NotFound,
+                                    Map("message" -> "Not Found"))
+                                }
+                              }
+                              data
+                          }.recover {
+                            case e: Exception =>
+                              (
+                                StatusCodes.BadRequest,
+                                Map("message" -> s"${e}"))
+                          }
                         }
                       }
                   }
@@ -425,8 +401,8 @@ class EventServiceActor(
                 val handleEvent
                     : PartialFunction[Try[Event], Future[Map[String, Any]]] = {
                   case Success(event) => {
-                    if (allowedEvents.isEmpty || allowedEvents.contains(
-                          event.event)) {
+                    if (allowedEvents.isEmpty || allowedEvents
+                          .contains(event.event)) {
                       pluginContext.inputBlockers.values.foreach(_.process(
                         EventInfo(
                           appId = appId,
@@ -434,8 +410,7 @@ class EventServiceActor(
                           event = event),
                         pluginContext))
                       val data = eventClient
-                        .futureInsert(event, appId, channelId)
-                        .map { id =>
+                        .futureInsert(event, appId, channelId).map { id =>
                           pluginsActorRef ! EventInfo(
                             appId = appId,
                             channelId = channelId,
@@ -448,11 +423,11 @@ class EventServiceActor(
                             statsActorRef ! Bookkeeping(appId, status, event)
                           }
                           result
-                        }
-                        .recover {
+                        }.recover {
                           case exception =>
                             Map(
-                              "status" -> StatusCodes.InternalServerError.intValue,
+                              "status" -> StatusCodes.InternalServerError
+                                .intValue,
                               "message" -> s"${exception.getMessage()}")
                         }
                       data
@@ -685,7 +660,7 @@ object EventServer {
 
 object Run {
   def main(args: Array[String]) {
-    EventServer.createEventServer(
-      EventServerConfig(ip = "0.0.0.0", port = 7070))
+    EventServer
+      .createEventServer(EventServerConfig(ip = "0.0.0.0", port = 7070))
   }
 }

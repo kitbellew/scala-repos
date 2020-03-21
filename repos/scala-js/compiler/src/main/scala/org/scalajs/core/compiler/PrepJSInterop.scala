@@ -337,9 +337,8 @@ abstract class PrepJSInterop
               if (typer.checkClassType(tpeArg)) {
                 typer.typed { Literal(Constant(tpeArg.tpe.dealias.widen)) }
               } else {
-                reporter.error(
-                  tpeArg.pos,
-                  s"Type ${tpeArg} is not a class type")
+                reporter
+                  .error(tpeArg.pos, s"Type ${tpeArg} is not a class type")
                 EmptyTree
               }
             } else {
@@ -401,9 +400,8 @@ abstract class PrepJSInterop
             }
           }
         } else {
-          reporter.error(
-            tpeArg.pos,
-            s"non-trait class type required but $tpe found")
+          reporter
+            .error(tpeArg.pos, s"non-trait class type required but $tpe found")
           EmptyTree
         }
       } else { EmptyTree }
@@ -468,9 +466,8 @@ abstract class PrepJSInterop
         /* We have to allow scala.Dynamic to be able to define js.Dynamic
          * and similar constructs. This causes the unsoundness filed as #1385.
          */
-        !(
-          t <:< JSAnyClass.tpe || t =:= AnyRefClass.tpe || t =:= DynamicClass.tpe
-        )
+        !(t <:< JSAnyClass.tpe || t =:= AnyRefClass.tpe || t =:= DynamicClass
+          .tpe)
       }
 
       def isNativeJSTraitType(tpe: Type): Boolean = {
@@ -605,9 +602,8 @@ abstract class PrepJSInterop
       // Check that only native objects extend js.GlobalScope
       if (isJSGlobalScope(implDef) && implDef.symbol != JSGlobalScopeClass &&
           (!sym.isModuleClass || !isJSNative)) {
-        reporter.error(
-          implDef.pos,
-          "Only native objects may extend js.GlobalScope")
+        reporter
+          .error(implDef.pos, "Only native objects may extend js.GlobalScope")
       }
 
       if (shouldPrepareExports) {
@@ -623,9 +619,8 @@ abstract class PrepJSInterop
             exp <- exportsOf(sym)
             if !exp.ignoreInvalid
           } {
-            reporter.error(
-              exp.pos,
-              "You may not export a native JS class or object")
+            reporter
+              .error(exp.pos, "You may not export a native JS class or object")
           }
         } else {
           if (sym.isModuleClass) registerModuleExports(sym)
@@ -944,9 +939,8 @@ abstract class PrepJSInterop
       annot <- sym.getAnnotation(JSNameAnnotation)
       if annot.stringArg(0).isEmpty
     } {
-      reporter.error(
-        annot.pos,
-        "The argument to JSName must be a literal string")
+      reporter
+        .error(annot.pos, "The argument to JSName must be a literal string")
     }
   }
 
@@ -1094,8 +1088,9 @@ object PrepJSInterop {
 
     @inline
     def isBaseKind: Boolean =
-      Integer.lowestOneBit(
-        baseKinds) == baseKinds && baseKinds != 0 // exactly 1 bit on
+      Integer
+        .lowestOneBit(
+          baseKinds) == baseKinds && baseKinds != 0 // exactly 1 bit on
 
     @inline
     def |(that: OwnerKind): OwnerKind =

@@ -102,8 +102,8 @@ class ReceivePipelineSpec extends AkkaSpec with ImplicitSender {
     }
 
     "invoke decorated Actor's behavior when has one interceptor" in {
-      val replier = system.actorOf(Props(
-        new ReplierActor with AdderInterceptor))
+      val replier = system
+        .actorOf(Props(new ReplierActor with AdderInterceptor))
       replier ! 5
       expectMsg(15)
     }
@@ -198,7 +198,8 @@ class PersistentReceivePipelineSpec(config: Config)
   def this() {
     this(ConfigFactory.parseString(s"""
         |akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-        |akka.persistence.journal.leveldb.dir = "target/journal-${getClass.getSimpleName}"
+        |akka.persistence.journal.leveldb.dir = "target/journal-${getClass
+                                        .getSimpleName}"
       """.stripMargin))
   }
 

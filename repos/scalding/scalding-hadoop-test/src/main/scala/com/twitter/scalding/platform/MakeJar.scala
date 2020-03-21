@@ -43,10 +43,8 @@ object MakeJar {
   }
 
   private[this] def add(parent: File, source: File, target: JarOutputStream) {
-    val name = getRelativeFileBetween(parent, source)
-      .getOrElse(new File(""))
-      .getPath
-      .replace("\\", "/")
+    val name = getRelativeFileBetween(parent, source).getOrElse(new File(""))
+      .getPath.replace("\\", "/")
     if (source.isDirectory) {
       if (!name.isEmpty) {
         val entry = new JarEntry(if (!name.endsWith("/")) name + "/" else name)

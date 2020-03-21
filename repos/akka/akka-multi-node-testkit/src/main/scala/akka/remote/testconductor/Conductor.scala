@@ -605,11 +605,10 @@ private[akka] object BarrierCoordinator {
       with Printer
   final case class WrongBarrier(barrier: String, client: ActorRef, data: Data)
       extends RuntimeException(
-        data.clients
-          .find(_.fsm == client)
-          .map(_.name.toString)
+        data.clients.find(_.fsm == client).map(_.name.toString)
           .getOrElse(client.toString) +
-          " tried to enter '" + barrier + "' while we were waiting for '" + data.barrier + "'")
+          " tried to enter '" + barrier + "' while we were waiting for '" + data
+          .barrier + "'")
       with NoStackTrace
       with Printer
   final case class BarrierEmpty(data: Data, msg: String)
@@ -735,8 +734,8 @@ private[akka] class BarrierCoordinator
   }
 
   def getDeadline(timeout: Option[FiniteDuration]): Deadline = {
-    Deadline.now + timeout.getOrElse(
-      TestConductor().Settings.BarrierTimeout.duration)
+    Deadline.now + timeout
+      .getOrElse(TestConductor().Settings.BarrierTimeout.duration)
   }
 
 }

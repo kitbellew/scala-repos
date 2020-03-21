@@ -78,8 +78,7 @@ class DefaultInfoServiceTest
 
     When("querying all apps")
     val appInfos = f.infoService
-      .selectAppsBy(AppSelector(_ => true), embed = Set.empty)
-      .futureValue
+      .selectAppsBy(AppSelector(_ => true), embed = Set.empty).futureValue
 
     Then("we get appInfos for each app from the appRepo/baseAppData")
     appInfos.map(_.app.id).toSet should be(someApps.map(_.id))
@@ -106,8 +105,7 @@ class DefaultInfoServiceTest
     val embed: Set[AppInfo.Embed] = Set(
       AppInfo.Embed.Tasks,
       AppInfo.Embed.Counts)
-    f.infoService
-      .selectAppsBy(AppSelector(_ => true), embed = embed)
+    f.infoService.selectAppsBy(AppSelector(_ => true), embed = embed)
       .futureValue
 
     Then("we get the base data calls with the correct embed")
@@ -124,8 +122,7 @@ class DefaultInfoServiceTest
 
     When("querying all apps with a filter that filters all apps")
     val appInfos = f.infoService
-      .selectAppsBy(AppSelector(_ => false), embed = Set.empty)
-      .futureValue
+      .selectAppsBy(AppSelector(_ => false), embed = Set.empty).futureValue
 
     Then("we get appInfos for no app from the appRepo/baseAppData")
     appInfos.map(_.app.id).toSet should be(Set.empty)
@@ -139,8 +136,8 @@ class DefaultInfoServiceTest
   test("queryForGroupId") {
     Given("a group repo with some apps below the queried group id")
     val f = new Fixture
-    f.groupManager.group(PathId("/nested")) returns Future.successful(
-      someGroupWithNested.group(PathId("/nested")))
+    f.groupManager.group(PathId("/nested")) returns Future
+      .successful(someGroupWithNested.group(PathId("/nested")))
     f.baseData.appInfoFuture(any, any) answers { args =>
       Future.successful(AppInfo(args.head.asInstanceOf[AppDefinition]))
     }
@@ -165,8 +162,8 @@ class DefaultInfoServiceTest
   test("queryForGroupId passes embed infos along") {
     Given("a group repo with some apps below the queried group id")
     val f = new Fixture
-    f.groupManager.group(PathId("/nested")) returns Future.successful(
-      someGroupWithNested.group(PathId("/nested")))
+    f.groupManager.group(PathId("/nested")) returns Future
+      .successful(someGroupWithNested.group(PathId("/nested")))
     f.baseData.appInfoFuture(any, any) answers { args =>
       Future.successful(AppInfo(args.head.asInstanceOf[AppDefinition]))
     }
@@ -175,8 +172,7 @@ class DefaultInfoServiceTest
     val embed: Set[AppInfo.Embed] = Set(
       AppInfo.Embed.Tasks,
       AppInfo.Embed.Counts)
-    f.infoService
-      .selectAppsInGroup(PathId("/nested"), AppSelector.all, embed)
+    f.infoService.selectAppsInGroup(PathId("/nested"), AppSelector.all, embed)
       .futureValue
 
     Then("baseData was called with the correct embed options")
@@ -219,11 +215,8 @@ class DefaultInfoServiceTest
     result2.futureValue.get.maybeApps should be(empty)
 
     When("querying extending group information without apps and groups")
-    val result3 = f.infoService.selectGroup(
-      group.id,
-      GroupSelector.all,
-      Set.empty,
-      Set.empty)
+    val result3 = f.infoService
+      .selectGroup(group.id, GroupSelector.all, Set.empty, Set.empty)
 
     Then("The group info contains no apps nor groups")
     result3.futureValue.get.maybeGroups should be(empty)

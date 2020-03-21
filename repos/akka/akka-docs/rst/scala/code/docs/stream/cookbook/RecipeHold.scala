@@ -90,11 +90,8 @@ class RecipeHold extends RecipeSpec {
       val source = Source.fromPublisher(pub)
       val sink = Sink.fromSubscriber(sub)
 
-      source
-        .via(new HoldWithInitial(0))
-        .to(sink)
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+      source.via(new HoldWithInitial(0)).to(sink)
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val subscription = sub.expectSubscription()
       sub.expectNoMsg(100.millis)

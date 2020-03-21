@@ -81,8 +81,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       |STORED AS SEQUENCEFILE
     """.stripMargin.format(classOf[PairSerDe].getName))
 
-    val location =
-      Utils.getSparkClassLoader.getResource("data/files/testUDF").getFile
+    val location = Utils.getSparkClassLoader.getResource("data/files/testUDF")
+      .getFile
     sql(s"""
       ALTER TABLE hiveUDFTestTable
       ADD IF NOT EXISTS PARTITION(partition='testUDF')
@@ -167,8 +167,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
   test("UDFIntegerToString") {
     val testData = hiveContext.sparkContext
-      .parallelize(IntegerCaseClass(1) :: IntegerCaseClass(2) :: Nil)
-      .toDF()
+      .parallelize(IntegerCaseClass(1) :: IntegerCaseClass(2) :: Nil).toDF()
     testData.registerTempTable("integerTable")
 
     val udfName = classOf[UDFIntegerToString].getName
@@ -183,8 +182,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
   test("UDFToListString") {
     val testData = hiveContext.sparkContext
-      .parallelize(StringCaseClass("") :: Nil)
-      .toDF()
+      .parallelize(StringCaseClass("") :: Nil).toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -202,8 +200,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
   test("UDFToListInt") {
     val testData = hiveContext.sparkContext
-      .parallelize(StringCaseClass("") :: Nil)
-      .toDF()
+      .parallelize(StringCaseClass("") :: Nil).toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -221,8 +218,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
   test("UDFToStringIntMap") {
     val testData = hiveContext.sparkContext
-      .parallelize(StringCaseClass("") :: Nil)
-      .toDF()
+      .parallelize(StringCaseClass("") :: Nil).toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -241,8 +237,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
   test("UDFToIntIntMap") {
     val testData = hiveContext.sparkContext
-      .parallelize(StringCaseClass("") :: Nil)
-      .toDF()
+      .parallelize(StringCaseClass("") :: Nil).toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -260,12 +255,10 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFListListInt") {
-    val testData = hiveContext.sparkContext
-      .parallelize(
-        ListListIntCaseClass(Nil) ::
-          ListListIntCaseClass(Seq((1, 2, 3))) ::
-          ListListIntCaseClass(Seq((4, 5, 6), (7, 8, 9))) :: Nil)
-      .toDF()
+    val testData = hiveContext.sparkContext.parallelize(
+      ListListIntCaseClass(Nil) ::
+        ListListIntCaseClass(Seq((1, 2, 3))) ::
+        ListListIntCaseClass(Seq((4, 5, 6), (7, 8, 9))) :: Nil).toDF()
     testData.registerTempTable("listListIntTable")
 
     sql(
@@ -279,11 +272,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFListString") {
-    val testData = hiveContext.sparkContext
-      .parallelize(
-        ListStringCaseClass(Seq("a", "b", "c")) ::
-          ListStringCaseClass(Seq("d", "e")) :: Nil)
-      .toDF()
+    val testData = hiveContext.sparkContext.parallelize(
+      ListStringCaseClass(Seq("a", "b", "c")) ::
+        ListStringCaseClass(Seq("d", "e")) :: Nil).toDF()
     testData.registerTempTable("listStringTable")
 
     sql(
@@ -297,10 +288,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFStringString") {
-    val testData = hiveContext.sparkContext
-      .parallelize(
-        StringCaseClass("world") :: StringCaseClass("goodbye") :: Nil)
-      .toDF()
+    val testData = hiveContext.sparkContext.parallelize(
+      StringCaseClass("world") :: StringCaseClass("goodbye") :: Nil).toDF()
     testData.registerTempTable("stringTable")
 
     sql(
@@ -320,13 +309,11 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFTwoListList") {
-    val testData = hiveContext.sparkContext
-      .parallelize(
-        ListListIntCaseClass(Nil) ::
-          ListListIntCaseClass(Seq((1, 2, 3))) ::
-          ListListIntCaseClass(Seq((4, 5, 6), (7, 8, 9))) ::
-          Nil)
-      .toDF()
+    val testData = hiveContext.sparkContext.parallelize(
+      ListListIntCaseClass(Nil) ::
+        ListListIntCaseClass(Seq((1, 2, 3))) ::
+        ListListIntCaseClass(Seq((4, 5, 6), (7, 8, 9))) ::
+        Nil).toDF()
     testData.registerTempTable("TwoListTable")
 
     sql(
@@ -439,13 +426,11 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         LOCATION '$tempDir'
       """)
 
-      val answer1 = sql("SELECT input_file_name() FROM csv_table")
-        .head()
+      val answer1 = sql("SELECT input_file_name() FROM csv_table").head()
         .getString(0)
       assert(answer1.contains("data1") || answer1.contains("data2"))
 
-      val count1 = sql("SELECT input_file_name() FROM csv_table")
-        .distinct()
+      val count1 = sql("SELECT input_file_name() FROM csv_table").distinct()
         .count()
       assert(count1 == 2)
       sql("DROP TABLE csv_table")
@@ -458,13 +443,11 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       """)
 
       val answer2 = sql("SELECT input_file_name() as file FROM external_t5")
-        .head()
-        .getString(0)
+        .head().getString(0)
       assert(answer1.contains("data1") || answer1.contains("data2"))
 
       val count2 = sql("SELECT input_file_name() as file FROM external_t5")
-        .distinct()
-        .count
+        .distinct().count
       assert(count2 == 2)
       sql("DROP TABLE external_t5")
     }
@@ -481,14 +464,12 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       """)
 
       val answer3 = sql(
-        "SELECT input_file_name() as file FROM external_parquet")
-        .head()
+        "SELECT input_file_name() as file FROM external_parquet").head()
         .getString(0)
       assert(answer3.contains("external_parquet"))
 
       val count3 = sql("SELECT input_file_name() as file FROM external_parquet")
-        .distinct()
-        .count
+        .distinct().count
       assert(count3 == 1)
       sql("DROP TABLE external_parquet")
     }
@@ -501,12 +482,11 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         " AS SELECT 1, 2")
 
     val answer4 = sql("SELECT input_file_name() as file FROM parquet_tmp")
-      .head()
-      .getString(0)
+      .head().getString(0)
     assert(answer4.contains("parquet_tmp"))
 
-    val count4 =
-      sql("SELECT input_file_name() as file FROM parquet_tmp").distinct().count
+    val count4 = sql("SELECT input_file_name() as file FROM parquet_tmp")
+      .distinct().count
     assert(count4 == 1)
     sql("DROP TABLE parquet_tmp")
   }
@@ -532,16 +512,15 @@ class PairSerDe extends AbstractSerDe {
   override def initialize(p1: Configuration, p2: Properties): Unit = {}
 
   override def getObjectInspector: ObjectInspector = {
-    ObjectInspectorFactory
-      .getStandardStructObjectInspector(
-        Arrays.asList("pair"),
-        Arrays.asList(ObjectInspectorFactory.getStandardStructObjectInspector(
-          Arrays.asList("id", "value"),
-          Arrays.asList(
-            PrimitiveObjectInspectorFactory.javaIntObjectInspector,
-            PrimitiveObjectInspectorFactory.javaIntObjectInspector)
-        ))
-      )
+    ObjectInspectorFactory.getStandardStructObjectInspector(
+      Arrays.asList("pair"),
+      Arrays.asList(ObjectInspectorFactory.getStandardStructObjectInspector(
+        Arrays.asList("id", "value"),
+        Arrays.asList(
+          PrimitiveObjectInspectorFactory.javaIntObjectInspector,
+          PrimitiveObjectInspectorFactory.javaIntObjectInspector)
+      ))
+    )
   }
 
   override def getSerializedClass: Class[_ <: Writable] = classOf[TestPair]

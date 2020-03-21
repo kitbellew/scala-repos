@@ -43,8 +43,8 @@ class JavaFunctionUsagesSearcher
                   case refElement: PsiReferenceExpression =>
                     refElement.resolve match {
                       case f: ScFunctionWrapper
-                          if f.function == method && !consumer.process(
-                            refElement) => return false
+                          if f.function == method && !consumer
+                            .process(refElement) => return false
                       case t: StaticPsiMethodWrapper
                           if t.getNavigationElement == method && !consumer
                             .process(refElement) => return false
@@ -57,8 +57,8 @@ class JavaFunctionUsagesSearcher
             true
           }
         }
-        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
-          queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE
+          .getInstance(queryParameters.getProject)
         if (name == "") return true
         helper.processElementsWithWord(
           processor,

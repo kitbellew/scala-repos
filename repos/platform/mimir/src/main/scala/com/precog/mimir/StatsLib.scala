@@ -104,17 +104,17 @@ trait StatsLibModule[M[+_]]
             ) //todo make function for this
             Mean(transformedTable, ctx)
           } else {
-            val middleValue = M.point(
-              sortedTable.takeRange((count.toLong / 2), 1))
+            val middleValue = M
+              .point(sortedTable.takeRange((count.toLong / 2), 1))
             middleValue map {
               _.transform(trans.DerefObjectStatic(Leaf(Source), paths.Value))
             }
           }
         } yield {
-          val keyTable = Table.constEmptyArray.transform(
-            trans.WrapObject(Leaf(Source), paths.Key.name))
-          val valueTable = median.transform(
-            trans.WrapObject(Leaf(Source), paths.Value.name))
+          val keyTable = Table.constEmptyArray
+            .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
+          val valueTable = median
+            .transform(trans.WrapObject(Leaf(Source), paths.Value.name))
 
           valueTable.cross(keyTable)(
             InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -431,8 +431,8 @@ trait StatsLibModule[M[+_]]
                 var first = first0
 
                 while (row < smoothed.length) {
-                  if (values.isDefinedAt(row) && alphas.isDefinedAt(
-                        row) && betas.isDefinedAt(row)) {
+                  if (values.isDefinedAt(row) && alphas
+                        .isDefinedAt(row) && betas.isDefinedAt(row)) {
                     defined.set(row)
                     if (first) {
                       // I hope we can do better here eventually.
@@ -773,13 +773,14 @@ trait StatsLibModule[M[+_]]
               val stdDev2 = sqrt(unscaledVar2) / count
               val correlation = cov / (stdDev1 * stdDev2)
 
-              val resultTable = Table.constDecimal(Set(
-                correlation
-              )) //TODO the following lines are used throughout. refactor!
-              val valueTable = resultTable.transform(
-                trans.WrapObject(Leaf(Source), paths.Value.name))
-              val keyTable = Table.constEmptyArray.transform(
-                trans.WrapObject(Leaf(Source), paths.Key.name))
+              val resultTable = Table
+                .constDecimal(Set(
+                  correlation
+                )) //TODO the following lines are used throughout. refactor!
+              val valueTable = resultTable
+                .transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+              val keyTable = Table.constEmptyArray
+                .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
               valueTable.cross(keyTable)(
                 InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -998,10 +999,10 @@ trait StatsLibModule[M[+_]]
             val cov = (productSum - ((sum1 * sum2) / count)) / count
 
             val resultTable = Table.constDecimal(Set(cov))
-            val valueTable = resultTable.transform(
-              trans.WrapObject(Leaf(Source), paths.Value.name))
-            val keyTable = Table.constEmptyArray.transform(
-              trans.WrapObject(Leaf(Source), paths.Key.name))
+            val valueTable = resultTable
+              .transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+            val keyTable = Table.constEmptyArray
+              .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
             valueTable.cross(keyTable)(
               InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -1287,8 +1288,8 @@ trait StatsLibModule[M[+_]]
 
             val valueTable = constSlope.cross(constIntercept)(
               trans.WrapObject(concatSpec, paths.Value.name))
-            val keyTable = Table.constEmptyArray.transform(
-              trans.WrapObject(Leaf(Source), paths.Key.name))
+            val keyTable = Table.constEmptyArray
+              .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
             valueTable.cross(keyTable)(
               InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -1351,8 +1352,8 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math
+                            .log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else { (count, sum1, sum2, sumsq1, productSum) }
                     }
@@ -1380,8 +1381,8 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math
+                            .log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else { (count, sum1, sum2, sumsq1, productSum) }
                     }
@@ -1409,8 +1410,8 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math
+                            .log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else { (count, sum1, sum2, sumsq1, productSum) }
                     }
@@ -1438,8 +1439,8 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math
+                            .log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else { (count, sum1, sum2, sumsq1, productSum) }
                     }
@@ -1467,8 +1468,8 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math
+                            .log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else { (count, sum1, sum2, sumsq1, productSum) }
                     }
@@ -1496,8 +1497,8 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math
+                            .log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else { (count, sum1, sum2, sumsq1, productSum) }
                     }
@@ -1525,8 +1526,8 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math
+                            .log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else { (count, sum1, sum2, sumsq1, productSum) }
                     }
@@ -1554,8 +1555,8 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math
+                            .log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else { (count, sum1, sum2, sumsq1, productSum) }
                     }
@@ -1583,8 +1584,8 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math
+                            .log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else { (count, sum1, sum2, sumsq1, productSum) }
                     }
@@ -1619,8 +1620,8 @@ trait StatsLibModule[M[+_]]
 
             val valueTable = constSlope.cross(constIntercept)(
               trans.WrapObject(concatSpec, paths.Value.name))
-            val keyTable = Table.constEmptyArray.transform(
-              trans.WrapObject(Leaf(Source), paths.Key.name))
+            val keyTable = Table.constEmptyArray
+              .transform(trans.WrapObject(Leaf(Source), paths.Key.name))
 
             valueTable.cross(keyTable)(
               InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -1937,8 +1938,12 @@ trait StatsLibModule[M[+_]]
 
         // compare each subsequent row against the last valid row
         while (row < end) {
-          if (defined
-                .get(row) && !isDuplicate(cols, definedCols, lastRow, row, 0)) {
+          if (defined.get(row) && !isDuplicate(
+                cols,
+                definedCols,
+                lastRow,
+                row,
+                0)) {
             duplicateRows.clear(row - start)
             lastRow = row
           }

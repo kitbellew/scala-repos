@@ -89,12 +89,12 @@ private[mesos] class MesosSubmitRequestServlet(
 
     // Optional fields
     val sparkProperties = request.sparkProperties
-    val driverExtraJavaOptions = sparkProperties.get(
-      "spark.driver.extraJavaOptions")
-    val driverExtraClassPath = sparkProperties.get(
-      "spark.driver.extraClassPath")
-    val driverExtraLibraryPath = sparkProperties.get(
-      "spark.driver.extraLibraryPath")
+    val driverExtraJavaOptions = sparkProperties
+      .get("spark.driver.extraJavaOptions")
+    val driverExtraClassPath = sparkProperties
+      .get("spark.driver.extraClassPath")
+    val driverExtraLibraryPath = sparkProperties
+      .get("spark.driver.extraLibraryPath")
     val superviseDriver = sparkProperties.get("spark.driver.supervise")
     val driverMemory = sparkProperties.get("spark.driver.memory")
     val driverCores = sparkProperties.get("spark.driver.cores")
@@ -104,12 +104,11 @@ private[mesos] class MesosSubmitRequestServlet(
 
     // Construct driver description
     val conf = new SparkConf(false).setAll(sparkProperties)
-    val extraClassPath = driverExtraClassPath.toSeq.flatMap(_.split(
-      File.pathSeparator))
-    val extraLibraryPath = driverExtraLibraryPath.toSeq.flatMap(_.split(
-      File.pathSeparator))
-    val extraJavaOpts = driverExtraJavaOptions
-      .map(Utils.splitCommandString)
+    val extraClassPath = driverExtraClassPath.toSeq
+      .flatMap(_.split(File.pathSeparator))
+    val extraLibraryPath = driverExtraLibraryPath.toSeq
+      .flatMap(_.split(File.pathSeparator))
+    val extraJavaOpts = driverExtraJavaOptions.map(Utils.splitCommandString)
       .getOrElse(Seq.empty)
     val sparkJavaOpts = Utils.sparkJavaOpts(conf)
     val javaOpts = sparkJavaOpts ++ extraJavaOpts
@@ -120,11 +119,9 @@ private[mesos] class MesosSubmitRequestServlet(
       extraClassPath,
       extraLibraryPath,
       javaOpts)
-    val actualSuperviseDriver = superviseDriver
-      .map(_.toBoolean)
+    val actualSuperviseDriver = superviseDriver.map(_.toBoolean)
       .getOrElse(DEFAULT_SUPERVISE)
-    val actualDriverMemory = driverMemory
-      .map(Utils.memoryStringToMb)
+    val actualDriverMemory = driverMemory.map(Utils.memoryStringToMb)
       .getOrElse(DEFAULT_MEMORY)
     val actualDriverCores = driverCores.map(_.toDouble).getOrElse(DEFAULT_CORES)
     val submitDate = new Date()

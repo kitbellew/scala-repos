@@ -28,8 +28,8 @@ trait $operator {
     Json.obj("$push" -> Json.obj(field -> value))
   def $pushSlice[A: Writes](field: String, value: A, max: Int) =
     Json.obj(
-      "$push" -> Json.obj(
-        field -> Json.obj("$each" -> List(value), "$slice" -> max)))
+      "$push" -> Json
+        .obj(field -> Json.obj("$each" -> List(value), "$slice" -> max)))
   def $pull[A: Writes](field: String, value: A) =
     Json.obj("$pull" -> Json.obj(field -> value))
 

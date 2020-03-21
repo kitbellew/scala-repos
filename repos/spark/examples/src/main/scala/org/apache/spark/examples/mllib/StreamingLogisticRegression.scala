@@ -54,8 +54,7 @@ object StreamingLogisticRegression {
       System.exit(1)
     }
 
-    val conf = new SparkConf()
-      .setMaster("local")
+    val conf = new SparkConf().setMaster("local")
       .setAppName("StreamingLogisticRegression")
     val ssc = new StreamingContext(conf, Seconds(args(2).toLong))
 

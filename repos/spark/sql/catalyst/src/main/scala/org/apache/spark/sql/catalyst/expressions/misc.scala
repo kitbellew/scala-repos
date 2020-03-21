@@ -256,8 +256,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (children.isEmpty) {
-      TypeCheckResult.TypeCheckFailure(
-        "function hash requires at least one argument")
+      TypeCheckResult
+        .TypeCheckFailure("function hash requires at least one argument")
     } else { TypeCheckResult.TypeCheckSuccess }
   }
 
@@ -301,17 +301,11 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
       case c: CalendarInterval =>
         Murmur3_x86_32.hashInt(c.months, hashLong(c.microseconds))
       case a: Array[Byte] =>
-        Murmur3_x86_32.hashUnsafeBytes(
-          a,
-          Platform.BYTE_ARRAY_OFFSET,
-          a.length,
-          seed)
+        Murmur3_x86_32
+          .hashUnsafeBytes(a, Platform.BYTE_ARRAY_OFFSET, a.length, seed)
       case s: UTF8String =>
-        Murmur3_x86_32.hashUnsafeBytes(
-          s.getBaseObject,
-          s.getBaseOffset,
-          s.numBytes(),
-          seed)
+        Murmur3_x86_32
+          .hashUnsafeBytes(s.getBaseObject, s.getBaseOffset, s.numBytes(), seed)
 
       case array: ArrayData =>
         val elementType = dataType match {
@@ -364,14 +358,12 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     ev.isNull = "false"
-    val childrenHash = children
-      .map { child =>
-        val childGen = child.gen(ctx)
-        childGen.code + ctx.nullSafeExec(child.nullable, childGen.isNull) {
-          computeHash(childGen.value, child.dataType, ev.value, ctx)
-        }
+    val childrenHash = children.map { child =>
+      val childGen = child.gen(ctx)
+      childGen.code + ctx.nullSafeExec(child.nullable, childGen.isNull) {
+        computeHash(childGen.value, child.dataType, ev.value, ctx)
       }
-      .mkString("\n")
+    }.mkString("\n")
 
     s"""
       int ${ev.value} = $seed;
@@ -390,10 +382,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
 
     ctx.nullSafeExec(nullable, s"$input.isNullAt($index)") {
       s"""
-        final ${ctx.javaType(elementType)} $element = ${ctx.getValue(
-        input,
-        elementType,
-        index)};
+        final ${ctx.javaType(elementType)} $element = ${ctx
+        .getValue(input, elementType, index)};
         ${computeHash(element, elementType, result, ctx)}
       """
     }
@@ -467,19 +457,16 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
           }
         """
 
-      case StructType(fields) =>
-        fields.zipWithIndex
-          .map {
-            case (field, index) =>
-              nullSafeElementHash(
-                input,
-                index.toString,
-                field.nullable,
-                field.dataType,
-                result,
-                ctx)
-          }
-          .mkString("\n")
+      case StructType(fields) => fields.zipWithIndex.map {
+          case (field, index) =>
+            nullSafeElementHash(
+              input,
+              index.toString,
+              field.nullable,
+              field.dataType,
+              result,
+              ctx)
+        }.mkString("\n")
 
       case udt: UserDefinedType[_] =>
         computeHash(input, udt.sqlType, result, ctx)

@@ -22,18 +22,16 @@ trait TcpIntegrationSpecSupport {
 
     def bindServer(): Unit = {
       val bindCommander = TestProbe()
-      bindCommander.send(
-        IO(Tcp),
-        Bind(bindHandler.ref, endpoint, options = bindOptions))
+      bindCommander
+        .send(IO(Tcp), Bind(bindHandler.ref, endpoint, options = bindOptions))
       bindCommander.expectMsg(Bound(endpoint))
     }
 
     def establishNewClientConnection()
         : (TestProbe, ActorRef, TestProbe, ActorRef) = {
       val connectCommander = TestProbe()
-      connectCommander.send(
-        IO(Tcp),
-        Connect(endpoint, options = connectOptions))
+      connectCommander
+        .send(IO(Tcp), Connect(endpoint, options = connectOptions))
       val Connected(`endpoint`, localAddress) = connectCommander
         .expectMsgType[Connected]
       val clientHandler = TestProbe()

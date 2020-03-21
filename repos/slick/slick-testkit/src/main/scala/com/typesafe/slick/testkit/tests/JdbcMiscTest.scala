@@ -49,30 +49,28 @@ class JdbcMiscTest extends AsyncTest[JdbcTestDB] {
         ResultSetHoldability.Auto,
         null,
         0)),
-      DBIO
-        .seq(
-          check(JdbcBackend.StatementParameters(
-            ResultSetType.ScrollInsensitive,
-            ResultSetConcurrency.Auto,
-            ResultSetHoldability.Auto,
-            null,
-            0)),
-          check(JdbcBackend.StatementParameters(
-            ResultSetType.ScrollInsensitive,
-            ResultSetConcurrency.Auto,
-            ResultSetHoldability.HoldCursorsOverCommit,
-            null,
-            100)).withStatementParameters(
-            rsHoldability = ResultSetHoldability.HoldCursorsOverCommit,
-            fetchSize = 100),
-          check(JdbcBackend.StatementParameters(
-            ResultSetType.ScrollInsensitive,
-            ResultSetConcurrency.Auto,
-            ResultSetHoldability.Auto,
-            null,
-            0))
-        )
-        .withStatementParameters(rsType = ResultSetType.ScrollInsensitive),
+      DBIO.seq(
+        check(JdbcBackend.StatementParameters(
+          ResultSetType.ScrollInsensitive,
+          ResultSetConcurrency.Auto,
+          ResultSetHoldability.Auto,
+          null,
+          0)),
+        check(JdbcBackend.StatementParameters(
+          ResultSetType.ScrollInsensitive,
+          ResultSetConcurrency.Auto,
+          ResultSetHoldability.HoldCursorsOverCommit,
+          null,
+          100)).withStatementParameters(
+          rsHoldability = ResultSetHoldability.HoldCursorsOverCommit,
+          fetchSize = 100),
+        check(JdbcBackend.StatementParameters(
+          ResultSetType.ScrollInsensitive,
+          ResultSetConcurrency.Auto,
+          ResultSetHoldability.Auto,
+          null,
+          0))
+      ).withStatementParameters(rsType = ResultSetType.ScrollInsensitive),
       check(JdbcBackend.StatementParameters(
         ResultSetType.Auto,
         ResultSetConcurrency.Auto,
@@ -98,8 +96,7 @@ class JdbcMiscTest extends AsyncTest[JdbcTestDB] {
       a1.result.map(_ shouldBe Seq(1)),
       a1.result.overrideStatements(a2.result.statements).map(_ shouldBe Seq(2)),
       a1.result.head.map(_ shouldBe 1),
-      a1.result.head
-        .overrideStatements(a2.result.head.statements)
+      a1.result.head.overrideStatements(a2.result.head.statements)
         .map(_ shouldBe 2)
     )
   }

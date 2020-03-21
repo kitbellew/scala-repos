@@ -192,8 +192,7 @@ class SparkILoop(
       def prompt = SparkILoop.this.prompt
     }
     override protected def parentClassLoader =
-      SparkHelper
-        .explicitParentLoader(settings)
+      SparkHelper.explicitParentLoader(settings)
         .getOrElse(classOf[SparkILoop].getClassLoader)
   }
 
@@ -216,8 +215,8 @@ class SparkILoop(
         SparkILoop.getAddedJars.map { jar => new URI(jar).getPath }
       }
     // work around for Scala bug
-    val totalClassPath = addedJars.foldLeft(settings.classpath.value)((l, r) =>
-      ClassPath.join(l, r))
+    val totalClassPath = addedJars
+      .foldLeft(settings.classpath.value)((l, r) => ClassPath.join(l, r))
     this.settings.classpath.value = totalClassPath
 
     intp = new SparkILoopInterpreter
@@ -249,8 +248,7 @@ class SparkILoop(
       case Nil => echo(cmd + ": no such command.  Type :help for help.")
       case xs =>
         echo(
-          cmd + " is ambiguous: did you mean " + xs
-            .map(":" + _.name)
+          cmd + " is ambiguous: did you mean " + xs.map(":" + _.name)
             .mkString(" or ") + "?")
     }
     Result(true, None)
@@ -397,7 +395,8 @@ class SparkILoop(
       "fallback",
       """
                            |disable/enable advanced repl changes, these fix some issues but may introduce others.
-                           |This mode will be removed once these fixes stablize""".stripMargin,
+                           |This mode will be removed once these fixes stablize"""
+        .stripMargin,
       toggleFallbackMode
     ),
     cmd(
@@ -482,7 +481,9 @@ class SparkILoop(
 
       filtered foreach {
         case (source, syms) =>
-          p("/* " + syms.size + " implicit members imported from " + source.fullName + " */")
+          p(
+            "/* " + syms.size + " implicit members imported from " + source
+              .fullName + " */")
 
           // This groups the members by where the symbol is defined
           val byOwner = syms groupBy (_.owner)
@@ -564,8 +565,8 @@ class SparkILoop(
           // the end of the flattened name.
           def className = intp flatName path
           def moduleName =
-            (intp flatName path.stripSuffix(
-              MODULE_SUFFIX_STRING)) + MODULE_SUFFIX_STRING
+            (intp flatName path
+              .stripSuffix(MODULE_SUFFIX_STRING)) + MODULE_SUFFIX_STRING
 
           val bytes = super.tryClass(className)
           if (bytes.nonEmpty) bytes else super.tryClass(moduleName)
@@ -765,8 +766,8 @@ class SparkILoop(
     }
     if (intp.namedDefinedTerms.nonEmpty)
       echo(
-        "Forgetting all expression results and named terms: " + intp.namedDefinedTerms
-          .mkString(", "))
+        "Forgetting all expression results and named terms: " + intp
+          .namedDefinedTerms.mkString(", "))
     if (intp.definedTypes.nonEmpty)
       echo("Forgetting defined types: " + intp.definedTypes.mkString(", "))
 
@@ -817,9 +818,8 @@ class SparkILoop(
       if (f.exists) {
         added = true
         addedClasspath = ClassPath.join(addedClasspath, f.path)
-        totalClasspath = ClassPath.join(
-          settings.classpath.value,
-          addedClasspath)
+        totalClasspath = ClassPath
+          .join(settings.classpath.value, addedClasspath)
         intp.addUrlsToClassPath(f.toURI.toURL)
         sparkContext.addJar(f.toURI.toURL.getPath)
       }
@@ -959,8 +959,8 @@ class SparkILoop(
     else if (!paste.running && code.trim.startsWith(PromptString)) {
       paste.transcript(code)
       None
-    } else if (Completion.looksLikeInvocation(
-                 code) && intp.mostRecentVar != "") {
+    } else if (Completion.looksLikeInvocation(code) && intp
+                 .mostRecentVar != "") {
       interpretStartingWith(intp.mostRecentVar + code)
     } else if (code.trim startsWith "//") {
       // line comment, do nothing
@@ -999,16 +999,15 @@ class SparkILoop(
       }
   }
 
-  private val u: scala.reflect.runtime.universe.type =
-    scala.reflect.runtime.universe
+  private val u: scala.reflect.runtime.universe.type = scala.reflect.runtime
+    .universe
   private val m = u.runtimeMirror(Utils.getSparkClassLoader)
   private def tagOfStaticClass[T: ClassTag]: u.TypeTag[T] =
     u.TypeTag[T](
       m,
       new TypeCreator {
         def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type =
-          m.staticClass(classTag[T].runtimeClass.getName)
-            .toTypeConstructor
+          m.staticClass(classTag[T].runtimeClass.getName).toTypeConstructor
             .asInstanceOf[U#Type]
       }
     )
@@ -1081,9 +1080,7 @@ class SparkILoop(
   def createSparkContext(): SparkContext = {
     val execUri = System.getenv("SPARK_EXECUTOR_URI")
     val jars = SparkILoop.getAddedJars
-    val conf = new SparkConf()
-      .setMaster(getMaster())
-      .setJars(jars)
+    val conf = new SparkConf().setMaster(getMaster()).setJars(jars)
       .setIfMissing("spark.app.name", "Spark shell")
       // SparkContext will detect this configuration and register it with the RpcEnv's
       // file server, setting spark.repl.class.uri to the actual URI for executors to
@@ -1102,11 +1099,8 @@ class SparkILoop(
     val name = "org.apache.spark.sql.hive.HiveContext"
     val loader = Utils.getContextOrSparkClassLoader
     try {
-      sqlContext = loader
-        .loadClass(name)
-        .getConstructor(classOf[SparkContext])
-        .newInstance(sparkContext)
-        .asInstanceOf[SQLContext]
+      sqlContext = loader.loadClass(name).getConstructor(classOf[SparkContext])
+        .newInstance(sparkContext).asInstanceOf[SQLContext]
       logInfo("Created sql context (with Hive support)..")
     } catch {
       case _: java.lang.ClassNotFoundException |
@@ -1199,8 +1193,7 @@ object SparkILoop extends Logging {
         if (settings.classpath.isDefault)
           settings.classpath.value = sys.props("java.class.path")
 
-        getAddedJars
-          .map(jar => new URI(jar).getPath)
+        getAddedJars.map(jar => new URI(jar).getPath)
           .foreach(settings.classpath.append(_))
 
         repl process settings

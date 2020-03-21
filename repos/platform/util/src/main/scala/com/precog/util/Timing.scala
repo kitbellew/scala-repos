@@ -79,13 +79,11 @@ object Timing {
       stream: => StreamT[M, A]): StreamT[M, A] = {
     val t0 = System.nanoTime()
     val end = StreamT(
-      (StreamT
-        .Skip {
-          val t = System.nanoTime() - t0
-          System.err.println("%s took %.2fms" format (s, t / m))
-          StreamT.empty[M, A]
-        })
-        .point[M])
+      (StreamT.Skip {
+        val t = System.nanoTime() - t0
+        System.err.println("%s took %.2fms" format (s, t / m))
+        StreamT.empty[M, A]
+      }).point[M])
     stream ++ end
   }
 

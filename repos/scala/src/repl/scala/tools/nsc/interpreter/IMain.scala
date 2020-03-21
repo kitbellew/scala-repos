@@ -116,8 +116,7 @@ class IMain(
   def compilerClasspath: Seq[java.net.URL] =
     (if (isInitializeComplete) global.classPath.asURLs
      else
-       PathResolverFactory
-         .create(settings)
+       PathResolverFactory.create(settings)
          .resultAsURLs // the compiler's classpath
      )
   def settings = initialSettings
@@ -284,9 +283,8 @@ class IMain(
   def addUrlsToClassPath(urls: URL*): Unit = {
     new Run //  force some initialization
     urls.foreach(_runtimeClassLoader.addURL) // Add jars to runtime classloader
-    global.extendCompilerClassPath(
-      urls: _*
-    ) // Add jars to compile-time classpath
+    global
+      .extendCompilerClassPath(urls: _*) // Add jars to compile-time classpath
   }
 
   /** Parent classloader.  Overridable. */
@@ -558,8 +556,9 @@ class IMain(
               val (raw1, raw2) = content splitAt lastpos0
               repldbg("[raw] " + raw1 + "   <--->   " + raw2)
 
-              val adjustment = (raw1.reverse takeWhile (ch =>
-                (ch != ';') && (ch != '\n'))).size
+              val adjustment =
+                (raw1.reverse takeWhile (ch => (ch != ';') && (ch != '\n')))
+                  .size
               val lastpos = lastpos0 - adjustment
 
               // the source code split at the laboriously determined position.
@@ -739,10 +738,8 @@ class IMain(
         IR.Error
 
       case Right(_) =>
-        val line = "%sval %s = %s.value".format(
-          modifiers map (_ + " ") mkString,
-          name,
-          bindRep.evalPath)
+        val line = "%sval %s = %s.value"
+          .format(modifiers map (_ + " ") mkString, name, bindRep.evalPath)
         repldbg("Interpreting: " + line)
         interpret(line)
     }
@@ -900,9 +897,8 @@ class IMain(
           case ((pos, msg)) :: rest =>
             val filtered = rest filter {
               case (pos0, msg0) =>
-                (msg != msg0) || (
-                  pos.lineContent.trim != pos0.lineContent.trim
-                ) || {
+                (msg != msg0) || (pos.lineContent.trim != pos0.lineContent
+                  .trim) || {
                   // same messages and same line content after whitespace removal
                   // but we want to let through multiple warnings on the same line
                   // from the same run.  The untrimmed line will be the same since
@@ -1231,8 +1227,7 @@ class IMain(
         val sym0 = symbolOfTerm(id)
         val sym = (importToRuntime importSymbol sym0).asTerm
         val module = runtimeMirror
-          .reflectModule(sym.owner.companionSymbol.asModule)
-          .instance
+          .reflectModule(sym.owner.companionSymbol.asModule).instance
         val module1 = runtimeMirror.reflect(module)
         val invoker = module1.reflectField(sym)
 
@@ -1308,8 +1303,8 @@ class IMain(
           else if (isIncomplete) Incomplete(trees)
           else Success(trees)
         }
-        currentRun.parsing.withIncompleteHandler((_, _) =>
-          isIncomplete = true) { parse }
+        currentRun.parsing
+          .withIncompleteHandler((_, _) => isIncomplete = true) { parse }
 
       }
   }
@@ -1474,9 +1469,8 @@ object IMain {
     def maxStringLength: Int
     def isTruncating: Boolean
     def truncate(str: String): String = {
-      if (isTruncating && (
-            maxStringLength != 0 && str.length > maxStringLength
-          )) (str take maxStringLength - 3) + "..."
+      if (isTruncating && (maxStringLength != 0 && str
+            .length > maxStringLength)) (str take maxStringLength - 3) + "..."
       else str
     }
   }

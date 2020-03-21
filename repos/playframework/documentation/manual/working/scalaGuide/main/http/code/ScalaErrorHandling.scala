@@ -13,11 +13,9 @@ object ScalaErrorHandling extends PlaySpecification with WsTestClient {
 
   def fakeApp[A](implicit ct: ClassTag[A]) = {
     GuiceApplicationBuilder()
-      .configure("play.http.errorHandler" -> ct.runtimeClass.getName)
-      .routes {
+      .configure("play.http.errorHandler" -> ct.runtimeClass.getName).routes {
         case (_, "/error") => Action(_ => throw new RuntimeException("foo"))
-      }
-      .build()
+      }.build()
   }
 
   "scala error handling" should {
@@ -39,9 +37,9 @@ object ScalaErrorHandling extends PlaySpecification with WsTestClient {
             def get = Router.empty
           })
       def errorContent(mode: Mode.Mode) =
-        contentAsString(errorHandler(mode).onServerError(
-          FakeRequest(),
-          new RuntimeException("foo")))
+        contentAsString(
+          errorHandler(mode)
+            .onServerError(FakeRequest(), new RuntimeException("foo")))
 
       errorContent(Mode.Prod) must startWith("A server error occurred: ")
       errorContent(Mode.Dev) must not startWith ("A server error occurred: ")
@@ -64,8 +62,8 @@ package root {
         request: RequestHeader,
         statusCode: Int,
         message: String) = {
-      Future.successful(
-        Status(statusCode)("A client error occurred: " + message))
+      Future
+        .successful(Status(statusCode)("A client error occurred: " + message))
     }
 
     def onServerError(request: RequestHeader, exception: Throwable) = {
@@ -102,8 +100,8 @@ package default {
     }
 
     override def onForbidden(request: RequestHeader, message: String) = {
-      Future.successful(Forbidden(
-        "You're not allowed to access this resource."))
+      Future
+        .successful(Forbidden("You're not allowed to access this resource."))
     }
   }
 //#default

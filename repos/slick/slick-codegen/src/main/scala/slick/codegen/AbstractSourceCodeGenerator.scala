@@ -32,8 +32,7 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
                 .mkString(", ") + ").reduceLeft(_ ++ _)"
             else if (tables.nonEmpty)
               "\nlazy val schema: profile.SchemaDescription = " + tables
-                .map(_.TableValue.name + ".schema")
-                .mkString(" ++ ")
+                .map(_.TableValue.name + ".schema").mkString(" ++ ")
             else
               "\nlazy val schema: profile.SchemaDescription = profile.DDL(Nil, Nil)") +
            "\n@deprecated(\"Use .schema instead of .ddl\", \"3.0\")" +
@@ -74,16 +73,12 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
 
     trait EntityTypeDef extends super.EntityTypeDef {
       def code = {
-        val args = columns
-          .map(c =>
-            c.default
-              .map(v => s"${c.name}: ${c.exposedType} = $v")
-              .getOrElse(s"${c.name}: ${c.exposedType}"))
-          .mkString(", ")
+        val args = columns.map(c =>
+          c.default.map(v => s"${c.name}: ${c.exposedType} = $v")
+            .getOrElse(s"${c.name}: ${c.exposedType}")).mkString(", ")
         if (classEnabled) {
           val prns =
-            (parents.take(1).map(" extends " + _) ++ parents
-              .drop(1)
+            (parents.take(1).map(" extends " + _) ++ parents.drop(1)
               .map(" with " + _)).mkString("")
           s"""case class $name($args)$prns"""
         } else {
@@ -103,12 +98,8 @@ def $name($args): $name = {
         val positional = compoundValue(columnsPositional.map(c =>
           (if (c.fakeNullable || c.model.nullable) s"<<?[${c.rawType}]"
            else s"<<[${c.rawType}]")))
-        val dependencies = columns
-          .map(_.exposedType)
-          .distinct
-          .zipWithIndex
-          .map { case (t, i) => s"""e$i: GR[$t]""" }
-          .mkString(", ")
+        val dependencies = columns.map(_.exposedType).distinct.zipWithIndex
+          .map { case (t, i) => s"""e$i: GR[$t]""" }.mkString(", ")
         val rearranged = compoundValue(
           desiredColumnOrder.map(i => if (hlistEnabled) s"r($i)" else tuple(i)))
         def result(args: String) =
@@ -159,8 +150,7 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
           case (c, i) if !c.model.nullable =>
             if (columns.size > 1) tuple(i) else "r"
         }.headOption
-        val expr = discriminator
-          .map(d => s"$d.map(_=> $fac)")
+        val expr = discriminator.map(d => s"$d.map(_=> $fac)")
           .getOrElse(s"None")
         if (columns.size > 1) s"{r=>import r._; $expr}" else s"r => $expr"
       }
@@ -221,9 +211,8 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
       // Explicit type to allow overloading existing Slick method names.
       // Explicit type argument for better error message when implicit type mapper not found.
       def code =
-        s"""val $name: Rep[$actualType] = column[$actualType]("${model.name}"${options
-          .map(", " + _)
-          .mkString("")})"""
+        s"""val $name: Rep[$actualType] = column[$actualType]("${model
+          .name}"${options.map(", " + _).mkString("")})"""
     }
 
     class PrimaryKeyDef(model: m.PrimaryKey)
@@ -245,8 +234,8 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
         }
       def code = {
         val pkTable = referencedTable.TableValue.name
-        val (pkColumns, fkColumns) =
-          (referencedColumns, referencingColumns).zipped.map { (p, f) =>
+        val (pkColumns, fkColumns) = (referencedColumns, referencingColumns)
+          .zipped.map { (p, f) =>
             val pk = s"r.${p.name}"
             val fk = f.name
             if (p.model.nullable && !f.model.nullable) (pk, s"Rep.Some($fk)")
@@ -281,8 +270,8 @@ trait StringGeneratorHelpers
     def isIdent =
       if (s.isEmpty) false
       else
-        Character.isJavaIdentifierStart(s.head) && s.tail.forall(
-          Character.isJavaIdentifierPart)
+        Character.isJavaIdentifierStart(s.head) && s.tail
+          .forall(Character.isJavaIdentifierPart)
     scalaKeywords.contains(s) || !isIdent
   }
   def termName(name: String) =

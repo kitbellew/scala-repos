@@ -48,11 +48,9 @@ class ScFunctionDefinitionImpl protected (
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     //process function's parameters for dependent method types, and process type parameters
-    if (!super[ScFunctionImpl].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)) return false
+    if (!super[ScFunctionImpl]
+          .processDeclarations(processor, state, lastParent, place))
+      return false
 
     //do not process parameters for default parameters, only for function body
     //processing parameters for default parameters in ScParameters
@@ -113,9 +111,8 @@ class ScFunctionDefinitionImpl protected (
     body match {
       case Some(block: ScBlockExpr) => // do nothing
       case Some(exp: ScExpression) =>
-        val block = ScalaPsiElementFactory.createBlockFromExpr(
-          exp,
-          exp.getManager)
+        val block = ScalaPsiElementFactory
+          .createBlockFromExpr(exp, exp.getManager)
         exp.replace(block)
       case _ =>
     }

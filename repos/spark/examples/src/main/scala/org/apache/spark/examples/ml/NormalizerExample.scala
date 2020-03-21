@@ -31,23 +31,19 @@ object NormalizerExample {
     val sqlContext = new SQLContext(sc)
 
     // $example on$
-    val dataFrame = sqlContext.read
-      .format("libsvm")
+    val dataFrame = sqlContext.read.format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 
     // Normalize each Vector using $L^1$ norm.
-    val normalizer = new Normalizer()
-      .setInputCol("features")
-      .setOutputCol("normFeatures")
-      .setP(1.0)
+    val normalizer = new Normalizer().setInputCol("features")
+      .setOutputCol("normFeatures").setP(1.0)
 
     val l1NormData = normalizer.transform(dataFrame)
     l1NormData.show()
 
     // Normalize each Vector using $L^\infty$ norm.
-    val lInfNormData = normalizer.transform(
-      dataFrame,
-      normalizer.p -> Double.PositiveInfinity)
+    val lInfNormData = normalizer
+      .transform(dataFrame, normalizer.p -> Double.PositiveInfinity)
     lInfNormData.show()
     // $example off$
     sc.stop()

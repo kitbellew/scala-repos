@@ -9,8 +9,8 @@ import scala.concurrent.{Await, Future, ExecutionContext}
 
 class ConcurrentSetTest extends WordSpecLike with Matchers {
 
-  implicit val ec = ExecutionContext.fromExecutor(
-    Executors.newCachedThreadPool())
+  implicit val ec = ExecutionContext
+    .fromExecutor(Executors.newCachedThreadPool())
 
   "A ConcurrentSet" should {
     "contain all values" in {

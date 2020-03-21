@@ -28,10 +28,7 @@ object StringUtil {
   def splitWords(value: String): Array[String] = value.split("[ \\t　]+")
 
   def escapeHtml(value: String): String =
-    value
-      .replace("&", "&amp;")
-      .replace("<", "&lt;")
-      .replace(">", "&gt;")
+    value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
       .replace("\"", "&quot;")
 
   /**
@@ -96,8 +93,6 @@ object StringUtil {
     */
   def extractCloseId(message: String): Iterator[String] =
     "(?i)(?<!\\w)(?:fix(?:e[sd])?|resolve[sd]?|close[sd]?)\\s+#(\\d+)(?!\\w)".r
-      .findAllIn(message)
-      .matchData
-      .map(_.group(1))
+      .findAllIn(message).matchData.map(_.group(1))
 
 }

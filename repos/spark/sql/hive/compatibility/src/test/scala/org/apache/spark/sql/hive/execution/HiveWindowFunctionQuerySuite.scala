@@ -60,8 +60,8 @@ class HiveWindowFunctionQuerySuite
         |  p_retailprice DOUBLE,
         |  p_comment STRING)
       """.stripMargin)
-    val testData1 =
-      TestHive.getHiveFile("data/files/part_tiny.txt").getCanonicalPath
+    val testData1 = TestHive.getHiveFile("data/files/part_tiny.txt")
+      .getCanonicalPath
     sql(s"""
         |LOAD DATA LOCAL INPATH '$testData1' overwrite into table part
       """.stripMargin)

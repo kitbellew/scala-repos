@@ -94,8 +94,8 @@ trait EtaExpansion {
           defs ++= stats
           liftoutPrefix(fun)
         case Apply(fn, args) =>
-          val byName: Int => Option[Boolean] =
-            fn.tpe.params.map(p => definitions.isByNameParamType(p.tpe)).lift
+          val byName: Int => Option[Boolean] = fn.tpe.params
+            .map(p => definitions.isByNameParamType(p.tpe)).lift
           val newArgs = mapWithIndex(args) { (arg, i) =>
             // with repeated params, there might be more or fewer args than params
             liftout(arg, byName(i).getOrElse(false))
@@ -105,8 +105,7 @@ trait EtaExpansion {
           treeCopy.TypeApply(tree, liftoutPrefix(fn), args).clearType()
         case Select(qual, name) =>
           val name = tree.symbol.name // account for renamed imports, SI-7233
-          treeCopy
-            .Select(tree, liftout(qual, byName = false), name)
+          treeCopy.Select(tree, liftout(qual, byName = false), name)
             .clearType() setSymbol NoSymbol
         case Ident(name) => tree
       }

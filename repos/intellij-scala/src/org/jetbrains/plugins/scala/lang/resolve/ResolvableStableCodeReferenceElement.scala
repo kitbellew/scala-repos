@@ -84,9 +84,8 @@ trait ResolvableStableCodeReferenceElement
       Array.empty,
       ModCount.getBlockModificationCount)
     def doResolve(incomplete: Boolean): Array[ResolveResult] =
-      ImportResolverNoMethods.resolve(
-        ResolvableStableCodeReferenceElement.this,
-        incomplete)
+      ImportResolverNoMethods
+        .resolve(ResolvableStableCodeReferenceElement.this, incomplete)
 
     resolveWithCompiled(incomplete, ImportResolverNoMethods, doResolve)
   }
@@ -98,9 +97,8 @@ trait ResolvableStableCodeReferenceElement
       Array.empty,
       ModCount.getBlockModificationCount)
     def doResolve(incomplete: Boolean): Array[ResolveResult] =
-      ImportResolverNoTypes.resolve(
-        ResolvableStableCodeReferenceElement.this,
-        incomplete)
+      ImportResolverNoTypes
+        .resolve(ResolvableStableCodeReferenceElement.this, incomplete)
 
     resolveWithCompiled(incomplete, ImportResolverNoTypes, doResolve)
   }
@@ -115,8 +113,8 @@ trait ResolvableStableCodeReferenceElement
       elsebr: Boolean => Array[ResolveResult]) = {
     ScalaPsiUtil.fileContext(this) match {
       case s: ScalaFile if s.isCompiled =>
-        val count =
-          ProjectRootManager.getInstance(getProject).getModificationCount
+        val count = ProjectRootManager.getInstance(getProject)
+          .getModificationCount
         if (count == resolveResultCount) resolveResult
         else {
           val res = resolver.resolve(this, incomplete)
@@ -172,12 +170,9 @@ trait ResolvableStableCodeReferenceElement
               ResolvableStableCodeReferenceElement.this)
         }
       case ScalaResolveResult(typed: ScTypedDefinition, s) =>
-        val fromType = s.subst(
-          typed
-            .getType(TypingContext.empty)
-            .getOrElse(
-              return
-            ))
+        val fromType = s.subst(typed.getType(TypingContext.empty).getOrElse(
+          return
+        ))
         processor.processType(
           fromType,
           this,
@@ -205,10 +200,11 @@ trait ResolvableStableCodeReferenceElement
           s.subst(ScType.create(field.getType, getProject, getResolveScope)),
           this)
       case ScalaResolveResult(clazz: PsiClass, s) =>
-        processor.processType(
-          new ScDesignatorType(clazz, true),
-          this
-        ) //static Java import
+        processor
+          .processType(
+            new ScDesignatorType(clazz, true),
+            this
+          ) //static Java import
       case ScalaResolveResult(pack: ScPackage, s) =>
         pack.processDeclarations(
           processor,
@@ -229,16 +225,12 @@ trait ResolvableStableCodeReferenceElement
       ref: ScStableCodeReferenceElement,
       processor: BaseProcessor,
       accessibilityCheck: Boolean = true): Array[ResolveResult] = {
-    val importStmt = PsiTreeUtil.getContextOfType(
-      ref,
-      true,
-      classOf[ScImportStmt])
+    val importStmt = PsiTreeUtil
+      .getContextOfType(ref, true, classOf[ScImportStmt])
 
     if (importStmt != null) {
-      val importHolder = PsiTreeUtil.getContextOfType(
-        importStmt,
-        true,
-        classOf[ScImportsHolder])
+      val importHolder = PsiTreeUtil
+        .getContextOfType(importStmt, true, classOf[ScImportsHolder])
       if (importHolder != null) {
         importHolder.getImportStatements.takeWhile(_ != importStmt).foreach {
           case stmt: ScImportStmt => stmt.importExprs.foreach {
@@ -260,8 +252,8 @@ trait ResolvableStableCodeReferenceElement
         x = true
         //todo: improve checking for this and super
         val refText: String = ref.getText
-        if (!refText.contains("this") && !refText
-              .contains("super") && (refText.contains(".") || ref.getContext
+        if (!refText.contains("this") && !refText.contains("super") && (refText
+              .contains(".") || ref.getContext
               .isInstanceOf[ScStableCodeReferenceElement])) {
           //so this is full qualified reference => findClass, or findPackage
           val facade = JavaPsiFacade.getInstance(getProject)
@@ -348,8 +340,7 @@ trait ResolvableStableCodeReferenceElement
       case p: ScInterpolationPattern => Some(p)
       case sel: ScImportSelector =>
         sel.getContext /*ScImportSelectors*/ .getContext
-          .asInstanceOf[ScImportExpr]
-          .reference
+          .asInstanceOf[ScImportExpr].reference
       case _ => pathQualifier
     }
   }
@@ -362,10 +353,8 @@ trait ResolvableStableCodeReferenceElement
             true // scala classes are available from default package
           // Other classes from default package are available only for top-level Scala statements
           case _ =>
-            PsiTreeUtil.getContextOfType(
-              this,
-              true,
-              classOf[ScPackaging]) == null
+            PsiTreeUtil
+              .getContextOfType(this, true, classOf[ScPackaging]) == null
         }
       case _ => true
     }

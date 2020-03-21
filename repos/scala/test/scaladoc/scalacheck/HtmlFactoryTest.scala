@@ -107,8 +107,7 @@ object Test extends Properties("HtmlFactory") {
         case Some(file) => if (file endsWith ".html") file else file + ".html"
         case None       => htmlFile
       }
-      val fileTextPretty = htmlAllFiles(fileName).text
-        .replace('→', ' ')
+      val fileTextPretty = htmlAllFiles(fileName).text.replace('→', ' ')
         .replaceAll("\\s+", " ")
       val fileText = fileTextPretty.replaceAll(" ", "")
 
@@ -118,12 +117,12 @@ object Test extends Properties("HtmlFactory") {
       val checkValue = fileText.contains(checkText) == expected
       if (debug && (!checkValue)) {
         Console.err.println("")
-        Console.err.println(
-          "HTML Check failed for resource file " + scalaFile + ":")
+        Console.err
+          .println("HTML Check failed for resource file " + scalaFile + ":")
         Console.err.println("Could not match: \n" + checkTextPretty)
         Console.err.println("In the extracted HTML text: \n" + fileTextPretty)
-        Console.err.println(
-          "NOTE: The whitespaces are eliminated before matching!")
+        Console.err
+          .println("NOTE: The whitespaces are eliminated before matching!")
         Console.err.println("")
       }
       result &&= checkValue
@@ -359,8 +358,8 @@ object Test extends Properties("HtmlFactory") {
   property("SI-4507: Default arguments of synthesized constructor") = {
     createTemplate("SI_4507.scala") match {
       case node: scala.xml.Node =>
-        !node.toString.contains(
-          "<li>returns silently when evaluating true and true</li>")
+        !node.toString
+          .contains("<li>returns silently when evaluating true and true</li>")
       case _ => false
     }
   }
@@ -702,7 +701,8 @@ object Test extends Properties("HtmlFactory") {
           node.toString contains "title=\"gt4s: $colon$colon\""
 
         property("gt4s of a deprecated method") =
-          node.toString contains "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "
+          node
+            .toString contains "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "
         true
       }
       case _ => false
@@ -805,11 +805,9 @@ object Test extends Properties("HtmlFactory") {
     property("SI-8144: Members' permalink - class") = check(
       "some/pack/SomeType.html") { node =>
       ("type link" |: node.assertTypeLink("../../some/pack/SomeType.html")) &&
-      (
-        "constructor " |: node.assertMemberLink("constructors")(
-          "some.pack.SomeType#<init>",
-          "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")
-      ) &&
+      ("constructor " |: node.assertMemberLink("constructors")(
+        "some.pack.SomeType#<init>",
+        "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")) &&
       ("member: type TypeAlias" |: node.assertMemberLink("types")(
         "some.pack.SomeType.TypeAlias",
         "../../some/pack/SomeType.html#TypeAlias=String")) &&

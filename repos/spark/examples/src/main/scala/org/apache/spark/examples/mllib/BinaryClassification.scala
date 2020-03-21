@@ -67,28 +67,23 @@ object BinaryClassification {
 
     val parser = new OptionParser[Params]("BinaryClassification") {
       head("BinaryClassification: an example app for binary classification.")
-      opt[Int]("numIterations")
-        .text("number of iterations")
+      opt[Int]("numIterations").text("number of iterations")
         .action((x, c) => c.copy(numIterations = x))
-      opt[Double]("stepSize")
-        .text(
-          "initial step size (ignored by logistic regression), " +
-            s"default: ${defaultParams.stepSize}")
+      opt[Double]("stepSize").text(
+        "initial step size (ignored by logistic regression), " +
+          s"default: ${defaultParams.stepSize}")
         .action((x, c) => c.copy(stepSize = x))
-      opt[String]("algorithm")
-        .text(
-          s"algorithm (${Algorithm.values.mkString(",")}), " +
-            s"default: ${defaultParams.algorithm}")
+      opt[String]("algorithm").text(
+        s"algorithm (${Algorithm.values.mkString(",")}), " +
+          s"default: ${defaultParams.algorithm}")
         .action((x, c) => c.copy(algorithm = Algorithm.withName(x)))
-      opt[String]("regType")
-        .text(
-          s"regularization type (${RegType.values.mkString(",")}), " +
-            s"default: ${defaultParams.regType}")
+      opt[String]("regType").text(
+        s"regularization type (${RegType.values.mkString(",")}), " +
+          s"default: ${defaultParams.regType}")
         .action((x, c) => c.copy(regType = RegType.withName(x)))
       opt[Double]("regParam")
         .text(s"regularization parameter, default: ${defaultParams.regParam}")
-      arg[String]("<input>")
-        .required()
+      arg[String]("<input>").required()
         .text("input paths to labeled examples in LIBSVM format")
         .action((x, c) => c.copy(input = x))
       note(
@@ -133,17 +128,13 @@ object BinaryClassification {
     val model = params.algorithm match {
       case LR =>
         val algorithm = new LogisticRegressionWithLBFGS()
-        algorithm.optimizer
-          .setNumIterations(params.numIterations)
-          .setUpdater(updater)
-          .setRegParam(params.regParam)
+        algorithm.optimizer.setNumIterations(params.numIterations)
+          .setUpdater(updater).setRegParam(params.regParam)
         algorithm.run(training).clearThreshold()
       case SVM =>
         val algorithm = new SVMWithSGD()
-        algorithm.optimizer
-          .setNumIterations(params.numIterations)
-          .setStepSize(params.stepSize)
-          .setUpdater(updater)
+        algorithm.optimizer.setNumIterations(params.numIterations)
+          .setStepSize(params.stepSize).setUpdater(updater)
           .setRegParam(params.regParam)
         algorithm.run(training).clearThreshold()
     }

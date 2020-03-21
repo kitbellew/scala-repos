@@ -45,8 +45,7 @@ class ScTraitParentsImpl private (
   def typeElements: Seq[ScTypeElement] = {
     val stub = getStub
     if (stub != null) {
-      return stub
-        .asInstanceOf[ScTemplateParentsStub]
+      return stub.asInstanceOf[ScTemplateParentsStub]
         .getTemplateParentsTypeElements
     }
     findChildrenByClassScala(classOf[ScTypeElement])

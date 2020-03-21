@@ -101,9 +101,8 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         def generateDataRow(info: ExecutionInfo): Seq[Node] = {
           val jobLink = info.jobId.map { id: String =>
             <a href={
-              "%s/jobs/job?id=%s".format(
-                UIUtils.prependBaseUri(parent.basePath),
-                id)
+              "%s/jobs/job?id=%s"
+                .format(UIUtils.prependBaseUri(parent.basePath), id)
             }>
             [{id}]
           </a>
@@ -173,10 +172,8 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
     val numBatches = sessionList.size
     val table =
       if (numBatches > 0) {
-        val dataRows = sessionList
-          .sortBy(_.startTimestamp)
-          .reverse
-          .map(session =>
+        val dataRows =
+          sessionList.sortBy(_.startTimestamp).reverse.map(session =>
             Seq(
               session.userName,
               session.ip,
@@ -185,8 +182,7 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
               formatDate(session.finishTimestamp),
               formatDurationOption(Some(session.totalTime)),
               session.totalExecution.toString
-            ))
-          .toSeq
+            )).toSeq
         val headerRow = Seq(
           "User",
           "IP",

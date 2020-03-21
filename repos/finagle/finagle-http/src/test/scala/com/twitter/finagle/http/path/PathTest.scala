@@ -12,8 +12,7 @@ import scala.util.Random
 class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   def alpha(min: Int, max: Int) =
-    for { len <- Gen.choose(min, max) } yield Random.alphanumeric
-      .take(len)
+    for { len <- Gen.choose(min, max) } yield Random.alphanumeric.take(len)
       .mkString
 
   val pathParts = Gen.listOf[String](alpha(0, 10))

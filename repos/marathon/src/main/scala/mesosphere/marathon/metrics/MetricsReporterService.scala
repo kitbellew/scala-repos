@@ -55,15 +55,12 @@ class MetricsReporterService @Inject() (
   private[this] def startGraphiteReporter(
       graphUrl: String): GraphiteReporter = {
     val url = new URI(graphUrl)
-    val params = Option(url.getQuery)
-      .getOrElse("")
-      .split("&")
-      .collect { case QueryParam(k, v) => k -> v }
-      .toMap
+    val params = Option(url.getQuery).getOrElse("").split("&").collect {
+      case QueryParam(k, v) => k -> v
+    }.toMap
 
     val graphite = new Graphite(new InetSocketAddress(url.getHost, url.getPort))
-    val builder = GraphiteReporter
-      .forRegistry(registry)
+    val builder = GraphiteReporter.forRegistry(registry)
       .convertRatesTo(TimeUnit.SECONDS)
       .convertDurationsTo(TimeUnit.MILLISECONDS)
     params.get("prefix").map(builder.prefixedWith)
@@ -99,11 +96,9 @@ class MetricsReporterService @Inject() (
     */
   private[this] def startDatadog(dataDog: String): DatadogReporter = {
     val url = new URI(dataDog)
-    val params = Option(url.getQuery)
-      .getOrElse("")
-      .split("&")
-      .collect { case QueryParam(k, v) => k -> v }
-      .toMap
+    val params = Option(url.getQuery).getOrElse("").split("&").collect {
+      case QueryParam(k, v) => k -> v
+    }.toMap
 
     val transport = url.getScheme match {
       case "http" | "https" =>
@@ -120,9 +115,7 @@ class MetricsReporterService @Inject() (
           s"Datadog: Unknown protocol $unknown")
     }
 
-    val expansions = params
-      .get("expansions")
-      .map(_.split(",").toSeq)
+    val expansions = params.get("expansions").map(_.split(",").toSeq)
       .getOrElse(Seq(
         "count",
         "meanRate",
@@ -143,22 +136,14 @@ class MetricsReporterService @Inject() (
     val interval = params.get("interval").map(_.toLong).getOrElse(10L)
     val prefix = params.getOrElse("prefix", "marathon_test")
 
-    val tags = params
-      .get("tags")
-      .map(_.split(",").toSeq)
+    val tags = params.get("tags").map(_.split(",").toSeq)
       .getOrElse(Seq.empty[String])
 
-    val reporter = DatadogReporter
-      .forRegistry(registry)
-      .withTransport(transport)
-      .withHost(InetAddress.getLocalHost.getHostName)
-      .withPrefix(prefix)
-      .withExpansions(util.EnumSet.copyOf(
-        expansions
-          .flatMap(e => Expansion.values().find(_.toString == e))
-          .asJava))
-      .withTags(tags.asJava)
-      .build()
+    val reporter = DatadogReporter.forRegistry(registry)
+      .withTransport(transport).withHost(InetAddress.getLocalHost.getHostName)
+      .withPrefix(prefix).withExpansions(util.EnumSet.copyOf(
+        expansions.flatMap(e => Expansion.values().find(_.toString == e))
+          .asJava)).withTags(tags.asJava).build()
 
     log.info(
       s"Datadog reporter configured $reporter with $interval seconds interval (url: $dataDog)")

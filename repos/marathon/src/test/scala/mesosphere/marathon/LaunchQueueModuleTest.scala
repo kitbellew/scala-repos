@@ -139,11 +139,8 @@ class LaunchQueueModuleTest
     val matchedTasks = Await.result(matchFuture, 3.seconds)
 
     Then("the offer gets passed to the task factory and respects the answer")
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      Iterable.empty,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, Iterable.empty, additionalLaunches = 1)
     verify(taskOpFactory).buildTaskOp(request)
     assert(matchedTasks.offerId == offer.getId)
     assert(matchedTasks.opsWithSource == Seq.empty)
@@ -154,10 +151,8 @@ class LaunchQueueModuleTest
   test("an offer gets successfully matched against an item in the queue") {
     val offer = MarathonTestHelper.makeBasicOffer().build()
     val taskId = Task.Id.forApp(PathId("/test"))
-    val mesosTask = MarathonTestHelper
-      .makeOneCPUTask("")
-      .setTaskId(taskId.mesosTaskId)
-      .build()
+    val mesosTask = MarathonTestHelper.makeOneCPUTask("")
+      .setTaskId(taskId.mesosTaskId).build()
     val marathonTask = MarathonTestHelper.mininimalTask(taskId)
     val launch = new TaskOpFactoryHelper(Some("principal"), Some("role"))
       .launch(mesosTask, marathonTask)
@@ -176,11 +171,8 @@ class LaunchQueueModuleTest
     val matchedTasks = Await.result(matchFuture, 3.seconds)
 
     Then("the offer gets passed to the task factory and respects the answer")
-    val request = TaskOpFactory.Request(
-      app,
-      offer,
-      Iterable.empty,
-      additionalLaunches = 1)
+    val request = TaskOpFactory
+      .Request(app, offer, Iterable.empty, additionalLaunches = 1)
     verify(taskOpFactory).buildTaskOp(request)
     assert(matchedTasks.offerId == offer.getId)
     assert(matchedTasks.launchedTaskInfos == Seq(mesosTask))
@@ -188,8 +180,7 @@ class LaunchQueueModuleTest
     verify(taskTracker).tasksByAppSync
   }
 
-  private[this] val app = MarathonTestHelper
-    .makeBasicApp()
+  private[this] val app = MarathonTestHelper.makeBasicApp()
     .copy(id = PathId("/app"))
 
   private[this] var clock: Clock = _

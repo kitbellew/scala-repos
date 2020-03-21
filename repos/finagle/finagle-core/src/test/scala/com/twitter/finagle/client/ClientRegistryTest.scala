@@ -41,8 +41,7 @@ class ClientRegistryTest
 
   trait Ctx {
     val sr = new InMemoryStatsReceiver
-    val stackClient = stringClient
-      .configured(param.Stats(sr))
+    val stackClient = stringClient.configured(param.Stats(sr))
       .configured(param.ProtocolLibrary("fancy"))
   }
 
@@ -183,9 +182,8 @@ class ClientRegistryTest
   test(
     "RegistryEntryLifecycle module registers a Stack and then deregisters it") {
     val stk = newStack()
-    val params =
-      Stack.Params.empty + param1 + param.Label("foo") + param.ProtocolLibrary(
-        "fancy")
+    val params = Stack.Params.empty + param1 + param.Label("foo") + param
+      .ProtocolLibrary("fancy")
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
       val factory = (RegistryEntryLifecycle.module[Int, Int] +: stk)

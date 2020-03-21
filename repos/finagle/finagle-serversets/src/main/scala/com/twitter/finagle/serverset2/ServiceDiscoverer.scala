@@ -36,9 +36,9 @@ private[serverset2] object ServiceDiscoverer {
 
     def apply(sessionState: SessionState): ClientHealth = {
       sessionState match {
-        case SessionState.Expired | SessionState.NoSyncConnected |
-            SessionState.Unknown | SessionState.AuthFailed |
-            SessionState.Disconnected => Unhealthy
+        case SessionState.Expired | SessionState.NoSyncConnected | SessionState
+              .Unknown | SessionState.AuthFailed | SessionState.Disconnected =>
+          Unhealthy
         case SessionState.ConnectedReadOnly | SessionState.SaslAuthenticated |
             SessionState.SyncConnected => Healthy
       }
@@ -69,17 +69,15 @@ private[serverset2] class ServiceDiscoverer(
     timer: Timer) {
   import ServiceDiscoverer._
 
-  private[this] val zkEntriesReadStat = statsReceiver
-    .scope("entries")
+  private[this] val zkEntriesReadStat = statsReceiver.scope("entries")
     .stat("read_ms")
-  private[this] val zkVectorsReadStat = statsReceiver
-    .scope("vectors")
+  private[this] val zkVectorsReadStat = statsReceiver.scope("vectors")
     .stat("read_ms")
 
   private[this] val actZkSession = Activity(varZkSession.map(Activity.Ok(_)))
   private[this] val log = Logger(getClass)
-  private[this] val retryJitter = Duration.fromSeconds(
-    20 + Rng.threadLocal.nextInt(120))
+  private[this] val retryJitter = Duration
+    .fromSeconds(20 + Rng.threadLocal.nextInt(120))
 
   /**
     * Monitor the session status of the ZkSession and expose to listeners whether
@@ -156,21 +154,19 @@ private[serverset2] class ServiceDiscoverer(
           @volatile
           var seenFailures = false
           Stat.timeFuture(readStat) {
-            Future
-              .collectToTry(paths.map { path =>
-                // note if any failed
-                cache.get(path).onFailure { _ => seenFailures = true }
-              })
-              // We end up with a Seq[Seq[Entity]] here, b/c cache.get() returns a Seq[Entity]
-              // flatten() to fix this (see the comment on ZkNodeDataCache for why we get a Seq[])
-              .map(tries => tries.collect { case Return(e) => e }.flatten)
-              .map { seq =>
-                // if we have *any* results or no-failure, we consider it a success
-                if (seenFailures && seq.isEmpty)
-                  u() = Activity.Failed(EntryLookupFailureException)
-                else u() = Activity.Ok(seq)
-              }
-              .ensure {
+            Future.collectToTry(paths.map { path =>
+              // note if any failed
+              cache.get(path).onFailure { _ => seenFailures = true }
+            })
+            // We end up with a Seq[Seq[Entity]] here, b/c cache.get() returns a Seq[Entity]
+            // flatten() to fix this (see the comment on ZkNodeDataCache for why we get a Seq[])
+              .map(tries => tries.collect { case Return(e) => e }.flatten).map {
+                seq =>
+                  // if we have *any* results or no-failure, we consider it a success
+                  if (seenFailures && seq.isEmpty)
+                    u() = Activity.Failed(EntryLookupFailureException)
+                  else u() = Activity.Ok(seq)
+              }.ensure {
                 if (seenFailures) {
                   log.warning(
                     s"Failed to read all data for $parentPath. Retrying in $retryJitter")

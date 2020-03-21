@@ -140,8 +140,7 @@ trait Base {
       def read(json: JValue) =
         json match {
           case JObject(fs) =>
-            val r = fs
-              .map(f => fromJSON[A](f.value).map(v => (f.name, v)))
+            val r = fs.map(f => fromJSON[A](f.value).map(v => (f.name, v)))
               .sequence[
                 ({ type λ[α] = ValidationNel[Error, α] })#λ,
                 (String, A)]

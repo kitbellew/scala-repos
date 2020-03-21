@@ -24,14 +24,11 @@ object LightUtil {
     * @return Java throws section string or empty string
     */
   def getThrowsSection(holder: ScAnnotationsHolder): String = {
-    val throwAnnotations = holder
-      .allMatchingAnnotations("scala.throws")
+    val throwAnnotations = holder.allMatchingAnnotations("scala.throws")
       .foldLeft[ArrayBuffer[String]](ArrayBuffer()) {
         case (accumulator, annotation) =>
-          val classes = annotation.constructor.args
-            .map(_.exprs)
-            .getOrElse(Seq.empty)
-            .flatMap { expr =>
+          val classes = annotation.constructor.args.map(_.exprs)
+            .getOrElse(Seq.empty).flatMap { expr =>
               expr.getType(TypingContext.empty) match {
                 case Success(ScParameterizedType(des, Seq(arg)), _) =>
                   ScType.extractClass(des) match {
@@ -55,15 +52,13 @@ object LightUtil {
           if (classes.isEmpty) {
             annotation.constructor.typeArgList match {
               case Some(args) =>
-                val classes = args.typeArgs
-                  .map(_.getType(TypingContext.empty))
-                  .filter(_.isDefined)
-                  .map(_.get)
-                  .flatMap { arg =>
-                    ScType.toPsi(
-                      arg,
-                      holder.getProject,
-                      holder.getResolveScope) match {
+                val classes = args.typeArgs.map(_.getType(TypingContext.empty))
+                  .filter(_.isDefined).map(_.get).flatMap { arg =>
+                    ScType
+                      .toPsi(
+                        arg,
+                        holder.getProject,
+                        holder.getResolveScope) match {
                       case c: PsiClassType => c.resolve() match {
                           case clazz: PsiClass => Seq(clazz.getQualifiedName)
                           case _               => Seq.empty

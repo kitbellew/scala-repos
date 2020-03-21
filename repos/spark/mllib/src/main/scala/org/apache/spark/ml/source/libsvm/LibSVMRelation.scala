@@ -51,8 +51,8 @@ private[libsvm] class LibSVMOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId = configuration.get(
-          "spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration
+          .get("spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId$extension")
@@ -176,14 +176,12 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     val sc = sqlContext.sparkContext
     val baseRdd = MLUtils.loadLibSVMFile(sc, path, numFeatures)
     val sparse = vectorType == "sparse"
-    baseRdd
-      .map { pt =>
-        val features = if (sparse) pt.features.toSparse else pt.features.toDense
-        Row(pt.label, features)
-      }
-      .mapPartitions { externalRows =>
-        val converter = RowEncoder(dataSchema)
-        externalRows.map(converter.toRow)
-      }
+    baseRdd.map { pt =>
+      val features = if (sparse) pt.features.toSparse else pt.features.toDense
+      Row(pt.label, features)
+    }.mapPartitions { externalRows =>
+      val converter = RowEncoder(dataSchema)
+      externalRows.map(converter.toRow)
+    }
   }
 }

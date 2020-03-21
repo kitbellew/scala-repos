@@ -15,8 +15,8 @@ private[changeInfo] trait ParametersChangeInfo {
   private val oldParameters = ScalaParameterInfo.allForMethod(function)
   private val oldParametersArray = oldParameters.flatten.toArray
   private val oldParameterNames: Array[String] = oldParametersArray.map(_.name)
-  private val oldParameterTypes: Array[String] = oldParametersArray.map(
-    _.getTypeText)
+  private val oldParameterTypes: Array[String] = oldParametersArray
+    .map(_.getTypeText)
 
   val toRemoveParm: Array[Boolean] = oldParametersArray.zipWithIndex.map {
     case (p, i) => !newParameters.exists(_.oldIndex == i)

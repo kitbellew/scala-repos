@@ -35,19 +35,15 @@ object DecisionTreeClassificationExample {
     val sqlContext = new SQLContext(sc)
     // $example on$
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = sqlContext.read
-      .format("libsvm")
+    val data = sqlContext.read.format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 
     // Index labels, adding metadata to the label column.
     // Fit on whole dataset to include all labels in index.
-    val labelIndexer = new StringIndexer()
-      .setInputCol("label")
-      .setOutputCol("indexedLabel")
-      .fit(data)
+    val labelIndexer = new StringIndexer().setInputCol("label")
+      .setOutputCol("indexedLabel").fit(data)
     // Automatically identify categorical features, and index them.
-    val featureIndexer = new VectorIndexer()
-      .setInputCol("features")
+    val featureIndexer = new VectorIndexer().setInputCol("features")
       .setOutputCol("indexedFeatures")
       .setMaxCategories(
         4
@@ -58,15 +54,12 @@ object DecisionTreeClassificationExample {
     val Array(trainingData, testData) = data.randomSplit(Array(0.7, 0.3))
 
     // Train a DecisionTree model.
-    val dt = new DecisionTreeClassifier()
-      .setLabelCol("indexedLabel")
+    val dt = new DecisionTreeClassifier().setLabelCol("indexedLabel")
       .setFeaturesCol("indexedFeatures")
 
     // Convert indexed labels back to original labels.
-    val labelConverter = new IndexToString()
-      .setInputCol("prediction")
-      .setOutputCol("predictedLabel")
-      .setLabels(labelIndexer.labels)
+    val labelConverter = new IndexToString().setInputCol("prediction")
+      .setOutputCol("predictedLabel").setLabels(labelIndexer.labels)
 
     // Chain indexers and tree in a Pipeline
     val pipeline = new Pipeline()
@@ -83,14 +76,12 @@ object DecisionTreeClassificationExample {
 
     // Select (prediction, true label) and compute test error
     val evaluator = new MulticlassClassificationEvaluator()
-      .setLabelCol("indexedLabel")
-      .setPredictionCol("prediction")
+      .setLabelCol("indexedLabel").setPredictionCol("prediction")
       .setMetricName("precision")
     val accuracy = evaluator.evaluate(predictions)
     println("Test Error = " + (1.0 - accuracy))
 
-    val treeModel = model
-      .stages(2)
+    val treeModel = model.stages(2)
       .asInstanceOf[DecisionTreeClassificationModel]
     println("Learned classification tree model:\n" + treeModel.toDebugString)
     // $example off$

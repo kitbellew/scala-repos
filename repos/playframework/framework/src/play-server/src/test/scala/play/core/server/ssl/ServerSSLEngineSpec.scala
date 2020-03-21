@@ -73,11 +73,9 @@ class ServerSSLEngineSpec extends Specification with Mockito {
       tempDir: Option[File] = None) = {
     val app = mock[ApplicationProvider]
     app.get returns Failure(new Exception("no app"))
-    ServerSSLEngine
-      .createSSLEngineProvider(
-        serverConfig(tempDir.getOrElse(new File(".")), engineProvider),
-        app)
-      .createSSLEngine()
+    ServerSSLEngine.createSSLEngineProvider(
+      serverConfig(tempDir.getOrElse(new File(".")), engineProvider),
+      app).createSSLEngine()
   }
 
   "ServerSSLContext" should {

@@ -105,8 +105,7 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒ acc + 1 }
 
         val (neverPromise, counterFuture) = neverSource
-          .toMat(counterSink)(Keep.both)
-          .run()
+          .toMat(counterSink)(Keep.both).run()
 
         // external cancellation
         neverPromise.trySuccess(None) shouldEqual true
@@ -120,8 +119,7 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         val counterSink = Sink.head[Int]
 
         val (neverPromise, counterFuture) = neverSource
-          .toMat(counterSink)(Keep.both)
-          .run()
+          .toMat(counterSink)(Keep.both).run()
 
         // external cancellation
         neverPromise.trySuccess(Some(6)) shouldEqual true
@@ -134,8 +132,7 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒ acc + 1 }
 
       val (neverPromise, counterFuture) = neverSource
-        .toMat(counterSink)(Keep.both)
-        .run()
+        .toMat(counterSink)(Keep.both).run()
 
       // external cancellation
       neverPromise.failure(new Exception("Boom") with NoStackTrace)
@@ -153,21 +150,19 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       val source = Source.asSubscriber[Int]
       val out = TestSubscriber.manualProbe[Int]
 
-      val s = Source
-        .fromGraph(
-          GraphDSL.create(source, source, source, source, source)(
-            Seq(_, _, _, _, _)) { implicit b ⇒ (i0, i1, i2, i3, i4) ⇒
-            import GraphDSL.Implicits._
-            val m = b.add(Merge[Int](5))
-            i0.out ~> m.in(0)
-            i1.out ~> m.in(1)
-            i2.out ~> m.in(2)
-            i3.out ~> m.in(3)
-            i4.out ~> m.in(4)
-            SourceShape(m.out)
-          })
-        .to(Sink.fromSubscriber(out))
-        .run()
+      val s = Source.fromGraph(
+        GraphDSL
+          .create(source, source, source, source, source)(Seq(_, _, _, _, _)) {
+            implicit b ⇒ (i0, i1, i2, i3, i4) ⇒
+              import GraphDSL.Implicits._
+              val m = b.add(Merge[Int](5))
+              i0.out ~> m.in(0)
+              i1.out ~> m.in(1)
+              i2.out ~> m.in(2)
+              i3.out ~> m.in(3)
+              i4.out ~> m.in(4)
+              SourceShape(m.out)
+          }).to(Sink.fromSubscriber(out)).run()
 
       for (i ← 0 to 4) probes(i).subscribe(s(i))
       val sub = out.expectSubscription()
@@ -190,10 +185,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       val source = for (i ← 0 to 2) yield Source.fromPublisher(probes(i))
       val out = TestSubscriber.manualProbe[Int]
 
-      Source
-        .combine(source(0), source(1), source(2))(Merge(_))
-        .to(Sink.fromSubscriber(out))
-        .run()
+      Source.combine(source(0), source(1), source(2))(Merge(_))
+        .to(Sink.fromSubscriber(out)).run()
 
       val sub = out.expectSubscription()
       sub.request(3)
@@ -212,14 +205,12 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
 
     "combine from two inputs with simplified API" in {
       val probes = Seq.fill(2)(TestPublisher.manualProbe[Int]())
-      val source = Source.fromPublisher(probes(0)) :: Source.fromPublisher(
-        probes(1)) :: Nil
+      val source = Source.fromPublisher(probes(0)) :: Source
+        .fromPublisher(probes(1)) :: Nil
       val out = TestSubscriber.manualProbe[Int]
 
-      Source
-        .combine(source(0), source(1))(Merge(_))
-        .to(Sink.fromSubscriber(out))
-        .run()
+      Source.combine(source(0), source(1))(Merge(_))
+        .to(Sink.fromSubscriber(out)).run()
 
       val sub = out.expectSubscription()
       sub.request(3)
@@ -253,12 +244,10 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       987, 610, 377, 233, 144, 89, 55, 34, 21, 13, 8, 5, 3, 2, 1, 1, 0)
 
     "generate a finite fibonacci sequence" in {
-      Source
-        .unfold((0, 1)) {
-          case (a, _) if a > 10000000 ⇒ None
-          case (a, b) ⇒ Some((b, a + b) → a)
-        }
-        .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
+      Source.unfold((0, 1)) {
+        case (a, _) if a > 10000000 ⇒ None
+        case (a, b) ⇒ Some((b, a + b) → a)
+      }.runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
         .futureValue should ===(expected)
     }
 
@@ -267,30 +256,24 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[RuntimeException](
         message = "expected",
         occurrences = 1) intercept
-        whenReady(
-          Source
-            .unfold((0, 1)) {
-              case (a, _) if a > 10000000 ⇒ throw t
-              case (a, b) ⇒ Some((b, a + b) → a)
-            }
-            .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
-            .failed) { _ should be theSameInstanceAs (t) }
+        whenReady(Source.unfold((0, 1)) {
+          case (a, _) if a > 10000000 ⇒ throw t
+          case (a, b) ⇒ Some((b, a + b) → a)
+        }.runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }.failed) {
+          _ should be theSameInstanceAs (t)
+        }
     }
 
     "generate a finite fibonacci sequence asynchronously" in {
-      Source
-        .unfoldAsync((0, 1)) {
-          case (a, _) if a > 10000000 ⇒ Future.successful(None)
-          case (a, b) ⇒ Future(Some((b, a + b) → a))(system.dispatcher)
-        }
-        .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
+      Source.unfoldAsync((0, 1)) {
+        case (a, _) if a > 10000000 ⇒ Future.successful(None)
+        case (a, b) ⇒ Future(Some((b, a + b) → a))(system.dispatcher)
+      }.runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
         .futureValue should ===(expected)
     }
 
     "generate an unbounded fibonacci sequence" in {
-      Source
-        .unfold((0, 1))({ case (a, b) ⇒ Some((b, a + b) → a) })
-        .take(36)
+      Source.unfold((0, 1))({ case (a, b) ⇒ Some((b, a + b) → a) }).take(36)
         .runFold(List.empty[Int]) { case (xs, x) ⇒ x :: xs }
         .futureValue should ===(expected)
     }
@@ -298,11 +281,8 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
 
   "Iterator Source" must {
     "properly iterate" in {
-      Source
-        .fromIterator(() ⇒ Iterator.iterate(false)(!_))
-        .grouped(10)
-        .runWith(Sink.head)
-        .futureValue should ===(Seq(
+      Source.fromIterator(() ⇒ Iterator.iterate(false)(!_)).grouped(10)
+        .runWith(Sink.head).futureValue should ===(Seq(
         false, true, false, true, false, true, false, true, false, true))
     }
   }
@@ -310,10 +290,7 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
   "A Source" must {
     "suitably override attribute handling methods" in {
       import Attributes._
-      val s: Source[Int, NotUsed] = Source
-        .single(42)
-        .async
-        .addAttributes(none)
+      val s: Source[Int, NotUsed] = Source.single(42).async.addAttributes(none)
         .named("")
     }
   }

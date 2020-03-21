@@ -146,8 +146,7 @@ object WorkflowUtils extends Logging {
     } else {
       val apClass = pClass.head
       try {
-        JsonExtractor
-          .extract(jsonExtractor, json, apClass, f)
+        JsonExtractor.extract(jsonExtractor, json, apClass, f)
           .asInstanceOf[Params]
       } catch {
         case e @ (_: MappingException | _: JsonSyntaxException) =>
@@ -170,8 +169,8 @@ object WorkflowUtils extends Logging {
       case JField(f, _) => f == field
       case _            => false
     } map { jv =>
-      implicit lazy val formats =
-        Utils.json4sDefaultFormats + new NameParamsSerializer
+      implicit lazy val formats = Utils
+        .json4sDefaultFormats + new NameParamsSerializer
       val np: NameParams =
         try { jv._2.extract[NameParams] }
         catch {
@@ -179,28 +178,26 @@ object WorkflowUtils extends Logging {
             error(s"Unable to extract $field name and params $jv")
             throw e
         }
-      val extractedParams = np.params
-        .map { p =>
-          try {
-            if (!classMap.contains(np.name)) {
-              error(
-                s"Unable to find $field class with name '${np.name}'" +
-                  " defined in Engine.")
-              sys.exit(1)
-            }
-            WorkflowUtils.extractParams(
-              engineLanguage,
-              compact(render(p)),
-              classMap(np.name),
-              jsonExtractor,
-              formats)
-          } catch {
-            case e: Exception =>
-              error(s"Unable to extract $field params $p")
-              throw e
+      val extractedParams = np.params.map { p =>
+        try {
+          if (!classMap.contains(np.name)) {
+            error(
+              s"Unable to find $field class with name '${np.name}'" +
+                " defined in Engine.")
+            sys.exit(1)
           }
+          WorkflowUtils.extractParams(
+            engineLanguage,
+            compact(render(p)),
+            classMap(np.name),
+            jsonExtractor,
+            formats)
+        } catch {
+          case e: Exception =>
+            error(s"Unable to extract $field params $p")
+            throw e
         }
-        .getOrElse(EmptyParams())
+      }.getOrElse(EmptyParams())
 
       (np.name, extractedParams)
     } getOrElse ("", EmptyParams())
@@ -265,8 +262,7 @@ object WorkflowUtils extends Logging {
       "HADOOP_CONF_DIR",
       "HBASE_CONF_DIR")
     thirdPartyPaths
-      .map(p => sys.env.get(p).map(Seq(_)).getOrElse(Seq[String]()))
-      .flatten
+      .map(p => sys.env.get(p).map(Seq(_)).getOrElse(Seq[String]())).flatten
   }
 
   def modifyLogging(verbose: Boolean): Unit = {
@@ -326,8 +322,8 @@ object WorkflowUtils extends Logging {
       }
     }
 
-    flatten(root \ "sparkConf").map(x =>
-      (x._1.reduce((a, b) => s"$a.$b"), x._2))
+    flatten(root \ "sparkConf")
+      .map(x => (x._1.reduce((a, b) => s"$a.$b"), x._2))
   }
 }
 
@@ -362,13 +358,11 @@ object SparkWorkflowUtils extends Logging {
     } catch {
       case e @ (_: NoSuchFieldException | _: ClassNotFoundException) =>
         try {
-          val loadMethod = Class
-            .forName(pmm.className)
-            .getMethod(
-              "load",
-              classOf[String],
-              classOf[Params],
-              classOf[SparkContext])
+          val loadMethod = Class.forName(pmm.className).getMethod(
+            "load",
+            classOf[String],
+            classOf[Params],
+            classOf[SparkContext])
           loadMethod.invoke(null, runId, params, sc.orNull).asInstanceOf[M]
         } catch {
           case e: ClassNotFoundException =>

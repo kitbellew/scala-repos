@@ -77,8 +77,8 @@ class ScalaTypeParameterInfoHandler
   def couldShowInLookup: Boolean = true
 
   def updateUI(p: Any, context: ParameterInfoUIContext): Unit = {
-    if (context == null || context.getParameterOwner == null || !context.getParameterOwner.isValid)
-      return
+    if (context == null || context.getParameterOwner == null || !context
+          .getParameterOwner.isValid) return
     context.getParameterOwner match {
       case args: ScTypeArgs =>
         var color: Color = context.getDefaultParameterColor
@@ -132,28 +132,24 @@ class ScalaTypeParameterInfoHandler
       buffer.append(CodeInsightBundle.message("parameter.info.no.parameters"))
     else {
       buffer.append(
-        params
-          .map((param: PsiTypeParameter) => {
-            val isBold =
-              if (params.indexOf(param) == index) true
-              else {
-                //todo: check type
-                false
-              }
-            var paramText = param.name
-            if (paramText == "?") paramText = "_"
-            val refTypes = param.getExtendsList.getReferencedTypes
-            if (refTypes.nonEmpty) {
-              paramText = paramText + refTypes
-                .map((typez: PsiType) => {
-                  ScType.presentableText(
-                    substitutor.subst(ScType.create(typez, param.getProject)))
-                })
-                .mkString(" <: ", " with ", "")
+        params.map((param: PsiTypeParameter) => {
+          val isBold =
+            if (params.indexOf(param) == index) true
+            else {
+              //todo: check type
+              false
             }
-            if (isBold) "<b>" + paramText + "</b>" else paramText
-          })
-          .mkString(", "))
+          var paramText = param.name
+          if (paramText == "?") paramText = "_"
+          val refTypes = param.getExtendsList.getReferencedTypes
+          if (refTypes.nonEmpty) {
+            paramText = paramText + refTypes.map((typez: PsiType) => {
+              ScType.presentableText(
+                substitutor.subst(ScType.create(typez, param.getProject)))
+            }).mkString(" <: ", " with ", "")
+          }
+          if (isBold) "<b>" + paramText + "</b>" else paramText
+        }).mkString(", "))
     }
   }
 
@@ -166,40 +162,38 @@ class ScalaTypeParameterInfoHandler
       buffer.append(CodeInsightBundle.message("parameter.info.no.parameters"))
     else {
       buffer.append(
-        params
-          .map((param: ScTypeParam) => {
-            val isBold =
-              if (params.indexOf(param) == index) true
-              else {
-                //todo: check type
-                false
-              }
-            var paramText = param.name
-            if (param.isContravariant) paramText = "-" + paramText
-            else if (param.isCovariant) paramText = "+" + paramText
-            param.lowerBound foreach {
-              case psi.types.Nothing =>
-              case tp: ScType =>
-                paramText = paramText + " >: " + ScType.presentableText(
-                  substitutor.subst(tp))
+        params.map((param: ScTypeParam) => {
+          val isBold =
+            if (params.indexOf(param) == index) true
+            else {
+              //todo: check type
+              false
             }
-            param.upperBound foreach {
-              case psi.types.Any =>
-              case tp: ScType =>
-                paramText = paramText + " <: " + ScType.presentableText(
-                  substitutor.subst(tp))
-            }
-            param.viewBound foreach { (tp: ScType) =>
-              paramText = paramText + " <% " + ScType.presentableText(
-                substitutor.subst(tp))
-            }
-            param.contextBound foreach { (tp: ScType) =>
-              paramText = paramText + " : " + ScType.presentableText(
-                substitutor.subst(tp))
-            }
-            if (isBold) "<b>" + paramText + "</b>" else paramText
-          })
-          .mkString(", "))
+          var paramText = param.name
+          if (param.isContravariant) paramText = "-" + paramText
+          else if (param.isCovariant) paramText = "+" + paramText
+          param.lowerBound foreach {
+            case psi.types.Nothing =>
+            case tp: ScType =>
+              paramText = paramText + " >: " + ScType
+                .presentableText(substitutor.subst(tp))
+          }
+          param.upperBound foreach {
+            case psi.types.Any =>
+            case tp: ScType =>
+              paramText = paramText + " <: " + ScType
+                .presentableText(substitutor.subst(tp))
+          }
+          param.viewBound foreach { (tp: ScType) =>
+            paramText = paramText + " <% " + ScType
+              .presentableText(substitutor.subst(tp))
+          }
+          param.contextBound foreach { (tp: ScType) =>
+            paramText = paramText + " : " + ScType
+              .presentableText(substitutor.subst(tp))
+          }
+          if (isBold) "<b>" + paramText + "</b>" else paramText
+        }).mkString(", "))
     }
   }
 
@@ -234,9 +228,8 @@ class ScalaTypeParameterInfoHandler
     val (file, offset) = (context.getFile, context.getOffset)
     val element = file.findElementAt(offset)
     if (element == null) return null
-    val args: ScTypeArgs = PsiTreeUtil.getParentOfType(
-      element,
-      getArgumentListClass)
+    val args: ScTypeArgs = PsiTreeUtil
+      .getParentOfType(element, getArgumentListClass)
     if (args != null) {
       context match {
         case context: CreateParameterInfoContext =>

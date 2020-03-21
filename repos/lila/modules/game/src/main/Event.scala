@@ -304,22 +304,19 @@ object Event {
       extends Event {
     def typ = "state"
     def data =
-      Json
-        .obj(
-          "color" -> color,
-          "turns" -> turns,
-          "status" -> status,
-          "winner" -> winner,
-          "wDraw" -> whiteOffersDraw.option(true),
-          "bDraw" -> blackOffersDraw.option(true))
-        .noNull
+      Json.obj(
+        "color" -> color,
+        "turns" -> turns,
+        "status" -> status,
+        "winner" -> winner,
+        "wDraw" -> whiteOffersDraw.option(true),
+        "bDraw" -> blackOffersDraw.option(true)).noNull
   }
 
   case class TakebackOffers(white: Boolean, black: Boolean) extends Event {
     def typ = "takebackOffers"
     def data =
-      Json
-        .obj("white" -> white.option(true), "black" -> black.option(true))
+      Json.obj("white" -> white.option(true), "black" -> black.option(true))
         .noNull
     override def owner = true
   }

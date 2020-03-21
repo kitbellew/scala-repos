@@ -80,9 +80,8 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
 
   def addPendingBreakpoint(bp: Breakpoint): Unit = {
     val file = bp.file
-    val breaks = pendingBreaksBySourceName.getOrElse(
-      file.getName,
-      mutable.HashSet())
+    val breaks = pendingBreaksBySourceName
+      .getOrElse(file.getName, mutable.HashSet())
     breaks.add(bp)
     pendingBreaksBySourceName(file.getName) = breaks
   }
@@ -129,11 +128,11 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
   private def handleRPCWithVMAndThread(threadId: DebugThreadId)(
       action: ((VM, ThreadReference) => RpcResponse)): RpcResponse = {
     withVM { vm =>
-      (for (thread <- vm.threadById(threadId))
-        yield { action(vm, thread) }).getOrElse {
-        log.warning(s"Could not find thread: $threadId")
-        FalseResponse
-      }
+      (for (thread <- vm.threadById(threadId)) yield { action(vm, thread) })
+        .getOrElse {
+          log.warning(s"Could not find thread: $threadId")
+          FalseResponse
+        }
     }.getOrElse {
       log.warning("Could not access debug VM")
       FalseResponse

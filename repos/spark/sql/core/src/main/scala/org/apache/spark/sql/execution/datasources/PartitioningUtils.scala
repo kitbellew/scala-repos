@@ -98,8 +98,7 @@ private[sql] object PartitioningUtils {
 
     // We create pairs of (path -> path's partition value) here
     // If the corresponding partition value is None, the pair will be skipped
-    val pathsWithPartitionValues = paths
-      .zip(partitionValues)
+    val pathsWithPartitionValues = paths.zip(partitionValues)
       .flatMap(x => x._2.map(x._1 -> _))
 
     if (pathsWithPartitionValues.isEmpty) {
@@ -119,8 +118,7 @@ private[sql] object PartitioningUtils {
       //   "hdfs://host:9000/invalidPath"
       //   "hdfs://host:9000/path"
       // TODO: Selective case sensitivity.
-      val discoveredBasePaths = optDiscoveredBasePaths
-        .flatMap(x => x)
+      val discoveredBasePaths = optDiscoveredBasePaths.flatMap(x => x)
         .map(_.toString.toLowerCase())
       assert(
         discoveredBasePaths.distinct.size == 1,
@@ -136,8 +134,8 @@ private[sql] object PartitioningUtils {
 
       // Creates the StructType which represents the partition columns.
       val fields = {
-        val PartitionValues(columnNames, literals) =
-          resolvedPartitionValues.head
+        val PartitionValues(columnNames, literals) = resolvedPartitionValues
+          .head
         columnNames.zip(literals).map {
           case (name, Literal(_, dataType)) =>
             // We always assume partition columns are nullable since we've no idea whether null values
@@ -147,8 +145,7 @@ private[sql] object PartitioningUtils {
       }
 
       // Finally, we create `Partition`s based on paths and resolved partition values.
-      val partitions = resolvedPartitionValues
-        .zip(pathsWithPartitionValues)
+      val partitions = resolvedPartitionValues.zip(pathsWithPartitionValues)
         .map {
           case (PartitionValues(_, literals), (path, _)) =>
             PartitionDirectory(InternalRow.fromSeq(literals.map(_.value)), path)
@@ -218,9 +215,8 @@ private[sql] object PartitioningUtils {
         //    i.e. currentPath.getParent == null. For the example of "/table/a=1/",
         //    the top level dir is "/table".
         finished =
-          (
-            maybeColumn.isEmpty && !columns.isEmpty
-          ) || currentPath.getParent == null
+          (maybeColumn.isEmpty && !columns.isEmpty) || currentPath
+            .getParent == null
 
         if (!finished) {
           // For the above example, currentPath will be "/table/".
@@ -277,8 +273,7 @@ private[sql] object PartitioningUtils {
     else {
       // TODO: Selective case sensitivity.
       val distinctPartColNames = pathsWithPartitionValues
-        .map(_._2.columnNames.map(_.toLowerCase()))
-        .distinct
+        .map(_._2.columnNames.map(_.toLowerCase())).distinct
       assert(
         distinctPartColNames.size == 1,
         listConflictingPartitionColumns(pathsWithPartitionValues))
@@ -299,28 +294,25 @@ private[sql] object PartitioningUtils {
 
   private[sql] def listConflictingPartitionColumns(
       pathWithPartitionValues: Seq[(Path, PartitionValues)]): String = {
-    val distinctPartColNames =
-      pathWithPartitionValues.map(_._2.columnNames).distinct
+    val distinctPartColNames = pathWithPartitionValues.map(_._2.columnNames)
+      .distinct
 
     def groupByKey[K, V](seq: Seq[(K, V)]): Map[K, Iterable[V]] =
-      seq
-        .groupBy { case (key, _) => key }
-        .mapValues(_.map { case (_, value) => value })
+      seq.groupBy { case (key, _) => key }.mapValues(_.map {
+        case (_, value) => value
+      })
 
     val partColNamesToPaths = groupByKey(pathWithPartitionValues.map {
       case (path, partValues) => partValues.columnNames -> path
     })
 
-    val distinctPartColLists = distinctPartColNames
-      .map(_.mkString(", "))
-      .zipWithIndex
-      .map {
+    val distinctPartColLists = distinctPartColNames.map(_.mkString(", "))
+      .zipWithIndex.map {
         case (names, index) => s"Partition column name list #$index: $names"
       }
 
     // Lists out those non-leaf partition directories that also contain files
-    val suspiciousPaths = distinctPartColNames
-      .sortBy(_.length)
+    val suspiciousPaths = distinctPartColNames.sortBy(_.length)
       .flatMap(partColNamesToPaths)
 
     s"Conflicting partition column names detected:\n" +

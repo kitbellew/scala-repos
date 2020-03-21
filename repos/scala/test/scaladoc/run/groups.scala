@@ -65,15 +65,14 @@ object Test extends ScaladocModelTest {
     import access._
 
     // just need to check the member exists, access methods will throw an error if there's a problem
-    val base = rootPackage
-      ._package("test")
-      ._package("scaladoc")
+    val base = rootPackage._package("test")._package("scaladoc")
       ._package("groups")
 
     def checkGroup(mbr: MemberEntity, grp: String) =
       assert(
         mbr.group == grp,
-        "Incorrect group for " + mbr.qualifiedName + ": " + mbr.group + " instead of " + grp)
+        "Incorrect group for " + mbr.qualifiedName + ": " + mbr
+          .group + " instead of " + grp)
 
     def checkGroupDesc(
         dtpl: DocTemplateEntity,
@@ -81,10 +80,12 @@ object Test extends ScaladocModelTest {
         grpDesc: String) = {
       assert(
         dtpl.groupDescription(grp).isDefined,
-        "Group description for " + grp + " not defined in " + dtpl.qualifiedName)
+        "Group description for " + grp + " not defined in " + dtpl
+          .qualifiedName)
       assert(
         extractCommentText(dtpl.groupDescription(grp).get).contains(grpDesc),
-        "Group description for " + grp + " in " + dtpl.qualifiedName + " does not contain \"" + grpDesc + "\": \"" +
+        "Group description for " + grp + " in " + dtpl
+          .qualifiedName + " does not contain \"" + grpDesc + "\": \"" +
           extractCommentText(dtpl.groupDescription(grp).get) + "\""
       )
     }
@@ -93,13 +94,15 @@ object Test extends ScaladocModelTest {
       // TODO: See why we need trim here, we already do trimming in the CommentFactory
       assert(
         dtpl.groupName(grp) == grpName,
-        "Group name for " + grp + " in " + dtpl.qualifiedName + " does not equal \"" + grpName + "\": \"" + dtpl
+        "Group name for " + grp + " in " + dtpl
+          .qualifiedName + " does not equal \"" + grpName + "\": \"" + dtpl
           .groupName(grp) + "\"")
 
     def checkGroupPrio(dtpl: DocTemplateEntity, grp: String, grpPrio: Int) =
       assert(
         dtpl.groupPriority(grp) == grpPrio,
-        "Group priority for " + grp + " in " + dtpl.qualifiedName + " does not equal " + grpPrio + ": " + dtpl
+        "Group priority for " + grp + " in " + dtpl
+          .qualifiedName + " does not equal " + grpPrio + ": " + dtpl
           .groupPriority(grp))
 
     val A = base._trait("A")

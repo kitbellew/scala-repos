@@ -44,9 +44,7 @@ abstract class Estimator[M <: Model[M]] extends PipelineStage {
       dataset: DataFrame,
       firstParamPair: ParamPair[_],
       otherParamPairs: ParamPair[_]*): M = {
-    val map = new ParamMap()
-      .put(firstParamPair)
-      .put(otherParamPairs: _*)
+    val map = new ParamMap().put(firstParamPair).put(otherParamPairs: _*)
     fit(dataset, map)
   }
 

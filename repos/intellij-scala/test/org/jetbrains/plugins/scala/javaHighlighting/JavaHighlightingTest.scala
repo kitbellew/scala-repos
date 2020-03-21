@@ -553,8 +553,8 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
     import scala.collection.JavaConverters._
     allInfo.asScala.toList.collect {
       case highlightInfo
-          if highlightInfo.`type`.getSeverity(
-            null) == HighlightSeverity.ERROR =>
+          if highlightInfo.`type`.getSeverity(null) == HighlightSeverity
+            .ERROR =>
         new Error(highlightInfo.getText, highlightInfo.getDescription)
     }
   }

@@ -20,34 +20,30 @@ final class DataForm(
 
   val empty = Form(
     mapping("gameId" -> nonEmptyText, "move" -> nonEmptyText)(Empty.apply)(_ =>
-      None)
-      .verifying(captchaFailMessage, validateCaptcha _))
+      None).verifying(captchaFailMessage, validateCaptcha _))
 
   def emptyWithCaptcha = withCaptcha(empty)
 
   private val anyEmail = nonEmptyText.verifying(Constraints.emailAddress)
-  private val acceptableEmail = anyEmail.verifying(
-    emailAddress.acceptableConstraint)
+  private val acceptableEmail = anyEmail
+    .verifying(emailAddress.acceptableConstraint)
   private def acceptableUniqueEmail(forUser: Option[User]) =
     acceptableEmail.verifying(emailAddress uniqueConstraint forUser)
 
   object signup {
 
-    private val username = nonEmptyText
-      .verifying(
-        Constraints minLength 2,
-        Constraints maxLength 20,
-        Constraints.pattern(
-          regex = """^[\w-]+$""".r,
-          error =
-            "Invalid username. Please use only letters, numbers and dash"),
-        Constraints.pattern(
-          regex = """^[^\d].+$""".r,
-          error = "The username must not start with a number")
-      )
-      .verifying(
-        "This user already exists",
-        u => ! $count.exists(u.toLowerCase) awaitSeconds 2)
+    private val username = nonEmptyText.verifying(
+      Constraints minLength 2,
+      Constraints maxLength 20,
+      Constraints.pattern(
+        regex = """^[\w-]+$""".r,
+        error = "Invalid username. Please use only letters, numbers and dash"),
+      Constraints.pattern(
+        regex = """^[^\d].+$""".r,
+        error = "The username must not start with a number")
+    ).verifying(
+      "This user already exists",
+      u => ! $count.exists(u.toLowerCase) awaitSeconds 2)
       .verifying("This username is not acceptable", u => !LameName(u))
 
     val website = Form(

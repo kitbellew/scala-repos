@@ -18,8 +18,7 @@ class ScalaGenerateCompanionObjectHandler
     extends LanguageCodeInsightActionHandler {
   def isValidFor(editor: Editor, file: PsiFile): Boolean =
     file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType &&
-      GenerationUtil
-        .classOrTraitAtCaret(editor, file)
+      GenerationUtil.classOrTraitAtCaret(editor, file)
         .exists(canAddCompanionObject)
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
@@ -28,17 +27,14 @@ class ScalaGenerateCompanionObjectHandler
       val obj = createCompanionObject(clazz)
       val parent = clazz.getParent
       val addedObj = parent.addAfter(obj, clazz)
-      parent.addAfter(
-        ScalaPsiElementFactory.createNewLine(clazz.getManager),
-        clazz)
+      parent
+        .addAfter(ScalaPsiElementFactory.createNewLine(clazz.getManager), clazz)
       val document = editor.getDocument
-      PsiDocumentManager
-        .getInstance(project)
+      PsiDocumentManager.getInstance(project)
         .doPostponedOperationsAndUnblockDocument(document)
       val offset = addedObj.getTextRange.getStartOffset
       val lineInside = document.getLineNumber(offset) + 1
-      CodeStyleManager
-        .getInstance(project)
+      CodeStyleManager.getInstance(project)
         .adjustLineIndent(document, document.getLineStartOffset(lineInside))
       editor.getCaretModel.moveToOffset(document.getLineEndOffset(lineInside))
       editor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
@@ -59,10 +55,8 @@ class ScalaGenerateCompanionObjectHandler
     if (canAddCompanionObject(clazz)) {
       val name = clazz.name
       val text = s"object $name {\n \n}"
-      ScalaPsiElementFactory.createObjectWithContext(
-        text,
-        clazz.getContext,
-        clazz)
+      ScalaPsiElementFactory
+        .createObjectWithContext(text, clazz.getContext, clazz)
     } else throw new IllegalArgumentException("Cannot create companion object")
   }
 

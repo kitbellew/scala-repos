@@ -61,8 +61,7 @@ object ScalatraBase {
 
   def callbacks(implicit
       request: HttpServletRequest): List[(Try[Any]) => Unit] =
-    request
-      .getOrElse(Callbacks, List.empty[Try[Any] => Unit])
+    request.getOrElse(Callbacks, List.empty[Try[Any] => Unit])
       .asInstanceOf[List[Try[Any] => Unit]]
 
   def addCallback(callback: Try[Any] => Unit)(implicit
@@ -77,8 +76,7 @@ object ScalatraBase {
 
   def renderCallbacks(implicit
       request: HttpServletRequest): List[(Try[Any]) => Unit] = {
-    request
-      .getOrElse(RenderCallbacks, List.empty[Try[Any] => Unit])
+    request.getOrElse(RenderCallbacks, List.empty[Try[Any] => Unit])
       .asInstanceOf[List[Try[Any] => Unit]]
   }
 
@@ -93,8 +91,8 @@ object ScalatraBase {
   }
 
   def getServletRegistration(app: ScalatraBase): Option[ServletRegistration] = {
-    val registrations =
-      app.servletContext.getServletRegistrations.values().asScala.toList
+    val registrations = app.servletContext.getServletRegistrations.values()
+      .asScala.toList
     registrations.find(_.getClassName == app.getClass.getName)
   }
 
@@ -182,8 +180,8 @@ trait ScalatraBase
           withRequestResponse(rq, rs) {
             this match {
               case f: Filter
-                  if !rq.contains(
-                    "org.scalatra.ScalatraFilter.afterFilters.Run") =>
+                  if !rq
+                    .contains("org.scalatra.ScalatraFilter.afterFilters.Run") =>
                 rq("org.scalatra.ScalatraFilter.afterFilters.Run") = new {}
                 runFilters(routes.afterFilters)
               case f: HttpServlet
@@ -411,10 +409,9 @@ trait ScalatraBase
     case is: java.io.InputStream => MimeTypes(is)
     case file: File              => MimeTypes(file)
     case actionResult: ActionResult =>
-      actionResult.headers
-        .find { case (name, value) => name equalsIgnoreCase "CONTENT-TYPE" }
-        .getOrElse(("Content-Type", contentTypeInferrer(actionResult.body)))
-        ._2
+      actionResult.headers.find {
+        case (name, value) => name equalsIgnoreCase "CONTENT-TYPE"
+      }.getOrElse(("Content-Type", contentTypeInferrer(actionResult.body)))._2
     //    case Unit | _: Unit => null
     case _ => "text/html"
   }
@@ -746,9 +743,7 @@ trait ScalatraBase
 
   protected def needsHttps: Boolean = {
     allCatch.withApply(_ => false) {
-      servletContext
-        .getInitParameter(ForceHttpsKey)
-        .blankOption
+      servletContext.getInitParameter(ForceHttpsKey).blankOption
         .map(_.toBoolean) getOrElse false
     }
   }
@@ -796,9 +791,8 @@ trait ScalatraBase
 
   private[this] def buildBaseUrl(implicit
       request: HttpServletRequest): String = {
-    "%s://%s".format(
-      if (needsHttps || isHttps) "https" else "http",
-      serverAuthority)
+    "%s://%s"
+      .format(if (needsHttps || isHttps) "https" else "http", serverAuthority)
   }
 
   private[this] def serverAuthority(implicit
@@ -809,14 +803,13 @@ trait ScalatraBase
   }
 
   def serverHost(implicit request: HttpServletRequest): String = {
-    initParameter(HostNameKey).flatMap(
-      _.blankOption) getOrElse request.getServerName
+    initParameter(HostNameKey).flatMap(_.blankOption) getOrElse request
+      .getServerName
   }
 
   def serverPort(implicit request: HttpServletRequest): Int = {
-    initParameter(PortKey)
-      .flatMap(_.blankOption)
-      .map(_.toInt) getOrElse request.getServerPort
+    initParameter(PortKey).flatMap(_.blankOption).map(_.toInt) getOrElse request
+      .getServerPort
   }
 
   protected def contextPath: String = servletContext.contextPath
@@ -867,11 +860,10 @@ trait ScalatraBase
     */
   def multiParams(implicit request: HttpServletRequest): MultiParams = {
     val read = request.contains("MultiParamsRead")
-    val found = request
-      .get(MultiParamsKey) map (_.asInstanceOf[MultiParams] ++ (if (read)
-                                                                  Map.empty
-                                                                else
-                                                                  request.multiParameters))
+    val found =
+      request.get(MultiParamsKey) map (_.asInstanceOf[MultiParams] ++ (
+        if (read) Map.empty else request.multiParameters
+      ))
     val multi = found getOrElse request.multiParameters
     request("MultiParamsRead") = new {}
     request(MultiParamsKey) = multi

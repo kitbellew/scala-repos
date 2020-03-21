@@ -105,7 +105,8 @@ object WebSocketFlowHandler {
                     "Unexpected continuation frame"))
                   null
                 case MessageType.Continuation
-                    if currentPartialMessage.data.size + read.data.size > bufferLimit =>
+                    if currentPartialMessage.data.size + read.data
+                      .size > bufferLimit =>
                   serverInitiatedClose(
                     CloseMessage(CloseCodes.TooBig, "Message was too big"))
                   null

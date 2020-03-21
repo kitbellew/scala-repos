@@ -57,11 +57,15 @@ object FunctorUsage extends App {
   // two additional derived functions which allow us to turn the
   // contained values into tuples:
   assert(
-    Functor[List]
-      .strengthL("a", List(1, 2, 3)) === List("a" -> 1, "a" -> 2, "a" -> 3))
+    Functor[List].strengthL("a", List(1, 2, 3)) === List(
+      "a" -> 1,
+      "a" -> 2,
+      "a" -> 3))
   assert(
-    Functor[List]
-      .strengthR(List(1, 2, 3), "a") === List(1 -> "a", 2 -> "a", 3 -> "a"))
+    Functor[List].strengthR(List(1, 2, 3), "a") === List(
+      1 -> "a",
+      2 -> "a",
+      3 -> "a"))
 
   // there is syntax for the strength functions
   assert(List(1, 2, 3).strengthL("a") === List("a" -> 1, "a" -> 2, "a" -> 3))

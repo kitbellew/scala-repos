@@ -48,8 +48,7 @@ object ReflectionUtils {
       cl match {
         case cl: java.net.URLClassLoader => (cl.getURLs mkString ",")
         case cl if cl != null && isAbstractFileClassLoader(cl.getClass) =>
-          cl.asInstanceOf[{ val root: scala.reflect.io.AbstractFile }]
-            .root
+          cl.asInstanceOf[{ val root: scala.reflect.io.AbstractFile }].root
             .canonicalPath
         case null =>
           val loadBootCp = (flavor: String) =>
@@ -59,11 +58,8 @@ object ReflectionUtils {
       }
     cl match {
       case cl if cl != null =>
-        "%s of type %s with classpath [%s] and parent being %s".format(
-          cl,
-          cl.getClass,
-          inferClasspath(cl),
-          show(cl.getParent))
+        "%s of type %s with classpath [%s] and parent being %s"
+          .format(cl, cl.getClass, inferClasspath(cl), show(cl.getParent))
       case null =>
         "primordial classloader with boot classpath [%s]".format(inferClasspath(
           cl))
@@ -86,8 +82,8 @@ object ReflectionUtils {
     def singletonAccessor(clazz: Class[_]): Option[Method] =
       if (clazz == null) None
       else {
-        val declaredAccessor = clazz.getDeclaredMethods.find(
-          _.getName == accessorName)
+        val declaredAccessor = clazz.getDeclaredMethods
+          .find(_.getName == accessorName)
         declaredAccessor orElse singletonAccessor(clazz.getSuperclass)
       }
 

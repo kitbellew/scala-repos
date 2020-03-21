@@ -58,16 +58,17 @@ object HttpErrorHandler {
   def bindingsFromConfiguration(
       environment: Environment,
       configuration: Configuration): Seq[Binding[_]] = {
-    Reflect.bindingsFromConfiguration[
-      HttpErrorHandler,
-      play.http.HttpErrorHandler,
-      JavaHttpErrorHandlerAdapter,
-      JavaHttpErrorHandlerDelegate,
-      GlobalSettingsHttpErrorHandler](
-      environment,
-      PlayConfig(configuration),
-      "play.http.errorHandler",
-      "ErrorHandler")
+    Reflect
+      .bindingsFromConfiguration[
+        HttpErrorHandler,
+        play.http.HttpErrorHandler,
+        JavaHttpErrorHandlerAdapter,
+        JavaHttpErrorHandlerDelegate,
+        GlobalSettingsHttpErrorHandler](
+        environment,
+        PlayConfig(configuration),
+        "play.http.errorHandler",
+        "ErrorHandler")
   }
 }
 
@@ -103,11 +104,9 @@ private[play] class GlobalSettingsHttpErrorHandler @Inject() (
         Future.successful(Forbidden(views.html.defaultpages.unauthorized()))
       case NOT_FOUND => global.get.onHandlerNotFound(request)
       case clientError if statusCode >= 400 && statusCode < 500 =>
-        Future.successful(
-          Results.Status(clientError)(views.html.defaultpages.badRequest(
-            request.method,
-            request.uri,
-            message)))
+        Future.successful(Results.Status(clientError)(
+          views.html.defaultpages
+            .badRequest(request.method, request.uri, message)))
       case nonClientError =>
         throw new IllegalArgumentException(
           s"onClientError invoked with non client error status code $statusCode: $message")
@@ -313,8 +312,8 @@ class DefaultHttpErrorHandler(
   protected def onProdServerError(
       request: RequestHeader,
       exception: UsefulException): Future[Result] =
-    Future.successful(InternalServerError(
-      views.html.defaultpages.error(exception)))
+    Future
+      .successful(InternalServerError(views.html.defaultpages.error(exception)))
 
 }
 
@@ -395,13 +394,11 @@ private[play] class JavaHttpErrorHandlerDelegate @Inject() (
       statusCode: Int,
       message: String) =
     FutureConverters.toJava(
-      delegate
-        .onClientError(request._underlyingHeader(), statusCode, message)
+      delegate.onClientError(request._underlyingHeader(), statusCode, message)
         .map(_.asJava))
 
   def onServerError(request: Http.RequestHeader, exception: Throwable) =
     FutureConverters.toJava(
-      delegate
-        .onServerError(request._underlyingHeader(), exception)
+      delegate.onServerError(request._underlyingHeader(), exception)
         .map(_.asJava))
 }

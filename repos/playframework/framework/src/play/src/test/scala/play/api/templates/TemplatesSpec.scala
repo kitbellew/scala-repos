@@ -13,8 +13,7 @@ import play.mvc.{Results => JResults}
 object TemplatesSpec extends Specification {
   "toHtmlArgs" should {
     "escape attribute values" in {
-      PlayMagic
-        .toHtmlArgs(Map('foo -> """bar <>&"'"""))
+      PlayMagic.toHtmlArgs(Map('foo -> """bar <>&"'"""))
         .body must_== """foo="bar &lt;&gt;&amp;&quot;&#x27;""""
     }
   }

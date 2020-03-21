@@ -29,10 +29,8 @@ class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
   }
 
   override def invoke(project: Project, editor: Editor, file: PsiFile): Unit = {
-    val varDef = GenerationUtil.elementOfTypeAtCaret(
-      editor,
-      file,
-      classOf[ScVariableDefinition]) match {
+    val varDef = GenerationUtil
+      .elementOfTypeAtCaret(editor, file, classOf[ScVariableDefinition]) match {
       case Some(x) if x.isSimple && x.containingClass != null => x
       case _                                                  => return
     }
@@ -48,10 +46,8 @@ class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
     val modifiers = varDef.getModifierList.getText
 
     def createDefinition(text: String) =
-      ScalaPsiElementFactory.createDefinitionWithContext(
-        text,
-        varDef.getContext,
-        varDef)
+      ScalaPsiElementFactory
+        .createDefinitionWithContext(text, varDef.getContext, varDef)
 
     val backingVarText = s"private[this] var _$name: $typeText = $defaultValue"
     val backingVar_0 = createDefinition(backingVarText)

@@ -44,9 +44,7 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
     val r = 0.1
 
     // create model with one cluster
-    val model = new StreamingKMeans()
-      .setK(1)
-      .setDecayFactor(1.0)
+    val model = new StreamingKMeans().setK(1).setDecayFactor(1.0)
       .setInitialCenters(
         Array(Vectors.dense(0.0, 0.0, 0.0, 0.0, 0.0)),
         Array(0.0))
@@ -79,8 +77,8 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
         numBatches * numPoints
       ).toDouble
     assert(
-      model.latestModel().clusterCenters(0) ~== Vectors.dense(
-        grandMean.toArray) absTol 1e-5)
+      model.latestModel().clusterCenters(0) ~== Vectors
+        .dense(grandMean.toArray) absTol 1e-5)
   }
 
   test("accuracy for two centers") {
@@ -91,9 +89,7 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
     val r = 0.1
 
     // create model with two clusters
-    val kMeans = new StreamingKMeans()
-      .setK(2)
-      .setHalfLife(2, "batches")
+    val kMeans = new StreamingKMeans().setK(2).setHalfLife(2, "batches")
       .setInitialCenters(
         Array(
           Vectors.dense(-0.1, 0.1, -0.2, -0.3, -0.1),
@@ -137,9 +133,7 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
     val r = 1.0
 
     // create model with two clusters
-    val kMeans = new StreamingKMeans()
-      .setK(2)
-      .setHalfLife(0.5, "points")
+    val kMeans = new StreamingKMeans().setK(2).setHalfLife(0.5, "points")
       .setInitialCenters(
         Array(Vectors.dense(0.0), Vectors.dense(1000.0)),
         Array(1.0, 1.0))
@@ -202,8 +196,8 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
     val data = (0 until numBatches).map { i =>
       (0 until numPoints).map { idx =>
         val center = centers(idx % k)
-        Vectors.dense(
-          Array.tabulate(d)(x => center(x) + rand.nextGaussian() * r))
+        Vectors
+          .dense(Array.tabulate(d)(x => center(x) + rand.nextGaussian() * r))
       }
     }
     (data, centers)

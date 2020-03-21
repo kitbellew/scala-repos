@@ -105,8 +105,7 @@ object Polynomial extends PolynomialInstances {
             if (ts.isEmpty) ("+", s) else throw new IllegalArgumentException(s)
         }
 
-        val m2 = termRe
-          .findPrefixMatchOf(s2)
+        val m2 = termRe.findPrefixMatchOf(s2)
           .getOrElse(throw new IllegalArgumentException(s2))
         val c0 = Option(m2.group(1)).getOrElse("1")
         val c = if (op == "-") "-" + c0 else c0
@@ -527,7 +526,8 @@ trait PolynomialEq[@sp(Double) C] extends Eq[Polynomial[C]] {
   implicit def ct: ClassTag[C]
 
   def eqv(x: Polynomial[C], y: Polynomial[C]): Boolean =
-    x.coeffsArray === y.coeffsArray // TODO: This is bad for sparse arrays. Do better.
+    x.coeffsArray === y
+      .coeffsArray // TODO: This is bad for sparse arrays. Do better.
 }
 
 trait PolynomialInstances0 {

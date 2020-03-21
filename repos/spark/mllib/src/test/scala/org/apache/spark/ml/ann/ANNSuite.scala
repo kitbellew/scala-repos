@@ -38,17 +38,17 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
     val rddData = sc.parallelize(data, 1)
     val hiddenLayersTopology = Array(5)
     val dataSample = rddData.first()
-    val layerSizes =
-      dataSample._1.size +: hiddenLayersTopology :+ dataSample._2.size
+    val layerSizes = dataSample._1.size +: hiddenLayersTopology :+ dataSample._2
+      .size
     val topology = FeedForwardTopology.multiLayerPerceptron(layerSizes, false)
     val initialWeights = FeedForwardModel(topology, 23124).weights()
     val trainer = new FeedForwardTrainer(topology, 2, 1)
     trainer.setWeights(initialWeights)
     trainer.LBFGSOptimizer.setNumIterations(20)
     val model = trainer.train(rddData)
-    val predictionAndLabels = rddData
-      .map { case (input, label) => (model.predict(input)(0), label(0)) }
-      .collect()
+    val predictionAndLabels = rddData.map {
+      case (input, label) => (model.predict(input)(0), label(0))
+    }.collect()
     predictionAndLabels.foreach { case (p, l) => assert(math.round(p) === l) }
   }
 
@@ -70,17 +70,17 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
     val rddData = sc.parallelize(data, 1)
     val hiddenLayersTopology = Array(5)
     val dataSample = rddData.first()
-    val layerSizes =
-      dataSample._1.size +: hiddenLayersTopology :+ dataSample._2.size
+    val layerSizes = dataSample._1.size +: hiddenLayersTopology :+ dataSample._2
+      .size
     val topology = FeedForwardTopology.multiLayerPerceptron(layerSizes, false)
     val initialWeights = FeedForwardModel(topology, 23124).weights()
     val trainer = new FeedForwardTrainer(topology, 2, 2)
     trainer.SGDOptimizer.setNumIterations(2000)
     trainer.setWeights(initialWeights)
     val model = trainer.train(rddData)
-    val predictionAndLabels = rddData
-      .map { case (input, label) => (model.predict(input), label) }
-      .collect()
+    val predictionAndLabels = rddData.map {
+      case (input, label) => (model.predict(input), label)
+    }.collect()
     predictionAndLabels.foreach { case (p, l) => assert(p ~== l absTol 0.5) }
   }
 }

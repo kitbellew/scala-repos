@@ -17,9 +17,8 @@ object TreeLocTest extends SpecLite {
         def streamEqualApprox =
           streamEqual[Tree[A]].contramap((_: Stream[Tree[A]]).take(1000))
         def equal(a1: Tree[A], a2: Tree[A]) =
-          Equal[A].equal(a1.rootLabel, a2.rootLabel) && streamEqualApprox.equal(
-            a1.subForest,
-            a2.subForest)
+          Equal[A].equal(a1.rootLabel, a2.rootLabel) && streamEqualApprox
+            .equal(a1.subForest, a2.subForest)
       }
 
     // TODO checkAll("TreeLoc", applicative.laws[TreeLoc])
@@ -28,8 +27,8 @@ object TreeLocTest extends SpecLite {
 
   "TreeLoc from empty forest does not throw an exception" ! {
     import scalaz.std.option._
-    val result: Option[TreeLoc[Int]] = TreeLoc.fromForest(
-      Stream.empty[Tree[Int]])
+    val result: Option[TreeLoc[Int]] = TreeLoc
+      .fromForest(Stream.empty[Tree[Int]])
     result must_== (none[TreeLoc[Int]])
   }
 

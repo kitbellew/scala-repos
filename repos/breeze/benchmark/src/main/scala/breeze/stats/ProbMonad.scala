@@ -71,9 +71,7 @@ class ProbMonadBenchmark extends BreezeBenchmark {
 
   def timeRepeatCondition(reps: Int) =
     run(reps) {
-      val mg = gaussian
-        .condition(x => x > 0)
-        .condition(x => x < 1)
+      val mg = gaussian.condition(x => x > 0).condition(x => x < 1)
         .condition(x => x > -1)
       mg.samplesVector(size)
     }
@@ -87,9 +85,7 @@ class ProbMonadBenchmark extends BreezeBenchmark {
     }
   def timeDrawOptMultipleCondition(reps: Int) =
     run(reps) {
-      val mg = gaussian
-        .condition(x => x > 0)
-        .condition(x => x < 1)
+      val mg = gaussian.condition(x => x > 0).condition(x => x < 1)
         .condition(x => x > -1)
       val result = new Array[Option[Double]](size)
       cfor(0)(i => i < size, i => i + 1)(i => { result(i) = mg.drawOpt() })

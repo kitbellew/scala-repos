@@ -69,19 +69,21 @@ object ScalaOptionParser {
         "=" ~ token(
           OptNotSpace,
           TokenCompletions.displayOnly("<property value>")))
-      concat(PropName ~ EqualsValue.?.map(_.getOrElse("")))
+      concat(
+        PropName ~ EqualsValue
+          .?.map(_.getOrElse("")))
     }
 
     val sourceFile = FileParser(GlobFilter("*.scala") | GlobFilter("*.java"))
 
     // TODO Allow JVM settings via -J-... and temporarily add them to the ForkOptions
     val UniversalOpt = Property | oneOf(
-      pathSettingNames.map(PathSetting) ++ phaseSettings.map(
-        PhaseSettingParser) ++ booleanSettingNames.map(
-        BooleanSetting) ++ stringSettingNames.map(
-        StringSetting) ++ multiStringSettingNames.map(
-        MultiStringSetting) ++ intSettingNames.map(
-        IntSetting) ++ choiceSettingNames.map {
+      pathSettingNames.map(PathSetting) ++ phaseSettings
+        .map(PhaseSettingParser) ++ booleanSettingNames
+        .map(BooleanSetting) ++ stringSettingNames
+        .map(StringSetting) ++ multiStringSettingNames
+        .map(MultiStringSetting) ++ intSettingNames
+        .map(IntSetting) ++ choiceSettingNames.map {
         case (k, v) => ChoiceSetting(k, v)
       } ++ multiChoiceSettingNames.map {
         case (k, v) => MultiChoiceSetting(k, v)

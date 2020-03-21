@@ -661,7 +661,8 @@ object MiscStackSpecsSuite extends PerfTestSuite {
         """
         | campaigns := //campaigns
         | solve 'gender 
-        |   { gender: 'gender, num: count(campaigns.gender where campaigns.gender = 'gender) }""".stripMargin)
+        |   { gender: 'gender, num: count(campaigns.gender where campaigns.gender = 'gender) }"""
+          .stripMargin)
     }
 
     "determine a histogram of STATE on (tweets union tweets)" := {
@@ -767,7 +768,8 @@ object MiscStackSpecsSuite extends PerfTestSuite {
         query(
           """
           | time := (//clicks).timeString
-          | std::time::yearsBetween(time, "2012-02-09T19:31:13.616+10:00")""".stripMargin)
+          | std::time::yearsBetween(time, "2012-02-09T19:31:13.616+10:00")"""
+            .stripMargin)
       }
 
       "Statslib" := { //note: there are no identities because these functions involve reductions
@@ -930,7 +932,8 @@ object MiscStackSpecsSuite extends PerfTestSuite {
         | meanAbove := mean(spacings.above)
         | meanBelow := mean(spacings.below)
         | 
-        | spacings.click where spacings.below > meanBelow & spacings.above > meanAbove""".stripMargin)
+        | spacings.click where spacings.below > meanBelow & spacings.above > meanAbove"""
+          .stripMargin)
     }
 
     // Regression test for #39590007
@@ -941,7 +944,8 @@ object MiscStackSpecsSuite extends PerfTestSuite {
         | newClicks := new clicks
         |
         | clicks ~ newClicks
-        |   {timeString: clicks.timeString, nonexistant: clicks.nonexistant}""".stripMargin)
+        |   {timeString: clicks.timeString, nonexistant: clicks.nonexistant}"""
+          .stripMargin)
     }
 
     "not explode on a large query" := {

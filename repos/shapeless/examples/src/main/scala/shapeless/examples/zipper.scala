@@ -102,19 +102,8 @@ object ZipperExamples extends App {
   // Dept(Employee(King Agamemnon,8000),Employee(Menelaus,3000) :: Employee(Achilles,3000) :: Employee(Odysseus,2000) :: HNil)
 
   // All together in a single pass ...
-  val singlePass = z.down
-    .put("King Agamemnon")
-    .right
-    .put(8000)
-    .up
-    .right
-    .down
-    .right
-    .down
-    .right
-    .put(3000)
-    .root
-    .reify
+  val singlePass = z.down.put("King Agamemnon").right.put(8000).up.right.down
+    .right.down.right.put(3000).root.reify
 
   typed[D](singlePass)
   println(singlePass)

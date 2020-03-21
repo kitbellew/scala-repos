@@ -123,8 +123,8 @@ package docs.serialization {
     }
 
     "demonstrate configuration of serializers" in {
-      val config = ConfigFactory.parseString(
-        """
+      val config = ConfigFactory
+        .parseString("""
       #//#serialize-serializers-config
       akka {
         actor {
@@ -142,8 +142,8 @@ package docs.serialization {
     }
 
     "demonstrate configuration of serialization-bindings" in {
-      val config = ConfigFactory.parseString(
-        """
+      val config = ConfigFactory
+        .parseString("""
       #//#serialization-bindings-config
       akka {
         actor {
@@ -165,14 +165,11 @@ package docs.serialization {
       #//#serialization-bindings-config
       """)
       val a = ActorSystem("system", config)
-      SerializationExtension(a)
-        .serializerFor(classOf[String])
+      SerializationExtension(a).serializerFor(classOf[String])
         .getClass should be(classOf[JavaSerializer])
-      SerializationExtension(a)
-        .serializerFor(classOf[Customer])
+      SerializationExtension(a).serializerFor(classOf[Customer])
         .getClass should be(classOf[JavaSerializer])
-      SerializationExtension(a)
-        .serializerFor(classOf[java.lang.Boolean])
+      SerializationExtension(a).serializerFor(classOf[java.lang.Boolean])
         .getClass should be(classOf[MyOwnSerializer])
       shutdown(a)
     }
@@ -217,8 +214,8 @@ package docs.serialization {
 
       // Deserialize
       // (beneath fromBinary)
-      val deserializedActorRef = extendedSystem.provider.resolveActorRef(
-        identifier)
+      val deserializedActorRef = extendedSystem.provider
+        .resolveActorRef(identifier)
       // Then just use the ActorRef
       //#actorref-serializer
 

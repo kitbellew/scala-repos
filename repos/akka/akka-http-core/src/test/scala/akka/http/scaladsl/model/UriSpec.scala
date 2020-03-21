@@ -306,8 +306,8 @@ class UriSpec extends WordSpec with Matchers {
     "be parsed and rendered correctly" in {
       def roundTripTo(p: Path, cs: Charset = UTF8) =
         Matcher[String] { s ⇒
-          val rendering =
-            UriRendering.renderPath(new StringRendering, p, cs).get
+          val rendering = UriRendering.renderPath(new StringRendering, p, cs)
+            .get
           if (rendering != s)
             MatchResult(
               matches = false,
@@ -368,7 +368,8 @@ class UriSpec extends WordSpec with Matchers {
     }
     "support the `endsWithSlash` predicate" in {
       Empty.endsWithSlash shouldBe false
-      Path./.endsWithSlash shouldBe true
+      Path
+        ./.endsWithSlash shouldBe true
       Path("abc").endsWithSlash shouldBe false
       Path("abc/").endsWithSlash shouldBe true
       Path("/abc").endsWithSlash shouldBe false
@@ -376,8 +377,10 @@ class UriSpec extends WordSpec with Matchers {
       Path("/abc/def/").endsWithSlash shouldBe true
     }
     "support the `dropChars` modifier" in {
-      Path./.dropChars(0) shouldEqual Path./
-      Path./.dropChars(1) shouldEqual Empty
+      Path
+        ./.dropChars(0) shouldEqual Path./
+      Path
+        ./.dropChars(1) shouldEqual Empty
       Path("/abc/def/").dropChars(0) shouldEqual Path("/abc/def/")
       Path("/abc/def/").dropChars(1) shouldEqual Path("abc/def/")
       Path("/abc/def/").dropChars(2) shouldEqual Path("bc/def/")
@@ -511,15 +514,14 @@ class UriSpec extends WordSpec with Matchers {
       Uri("http://") shouldEqual Uri(
         scheme = "http",
         authority = Authority(Host.Empty))
-      Uri("http:?") shouldEqual Uri.from(
-        scheme = "http",
-        queryString = Some(""))
+      Uri("http:?") shouldEqual Uri
+        .from(scheme = "http", queryString = Some(""))
       Uri("http:") shouldEqual Uri.from(scheme = "http", queryString = None)
       Uri("?a+b=c%2Bd").query() shouldEqual ("a b", "c+d") +: Query.Empty
 
       // illegal paths
-      Uri("foo/another@url/[]and{}") shouldEqual Uri.from(path =
-        "foo/another@url/%5B%5Dand%7B%7D")
+      Uri("foo/another@url/[]and{}") shouldEqual Uri
+        .from(path = "foo/another@url/%5B%5Dand%7B%7D")
       a[IllegalUriException] should be thrownBy Uri(
         "foo/another@url/[]and{}",
         mode = Uri.ParsingMode.Strict)
@@ -533,7 +535,8 @@ class UriSpec extends WordSpec with Matchers {
       Uri("/%2F%5C").path shouldEqual Path / """/\"""
 
       // render
-      Uri("https://server.com/path/to/here?st=12345").toString shouldEqual "https://server.com/path/to/here?st=12345"
+      Uri("https://server.com/path/to/here?st=12345")
+        .toString shouldEqual "https://server.com/path/to/here?st=12345"
       Uri("/foo/?a#b").toString shouldEqual "/foo/?a#b"
 
       // empty host
@@ -639,8 +642,8 @@ class UriSpec extends WordSpec with Matchers {
     "support tunneling a URI through a query param" in {
       val uri = Uri("http://aHost/aPath?aParam=aValue#aFragment")
       val q = Query("uri" -> uri.toString)
-      val uri2 =
-        Uri(path = Path./, fragment = Some("aFragment")).withQuery(q).toString
+      val uri2 = Uri(path = Path./, fragment = Some("aFragment")).withQuery(q)
+        .toString
       uri2 shouldEqual "/?uri=http://ahost/aPath?aParam%3DaValue%23aFragment#aFragment"
       Uri(uri2).query() shouldEqual q
       Uri(q.getOrElse("uri", "<nope>")) shouldEqual uri
@@ -811,16 +814,17 @@ class UriSpec extends WordSpec with Matchers {
     }
 
     "properly render as HTTP request target origin forms" in {
-      Uri(
-        "http://example.com/foo/bar?query=1#frag").toHttpRequestTargetOriginForm.toString === "/foo/bar?query=1"
-      Uri(
-        "http://example.com//foo/bar?query=1#frag").toHttpRequestTargetOriginForm.toString === "//foo/bar?query=1"
+      Uri("http://example.com/foo/bar?query=1#frag")
+        .toHttpRequestTargetOriginForm.toString === "/foo/bar?query=1"
+      Uri("http://example.com//foo/bar?query=1#frag")
+        .toHttpRequestTargetOriginForm.toString === "//foo/bar?query=1"
     }
 
     "survive parsing a URI with thousands of path segments" in {
       val slashes = "/a/" * 2000
       val uri = Uri(s"http://foo.bar/$slashes")
-      uri.toString // was reported to throw StackOverflowException in Spray's URI
+      uri
+        .toString // was reported to throw StackOverflowException in Spray's URI
     }
   }
 }

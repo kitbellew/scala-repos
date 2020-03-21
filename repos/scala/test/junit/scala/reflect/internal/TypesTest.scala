@@ -37,10 +37,8 @@ class TypesTest {
   @Test
   def testTransitivityWithModuleTypeRef(): Unit = {
     import rootMirror.EmptyPackageClass
-    val (module, moduleClass) = EmptyPackageClass.newModuleAndClassSymbol(
-      TermName("O"),
-      NoPosition,
-      0L)
+    val (module, moduleClass) = EmptyPackageClass
+      .newModuleAndClassSymbol(TermName("O"), NoPosition, 0L)
     val minfo = ClassInfoType(List(ObjectTpe), newScope, moduleClass)
     module.moduleClass setInfo minfo
     module setInfo module.moduleClass.tpe

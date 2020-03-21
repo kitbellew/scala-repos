@@ -17,9 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScReferenceElement
 case class Association(kind: DependencyKind, var range: TextRange, path: Path) {
   def isSatisfiedIn(element: PsiElement): Boolean =
     element match {
-      case reference: ScReferenceElement =>
-        Dependency
-          .dependencyFor(reference)
+      case reference: ScReferenceElement => Dependency.dependencyFor(reference)
           .exists(it => it.kind == kind && it.path == path)
       case _ => false
     }

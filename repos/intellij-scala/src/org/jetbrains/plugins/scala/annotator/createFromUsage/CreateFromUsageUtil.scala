@@ -39,11 +39,9 @@ import org.jetbrains.plugins.scala.lang.refactoring.namesSuggester.NameSuggester
 object CreateFromUsageUtil {
 
   def uniqueNames(names: Seq[String]) = {
-    names
-      .foldLeft(List[String]()) { (r, h) =>
-        (h #:: Stream.from(1).map(h + _)).find(!r.contains(_)).get :: r
-      }
-      .reverse
+    names.foldLeft(List[String]()) { (r, h) =>
+      (h #:: Stream.from(1).map(h + _)).find(!r.contains(_)).get :: r
+    }.reverse
   }
 
   def nameByType(tp: ScType) =
@@ -75,14 +73,14 @@ object CreateFromUsageUtil {
       case p: ScPattern              => paramsText(patternArgs(p))
       case MethodRepr(_, _, _, args) => paramsText(args) //for case class
       case _ =>
-        val fromConstrArguments =
-          PsiTreeUtil.getParentOfType(ref, classOf[ScConstructor]) match {
-            case ScConstructor(simple: ScSimpleTypeElement, args)
-                if ref.getParent == simple => args
-            case ScConstructor(pt: ScParameterizedTypeElement, args)
-                if ref.getParent == pt.typeElement => args
-            case _                                 => Seq.empty
-          }
+        val fromConstrArguments = PsiTreeUtil
+          .getParentOfType(ref, classOf[ScConstructor]) match {
+          case ScConstructor(simple: ScSimpleTypeElement, args)
+              if ref.getParent == simple => args
+          case ScConstructor(pt: ScParameterizedTypeElement, args)
+              if ref.getParent == pt.typeElement => args
+          case _                                 => Seq.empty
+        }
         fromConstrArguments.map(argList => paramsText(argList.exprs)).mkString
     }
   }
@@ -118,10 +116,10 @@ object CreateFromUsageUtil {
 
   def addQmarksToTemplate(elem: PsiElement, builder: TemplateBuilder): Unit = {
     val Q_MARKS = "???"
-    elem.depthFirst
-      .filterByType(classOf[ScReferenceExpression])
-      .filter(_.getText == Q_MARKS)
-      .foreach { qmarks => builder.replaceElement(qmarks, Q_MARKS) }
+    elem.depthFirst.filterByType(classOf[ScReferenceExpression])
+      .filter(_.getText == Q_MARKS).foreach { qmarks =>
+        builder.replaceElement(qmarks, Q_MARKS)
+      }
   }
 
   def addUnapplyResultTypesToTemplate(
@@ -155,8 +153,7 @@ object CreateFromUsageUtil {
   }
 
   def unapplyMethodTypeText(pattern: ScPattern) = {
-    val types = CreateFromUsageUtil
-      .patternArgs(pattern)
+    val types = CreateFromUsageUtil.patternArgs(pattern)
       .map(_.getType(TypingContext.empty).getOrAny)
     val typesText = types.map(_.canonicalText).mkString(", ")
     types.size match {
@@ -184,9 +181,7 @@ object TypeAsClass {
   def unapply(scType: ScType): Option[PsiClass] =
     scType match {
       case ScType.ExtractClass(aClass) => Some(aClass)
-      case t: ScType =>
-        ScType
-          .extractDesignatorSingletonType(t)
+      case t: ScType => ScType.extractDesignatorSingletonType(t)
           .flatMap(ScType.extractClass(_, None))
       case _ => None
     }

@@ -45,8 +45,7 @@ private[setup] final class FormFactory(casualOnly: Boolean) {
         "days" -> days,
         "level" -> level,
         "color" -> color,
-        "fen" -> fen)(AiConfig.<<)(_.>>)
-        .verifying("Invalid FEN", _.validFen))
+        "fen" -> fen)(AiConfig.<<)(_.>>).verifying("Invalid FEN", _.validFen))
 
   def aiConfig(implicit ctx: UserContext): Fu[AiConfig] = savedConfig map (_.ai)
 
@@ -69,8 +68,7 @@ private[setup] final class FormFactory(casualOnly: Boolean) {
         "mode" -> mode(withRated = ctx.isAuth && !casualOnly),
         "color" -> color,
         "fen" -> fen
-      )(FriendConfig.<<)(_.>>)
-        .verifying("Invalid clock", _.validClock)
+      )(FriendConfig.<<)(_.>>).verifying("Invalid clock", _.validClock)
         .verifying("Invalid FEN", _.validFen))
 
   def friendConfig(implicit ctx: UserContext): Fu[FriendConfig] =
@@ -92,8 +90,7 @@ private[setup] final class FormFactory(casualOnly: Boolean) {
         "membersOnly" -> boolean,
         "ratingRange" -> optional(ratingRange),
         "color" -> nonEmptyText.verifying(Color.names contains _)
-      )(HookConfig.<<)(_.>>)
-        .verifying("Invalid clock", _.validClock)
+      )(HookConfig.<<)(_.>>).verifying("Invalid clock", _.validClock)
         .verifying("Can't create rated unlimited in lobby", _.noRatedUnlimited))
 
   def hookConfig(implicit ctx: UserContext): Fu[HookConfig] =

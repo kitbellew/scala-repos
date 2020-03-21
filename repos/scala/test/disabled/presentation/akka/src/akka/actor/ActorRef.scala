@@ -87,8 +87,8 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
   @volatile
   protected[akka] var _uuid = newUuid
   @volatile
-  protected[this] var _status: ActorRefInternals.StatusType =
-    ActorRefInternals.UNSTARTED
+  protected[this] var _status: ActorRefInternals.StatusType = ActorRefInternals
+    .UNSTARTED
 
   /**
     * User overridable callback/setting.
@@ -326,16 +326,14 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
       message: AnyRef,
       timeout: Long,
       sender: ActorRef): AnyRef = {
-    !!(message, timeout)(Option(sender))
-      .getOrElse(
-        throw new ActorTimeoutException(
-          "Message [" + message +
-            "]\n\tsent to [" + actorClassName +
-            "]\n\tfrom [" + (if (sender ne null) sender.actorClassName
-                             else "nowhere") +
-            "]\n\twith timeout [" + timeout +
-            "]\n\ttimed out."))
-      .asInstanceOf[AnyRef]
+    !!(message, timeout)(Option(sender)).getOrElse(
+      throw new ActorTimeoutException(
+        "Message [" + message +
+          "]\n\tsent to [" + actorClassName +
+          "]\n\tfrom [" + (if (sender ne null) sender.actorClassName
+                           else "nowhere") +
+          "]\n\twith timeout [" + timeout +
+          "]\n\ttimed out.")).asInstanceOf[AnyRef]
   }
 
   /**
@@ -657,8 +655,8 @@ class LocalActorRef private[akka] (
   @volatile
   private var _mailbox: AnyRef = _
   @volatile
-  private[akka] var _dispatcher: MessageDispatcher =
-    Dispatchers.defaultGlobalDispatcher
+  private[akka] var _dispatcher: MessageDispatcher = Dispatchers
+    .defaultGlobalDispatcher
 
   protected[akka] val actorInstance = guard.withGuard {
     new AtomicReference[Actor](newActor)
@@ -1034,8 +1032,8 @@ class LocalActorRef private[akka] (
           else (now - windowStart) <= withinTimeRange.get
 
         //The actor is dead if it dies X times within the window of restart
-        val unrestartable =
-          insideWindow && retries > maxNrOfRetries.getOrElse(1)
+        val unrestartable = insideWindow && retries > maxNrOfRetries
+          .getOrElse(1)
 
         if (windowStart == 0 || !insideWindow) //(Re-)set the start of the window
           restartsWithinTimeRangeTimestamp = now
@@ -1067,9 +1065,10 @@ class LocalActorRef private[akka] (
             failedActor,
             null
           ) // Only null out the references if we could instantiate the new actor
-          actorInstance.set(
-            freshActor
-          ) // Assign it here so if preStart fails, we can null out the sef-refs next call
+          actorInstance
+            .set(
+              freshActor
+            ) // Assign it here so if preStart fails, we can null out the sef-refs next call
           freshActor.preStart
           freshActor.postRestart(reason)
       }
@@ -1255,8 +1254,7 @@ class LocalActorRef private[akka] (
 
   protected[akka] def checkReceiveTimeout = {
     cancelReceiveTimeout
-    if (receiveTimeout.isDefined && dispatcher
-          .mailboxSize(this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
+    if (receiveTimeout.isDefined && dispatcher.mailboxSize(this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
       _futureTimeout = Some(Scheduler.scheduleOnce(
         this,
         ReceiveTimeout,

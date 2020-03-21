@@ -607,29 +607,26 @@ class Flags(
             case Array(k) if !hasFlag(k) =>
               if (allowUndefinedFlags) remaining += a
               else
-                return Error("Error parsing flag \"%s\": %s\n%s".format(
-                  k,
-                  FlagUndefinedMessage,
-                  usage))
+                return Error(
+                  "Error parsing flag \"%s\": %s\n%s"
+                    .format(k, FlagUndefinedMessage, usage))
 
             // Flag isn't defined
             case Array(k, _) if !hasFlag(k) =>
               if (allowUndefinedFlags) remaining += a
               else
-                return Error("Error parsing flag \"%s\": %s\n%s".format(
-                  k,
-                  FlagUndefinedMessage,
-                  usage))
+                return Error(
+                  "Error parsing flag \"%s\": %s\n%s"
+                    .format(k, FlagUndefinedMessage, usage))
 
             // Optional argument without a value
             case Array(k) if flag(k).noArgumentOk => flag(k).parse()
 
             // Mandatory argument without a value and with no more arguments.
             case Array(k) if i == args.size =>
-              return Error("Error parsing flag \"%s\": %s\n%s".format(
-                k,
-                FlagValueRequiredMessage,
-                usage))
+              return Error(
+                "Error parsing flag \"%s\": %s\n%s"
+                  .format(k, FlagValueRequiredMessage, usage))
 
             // Mandatory argument with another argument
             case Array(k) =>
@@ -637,10 +634,9 @@ class Flags(
               try flag(k).parse(args(i - 1))
               catch {
                 case NonFatal(e) =>
-                  return Error("Error parsing flag \"%s\": %s\n%s".format(
-                    k,
-                    e.getMessage,
-                    usage))
+                  return Error(
+                    "Error parsing flag \"%s\": %s\n%s"
+                      .format(k, e.getMessage, usage))
               }
 
             // Mandatory k=v
@@ -648,10 +644,9 @@ class Flags(
               try flag(k).parse(v)
               catch {
                 case e: Throwable =>
-                  return Error("Error parsing flag \"%s\": %s\n%s".format(
-                    k,
-                    e.getMessage,
-                    usage))
+                  return Error(
+                    "Error parsing flag \"%s\": %s\n%s"
+                      .format(k, e.getMessage, usage))
               }
           }
         } else { remaining += a }
@@ -792,10 +787,8 @@ class Flags(
       val globalLines =
         if (!includeGlobal) Seq.empty
         else {
-          GlobalFlag
-            .getAllOrEmptyArray(getClass.getClassLoader)
-            .map(_.usageString)
-            .sorted
+          GlobalFlag.getAllOrEmptyArray(getClass.getClassLoader)
+            .map(_.usageString).sorted
         }
 
       val cmd = if (cmdUsage.nonEmpty) cmdUsage + "\n" else "usage: "
@@ -825,8 +818,8 @@ class Flags(
       classLoader: ClassLoader = this.getClass.getClassLoader)
       : Iterable[Flag[_]] =
     synchronized {
-      var flags =
-        TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags.valuesIterator
+      var flags = TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags
+        .valuesIterator
 
       if (includeGlobal) { flags ++= GlobalFlag.getAll(classLoader).iterator }
 
@@ -915,12 +908,10 @@ class GlobalFlag[T] private[app] (
       try Some(flaggable.parse(p))
       catch {
         case NonFatal(exc) =>
-          java.util.logging.Logger
-            .getLogger("")
-            .log(
-              java.util.logging.Level.SEVERE,
-              "Failed to parse system property " + name + " as flag",
-              exc)
+          java.util.logging.Logger.getLogger("").log(
+            java.util.logging.Level.SEVERE,
+            "Failed to parse system property " + name + " as flag",
+            exc)
           None
       }
     }

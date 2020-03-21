@@ -180,10 +180,12 @@ trait ShardService
               produce(application / json)(
                 new BrowseServiceHandler[ByteChunk](state.platform.vfs) map {
                   _ map { _ map { _ map { jvalueToChunk } } }
-                })(ResponseModifier.responseFG[
-                ({ type λ[α] = (APIKey, Path) => α })#λ,
-                Future,
-                ByteChunk])
+                })(
+                ResponseModifier
+                  .responseFG[
+                    ({ type λ[α] = (APIKey, Path) => α })#λ,
+                    Future,
+                    ByteChunk])
             } ~
               options {
                 (request: HttpRequest[ByteChunk]) => (a: APIKey, p: Path) =>
@@ -197,10 +199,12 @@ trait ShardService
                   state.platform.vfs,
                   legacy = true) map {
                   _ map { _ map { _ map { jvalueToChunk } } }
-                })(ResponseModifier.responseFG[
-                ({ type λ[α] = (APIKey, Path) => α })#λ,
-                Future,
-                ByteChunk])
+                })(
+                ResponseModifier
+                  .responseFG[
+                    ({ type λ[α] = (APIKey, Path) => α })#λ,
+                    Future,
+                    ByteChunk])
             } ~
               options {
                 (request: HttpRequest[ByteChunk]) => (a: APIKey, p: Path) =>

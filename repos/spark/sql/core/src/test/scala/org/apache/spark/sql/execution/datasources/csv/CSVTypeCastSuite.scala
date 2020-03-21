@@ -100,8 +100,8 @@ class CSVTypeCastSuite extends SparkFunSuite {
         DateTimeUtils.stringToTime(timestamp).getTime * 1000L)
     assert(
       CSVTypeCast.castTo("2015-01-01", DateType) ==
-        DateTimeUtils.millisToDays(
-          DateTimeUtils.stringToTime("2015-01-01").getTime))
+        DateTimeUtils
+          .millisToDays(DateTimeUtils.stringToTime("2015-01-01").getTime))
   }
 
   test("Float and Double Types are cast correctly with Locale") {

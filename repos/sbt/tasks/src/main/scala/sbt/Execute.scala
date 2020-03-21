@@ -30,8 +30,7 @@ private[sbt] object Execute {
       val checkCycles: Boolean,
       val overwriteNode: Incomplete => Boolean)
 
-  final val checkPreAndPostConditions = sys.props
-    .get("sbt.execute.extrachecks")
+  final val checkPreAndPostConditions = sys.props.get("sbt.execute.extrachecks")
     .exists(java.lang.Boolean.parseBoolean)
 }
 sealed trait Completed {
@@ -75,7 +74,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   import State.{Pending, Running, Calling, Done}
 
   def dump: String =
-    "State: " + state.toString + "\n\nResults: " + results + "\n\nCalls: " + callers + "\n\n"
+    "State: " + state
+      .toString + "\n\nResults: " + results + "\n\nCalls: " + callers + "\n\n"
 
   def run[T](root: A[T])(implicit strategy: Strategy): Result[T] =
     try { runKeep(root)(strategy)(root) }

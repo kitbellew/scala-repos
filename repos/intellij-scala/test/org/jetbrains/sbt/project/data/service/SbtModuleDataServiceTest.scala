@@ -35,8 +35,7 @@ class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
   def doTest(imports: Seq[String], resolvers: Set[SbtResolver]): Unit = {
     FileUtil.delete(SbtResolverIndexesManager.DEFAULT_INDEXES_DIR)
     importProjectData(generateProject(imports, resolvers))
-    val module = ModuleManager
-      .getInstance(getProject)
+    val module = ModuleManager.getInstance(getProject)
       .findModuleByName("Module 1")
 
     if (imports.nonEmpty) assert(SbtModule.getImportsFrom(module) == imports)

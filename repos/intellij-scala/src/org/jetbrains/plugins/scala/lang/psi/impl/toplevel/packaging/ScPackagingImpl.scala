@@ -153,11 +153,10 @@ class ScPackagingImpl private (
       ProgressManager.checkCanceled()
       val p = ScPackageImpl(
         JavaPsiFacade.getInstance(getProject).findPackage(pName))
-      if (p != null && !p.processDeclarations(
-            processor,
-            state,
-            lastParent,
-            place)) { return false }
+      if (p != null && !p
+            .processDeclarations(processor, state, lastParent, place)) {
+        return false
+      }
 
       findPackageObject(place.getResolveScope) match {
         case Some(po) =>
@@ -173,18 +172,14 @@ class ScPackagingImpl private (
     }
 
     if (lastParent != null && lastParent.getContext == this) {
-      if (!super[ScImportsHolder].processDeclarations(
-            processor,
-            state,
-            lastParent,
-            place)) return false
+      if (!super[ScImportsHolder]
+            .processDeclarations(processor, state, lastParent, place))
+        return false
 
       if (ScalaFileImpl.isProcessLocalClasses(lastParent) &&
-          !super[ScDeclarationSequenceHolder].processDeclarations(
-            processor,
-            state,
-            lastParent,
-            place)) return false
+          !super[ScDeclarationSequenceHolder]
+            .processDeclarations(processor, state, lastParent, place))
+        return false
     }
 
     true
@@ -192,15 +187,14 @@ class ScPackagingImpl private (
 
   def findPackageObject(scope: GlobalSearchScope): Option[ScTypeDefinition] = {
     Option(
-      ScalaShortNamesCacheManager
-        .getInstance(getProject)
+      ScalaShortNamesCacheManager.getInstance(getProject)
         .getPackageObjectByName(getPackageName, scope))
   }
 
   def getBodyText: String = {
     if (isExplicit) {
-      val startOffset = findChildByType[PsiElement](
-        ScalaTokenTypes.tLBRACE).getTextRange.getEndOffset - getTextRange.getStartOffset
+      val startOffset = findChildByType[PsiElement](ScalaTokenTypes.tLBRACE)
+        .getTextRange.getEndOffset - getTextRange.getStartOffset
       val text = getText
       val endOffset =
         if (text.apply(text.length - 1) == '}') { text.length - 1 }

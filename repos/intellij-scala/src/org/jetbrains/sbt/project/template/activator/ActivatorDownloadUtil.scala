@@ -21,7 +21,8 @@ object ActivatorDownloadUtil {
     val parentDirExists: Boolean = FileUtil.createParentDirs(outputFile)
     if (!parentDirExists)
       throw new IOException(
-        "Parent dir of '" + outputFile.getAbsolutePath + "' can not be created!")
+        "Parent dir of '" + outputFile
+          .getAbsolutePath + "' can not be created!")
 
     val out = new BufferedOutputStream(new FileOutputStream(outputFile))
     try { download(progress, url, out) }
@@ -37,9 +38,7 @@ object ActivatorDownloadUtil {
     if (progress != null) progress.setText2("Downloading " + location)
 
     try {
-      HttpRequests
-        .request(location)
-        .productNameAsUserAgent
+      HttpRequests.request(location).productNameAsUserAgent
         .connect(new HttpRequests.RequestProcessor[Object]() {
           def process(request: HttpRequests.Request): AnyRef = {
             try {
@@ -76,8 +75,8 @@ object ActivatorDownloadUtil {
 
     if (ind != -1) {
       val mes: String = formatContentLength(contentLengthInBytes)
-      val newText: String = text.substring(0, ind) + mes + text.substring(
-        ind + CONTENT_LENGTH_TEMPLATE.length)
+      val newText: String = text.substring(0, ind) + mes + text
+        .substring(ind + CONTENT_LENGTH_TEMPLATE.length)
       progress.setText(newText)
     }
   }

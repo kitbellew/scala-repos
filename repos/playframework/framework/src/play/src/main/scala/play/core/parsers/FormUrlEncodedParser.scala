@@ -19,10 +19,8 @@ object FormUrlEncodedParser {
       data: String,
       encoding: String = "utf-8"): Map[String, Seq[String]] = {
     // Generate the pairs of values from the string.
-    parseToPairs(data, encoding)
-      .groupBy(_._1)
-      .map(param => param._1 -> param._2.map(_._2))
-      .toMap
+    parseToPairs(data, encoding).groupBy(_._1)
+      .map(param => param._1 -> param._2.map(_._2)).toMap
   }
 
   /**
@@ -54,9 +52,8 @@ object FormUrlEncodedParser {
       data: String,
       encoding: String): java.util.Map[String, java.util.List[String]] = {
     import scala.collection.JavaConverters._
-    parse(data, encoding).map {
-      case (key, values) => key -> values.asJava
-    }.asJava
+    parse(data, encoding).map { case (key, values) => key -> values.asJava }
+      .asJava
   }
 
   /**
@@ -69,9 +66,8 @@ object FormUrlEncodedParser {
       data: String,
       encoding: String): java.util.Map[String, Array[String]] = {
     import scala.collection.JavaConverters._
-    parse(data, encoding).map {
-      case (key, values) => key -> values.toArray
-    }.asJava
+    parse(data, encoding).map { case (key, values) => key -> values.toArray }
+      .asJava
   }
 
   private[this] val parameterDelimiter = "[&;]".r

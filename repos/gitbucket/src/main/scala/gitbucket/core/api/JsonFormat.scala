@@ -19,10 +19,8 @@ object JsonFormat {
       (
         {
           case JString(s) =>
-            Try(parserISO.parseDateTime(s)).toOption
-              .map(_.toDate)
-              .getOrElse(
-                throw new MappingException("Can't convert " + s + " to Date"))
+            Try(parserISO.parseDateTime(s)).toOption.map(_.toDate).getOrElse(
+              throw new MappingException("Can't convert " + s + " to Date"))
         },
         {
           case x: Date =>

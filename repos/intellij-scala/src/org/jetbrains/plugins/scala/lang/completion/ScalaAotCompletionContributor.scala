@@ -33,8 +33,7 @@ import org.jetbrains.plugins.scala.settings.ScalaProjectSettings
 class ScalaAotCompletionContributor extends ScalaCompletionContributor {
   extend(
     CompletionType.BASIC,
-    PlatformPatterns
-      .psiElement(ScalaTokenTypes.tIDENTIFIER)
+    PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER)
       .withParent(classOf[ScParameter]),
     new CompletionProvider[CompletionParameters] {
 
@@ -54,8 +53,7 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
 
   extend(
     CompletionType.BASIC,
-    PlatformPatterns
-      .psiElement(ScalaTokenTypes.tIDENTIFIER)
+    PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER)
       .withParent(classOf[ScFieldId]),
     new CompletionProvider[CompletionParameters] {
 
@@ -63,8 +61,8 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
           parameters: CompletionParameters,
           context: ProcessingContext,
           result: CompletionResultSet) {
-        val scope =
-          positionFromParameters(parameters).getContext.getContext.getContext
+        val scope = positionFromParameters(parameters).getContext.getContext
+          .getContext
 
         if (!scope.isInstanceOf[ScVariableDeclaration] && !scope
               .isInstanceOf[ScValueDeclaration]) return
@@ -114,22 +112,18 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
 private object ScalaAotCompletionContributor {
   def typeIdentifierIn(parameter: ScParameter): PsiElement =
     parameter.paramType.get.depthFirst
-      .find(_.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER)
-      .get
+      .find(_.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER).get
 
   def typeIdentifierIn(declaration: ScTypedDeclaration): PsiElement =
     declaration.typeElement.get.depthFirst
-      .find(_.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER)
-      .get
+      .find(_.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER).get
 
   def capitalize(s: String): String =
     if (s.length == 0) s else s.substring(0, 1).toUpperCase + s.substring(1)
 
   def createParameterFrom(text: String, original: PsiElement): ScParameter = {
-    val clauses = ScalaPsiElementFactory.createParamClausesWithContext(
-      s"($text)",
-      original.getContext,
-      original)
+    val clauses = ScalaPsiElementFactory
+      .createParamClausesWithContext(s"($text)", original.getContext, original)
     clauses.params.head
   }
 
@@ -154,13 +148,11 @@ private class MyConsumer(
 
     val name = suggestNameFor(prefix, element.getLookupString)
 
-    val renderingDecorator = LookupElementDecorator.withRenderer(
-      element,
-      new MyElementRenderer(name, typed))
+    val renderingDecorator = LookupElementDecorator
+      .withRenderer(element, new MyElementRenderer(name, typed))
 
-    val insertionDecorator = LookupElementDecorator.withInsertHandler(
-      renderingDecorator,
-      new MyInsertHandler(name, typed))
+    val insertionDecorator = LookupElementDecorator
+      .withInsertHandler(renderingDecorator, new MyInsertHandler(name, typed))
 
     if (typed) { resultSet.consume(insertionDecorator) }
     else if (!consumed.contains(name)) {

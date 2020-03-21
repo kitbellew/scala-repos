@@ -31,8 +31,8 @@ object SHtmlSpec extends Specification with XmlMatchers {
   val inputField1 = testS("/")(
     ("#number" #> SHtml.number(0, println(_), 0, 100)).apply(html1))
   val inputField2 = testS("/")(
-    ("#number" #> SHtml.number(0, println(_: Double), 0, 100, 0.1)).apply(
-      html1))
+    ("#number" #> SHtml.number(0, println(_: Double), 0, 100, 0.1))
+      .apply(html1))
   val inputField3 = testS("/")(
     ("#number" #> SHtml.number(0, println(_: Double), 0, 100, 1)).apply(html1))
 

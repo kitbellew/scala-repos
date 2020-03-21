@@ -47,18 +47,15 @@ class FileSourceTest extends WordSpec with Matchers {
   import Dsl._
 
   "A MultipleTsvFile Source" should {
-    JobTest(new MultiTsvInputJob(_))
-      .source(
-        MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)),
-        List(("foobar", 1), ("helloworld", 2)))
+    JobTest(new MultiTsvInputJob(_)).source(
+      MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)),
+      List(("foobar", 1), ("helloworld", 2)))
       .sink[(String, Int)](Tsv("output0")) { outBuf =>
         "take multiple Tsv files as input sources" in {
           outBuf should have length 2
           outBuf.toList shouldBe List(("foobar", 1), ("helloworld", 2))
         }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   "A WritableSequenceFile Source" should {
@@ -72,40 +69,34 @@ class FileSourceTest extends WordSpec with Matchers {
           outBuf should have length 2
           outBuf.toList shouldBe List(("foobar0", 1), ("helloworld0", 2))
         }
-      }
-      .sink[(String, Int)](WritableSequenceFile(
+      }.sink[(String, Int)](WritableSequenceFile(
         "output1",
         ('query, 'queryStats))) { outBuf =>
         "writable sequence file input" in {
           outBuf should have length 2
           outBuf.toList shouldBe List(("foobar1", 1), ("helloworld1", 2))
         }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   "A MultipleTextLineFiles Source" should {
     JobTest(new MultipleTextLineFilesJob(_))
-      .arg("input", List("input0", "input1"))
-      .source(
+      .arg("input", List("input0", "input1")).source(
         MultipleTextLineFiles("input0", "input1"),
-        List("foobar", "helloworld"))
-      .sink[String](Tsv("output0")) { outBuf =>
+        List("foobar", "helloworld")).sink[String](Tsv("output0")) { outBuf =>
         "take multiple text files as input sources" in {
           outBuf should have length 2
           outBuf.toList shouldBe List("foobar", "helloworld")
         }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   "TextLine.toIterator" should {
     "correctly read strings" in {
       TextLine("../tutorial/data/hello.txt")
-        .toIterator(Config.default, Local(true))
-        .toList shouldBe List("Hello world", "Goodbye world")
+        .toIterator(Config.default, Local(true)).toList shouldBe List(
+        "Hello world",
+        "Goodbye world")
     }
   }
 
@@ -257,23 +248,23 @@ class FileSourceTest extends WordSpec with Matchers {
     }
 
     "remove /* from a path ending in /*" in {
-      TestFixedPathSource(
-        "test_data/2013/06/*").hdfsWritePath shouldBe "test_data/2013/06"
+      TestFixedPathSource("test_data/2013/06/*")
+        .hdfsWritePath shouldBe "test_data/2013/06"
     }
 
     "leave path as-is when it ends in a directory name" in {
-      TestFixedPathSource(
-        "test_data/2013/06").hdfsWritePath shouldBe "test_data/2013/06"
+      TestFixedPathSource("test_data/2013/06")
+        .hdfsWritePath shouldBe "test_data/2013/06"
     }
 
     "leave path as-is when it ends in a directory name/" in {
-      TestFixedPathSource(
-        "test_data/2013/06/").hdfsWritePath shouldBe "test_data/2013/06/"
+      TestFixedPathSource("test_data/2013/06/")
+        .hdfsWritePath shouldBe "test_data/2013/06/"
     }
 
     "leave path as-is when it ends in * without a preceeding /" in {
-      TestFixedPathSource(
-        "test_data/2013/06*").hdfsWritePath shouldBe "test_data/2013/06*"
+      TestFixedPathSource("test_data/2013/06*")
+        .hdfsWritePath shouldBe "test_data/2013/06*"
     }
   }
 
@@ -328,8 +319,8 @@ object TestInvalidFileSource extends FileSource with Mappable[String] {
   override def localPaths: Iterable[String] = Iterable("invalid_local_path")
   override def hdfsScheme = new NullScheme(Fields.ALL, Fields.NONE)
   override def converter[U >: String] =
-    TupleConverter.asSuperConverter[String, U](
-      implicitly[TupleConverter[String]])
+    TupleConverter
+      .asSuperConverter[String, U](implicitly[TupleConverter[String]])
 
   val conf = new Configuration()
 

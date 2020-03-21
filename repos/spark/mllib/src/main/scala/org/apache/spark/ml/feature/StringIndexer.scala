@@ -88,11 +88,8 @@ class StringIndexer(override val uid: String)
   def setOutputCol(value: String): this.type = set(outputCol, value)
 
   override def fit(dataset: DataFrame): StringIndexerModel = {
-    val counts = dataset
-      .select(col($(inputCol)).cast(StringType))
-      .rdd
-      .map(_.getString(0))
-      .countByValue()
+    val counts = dataset.select(col($(inputCol)).cast(StringType)).rdd
+      .map(_.getString(0)).countByValue()
     val labels = counts.toSeq.sortBy(-_._2).map(_._1).toArray
     copyValues(new StringIndexerModel(uid, labels).setParent(this))
   }
@@ -167,10 +164,8 @@ class StringIndexerModel(override val uid: String, val labels: Array[String])
       else { throw new SparkException(s"Unseen label: $label.") }
     }
 
-    val metadata = NominalAttribute.defaultAttr
-      .withName($(inputCol))
-      .withValues(labels)
-      .toMetadata()
+    val metadata = NominalAttribute.defaultAttr.withName($(inputCol))
+      .withValues(labels).toMetadata()
     // If we are skipping invalid records, filter them out.
     val filteredDataset = (getHandleInvalid) match {
       case "skip" => {
@@ -215,10 +210,7 @@ object StringIndexerModel extends MLReadable[StringIndexerModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       val data = Data(instance.labels)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -230,10 +222,7 @@ object StringIndexerModel extends MLReadable[StringIndexerModel] {
     override def load(path: String): StringIndexerModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("labels")
-        .head()
+      val data = sqlContext.read.parquet(dataPath).select("labels").head()
       val labels = data.getAs[Seq[String]](0).toArray
       val model = new StringIndexerModel(metadata.uid, labels)
       DefaultParamsReader.getAndSetParams(model, metadata)
@@ -312,11 +301,8 @@ class IndexToString private[ml] (override val uid: String)
     // If the labels array is empty use column metadata
     val values =
       if ($(labels).isEmpty) {
-        Attribute
-          .fromStructField(inputColSchema)
-          .asInstanceOf[NominalAttribute]
-          .values
-          .get
+        Attribute.fromStructField(inputColSchema).asInstanceOf[NominalAttribute]
+          .values.get
       } else { $(labels) }
     val indexer = udf { index: Double =>
       val idx = index.toInt

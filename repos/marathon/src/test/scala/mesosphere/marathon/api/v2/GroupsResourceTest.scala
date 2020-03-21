@@ -29,8 +29,8 @@ class GroupsResourceTest
   test("dry run update") {
     Given("A real Group Manager with no groups")
     useRealGroupManager()
-    groupRepository.group(GroupRepository.zkRootName) returns Future.successful(
-      Some(Group.empty))
+    groupRepository.group(GroupRepository.zkRootName) returns Future
+      .successful(Some(Group.empty))
 
     val app = AppDefinition(id = "/test/app".toRootPath, cmd = Some("test cmd"))
     val update = GroupUpdate(
@@ -39,12 +39,8 @@ class GroupsResourceTest
 
     When("Doing a dry run update")
     val body = Json.stringify(Json.toJson(update)).getBytes
-    val result = groupsResource.update(
-      "/test",
-      force = false,
-      dryRun = true,
-      body,
-      auth.request)
+    val result = groupsResource
+      .update("/test", force = false, dryRun = true, body, auth.request)
     val json = Json.parse(result.getEntity.toString)
 
     Then("The deployment plan is correct")
@@ -84,30 +80,20 @@ class GroupsResourceTest
     create.getStatus should be(auth.NotAuthenticatedStatus)
 
     When(s"the group is created")
-    val createWithPath = groupsResource.createWithPath(
-      "/my/id",
-      false,
-      body.getBytes("UTF-8"),
-      req)
+    val createWithPath = groupsResource
+      .createWithPath("/my/id", false, body.getBytes("UTF-8"), req)
     Then("we receive a NotAuthenticated response")
     createWithPath.getStatus should be(auth.NotAuthenticatedStatus)
 
     When(s"the root group is updated")
-    val updateRoot = groupsResource.updateRoot(
-      false,
-      false,
-      body.getBytes("UTF-8"),
-      req)
+    val updateRoot = groupsResource
+      .updateRoot(false, false, body.getBytes("UTF-8"), req)
     Then("we receive a NotAuthenticated response")
     updateRoot.getStatus should be(auth.NotAuthenticatedStatus)
 
     When(s"the group is updated")
-    val update = groupsResource.update(
-      "",
-      false,
-      false,
-      body.getBytes("UTF-8"),
-      req)
+    val update = groupsResource
+      .update("", false, false, body.getBytes("UTF-8"), req)
     Then("we receive a NotAuthenticated response")
     update.getStatus should be(auth.NotAuthenticatedStatus)
 
@@ -126,8 +112,8 @@ class GroupsResourceTest
     Given("A real group manager with one app")
     useRealGroupManager()
     val group = Group(PathId.empty, apps = Set(AppDefinition("/a".toRootPath)))
-    groupRepository.group(GroupRepository.zkRootName) returns Future.successful(
-      Some(group))
+    groupRepository.group(GroupRepository.zkRootName) returns Future
+      .successful(Some(group))
     groupRepository.rootGroup returns Future.successful(Some(group))
 
     Given("An unauthorized request")
@@ -142,30 +128,20 @@ class GroupsResourceTest
     create.getStatus should be(auth.UnauthorizedStatus)
 
     When(s"the group is created")
-    val createWithPath = groupsResource.createWithPath(
-      "/my/id",
-      false,
-      body.getBytes("UTF-8"),
-      req)
+    val createWithPath = groupsResource
+      .createWithPath("/my/id", false, body.getBytes("UTF-8"), req)
     Then("we receive a Not Authorized response")
     createWithPath.getStatus should be(auth.UnauthorizedStatus)
 
     When(s"the root group is updated")
-    val updateRoot = groupsResource.updateRoot(
-      false,
-      false,
-      body.getBytes("UTF-8"),
-      req)
+    val updateRoot = groupsResource
+      .updateRoot(false, false, body.getBytes("UTF-8"), req)
     Then("we receive a Not Authorized response")
     updateRoot.getStatus should be(auth.UnauthorizedStatus)
 
     When(s"the group is updated")
-    val update = groupsResource.update(
-      "",
-      false,
-      false,
-      body.getBytes("UTF-8"),
-      req)
+    val update = groupsResource
+      .update("", false, false, body.getBytes("UTF-8"), req)
     Then("we receive a Not Authorized response")
     update.getStatus should be(auth.UnauthorizedStatus)
 
@@ -185,8 +161,8 @@ class GroupsResourceTest
     Given("A real group manager with no apps")
     useRealGroupManager()
     groupRepository.group("/") returns Future.successful(None)
-    groupRepository.group(GroupRepository.zkRootName) returns Future.successful(
-      Some(Group.empty))
+    groupRepository.group(GroupRepository.zkRootName) returns Future
+      .successful(Some(Group.empty))
     groupRepository.rootGroup returns Future.successful(Some(Group.empty))
 
     Given("An unauthorized request")
@@ -206,16 +182,14 @@ class GroupsResourceTest
     "Group Versions for root are transferred as simple json string array (Fix #2329)") {
     Given("Specific Group versions")
     val groupVersions = Seq(Timestamp.now(), Timestamp.now())
-    groupManager.versions(PathId.empty) returns Future.successful(
-      groupVersions.toIterable)
-    groupManager.group(PathId.empty) returns Future.successful(Some(
-      Group(PathId.empty)))
+    groupManager.versions(PathId.empty) returns Future
+      .successful(groupVersions.toIterable)
+    groupManager.group(PathId.empty) returns Future
+      .successful(Some(Group(PathId.empty)))
 
     When("The versions are queried")
-    val rootVersionsResponse = groupsResource.group(
-      "versions",
-      embed,
-      auth.request)
+    val rootVersionsResponse = groupsResource
+      .group("versions", embed, auth.request)
 
     Then("The versions are send as simple json array")
     rootVersionsResponse.getStatus should be(200)
@@ -227,18 +201,16 @@ class GroupsResourceTest
     "Group Versions for path are transferred as simple json string array (Fix #2329)") {
     Given("Specific group versions")
     val groupVersions = Seq(Timestamp.now(), Timestamp.now())
-    groupManager.versions(any) returns Future.successful(
-      groupVersions.toIterable)
-    groupManager.versions("/foo/bla/blub".toRootPath) returns Future.successful(
-      groupVersions.toIterable)
-    groupManager.group("/foo/bla/blub".toRootPath) returns Future.successful(
-      Some(Group("/foo/bla/blub".toRootPath)))
+    groupManager.versions(any) returns Future
+      .successful(groupVersions.toIterable)
+    groupManager.versions("/foo/bla/blub".toRootPath) returns Future
+      .successful(groupVersions.toIterable)
+    groupManager.group("/foo/bla/blub".toRootPath) returns Future
+      .successful(Some(Group("/foo/bla/blub".toRootPath)))
 
     When("The versions are queried")
-    val rootVersionsResponse = groupsResource.group(
-      "/foo/bla/blub/versions",
-      embed,
-      auth.request)
+    val rootVersionsResponse = groupsResource
+      .group("/foo/bla/blub/versions", embed, auth.request)
 
     Then("The versions are send as simple json array")
     rootVersionsResponse.getStatus should be(200)
@@ -253,13 +225,13 @@ class GroupsResourceTest
     val group = Group(
       "/group".toRootPath,
       apps = Set(AppDefinition("/group/app".toRootPath)))
-    groupRepository.group(GroupRepository.zkRootName) returns Future.successful(
-      Some(group))
+    groupRepository.group(GroupRepository.zkRootName) returns Future
+      .successful(Some(group))
     groupRepository.rootGroup returns Future.successful(Some(group))
 
     When("creating a group with the same path existing app")
-    val body = Json.stringify(
-      Json.toJson(GroupUpdate(id = Some("/group/app".toRootPath))))
+    val body = Json
+      .stringify(Json.toJson(GroupUpdate(id = Some("/group/app".toRootPath))))
 
     Then("we get a 409")
     intercept[ConflictingChangeException] {
@@ -272,13 +244,13 @@ class GroupsResourceTest
     Given("A real group manager with one app")
     useRealGroupManager()
     val group = Group("/group".toRootPath)
-    groupRepository.group(GroupRepository.zkRootName) returns Future.successful(
-      Some(group))
+    groupRepository.group(GroupRepository.zkRootName) returns Future
+      .successful(Some(group))
     groupRepository.rootGroup returns Future.successful(Some(group))
 
     When("creating a group with the same path existing app")
-    val body = Json.stringify(
-      Json.toJson(GroupUpdate(id = Some("/group".toRootPath))))
+    val body = Json
+      .stringify(Json.toJson(GroupUpdate(id = Some("/group".toRootPath))))
 
     Then("we get a 409")
     intercept[ConflictingChangeException] {

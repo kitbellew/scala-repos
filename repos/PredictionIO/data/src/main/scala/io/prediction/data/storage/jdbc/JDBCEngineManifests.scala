@@ -64,9 +64,7 @@ class JDBCEngineManifests(
       files,
       engineFactory
     FROM $tableName WHERE id = $id AND version = $version"""
-        .map(resultToEngineManifest)
-        .single()
-        .apply()
+        .map(resultToEngineManifest).single().apply()
     }
 
   def getAll(): Seq[EngineManifest] =
@@ -103,8 +101,7 @@ class JDBCEngineManifests(
 
   def delete(id: String, version: String): Unit =
     DB localTx { implicit session =>
-      sql"DELETE FROM $tableName WHERE id = $id AND version = $version"
-        .update()
+      sql"DELETE FROM $tableName WHERE id = $id AND version = $version".update()
         .apply()
     }
 

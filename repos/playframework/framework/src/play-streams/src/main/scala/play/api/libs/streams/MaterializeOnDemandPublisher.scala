@@ -71,8 +71,8 @@ private[play] class MaterializeOnDemandPublisher[T](source: Source[T, _])(
       exclusive {
         case AwaitingDemand =>
           state = CachingDemand(n)
-          source.runWith(
-            Sink.fromSubscriber(new ForwardingSubscriber(subscriber)))
+          source
+            .runWith(Sink.fromSubscriber(new ForwardingSubscriber(subscriber)))
         case CachingDemand(demand) => state = CachingDemand(n + demand)
         case Cancelled             =>
         // nop, as required by the spec

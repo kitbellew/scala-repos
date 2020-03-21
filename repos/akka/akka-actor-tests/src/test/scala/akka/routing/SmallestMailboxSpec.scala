@@ -18,8 +18,8 @@ class SmallestMailboxSpec
 
     "deliver messages to idle actor" in {
       val usedActors = new ConcurrentHashMap[Int, String]()
-      val router = system.actorOf(
-        SmallestMailboxPool(3).props(routeeProps = Props(new Actor {
+      val router = system
+        .actorOf(SmallestMailboxPool(3).props(routeeProps = Props(new Actor {
           def receive = {
             case (busy: TestLatch, receivedLatch: TestLatch) ⇒
               usedActors.put(0, self.path.toString)

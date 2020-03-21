@@ -53,13 +53,8 @@ class RandomForestRegressorSuite
 
   def regressionTestWithContinuousFeatures(rf: RandomForestRegressor) {
     val categoricalFeaturesInfo = Map.empty[Int, Int]
-    val newRF = rf
-      .setImpurity("variance")
-      .setMaxDepth(2)
-      .setMaxBins(10)
-      .setNumTrees(1)
-      .setFeatureSubsetStrategy("auto")
-      .setSeed(123)
+    val newRF = rf.setImpurity("variance").setMaxDepth(2).setMaxBins(10)
+      .setNumTrees(1).setFeatureSubsetStrategy("auto").setSeed(123)
     compareAPIs(orderedLabeledPoints50_1000, newRF, categoricalFeaturesInfo)
   }
 
@@ -73,18 +68,13 @@ class RandomForestRegressorSuite
   test(
     "Regression with continuous features and node Id cache :" +
       " comparing DecisionTree vs. RandomForest(numTrees = 1)") {
-    val rf = new RandomForestRegressor()
-      .setCacheNodeIds(true)
+    val rf = new RandomForestRegressor().setCacheNodeIds(true)
     regressionTestWithContinuousFeatures(rf)
   }
 
   test("Feature importance with toy data") {
-    val rf = new RandomForestRegressor()
-      .setImpurity("variance")
-      .setMaxDepth(3)
-      .setNumTrees(3)
-      .setFeatureSubsetStrategy("all")
-      .setSubsamplingRate(1.0)
+    val rf = new RandomForestRegressor().setImpurity("variance").setMaxDepth(3)
+      .setNumTrees(3).setFeatureSubsetStrategy("all").setSubsamplingRate(1.0)
       .setSeed(123)
 
     // In this data, feature 1 is very important.
@@ -149,10 +139,8 @@ private object RandomForestRegressorSuite extends SparkFunSuite {
       rf.getNumTrees,
       rf.getFeatureSubsetStrategy,
       rf.getSeed.toInt)
-    val newData: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses = 0)
+    val newData: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses = 0)
     val newModel = rf.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldModelAsNew = RandomForestRegressionModel.fromOld(

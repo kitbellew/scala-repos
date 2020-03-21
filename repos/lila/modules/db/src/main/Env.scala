@@ -12,11 +12,11 @@ final class Env(
     lifecycle: play.api.inject.ApplicationLifecycle) {
 
   lazy val db = {
-    val parsedUri: MongoConnection.ParsedURI =
-      MongoConnection.parseURI(config.getString("uri")) match {
-        case Success(parsedURI) => parsedURI
-        case Failure(e)         => sys error s"Invalid mongodb.uri"
-      }
+    val parsedUri: MongoConnection.ParsedURI = MongoConnection
+      .parseURI(config.getString("uri")) match {
+      case Success(parsedURI) => parsedURI
+      case Failure(e)         => sys error s"Invalid mongodb.uri"
+    }
     val driver = new MongoDriver(Some(config))
     val connection = driver.connection(parsedUri)
 
@@ -25,9 +25,8 @@ final class Env(
       val db = DB(dbUri, connection)
       registerDriverShutdownHook(driver)
       logger.info(
-        s"""ReactiveMongoApi successfully started with DB '$dbUri'! Servers: ${parsedUri.hosts
-          .map { s => s"[${s._1}:${s._2}]" }
-          .mkString("\n\t\t")}""")
+        s"""ReactiveMongoApi successfully started with DB '$dbUri'! Servers: ${parsedUri
+          .hosts.map { s => s"[${s._1}:${s._2}]" }.mkString("\n\t\t")}""")
       db
     }
   }

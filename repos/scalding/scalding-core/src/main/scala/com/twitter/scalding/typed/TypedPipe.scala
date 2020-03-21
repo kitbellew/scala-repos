@@ -102,8 +102,8 @@ object TypedPipe extends Serializable {
       def mapped = pipe
       def keyOrdering = ord
       def reducers = None
-      val descriptions: Seq[String] =
-        LineNumber.tryNonScaldingCaller.map(_.toString).toList
+      val descriptions: Seq[String] = LineNumber.tryNonScaldingCaller
+        .map(_.toString).toList
       def joinFunction = CoGroupable.castingJoinFunction[V]
     }
 
@@ -550,10 +550,8 @@ trait TypedPipe[+T] extends Serializable {
     def hadoopTypedSource(conf: Config): TypedSource[T] with TypedSink[T] = {
       // come up with unique temporary filename, use the config here
       // TODO: refactor into TemporarySequenceFile class
-      val tmpDir = conf
-        .get("hadoop.tmp.dir")
-        .orElse(conf.get("cascading.tmp.dir"))
-        .getOrElse("/tmp")
+      val tmpDir = conf.get("hadoop.tmp.dir")
+        .orElse(conf.get("cascading.tmp.dir")).getOrElse("/tmp")
 
       val tmpSeq = tmpDir + "/scalding/snapshot-" + cachedRandomUUID + ".seq"
       source.TypedSequenceFile[T](tmpSeq)
@@ -753,9 +751,7 @@ trait TypedPipe[+T] extends Serializable {
     */
   def hashLookup[K >: T, V](
       grouped: HashJoinable[K, V]): TypedPipe[(K, Option[V])] =
-    map((_, ()))
-      .hashLeftJoin(grouped)
-      .map { case (t, (_, optV)) => (t, optV) }
+    map((_, ())).hashLeftJoin(grouped).map { case (t, (_, optV)) => (t, optV) }
 
   /**
     * Enables joining when this TypedPipe has some keys with many many values and
@@ -790,8 +786,8 @@ trait TypedPipe[+T] extends Serializable {
     TypedPipeFactory({ (flowDef, mode) =>
       val fields = trapSink.sinkFields
       // TODO: with diamonds in the graph, this might not be correct
-      val pipe = RichPipe.assignName(
-        fork.toPipe[T](fields)(flowDef, mode, trapSink.setter))
+      val pipe = RichPipe
+        .assignName(fork.toPipe[T](fields)(flowDef, mode, trapSink.setter))
       flowDef.addTrap(pipe, trapSink.createTap(Write)(mode))
       TypedPipe.from[U](pipe, fields)(flowDef, mode, conv)
     })
@@ -857,9 +853,7 @@ final case object EmptyTypedPipe extends TypedPipe[Nothing] {
 final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
 
   override def aggregate[B, C](agg: Aggregator[T, B, C]): ValuePipe[C] =
-    Some(iterable)
-      .filterNot(_.isEmpty)
-      .map(it => LiteralValue(agg(it)))
+    Some(iterable).filterNot(_.isEmpty).map(it => LiteralValue(agg(it)))
       .getOrElse(EmptyValue)
 
   override def ++[U >: T](other: TypedPipe[U]): TypedPipe[U] =
@@ -904,10 +898,7 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
     Execution.from(this)
 
   override def sum[U >: T](implicit plus: Semigroup[U]): ValuePipe[U] =
-    Semigroup
-      .sumOption[U](iterable)
-      .map(LiteralValue(_))
-      .getOrElse(EmptyValue)
+    Semigroup.sumOption[U](iterable).map(LiteralValue(_)).getOrElse(EmptyValue)
 
   override def sumByLocalKeys[K, V](implicit
       ev: T <:< (K, V),
@@ -917,9 +908,8 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
       case p                    => sys.error("This must be IterablePipe: " + p.toString)
     }
     IterablePipe(
-      kvit
-        .groupBy(_._1)
-        // use map to force this so it is not lazy.
+      kvit.groupBy(_._1)
+      // use map to force this so it is not lazy.
         .map {
           case (k, kvs) =>
             // These lists are never empty, get is safe.
@@ -960,9 +950,8 @@ object TypedPipeFactory {
           case (memoMode, pipe) if memoMode == m => pipe
           case (memoMode, pipe) =>
             sys.error(
-              "FlowDef reused on different Mode. Original: %s, now: %s".format(
-                memoMode,
-                m))
+              "FlowDef reused on different Mode. Original: %s, now: %s"
+                .format(memoMode, m))
         }
       }
     }
@@ -1160,8 +1149,7 @@ class TypedPipeInst[T] private[scalding] (
             checkMode(m)
             new Iterable[T] {
               def iterator =
-                m.openForRead(conf, tap)
-                  .asScala
+                m.openForRead(conf, tap).asScala
                   .map(tup => conv(tup.selectEntry(fields)))
             }
         }
@@ -1226,14 +1214,10 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
      */
     val merged = flattenMerge(List(this), Nil)
     // check for repeated pipes
-      .groupBy(identity)
-      .mapValues(_.size)
-      .map {
+      .groupBy(identity).mapValues(_.size).map {
         case (pipe, 1)   => pipe
         case (pipe, cnt) => pipe.flatMap(List.fill(cnt)(_).iterator)
-      }
-      .map(_.toPipe[U](fieldNames)(flowDef, mode, setter))
-      .toList
+      }.map(_.toPipe[U](fieldNames)(flowDef, mode, setter)).toList
 
     if (merged.size == 1) {
       // there is no actual merging here, no need to rename:

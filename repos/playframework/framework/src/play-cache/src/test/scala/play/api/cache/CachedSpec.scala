@@ -62,9 +62,7 @@ class CachedSpec extends PlaySpecification {
       val diskEhcache = new Cache(
         new CacheConfiguration("disk", 30)
           .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
-          .eternal(false)
-          .timeToLiveSeconds(60)
-          .timeToIdleSeconds(30)
+          .eternal(false).timeToLiveSeconds(60).timeToIdleSeconds(30)
           .diskExpiryThreadIntervalSeconds(0)
           .persistence(new PersistenceConfiguration().strategy(
             PersistenceConfiguration.Strategy.LOCALTEMPSWAP)))
@@ -140,16 +138,14 @@ class CachedSpec extends PlaySpecification {
       val resultA = action(FakeRequest("GET", "/a")).run()
       status(resultA) must_== 200
       status(
-        action(
-          FakeRequest("GET", "/a").withHeaders(
-            IF_NONE_MATCH -> "foo")).run) must_== 200
+        action(FakeRequest("GET", "/a").withHeaders(IF_NONE_MATCH -> "foo"))
+          .run) must_== 200
       status(
         action(FakeRequest("GET", "/b").withHeaders(
           IF_NONE_MATCH -> header(ETAG, resultA).get)).run) must_== 200
       status(
-        action(
-          FakeRequest("GET", "/c").withHeaders(
-            IF_NONE_MATCH -> "*")).run) must_== 200
+        action(FakeRequest("GET", "/c").withHeaders(IF_NONE_MATCH -> "*"))
+          .run) must_== 200
     }
   }
 

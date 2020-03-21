@@ -45,8 +45,7 @@ class Word2VecSuite
 
     val sentence = "a b " * 100 + "a c " * 10
     val numOfWords = sentence.split(" ").size
-    val doc = sc
-      .parallelize(Seq(sentence, sentence))
+    val doc = sc.parallelize(Seq(sentence, sentence))
       .map(line => line.split(" "))
 
     val codes = Map(
@@ -63,31 +62,23 @@ class Word2VecSuite
 
     val expected = doc.map { sentence =>
       Vectors.dense(
-        sentence
-          .map(codes.apply)
-          .reduce((word1, word2) =>
-            word1.zip(word2).map { case (v1, v2) => v1 + v2 })
+        sentence.map(codes.apply).reduce((word1, word2) =>
+          word1.zip(word2).map { case (v1, v2) => v1 + v2 })
           .map(_ / numOfWords))
     }
 
     val docDF = doc.zip(expected).toDF("text", "expected")
 
-    val model = new Word2Vec()
-      .setVectorSize(3)
-      .setInputCol("text")
-      .setOutputCol("result")
-      .setSeed(42L)
-      .fit(docDF)
+    val model = new Word2Vec().setVectorSize(3).setInputCol("text")
+      .setOutputCol("result").setSeed(42L).fit(docDF)
 
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(model)
 
     // These expectations are just magic values, characterizing the current
     // behavior.  The test needs to be updated to be more general, see SPARK-11502
-    val magicExp = Vectors.dense(
-      0.30153007534417237,
-      -0.6833061711354689,
-      0.5116530778733167)
+    val magicExp = Vectors
+      .dense(0.30153007534417237, -0.6833061711354689, 0.5116530778733167)
     model.transform(docDF).select("result", "expected").collect().foreach {
       case Row(vector1: Vector, vector2: Vector) =>
         assert(
@@ -102,8 +93,7 @@ class Word2VecSuite
     import sqlContext.implicits._
 
     val sentence = "a b " * 100 + "a c " * 10
-    val doc = sc
-      .parallelize(Seq(sentence, sentence))
+    val doc = sc.parallelize(Seq(sentence, sentence))
       .map(line => line.split(" "))
 
     val codes = Map(
@@ -123,19 +113,12 @@ class Word2VecSuite
 
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 
-    val model = new Word2Vec()
-      .setVectorSize(3)
-      .setInputCol("text")
-      .setOutputCol("result")
-      .setSeed(42L)
-      .fit(docDF)
+    val model = new Word2Vec().setVectorSize(3).setInputCol("text")
+      .setOutputCol("result").setSeed(42L).fit(docDF)
 
-    val realVectors = model.getVectors
-      .sort("word")
-      .select("vector")
-      .rdd
-      .map { case Row(v: Vector) => v }
-      .collect()
+    val realVectors = model.getVectors.sort("word").select("vector").rdd.map {
+      case Row(v: Vector) => v
+    }.collect()
     // These expectations are just magic values, characterizing the current
     // behavior.  The test needs to be updated to be more general, see SPARK-11502
     val magicExpected = Seq(
@@ -161,25 +144,17 @@ class Word2VecSuite
     import sqlContext.implicits._
 
     val sentence = "a b " * 100 + "a c " * 10
-    val doc = sc
-      .parallelize(Seq(sentence, sentence))
+    val doc = sc.parallelize(Seq(sentence, sentence))
       .map(line => line.split(" "))
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 
-    val model = new Word2Vec()
-      .setVectorSize(3)
-      .setInputCol("text")
-      .setOutputCol("result")
-      .setSeed(42L)
-      .fit(docDF)
+    val model = new Word2Vec().setVectorSize(3).setInputCol("text")
+      .setOutputCol("result").setSeed(42L).fit(docDF)
 
     val expectedSimilarity = Array(0.2608488929093532, -0.8271274846926078)
-    val (synonyms, similarity) = model
-      .findSynonyms("a", 2)
-      .rdd
-      .map { case Row(w: String, sim: Double) => (w, sim) }
-      .collect()
-      .unzip
+    val (synonyms, similarity) = model.findSynonyms("a", 2).rdd.map {
+      case Row(w: String, sim: Double) => (w, sim)
+    }.collect().unzip
 
     assert(synonyms.toArray === Array("b", "c"))
     expectedSimilarity.zip(similarity).map {
@@ -194,55 +169,31 @@ class Word2VecSuite
     import sqlContext.implicits._
 
     val sentence = "a q s t q s t b b b s t m s t m q " * 100 + "a c " * 10
-    val doc = sc
-      .parallelize(Seq(sentence, sentence))
+    val doc = sc.parallelize(Seq(sentence, sentence))
       .map(line => line.split(" "))
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 
-    val model = new Word2Vec()
-      .setVectorSize(3)
-      .setWindowSize(2)
-      .setInputCol("text")
-      .setOutputCol("result")
-      .setSeed(42L)
-      .fit(docDF)
+    val model = new Word2Vec().setVectorSize(3).setWindowSize(2)
+      .setInputCol("text").setOutputCol("result").setSeed(42L).fit(docDF)
 
-    val (synonyms, similarity) = model
-      .findSynonyms("a", 6)
-      .rdd
-      .map { case Row(w: String, sim: Double) => (w, sim) }
-      .collect()
-      .unzip
+    val (synonyms, similarity) = model.findSynonyms("a", 6).rdd.map {
+      case Row(w: String, sim: Double) => (w, sim)
+    }.collect().unzip
 
     // Increase the window size
-    val biggerModel = new Word2Vec()
-      .setVectorSize(3)
-      .setInputCol("text")
-      .setOutputCol("result")
-      .setSeed(42L)
-      .setWindowSize(10)
-      .fit(docDF)
+    val biggerModel = new Word2Vec().setVectorSize(3).setInputCol("text")
+      .setOutputCol("result").setSeed(42L).setWindowSize(10).fit(docDF)
 
-    val (synonymsLarger, similarityLarger) = model
-      .findSynonyms("a", 6)
-      .rdd
-      .map { case Row(w: String, sim: Double) => (w, sim) }
-      .collect()
-      .unzip
+    val (synonymsLarger, similarityLarger) = model.findSynonyms("a", 6).rdd
+      .map { case Row(w: String, sim: Double) => (w, sim) }.collect().unzip
     // The similarity score should be very different with the larger window
     assert(math.abs(similarity(5) - similarityLarger(5) / similarity(5)) > 1e-5)
   }
 
   test("Word2Vec read/write") {
-    val t = new Word2Vec()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setMaxIter(2)
-      .setMinCount(8)
-      .setNumPartitions(1)
-      .setSeed(42L)
-      .setStepSize(0.01)
-      .setVectorSize(100)
+    val t = new Word2Vec().setInputCol("myInputCol").setOutputCol("myOutputCol")
+      .setMaxIter(2).setMinCount(8).setNumPartitions(1).setSeed(42L)
+      .setStepSize(0.01).setVectorSize(100)
     testDefaultReadWrite(t)
   }
 

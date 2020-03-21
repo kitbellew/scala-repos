@@ -52,8 +52,8 @@ class InetSocketAddressUtilTest extends FunSuite {
       InetSocketAddressUtil.resolveHostPorts(Seq(("127.0.0.1", port1))) == Set(
         new InetSocketAddress("127.0.0.1", port1)))
     assert(
-      InetSocketAddressUtil.resolveHostPorts(
-        Seq(("127.0.0.1", port1), ("127.0.0.1", port2))) ==
+      InetSocketAddressUtil
+        .resolveHostPorts(Seq(("127.0.0.1", port1), ("127.0.0.1", port2))) ==
         Set(
           new InetSocketAddress("127.0.0.1", port1),
           new InetSocketAddress("127.0.0.1", port2)))
@@ -85,14 +85,14 @@ class InetSocketAddressUtilTest extends FunSuite {
       InetSocketAddressUtil.parseHosts(" 127.0.0.1:" + port1 + " ") == Seq(
         new InetSocketAddress("127.0.0.1", port1)))
     assert(
-      InetSocketAddressUtil.parseHosts(
-        "127.0.0.1:" + port1 + ",127.0.0.1:" + port2) ==
+      InetSocketAddressUtil
+        .parseHosts("127.0.0.1:" + port1 + ",127.0.0.1:" + port2) ==
         Seq(
           new InetSocketAddress("127.0.0.1", port1),
           new InetSocketAddress("127.0.0.1", port2)))
     assert(
-      InetSocketAddressUtil.parseHosts(
-        "127.0.0.1:" + port1 + " 127.0.0.1:" + port2) ==
+      InetSocketAddressUtil
+        .parseHosts("127.0.0.1:" + port1 + " 127.0.0.1:" + port2) ==
         Seq(
           new InetSocketAddress("127.0.0.1", port1),
           new InetSocketAddress("127.0.0.1", port2)))

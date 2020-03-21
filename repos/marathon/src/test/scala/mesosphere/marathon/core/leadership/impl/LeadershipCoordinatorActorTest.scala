@@ -20,8 +20,8 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     "in preparingForStart, Stop is send to all whenLeaderActors and preparation is aborted") {
     val probe = TestProbe()
 
-    coordinatorRef.underlying.become(
-      coordinatorRef.underlyingActor.preparingForStart(
+    coordinatorRef.underlying
+      .become(coordinatorRef.underlyingActor.preparingForStart(
         Set(probe.ref),
         Set(whenLeader1Probe.ref)))
 
@@ -63,8 +63,8 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
   test("in prepareToStart, remove terminated whenLeaderActors") {
     val probe = TestProbe()
 
-    coordinatorRef.underlying.become(
-      coordinatorRef.underlyingActor.preparingForStart(
+    coordinatorRef.underlying
+      .become(coordinatorRef.underlyingActor.preparingForStart(
         Set(probe.ref),
         Set(whenLeader1Probe.ref)))
     probe.send(whenLeader1Probe.ref, PoisonPill)
@@ -72,9 +72,8 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     assert(
       coordinatorRef.underlyingActor.whenLeaderActors == Set(
         whenLeader2Probe.ref))
-    whenLeader2Probe.send(
-      coordinatorRef,
-      PreparationMessages.Prepared(whenLeader2Probe.ref))
+    whenLeader2Probe
+      .send(coordinatorRef, PreparationMessages.Prepared(whenLeader2Probe.ref))
 
     probe.expectMsg(PreparationMessages.Prepared(coordinatorRef))
   }
@@ -115,16 +114,15 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     val requester1 = TestProbe()
     val requester2 = TestProbe()
 
-    coordinatorRef.underlying.become(
-      coordinatorRef.underlyingActor.preparingForStart(
+    coordinatorRef.underlying
+      .become(coordinatorRef.underlyingActor.preparingForStart(
         Set(requester1.ref),
         Set(whenLeader1Probe.ref)))
 
     requester2.send(coordinatorRef, PreparationMessages.PrepareForStart)
 
-    whenLeader1Probe.send(
-      coordinatorRef,
-      PreparationMessages.Prepared(whenLeader1Probe.ref))
+    whenLeader1Probe
+      .send(coordinatorRef, PreparationMessages.Prepared(whenLeader1Probe.ref))
 
     requester1.expectMsg(PreparationMessages.Prepared(coordinatorRef))
     requester2.expectMsg(PreparationMessages.Prepared(coordinatorRef))

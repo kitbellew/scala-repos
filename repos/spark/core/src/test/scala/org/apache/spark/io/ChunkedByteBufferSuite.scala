@@ -58,8 +58,8 @@ class ChunkedByteBufferSuite extends SparkFunSuite {
 
   test("writeFully() does not affect original buffer's position") {
     val chunkedByteBuffer = new ChunkedByteBuffer(Array(ByteBuffer.allocate(8)))
-    chunkedByteBuffer.writeFully(new ByteArrayWritableChannel(
-      chunkedByteBuffer.size.toInt))
+    chunkedByteBuffer
+      .writeFully(new ByteArrayWritableChannel(chunkedByteBuffer.size.toInt))
     assert(chunkedByteBuffer.getChunks().head.position() === 0)
   }
 

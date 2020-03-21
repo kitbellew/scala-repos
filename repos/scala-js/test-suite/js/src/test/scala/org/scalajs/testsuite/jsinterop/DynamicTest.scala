@@ -38,8 +38,8 @@ class DynamicTest {
       new Point(json.x.toString.toInt, json.y.toString.toInt)
     }
 
-    val json = js.eval(
-      "var dynamicTestPoint = { x: 1, y: 2 }; dynamicTestPoint;")
+    val json = js
+      .eval("var dynamicTestPoint = { x: 1, y: 2 }; dynamicTestPoint;")
     val point = jsonToPoint(json.asInstanceOf[js.Dynamic])
 
     assertEquals(1, point.x)
@@ -86,8 +86,7 @@ class DynamicTest {
             this['elem'+i] = arguments[i];
         };
         DynamicTestClassVarArgs;
-        """)
-      .asInstanceOf[js.Dynamic]
+        """).asInstanceOf[js.Dynamic]
 
     val obj1 = js.Dynamic.newInstance(DynamicTestClassVarArgs)("Scala.js")
     val obj1_count = obj1.count
@@ -209,8 +208,7 @@ class DynamicTest {
         return x['.o[3√!|-pr()per7:3$];'] === ' such eval ';
       }
       dynamicLiteralNameEncoding_checkEvilProperties
-    """)
-      .asInstanceOf[js.Function1[js.Any, Boolean]]
+    """).asInstanceOf[js.Function1[js.Any, Boolean]]
     val obj1 = obj(".o[3√!|-pr()per7:3$];" -> " such eval ")
       .asInstanceOf[js.Dictionary[js.Any]]
     assertEquals(" such eval ", obj1(".o[3√!|-pr()per7:3$];"))
@@ -222,8 +220,7 @@ class DynamicTest {
         return x["'" + '"'] === 7357;
       }
       dynamicLiteralNameEncoding_quote
-    """)
-      .asInstanceOf[js.Function1[js.Any, Boolean]]
+    """).asInstanceOf[js.Function1[js.Any, Boolean]]
 
     val quote = '"'
 

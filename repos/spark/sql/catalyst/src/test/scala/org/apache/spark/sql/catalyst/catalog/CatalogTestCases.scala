@@ -136,8 +136,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     val catalog = newBasicCatalog()
     val db1 = catalog.getDatabase("db1")
     // Note: alter properties here because Hive does not support altering other fields
-    catalog.alterDatabase(
-      db1.copy(properties = Map("k" -> "v3", "good" -> "true")))
+    catalog
+      .alterDatabase(db1.copy(properties = Map("k" -> "v3", "good" -> "true")))
     val newDb1 = catalog.getDatabase("db1")
     assert(db1.properties.isEmpty)
     assert(newDb1.properties.size == 2)
@@ -167,10 +167,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     val catalog = newBasicCatalog()
     // Should always throw exception when the database does not exist
     intercept[AnalysisException] {
-      catalog.dropTable(
-        "unknown_db",
-        "unknown_table",
-        ignoreIfNotExists = false)
+      catalog
+        .dropTable("unknown_db", "unknown_table", ignoreIfNotExists = false)
     }
     intercept[AnalysisException] {
       catalog.dropTable("unknown_db", "unknown_table", ignoreIfNotExists = true)
@@ -283,11 +281,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
   test("create partitions that already exist") {
     val catalog = newBasicCatalog()
     intercept[AnalysisException] {
-      catalog.createPartitions(
-        "db2",
-        "tbl2",
-        Seq(part1),
-        ignoreIfExists = false)
+      catalog
+        .createPartitions("db2", "tbl2", Seq(part1), ignoreIfExists = false)
     }
     catalog.createPartitions("db2", "tbl2", Seq(part1), ignoreIfExists = true)
   }
@@ -295,11 +290,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
   test("drop partitions") {
     val catalog = newBasicCatalog()
     assert(catalogPartitionsEqual(catalog, "db2", "tbl2", Seq(part1, part2)))
-    catalog.dropPartitions(
-      "db2",
-      "tbl2",
-      Seq(part1.spec),
-      ignoreIfNotExists = false)
+    catalog
+      .dropPartitions("db2", "tbl2", Seq(part1.spec), ignoreIfNotExists = false)
     assert(catalogPartitionsEqual(catalog, "db2", "tbl2", Seq(part2)))
     resetState()
     val catalog2 = newBasicCatalog()
@@ -339,11 +331,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
         Seq(part3.spec),
         ignoreIfNotExists = false)
     }
-    catalog.dropPartitions(
-      "db2",
-      "tbl2",
-      Seq(part3.spec),
-      ignoreIfNotExists = true)
+    catalog
+      .dropPartitions("db2", "tbl2", Seq(part3.spec), ignoreIfNotExists = true)
   }
 
   test("get partition") {
@@ -370,11 +359,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     val newPart1 = part1.copy(spec = Map("a" -> "100", "b" -> "101"))
     val newPart2 = part2.copy(spec = Map("a" -> "200", "b" -> "201"))
     val newSpecs = Seq(newPart1.spec, newPart2.spec)
-    catalog.renamePartitions(
-      "db2",
-      "tbl2",
-      Seq(part1.spec, part2.spec),
-      newSpecs)
+    catalog
+      .renamePartitions("db2", "tbl2", Seq(part1.spec, part2.spec), newSpecs)
     assert(
       catalog.getPartition("db2", "tbl2", newPart1.spec).spec === newPart1.spec)
     assert(
@@ -560,9 +546,10 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     catalog.createFunction("db2", newFunc("func2"))
     catalog.createFunction("db2", newFunc("not_me"))
     assert(
-      catalog
-        .listFunctions("db2", "*")
-        .toSet == Set("func1", "func2", "not_me"))
+      catalog.listFunctions("db2", "*").toSet == Set(
+        "func1",
+        "func2",
+        "not_me"))
     assert(catalog.listFunctions("db2", "func*").toSet == Set("func1", "func2"))
   }
 
@@ -665,8 +652,7 @@ abstract class CatalogTestUtils {
       db: String,
       table: String,
       parts: Seq[CatalogTablePartition]): Boolean = {
-    catalog.listPartitions(db, table).map(_.spec).toSet == parts
-      .map(_.spec)
+    catalog.listPartitions(db, table).map(_.spec).toSet == parts.map(_.spec)
       .toSet
   }
 

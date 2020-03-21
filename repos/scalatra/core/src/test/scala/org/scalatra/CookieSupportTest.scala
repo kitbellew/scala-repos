@@ -28,8 +28,8 @@ class CookieSupportServlet extends ScalatraServlet {
   }
 
   post("/set-http-only-cookie") {
-    cookies.update("thecookie", params("cookieval"))(CookieOptions(httpOnly =
-      true))
+    cookies
+      .update("thecookie", params("cookieval"))(CookieOptions(httpOnly = true))
   }
 
   post("/maplikeset") {

@@ -112,11 +112,11 @@ class VersionedBatchedStoreTest extends WordSpec {
       // get time interval for the input
       val intr = TestUtil.toTimeInterval(0L, original.size.toLong)
 
-      val batchCoveredInput: List[Int] =
-        TestUtil.pruneToBatchCovered(inWithTime, intr, batcher).toList
+      val batchCoveredInput: List[Int] = TestUtil
+        .pruneToBatchCovered(inWithTime, intr, batcher).toList
 
-      val (inMemoryA, inMemoryB) = TestGraphs.multipleSummerJobInScala(
-        batchCoveredInput)(fnA, fnB, fnC)
+      val (inMemoryA, inMemoryB) = TestGraphs
+        .multipleSummerJobInScala(batchCoveredInput)(fnA, fnB, fnC)
 
       val packFn = { (bid: BatchID, kv: (Int, Int)) =>
         ((bid.id, kv._1), kv._2)

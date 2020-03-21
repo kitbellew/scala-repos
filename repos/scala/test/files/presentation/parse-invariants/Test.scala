@@ -18,12 +18,10 @@ object Test extends InteractiveTest {
     */
   private def noNewSymbols(sf: SourceFile) {
     def nextId() =
-      compiler.NoSymbol
-        .newTermSymbol(
-          compiler.TermName("dummy"),
-          compiler.NoPosition,
-          compiler.NoFlags)
-        .id
+      compiler.NoSymbol.newTermSymbol(
+        compiler.TermName("dummy"),
+        compiler.NoPosition,
+        compiler.NoFlags).id
     val id = nextId()
     val tree = compiler.parseTree(sf)
     val id2 = nextId()
@@ -90,7 +88,8 @@ object Test extends InteractiveTest {
     tree.forAll { t =>
       (t.symbol == null ||
       t.symbol == compiler.NoSymbol ||
-      t.symbol == compiler.definitions.ScalaPackage // ignore the symbol for the scala package for now
+      t.symbol == compiler.definitions
+        .ScalaPackage // ignore the symbol for the scala package for now
       ) && (t.tpe == null ||
       t.tpe == compiler.NoType)
     }

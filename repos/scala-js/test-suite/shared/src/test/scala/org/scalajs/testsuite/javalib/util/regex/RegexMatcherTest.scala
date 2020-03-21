@@ -31,8 +31,7 @@ class RegexMatcherTest {
 
   @Test
   def start_end_group_and_toMatchResult(): Unit = {
-    val matcher = Pattern
-      .compile("\\s(([A-Za-z]{5}(hum)?).js)\\s")
+    val matcher = Pattern.compile("\\s(([A-Za-z]{5}(hum)?).js)\\s")
       .matcher("Write Scala.js everyday!")
 
     def checkGroup0(start: Int, end: Int, group: String): Unit =
@@ -197,8 +196,7 @@ class RegexMatcherTest {
       assertEquals("Solution", region5toEnd.group)
     }
 
-    val matcher1 = Pattern
-      .compile("0[xX][A-Fa-f0-9]{3}$")
+    val matcher1 = Pattern.compile("0[xX][A-Fa-f0-9]{3}$")
       .matcher("In CSS, 0xc4fe is not a color")
 
     val region5to13 = matcher1.region(5, 13)

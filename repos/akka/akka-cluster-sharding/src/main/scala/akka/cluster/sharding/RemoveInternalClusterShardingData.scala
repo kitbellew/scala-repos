@@ -121,8 +121,7 @@ object RemoveInternalClusterShardingData {
       journalPluginId,
       typeNames,
       completion,
-      remove2dot3Data))
-      .withDeploy(Deploy.local)
+      remove2dot3Data)).withDeploy(Deploy.local)
 
   /**
     * INTERNAL API
@@ -230,8 +229,8 @@ class RemoveInternalClusterShardingData(
   def removeNext(): Unit = {
     currentPid = remainingPids.head
     log.info("Removing data for persistenceId [{}]", currentPid)
-    currentRef = context.actorOf(
-      RemoveOnePersistenceId.props(journalPluginId, currentPid, self))
+    currentRef = context
+      .actorOf(RemoveOnePersistenceId.props(journalPluginId, currentPid, self))
     context.watch(currentRef)
     remainingPids -= currentPid
   }

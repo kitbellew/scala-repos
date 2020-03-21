@@ -30,8 +30,8 @@ import com.google.common.util.concurrent.{MoreExecutors, ThreadFactoryBuilder}
 
 private[spark] object ThreadUtils {
 
-  private val sameThreadExecutionContext = ExecutionContext.fromExecutorService(
-    MoreExecutors.sameThreadExecutor())
+  private val sameThreadExecutionContext = ExecutionContext
+    .fromExecutorService(MoreExecutors.sameThreadExecutor())
 
   /**
     * An `ExecutionContextExecutor` that runs each task in the thread that invokes `execute/submit`.
@@ -44,9 +44,7 @@ private[spark] object ThreadUtils {
     * Create a thread factory that names threads with a prefix and also sets the threads to daemon.
     */
   def namedThreadFactory(prefix: String): ThreadFactory = {
-    new ThreadFactoryBuilder()
-      .setDaemon(true)
-      .setNameFormat(prefix + "-%d")
+    new ThreadFactoryBuilder().setDaemon(true).setNameFormat(prefix + "-%d")
       .build()
   }
 
@@ -56,8 +54,7 @@ private[spark] object ThreadUtils {
     */
   def newDaemonCachedThreadPool(prefix: String): ThreadPoolExecutor = {
     val threadFactory = namedThreadFactory(prefix)
-    Executors
-      .newCachedThreadPool(threadFactory)
+    Executors.newCachedThreadPool(threadFactory)
       .asInstanceOf[ThreadPoolExecutor]
   }
 
@@ -89,8 +86,7 @@ private[spark] object ThreadUtils {
       nThreads: Int,
       prefix: String): ThreadPoolExecutor = {
     val threadFactory = namedThreadFactory(prefix)
-    Executors
-      .newFixedThreadPool(nThreads, threadFactory)
+    Executors.newFixedThreadPool(nThreads, threadFactory)
       .asInstanceOf[ThreadPoolExecutor]
   }
 
@@ -98,10 +94,8 @@ private[spark] object ThreadUtils {
     * Wrapper over newSingleThreadExecutor.
     */
   def newDaemonSingleThreadExecutor(threadName: String): ExecutorService = {
-    val threadFactory = new ThreadFactoryBuilder()
-      .setDaemon(true)
-      .setNameFormat(threadName)
-      .build()
+    val threadFactory = new ThreadFactoryBuilder().setDaemon(true)
+      .setNameFormat(threadName).build()
     Executors.newSingleThreadExecutor(threadFactory)
   }
 
@@ -110,10 +104,8 @@ private[spark] object ThreadUtils {
     */
   def newDaemonSingleThreadScheduledExecutor(
       threadName: String): ScheduledExecutorService = {
-    val threadFactory = new ThreadFactoryBuilder()
-      .setDaemon(true)
-      .setNameFormat(threadName)
-      .build()
+    val threadFactory = new ThreadFactoryBuilder().setDaemon(true)
+      .setNameFormat(threadName).build()
     val executor = new ScheduledThreadPoolExecutor(1, threadFactory)
     // By default, a cancelled task is not automatically removed from the work queue until its delay
     // elapses. We have to enable it manually.
@@ -154,15 +146,13 @@ private[spark] object ThreadUtils {
         // Remove the part of the stack that shows method calls into this helper method
         // This means drop everything from the top until the stack element
         // ThreadUtils.runInNewThread(), and then drop that as well (hence the `drop(1)`).
-        val baseStackTrace = Thread
-          .currentThread()
-          .getStackTrace()
+        val baseStackTrace = Thread.currentThread().getStackTrace()
           .dropWhile(!_.getClassName.contains(this.getClass.getSimpleName))
           .drop(1)
 
         // Remove the part of the new thread stack that shows methods call from this helper method
-        val extraStackTrace = realException.getStackTrace.takeWhile(
-          !_.getClassName.contains(this.getClass.getSimpleName))
+        val extraStackTrace = realException.getStackTrace
+          .takeWhile(!_.getClassName.contains(this.getClass.getSimpleName))
 
         // Combine the two stack traces, with a place holder just specifying that there
         // was a helper method used, without any further details of the helper

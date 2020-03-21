@@ -45,25 +45,17 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
 
   test("default size avoids broadcast") {
     // TODO: Improve this test when we have better statistics
-    sparkContext
-      .parallelize(1 to 10)
-      .map(i => TestData(i, i.toString))
-      .toDF()
+    sparkContext.parallelize(1 to 10).map(i => TestData(i, i.toString)).toDF()
       .registerTempTable("sizeTst")
     sqlContext.cacheTable("sizeTst")
     assert(
-      sqlContext
-        .table("sizeTst")
-        .queryExecution
-        .analyzed
-        .statistics
+      sqlContext.table("sizeTst").queryExecution.analyzed.statistics
         .sizeInBytes >
         sqlContext.conf.autoBroadcastJoinThreshold)
   }
 
   test("projection") {
-    val plan = sqlContext
-      .executePlan(testData.select('value, 'key).logicalPlan)
+    val plan = sqlContext.executePlan(testData.select('value, 'key).logicalPlan)
       .sparkPlan
     val scan = InMemoryRelation(
       useCompression = true,
@@ -74,10 +66,9 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       scan,
-      testData
-        .collect()
-        .map { case Row(key: Int, value: String) => value -> key }
-        .map(Row.fromTuple))
+      testData.collect().map {
+        case Row(key: Int, value: String) => value -> key
+      }.map(Row.fromTuple))
   }
 
   test(
@@ -151,9 +142,7 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
 
   test("decimal type") {
     // Casting is required here because ScalaReflection can't capture decimal precision information.
-    val df = (1 to 10)
-      .map(i => Tuple1(Decimal(i, 15, 10)))
-      .toDF("dec")
+    val df = (1 to 10).map(i => Tuple1(Decimal(i, 15, 10))).toDF("dec")
       .select($"dec" cast DecimalType(15, 10))
 
     assert(df.schema.head.dataType === DecimalType(15, 10))
@@ -216,15 +205,12 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
         Row((i - 0.25).toFloat, Seq(true, false, null))
       )
     }
-    sqlContext
-      .createDataFrame(rdd, schema)
+    sqlContext.createDataFrame(rdd, schema)
       .registerTempTable("InMemoryCache_different_data_types")
     // Cache the table.
     sql("cache table InMemoryCache_different_data_types")
     // Make sure the table is indeed cached.
-    sqlContext
-      .table("InMemoryCache_different_data_types")
-      .queryExecution
+    sqlContext.table("InMemoryCache_different_data_types").queryExecution
       .executedPlan
     assert(
       sqlContext.isCached("InMemoryCache_different_data_types"),
@@ -239,12 +225,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
 
   test(
     "SPARK-10422: String column in InMemoryColumnarCache needs to override clone method") {
-    val df = sqlContext
-      .range(1, 100)
-      .selectExpr("id % 10 as id")
-      .rdd
-      .map(id => Tuple1(s"str_$id"))
-      .toDF("i")
+    val df = sqlContext.range(1, 100).selectExpr("id % 10 as id").rdd
+      .map(id => Tuple1(s"str_$id")).toDF("i")
     val cached = df.cache()
     // count triggers the caching action. It should not throw.
     cached.count()
@@ -255,12 +237,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
     // Check result.
     checkAnswer(
       cached,
-      sqlContext
-        .range(1, 100)
-        .selectExpr("id % 10 as id")
-        .rdd
-        .map(id => Tuple1(s"str_$id"))
-        .toDF("i"))
+      sqlContext.range(1, 100).selectExpr("id % 10 as id").rdd
+        .map(id => Tuple1(s"str_$id")).toDF("i"))
 
     // Drop the cache.
     cached.unpersist()

@@ -64,8 +64,7 @@ class ReplicationUtilsTest extends ZooKeeperTestHarness {
 
   @Test
   def testUpdateLeaderAndIsr() {
-    val configs = TestUtils
-      .createBrokerConfigs(1, zkConnect)
+    val configs = TestUtils.createBrokerConfigs(1, zkConnect)
       .map(KafkaConfig.fromProps)
     val log = EasyMock.createMock(classOf[kafka.log.Log])
     EasyMock.expect(log.logEndOffset).andReturn(20).anyTimes()
@@ -73,18 +72,15 @@ class ReplicationUtilsTest extends ZooKeeperTestHarness {
     EasyMock.replay(log)
 
     val logManager = EasyMock.createMock(classOf[kafka.log.LogManager])
-    EasyMock
-      .expect(logManager.getLog(TopicAndPartition(topic, partitionId)))
-      .andReturn(Some(log))
-      .anyTimes()
+    EasyMock.expect(logManager.getLog(TopicAndPartition(topic, partitionId)))
+      .andReturn(Some(log)).anyTimes()
     EasyMock.replay(logManager)
 
-    val replicaManager = EasyMock.createMock(
-      classOf[kafka.server.ReplicaManager])
+    val replicaManager = EasyMock
+      .createMock(classOf[kafka.server.ReplicaManager])
     EasyMock.expect(replicaManager.config).andReturn(configs.head)
     EasyMock.expect(replicaManager.logManager).andReturn(logManager)
-    EasyMock
-      .expect(replicaManager.replicaFetcherManager)
+    EasyMock.expect(replicaManager.replicaFetcherManager)
       .andReturn(EasyMock.createMock(classOf[ReplicaFetcherManager]))
     EasyMock.expect(replicaManager.zkUtils).andReturn(zkUtils)
     EasyMock.replay(replicaManager)

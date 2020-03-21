@@ -100,10 +100,10 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
 
   // If true, enable using the custom RecordReader for parquet. This only works for
   // a subset of the types (no complex types).
-  protected val enableVectorizedParquetReader: Boolean =
-    sqlContext.getConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key).toBoolean
-  protected val enableWholestageCodegen: Boolean =
-    sqlContext.getConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key).toBoolean
+  protected val enableVectorizedParquetReader: Boolean = sqlContext
+    .getConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key).toBoolean
+  protected val enableWholestageCodegen: Boolean = sqlContext
+    .getConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key).toBoolean
 
   override def getPartitions: Array[SparkPartition] = {
     val conf = getConf(isDriverSide = true)
@@ -132,8 +132,7 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
       logInfo("Input split: " + split.serializableHadoopSplit)
       val conf = getConf(isDriverSide = false)
 
-      val inputMetrics = context
-        .taskMetrics()
+      val inputMetrics = context.taskMetrics()
         .registerInputMetrics(DataReadMethod.Hadoop)
       val existingBytesRead = inputMetrics.bytesRead
 
@@ -146,12 +145,12 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
 
       // Find a function that will return the FileSystem bytes read by this thread. Do this before
       // creating RecordReader, because RecordReader's constructor might read some bytes
-      val getBytesReadCallback: Option[() => Long] =
-        split.serializableHadoopSplit.value match {
-          case _: FileSplit | _: CombineFileSplit =>
-            SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
-          case _ => None
-        }
+      val getBytesReadCallback: Option[() => Long] = split
+        .serializableHadoopSplit.value match {
+        case _: FileSplit | _: CombineFileSplit =>
+          SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
+        case _ => None
+      }
 
       // For Hadoop 2.5+, we get our input bytes from thread-local Hadoop FileSystem statistics.
       // If we do a coalesce, however, we are likely to compute multiple partitions in the same
@@ -179,7 +178,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
         * TODO: plumb this through a different way?
         */
       if (enableVectorizedParquetReader &&
-          format.getClass.getName == "org.apache.parquet.hadoop.ParquetInputFormat") {
+          format.getClass
+            .getName == "org.apache.parquet.hadoop.ParquetInputFormat") {
         val parquetReader: VectorizedParquetRecordReader =
           new VectorizedParquetRecordReader()
         if (!parquetReader.tryInitialize(
@@ -197,9 +197,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
         reader = format.createRecordReader(
           split.serializableHadoopSplit.value,
           hadoopAttemptContext)
-        reader.initialize(
-          split.serializableHadoopSplit.value,
-          hadoopAttemptContext)
+        reader
+          .initialize(split.serializableHadoopSplit.value, hadoopAttemptContext)
       }
 
       // Register an on-task-completion callback to close the input stream.
@@ -229,9 +228,8 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
         }
         havePair = false
         if (!finished) { inputMetrics.incRecordsReadInternal(1) }
-        if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
-          updateBytesRead()
-        }
+        if (inputMetrics.recordsRead % SparkHadoopUtil
+              .UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) { updateBytesRead() }
         reader.getCurrentValue
       }
 
@@ -273,13 +271,12 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
   }
 
   override def getPreferredLocations(hsplit: SparkPartition): Seq[String] = {
-    val split =
-      hsplit.asInstanceOf[SqlNewHadoopPartition].serializableHadoopSplit.value
+    val split = hsplit.asInstanceOf[SqlNewHadoopPartition]
+      .serializableHadoopSplit.value
     val locs = HadoopRDD.SPLIT_INFO_REFLECTIONS match {
       case Some(c) =>
         try {
-          val infos = c.newGetLocationInfo
-            .invoke(split)
+          val infos = c.newGetLocationInfo.invoke(split)
             .asInstanceOf[Array[AnyRef]]
           Some(HadoopRDD.convertSplitLocationInfo(infos))
         } catch {

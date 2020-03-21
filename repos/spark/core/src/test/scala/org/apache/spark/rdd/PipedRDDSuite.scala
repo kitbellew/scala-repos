@@ -50,8 +50,7 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test("failure in iterating over pipe input") {
     if (testCommandAvailable("cat")) {
-      val nums = sc
-        .makeRDD(Array(1, 2, 3, 4), 2)
+      val nums = sc.makeRDD(Array(1, 2, 3, 4), 2)
         .mapPartitionsWithIndex((index, iterator) => {
           new Iterator[Int] {
             def hasNext = true
@@ -91,17 +90,14 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(c(7) === "4_")
 
       val nums1 = sc.makeRDD(Array("a\t1", "b\t2", "a\t3", "b\t4"), 2)
-      val d = nums1
-        .groupBy(str => str.split("\t")(0))
-        .pipe(
-          Seq("cat"),
-          Map[String, String](),
-          (f: String => Unit) => { bl.value.map(f(_)); f("\u0001") },
-          (i: Tuple2[String, Iterable[String]], f: String => Unit) => {
-            for (e <- i._2) { f(e + "_") }
-          }
-        )
-        .collect()
+      val d = nums1.groupBy(str => str.split("\t")(0)).pipe(
+        Seq("cat"),
+        Map[String, String](),
+        (f: String => Unit) => { bl.value.map(f(_)); f("\u0001") },
+        (i: Tuple2[String, Iterable[String]], f: String => Unit) => {
+          for (e <- i._2) { f(e + "_") }
+        }
+      ).collect()
       assert(d.size === 8)
       assert(d(0) === "0")
       assert(d(1) === "\u0001")
@@ -117,9 +113,8 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
   test("pipe with env variable") {
     if (testCommandAvailable("printenv")) {
       val nums = sc.makeRDD(Array(1, 2, 3, 4), 2)
-      val piped = nums.pipe(
-        Seq("printenv", "MY_TEST_ENV"),
-        Map("MY_TEST_ENV" -> "LALALA"))
+      val piped = nums
+        .pipe(Seq("printenv", "MY_TEST_ENV"), Map("MY_TEST_ENV" -> "LALALA"))
       val c = piped.collect()
       assert(c.size === 2)
       assert(c(0) === "LALALA")

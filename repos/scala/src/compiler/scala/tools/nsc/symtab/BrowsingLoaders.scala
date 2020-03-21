@@ -134,17 +134,15 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
       name: String,
       src: AbstractFile) {
     try {
-      if (root.isEffectiveRoot || !src.name.endsWith(
-            ".scala"
-          )) // RootClass or EmptyPackageClass
+      if (root.isEffectiveRoot || !src.name
+            .endsWith(".scala")) // RootClass or EmptyPackageClass
         super.enterToplevelsFromSource(root, name, src)
       else browseTopLevel(root, src)
     } catch {
       case ex: syntaxAnalyzer.MalformedInput =>
-        println("[%s] caught malformed input exception at offset %d: %s".format(
-          src,
-          ex.offset,
-          ex.msg))
+        println(
+          "[%s] caught malformed input exception at offset %d: %s"
+            .format(src, ex.offset, ex.msg))
         super.enterToplevelsFromSource(root, name, src)
     }
   }

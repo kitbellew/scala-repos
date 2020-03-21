@@ -46,18 +46,15 @@ object SparseNaiveBayes {
 
     val parser = new OptionParser[Params]("SparseNaiveBayes") {
       head("SparseNaiveBayes: an example naive Bayes app for LIBSVM data.")
-      opt[Int]("numPartitions")
-        .text("min number of partitions")
+      opt[Int]("numPartitions").text("min number of partitions")
         .action((x, c) => c.copy(minPartitions = x))
-      opt[Int]("numFeatures")
-        .text("number of features")
+      opt[Int]("numFeatures").text("number of features")
         .action((x, c) => c.copy(numFeatures = x))
       opt[Double]("lambda")
         .text(s"lambda (smoothing constant), default: ${defaultParams.lambda}")
         .action((x, c) => c.copy(lambda = x))
       arg[String]("<input>")
-        .text("input paths to labeled examples in LIBSVM format")
-        .required()
+        .text("input paths to labeled examples in LIBSVM format").required()
         .action((x, c) => c.copy(input = x))
     }
 
@@ -76,11 +73,8 @@ object SparseNaiveBayes {
       if (params.minPartitions > 0) params.minPartitions
       else sc.defaultMinPartitions
 
-    val examples = MLUtils.loadLibSVMFile(
-      sc,
-      params.input,
-      params.numFeatures,
-      minPartitions)
+    val examples = MLUtils
+      .loadLibSVMFile(sc, params.input, params.numFeatures, minPartitions)
     // Cache examples because it will be used in both training and evaluation.
     examples.cache()
 
@@ -97,8 +91,8 @@ object SparseNaiveBayes {
 
     val prediction = model.predict(test.map(_.features))
     val predictionAndLabel = prediction.zip(test.map(_.label))
-    val accuracy =
-      predictionAndLabel.filter(x => x._1 == x._2).count().toDouble / numTest
+    val accuracy = predictionAndLabel.filter(x => x._1 == x._2).count()
+      .toDouble / numTest
 
     println(s"Test accuracy = $accuracy.")
 

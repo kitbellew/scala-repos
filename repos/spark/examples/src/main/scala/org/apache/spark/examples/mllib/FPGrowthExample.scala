@@ -47,12 +47,10 @@ object FPGrowthExample {
       opt[Int]("numPartition")
         .text(s"number of partition, default: ${defaultParams.numPartition}")
         .action((x, c) => c.copy(numPartition = x))
-      arg[String]("<input>")
-        .text(
-          "input paths to input data set, whose file format is that each line " +
-            "contains a transaction with each item in String and separated by a space")
-        .required()
-        .action((x, c) => c.copy(input = x))
+      arg[String]("<input>").text(
+        "input paths to input data set, whose file format is that each line " +
+          "contains a transaction with each item in String and separated by a space")
+        .required().action((x, c) => c.copy(input = x))
     }
 
     parser.parse(args, defaultParams).map { params => run(params) }.getOrElse {
@@ -67,10 +65,8 @@ object FPGrowthExample {
 
     println(s"Number of transactions: ${transactions.count()}")
 
-    val model = new FPGrowth()
-      .setMinSupport(params.minSupport)
-      .setNumPartitions(params.numPartition)
-      .run(transactions)
+    val model = new FPGrowth().setMinSupport(params.minSupport)
+      .setNumPartitions(params.numPartition).run(transactions)
 
     println(s"Number of frequent itemsets: ${model.freqItemsets.count()}")
 

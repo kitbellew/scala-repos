@@ -22,9 +22,8 @@ trait MemberLookupBase {
   import rootMirror.{RootPackage, EmptyPackage}
 
   private def isRoot(s: Symbol) =
-    (
-      s eq NoSymbol
-    ) || s.isRootSymbol || s.isEmptyPackage || s.isEmptyPackageClass
+    (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage || s
+      .isEmptyPackageClass
 
   def makeEntityLink(
       title: Inline,
@@ -51,7 +50,8 @@ trait MemberLookupBase {
       |Notes:
       | - you can use any number of matching square brackets to avoid interference with the signature
       | - you can use \\. to escape dots in prefixes (don't forget to use * at the end to match the signature!)
-      | - you can use \\# to escape hashes, otherwise they will be considered as delimiters, like dots.""".stripMargin
+      | - you can use \\# to escape hashes, otherwise they will be considered as delimiters, like dots."""
+        .stripMargin
     } else ""
 
   def memberLookup(pos: Position, query: String, site: Symbol): LinkTo = {
@@ -83,15 +83,14 @@ trait MemberLookupBase {
                 )
               val packageSuffix = if (sym.hasPackageFlag) ".package" else ""
 
-              sym.ownerChain.reverse
-                .filterNot(isRoot(_))
-                .map(nameString(_))
+              sym.ownerChain.reverse.filterNot(isRoot(_)).map(nameString(_))
                 .mkString(".") + packageSuffix
             }
 
-            if (sym.isClass || sym.isModule || sym.isTrait || sym.hasPackageFlag)
-              findExternalLink(sym, linkName(sym))
-            else if (owner.isClass || owner.isModule || owner.isTrait || owner.hasPackageFlag)
+            if (sym.isClass || sym.isModule || sym.isTrait || sym
+                  .hasPackageFlag) findExternalLink(sym, linkName(sym))
+            else if (owner.isClass || owner.isModule || owner.isTrait || owner
+                       .hasPackageFlag)
               findExternalLink(
                 sym,
                 linkName(owner) + "@" + externalSignature(sym))
@@ -227,8 +226,7 @@ trait MemberLookupBase {
       if ((query.charAt(index) == '.' || query.charAt(index) == '#') &&
           ((index == 0) || (query.charAt(index - 1) != '\\'))) {
 
-        val member = query
-          .substring(last_index, index)
+        val member = query.substring(last_index, index)
           .replaceAll("\\\\([#\\.])", "$1")
         // we want to allow javadoc-style links [[#member]] -- which requires us to remove empty members from the first
         // elemnt in the list

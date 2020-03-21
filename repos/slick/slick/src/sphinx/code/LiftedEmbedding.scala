@@ -214,11 +214,11 @@ object LiftedEmbedding extends App {
         List(
           criteriaColombian.map(coffee.name === _),
           criteriaEspresso.map(coffee.name === _),
-          criteriaRoast.map(
-            coffee.name === _
-          ) // not a condition as `criteriaRoast` evaluates to `None`
-        ).collect({ case Some(criteria) => criteria })
-          .reduceLeftOption(_ || _)
+          criteriaRoast
+            .map(
+              coffee.name === _
+            ) // not a condition as `criteriaRoast` evaluates to `None`
+        ).collect({ case Some(criteria) => criteria }).reduceLeftOption(_ || _)
           .getOrElse(true: Rep[Boolean])
       }
       // compiles to SQL (simplified):
@@ -369,9 +369,8 @@ object LiftedEmbedding extends App {
           "Stefan",
           "Zeiger")
       //#insert3b
-      val userWithIdRes = Await.result(
-        db.run(users.schema.create >> userWithId),
-        Duration.Inf)
+      val userWithIdRes = Await
+        .result(db.run(users.schema.create >> userWithId), Duration.Inf)
       println(userWithIdRes)
 
       //#insert4
@@ -384,9 +383,8 @@ object LiftedEmbedding extends App {
 
       val actions = DBIO.seq(
         users2.schema.create,
-        users2 forceInsertQuery (users.map { u =>
-          (u.id, u.first ++ " " ++ u.last)
-        }),
+        users2 forceInsertQuery (users
+          .map { u => (u.id, u.first ++ " " ++ u.last) }),
         users2 forceInsertExpr (users.length + 1, "admin"))
       //#insert4
       Await.result(db.run(actions), Duration.Inf)
@@ -395,8 +393,8 @@ object LiftedEmbedding extends App {
       val updated = users.insertOrUpdate(User(Some(1), "Admin", "Zeiger"))
       // returns: number of rows updated
 
-      val updatedAdmin = (users returning users).insertOrUpdate(
-        User(Some(1), "Slick Admin", "Zeiger"))
+      val updatedAdmin = (users returning users)
+        .insertOrUpdate(User(Some(1), "Slick Admin", "Zeiger"))
       // returns: None if updated, Some((Int, String)) if row inserted
       //#insertOrUpdate
       Await.result(db.run(updated), Duration.Inf)
@@ -476,8 +474,7 @@ object LiftedEmbedding extends App {
 
       // Use the lifted function in a query to group by day of week
       val q1 = for {
-        (dow, q) <- salesPerDay
-          .map(s => (dayOfWeek(s.day), s.count))
+        (dow, q) <- salesPerDay.map(s => (dayOfWeek(s.day), s.count))
           .groupBy(_._1)
       } yield (dow, q.map(_._2).sum)
       //#simplefunction1
@@ -488,19 +485,17 @@ object LiftedEmbedding extends App {
       //#simplefunction2
 
       assert {
-        Await
-          .result(
-            db.run(
-              salesPerDay.schema.create >>
-                (salesPerDay += ((new Date(999999999), 999))) >> {
-                //#simpleliteral
-                val current_date = SimpleLiteral[java.sql.Date]("CURRENT_DATE")
-                salesPerDay.map(_ => current_date)
-                //#simpleliteral
-              }.result.head),
-            Duration.Inf
-          )
-          .isInstanceOf[java.sql.Date]
+        Await.result(
+          db.run(
+            salesPerDay.schema.create >>
+              (salesPerDay += ((new Date(999999999), 999))) >> {
+              //#simpleliteral
+              val current_date = SimpleLiteral[java.sql.Date]("CURRENT_DATE")
+              salesPerDay.map(_ => current_date)
+              //#simpleliteral
+            }.result.head),
+          Duration.Inf
+        ).isInstanceOf[java.sql.Date]
       }
     }
 
@@ -567,17 +562,15 @@ object LiftedEmbedding extends App {
       val as = TableQuery[A]
 
       // Insert data with the custom shape
-      val insertAction = DBIO.seq(
-        as += Pair(1, "a"),
-        as += Pair(2, "c"),
-        as += Pair(3, "b"))
+      val insertAction = DBIO
+        .seq(as += Pair(1, "a"), as += Pair(2, "c"), as += Pair(3, "b"))
 
       // Use it for returning data from a query
-      val q2 = as
-        .map { case a => Pair(a.id, (a.s ++ a.s)) }
-        .filter { case Pair(id, _) => id =!= 1 }
-        .sortBy { case Pair(_, ss) => ss }
-        .map { case Pair(id, ss) => Pair(id, Pair(42, ss)) }
+      val q2 = as.map { case a => Pair(a.id, (a.s ++ a.s)) }.filter {
+        case Pair(id, _) => id =!= 1
+      }.sortBy { case Pair(_, ss) => ss }.map {
+        case Pair(id, ss) => Pair(id, Pair(42, ss))
+      }
       // returns: Vector(Pair(3,Pair(42,"bb")), Pair(2,Pair(42,"cc")))
       //#recordtype2
 
@@ -608,10 +601,9 @@ object LiftedEmbedding extends App {
         bs.map(b => (b.id, b.s)) += ((2, "c")),
         bs += B(3, "b"))
 
-      val q3 = bs
-        .map { case b => LiftedB(b.id, (b.s ++ b.s)) }
-        .filter { case LiftedB(id, _) => id =!= 1 }
-        .sortBy { case LiftedB(_, ss) => ss }
+      val q3 = bs.map { case b => LiftedB(b.id, (b.s ++ b.s)) }.filter {
+        case LiftedB(id, _) => id =!= 1
+      }.sortBy { case LiftedB(_, ss) => ss }
 
       // returns: Vector(B(3,"bb"), B(2,"cc"))
       //#case-class-shape
@@ -646,10 +638,11 @@ object LiftedEmbedding extends App {
         cs += C(Pair(8, "y"), B(2, "c")),
         cs += C(Pair(9, "z"), B(3, "b")))
 
-      val q4 = cs
-        .map { case c => LiftedC(c.projection.p, LiftedB(c.id, (c.s ++ c.s))) }
-        .filter { case LiftedC(_, LiftedB(id, _)) => id =!= 1 }
-        .sortBy { case LiftedC(Pair(_, p2), LiftedB(_, ss)) => ss ++ p2 }
+      val q4 = cs.map {
+        case c => LiftedC(c.projection.p, LiftedB(c.id, (c.s ++ c.s)))
+      }.filter { case LiftedC(_, LiftedB(id, _)) => id =!= 1 }.sortBy {
+        case LiftedC(Pair(_, p2), LiftedB(_, ss)) => ss ++ p2
+      }
 
       // returns: Vector(C(Pair(9,"z"),B(3,"bb")), C(Pair(8,"y"),B(2,"cc")))
       //#combining-shapes

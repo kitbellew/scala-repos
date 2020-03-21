@@ -138,12 +138,11 @@ class ExecutorClassLoaderSuite
     val classLoader =
       new ExecutorClassLoader(new SparkConf(), null, url1, parentLoader, true)
     val resourceName: String = parentResourceNames.head
-    val resources: util.Enumeration[URL] = classLoader.getResources(
-      resourceName)
+    val resources: util.Enumeration[URL] = classLoader
+      .getResources(resourceName)
     assert(resources.hasMoreElements, s"Resource $resourceName not found")
     val fileReader = Source
-      .fromInputStream(resources.nextElement().openStream())
-      .bufferedReader()
+      .fromInputStream(resources.nextElement().openStream()).bufferedReader()
     assert(
       fileReader.readLine().contains("resource"),
       "File doesn't contain 'resource'")

@@ -22,8 +22,7 @@ object SizeToLength extends SimplificationType {
       case (qual @ ExpressionType(tpe)) `.size` ()
           if isArray(qual) || isString(tpe) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, "length"))
+          replace(expr).withText(invocationText(qual, "length"))
             .highlightFrom(qual))
       case _ => None
     }

@@ -61,8 +61,8 @@ class JavaValsUsagesSearcher
             true
           }
         }
-        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
-          queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE
+          .getInstance(queryParameters.getProject)
         helper.processElementsWithWord(
           processor,
           scope,
@@ -97,8 +97,8 @@ class JavaValsUsagesSearcher
             true
           }
         }
-        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
-          queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE
+          .getInstance(queryParameters.getProject)
         helper.processElementsWithWord(
           processor,
           scope,

@@ -11,8 +11,8 @@ import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 
 class Hotspot extends Jvm {
-  private[this] val epoch = Time.fromMilliseconds(
-    ManagementFactory.getRuntimeMXBean().getStartTime())
+  private[this] val epoch = Time
+    .fromMilliseconds(ManagementFactory.getRuntimeMXBean().getStartTime())
 
   private[this] type Counter = {
     def getName(): String
@@ -24,21 +24,19 @@ class Hotspot extends Jvm {
     def getInternalCounters(pat: String): java.util.List[Counter]
   }
 
-  private[this] val DiagnosticBean = ObjectName.getInstance(
-    "com.sun.management:type=HotSpotDiagnostic")
+  private[this] val DiagnosticBean = ObjectName
+    .getInstance("com.sun.management:type=HotSpotDiagnostic")
 
   private[this] val jvm: VMManagement = {
     val fld =
       try {
         // jdk5/6 have jvm field in ManagementFactory class
-        Class
-          .forName("sun.management.ManagementFactory")
+        Class.forName("sun.management.ManagementFactory")
           .getDeclaredField("jvm")
       } catch {
         case _: NoSuchFieldException =>
           // jdk7 moves jvm field to ManagementFactoryHelper class
-          Class
-            .forName("sun.management.ManagementFactoryHelper")
+          Class.forName("sun.management.ManagementFactoryHelper")
             .getDeclaredField("jvm")
       }
     fld.setAccessible(true)
@@ -47,13 +45,11 @@ class Hotspot extends Jvm {
 
   private[this] def opt(name: String) =
     try Some {
-      val o = ManagementFactory
-        .getPlatformMBeanServer()
-        .invoke(
-          DiagnosticBean,
-          "getVMOption",
-          Array(name),
-          Array("java.lang.String"))
+      val o = ManagementFactory.getPlatformMBeanServer().invoke(
+        DiagnosticBean,
+        "getVMOption",
+        Array(name),
+        Array("java.lang.String"))
       o.asInstanceOf[CompositeDataSupport].get("value").asInstanceOf[String]
     } catch {
       case _: IllegalArgumentException => None
@@ -104,8 +100,7 @@ class Hotspot extends Jvm {
       // This is a somewhat poor estimate, since for example the
       // capacity can change over time.
 
-      val tenuringThreshold = cs
-        .get("sun.gc.policy.tenuringThreshold")
+      val tenuringThreshold = cs.get("sun.gc.policy.tenuringThreshold")
         .map(long)
 
       val ageHisto = for {
@@ -140,17 +135,13 @@ class Hotspot extends Jvm {
   private[this] val safepointBean = {
     val runtimeBean =
       try {
-        Class
-          .forName("sun.management.ManagementFactory")
-          .getMethod("getHotspotRuntimeMBean")
-          .invoke(null)
+        Class.forName("sun.management.ManagementFactory")
+          .getMethod("getHotspotRuntimeMBean").invoke(null)
         // jdk 6 has HotspotRuntimeMBean in the ManagementFactory class
       } catch {
         case _: Throwable =>
-          Class
-            .forName("sun.management.ManagementFactoryHelper")
-            .getMethod("getHotspotRuntimeMBean")
-            .invoke(null)
+          Class.forName("sun.management.ManagementFactoryHelper")
+            .getMethod("getHotspotRuntimeMBean").invoke(null)
         // jdks 7 and 8 have HotspotRuntimeMBean in the ManagementFactoryHelper class
       }
 

@@ -38,7 +38,8 @@ private[http] final class BodyPartParser(
     "'boundary' parameter of multipart Content-Type must not end with a space char")
   require(
     boundaryChar matchesAll boundary,
-    s"'boundary' parameter of multipart Content-Type contains illegal character '${boundaryChar.firstMismatch(boundary).get}'"
+    s"'boundary' parameter of multipart Content-Type contains illegal character '${boundaryChar
+      .firstMismatch(boundary).get}'"
   )
 
   sealed trait StateResult // phantom type for ensuring soundness of our parsing method setup
@@ -313,8 +314,8 @@ private[http] final class BodyPartParser(
 
 private[http] object BodyPartParser {
   // http://tools.ietf.org/html/rfc2046#section-5.1.1
-  val boundaryChar =
-    CharPredicate.Digit ++ CharPredicate.Alpha ++ "'()+_,-./:=? "
+  val boundaryChar = CharPredicate.Digit ++ CharPredicate
+    .Alpha ++ "'()+_,-./:=? "
 
   private object BoundaryHeader extends HttpHeader {
     def renderInRequests = false

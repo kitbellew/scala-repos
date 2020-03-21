@@ -23,15 +23,14 @@ object Export extends LilaController {
             case None => for {
                 initialFen <- GameRepo initialFen game
                 pgn = Env.api.pgnDump(game, initialFen)
-                analysis ← !get("as")
-                  .contains("raw") ?? (Env.analyse.analyser get game.id)
+                analysis ← !get("as").contains("raw") ?? (Env.analyse
+                  .analyser get game.id)
               } yield Env.analyse.annotator(pgn, analysis, game.opening, game.winnerColor, game.status, game.clock).toString
           }) map { content =>
             Ok(content).withHeaders(
               CONTENT_TYPE -> ContentTypes.TEXT,
-              CONTENT_DISPOSITION -> (
-                "attachment; filename=" + (Env.api.pgnDump filename game)
-              ))
+              CONTENT_DISPOSITION -> ("attachment; filename=" + (Env.api
+                .pgnDump filename game)))
           }
         }
       }
@@ -53,10 +52,9 @@ object Export extends LilaController {
     Open { implicit ctx =>
       OnlyHumansAndFacebook {
         OptionResult(GameRepo game id) { game =>
-          Ok.chunked(Enumerator.outputStream(env.pngExport(game)))
-            .withHeaders(
-              CONTENT_TYPE -> "image/png",
-              CACHE_CONTROL -> "max-age=7200")
+          Ok.chunked(Enumerator.outputStream(env.pngExport(game))).withHeaders(
+            CONTENT_TYPE -> "image/png",
+            CACHE_CONTROL -> "max-age=7200")
         }
       }
     }

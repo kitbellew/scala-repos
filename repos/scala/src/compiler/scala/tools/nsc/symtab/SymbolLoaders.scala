@@ -136,9 +136,10 @@ abstract class SymbolLoaders {
           else s"${clazz.fullLocationString} (from ${clazz.associatedFile})"
         sm"""Inconsistent class/module symbol pair for `$name` loaded from ${symLocation(
           root)}.
-            |clazz = ${symLocation(clazz)}; clazz.companionModule = ${clazz.companionModule}
-            |module = ${symLocation(
-          module)}; module.companionClass = ${module.companionClass}"""
+            |clazz = ${symLocation(clazz)}; clazz.companionModule = ${clazz
+          .companionModule}
+            |module = ${symLocation(module)}; module.companionClass = ${module
+          .companionClass}"""
       }
       assert(clazz.companionModule == module, msg)
       assert(module.companionClass == clazz, msg)
@@ -173,8 +174,9 @@ abstract class SymbolLoaders {
       classRep: ClassRepresentation[AbstractFile]) {
     ((classRep.binary, classRep.source): @unchecked) match {
       case (Some(bin), Some(src))
-          if platform
-            .needCompile(bin, src) && !binaryOnly(owner, classRep.name) =>
+          if platform.needCompile(bin, src) && !binaryOnly(
+            owner,
+            classRep.name) =>
         if (settings.verbose)
           inform("[symloader] picked up newer source file for " + src.path)
         enterToplevelsFromSource(owner, classRep.name, src)
@@ -340,8 +342,8 @@ abstract class SymbolLoaders {
       extends SymbolLoader
       with FlagAssigningCompleter {
     private object classfileParser extends {
-      val symbolTable: SymbolLoaders.this.symbolTable.type =
-        SymbolLoaders.this.symbolTable
+      val symbolTable: SymbolLoaders.this.symbolTable.type = SymbolLoaders.this
+        .symbolTable
     } with ClassfileParser {
       override protected type ThisConstantPool = ConstantPool
       override protected def newConstantPool: ThisConstantPool =
@@ -395,10 +397,8 @@ abstract class SymbolLoaders {
             root.associatedFile = classfile
           case _ =>
             debuglog(
-              "Not setting associatedFile to %s because %s is a %s".format(
-                classfile,
-                root.name,
-                root.shortSymbolClass))
+              "Not setting associatedFile to %s because %s is a %s"
+                .format(classfile, root.name, root.shortSymbolClass))
         }
       }
       if (Statistics.canEnable) Statistics.stopTimer(classReadNanos, start)
@@ -427,7 +427,6 @@ abstract class SymbolLoaders {
 
 object SymbolLoadersStats {
   import scala.reflect.internal.TypesStats.typerNanos
-  val classReadNanos = Statistics.newSubTimer(
-    "time classfilereading",
-    typerNanos)
+  val classReadNanos = Statistics
+    .newSubTimer("time classfilereading", typerNanos)
 }

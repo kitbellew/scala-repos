@@ -156,9 +156,8 @@ class Formatter(
       lines ++= splitOnNewlines
 
       if (record.getThrown ne null) {
-        val traceLines = Formatter.formatStackTrace(
-          record.getThrown,
-          truncateStackTracesAt)
+        val traceLines = Formatter
+          .formatStackTrace(record.getThrown, truncateStackTracesAt)
         lines += record.getThrown.toString
         if (traceLines.nonEmpty) lines ++= traceLines
       }
@@ -193,10 +192,8 @@ class Formatter(
       record.getLevel,
       dateFormat.format(new Date(record.getMillis)),
       name)
-    formatMessageLines(record).mkString(
-      prefix,
-      lineTerminator + prefix,
-      lineTerminator)
+    formatMessageLines(record)
+      .mkString(prefix, lineTerminator + prefix, lineTerminator)
   }
 
   /**

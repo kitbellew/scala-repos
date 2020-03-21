@@ -8,8 +8,7 @@ case class MQName(
     schema: Option[String],
     name: String) {
   override def toString =
-    "MQName(" + catalog.map(_ + ".").getOrElse("") + schema
-      .map(_ + ".")
+    "MQName(" + catalog.map(_ + ".").getOrElse("") + schema.map(_ + ".")
       .getOrElse("") + name + ")"
 
   def catalog_? = catalog.orNull

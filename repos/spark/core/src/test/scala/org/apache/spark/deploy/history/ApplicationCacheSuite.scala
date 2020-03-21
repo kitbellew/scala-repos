@@ -87,8 +87,7 @@ class ApplicationCacheSuite
         attemptId: Option[String]): Option[LoadedAppUI] = {
       logDebug(s"getAppUI($appId, $attemptId)")
       getAppUICount += 1
-      instances
-        .get(CacheKey(appId, attemptId))
+      instances.get(CacheKey(appId, attemptId))
         .map(e => LoadedAppUI(e.ui, updateProbe(appId, attemptId, e.probeTime)))
     }
 
@@ -338,13 +337,8 @@ class ApplicationCacheSuite
 
     val updateTime = window * 3
     // update the cached value
-    val updatedApp = operations.putAppUI(
-      appId,
-      attemptId,
-      true,
-      started,
-      updateTime,
-      updateTime)
+    val updatedApp = operations
+      .putAppUI(appId, attemptId, true, started, updateTime, updateTime)
     val endTime = window * 10
     clock.setTime(endTime)
     logDebug(s"Before operation = $cache")
@@ -530,8 +524,8 @@ class ApplicationCacheSuite
       }
     })
     filter.doFilter(request, resp, null)
-    verify(resp).sendRedirect(
-      "http://localhost:18080/history/local-123/jobs/job/?id=2")
+    verify(resp)
+      .sendRedirect("http://localhost:18080/history/local-123/jobs/job/?id=2")
   }
 
 }

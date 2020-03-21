@@ -107,8 +107,7 @@ class SparkIMain(
 
   /** Local directory to save .class files too */
   private[repl] val outputDir = {
-    val rootDir = conf
-      .getOption("spark.repl.classdir")
+    val rootDir = conf.getOption("spark.repl.classdir")
       .getOrElse(Utils.getLocalDir(conf))
     Utils.createTempDir(root = rootDir, namePrefix = "repl")
   }
@@ -429,9 +428,10 @@ class SparkIMain(
   @DeveloperApi
   def addUrlsToClassPath(urls: URL*): Unit = {
     new Run // Needed to force initialization of "something" to correctly load Scala classes from jars
-    urls.foreach(
-      _runtimeClassLoader.addNewUrl
-    ) // Add jars/classes to runtime for execution
+    urls
+      .foreach(
+        _runtimeClassLoader.addNewUrl
+      ) // Add jars/classes to runtime for execution
     updateCompilerClassPath(
       urls: _*
     ) // Add jars/classes to compile time for compiling
@@ -446,8 +446,7 @@ class SparkIMain(
 
     // NOTE: Must use reflection until this is exposed/fixed upstream in Scala
     val fieldSetter = platform.getClass.getMethods
-      .find(_.getName.endsWith("currentClassPath_$eq"))
-      .get
+      .find(_.getName.endsWith("currentClassPath_$eq")).get
     fieldSetter.invoke(platform, Some(newClassPath))
 
     // Reload all jars specified into our compiler
@@ -458,16 +457,15 @@ class SparkIMain(
       platform: JavaPlatform,
       urls: URL*): MergedClassPath[AbstractFile] = {
     // Collect our new jars/directories and add them to the existing set of classpaths
-    val allClassPaths =
-      (platform.classPath.asInstanceOf[MergedClassPath[AbstractFile]].entries ++
-        urls.map(url => {
-          platform.classPath.context.newClassPath(
-            if (url.getProtocol == "file") {
-              val f = new File(url.getPath)
-              if (f.isDirectory) io.AbstractFile.getDirectory(f)
-              else io.AbstractFile.getFile(f)
-            } else { io.AbstractFile.getURL(url) })
-        })).distinct
+    val allClassPaths = (platform.classPath
+      .asInstanceOf[MergedClassPath[AbstractFile]].entries ++
+      urls.map(url => {
+        platform.classPath.context.newClassPath(if (url.getProtocol == "file") {
+          val f = new File(url.getPath)
+          if (f.isDirectory) io.AbstractFile.getDirectory(f)
+          else io.AbstractFile.getFile(f)
+        } else { io.AbstractFile.getURL(url) })
+      })).distinct
 
     // Combine all of our classpaths (old and new) into one merged classpath
     new MergedClassPath(allClassPaths, platform.classPath.context)
@@ -481,8 +479,7 @@ class SparkIMain(
     */
   @DeveloperApi
   protected def parentClassLoader: ClassLoader =
-    SparkHelper
-      .explicitParentLoader(settings)
+    SparkHelper.explicitParentLoader(settings)
       .getOrElse(this.getClass.getClassLoader())
 
   /* A single class loader is used for all commands interpreted by this Interpreter.
@@ -791,8 +788,9 @@ class SparkIMain(
               val (raw1, raw2) = content splitAt lastpos0
               logDebug("[raw] " + raw1 + "   <--->   " + raw2)
 
-              val adjustment = (raw1.reverse takeWhile (ch =>
-                (ch != ';') && (ch != '\n'))).size
+              val adjustment =
+                (raw1.reverse takeWhile (ch => (ch != ';') && (ch != '\n')))
+                  .size
               val lastpos = lastpos0 - adjustment
 
               // the source code split at the laboriously determined position.
@@ -919,15 +917,14 @@ class SparkIMain(
       value: Any,
       modifiers: List[String] = Nil): IR.Result = {
     val bindRep = new ReadEvalPrint()
-    val run = bindRep.compile("""
+    val run = bindRep.compile(
+      """
                               |object %s {
                                 |  var value: %s = _
                               |  def set(x: Any) = value = x.asInstanceOf[%s]
                               |}
-                              """.stripMargin.format(
-      bindRep.evalName,
-      boundType,
-      boundType))
+                              """.stripMargin
+        .format(bindRep.evalName, boundType, boundType))
     bindRep.callEither("set", value) match {
       case Left(ex) =>
         logDebug(
@@ -936,10 +933,8 @@ class SparkIMain(
         IR.Error
 
       case Right(_) =>
-        val line = "%sval %s = %s.value".format(
-          modifiers map (_ + " ") mkString,
-          name,
-          bindRep.evalPath)
+        val line = "%sval %s = %s.value"
+          .format(modifiers map (_ + " ") mkString, name, bindRep.evalPath)
         logDebug("Interpreting: " + line)
         interpret(line)
     }
@@ -1145,9 +1140,8 @@ class SparkIMain(
       // val readRoot  = getRequiredModule(readPath)   // the outermost wrapper
       // MATEI: Changed this to getClass because the root object is no longer a module (Scala singleton object)
 
-      val readRoot = rootMirror.getClassByName(newTypeName(
-        readPath
-      )) // the outermost wrapper
+      val readRoot = rootMirror
+        .getClassByName(newTypeName(readPath)) // the outermost wrapper
       (accessPath split '.').foldLeft(readRoot: Symbol) {
         case (sym, "")   => sym
         case (sym, name) => afterTyper(termMember(sym, name))
@@ -1164,9 +1158,8 @@ class SparkIMain(
           case ((pos, msg)) :: rest =>
             val filtered = rest filter {
               case (pos0, msg0) =>
-                (msg != msg0) || (
-                  pos.lineContent.trim != pos0.lineContent.trim
-                ) || {
+                (msg != msg0) || (pos.lineContent.trim != pos0.lineContent
+                  .trim) || {
                   // same messages and same line content after whitespace removal
                   // but we want to let through multiple warnings on the same line
                   // from the same run.  The untrimmed line will be the same since
@@ -1252,9 +1245,8 @@ class SparkIMain(
       */
     def fullFlatName(name: String) =
       // lineRep.readPath + accessPath.replace('.', '$') + nme.NAME_JOIN_STRING + name
-      lineRep.readPath + ".INSTANCE" + accessPath.replace(
-        '.',
-        '$') + nme.NAME_JOIN_STRING + name
+      lineRep.readPath + ".INSTANCE" + accessPath.replace('.', '$') + nme
+        .NAME_JOIN_STRING + name
 
     /** The unmangled symbol name, but supplemented with line info. */
     def disambiguated(name: Name): String = name + " (in " + lineRep + ")"
@@ -1511,8 +1503,8 @@ class SparkIMain(
   def typeOfTerm(id: String): Type =
     newTermName(id) match {
       case nme.ROOTPKG => RootClass.tpe
-      case name =>
-        requestForName(name).fold(NoType: Type)(_ compilerTypeOf name)
+      case name => requestForName(name)
+          .fold(NoType: Type)(_ compilerTypeOf name)
     }
 
   /**
@@ -1833,9 +1825,8 @@ object SparkIMain {
     def maxStringLength: Int
     def isTruncating: Boolean
     def truncate(str: String): String = {
-      if (isTruncating && (
-            maxStringLength != 0 && str.length > maxStringLength
-          )) (str take maxStringLength - 3) + "..."
+      if (isTruncating && (maxStringLength != 0 && str
+            .length > maxStringLength)) (str take maxStringLength - 3) + "..."
       else str
     }
   }

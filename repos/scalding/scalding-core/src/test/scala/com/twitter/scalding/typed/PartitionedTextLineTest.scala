@@ -36,9 +36,9 @@ class PartitionedTextLineSingleWriteJob(args: Args) extends Job(args) {
 
 class PartitionedTextLineMultipleWriteJob(args: Args) extends Job(args) {
   import PartitionedTextLineTestSources._
-  TypedCsv[(String, String, String)]("in")
-    .map { case (v1, v2, v3) => ((v1, v2), v3) }
-    .write(multiplePartition)
+  TypedCsv[(String, String, String)]("in").map {
+    case (v1, v2, v3) => ((v1, v2), v3)
+  }.write(multiplePartition)
 }
 
 class PartitionedTextLineTest extends WordSpec with Matchers {
@@ -55,10 +55,8 @@ class PartitionedTextLineTest extends WordSpec with Matchers {
         job
       }
 
-      JobTest(buildJob(_))
-        .source(TypedCsv[(String, String)]("in"), input)
-        .runHadoop
-        .finish
+      JobTest(buildJob(_)).source(TypedCsv[(String, String)]("in"), input)
+        .runHadoop.finish
 
       val testMode = job.mode.asInstanceOf[HadoopTest]
 
@@ -67,10 +65,10 @@ class PartitionedTextLineTest extends WordSpec with Matchers {
 
       directory.listFiles().map({ _.getName() }).toSet shouldBe Set("A", "B")
 
-      val aSource = ScalaSource.fromFile(
-        new File(directory, "A/part-00000-00000"))
-      val bSource = ScalaSource.fromFile(
-        new File(directory, "B/part-00000-00001"))
+      val aSource = ScalaSource
+        .fromFile(new File(directory, "A/part-00000-00000"))
+      val bSource = ScalaSource
+        .fromFile(new File(directory, "B/part-00000-00001"))
 
       aSource.getLines.toList shouldBe Seq("1", "2")
       bSource.getLines.toList shouldBe Seq("3")
@@ -86,8 +84,7 @@ class PartitionedTextLineTest extends WordSpec with Matchers {
       }
 
       JobTest(buildJob(_))
-        .source(TypedCsv[(String, String, String)]("in"), input)
-        .runHadoop
+        .source(TypedCsv[(String, String, String)]("in"), input).runHadoop
         .finish
 
       val testMode = job.mode.asInstanceOf[HadoopTest]
@@ -99,12 +96,12 @@ class PartitionedTextLineTest extends WordSpec with Matchers {
         .flatMap(d => d.listFiles.map(d.getName + "/" + _.getName))
         .toSet shouldBe Set("A/X", "A/Y", "B/Z")
 
-      val axSource = ScalaSource.fromFile(
-        new File(directory, "A/X/part-00000-00000"))
-      val aySource = ScalaSource.fromFile(
-        new File(directory, "A/Y/part-00000-00001"))
-      val bzSource = ScalaSource.fromFile(
-        new File(directory, "B/Z/part-00000-00002"))
+      val axSource = ScalaSource
+        .fromFile(new File(directory, "A/X/part-00000-00000"))
+      val aySource = ScalaSource
+        .fromFile(new File(directory, "A/Y/part-00000-00001"))
+      val bzSource = ScalaSource
+        .fromFile(new File(directory, "B/Z/part-00000-00002"))
 
       axSource.getLines.toList shouldBe Seq("1")
       aySource.getLines.toList shouldBe Seq("2")

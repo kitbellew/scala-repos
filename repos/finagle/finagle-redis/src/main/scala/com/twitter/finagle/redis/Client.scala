@@ -14,12 +14,8 @@ object Client {
     */
   def apply(host: String): Client =
     Client(
-      ClientBuilder()
-        .hosts(host)
-        .hostConnectionLimit(1)
-        .codec(Redis())
-        .daemon(true)
-        .build())
+      ClientBuilder().hosts(host).hostConnectionLimit(1).codec(Redis())
+        .daemon(true).build())
 
   /**
     * Construct a client from a single Service.
@@ -154,12 +150,8 @@ object TransactionalClient {
     */
   def apply(host: String): TransactionalClient =
     TransactionalClient(
-      ClientBuilder()
-        .hosts(host)
-        .hostConnectionLimit(1)
-        .codec(Redis())
-        .daemon(true)
-        .buildFactory())
+      ClientBuilder().hosts(host).hostConnectionLimit(1).codec(Redis())
+        .daemon(true).buildFactory())
 
   /**
     * Construct a client from a service factory

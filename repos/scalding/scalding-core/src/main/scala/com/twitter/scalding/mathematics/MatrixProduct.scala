@@ -99,42 +99,35 @@ object MatrixProduct extends java.io.Serializable {
   var maxReducers = 200
 
   def numOfReducers(hint: SizeHint) = {
-    hint.total
-      .map { tot =>
-        // + 1L is to make sure there is at least once reducer
-        (
-          tot / MatrixProduct.maxTinyJoin + 1L
-        ).toInt min MatrixProduct.maxReducers
-      }
-      .getOrElse(-1)
+    hint.total.map { tot =>
+      // + 1L is to make sure there is at least once reducer
+      (tot / MatrixProduct.maxTinyJoin + 1L).toInt min MatrixProduct.maxReducers
+    }.getOrElse(-1)
   }
 
   def getJoiner(leftSize: SizeHint, rightSize: SizeHint): MatrixJoiner = {
     val newHint = leftSize * rightSize
     if (SizeHintOrdering.lteq(leftSize, rightSize)) {
       // If leftsize is definite:
-      leftSize.total
-        .map { t =>
-          if (t < maxTinyJoin) TinyToAny
-          else new SmallToBig(numOfReducers(newHint))
-        }
-        // Else just assume the right is smaller, but both are unknown:
+      leftSize.total.map { t =>
+        if (t < maxTinyJoin) TinyToAny
+        else new SmallToBig(numOfReducers(newHint))
+      }
+      // Else just assume the right is smaller, but both are unknown:
         .getOrElse(new BigToSmall(numOfReducers(newHint)))
     } else {
       // left > right
-      rightSize.total
-        .map { rs =>
-          if (rs < maxTinyJoin) AnyToTiny
-          else new BigToSmall(numOfReducers(newHint))
-        }
-        .getOrElse(new BigToSmall(numOfReducers(newHint)))
+      rightSize.total.map { rs =>
+        if (rs < maxTinyJoin) AnyToTiny
+        else new BigToSmall(numOfReducers(newHint))
+      }.getOrElse(new BigToSmall(numOfReducers(newHint)))
     }
   }
 
   def getCrosser(rightSize: SizeHint): MatrixCrosser =
-    rightSize.total
-      .map { t => if (t < maxTinyJoin) AnyCrossTiny else AnyCrossSmall }
-      .getOrElse(AnyCrossSmall)
+    rightSize.total.map { t =>
+      if (t < maxTinyJoin) AnyCrossTiny else AnyCrossSmall
+    }.getOrElse(AnyCrossSmall)
 
   implicit def literalScalarRightProduct[Row, Col, ValT](implicit
       ring: Ring[ValT]): MatrixProduct[Matrix[Row, Col, ValT], LiteralScalar[
@@ -202,12 +195,10 @@ object MatrixProduct extends java.io.Serializable {
       Scalar[ValT],
       Matrix[Row, Col, ValT]] {
       def apply(left: Matrix[Row, Col, ValT], right: Scalar[ValT]) = {
-        left
-          .nonZerosWith(right)
-          .mapValues({ leftRight =>
-            val (left, right) = leftRight
-            ring.times(left, right)
-          })(ring)
+        left.nonZerosWith(right).mapValues({ leftRight =>
+          val (left, right) = leftRight
+          ring.times(left, right)
+        })(ring)
       }
     }
 
@@ -221,12 +212,10 @@ object MatrixProduct extends java.io.Serializable {
       Matrix[Row, Col, ValT],
       Matrix[Row, Col, ValT]] {
       def apply(left: Scalar[ValT], right: Matrix[Row, Col, ValT]) = {
-        right
-          .nonZerosWith(left)
-          .mapValues({ matScal =>
-            val (matVal, scalarVal) = matScal
-            ring.times(scalarVal, matVal)
-          })(ring)
+        right.nonZerosWith(left).mapValues({ matScal =>
+          val (matVal, scalarVal) = matScal
+          ring.times(scalarVal, matVal)
+        })(ring)
       }
     }
 
@@ -530,15 +519,12 @@ object MatrixProduct extends java.io.Serializable {
           right.pipe)
         val newColSym = Symbol(right.colS.name + "_newCol")
         val newHint = left.sizeH * right.sizeH
-        val productPipe = Matrix
-          .filterOutZeros(left.valS, ring) {
-            getCrosser(right.sizeH)
-              .apply(left.pipe, newRightPipe)
-              .map(left.valS.append(getField(newRightFields, 1)) -> left.valS) {
-                pair: (ValT, ValT) => ring.times(pair._1, pair._2)
-              }
-          }
-          .rename(getField(newRightFields, 0) -> newColSym)
+        val productPipe = Matrix.filterOutZeros(left.valS, ring) {
+          getCrosser(right.sizeH).apply(left.pipe, newRightPipe)
+            .map(left.valS.append(getField(newRightFields, 1)) -> left.valS) {
+              pair: (ValT, ValT) => ring.times(pair._1, pair._2)
+            }
+        }.rename(getField(newRightFields, 0) -> newColSym)
         new Matrix[RowT, ColT, ValT](
           left.rowS,
           newColSym,
@@ -568,32 +554,28 @@ object MatrixProduct extends java.io.Serializable {
         // Hint of groupBy reducer size
         val grpReds = numOfReducers(newHint)
 
-        val productPipe = Matrix
-          .filterOutZeros(left.valSym, ring) {
-            getJoiner(left.sizeHint, right.sizeHint)
-            // TODO: we should use the size hints to set the number of reducers:
-              .apply(
-                left.pipe,
-                (left.colSym -> getField(newRightFields, 0)),
-                newRightPipe)
-              // Do the product:
-              .map(
-                (left.valSym.append(
-                  getField(newRightFields, 2))) -> left.valSym) {
-                pair: (ValT, ValT) => ring.times(pair._1, pair._2)
+        val productPipe = Matrix.filterOutZeros(left.valSym, ring) {
+          getJoiner(left.sizeHint, right.sizeHint)
+          // TODO: we should use the size hints to set the number of reducers:
+            .apply(
+              left.pipe,
+              (left.colSym -> getField(newRightFields, 0)),
+              newRightPipe)
+            // Do the product:
+            .map(
+              (left.valSym.append(getField(newRightFields, 2))) -> left
+                .valSym) { pair: (ValT, ValT) => ring.times(pair._1, pair._2) }
+            .groupBy(left.rowSym.append(getField(newRightFields, 1))) {
+              // We should use the size hints to set the number of reducers here
+              _.reduce(left.valSym) { (x: Tuple1[ValT], y: Tuple1[ValT]) =>
+                Tuple1(ring.plus(x._1, y._1))
               }
-              .groupBy(left.rowSym.append(getField(newRightFields, 1))) {
-                // We should use the size hints to set the number of reducers here
-                _.reduce(left.valSym) { (x: Tuple1[ValT], y: Tuple1[ValT]) =>
-                  Tuple1(ring.plus(x._1, y._1))
-                }
-                // There is a low chance that many (row,col) keys are co-located, and the keyspace
-                // is likely huge, just push to reducers
-                .forceToReducers
-                  .reducers(grpReds)
-              }
-          }
-          // Keep the names from the left:
+              // There is a low chance that many (row,col) keys are co-located, and the keyspace
+              // is likely huge, just push to reducers
+              .forceToReducers.reducers(grpReds)
+            }
+        }
+        // Keep the names from the left:
           .rename(getField(newRightFields, 1) -> left.colSym)
         new Matrix[RowL, ColR, ValT](
           left.rowSym,
@@ -630,12 +612,13 @@ object MatrixProduct extends java.io.Serializable {
               newRightPipe)
             // Do the product:
             .map(
-              (left.valSym.append(getField(newRightFields, 2))) -> getField(
-                newRightFields,
-                2)) { pair: (ValT, ValT) => ring.times(pair._1, pair._2) }
+              (
+                left.valSym.append(getField(newRightFields, 2))
+              ) -> getField(newRightFields, 2)) { pair: (ValT, ValT) =>
+              ring.times(pair._1, pair._2)
+            }
             // Keep the names from the right:
-            .project(newRightFields)
-            .rename(
+            .project(newRightFields).rename(
               newRightFields -> (right.rowSym, right.colSym, right.valSym))
         }
         new Matrix[RowT, ColT, ValT](
@@ -680,22 +663,19 @@ object MatrixProduct extends java.io.Serializable {
           (right.idxSym, right.valSym),
           right.pipe)
         val newHint = left.sizeHint * right.sizeHint
-        val productPipe = Matrix
-          .filterOutZeros(left.valSym, ring) {
-            getJoiner(left.sizeHint, right.sizeHint)
-            // TODO: we should use the size hints to set the number of reducers:
-              .apply(
-                left.pipe,
-                (left.idxSym -> getField(newRightFields, 0)),
-                newRightPipe)
-              // Do the product:
-              .map(
-                (left.valSym.append(
-                  getField(newRightFields, 1))) -> left.valSym) {
-                pair: (ValT, ValT) => ring.times(pair._1, pair._2)
-              }
-          }
-          // Keep the names from the left:
+        val productPipe = Matrix.filterOutZeros(left.valSym, ring) {
+          getJoiner(left.sizeHint, right.sizeHint)
+          // TODO: we should use the size hints to set the number of reducers:
+            .apply(
+              left.pipe,
+              (left.idxSym -> getField(newRightFields, 0)),
+              newRightPipe)
+            // Do the product:
+            .map(
+              (left.valSym.append(getField(newRightFields, 1))) -> left
+                .valSym) { pair: (ValT, ValT) => ring.times(pair._1, pair._2) }
+        }
+        // Keep the names from the left:
           .project(left.idxSym, left.valSym)
         new DiagonalMatrix[IdxT, ValT](
           left.idxSym,

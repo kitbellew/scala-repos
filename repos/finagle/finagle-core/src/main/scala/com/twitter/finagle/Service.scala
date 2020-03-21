@@ -182,8 +182,8 @@ abstract class ServiceFactory[-Req, +Rep]
 object ServiceFactory {
   def const[Req, Rep](service: Service[Req, Rep]): ServiceFactory[Req, Rep] =
     new ServiceFactory[Req, Rep] {
-      private[this] val noRelease = Future.value(
-        new ServiceProxy[Req, Rep](service) {
+      private[this] val noRelease = Future
+        .value(new ServiceProxy[Req, Rep](service) {
           // close() is meaningless on connectionless services.
           override def close(deadline: Time) = Future.Done
         })
@@ -262,8 +262,8 @@ object FactoryToService {
            *
            * This is too complicated.
            */
-          val service = Future.value(
-            new ServiceProxy[Req, Rep](new FactoryToService(next)) {
+          val service = Future
+            .value(new ServiceProxy[Req, Rep](new FactoryToService(next)) {
               override def close(deadline: Time): Future[Unit] = Future.Done
             })
           new ServiceFactoryProxy(next) {

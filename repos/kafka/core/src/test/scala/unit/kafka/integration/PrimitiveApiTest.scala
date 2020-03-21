@@ -51,14 +51,9 @@ class PrimitiveApiTest
 
   @Test
   def testFetchRequestCanProperlySerialize() {
-    val request = new FetchRequestBuilder()
-      .clientId("test-client")
-      .maxWait(10001)
-      .minBytes(4444)
-      .addFetch("topic1", 0, 0, 10000)
-      .addFetch("topic2", 1, 1024, 9999)
-      .addFetch("topic1", 1, 256, 444)
-      .build()
+    val request = new FetchRequestBuilder().clientId("test-client")
+      .maxWait(10001).minBytes(4444).addFetch("topic1", 0, 0, 10000)
+      .addFetch("topic2", 1, 1024, 9999).addFetch("topic1", 1, 256, 444).build()
     val serializedBuffer = ByteBuffer.allocate(request.sizeInBytes)
     request.writeTo(serializedBuffer)
     serializedBuffer.rewind()
@@ -84,14 +79,12 @@ class PrimitiveApiTest
     val replica = servers.head.replicaManager.getReplica(topic, 0).get
     assertTrue(
       "HighWatermark should equal logEndOffset with just 1 replica",
-      replica.logEndOffset.messageOffset > 0 && replica.logEndOffset.equals(
-        replica.highWatermark)
+      replica.logEndOffset.messageOffset > 0 && replica.logEndOffset
+        .equals(replica.highWatermark)
     )
 
-    val request = new FetchRequestBuilder()
-      .clientId("test-client")
-      .addFetch(topic, 0, 0, 10000)
-      .build()
+    val request = new FetchRequestBuilder().clientId("test-client")
+      .addFetch(topic, 0, 0, 10000).build()
     val fetched = consumer.fetch(request)
     assertEquals(
       "Returned correlationId doesn't match that in request.",
@@ -121,11 +114,11 @@ class PrimitiveApiTest
       producerProps = props
     )
 
-    stringProducer1.send(
-      new KeyedMessage[String, String](topic, "test-message"))
+    stringProducer1
+      .send(new KeyedMessage[String, String](topic, "test-message"))
 
-    val fetched = consumer.fetch(
-      new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
+    val fetched = consumer
+      .fetch(new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
     val messageSet = fetched.messageSet(topic, 0)
     assertTrue(messageSet.iterator.hasNext)
 
@@ -146,8 +139,8 @@ class PrimitiveApiTest
       val builder = new FetchRequestBuilder()
       for ((topic, partition) <- topics) {
         val messageList = List("a_" + topic, "b_" + topic)
-        val producerData = messageList.map(
-          new KeyedMessage[String, String](topic, topic, _))
+        val producerData = messageList
+          .map(new KeyedMessage[String, String](topic, topic, _))
         messages += topic -> messageList
         producer.send(producerData: _*)
         builder.addFetch(topic, partition, 0, 10000)
@@ -176,8 +169,8 @@ class PrimitiveApiTest
       try {
         val request = builder.build()
         val response = consumer.fetch(request)
-        response.data.values.foreach(pdata =>
-          ErrorMapping.maybeThrowException(pdata.error))
+        response.data.values
+          .foreach(pdata => ErrorMapping.maybeThrowException(pdata.error))
         fail("Expected exception when fetching message with invalid offset")
       } catch { case e: OffsetOutOfRangeException => "this is good" }
     }
@@ -190,8 +183,8 @@ class PrimitiveApiTest
       try {
         val request = builder.build()
         val response = consumer.fetch(request)
-        response.data.values.foreach(pdata =>
-          ErrorMapping.maybeThrowException(pdata.error))
+        response.data.values
+          .foreach(pdata => ErrorMapping.maybeThrowException(pdata.error))
         fail("Expected exception when fetching message with invalid partition")
       } catch { case e: UnknownTopicOrPartitionException => "this is good" }
     }
@@ -205,15 +198,15 @@ class PrimitiveApiTest
 
   private def multiProduce(producer: Producer[String, String]) {
     val topics = Map("test4" -> 0, "test1" -> 0, "test2" -> 0, "test3" -> 0)
-    topics.keys.map(topic =>
-      TestUtils.createTopic(zkUtils, topic, servers = servers))
+    topics.keys
+      .map(topic => TestUtils.createTopic(zkUtils, topic, servers = servers))
 
     val messages = new mutable.HashMap[String, Seq[String]]
     val builder = new FetchRequestBuilder()
     for ((topic, partition) <- topics) {
       val messageList = List("a_" + topic, "b_" + topic)
-      val producerData = messageList.map(
-        new KeyedMessage[String, String](topic, topic, _))
+      val producerData = messageList
+        .map(new KeyedMessage[String, String](topic, topic, _))
       messages += topic -> messageList
       producer.send(producerData: _*)
       builder.addFetch(topic, partition, 0, 10000)
@@ -243,16 +236,16 @@ class PrimitiveApiTest
       replicationFactor = 1,
       servers = servers)
 
-    val fetchResponse = consumer.fetch(
-      new FetchRequestBuilder().addFetch(newTopic, 0, 0, 10000).build())
+    val fetchResponse = consumer
+      .fetch(new FetchRequestBuilder().addFetch(newTopic, 0, 0, 10000).build())
     assertFalse(fetchResponse.messageSet(newTopic, 0).iterator.hasNext)
   }
 
   @Test
   def testPipelinedProduceRequests() {
     val topics = Map("test4" -> 0, "test1" -> 0, "test2" -> 0, "test3" -> 0)
-    topics.keys.map(topic =>
-      TestUtils.createTopic(zkUtils, topic, servers = servers))
+    topics.keys
+      .map(topic => TestUtils.createTopic(zkUtils, topic, servers = servers))
     val props = new Properties()
     props.put("request.required.acks", "0")
     val pipelinedProducer: Producer[String, String] = TestUtils
@@ -269,8 +262,8 @@ class PrimitiveApiTest
     val builder = new FetchRequestBuilder()
     for ((topic, partition) <- topics) {
       val messageList = List("a_" + topic, "b_" + topic)
-      val producerData = messageList.map(
-        new KeyedMessage[String, String](topic, topic, _))
+      val producerData = messageList
+        .map(new KeyedMessage[String, String](topic, topic, _))
       messages += topic -> messageList
       pipelinedProducer.send(producerData: _*)
       builder.addFetch(topic, partition, 0, 10000)
@@ -279,33 +272,25 @@ class PrimitiveApiTest
     // wait until the messages are published
     TestUtils.waitUntilTrue(
       () => {
-        servers.head.logManager
-          .getLog(TopicAndPartition("test1", 0))
-          .get
+        servers.head.logManager.getLog(TopicAndPartition("test1", 0)).get
           .logEndOffset == 2
       },
       "Published messages should be in the log")
     TestUtils.waitUntilTrue(
       () => {
-        servers.head.logManager
-          .getLog(TopicAndPartition("test2", 0))
-          .get
+        servers.head.logManager.getLog(TopicAndPartition("test2", 0)).get
           .logEndOffset == 2
       },
       "Published messages should be in the log")
     TestUtils.waitUntilTrue(
       () => {
-        servers.head.logManager
-          .getLog(TopicAndPartition("test3", 0))
-          .get
+        servers.head.logManager.getLog(TopicAndPartition("test3", 0)).get
           .logEndOffset == 2
       },
       "Published messages should be in the log")
     TestUtils.waitUntilTrue(
       () => {
-        servers.head.logManager
-          .getLog(TopicAndPartition("test4", 0))
-          .get
+        servers.head.logManager.getLog(TopicAndPartition("test4", 0)).get
           .logEndOffset == 2
       },
       "Published messages should be in the log")
@@ -313,38 +298,26 @@ class PrimitiveApiTest
     val replicaId = servers.head.config.brokerId
     TestUtils.waitUntilTrue(
       () => {
-        servers.head.replicaManager
-          .getReplica("test1", 0, replicaId)
-          .get
-          .highWatermark
-          .messageOffset == 2
+        servers.head.replicaManager.getReplica("test1", 0, replicaId).get
+          .highWatermark.messageOffset == 2
       },
       "High watermark should equal to log end offset")
     TestUtils.waitUntilTrue(
       () => {
-        servers.head.replicaManager
-          .getReplica("test2", 0, replicaId)
-          .get
-          .highWatermark
-          .messageOffset == 2
+        servers.head.replicaManager.getReplica("test2", 0, replicaId).get
+          .highWatermark.messageOffset == 2
       },
       "High watermark should equal to log end offset")
     TestUtils.waitUntilTrue(
       () => {
-        servers.head.replicaManager
-          .getReplica("test3", 0, replicaId)
-          .get
-          .highWatermark
-          .messageOffset == 2
+        servers.head.replicaManager.getReplica("test3", 0, replicaId).get
+          .highWatermark.messageOffset == 2
       },
       "High watermark should equal to log end offset")
     TestUtils.waitUntilTrue(
       () => {
-        servers.head.replicaManager
-          .getReplica("test4", 0, replicaId)
-          .get
-          .highWatermark
-          .messageOffset == 2
+        servers.head.replicaManager.getReplica("test4", 0, replicaId).get
+          .highWatermark.messageOffset == 2
       },
       "High watermark should equal to log end offset")
 

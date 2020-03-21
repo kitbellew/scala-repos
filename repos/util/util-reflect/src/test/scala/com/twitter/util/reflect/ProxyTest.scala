@@ -225,22 +225,19 @@ class ProxyTest extends WordSpec {
     protected val interface = implicitly[Manifest[I]].runtimeClass
 
     private val proxyConstructor = {
-      reflect.Proxy
-        .getProxyClass(interface.getClassLoader, interface)
+      reflect.Proxy.getProxyClass(interface.getClassLoader, interface)
         .getConstructor(classOf[reflect.InvocationHandler])
     }
 
     def apply[T <: I](instance: T) = {
-      proxyConstructor
-        .newInstance(new reflect.InvocationHandler {
-          def invoke(p: AnyRef, method: reflect.Method, args: Array[AnyRef]) = {
-            try { f.apply(() => method.invoke(instance, args: _*)) }
-            catch {
-              case e: reflect.InvocationTargetException => throw e.getCause
-            }
+      proxyConstructor.newInstance(new reflect.InvocationHandler {
+        def invoke(p: AnyRef, method: reflect.Method, args: Array[AnyRef]) = {
+          try { f.apply(() => method.invoke(instance, args: _*)) }
+          catch {
+            case e: reflect.InvocationTargetException => throw e.getCause
           }
-        })
-        .asInstanceOf[I]
+        }
+      }).asInstanceOf[I]
     }
   }
 }

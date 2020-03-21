@@ -50,8 +50,7 @@ object Databases {
       urlOptions: Map[String, String] = Map.empty,
       config: Map[String, _ <: Any] = Map.empty): Database = {
     val driver = "org.h2.Driver"
-    val urlExtra = urlOptions
-      .map { case (k, v) => k + "=" + v }
+    val urlExtra = urlOptions.map { case (k, v) => k + "=" + v }
       .mkString(";", ";", "")
     val url = "jdbc:h2:mem:" + name + urlExtra
     Databases(driver, url, name, config)
@@ -216,10 +215,8 @@ class PooledDatabase(
       new HikariCPConnectionPool(Environment.simple()))
 
   def createDataSource(): DataSource = {
-    val datasource: DataSource = pool.create(
-      name,
-      databaseConfig,
-      configuration)
+    val datasource: DataSource = pool
+      .create(name, databaseConfig, configuration)
     if (configuration.getBoolean("logSql")) {
       val proxyDatasource = new LogSqlDataSource()
       proxyDatasource.setTargetDSDirect(datasource)

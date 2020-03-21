@@ -207,13 +207,11 @@ object ScalaJSPluginInternal {
           else None
         }
 
-        val frontendConfig = LinkerFrontend
-          .Config()
+        val frontendConfig = LinkerFrontend.Config()
           .withBypassLinkingErrorsInternal(opts.bypassLinkingErrors)
           .withCheckIR(opts.checkScalaJSIR)
 
-        val backendConfig = LinkerBackend
-          .Config()
+        val backendConfig = LinkerBackend.Config()
           .withRelativizeSourceMapBase(relSourceMapBase)
           .withCustomOutputWrapper(scalaJSOutputWrapper.value)
           .withPrettyPrint(opts.prettyPrintFullOptJS)
@@ -302,13 +300,12 @@ object ScalaJSPluginInternal {
 
     val optionsParser: Parser[Options] = {
       token(
-        OptSpace ~> ((literal("-i") | "--infos") ^^^ ((_: Options).copy(infos =
-          true)))).* map { fns => Function.chain(fns)(Options()) }
+        OptSpace ~> ((literal("-i") | "--infos") ^^^ ((_: Options)
+          .copy(infos = true)))).* map { fns => Function.chain(fns)(Options()) }
     }
 
     def sjsirFileOnClasspathParser(relPaths: Seq[String]): Parser[String] = {
-      OptSpace ~> StringBasic
-        .examples(ScalajspUtils.relPathsExamples(relPaths))
+      OptSpace ~> StringBasic.examples(ScalajspUtils.relPathsExamples(relPaths))
     }
 
     def scalajspParser(state: State, relPaths: Seq[String]) =
@@ -325,8 +322,7 @@ object ScalaJSPluginInternal {
       scalajsp := {
         val (options, relPath) = parser.parsed
 
-        val vfile = scalaJSIR.value.data
-          .find(_.relativePath == relPath)
+        val vfile = scalaJSIR.value.data.find(_.relativePath == relPath)
           .getOrElse(throw new FileNotFoundException(relPath))
 
         val stdout = new java.io.PrintWriter(System.out)
@@ -371,8 +367,7 @@ object ScalaJSPluginInternal {
       } else { sys.error("Illegal classpath entry: " + cpEntry.getPath) }
     }
 
-    Attributed
-      .blank(results.result())
+    Attributed.blank(results.result())
       .put(scalaJSSourceFiles, realFiles.result())
   }
 
@@ -414,8 +409,8 @@ object ScalaJSPluginInternal {
       scalaJSOptimizerOptions in fullOptJS := {
         val prev = (scalaJSOptimizerOptions in fullOptJS).value
         val outputMode = (scalaJSOutputMode in fullOptJS).value
-        prev.withUseClosureCompiler(
-          outputMode == OutputMode.ECMAScript51Isolated)
+        prev
+          .withUseClosureCompiler(outputMode == OutputMode.ECMAScript51Isolated)
       },
       fullOptJS <<= fullOptJS.dependsOn(packageMinifiedJSDependencies),
       artifactPath in packageScalaJSLauncher :=
@@ -453,9 +448,8 @@ object ScalaJSPluginInternal {
         _.lib),
       artifactPath in packageMinifiedJSDependencies :=
         ((crossTarget in packageMinifiedJSDependencies).value /
-          ((
-            moduleName in packageMinifiedJSDependencies
-          ).value + "-jsdeps.min.js")),
+          ((moduleName in packageMinifiedJSDependencies)
+            .value + "-jsdeps.min.js")),
       packageJSDependenciesSetting(
         packageMinifiedJSDependencies,
         "package-min-js-deps",
@@ -567,8 +561,7 @@ object ScalaJSPluginInternal {
           availableLibs,
           dependencyFilter)
 
-        Attributed
-          .blank[Seq[ResolvedJSDependency]](resolved)
+        Attributed.blank[Seq[ResolvedJSDependency]](resolved)
           .put(scalaJSSourceFiles, realFiles)
       },
       // Give tasks ability to check we are not forking at build reading time
@@ -577,21 +570,24 @@ object ScalaJSPluginInternal {
         else true
       },
       scalaJSRequestsDOM := {
-        requiresDOM.?.value
+        requiresDOM
+          .?.value
           .getOrElse(jsDependencyManifests.value.data.exists(_.requiresDOM))
       },
-      resolvedJSEnv := jsEnv.?.value.getOrElse {
-        if (scalaJSUseRhino.value) {
-          /* We take the semantics from the linker, since they depend on the
-           * stage. This way we are sure we agree on the semantics with the
-           * linker.
-           */
-          val semantics = scalaJSLinker.value.semantics
-          new RhinoJSEnv(semantics, withDOM = scalaJSRequestsDOM.value)
-        } else if (scalaJSRequestsDOM.value) {
-          new PhantomJSEnv(jettyClassLoader = scalaJSPhantomJSClassLoader.value)
-        } else { new NodeJSEnv }
-      },
+      resolvedJSEnv := jsEnv
+        .?.value.getOrElse {
+          if (scalaJSUseRhino.value) {
+            /* We take the semantics from the linker, since they depend on the
+             * stage. This way we are sure we agree on the semantics with the
+             * linker.
+             */
+            val semantics = scalaJSLinker.value.semantics
+            new RhinoJSEnv(semantics, withDOM = scalaJSRequestsDOM.value)
+          } else if (scalaJSRequestsDOM.value) {
+            new PhantomJSEnv(
+              jettyClassLoader = scalaJSPhantomJSClassLoader.value)
+          } else { new NodeJSEnv }
+        },
       scalaJSJavaSystemProperties ++= {
         val javaSysPropsPattern = "-D([^=]*)=(.*)".r
         javaOptions.value.map {
@@ -611,12 +607,12 @@ object ScalaJSPluginInternal {
           }
           val code = {
             "var __ScalaJSEnv = (typeof __ScalaJSEnv === \"object\" && __ScalaJSEnv) ? __ScalaJSEnv : {};\n" +
-              "__ScalaJSEnv.javaSystemProperties = {" + formattedProps.mkString(
-              ", ") + "};\n"
+              "__ScalaJSEnv.javaSystemProperties = {" + formattedProps
+              .mkString(", ") + "};\n"
           }
           Seq(ResolvedJSDependency.minimal(
-            new MemVirtualJSFile("setJavaSystemProperties.js").withContent(
-              code)))
+            new MemVirtualJSFile("setJavaSystemProperties.js")
+              .withContent(code)))
         }
       },
       loadedJSEnv <<= Def.taskDyn {
@@ -703,10 +699,8 @@ object ScalaJSPluginInternal {
           } getOrElse { sys.error("No main class detected.") }
         }
     },
-    discoveredMainClasses <<= compile
-      .map(discoverJSApps)
-      .storeAs(discoveredMainClasses)
-      .triggeredBy(compile),
+    discoveredMainClasses <<= compile.map(discoverJSApps)
+      .storeAs(discoveredMainClasses).triggeredBy(compile),
     run <<= Def.inputTask {
       // use assert to prevent warning about pure expr in stat pos
       assert(scalaJSEnsureUnforked.value)
@@ -847,7 +841,8 @@ object ScalaJSPluginInternal {
     // you will need the Scala.js compiler plugin
     autoCompilerPlugins := true,
     addCompilerPlugin(
-      "org.scala-js" % "scalajs-compiler" % scalaJSVersion cross CrossVersion.full),
+      "org.scala-js" % "scalajs-compiler" % scalaJSVersion cross CrossVersion
+        .full),
     // and of course the Scala.js library
     libraryDependencies += "org.scala-js" %% "scalajs-library" % scalaJSVersion,
     // and you will want to be cross-compiled on the Scala.js binary version

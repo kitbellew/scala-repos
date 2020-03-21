@@ -47,9 +47,8 @@ trait RequestBuilding extends TransformerPipelineSupport {
       content match {
         case None ⇒ apply(uri, HttpEntity.Empty)
         case Some(value) ⇒
-          val entity = Await.result(
-            Marshal(value).to[RequestEntity],
-            timeout.duration)
+          val entity = Await
+            .result(Marshal(value).to[RequestEntity], timeout.duration)
           apply(uri, entity)
       }
 

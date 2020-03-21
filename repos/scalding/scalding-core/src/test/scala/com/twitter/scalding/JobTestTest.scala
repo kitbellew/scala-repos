@@ -25,20 +25,17 @@ class JobTestTest extends WordSpec with Matchers {
 
       // A method that runs a JobTest where the sources don't match
       def runJobTest() =
-        JobTest(new SimpleTestJob(_))
-          .arg("input", "input")
-          .arg("output", "output")
-          .source(incorrectSource, testInput)
+        JobTest(new SimpleTestJob(_)).arg("input", "input")
+          .arg("output", "output").source(incorrectSource, testInput)
           .sink[(String, Int)](Tsv("output")) { outBuf =>
             { outBuf shouldBe testInput }
-          }
-          .run
+          }.run
 
       the[IllegalArgumentException] thrownBy {
         runJobTest()
       } should have message (
-        s"Failed to create tap for: ${requiredSource}, with error: requirement failed: " + TestTapFactory.sourceNotFoundError
-          .format(requiredSource)
+        s"Failed to create tap for: ${requiredSource}, with error: requirement failed: " + TestTapFactory
+          .sourceNotFoundError.format(requiredSource)
       )
     }
   }

@@ -49,8 +49,7 @@ private final class ExplorerIndexer(
           Query.noProvisional ++
           Query.bothRatingsGreaterThan(1501))
       import reactivemongo.api._
-      pimpQB(query)
-        .sort(Query.sortChronological)
+      pimpQB(query).sort(Query.sortChronological)
         .cursor[Game](ReadPreference.secondaryPreferred)
         .enumerate(maxGames, stopOnError = true) &>
         Enumeratee.mapM[Game].apply[Option[GamePGN]] { game =>
@@ -61,11 +60,10 @@ private final class ExplorerIndexer(
         Iteratee.foldM[Seq[GamePGN], Long](nowMillis) {
           case (millis, pairs) =>
             WS.url(massImportEndPointUrl)
-              .put(pairs.map(_._2) mkString separator)
-              .flatMap {
+              .put(pairs.map(_._2) mkString separator).flatMap {
                 case res if res.status == 200 =>
-                  val date = pairs.headOption.map(
-                    _._1.createdAt) ?? dateTimeFormatter.print
+                  val date = pairs.headOption
+                    .map(_._1.createdAt) ?? dateTimeFormatter.print
                   val nb = pairs.size
                   val gameMs = (nowMillis - millis) / nb.toDouble
                   logger.info(
@@ -116,8 +114,8 @@ private final class ExplorerIndexer(
       game.rated &&
       game.turns >= 10 &&
       game.variant != chess.variant.FromPosition &&
-      (game.variant != chess.variant.Horde || game.createdAt.isAfter(
-        Query.hordeWhitePawnsSince))
+      (game.variant != chess.variant.Horde || game.createdAt
+        .isAfter(Query.hordeWhitePawnsSince))
 
   private def stableRating(player: Player) =
     player.rating ifFalse player.provisional
@@ -176,7 +174,8 @@ private final class ExplorerIndexer(
           s"[Date ${pgnDateFormat.print(game.createdAt)}]"
         )
         val allTags = fenTags ::: otherTags
-        s"${allTags.mkString("\n")}\n\n${game.pgnMoves.take(maxPlies).mkString(" ")}".some
+        s"${allTags.mkString("\n")}\n\n${game.pgnMoves.take(maxPlies).mkString(" ")}"
+          .some
       }
     })
 

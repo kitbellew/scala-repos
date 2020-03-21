@@ -57,9 +57,7 @@ class UISeleniumSuite
     * Create a test SparkStreamingContext with the SparkUI enabled.
     */
   private def newSparkStreamingContext(): StreamingContext = {
-    val conf = new SparkConf()
-      .setMaster("local")
-      .setAppName("test")
+    val conf = new SparkConf().setMaster("local").setAppName("test")
       .set("spark.ui.enabled", "true")
     val ssc = new StreamingContext(conf, Seconds(1))
     assert(ssc.sc.ui.isDefined, "Spark UI is not started!")
@@ -99,15 +97,15 @@ class UISeleniumSuite
         h3Text should contain("Streaming Statistics")
 
         // Check stat table
-        val statTableHeaders =
-          findAll(cssSelector("#stat-table th")).map(_.text).toSeq
+        val statTableHeaders = findAll(cssSelector("#stat-table th"))
+          .map(_.text).toSeq
         statTableHeaders.exists(_.matches(
           "Timelines \\(Last \\d+ batches, \\d+ active, \\d+ completed\\)")) should be(
           true)
         statTableHeaders should contain("Histograms")
 
-        val statTableCells =
-          findAll(cssSelector("#stat-table td")).map(_.text).toSeq
+        val statTableCells = findAll(cssSelector("#stat-table td")).map(_.text)
+          .toSeq
         statTableCells.exists(_.contains("Input Rate")) should be(true)
         statTableCells.exists(_.contains("Scheduling Delay")) should be(true)
         statTableCells.exists(_.contains("Processing Time")) should be(true)
@@ -119,8 +117,7 @@ class UISeleniumSuite
         h4Text.exists(_.matches(
           "Completed Batches \\(last \\d+ out of \\d+\\)")) should be(true)
 
-        findAll(cssSelector("""#active-batches-table th"""))
-          .map(_.text)
+        findAll(cssSelector("""#active-batches-table th""")).map(_.text)
           .toSeq should be {
           List(
             "Batch Time",
@@ -130,8 +127,7 @@ class UISeleniumSuite
             "Output Ops: Succeeded/Total",
             "Status")
         }
-        findAll(cssSelector("""#completed-batches-table th"""))
-          .map(_.text)
+        findAll(cssSelector("""#completed-batches-table th""")).map(_.text)
           .toSeq should be {
           List(
             "Batch Time",
@@ -143,14 +139,12 @@ class UISeleniumSuite
         }
 
         val batchLinks = findAll(cssSelector("""#completed-batches-table a"""))
-          .flatMap(_.attribute("href"))
-          .toSeq
+          .flatMap(_.attribute("href")).toSeq
         batchLinks.size should be >= 1
 
         // Check a normal batch page
-        go to (
-          batchLinks.last
-        ) // Last should be the first batch, so it will have some jobs
+        go to (batchLinks
+          .last) // Last should be the first batch, so it will have some jobs
         val summaryText = findAll(cssSelector("li strong")).map(_.text).toSeq
         summaryText should contain("Batch Duration:")
         summaryText should contain("Input data size:")
@@ -158,8 +152,7 @@ class UISeleniumSuite
         summaryText should contain("Processing time:")
         summaryText should contain("Total delay:")
 
-        findAll(cssSelector("""#batch-job-table th"""))
-          .map(_.text)
+        findAll(cssSelector("""#batch-job-table th""")).map(_.text)
           .toSeq should be {
           List(
             "Output Op Id",
@@ -188,8 +181,7 @@ class UISeleniumSuite
         jobLinks.size should be(4)
 
         // Check stage progress
-        findAll(cssSelector(""".stage-progress-cell"""))
-          .map(_.text)
+        findAll(cssSelector(""".stage-progress-cell""")).map(_.text)
           .toList should be(List("1/1", "1/1", "1/1", "0/1 (1 failed)"))
 
         // Check job progress
@@ -197,8 +189,8 @@ class UISeleniumSuite
           List("4/4", "4/4", "4/4", "0/4 (1 failed)"))
 
         // Check stacktrace
-        val errorCells =
-          findAll(cssSelector(""".stacktrace-details""")).map(_.text).toSeq
+        val errorCells = findAll(cssSelector(""".stacktrace-details"""))
+          .map(_.text).toSeq
         errorCells should have size 1
         errorCells(0) should include("java.lang.RuntimeException: Oops")
 
@@ -213,8 +205,8 @@ class UISeleniumSuite
         webDriver.getPageSource should include("Missing id parameter")
 
         // Check a non-exist batch
-        go to (sparkUI.appUIAddress.stripSuffix(
-          "/") + "/streaming/batch/?id=12345")
+        go to (sparkUI.appUIAddress
+          .stripSuffix("/") + "/streaming/batch/?id=12345")
         webDriver.getPageSource should include("does not exist")
       }
 

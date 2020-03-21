@@ -141,10 +141,11 @@ private[kinesis] class KinesisRecordProcessor[T](
        * This may lead to records being processed more than once.
        */
       case _ =>
-        receiver.removeCheckpointer(
-          shardId,
-          null
-        ) // return null so that we don't checkpoint
+        receiver
+          .removeCheckpointer(
+            shardId,
+            null
+          ) // return null so that we don't checkpoint
     }
 
   }

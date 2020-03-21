@@ -101,8 +101,8 @@ private[remote] object Remoting {
         }
       case None ⇒
         throw new RemoteTransportException(
-          s"No transport is loaded for protocol: [${remote.protocol}], available protocols: [${transportMapping.keys
-            .mkString(", ")}]",
+          s"No transport is loaded for protocol: [${remote.protocol}], available protocols: [${transportMapping
+            .keys.mkString(", ")}]",
           null)
     }
   }
@@ -119,8 +119,8 @@ private[remote] object Remoting {
     def receive = {
       case RegisterTransportActor(props, name) ⇒
         sender() ! context.actorOf(
-          RARP(context.system).configureDispatcher(props.withDeploy(
-            Deploy.local)),
+          RARP(context.system)
+            .configureDispatcher(props.withDeploy(Deploy.local)),
           name)
     }
   }
@@ -213,9 +213,8 @@ private[remote] class Remoting(
             Promise()
           manager ! Listen(addressesPromise)
 
-          val transports: Seq[(AkkaProtocolTransport, Address)] = Await.result(
-            addressesPromise.future,
-            StartupTimeout.duration)
+          val transports: Seq[(AkkaProtocolTransport, Address)] = Await
+            .result(addressesPromise.future, StartupTimeout.duration)
           if (transports.isEmpty)
             throw new RemoteTransportException(
               "No transport drivers were loaded.",
@@ -417,7 +416,8 @@ private[remote] object EndpointManager {
         val address = writableToAddress(endpoint)
         addressToWritable.get(address) match {
           case Some(policy)
-              if policy.isTombstone ⇒ // There is already a tombstone directive, leave it there
+              if policy
+                .isTombstone ⇒ // There is already a tombstone directive, leave it there
           case _ ⇒ addressToWritable -= address
         }
         writableToAddress -= endpoint
@@ -525,14 +525,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   var transportMapping: Map[Address, AkkaProtocolTransport] = Map()
 
   val pruneInterval: FiniteDuration = (settings.RetryGateClosedFor * 2)
-    .max(1.second)
-    .min(10.seconds)
+    .max(1.second).min(10.seconds)
 
-  val pruneTimerCancellable: Cancellable = context.system.scheduler.schedule(
-    pruneInterval,
-    pruneInterval,
-    self,
-    Prune)
+  val pruneTimerCancellable: Cancellable = context.system.scheduler
+    .schedule(pruneInterval, pruneInterval, self, Prune)
 
   var pendingReadHandoffs = Map[ActorRef, AkkaProtocolHandle]()
   var stashedInbound = Map[ActorRef, Vector[InboundAssociation]]()
@@ -576,9 +572,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           reason.getMessage,
           causedBy
         )
-        endpoints.markAsFailed(
-          sender(),
-          Deadline.now + settings.RetryGateClosedFor)
+        endpoints
+          .markAsFailed(sender(), Deadline.now + settings.RetryGateClosedFor)
       }
       disassiciationInfo.foreach {
         case AssociationHandle.Quarantined ⇒
@@ -596,9 +591,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           remoteAddress,
           settings.RetryGateClosedFor.toMillis
         )
-        endpoints.markAsFailed(
-          sender(),
-          Deadline.now + settings.RetryGateClosedFor)
+        endpoints
+          .markAsFailed(sender(), Deadline.now + settings.RetryGateClosedFor)
       }
       Stop
 
@@ -624,9 +618,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           remoteAddress,
           settings.RetryGateClosedFor.toMillis
         )
-        endpoints.markAsFailed(
-          sender(),
-          Deadline.now + settings.RetryGateClosedFor)
+        endpoints
+          .markAsFailed(sender(), Deadline.now + settings.RetryGateClosedFor)
       }
       Stop
 
@@ -636,9 +629,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             _: EndpointAssociationException ⇒ // no logging
         case _ ⇒ log.error(e, e.getMessage)
       }
-      endpoints.markAsFailed(
-        sender(),
-        Deadline.now + settings.RetryGateClosedFor)
+      endpoints
+        .markAsFailed(sender(), Deadline.now + settings.RetryGateClosedFor)
       Stop
   }
 
@@ -683,8 +675,9 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       val allStatuses = transportMapping.values map { transport ⇒
         transport.managementCommand(cmd)
       }
-      Future.fold(allStatuses)(true)(
-        _ && _) map ManagementCommandAck pipeTo sender()
+      Future
+        .fold(allStatuses)(true)(
+          _ && _) map ManagementCommandAck pipeTo sender()
 
     case Quarantine(address, uidToQuarantineOption) ⇒
       // Stop writers
@@ -699,9 +692,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             address,
             settings.RetryGateClosedFor.toMillis
           )
-          endpoints.markAsFailed(
-            endpoint,
-            Deadline.now + settings.RetryGateClosedFor)
+          endpoints
+            .markAsFailed(endpoint, Deadline.now + settings.RetryGateClosedFor)
         case (Some(Pass(endpoint, Some(currentUid), _)), Some(quarantineUid))
             if currentUid == quarantineUid ⇒ context.stop(endpoint)
         case _ ⇒
@@ -845,8 +837,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             pendingReadHandoffs.get(endpoint) foreach (_.disassociate())
             pendingReadHandoffs += endpoint -> handle
             endpoint ! EndpointWriter.TakeOver(handle, self)
-            endpoints.writableEndpointWithPolicyFor(
-              handle.remoteAddress) match {
+            endpoints
+              .writableEndpointWithPolicyFor(handle.remoteAddress) match {
               case Some(Pass(ep, _, _)) ⇒ ep ! ReliableDeliverySupervisor.Ungate
               case _ ⇒
             }
@@ -856,16 +848,15 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                   handle.handshakeInfo.uid))
               handle.disassociate(AssociationHandle.Quarantined)
             else
-              endpoints.writableEndpointWithPolicyFor(
-                handle.remoteAddress) match {
+              endpoints
+                .writableEndpointWithPolicyFor(handle.remoteAddress) match {
                 case Some(Pass(ep, None, _)) ⇒
                   // Idle writer will never send a GotUid or a Terminated so we need to "provoke it"
                   // to get an unstash event
                   if (!writerIsIdle) {
                     ep ! ReliableDeliverySupervisor.IsIdle
-                    stashedInbound += ep -> (stashedInbound.getOrElse(
-                      ep,
-                      Vector.empty) :+ ia)
+                    stashedInbound += ep -> (stashedInbound
+                      .getOrElse(ep, Vector.empty) :+ ia)
                   } else
                     createAndRegisterEndpoint(
                       handle,
@@ -893,9 +884,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   private def createAndRegisterEndpoint(
       handle: AkkaProtocolHandle,
       refuseUid: Option[Int]): Unit = {
-    val writing =
-      settings.UsePassiveConnections && !endpoints.hasWritableEndpointFor(
-        handle.remoteAddress)
+    val writing = settings.UsePassiveConnections && !endpoints
+      .hasWritableEndpointFor(handle.remoteAddress)
     eventPublisher.notifyListeners(AssociatedEvent(
       handle.localAddress,
       handle.remoteAddress,
@@ -943,33 +933,29 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         // Loads the driver -- the bottom element of the chain.
         // The chain at this point:
         //   Driver
-        val driver = extendedSystem.dynamicAccess
-          .createInstanceFor[Transport](fqn, args)
-          .recover({
+        val driver = extendedSystem.dynamicAccess.createInstanceFor[Transport](
+          fqn,
+          args).recover({
 
-            case exception ⇒
-              throw new IllegalArgumentException(
-                s"Cannot instantiate transport [$fqn]. " +
-                  "Make sure it extends [akka.remote.transport.Transport] and has constructor with " +
-                  "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
-                exception)
+          case exception ⇒
+            throw new IllegalArgumentException(
+              s"Cannot instantiate transport [$fqn]. " +
+                "Make sure it extends [akka.remote.transport.Transport] and has constructor with " +
+                "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
+              exception)
 
-          })
-          .get
+        }).get
 
         // Iteratively decorates the bottom level driver with a list of adapters.
         // The chain at this point:
         //   Adapter <- ... <- Adapter <- Driver
-        val wrappedTransport = adapters
-          .map {
-            TransportAdaptersExtension.get(context.system).getAdapterProvider
-          }
-          .foldLeft(driver) {
-            (t: Transport, provider: TransportAdapterProvider) ⇒
-              // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
-              provider
-                .create(t, context.system.asInstanceOf[ExtendedActorSystem])
-          }
+        val wrappedTransport = adapters.map {
+          TransportAdaptersExtension.get(context.system).getAdapterProvider
+        }.foldLeft(driver) {
+          (t: Transport, provider: TransportAdapterProvider) ⇒
+            // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
+            provider.create(t, context.system.asInstanceOf[ExtendedActorSystem])
+        }
 
         // Apply AkkaProtocolTransport wrapper to the end of the chain
         // The chain at this point:
@@ -1015,8 +1001,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   private def removePendingReader(
       takingOverFrom: ActorRef,
       withHandle: AkkaProtocolHandle): Unit = {
-    if (pendingReadHandoffs
-          .get(takingOverFrom)
+    if (pendingReadHandoffs.get(takingOverFrom)
           .exists(handle ⇒ handle == withHandle))
       pendingReadHandoffs -= takingOverFrom
   }
@@ -1046,25 +1031,22 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             transport,
             endpointSettings,
             AkkaPduProtobufCodec,
-            receiveBuffers))
-          .withDeploy(Deploy.local),
+            receiveBuffers)).withDeploy(Deploy.local),
         "reliableEndpointWriter-" + AddressUrlEncoder(
           remoteAddress) + "-" + endpointId.next()
       ))
     else
       context.watch(context.actorOf(
-        RARP(extendedSystem)
-          .configureDispatcher(EndpointWriter.props(
-            handleOption,
-            localAddress,
-            remoteAddress,
-            refuseUid,
-            transport,
-            endpointSettings,
-            AkkaPduProtobufCodec,
-            receiveBuffers,
-            reliableDeliverySupervisor = None))
-          .withDeploy(Deploy.local),
+        RARP(extendedSystem).configureDispatcher(EndpointWriter.props(
+          handleOption,
+          localAddress,
+          remoteAddress,
+          refuseUid,
+          transport,
+          endpointSettings,
+          AkkaPduProtobufCodec,
+          receiveBuffers,
+          reliableDeliverySupervisor = None)).withDeploy(Deploy.local),
         "endpointWriter-" + AddressUrlEncoder(remoteAddress) + "-" + endpointId
           .next()
       ))

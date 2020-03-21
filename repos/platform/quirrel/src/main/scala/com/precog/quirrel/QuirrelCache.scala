@@ -98,19 +98,19 @@ trait QuirrelCache extends AST {
         var matched = false
         while (!matched && j < rules.length) {
           rules(j) match {
-            case Ignore(re) =>
-              re.findPrefixOf(input.substring(i)).foreach { m =>
-                output.append(m)
-                matched = true
-                i += m.length
+            case Ignore(re) => re.findPrefixOf(input.substring(i)).foreach {
+                m =>
+                  output.append(m)
+                  matched = true
+                  i += m.length
               }
-            case Keep(tpe, re) =>
-              re.findPrefixOf(input.substring(i)).foreach { m =>
-                val name = nextName(tpe)
-                bindings.append(Binding(tpe, name, m, i))
-                output.append(name)
-                matched = true
-                i += m.length
+            case Keep(tpe, re) => re.findPrefixOf(input.substring(i)).foreach {
+                m =>
+                  val name = nextName(tpe)
+                  bindings.append(Binding(tpe, name, m, i))
+                  output.append(name)
+                  matched = true
+                  i += m.length
               }
           }
           j += 1
@@ -158,9 +158,7 @@ trait QuirrelCache extends AST {
                 ))
             }
           case _: NumLit =>
-            parser.numLiteralRegex
-              .findPrefixOf(s)
-              .map(x => ("n", x.length))
+            parser.numLiteralRegex.findPrefixOf(s).map(x => ("n", x.length))
               .getOrElse {
                 sys.error(
                   "error recovering number literal from %s (%s at %s)" format (
@@ -168,20 +166,14 @@ trait QuirrelCache extends AST {
                   ))
               }
           case _: StrLit =>
-            parser.pathLiteralRegex
-              .findPrefixOf(s)
-              .map(x => ("p", x.length))
+            parser.pathLiteralRegex.findPrefixOf(s).map(x => ("p", x.length))
               .orElse {
-                parser.relPathLiteralRegex
-                  .findPrefixOf(s)
-                  .map(x => ("rp", x.length))
-                  .orElse {
-                    parser.strLiteralRegex
-                      .findPrefixOf(s)
+                parser.relPathLiteralRegex.findPrefixOf(s)
+                  .map(x => ("rp", x.length)).orElse {
+                    parser.strLiteralRegex.findPrefixOf(s)
                       .map(x => ("s", x.length))
                   }
-              }
-              .getOrElse {
+              }.getOrElse {
                 sys.error(
                   "error recovering string literal from %s (%s at %s)" format (
                     s, original, i
@@ -245,11 +237,9 @@ trait QuirrelCache extends AST {
       bindings: IndexedSeq[Binding],
       slots: Map[String, Slot]): Option[Expr] = {
     val index = buildBindingIndex(expr)
-    val sortedBindings = bindings.zipWithIndex
-      .map { case (b, i) => (b, index(i)) }
-      .sortBy(_._2)
-      .map(_._1)
-      .toList
+    val sortedBindings = bindings.zipWithIndex.map {
+      case (b, i) => (b, index(i))
+    }.sortBy(_._2).map(_._1).toList
 
     val result = replaceLiteralsS(
       expr,
@@ -265,15 +255,14 @@ trait QuirrelCache extends AST {
       (b.name, b.rawValue.length)
     }.toMap
 
-    val deltas: Map[Int, List[(Int, Int)]] = slots.toList
-      .map {
-        case (name, Slot(lineNum, colNum, oldWidth)) =>
-          val width = widths(name)
-          val delta = width - oldWidth
-          lineNum -> (colNum, delta)
-      }
-      .groupBy(_._1)
-      .map { case (lineNum, ds) => (lineNum, ds.map(_._2).sortBy(_._1)) }
+    val deltas: Map[Int, List[(Int, Int)]] = slots.toList.map {
+      case (name, Slot(lineNum, colNum, oldWidth)) =>
+        val width = widths(name)
+        val delta = width - oldWidth
+        lineNum -> (colNum, delta)
+    }.groupBy(_._1).map {
+      case (lineNum, ds) => (lineNum, ds.map(_._2).sortBy(_._1))
+    }
 
     { (loc: LineStream) =>
       val colNum = deltas get loc.lineNum map { ds =>
@@ -472,8 +461,8 @@ trait QuirrelCache extends AST {
   }
 
   class ParseCache(maxSize: Long) {
-    private val cache: mutable.Map[CacheKey, CacheValue] = Cache.simple(
-      Cache.MaxSize(maxSize))
+    private val cache: mutable.Map[CacheKey, CacheValue] = Cache
+      .simple(Cache.MaxSize(maxSize))
 
     def getOrElseUpdate(query: LineStream)(
         f: LineStream => Set[Expr]): Set[Expr] = {

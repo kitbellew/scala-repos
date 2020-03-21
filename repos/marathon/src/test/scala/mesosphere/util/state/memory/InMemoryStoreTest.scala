@@ -16,8 +16,7 @@ class InMemoryStoreTest extends PersistentStoreTest with Matchers {
     read should be('defined)
     read.get.bytes should be("Hello".getBytes)
     val update = persistentStore
-      .update(read.get.withNewContent("Hello again".getBytes))
-      .futureValue
+      .update(read.get.withNewContent("Hello again".getBytes)).futureValue
       .asInstanceOf[InMemoryEntity]
     update.version should be(read.get.version + 1)
   }

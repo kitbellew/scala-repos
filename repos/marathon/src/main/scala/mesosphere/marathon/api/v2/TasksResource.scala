@@ -71,8 +71,8 @@ class TasksResource @Inject() (
 
       val appIds = taskList.allAppIdsWithTasks
 
-      val appIdsToApps =
-        appIds.map(appId => appId -> result(groupManager.app(appId))).toMap
+      val appIdsToApps = appIds
+        .map(appId => appId -> result(groupManager.app(appId))).toMap
 
       val appToPorts = appIdsToApps.map {
         case (appId, app) => appId -> app.map(_.servicePorts).getOrElse(Nil)
@@ -86,8 +86,8 @@ class TasksResource @Inject() (
         (appId, task) <- tasks
         app <- appIdsToApps(appId)
         if isAuthorized(ViewApp, app)
-        if statusSet.isEmpty || task.mesosStatus.exists(s =>
-          statusSet(s.getState))
+        if statusSet.isEmpty || task.mesosStatus
+          .exists(s => statusSet(s.getState))
       } yield {
         EnrichedTask(
           appId,
@@ -106,8 +106,8 @@ class TasksResource @Inject() (
     authenticated(req) { implicit identity =>
       ok(EndpointsHelper.appsToEndpointString(
         taskTracker,
-        result(groupManager.rootGroup()).transitiveApps.toSeq.filter(app =>
-          isAuthorized(ViewApp, app)),
+        result(groupManager.rootGroup()).transitiveApps.toSeq
+          .filter(app => isAuthorized(ViewApp, app)),
         "\t"))
     }
 
@@ -135,8 +135,7 @@ class TasksResource @Inject() (
 
       def killTasks(toKill: Map[PathId, Iterable[Task]]): Response = {
         val affectedApps = tasksToAppId.values
-          .flatMap(appId => result(groupManager.app(appId)))
-          .toSeq
+          .flatMap(appId => result(groupManager.app(appId))).toSeq
         // FIXME (gkleiman): taskKiller.kill a few lines below also checks authorization, but we need to check ALL before
         // starting to kill tasks
         affectedApps.foreach(checkAuthorization(UpdateApp, _))
@@ -145,17 +144,15 @@ class TasksResource @Inject() (
           case (appId, tasks) => taskKiller.kill(appId, _ => tasks)
         })).flatten
         ok(jsonObjString(
-          "tasks" -> killed.map(task =>
-            EnrichedTask(task.taskId.appId, task, Seq.empty))))
+          "tasks" -> killed
+            .map(task => EnrichedTask(task.taskId.appId, task, Seq.empty))))
       }
 
-      val tasksByAppId = tasksToAppId
-        .flatMap {
-          case (taskId, appId) =>
-            taskTracker.tasksByAppSync.task(Task.Id(taskId))
-        }
-        .groupBy { task => task.taskId.appId }
-        .map { case (appId, tasks) => appId -> tasks }
+      val tasksByAppId = tasksToAppId.flatMap {
+        case (taskId, appId) => taskTracker.tasksByAppSync.task(Task.Id(taskId))
+      }.groupBy { task => task.taskId.appId }.map {
+        case (appId, tasks) => appId -> tasks
+      }
 
       if (scale) scaleAppWithKill(tasksByAppId) else killTasks(tasksByAppId)
     }

@@ -188,9 +188,9 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   private[this] def normalizeName(s: String) = s.replaceAll("""\s+""", "-")
 
   private def writeSuite() = {
-    val file = new File(
-      targetDir,
-      s"${normalizeName(testSuite.value.name)}.xml").getAbsolutePath
+    val file =
+      new File(targetDir, s"${normalizeName(testSuite.value.name)}.xml")
+        .getAbsolutePath
     // TODO would be nice to have a logger and log this with level debug
     // System.err.println("Writing JUnit XML test report: " + file)
     XML.save(file, testSuite.value.stop(), "UTF-8", true, null)

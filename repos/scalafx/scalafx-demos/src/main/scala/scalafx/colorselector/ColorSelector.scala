@@ -62,8 +62,8 @@ object ColorSelector extends JFXApp {
   val synchronizedValue = new DoubleProperty()
 
   val synchronizedControls = new ObservableBuffer[SliderControl]
-  synchronizedControls.onChange((buffer, changes) =>
-    synchronizeValues(buffer, changes))
+  synchronizedControls
+    .onChange((buffer, changes) => synchronizeValues(buffer, changes))
 
   // METHODS - BEGIN
 
@@ -104,8 +104,7 @@ object ColorSelector extends JFXApp {
       this.synchronizedValue() = math.random * colorselector.Max
     }
     if (synchronizedControls.size < 4) {
-      this.allControls
-        .filterNot(_.selectedControl.value)
+      this.allControls.filterNot(_.selectedControl.value)
         .filterNot(_.disabled.value)
         .foreach(_.value() = math.random * colorselector.Max)
     }
@@ -125,8 +124,8 @@ object ColorSelector extends JFXApp {
     if (d > Max / 2) Color.Black else Color.White
 
   private def verifyWebColor() {
-    cmbWebColor.value() =
-      WebColor.colors.find(_.sameColor(currentColor())).orNull
+    cmbWebColor.value() = WebColor.colors.find(_.sameColor(currentColor()))
+      .orNull
   }
 
   private def webColorSelected() {
@@ -192,9 +191,8 @@ object ColorSelector extends JFXApp {
       .changeColor(Color.rgb(0, 0, controlBlue.value.value.toInt), Color.White)
   })
   controlBlue.selectedControl.onChange(controlSelected(controlBlue))
-  controlBlue.changeColor(
-    Color.rgb(0, 0, controlBlue.value.value.toInt),
-    Color.White)
+  controlBlue
+    .changeColor(Color.rgb(0, 0, controlBlue.value.value.toInt), Color.White)
 
   val controlAlpha = new SliderControl("A") {
     value = 255
@@ -226,8 +224,8 @@ object ColorSelector extends JFXApp {
 
   val cmbColorFormat = new ComboBox[Formatter](Formatter.formatters) {
     promptText = "Color Format"
-    converter = StringConverter.toStringConverter((f: Formatter) =>
-      f.description)
+    converter = StringConverter
+      .toStringConverter((f: Formatter) => f.description)
     value = RgbFormatter
     onAction = (event: ActionEvent) => formatColor()
   }

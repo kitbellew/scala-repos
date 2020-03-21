@@ -47,12 +47,10 @@ object TestHive
     extends TestHiveContext(new SparkContext(
       System.getProperty("spark.sql.test.master", "local[1]"),
       "TestSQLContext",
-      new SparkConf()
-        .set("spark.sql.test", "")
-        .set(
-          "spark.sql.hive.metastore.barrierPrefixes",
-          "org.apache.spark.sql.hive.execution.PairSerDe")
-        // SPARK-8910
+      new SparkConf().set("spark.sql.test", "").set(
+        "spark.sql.hive.metastore.barrierPrefixes",
+        "org.apache.spark.sql.hive.execution.PairSerDe")
+      // SPARK-8910
         .set("spark.ui.enabled", "false")))
 
 trait TestHiveSingleton {
@@ -159,8 +157,7 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     */
   private def rewritePaths(cmd: String): String =
     if (cmd.toUpperCase contains "LOAD DATA") {
-      val testDataLocation = hiveDevHome
-        .map(_.getCanonicalPath)
+      val testDataLocation = hiveDevHome.map(_.getCanonicalPath)
         .getOrElse(inRepoTests.getCanonicalPath)
       cmd.replaceAll("\\.\\./\\.\\./", testDataLocation + "/")
     } else { cmd }
@@ -171,24 +168,22 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
   ShutdownHookManager.registerShutdownDeleteDir(hiveFilesTemp)
 
   val inRepoTests =
-    if (System
-          .getProperty("user.dir")
+    if (System.getProperty("user.dir")
           .endsWith("sql" + File.separator + "hive")) {
       new File(
-        "src" + File.separator + "test" + File.separator + "resources" + File.separator)
+        "src" + File.separator + "test" + File.separator + "resources" + File
+          .separator)
     } else {
       new File(
-        "sql" + File.separator + "hive" + File.separator + "src" + File.separator + "test" +
+        "sql" + File.separator + "hive" + File.separator + "src" + File
+          .separator + "test" +
           File.separator + "resources")
     }
 
   def getHiveFile(path: String): File = {
-    val stripped = path
-      .replaceAll("""\.\.\/""", "")
+    val stripped = path.replaceAll("""\.\.\/""", "")
       .replace('/', File.separatorChar)
-    hiveDevHome
-      .map(new File(_, stripped))
-      .filter(_.exists)
+    hiveDevHome.map(new File(_, stripped)).filter(_.exists)
       .getOrElse(new File(inRepoTests, stripped))
   }
 
@@ -247,11 +242,13 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     TestTable(
       "src",
       "CREATE TABLE src (key INT, value STRING)".cmd,
-      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv1.txt")}' INTO TABLE src".cmd),
+      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv1.txt")}' INTO TABLE src"
+        .cmd),
     TestTable(
       "src1",
       "CREATE TABLE src1 (key INT, value STRING)".cmd,
-      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv3.txt")}' INTO TABLE src1".cmd),
+      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv3.txt")}' INTO TABLE src1"
+        .cmd),
     TestTable(
       "srcpart",
       () => {
@@ -341,7 +338,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
          |  }'
          |)
        """.stripMargin.cmd,
-      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/episodes.avro")}' INTO TABLE episodes".cmd
+      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/episodes.avro")}' INTO TABLE episodes"
+        .cmd
     ),
     // THIS TABLE IS NOT THE SAME AS THE HIVE TEST TABLE episodes_partitioned AS DYNAMIC PARITIONING
     // IS NOT YET SUPPORTED
@@ -412,7 +410,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       "src_json",
       s"""CREATE TABLE src_json (json STRING) STORED AS TEXTFILE
        """.stripMargin.cmd,
-      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/json.txt")}' INTO TABLE src_json".cmd
+      s"LOAD DATA LOCAL INPATH '${getHiveFile("data/files/json.txt")}' INTO TABLE src_json"
+        .cmd
     )
   )
 
@@ -426,9 +425,7 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       // Marks the table as loaded first to prevent infinite mutually recursive table loading.
       loadedTables += name
       logDebug(s"Loading test table $name")
-      val createCmds = testTables
-        .get(name)
-        .map(_.commands)
+      val createCmds = testTables.get(name).map(_.commands)
         .getOrElse(sys.error(s"Unknown test table $name"))
       createCmds.foreach(_())
 
@@ -440,8 +437,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     * Records the UDFs present when the server starts, so we can delete ones that are created by
     * tests.
     */
-  protected val originalUDFs: JavaSet[String] =
-    FunctionRegistry.getFunctionNames
+  protected val originalUDFs: JavaSet[String] = FunctionRegistry
+    .getFunctionNames
 
   /**
     * Resets the test instance by deleting any tables that have been created.
@@ -464,8 +461,9 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       sessionState.catalog.unregisterAllTables()
 
       FunctionRegistry.getFunctionNames.asScala
-        .filterNot(originalUDFs.contains(_))
-        .foreach { udfName => FunctionRegistry.unregisterTemporaryUDF(udfName) }
+        .filterNot(originalUDFs.contains(_)).foreach { udfName =>
+          FunctionRegistry.unregisterTemporaryUDF(udfName)
+        }
 
       // Some tests corrupt this value on purpose, which breaks the RESET call below.
       hiveconf.set("fs.default.name", new File(".").toURI.toString)

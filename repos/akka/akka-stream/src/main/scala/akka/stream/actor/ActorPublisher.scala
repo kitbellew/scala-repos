@@ -295,7 +295,8 @@ trait ActorPublisher[T] extends Actor {
           demand += n
           if (demand < 0)
             demand =
-              Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
+              Long
+                .MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
           super.aroundReceive(receive, msg)
         }
 
@@ -321,9 +322,11 @@ trait ActorPublisher[T] extends Actor {
             tryOnError(
               sub,
               if (subscriber == sub)
-                ReactiveStreamsCompliance.canNotSubscribeTheSameSubscriberMultipleTimesException
+                ReactiveStreamsCompliance
+                  .canNotSubscribeTheSameSubscriberMultipleTimesException
               else
-                ReactiveStreamsCompliance.canNotSubscribeTheSameSubscriberMultipleTimesException
+                ReactiveStreamsCompliance
+                  .canNotSubscribeTheSameSubscriberMultipleTimesException
             )
         }
 

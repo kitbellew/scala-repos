@@ -29,8 +29,8 @@ private[tracker] class TaskCreationHandlerAndUpdaterDelegate(
 
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  private[impl] implicit val timeout: Timeout =
-    conf.internalTaskUpdateRequestTimeout().milliseconds
+  private[impl] implicit val timeout: Timeout = conf
+    .internalTaskUpdateRequestTimeout().milliseconds
 
   override def created(task: Task): Future[Task] = {
     taskUpdate(task.taskId, TaskOpProcessor.Action.Update(task)).map(_ => task)
@@ -49,10 +49,8 @@ private[tracker] class TaskCreationHandlerAndUpdaterDelegate(
 
     import akka.pattern.ask
     val deadline = clock.now + timeout.duration
-    val op: ForwardTaskOp = TaskTrackerActor.ForwardTaskOp(
-      deadline,
-      taskId,
-      action)
+    val op: ForwardTaskOp = TaskTrackerActor
+      .ForwardTaskOp(deadline, taskId, action)
     (taskTrackerRef ? op).mapTo[Unit].recover {
       case NonFatal(e) =>
         throw new RuntimeException(

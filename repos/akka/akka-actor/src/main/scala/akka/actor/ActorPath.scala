@@ -65,7 +65,8 @@ object ActorPath {
 
   @deprecated("Use `isValidPathElement` instead", since = "2.3.8")
   val ElementRegex =
-    """(?:[-\w:@&=+,.!~*'_;]|%\p{XDigit}{2})(?:[-\w:@&=+,.!~*'$_;]|%\p{XDigit}{2})*""".r
+    """(?:[-\w:@&=+,.!~*'_;]|%\p{XDigit}{2})(?:[-\w:@&=+,.!~*'$_;]|%\p{XDigit}{2})*"""
+      .r
 
   private final val ValidSymbols = """-_.*$+:@&=,!~';"""
 
@@ -104,7 +105,8 @@ object ActorPath {
             invalidAt)}] at position: $invalidAt. """ +
             """Actor paths MUST: """ +
             """not start with `$`, """ +
-            s"""include only ASCII letters and can only contain these special characters: ${ActorPath.ValidSymbols}.""")
+            s"""include only ASCII letters and can only contain these special characters: ${ActorPath
+              .ValidSymbols}.""")
     }
   }
 
@@ -308,7 +310,8 @@ final case class RootActorPath(address: Address, name: String = "/")
   override def compareTo(other: ActorPath): Int =
     other match {
       case r: RootActorPath ⇒
-        toString compareTo r.toString // FIXME make this cheaper by comparing address and name in isolation
+        toString compareTo r
+          .toString // FIXME make this cheaper by comparing address and name in isolation
       case c: ChildActorPath ⇒ 1
     }
 

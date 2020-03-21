@@ -124,10 +124,8 @@ class ScalaGradleDataServiceTest
       None))
 
     import org.jetbrains.plugins.scala.project._
-    val isLibrarySetUp = ProjectLibraryTable
-      .getInstance(getProject)
-      .getLibraries
-      .filter(_.getName.contains("scala-library"))
+    val isLibrarySetUp = ProjectLibraryTable.getInstance(getProject)
+      .getLibraries.filter(_.getName.contains("scala-library"))
       .exists(_.isScalaSdk)
     assert(isLibrarySetUp, "Scala library is not set up")
   }
@@ -162,12 +160,10 @@ class ScalaGradleDataServiceTest
       Some("2.10.4"),
       Set(new File("/tmp/test/scala-library-2.10.4.jar")),
       Some(options)))
-    val module = ModuleManager
-      .getInstance(getProject)
+    val module = ModuleManager.getInstance(getProject)
       .findModuleByName("Module 1")
     val compilerConfiguration = ScalaCompilerConfiguration
-      .instanceIn(getProject)
-      .getSettingsForModule(module)
+      .instanceIn(getProject).getSettingsForModule(module)
 
     assert(
       compilerConfiguration.debuggingInfoLevel == DebuggingInfoLevel.Source)

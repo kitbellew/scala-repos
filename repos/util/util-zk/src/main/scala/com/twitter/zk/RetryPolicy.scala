@@ -54,12 +54,10 @@ object RetryPolicy {
       def retry(delay: Duration): Future[T] = {
         op rescue {
           case KeeperConnectionException(_) =>
-            timer
-              .doLater(delay) {
-                retry(
-                  (delay.inNanoseconds * factor).toLong.nanoseconds min maximum)
-              }
-              .flatten
+            timer.doLater(delay) {
+              retry(
+                (delay.inNanoseconds * factor).toLong.nanoseconds min maximum)
+            }.flatten
         }
       }
       retry(base)

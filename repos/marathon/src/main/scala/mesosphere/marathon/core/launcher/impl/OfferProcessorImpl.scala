@@ -38,21 +38,21 @@ private[launcher] class OfferProcessorImpl(
 
   private[this] val log = LoggerFactory.getLogger(getClass)
   private[this] val offerMatchingTimeout = conf.offerMatchingTimeout().millis
-  private[this] val saveTasksToLaunchTimeout =
-    conf.saveTasksToLaunchTimeout().millis
+  private[this] val saveTasksToLaunchTimeout = conf.saveTasksToLaunchTimeout()
+    .millis
 
-  private[this] val incomingOffersMeter = metrics.meter(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "incomingOffers"))
-  private[this] val matchTimeMeter = metrics.timer(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "matchTime"))
-  private[this] val matchErrorsMeter = metrics.meter(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "matchErrors"))
-  private[this] val savingTasksTimeMeter = metrics.timer(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasks"))
+  private[this] val incomingOffersMeter = metrics
+    .meter(metrics.name(MetricPrefixes.SERVICE, getClass, "incomingOffers"))
+  private[this] val matchTimeMeter = metrics
+    .timer(metrics.name(MetricPrefixes.SERVICE, getClass, "matchTime"))
+  private[this] val matchErrorsMeter = metrics
+    .meter(metrics.name(MetricPrefixes.SERVICE, getClass, "matchErrors"))
+  private[this] val savingTasksTimeMeter = metrics
+    .timer(metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasks"))
   private[this] val savingTasksTimeoutMeter = metrics.meter(
     metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasksTimeouts"))
-  private[this] val savingTasksErrorMeter = metrics.meter(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasksErrors"))
+  private[this] val savingTasksErrorMeter = metrics
+    .meter(metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasksErrors"))
 
   override def processOffer(offer: Offer): Future[Unit] = {
     incomingOffersMeter.mark()
@@ -64,35 +64,29 @@ private[launcher] class OfferProcessorImpl(
       offerMatcher.matchOffer(matchingDeadline, offer)
     }
 
-    matchFuture
-      .recover {
-        case e: AskTimeoutException =>
-          matchErrorsMeter.mark()
-          log.warn(
-            s"Could not process offer '${offer.getId.getValue}' in time. (See --max_offer_matching_timeout)")
-          MatchedTaskOps(offer.getId, Seq.empty, resendThisOffer = true)
-        case NonFatal(e) =>
-          matchErrorsMeter.mark()
-          log.error(s"Could not process offer '${offer.getId.getValue}'", e)
-          MatchedTaskOps(offer.getId, Seq.empty, resendThisOffer = true)
-      }
-      .flatMap {
-        case MatchedTaskOps(offerId, tasks, resendThisOffer) =>
-          savingTasksTimeMeter.timeFuture {
-            saveTasks(tasks, savingDeadline).map { savedTasks =>
-              def notAllSaved: Boolean = savedTasks.size != tasks.size
-              MatchedTaskOps(
-                offerId,
-                savedTasks,
-                resendThisOffer || notAllSaved)
-            }
+    matchFuture.recover {
+      case e: AskTimeoutException =>
+        matchErrorsMeter.mark()
+        log.warn(
+          s"Could not process offer '${offer.getId.getValue}' in time. (See --max_offer_matching_timeout)")
+        MatchedTaskOps(offer.getId, Seq.empty, resendThisOffer = true)
+      case NonFatal(e) =>
+        matchErrorsMeter.mark()
+        log.error(s"Could not process offer '${offer.getId.getValue}'", e)
+        MatchedTaskOps(offer.getId, Seq.empty, resendThisOffer = true)
+    }.flatMap {
+      case MatchedTaskOps(offerId, tasks, resendThisOffer) =>
+        savingTasksTimeMeter.timeFuture {
+          saveTasks(tasks, savingDeadline).map { savedTasks =>
+            def notAllSaved: Boolean = savedTasks.size != tasks.size
+            MatchedTaskOps(offerId, savedTasks, resendThisOffer || notAllSaved)
           }
-      }
-      .flatMap {
-        case MatchedTaskOps(offerId, Nil, resendThisOffer) =>
-          declineOffer(offerId, resendThisOffer)
-        case MatchedTaskOps(offerId, tasks, _) => acceptOffer(offerId, tasks)
-      }
+        }
+    }.flatMap {
+      case MatchedTaskOps(offerId, Nil, resendThisOffer) =>
+        declineOffer(offerId, resendThisOffer)
+      case MatchedTaskOps(offerId, tasks, _) => acceptOffer(offerId, tasks)
+    }
   }
 
   private[this] def declineOffer(
@@ -121,21 +115,19 @@ private[launcher] class OfferProcessorImpl(
 
   /** Revert the effects of the task ops on the task state. */
   private[this] def revertTaskOps(ops: Iterable[TaskOp]): Future[Unit] = {
-    ops
-      .foldLeft(Future.successful(())) { (terminatedFuture, nextOp) =>
-        terminatedFuture.flatMap { _ =>
-          nextOp.oldTask match {
-            case Some(existingTask) =>
-              taskCreationHandler.created(existingTask).map(_ => ())
-            case None =>
-              taskCreationHandler.terminated(nextOp.taskId).map(_ => ())
-          }
+    ops.foldLeft(Future.successful(())) { (terminatedFuture, nextOp) =>
+      terminatedFuture.flatMap { _ =>
+        nextOp.oldTask match {
+          case Some(existingTask) => taskCreationHandler.created(existingTask)
+              .map(_ => ())
+          case None =>
+            taskCreationHandler.terminated(nextOp.taskId).map(_ => ())
         }
       }
-      .recover {
-        case NonFatal(e) =>
-          throw new RuntimeException("while reverting task ops", e)
-      }
+    }.recover {
+      case NonFatal(e) =>
+        throw new RuntimeException("while reverting task ops", e)
+    }
   }
 
   /**
@@ -161,21 +153,18 @@ private[launcher] class OfferProcessorImpl(
           taskCreationHandler.terminated(taskId)
       }
 
-      persistedOp
-        .map(_ => Some(taskOpWithSource))
-        .recoverWith {
-          case NonFatal(e) =>
-            savingTasksErrorMeter.mark()
-            taskOpWithSource.reject(s"storage error: $e")
-            log.warn(
-              s"error while storing task $taskId for app [${taskId.appId}]",
-              e)
-            revertTaskOps(Some(taskOpWithSource.op))
-        }
-        .map {
-          case Some(savedTask) => Some(taskOpWithSource)
-          case None            => None
-        }
+      persistedOp.map(_ => Some(taskOpWithSource)).recoverWith {
+        case NonFatal(e) =>
+          savingTasksErrorMeter.mark()
+          taskOpWithSource.reject(s"storage error: $e")
+          log.warn(
+            s"error while storing task $taskId for app [${taskId.appId}]",
+            e)
+          revertTaskOps(Some(taskOpWithSource.op))
+      }.map {
+        case Some(savedTask) => Some(taskOpWithSource)
+        case None            => None
+      }
     }
 
     ops.foldLeft(Future.successful(Vector.empty[TaskOpWithSource])) {

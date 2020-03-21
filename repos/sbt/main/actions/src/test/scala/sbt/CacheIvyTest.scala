@@ -73,7 +73,8 @@ class CacheIvyTest extends Properties("CacheIvy") {
   property("moduleIDFormat") = forAll { (m: ModuleID) =>
     def str(m: ModuleID) = {
       import m._
-      s"ModuleID($organization, ${m.name}, $revision, $configurations, $isChanging, $isTransitive, $isForce, $explicitArtifacts, $exclusions, " +
+      s"ModuleID($organization, ${m
+        .name}, $revision, $configurations, $isChanging, $isTransitive, $isForce, $explicitArtifacts, $exclusions, " +
         s"$inclusions, $extraAttributes, $crossVersion, $branchName)"
     }
     def eq(a: ModuleID, b: ModuleID): Prop = {

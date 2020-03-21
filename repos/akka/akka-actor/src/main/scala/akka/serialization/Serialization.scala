@@ -76,9 +76,8 @@ object Serialization {
         else {
           val provider = originalSystem.provider
           path.toSerializationFormatWithAddress(
-            provider
-              .getExternalAddressFor(address)
-              .getOrElse(provider.getDefaultAddress))
+            provider.getExternalAddressFor(address).getOrElse(
+              provider.getDefaultAddress))
         }
     }
   }
@@ -187,14 +186,15 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         def unique(
             possibilities: immutable.Seq[(Class[_], Serializer)]): Boolean =
           possibilities.size == 1 ||
-            (possibilities forall (_._1 isAssignableFrom possibilities(
-              0)._1)) ||
+            (possibilities forall (_._1 isAssignableFrom possibilities(0)
+              ._1)) ||
             (possibilities forall (_._2 == possibilities(0)._2))
 
         val ser = bindings filter { _._1 isAssignableFrom clazz } match {
           case Seq() ⇒
             throw new NotSerializableException(
-              "No configured serialization-bindings for class [%s]" format clazz.getName)
+              "No configured serialization-bindings for class [%s]" format clazz
+                .getName)
           case possibilities ⇒
             if (!unique(possibilities))
               log.warning(
@@ -257,8 +257,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   // include "com.google.protobuf.GeneratedMessage" = proto in configured serialization-bindings.
   private def checkGoogleProtobuf(className: String): Boolean =
     (!className.startsWith("com.google.protobuf") || system.dynamicAccess
-      .getClassFor[Any](className)
-      .isSuccess)
+      .getClassFor[Any](className).isSuccess)
 
   /**
     * Sort so that subtypes always precede their supertypes, but without
@@ -291,8 +290,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       case (_, v) ⇒ (v.identifier, v)
     }
 
-  private val isJavaSerializationWarningEnabled = settings.config.getBoolean(
-    "akka.actor.warn-about-java-serializer-usage")
+  private val isJavaSerializationWarningEnabled = settings.config
+    .getBoolean("akka.actor.warn-about-java-serializer-usage")
 
   private def shouldWarnAboutJavaSerializer(
       serializedClass: Class[_],

@@ -198,34 +198,32 @@ class TypedStaticQueryTest {
 
       Await.result(
         dc.db.run(
-          DBIO
-            .seq(
-              tsql"""create table "SUPPLIERS2" ("SUP_ID" INTEGER NOT NULL PRIMARY KEY,"SUP_NAME" VARCHAR NOT NULL);""",
-              tsql"""INSERT INTO SUPPLIERS VALUES(102, 'Acme, Inc. Next', '99 Market Street', 'Groundsville', 'CA', '95199');""" map testUnitDML,
-              tsql"""INSERT INTO SUPPLIERS VALUES(103, 'Coffee Retailers Corp.', '9 Random Street', 'Ville', 'LA', '63195');""" map testUnitDML,
-              s1.map { o1 =>
-                val t1: Supplier = o1.map(supplierGetter).head
-                assertEquals(Supplier(102, "Acme, Inc. Next"), t1)
-              },
-              s2.map { o2 =>
-                val t2: Supplier = o2.map(supplierGetter).head
-                assertEquals(Supplier(103, "Coffee Retailers Corp."), t2)
-              },
-              tsql"""UPDATE SUPPLIERS SET SUP_NAME = 'Acme, Inc. II' WHERE SUP_ID = '102';""" map testUnitDML,
-              tsql"""UPDATE SUPPLIERS SET SUP_NAME = 'Coffee Retailers Corp. II' WHERE SUP_ID = '103';""" map testUnitDML,
-              s1.map { o1 =>
-                val t1: Supplier = o1.map(supplierGetter).head
-                assertEquals(Supplier(102, "Acme, Inc. II"), t1)
-              },
-              s2.map { o2 =>
-                val t2: Supplier = o2.map(supplierGetter).head
-                assertEquals(Supplier(103, "Coffee Retailers Corp. II"), t2)
-              },
-              tsql"""DELETE FROM SUPPLIERS WHERE SUP_ID = '102';""" map testUnitDML,
-              tsql"""DELETE FROM SUPPLIERS WHERE SUP_ID = '103';""" map testUnitDML,
-              tsql"""drop table "SUPPLIERS2" """
-            )
-            .withPinnedSession),
+          DBIO.seq(
+            tsql"""create table "SUPPLIERS2" ("SUP_ID" INTEGER NOT NULL PRIMARY KEY,"SUP_NAME" VARCHAR NOT NULL);""",
+            tsql"""INSERT INTO SUPPLIERS VALUES(102, 'Acme, Inc. Next', '99 Market Street', 'Groundsville', 'CA', '95199');""" map testUnitDML,
+            tsql"""INSERT INTO SUPPLIERS VALUES(103, 'Coffee Retailers Corp.', '9 Random Street', 'Ville', 'LA', '63195');""" map testUnitDML,
+            s1.map { o1 =>
+              val t1: Supplier = o1.map(supplierGetter).head
+              assertEquals(Supplier(102, "Acme, Inc. Next"), t1)
+            },
+            s2.map { o2 =>
+              val t2: Supplier = o2.map(supplierGetter).head
+              assertEquals(Supplier(103, "Coffee Retailers Corp."), t2)
+            },
+            tsql"""UPDATE SUPPLIERS SET SUP_NAME = 'Acme, Inc. II' WHERE SUP_ID = '102';""" map testUnitDML,
+            tsql"""UPDATE SUPPLIERS SET SUP_NAME = 'Coffee Retailers Corp. II' WHERE SUP_ID = '103';""" map testUnitDML,
+            s1.map { o1 =>
+              val t1: Supplier = o1.map(supplierGetter).head
+              assertEquals(Supplier(102, "Acme, Inc. II"), t1)
+            },
+            s2.map { o2 =>
+              val t2: Supplier = o2.map(supplierGetter).head
+              assertEquals(Supplier(103, "Coffee Retailers Corp. II"), t2)
+            },
+            tsql"""DELETE FROM SUPPLIERS WHERE SUP_ID = '102';""" map testUnitDML,
+            tsql"""DELETE FROM SUPPLIERS WHERE SUP_ID = '103';""" map testUnitDML,
+            tsql"""drop table "SUPPLIERS2" """
+          ).withPinnedSession),
         Duration.Inf
       )
     } finally dc.db.close()

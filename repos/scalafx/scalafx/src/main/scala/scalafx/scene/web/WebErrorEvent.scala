@@ -59,8 +59,8 @@ object WebErrorEvent {
     * This event occurs when a [[scalafx.scene.web.WebEngine]] detects that
     * its user data directory is already in use by a WebEngine running in a different VM.
     */
-  val UserDataDirectoryAlreadyInUse: EventType[jfxsw.WebErrorEvent] =
-    jfxsw.WebErrorEvent.USER_DATA_DIRECTORY_ALREADY_IN_USE
+  val UserDataDirectoryAlreadyInUse: EventType[jfxsw.WebErrorEvent] = jfxsw
+    .WebErrorEvent.USER_DATA_DIRECTORY_ALREADY_IN_USE
   @deprecated(
     "Use UserDataDirectoryAlreadyInUse; USER_DATA_DIRECTORY_ALREADY_IN_USE will be removed in a future release",
     "8.0.60-R10")
@@ -70,8 +70,8 @@ object WebErrorEvent {
     * This event occurs when a [[scalafx.scene.web.WebEngine]] encounters an I/O error
     * while trying to create or access the user data directory.
     */
-  val UserDataDirectoryIOError: EventType[jfxsw.WebErrorEvent] =
-    jfxsw.WebErrorEvent.USER_DATA_DIRECTORY_IO_ERROR
+  val UserDataDirectoryIOError: EventType[jfxsw.WebErrorEvent] = jfxsw
+    .WebErrorEvent.USER_DATA_DIRECTORY_IO_ERROR
   @deprecated(
     "Use UserDataDirectoryIOError; USER_DATA_DIRECTORY_IO_ERROR will be removed in a future release",
     "8.0.60-R10")
@@ -81,8 +81,8 @@ object WebErrorEvent {
     * This event occurs when a [[scalafx.scene.web.WebEngine]] encounters a security error
     * while trying to create or access the user data directory.
     */
-  val UserDataDirectorySecurityError: EventType[jfxsw.WebErrorEvent] =
-    jfxsw.WebErrorEvent.USER_DATA_DIRECTORY_SECURITY_ERROR
+  val UserDataDirectorySecurityError: EventType[jfxsw.WebErrorEvent] = jfxsw
+    .WebErrorEvent.USER_DATA_DIRECTORY_SECURITY_ERROR
   @deprecated(
     "Use UserDataDirectorySecurityError; USER_DATA_DIRECTORY_SECURITY_ERROR will be removed in a future release",
     "8.0.60-R10")

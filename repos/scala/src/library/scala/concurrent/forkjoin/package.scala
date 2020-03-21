@@ -23,8 +23,8 @@ package object forkjoin {
       juc.ForkJoinPool.ForkJoinWorkerThreadFactory
     type ManagedBlocker = juc.ForkJoinPool.ManagedBlocker
 
-    val defaultForkJoinWorkerThreadFactory: ForkJoinWorkerThreadFactory =
-      juc.ForkJoinPool.defaultForkJoinWorkerThreadFactory
+    val defaultForkJoinWorkerThreadFactory: ForkJoinWorkerThreadFactory = juc
+      .ForkJoinPool.defaultForkJoinWorkerThreadFactory
     def managedBlock(blocker: ManagedBlocker): Unit =
       juc.ForkJoinPool.managedBlock(blocker)
   }

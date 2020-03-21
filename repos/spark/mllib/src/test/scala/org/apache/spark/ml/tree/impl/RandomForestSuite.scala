@@ -50,19 +50,15 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
     val rightImp = new GiniCalculator(Array(1.0, 2.0, 5.0))
     val right = new LeafNode(2.0, rightImp.calculate(), rightImp)
 
-    val parent = TreeTests.buildParentNode(
-      left,
-      right,
-      new ContinuousSplit(0, 0.5))
+    val parent = TreeTests
+      .buildParentNode(left, right, new ContinuousSplit(0, 0.5))
     val parentImp = parent.impurityStats
 
     val left2Imp = new GiniCalculator(Array(1.0, 6.0, 1.0))
     val left2 = new LeafNode(0.0, left2Imp.calculate(), left2Imp)
 
-    val grandParent = TreeTests.buildParentNode(
-      left2,
-      parent,
-      new ContinuousSplit(1, 1.0))
+    val grandParent = TreeTests
+      .buildParentNode(left2, parent, new ContinuousSplit(1, 1.0))
     val grandImp = grandParent.impurityStats
 
     // Test feature importance computed at different subtrees.
@@ -77,14 +73,14 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Internal node with 2 leaf children
     val feature0importance = parentImp.calculate() * parentImp.count -
-      (leftImp.calculate() * leftImp.count + rightImp
-        .calculate() * rightImp.count)
+      (leftImp.calculate() * leftImp.count + rightImp.calculate() * rightImp
+        .count)
     testNode(parent, Map(0 -> feature0importance))
 
     // Full tree
     val feature1importance = grandImp.calculate() * grandImp.count -
-      (left2Imp.calculate() * left2Imp.count + parentImp
-        .calculate() * parentImp.count)
+      (left2Imp.calculate() * left2Imp.count + parentImp.calculate() * parentImp
+        .count)
     testNode(grandParent, Map(0 -> feature0importance, 1 -> feature1importance))
 
     // Forest consisting of (full tree) + (internal node with 2 leafs)

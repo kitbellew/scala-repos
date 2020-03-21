@@ -24,15 +24,14 @@ case class Arguments(
 
     val (sourceRoots, outputDirs) = compilationData.outputGroups.unzip
 
-    val compilerJarPaths = compilerData.compilerJars.map(jars =>
-      filesToPaths(jars.library +: jars.compiler +: jars.extra))
+    val compilerJarPaths = compilerData.compilerJars
+      .map(jars => filesToPaths(jars.library +: jars.compiler +: jars.extra))
 
     val javaHomePath = compilerData.javaHome.map(fileToPath)
 
     val incrementalType = compilerData.incrementalType
 
-    val sbtIncOptions = compilationData.sbtIncOptions
-      .map(_.asString)
+    val sbtIncOptions = compilationData.sbtIncOptions.map(_.asString)
       .getOrElse("")
 
     Seq(
@@ -107,8 +106,8 @@ object Arguments {
 
         val outputGroups = sourceRoots zip outputDirs
 
-        val sbtIncOptions = SbtIncrementalOptions.fromString(
-          sbtIncOptionsString)
+        val sbtIncOptions = SbtIncrementalOptions
+          .fromString(sbtIncOptionsString)
 
         val compilationData = CompilationData(
           sources,

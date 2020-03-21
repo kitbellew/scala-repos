@@ -36,8 +36,8 @@ import scalafx.scene.control.TreeTableColumn._
 object SimpleTreeTableView extends JFXApp {
 
   val treeRoot = new TreeItem[Person](new Person("Peggy", "Sue", "555-6798"))
-  treeRoot.children.add(new TreeItem[Person](
-    new Person("Rocky", "Raccoon", "555-6798")))
+  treeRoot.children
+    .add(new TreeItem[Person](new Person("Rocky", "Raccoon", "555-6798")))
 
   stage = new PrimaryStage {
     title = "Simple Table View"

@@ -7,20 +7,17 @@ import scala.collection.JavaConverters._
 
 object PortDefinitionSerializer {
   def toProto(portDefinition: PortDefinition): mesos.Protos.Port = {
-    val builder = mesos.Protos.Port.newBuilder
-      .setNumber(portDefinition.port)
+    val builder = mesos.Protos.Port.newBuilder.setNumber(portDefinition.port)
       .setProtocol(portDefinition.protocol)
 
     portDefinition.name.foreach(builder.setName)
 
     if (portDefinition.labels.nonEmpty) {
       val labelsBuilder = mesos.Protos.Labels.newBuilder
-      portDefinition.labels
-        .map {
-          case (key, value) =>
-            mesos.Protos.Label.newBuilder.setKey(key).setValue(value).build
-        }
-        .foreach(labelsBuilder.addLabels)
+      portDefinition.labels.map {
+        case (key, value) =>
+          mesos.Protos.Label.newBuilder.setKey(key).setValue(value).build
+      }.foreach(labelsBuilder.addLabels)
       builder.setLabels(labelsBuilder.build())
     }
 

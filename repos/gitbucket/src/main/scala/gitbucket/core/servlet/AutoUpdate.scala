@@ -101,10 +101,8 @@ object AutoUpdate {
           "SELECT ACTIVITY_ID, ADDITIONAL_INFO FROM ACTIVITY WHERE ACTIVITY_TYPE='push'") {
           rs =>
             val curInfo = rs.getString("ADDITIONAL_INFO")
-            val newInfo = curInfo
-              .split("\n")
-              .filter(_ matches "^[0-9a-z]{40}:.*")
-              .mkString("\n")
+            val newInfo = curInfo.split("\n")
+              .filter(_ matches "^[0-9a-z]{40}:.*").mkString("\n")
             if (curInfo != newInfo) {
               conn.update(
                 "UPDATE ACTIVITY SET ADDITIONAL_INFO = ? WHERE ACTIVITY_ID = ?",
@@ -142,8 +140,7 @@ object AutoUpdate {
                         val mimeType = MimeUtil2
                           .getMostSpecificMimeType(mimeUtil.getMimeTypes(
                             file,
-                            new MimeType("application/octet-stream")))
-                          .toString
+                            new MimeType("application/octet-stream"))).toString
                         if (mimeType.startsWith("image/")) {
                           file.renameTo(new File(
                             file.getParent,
@@ -208,11 +205,10 @@ object AutoUpdate {
     if (versionFile.exists) {
       FileUtils.readFileToString(versionFile, "UTF-8").trim.split("\\.") match {
         case Array(majorVersion, minorVersion) => {
-          versions
-            .find { v =>
-              v.majorVersion == majorVersion.toInt && v.minorVersion == minorVersion.toInt
-            }
-            .getOrElse(Version(0, 0))
+          versions.find { v =>
+            v.majorVersion == majorVersion.toInt && v
+              .minorVersion == minorVersion.toInt
+          }.getOrElse(Version(0, 0))
         }
         case _ => Version(0, 0)
       }

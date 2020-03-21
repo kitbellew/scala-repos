@@ -59,20 +59,17 @@ object Combinatorics {
       (pipe, num)
     })
 
-    val res = pipes
-      .reduceLeft((a, b) => {
-        val num = b._2
-        val prevname = Symbol("n" + (num - 1))
-        val myname = Symbol("n" + num)
-        val mypipe = a._1
-          .crossWithSmaller(b._1)
-          .filter(prevname, myname) { foo: (Int, Int) =>
-            val (nn1, nn2) = foo
-            nn1 < nn2
-          }
-        (mypipe, -1)
-      })
-      ._1
+    val res = pipes.reduceLeft((a, b) => {
+      val num = b._2
+      val prevname = Symbol("n" + (num - 1))
+      val myname = Symbol("n" + num)
+      val mypipe = a._1.crossWithSmaller(b._1).filter(prevname, myname) {
+        foo: (Int, Int) =>
+          val (nn1, nn2) = foo
+          nn1 < nn2
+      }
+      (mypipe, -1)
+    })._1
 
     (1 to k).foldLeft(res)((a, b) => {
       val myname = Symbol("n" + b)
@@ -102,12 +99,11 @@ object Combinatorics {
     val pipes = allc.map(x => IterableSource(1 to n, x).read)
 
     // on a given row, we cannot have duplicate columns in a permutation
-    val res = pipes
-      .reduceLeft((a, b) => { a.crossWithSmaller(b) })
+    val res = pipes.reduceLeft((a, b) => { a.crossWithSmaller(b) })
       .filter(allc) { x: TupleEntry =>
         Boolean
-        val values = (0 until allc.size).map(i =>
-          x.getInteger(i.asInstanceOf[java.lang.Integer]))
+        val values = (0 until allc.size)
+          .map(i => x.getInteger(i.asInstanceOf[java.lang.Integer]))
         values.size == values.distinct.size
       }
 
@@ -173,58 +169,46 @@ object Combinatorics {
     val allColumns = (1 to numWeights).map(x => Symbol("k" + x))
 
     // create as many single-column pipes as the number of weights
-    val pipes = allColumns
-      .zip(weights)
-      .map(x => {
-        val (name, wt) = x
-        IterableSource((0.0 to result by wt), name).read
-      })
-      .zip(allColumns)
+    val pipes = allColumns.zip(weights).map(x => {
+      val (name, wt) = x
+      IterableSource((0.0 to result by wt), name).read
+    }).zip(allColumns)
 
     val first = pipes.head
     val accum = (first._1, List[Symbol](first._2))
     val rest = pipes.tail
 
-    val res = rest
-      .foldLeft(accum)((a, b) => {
+    val res = rest.foldLeft(accum)((a, b) => {
 
-        val (apipe, aname) = a
-        val (bpipe, bname) = b
-        val allc = (List(aname)).flatten ++ List[Symbol](bname)
+      val (apipe, aname) = a
+      val (bpipe, bname) = b
+      val allc = (List(aname)).flatten ++ List[Symbol](bname)
 
-        // Algorithm:
-        // Cross two pipes
-        // Create a temp column that stores intermediate results
-        // Apply progressive filtering on the temp column
-        // Discard the temp column
-        // Once all pipes are crossed, test for temp column within error bounds of result
-        // Discard duplicates at end of process
+      // Algorithm:
+      // Cross two pipes
+      // Create a temp column that stores intermediate results
+      // Apply progressive filtering on the temp column
+      // Discard the temp column
+      // Once all pipes are crossed, test for temp column within error bounds of result
+      // Discard duplicates at end of process
 
-        (
-          apipe
-            .crossWithSmaller(bpipe)
-            .map(allc -> 'temp) { x: TupleEntry =>
-              val values = (0 until allc.size).map(i =>
-                x.getDouble(i.asInstanceOf[java.lang.Integer]))
-              values.sum
-            }
-            .filter('temp) { x: Double =>
-              if (allc.size == numWeights) (math.abs(x - result) <= error)
-              else (x <= result)
-            }
-            .discard('temp),
-          allc)
-      })
-      ._1
-      .unique(allColumns)
+      (
+        apipe.crossWithSmaller(bpipe).map(allc -> 'temp) { x: TupleEntry =>
+          val values = (0 until allc.size)
+            .map(i => x.getDouble(i.asInstanceOf[java.lang.Integer]))
+          values.sum
+        }.filter('temp) { x: Double =>
+          if (allc.size == numWeights) (math.abs(x - result) <= error)
+          else (x <= result)
+        }.discard('temp),
+        allc)
+    })._1.unique(allColumns)
 
-    (1 to numWeights)
-      .zip(weights)
-      .foldLeft(res)((a, b) => {
-        val (num, wt) = b
-        val myname = Symbol("k" + num)
-        a.map(myname -> myname) { x: Int => (x / wt).toInt }
-      })
+    (1 to numWeights).zip(weights).foldLeft(res)((a, b) => {
+      val (num, wt) = b
+      val myname = Symbol("k" + num)
+      a.map(myname -> myname) { x: Int => (x / wt).toInt }
+    })
   }
 
   /**

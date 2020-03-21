@@ -68,16 +68,15 @@ class NIHDBProjectionSpecs
   val authorities = Authorities("test")
 
   def newNihdb(workDir: File, threshold: Int = 1000): NIHDB =
-    NIHDB
-      .create(
-        chef,
-        authorities,
-        workDir,
-        threshold,
-        Duration(60, "seconds"),
-        txLogScheduler)(actorSystem)
-      .unsafePerformIO
-      .valueOr { e => throw new Exception(e.message) }
+    NIHDB.create(
+      chef,
+      authorities,
+      workDir,
+      threshold,
+      Duration(60, "seconds"),
+      txLogScheduler)(actorSystem).unsafePerformIO.valueOr { e =>
+      throw new Exception(e.message)
+    }
 
   val maxDuration = Duration(60, "seconds")
 
@@ -145,8 +144,8 @@ class NIHDBProjectionSpecs
             min mustEqual 0L
             max mustEqual 0L
             data.size mustEqual 3
-            data.toJsonElements.map(_("value")) must containAllOf(
-              expected).only.inOrder
+            data.toJsonElements.map(_("value")) must containAllOf(expected).only
+              .inOrder
         })
     }
 
@@ -188,8 +187,8 @@ class NIHDBProjectionSpecs
               min mustEqual 0L
               max mustEqual 0L
               data.size mustEqual 5
-              data.toJsonElements.map(_("value")) must containAllOf(
-                expected).only.inOrder
+              data.toJsonElements.map(_("value")) must containAllOf(expected)
+                .only.inOrder
           }
         }
     }

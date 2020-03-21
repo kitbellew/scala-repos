@@ -155,8 +155,9 @@ object ThrottlerTransportAdapter {
     }
 
     private def tokensGenerated(nanoTimeOfSend: Long): Int =
-      (TimeUnit.NANOSECONDS.toMillis(
-        nanoTimeOfSend - nanoTimeOfLastSend) * tokensPerSecond / 1000.0).toInt
+      (TimeUnit.NANOSECONDS
+        .toMillis(
+          nanoTimeOfSend - nanoTimeOfLastSend) * tokensPerSecond / 1000.0).toInt
   }
 
   @SerialVersionUID(1L)
@@ -311,12 +312,10 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       val naked = nakedAddress(address)
       throttlingModes = throttlingModes.updated(naked, (mode, direction))
       val ok = Future.successful(SetThrottleAck)
-      Future
-        .sequence(handleTable map {
-          case (`naked`, handle) ⇒ setMode(handle, mode, direction)
-          case _ ⇒ ok
-        })
-        .map(_ ⇒ SetThrottleAck) pipeTo sender()
+      Future.sequence(handleTable map {
+        case (`naked`, handle) ⇒ setMode(handle, mode, direction)
+        case _ ⇒ ok
+      }).map(_ ⇒ SetThrottleAck) pipeTo sender()
     case ForceDisassociate(address) ⇒
       val naked = nakedAddress(address)
       handleTable foreach {
@@ -408,14 +407,12 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
     ThrottlerHandle(
       originalHandle,
       context.actorOf(
-        RARP(context.system)
-          .configureDispatcher(Props(
-            classOf[ThrottledAssociation],
-            managerRef,
-            listener,
-            originalHandle,
-            inbound))
-          .withDeploy(Deploy.local),
+        RARP(context.system).configureDispatcher(Props(
+          classOf[ThrottledAssociation],
+          managerRef,
+          listener,
+          originalHandle,
+          inbound)).withDeploy(Deploy.local),
         "throttler" + nextId()
       )
     )
@@ -566,8 +563,7 @@ private[transport] class ThrottledAssociation(
         upstreamListener notify InboundPayload(payload)
         throttledMessages = newqueue
         inboundThrottleMode = inboundThrottleMode
-          .tryConsumeTokens(System.nanoTime(), payload.length)
-          ._1
+          .tryConsumeTokens(System.nanoTime(), payload.length)._1
         if (throttledMessages.nonEmpty)
           scheduleDequeue(inboundThrottleMode.timeToAvailable(
             System.nanoTime(),
@@ -611,9 +607,8 @@ private[transport] class ThrottledAssociation(
     } else {
       if (throttledMessages.isEmpty) {
         val tokens = payload.length
-        val (newbucket, success) = inboundThrottleMode.tryConsumeTokens(
-          System.nanoTime(),
-          tokens)
+        val (newbucket, success) = inboundThrottleMode
+          .tryConsumeTokens(System.nanoTime(), tokens)
         if (success) {
           inboundThrottleMode = newbucket
           upstreamListener notify InboundPayload(payload)
@@ -654,9 +649,8 @@ private[transport] final case class ThrottlerHandle(
     @tailrec
     def tryConsume(currentBucket: ThrottleMode): Boolean = {
       val timeOfSend = System.nanoTime()
-      val (newBucket, allow) = currentBucket.tryConsumeTokens(
-        timeOfSend,
-        tokens)
+      val (newBucket, allow) = currentBucket
+        .tryConsumeTokens(timeOfSend, tokens)
       if (allow) {
         if (outboundThrottleMode.compareAndSet(currentBucket, newBucket)) true
         else tryConsume(outboundThrottleMode.get())

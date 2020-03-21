@@ -98,7 +98,8 @@ private[http4] object Bijections {
         statusToNetty(r.status),
         BufAsByteBuf.Owned(r.content),
         headersToNetty(r.headerMap),
-        NettyHttp.EmptyHttpHeaders.INSTANCE // only chunked messages have trailing headers
+        NettyHttp.EmptyHttpHeaders
+          .INSTANCE // only chunked messages have trailing headers
       )
 
     def methodToNetty(m: FinagleHttp.Method): NettyHttp.HttpMethod =
@@ -111,7 +112,8 @@ private[http4] object Bijections {
         r.uri,
         BufAsByteBuf.Owned(r.content),
         headersToNetty(r.headerMap),
-        NettyHttp.EmptyHttpHeaders.INSTANCE // only chunked messages have trailing headers
+        NettyHttp.EmptyHttpHeaders
+          .INSTANCE // only chunked messages have trailing headers
       )
   }
 }

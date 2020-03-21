@@ -26,8 +26,7 @@ class ScClassFileViewProvider(
     else
       DecompilerUtil
         .decompile(getVirtualFile, getVirtualFile.contentsToByteArray)
-        .sourceText
-        .replace("\r", "")
+        .sourceText.replace("\r", "")
 
   override def createFile(
       project: Project,

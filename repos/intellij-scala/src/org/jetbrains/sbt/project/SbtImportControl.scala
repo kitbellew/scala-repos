@@ -16,8 +16,8 @@ class SbtImportControl
       SbtProjectSettingsListener,
       SbtSystemSettings](
       SbtProjectSystem.Id,
-      SbtSystemSettings.getInstance(
-        ProjectManager.getInstance.getDefaultProject),
+      SbtSystemSettings
+        .getInstance(ProjectManager.getInstance.getDefaultProject),
       SbtProjectSettings.default) {
 
   def getLinkedProjectChooserDescriptor =

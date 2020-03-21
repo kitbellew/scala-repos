@@ -574,18 +574,16 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       val list = (scalaFiles ++ javaFiles).toList
 
       if (scalacDebugging && !list.isEmpty)
-        log("Compiling source file%s: %s to %s".format(
-          plural(list),
-          list.mkString(", "),
-          getDestination.toString))
+        log(
+          "Compiling source file%s: %s to %s"
+            .format(plural(list), list.mkString(", "), getDestination.toString))
       else if (!list.isEmpty) {
         val str =
           if (javaFiles.isEmpty)
             "%d source file%s".format(list.length, plural(list))
           else
-            "%d scala and %d java source files".format(
-              scalaFiles.length,
-              javaFiles.length)
+            "%d scala and %d java source files"
+              .format(scalaFiles.length, javaFiles.length)
         log("Compiling %s to %s".format(str, getDestination.toString))
       } else log("No files selected for compilation", Project.MSG_VERBOSE)
 
@@ -650,8 +648,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       case "none" =>
       case x =>
         val depFilePath = SPath(x)
-        command.settings.dependenciesFile.value =
-          SPath(getProject.getBaseDir).normalize.resolve(depFilePath).path
+        command.settings.dependenciesFile.value = SPath(getProject.getBaseDir)
+          .normalize.resolve(depFilePath).path
     }
 
     (command.settings, sourceFiles, javaOnly)

@@ -112,8 +112,8 @@ class Same extends ScalaMatchingTask {
     validateAttributes()
     val mapper = getMapper
     allEqualNow = true
-    val originNames: Array[String] = getDirectoryScanner(
-      origin.get).getIncludedFiles
+    val originNames: Array[String] = getDirectoryScanner(origin.get)
+      .getIncludedFiles
     val bufferSize = 1024
     val originBuffer = new Array[Byte](bufferSize)
     val destBuffer = new Array[Byte](bufferSize)
@@ -146,15 +146,18 @@ class Same extends ScalaMatchingTask {
     if (!allEqualNow)
       if (failing)
         sys.error(
-          "There were differences between '" + origin.get + "' and '" + destination.get + "'")
+          "There were differences between '" + origin
+            .get + "' and '" + destination.get + "'")
       else
         log(
-          "There were differences between '" + origin.get + "' and '" + destination.get + "'")
+          "There were differences between '" + origin
+            .get + "' and '" + destination.get + "'")
     else {
       if (!resultProperty.isEmpty)
         getProject.setProperty(resultProperty.get, "yes")
       log(
-        "All files in '" + origin.get + "' and '" + destination.get + "' are equal",
+        "All files in '" + origin.get + "' and '" + destination
+          .get + "' are equal",
         Project.MSG_VERBOSE)
     }
   }

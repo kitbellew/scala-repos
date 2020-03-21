@@ -38,7 +38,7 @@ class RuntimeNameActorSystemActivator extends ActorSystemActivator {
     registerService(context, system);
 
   override def getActorSystemName(context: BundleContext) =
-    TestActivators.ACTOR_SYSTEM_NAME_PATTERN.format(
-      context.getBundle.getBundleId)
+    TestActivators.ACTOR_SYSTEM_NAME_PATTERN
+      .format(context.getBundle.getBundleId)
 
 }

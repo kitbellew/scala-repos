@@ -53,10 +53,8 @@ object DBSpec extends org.specs2.mutable.Specification {
 
   lazy val fakeApp = {
     acolyte.jdbc.Driver.register("test", acolyte.jdbc.CompositeHandler.empty())
-    GuiceApplicationBuilder()
-      .configure(
-        "db.default.driver" -> "acolyte.jdbc.Driver",
-        "db.default.url" -> "jdbc:acolyte:test?handler=test")
-      .build()
+    GuiceApplicationBuilder().configure(
+      "db.default.driver" -> "acolyte.jdbc.Driver",
+      "db.default.url" -> "jdbc:acolyte:test?handler=test").build()
   }
 }

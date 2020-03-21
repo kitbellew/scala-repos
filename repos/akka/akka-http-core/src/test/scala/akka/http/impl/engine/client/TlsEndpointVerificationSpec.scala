@@ -54,7 +54,8 @@ class TlsEndpointVerificationSpec
         timeout) { response ⇒
         response.status shouldEqual StatusCodes.OK
         val tlsInfo = response.header[`Tls-Session-Info`].get
-        tlsInfo.peerPrincipal.get.getName shouldEqual "CN=akka.example.org,O=Internet Widgits Pty Ltd,ST=Some-State,C=AU"
+        tlsInfo.peerPrincipal.get
+          .getName shouldEqual "CN=akka.example.org,O=Internet Widgits Pty Ltd,ST=Some-State,C=AU"
       }
     }
     "not accept certificates for foreign hosts" in {
@@ -101,9 +102,7 @@ class TlsEndpointVerificationSpec
       clientContext: ConnectionContext,
       hostname: String): HttpRequest ⇒ Future[HttpResponse] =
     req ⇒
-      Source
-        .single(req)
-        .via(pipelineFlow(clientContext, hostname))
+      Source.single(req).via(pipelineFlow(clientContext, hostname))
         .runWith(Sink.head)
 
   def pipelineFlow(
@@ -111,9 +110,7 @@ class TlsEndpointVerificationSpec
       hostname: String): Flow[HttpRequest, HttpResponse, NotUsed] = {
     val handler: HttpRequest ⇒ HttpResponse = { req ⇒
       // verify Tls-Session-Info header information
-      val name = req
-        .header[`Tls-Session-Info`]
-        .flatMap(_.localPrincipal)
+      val name = req.header[`Tls-Session-Info`].flatMap(_.localPrincipal)
         .map(_.getName)
       if (name.exists(
             _ == "CN=akka.example.org,O=Internet Widgits Pty Ltd,ST=Some-State,C=AU"))
@@ -126,20 +123,13 @@ class TlsEndpointVerificationSpec
 
     val serverSideTls = Http()
       .sslTlsStage(ExampleHttpContexts.exampleServerContext, Server)
-    val clientSideTls = Http().sslTlsStage(
-      clientContext,
-      Client,
-      Some(hostname -> 8080))
+    val clientSideTls = Http()
+      .sslTlsStage(clientContext, Client, Some(hostname -> 8080))
 
-    val server = Http()
-      .serverLayer()
-      .atop(serverSideTls)
-      .reversed
+    val server = Http().serverLayer().atop(serverSideTls).reversed
       .join(Flow[HttpRequest].map(handler))
 
-    val client = Http()
-      .clientLayer(Host(hostname, 8080))
-      .atop(clientSideTls)
+    val client = Http().clientLayer(Host(hostname, 8080)).atop(clientSideTls)
 
     client.join(server)
   }

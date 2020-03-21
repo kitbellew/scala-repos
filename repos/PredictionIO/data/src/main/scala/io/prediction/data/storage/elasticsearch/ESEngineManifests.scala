@@ -37,22 +37,17 @@ class ESEngineManifests(
 
   def insert(engineManifest: EngineManifest): Unit = {
     val json = write(engineManifest)
-    val response = client
-      .prepareIndex(
-        index,
-        estype,
-        esid(engineManifest.id, engineManifest.version))
-      .setSource(json)
-      .execute()
+    val response = client.prepareIndex(
+      index,
+      estype,
+      esid(engineManifest.id, engineManifest.version)).setSource(json).execute()
       .actionGet()
   }
 
   def get(id: String, version: String): Option[EngineManifest] = {
     try {
-      val response = client
-        .prepareGet(index, estype, esid(id, version))
-        .execute()
-        .actionGet()
+      val response = client.prepareGet(index, estype, esid(id, version))
+        .execute().actionGet()
       if (response.isExists) {
         Some(read[EngineManifest](response.getSourceAsString))
       } else { None }
@@ -79,9 +74,7 @@ class ESEngineManifests(
 
   def delete(id: String, version: String): Unit = {
     try {
-      client
-        .prepareDelete(index, estype, esid(id, version))
-        .execute()
+      client.prepareDelete(index, estype, esid(id, version)).execute()
         .actionGet()
     } catch { case e: ElasticsearchException => error(e.getMessage) }
   }

@@ -69,11 +69,11 @@ private[orc] object OrcFileOperator extends Logging {
       hdfsPath.getFileSystem(conf)
     }
 
-    listOrcFiles(basePath, conf).iterator
-      .map { path => path -> OrcFile.createReader(fs, path) }
-      .collectFirst {
-        case (path, reader) if isWithNonEmptySchema(path, reader) => reader
-      }
+    listOrcFiles(basePath, conf).iterator.map { path =>
+      path -> OrcFile.createReader(fs, path)
+    }.collectFirst {
+      case (path, reader) if isWithNonEmptySchema(path, reader) => reader
+    }
   }
 
   def readSchema(
@@ -94,8 +94,8 @@ private[orc] object OrcFileOperator extends Logging {
   def getObjectInspector(
       path: String,
       conf: Option[Configuration]): Option[StructObjectInspector] = {
-    getFileReader(path, conf).map(
-      _.getObjectInspector.asInstanceOf[StructObjectInspector])
+    getFileReader(path, conf)
+      .map(_.getObjectInspector.asInstanceOf[StructObjectInspector])
   }
 
   def listOrcFiles(pathStr: String, conf: Configuration): Seq[Path] = {
@@ -103,12 +103,9 @@ private[orc] object OrcFileOperator extends Logging {
     val origPath = new Path(pathStr)
     val fs = origPath.getFileSystem(conf)
     val path = origPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
-    val paths = SparkHadoopUtil.get
-      .listLeafStatuses(fs, origPath)
-      .filterNot(_.isDirectory)
-      .map(_.getPath)
-      .filterNot(_.getName.startsWith("_"))
-      .filterNot(_.getName.startsWith("."))
+    val paths = SparkHadoopUtil.get.listLeafStatuses(fs, origPath)
+      .filterNot(_.isDirectory).map(_.getPath)
+      .filterNot(_.getName.startsWith("_")).filterNot(_.getName.startsWith("."))
     paths
   }
 }

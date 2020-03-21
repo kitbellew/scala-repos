@@ -9,15 +9,12 @@ object MapPicklerHelper {
   def tupleTagExtractor[T, U](tpe: AppliedType): FastTypeTag[(T, U)] = {
     tpe.typeargs match {
       case List(one, two) =>
-        FastTypeTag
-          .apply(
-            currentMirror,
-            s"scala.Tuple2[${one.toString},${two.toString}]")
+        FastTypeTag.apply(
+          currentMirror,
+          s"scala.Tuple2[${one.toString},${two.toString}]")
           .asInstanceOf[FastTypeTag[(T, U)]]
       // Note: This is what we do to handle
-      case List() =>
-        FastTypeTag
-          .apply(currentMirror, "scala.Tuple2")
+      case List() => FastTypeTag.apply(currentMirror, "scala.Tuple2")
           .asInstanceOf[FastTypeTag[(T, U)]]
       case x =>
         throw new PicklingException(

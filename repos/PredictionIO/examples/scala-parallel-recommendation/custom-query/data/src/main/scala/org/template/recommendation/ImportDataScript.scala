@@ -40,13 +40,10 @@ object ImportDataScript extends App {
         entityId ← eventObj(0)
         targetEntityId ← eventObj(1)
         rating ← eventObj(2)
-      } yield new Event()
-        .event("rate")
-        .entityId(entityId)
-        .entityType("user")
+      } yield new Event().event("rate").entityId(entityId).entityType("user")
         .properties(javaMap("rating" → new java.lang.Double(rating)))
-        .targetEntityId(targetEntityId)
-        .targetEntityType("movie")).map(client.createEvent)
+        .targetEntityId(targetEntityId).targetEntityType("movie"))
+        .map(client.createEvent)
     }
 
   def importUsers(implicit ec: EventClient): Iterator[_] =
@@ -86,8 +83,6 @@ object ImportDataScript extends App {
     * @return the list of string arrays made from every file line
     */
   private def readCSV(filename: String, delimiter: String = "\\|") =
-    Source
-      .fromFile(filename, "UTF-8")
-      .getLines()
+    Source.fromFile(filename, "UTF-8").getLines()
       .map(_.split(delimiter).toVector)
 }

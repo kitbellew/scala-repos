@@ -61,10 +61,8 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("select as dense vector") {
-    val df = sqlContext.read
-      .format("libsvm")
-      .options(Map("vectorType" -> "dense"))
-      .load(path)
+    val df = sqlContext.read.format("libsvm")
+      .options(Map("vectorType" -> "dense")).load(path)
     assert(df.columns(0) == "label")
     assert(df.columns(1) == "features")
     assert(df.count() == 3)
@@ -75,9 +73,7 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("select a vector with specifying the longer dimension") {
-    val df = sqlContext.read
-      .option("numFeatures", "100")
-      .format("libsvm")
+    val df = sqlContext.read.option("numFeatures", "100").format("libsvm")
       .load(path)
     val row1 = df.first()
     val v = row1.getAs[SparseVector](1)
@@ -89,10 +85,7 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
     val tempDir2 = Utils.createTempDir()
     val writepath = tempDir2.toURI.toString
     // TODO: Remove requirement to coalesce by supporting multiple reads.
-    df.coalesce(1)
-      .write
-      .format("libsvm")
-      .mode(SaveMode.Overwrite)
+    df.coalesce(1).write.format("libsvm").mode(SaveMode.Overwrite)
       .save(writepath)
 
     val df2 = sqlContext.read.format("libsvm").load(writepath)

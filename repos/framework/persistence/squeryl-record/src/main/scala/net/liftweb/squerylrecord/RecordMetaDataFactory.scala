@@ -59,7 +59,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         } catch {
           case ex: Exception =>
             org.squeryl.internals.Utils.throwError(
-              "failed to find MetaRecord for " + clasz + " due to exception " + ex.toString)
+              "failed to find MetaRecord for " + clasz + " due to exception " + ex
+                .toString)
         }
     }
   }
@@ -93,8 +94,7 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
 
     val (field, getter, setter, annotations) = property
 
-    val colAnnotation = annotations
-      .find(a => a.isInstanceOf[Column])
+    val colAnnotation = annotations.find(a => a.isInstanceOf[Column])
       .map(a => a.asInstanceOf[Column])
 
     val fieldsValueType = metaField match {
@@ -229,13 +229,9 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
 
     // Extract the MetaRecord for the companion object. This
     // is done only once for each class.
-    val metaRecord = Class
-      .forName(
-        posoMetaData.clasz.getName +
-          "$")
-      .getField("MODULE$")
-      .get(null)
-      .asInstanceOf[MetaRecord[_]]
+    val metaRecord = Class.forName(
+      posoMetaData.clasz.getName +
+        "$").getField("MODULE$").get(null).asInstanceOf[MetaRecord[_]]
 
     () => metaRecord.createRecord.asInstanceOf[AnyRef]
   }

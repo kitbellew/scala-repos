@@ -32,8 +32,7 @@ class BinaryClassificationEvaluatorSuite
 
   test("read/write") {
     val evaluator = new BinaryClassificationEvaluator()
-      .setRawPredictionCol("myRawPrediction")
-      .setLabelCol("myLabel")
+      .setRawPredictionCol("myRawPrediction").setLabelCol("myLabel")
       .setMetricName("areaUnderPR")
     testDefaultReadWrite(evaluator)
   }
@@ -42,16 +41,13 @@ class BinaryClassificationEvaluatorSuite
     val evaluator = new BinaryClassificationEvaluator()
       .setMetricName("areaUnderPR")
 
-    val vectorDF = sqlContext
-      .createDataFrame(Seq(
-        (0d, Vectors.dense(12, 2.5)),
-        (1d, Vectors.dense(1, 3)),
-        (0d, Vectors.dense(10, 2))))
-      .toDF("label", "rawPrediction")
+    val vectorDF = sqlContext.createDataFrame(Seq(
+      (0d, Vectors.dense(12, 2.5)),
+      (1d, Vectors.dense(1, 3)),
+      (0d, Vectors.dense(10, 2)))).toDF("label", "rawPrediction")
     assert(evaluator.evaluate(vectorDF) === 1.0)
 
-    val doubleDF = sqlContext
-      .createDataFrame(Seq((0d, 0d), (1d, 1d), (0d, 0d)))
+    val doubleDF = sqlContext.createDataFrame(Seq((0d, 0d), (1d, 1d), (0d, 0d)))
       .toDF("label", "rawPrediction")
     assert(evaluator.evaluate(doubleDF) === 1.0)
 

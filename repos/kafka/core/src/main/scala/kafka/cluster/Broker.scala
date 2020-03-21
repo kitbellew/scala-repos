@@ -98,9 +98,7 @@ object Broker {
                 (ep.protocolType, ep)
               }.toMap
             }
-          val rack = brokerInfo
-            .get("rack")
-            .filter(_ != null)
+          val rack = brokerInfo.get("rack").filter(_ != null)
             .map(_.asInstanceOf[String])
           new Broker(id, endpoints, rack)
         case None =>

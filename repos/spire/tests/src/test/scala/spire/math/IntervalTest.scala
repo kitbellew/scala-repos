@@ -442,9 +442,8 @@ class IntervalCheck
     forAll { (x: Rational, y: Rational) =>
       val a = Interval.point(x)
       val b = Interval.point(y)
-      PartialOrder[Interval[Rational]]
-        .tryCompare(a, b)
-        .get shouldBe Order[Rational].compare(x, y)
+      PartialOrder[Interval[Rational]].tryCompare(a, b).get shouldBe Order[
+        Rational].compare(x, y)
       val Some(Point(vmin)) = a.pmin(b)
       vmin shouldBe x.min(y)
       val Some(Point(vmax)) = a.pmax(b)

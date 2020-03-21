@@ -53,8 +53,8 @@ class ALSSuite
     for (numBlocks <- Seq(1, 2, 5, 10, 20, 50, 100)) {
       val encoder = new LocalIndexEncoder(numBlocks)
       val maxLocalIndex = Int.MaxValue / numBlocks
-      val tests = Seq.fill(5)(
-        (random.nextInt(numBlocks), random.nextInt(maxLocalIndex))) ++
+      val tests = Seq
+        .fill(5)((random.nextInt(numBlocks), random.nextInt(maxLocalIndex))) ++
         Seq((0, 0), (numBlocks - 1, maxLocalIndex))
       tests.foreach {
         case (blockId, localIndex) =>
@@ -69,8 +69,7 @@ class ALSSuite
 
   test("normal equation construction") {
     val k = 2
-    val ne0 = new NormalEquation(k)
-      .add(Array(1.0f, 2.0f), 3.0)
+    val ne0 = new NormalEquation(k).add(Array(1.0f, 2.0f), 3.0)
       .add(Array(4.0f, 5.0f), 6.0, 2.0) // weighted
     assert(ne0.k === k)
     assert(ne0.triK === k * (k + 1) / 2)
@@ -84,8 +83,7 @@ class ALSSuite
       Vectors.dense(ne0.ata) ~== Vectors.dense(33.0, 42.0, 54.0) relTol 1e-8)
     assert(Vectors.dense(ne0.atb) ~== Vectors.dense(51.0, 66.0) relTol 1e-8)
 
-    val ne1 = new NormalEquation(2)
-      .add(Array(7.0f, 8.0f), 9.0)
+    val ne1 = new NormalEquation(2).add(Array(7.0f, 8.0f), 9.0)
     ne0.merge(ne1)
     // NumPy code that computes the expected values:
     // A = np.matrix("1 2; 4 5; 7 8")
@@ -116,12 +114,9 @@ class ALSSuite
 
   test("CholeskySolver") {
     val k = 2
-    val ne0 = new NormalEquation(k)
-      .add(Array(1.0f, 2.0f), 4.0)
-      .add(Array(1.0f, 3.0f), 9.0)
-      .add(Array(1.0f, 4.0f), 16.0)
-    val ne1 = new NormalEquation(k)
-      .merge(ne0)
+    val ne0 = new NormalEquation(k).add(Array(1.0f, 2.0f), 4.0)
+      .add(Array(1.0f, 3.0f), 9.0).add(Array(1.0f, 4.0f), 16.0)
+    val ne1 = new NormalEquation(k).merge(ne0)
 
     val chol = new CholeskySolver
     val x0 = chol.solve(ne0, 0.0).map(_.toDouble)
@@ -148,20 +143,16 @@ class ALSSuite
     assert(emptyBlock.dstIds.isEmpty)
     assert(emptyBlock.ratings.isEmpty)
 
-    val builder0 = new RatingBlockBuilder()
-      .add(Rating(0, 1, 2.0f))
+    val builder0 = new RatingBlockBuilder().add(Rating(0, 1, 2.0f))
       .add(Rating(3, 4, 5.0f))
     assert(builder0.size === 2)
-    val builder1 = new RatingBlockBuilder()
-      .add(Rating(6, 7, 8.0f))
+    val builder1 = new RatingBlockBuilder().add(Rating(6, 7, 8.0f))
       .merge(builder0.build())
     assert(builder1.size === 3)
     val block = builder1.build()
-    val ratings = Seq
-      .tabulate(block.size) { i =>
-        (block.srcIds(i), block.dstIds(i), block.ratings(i))
-      }
-      .toSet
+    val ratings = Seq.tabulate(block.size) { i =>
+      (block.srcIds(i), block.dstIds(i), block.ratings(i))
+    }.toSet
     assert(ratings === Set((0, 1, 2.0f), (3, 4, 5.0f), (6, 7, 8.0f)))
   }
 
@@ -169,21 +160,18 @@ class ALSSuite
     val encoder = new LocalIndexEncoder(10)
     val uncompressed = new UncompressedInBlockBuilder[Int](encoder)
       .add(0, Array(1, 0, 2), Array(0, 1, 4), Array(1.0f, 2.0f, 3.0f))
-      .add(1, Array(3, 0), Array(2, 5), Array(4.0f, 5.0f))
-      .build()
+      .add(1, Array(3, 0), Array(2, 5), Array(4.0f, 5.0f)).build()
     assert(uncompressed.length === 5)
-    val records = Seq
-      .tabulate(uncompressed.length) { i =>
-        val dstEncodedIndex = uncompressed.dstEncodedIndices(i)
-        val dstBlockId = encoder.blockId(dstEncodedIndex)
-        val dstLocalIndex = encoder.localIndex(dstEncodedIndex)
-        (
-          uncompressed.srcIds(i),
-          dstBlockId,
-          dstLocalIndex,
-          uncompressed.ratings(i))
-      }
-      .toSet
+    val records = Seq.tabulate(uncompressed.length) { i =>
+      val dstEncodedIndex = uncompressed.dstEncodedIndices(i)
+      val dstBlockId = encoder.blockId(dstEncodedIndex)
+      val dstLocalIndex = encoder.localIndex(dstEncodedIndex)
+      (
+        uncompressed.srcIds(i),
+        dstBlockId,
+        dstLocalIndex,
+        uncompressed.ratings(i))
+    }.toSet
     val expected = Set(
       (1, 0, 0, 1.0f),
       (0, 0, 1, 2.0f),
@@ -325,8 +313,8 @@ class ALSSuite
     val ids = mutable.Set.empty[Int]
     while (ids.size < size) { ids += random.nextInt() }
     val width = b - a
-    ids.toSeq.sorted.map(id =>
-      (id, Array.fill(rank)(a + random.nextFloat() * width)))
+    ids.toSeq.sorted
+      .map(id => (id, Array.fill(rank)(a + random.nextFloat() * width)))
   }
 
   /**
@@ -353,20 +341,13 @@ class ALSSuite
       targetRMSE: Double = 0.05): Unit = {
     val sqlContext = this.sqlContext
     import sqlContext.implicits._
-    val als = new ALS()
-      .setRank(rank)
-      .setRegParam(regParam)
-      .setImplicitPrefs(implicitPrefs)
-      .setNumUserBlocks(numUserBlocks)
-      .setNumItemBlocks(numItemBlocks)
-      .setSeed(0)
+    val als = new ALS().setRank(rank).setRegParam(regParam)
+      .setImplicitPrefs(implicitPrefs).setNumUserBlocks(numUserBlocks)
+      .setNumItemBlocks(numItemBlocks).setSeed(0)
     val alpha = als.getAlpha
     val model = als.fit(training.toDF())
-    val predictions = model
-      .transform(test.toDF())
-      .select("rating", "prediction")
-      .rdd
-      .map {
+    val predictions = model.transform(test.toDF())
+      .select("rating", "prediction").rdd.map {
         case Row(rating: Float, prediction: Float) =>
           (rating.toDouble, prediction.toDouble)
       }
@@ -375,25 +356,21 @@ class ALSSuite
         // TODO: Use a better (rank-based?) evaluation metric for implicit feedback.
         // We limit the ratings and the predictions to interval [0, 1] and compute the weighted RMSE
         // with the confidence scores as weights.
-        val (totalWeight, weightedSumSq) = predictions
-          .map {
-            case (rating, prediction) =>
-              val confidence = 1.0 + alpha * math.abs(rating)
-              val rating01 = math.max(math.min(rating, 1.0), 0.0)
-              val prediction01 = math.max(math.min(prediction, 1.0), 0.0)
-              val err = prediction01 - rating01
-              (confidence, confidence * err * err)
-          }
-          .reduce { case ((c0, e0), (c1, e1)) => (c0 + c1, e0 + e1) }
+        val (totalWeight, weightedSumSq) = predictions.map {
+          case (rating, prediction) =>
+            val confidence = 1.0 + alpha * math.abs(rating)
+            val rating01 = math.max(math.min(rating, 1.0), 0.0)
+            val prediction01 = math.max(math.min(prediction, 1.0), 0.0)
+            val err = prediction01 - rating01
+            (confidence, confidence * err * err)
+        }.reduce { case ((c0, e0), (c1, e1)) => (c0 + c1, e0 + e1) }
         math.sqrt(weightedSumSq / totalWeight)
       } else {
-        val mse = predictions
-          .map {
-            case (rating, prediction) =>
-              val err = rating - prediction
-              err * err
-          }
-          .mean()
+        val mse = predictions.map {
+          case (rating, prediction) =>
+            val err = rating - prediction
+            err * err
+        }.mean()
         math.sqrt(mse)
       }
     logInfo(s"Test RMSE is $rmse.")
@@ -530,22 +507,16 @@ class ALSSuite
       rank = 2,
       noiseStd = 0.01)
 
-    val longRatings = ratings.map(r =>
-      Rating(r.user.toLong, r.item.toLong, r.rating))
-    val (longUserFactors, _) = ALS.train(
-      longRatings,
-      rank = 2,
-      maxIter = 4,
-      seed = 0)
+    val longRatings = ratings
+      .map(r => Rating(r.user.toLong, r.item.toLong, r.rating))
+    val (longUserFactors, _) = ALS
+      .train(longRatings, rank = 2, maxIter = 4, seed = 0)
     assert(longUserFactors.first()._1.getClass === classOf[Long])
 
-    val strRatings = ratings.map(r =>
-      Rating(r.user.toString, r.item.toString, r.rating))
-    val (strUserFactors, _) = ALS.train(
-      strRatings,
-      rank = 2,
-      maxIter = 4,
-      seed = 0)
+    val strRatings = ratings
+      .map(r => Rating(r.user.toString, r.item.toString, r.rating))
+    val (strUserFactors, _) = ALS
+      .train(strRatings, rank = 2, maxIter = 4, seed = 0)
     assert(strUserFactors.first()._1.getClass === classOf[String])
   }
 
@@ -555,12 +526,8 @@ class ALSSuite
       numItems = 40,
       rank = 2,
       noiseStd = 0.01)
-    val (userFactors, itemFactors) = ALS.train(
-      ratings,
-      rank = 2,
-      maxIter = 4,
-      nonnegative = true,
-      seed = 0)
+    val (userFactors, itemFactors) = ALS
+      .train(ratings, rank = 2, maxIter = 4, nonnegative = true, seed = 0)
     def isNonnegative(factors: RDD[(Int, Array[Float])]): Boolean = {
       factors.values.map { _.forall(_ >= 0.0) }.reduce(_ && _)
     }
@@ -599,18 +566,16 @@ class ALSSuite
         userFactors.partitioner.isDefined,
         s"$tpe factors should have partitioner.")
       val part = userFactors.partitioner.get
-      userFactors
-        .mapPartitionsWithIndex { (idx, items) =>
-          items.foreach {
-            case (id, _) =>
-              if (part.getPartition(id) != idx) {
-                throw new SparkException(
-                  s"$tpe with ID $id should not be in partition $idx.")
-              }
-          }
-          Iterator.empty
+      userFactors.mapPartitionsWithIndex { (idx, items) =>
+        items.foreach {
+          case (id, _) =>
+            if (part.getPartition(id) != idx) {
+              throw new SparkException(
+                s"$tpe with ID $id should not be in partition $idx.")
+            }
         }
-        .count()
+        Iterator.empty
+      }.count()
     }
   }
 
@@ -661,10 +626,9 @@ class ALSSuite
     }
     assert(model.rank === model2.rank)
     def getFactors(df: DataFrame): Set[(Int, Array[Float])] = {
-      df.select("id", "features")
-        .collect()
-        .map { case r => (r.getInt(0), r.getAs[Array[Float]](1)) }
-        .toSet
+      df.select("id", "features").collect().map {
+        case r => (r.getInt(0), r.getAs[Array[Float]](1))
+      }.toSet
     }
     assert(getFactors(model.userFactors) === getFactors(model2.userFactors))
     assert(getFactors(model.itemFactors) === getFactors(model2.itemFactors))

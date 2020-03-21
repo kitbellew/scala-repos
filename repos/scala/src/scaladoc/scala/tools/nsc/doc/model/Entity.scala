@@ -206,8 +206,8 @@ trait MemberEntity extends Entity {
 object MemberEntity {
   // Oh contravariance, contravariance, wherefore art thou contravariance?
   // Note: the above works for both the commonly misunderstood meaning of the line and the real one.
-  implicit lazy val MemberEntityOrdering: Ordering[MemberEntity] =
-    Entity.EntityOrdering on (x => x)
+  implicit lazy val MemberEntityOrdering: Ordering[MemberEntity] = Entity
+    .EntityOrdering on (x => x)
 }
 
 /** An entity that is parameterized by types */
@@ -552,7 +552,8 @@ trait TypeClassConstraint
 
   /** toString for debugging */
   override def toString =
-    typeParamName + " is a class of type " + typeClassEntity.qualifiedName + " (" +
+    typeParamName + " is a class of type " + typeClassEntity
+      .qualifiedName + " (" +
       typeParamName + ": " + typeClassEntity.name + ")"
 }
 
@@ -581,7 +582,8 @@ trait EqualTypeParamConstraint extends TypeParamConstraint {
 
   /** toString for debugging */
   override def toString =
-    typeParamName + " is " + rhs.name + " (" + typeParamName + " =:= " + rhs.name + ")"
+    typeParamName + " is " + rhs.name + " (" + typeParamName + " =:= " + rhs
+      .name + ")"
 }
 
 trait BoundedTypeParamConstraint extends TypeParamConstraint {
@@ -594,8 +596,10 @@ trait BoundedTypeParamConstraint extends TypeParamConstraint {
 
   /** toString for debugging */
   override def toString =
-    typeParamName + " is a superclass of " + lowerBound.name + " and a subclass of " +
-      upperBound.name + " (" + typeParamName + " >: " + lowerBound.name + " <: " + upperBound.name + ")"
+    typeParamName + " is a superclass of " + lowerBound
+      .name + " and a subclass of " +
+      upperBound.name + " (" + typeParamName + " >: " + lowerBound
+      .name + " <: " + upperBound.name + ")"
 }
 
 trait LowerBoundedTypeParamConstraint extends TypeParamConstraint {
@@ -605,7 +609,8 @@ trait LowerBoundedTypeParamConstraint extends TypeParamConstraint {
 
   /** toString for debugging */
   override def toString =
-    typeParamName + " is a superclass of " + lowerBound.name + " (" + typeParamName + " >: " +
+    typeParamName + " is a superclass of " + lowerBound
+      .name + " (" + typeParamName + " >: " +
       lowerBound.name + ")"
 }
 
@@ -616,6 +621,7 @@ trait UpperBoundedTypeParamConstraint extends TypeParamConstraint {
 
   /** toString for debugging */
   override def toString =
-    typeParamName + " is a subclass of " + upperBound.name + " (" + typeParamName + " <: " +
+    typeParamName + " is a subclass of " + upperBound
+      .name + " (" + typeParamName + " <: " +
       upperBound.name + ")"
 }

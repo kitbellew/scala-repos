@@ -58,10 +58,8 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
     if (user.count.rated == 0) fuccess(none)
     else {
       (user.count.rated >= maxGames) ??
-        pimpQB($query(gameQuery(user)))
-          .sort(Query.sortCreated)
-          .skip(maxGames - 1)
-          .one[Game]
+        pimpQB($query(gameQuery(user))).sort(Query.sortCreated)
+          .skip(maxGames - 1).one[Game]
     } orElse
       pimpQB($query(gameQuery(user))).sort(Query.sortChronological).one[Game]
 
@@ -82,11 +80,9 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
           } map (_.toOption)
         }
       val query = $query(
-        gameQuery(user) ++ Json.obj(
-          Game.BSONFields.createdAt -> $gte($date(from))))
-      pimpQB(query)
-        .sort(Query.sortChronological)
-        .cursor[Game]()
+        gameQuery(user) ++ Json
+          .obj(Game.BSONFields.createdAt -> $gte($date(from))))
+      pimpQB(query).sort(Query.sortChronological).cursor[Game]()
         .enumerate(maxGames, stopOnError = true) &>
         Enumeratee.grouped(Iteratee takeUpTo 4) &>
         Enumeratee.mapM[Seq[Game]].apply[Seq[Entry]] { games =>

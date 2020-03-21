@@ -260,9 +260,7 @@ object Commands {
   )
 
   def doMatch(cmd: String, args: List[Array[Byte]]) =
-    commandMap
-      .get(cmd.toUpperCase)
-      .map { _(args) }
+    commandMap.get(cmd.toUpperCase).map { _(args) }
       .getOrElse(throw ClientError("Unsupported command: " + cmd))
 
   def trimList(list: Seq[Array[Byte]], count: Int, from: String = "") = {

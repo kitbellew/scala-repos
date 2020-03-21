@@ -100,12 +100,8 @@ object Lang {
       script: String = "",
       variant: String = ""): Lang =
     Lang(
-      new Locale.Builder()
-        .setLanguage(language)
-        .setRegion(country)
-        .setScript(script)
-        .setVariant(variant)
-        .build())
+      new Locale.Builder().setLanguage(language).setRegion(country)
+        .setScript(script).setVariant(variant).build())
 
   /**
     * Create a Lang value from a code (such as fr or en-US) or none
@@ -169,8 +165,8 @@ class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
 
   val availables: Seq[Lang] = {
     val langs = configuration.getString("application.langs") map { langsStr =>
-      Logger.warn(
-        "application.langs is deprecated, use play.i18n.langs instead")
+      Logger
+        .warn("application.langs is deprecated, use play.i18n.langs instead")
       langsStr.split(",").map(_.trim).toSeq
     } getOrElse { config.get[Seq[String]]("play.i18n.langs") }
 
@@ -187,11 +183,9 @@ class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
   }
 
   def preferred(candidates: Seq[Lang]): Lang =
-    candidates
-      .collectFirst(Function.unlift { lang =>
-        availables.find(_.satisfies(lang))
-      })
-      .getOrElse(availables.headOption.getOrElse(Lang.defaultLang))
+    candidates.collectFirst(Function.unlift { lang =>
+      availables.find(_.satisfies(lang))
+    }).getOrElse(availables.headOption.getOrElse(Lang.defaultLang))
 }
 
 /**
@@ -522,11 +516,10 @@ class DefaultMessagesApi @Inject() (
     Messages(langs.preferred(candidates), this)
 
   def preferred(request: RequestHeader) = {
-    val maybeLangFromCookie = request.cookies
-      .get(langCookieName)
+    val maybeLangFromCookie = request.cookies.get(langCookieName)
       .flatMap(c => Lang.get(c.value))
-    val lang = langs.preferred(
-      maybeLangFromCookie.toSeq ++ request.acceptLanguages)
+    val lang = langs
+      .preferred(maybeLangFromCookie.toSeq ++ request.acceptLanguages)
     Messages(lang, this)
   }
 
@@ -554,12 +547,10 @@ class DefaultMessagesApi @Inject() (
   }
 
   def apply(keys: Seq[String], args: Any*)(implicit lang: Lang): String = {
-    keys
-      .foldLeft[Option[String]](None) {
-        case (None, key) => translate(key, args)
-        case (acc, _)    => acc
-      }
-      .getOrElse(noMatch(keys.last, args))
+    keys.foldLeft[Option[String]](None) {
+      case (None, key) => translate(key, args)
+      case (acc, _)    => acc
+    }.getOrElse(noMatch(keys.last, args))
   }
 
   protected def noMatch(key: String, args: Seq[Any])(implicit lang: Lang) = key
@@ -567,8 +558,9 @@ class DefaultMessagesApi @Inject() (
   def translate(key: String, args: Seq[Any])(implicit
       lang: Lang): Option[String] = {
     val codesToTry = Seq(lang.code, lang.language, "default", "default.play")
-    val pattern: Option[String] = codesToTry.foldLeft[Option[String]](None)(
-      (res, lang) => res.orElse(messages.get(lang).flatMap(_.get(key))))
+    val pattern: Option[String] = codesToTry
+      .foldLeft[Option[String]](None)((res, lang) =>
+        res.orElse(messages.get(lang).flatMap(_.get(key))))
     pattern.map(pattern =>
       new MessageFormat(pattern, lang.toLocale)
         .format(args.map(_.asInstanceOf[java.lang.Object]).toArray))
@@ -591,26 +583,20 @@ class DefaultMessagesApi @Inject() (
   protected def loadMessages(file: String): Map[String, String] = {
     import scala.collection.JavaConverters._
 
-    environment.classLoader
-      .getResources(joinPaths(messagesPrefix, file))
-      .asScala
-      .toList
+    environment.classLoader.getResources(joinPaths(messagesPrefix, file))
+      .asScala.toList
       .filterNot(url => Resources.isDirectory(environment.classLoader, url))
-      .reverse
-      .map { messageFile =>
+      .reverse.map { messageFile =>
         Messages
           .parse(Messages.UrlMessageSource(messageFile), messageFile.toString)
           .fold(e => throw e, identity)
-      }
-      .foldLeft(Map.empty[String, String]) { _ ++ _ }
+      }.foldLeft(Map.empty[String, String]) { _ ++ _ }
   }
 
   protected def loadAllMessages: Map[String, Map[String, String]] = {
-    langs.availables
-      .map(_.code)
-      .map { lang => (lang, loadMessages("messages." + lang)) }
-      .toMap
-      .+("default" -> loadMessages("messages"))
+    langs.availables.map(_.code).map { lang =>
+      (lang, loadMessages("messages." + lang))
+    }.toMap.+("default" -> loadMessages("messages"))
       .+("default.play" -> loadMessages("messages.default"))
   }
 
@@ -620,8 +606,8 @@ class DefaultMessagesApi @Inject() (
 
   lazy val langCookieSecure = config.get[Boolean]("play.i18n.langCookieSecure")
 
-  lazy val langCookieHttpOnly = config.get[Boolean](
-    "play.i18n.langCookieHttpOnly")
+  lazy val langCookieHttpOnly = config
+    .get[Boolean]("play.i18n.langCookieHttpOnly")
 
 }
 

@@ -136,8 +136,8 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
     */
   def containsBlock(blockId: BlockId): Boolean = {
     blockId match {
-      case RDDBlockId(rddId, _) =>
-        _rddBlocks.get(rddId).exists(_.contains(blockId))
+      case RDDBlockId(rddId, _) => _rddBlocks.get(rddId)
+          .exists(_.contains(blockId))
       case _ => _nonRddBlocks.contains(blockId)
     }
   }
@@ -209,11 +209,9 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
 
     // Compute new info from old info
     val (oldMem, oldDisk) = blockId match {
-      case RDDBlockId(rddId, _) =>
-        _rddStorageInfo
-          .get(rddId)
-          .map { case (mem, disk, _) => (mem, disk) }
-          .getOrElse((0L, 0L))
+      case RDDBlockId(rddId, _) => _rddStorageInfo.get(rddId).map {
+          case (mem, disk, _) => (mem, disk)
+        }.getOrElse((0L, 0L))
       case _ => _nonRddStorageInfo
     }
     val newMem = math.max(oldMem + changeInMem, 0L)
@@ -259,9 +257,7 @@ private[spark] object StorageUtils extends Logging {
     rddInfos.foreach { rddInfo =>
       val rddId = rddInfo.id
       // Assume all blocks belonging to the same RDD have the same storage level
-      val storageLevel = statuses
-        .flatMap(_.rddStorageLevel(rddId))
-        .headOption
+      val storageLevel = statuses.flatMap(_.rddStorageLevel(rddId)).headOption
         .getOrElse(StorageLevel.NONE)
       val numCachedPartitions = statuses.map(_.numRddBlocksById(rddId)).sum
       val memSize = statuses.map(_.memUsedByRdd(rddId)).sum

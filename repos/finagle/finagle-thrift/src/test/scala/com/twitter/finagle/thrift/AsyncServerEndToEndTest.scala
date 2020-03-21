@@ -80,20 +80,17 @@ class AsyncServerEndToEndTest extends FunSuite {
 
     val addr = new LocalAddress("thrift-async")
     val serverChannel = serverBootstrap.bind(addr)
-    clientBootstrap
-      .connect(addr)
-      .addListener(new ChannelFutureListener {
-        override def operationComplete(f: ChannelFuture): Unit =
-          if (f.isSuccess) {
-            val ch = f.getChannel
-            val thriftCall =
-              new ThriftCall[Silly.bleep_args, Silly.bleep_result](
-                "bleep",
-                new Silly.bleep_args("heyhey"),
-                classOf[Silly.bleep_result])
-            Channels.write(ch, thriftCall)
-          }
-      })
+    clientBootstrap.connect(addr).addListener(new ChannelFutureListener {
+      override def operationComplete(f: ChannelFuture): Unit =
+        if (f.isSuccess) {
+          val ch = f.getChannel
+          val thriftCall = new ThriftCall[Silly.bleep_args, Silly.bleep_result](
+            "bleep",
+            new Silly.bleep_args("heyhey"),
+            classOf[Silly.bleep_result])
+          Channels.write(ch, thriftCall)
+        }
+    })
 
     val result = Try(Await.result(callResults, 1.second))
     assert(result.isReturn == true)

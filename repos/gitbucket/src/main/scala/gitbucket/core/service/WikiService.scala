@@ -50,15 +50,13 @@ object WikiService {
 
   def wikiHttpUrl(repositoryInfo: RepositoryInfo)(implicit
       context: Context): String =
-    RepositoryService.httpUrl(
-      repositoryInfo.owner,
-      repositoryInfo.name + ".wiki")
+    RepositoryService
+      .httpUrl(repositoryInfo.owner, repositoryInfo.name + ".wiki")
 
   def wikiSshUrl(repositoryInfo: RepositoryInfo)(implicit
       context: Context): Option[String] =
-    RepositoryService.sshUrl(
-      repositoryInfo.owner,
-      repositoryInfo.name + ".wiki")
+    RepositoryService
+      .sshUrl(repositoryInfo.owner, repositoryInfo.name + ".wiki")
 
 }
 
@@ -95,14 +93,12 @@ trait WikiService {
       pageName: String): Option[WikiPageInfo] = {
     using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) { git =>
       if (!JGitUtil.isEmpty(git)) {
-        JGitUtil
-          .getFileList(git, "master", ".")
-          .find(_.name == pageName + ".md")
-          .map { file =>
+        JGitUtil.getFileList(git, "master", ".")
+          .find(_.name == pageName + ".md").map { file =>
             WikiPageInfo(
               file.name,
-              StringUtil.convertFromByteArray(
-                git.getRepository.open(file.id).getBytes),
+              StringUtil
+                .convertFromByteArray(git.getRepository.open(file.id).getBytes),
               file.author,
               file.time,
               file.commitId)
@@ -124,9 +120,7 @@ trait WikiService {
         val parentPath = if (index < 0) "." else path.substring(0, index)
         val fileName = if (index < 0) path else path.substring(index + 1)
 
-        JGitUtil
-          .getFileList(git, "master", parentPath)
-          .find(_.name == fileName)
+        JGitUtil.getFileList(git, "master", parentPath).find(_.name == fileName)
           .map { file => git.getRepository.open(file.id).getBytes }
       } else None
     }
@@ -136,11 +130,8 @@ trait WikiService {
     */
   def getWikiPageList(owner: String, repository: String): List[String] = {
     using(Git.open(Directory.getWikiRepositoryDir(owner, repository))) { git =>
-      JGitUtil
-        .getFileList(git, "master", ".")
-        .filter(_.name.endsWith(".md"))
-        .filterNot(_.name.startsWith("_"))
-        .map(_.name.stripSuffix(".md"))
+      JGitUtil.getFileList(git, "master", ".").filter(_.name.endsWith(".md"))
+        .filterNot(_.name.startsWith("_")).map(_.name.stripSuffix(".md"))
         .sortBy(x => x)
     }
   }
@@ -164,19 +155,14 @@ trait WikiService {
           git =>
             val reader = git.getRepository.newObjectReader
             val oldTreeIter = new CanonicalTreeParser
-            oldTreeIter.reset(
-              reader,
-              git.getRepository.resolve(from + "^{tree}"))
+            oldTreeIter
+              .reset(reader, git.getRepository.resolve(from + "^{tree}"))
 
             val newTreeIter = new CanonicalTreeParser
             newTreeIter.reset(reader, git.getRepository.resolve(to + "^{tree}"))
 
-            val diffs = git.diff
-              .setNewTree(oldTreeIter)
-              .setOldTree(newTreeIter)
-              .call
-              .asScala
-              .filter { diff =>
+            val diffs = git.diff.setNewTree(oldTreeIter).setOldTree(newTreeIter)
+              .call.asScala.filter { diff =>
                 pageName match {
                   case Some(x) => diff.getNewPath == x + ".md"
                   case None    => true
@@ -197,48 +183,50 @@ trait WikiService {
             }
             val revertInfo =
               (
-                p.getFiles.asScala.map {
-                  fh =>
-                    fh.getChangeType match {
-                      case DiffEntry.ChangeType.MODIFY => {
-                        val source = getWikiPage(
-                          owner,
-                          repository,
-                          fh.getNewPath.stripSuffix(".md"))
-                          .map(_.content)
-                          .getOrElse("")
-                        val applied = PatchUtil.apply(source, patch, fh)
-                        if (applied != null) {
-                          Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                        } else Nil
+                p.getFiles.asScala
+                  .map {
+                    fh =>
+                      fh.getChangeType match {
+                        case DiffEntry.ChangeType.MODIFY => {
+                          val source = getWikiPage(
+                            owner,
+                            repository,
+                            fh.getNewPath.stripSuffix(".md")).map(_.content)
+                            .getOrElse("")
+                          val applied = PatchUtil.apply(source, patch, fh)
+                          if (applied != null) {
+                            Seq(RevertInfo("ADD", fh.getNewPath, applied))
+                          } else Nil
+                        }
+                        case DiffEntry.ChangeType.ADD => {
+                          val applied = PatchUtil.apply("", patch, fh)
+                          if (applied != null) {
+                            Seq(RevertInfo("ADD", fh.getNewPath, applied))
+                          } else Nil
+                        }
+                        case DiffEntry.ChangeType.DELETE => {
+                          Seq(RevertInfo("DELETE", fh.getNewPath, ""))
+                        }
+                        case DiffEntry.ChangeType.RENAME => {
+                          val applied = PatchUtil.apply("", patch, fh)
+                          if (applied != null) {
+                            Seq(
+                              RevertInfo("DELETE", fh.getOldPath, ""),
+                              RevertInfo("ADD", fh.getNewPath, applied))
+                          } else {
+                            Seq(RevertInfo("DELETE", fh.getOldPath, ""))
+                          }
+                        }
+                        case _ => Nil
                       }
-                      case DiffEntry.ChangeType.ADD => {
-                        val applied = PatchUtil.apply("", patch, fh)
-                        if (applied != null) {
-                          Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                        } else Nil
-                      }
-                      case DiffEntry.ChangeType.DELETE => {
-                        Seq(RevertInfo("DELETE", fh.getNewPath, ""))
-                      }
-                      case DiffEntry.ChangeType.RENAME => {
-                        val applied = PatchUtil.apply("", patch, fh)
-                        if (applied != null) {
-                          Seq(
-                            RevertInfo("DELETE", fh.getOldPath, ""),
-                            RevertInfo("ADD", fh.getNewPath, applied))
-                        } else { Seq(RevertInfo("DELETE", fh.getOldPath, "")) }
-                      }
-                      case _ => Nil
-                    }
-                }
-              ).flatten
+                  }
+                ).flatten
 
             if (revertInfo.nonEmpty) {
               val builder = DirCache.newInCore.builder()
               val inserter = git.getRepository.newObjectInserter()
-              val headId = git.getRepository.resolve(
-                Constants.HEAD + "^{commit}")
+              val headId = git.getRepository
+                .resolve(Constants.HEAD + "^{commit}")
 
               JGitUtil.processTree(git, headId) { (path, tree) =>
                 if (revertInfo.find(x => x.filePath == path).isEmpty) {
@@ -318,8 +306,7 @@ trait WikiService {
                 created = false
                 updated = JGitUtil
                   .getContentFromId(git, tree.getEntryObjectId, true)
-                  .map(new String(_, "UTF-8") != content)
-                  .getOrElse(false)
+                  .map(new String(_, "UTF-8") != content).getOrElse(false)
               }
             }
           }

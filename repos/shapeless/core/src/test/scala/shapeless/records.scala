@@ -936,9 +936,8 @@ class RecordTests {
     {
       val f = r.fields
       assertTypedEquals(
-        (
-          'i.narrow -> 23
-        ) :: ('s.narrow -> "foo") :: ('b.narrow -> true) :: HNil,
+        ('i.narrow -> 23) :: ('s.narrow -> "foo") :: ('b
+          .narrow -> true) :: HNil,
         f)
     }
 

@@ -298,10 +298,9 @@ class UseAsScalaTypesTest {
   @Test
   def should_support_anonymous_types(): Unit = {
     js.use(new {
-        @JSExport
-        def m(a: Int, b: String): js.Object = ???
-      })
-      .as[JSBasic]
+      @JSExport
+      def m(a: Int, b: String): js.Object = ???
+    }).as[JSBasic]
   }
 
   @Test

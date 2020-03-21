@@ -36,9 +36,7 @@ object StatusStreamer {
   implicit val batcher = Batcher.ofHours(1)
 
   def tokenize(text: String): TraversableOnce[String] =
-    text.toLowerCase
-      .replaceAll("[^a-zA-Z0-9\\s]", "")
-      .split("\\s+")
+    text.toLowerCase.replaceAll("[^a-zA-Z0-9\\s]", "").split("\\s+")
 
   /**
     * The actual Summingbird job. Notice that the execution platform
@@ -49,8 +47,7 @@ object StatusStreamer {
   def wordCount[P <: Platform[P]](
       source: Producer[P, Status],
       store: P#Store[String, Long]) =
-    source
-      .filter(_.getText != null)
-      .flatMap { tweet: Status => tokenize(tweet.getText).map(_ -> 1L) }
-      .sumByKey(store)
+    source.filter(_.getText != null).flatMap { tweet: Status =>
+      tokenize(tweet.getText).map(_ -> 1L)
+    }.sumByKey(store)
 }

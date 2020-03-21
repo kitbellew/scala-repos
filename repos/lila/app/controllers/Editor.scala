@@ -20,12 +20,12 @@ object Editor extends LilaController {
 
   def load(urlFen: String) =
     Open { implicit ctx =>
-      val fenStr =
-        Some(urlFen.trim.replace("_", " ")).filter(_.nonEmpty) orElse get("fen")
+      val fenStr = Some(urlFen.trim.replace("_", " "))
+        .filter(_.nonEmpty) orElse get("fen")
       fuccess {
-        val decodedFen = fenStr
-          .map { java.net.URLDecoder.decode(_, "UTF-8").trim }
-          .filter(_.nonEmpty)
+        val decodedFen = fenStr.map {
+          java.net.URLDecoder.decode(_, "UTF-8").trim
+        }.filter(_.nonEmpty)
         val situation =
           (decodedFen flatMap Forsyth.<<< map (_.situation)) | Situation(
             chess.variant.Standard)
@@ -44,8 +44,8 @@ object Editor extends LilaController {
         Redirect {
           if (game.playable) routes.Round.watcher(game.id, "white")
           else
-            routes.Editor.load(
-              get("fen") | (chess.format.Forsyth >> game.toChess))
+            routes.Editor
+              .load(get("fen") | (chess.format.Forsyth >> game.toChess))
         }
       }
     }

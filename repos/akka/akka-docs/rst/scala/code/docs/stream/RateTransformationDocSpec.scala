@@ -23,21 +23,17 @@ class RateTransformationDocSpec extends AkkaSpec {
 
   "conflate should summarize" in {
     //#conflate-summarize
-    val statsFlow = Flow[Double]
-      .conflateWithSeed(Seq(_))(_ :+ _)
-      .map { s =>
-        val μ = s.sum / s.size
-        val se = s.map(x => pow(x - μ, 2))
-        val σ = sqrt(se.sum / se.size)
-        (σ, μ, s.size)
-      }
+    val statsFlow = Flow[Double].conflateWithSeed(Seq(_))(_ :+ _).map { s =>
+      val μ = s.sum / s.size
+      val se = s.map(x => pow(x - μ, 2))
+      val σ = sqrt(se.sum / se.size)
+      (σ, μ, s.size)
+    }
     //#conflate-summarize
 
     val fut = Source
       .fromIterator(() => Iterator.continually(Random.nextGaussian))
-      .via(statsFlow)
-      .grouped(10)
-      .runWith(Sink.head)
+      .via(statsFlow).grouped(10).runWith(Sink.head)
 
     Await.result(fut, 100.millis)
   }
@@ -45,17 +41,13 @@ class RateTransformationDocSpec extends AkkaSpec {
   "conflate should sample" in {
     //#conflate-sample
     val p = 0.01
-    val sampleFlow = Flow[Double]
-      .conflateWithSeed(Seq(_)) {
-        case (acc, elem) if Random.nextDouble < p => acc :+ elem
-        case (acc, _)                             => acc
-      }
-      .mapConcat(identity)
+    val sampleFlow = Flow[Double].conflateWithSeed(Seq(_)) {
+      case (acc, elem) if Random.nextDouble < p => acc :+ elem
+      case (acc, _)                             => acc
+    }.mapConcat(identity)
     //#conflate-sample
 
-    val fut = Source(1 to 1000)
-      .map(_.toDouble)
-      .via(sampleFlow)
+    val fut = Source(1 to 1000).map(_.toDouble).via(sampleFlow)
       .runWith(Sink.fold(Seq.empty[Double])(_ :+ _))
 
     val count = Await.result(fut, 1000.millis).size
@@ -63,16 +55,11 @@ class RateTransformationDocSpec extends AkkaSpec {
 
   "expand should repeat last" in {
     //#expand-last
-    val lastFlow = Flow[Double]
-      .expand(Iterator.continually(_))
+    val lastFlow = Flow[Double].expand(Iterator.continually(_))
     //#expand-last
 
-    val (probe, fut) = TestSource
-      .probe[Double]
-      .via(lastFlow)
-      .grouped(10)
-      .toMat(Sink.head)(Keep.both)
-      .run()
+    val (probe, fut) = TestSource.probe[Double].via(lastFlow).grouped(10)
+      .toMat(Sink.head)(Keep.both).run()
 
     probe.sendNext(1.0)
     val expanded = Await.result(fut, 100.millis)
@@ -82,18 +69,15 @@ class RateTransformationDocSpec extends AkkaSpec {
 
   "expand should track drift" in {
     //#expand-drift
-    val driftFlow = Flow[Double]
-      .expand(i => Iterator.from(0).map(i -> _))
+    val driftFlow = Flow[Double].expand(i => Iterator.from(0).map(i -> _))
     //#expand-drift
     val latch = TestLatch(2)
-    val realDriftFlow = Flow[Double]
-      .expand(d => { latch.countDown(); Iterator.from(0).map(d -> _) })
+    val realDriftFlow = Flow[Double].expand(d => {
+      latch.countDown(); Iterator.from(0).map(d -> _)
+    })
 
-    val (pub, sub) = TestSource
-      .probe[Double]
-      .via(realDriftFlow)
-      .toMat(TestSink.probe[(Double, Int)])(Keep.both)
-      .run()
+    val (pub, sub) = TestSource.probe[Double].via(realDriftFlow)
+      .toMat(TestSink.probe[(Double, Int)])(Keep.both).run()
 
     sub.request(1)
     pub.sendNext(1.0)

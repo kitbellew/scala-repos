@@ -71,11 +71,8 @@ object DbProviders {
       def deleteAllTables {
         DB.use(DefaultConnectionIdentifier) { conn =>
           val md = conn.getMetaData
-          val rs = md.getTables(
-            null,
-            Schemifier.getDefaultSchemaName(conn),
-            null,
-            null)
+          val rs = md
+            .getTables(null, Schemifier.getDefaultSchemaName(conn), null, null)
           var toDelete: List[String] = Nil
           while (rs.next) {
             val tableName = rs.getString(3)
@@ -124,10 +121,8 @@ object DbProviders {
     def vendor =
       new Vendor("org.postgresql.Driver") {
         def mkConn =
-          DriverManager.getConnection(
-            "jdbc:postgresql://localhost/lift",
-            "lift",
-            "lift")
+          DriverManager
+            .getConnection("jdbc:postgresql://localhost/lift", "lift", "lift")
       }
     def propName: String = "psql_local"
   }
@@ -185,8 +180,8 @@ object DbProviders {
     def vendor =
       new Vendor("oracle.jdbc.OracleDriver") {
         def mkConn =
-          DriverManager.getConnection(
-            "jdbc:oracle:thin:lift/lift@//localhost:1521/lift")
+          DriverManager
+            .getConnection("jdbc:oracle:thin:lift/lift@//localhost:1521/lift")
       }
     def propName: String = "oracle_local"
   }

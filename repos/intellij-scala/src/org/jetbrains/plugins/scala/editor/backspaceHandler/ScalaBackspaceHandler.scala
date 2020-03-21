@@ -39,58 +39,61 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
                 element.getNode.getElementType,
                 tagToDelete.getNode.getElementType)) {
             val textLength =
-              if (tagToDelete.getNode.getElementType != ScalaDocTokenType.DOC_BOLD_TAG)
-                tagToDelete.getTextLength
+              if (tagToDelete.getNode.getElementType != ScalaDocTokenType
+                    .DOC_BOLD_TAG) tagToDelete.getTextLength
               else 1
             document.deleteString(
               tagToDelete.getTextOffset,
               tagToDelete.getTextOffset + textLength)
           }
         } else {
-          document.deleteString(
-            element.getTextOffset,
-            element.getTextOffset + 2)
+          document
+            .deleteString(element.getTextOffset, element.getTextOffset + 2)
           editor.getCaretModel.moveCaretRelatively(1, 0, false, false, false)
         }
 
-        PsiDocumentManager
-          .getInstance(file.getProject)
+        PsiDocumentManager.getInstance(file.getProject)
           .commitDocument(editor.getDocument)
       }
-    } else if (element.getNode.getElementType == ScalaXmlTokenTypes.XML_NAME && element.getParent != null && element.getParent
+    } else if (element.getNode.getElementType == ScalaXmlTokenTypes
+                 .XML_NAME && element.getParent != null && element.getParent
                  .isInstanceOf[ScXmlStartTag]) {
       val openingTag = element.getParent.asInstanceOf[ScXmlStartTag]
       val closingTag = openingTag.getClosingTag
 
-      if (closingTag != null && closingTag.getTextLength > 3 && closingTag.getText
-            .substring(
-              2,
-              closingTag.getTextLength - 1) == openingTag.getTagName) {
+      if (closingTag != null && closingTag.getTextLength > 3 && closingTag
+            .getText.substring(2, closingTag.getTextLength - 1) == openingTag
+            .getTagName) {
         extensions.inWriteAction {
-          val offsetInName =
-            editor.getCaretModel.getOffset - element.getTextOffset + 1
+          val offsetInName = editor.getCaretModel.getOffset - element
+            .getTextOffset + 1
           editor.getDocument.deleteString(
             closingTag.getTextOffset + offsetInName,
             closingTag.getTextOffset + offsetInName + 1)
-          PsiDocumentManager
-            .getInstance(file.getProject)
+          PsiDocumentManager.getInstance(file.getProject)
             .commitDocument(editor.getDocument)
         }
       }
-    } else if (element.getNode.getElementType == ScalaTokenTypes.tMULTILINE_STRING && offset - element.getTextOffset == 3) {
+    } else if (element.getNode.getElementType == ScalaTokenTypes
+                 .tMULTILINE_STRING && offset - element.getTextOffset == 3) {
       correctMultilineString(element.getTextOffset + element.getTextLength - 3)
-    } else if (element.getNode.getElementType == ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_START_DELIMITER && element.getNextSibling != null &&
-               element.getNextSibling.getNode.getElementType == ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_END_DELIMITER) {
+    } else if (element.getNode.getElementType == ScalaXmlTokenTypes
+                 .XML_ATTRIBUTE_VALUE_START_DELIMITER && element
+                 .getNextSibling != null &&
+               element.getNextSibling.getNode
+                 .getElementType == ScalaXmlTokenTypes
+                 .XML_ATTRIBUTE_VALUE_END_DELIMITER) {
       extensions.inWriteAction {
         editor.getDocument
           .deleteString(element.getTextOffset + 1, element.getTextOffset + 2)
-        PsiDocumentManager
-          .getInstance(file.getProject)
+        PsiDocumentManager.getInstance(file.getProject)
           .commitDocument(editor.getDocument)
       }
     } else if (offset - element.getTextOffset == 3 &&
-               element.getNode.getElementType == ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING &&
-               element.getParent.getLastChild.getNode.getElementType == ScalaTokenTypes.tINTERPOLATED_STRING_END &&
+               element.getNode.getElementType == ScalaTokenTypes
+                 .tINTERPOLATED_MULTILINE_STRING &&
+               element.getParent.getLastChild.getNode
+                 .getElementType == ScalaTokenTypes.tINTERPOLATED_STRING_END &&
                element.getPrevSibling != null &&
                isMultilineInterpolatedStringPrefix(
                  element.getPrevSibling.getNode.getElementType)) {
@@ -110,18 +113,17 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
         editor.getDocument
           .deleteString(closingQuotesOffset, closingQuotesOffset + 3)
 //        editor.getCaretModel.moveCaretRelatively(-1, 0, false, false, false) //http://youtrack.jetbrains.com/issue/SCL-6490
-        PsiDocumentManager
-          .getInstance(file.getProject)
+        PsiDocumentManager.getInstance(file.getProject)
           .commitDocument(editor.getDocument)
       }
     }
 
     def needCorrecrWiki(element: PsiElement) =
       (element.getNode.getElementType.isInstanceOf[ScaladocSyntaxElementType]
-        || element.getText == "{{{") && (
-        element.getParent.getLastChild != element ||
-          element.getText == "'''" && element.getPrevSibling != null && element.getPrevSibling.getText == "'"
-      )
+        || element.getText == "{{{") && (element.getParent
+        .getLastChild != element ||
+        element.getText == "'''" && element.getPrevSibling != null && element
+          .getPrevSibling.getText == "'")
   }
 
   /*
@@ -133,15 +135,14 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
     val document = editor.getDocument
     val offset = editor.getCaretModel.getOffset
 
-    if (!CodeInsightSettings.getInstance.AUTOINSERT_PAIR_BRACKET || offset >= document.getTextLength)
+    if (!CodeInsightSettings.getInstance
+          .AUTOINSERT_PAIR_BRACKET || offset >= document.getTextLength)
       return false
 
     val c1 = document.getImmutableCharSequence.charAt(offset)
 
     def hasLeft: Option[Boolean] = {
-      val iterator = editor
-        .asInstanceOf[EditorEx]
-        .getHighlighter
+      val iterator = editor.asInstanceOf[EditorEx].getHighlighter
         .createIterator(offset)
 
       val fileType = file.getFileType
@@ -161,9 +162,9 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
         if (matcher.isRBraceToken(iterator, txt, fileType))
           stack push iterator.getTokenType
         else if (matcher.isLBraceToken(iterator, txt, fileType)) {
-          if (stack.isEmpty || !matcher.isPairBraces(
-                iterator.getTokenType,
-                stack.pop())) return Some(false)
+          if (stack.isEmpty || !matcher
+                .isPairBraces(iterator.getTokenType, stack.pop()))
+            return Some(false)
         }
 
         iterator.retreat()

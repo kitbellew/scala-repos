@@ -23,15 +23,12 @@ class OffsetResponse(private val underlying: kafka.api.OffsetResponse) {
   def hasError = underlying.hasError
 
   def errorCode(topic: String, partition: Int) =
-    underlying
-      .partitionErrorAndOffsets(TopicAndPartition(topic, partition))
+    underlying.partitionErrorAndOffsets(TopicAndPartition(topic, partition))
       .error
 
   def offsets(topic: String, partition: Int) =
-    underlying
-      .partitionErrorAndOffsets(TopicAndPartition(topic, partition))
-      .offsets
-      .toArray
+    underlying.partitionErrorAndOffsets(TopicAndPartition(topic, partition))
+      .offsets.toArray
 
   override def equals(other: Any) =
     canEqual(other) && {

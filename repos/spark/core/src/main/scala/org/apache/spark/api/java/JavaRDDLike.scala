@@ -216,9 +216,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
       f.call(x.asJava).asScala
     }
     new JavaDoubleRDD(
-      rdd
-        .mapPartitions(fn, preservesPartitioning)
-        .map(x => x.doubleValue()))
+      rdd.mapPartitions(fn, preservesPartitioning).map(x => x.doubleValue()))
   }
 
   /**
@@ -334,8 +332,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * won't trigger a spark job, which is different from [[org.apache.spark.rdd.RDD#zipWithIndex]].
     */
   def zipWithUniqueId(): JavaPairRDD[T, jl.Long] = {
-    JavaPairRDD
-      .fromRDD(rdd.zipWithUniqueId())
+    JavaPairRDD.fromRDD(rdd.zipWithUniqueId())
       .asInstanceOf[JavaPairRDD[T, jl.Long]]
   }
 
@@ -347,8 +344,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * This method needs to trigger a spark job when this RDD contains more than one partitions.
     */
   def zipWithIndex(): JavaPairRDD[T, jl.Long] = {
-    JavaPairRDD
-      .fromRDD(rdd.zipWithIndex())
+    JavaPairRDD.fromRDD(rdd.zipWithIndex())
       .asInstanceOf[JavaPairRDD[T, jl.Long]]
   }
 
@@ -604,8 +600,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @return an array of top elements
     */
   def top(num: Int): JList[T] = {
-    val comp = com.google.common.collect.Ordering
-      .natural()
+    val comp = com.google.common.collect.Ordering.natural()
       .asInstanceOf[Comparator[T]]
     top(num, comp)
   }
@@ -654,8 +649,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @return an array of top elements
     */
   def takeOrdered(num: Int): JList[T] = {
-    val comp = com.google.common.collect.Ordering
-      .natural()
+    val comp = com.google.common.collect.Ordering.natural()
       .asInstanceOf[Comparator[T]]
     takeOrdered(num, comp)
   }

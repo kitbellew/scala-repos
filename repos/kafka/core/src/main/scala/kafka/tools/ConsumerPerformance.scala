@@ -82,8 +82,8 @@ object ConsumerPerformance {
       import kafka.consumer.ConsumerConfig
       val consumerConfig = new ConsumerConfig(config.props)
       val consumerConnector: ConsumerConnector = Consumer.create(consumerConfig)
-      val topicMessageStreams = consumerConnector.createMessageStreams(Map(
-        config.topic -> config.numThreads))
+      val topicMessageStreams = consumerConnector
+        .createMessageStreams(Map(config.topic -> config.numThreads))
       var threadList = List[ConsumerPerfThread]()
       for ((topic, streamList) <- topicMessageStreams)
         for (i <- 0 until streamList.length)
@@ -215,38 +215,25 @@ object ConsumerPerformance {
   }
 
   class ConsumerPerfConfig(args: Array[String]) extends PerfConfig(args) {
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "The connection string for the zookeeper connection in the form host:port. " +
-          "Multiple URLS can be given to allow fail-over. This option is only used with the old consumer."
-      )
-      .withRequiredArg
-      .describedAs("urls")
-      .ofType(classOf[String])
-    val bootstrapServersOpt = parser
-      .accepts(
-        "broker-list",
-        "A broker list to use for connecting if using the new consumer.")
-      .withRequiredArg()
-      .describedAs("host")
-      .ofType(classOf[String])
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "The connection string for the zookeeper connection in the form host:port. " +
+        "Multiple URLS can be given to allow fail-over. This option is only used with the old consumer."
+    ).withRequiredArg.describedAs("urls").ofType(classOf[String])
+    val bootstrapServersOpt = parser.accepts(
+      "broker-list",
+      "A broker list to use for connecting if using the new consumer.")
+      .withRequiredArg().describedAs("host").ofType(classOf[String])
     val topicOpt = parser
-      .accepts("topic", "REQUIRED: The topic to consume from.")
-      .withRequiredArg
-      .describedAs("topic")
-      .ofType(classOf[String])
-    val groupIdOpt = parser
-      .accepts("group", "The group id to consume on.")
-      .withRequiredArg
-      .describedAs("gid")
+      .accepts("topic", "REQUIRED: The topic to consume from.").withRequiredArg
+      .describedAs("topic").ofType(classOf[String])
+    val groupIdOpt = parser.accepts("group", "The group id to consume on.")
+      .withRequiredArg.describedAs("gid")
       .defaultsTo("perf-consumer-" + new Random().nextInt(100000))
       .ofType(classOf[String])
     val fetchSizeOpt = parser
       .accepts("fetch-size", "The amount of data to fetch in a single request.")
-      .withRequiredArg
-      .describedAs("size")
-      .ofType(classOf[java.lang.Integer])
+      .withRequiredArg.describedAs("size").ofType(classOf[java.lang.Integer])
       .defaultsTo(1024 * 1024)
     val resetBeginningOffsetOpt = parser.accepts(
       "from-latest",
@@ -255,38 +242,25 @@ object ConsumerPerformance {
     )
     val socketBufferSizeOpt = parser
       .accepts("socket-buffer-size", "The size of the tcp RECV size.")
-      .withRequiredArg
-      .describedAs("size")
-      .ofType(classOf[java.lang.Integer])
+      .withRequiredArg.describedAs("size").ofType(classOf[java.lang.Integer])
       .defaultsTo(2 * 1024 * 1024)
     val numThreadsOpt = parser
-      .accepts("threads", "Number of processing threads.")
-      .withRequiredArg
-      .describedAs("count")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(10)
+      .accepts("threads", "Number of processing threads.").withRequiredArg
+      .describedAs("count").ofType(classOf[java.lang.Integer]).defaultsTo(10)
     val numFetchersOpt = parser
       .accepts("num-fetch-threads", "Number of fetcher threads.")
-      .withRequiredArg
-      .describedAs("count")
-      .ofType(classOf[java.lang.Integer])
+      .withRequiredArg.describedAs("count").ofType(classOf[java.lang.Integer])
       .defaultsTo(1)
-    val useNewConsumerOpt = parser.accepts(
-      "new-consumer",
-      "Use the new consumer implementation.")
+    val useNewConsumerOpt = parser
+      .accepts("new-consumer", "Use the new consumer implementation.")
     val consumerConfigOpt = parser
       .accepts("consumer.config", "Consumer config properties file.")
-      .withRequiredArg
-      .describedAs("config file")
-      .ofType(classOf[String])
+      .withRequiredArg.describedAs("config file").ofType(classOf[String])
 
     val options = parser.parse(args: _*)
 
-    CommandLineUtils.checkRequiredArgs(
-      parser,
-      options,
-      topicOpt,
-      numMessagesOpt)
+    CommandLineUtils
+      .checkRequiredArgs(parser, options, topicOpt, numMessagesOpt)
 
     val useNewConsumer = options.has(useNewConsumerOpt)
 
@@ -317,26 +291,21 @@ object ConsumerPerformance {
         classOf[ByteArrayDeserializer])
       props.put(ConsumerConfig.CHECK_CRCS_CONFIG, "false")
     } else {
-      CommandLineUtils.checkRequiredArgs(
-        parser,
-        options,
-        zkConnectOpt,
-        numMessagesOpt)
+      CommandLineUtils
+        .checkRequiredArgs(parser, options, zkConnectOpt, numMessagesOpt)
       props.put("group.id", options.valueOf(groupIdOpt))
       props.put(
         "socket.receive.buffer.bytes",
         options.valueOf(socketBufferSizeOpt).toString)
-      props.put(
-        "fetch.message.max.bytes",
-        options.valueOf(fetchSizeOpt).toString)
+      props
+        .put("fetch.message.max.bytes", options.valueOf(fetchSizeOpt).toString)
       props.put(
         "auto.offset.reset",
         if (options.has(resetBeginningOffsetOpt)) "largest" else "smallest")
       props.put("zookeeper.connect", options.valueOf(zkConnectOpt))
       props.put("consumer.timeout.ms", "1000")
-      props.put(
-        "num.consumer.fetchers",
-        options.valueOf(numFetchersOpt).toString)
+      props
+        .put("num.consumer.fetchers", options.valueOf(numFetchersOpt).toString)
     }
     val numThreads = options.valueOf(numThreadsOpt).intValue
     val topic = options.valueOf(topicOpt)

@@ -68,8 +68,8 @@ object Util {
       s: TaskStreams): Seq[File] = {
     IO.delete(out)
     IO.createDirectory(out)
-    val args =
-      "xsbti.api" :: out.getAbsolutePath :: defs.map(_.getAbsolutePath).toList
+    val args = "xsbti.api" :: out.getAbsolutePath :: defs.map(_.getAbsolutePath)
+      .toList
     val mainClass =
       main getOrElse "No main class defined for datatype generator"
     toError(run.run(mainClass, cp.files, args, s.log))
@@ -184,11 +184,8 @@ object Licensed {
     else sys.error("Referenced license '" + str + "' not found at " + path)
   }
   def seePaths(base: File, noticeString: String): Seq[File] =
-    seeRegex
-      .findAllIn(noticeString)
-      .matchData
-      .map(d => licensePath(base, d.group(1)))
-      .toList
+    seeRegex.findAllIn(noticeString).matchData
+      .map(d => licensePath(base, d.group(1))).toList
 
   def settings: Seq[Setting[_]] =
     Seq(

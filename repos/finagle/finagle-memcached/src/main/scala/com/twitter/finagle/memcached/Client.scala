@@ -41,24 +41,16 @@ object Client {
     */
   def apply(host: String): Client =
     Client(
-      ClientBuilder()
-        .hosts(host)
-        .hostConnectionLimit(1)
-        .codec(text.Memcached())
-        .daemon(true)
-        .build())
+      ClientBuilder().hosts(host).hostConnectionLimit(1).codec(text.Memcached())
+        .daemon(true).build())
 
   /**
     * Construct a client from a Name
     */
   def apply(name: Name): Client =
     Client(
-      ClientBuilder()
-        .dest(name)
-        .hostConnectionLimit(1)
-        .codec(new text.Memcached)
-        .daemon(true)
-        .build())
+      ClientBuilder().dest(name).hostConnectionLimit(1)
+        .codec(new text.Memcached).daemon(true).build())
 
   /**
     * Construct a client from a Group
@@ -66,12 +58,8 @@ object Client {
   @deprecated("Use `apply(name: Name)` instead", "7.0.0")
   def apply(group: Group[SocketAddress]): Client =
     Client(
-      ClientBuilder()
-        .group(group)
-        .hostConnectionLimit(1)
-        .codec(new text.Memcached)
-        .daemon(true)
-        .build())
+      ClientBuilder().group(group).hostConnectionLimit(1)
+        .codec(new text.Memcached).daemon(true).build())
 
   /**
     * Construct a client from a Cluster
@@ -79,12 +67,8 @@ object Client {
   @deprecated("Use `apply(name: Name)` instead", "7.0.0")
   def apply(cluster: Cluster[SocketAddress]): Client =
     Client(
-      ClientBuilder()
-        .cluster(cluster)
-        .hostConnectionLimit(1)
-        .codec(new text.Memcached)
-        .daemon(true)
-        .build())
+      ClientBuilder().cluster(cluster).hostConnectionLimit(1)
+        .codec(new text.Memcached).daemon(true).build())
 
   /**
     * Construct a client from a single Service.
@@ -210,8 +194,8 @@ trait BaseClient[T] {
       expiry: Time,
       value: T,
       casUnique: Buf): Future[JBoolean] =
-    checkAndSet(key, flags, expiry, value, casUnique).flatMap(
-      CasFromCheckAndSet)
+    checkAndSet(key, flags, expiry, value, casUnique)
+      .flatMap(CasFromCheckAndSet)
 
   /**
     * Perform a CAS operation on the key, only if the value has not
@@ -763,10 +747,7 @@ trait PartitionedClient extends Client {
 object PartitionedClient {
   @deprecated("Use CacheNodeGroup.apply(hostPartWeights) instead", "7.0.0")
   def parseHostPortWeights(hostPortWeights: String): Seq[(String, Int, Int)] =
-    hostPortWeights
-      .split(Array(' ', ','))
-      .filter((_ != ""))
-      .map(_.split(":"))
+    hostPortWeights.split(Array(' ', ',')).filter((_ != "")).map(_.split(":"))
       .map {
         case Array(host)               => (host, 11211, 1)
         case Array(host, port)         => (host, port.toInt, 1)
@@ -1031,8 +1012,8 @@ private[finagle] class KetamaPartitionedClient(
   private[this] val revivalCount = statsReceiver.counter("revivals")
   private[this] val nodeLeaveCount = statsReceiver.counter("leaves")
   private[this] val nodeJoinCount = statsReceiver.counter("joins")
-  private[this] val keyRingRedistributeCount = statsReceiver.counter(
-    "redistributes")
+  private[this] val keyRingRedistributeCount = statsReceiver
+    .counter("redistributes")
 
   private[this] def buildDistributor(nodes: Seq[KetamaNode[Client]]) =
     synchronized {
@@ -1129,12 +1110,8 @@ private[finagle] class KetamaPartitionedClient(
       expiry: Time,
       value: Buf,
       casUnique: Buf) =
-    ready.interruptible before super.checkAndSet(
-      key,
-      flags,
-      expiry,
-      value,
-      casUnique)
+    ready.interruptible before super
+      .checkAndSet(key, flags, expiry, value, casUnique)
 
   override def add(key: String, flags: Int, expiry: Time, value: Buf) =
     ready.interruptible before super.add(key, flags, expiry, value)
@@ -1175,8 +1152,8 @@ case class KetamaClientBuilder private[memcached] (
     numReps: Int = KetamaPartitionedClient.DefaultNumReps) {
   import Memcached.Client.mkDestination
 
-  private lazy val localMemcachedName = Resolver.eval(
-    "localhost:" + LocalMemcached.port)
+  private lazy val localMemcachedName = Resolver
+    .eval("localhost:" + LocalMemcached.port)
 
   private def withLocalMemcached = {
     val Name.Bound(va) = localMemcachedName
@@ -1204,8 +1181,9 @@ case class KetamaClientBuilder private[memcached] (
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
   def cluster(cluster: Cluster[InetSocketAddress]): KetamaClientBuilder = {
-    group(CacheNodeGroup(
-      Group.fromCluster(cluster).map { _.asInstanceOf[SocketAddress] }))
+    group(CacheNodeGroup(Group.fromCluster(cluster).map {
+      _.asInstanceOf[SocketAddress]
+    }))
   }
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
@@ -1255,21 +1233,15 @@ case class KetamaClientBuilder private[memcached] (
 
   def build(): Client = {
     val stackBasedClient = (_clientBuilder getOrElse ClientBuilder()
-      .hostConnectionLimit(1)
-      .daemon(true))
-      .codec(text.Memcached())
-      .underlying
+      .hostConnectionLimit(1).daemon(true)).codec(text.Memcached()).underlying
 
     val keyHasher = KeyHasher.byName(_hashName.getOrElse("ketama"))
 
     val (numFailures, markDeadFor) = _failureAccrualParams
 
     val label = stackBasedClient.params[finagle.param.Label].label
-    val stats = stackBasedClient
-      .params[finagle.param.Stats]
-      .statsReceiver
-      .scope(label)
-      .scope("memcached_client")
+    val stats = stackBasedClient.params[finagle.param.Stats].statsReceiver
+      .scope(label).scope("memcached_client")
 
     val healthBroker = new Broker[NodeHealth]
 
@@ -1286,9 +1258,7 @@ case class KetamaClientBuilder private[memcached] (
             stk.replace(
               FailureAccrualFactory.role,
               KetamaFailureAccrualFactory.module[Cmd, Rep](key, healthBroker))
-        })
-        .newClient(mkDestination(node.host, node.port))
-        .toService
+        }).newClient(mkDestination(node.host, node.port)).toService
 
     new KetamaPartitionedClient(
       _group,
@@ -1347,8 +1317,7 @@ case class RubyMemCacheClientBuilder(
 
   def build(): PartitionedClient = {
     val builder = _clientBuilder getOrElse ClientBuilder()
-      .hostConnectionLimit(1)
-      .daemon(true)
+      .hostConnectionLimit(1).daemon(true)
     val clients = _nodes.map {
       case (hostname, port, weight) =>
         require(weight == 1, "Ruby memcache node weight must be 1")
@@ -1398,21 +1367,14 @@ case class PHPMemCacheClientBuilder(
 
   def build(): PartitionedClient = {
     val builder = _clientBuilder getOrElse ClientBuilder()
-      .hostConnectionLimit(1)
-      .daemon(true)
+      .hostConnectionLimit(1).daemon(true)
     val keyHasher = KeyHasher.byName(_hashName.getOrElse("crc32-itu"))
-    val clients = _nodes
-      .map {
-        case (hostname, port, weight) =>
-          val client = Client(
-            builder
-              .hosts(hostname + ":" + port)
-              .codec(text.Memcached())
-              .build())
-          for (i <- (1 to weight)) yield client
-      }
-      .flatten
-      .toArray
+    val clients = _nodes.map {
+      case (hostname, port, weight) =>
+        val client = Client(
+          builder.hosts(hostname + ":" + port).codec(text.Memcached()).build())
+        for (i <- (1 to weight)) yield client
+    }.flatten.toArray
     new PHPMemCacheClient(clients, keyHasher)
   }
 }

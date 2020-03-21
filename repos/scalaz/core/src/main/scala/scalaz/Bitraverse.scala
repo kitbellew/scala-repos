@@ -84,8 +84,7 @@ trait Bitraverse[F[_, _]] extends Bifunctor[F] with Bifoldable[F] {
   def traverseSTrampoline[S, G[_]: Applicative, A, B, C, D](fa: F[A, B])(
       f: A => State[S, G[C]])(g: B => State[S, G[D]]): State[S, G[F[C, D]]] = {
     import Free._
-    implicit val A = StateT
-      .stateTMonadState[S, Trampoline]
+    implicit val A = StateT.stateTMonadState[S, Trampoline]
       .compose(Applicative[G])
 
     State[S, G[F[C, D]]] { initial =>
@@ -100,8 +99,7 @@ trait Bitraverse[F[_, _]] extends Bifunctor[F] with Bifoldable[F] {
       f: A => Kleisli[G, S, C])(
       g: B => Kleisli[G, S, D]): Kleisli[G, S, F[C, D]] = {
     import Free._
-    implicit val A = Kleisli
-      .kleisliMonadReader[Trampoline, S]
+    implicit val A = Kleisli.kleisliMonadReader[Trampoline, S]
       .compose(Applicative[G])
 
     Kleisli[G, S, F[C, D]](s => {

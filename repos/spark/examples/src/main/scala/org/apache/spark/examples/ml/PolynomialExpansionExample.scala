@@ -37,10 +37,8 @@ object PolynomialExpansionExample {
       Vectors.dense(0.0, 0.0),
       Vectors.dense(0.6, -1.1))
     val df = sqlContext.createDataFrame(data.map(Tuple1.apply)).toDF("features")
-    val polynomialExpansion = new PolynomialExpansion()
-      .setInputCol("features")
-      .setOutputCol("polyFeatures")
-      .setDegree(3)
+    val polynomialExpansion = new PolynomialExpansion().setInputCol("features")
+      .setOutputCol("polyFeatures").setDegree(3)
     val polyDF = polynomialExpansion.transform(df)
     polyDF.select("polyFeatures").take(3).foreach(println)
     // $example off$

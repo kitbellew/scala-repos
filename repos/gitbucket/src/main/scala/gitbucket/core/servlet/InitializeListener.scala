@@ -38,18 +38,14 @@ class InitializeListener
         getCurrentVersion(),
         versions,
         Thread.currentThread.getContextClassLoader) { conn =>
-        FileUtils.writeStringToFile(
-          versionFile,
-          headVersion.versionString,
-          "UTF-8")
+        FileUtils
+          .writeStringToFile(versionFile, headVersion.versionString, "UTF-8")
       }
 
       // Load plugins
       logger.debug("Initialize plugins")
-      PluginRegistry.initialize(
-        event.getServletContext,
-        loadSystemSettings(),
-        conn)
+      PluginRegistry
+        .initialize(event.getServletContext, loadSystemSettings(), conn)
     }
 
     // Start Quartz scheduler

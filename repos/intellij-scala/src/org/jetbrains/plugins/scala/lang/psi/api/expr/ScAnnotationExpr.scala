@@ -16,10 +16,10 @@ import org.jetbrains.plugins.scala.lang.psi.impl.expr.ScNameValuePairImpl
 trait ScAnnotationExpr extends ScalaPsiElement {
   def constr = findChildByClassScala(classOf[ScConstructor])
   def getAttributes: Seq[ScNameValuePair] =
-    findArgExprs
-      .map(_.findChildrenByType(ScalaElementTypes.ASSIGN_STMT))
-      .getOrElse(Seq.empty)
-      .map { case stmt: ScAssignStmt => new ScNameValueAssignment(stmt) }
+    findArgExprs.map(_.findChildrenByType(ScalaElementTypes.ASSIGN_STMT))
+      .getOrElse(Seq.empty).map {
+        case stmt: ScAssignStmt => new ScNameValueAssignment(stmt)
+      }
 
   def getAnnotationParameters = findArgExprs.map(_.exprs).getOrElse(Seq.empty)
 

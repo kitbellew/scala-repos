@@ -102,8 +102,7 @@ private class MyTaskResultGetter(env: SparkEnv, scheduler: TaskSchedulerImpl)
       data: ByteBuffer): Unit = {
     // work on a copy since the super class still needs to use the buffer
     val newBuffer = data.duplicate()
-    _taskResults += env.closureSerializer
-      .newInstance()
+    _taskResults += env.closureSerializer.newInstance()
       .deserialize[DirectTaskResult[_]](newBuffer)
     super.enqueueSuccessfulTask(tsm, tid, data)
   }
@@ -130,10 +129,8 @@ class TaskResultGetterSuite
   test("handling results larger than max RPC message size") {
     sc = new SparkContext("local", "test", conf)
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
-    val result = sc
-      .parallelize(Seq(1), 1)
-      .map(x => 1.to(maxRpcMessageSize).toArray)
-      .reduce((x, y) => x)
+    val result = sc.parallelize(Seq(1), 1)
+      .map(x => 1.to(maxRpcMessageSize).toArray).reduce((x, y) => x)
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
     val RESULT_BLOCK_ID = TaskResultBlockId(0)
@@ -157,10 +154,8 @@ class TaskResultGetterSuite
     val resultGetter = new ResultDeletingTaskResultGetter(sc.env, scheduler)
     scheduler.taskResultGetter = resultGetter
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
-    val result = sc
-      .parallelize(Seq(1), 1)
-      .map(x => 1.to(maxRpcMessageSize).toArray)
-      .reduce((x, y) => x)
+    val result = sc.parallelize(Seq(1), 1)
+      .map(x => 1.to(maxRpcMessageSize).toArray).reduce((x, y) => x)
     assert(resultGetter.removeBlockSuccessfully)
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
@@ -191,11 +186,8 @@ class TaskResultGetterSuite
         |public class MyException extends Exception {
         |}
       """.stripMargin)
-    val excFile = TestUtils.createCompiledClass(
-      "MyException",
-      srcDir,
-      excSource,
-      Seq.empty)
+    val excFile = TestUtils
+      .createCompiledClass("MyException", srcDir, excSource, Seq.empty)
     val jarFile =
       new File(tempDir, "testJar-%s.jar".format(System.currentTimeMillis()))
     TestUtils.createJar(Seq(excFile), jarFile, directoryPrefix = Some("repro"))
@@ -220,9 +212,8 @@ class TaskResultGetterSuite
 
       // the driver should not have any problems resolving the exception class and determining
       // why the task failed.
-      val exceptionMessage = intercept[SparkException] {
-        rdd.collect()
-      }.getMessage
+      val exceptionMessage = intercept[SparkException] { rdd.collect() }
+        .getMessage
 
       val expectedFailure = """(?s).*Lost task.*: repro.MyException.*""".r
       val unknownFailure = """(?s).*Lost task.*: UnknownReason.*""".r
@@ -262,11 +253,9 @@ class TaskResultGetterSuite
     assert(resultGetter.taskResults.size === 1)
     val resBefore = resultGetter.taskResults.head
     val resAfter = captor.getValue
-    val resSizeBefore = resBefore.accumUpdates
-      .find(_.name == Some(RESULT_SIZE))
+    val resSizeBefore = resBefore.accumUpdates.find(_.name == Some(RESULT_SIZE))
       .flatMap(_.update)
-    val resSizeAfter = resAfter.accumUpdates
-      .find(_.name == Some(RESULT_SIZE))
+    val resSizeAfter = resAfter.accumUpdates.find(_.name == Some(RESULT_SIZE))
       .flatMap(_.update)
     assert(resSizeBefore.exists(_ == 0L))
     assert(resSizeAfter.exists(_.toString.toLong > 0L))

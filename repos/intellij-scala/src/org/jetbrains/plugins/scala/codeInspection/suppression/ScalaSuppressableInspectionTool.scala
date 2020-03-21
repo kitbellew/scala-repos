@@ -23,9 +23,10 @@ object ScalaSuppressableInspectionTool {
         val text: String = comment.getText
         val matcher: Matcher = SuppressionUtil.SUPPRESS_IN_LINE_COMMENT_PATTERN
           .matcher(text)
-        if (matcher.matches && SuppressionUtil.isInspectionToolIdMentioned(
-              matcher.group(1),
-              toolId)) { return Some(comment) }
+        if (matcher.matches && SuppressionUtil
+              .isInspectionToolIdMentioned(matcher.group(1), toolId)) {
+          return Some(comment)
+        }
       }
       None
     }
@@ -48,8 +49,8 @@ object ScalaSuppressableInspectionTool {
   }
 
   def suppressActions(toolShortName: String): Array[SuppressQuickFix] = {
-    val displayKey: HighlightDisplayKey = HighlightDisplayKey.find(
-      toolShortName)
+    val displayKey: HighlightDisplayKey = HighlightDisplayKey
+      .find(toolShortName)
     if (displayKey != null) allFixesForKey(displayKey) else Array.empty
   }
 

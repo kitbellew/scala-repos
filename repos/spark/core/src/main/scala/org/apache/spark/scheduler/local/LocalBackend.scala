@@ -136,10 +136,7 @@ private[spark] class LocalBackend(
     */
   def getUserClasspath(conf: SparkConf): Seq[URL] = {
     val userClassPathStr = conf.getOption("spark.executor.extraClassPath")
-    userClassPathStr
-      .map(_.split(File.pathSeparator))
-      .toSeq
-      .flatten
+    userClassPathStr.map(_.split(File.pathSeparator)).toSeq.flatten
       .map(new File(_).toURI.toURL)
   }
 
@@ -149,9 +146,8 @@ private[spark] class LocalBackend(
     val rpcEnv = SparkEnv.get.rpcEnv
     val executorEndpoint =
       new LocalEndpoint(rpcEnv, userClassPath, scheduler, this, totalCores)
-    localEndpoint = rpcEnv.setupEndpoint(
-      "LocalBackendEndpoint",
-      executorEndpoint)
+    localEndpoint = rpcEnv
+      .setupEndpoint("LocalBackendEndpoint", executorEndpoint)
     listenerBus.post(SparkListenerExecutorAdded(
       System.currentTimeMillis,
       executorEndpoint.localExecutorId,

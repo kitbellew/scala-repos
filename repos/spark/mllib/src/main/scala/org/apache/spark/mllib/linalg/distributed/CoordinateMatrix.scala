@@ -86,9 +86,7 @@ class CoordinateMatrix @Since("1.0.0") (
     }
     val n = nl.toInt
     val indexedRows = entries
-      .map(entry => (entry.i, (entry.j.toInt, entry.value)))
-      .groupByKey()
-      .map {
+      .map(entry => (entry.i, (entry.j.toInt, entry.value))).groupByKey().map {
         case (i, vectorEntries) =>
           IndexedRow(i, Vectors.sparse(n, vectorEntries.toSeq))
       }
@@ -131,31 +129,24 @@ class CoordinateMatrix @Since("1.0.0") (
       numColBlocks,
       entries.partitions.length)
 
-    val blocks: RDD[((Int, Int), Matrix)] = entries
-      .map { entry =>
-        val blockRowIndex = (entry.i / rowsPerBlock).toInt
-        val blockColIndex = (entry.j / colsPerBlock).toInt
+    val blocks: RDD[((Int, Int), Matrix)] = entries.map { entry =>
+      val blockRowIndex = (entry.i / rowsPerBlock).toInt
+      val blockColIndex = (entry.j / colsPerBlock).toInt
 
-        val rowId = entry.i % rowsPerBlock
-        val colId = entry.j % colsPerBlock
+      val rowId = entry.i % rowsPerBlock
+      val colId = entry.j % colsPerBlock
 
+      ((blockRowIndex, blockColIndex), (rowId.toInt, colId.toInt, entry.value))
+    }.groupByKey(partitioner).map {
+      case ((blockRowIndex, blockColIndex), entry) =>
+        val effRows = math
+          .min(m - blockRowIndex.toLong * rowsPerBlock, rowsPerBlock).toInt
+        val effCols = math
+          .min(n - blockColIndex.toLong * colsPerBlock, colsPerBlock).toInt
         (
           (blockRowIndex, blockColIndex),
-          (rowId.toInt, colId.toInt, entry.value))
-      }
-      .groupByKey(partitioner)
-      .map {
-        case ((blockRowIndex, blockColIndex), entry) =>
-          val effRows = math
-            .min(m - blockRowIndex.toLong * rowsPerBlock, rowsPerBlock)
-            .toInt
-          val effCols = math
-            .min(n - blockColIndex.toLong * colsPerBlock, colsPerBlock)
-            .toInt
-          (
-            (blockRowIndex, blockColIndex),
-            SparseMatrix.fromCOO(effRows, effCols, entry))
-      }
+          SparseMatrix.fromCOO(effRows, effCols, entry))
+    }
     new BlockMatrix(blocks, rowsPerBlock, colsPerBlock, m, n)
   }
 

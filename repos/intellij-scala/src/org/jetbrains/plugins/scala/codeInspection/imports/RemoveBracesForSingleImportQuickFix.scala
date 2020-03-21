@@ -25,9 +25,8 @@ class RemoveBracesForSingleImportQuickFix(importExpr: ScImportExpr)
     if (iExpr.singleWildcard) { buf.append("_") }
     else { buf.append(iExpr.getNames(0)) }
 
-    val newImportExpr = ScalaPsiElementFactory.createImportExprFromText(
-      buf.toString(),
-      iExpr.getManager)
+    val newImportExpr = ScalaPsiElementFactory
+      .createImportExprFromText(buf.toString(), iExpr.getManager)
 
     inWriteAction { iExpr.replace(newImportExpr) }
   }

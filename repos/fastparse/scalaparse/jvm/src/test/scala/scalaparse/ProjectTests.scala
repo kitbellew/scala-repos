@@ -19,8 +19,7 @@ object ProjectTests extends TestSuite {
         println("Checking Dir " + path)
         def listFiles(s: java.io.File): Iterator[String] = {
           val (dirs, files) = Option(s.listFiles()).toIterator
-            .flatMap(_.toIterator)
-            .partition(_.isDirectory)
+            .flatMap(_.toIterator).partition(_.isDirectory)
 
           files.map(_.getPath) ++ dirs.flatMap(listFiles)
         }
@@ -44,10 +43,9 @@ object ProjectTests extends TestSuite {
       }
 
       'test - {
-        val testSource = scala.io.Source
-          .fromInputStream(getClass.getResourceAsStream(
-            "/scalaparse/Test.scala"))
-          .mkString
+        val testSource =
+          scala.io.Source.fromInputStream(getClass.getResourceAsStream(
+            "/scalaparse/Test.scala")).mkString
         TestUtil.check(testSource)
       }
       def checkRepo(filter: String => Boolean = _ => true)(implicit

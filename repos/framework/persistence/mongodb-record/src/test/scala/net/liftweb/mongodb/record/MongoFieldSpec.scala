@@ -598,9 +598,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
         ("name" -> "subrecord") ~
           ("subsub" -> ("name" -> "subsub")) ~
           ("subsublist" -> JArray(Nil)) ~
-          ("when" -> (
-            "$dt" -> rec.meta.formats.dateFormat.format(subRec.when.value)
-          )) ~
+          ("when" -> ("$dt" -> rec.meta.formats.dateFormat
+            .format(subRec.when.value))) ~
           ("slist" -> JArray(Nil)) ~
           ("smap" -> JObject(Nil)) ~
           ("oid" -> ("$oid" -> subRec.oid.value.toString)) ~
@@ -642,9 +641,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
         ("name" -> "subrec1") ~
           ("subsub" -> ("name" -> "subsub")) ~
           ("subsublist" -> JArray(Nil)) ~
-          ("when" -> (
-            "$dt" -> rec.meta.formats.dateFormat.format(lst(0).when.value)
-          )) ~
+          ("when" -> ("$dt" -> rec.meta.formats.dateFormat
+            .format(lst(0).when.value))) ~
           ("slist" -> JArray(Nil)) ~
           ("smap" -> JObject(Nil)) ~
           ("oid" -> ("$oid" -> lst(0).oid.value.toString)) ~
@@ -657,9 +655,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
         ("name" -> "subrec2") ~
           ("subsub" -> ("name" -> "subsub")) ~
           ("subsublist" -> JArray(Nil)) ~
-          ("when" -> (
-            "$dt" -> rec.meta.formats.dateFormat.format(lst(1).when.value)
-          )) ~
+          ("when" -> ("$dt" -> rec.meta.formats.dateFormat
+            .format(lst(1).when.value))) ~
           ("slist" -> JArray(Nil)) ~
           ("smap" -> JObject(Nil)) ~
           ("oid" -> ("$oid" -> lst(1).oid.value.toString)) ~
@@ -694,8 +691,7 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
     val json: JObject = ("mandatoryJObjectField" -> jo)
 
     "convert to JValue" in {
-      val rec = JObjectFieldTestRecord.createRecord
-        .mandatoryJObjectField(json)
+      val rec = JObjectFieldTestRecord.createRecord.mandatoryJObjectField(json)
 
       rec.mandatoryJObjectField.asJValue must_== json
 

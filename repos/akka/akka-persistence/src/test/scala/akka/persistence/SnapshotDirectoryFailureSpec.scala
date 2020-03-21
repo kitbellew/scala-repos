@@ -34,7 +34,8 @@ class SnapshotDirectoryFailureSpec
       "leveldb",
       "SnapshotDirectoryFailureSpec",
       extraConfig = Some(s"""
-  akka.persistence.snapshot-store.local.dir = "${SnapshotDirectoryFailureSpec.inUseSnapshotPath}"
+  akka.persistence.snapshot-store.local.dir = "${SnapshotDirectoryFailureSpec
+        .inUseSnapshotPath}"
   """)
     ))
     with ImplicitSender {

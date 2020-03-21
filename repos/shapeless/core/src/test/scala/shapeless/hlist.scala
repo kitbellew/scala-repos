@@ -945,8 +945,7 @@ class HListTests {
       implicitly[ToTraversable.Aux[M[Int] :: HNil, Array, M[_]]]
     }
 
-    val fruits1 = apap
-      .to[Array]
+    val fruits1 = apap.to[Array]
       .map(x => x: Fruit) // Default inferred type is too precise
     // (Product with Serializable with Fruit)
     typed[Array[Fruit]](fruits1)

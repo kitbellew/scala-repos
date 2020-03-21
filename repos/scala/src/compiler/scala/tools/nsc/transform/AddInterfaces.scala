@@ -98,7 +98,8 @@ abstract class AddInterfaces extends InfoTransform {
       val sym = tree.symbol
       val tree1 = tree match {
         case DefDef(_, _, _, _, _, _)
-            if sym.isClassConstructor && sym.isPrimaryConstructor && sym.owner != ArrayClass =>
+            if sym.isClassConstructor && sym.isPrimaryConstructor && sym
+              .owner != ArrayClass =>
           deriveDefDef(tree)(addMixinConstructorCalls(_, sym.owner)) // (3)
         case Template(parents, self, body) =>
           val parents1 =

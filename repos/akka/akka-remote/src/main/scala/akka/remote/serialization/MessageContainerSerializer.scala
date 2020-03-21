@@ -83,16 +83,14 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
       if (selectionEnvelope.hasMessageManifest)
         selectionEnvelope.getMessageManifest.toStringUtf8
       else ""
-    val msg = serialization
-      .deserialize(
-        selectionEnvelope.getEnclosedMessage.toByteArray,
-        selectionEnvelope.getSerializerId,
-        manifest)
-      .get
+    val msg = serialization.deserialize(
+      selectionEnvelope.getEnclosedMessage.toByteArray,
+      selectionEnvelope.getSerializerId,
+      manifest).get
 
     import scala.collection.JavaConverters._
-    val elements: immutable.Iterable[SelectionPathElement] =
-      selectionEnvelope.getPatternList.asScala.map { x ⇒
+    val elements: immutable.Iterable[SelectionPathElement] = selectionEnvelope
+      .getPatternList.asScala.map { x ⇒
         x.getType match {
           case CHILD_NAME ⇒ SelectChildName(x.getMatcher)
           case CHILD_PATTERN ⇒ SelectChildPattern(x.getMatcher)

@@ -63,9 +63,8 @@ object AccountDetails {
       profile)
   }
 
-  implicit val accountDetailsIso = Iso.hlist(
-    AccountDetails.apply _,
-    AccountDetails.unapply _)
+  implicit val accountDetailsIso = Iso
+    .hlist(AccountDetails.apply _, AccountDetails.unapply _)
 
   val schema =
     "accountId" :: "email" :: "accountCreationDate" :: "apiKey" :: "rootPath" :: "plan" :: "lastPasswordChangeTime" :: "profile" :: HNil

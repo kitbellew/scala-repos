@@ -106,10 +106,8 @@ private[feature] trait Word2VecBase
     * Validate and transform the input schema.
     */
   protected def validateAndTransformSchema(schema: StructType): StructType = {
-    SchemaUtils.checkColumnType(
-      schema,
-      $(inputCol),
-      new ArrayType(StringType, true))
+    SchemaUtils
+      .checkColumnType(schema, $(inputCol), new ArrayType(StringType, true))
     SchemaUtils.appendColumn(schema, $(outputCol), new VectorUDT)
   }
 }
@@ -157,15 +155,10 @@ final class Word2Vec(override val uid: String)
   override def fit(dataset: DataFrame): Word2VecModel = {
     transformSchema(dataset.schema, logging = true)
     val input = dataset.select($(inputCol)).rdd.map(_.getAs[Seq[String]](0))
-    val wordVectors = new feature.Word2Vec()
-      .setLearningRate($(stepSize))
-      .setMinCount($(minCount))
-      .setNumIterations($(maxIter))
-      .setNumPartitions($(numPartitions))
-      .setSeed($(seed))
-      .setVectorSize($(vectorSize))
-      .setWindowSize($(windowSize))
-      .fit(input)
+    val wordVectors = new feature.Word2Vec().setLearningRate($(stepSize))
+      .setMinCount($(minCount)).setNumIterations($(maxIter))
+      .setNumPartitions($(numPartitions)).setSeed($(seed))
+      .setVectorSize($(vectorSize)).setWindowSize($(windowSize)).fit(input)
     copyValues(new Word2VecModel(uid, wordVectors).setParent(this))
   }
 
@@ -207,8 +200,8 @@ class Word2VecModel private[ml] (
     val sc = SparkContext.getOrCreate()
     val sqlContext = SQLContext.getOrCreate(sc)
     import sqlContext.implicits._
-    val wordVec = wordVectors.getVectors.mapValues(vec =>
-      Vectors.dense(vec.map(_.toDouble)))
+    val wordVec = wordVectors.getVectors
+      .mapValues(vec => Vectors.dense(vec.map(_.toDouble)))
     sc.parallelize(wordVec.toSeq).toDF("word", "vector")
   }
 
@@ -295,10 +288,7 @@ object Word2VecModel extends MLReadable[Word2VecModel] {
         instance.wordVectors.wordIndex,
         instance.wordVectors.wordVectors.toSeq)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -310,10 +300,8 @@ object Word2VecModel extends MLReadable[Word2VecModel] {
     override def load(path: String): Word2VecModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("wordIndex", "wordVectors")
-        .head()
+      val data = sqlContext.read.parquet(dataPath)
+        .select("wordIndex", "wordVectors").head()
       val wordIndex = data.getAs[Map[String, Int]](0)
       val wordVectors = data.getAs[Seq[Float]](1).toArray
       val oldModel = new feature.Word2VecModel(wordIndex, wordVectors)

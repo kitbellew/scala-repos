@@ -233,8 +233,8 @@ class JavaTimer(isDaemon: Boolean, name: Option[String]) extends Timer {
     * This method MUST NOT throw or else your Timer will die.
     */
   def logError(t: Throwable): Unit = {
-    System.err.println(
-      "WARNING: JavaTimer caught exception running task: %s".format(t))
+    System.err
+      .println("WARNING: JavaTimer caught exception running task: %s".format(t))
     t.printStackTrace(System.err)
   }
 
@@ -288,10 +288,8 @@ class ScheduledThreadPoolTimer(
 
   protected def scheduleOnce(when: Time)(f: => Unit): TimerTask = {
     val runnable = toRunnable(f)
-    val javaFuture = underlying.schedule(
-      runnable,
-      when.sinceNow.inMillis,
-      TimeUnit.MILLISECONDS)
+    val javaFuture = underlying
+      .schedule(runnable, when.sinceNow.inMillis, TimeUnit.MILLISECONDS)
     new TimerTask {
       def cancel(): Unit = {
         javaFuture.cancel(true)

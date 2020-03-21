@@ -12,9 +12,8 @@ class StateTracker(
   private[this] var currState: Option[SessionState] = None
   private[this] var lastSample: Time = Time.now
 
-  private[this] val timerTask = timer.schedule(
-    Time.now + samplePeriod,
-    samplePeriod) { sample() }
+  private[this] val timerTask = timer
+    .schedule(Time.now + samplePeriod, samplePeriod) { sample() }
 
   def close(deadline: Time): Future[Unit] = { timerTask.close(deadline) }
 
@@ -30,8 +29,7 @@ class StateTracker(
       val delta = now - lastSample
       lastSample = now
       currState foreach { state =>
-        statsReceiver
-          .counter(s"${state.name}_duration_ms")
+        statsReceiver.counter(s"${state.name}_duration_ms")
           .incr(delta.inMilliseconds.toInt)
       }
     }

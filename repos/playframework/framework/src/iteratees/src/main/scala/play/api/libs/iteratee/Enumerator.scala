@@ -82,8 +82,7 @@ trait Enumerator[E] {
   def andThen(e: Enumerator[E]): Enumerator[E] =
     new Enumerator[E] {
       def apply[A](i: Iteratee[E, A]): Future[Iteratee[E, A]] =
-        parent
-          .apply(i)
+        parent.apply(i)
           .flatMap(e.apply)(
             dec
           ) //bad implementation, should remove Input.EOF in the end of first
@@ -128,13 +127,11 @@ trait Enumerator[E] {
       private val pec = ec.prepare()
 
       def apply[A](it: Iteratee[E, A]): Future[Iteratee[E, A]] =
-        parent
-          .apply(it)
-          .andThen {
-            case someTry =>
-              callback
-              someTry.get
-          }(pec)
+        parent.apply(it).andThen {
+          case someTry =>
+            callback
+            someTry.get
+        }(pec)
 
     }
 
@@ -285,8 +282,7 @@ object Enumerator {
                 }(dec)
                 Iteratee.flatten(nextI)
               case Input.EOF => {
-                if (attending.single
-                      .transformAndGet { _.map(f) }
+                if (attending.single.transformAndGet { _.map(f) }
                       .forall(_.forall(_ == false))) {
                   p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
                 } else { p.success(i) }
@@ -296,11 +292,9 @@ object Enumerator {
           }
           Cont(step)
         }
-        val ps = es.zipWithIndex
-          .map {
-            case (e, index) => e |>> iteratee[E](_.patch(index, Seq(true), 1))
-          }
-          .map(_.flatMap(_.pureFold(any => ())(dec)))
+        val ps = es.zipWithIndex.map {
+          case (e, index) => e |>> iteratee[E](_.patch(index, Seq(true), 1))
+        }.map(_.flatMap(_.pureFold(any => ())(dec)))
 
         Future.sequence(ps).onComplete {
           case Success(_) => redeemResultIfNotYet(iter.single())

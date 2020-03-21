@@ -55,9 +55,9 @@ class ExpandLibJarsGlobsTest extends WordSpec with Matchers {
         touch(tmpRoot, s".myHidden.jar.myF_${idx}.jar")
       }
 
-      val resultingLibJars1 = ExpandLibJarsGlobs(Array(
-        "-libjars",
-        s"${tmpRoot.getAbsolutePath}/*.zip"))(1).split(",").filter(_.nonEmpty)
+      val resultingLibJars1 = ExpandLibJarsGlobs(
+        Array("-libjars", s"${tmpRoot.getAbsolutePath}/*.zip"))(1).split(",")
+        .filter(_.nonEmpty)
       assert(resultingLibJars1.isEmpty)
     }
 

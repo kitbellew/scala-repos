@@ -41,8 +41,8 @@ class DecisionTreeRegressorSuite
 
   override def beforeAll() {
     super.beforeAll()
-    categoricalDataPointsRDD = sc.parallelize(
-      OldDecisionTreeSuite.generateCategoricalDataPoints())
+    categoricalDataPointsRDD = sc
+      .parallelize(OldDecisionTreeSuite.generateCategoricalDataPoints())
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -50,19 +50,14 @@ class DecisionTreeRegressorSuite
   /////////////////////////////////////////////////////////////////////////////
 
   test("Regression stump with 3-ary (ordered) categorical features") {
-    val dt = new DecisionTreeRegressor()
-      .setImpurity("variance")
-      .setMaxDepth(2)
-      .setMaxBins(100)
-      .setSeed(1)
+    val dt = new DecisionTreeRegressor().setImpurity("variance").setMaxDepth(2)
+      .setMaxBins(100).setSeed(1)
     val categoricalFeatures = Map(0 -> 3, 1 -> 3)
     compareAPIs(categoricalDataPointsRDD, dt, categoricalFeatures)
   }
 
   test("Regression stump with binary (ordered) categorical features") {
-    val dt = new DecisionTreeRegressor()
-      .setImpurity("variance")
-      .setMaxDepth(2)
+    val dt = new DecisionTreeRegressor().setImpurity("variance").setMaxDepth(2)
       .setMaxBins(100)
     val categoricalFeatures = Map(0 -> 2, 1 -> 2)
     compareAPIs(categoricalDataPointsRDD, dt, categoricalFeatures)
@@ -74,21 +69,14 @@ class DecisionTreeRegressorSuite
       categoricalDataPointsRDD,
       categoricalFeatures,
       numClasses = 0)
-    val model = new DecisionTreeRegressor()
-      .setImpurity("variance")
-      .setMaxDepth(2)
-      .setMaxBins(8)
-      .fit(df)
+    val model = new DecisionTreeRegressor().setImpurity("variance")
+      .setMaxDepth(2).setMaxBins(8).fit(df)
     MLTestingUtils.checkCopy(model)
   }
 
   test("predictVariance") {
-    val dt = new DecisionTreeRegressor()
-      .setImpurity("variance")
-      .setMaxDepth(2)
-      .setMaxBins(100)
-      .setPredictionCol("")
-      .setVarianceCol("variance")
+    val dt = new DecisionTreeRegressor().setImpurity("variance").setMaxDepth(2)
+      .setMaxBins(100).setPredictionCol("").setVarianceCol("variance")
     val categoricalFeatures = Map(0 -> 2, 1 -> 2)
 
     val df = TreeTests.setMetadata(
@@ -97,17 +85,13 @@ class DecisionTreeRegressorSuite
       numClasses = 0)
     val model = dt.fit(df)
 
-    val predictions = model
-      .transform(df)
-      .select(model.getFeaturesCol, model.getVarianceCol)
-      .collect()
+    val predictions = model.transform(df)
+      .select(model.getFeaturesCol, model.getVarianceCol).collect()
 
     predictions.foreach {
       case Row(features: Vector, variance: Double) =>
-        val expectedVariance = model.rootNode
-          .predictImpl(features)
-          .impurityStats
-          .calculate()
+        val expectedVariance = model.rootNode.predictImpl(features)
+          .impurityStats.calculate()
         assert(
           variance === expectedVariance,
           s"Expected variance $expectedVariance but got $variance.")
@@ -115,9 +99,7 @@ class DecisionTreeRegressorSuite
   }
 
   test("Feature importance with toy data") {
-    val dt = new DecisionTreeRegressor()
-      .setImpurity("variance")
-      .setMaxDepth(3)
+    val dt = new DecisionTreeRegressor().setImpurity("variance").setMaxDepth(3)
       .setSeed(123)
 
     // In this data, feature 1 is very important.
@@ -150,10 +132,8 @@ class DecisionTreeRegressorSuite
     val rdd = TreeTests.getTreeReadWriteData(sc)
 
     // Categorical splits with tree depth 2
-    val categoricalData: DataFrame = TreeTests.setMetadata(
-      rdd,
-      Map(0 -> 2, 1 -> 3),
-      numClasses = 0)
+    val categoricalData: DataFrame = TreeTests
+      .setMetadata(rdd, Map(0 -> 2, 1 -> 3), numClasses = 0)
     testEstimatorAndModelReadWrite(
       dt,
       categoricalData,
@@ -161,10 +141,8 @@ class DecisionTreeRegressorSuite
       checkModelData)
 
     // Continuous splits with tree depth 2
-    val continuousData: DataFrame = TreeTests.setMetadata(
-      rdd,
-      Map.empty[Int, Int],
-      numClasses = 0)
+    val continuousData: DataFrame = TreeTests
+      .setMetadata(rdd, Map.empty[Int, Int], numClasses = 0)
     testEstimatorAndModelReadWrite(
       dt,
       continuousData,
@@ -193,10 +171,8 @@ private[ml] object DecisionTreeRegressorSuite extends SparkFunSuite {
     val numFeatures = data.first().features.size
     val oldStrategy = dt.getOldStrategy(categoricalFeatures)
     val oldTree = OldDecisionTree.train(data, oldStrategy)
-    val newData: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses = 0)
+    val newData: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses = 0)
     val newTree = dt.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldTreeAsNew = DecisionTreeRegressionModel.fromOld(

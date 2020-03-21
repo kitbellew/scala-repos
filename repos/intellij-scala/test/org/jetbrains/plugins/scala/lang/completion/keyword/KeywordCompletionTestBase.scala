@@ -30,8 +30,8 @@ abstract class KeywordCompletionTestBase
     import org.junit.Assert._
 
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem.getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -48,14 +48,12 @@ abstract class KeywordCompletionTestBase
     val myType = CompletionType.BASIC
     new CodeCompletionHandlerBase(myType, false, false, true)
       .invokeCompletion(getProjectAdapter, editor)
-    val lookup: LookupImpl = LookupManager
-      .getActiveLookup(editor)
+    val lookup: LookupImpl = LookupManager.getActiveLookup(editor)
       .asInstanceOf[LookupImpl]
     val items: Array[String] =
       if (lookup == null) Array.empty
       else
-        lookup.getItems
-          .toArray(LookupElement.EMPTY_ARRAY)
+        lookup.getItems.toArray(LookupElement.EMPTY_ARRAY)
           .map(_.getLookupString)
 
     val res = items.filter(ScalaNamesUtil.isKeyword).sorted.mkString("\n")

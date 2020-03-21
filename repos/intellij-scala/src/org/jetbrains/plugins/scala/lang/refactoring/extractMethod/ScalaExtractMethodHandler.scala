@@ -51,8 +51,8 @@ import scala.collection.mutable.ArrayBuffer
   * Date: 11.01.2010
   */
 class ScalaExtractMethodHandler extends RefactoringActionHandler {
-  private val REFACTORING_NAME: String = ScalaBundle.message(
-    "extract.method.title")
+  private val REFACTORING_NAME: String = ScalaBundle
+    .message("extract.method.title")
 
   def invoke(
       project: Project,
@@ -94,16 +94,11 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       return
     }
     if (!editor.getSelectionModel.hasSelection) return
-    val elements: Seq[PsiElement] = ScalaRefactoringUtil.selectedElements(
-      editor,
-      file,
-      trimComments = false)
+    val elements: Seq[PsiElement] = ScalaRefactoringUtil
+      .selectedElements(editor, file, trimComments = false)
 
-    val hasWarnings = ScalaRefactoringUtil.showNotPossibleWarnings(
-      elements,
-      project,
-      editor,
-      REFACTORING_NAME)
+    val hasWarnings = ScalaRefactoringUtil
+      .showNotPossibleWarnings(elements, project, editor, REFACTORING_NAME)
     if (hasWarnings) return
 
     def checkLastReturn(elem: PsiElement): Boolean = {
@@ -119,16 +114,14 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     }
 
     def returnType: Option[ScType] = {
-      val fun = PsiTreeUtil.getParentOfType(
-        elements.head,
-        classOf[ScFunctionDefinition])
+      val fun = PsiTreeUtil
+        .getParentOfType(elements.head, classOf[ScFunctionDefinition])
       if (fun == null) return None
       var result: Option[ScType] = None
       val visitor = new ScalaRecursiveElementVisitor {
         override def visitReturnStatement(ret: ScReturnStmt) {
-          val newFun = PsiTreeUtil.getParentOfType(
-            ret,
-            classOf[ScFunctionDefinition])
+          val newFun = PsiTreeUtil
+            .getParentOfType(ret, classOf[ScFunctionDefinition])
           if (newFun == fun) {
             result = Some(fun.returnType.getOrElse(psi.types.Unit))
           }
@@ -138,14 +131,12 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       result
     }
 
-    val (lastReturn, lastExprType) = elements.reverse
-      .collectFirst {
-        case expr: ScExpression =>
-          (
-            checkLastReturn(expr),
-            Some(expr.getType(TypingContext.empty).getOrAny))
-      }
-      .getOrElse((false, None))
+    val (lastReturn, lastExprType) = elements.reverse.collectFirst {
+      case expr: ScExpression =>
+        (
+          checkLastReturn(expr),
+          Some(expr.getType(TypingContext.empty).getOrAny))
+    }.getOrElse((false, None))
 
     val hasReturn: Option[ScType] = returnType
     val stopAtScope: PsiElement = findScopeBound(elements).getOrElse(file)
@@ -159,7 +150,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       return
     }
     val array = elements.toArray
-    if (ApplicationManager.getApplication.isUnitTestMode && siblings.length > 0) {
+    if (ApplicationManager.getApplication.isUnitTestMode && siblings
+          .length > 0) {
       invokeDialog(
         project,
         editor,
@@ -210,8 +202,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       assert(
         parent.getTextRange != null,
         "TextRange is null: " + parent.getText)
-      stopAtScope == null || stopAtScope.getTextRange.contains(
-        parent.getTextRange)
+      stopAtScope == null || stopAtScope.getTextRange
+        .contains(parent.getTextRange)
     }
 
     val res = new ArrayBuffer[PsiElement]
@@ -255,10 +247,10 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
             member.containingClass.toOption
           case td: ScTypeDefinition => td.parent
           case ScalaPsiUtil.inNameContext(varDef: ScVariableDefinition)
-              if ScalaPsiUtil.isLValue(ref) && !elements.exists(
-                _.isAncestorOf(varDef)) => varDef.parent
-          case member: PsiMember        => member.containingClass.toOption
-          case _                        => return None
+              if ScalaPsiUtil.isLValue(ref) && !elements
+                .exists(_.isAncestorOf(varDef)) => varDef.parent
+          case member: PsiMember                => member.containingClass.toOption
+          case _                                => return None
         }
       }
       defScope match {
@@ -268,10 +260,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
           }
         case local @ Some(_) => local
         case _ =>
-          PsiTreeUtil
-            .getParentOfType(commonParent, classOf[ScPackaging])
-            .toOption
-            .orElse(commonParent.containingFile)
+          PsiTreeUtil.getParentOfType(commonParent, classOf[ScPackaging])
+            .toOption.orElse(commonParent.containingFile)
       }
     }
 
@@ -302,9 +292,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       smallestScope: Boolean,
       lastExprType: Option[ScType]) {
 
-    val info = ReachingDefintionsCollector.collectVariableInfo(
-      elements,
-      sibling)
+    val info = ReachingDefintionsCollector
+      .collectVariableInfo(elements, sibling)
 
     val input = info.inputVariables
     val output = info.outputVariables
@@ -369,9 +358,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     def local(text: String) = ScalaBundle.message("extract.local.method", text)
     element.getParent match {
       case tbody: ScTemplateBody =>
-        PsiTreeUtil.getParentOfType(
-          tbody,
-          classOf[ScTemplateDefinition]) match {
+        PsiTreeUtil
+          .getParentOfType(tbody, classOf[ScTemplateDefinition]) match {
           case o: ScObject                => s"Extract method to object ${o.name}"
           case c: ScClass                 => s"Extract method to class ${c.name}"
           case t: ScTrait                 => s"Extract method to trait ${t.name}"
@@ -454,8 +442,7 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         param => param.oldName,
         output => output.paramName)
 
-    PsiDocumentManager
-      .getInstance(editor.getProject)
+    PsiDocumentManager.getInstance(editor.getProject)
       .commitDocument(editor.getDocument)
 
     inWriteCommandAction(editor.getProject, REFACTORING_NAME) {

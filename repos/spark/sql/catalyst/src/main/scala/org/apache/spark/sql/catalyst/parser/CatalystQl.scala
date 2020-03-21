@@ -105,12 +105,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
     val bitmasks: Seq[Int] = setASTs.map {
       case Token("TOK_GROUPING_SETS_EXPRESSION", columns) =>
         columns.foldLeft(mask)((bitmap, col) => {
-          val keyIndex = keyMap
-            .find(_._1.treeEquals(col))
-            .map(_._2)
-            .getOrElse(
-              throw new AnalysisException(
-                s"${col.treeString} doesn't show up in the GROUP BY list"))
+          val keyIndex = keyMap.find(_._1.treeEquals(col)).map(_._2).getOrElse(
+            throw new AnalysisException(
+              s"${col.treeString} doesn't show up in the GROUP BY list"))
           // 0 means that the column at the given index is a grouping column, 1 means it is not,
           // so we unset the bit in bitmap.
           bitmap & ~(1 << (keys.length - 1 - keyIndex))
@@ -164,23 +161,25 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         // Return one query for each insert clause.
         val queries = insertClauses.map {
           case Token("TOK_INSERT", singleInsert) =>
-            val (intoClause ::
-              destClause ::
-              selectClause ::
-              selectDistinctClause ::
-              whereClause ::
-              groupByClause ::
-              rollupGroupByClause ::
-              cubeGroupByClause ::
-              groupingSetsClause ::
-              orderByClause ::
-              havingClause ::
-              sortByClause ::
-              clusterByClause ::
-              distributeByClause ::
-              limitClause ::
-              lateralViewClause ::
-              windowClause :: Nil) = {
+            val (
+              intoClause ::
+                destClause ::
+                selectClause ::
+                selectDistinctClause ::
+                whereClause ::
+                groupByClause ::
+                rollupGroupByClause ::
+                cubeGroupByClause ::
+                groupingSetsClause ::
+                orderByClause ::
+                havingClause ::
+                sortByClause ::
+                clusterByClause ::
+                distributeByClause ::
+                limitClause ::
+                lateralViewClause ::
+                windowClause :: Nil
+            ) = {
               getClauses(
                 Seq(
                   "TOK_INSERT_INTO",
@@ -210,18 +209,14 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               case None    => OneRowRelation
             }
 
-            val withLateralView = lateralViewClause
-              .map { lv =>
-                nodeToGenerate(lv.children.head, outer = false, relations)
-              }
-              .getOrElse(relations)
+            val withLateralView = lateralViewClause.map { lv =>
+              nodeToGenerate(lv.children.head, outer = false, relations)
+            }.getOrElse(relations)
 
-            val withWhere = whereClause
-              .map { whereNode =>
-                val Seq(whereExpr) = whereNode.children
-                Filter(nodeToExpr(whereExpr), withLateralView)
-              }
-              .getOrElse(withLateralView)
+            val withWhere = whereClause.map { whereNode =>
+              val Seq(whereExpr) = whereNode.children
+              Filter(nodeToExpr(whereExpr), withLateralView)
+            }.getOrElse(withLateralView)
 
             val select = (selectClause orElse selectDistinctClause)
               .getOrElse(sys.error("No select clause."))
@@ -233,8 +228,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             // The projection of the query can either be a normal projection, an aggregation
             // (if there is a group by) or a script transformation.
             val withProject: LogicalPlan = transformation.getOrElse {
-              val selectExpressions = select.children
-                .flatMap(selExprNodeToExpr)
+              val selectExpressions = select.children.flatMap(selExprNodeToExpr)
                 .map(UnresolvedAlias(_))
               Seq(
                 groupByClause.map(e =>
@@ -279,16 +273,14 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             }
 
             // Handle HAVING clause.
-            val withHaving = havingClause
-              .map { h =>
-                val havingExpr = h.children match {
-                  case Seq(hexpr) => nodeToExpr(hexpr)
-                }
-                // Note that we added a cast to boolean. If the expression itself is already boolean,
-                // the optimizer will get rid of the unnecessary cast.
-                Filter(Cast(havingExpr, BooleanType), withProject)
+            val withHaving = havingClause.map { h =>
+              val havingExpr = h.children match {
+                case Seq(hexpr) => nodeToExpr(hexpr)
               }
-              .getOrElse(withProject)
+              // Note that we added a cast to boolean. If the expression itself is already boolean,
+              // the optimizer will get rid of the unnecessary cast.
+              Filter(Cast(havingExpr, BooleanType), withProject)
+            }.getOrElse(withProject)
 
             // Handle SELECT DISTINCT
             val withDistinct =
@@ -327,8 +319,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                     partitionExprs.children.map(nodeToExpr),
                     withDistinct))
               case (None, None, None, Some(clusterExprs)) => Sort(
-                  clusterExprs.children
-                    .map(nodeToExpr)
+                  clusterExprs.children.map(nodeToExpr)
                     .map(SortOrder(_, Ascending)),
                   global = false,
                   RepartitionByExpression(
@@ -340,10 +331,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                 sys.error("Unsupported set of ordering / distribution clauses.")
             }
 
-            val withLimit = limitClause
-              .map(l => nodeToExpr(l.children.head))
-              .map(Limit(_, withSort))
-              .getOrElse(withSort)
+            val withLimit = limitClause.map(l => nodeToExpr(l.children.head))
+              .map(Limit(_, withSort)).getOrElse(withSort)
 
             // Collect all window specifications defined in the WINDOW clause.
             val windowDefinitions = windowClause.map(_.children.collect {
@@ -369,13 +358,12 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             }
 
             val withWindowDefinitions = resolvedCrossReference
-              .map(WithWindowDefinition(_, withLimit))
-              .getOrElse(withLimit)
+              .map(WithWindowDefinition(_, withLimit)).getOrElse(withLimit)
 
             // TOK_INSERT_INTO means to add files to the table.
             // TOK_DESTINATION means to overwrite the table.
-            val resultDestination = (intoClause orElse destClause).getOrElse(
-              sys.error("No destination found."))
+            val resultDestination = (intoClause orElse destClause)
+              .getOrElse(sys.error("No destination found."))
             val overwrite = intoClause.isEmpty
             nodeToDest(resultDestination, withWindowDefinitions, overwrite)
         }
@@ -433,45 +421,41 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         val relation = UnresolvedRelation(tableIdent, alias)
 
         // Apply sampling if requested.
-        (bucketSampleClause orElse splitSampleClause)
-          .map {
-            case Token(
-                  "TOK_TABLESPLITSAMPLE",
-                  Token("TOK_ROWCOUNT", Nil) :: Token(count, Nil) :: Nil) =>
-              Limit(Literal(count.toInt), relation)
-            case Token(
-                  "TOK_TABLESPLITSAMPLE",
-                  Token("TOK_PERCENT", Nil) :: Token(fraction, Nil) :: Nil) =>
-              // The range of fraction accepted by Sample is [0, 1]. Because Hive's block sampling
-              // function takes X PERCENT as the input and the range of X is [0, 100], we need to
-              // adjust the fraction.
-              require(
-                fraction.toDouble >= (0.0 - RandomSampler.roundingEpsilon)
-                  && fraction.toDouble <= (
-                    100.0 + RandomSampler.roundingEpsilon
-                  ),
-                s"Sampling fraction ($fraction) must be on interval [0, 100]"
-              )
-              Sample(
-                0.0,
-                fraction.toDouble / 100,
-                withReplacement = false,
-                (math.random * 1000).toInt,
-                relation)(isTableSample = true)
-            case Token(
-                  "TOK_TABLEBUCKETSAMPLE",
-                  Token(numerator, Nil) ::
-                  Token(denominator, Nil) :: Nil) =>
-              val fraction = numerator.toDouble / denominator.toDouble
-              Sample(
-                0.0,
-                fraction,
-                withReplacement = false,
-                (math.random * 1000).toInt,
-                relation)(isTableSample = true)
-            case a => noParseRule("Sampling", a)
-          }
-          .getOrElse(relation)
+        (bucketSampleClause orElse splitSampleClause).map {
+          case Token(
+                "TOK_TABLESPLITSAMPLE",
+                Token("TOK_ROWCOUNT", Nil) :: Token(count, Nil) :: Nil) =>
+            Limit(Literal(count.toInt), relation)
+          case Token(
+                "TOK_TABLESPLITSAMPLE",
+                Token("TOK_PERCENT", Nil) :: Token(fraction, Nil) :: Nil) =>
+            // The range of fraction accepted by Sample is [0, 1]. Because Hive's block sampling
+            // function takes X PERCENT as the input and the range of X is [0, 100], we need to
+            // adjust the fraction.
+            require(
+              fraction.toDouble >= (0.0 - RandomSampler.roundingEpsilon)
+                && fraction.toDouble <= (100.0 + RandomSampler.roundingEpsilon),
+              s"Sampling fraction ($fraction) must be on interval [0, 100]"
+            )
+            Sample(
+              0.0,
+              fraction.toDouble / 100,
+              withReplacement = false,
+              (math.random * 1000).toInt,
+              relation)(isTableSample = true)
+          case Token(
+                "TOK_TABLEBUCKETSAMPLE",
+                Token(numerator, Nil) ::
+                Token(denominator, Nil) :: Nil) =>
+            val fraction = numerator.toDouble / denominator.toDouble
+            Sample(
+              0.0,
+              fraction,
+              withReplacement = false,
+              (math.random * 1000).toInt,
+              relation)(isTableSample = true)
+          case a => noParseRule("Sampling", a)
+        }.getOrElse(relation)
 
       case Token(allJoinTokens(joinToken), relation1 :: relation2 :: other) =>
         if (!(other.size <= 1)) {
@@ -545,17 +529,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
         val tableIdent = extractTableIdent(tableNameParts)
 
-        val partitionKeys = partitionClause
-          .map(_.children.map {
-            // Parse partitions. We also make keys case insensitive.
-            case Token(
-                  "TOK_PARTVAL",
-                  Token(key, Nil) :: Token(value, Nil) :: Nil) =>
-              cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
-            case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
-              cleanIdentifier(key.toLowerCase) -> None
-          }.toMap)
-          .getOrElse(Map.empty)
+        val partitionKeys = partitionClause.map(_.children.map {
+          // Parse partitions. We also make keys case insensitive.
+          case Token(
+                "TOK_PARTVAL",
+                Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+            cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
+          case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
+            cleanIdentifier(key.toLowerCase) -> None
+        }.toMap).getOrElse(Map.empty)
 
         InsertIntoTable(
           UnresolvedRelation(tableIdent, None),
@@ -574,17 +556,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
         val tableIdent = extractTableIdent(tableNameParts)
 
-        val partitionKeys = partitionClause
-          .map(_.children.map {
-            // Parse partitions. We also make keys case insensitive.
-            case Token(
-                  "TOK_PARTVAL",
-                  Token(key, Nil) :: Token(value, Nil) :: Nil) =>
-              cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
-            case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
-              cleanIdentifier(key.toLowerCase) -> None
-          }.toMap)
-          .getOrElse(Map.empty)
+        val partitionKeys = partitionClause.map(_.children.map {
+          // Parse partitions. We also make keys case insensitive.
+          case Token(
+                "TOK_PARTVAL",
+                Token(key, Nil) :: Token(value, Nil) :: Nil) =>
+            cleanIdentifier(key.toLowerCase) -> Some(unquoteString(value))
+          case Token("TOK_PARTVAL", Token(key, Nil) :: Nil) =>
+            cleanIdentifier(key.toLowerCase) -> None
+        }.toMap).getOrElse(Map.empty)
 
         InsertIntoTable(
           UnresolvedRelation(tableIdent, None),
@@ -844,9 +824,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           strings.map(s => ParseUtils.unescapeSQLString(s.text)).mkString)
 
       case ast if ast.tokenType == SparkSqlParser.TinyintLiteral =>
-        Literal.create(
-          ast.text.substring(0, ast.text.length() - 1).toByte,
-          ByteType)
+        Literal
+          .create(ast.text.substring(0, ast.text.length() - 1).toByte, ByteType)
 
       case ast if ast.tokenType == SparkSqlParser.SmallintLiteral =>
         Literal.create(
@@ -854,9 +833,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           ShortType)
 
       case ast if ast.tokenType == SparkSqlParser.BigintLiteral =>
-        Literal.create(
-          ast.text.substring(0, ast.text.length() - 1).toLong,
-          LongType)
+        Literal
+          .create(ast.text.substring(0, ast.text.length() - 1).toLong, LongType)
 
       case ast if ast.tokenType == SparkSqlParser.DoubleLiteral =>
         Literal(ast.text.toDouble)
@@ -907,8 +885,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               case "TOK_INTERVAL_MICROSECOND_LITERAL" => "microsecond"
               case _                                  => noParseRule(s"Interval($name)", e)
             }
-            interval = interval.add(
-              CalendarInterval.fromSingleUnitString(unit, value))
+            interval = interval
+              .add(CalendarInterval.fromSingleUnitString(unit, value))
             updated = true
           case _ =>
         }
@@ -942,8 +920,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           spec)
 
         // Handle Partition By and Order By.
-        val (partitionSpec, orderSpec) = partitionClause
-          .map { partitionAndOrdering =>
+        val (partitionSpec, orderSpec) = partitionClause.map {
+          partitionAndOrdering =>
             val (
               partitionByClause :: orderByClause :: sortByClause :: clusterByClause :: Nil
             ) = getClauses(
@@ -972,8 +950,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               case _ =>
                 noParseRule("Partition & Ordering", partitionAndOrdering)
             }
-          }
-          .getOrElse { (Nil, Nil) }
+        }.getOrElse { (Nil, Nil) }
 
         // Handle Window Frame
         val windowFrame =
@@ -992,25 +969,22 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                 case _                     => noParseRule("Window Frame Boundary", node)
               }
 
-            rowFrame
-              .orElse(rangeFrame)
-              .map { frame =>
-                frame.children match {
-                  case precedingNode :: followingNode :: Nil =>
-                    SpecifiedWindowFrame(
-                      frameType,
-                      nodeToBoundary(precedingNode),
-                      nodeToBoundary(followingNode))
-                  case precedingNode :: Nil =>
-                    SpecifiedWindowFrame(
-                      frameType,
-                      nodeToBoundary(precedingNode),
-                      CurrentRow)
-                  case _ => noParseRule("Window Frame", frame)
-                }
+            rowFrame.orElse(rangeFrame).map { frame =>
+              frame.children match {
+                case precedingNode :: followingNode :: Nil =>
+                  SpecifiedWindowFrame(
+                    frameType,
+                    nodeToBoundary(precedingNode),
+                    nodeToBoundary(followingNode))
+                case precedingNode :: Nil =>
+                  SpecifiedWindowFrame(
+                    frameType,
+                    nodeToBoundary(precedingNode),
+                    CurrentRow)
+                case _ => noParseRule("Window Frame", frame)
               }
-              .getOrElse(sys.error(
-                s"If you see this, please file a bug report with your query."))
+            }.getOrElse(sys.error(
+              s"If you see this, please file a bug report with your query."))
           }
 
         WindowSpecDefinition(partitionSpec, orderSpec, windowFrame)

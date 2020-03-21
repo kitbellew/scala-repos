@@ -54,15 +54,9 @@ class KMeansSuite
   }
 
   test("set parameters") {
-    val kmeans = new KMeans()
-      .setK(9)
-      .setFeaturesCol("test_feature")
-      .setPredictionCol("test_prediction")
-      .setMaxIter(33)
-      .setInitMode(MLlibKMeans.RANDOM)
-      .setInitSteps(3)
-      .setSeed(123)
-      .setTol(1e-3)
+    val kmeans = new KMeans().setK(9).setFeaturesCol("test_feature")
+      .setPredictionCol("test_prediction").setMaxIter(33)
+      .setInitMode(MLlibKMeans.RANDOM).setInitSteps(3).setSeed(123).setTol(1e-3)
 
     assert(kmeans.getK === 9)
     assert(kmeans.getFeaturesCol === "test_feature")
@@ -84,9 +78,7 @@ class KMeansSuite
 
   test("fit & transform") {
     val predictionColName = "kmeans_prediction"
-    val kmeans = new KMeans()
-      .setK(k)
-      .setPredictionCol(predictionColName)
+    val kmeans = new KMeans().setK(k).setPredictionCol(predictionColName)
       .setSeed(1)
     val model = kmeans.fit(dataset)
     assert(model.clusterCenters.length === k)
@@ -96,13 +88,8 @@ class KMeansSuite
     expectedColumns.foreach { column =>
       assert(transformed.columns.contains(column))
     }
-    val clusters = transformed
-      .select(predictionColName)
-      .rdd
-      .map(_.getInt(0))
-      .distinct()
-      .collect()
-      .toSet
+    val clusters = transformed.select(predictionColName).rdd.map(_.getInt(0))
+      .distinct().collect().toSet
     assert(clusters.size === k)
     assert(clusters === Set(0, 1, 2, 3, 4))
     assert(model.computeCost(dataset) < 0.1)
@@ -129,8 +116,7 @@ object KMeansSuite {
       dim: Int,
       k: Int): DataFrame = {
     val sc = sql.sparkContext
-    val rdd = sc
-      .parallelize(1 to rows)
+    val rdd = sc.parallelize(1 to rows)
       .map(i => Vectors.dense(Array.fill(dim)((i % k).toDouble)))
       .map(v => new TestRow(v))
     sql.createDataFrame(rdd)

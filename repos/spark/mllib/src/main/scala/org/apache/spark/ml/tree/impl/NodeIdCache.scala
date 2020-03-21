@@ -75,12 +75,12 @@ private[spark] class NodeIdCache(
   private var rddUpdateCount = 0
 
   // Indicates whether we can checkpoint
-  private val canCheckpoint =
-    nodeIdsForInstances.sparkContext.getCheckpointDir.nonEmpty
+  private val canCheckpoint = nodeIdsForInstances.sparkContext.getCheckpointDir
+    .nonEmpty
 
   // FileSystem instance for deleting checkpoints as needed
-  private val fs = FileSystem.get(
-    nodeIdsForInstances.sparkContext.hadoopConfiguration)
+  private val fs = FileSystem
+    .get(nodeIdsForInstances.sparkContext.hadoopConfiguration)
 
   /**
     * Update the node index values in the cache.

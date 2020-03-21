@@ -166,18 +166,12 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
 
-    val server = ServerBuilder()
-      .codec(StringCodec)
-      .bindTo(address)
-      .name("FinagleServer")
-      .build(service)
+    val server = ServerBuilder().codec(StringCodec).bindTo(address)
+      .name("FinagleServer").build(service)
     val cluster = new DynamicCluster[SocketAddress](Seq(server.boundAddress))
-    val client = ClientBuilder()
-      .cluster(cluster)
-      .codec(StringCodec)
+    val client = ClientBuilder().cluster(cluster).codec(StringCodec)
       .daemon(true) // don't create an exit guard
-      .hostConnectionLimit(1)
-      .build()
+      .hostConnectionLimit(1).build()
 
     // create a pending request; delete the server from cluster
     //  then verify the request can still finish
@@ -195,21 +189,14 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       def apply(request: String) = Future.value(request)
     }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-    val server = ServerBuilder()
-      .codec(StringCodec)
-      .bindTo(address)
-      .name("FinagleServer")
-      .build(echo)
+    val server = ServerBuilder().codec(StringCodec).bindTo(address)
+      .name("FinagleServer").build(echo)
 
     // start with an empty cluster
     val cluster = new DynamicCluster[SocketAddress](Seq[SocketAddress]())
-    val client = ClientBuilder()
-      .cluster(cluster)
-      .codec(StringCodec)
+    val client = ClientBuilder().cluster(cluster).codec(StringCodec)
       .daemon(true) // don't create an exit guard
-      .hostConnectionLimit(1)
-      .hostConnectionMaxWaiters(5)
-      .build()
+      .hostConnectionLimit(1).hostConnectionMaxWaiters(5).build()
 
     val responses = new Array[Future[String]](5)
     0 until 5 foreach { i =>
@@ -237,23 +224,15 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       def apply(request: String) = new Promise[String]
     }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-    val server = ServerBuilder()
-      .codec(StringCodec)
-      .bindTo(address)
-      .name("FinagleServer")
-      .build(never)
+    val server = ServerBuilder().codec(StringCodec).bindTo(address)
+      .name("FinagleServer").build(never)
 
     val mem = new InMemoryStatsReceiver
-    val client = ClientBuilder()
-      .name("client")
+    val client = ClientBuilder().name("client")
       .hosts(server.boundAddress.asInstanceOf[InetSocketAddress])
-      .codec(StringCodec)
-      .daemon(true) // don't create an exit guard
-      .requestTimeout(10.millisecond)
-      .hostConnectionLimit(1)
-      .hostConnectionMaxWaiters(1)
-      .reportTo(mem)
-      .build()
+      .codec(StringCodec).daemon(true) // don't create an exit guard
+      .requestTimeout(10.millisecond).hostConnectionLimit(1)
+      .hostConnectionMaxWaiters(1).reportTo(mem).build()
 
     // generate com.twitter.finagle.IndividualRequestTimeoutException
     intercept[IndividualRequestTimeoutException] {
@@ -270,16 +249,10 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
   test(
     "ClientBuilder should be properly instrumented on service acquisition failure") {
     val mem = new InMemoryStatsReceiver
-    val client = ClientBuilder()
-      .name("client")
-      .addrs(Address.failing)
-      .codec(StringCodec)
-      .daemon(true) // don't create an exit guard
-      .requestTimeout(10.millisecond)
-      .hostConnectionLimit(1)
-      .hostConnectionMaxWaiters(1)
-      .reportTo(mem)
-      .build()
+    val client = ClientBuilder().name("client").addrs(Address.failing)
+      .codec(StringCodec).daemon(true) // don't create an exit guard
+      .requestTimeout(10.millisecond).hostConnectionLimit(1)
+      .hostConnectionMaxWaiters(1).reportTo(mem).build()
 
     // generate com.twitter.finagle.ChannelWriteException
     val traceId = Trace.id
@@ -288,8 +261,8 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       Trace.letId(traceId, true) { Await.result(client("hi"), 1.second) }
     }
 
-    val serviceCreationFailures = mem.counters(
-      Seq("client", "service_creation", "failures"))
+    val serviceCreationFailures = mem
+      .counters(Seq("client", "service_creation", "failures"))
     val requeues = mem.counters.get(Seq("client", "retries", "requeues"))
 
     // initial write exception and no requeues
@@ -302,22 +275,14 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       def apply(request: String) = Future.value("pong");
     }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-    val server = ServerBuilder()
-      .codec(StringCodec)
-      .bindTo(address)
-      .name("FinagleServer")
-      .build(always)
+    val server = ServerBuilder().codec(StringCodec).bindTo(address)
+      .name("FinagleServer").build(always)
 
     val mem = new InMemoryStatsReceiver
-    val client = ClientBuilder()
-      .name("testClient")
+    val client = ClientBuilder().name("testClient")
       .hosts(server.boundAddress.asInstanceOf[InetSocketAddress])
-      .codec(StringCodec)
-      .hostConnectionLimit(1)
-      .hostConnectionMaxWaiters(1)
-      .reportTo(mem)
-      .retries(1)
-      .build()
+      .codec(StringCodec).hostConnectionLimit(1).hostConnectionMaxWaiters(1)
+      .reportTo(mem).retries(1).build()
 
     Await.result(client("ping"), 10.second)
     Await.ready(server.close(), 1.second)
@@ -335,23 +300,18 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       def apply(request: String) = Future.value("pong");
     }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-    val server = ServerBuilder()
-      .codec(StringCodec)
-      .bindTo(address)
-      .name("FinagleServer")
-      .build(always)
+    val server = ServerBuilder().codec(StringCodec).bindTo(address)
+      .name("FinagleServer").build(always)
 
     val mem = new InMemoryStatsReceiver
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
-    val client = ClientBuilder
-      .stackClientOfCodec(StringCodec.client)
+    val client = ClientBuilder.stackClientOfCodec(StringCodec.client)
       .configured(DefaultPool.Param(
         /* low        */ 1,
         /* high       */ 1,
         /* bufferSize */ 0,
         /* idleTime   */ 5.seconds,
-        /* maxWaiters */ 1))
-      .configured(Stats(mem))
+        /* maxWaiters */ 1)).configured(Stats(mem))
       .configured(Retries.Policy(RetryPolicy.tries(1)))
       .newService(Name.bound(addr), "testClient")
 

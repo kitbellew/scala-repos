@@ -50,15 +50,14 @@ class ScSuperReferenceImpl(node: ASTNode)
               case comment: PsiComment =>
                 val commentText = comment.getText
                 val path = commentText.substring(2, commentText.length - 2)
-                val classes = ScalaPsiManager
-                  .instance(getProject)
+                val classes = ScalaPsiManager.instance(getProject)
                   .getCachedClasses(getResolveScope, path)
                 if (classes.length == 1) {
                   drvTemplate.exists(td =>
                     !ScalaPsiUtil.cachedDeepIsInheritor(td, classes(0)))
                 } else {
-                  val clazz: Option[PsiClass] = classes.find(
-                    !_.isInstanceOf[ScObject])
+                  val clazz: Option[PsiClass] = classes
+                    .find(!_.isInstanceOf[ScObject])
                   clazz match {
                     case Some(psiClass) =>
                       drvTemplate.exists(td =>
@@ -146,13 +145,11 @@ class ScSuperReferenceImpl(node: ASTNode)
                   case comment: PsiComment =>
                     val commentText = comment.getText
                     val path = commentText.substring(2, commentText.length - 2)
-                    val classes = ScalaPsiManager
-                      .instance(getProject)
+                    val classes = ScalaPsiManager.instance(getProject)
                       .getCachedClasses(getResolveScope, path)
                     if (classes.length == 1) classes(0)
                     else
-                      classes
-                        .find(!_.isInstanceOf[ScObject])
+                      classes.find(!_.isInstanceOf[ScObject])
                         .getOrElse(resolveNoHack)
                   case _ => resolveNoHack
                 }
@@ -201,10 +198,8 @@ class ScSuperReferenceImpl(node: ASTNode)
           case _ => None
         }
       case None => {
-        PsiTreeUtil.getContextOfType(
-          this,
-          false,
-          classOf[ScExtendsBlock]) match {
+        PsiTreeUtil
+          .getContextOfType(this, false, classOf[ScExtendsBlock]) match {
           case null               => None
           case eb: ScExtendsBlock => Some(eb.superTypes)
         }

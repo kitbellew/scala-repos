@@ -64,20 +64,17 @@ class NettyBlockRpcServer(
 
     message match {
       case openBlocks: OpenBlocks =>
-        val blocks: Seq[ManagedBuffer] = openBlocks.blockIds
-          .map(BlockId.apply)
+        val blocks: Seq[ManagedBuffer] = openBlocks.blockIds.map(BlockId.apply)
           .map(blockManager.getBlockData)
-        val streamId = streamManager.registerStream(
-          appId,
-          blocks.iterator.asJava)
+        val streamId = streamManager
+          .registerStream(appId, blocks.iterator.asJava)
         logTrace(s"Registered streamId $streamId with ${blocks.size} buffers")
-        responseContext.onSuccess(
-          new StreamHandle(streamId, blocks.size).toByteBuffer)
+        responseContext
+          .onSuccess(new StreamHandle(streamId, blocks.size).toByteBuffer)
 
       case uploadBlock: UploadBlock =>
         // StorageLevel is serialized as bytes using our JavaSerializer.
-        val level: StorageLevel = serializer
-          .newInstance()
+        val level: StorageLevel = serializer.newInstance()
           .deserialize(ByteBuffer.wrap(uploadBlock.metadata))
         val data = new NioManagedBuffer(ByteBuffer.wrap(uploadBlock.blockData))
         val blockId = BlockId(uploadBlock.blockId)

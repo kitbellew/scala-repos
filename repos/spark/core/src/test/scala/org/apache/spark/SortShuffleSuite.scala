@@ -85,8 +85,7 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
     def getAllFiles: Set[File] =
       FileUtils
         .listFiles(tempDir, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)
-        .asScala
-        .toSet
+        .asScala.toSet
     val filesBeforeShuffle = getAllFiles
     // Force the shuffle to be performed
     shuffledRdd.count()

@@ -87,16 +87,11 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
     val errs = new Err
     withBrokers(Random.shuffle(config.seedBrokers), errs) { consumer =>
       val resp: TopicMetadataResponse = consumer.send(req)
-      resp.topicsMetadata
-        .find(_.topic == topic)
-        .flatMap { tm: TopicMetadata =>
-          tm.partitionsMetadata.find(_.partitionId == partition)
-        }
-        .foreach { pm: PartitionMetadata =>
-          pm.leader.foreach { leader =>
-            return Right((leader.host, leader.port))
-          }
-        }
+      resp.topicsMetadata.find(_.topic == topic).flatMap { tm: TopicMetadata =>
+        tm.partitionsMetadata.find(_.partitionId == partition)
+      }.foreach { pm: PartitionMetadata =>
+        pm.leader.foreach { leader => return Right((leader.host, leader.port)) }
+      }
     }
     Left(errs)
   }
@@ -147,8 +142,8 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
     val errs = new Err
     withBrokers(Random.shuffle(config.seedBrokers), errs) { consumer =>
       val resp: TopicMetadataResponse = consumer.send(req)
-      val respErrs = resp.topicsMetadata.filter(m =>
-        m.errorCode != ErrorMapping.NoError)
+      val respErrs = resp.topicsMetadata
+        .filter(m => m.errorCode != ErrorMapping.NoError)
 
       if (respErrs.isEmpty) { return Right(resp.topicsMetadata.toSet) }
       else {
@@ -254,12 +249,8 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       groupId: String,
       topicAndPartitions: Set[TopicAndPartition],
       consumerApiVersion: Short): Either[Err, Map[TopicAndPartition, Long]] = {
-    getConsumerOffsetMetadata(
-      groupId,
-      topicAndPartitions,
-      consumerApiVersion).right.map { r =>
-      r.map { kv => kv._1 -> kv._2.offset }
-    }
+    getConsumerOffsetMetadata(groupId, topicAndPartitions, consumerApiVersion)
+      .right.map { r => r.map { kv => kv._1 -> kv._2.offset } }
   }
 
   /** Requires Kafka >= 0.8.1.1.  Defaults to the original ZooKeeper backed api version. */
@@ -398,10 +389,8 @@ object KafkaCluster {
       */
     def apply(kafkaParams: Map[String, String]): SimpleConsumerConfig = {
       // These keys are from other pre-existing kafka configs for specifying brokers, accept either
-      val brokers = kafkaParams
-        .get("metadata.broker.list")
-        .orElse(kafkaParams.get("bootstrap.servers"))
-        .getOrElse(
+      val brokers = kafkaParams.get("metadata.broker.list")
+        .orElse(kafkaParams.get("bootstrap.servers")).getOrElse(
           throw new SparkException(
             "Must specify metadata.broker.list or bootstrap.servers"))
 

@@ -81,8 +81,7 @@ private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
 
   override def take(num: Int): Array[R] = {
     val nonEmptyPartitions = this.partitions
-      .map(_.asInstanceOf[KafkaRDDPartition])
-      .filter(_.count > 0)
+      .map(_.asInstanceOf[KafkaRDDPartition]).filter(_.count > 0)
 
     if (num < 1 || nonEmptyPartitions.isEmpty) { return new Array[R](0) }
 
@@ -153,12 +152,10 @@ private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
     val kc = new KafkaCluster(kafkaParams)
     val keyDecoder = classTag[U].runtimeClass
       .getConstructor(classOf[VerifiableProperties])
-      .newInstance(kc.config.props)
-      .asInstanceOf[Decoder[K]]
+      .newInstance(kc.config.props).asInstanceOf[Decoder[K]]
     val valueDecoder = classTag[T].runtimeClass
       .getConstructor(classOf[VerifiableProperties])
-      .newInstance(kc.config.props)
-      .asInstanceOf[Decoder[V]]
+      .newInstance(kc.config.props).asInstanceOf[Decoder[V]]
     val consumer = connectLeader
     var requestOffset = part.fromOffset
     var iter: Iterator[MessageAndOffset] = null
@@ -167,13 +164,12 @@ private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
     // to minimize number of kafka metadata requests
     private def connectLeader: SimpleConsumer = {
       if (context.attemptNumber > 0) {
-        kc.connectLeader(part.topic, part.partition)
-          .fold(
-            errs =>
-              throw new SparkException(
-                s"Couldn't connect to leader for topic ${part.topic} ${part.partition}: " +
-                  errs.mkString("\n")),
-            consumer => consumer)
+        kc.connectLeader(part.topic, part.partition).fold(
+          errs =>
+            throw new SparkException(
+              s"Couldn't connect to leader for topic ${part.topic} ${part.partition}: " +
+                errs.mkString("\n")),
+          consumer => consumer)
       } else { kc.connect(part.host, part.port) }
     }
 
@@ -193,19 +189,15 @@ private[kafka] class KafkaRDD[K: ClassTag, V: ClassTag, U <: Decoder[
     }
 
     private def fetchBatch: Iterator[MessageAndOffset] = {
-      val req = new FetchRequestBuilder()
-        .addFetch(
-          part.topic,
-          part.partition,
-          requestOffset,
-          kc.config.fetchMessageMaxBytes)
-        .build()
+      val req = new FetchRequestBuilder().addFetch(
+        part.topic,
+        part.partition,
+        requestOffset,
+        kc.config.fetchMessageMaxBytes).build()
       val resp = consumer.fetch(req)
       handleFetchErr(resp)
       // kafka may return a batch that starts before the requested offset
-      resp
-        .messageSet(part.topic, part.partition)
-        .iterator
+      resp.messageSet(part.topic, part.partition).iterator
         .dropWhile(_.offset < requestOffset)
     }
 
@@ -262,9 +254,8 @@ private[kafka] object KafkaRDD {
       untilOffsets: Map[TopicAndPartition, LeaderOffset],
       messageHandler: MessageAndMetadata[K, V] => R)
       : KafkaRDD[K, V, U, T, R] = {
-    val leaders = untilOffsets.map {
-      case (tp, lo) => tp -> (lo.host, lo.port)
-    }.toMap
+    val leaders = untilOffsets.map { case (tp, lo) => tp -> (lo.host, lo.port) }
+      .toMap
 
     val offsetRanges = fromOffsets.map {
       case (tp, fo) =>

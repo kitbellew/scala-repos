@@ -37,66 +37,66 @@ object Cross {
   }
   def spacedFirst(name: String) = opOrIDSpaced(name) ~ any.+
 
-  lazy val switchVersion = Command.arb(
-    requireSession(switchParser),
-    switchHelp) {
-    case (state, (arg, command)) =>
-      val x = Project.extract(state)
-      import x._
+  lazy val switchVersion = Command
+    .arb(requireSession(switchParser), switchHelp) {
+      case (state, (arg, command)) =>
+        val x = Project.extract(state)
+        import x._
 
-      val (resolveVersion, homePath) = arg.split("=") match {
-        case Array(v, h) => (v, h)
-        case _           => ("", arg)
-      }
-      val home = IO.resolve(x.currentProject.base, new File(homePath))
-      // Basic Algorithm.
-      // 1. First we figure out what the new scala instances should be, create settings for them.
-      // 2. Find any non-overridden scalaVersion setting in the whole build and force it to delegate
-      //    to the new global settings.
-      // 3. Append these to the session, so that the session is up-to-date and
-      //    things like set/session clear, etc. work.
-      val (add, exclude) =
-        if (home.exists) {
-          val instance = ScalaInstance(home)(state.classLoaderCache.apply _)
-          state.log.info(
-            "Setting Scala home to " + home + " with actual version " + instance.actualVersion)
-          val version =
-            if (resolveVersion.isEmpty) instance.actualVersion
-            else resolveVersion
-          state.log.info(
-            "\tand using " + version + " for resolving dependencies.")
-          val settings = Seq(
-            scalaVersion in GlobalScope :== version,
-            scalaHome in GlobalScope :== Some(home),
-            scalaInstance in GlobalScope :== instance)
-          (
-            settings,
-            excludeKeys(
-              Set(scalaVersion.key, scalaHome.key, scalaInstance.key)))
-        } else if (!resolveVersion.isEmpty) {
-          sys.error("Scala home directory did not exist: " + home)
-        } else {
-          state.log.info("Setting version to " + arg)
-          val settings = Seq(
-            scalaVersion in GlobalScope :== arg,
-            scalaHome in GlobalScope :== None)
-          (settings, excludeKeys(Set(scalaVersion.key, scalaHome.key)))
+        val (resolveVersion, homePath) = arg.split("=") match {
+          case Array(v, h) => (v, h)
+          case _           => ("", arg)
         }
+        val home = IO.resolve(x.currentProject.base, new File(homePath))
+        // Basic Algorithm.
+        // 1. First we figure out what the new scala instances should be, create settings for them.
+        // 2. Find any non-overridden scalaVersion setting in the whole build and force it to delegate
+        //    to the new global settings.
+        // 3. Append these to the session, so that the session is up-to-date and
+        //    things like set/session clear, etc. work.
+        val (add, exclude) =
+          if (home.exists) {
+            val instance = ScalaInstance(home)(state.classLoaderCache.apply _)
+            state.log.info(
+              "Setting Scala home to " + home + " with actual version " + instance
+                .actualVersion)
+            val version =
+              if (resolveVersion.isEmpty) instance.actualVersion
+              else resolveVersion
+            state.log
+              .info("\tand using " + version + " for resolving dependencies.")
+            val settings = Seq(
+              scalaVersion in GlobalScope :== version,
+              scalaHome in GlobalScope :== Some(home),
+              scalaInstance in GlobalScope :== instance)
+            (
+              settings,
+              excludeKeys(
+                Set(scalaVersion.key, scalaHome.key, scalaInstance.key)))
+          } else if (!resolveVersion.isEmpty) {
+            sys.error("Scala home directory did not exist: " + home)
+          } else {
+            state.log.info("Setting version to " + arg)
+            val settings = Seq(
+              scalaVersion in GlobalScope :== arg,
+              scalaHome in GlobalScope :== None)
+            (settings, excludeKeys(Set(scalaVersion.key, scalaHome.key)))
+          }
 
-      val isForceGc = getOpt(
-        Keys.forcegc in Global) getOrElse GCUtil.defaultForceGarbageCollection
-      // This is how to get the interval, but ignore it, and just forcegc
-      // val gcInterval = getOpt(Keys.minForcegcInterval in Global) getOrElse GCUtil.defaultMinForcegcInterval
-      if (isForceGc) { GCUtil.forceGc(state.log) }
+        val isForceGc = getOpt(Keys.forcegc in Global) getOrElse GCUtil
+          .defaultForceGarbageCollection
+        // This is how to get the interval, but ignore it, and just forcegc
+        // val gcInterval = getOpt(Keys.minForcegcInterval in Global) getOrElse GCUtil.defaultMinForcegcInterval
+        if (isForceGc) { GCUtil.forceGc(state.log) }
 
-      // TODO - Track delegates and avoid regenerating.
-      val delegates: Seq[Setting[_]] = session.mergeSettings collect {
-        case x if exclude(x) => delegateToGlobal(x.key)
-      }
-      val fixedSession = session.appendRaw(add ++ delegates)
-      val fixedState = BuiltinCommands.reapply(fixedSession, structure, state)
-      if (!command.isEmpty) command :: fixedState else fixedState
-  }
+        // TODO - Track delegates and avoid regenerating.
+        val delegates: Seq[Setting[_]] = session.mergeSettings collect {
+          case x if exclude(x) => delegateToGlobal(x.key)
+        }
+        val fixedSession = session.appendRaw(add ++ delegates)
+        val fixedState = BuiltinCommands.reapply(fixedSession, structure, state)
+        if (!command.isEmpty) command :: fixedState else fixedState
+    }
 
   // Creates a delegate for a scoped key that pulls the setting from the global scope.
   private[this] def delegateToGlobal[T](key: ScopedKey[T]): Setting[_] =

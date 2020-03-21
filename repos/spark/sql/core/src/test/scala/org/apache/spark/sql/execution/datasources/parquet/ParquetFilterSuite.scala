@@ -64,8 +64,7 @@ class ParquetFilterSuite
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
-        val query = df
-          .select(output.map(e => Column(e)): _*)
+        val query = df.select(output.map(e => Column(e)): _*)
           .where(Column(predicate))
 
         var maybeRelation: Option[HadoopFsRelation] = None
@@ -77,16 +76,13 @@ class ParquetFilterSuite
                   LogicalRelation(relation: HadoopFsRelation, _, _)) =>
               maybeRelation = Some(relation)
               filters
-          }
-          .flatten
-          .reduceLeftOption(_ && _)
+          }.flatten.reduceLeftOption(_ && _)
         assert(
           maybeAnalyzedPredicate.isDefined,
           "No filter is analyzed from the given query")
 
-        val (_, selectedFilters) = DataSourceStrategy.selectFilters(
-          maybeRelation.get,
-          maybeAnalyzedPredicate.toSeq)
+        val (_, selectedFilters) = DataSourceStrategy
+          .selectFilters(maybeRelation.get, maybeAnalyzedPredicate.toSeq)
         assert(selectedFilters.nonEmpty, "No filter is pushed down")
 
         selectedFilters.foreach { pred =>
@@ -411,8 +407,7 @@ class ParquetFilterSuite
         // If the "part = 1" filter gets pushed down, this query will throw an exception since
         // "part" is not a valid column in the actual Parquet file
         checkAnswer(
-          sqlContext.read
-            .parquet(dir.getCanonicalPath)
+          sqlContext.read.parquet(dir.getCanonicalPath)
             .filter("a > 0 and (part = 0 or a > 1)"),
           (2 to 3).map(i => Row(i, i.toString, 1)))
       }
@@ -426,12 +421,8 @@ class ParquetFilterSuite
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}"
-        (1 to 3)
-          .map(i => (i, i + 1, i + 2, i + 3))
-          .toDF("a", "b", "c", "d")
-          .write
-          .partitionBy("a")
-          .parquet(path)
+        (1 to 3).map(i => (i, i + 1, i + 2, i + 3)).toDF("a", "b", "c", "d")
+          .write.partitionBy("a").parquet(path)
 
         // The filter "a > 1 or b < 2" will not get pushed down, and the projection is empty,
         // this query will throw an exception since the project from combinedFilter expect
@@ -449,12 +440,8 @@ class ParquetFilterSuite
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}"
-        (1 to 3)
-          .map(i => (i, i + 1, i + 2, i + 3))
-          .toDF("a", "b", "c", "d")
-          .write
-          .partitionBy("a")
-          .parquet(path)
+        (1 to 3).map(i => (i, i + 1, i + 2, i + 3)).toDF("a", "b", "c", "d")
+          .write.partitionBy("a").parquet(path)
 
         // test the generate new projection case
         // when projects != partitionAndNormalColumnProjs
@@ -462,9 +449,7 @@ class ParquetFilterSuite
         val df1 = sqlContext.read.parquet(dir.getCanonicalPath)
 
         checkAnswer(
-          df1
-            .filter("a > 1 or b > 2")
-            .orderBy("a")
+          df1.filter("a > 1 or b > 2").orderBy("a")
             .selectExpr("a", "b", "c", "d"),
           (2 to 3).map(i => Row(i, i + 1, i + 2, i + 3)))
       }
@@ -486,21 +471,15 @@ class ParquetFilterSuite
 
         // If the "c = 1" filter gets pushed down, this query will throw an exception which
         // Parquet emits. This is a Parquet issue (PARQUET-389).
-        val df = sqlContext.read
-          .parquet(pathOne, pathTwo)
-          .filter("c = 1")
+        val df = sqlContext.read.parquet(pathOne, pathTwo).filter("c = 1")
           .selectExpr("c", "b", "a")
         checkAnswer(df, Row(1, "1", null))
 
         // The fields "a" and "c" only exist in one Parquet file.
-        assert(
-          df.schema("a")
-            .metadata
-            .getBoolean(StructType.metadataKeyForOptionalField))
-        assert(
-          df.schema("c")
-            .metadata
-            .getBoolean(StructType.metadataKeyForOptionalField))
+        assert(df.schema("a").metadata.getBoolean(
+          StructType.metadataKeyForOptionalField))
+        assert(df.schema("c").metadata.getBoolean(
+          StructType.metadataKeyForOptionalField))
 
         val pathThree = s"${dir.getCanonicalPath}/table3"
         df.write.parquet(pathThree)
@@ -520,10 +499,8 @@ class ParquetFilterSuite
 
         // If the "s.c = 1" filter gets pushed down, this query will throw an exception which
         // Parquet emits.
-        val dfStruct3 = sqlContext.read
-          .parquet(pathFour, pathFive)
-          .filter("s.c = 1")
-          .selectExpr("s")
+        val dfStruct3 = sqlContext.read.parquet(pathFour, pathFive)
+          .filter("s.c = 1").selectExpr("s")
         checkAnswer(dfStruct3, Row(Row(null, 1)))
 
         // The fields "s.a" and "s.c" only exist in one Parquet file.
@@ -543,30 +520,22 @@ class ParquetFilterSuite
 
         // sanity test: make sure optional metadata field is not wrongly set.
         val pathSeven = s"${dir.getCanonicalPath}/table7"
-        (
-          1 to 3
-        ).map(i => (i, i.toString)).toDF("a", "b").write.parquet(pathSeven)
+        (1 to 3).map(i => (i, i.toString)).toDF("a", "b").write
+          .parquet(pathSeven)
         val pathEight = s"${dir.getCanonicalPath}/table8"
-        (
-          4 to 6
-        ).map(i => (i, i.toString)).toDF("a", "b").write.parquet(pathEight)
+        (4 to 6).map(i => (i, i.toString)).toDF("a", "b").write
+          .parquet(pathEight)
 
-        val df2 = sqlContext.read
-          .parquet(pathSeven, pathEight)
-          .filter("a = 1")
+        val df2 = sqlContext.read.parquet(pathSeven, pathEight).filter("a = 1")
           .selectExpr("a", "b")
         checkAnswer(df2, Row(1, "1"))
 
         // The fields "a" and "b" exist in both two Parquet files. No metadata is set.
         assert(
-          !df2
-            .schema("a")
-            .metadata
+          !df2.schema("a").metadata
             .contains(StructType.metadataKeyForOptionalField))
         assert(
-          !df2
-            .schema("b")
-            .metadata
+          !df2.schema("b").metadata
             .contains(StructType.metadataKeyForOptionalField))
       }
     }
@@ -598,9 +567,8 @@ class ParquetFilterSuite
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}/table1"
-        (
-          1 to 5
-        ).map(i => (i, (i % 2).toString)).toDF("a", "b").write.parquet(path)
+        (1 to 5).map(i => (i, (i % 2).toString)).toDF("a", "b").write
+          .parquet(path)
 
         checkAnswer(
           sqlContext.read.parquet(path).where("not (a = 2) or not(b in ('1'))"),
@@ -650,9 +618,8 @@ class ParquetFilterSuite
       withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
         withTempPath { dir =>
           val path = s"${dir.getCanonicalPath}/table1"
-          (
-            1 to 5
-          ).map(i => (i.toFloat, i % 3)).toDF("a", "b").write.parquet(path)
+          (1 to 5).map(i => (i.toFloat, i % 3)).toDF("a", "b").write
+            .parquet(path)
 
           // When a filter is pushed to Parquet, Parquet can apply it to every row.
           // So, we can check the number of rows returned from the Parquet
@@ -663,13 +630,11 @@ class ParquetFilterSuite
           val df1 = sqlContext.read.parquet(path).where("not (b in (1))")
           assert(stripSparkFilter(df1).count == 3)
 
-          val df2 = sqlContext.read
-            .parquet(path)
+          val df2 = sqlContext.read.parquet(path)
             .where("not (b in (1,3) or a <= 2)")
           assert(stripSparkFilter(df2).count == 2)
 
-          val df3 = sqlContext.read
-            .parquet(path)
+          val df3 = sqlContext.read.parquet(path)
             .where("not (b in (1,3) and a <= 2)")
           assert(stripSparkFilter(df3).count == 4)
 

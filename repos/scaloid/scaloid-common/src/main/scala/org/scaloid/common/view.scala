@@ -146,8 +146,7 @@ trait TraitView[This <: android.view.View]
   def hereWithoutStyle[LP <: ViewGroupLayoutParams[_, _]](implicit
       defaultLayoutParam: This => LP) = {
     val parent = parentViewGroupIfExists
-    if (parent != null)(parent.basis
-      .asInstanceOf[ViewGroup])
+    if (parent != null)(parent.basis.asInstanceOf[ViewGroup])
       .addView(basis) // TODO remove asInstanceOf
     basis
   }
@@ -2270,8 +2269,8 @@ trait TraitView[This <: android.view.View]
   def onLayoutChange[U](
       f: (android.view.View, Int, Int, Int, Int, Int, Int, Int, Int) => U)
       : This = {
-    basis.addOnLayoutChangeListener(
-      new android.view.View.OnLayoutChangeListener {
+    basis
+      .addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener {
         def onLayoutChange(
             p1: android.view.View,
             p2: Int,
@@ -2288,8 +2287,8 @@ trait TraitView[This <: android.view.View]
 
   @inline
   def onLayoutChange[U](f: => U): This = {
-    basis.addOnLayoutChangeListener(
-      new android.view.View.OnLayoutChangeListener {
+    basis
+      .addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener {
         def onLayoutChange(
             p1: android.view.View,
             p2: Int,
@@ -2420,7 +2419,8 @@ object SView {
       context: android.content.Context,
       defaultLayoutParam: SView => LP): SView = {
     val v = new SView
-    v.<<.parent.+=(v)
+    v
+      .<<.parent.+=(v)
     v
   }
 
@@ -3155,7 +3155,8 @@ object SSurfaceView {
       context: android.content.Context,
       defaultLayoutParam: SSurfaceView => LP): SSurfaceView = {
     val v = new SSurfaceView
-    v.<<.parent.+=(v)
+    v
+      .<<.parent.+=(v)
     v
   }
 
@@ -3438,7 +3439,8 @@ object STextureView {
       context: android.content.Context,
       defaultLayoutParam: STextureView => LP): STextureView = {
     val v = new STextureView
-    v.<<.parent.+=(v)
+    v
+      .<<.parent.+=(v)
     v
   }
 

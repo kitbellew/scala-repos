@@ -19,9 +19,8 @@ object ScalatraServlet {
       request != null,
       "The request can't be null for getting the request path")
     def startIndex(r: HttpServletRequest) =
-      r.getContextPath.blankOption
-        .map(_.length)
-        .getOrElse(0) + r.getServletPath.blankOption.map(_.length).getOrElse(0)
+      r.getContextPath.blankOption.map(_.length).getOrElse(0) + r.getServletPath
+        .blankOption.map(_.length).getOrElse(0)
     def getRequestPath(r: HttpServletRequest) = {
       val u = (catching(classOf[NullPointerException]) opt {
         r.getRequestURI

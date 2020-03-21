@@ -30,8 +30,7 @@ class DecompilerTest extends TestCase {
         (new File(new jFile(insidePath)).toByteArray(), insidePath + ".test")
       }
 
-    val expectedResult = new File(new jFile(expectedFilePath))
-      .slurp()
+    val expectedResult = new File(new jFile(expectedFilePath)).slurp()
       .replace("\r", "")
 
     (Decompiler.decompile(fileName, bytes): @unchecked) match {

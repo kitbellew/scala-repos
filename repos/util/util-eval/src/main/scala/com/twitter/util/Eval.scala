@@ -148,8 +148,7 @@ class Eval(target: Option[File]) {
   def apply[T](files: File*): T = {
     if (target.isDefined) {
       val targetDir = target.get
-      val unprocessedSource = files
-        .map { scala.io.Source.fromFile(_).mkString }
+      val unprocessedSource = files.map { scala.io.Source.fromFile(_).mkString }
         .mkString("\n")
       val processed = sourceForString(unprocessedSource)
       val sourceChecksum = uniqueId(processed, None)
@@ -206,11 +205,7 @@ class Eval(target: Option[File]) {
       code: String,
       resetState: Boolean): T = {
     val cls = compiler(wrapCodeInClass(className, code), className, resetState)
-    cls
-      .getConstructor()
-      .newInstance()
-      .asInstanceOf[() => Any]
-      .apply()
+    cls.getConstructor().newInstance().asInstanceOf[() => Any].apply()
       .asInstanceOf[T]
   }
 
@@ -347,10 +342,8 @@ class Eval(target: Option[File]) {
         acc: List[List[String]] = List.empty): List[List[String]] = {
       val cp = cl match {
         case urlClassLoader: URLClassLoader =>
-          urlClassLoader.getURLs
-            .filter(_.getProtocol == "file")
-            .map(u => new File(u.toURI).getPath)
-            .toList
+          urlClassLoader.getURLs.filter(_.getProtocol == "file")
+            .map(u => new File(u.toURI).getPath).toList
         case _ => Nil
       }
       cl.getParent match {
@@ -371,10 +364,9 @@ class Eval(target: Option[File]) {
           .getValue("Class-Path")
         if (nestedClassPath eq null) { Nil }
         else {
-          nestedClassPath
-            .split(" ")
-            .map { f => new File(relativeRoot, f).getAbsolutePath }
-            .toList
+          nestedClassPath.split(" ").map { f =>
+            new File(relativeRoot, f).getAbsolutePath
+          }.toList
         }
       } else { Nil }
     ) ::: classPath.tail.flatten
@@ -464,8 +456,8 @@ class Eval(target: Option[File]) {
     outputDirs.setSingleOutput(compilerOutputDir)
     private[this] val pathList = compilerPath ::: libPath
     bootclasspath.value = pathList.mkString(File.pathSeparator)
-    classpath.value = (pathList ::: impliedClassPath).mkString(
-      File.pathSeparator)
+    classpath.value = (pathList ::: impliedClassPath)
+      .mkString(File.pathSeparator)
   }
 
   /**
@@ -533,8 +525,8 @@ class Eval(target: Option[File]) {
         case None => { target.asInstanceOf[VirtualDirectory].clear() }
         case Some(t) => {
           target.foreach { abstractFile =>
-            if (abstractFile.file == null || abstractFile.file.getName.endsWith(
-                  ".class")) { abstractFile.delete() }
+            if (abstractFile.file == null || abstractFile.file.getName
+                  .endsWith(".class")) { abstractFile.delete() }
           }
         }
       }

@@ -36,29 +36,23 @@ object DecisionTreeRegressionExample {
 
     // $example on$
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = sqlContext.read
-      .format("libsvm")
+    val data = sqlContext.read.format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 
     // Automatically identify categorical features, and index them.
     // Here, we treat features with > 4 distinct values as continuous.
-    val featureIndexer = new VectorIndexer()
-      .setInputCol("features")
-      .setOutputCol("indexedFeatures")
-      .setMaxCategories(4)
-      .fit(data)
+    val featureIndexer = new VectorIndexer().setInputCol("features")
+      .setOutputCol("indexedFeatures").setMaxCategories(4).fit(data)
 
     // Split the data into training and test sets (30% held out for testing)
     val Array(trainingData, testData) = data.randomSplit(Array(0.7, 0.3))
 
     // Train a DecisionTree model.
-    val dt = new DecisionTreeRegressor()
-      .setLabelCol("label")
+    val dt = new DecisionTreeRegressor().setLabelCol("label")
       .setFeaturesCol("indexedFeatures")
 
     // Chain indexer and tree in a Pipeline
-    val pipeline = new Pipeline()
-      .setStages(Array(featureIndexer, dt))
+    val pipeline = new Pipeline().setStages(Array(featureIndexer, dt))
 
     // Train model.  This also runs the indexer.
     val model = pipeline.fit(trainingData)
@@ -70,10 +64,8 @@ object DecisionTreeRegressionExample {
     predictions.select("prediction", "label", "features").show(5)
 
     // Select (prediction, true label) and compute test error
-    val evaluator = new RegressionEvaluator()
-      .setLabelCol("label")
-      .setPredictionCol("prediction")
-      .setMetricName("rmse")
+    val evaluator = new RegressionEvaluator().setLabelCol("label")
+      .setPredictionCol("prediction").setMetricName("rmse")
     val rmse = evaluator.evaluate(predictions)
     println("Root Mean Squared Error (RMSE) on test data = " + rmse)
 

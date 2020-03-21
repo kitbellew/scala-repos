@@ -89,26 +89,21 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
 
     // needs to be eager to break circular dependencies
     bind(classOf[SchedulerCallbacks])
-      .to(classOf[SchedulerCallbacksServiceAdapter])
-      .asEagerSingleton()
+      .to(classOf[SchedulerCallbacksServiceAdapter]).asEagerSingleton()
 
     bind(classOf[MarathonSchedulerDriverHolder]).in(Scopes.SINGLETON)
     bind(classOf[SchedulerDriverFactory])
-      .to(classOf[MesosSchedulerDriverFactory])
-      .in(Scopes.SINGLETON)
+      .to(classOf[MesosSchedulerDriverFactory]).in(Scopes.SINGLETON)
     bind(classOf[MarathonLeaderInfoMetrics]).in(Scopes.SINGLETON)
     bind(classOf[MarathonScheduler]).in(Scopes.SINGLETON)
     bind(classOf[MarathonSchedulerService]).in(Scopes.SINGLETON)
     bind(classOf[LeadershipAbdication]).to(classOf[MarathonSchedulerService])
-    bind(classOf[LeaderInfo])
-      .to(classOf[MarathonLeaderInfo])
+    bind(classOf[LeaderInfo]).to(classOf[MarathonLeaderInfo])
       .in(Scopes.SINGLETON)
-    bind(classOf[TaskOpFactory])
-      .to(classOf[TaskOpFactoryImpl])
+    bind(classOf[TaskOpFactory]).to(classOf[TaskOpFactoryImpl])
       .in(Scopes.SINGLETON)
 
-    bind(classOf[HealthCheckManager])
-      .to(classOf[MarathonHealthCheckManager])
+    bind(classOf[HealthCheckManager]).to(classOf[MarathonHealthCheckManager])
       .asEagerSingleton()
 
     bind(classOf[String])
@@ -176,8 +171,7 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
         None,
         sessionTimeout,
         new JavaTimer(isDaemon = true))
-      val client = ZkClient(connector)
-        .withAcl(Ids.OPEN_ACL_UNSAFE.asScala)
+      val client = ZkClient(connector).withAcl(Ids.OPEN_ACL_UNSAFE.asScala)
         .withRetries(3)
       val compressionConf = CompressionConf(
         conf.zooKeeperCompressionEnabled(),
@@ -248,22 +242,20 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       new HistoryActor(eventBus, taskFailureRepository))
 
     system.actorOf(
-      MarathonSchedulerActor
-        .props(
-          createSchedulerActions,
-          deploymentManagerProps,
-          historyActorProps,
-          appRepository,
-          deploymentRepository,
-          healthCheckManager,
-          taskTracker,
-          taskQueue,
-          driverHolder,
-          leaderInfo,
-          eventBus
-        )
-        .withRouter(
-          RoundRobinPool(nrOfInstances = 1, supervisorStrategy = supervision)),
+      MarathonSchedulerActor.props(
+        createSchedulerActions,
+        deploymentManagerProps,
+        historyActorProps,
+        appRepository,
+        deploymentRepository,
+        healthCheckManager,
+        taskTracker,
+        taskQueue,
+        driverHolder,
+        leaderInfo,
+        eventBus
+      ).withRouter(
+        RoundRobinPool(nrOfInstances = 1, supervisorStrategy = supervision)),
       "MarathonScheduler"
     )
   }
@@ -335,7 +327,8 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
   @Provides @Singleton
   def provideGroupManager(
       @Named(
-        ModuleNames.SERIALIZE_GROUP_UPDATES) serializeUpdates: CapConcurrentExecutions,
+        ModuleNames
+          .SERIALIZE_GROUP_UPDATES) serializeUpdates: CapConcurrentExecutions,
       scheduler: MarathonSchedulerService,
       groupRepo: GroupRepository,
       appRepo: AppRepository,
@@ -355,10 +348,8 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       "service.mesosphere.marathon.app.count",
       new Gauge[Int] {
         override def getValue: Int = {
-          Await
-            .result(groupManager.rootGroup(), conf.zkTimeoutDuration)
-            .transitiveApps
-            .size
+          Await.result(groupManager.rootGroup(), conf.zkTimeoutDuration)
+            .transitiveApps.size
         }
       }
     )
@@ -367,10 +358,8 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       "service.mesosphere.marathon.group.count",
       new Gauge[Int] {
         override def getValue: Int = {
-          Await
-            .result(groupManager.rootGroup(), conf.zkTimeoutDuration)
-            .transitiveGroups
-            .size
+          Await.result(groupManager.rootGroup(), conf.zkTimeoutDuration)
+            .transitiveGroups.size
         }
       }
     )

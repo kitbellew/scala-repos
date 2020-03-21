@@ -88,11 +88,8 @@ class ThrottlerTransportAdapterSpec
       "systemB",
       "localhost",
       rootB.address.port.get)
-    val transport = system
-      .asInstanceOf[ExtendedActorSystem]
-      .provider
-      .asInstanceOf[RemoteActorRefProvider]
-      .transport
+    val transport = system.asInstanceOf[ExtendedActorSystem].provider
+      .asInstanceOf[RemoteActorRefProvider].transport
     Await.result(
       transport.managementCommand(SetThrottle(rootBAddress, direction, mode)),
       3.seconds)
@@ -104,11 +101,8 @@ class ThrottlerTransportAdapterSpec
       "systemB",
       "localhost",
       rootB.address.port.get)
-    val transport = system
-      .asInstanceOf[ExtendedActorSystem]
-      .provider
-      .asInstanceOf[RemoteActorRefProvider]
-      .transport
+    val transport = system.asInstanceOf[ExtendedActorSystem].provider
+      .asInstanceOf[RemoteActorRefProvider].transport
     Await.result(
       transport.managementCommand(ForceDisassociate(rootBAddress)),
       3.seconds)
@@ -117,11 +111,11 @@ class ThrottlerTransportAdapterSpec
   "ThrottlerTransportAdapter" must {
     "maintain average message rate" taggedAs TimingTest in {
       throttle(Direction.Send, TokenBucket(200, 500, 0, 0)) should ===(true)
-      val tester =
-        system.actorOf(Props(classOf[ThrottlingTester], here, self)) ! "start"
+      val tester = system
+        .actorOf(Props(classOf[ThrottlingTester], here, self)) ! "start"
 
-      val time = NANOSECONDS.toSeconds(
-        expectMsgType[Long]((TotalTime + 3).seconds))
+      val time = NANOSECONDS
+        .toSeconds(expectMsgType[Long]((TotalTime + 3).seconds))
       log.warning("Total time of transmission: " + time)
       time should be > (TotalTime - 3)
       throttle(Direction.Send, Unthrottled) should ===(true)

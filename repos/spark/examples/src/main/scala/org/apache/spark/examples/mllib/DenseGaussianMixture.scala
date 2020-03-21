@@ -48,23 +48,20 @@ object DenseGaussianMixture {
     val conf = new SparkConf().setAppName("Gaussian Mixture Model EM example")
     val ctx = new SparkContext(conf)
 
-    val data = ctx
-      .textFile(inputFile)
-      .map { line => Vectors.dense(line.trim.split(' ').map(_.toDouble)) }
-      .cache()
+    val data = ctx.textFile(inputFile).map { line =>
+      Vectors.dense(line.trim.split(' ').map(_.toDouble))
+    }.cache()
 
-    val clusters = new GaussianMixture()
-      .setK(k)
-      .setConvergenceTol(convergenceTol)
-      .setMaxIterations(maxIterations)
+    val clusters = new GaussianMixture().setK(k)
+      .setConvergenceTol(convergenceTol).setMaxIterations(maxIterations)
       .run(data)
 
     for (i <- 0 until clusters.k) {
       println(
         "weight=%f\nmu=%s\nsigma=\n%s\n" format
           (
-            clusters
-              .weights(i), clusters.gaussians(i).mu, clusters.gaussians(i).sigma
+            clusters.weights(i), clusters.gaussians(i).mu, clusters.gaussians(i)
+              .sigma
         ))
     }
 

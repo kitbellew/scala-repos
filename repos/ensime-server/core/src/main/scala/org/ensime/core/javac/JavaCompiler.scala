@@ -66,15 +66,13 @@ class JavaCompiler(
         fm
     }
 
-    compiler
-      .getTask(
-        null,
-        fileManager,
-        listener,
-        List("-cp", cp, "-Xlint:" + lint, "-proc:none").asJava,
-        null,
-        files)
-      .asInstanceOf[JavacTask]
+    compiler.getTask(
+      null,
+      fileManager,
+      listener,
+      List("-cp", cp, "-Xlint:" + lint, "-proc:none").asJava,
+      null,
+      files).asInstanceOf[JavacTask]
   }
 
   def internSource(sf: SourceFileInfo): JavaFileObject = {
@@ -192,8 +190,8 @@ class JavaCompiler(
     try {
       task.parse()
       task.analyze()
-      log.info(
-        "Parsed and analyzed: " + (System.currentTimeMillis() - t) + "ms")
+      log
+        .info("Parsed and analyzed: " + (System.currentTimeMillis() - t) + "ms")
     } catch {
       case e @ (_: Abort | _: ArrayIndexOutOfBoundsException |
           _: AssertionError) => log.error("Javac error: " + e.getMessage())
@@ -208,12 +206,9 @@ class JavaCompiler(
     val task = getTask("none", silencer, workingSet.values)
     val t = System.currentTimeMillis()
     try {
-      val units = task
-        .parse()
-        .asScala
-        .filter { unit => inputJfos.contains(unit.getSourceFile.toUri) }
-        .map(new CompilationInfo(task, _))
-        .toVector
+      val units = task.parse().asScala.filter { unit =>
+        inputJfos.contains(unit.getSourceFile.toUri)
+      }.map(new CompilationInfo(task, _)).toVector
       task.analyze()
       log.info(
         "Parsed and analyzed for trees: " + (System

@@ -91,21 +91,20 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
           logger.warn("Located expired reset token: " + token)
           M.point(-\/("Reset token %s has expired".format(tokenId)))
         } else if (token.usedAt.nonEmpty) {
-          logger.warn(
-            "Reset attempted with previously used reset token: " + token)
+          logger
+            .warn("Reset attempted with previously used reset token: " + token)
           M.point(-\/("Reset token %s has already been used".format(tokenId)))
         } else if (token.accountId != accountId) {
           logger.debug(
             "Located reset token, but with the wrong account (expected %s): %s"
               .format(accountId, token))
           M.point(-\/(
-            "Reset token %s does not match provided account %s".format(
-              tokenId,
-              accountId)))
+            "Reset token %s does not match provided account %s"
+              .format(tokenId, accountId)))
         } else {
           logger.debug("Located reset token " + token)
-          findAccountById(token.accountId).map(_.\/>(
-            "Could not find account by id " + token.accountId))
+          findAccountById(token.accountId)
+            .map(_.\/>("Could not find account by id " + token.accountId))
         }
 
       case None =>

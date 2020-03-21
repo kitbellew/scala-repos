@@ -121,8 +121,8 @@ class DecrBy(val key: ChannelBuffer, val amount: Long)
   override def equals(other: Any) =
     other match {
       case that: DecrBy =>
-        that.canEqual(
-          this) && this.key == that.key && this.amount == that.amount
+        that.canEqual(this) && this.key == that.key && this.amount == that
+          .amount
       case _ => false
     }
   def canEqual(other: Any) = other.isInstanceOf[DecrBy]
@@ -223,8 +223,8 @@ class IncrBy(val key: ChannelBuffer, val amount: Long)
   override def equals(other: Any) =
     other match {
       case that: IncrBy =>
-        that.canEqual(
-          this) && this.key == that.key && this.amount == that.amount
+        that.canEqual(this) && this.key == that.key && this.amount == that
+          .amount
       case _ => false
     }
   def canEqual(other: Any) = other.isInstanceOf[IncrBy]
@@ -496,17 +496,11 @@ trait MultiSetCompanion {
       length % 2 == 0 && length > 0,
       "Expected even number of k/v pairs")
 
-    val map = args
-      .grouped(2)
-      .map {
-        case key :: value :: Nil =>
-          (
-            ChannelBuffers.wrappedBuffer(key),
-            ChannelBuffers.wrappedBuffer(value))
-        case _ =>
-          throw ClientError("Unexpected uneven pair of elements in MSET")
-      }
-      .toMap
+    val map = args.grouped(2).map {
+      case key :: value :: Nil =>
+        (ChannelBuffers.wrappedBuffer(key), ChannelBuffers.wrappedBuffer(value))
+      case _ => throw ClientError("Unexpected uneven pair of elements in MSET")
+    }.toMap
     RequireClientProtocol(
       map.size == length / 2,
       "Broken mapping, map size not equal to group size")

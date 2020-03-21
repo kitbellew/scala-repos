@@ -112,18 +112,18 @@ trait EvaluatorMethodsModule[M[+_]]
 
       val sharedDerefs =
         for ((i, _) <- idMatch.sharedIndices)
-          yield trans.WrapArray(
-            DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
+          yield trans
+            .WrapArray(DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
 
       val unsharedLeft =
         for (i <- idMatch.leftIndices)
-          yield trans.WrapArray(
-            DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
+          yield trans
+            .WrapArray(DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
 
       val unsharedRight =
         for (i <- idMatch.rightIndices)
-          yield trans.WrapArray(
-            DerefArrayStatic(rightIdentitySpec, CPathIndex(i)))
+          yield trans
+            .WrapArray(DerefArrayStatic(rightIdentitySpec, CPathIndex(i)))
 
       val derefs: Seq[TransSpec2] =
         sharedDerefs ++ unsharedLeft ++ unsharedRight
@@ -132,16 +132,14 @@ trait EvaluatorMethodsModule[M[+_]]
         if (derefs.isEmpty) trans.ConstLiteral(CEmptyArray, Leaf(SourceLeft))
         else derefs reduceLeft { trans.InnerArrayConcat(_, _) }
 
-      val wrappedIdentitySpec = trans.WrapObject(
-        newIdentitySpec,
-        paths.Key.name)
+      val wrappedIdentitySpec = trans
+        .WrapObject(newIdentitySpec, paths.Key.name)
 
       val leftValueSpec = DerefObjectStatic(Leaf(SourceLeft), paths.Value)
       val rightValueSpec = DerefObjectStatic(Leaf(SourceRight), paths.Value)
 
-      val wrappedValueSpec = trans.WrapObject(
-        spec(leftValueSpec, rightValueSpec),
-        paths.Value.name)
+      val wrappedValueSpec = trans
+        .WrapObject(spec(leftValueSpec, rightValueSpec), paths.Value.name)
 
       val valueKeySpecs = valueKeys map { key =>
         trans.WrapObject(
@@ -170,9 +168,8 @@ trait EvaluatorMethodsModule[M[+_]]
         leftIdentitySpec,
         rightIdentitySpec)
 
-      val wrappedIdentitySpec = trans.WrapObject(
-        newIdentitySpec,
-        paths.Key.name)
+      val wrappedIdentitySpec = trans
+        .WrapObject(newIdentitySpec, paths.Key.name)
 
       val leftValueSpec = DerefObjectStatic(Leaf(SourceLeft), paths.Value)
       val rightValueSpec = DerefObjectStatic(Leaf(SourceRight), paths.Value)
@@ -185,8 +182,9 @@ trait EvaluatorMethodsModule[M[+_]]
 
     def buildIdShuffleSpec(indexes: Vector[Int]): TransSpec1 = {
       indexes map { idx =>
-        trans.WrapArray(
-          DerefArrayStatic(Leaf(Source), CPathIndex(idx))): TransSpec1
+        trans
+          .WrapArray(
+            DerefArrayStatic(Leaf(Source), CPathIndex(idx))): TransSpec1
       } reduceLeft { trans.InnerArrayConcat(_, _) }
     }
   }

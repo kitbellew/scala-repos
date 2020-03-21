@@ -117,8 +117,7 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
             ms.millisecond)))
 
       val futureSink = newHeadSink
-      val fut = Source(1 to 2)
-        .prefixAndTail(1)
+      val fut = Source(1 to 2).prefixAndTail(1)
         .runWith(futureSink)(tightTimeoutMaterializer)
       val (takes, tail) = Await.result(fut, 3.seconds)
       takes should be(Seq(1))
@@ -138,8 +137,7 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
             1.millisecond)))
 
       val futureSink = newHeadSink
-      val fut = Source(1 to 2)
-        .prefixAndTail(1)
+      val fut = Source(1 to 2).prefixAndTail(1)
         .runWith(futureSink)(tightTimeoutMaterializer)
       val (takes, tail) = Await.result(fut, 3.seconds)
       takes should be(Seq(1))
@@ -164,11 +162,8 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
       val subscriber = TestSubscriber
         .manualProbe[(immutable.Seq[Int], Source[Int, _])]()
 
-      Source
-        .fromPublisher(publisher)
-        .prefixAndTail(3)
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).prefixAndTail(3)
+        .to(Sink.fromSubscriber(subscriber)).run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
@@ -187,11 +182,8 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
       val subscriber = TestSubscriber
         .manualProbe[(immutable.Seq[Int], Source[Int, _])]()
 
-      Source
-        .fromPublisher(publisher)
-        .prefixAndTail(1)
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).prefixAndTail(1)
+        .to(Sink.fromSubscriber(subscriber)).run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
@@ -219,11 +211,8 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
       val subscriber = TestSubscriber
         .manualProbe[(immutable.Seq[Int], Source[Int, _])]()
 
-      Source
-        .fromPublisher(publisher)
-        .prefixAndTail(3)
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).prefixAndTail(3)
+        .to(Sink.fromSubscriber(subscriber)).run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
@@ -242,11 +231,8 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
       val subscriber = TestSubscriber
         .manualProbe[(immutable.Seq[Int], Source[Int, _])]()
 
-      Source
-        .fromPublisher(publisher)
-        .prefixAndTail(1)
-        .to(Sink.fromSubscriber(subscriber))
-        .run()
+      Source.fromPublisher(publisher).prefixAndTail(1)
+        .to(Sink.fromSubscriber(subscriber)).run()
 
       val upstream = publisher.expectSubscription()
       val downstream = subscriber.expectSubscription()
@@ -273,11 +259,8 @@ class FlowPrefixAndTailSpec extends AkkaSpec {
       val down = TestSubscriber
         .manualProbe[(immutable.Seq[Int], Source[Int, _])]()
 
-      val flowSubscriber = Source
-        .asSubscriber[Int]
-        .prefixAndTail(1)
-        .to(Sink.fromSubscriber(down))
-        .run()
+      val flowSubscriber = Source.asSubscriber[Int].prefixAndTail(1)
+        .to(Sink.fromSubscriber(down)).run()
 
       val downstream = down.expectSubscription()
       downstream.cancel()

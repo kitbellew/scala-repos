@@ -54,27 +54,27 @@ class LimitPushdownSuite extends PlanTest {
   test("Union: limit to each side") {
     val unionQuery = Union(testRelation, testRelation2).limit(1)
     val unionOptimized = Optimize.execute(unionQuery.analyze)
-    val unionCorrectAnswer = Limit(
-      1,
-      Union(LocalLimit(1, testRelation), LocalLimit(1, testRelation2))).analyze
+    val unionCorrectAnswer =
+      Limit(1, Union(LocalLimit(1, testRelation), LocalLimit(1, testRelation2)))
+        .analyze
     comparePlans(unionOptimized, unionCorrectAnswer)
   }
 
   test("Union: limit to each side with constant-foldable limit expressions") {
     val unionQuery = Union(testRelation, testRelation2).limit(Add(1, 1))
     val unionOptimized = Optimize.execute(unionQuery.analyze)
-    val unionCorrectAnswer = Limit(
-      2,
-      Union(LocalLimit(2, testRelation), LocalLimit(2, testRelation2))).analyze
+    val unionCorrectAnswer =
+      Limit(2, Union(LocalLimit(2, testRelation), LocalLimit(2, testRelation2)))
+        .analyze
     comparePlans(unionOptimized, unionCorrectAnswer)
   }
 
   test("Union: limit to each side with the new limit number") {
     val unionQuery = Union(testRelation, testRelation2.limit(3)).limit(1)
     val unionOptimized = Optimize.execute(unionQuery.analyze)
-    val unionCorrectAnswer = Limit(
-      1,
-      Union(LocalLimit(1, testRelation), LocalLimit(1, testRelation2))).analyze
+    val unionCorrectAnswer =
+      Limit(1, Union(LocalLimit(1, testRelation), LocalLimit(1, testRelation2)))
+        .analyze
     comparePlans(unionOptimized, unionCorrectAnswer)
   }
 
@@ -84,9 +84,9 @@ class LimitPushdownSuite extends PlanTest {
       testRelation.limit(1),
       testRelation2.select('d).limit(1)).limit(2)
     val unionOptimized = Optimize.execute(unionQuery.analyze)
-    val unionCorrectAnswer = Limit(
-      2,
-      Union(testRelation.limit(1), testRelation2.select('d).limit(1))).analyze
+    val unionCorrectAnswer =
+      Limit(2, Union(testRelation.limit(1), testRelation2.select('d).limit(1)))
+        .analyze
     comparePlans(unionOptimized, unionCorrectAnswer)
   }
 
@@ -160,8 +160,8 @@ class LimitPushdownSuite extends PlanTest {
   test("full outer join where both sides are limited") {
     val originalQuery = x.limit(2).join(y.limit(2), FullOuter).limit(1)
     val optimized = Optimize.execute(originalQuery.analyze)
-    val correctAnswer =
-      Limit(1, Limit(2, x).join(Limit(2, y), FullOuter)).analyze
+    val correctAnswer = Limit(1, Limit(2, x).join(Limit(2, y), FullOuter))
+      .analyze
     comparePlans(optimized, correctAnswer)
   }
 }

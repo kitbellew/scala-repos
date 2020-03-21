@@ -65,10 +65,10 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
       request: HttpServletRequest,
       action: String => Unit): Unit = {
     if (parent.killEnabled &&
-        parent.master.securityMgr.checkModifyPermissions(
-          request.getRemoteUser)) {
-      val killFlag =
-        Option(request.getParameter("terminate")).getOrElse("false").toBoolean
+        parent.master.securityMgr
+          .checkModifyPermissions(request.getRemoteUser)) {
+      val killFlag = Option(request.getParameter("terminate"))
+        .getOrElse("false").toBoolean
       val id = Option(request.getParameter("id"))
       if (id.isDefined && killFlag) { action(id.get) }
 
@@ -97,10 +97,8 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
     val activeApps = state.activeApps.sortBy(_.startTime).reverse
     val activeAppsTable = UIUtils.listingTable(appHeaders, appRow, activeApps)
     val completedApps = state.completedApps.sortBy(_.endTime).reverse
-    val completedAppsTable = UIUtils.listingTable(
-      appHeaders,
-      appRow,
-      completedApps)
+    val completedAppsTable = UIUtils
+      .listingTable(appHeaders, appRow, completedApps)
 
     val driverHeaders = Seq(
       "Submission ID",
@@ -111,15 +109,11 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
       "Memory",
       "Main Class")
     val activeDrivers = state.activeDrivers.sortBy(_.startTime).reverse
-    val activeDriversTable = UIUtils.listingTable(
-      driverHeaders,
-      driverRow,
-      activeDrivers)
+    val activeDriversTable = UIUtils
+      .listingTable(driverHeaders, driverRow, activeDrivers)
     val completedDrivers = state.completedDrivers.sortBy(_.startTime).reverse
-    val completedDriversTable = UIUtils.listingTable(
-      driverHeaders,
-      driverRow,
-      completedDrivers)
+    val completedDriversTable = UIUtils
+      .listingTable(driverHeaders, driverRow, completedDrivers)
 
     // For now we only show driver information if the user has submitted drivers to the cluster.
     // This is until we integrate the notion of drivers and applications in the UI.
@@ -131,14 +125,12 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
             <ul class="unstyled">
               <li><strong>URL:</strong> {state.uri}</li>
               {
-      state.restUri
-        .map { uri =>
-          <li>
+      state.restUri.map { uri =>
+        <li>
                     <strong>REST URL:</strong> {uri}
                     <span class="rest-uri"> (cluster mode)</span>
                   </li>
-        }
-        .getOrElse { Seq.empty }
+      }.getOrElse { Seq.empty }
     }
               <li><strong>Alive Workers:</strong> {aliveWorkers.length}</li>
               <li><strong>Cores in use:</strong> {aliveWorkers.map(_.cores).sum} Total,
@@ -225,9 +217,8 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
   private def appRow(app: ApplicationInfo): Seq[Node] = {
     val killLink =
       if (parent.killEnabled &&
-          (
-            app.state == ApplicationState.RUNNING || app.state == ApplicationState.WAITING
-          )) {
+          (app.state == ApplicationState.RUNNING || app
+            .state == ApplicationState.WAITING)) {
         val confirm =
           s"if (window.confirm('Are you sure you want to kill application ${app.id} ?')) " +
             "{ this.parentNode.submit(); return true; } else { return false; }"

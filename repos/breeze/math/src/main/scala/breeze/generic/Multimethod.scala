@@ -328,8 +328,8 @@ trait MMRegistry3[R] {
             aa.isAssignableFrom(pair._1) && bb.isAssignableFrom(pair._2)) && cc
             .isAssignableFrom(pair._3)) {
         bestCandidates = bestCandidates.filterNot(pair =>
-          pair._1.isAssignableFrom(aa) && pair._2.isAssignableFrom(
-            bb) && pair._3.isAssignableFrom(cc))
+          pair._1.isAssignableFrom(aa) && pair._2.isAssignableFrom(bb) && pair
+            ._3.isAssignableFrom(cc))
         bestCandidates += pair
       }
     }

@@ -107,15 +107,14 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     val file = position.getFile
     throwIfNotScalaFile(file)
 
-    val generatedClassName = file.getUserData(
-      ScalaCompilingEvaluator.classNameKey)
+    val generatedClassName = file
+      .getUserData(ScalaCompilingEvaluator.classNameKey)
 
     def hasLocations(
         refType: ReferenceType,
         position: SourcePosition): Boolean = {
       try {
-        val generated = generatedClassName != null && refType
-          .name()
+        val generated = generatedClassName != null && refType.name()
           .contains(generatedClassName)
         lazy val sameFile =
           getPsiFileByReferenceType(file.getProject, refType) == file
@@ -136,10 +135,10 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
       if (onTheLine.isEmpty) return Collections.emptyList()
       val nonLambdaParent =
         if (isCompiledWithIndyLambdas(file)) {
-          val nonStrictParents =
-            Iterator(onTheLine.head) ++ onTheLine.head.parentsInFile
-          nonStrictParents.find(p =>
-            ScalaEvaluatorBuilderUtil.isGenerateNonAnonfunClass(p))
+          val nonStrictParents = Iterator(onTheLine.head) ++ onTheLine.head
+            .parentsInFile
+          nonStrictParents
+            .find(p => ScalaEvaluatorBuilderUtil.isGenerateNonAnonfunClass(p))
         } else None
 
       val sourceImages = onTheLine ++ nonLambdaParent
@@ -151,8 +150,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
             if (isDelayedInit(td)) Seq(s"$qName$delayedInitBody") else Nil
           (qName +: delayedBodyName).foreach { name =>
             exactClasses ++= debugProcess.getVirtualMachineProxy
-              .classesByName(name)
-              .asScala
+              .classesByName(name).asScala
           }
         case elem =>
           val namePattern = NamePattern.forElement(elem)
@@ -309,10 +307,11 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
       element match {
         case null => null
         case ws: PsiWhiteSpace
-            if document.getLineNumber(
-              element.getTextRange.getEndOffset) == position.getLine =>
-          val nextElement = file.findElementAt(
-            element.getTextRange.getEndOffset)
+            if document
+              .getLineNumber(element.getTextRange.getEndOffset) == position
+              .getLine =>
+          val nextElement = file
+            .findElementAt(element.getTextRange.getEndOffset)
           nonWhitespaceInner(nextElement, document)
         case _ => element
       }
@@ -321,8 +320,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     else {
       val firstElement = file.findElementAt(position.getOffset)
       try {
-        val document = PsiDocumentManager
-          .getInstance(file.getProject)
+        val document = PsiDocumentManager.getInstance(file.getProject)
           .getDocument(file)
         nonWhitespaceInner(firstElement, document)
       } catch { case t: Throwable => firstElement }
@@ -351,9 +349,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         val paramNumber = defaultArgIndex.toInt - 1
         possiblePositions.find {
           case e =>
-            val scParameters = PsiTreeUtil.getParentOfType(
-              e,
-              classOf[ScParameters])
+            val scParameters = PsiTreeUtil
+              .getParentOfType(e, classOf[ScParameters])
             if (scParameters != null) {
               val param = scParameters.params(paramNumber)
               param.isDefaultParam && param.isAncestorOf(e)
@@ -445,8 +442,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
             if !isFound
             vFile <- vDir.findChild(fileName).toOption
           } {
-            val psiFile: PsiFile = PsiManager
-              .getInstance(project)
+            val psiFile: PsiFile = PsiManager.getInstance(project)
               .findFile(vFile)
             val debugFile: PsiFile = ScalaMacroDebuggingUtil
               .loadCode(psiFile, force = false)
@@ -469,8 +465,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         val dollarTestSuffix = "$Test" //See SCL-9340
         if (originalQName.endsWith(dollarTestSuffix)) Some(originalQName)
         else if (originalQName.contains(dollarTestSuffix + "$")) {
-          val index =
-            originalQName.indexOf(dollarTestSuffix) + dollarTestSuffix.length
+          val index = originalQName.indexOf(dollarTestSuffix) + dollarTestSuffix
+            .length
           Some(originalQName.take(index))
         } else None
       }
@@ -488,8 +484,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         val originalQName = NameTransformer.decode(refType.name)
 
         if (!ScalaMacroDebuggingUtil.isEnabled) {
-          val clazz = withDollarTestName(originalQName)
-            .flatMap(tryToFindClass)
+          val clazz = withDollarTestName(originalQName).flatMap(tryToFindClass)
             .orElse(tryToFindClass(topLevelClassName(originalQName)))
           clazz.map(_.getNavigationElement.getContainingFile).orNull
         } else searchForMacroDebugging(topLevelClassName(originalQName))
@@ -518,8 +513,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
 
   def findElementByReferenceType(refType: ReferenceType): Option[PsiElement] = {
     def createPointer(elem: PsiElement) =
-      SmartPointerManager
-        .getInstance(debugProcess.getProject)
+      SmartPointerManager.getInstance(debugProcess.getProject)
         .createSmartPsiElementPointer(elem)
 
     refTypeToElementCache.get(refType) match {
@@ -569,8 +563,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     }
 
     def isAppropriateCandidate(elem: PsiElement) = {
-      checkLines(elem, document) && ScalaEvaluatorBuilderUtil.isGenerateClass(
-        elem) && nameMatches(elem, refType)
+      checkLines(elem, document) && ScalaEvaluatorBuilderUtil
+        .isGenerateClass(elem) && nameMatches(elem, refType)
     }
 
     def findCandidates(): Seq[PsiElement] = {
@@ -593,15 +587,12 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     }
 
     def filterWithSignature(candidates: Seq[PsiElement]) = {
-      val applySignature = refType
-        .methodsByName("apply")
-        .asScala
-        .find(m => !m.isSynthetic)
-        .map(_.signature())
+      val applySignature = refType.methodsByName("apply").asScala
+        .find(m => !m.isSynthetic).map(_.signature())
       if (applySignature.isEmpty) candidates
       else {
-        candidates.filter(l =>
-          applySignature == DebuggerUtil.lambdaJVMSignature(l))
+        candidates
+          .filter(l => applySignature == DebuggerUtil.lambdaJVMSignature(l))
       }
     }
 
@@ -610,8 +601,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     if (candidates.size <= 1) return candidates.headOption
 
     if (refTypeLines.size > 1) {
-      val withExactlySameLines = candidates.filter(
-        elementLineRange(_, document) == refTypeLines)
+      val withExactlySameLines = candidates
+        .filter(elementLineRange(_, document) == refTypeLines)
       if (withExactlySameLines.size == 1) return withExactlySameLines.headOption
     }
 
@@ -620,8 +611,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     val filteredWithSignature = filterWithSignature(candidates)
     if (filteredWithSignature.size == 1) return filteredWithSignature.headOption
 
-    val byContainingClasses = filteredWithSignature.groupBy(c =>
-      findGeneratingClassOrMethodParent(c.getParent))
+    val byContainingClasses = filteredWithSignature
+      .groupBy(c => findGeneratingClassOrMethodParent(c.getParent))
     if (byContainingClasses.size > 1) {
       findContainingClass(refType) match {
         case Some(e) => return byContainingClasses.get(e).flatMap(_.headOption)
@@ -685,9 +676,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     val withoutSuffix =
       if (originalQName.endsWith(packageSuffix)) originalQName
       else
-        originalQName
-          .replace(packageSuffix, ".")
-          .stripSuffix("$")
+        originalQName.replace(packageSuffix, ".").stripSuffix("$")
           .stripSuffix("$class")
     val lastDollar = withoutSuffix.lastIndexOf('$')
     val lastDot = withoutSuffix.lastIndexOf('.')
@@ -696,9 +685,8 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     val isScalaObject = originalQName.endsWith("$")
 
     val cacheManager = ScalaShortNamesCacheManager.getInstance(project)
-    val classes = cacheManager.getClassesByName(
-      name,
-      GlobalSearchScope.allScope(project))
+    val classes = cacheManager
+      .getClassesByName(name, GlobalSearchScope.allScope(project))
 
     val inSameFile = classes.filter(c => c.isValid && sameFileName(c))
 
@@ -779,8 +767,7 @@ object ScalaPositionManager {
           Result.create(mutable.HashMap[Int, Seq[PsiElement]](), file)
       }
 
-    CachedValuesManager
-      .getCachedValue(file, cacheProvider)
+    CachedValuesManager.getCachedValue(file, cacheProvider)
       .getOrElseUpdate(lineNumber, positionsOnLineInner(scFile, lineNumber))
   }
 
@@ -789,9 +776,7 @@ object ScalaPositionManager {
     catch { case ie: InternalError => -1 }
 
   def cachedSourceName(refType: ReferenceType) = {
-    ScalaPositionManager
-      .instance(refType)
-      .map(_.caches)
+    ScalaPositionManager.instance(refType).map(_.caches)
       .flatMap(_.cachedSourceName(refType))
   }
 
@@ -799,8 +784,7 @@ object ScalaPositionManager {
       file: ScalaFile,
       lineNumber: Int): Seq[PsiElement] = {
     inReadAction {
-      val document = PsiDocumentManager
-        .getInstance(file.getProject)
+      val document = PsiDocumentManager.getInstance(file.getProject)
         .getDocument(file)
       if (document == null || lineNumber >= document.getLineCount)
         return Seq.empty
@@ -829,8 +813,7 @@ object ScalaPositionManager {
 
       def findParent(element: PsiElement): Option[PsiElement] = {
         val parentsOnTheLine = element +: element.parentsInFile
-          .takeWhile(e => e.getTextOffset > startLine)
-          .toIndexedSeq
+          .takeWhile(e => e.getTextOffset > startLine).toIndexedSeq
         val anon = parentsOnTheLine.collectFirst {
           case e if isLambda(e) => e
           case newTd: ScNewTemplateDefinition
@@ -843,16 +826,14 @@ object ScalaPositionManager {
           case callRefId childOf (
                 (ref: ScReferenceExpression) childOf (_: ScMethodCall)
               )
-              if ref.nameId == callRefId && ref.getTextRange.getStartOffset < startLine =>
-            true
-          case _: ScTypeDefinition => true
-          case _                   => false
+              if ref.nameId == callRefId && ref.getTextRange
+                .getStartOffset < startLine => true
+          case _: ScTypeDefinition          => true
+          case _                            => false
         }
         val maxExpressionPatternOrTypeDef = filteredParents
-          .find(!_.isInstanceOf[ScBlock])
-          .orElse(filteredParents.headOption)
-        Seq(anon, maxExpressionPatternOrTypeDef).flatten
-          .sortBy(_.getTextLength)
+          .find(!_.isInstanceOf[ScBlock]).orElse(filteredParents.headOption)
+        Seq(anon, maxExpressionPatternOrTypeDef).flatten.sortBy(_.getTextLength)
           .headOption
       }
       elementsOnTheLine(file, lineNumber).flatMap(findParent).distinct
@@ -878,8 +859,7 @@ object ScalaPositionManager {
     refType match {
       case ct: ClassType =>
         val supClass = ct.superclass()
-        supClass != null && supClass
-          .name()
+        supClass != null && supClass.name()
           .startsWith("scala.runtime.AbstractFunction")
       case _ => false
     }
@@ -908,8 +888,9 @@ object ScalaPositionManager {
   def isCompiledWithIndyLambdas(file: PsiFile): Boolean = {
     if (file == null) false
     else {
-      val originalFile = Option(file.getUserData(
-        ScalaCompilingEvaluator.originalFileKey)).getOrElse(file)
+      val originalFile = Option(
+        file.getUserData(ScalaCompilingEvaluator.originalFileKey))
+        .getOrElse(file)
       isCompiledWithIndyLambdasCache.getOrElse(originalFile, false)
     }
   }
@@ -932,8 +913,7 @@ object ScalaPositionManager {
       fun match {
         case m: ScMacroDefinition => Some(m)
         case _
-            if fun.annotations
-              .map(_.constructor.typeElement.getText)
+            if fun.annotations.map(_.constructor.typeElement.getText)
               .contains(macroImpl) => Some(fun)
         case _                     => None
       }
@@ -979,8 +959,7 @@ object ScalaPositionManager {
       case obj: ScObject =>
         val manager: ScalaPsiManager = ScalaPsiManager.instance(obj.getProject)
         val clazz: PsiClass = manager
-          .getCachedClass(obj.getResolveScope, "scala.DelayedInit")
-          .orNull
+          .getCachedClass(obj.getResolveScope, "scala.DelayedInit").orNull
         clazz != null && manager.cachedDeepIsInheritor(obj, clazz)
       case _ => false
     }
@@ -997,8 +976,8 @@ object ScalaPositionManager {
     def processClassPrepare(
         debuggerProcess: DebugProcess,
         referenceType: ReferenceType) {
-      val positionManager: CompoundPositionManager =
-        debuggerProcess.asInstanceOf[DebugProcessImpl].getPositionManager
+      val positionManager: CompoundPositionManager = debuggerProcess
+        .asInstanceOf[DebugProcessImpl].getPositionManager
 
       if (!sourceNameOf(referenceType).contains(sourceName)) return
 
@@ -1017,8 +996,8 @@ object ScalaPositionManager {
   private class NamePattern(elem: PsiElement) {
     private val containingFile = elem.getContainingFile
     private val sourceName = containingFile.getName
-    private val isGeneratedForCompilingEvaluator =
-      containingFile.getUserData(ScalaCompilingEvaluator.classNameKey) != null
+    private val isGeneratedForCompilingEvaluator = containingFile
+      .getUserData(ScalaCompilingEvaluator.classNameKey) != null
     private var compiledWithIndyLambdas = isCompiledWithIndyLambdas(
       containingFile)
     private val exactName: Option[String] = {
@@ -1053,8 +1032,8 @@ object ScalaPositionManager {
 
     private def partsForAnonfun(elem: PsiElement): Seq[String] = {
       val anonfunCount = ScalaEvaluatorBuilderUtil.anonClassCount(elem)
-      val lastParts =
-        Seq.fill(anonfunCount - 1)(Seq("$apply", "$anonfun")).flatten
+      val lastParts = Seq.fill(anonfunCount - 1)(Seq("$apply", "$anonfun"))
+        .flatten
       val containingClass = findGeneratingClassOrMethodParent(elem.getParent)
       val owner = PsiTreeUtil.getParentOfType(
         elem,

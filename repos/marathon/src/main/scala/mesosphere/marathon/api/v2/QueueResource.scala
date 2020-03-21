@@ -39,8 +39,7 @@ class QueueResource @Inject() (
       import Formats._
 
       val queuedWithDelay = launchQueue.list
-        .filter(t => t.inProgress && isAuthorized(ViewApp, t.app))
-        .map {
+        .filter(t => t.inProgress && isAuthorized(ViewApp, t.app)).map {
           case taskCount: LaunchQueue.QueuedTaskInfo =>
             val timeLeft = clock.now() until taskCount.backOffUntil
             Json.obj(

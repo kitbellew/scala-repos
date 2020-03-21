@@ -29,9 +29,7 @@ class ClientTest extends FunSuite {
     val server = Http.serve(new InetSocketAddress(0), factory)
     val serverAddress = server.boundAddress.asInstanceOf[InetSocketAddress]
 
-    val builder = ClientBuilder()
-      .hosts(serverAddress)
-      .hostConnectionLimit(1)
+    val builder = ClientBuilder().hosts(serverAddress).hostConnectionLimit(1)
       .codec(HttpCodec())
 
     try spec(builder)
@@ -68,9 +66,7 @@ class ClientTest extends FunSuite {
     "report a closed connection when the server doesn't reply, without retrying") {
     withServer(failingFactory) { clientBuilder =>
       counter = 0
-      val client = clientBuilder
-        .retries(10)
-        .build()
+      val client = clientBuilder.retries(10).build()
       try {
         val future = client(Request(Version.Http11, Method.Get, "/"))
         val resolved = Try(Await.result(future, 1.second))

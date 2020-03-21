@@ -111,11 +111,8 @@ object KinesisWordCountASL extends Logging {
     )
     val kinesisClient = new AmazonKinesisClient(credentials)
     kinesisClient.setEndpoint(endpointUrl)
-    val numShards = kinesisClient
-      .describeStream(streamName)
-      .getStreamDescription()
-      .getShards()
-      .size
+    val numShards = kinesisClient.describeStream(streamName)
+      .getStreamDescription().getShards().size
 
     // In this example, we're going to create 1 Kinesis Receiver/input DStream for each shard.
     // This is not a necessity; if there are less receivers/DStreams than the number of shards,
@@ -156,8 +153,8 @@ object KinesisWordCountASL extends Logging {
     val unionStreams = ssc.union(kinesisStreams)
 
     // Convert each line of Array[Byte] to String, and split into words
-    val words = unionStreams.flatMap(byteArray =>
-      new String(byteArray).split(" "))
+    val words = unionStreams
+      .flatMap(byteArray => new String(byteArray).split(" "))
 
     // Map each word to a (word, 1) tuple so we can reduce by key to count the words
     val wordCounts = words.map(word => (word, 1)).reduceByKey(_ + _)
@@ -245,25 +242,22 @@ object KinesisWordProducerASL {
       // Generate recordsPerSec records to put onto the stream
       val records = (1 to recordsPerSecond.toInt).foreach { recordNum =>
         // Randomly generate wordsPerRecord number of words
-        val data = (1 to wordsPerRecord.toInt)
-          .map(x => {
-            // Get a random index to a word
-            val randomWordIdx = Random.nextInt(randomWords.size)
-            val randomWord = randomWords(randomWordIdx)
+        val data = (1 to wordsPerRecord.toInt).map(x => {
+          // Get a random index to a word
+          val randomWordIdx = Random.nextInt(randomWords.size)
+          val randomWord = randomWords(randomWordIdx)
 
-            // Increment total count to compare to server counts later
-            totals(randomWord) = totals.getOrElse(randomWord, 0) + 1
+          // Increment total count to compare to server counts later
+          totals(randomWord) = totals.getOrElse(randomWord, 0) + 1
 
-            randomWord
-          })
-          .mkString(" ")
+          randomWord
+        }).mkString(" ")
 
         // Create a partitionKey based on recordNum
         val partitionKey = s"partitionKey-$recordNum"
 
         // Create a PutRecordRequest with an Array[Byte] version of the data
-        val putRecordRequest = new PutRecordRequest()
-          .withStreamName(stream)
+        val putRecordRequest = new PutRecordRequest().withStreamName(stream)
           .withPartitionKey(partitionKey)
           .withData(ByteBuffer.wrap(data.getBytes()))
 

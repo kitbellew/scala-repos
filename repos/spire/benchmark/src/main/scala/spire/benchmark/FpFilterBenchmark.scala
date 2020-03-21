@@ -19,8 +19,7 @@ object Orient2 {
   // Very fast, but may be incorrect.
   val bad = new Orient2 {
     def orient(p: Point2, q: Point2, r: Point2): Int = {
-      spire.math
-        .signum((q.x - p.x) * (r.y - p.y) - (r.x - p.x) * (q.y - p.y))
+      spire.math.signum((q.x - p.x) * (r.y - p.y) - (r.x - p.x) * (q.y - p.y))
         .toInt
     }
   }

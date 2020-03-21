@@ -109,8 +109,9 @@ sealed abstract class Future[+A] {
       case BindAsync(onFinish, g) if !cancel.get =>
         onFinish(x =>
           if (!cancel.get)
-            Trampoline
-              .delay(g(x)) map (_ unsafePerformListenInterruptibly (cb, cancel))
+            Trampoline.delay(g(x)) map (
+              _ unsafePerformListenInterruptibly (cb, cancel)
+            )
           else Trampoline.done(()))
       case _ if cancel.get => ()
     }
@@ -139,8 +140,8 @@ sealed abstract class Future[+A] {
   final def stepInterruptibly(cancel: AtomicBoolean): Future[A] =
     if (!cancel.get) this match {
       case Suspend(thunk) => thunk().stepInterruptibly(cancel)
-      case BindSuspend(thunk, f) =>
-        (thunk() flatMap f).stepInterruptibly(cancel)
+      case BindSuspend(thunk, f) => (thunk() flatMap f)
+          .stepInterruptibly(cancel)
       case _ => this
     }
     else this
@@ -349,7 +350,8 @@ object Future {
                 if (used.compareAndSet(false, true)) { // get residual value from already running Future
                   if (listener.compareAndSet(null, cb)) {} // we've successfully registered ourself with running task
                   else
-                    cb(ref.get).run // the running task has completed, use its result
+                    cb(ref.get)
+                      .run // the running task has completed, use its result
                 } else // residual value used up, revert to original Future
                   f.unsafePerformListen(cb)
               }
@@ -367,9 +369,10 @@ object Future {
                         a,
                         fs.collect { case (i, _, rf, _, _) if i != ind => rf }))
                     else {
-                      Trampoline.done(
-                        ()
-                      ) // noop; another thread will have already invoked `cb` w/ our residual
+                      Trampoline
+                        .done(
+                          ()
+                        ) // noop; another thread will have already invoked `cb` w/ our residual
                     }
                   val notifyListener =
                     if (listener.compareAndSet(null, finishedCallback))

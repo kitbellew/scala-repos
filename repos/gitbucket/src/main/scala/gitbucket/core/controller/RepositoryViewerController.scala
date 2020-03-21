@@ -165,8 +165,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
               branchName,
               repository,
               logs.splitWith { (commit1, commit2) =>
-                view.helpers.date(commit1.commitTime) == view.helpers.date(
-                  commit2.commitTime)
+                view.helpers.date(commit1.commitTime) == view.helpers
+                  .date(commit2.commitTime)
               },
               page,
               hasNext,
@@ -254,9 +254,9 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         message = form.message.getOrElse(s"Create ${form.newFileName}")
       )
 
-      redirect(
-        s"/${repository.owner}/${repository.name}/blob/${form.branch}/${if (form.path.length == 0) urlEncode(form.newFileName)
-        else s"${form.path}/${urlEncode(form.newFileName)}"}")
+      redirect(s"/${repository.owner}/${repository.name}/blob/${form
+        .branch}/${if (form.path.length == 0) urlEncode(form.newFileName)
+      else s"${form.path}/${urlEncode(form.newFileName)}"}")
   })
 
   post("/:owner/:repository/update", editorForm)(collaboratorsOnly {
@@ -280,27 +280,27 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           }
       )
 
-      redirect(
-        s"/${repository.owner}/${repository.name}/blob/${form.branch}/${if (form.path.length == 0) urlEncode(form.newFileName)
-        else s"${form.path}/${urlEncode(form.newFileName)}"}")
+      redirect(s"/${repository.owner}/${repository.name}/blob/${form
+        .branch}/${if (form.path.length == 0) urlEncode(form.newFileName)
+      else s"${form.path}/${urlEncode(form.newFileName)}"}")
   })
 
-  post("/:owner/:repository/remove", deleteForm)(collaboratorsOnly {
-    (form, repository) =>
-      commitFile(
-        repository,
-        form.branch,
-        form.path,
-        None,
-        Some(form.fileName),
-        "",
-        "",
-        form.message.getOrElse(s"Delete ${form.fileName}"))
+  post("/:owner/:repository/remove", deleteForm)(
+    collaboratorsOnly {
+      (form, repository) =>
+        commitFile(
+          repository,
+          form.branch,
+          form.path,
+          None,
+          Some(form.fileName),
+          "",
+          "",
+          form.message.getOrElse(s"Delete ${form.fileName}"))
 
-      redirect(
-        s"/${repository.owner}/${repository.name}/tree/${form.branch}${if (form.path.length == 0) ""
-        else form.path}")
-  })
+        redirect(s"/${repository.owner}/${repository.name}/tree/${form
+          .branch}${if (form.path.length == 0) "" else form.path}")
+    })
 
   get("/:owner/:repository/raw/*")(referrersOnly { repository =>
     val (id, path) = splitPath(repository, multiParams("splat").head)
@@ -322,43 +322,42 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   /**
     * Displays the file content of the specified branch or commit.
     */
-  val blobRoute = get("/:owner/:repository/blob/*")(
-    referrersOnly {
-      repository =>
-        val (id, path) = splitPath(repository, multiParams("splat").head)
-        val raw = params.get("raw").getOrElse("false").toBoolean
-        using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
-          git =>
-            val revCommit = JGitUtil
-              .getRevCommitFromId(git, git.getRepository.resolve(id))
-            getPathObjectId(git, path, revCommit).map {
-              objectId =>
-                if (raw) {
-                  // Download (This route is left for backword compatibility)
-                  JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
-                    contentType = FileUtil.getMimeType(path)
-                    response.setContentLength(loader.getSize.toInt)
-                    loader.copyTo(response.outputStream)
-                    ()
-                  } getOrElse NotFound
-                } else {
-                  html.blob(
-                    id,
-                    repository,
-                    path.split("/").toList,
-                    JGitUtil.getContentInfo(git, path, objectId),
-                    new JGitUtil.CommitInfo(
-                      JGitUtil.getLastModifiedCommit(git, revCommit, path)),
-                    hasWritePermission(
-                      repository.owner,
-                      repository.name,
-                      context.loginAccount),
-                    request.paths(2) == "blame"
-                  )
-                }
-            } getOrElse NotFound
-        }
-    })
+  val blobRoute = get("/:owner/:repository/blob/*")(referrersOnly {
+    repository =>
+      val (id, path) = splitPath(repository, multiParams("splat").head)
+      val raw = params.get("raw").getOrElse("false").toBoolean
+      using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
+        git =>
+          val revCommit = JGitUtil
+            .getRevCommitFromId(git, git.getRepository.resolve(id))
+          getPathObjectId(git, path, revCommit).map {
+            objectId =>
+              if (raw) {
+                // Download (This route is left for backword compatibility)
+                JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
+                  contentType = FileUtil.getMimeType(path)
+                  response.setContentLength(loader.getSize.toInt)
+                  loader.copyTo(response.outputStream)
+                  ()
+                } getOrElse NotFound
+              } else {
+                html.blob(
+                  id,
+                  repository,
+                  path.split("/").toList,
+                  JGitUtil.getContentInfo(git, path, objectId),
+                  new JGitUtil.CommitInfo(
+                    JGitUtil.getLastModifiedCommit(git, revCommit, path)),
+                  hasWritePermission(
+                    repository.owner,
+                    repository.name,
+                    context.loginAccount),
+                  request.paths(2) == "blame"
+                )
+              }
+          } getOrElse NotFound
+      }
+  })
 
   get("/:owner/:repository/blame/*") { blobRoute.action() }
 
@@ -370,14 +369,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     contentType = formats("json")
     using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
       git =>
-        val last = git.log
-          .add(git.getRepository.resolve(id))
-          .addPath(path)
-          .setMaxCount(1)
-          .call
-          .iterator
-          .next
-          .name
+        val last = git.log.add(git.getRepository.resolve(id)).addPath(path)
+          .setMaxCount(1).call.iterator.next.name
         Map(
           "root" -> s"${context.baseUrl}/${repository.owner}/${repository.name}",
           "id" -> id,
@@ -387,8 +380,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             Map(
               "id" -> blame.id,
               "author" -> view.helpers
-                .user(blame.authorName, blame.authorEmailAddress)
-                .toString,
+                .user(blame.authorName, blame.authorEmailAddress).toString,
               "avatar" -> view.helpers
                 .avatarLink(blame.authorName, 32, blame.authorEmailAddress)
                 .toString,
@@ -507,10 +499,9 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         form.oldLineNumber,
         form.newLineNumber,
         form.issueId)
-      val comment = getCommitComment(
-        repository.owner,
-        repository.name,
-        commentId.toString).get
+      val comment =
+        getCommitComment(repository.owner, repository.name, commentId.toString)
+          .get
       form.issueId match {
         case Some(issueId) =>
           recordCommentPullRequestActivity(
@@ -607,14 +598,12 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   get("/:owner/:repository/branches")(referrersOnly { repository =>
     val protectedBranches =
       getProtectedBranchList(repository.owner, repository.name).toSet
-    val branches = JGitUtil
-      .getBranches(
-        owner = repository.owner,
-        name = repository.name,
-        defaultBranch = repository.repository.defaultBranch,
-        origin = repository.repository.originUserName.isEmpty)
-      .sortBy(br => (br.mergeInfo.isEmpty, br.commitTime))
-      .map(br =>
+    val branches = JGitUtil.getBranches(
+      owner = repository.owner,
+      name = repository.name,
+      defaultBranch = repository.repository.defaultBranch,
+      origin = repository.repository.originUserName.isEmpty)
+      .sortBy(br => (br.mergeInfo.isEmpty, br.commitTime)).map(br =>
         (
           br,
           getPullRequestByRequestCommit(
@@ -623,8 +612,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             repository.repository.defaultBranch,
             br.name,
             br.commitId),
-          protectedBranches.contains(br.name)))
-      .reverse
+          protectedBranches.contains(br.name))).reverse
 
     html.branches(
       branches,
@@ -646,8 +634,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     } match {
       case Right(message) =>
         flash += "info" -> message
-        redirect(
-          s"/${repository.owner}/${repository.name}/tree/${StringUtil.urlEncode(newBranchName).replace("%2F", "/")}")
+        redirect(s"/${repository.owner}/${repository.name}/tree/${StringUtil
+          .urlEncode(newBranchName).replace("%2F", "/")}")
       case Left(message) =>
         flash += "error" -> message
         redirect(
@@ -787,23 +775,18 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                   val parentPath =
                     if (path == ".") Nil else path.split("/").toList
                   // process README.md or README.markdown
-                  val readme = files
-                    .find { file =>
-                      !file.isDirectory && readmeFiles.contains(
-                        file.name.toLowerCase)
-                    }
-                    .map { file =>
-                      val path = (file.name :: parentPath.reverse).reverse
-                      path -> StringUtil.convertFromByteArray(
-                        JGitUtil
-                          .getContentFromId(
-                            Git.open(getRepositoryDir(
-                              repository.owner,
-                              repository.name)),
-                            file.id,
-                            true)
-                          .get)
-                    }
+                  val readme = files.find { file =>
+                    !file.isDirectory && readmeFiles
+                      .contains(file.name.toLowerCase)
+                  }.map { file =>
+                    val path = (file.name :: parentPath.reverse).reverse
+                    path -> StringUtil.convertFromByteArray(
+                      JGitUtil.getContentFromId(
+                        Git.open(
+                          getRepositoryDir(repository.owner, repository.name)),
+                        file.id,
+                        true).get)
+                  }
 
                   html.files(
                     revision,
@@ -979,21 +962,16 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
     using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
       git =>
-        val revCommit = JGitUtil.getRevCommitFromId(
-          git,
-          git.getRepository.resolve(revision))
+        val revCommit = JGitUtil
+          .getRevCommitFromId(git, git.getRepository.resolve(revision))
 
         contentType = "application/octet-stream"
-        response.setHeader(
-          "Content-Disposition",
-          s"attachment; filename=${filename}")
+        response
+          .setHeader("Content-Disposition", s"attachment; filename=${filename}")
         response.setBufferSize(1024 * 1024);
 
-        git.archive
-          .setFormat(suffix.tail)
-          .setTree(revCommit.getTree)
-          .setOutputStream(response.getOutputStream)
-          .call()
+        git.archive.setFormat(suffix.tail).setTree(revCommit.getTree)
+          .setOutputStream(response.getOutputStream).call()
     }
   }
 

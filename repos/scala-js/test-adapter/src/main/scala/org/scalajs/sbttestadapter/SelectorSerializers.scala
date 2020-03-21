@@ -18,25 +18,15 @@ private[testadapter] object SelectorSerializers {
     def serialize(sel: Selector): JSON = {
       val bld = new JSONObjBuilder()
       sel match {
-        case sel: SuiteSelector =>
-          bld
-            .fld("selType", "SuiteSelector")
-        case sel: TestSelector =>
-          bld
-            .fld("selType", "TestSelector")
+        case sel: SuiteSelector => bld.fld("selType", "SuiteSelector")
+        case sel: TestSelector => bld.fld("selType", "TestSelector")
             .fld("testName", sel.testName)
         case sel: NestedSuiteSelector =>
-          bld
-            .fld("selType", "NestedSuiteSelector")
-            .fld("suiteId", sel.suiteId)
-        case sel: NestedTestSelector =>
-          bld
-            .fld("selType", "NestedTestSelector")
-            .fld("suiteId", sel.suiteId)
-            .fld("testName", sel.testName)
+          bld.fld("selType", "NestedSuiteSelector").fld("suiteId", sel.suiteId)
+        case sel: NestedTestSelector => bld.fld("selType", "NestedTestSelector")
+            .fld("suiteId", sel.suiteId).fld("testName", sel.testName)
         case sel: TestWildcardSelector =>
-          bld
-            .fld("selType", "TestWildcardSelector")
+          bld.fld("selType", "TestWildcardSelector")
             .fld("testWildcard", sel.testWildcard)
         case _ =>
           throw new IllegalArgumentException(

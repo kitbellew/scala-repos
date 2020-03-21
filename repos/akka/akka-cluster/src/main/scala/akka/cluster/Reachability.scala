@@ -97,8 +97,8 @@ private[cluster] class Reachability private (
             : Map[UniqueAddress, Map[UniqueAddress, Reachability.Record]] =
           mapBuilder.toMap
         val allTerminated: Set[UniqueAddress] = terminatedBuilder.result()
-        val allUnreachable: Set[UniqueAddress] =
-          unreachableBuilder.result() diff allTerminated
+        val allUnreachable: Set[UniqueAddress] = unreachableBuilder
+          .result() diff allTerminated
 
         (observerRowsMap, allUnreachable, allTerminated)
       }
@@ -219,8 +219,8 @@ private[cluster] class Reachability private (
 
   def remove(nodes: Iterable[UniqueAddress]): Reachability = {
     val nodesSet = nodes.to[immutable.HashSet]
-    val newRecords = records.filterNot(r ⇒
-      nodesSet(r.observer) || nodesSet(r.subject))
+    val newRecords = records
+      .filterNot(r ⇒ nodesSet(r.observer) || nodesSet(r.subject))
     if (newRecords.size == records.size) this
     else {
       val newVersions = versions -- nodes
@@ -323,7 +323,8 @@ private[cluster] class Reachability private (
     } yield {
       val record = rows(subject)
       val aggregated = status(subject)
-      s"${observer.address} -> ${subject.address}: ${record.status} [$aggregated] (${record.version})"
+      s"${observer.address} -> ${subject.address}: ${record
+        .status} [$aggregated] (${record.version})"
     }
 
     rows.mkString(", ")

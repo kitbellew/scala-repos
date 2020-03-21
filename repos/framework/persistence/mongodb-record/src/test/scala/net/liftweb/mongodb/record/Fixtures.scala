@@ -378,7 +378,8 @@ object MongoListTestRecord
     extends MongoListTestRecord
     with MongoMetaRecord[MongoListTestRecord] {
   override def formats =
-    DefaultFormats.lossless + new ObjectIdSerializer + new PatternSerializer + new DateSerializer
+    DefaultFormats
+      .lossless + new ObjectIdSerializer + new PatternSerializer + new DateSerializer
 }
 
 class MongoJodaListTestRecord private ()

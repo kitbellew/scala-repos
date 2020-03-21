@@ -14,8 +14,7 @@ class FileUploadTestHelpersTestServlet
     response.setHeader("Request-Method", request.getMethod)
     params.foreach(p => response.setHeader("Param-" + p._1, p._2))
 
-    request.getHeaderNames
-      .filter(header => header.startsWith("Test-"))
+    request.getHeaderNames.filter(header => header.startsWith("Test-"))
       .foreach(header => response.setHeader(header, request.getHeader(header)))
 
     fileParams.foreach(fileParam => {

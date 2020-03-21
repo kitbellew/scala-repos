@@ -55,15 +55,13 @@ class BackoffSupervisorDocSpec {
 
     //#backoff-custom-stop
     val supervisor = BackoffSupervisor.props(
-      Backoff
-        .onStop(
-          childProps,
-          childName = "myEcho",
-          minBackoff = 3.seconds,
-          maxBackoff = 30.seconds,
-          randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
-        )
-        .withManualReset // the child must send BackoffSupervisor.Reset to its parent
+      Backoff.onStop(
+        childProps,
+        childName = "myEcho",
+        minBackoff = 3.seconds,
+        maxBackoff = 30.seconds,
+        randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
+      ).withManualReset // the child must send BackoffSupervisor.Reset to its parent
         .withDefaultStoppingStrategy // Stop at any Exception thrown
     )
     //#backoff-custom-stop
@@ -79,14 +77,13 @@ class BackoffSupervisorDocSpec {
 
     //#backoff-custom-fail
     val supervisor = BackoffSupervisor.props(
-      Backoff
-        .onFailure(
-          childProps,
-          childName = "myEcho",
-          minBackoff = 3.seconds,
-          maxBackoff = 30.seconds,
-          randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
-        )
+      Backoff.onFailure(
+        childProps,
+        childName = "myEcho",
+        minBackoff = 3.seconds,
+        maxBackoff = 30.seconds,
+        randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
+      )
         .withAutoReset(
           10.seconds
         ) // the child must send BackoffSupervisor.Reset to its parent

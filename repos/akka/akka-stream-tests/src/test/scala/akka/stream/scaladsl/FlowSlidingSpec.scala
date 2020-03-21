@@ -24,10 +24,8 @@ class FlowSlidingSpec extends AkkaSpec with GeneratorDrivenPropertyChecks {
     def check(gen: Gen[(Int, Int, Int)]): Unit =
       forAll(gen, MinSize(1000), MaxSize(1000)) {
         case (len, win, step) ⇒
-          val af = Source
-            .fromIterator(() ⇒ Iterator.from(0).take(len))
-            .sliding(win, step)
-            .runFold(Seq.empty[Seq[Int]])(_ :+ _)
+          val af = Source.fromIterator(() ⇒ Iterator.from(0).take(len))
+            .sliding(win, step).runFold(Seq.empty[Seq[Int]])(_ :+ _)
           val cf = Source
             .fromIterator(() ⇒ Iterator.from(0).take(len).sliding(win, step))
             .runFold(Seq.empty[Seq[Int]])(_ :+ _)
@@ -59,9 +57,7 @@ class FlowSlidingSpec extends AkkaSpec with GeneratorDrivenPropertyChecks {
     }
 
     "work with empty sources" in assertAllStagesStopped {
-      Source.empty
-        .sliding(1)
-        .runForeach(testActor ! _)
+      Source.empty.sliding(1).runForeach(testActor ! _)
         .map(_ ⇒ "done") pipeTo testActor
       expectMsg("done")
     }

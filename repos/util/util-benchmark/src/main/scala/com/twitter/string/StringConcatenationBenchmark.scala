@@ -31,13 +31,8 @@ class StringConcatenationBenchmark extends StdBenchAnnotations {
 
   @Benchmark
   def stringBuilder: String = {
-    new StringBuilder()
-      .append(word())
-      .append(" ")
-      .append(word())
-      .append(" ")
-      .append(word())
-      .toString
+    new StringBuilder().append(word()).append(" ").append(word()).append(" ")
+      .append(word()).toString
   }
 
   @Benchmark
@@ -45,13 +40,8 @@ class StringConcatenationBenchmark extends StdBenchAnnotations {
     val a = word()
     val b = word()
     val c = word()
-    new StringBuilder(a.length + b.length + c.length + 2)
-      .append(a)
-      .append(" ")
-      .append(b)
-      .append(" ")
-      .append(c)
-      .toString
+    new StringBuilder(a.length + b.length + c.length + 2).append(a).append(" ")
+      .append(b).append(" ").append(c).toString
   }
 
   @Benchmark

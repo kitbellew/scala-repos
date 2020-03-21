@@ -66,9 +66,8 @@ private[streaming] class InputInfoTracker(ssc: StreamingContext)
   /** Report the input information with batch time to the tracker */
   def reportInfo(batchTime: Time, inputInfo: StreamInputInfo): Unit =
     synchronized {
-      val inputInfos = batchTimeToInputInfos.getOrElseUpdate(
-        batchTime,
-        new mutable.HashMap[Int, StreamInputInfo]())
+      val inputInfos = batchTimeToInputInfos
+        .getOrElseUpdate(batchTime, new mutable.HashMap[Int, StreamInputInfo]())
 
       if (inputInfos.contains(inputInfo.inputStreamId)) {
         throw new IllegalStateException(
@@ -89,8 +88,8 @@ private[streaming] class InputInfoTracker(ssc: StreamingContext)
   /** Cleanup the tracked input information older than threshold batch time */
   def cleanup(batchThreshTime: Time): Unit =
     synchronized {
-      val timesToCleanup = batchTimeToInputInfos.keys.filter(
-        _ < batchThreshTime)
+      val timesToCleanup = batchTimeToInputInfos.keys
+        .filter(_ < batchThreshTime)
       logInfo(s"remove old batch metadata: ${timesToCleanup.mkString(" ")}")
       batchTimeToInputInfos --= timesToCleanup
     }

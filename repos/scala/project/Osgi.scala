@@ -58,9 +58,9 @@ object Osgi {
         "Bundle-Name" -> (description.value + " Sources"),
         "Bundle-SymbolicName" -> (bundleSymbolicName.value + ".source"),
         "Bundle-Version" -> versionProperties.value.osgiVersion,
-        "Eclipse-SourceBundle" -> (
-          bundleSymbolicName.value + ";version=\"" + versionProperties.value.osgiVersion + "\";roots:=\".\""
-        )
+        "Eclipse-SourceBundle" -> (bundleSymbolicName
+          .value + ";version=\"" + versionProperties.value
+          .osgiVersion + "\";roots:=\".\"")
       )
     )
 
@@ -74,9 +74,7 @@ object Osgi {
     val builder = new Builder
     builder.setClasspath(fullClasspath.toArray)
     headers foreach { case (k, v) => builder.setProperty(k, v) }
-    val includeRes = resourceDirectories
-      .filter(_.exists)
-      .map(_.getAbsolutePath)
+    val includeRes = resourceDirectories.filter(_.exists).map(_.getAbsolutePath)
       .mkString(",")
     if (!includeRes.isEmpty) builder.setProperty(INCLUDERESOURCE, includeRes)
     builder.getProperties.foreach { case (k, v) => log.debug(s"bnd: $k: $v") }

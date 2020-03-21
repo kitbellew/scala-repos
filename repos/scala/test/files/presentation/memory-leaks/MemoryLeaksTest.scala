@@ -56,11 +56,14 @@ object Test extends InteractiveTest {
     val filename = "usedmem-%tF.txt".format(Calendar.getInstance.getTime)
 
     val typerUnit = AbstractFile.getFile(
-      baseDir.parent.parent.parent.parent / "src/compiler/scala/tools/nsc/typechecker/Typers.scala")
+      baseDir.parent.parent.parent
+        .parent / "src/compiler/scala/tools/nsc/typechecker/Typers.scala")
     val typesUnit = AbstractFile.getFile(
-      baseDir.parent.parent.parent.parent / "src/reflect/scala/reflect/internal/Types.scala")
+      baseDir.parent.parent.parent
+        .parent / "src/reflect/scala/reflect/internal/Types.scala")
     val treesUnit = AbstractFile.getFile(
-      baseDir.parent.parent.parent.parent / "src/reflect/scala/reflect/internal/Trees.scala")
+      baseDir.parent.parent.parent
+        .parent / "src/reflect/scala/reflect/internal/Trees.scala")
 
     askReload(Seq(
       new BatchSourceFile(typerUnit),
@@ -71,8 +74,8 @@ object Test extends InteractiveTest {
 
     val originalTyper = new String(typerUnit.toCharArray)
 
-    val (prefix, postfix) = originalTyper.splitAt(
-      originalTyper.indexOf("import global._"))
+    val (prefix, postfix) = originalTyper
+      .splitAt(originalTyper.indexOf("import global._"))
     val changedTyper = prefix + " a\n " + postfix
 
     val usedMem = for (i <- 1 to N) yield {

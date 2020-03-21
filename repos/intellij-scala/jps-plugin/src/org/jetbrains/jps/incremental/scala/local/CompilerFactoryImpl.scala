@@ -49,10 +49,8 @@ class CompilerFactoryImpl(sbtData: SbtData) extends CompilerFactory {
               Seq.empty,
               None))
           val classpathOptions = ClasspathOptions.javac(compiler = false)
-          AggressiveCompile.directOrFork(
-            scala,
-            classpathOptions,
-            compilerData.javaHome)
+          AggressiveCompile
+            .directOrFork(scala, classpathOptions, compilerData.javaHome)
         }
         new SbtCompiler(javac, scalac, fileToStore)
 

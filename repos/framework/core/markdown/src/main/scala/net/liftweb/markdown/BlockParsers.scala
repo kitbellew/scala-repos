@@ -96,11 +96,8 @@ trait BlockParsers extends Parsers {
       lookup: Map[String, LinkDefinition])
       extends MarkdownBlock {
     def addResult(level: Int, out: StringBuilder) {
-      out
-        .append(indent(level))
-        .append(deco.decorateHeaderOpen(headerLevel))
-        .append(applyInline(content, lookup))
-        .append(indent(level))
+      out.append(indent(level)).append(deco.decorateHeaderOpen(headerLevel))
+        .append(applyInline(content, lookup)).append(indent(level))
         .append(deco.decorateHeaderClose(headerLevel))
     }
   }

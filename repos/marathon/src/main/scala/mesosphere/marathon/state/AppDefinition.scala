@@ -76,8 +76,8 @@ case class AppDefinition(
   def portIndicesAreValid(): Boolean = {
     val validPortIndices = hostPorts.indices
     healthChecks.forall { hc =>
-      hc.protocol == Protocol.COMMAND || hc.portIndex.forall(
-        validPortIndices.contains(_))
+      hc.protocol == Protocol.COMMAND || hc.portIndex
+        .forall(validPortIndices.contains(_))
     }
   }
 
@@ -108,32 +108,21 @@ case class AppDefinition(
     val diskResource = ScalarResource(Resource.DISK, disk)
     val appLabels = labels.map {
       case (key, value) =>
-        mesos.Parameter.newBuilder
-          .setKey(key)
-          .setValue(value)
-          .build
+        mesos.Parameter.newBuilder.setKey(key).setValue(value).build
     }
 
-    val builder = Protos.ServiceDefinition.newBuilder
-      .setId(id.toString)
-      .setCmd(commandInfo)
-      .setInstances(instances)
-      .addAllPortDefinitions(
+    val builder = Protos.ServiceDefinition.newBuilder.setId(id.toString)
+      .setCmd(commandInfo).setInstances(instances).addAllPortDefinitions(
         portDefinitions.map(PortDefinitionSerializer.toProto).asJava)
-      .setRequirePorts(requirePorts)
-      .setBackoff(backoff.toMillis)
+      .setRequirePorts(requirePorts).setBackoff(backoff.toMillis)
       .setBackoffFactor(backoffFactor)
-      .setMaxLaunchDelay(maxLaunchDelay.toMillis)
-      .setExecutor(executor)
-      .addAllConstraints(constraints.asJava)
-      .addResources(cpusResource)
-      .addResources(memResource)
-      .addResources(diskResource)
+      .setMaxLaunchDelay(maxLaunchDelay.toMillis).setExecutor(executor)
+      .addAllConstraints(constraints.asJava).addResources(cpusResource)
+      .addResources(memResource).addResources(diskResource)
       .addAllHealthChecks(healthChecks.map(_.toProto).asJava)
       .setUpgradeStrategy(upgradeStrategy.toProto)
       .addAllDependencies(dependencies.map(_.toString).asJava)
-      .addAllStoreUrls(storeUrls.asJava)
-      .addAllLabels(appLabels.asJava)
+      .addAllStoreUrls(storeUrls.asJava).addAllLabels(appLabels.asJava)
 
     ipAddress.foreach { ip => builder.setIpAddress(ip.toProto) }
 
@@ -166,10 +155,8 @@ case class AppDefinition(
   //TODO: fix style issue and enable this scalastyle check
   //scalastyle:off cyclomatic.complexity method.length
   def mergeFromProto(proto: Protos.ServiceDefinition): AppDefinition = {
-    val envMap: Map[String, String] =
-      proto.getCmd.getEnvironment.getVariablesList.asScala.map { v =>
-        v.getName -> v.getValue
-      }.toMap
+    val envMap: Map[String, String] = proto.getCmd.getEnvironment
+      .getVariablesList.asScala.map { v => v.getName -> v.getValue }.toMap
 
     val resourcesMap: Map[String, Double] = proto.getResourcesList.asScala.map {
       r => r.getName -> (r.getScalar.getValue: Double)
@@ -182,8 +169,8 @@ case class AppDefinition(
 
     //Precondition: either args or command is defined
     val commandOption =
-      if (argsOption.isEmpty && proto.getCmd.hasValue && proto.getCmd.getValue.nonEmpty)
-        Some(proto.getCmd.getValue)
+      if (argsOption.isEmpty && proto.getCmd.hasValue && proto.getCmd.getValue
+            .nonEmpty) Some(proto.getCmd.getValue)
       else None
 
     val containerOption =
@@ -220,8 +207,7 @@ case class AppDefinition(
         PortDefinitions(proto.getPortsList.asScala.map(_.intValue): _*)
       else
         proto.getPortDefinitionsList.asScala
-          .map(PortDefinitionSerializer.fromProto)
-          .to[Seq]
+          .map(PortDefinitionSerializer.fromProto).to[Seq]
 
     AppDefinition(
       id = PathId(proto.getId),
@@ -245,11 +231,9 @@ case class AppDefinition(
       storeUrls = proto.getStoreUrlsList.asScala.to[Seq],
       container = containerOption,
       healthChecks = proto.getHealthChecksList.asScala
-        .map(new HealthCheck().mergeFromProto)
-        .toSet,
-      labels = proto.getLabelsList.asScala.map { p =>
-        p.getKey -> p.getValue
-      }.toMap,
+        .map(new HealthCheck().mergeFromProto).toSet,
+      labels =
+        proto.getLabelsList.asScala.map { p => p.getKey -> p.getValue }.toMap,
       versionInfo = versionInfoFromProto,
       upgradeStrategy =
         if (proto.hasUpgradeStrategy)
@@ -509,9 +493,8 @@ object AppDefinition {
     appDef.instances should be >= 0
     appDef.disk should be >= 0.0
     appDef must definesCorrectResidencyCombination
-    (appDef.isResident is false) or (
-      appDef.upgradeStrategy is UpgradeStrategy.validForResidentTasks
-    )
+    (appDef.isResident is false) or (appDef.upgradeStrategy is UpgradeStrategy
+      .validForResidentTasks)
   }
 
   /**
@@ -574,8 +557,7 @@ object AppDefinition {
       def sameSize = fromVolumes.size == toVolumes.size
       def noChange =
         from.persistentVolumes.forall { fromVolume =>
-          toVolumes
-            .find(_.containerPath == fromVolume.containerPath)
+          toVolumes.find(_.containerPath == fromVolume.containerPath)
             .contains(fromVolume)
         }
       sameSize && noChange

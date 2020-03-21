@@ -52,10 +52,7 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
     */
   def apply(index: Int): JsLookupResult =
     result match {
-      case JsDefined(arr: JsArray) =>
-        arr.value
-          .lift(index)
-          .map(JsDefined.apply)
+      case JsDefined(arr: JsArray) => arr.value.lift(index).map(JsDefined.apply)
           .getOrElse(JsUndefined("Array index out of bounds in " + arr))
       case JsDefined(o) => JsUndefined(o + " is not an array")
       case undef        => undef
@@ -78,11 +75,8 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
   def \(fieldName: String): JsLookupResult =
     result match {
       case JsDefined(obj: JsObject) =>
-        obj.value
-          .get(fieldName)
-          .map(JsDefined.apply)
-          .getOrElse(JsUndefined(
-            "'" + fieldName + "' is undefined on object: " + obj))
+        obj.value.get(fieldName).map(JsDefined.apply).getOrElse(JsUndefined(
+          "'" + fieldName + "' is undefined on object: " + obj))
       case JsDefined(o) => JsUndefined(o + " is not an object")
       case undef        => undef
     }

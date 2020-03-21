@@ -30,15 +30,9 @@ object SbtWatcherMain {
   private def handle(arguments: Seq[String], out: PrintStream) {
     def write2source(message: String) {
       out.write(
-        Base64Converter
-          .encode(
-            MessageEvent(
-              BuildMessage.Kind.INFO,
-              message,
-              None,
-              None,
-              None).toBytes)
-          .getBytes)
+        Base64Converter.encode(
+          MessageEvent(BuildMessage.Kind.INFO, message, None, None, None)
+            .toBytes).getBytes)
     }
 
     def createConsumer(delegate: MessageConsumer) =
@@ -95,7 +89,8 @@ object SbtWatcherMain {
 
         currentExec match {
           case Some((watcher, cons, args))
-              if watcher.isRunning && args.head == argsTail.head && cm == LOOP =>
+              if watcher.isRunning && args.head == argsTail
+                .head && cm == LOOP =>
             val oldDelegate = cons.delegate
             val newDelegate = delegate
             cons.delegate = newDelegate

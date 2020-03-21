@@ -63,8 +63,8 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
         x.qualifier match {
           case Some(qual) => {
             //get ranges for previos qualifier
-            val ranges = select(qual, editorText, cursorOffset, editor).toArray(
-              new Array[TextRange](0))
+            val ranges = select(qual, editorText, cursorOffset, editor)
+              .toArray(new Array[TextRange](0))
             for (fRange <- ranges
                  if fRange.getEndOffset == qual.getTextRange.getEndOffset) {
               //cancatenating ranges
@@ -90,9 +90,10 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
             result.add(new TextRange(offset, offset))
           }
           case None =>
-            result.add(
-              new TextRange(offset, offset)
-            ) //adding dummy range for recursion
+            result
+              .add(
+                new TextRange(offset, offset)
+              ) //adding dummy range for recursion
         }
       case x: ScMethodCall => x.getEffectiveInvokedExpr match {
           case ref: ScReferenceElement =>

@@ -252,10 +252,10 @@ private[rest] abstract class SubmitRequestServlet extends RestServlet {
       responseServlet: HttpServletResponse): Unit = {
     val responseMessage =
       try {
-        val requestMessageJson =
-          Source.fromInputStream(requestServlet.getInputStream).mkString
-        val requestMessage = SubmitRestProtocolMessage.fromJson(
-          requestMessageJson)
+        val requestMessageJson = Source
+          .fromInputStream(requestServlet.getInputStream).mkString
+        val requestMessage = SubmitRestProtocolMessage
+          .fromJson(requestMessageJson)
         // The response should have already been validated on the client.
         // In case this is not true, validate it ourselves to avoid potential NPEs.
         requestMessage.validate()

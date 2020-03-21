@@ -18,8 +18,7 @@ class FoldBench {
   /** Benchmark fold using traverse with Const */
   @Benchmark
   def traverseConst(): String =
-    Traverse[List]
-      .traverse[Const[String, ?], String, String](chars)(Const(_))
+    Traverse[List].traverse[Const[String, ?], String, String](chars)(Const(_))
       .getConst
 
 }

@@ -18,17 +18,12 @@ class HoconHighlightUsagesHandlerFactory
       editor: Editor,
       file: PsiFile,
       target: PsiElement) =
-    Iterator
-      .iterate(target)(_.getParent)
-      .takeWhile {
-        case null | _: PsiFile => false
-        case _                 => true
-      }
-      .collectFirst {
-        case hkey: HKey =>
-          new HoconHighlightKeyUsagesHandler(editor, file, hkey)
-      }
-      .orNull
+    Iterator.iterate(target)(_.getParent).takeWhile {
+      case null | _: PsiFile => false
+      case _                 => true
+    }.collectFirst {
+      case hkey: HKey => new HoconHighlightKeyUsagesHandler(editor, file, hkey)
+    }.orNull
 }
 
 class HoconHighlightKeyUsagesHandler(
@@ -47,11 +42,10 @@ class HoconHighlightKeyUsagesHandler(
           hoconElement.nonWhitespaceChildren.flatMap(findPaths)
         case _ => Iterator.empty
       }
-    lazy val allValidPathsInFile =
-      findPaths(psiFile).map(_.startingValidKeys).toList
+    lazy val allValidPathsInFile = findPaths(psiFile).map(_.startingValidKeys)
+      .toList
 
-    val foundKeys = targets.iterator.asScala
-      .flatMap(_.allKeysFromToplevel)
+    val foundKeys = targets.iterator.asScala.flatMap(_.allKeysFromToplevel)
       .flatMap {
         case keys @ (firstKey :: _) =>
           @tailrec
@@ -61,9 +55,7 @@ class HoconHighlightKeyUsagesHandler(
             keys match {
               case Nil => Iterator.empty
               case List(lastKey) =>
-                scopes
-                  .flatMap(_.directKeyedFields)
-                  .flatMap(_.validKey)
+                scopes.flatMap(_.directKeyedFields).flatMap(_.validKey)
                   .filter(_.stringValue == lastKey.stringValue)
               case nextKey :: restOfKeys =>
                 fromFields(
@@ -81,17 +73,17 @@ class HoconHighlightKeyUsagesHandler(
               case _ => None
             }
           def fromPaths =
-            if (firstKey.enclosingEntries eq firstKey.getContainingFile.toplevelEntries)
-              allValidPathsInFile.iterator.flatMap(pathKeys =>
-                fromPath(keys, pathKeys))
+            if (firstKey.enclosingEntries eq firstKey.getContainingFile
+                  .toplevelEntries)
+              allValidPathsInFile.iterator
+                .flatMap(pathKeys => fromPath(keys, pathKeys))
             else Iterator.empty
 
           fromFields(Iterator(firstKey.enclosingEntries), keys) ++ fromPaths
         case Nil => Iterator.empty
       }
     foundKeys.foreach(key =>
-      key
-        .forParent(path => myReadUsages, field => myWriteUsages)
+      key.forParent(path => myReadUsages, field => myWriteUsages)
         .add(key.getTextRange))
 
     // don't highlight if there is only one occurrence

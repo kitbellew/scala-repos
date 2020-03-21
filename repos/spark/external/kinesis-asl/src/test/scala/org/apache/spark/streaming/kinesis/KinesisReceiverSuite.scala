@@ -55,8 +55,8 @@ class KinesisReceiverSuite
   record1.setData(
     ByteBuffer.wrap("Spark In Action".getBytes(StandardCharsets.UTF_8)))
   val record2 = new Record()
-  record2.setData(
-    ByteBuffer.wrap("Learning Spark".getBytes(StandardCharsets.UTF_8)))
+  record2
+    .setData(ByteBuffer.wrap("Learning Spark".getBytes(StandardCharsets.UTF_8)))
   val batch = Arrays.asList(record1, record2)
 
   var receiverMock: KinesisReceiver[Array[Byte]] = _
@@ -144,10 +144,8 @@ class KinesisReceiverSuite
     val expectedIsStopped = false
     when(receiverMock.isStopped()).thenReturn(expectedIsStopped)
 
-    val actualVal = KinesisRecordProcessor.retryRandom(
-      receiverMock.isStopped(),
-      2,
-      100)
+    val actualVal = KinesisRecordProcessor
+      .retryRandom(receiverMock.isStopped(), 2, 100)
     assert(actualVal == expectedIsStopped)
 
     verify(receiverMock, times(1)).isStopped()
@@ -159,10 +157,8 @@ class KinesisReceiverSuite
       .thenThrow(new ThrottlingException("error message"))
       .thenReturn(expectedIsStopped)
 
-    val actualVal = KinesisRecordProcessor.retryRandom(
-      receiverMock.isStopped(),
-      2,
-      100)
+    val actualVal = KinesisRecordProcessor
+      .retryRandom(receiverMock.isStopped(), 2, 100)
     assert(actualVal == expectedIsStopped)
 
     verify(receiverMock, times(2)).isStopped()
@@ -174,18 +170,16 @@ class KinesisReceiverSuite
       .thenThrow(new KinesisClientLibDependencyException("error message"))
       .thenReturn(expectedIsStopped)
 
-    val actualVal = KinesisRecordProcessor.retryRandom(
-      receiverMock.isStopped(),
-      2,
-      100)
+    val actualVal = KinesisRecordProcessor
+      .retryRandom(receiverMock.isStopped(), 2, 100)
     assert(actualVal == expectedIsStopped)
 
     verify(receiverMock, times(2)).isStopped()
   }
 
   test("retry failed after a shutdown exception") {
-    when(checkpointerMock.checkpoint()).thenThrow(new ShutdownException(
-      "error message"))
+    when(checkpointerMock.checkpoint())
+      .thenThrow(new ShutdownException("error message"))
 
     intercept[ShutdownException] {
       KinesisRecordProcessor.retryRandom(checkpointerMock.checkpoint(), 2, 100)
@@ -195,8 +189,8 @@ class KinesisReceiverSuite
   }
 
   test("retry failed after an invalid state exception") {
-    when(checkpointerMock.checkpoint()).thenThrow(new InvalidStateException(
-      "error message"))
+    when(checkpointerMock.checkpoint())
+      .thenThrow(new InvalidStateException("error message"))
 
     intercept[InvalidStateException] {
       KinesisRecordProcessor.retryRandom(checkpointerMock.checkpoint(), 2, 100)
@@ -206,8 +200,8 @@ class KinesisReceiverSuite
   }
 
   test("retry failed after unexpected exception") {
-    when(checkpointerMock.checkpoint()).thenThrow(new RuntimeException(
-      "error message"))
+    when(checkpointerMock.checkpoint())
+      .thenThrow(new RuntimeException("error message"))
 
     intercept[RuntimeException] {
       KinesisRecordProcessor.retryRandom(checkpointerMock.checkpoint(), 2, 100)

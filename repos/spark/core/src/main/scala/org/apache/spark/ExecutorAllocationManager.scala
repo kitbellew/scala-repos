@@ -87,20 +87,16 @@ private[spark] class ExecutorAllocationManager(
   import ExecutorAllocationManager._
 
   // Lower and upper bounds on the number of executors.
-  private val minNumExecutors = conf.getInt(
-    "spark.dynamicAllocation.minExecutors",
-    0)
-  private val maxNumExecutors = conf.getInt(
-    "spark.dynamicAllocation.maxExecutors",
-    Integer.MAX_VALUE)
-  private val initialNumExecutors = conf.getInt(
-    "spark.dynamicAllocation.initialExecutors",
-    minNumExecutors)
+  private val minNumExecutors = conf
+    .getInt("spark.dynamicAllocation.minExecutors", 0)
+  private val maxNumExecutors = conf
+    .getInt("spark.dynamicAllocation.maxExecutors", Integer.MAX_VALUE)
+  private val initialNumExecutors = conf
+    .getInt("spark.dynamicAllocation.initialExecutors", minNumExecutors)
 
   // How long there must be backlogged tasks for before an addition is triggered (seconds)
-  private val schedulerBacklogTimeoutS = conf.getTimeAsSeconds(
-    "spark.dynamicAllocation.schedulerBacklogTimeout",
-    "1s")
+  private val schedulerBacklogTimeoutS = conf
+    .getTimeAsSeconds("spark.dynamicAllocation.schedulerBacklogTimeout", "1s")
 
   // Same as above, but used only after `schedulerBacklogTimeoutS` is exceeded
   private val sustainedSchedulerBacklogTimeoutS = conf.getTimeAsSeconds(
@@ -108,18 +104,16 @@ private[spark] class ExecutorAllocationManager(
     s"${schedulerBacklogTimeoutS}s")
 
   // How long an executor must be idle for before it is removed (seconds)
-  private val executorIdleTimeoutS = conf.getTimeAsSeconds(
-    "spark.dynamicAllocation.executorIdleTimeout",
-    "60s")
+  private val executorIdleTimeoutS = conf
+    .getTimeAsSeconds("spark.dynamicAllocation.executorIdleTimeout", "60s")
 
   private val cachedExecutorIdleTimeoutS = conf.getTimeAsSeconds(
     "spark.dynamicAllocation.cachedExecutorIdleTimeout",
     s"${Integer.MAX_VALUE}s")
 
   // During testing, the methods to actually kill and add executors are mocked out
-  private val testing = conf.getBoolean(
-    "spark.dynamicAllocation.testing",
-    false)
+  private val testing = conf
+    .getBoolean("spark.dynamicAllocation.testing", false)
 
   // TODO: The default value of 1 for spark.executor.cores works right now because dynamic
   // allocation is only supported for YARN and the default number of cores per executor in YARN is
@@ -160,8 +154,8 @@ private[spark] class ExecutorAllocationManager(
   private val listener = new ExecutorAllocationListener
 
   // Executor that handles the scheduling task.
-  private val executor = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-    "spark-dynamic-executor-allocation")
+  private val executor = ThreadUtils
+    .newDaemonSingleThreadScheduledExecutor("spark-dynamic-executor-allocation")
 
   // Metric source for ExecutorAllocationManager to expose internal status to MetricsSystem.
   val executorAllocationManagerSource = new ExecutorAllocationManagerSource
@@ -286,8 +280,8 @@ private[spark] class ExecutorAllocationManager(
     * and pending tasks, rounded up.
     */
   private def maxNumExecutorsNeeded(): Int = {
-    val numRunningOrPendingTasks =
-      listener.totalPendingTasks + listener.totalRunningTasks
+    val numRunningOrPendingTasks = listener.totalPendingTasks + listener
+      .totalRunningTasks
     (numRunningOrPendingTasks + tasksPerExecutor - 1) / tasksPerExecutor
   }
 
@@ -393,9 +387,8 @@ private[spark] class ExecutorAllocationManager(
     // Ensure that our target doesn't exceed what we need at the present moment:
     numExecutorsTarget = math.min(numExecutorsTarget, maxNumExecutorsNeeded)
     // Ensure that our target fits within configured bounds:
-    numExecutorsTarget = math.max(
-      math.min(numExecutorsTarget, maxNumExecutors),
-      minNumExecutors)
+    numExecutorsTarget = math
+      .max(math.min(numExecutorsTarget, maxNumExecutors), minNumExecutors)
 
     val delta = numExecutorsTarget - oldNumExecutorsTarget
 
@@ -449,8 +442,8 @@ private[spark] class ExecutorAllocationManager(
       }
 
       // Do not kill the executor if we have already reached the lower bound
-      val numExistingExecutors =
-        executorIds.size - executorsPendingToRemove.size
+      val numExistingExecutors = executorIds.size - executorsPendingToRemove
+        .size
       if (numExistingExecutors - 1 < minNumExecutors) {
         logDebug(
           s"Not removing idle executor $executorId because there are only " +
@@ -622,15 +615,14 @@ private[spark] class ExecutorAllocationManager(
           if (!locality.isEmpty) {
             numTasksPending += 1
             locality.foreach { location =>
-              val count =
-                hostToLocalTaskCountPerStage.getOrElse(location.host, 0) + 1
+              val count = hostToLocalTaskCountPerStage
+                .getOrElse(location.host, 0) + 1
               hostToLocalTaskCountPerStage(location.host) = count
             }
           }
         }
-        stageIdToExecutorPlacementHints.put(
-          stageId,
-          (numTasksPending, hostToLocalTaskCountPerStage.toMap))
+        stageIdToExecutorPlacementHints
+          .put(stageId, (numTasksPending, hostToLocalTaskCountPerStage.toMap))
 
         // Update the executor placement hints
         updateExecutorPlacementHints()
@@ -676,17 +668,15 @@ private[spark] class ExecutorAllocationManager(
         }
 
         // If this is the last pending task, mark the scheduler queue as empty
-        stageIdToTaskIndices.getOrElseUpdate(
-          stageId,
-          new mutable.HashSet[Int]) += taskIndex
+        stageIdToTaskIndices
+          .getOrElseUpdate(stageId, new mutable.HashSet[Int]) += taskIndex
         if (totalPendingTasks() == 0) {
           allocationManager.onSchedulerQueueEmpty()
         }
 
         // Mark the executor on which this task is scheduled as busy
-        executorIdToTaskIds.getOrElseUpdate(
-          executorId,
-          new mutable.HashSet[Long]) += taskId
+        executorIdToTaskIds
+          .getOrElseUpdate(executorId, new mutable.HashSet[Long]) += taskId
         allocationManager.onExecutorBusy(executorId)
       }
     }

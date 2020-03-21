@@ -19,8 +19,8 @@ trait IntInstances extends algebra.std.IntInstances {
 
   implicit val intShow: Show[Int] = Show.fromToString[Int]
 
-  implicit val intGroup: CommutativeGroup[Int] =
-    AdditiveCommutativeGroup[Int].additive
+  implicit val intGroup: CommutativeGroup[Int] = AdditiveCommutativeGroup[Int]
+    .additive
 
 }
 

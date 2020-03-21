@@ -14,8 +14,8 @@ import org.jetbrains.jps.incremental.scala.remote.RemoteResourceOwner
 class RemoteServerRunner(project: Project) extends RemoteResourceOwner {
   protected val address = InetAddress.getByName(null)
 
-  protected val port =
-    ScalaCompileServerSettings.getInstance().COMPILE_SERVER_PORT
+  protected val port = ScalaCompileServerSettings.getInstance()
+    .COMPILE_SERVER_PORT
 
   def buildProcess(arguments: Seq[String], client: Client) =
     new CompilationProcess {
@@ -40,9 +40,8 @@ class RemoteServerRunner(project: Project) extends RemoteResourceOwner {
           send(serverAlias, arguments, client)
         } catch {
           case e: ConnectException =>
-            val message = "Cannot connect to compile server at %s:%s".format(
-              address.toString,
-              port)
+            val message = "Cannot connect to compile server at %s:%s"
+              .format(address.toString, port)
             client.error(message)
             client.debug(
               s"$message\n${e.toString}\n${e.getStackTrace.mkString("\n")}")
@@ -64,8 +63,8 @@ class RemoteServerStopper(val port: Int) extends RemoteResourceOwner {
 
   def sendStop(): Unit =
     try {
-      val stopCommand =
-        "stop_" + ScalaCompileServerSettings.getInstance().COMPILE_SERVER_ID
+      val stopCommand = "stop_" + ScalaCompileServerSettings.getInstance()
+        .COMPILE_SERVER_ID
       send(stopCommand, Seq(s"--nailgun-port $port"), null)
     } catch { case e: Exception => }
 }

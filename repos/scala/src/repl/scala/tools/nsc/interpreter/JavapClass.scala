@@ -94,9 +94,8 @@ class JavapClass(
   /** Assume the string is a path and try to find the classfile it represents.
     */
   def tryFile(path: String): Option[Array[Byte]] =
-    (
-      Try(File(path.asClassResource)) filter (_.exists) map (_.toByteArray())
-    ).toOption
+    (Try(File(path.asClassResource)) filter (_.exists) map (_.toByteArray()))
+      .toOption
 
   /** Assume the string is a fully qualified class name and try to
     *  find the class object it represents.
@@ -342,14 +341,12 @@ class JavapClass(
       //ServiceLoader.load(classOf[javax.tools.DisassemblerTool]).
       //getTask(writer, fileManager, reporter, options.asJava, classes.asJava)
       val toolopts = options filter (_ != "-filter")
-      TaskCtor
-        .newInstance(
-          writer,
-          fileManager(inputs),
-          reporter,
-          toolopts.asJava,
-          classes.asJava)
-        .orFailed(throw new IllegalStateException)
+      TaskCtor.newInstance(
+        writer,
+        fileManager(inputs),
+        reporter,
+        toolopts.asJava,
+        classes.asJava).orFailed(throw new IllegalStateException)
     }
     // a result per input
     private def applyOne(

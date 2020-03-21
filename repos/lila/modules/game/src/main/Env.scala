@@ -57,9 +57,8 @@ final class Env(
   lazy val crosstableApi = new CrosstableApi(db(CollectionCrosstable))
 
   // load captcher actor
-  private val captcher = system.actorOf(
-    Props(new Captcher),
-    name = CaptcherName)
+  private val captcher = system
+    .actorOf(Props(new Captcher), name = CaptcherName)
 
   scheduler.message(CaptcherDuration) { captcher -> actorApi.NewCaptcha }
 

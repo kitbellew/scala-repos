@@ -74,8 +74,7 @@ case class HealthCheck(
         assert(
           command.isDefined,
           "A command is required when using the COMMAND health check protocol.")
-        MesosProtos.HealthCheck.newBuilder
-          .setCommand(this.command.get.toProto)
+        MesosProtos.HealthCheck.newBuilder.setCommand(this.command.get.toProto)
 
       case Protocol.HTTP =>
         throw new UnsupportedOperationException(
@@ -86,13 +85,11 @@ case class HealthCheck(
           s"Mesos does not support health checks of type [$protocol]")
     }
 
-    builder
-      .setDelaySeconds(0)
+    builder.setDelaySeconds(0)
       .setIntervalSeconds(this.interval.toSeconds.toDouble)
       .setTimeoutSeconds(this.timeout.toSeconds.toDouble)
       .setConsecutiveFailures(this.maxConsecutiveFailures)
-      .setGracePeriodSeconds(this.gracePeriod.toUnit(SECONDS))
-      .build
+      .setGracePeriodSeconds(this.gracePeriod.toUnit(SECONDS)).build
   }
 
   def hostPort(launched: Task.Launched): Option[Int] = {

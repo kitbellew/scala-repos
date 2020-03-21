@@ -12,7 +12,7 @@ object CorePlugin extends AutoPlugin {
   // This is included by default
   override def trigger = allRequirements
 
-  override lazy val projectSettings: Seq[Setting[_]] =
-    Defaults.coreDefaultSettings
+  override lazy val projectSettings: Seq[Setting[_]] = Defaults
+    .coreDefaultSettings
   override lazy val globalSettings: Seq[Setting[_]] = Defaults.globalSbtCore
 }

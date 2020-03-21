@@ -170,16 +170,14 @@ object Evolutions {
     * @return a formatted script
     */
   def toHumanReadableScript(scripts: Seq[Script]): String = {
-    val txt = scripts
-      .map {
-        case UpScript(ev) =>
-          "# --- Rev:" + ev.revision + ",Ups - " + ev.hash.take(
-            7) + "\n" + ev.sql_up + "\n"
-        case DownScript(ev) =>
-          "# --- Rev:" + ev.revision + ",Downs - " + ev.hash.take(
-            7) + "\n" + ev.sql_down + "\n"
-      }
-      .mkString("\n")
+    val txt = scripts.map {
+      case UpScript(ev) =>
+        "# --- Rev:" + ev.revision + ",Ups - " + ev.hash.take(7) + "\n" + ev
+          .sql_up + "\n"
+      case DownScript(ev) =>
+        "# --- Rev:" + ev.revision + ",Downs - " + ev.hash.take(7) + "\n" + ev
+          .sql_down + "\n"
+    }.mkString("\n")
 
     val hasDownWarning =
       "# !!! WARNING! This script contains DOWNS evolutions that are likely destructive\n\n"
@@ -199,12 +197,8 @@ object Evolutions {
   def conflictings(
       downs: Seq[Evolution],
       ups: Seq[Evolution]): (Seq[Evolution], Seq[Evolution]) =
-    downs
-      .zip(ups)
-      .reverse
-      .dropWhile { case (down, up) => down.hash == up.hash }
-      .reverse
-      .unzip
+    downs.zip(ups).reverse.dropWhile { case (down, up) => down.hash == up.hash }
+      .reverse.unzip
 
   /**
     * Apply evolutions for the given database.
@@ -309,10 +303,8 @@ object OfflineEvolutions {
       autocommit: Boolean = true,
       schema: String = ""): Unit = {
     val evolutions = getEvolutions(appPath, classloader, dbApi)
-    val scripts = evolutions.evolutionsApi.scripts(
-      dbName,
-      evolutions.evolutionsReader,
-      schema)
+    val scripts = evolutions.evolutionsApi
+      .scripts(dbName, evolutions.evolutionsReader, schema)
     if (!isTest) {
       logger.warn(
         "Applying evolution scripts for database '" + dbName + "':\n\n" + Evolutions

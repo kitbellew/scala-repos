@@ -23,8 +23,8 @@ final class TransactionClientIntegrationSuite extends RedisClientTest {
 
   test("Correctly set and get transaction", RedisTest, ClientTest) {
     withRedisClient { client =>
-      val txResult = Await.result(
-        client.transaction(Seq(Set(foo, bar), Set(baz, boo))))
+      val txResult = Await
+        .result(client.transaction(Seq(Set(foo, bar), Set(baz, boo))))
       assert(ReplyFormat.toString(txResult.toList) == Seq("OK", "OK"))
     }
   }
@@ -84,8 +84,8 @@ final class TransactionClientIntegrationSuite extends RedisClientTest {
     RedisTest,
     ClientTest) {
     withRedisClient { client =>
-      val txResult = Await.result(
-        client.transaction(Seq(Set(foo, bar), Get(foo))))
+      val txResult = Await
+        .result(client.transaction(Seq(Set(foo, bar), Get(foo))))
       assert(ReplyFormat.toString(txResult.toList) == Seq("OK", "bar"))
     }
   }

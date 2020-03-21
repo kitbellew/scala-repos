@@ -15,8 +15,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   */
 class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
   def withRelativeImports(body: => Unit): Unit = {
-    val settings: ScalaCodeStyleSettings = ScalaCodeStyleSettings.getInstance(
-      getProjectAdapter)
+    val settings: ScalaCodeStyleSettings = ScalaCodeStyleSettings
+      .getInstance(getProjectAdapter)
     val oldValue = settings.isAddFullQualifiedImports
     settings.setAddFullQualifiedImports(false)
     try { body }

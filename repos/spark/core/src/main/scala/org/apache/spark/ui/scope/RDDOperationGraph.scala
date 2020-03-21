@@ -133,8 +133,7 @@ private[ui] object RDDOperationGraph extends Logging {
       } else {
         // Otherwise, this RDD belongs to an inner cluster,
         // which may be nested inside of other clusters
-        val rddScopes = rdd.scope
-          .map { scope => scope.getAllScopes }
+        val rddScopes = rdd.scope.map { scope => scope.getAllScopes }
           .getOrElse(Seq.empty)
         val rddClusters = rddScopes.map { scope =>
           val clusterId = scope.id
@@ -219,11 +218,9 @@ private[ui] object RDDOperationGraph extends Logging {
       subgraph: StringBuilder,
       cluster: RDDOperationCluster,
       indent: String): Unit = {
-    subgraph
-      .append(indent)
-      .append(s"subgraph cluster${cluster.id} {\n")
-      .append(indent)
-      .append(s"""  label="${StringEscapeUtils.escapeJava(cluster.name)}";\n""")
+    subgraph.append(indent).append(s"subgraph cluster${cluster.id} {\n")
+      .append(indent).append(s"""  label="${StringEscapeUtils
+        .escapeJava(cluster.name)}";\n""")
     cluster.childNodes.foreach { node =>
       subgraph.append(indent).append(s"  ${makeDotNode(node)};\n")
     }

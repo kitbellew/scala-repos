@@ -60,8 +60,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
           host,
           literals) || injectInInterpolation(registrar, host, literals)) return
 
-    if (ScalaProjectSettings
-          .getInstance(host.getProject)
+    if (ScalaProjectSettings.getInstance(host.getProject)
           .isDisableLangInjection) return
 
     injectUsingAnnotation(registrar, host, literals) || injectUsingPatterns(
@@ -77,15 +76,12 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       case _ =>
     }
 
-    val expressions = host
-      .depthFirst {
-        case injectedExpr: ScExpression
-            if injectedExpr.getParent
-              .isInstanceOf[ScInterpolatedStringLiteral] => false
-        case _                                           => true
-      }
-      .filter(_.isInstanceOf[ScExpression])
-      .toList
+    val expressions = host.depthFirst {
+      case injectedExpr: ScExpression
+          if injectedExpr.getParent.isInstanceOf[ScInterpolatedStringLiteral] =>
+        false
+      case _ => true
+    }.filter(_.isInstanceOf[ScExpression]).toList
 
     val suitable = expressions forall {
       case l: ScLiteral if l.isString                   => true
@@ -123,7 +119,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
     val annotation = annotationOwner flatMap {
       _.getAnnotations find {
-        _.getQualifiedName == myInjectionConfiguration.getAdvancedConfiguration.getLanguageAnnotationClass
+        _.getQualifiedName == myInjectionConfiguration.getAdvancedConfiguration
+          .getLanguageAnnotationClass
       }
     }
 
@@ -172,8 +169,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       host: PsiElement,
       literals: scala.Seq[ScLiteral]) = {
     ScalaLanguageInjector withInjectionSupport { support =>
-      val injections =
-        myInjectionConfiguration.getInjections(support.getId).toIterator
+      val injections = myInjectionConfiguration.getInjections(support.getId)
+        .toIterator
 
       var done = false
 
@@ -181,8 +178,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
         val injection = injections.next()
 
         if (injection acceptsPsiElement host) {
-          val language =
-            InjectedLanguage findLanguageById injection.getInjectedLanguageId
+          val language = InjectedLanguage findLanguageById injection
+            .getInjectedLanguageId
           if (language != null) {
             val injectedLanguage = InjectedLanguage.create(
               injection.getInjectedLanguageId,
@@ -251,10 +248,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
   def implicitAnnotationOwnerFor(
       literal: ScLiteral): Option[PsiAnnotationOwner] = {
-    literal
-      .getImplicitConversions()
-      ._2
-      .flatMap(_.asOptionOf[ScFunction])
+    literal.getImplicitConversions()._2.flatMap(_.asOptionOf[ScFunction])
       .flatMap(_.parameters.headOption)
   }
 
@@ -265,8 +259,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     hostElement match {
       case host: PsiLanguageInjectionHost =>
         ScalaLanguageInjector withInjectionSupport { support =>
-          val mapping = ScalaProjectSettings
-            .getInstance(host.getProject)
+          val mapping = ScalaProjectSettings.getInstance(host.getProject)
             .getIntInjectionMapping
           val allInjections = new util.HashMap[InjectedLanguage, util.ArrayList[
             Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]]()
@@ -318,8 +311,7 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     // map(x) = y check
     if (l.isInstanceOf[ScMethodCall]) None
     else
-      l.asOptionOf[ScReferenceElement]
-        .flatMap(_.resolve().toOption)
+      l.asOptionOf[ScReferenceElement].flatMap(_.resolve().toOption)
         .map(contextOf)
         .flatMap(_.asOptionOf[PsiAnnotationOwner with PsiElement])
   }
@@ -340,8 +332,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
               val parameters = m.getParameterList.getParameters
               if (parameters.isEmpty) None
               else
-                parameters(
-                  index.min(parameters.size - 1)).getModifierList.toOption
+                parameters(index.min(parameters.size - 1)).getModifierList
+                  .toOption
             case _ => None
           }
         }

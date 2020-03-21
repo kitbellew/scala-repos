@@ -81,8 +81,8 @@ class SocketServerTest extends JUnitSuite {
   /* A simple request handler that just echos back the response */
   def processRequest(channel: RequestChannel) {
     val request = channel.receiveRequest
-    val byteBuffer = ByteBuffer.allocate(
-      request.header.sizeOf + request.body.sizeOf)
+    val byteBuffer = ByteBuffer
+      .allocate(request.header.sizeOf + request.body.sizeOf)
     request.header.writeTo(byteBuffer)
     request.body.writeTo(byteBuffer)
     byteBuffer.rewind()
@@ -116,8 +116,8 @@ class SocketServerTest extends JUnitSuite {
       ackTimeoutMs,
       new HashMap[TopicPartition, ByteBuffer]())
 
-    val byteBuffer = ByteBuffer.allocate(
-      emptyHeader.sizeOf + emptyRequest.sizeOf)
+    val byteBuffer = ByteBuffer
+      .allocate(emptyHeader.sizeOf + emptyRequest.sizeOf)
     emptyHeader.writeTo(byteBuffer)
     emptyRequest.writeTo(byteBuffer)
     byteBuffer.rewind()
@@ -167,8 +167,8 @@ class SocketServerTest extends JUnitSuite {
     processRequest(server.requestChannel)
 
     // make sure the sockets are open
-    server.acceptors.values.map(acceptor =>
-      assertFalse(acceptor.serverChannel.socket.isClosed))
+    server.acceptors.values
+      .map(acceptor => assertFalse(acceptor.serverChannel.socket.isClosed))
     // then shutdown the server
     server.shutdown()
 
@@ -219,10 +219,8 @@ class SocketServerTest extends JUnitSuite {
   def testMaxConnectionsPerIPOverrides() {
     val overrideNum = 6
     val overrides = Map("localhost" -> overrideNum)
-    val overrideProps = TestUtils.createBrokerConfig(
-      0,
-      TestUtils.MockZkConnect,
-      port = 0)
+    val overrideProps = TestUtils
+      .createBrokerConfig(0, TestUtils.MockZkConnect, port = 0)
     val serverMetrics = new Metrics()
     val overrideServer: SocketServer = new SocketServer(
       KafkaConfig.fromProps(overrideProps),
@@ -267,11 +265,9 @@ class SocketServerTest extends JUnitSuite {
         Array(TestUtils.trustAllCerts),
         new java.security.SecureRandom())
       val socketFactory = sslContext.getSocketFactory
-      val sslSocket = socketFactory
-        .createSocket(
-          "localhost",
-          overrideServer.boundPort(SecurityProtocol.SSL))
-        .asInstanceOf[SSLSocket]
+      val sslSocket = socketFactory.createSocket(
+        "localhost",
+        overrideServer.boundPort(SecurityProtocol.SSL)).asInstanceOf[SSLSocket]
       sslSocket.setNeedClientAuth(false)
 
       val apiKey = ApiKeys.PRODUCE.id
@@ -285,8 +281,8 @@ class SocketServerTest extends JUnitSuite {
         ackTimeoutMs,
         new HashMap[TopicPartition, ByteBuffer]())
 
-      val byteBuffer = ByteBuffer.allocate(
-        emptyHeader.sizeOf() + emptyRequest.sizeOf())
+      val byteBuffer = ByteBuffer
+        .allocate(emptyHeader.sizeOf() + emptyRequest.sizeOf())
       emptyHeader.writeTo(byteBuffer)
       emptyRequest.writeTo(byteBuffer)
       byteBuffer.rewind()

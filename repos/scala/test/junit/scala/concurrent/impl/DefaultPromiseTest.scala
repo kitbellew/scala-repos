@@ -100,10 +100,10 @@ class DefaultPromiseTest {
           assertEquals(Map.empty[(Try[Result], HandlerId), Int], fireCounts)
         case HandlersFired(firingResult, handlers) =>
           assert(result.isSuccess)
-          val expectedCounts = handlers.foldLeft(
-            Map.empty[(Try[Result], HandlerId), Int]) {
-            case (map, hid) => map.updated((firingResult, hid), 1)
-          }
+          val expectedCounts = handlers
+            .foldLeft(Map.empty[(Try[Result], HandlerId), Int]) {
+              case (map, hid) => map.updated((firingResult, hid), 1)
+            }
           assertEquals(expectedCounts, fireCounts)
         case MaybeIllegalThrown =>
           if (result.isFailure) assertIllegalResult

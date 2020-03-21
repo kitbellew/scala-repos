@@ -68,8 +68,8 @@ object Implicits {
   implicit class RichRequest(request: HttpServletRequest) {
 
     def paths: Array[String] =
-      (request.getRequestURI.substring(
-        request.getContextPath.length + 1) match {
+      (request.getRequestURI
+        .substring(request.getContextPath.length + 1) match {
         case path if path.startsWith("api/v3/repos/") =>
           path.substring(13 /* "/api/v3/repos".length */ )
         case path if path.startsWith("api/v3/orgs/") =>
@@ -86,9 +86,8 @@ object Implicits {
 
     def baseUrl: String = {
       val url = request.getRequestURL.toString
-      val len = url.length - (
-        request.getRequestURI.length - request.getContextPath.length
-      )
+      val len = url.length - (request.getRequestURI.length - request
+        .getContextPath.length)
       url.substring(0, len).stripSuffix("/")
     }
   }

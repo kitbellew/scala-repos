@@ -79,8 +79,7 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
 
   before {
     tempDir = Utils.createTempDir()
-    val conf = new SparkConf()
-      .setMaster("local[4]")
+    val conf = new SparkConf().setMaster("local[4]")
       .setAppName(classOf[OutputCommitCoordinatorSuite].getSimpleName)
       .set("spark.speculation", "true")
     sc = new SparkContext(conf) {
@@ -167,12 +166,10 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
 
   test("Job should not complete if all commits are denied") {
     // Create a mock OutputCommitCoordinator that denies all attempts to commit
-    doReturn(false)
-      .when(outputCommitCoordinator)
-      .handleAskPermissionToCommit(
-        Matchers.any(),
-        Matchers.any(),
-        Matchers.any())
+    doReturn(false).when(outputCommitCoordinator).handleAskPermissionToCommit(
+      Matchers.any(),
+      Matchers.any(),
+      Matchers.any())
     val rdd: RDD[Int] = sc.parallelize(Seq(1), 1)
     def resultHandler(x: Int, y: Unit): Unit = {}
     val futureAction: SimpleFutureAction[Unit] = sc.submitJob[Int, Unit, Unit](
@@ -217,10 +214,9 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
       attemptNumber = authorizedCommitter,
       reason = TaskKilled)
     // A new task should now be allowed to become the authorized committer
-    assert(outputCommitCoordinator.canCommit(
-      stage,
-      partition,
-      nonAuthorizedCommitter + 2))
+    assert(
+      outputCommitCoordinator
+        .canCommit(stage, partition, nonAuthorizedCommitter + 2))
     // There can only be one authorized committer
     assert(
       !outputCommitCoordinator

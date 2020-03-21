@@ -48,10 +48,9 @@ class ReplicatorChaosSpec
 
   implicit val cluster = Cluster(system)
   val replicator = system.actorOf(
-    Replicator.props(
-      ReplicatorSettings(system)
-        .withRole("backend")
-        .withGossipInterval(1.second)),
+    Replicator
+      .props(ReplicatorSettings(system).withRole("backend").withGossipInterval(
+        1.second)),
     "replicator")
   val timeout = 3.seconds.dilated
 

@@ -97,11 +97,8 @@ class ClusterTest extends FunSuite {
     "Cluster ready should honor timeout while waiting for cluster to initialize") {
     val cluster =
       new DynamicCluster[SocketAddress](Seq[SocketAddress]()) //empty cluster
-    val client = ClientBuilder()
-      .cluster(cluster)
-      .codec(StringCodec)
-      .hostConnectionLimit(1)
-      .timeout(1.seconds) //global time out
+    val client = ClientBuilder().cluster(cluster).codec(StringCodec)
+      .hostConnectionLimit(1).timeout(1.seconds) //global time out
       .build()
 
     intercept[GlobalRequestTimeoutException] { Await.result(client("hello1")) }

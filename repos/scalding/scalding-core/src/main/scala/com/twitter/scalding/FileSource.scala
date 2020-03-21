@@ -130,11 +130,9 @@ object FileSource {
       conf: Configuration,
       filter: PathFilter = AcceptAllPathFilter): Iterable[FileStatus] = {
     val path = new Path(glob)
-    Option(path.getFileSystem(conf).globStatus(path, filter))
-      .map {
-        _.toIterable // convert java Array to scala Iterable
-      }
-      .getOrElse { Iterable.empty }
+    Option(path.getFileSystem(conf).globStatus(path, filter)).map {
+      _.toIterable // convert java Array to scala Iterable
+    }.getOrElse { Iterable.empty }
   }
 
   /**
@@ -163,8 +161,8 @@ object FileSource {
       hiddenFilter: Boolean): Boolean = {
     // Produce tuples (dirName, hasSuccess, hasNonHidden) keyed by dir
     //
-    val usedDirs = glob(globPath, conf, AcceptAllPathFilter)
-      .map { fileStatus: FileStatus =>
+    val usedDirs = glob(globPath, conf, AcceptAllPathFilter).map {
+      fileStatus: FileStatus =>
         // stringify Path for Semigroup
         val dir =
           if (fileStatus.isDirectory) fileStatus.getPath.toString
@@ -179,14 +177,12 @@ object FileSource {
             SuccessFileFilter.accept(fileStatus.getPath) && fileStatus.isFile),
           OrVal(HiddenFileFilter.accept(fileStatus.getPath))
         )
-      }
+    }
 
     // OR by key
-    val uniqueUsedDirs = MapAlgebra
-      .sumByKey(usedDirs)
-      .filter {
-        case (_, (_, _, hasNonHidden)) => (!hiddenFilter || hasNonHidden.get)
-      }
+    val uniqueUsedDirs = MapAlgebra.sumByKey(usedDirs).filter {
+      case (_, (_, _, hasNonHidden)) => (!hiddenFilter || hasNonHidden.get)
+    }
 
     // there is at least one valid path, and all paths have success
     //
@@ -240,19 +236,14 @@ abstract class FileSource
               createHfsTap(hdfsScheme, hdfsWritePath, sinkMode))
         }
       case _ => {
-        val tryTtp = Try(TestTapFactory(this, hdfsScheme, sinkMode))
-          .map {
-            // these java types are invariant, so we cast here
-            _.createTap(readOrWrite)
-              .asInstanceOf[Tap[Any, Any, Any]]
+        val tryTtp = Try(TestTapFactory(this, hdfsScheme, sinkMode)).map {
+          // these java types are invariant, so we cast here
+          _.createTap(readOrWrite).asInstanceOf[Tap[Any, Any, Any]]
+        }.orElse {
+          Try(TestTapFactory(this, localScheme.getSourceFields, sinkMode)).map {
+            _.createTap(readOrWrite).asInstanceOf[Tap[Any, Any, Any]]
           }
-          .orElse {
-            Try(TestTapFactory(this, localScheme.getSourceFields, sinkMode))
-              .map {
-                _.createTap(readOrWrite)
-                  .asInstanceOf[Tap[Any, Any, Any]]
-              }
-          }
+        }
 
         tryTtp match {
           case Success(s) => s
@@ -281,7 +272,8 @@ abstract class FileSource
       case Hdfs(strict, conf) => {
         if (strict && (!hdfsReadPathsAreGood(conf))) {
           throw new InvalidSourceException(
-            "[" + this.toString + "] Data is missing from one or more paths in: " +
+            "[" + this
+              .toString + "] Data is missing from one or more paths in: " +
               hdfsPaths.toString)
         } else if (!hdfsPaths.exists { pathIsGood(_, conf) }) {
           //Check that there is at least one good path:
@@ -586,8 +578,8 @@ class OffsetTextLine(
     with TextSourceScheme {
 
   override def converter[U >: (Long, String)] =
-    TupleConverter.asSuperConverter[(Long, String), U](
-      TupleConverter.of[(Long, String)])
+    TupleConverter
+      .asSuperConverter[(Long, String), U](TupleConverter.of[(Long, String)])
 }
 
 /**

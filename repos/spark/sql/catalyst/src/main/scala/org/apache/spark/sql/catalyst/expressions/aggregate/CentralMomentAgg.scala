@@ -66,8 +66,8 @@ abstract class CentralMomentAgg(child: Expression)
 
   override val aggBufferAttributes = trimHigherOrder(Seq(n, avg, m2, m3, m4))
 
-  override val initialValues: Seq[Expression] = Array.fill(momentOrder + 1)(
-    Literal(0.0))
+  override val initialValues: Seq[Expression] = Array
+    .fill(momentOrder + 1)(Literal(0.0))
 
   override val updateExpressions: Seq[Expression] = {
     val newN = n + Literal(1.0)
@@ -121,9 +121,8 @@ abstract class CentralMomentAgg(child: Expression)
           deltaN * deltaN * deltaN * delta * n1 * n2 * (
             n1 * n1 - n1 * n2 + n2 * n2
           ) +
-          Literal(6.0) * deltaN * deltaN * (
-            n1 * n1 * m2.right + n2 * n2 * m2.left
-          ) +
+          Literal(6.0) * deltaN * deltaN * (n1 * n1 * m2.right + n2 * n2 * m2
+            .left) +
           Literal(4.0) * deltaN * (n1 * m3.right - n2 * m3.left)
       } else { Literal(0.0) }
 

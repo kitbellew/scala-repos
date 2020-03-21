@@ -43,8 +43,8 @@ private[csv] object CSVInferSchema {
       header: Array[String],
       nullValue: String = ""): StructType = {
 
-    val startType: Array[DataType] = Array.fill[DataType](header.length)(
-      NullType)
+    val startType: Array[DataType] = Array
+      .fill[DataType](header.length)(NullType)
     val rootTypes: Array[DataType] = tokenRdd
       .aggregate(startType)(inferRowType(nullValue), mergeRowTypes)
 
@@ -133,8 +133,8 @@ private[csv] object CSVInferSchema {
   // see issue #128 for more details.
   private def stringType(): DataType = { StringType }
 
-  private val numericPrecedence: IndexedSeq[DataType] =
-    HiveTypeCoercion.numericPrecedence
+  private val numericPrecedence: IndexedSeq[DataType] = HiveTypeCoercion
+    .numericPrecedence
 
   /**
     * Copied from internal Spark api
@@ -183,19 +183,13 @@ private[csv] object CSVTypeCast {
         case _: IntegerType => datum.toInt
         case _: LongType    => datum.toLong
         case _: FloatType =>
-          Try(datum.toFloat)
-            .getOrElse(
-              NumberFormat
-                .getInstance(Locale.getDefault)
-                .parse(datum)
-                .floatValue())
+          Try(datum.toFloat).getOrElse(
+            NumberFormat.getInstance(Locale.getDefault).parse(datum)
+              .floatValue())
         case _: DoubleType =>
-          Try(datum.toDouble)
-            .getOrElse(
-              NumberFormat
-                .getInstance(Locale.getDefault)
-                .parse(datum)
-                .doubleValue())
+          Try(datum.toDouble).getOrElse(
+            NumberFormat.getInstance(Locale.getDefault).parse(datum)
+              .doubleValue())
         case _: BooleanType => datum.toBoolean
         case dt: DecimalType =>
           val value = new BigDecimal(datum.replaceAll(",", ""))

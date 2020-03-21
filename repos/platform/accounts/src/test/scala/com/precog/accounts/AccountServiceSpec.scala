@@ -134,8 +134,7 @@ trait TestAccountService
 
 class AccountServiceSpec extends TestAccountService with Tags {
   def accounts =
-    client
-      .contentType[JValue](application / (MimeTypes.json))
+    client.contentType[JValue](application / (MimeTypes.json))
       .path("/accounts/v1/accounts/")
 
   def auth(user: String, pass: String): HttpHeader = {
@@ -334,8 +333,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
       }.copoint
 
       val subkey = apiKeyManager
-        .createAPIKey(Some("subkey"), None, apiKey, Set.empty)
-        .copoint
+        .createAPIKey(Some("subkey"), None, apiKey, Set.empty).copoint
 
       getAccountByAPIKey(subkey.apiKey, rootUser, rootPass).map {
         case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>

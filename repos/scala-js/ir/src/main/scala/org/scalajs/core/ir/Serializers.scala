@@ -550,7 +550,8 @@ object Serializers {
         } else if (lineDiff >= -32 && lineDiff < 32 && columnIsByte) {
           writeByte((lineDiff << Format2Shift) | Format2MaskValue)
           writeByte(column)
-        } else if (lineDiff >= Short.MinValue && lineDiff <= Short.MaxValue && columnIsByte) {
+        } else if (lineDiff >= Short.MinValue && lineDiff <= Short
+                     .MaxValue && columnIsByte) {
           writeByte(Format3MaskValue)
           writeShort(lineDiff)
           writeByte(column)
@@ -582,8 +583,8 @@ object Serializers {
 
     private[this] val input = new DataInputStream(stream)
 
-    private[this] val files = Array.fill(input.readInt())(new URI(
-      input.readUTF()))
+    private[this] val files = Array
+      .fill(input.readInt())(new URI(input.readUTF()))
 
     private[this] val strings = Array.fill(input.readInt())(input.readUTF())
 
@@ -974,12 +975,11 @@ object Serializers {
       tree match {
         case VarRef(Ident(name, origName)) =>
           implicit val pos = tree.pos
-          paramToIndex
-            .get(name)
-            .fold { if (name == "arguments") argumentsRef else tree } {
-              paramIndex =>
-                JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
-            }
+          paramToIndex.get(name).fold {
+            if (name == "arguments") argumentsRef else tree
+          } { paramIndex =>
+            JSBracketSelect(argumentsRef, IntLiteral(paramIndex))
+          }
 
         case _ => super.transform(tree, isStat)
       }

@@ -84,8 +84,7 @@ trait AtmosphereSupport
   val atmosphereFramework = new ScalatraAtmosphereFramework(isFilter, false)
 
   implicit protected def scalatraActorSystem: ActorSystem =
-    servletContext
-      .get(ActorSystemKey)
+    servletContext.get(ActorSystemKey)
       .map(_.asInstanceOf[ActorSystem]) getOrElse {
       val msg =
         "Scalatra Actor system not present. Creating a private actor system"
@@ -139,17 +138,13 @@ trait AtmosphereSupport
 
   protected def configureInterceptors(cfg: ServletConfig) = {
     atmosphereFramework.interceptor(new SessionCreationInterceptor)
-    if (cfg
-          .getInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT)
+    if (cfg.getInitParameter(ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT)
           .isBlank)
       cfg.getServletContext.setInitParameter(
         ApplicationConfig.PROPERTY_NATIVE_COMETSUPPORT,
         "true")
-    if (trackMessageSize || cfg
-          .getInitParameter(TrackMessageSize)
-          .blankOption
-          .map(_.toCheckboxBool)
-          .getOrElse(false))
+    if (trackMessageSize || cfg.getInitParameter(TrackMessageSize).blankOption
+          .map(_.toCheckboxBool).getOrElse(false))
       atmosphereFramework.interceptor(new TrackMessageSizeInterceptor)
   }
 
@@ -198,8 +193,7 @@ trait AtmosphereSupport
         "you should get rid of it.")
 
   private[this] def atmosphereRoutes =
-    routes.methodRoutes
-      .getOrElse(Get, noGetRoute)
+    routes.methodRoutes.getOrElse(Get, noGetRoute)
       .filter(_.metadata.contains('Atmosphere))
 
   private[this] def atmosphereRoute(req: HttpServletRequest) =
@@ -219,8 +213,8 @@ trait AtmosphereSupport
 
   private[this] def configureBroadcasterCache() {
     if (atmosphereFramework.getBroadcasterCacheClassName.isBlank)
-      atmosphereFramework.setBroadcasterCacheClassName(
-        classOf[UUIDBroadcasterCache].getName)
+      atmosphereFramework
+        .setBroadcasterCacheClassName(classOf[UUIDBroadcasterCache].getName)
   }
 
   private[atmosphere] val Atmosphere: RouteTransformer = { (route: Route) =>
@@ -252,10 +246,12 @@ trait AtmosphereSupport
     atmosphereFramework.setupTomcat()
     handle(req, res)
 
-    val transport = cometEvent.getHttpServletRequest.getParameter(
-      HeaderConfig.X_ATMOSPHERE_TRANSPORT)
-    if (transport != null && transport.equalsIgnoreCase(
-          HeaderConfig.WEBSOCKET_TRANSPORT)) { cometEvent.close() }
+    val transport = cometEvent.getHttpServletRequest
+      .getParameter(HeaderConfig.X_ATMOSPHERE_TRANSPORT)
+    if (transport != null && transport
+          .equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT)) {
+      cometEvent.close()
+    }
   }
 
   /**
@@ -270,10 +266,12 @@ trait AtmosphereSupport
     atmosphereFramework.setupTomcat7()
     handle(req, res)
 
-    val transport = cometEvent.getHttpServletRequest.getParameter(
-      HeaderConfig.X_ATMOSPHERE_TRANSPORT)
-    if (transport != null && transport.equalsIgnoreCase(
-          HeaderConfig.WEBSOCKET_TRANSPORT)) { cometEvent.close() }
+    val transport = cometEvent.getHttpServletRequest
+      .getParameter(HeaderConfig.X_ATMOSPHERE_TRANSPORT)
+    if (transport != null && transport
+          .equalsIgnoreCase(HeaderConfig.WEBSOCKET_TRANSPORT)) {
+      cometEvent.close()
+    }
   }
 
   /**

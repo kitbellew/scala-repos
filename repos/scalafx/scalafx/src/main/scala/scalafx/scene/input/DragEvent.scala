@@ -60,8 +60,8 @@ object DragEvent {
   /**
     * This event occurs when drag gesture enters a node.
     */
-  val DragEnteredTarget: EventType[jfxsi.DragEvent] =
-    jfxsi.DragEvent.DRAG_ENTERED_TARGET
+  val DragEnteredTarget: EventType[jfxsi.DragEvent] = jfxsi.DragEvent
+    .DRAG_ENTERED_TARGET
 
   /**
     * This event occurs when drag gesture exits a node.
@@ -71,8 +71,8 @@ object DragEvent {
   /**
     * This event occurs when drag gesture exits a node.
     */
-  val DragExitedTarget: EventType[jfxsi.DragEvent] =
-    jfxsi.DragEvent.DRAG_EXITED_TARGET
+  val DragExitedTarget: EventType[jfxsi.DragEvent] = jfxsi.DragEvent
+    .DRAG_EXITED_TARGET
 
   /**
     * This event occurs when drag gesture progresses within this node.

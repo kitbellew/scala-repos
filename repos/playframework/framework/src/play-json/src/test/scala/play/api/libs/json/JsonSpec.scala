@@ -39,10 +39,9 @@ object JsonSpec extends org.specs2.mutable.Specification {
 
   implicit val PostFormat: Format[Post] =
     ((__ \ 'body).format[String] and
-      (__ \ 'created_at)
-        .formatNullable[Option[Date]](Format(
-          Reads.optionWithNull(Reads.dateReads(dateFormat)),
-          Writes.optionWithNull(Writes.dateWrites(dateFormat))))
+      (__ \ 'created_at).formatNullable[Option[Date]](Format(
+        Reads.optionWithNull(Reads.dateReads(dateFormat)),
+        Writes.optionWithNull(Writes.dateWrites(dateFormat))))
         .inmap(optopt => optopt.flatten, (opt: Option[Date]) => Some(opt)))(
       Post,
       unlift(Post.unapply))
@@ -92,14 +91,13 @@ object JsonSpec extends org.specs2.mutable.Specification {
         "field3" -> Json.obj(
           "field31" -> true,
           "field32" -> 123.45,
-          "field33" -> Json.arr("blabla", 456L, JsNull))) must not equalTo (
-        Json.obj(
+          "field33" -> Json.arr("blabla", 456L, JsNull))) must not equalTo (Json
+        .obj(
           "field3" -> Json.obj(
             "field31" -> true,
             "field33" -> Json.arr("blabla", 456L, JsNull),
             "field32" -> 123.45),
-          "field1" -> 123)
-      )
+          "field1" -> 123))
     }
 
     "support basic array operations" in {
@@ -154,9 +152,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
         """{"body": "foobar", "created_at": "2011-04-22T13:33:48.000Z"}"""
       val expectedPost = Post("foobar", Some(postDate))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
+      Json.parse(postJson).as[Post](LenientPostFormat)
         .aka("parsed") must_== expectedPost
     }
 
@@ -169,9 +165,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
         """{"body": "foobar", "created_at": "2011-04-22T13:33:48.000+0500"}"""
       val expectedPost = Post("foobar", Some(cal.getTime))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
+      Json.parse(postJson).as[Post](LenientPostFormat)
         .aka("parsed") must_== expectedPost
     }
 
@@ -180,9 +174,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
         """{"body": "foobar", "created_at": "2011-04-22T13:33:48Z"}"""
       val expectedPost = Post("foobar", Some(postDate))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
+      Json.parse(postJson).as[Post](LenientPostFormat)
         .aka("parsed") must_== expectedPost
     }
 
@@ -195,9 +187,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
         """{"body": "foobar", "created_at": "2011-04-22T13:33:48+0700"}"""
       val expectedPost = Post("foobar", Some(cal.getTime))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
+      Json.parse(postJson).as[Post](LenientPostFormat)
         .aka("parsed") must_== expectedPost
     }
 
@@ -208,9 +198,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
         "foobar",
         Some(postDateWithTZ(TimeZone.getDefault)))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
+      Json.parse(postJson).as[Post](LenientPostFormat)
         .aka("parsed") must_== expectedPost
     }
 
@@ -221,9 +209,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
         "foobar",
         Some(postDateWithTZ(TimeZone.getDefault)))
 
-      Json
-        .parse(postJson)
-        .as[Post](LenientPostFormat)
+      Json.parse(postJson).as[Post](LenientPostFormat)
         .aka("parsed") must_== expectedPost
     }
 
@@ -243,25 +229,24 @@ object JsonSpec extends org.specs2.mutable.Specification {
       val t = 1330950829160L
       val m = Map("timestamp" -> t)
       val jsonM = toJson(m)
-      (jsonM \ "timestamp").as[Long] must_== t and (
-        jsonM.toString must_== """{"timestamp":1330950829160}"""
-      )
+      (jsonM \ "timestamp").as[Long] must_== t and (jsonM
+        .toString must_== """{"timestamp":1330950829160}""")
     }
 
     "Serialize short integers correctly" in {
       val s: Short = 1234
       val m = Map("s" -> s)
       val jsonM = toJson(m)
-      (jsonM \ "s")
-        .as[Short] must_== s and (jsonM.toString must_== """{"s":1234}""")
+      (jsonM \ "s").as[Short] must_== s and (jsonM
+        .toString must_== """{"s":1234}""")
     }
 
     "Serialize bytes correctly" in {
       val b: Byte = 123
       val m = Map("b" -> b)
       val jsonM = toJson(m)
-      (jsonM \ "b")
-        .as[Byte] must_== b and (jsonM.toString must_== """{"b":123}""")
+      (jsonM \ "b").as[Byte] must_== b and (jsonM
+        .toString must_== """{"b":123}""")
     }
 
     "Serialize and deserialize BigDecimals" in {
@@ -293,10 +278,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
     }
 
     "Serialize and deserialize Jackson ObjectNodes" in {
-      val on = mapper
-        .createObjectNode()
-        .put("foo", 1)
-        .put("bar", "two")
+      val on = mapper.createObjectNode().put("foo", 1).put("bar", "two")
       val json = Json.obj("foo" -> 1, "bar" -> "two")
 
       toJson(on) must_== json and (fromJson[JsonNode](json)
@@ -304,10 +286,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
     }
 
     "Serialize and deserialize Jackson ArrayNodes" in {
-      val an = mapper
-        .createArrayNode()
-        .add("one")
-        .add(2)
+      val an = mapper.createArrayNode().add("one").add(2)
       val json = Json.arr("one", 2)
       toJson(an) must equalTo(json) and (fromJson[JsonNode](json)
         .map(_.toString) must_== JsSuccess(an.toString))
@@ -461,8 +440,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
     }
 
     "keep the insertion order on ListMap" in {
-      val test = Json.toJson(
-        ListMap("name" -> "foo", "zip" -> "foo", "city" -> "foo"))
+      val test = Json
+        .toJson(ListMap("name" -> "foo", "zip" -> "foo", "city" -> "foo"))
       val req = """{"name":"foo", "zip":"foo", "city":"foo"}"""
       test.toString must beEqualTo(Json.parse(req).toString).ignoreSpace
     }

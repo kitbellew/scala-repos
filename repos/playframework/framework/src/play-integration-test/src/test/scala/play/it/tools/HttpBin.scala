@@ -51,14 +51,11 @@ object HttpBinApplication {
             // Anything else
             case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
               Json.obj(
-                "form" -> m.mdf.dataParts.map {
-                  case (k, v) => k -> JsString(v.mkString)
-                },
+                "form" -> m.mdf.dataParts
+                  .map { case (k, v) => k -> JsString(v.mkString) },
                 "file" -> JsString(
-                  m.mdf
-                    .file("upload")
-                    .map(v => FileUtils.readFileToString(v.ref.file))
-                    .getOrElse(""))
+                  m.mdf.file("upload").map(v =>
+                    FileUtils.readFileToString(v.ref.file)).getOrElse(""))
               )
             case b => Json.obj("data" -> JsString(b.toString))
           }
@@ -114,19 +111,17 @@ object HttpBinApplication {
   private def gzipFilter(mat: Materializer) = new GzipFilter()(mat)
 
   def gzip(implicit mat: Materializer) =
-    Seq("GET", "PATCH", "POST", "PUT", "DELETE")
-      .map { method =>
-        val route: Routes = {
-          case r @ p"/gzip" if r.method == method =>
-            gzipFilter(mat)(Action { request =>
-              Ok(
-                requestHeaderWriter.writes(request).as[JsObject] ++ Json
-                  .obj("gzipped" -> true, "method" -> method))
-            })
-        }
-        route
+    Seq("GET", "PATCH", "POST", "PUT", "DELETE").map { method =>
+      val route: Routes = {
+        case r @ p"/gzip" if r.method == method =>
+          gzipFilter(mat)(Action { request =>
+            Ok(
+              requestHeaderWriter.writes(request).as[JsObject] ++ Json
+                .obj("gzipped" -> true, "method" -> method))
+          })
       }
-      .reduceLeft((a, b) => a.orElse(b))
+      route
+    }.reduceLeft((a, b) => a.orElse(b))
 
   val status: Routes = {
     case GET(p"/status/$status<[0-9]+>") => Action {
@@ -137,8 +132,8 @@ object HttpBinApplication {
 
   val responseHeaders: Routes = {
     case GET(p"/response-header") => Action { request =>
-        Ok("").withHeaders(
-          request.queryString.mapValues(_.mkString(",")).toSeq: _*)
+        Ok("")
+          .withHeaders(request.queryString.mapValues(_.mkString(",")).toSeq: _*)
       }
   }
 
@@ -167,8 +162,8 @@ object HttpBinApplication {
 
   val cookiesSet: Routes = {
     case GET(p"/cookies/set") => Action { request =>
-        Redirect("/cookies").withCookies(
-          request.queryString.mapValues(_.head).toSeq.map {
+        Redirect("/cookies")
+          .withCookies(request.queryString.mapValues(_.head).toSeq.map {
             case (k, v) => Cookie(k, v)
           }: _*)
       }
@@ -183,26 +178,19 @@ object HttpBinApplication {
 
   val basicAuth: Routes = {
     case GET(p"/basic-auth/$username/$password") => Action { request =>
-        request.headers
-          .get("Authorization")
-          .flatMap { authorization =>
-            authorization
-              .split(" ")
-              .drop(1)
-              .headOption
-              .filter { encoded =>
-                new String(org.apache.commons.codec.binary.Base64.decodeBase64(
-                  encoded.getBytes)).split(":").toList match {
-                  case u :: p :: Nil if u == username && password == p => true
-                  case _                                               => false
-                }
-              }
-              .map(_ => Ok(Json.obj("authenticated" -> true)))
-          }
-          .getOrElse {
-            Unauthorized.withHeaders(
-              "WWW-Authenticate" -> """Basic realm="Secured"""")
-          }
+        request.headers.get("Authorization").flatMap { authorization =>
+          authorization.split(" ").drop(1).headOption.filter { encoded =>
+            new String(
+              org.apache.commons.codec.binary.Base64
+                .decodeBase64(encoded.getBytes)).split(":").toList match {
+              case u :: p :: Nil if u == username && password == p => true
+              case _                                               => false
+            }
+          }.map(_ => Ok(Json.obj("authenticated" -> true)))
+        }.getOrElse {
+          Unauthorized
+            .withHeaders("WWW-Authenticate" -> """Basic realm="Secured"""")
+        }
       }
   }
 
@@ -322,27 +310,12 @@ object HttpBinApplication {
       Environment.simple())) with AhcWSComponents {
       def router =
         SimpleRouter(
-          PartialFunction.empty
-            .orElse(getIp)
-            .orElse(getUserAgent)
-            .orElse(getHeaders)
-            .orElse(get)
-            .orElse(patch)
-            .orElse(post)
-            .orElse(put)
-            .orElse(delete)
-            .orElse(gzip)
-            .orElse(status)
-            .orElse(responseHeaders)
-            .orElse(redirect)
-            .orElse(redirectTo)
-            .orElse(cookies)
-            .orElse(cookiesSet)
-            .orElse(cookiesDelete)
-            .orElse(basicAuth)
-            .orElse(stream)
-            .orElse(delay)
-            .orElse(html)
+          PartialFunction.empty.orElse(getIp).orElse(getUserAgent)
+            .orElse(getHeaders).orElse(get).orElse(patch).orElse(post)
+            .orElse(put).orElse(delete).orElse(gzip).orElse(status)
+            .orElse(responseHeaders).orElse(redirect).orElse(redirectTo)
+            .orElse(cookies).orElse(cookiesSet).orElse(cookiesDelete)
+            .orElse(basicAuth).orElse(stream).orElse(delay).orElse(html)
             .orElse(robots))
     }.application
   }

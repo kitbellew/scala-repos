@@ -274,8 +274,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       */
     val scaler =
       if (useFeatureScaling) {
-        new StandardScaler(withStd = true, withMean = false).fit(input.map(
-          _.features))
+        new StandardScaler(withStd = true, withMean = false)
+          .fit(input.map(_.features))
       } else { null }
 
     // Prepend an extra variable consisting of all 1.0's for the intercept.
@@ -283,8 +283,7 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     val data =
       if (addIntercept) {
         if (useFeatureScaling) {
-          input
-            .map(lp => (lp.label, appendBias(scaler.transform(lp.features))))
+          input.map(lp => (lp.label, appendBias(scaler.transform(lp.features))))
             .cache()
         } else { input.map(lp => (lp.label, appendBias(lp.features))).cache() }
       } else {
@@ -307,9 +306,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
         initialWeights
       }
 
-    val weightsWithIntercept = optimizer.optimize(
-      data,
-      initialWeightsWithIntercept)
+    val weightsWithIntercept = optimizer
+      .optimize(data, initialWeightsWithIntercept)
 
     val intercept =
       if (addIntercept && numOfLinearPredictor == 1) {
@@ -347,8 +345,7 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
           val end = (i + 1) * n - { if (addIntercept) 1 else 0 }
 
           val partialWeightsArray = scaler
-            .transform(Vectors.dense(weightsArray.slice(start, end)))
-            .toArray
+            .transform(Vectors.dense(weightsArray.slice(start, end))).toArray
 
           System.arraycopy(
             partialWeightsArray,

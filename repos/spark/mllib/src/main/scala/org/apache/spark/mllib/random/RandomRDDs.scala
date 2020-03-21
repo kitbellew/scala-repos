@@ -245,8 +245,8 @@ object RandomRDDs {
       size: Long,
       numPartitions: Int,
       seed: Long): JavaDoubleRDD = {
-    JavaDoubleRDD.fromRDD(
-      exponentialRDD(jsc.sc, mean, size, numPartitions, seed))
+    JavaDoubleRDD
+      .fromRDD(exponentialRDD(jsc.sc, mean, size, numPartitions, seed))
   }
 
   /**
@@ -307,8 +307,8 @@ object RandomRDDs {
       size: Long,
       numPartitions: Int,
       seed: Long): JavaDoubleRDD = {
-    JavaDoubleRDD.fromRDD(
-      gammaRDD(jsc.sc, shape, scale, size, numPartitions, seed))
+    JavaDoubleRDD
+      .fromRDD(gammaRDD(jsc.sc, shape, scale, size, numPartitions, seed))
   }
 
   /**
@@ -376,8 +376,8 @@ object RandomRDDs {
       size: Long,
       numPartitions: Int,
       seed: Long): JavaDoubleRDD = {
-    JavaDoubleRDD.fromRDD(
-      logNormalRDD(jsc.sc, mean, std, size, numPartitions, seed))
+    JavaDoubleRDD
+      .fromRDD(logNormalRDD(jsc.sc, mean, std, size, numPartitions, seed))
   }
 
   /**

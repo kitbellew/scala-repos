@@ -14,9 +14,8 @@ import scala.io.Source
   */
 abstract class StepOverTestBase extends ScalaDebuggerTestCase {
   def doStepOver(): Unit = {
-    val stepOverCommand = getDebugProcess.createStepOverCommand(
-      suspendContext,
-      false)
+    val stepOverCommand = getDebugProcess
+      .createStepOverCommand(suspendContext, false)
     getDebugProcess.getManagerThread.invokeAndWait(stepOverCommand)
   }
 
@@ -62,8 +61,7 @@ abstract class StepOverTestBase extends ScalaDebuggerTestCase {
     managed[Integer] {
       val location = suspendContext.getFrameProxy.location
       inReadAction {
-        new ScalaPositionManager(getDebugProcess)
-          .getSourcePosition(location)
+        new ScalaPositionManager(getDebugProcess).getSourcePosition(location)
           .getLine
       }
     }

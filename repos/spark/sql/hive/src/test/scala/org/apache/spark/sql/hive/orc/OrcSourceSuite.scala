@@ -49,10 +49,7 @@ abstract class OrcSuite
     orcTableDir.mkdir()
     import org.apache.spark.sql.hive.test.TestHive.implicits._
 
-    sparkContext
-      .makeRDD(1 to 10)
-      .map(i => OrcData(i, s"part-$i"))
-      .toDF()
+    sparkContext.makeRDD(1 to 10).map(i => OrcData(i, s"part-$i")).toDF()
       .registerTempTable(s"orc_temp_table")
 
     sql(s"""CREATE EXTERNAL TABLE normal_orc(
@@ -183,19 +180,16 @@ class OrcSourceSuite extends OrcSuite {
       """.stripMargin.trim) {
       OrcFilters
         .createFilter(Array(LessThan("a", 10), StringContains("b", "prefix")))
-        .get
-        .toString
+        .get.toString
     }
 
     // The `LessThan` should be converted while the whole inner `And` shouldn't
     assertResult("""leaf-0 = (LESS_THAN a 10)
         |expr = leaf-0
       """.stripMargin.trim) {
-      OrcFilters
-        .createFilter(Array(
-          LessThan("a", 10),
-          Not(And(GreaterThan("a", 1), StringContains("b", "prefix")))))
-        .get
+      OrcFilters.createFilter(Array(
+        LessThan("a", 10),
+        Not(And(GreaterThan("a", 1), StringContains("b", "prefix"))))).get
         .toString
     }
   }

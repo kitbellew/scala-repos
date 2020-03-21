@@ -17,8 +17,8 @@ import org.scalatest.mock.MockitoSugar
 class ExceptionRemoteInfoFactoryTest extends FunSuite with MockitoSugar {
   test(
     "ExceptionRemoteInfoFactory should add remote info to HasRemoteInfo service acquisition exceptions") {
-    val serviceFactory = ServiceFactory.const(new FailedService(
-      new HasRemoteInfo {}))
+    val serviceFactory = ServiceFactory
+      .const(new FailedService(new HasRemoteInfo {}))
 
     val failingFactory = new ServiceFactory[String, String] {
       def apply(conn: ClientConnection) = Future.exception(new HasRemoteInfo {})
@@ -54,8 +54,8 @@ class ExceptionRemoteInfoFactoryTest extends FunSuite with MockitoSugar {
 
   test(
     "ExceptionRemoteInfoFactory should add remote info to request exceptions") {
-    val serviceFactory = ServiceFactory.const(new FailedService(
-      new HasRemoteInfo {}))
+    val serviceFactory = ServiceFactory
+      .const(new FailedService(new HasRemoteInfo {}))
 
     val downstreamAddr = new InetSocketAddress("1.2.3.4", 100)
     val downstreamId = "downstream"
@@ -86,8 +86,8 @@ class ExceptionRemoteInfoFactoryTest extends FunSuite with MockitoSugar {
   }
 
   test("ExceptionRemoteInfoFactory should add remote info to Failures") {
-    val serviceFactory = ServiceFactory.const(new FailedService(new Failure(
-      "bad time")))
+    val serviceFactory = ServiceFactory
+      .const(new FailedService(new Failure("bad time")))
 
     val downstreamAddr = new InetSocketAddress("1.2.3.4", 100)
     val downstreamId = "downstream"

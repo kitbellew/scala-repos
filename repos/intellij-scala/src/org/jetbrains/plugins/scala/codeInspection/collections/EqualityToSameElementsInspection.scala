@@ -20,14 +20,12 @@ object ArrayEquality extends SimplificationType {
     expr match {
       case left `==` right if arraysOrSeqAndArray(left, right) =>
         Some(
-          replace(expr)
-            .withText(invocationText(left, "sameElements", right))
+          replace(expr).withText(invocationText(left, "sameElements", right))
             .highlightRef)
       case left `!=` right if arraysOrSeqAndArray(left, right) =>
         Some(
-          replace(expr)
-            .withText(
-              invocationText(negation = true, left, "sameElements", right))
+          replace(expr).withText(
+            invocationText(negation = true, left, "sameElements", right))
             .highlightRef)
       case _ => None
     }
@@ -47,14 +45,12 @@ object IteratorsEquality extends SimplificationType {
     expr match {
       case left `==` right if iterators(left, right) =>
         Some(
-          replace(expr)
-            .withText(invocationText(left, "sameElements", right))
+          replace(expr).withText(invocationText(left, "sameElements", right))
             .highlightRef)
       case left `!=` right if iterators(left, right) =>
         Some(
-          replace(expr)
-            .withText(
-              invocationText(negation = true, left, "sameElements", right))
+          replace(expr).withText(
+            invocationText(negation = true, left, "sameElements", right))
             .highlightRef)
       case _ => None
     }

@@ -155,8 +155,8 @@ trait HttpComponentsClient extends Client {
           HttpMultipartMode.BROWSER_COMPATIBLE)
         params.foreach {
           case (name, value) =>
-            multipartEntity.addPart(
-              new FormBodyPart(name, new StringBody(value)))
+            multipartEntity
+              .addPart(new FormBodyPart(name, new StringBody(value)))
         }
 
         files.foreach {

@@ -202,7 +202,8 @@ trait SymbolTrackers {
 
       "" + hierarchy + (if (removed.isEmpty) ""
                         else
-                          "\n\n!!! " + label + ", " + removed.size + " symbols vanished:\n" + removedString)
+                          "\n\n!!! " + label + ", " + removed
+                            .size + " symbols vanished:\n" + removedString)
     }
   }
 }

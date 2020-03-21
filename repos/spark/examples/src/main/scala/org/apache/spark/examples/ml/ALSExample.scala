@@ -53,31 +53,22 @@ object ALSExample {
     import sqlContext.implicits._
 
     // $example on$
-    val ratings = sc
-      .textFile("data/mllib/als/sample_movielens_ratings.txt")
-      .map(Rating.parseRating)
-      .toDF()
+    val ratings = sc.textFile("data/mllib/als/sample_movielens_ratings.txt")
+      .map(Rating.parseRating).toDF()
     val Array(training, test) = ratings.randomSplit(Array(0.8, 0.2))
 
     // Build the recommendation model using ALS on the training data
-    val als = new ALS()
-      .setMaxIter(5)
-      .setRegParam(0.01)
-      .setUserCol("userId")
-      .setItemCol("movieId")
-      .setRatingCol("rating")
+    val als = new ALS().setMaxIter(5).setRegParam(0.01).setUserCol("userId")
+      .setItemCol("movieId").setRatingCol("rating")
     val model = als.fit(training)
 
     // Evaluate the model by computing the RMSE on the test data
-    val predictions = model
-      .transform(test)
+    val predictions = model.transform(test)
       .withColumn("rating", col("rating").cast(DoubleType))
       .withColumn("prediction", col("prediction").cast(DoubleType))
 
-    val evaluator = new RegressionEvaluator()
-      .setMetricName("rmse")
-      .setLabelCol("rating")
-      .setPredictionCol("prediction")
+    val evaluator = new RegressionEvaluator().setMetricName("rmse")
+      .setLabelCol("rating").setPredictionCol("prediction")
     val rmse = evaluator.evaluate(predictions)
     println(s"Root-mean-square error = $rmse")
     // $example off$

@@ -33,10 +33,8 @@ object BasicHttpClient {
       var requestNo = 0
       val responses = requests.flatMap { request =>
         requestNo += 1
-        client.sendRequest(
-          request,
-          requestNo.toString,
-          trickleFeed = trickleFeed)
+        client
+          .sendRequest(request, requestNo.toString, trickleFeed = trickleFeed)
       }
 
       if (checkClosed) {
@@ -63,10 +61,8 @@ object BasicHttpClient {
       var requestNo = 0
       requests.foreach { request =>
         requestNo += 1
-        client.sendRequest(
-          request,
-          requestNo.toString,
-          waitForResponses = false)
+        client
+          .sendRequest(request, requestNo.toString, waitForResponses = false)
       }
       for (i <- 0 until requests.length) yield {
         client.readResponse(requestNo.toString)
@@ -106,8 +102,7 @@ class BasicHttpClient(port: Int) {
     def writeBody() = {
       if (request.body.length > 0) {
         trickleFeed match {
-          case Some(timeout) =>
-            request.body.grouped(8192).foreach { chunk =>
+          case Some(timeout) => request.body.grouped(8192).foreach { chunk =>
               out.write(chunk)
               out.flush()
               Thread.sleep(timeout)
@@ -213,7 +208,8 @@ class BasicHttpClient(port: Int) {
       case io: IOException => throw io
       case e: Exception =>
         throw new RuntimeException(
-          s"Exception while reading response $responseDesc ${e.getClass.getName}: ${e.getMessage}",
+          s"Exception while reading response $responseDesc ${e.getClass
+            .getName}: ${e.getMessage}",
           e)
     }
   }

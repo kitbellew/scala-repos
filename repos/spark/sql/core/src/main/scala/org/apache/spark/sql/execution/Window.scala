@@ -303,11 +303,10 @@ case class Window(
         BoundReference(child.output.size + i, e.dataType, e.nullable)
     }
     val unboundToRefMap = expressions.zip(references).toMap
-    val patchedWindowExpression = windowExpression.map(
-      _.transform(unboundToRefMap))
-    UnsafeProjection.create(
-      child.output ++ patchedWindowExpression,
-      child.output)
+    val patchedWindowExpression = windowExpression
+      .map(_.transform(unboundToRefMap))
+    UnsafeProjection
+      .create(child.output ++ patchedWindowExpression, child.output)
   }
 
   protected override def doExecute(): RDD[InternalRow] = {
@@ -543,10 +542,8 @@ private[execution] class ExternalRowBuffer(
   def next(): InternalRow = {
     if (iter.hasNext) {
       iter.loadNext()
-      currentRow.pointTo(
-        iter.getBaseObject,
-        iter.getBaseOffset,
-        iter.getRecordLength)
+      currentRow
+        .pointTo(iter.getBaseObject, iter.getBaseOffset, iter.getRecordLength)
       currentRow
     } else { null }
   }
@@ -630,8 +627,7 @@ private[execution] final class OffsetWindowFunctionFrame(
           input
         } else {
           // With default value.
-          val default = BindReferences
-            .bindReference(e.default, inputAttrs)
+          val default = BindReferences.bindReference(e.default, inputAttrs)
             .transform {
               // Shift the input reference to its default version.
               case BoundReference(o, dataType, nullable) =>
@@ -716,11 +712,8 @@ private[execution] final class SlidingWindowFunctionFrame(
 
     // Add all rows to the buffer for which the input row value is equal to or less than
     // the output row upper bound.
-    while (nextRow != null && ubound.compare(
-             nextRow,
-             inputHighIndex,
-             current,
-             index) <= 0) {
+    while (nextRow != null && ubound
+             .compare(nextRow, inputHighIndex, current, index) <= 0) {
       buffer.add(nextRow.copy())
       nextRow = input.next()
       inputHighIndex += 1
@@ -729,11 +722,8 @@ private[execution] final class SlidingWindowFunctionFrame(
 
     // Drop all rows from the buffer for which the input row value is smaller than
     // the output row lower bound.
-    while (!buffer.isEmpty && lbound.compare(
-             buffer.peek(),
-             inputLowIndex,
-             current,
-             index) < 0) {
+    while (!buffer.isEmpty && lbound
+             .compare(buffer.peek(), inputLowIndex, current, index) < 0) {
       buffer.remove()
       inputLowIndex += 1
       bufferUpdated = true
@@ -828,11 +818,8 @@ private[execution] final class UnboundedPrecedingWindowFunctionFrame(
 
     // Add all rows to the aggregates for which the input row value is equal to or less than
     // the output row upper bound.
-    while (nextRow != null && ubound.compare(
-             nextRow,
-             inputIndex,
-             current,
-             index) <= 0) {
+    while (nextRow != null && ubound
+             .compare(nextRow, inputIndex, current, index) <= 0) {
       processor.update(nextRow)
       nextRow = input.next()
       inputIndex += 1
@@ -890,11 +877,8 @@ private[execution] final class UnboundedFollowingWindowFunctionFrame(
     // the output row lower bound.
     tmp.skip(inputIndex)
     var nextRow = tmp.next()
-    while (nextRow != null && lbound.compare(
-             nextRow,
-             inputIndex,
-             current,
-             index) < 0) {
+    while (nextRow != null && lbound
+             .compare(nextRow, inputIndex, current, index) < 0) {
       nextRow = tmp.next()
       inputIndex += 1
       bufferUpdated = true
@@ -943,8 +927,8 @@ private[execution] object AggregateProcessor {
 
     // Check if there are any SizeBasedWindowFunctions. If there are, we add the partition size to
     // the aggregation buffer. Note that the ordinal of the partition size value will always be 0.
-    val trackPartitionSize = functions.exists(
-      _.isInstanceOf[SizeBasedWindowFunction])
+    val trackPartitionSize = functions
+      .exists(_.isInstanceOf[SizeBasedWindowFunction])
     if (trackPartitionSize) {
       aggBufferAttributes += SizeBasedWindowFunction.n
       initialValues += NoOp
@@ -961,8 +945,7 @@ private[execution] object AggregateProcessor {
       case agg: ImperativeAggregate =>
         val offset = aggBufferAttributes.size
         val imperative = BindReferences.bindReference(
-          agg
-            .withNewInputAggBufferOffset(offset)
+          agg.withNewInputAggBufferOffset(offset)
             .withNewMutableAggBufferOffset(offset),
           inputAttributes)
         imperatives += imperative

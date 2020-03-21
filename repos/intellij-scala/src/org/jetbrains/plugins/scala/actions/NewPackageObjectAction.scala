@@ -18,9 +18,8 @@ import org.jetbrains.plugins.scala.project._
   */
 class NewPackageObjectAction
     extends CreateFromTemplateAction(
-      FileTemplateManager
-        .getDefaultInstance()
-        .getInternalTemplate("Package Object"))
+      FileTemplateManager.getDefaultInstance().getInternalTemplate(
+        "Package Object"))
     with DumbAware {
 
   override def update(e: AnActionEvent) {
@@ -31,11 +30,9 @@ class NewPackageObjectAction
     val hasPackage = Option(LangDataKeys.IDE_VIEW.getData(e.getDataContext))
       .flatMap(_.getDirectories.headOption)
       .flatMap(dir => Option(JavaDirectoryService.getInstance.getPackage(dir)))
-      .map(_.getQualifiedName)
-      .exists(!_.isEmpty)
+      .map(_.getQualifiedName).exists(!_.isEmpty)
 
-    val module: Module = e.getDataContext
-      .getData(LangDataKeys.MODULE.getName)
+    val module: Module = e.getDataContext.getData(LangDataKeys.MODULE.getName)
       .asInstanceOf[Module]
     val isEnabled: Boolean = Option(module).exists(_.hasScala)
 

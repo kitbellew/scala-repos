@@ -18,13 +18,10 @@ class ScalaMethodReturnTypeMacro extends Macro {
       context: ExpressionContext): Result = {
     Option(PsiTreeUtil.getParentOfType(
       context.getPsiElementAtStartOffset,
-      classOf[ScFunction]))
-      .map(_.getType(TypingContext.empty).getOrAny match {
-        case ScFunctionType(rt, _) => rt
-        case t                     => t
-      })
-      .map(new ScalaTypeResult(_))
-      .orNull
+      classOf[ScFunction])).map(_.getType(TypingContext.empty).getOrAny match {
+      case ScFunctionType(rt, _) => rt
+      case t                     => t
+    }).map(new ScalaTypeResult(_)).orNull
   }
 
   override def getName: String = MacroUtil.scalaIdPrefix + "methodReturnType"

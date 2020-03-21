@@ -34,8 +34,8 @@ final class OpenAddressHashArray[
     protected var _data: Array[V],
     protected var load: Int,
     val size: Int,
-    val default: ConfigurableDefault[V] = ConfigurableDefault
-      .default[V])(implicit
+    val default: ConfigurableDefault[V] = ConfigurableDefault.default[V])(
+    implicit
     protected val manElem: ClassTag[V],
     val zero: Zero[V])
     extends Storage[V]
@@ -48,8 +48,8 @@ final class OpenAddressHashArray[
       manElem: ClassTag[V],
       zero: Zero[V]) = {
     this(
-      OpenAddressHashArray.emptyIndexArray(
-        OpenAddressHashArray.calculateSize(initialSize)),
+      OpenAddressHashArray
+        .emptyIndexArray(OpenAddressHashArray.calculateSize(initialSize)),
       default.makeArray(OpenAddressHashArray.calculateSize(initialSize)),
       0,
       size,

@@ -60,21 +60,18 @@ object LinearRegression {
 
     val parser = new OptionParser[Params]("LinearRegression") {
       head("LinearRegression: an example app for linear regression.")
-      opt[Int]("numIterations")
-        .text("number of iterations")
+      opt[Int]("numIterations").text("number of iterations")
         .action((x, c) => c.copy(numIterations = x))
       opt[Double]("stepSize")
         .text(s"initial step size, default: ${defaultParams.stepSize}")
         .action((x, c) => c.copy(stepSize = x))
-      opt[String]("regType")
-        .text(
-          s"regularization type (${RegType.values.mkString(",")}), " +
-            s"default: ${defaultParams.regType}")
+      opt[String]("regType").text(
+        s"regularization type (${RegType.values.mkString(",")}), " +
+          s"default: ${defaultParams.regType}")
         .action((x, c) => c.copy(regType = RegType.withName(x)))
       opt[Double]("regParam")
         .text(s"regularization parameter, default: ${defaultParams.regParam}")
-      arg[String]("<input>")
-        .required()
+      arg[String]("<input>").required()
         .text("input paths to labeled examples in LIBSVM format")
         .action((x, c) => c.copy(input = x))
       note(
@@ -117,10 +114,8 @@ object LinearRegression {
     }
 
     val algorithm = new LinearRegressionWithSGD()
-    algorithm.optimizer
-      .setNumIterations(params.numIterations)
-      .setStepSize(params.stepSize)
-      .setUpdater(updater)
+    algorithm.optimizer.setNumIterations(params.numIterations)
+      .setStepSize(params.stepSize).setUpdater(updater)
       .setRegParam(params.regParam)
 
     val model = algorithm.run(training)
@@ -128,13 +123,11 @@ object LinearRegression {
     val prediction = model.predict(test.map(_.features))
     val predictionAndLabel = prediction.zip(test.map(_.label))
 
-    val loss = predictionAndLabel
-      .map {
-        case (p, l) =>
-          val err = p - l
-          err * err
-      }
-      .reduce(_ + _)
+    val loss = predictionAndLabel.map {
+      case (p, l) =>
+        val err = p - l
+        err * err
+    }.reduce(_ + _)
     val rmse = math.sqrt(loss / numTest)
 
     println(s"Test RMSE = $rmse.")

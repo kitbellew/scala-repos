@@ -137,9 +137,8 @@ class ScObjectImpl protected (
       val newState = state.put(BaseProcessor.FROM_TYPE_KEY, null)
       val qual = qualifiedName
       val facade = JavaPsiFacade.getInstance(getProject)
-      val pack = facade.findPackage(
-        qual
-      ) //do not wrap into ScPackage to avoid SOE
+      val pack = facade
+        .findPackage(qual) //do not wrap into ScPackage to avoid SOE
       if (pack != null && !ResolveUtils.packageProcessDeclarations(
             pack,
             processor,
@@ -159,21 +158,15 @@ class ScObjectImpl protected (
       import org.jetbrains.plugins.scala.lang.psi.impl.ScPackageImpl._
       startPackageObjectProcessing()
       try {
-        super[ScTemplateDefinition].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)
+        super[ScTemplateDefinition]
+          .processDeclarations(processor, state, lastParent, place)
       } catch {
         case ignore: DoNotProcessPackageObjectException =>
           true //do nothing, just let's move on
       } finally { stopPackageObjectProcessing() }
     } else {
-      super[ScTemplateDefinition].processDeclarations(
-        processor,
-        state,
-        lastParent,
-        place)
+      super[ScTemplateDefinition]
+        .processDeclarations(processor, state, lastParent, place)
     }
   }
 
@@ -224,15 +217,12 @@ class ScObjectImpl protected (
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   private def getModuleField: Option[PsiField] = {
-    if (getQualifiedName
-          .split('.')
+    if (getQualifiedName.split('.')
           .exists(JavaLexer.isKeyword(_, PsiUtil.getLanguageLevel(this)))) None
     else {
       val field: LightField = new LightField(
         getManager,
-        JavaPsiFacade
-          .getInstance(getProject)
-          .getElementFactory
+        JavaPsiFacade.getInstance(getProject).getElementFactory
           .createFieldFromText(
             "public final static " + getQualifiedName + " MODULE$",
             this),
@@ -319,9 +309,8 @@ class ScObjectImpl protected (
       : mutable.WeakHashMap[Project, TypeDefinitionMembers.TypeNodes.Map] =
     new mutable.WeakHashMap[Project, TypeDefinitionMembers.TypeNodes.Map]
   def getHardTypes: TypeDefinitionMembers.TypeNodes.Map = {
-    hardTypes.getOrElseUpdate(
-      getProject,
-      TypeDefinitionMembers.TypeNodes.build(this))
+    hardTypes
+      .getOrElseUpdate(getProject, TypeDefinitionMembers.TypeNodes.build(this))
   }
 
   private val hardSignatures

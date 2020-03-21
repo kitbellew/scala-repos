@@ -26,7 +26,9 @@ class ExpressionFilter extends ElementFilter {
           !parent.getParent.isInstanceOf[ScStableReferenceElementPattern] &&
           (parent.getPrevSibling == null ||
           parent.getPrevSibling.getPrevSibling == null ||
-          (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT || !parent.getPrevSibling.getPrevSibling.getLastChild
+          (parent.getPrevSibling.getPrevSibling.getNode
+            .getElementType != ScalaElementTypes.MATCH_STMT || !parent
+            .getPrevSibling.getPrevSibling.getLastChild
             .isInstanceOf[PsiErrorElement]))) { return true }
     }
     false

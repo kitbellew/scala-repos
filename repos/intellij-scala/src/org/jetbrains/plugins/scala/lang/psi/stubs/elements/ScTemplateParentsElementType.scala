@@ -52,8 +52,8 @@ abstract class ScTemplateParentsElementType[Func <: ScTemplateParents](
       parentStub,
       this,
       constr.map(StringRef.fromString),
-      psi.typeElementsWithoutConstructor.map(te =>
-        StringRef.fromString(te.getText)))
+      psi.typeElementsWithoutConstructor
+        .map(te => StringRef.fromString(te.getText)))
   }
 
   def deserializeImpl(
@@ -73,8 +73,8 @@ abstract class ScTemplateParentsElementType[Func <: ScTemplateParents](
         constr,
         res)
     } else {
-      ScTemplateParentsElementType.LOG.error(
-        "Negative byte deserialized for array")
+      ScTemplateParentsElementType.LOG
+        .error("Negative byte deserialized for array")
       new ScTemplateParentsStubImpl(
         parentStub.asInstanceOf[StubElement[PsiElement]],
         this,

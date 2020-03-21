@@ -56,26 +56,18 @@ private[ui] class DriverPage(parent: MesosClusterUI)
     val driverDescription = Iterable.apply(driverState.description)
     val submissionState = Iterable.apply(driverState.submissionState)
     val command = Iterable.apply(driverState.description.command)
-    val schedulerProperties = Iterable.apply(
-      driverState.description.schedulerProperties)
+    val schedulerProperties = Iterable
+      .apply(driverState.description.schedulerProperties)
     val commandEnv = Iterable.apply(driverState.description.command.environment)
-    val driverTable = UIUtils.listingTable(
-      driverHeaders,
-      driverRow,
-      driverDescription)
+    val driverTable = UIUtils
+      .listingTable(driverHeaders, driverRow, driverDescription)
     val commandTable = UIUtils.listingTable(commandHeaders, commandRow, command)
-    val commandEnvTable = UIUtils.listingTable(
-      commandEnvHeaders,
-      propertiesRow,
-      commandEnv)
-    val schedulerTable = UIUtils.listingTable(
-      schedulerHeaders,
-      propertiesRow,
-      schedulerProperties)
-    val launchedTable = UIUtils.listingTable(
-      launchedHeaders,
-      launchedRow,
-      submissionState)
+    val commandEnvTable = UIUtils
+      .listingTable(commandEnvHeaders, propertiesRow, commandEnv)
+    val schedulerTable = UIUtils
+      .listingTable(schedulerHeaders, propertiesRow, schedulerProperties)
+    val launchedTable = UIUtils
+      .listingTable(launchedHeaders, launchedRow, submissionState)
     val retryTable = UIUtils.listingTable(
       retryHeaders,
       retryRow,
@@ -105,9 +97,8 @@ private[ui] class DriverPage(parent: MesosClusterUI)
 
   private def launchedRow(
       submissionState: Option[MesosClusterSubmissionState]): Seq[Node] = {
-    submissionState
-      .map { state =>
-        <tr>
+    submissionState.map { state =>
+      <tr>
         <td>Mesos Slave ID</td>
         <td>{state.slaveId.getValue}</td>
       </tr>
@@ -127,8 +118,7 @@ private[ui] class DriverPage(parent: MesosClusterUI)
         <td>Last Task Status</td>
         <td>{state.mesosTaskStatus.map(_.toString).getOrElse("")}</td>
       </tr>
-      }
-      .getOrElse(Seq[Node]())
+    }.getOrElse(Seq[Node]())
   }
 
   private def propertiesRow(
@@ -183,9 +173,8 @@ private[ui] class DriverPage(parent: MesosClusterUI)
 
   private def retryRow(
       retryState: Option[MesosClusterRetryState]): Seq[Node] = {
-    retryState
-      .map { state =>
-        <tr>
+    retryState.map { state =>
+      <tr>
         <td>
           {state.lastFailureStatus}
         </td>
@@ -196,7 +185,6 @@ private[ui] class DriverPage(parent: MesosClusterUI)
           {state.retries}
         </td>
       </tr>
-      }
-      .getOrElse(Seq[Node]())
+    }.getOrElse(Seq[Node]())
   }
 }

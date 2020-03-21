@@ -58,19 +58,14 @@ class PowerIterationClusteringSuite
       (i.toLong, j.toLong, sim(points(i), points(j)))
     }
 
-    val model = new PowerIterationClustering()
-      .setK(2)
-      .setMaxIterations(40)
+    val model = new PowerIterationClustering().setK(2).setMaxIterations(40)
       .run(sc.parallelize(similarities, 2))
     val predictions = Array.fill(2)(mutable.Set.empty[Long])
     model.assignments.collect().foreach { a => predictions(a.cluster) += a.id }
     assert(predictions.toSet == Set((0 until n1).toSet, (n1 until n).toSet))
 
-    val model2 = new PowerIterationClustering()
-      .setK(2)
-      .setMaxIterations(10)
-      .setInitializationMode("degree")
-      .run(sc.parallelize(similarities, 2))
+    val model2 = new PowerIterationClustering().setK(2).setMaxIterations(10)
+      .setInitializationMode("degree").run(sc.parallelize(similarities, 2))
     val predictions2 = Array.fill(2)(mutable.Set.empty[Long])
     model2.assignments.collect().foreach { a =>
       predictions2(a.cluster) += a.id
@@ -97,19 +92,14 @@ class PowerIterationClusteringSuite
     }
     val graph = Graph.fromEdges(sc.parallelize(edges, 2), 0.0)
 
-    val model = new PowerIterationClustering()
-      .setK(2)
-      .setMaxIterations(40)
+    val model = new PowerIterationClustering().setK(2).setMaxIterations(40)
       .run(graph)
     val predictions = Array.fill(2)(mutable.Set.empty[Long])
     model.assignments.collect().foreach { a => predictions(a.cluster) += a.id }
     assert(predictions.toSet == Set((0 until n1).toSet, (n1 until n).toSet))
 
-    val model2 = new PowerIterationClustering()
-      .setK(2)
-      .setMaxIterations(10)
-      .setInitializationMode("degree")
-      .run(sc.parallelize(similarities, 2))
+    val model2 = new PowerIterationClustering().setK(2).setMaxIterations(10)
+      .setInitializationMode("degree").run(sc.parallelize(similarities, 2))
     val predictions2 = Array.fill(2)(mutable.Set.empty[Long])
     model2.assignments.collect().foreach { a =>
       predictions2(a.cluster) += a.id
@@ -197,10 +187,9 @@ object PowerIterationClusteringSuite extends SparkFunSuite {
 
     val aAssignments = a.assignments.map(x => (x.id, x.cluster))
     val bAssignments = b.assignments.map(x => (x.id, x.cluster))
-    val unequalElements = aAssignments
-      .join(bAssignments)
-      .filter { case (id, (c1, c2)) => c1 != c2 }
-      .count()
+    val unequalElements = aAssignments.join(bAssignments).filter {
+      case (id, (c1, c2)) => c1 != c2
+    }.count()
     assert(unequalElements === 0L)
   }
 }

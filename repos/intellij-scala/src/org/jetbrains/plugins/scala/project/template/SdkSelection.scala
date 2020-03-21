@@ -37,8 +37,8 @@ trait SdkSelection {
 
   protected def browse(
       parent: JComponent): Option[Either[String, SdkDescriptor]] = {
-    val virtualFiles =
-      FileChooser.chooseFiles(filesChooserDescriptor, parent, null, null).toSeq
+    val virtualFiles = FileChooser
+      .chooseFiles(filesChooserDescriptor, parent, null, null).toSeq
 
     val files = virtualFiles.map(VfsUtilCore.virtualToIoFile)
 

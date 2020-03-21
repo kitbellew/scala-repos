@@ -82,7 +82,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
       case Some(madeModel) =>
         if (!settings.scaladocQuietRun)
           println(
-            "model contains " + modelFactory.templatesCount + " documentable templates")
+            "model contains " + modelFactory
+              .templatesCount + " documentable templates")
         Some(madeModel)
       case None =>
         if (!settings.scaladocQuietRun)
@@ -103,7 +104,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
         _: InstantiationException | _: SecurityException |
         _: ClassCastException) => reporter.error(
         null,
-        s"Cannot load the doclet class ${settings.docgenerator.value} (specified with ${settings.docgenerator.name}): $e. Leaving the default settings will generate the html version of scaladoc."
+        s"Cannot load the doclet class ${settings.docgenerator
+          .value} (specified with ${settings.docgenerator.name}): $e. Leaving the default settings will generate the html version of scaladoc."
       )
   }
 
@@ -112,9 +114,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
   def document(files: List[String]) {
     def generate() = {
       import doclet._
-      val docletClass = Class.forName(
-        settings.docgenerator.value
-      ) // default is html.Doclet
+      val docletClass = Class
+        .forName(settings.docgenerator.value) // default is html.Doclet
       val docletInstance = docletClass.newInstance().asInstanceOf[Generator]
 
       docletInstance match {

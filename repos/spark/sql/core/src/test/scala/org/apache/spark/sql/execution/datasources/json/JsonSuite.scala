@@ -575,8 +575,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // We should directly cast num_str to DecimalType and also need to do the right type promotion
     // in the Project.
     checkAnswer(
-      jsonDF
-        .where('num_str >= BigDecimal("92233720368547758060"))
+      jsonDF.where('num_str >= BigDecimal("92233720368547758060"))
         .select(('num_str + 1.2).as("num")),
       Row(new java.math.BigDecimal("92233720368547758071.2").doubleValue())
     )
@@ -687,8 +686,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val dir = Utils.createTempDir()
     dir.delete()
     val path = dir.getCanonicalPath
-    primitiveFieldAndType
-      .map(record => record.replaceAll("\n", " "))
+    primitiveFieldAndType.map(record => record.replaceAll("\n", " "))
       .saveAsTextFile(path)
     val jsonDF = sqlContext.read.json(path)
 
@@ -723,8 +721,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val dir = Utils.createTempDir()
     dir.delete()
     val path = dir.getCanonicalPath
-    primitiveFieldAndType
-      .map(record => record.replaceAll("\n", " "))
+    primitiveFieldAndType.map(record => record.replaceAll("\n", " "))
       .saveAsTextFile(path)
     val jsonDF = sqlContext.read.option("primitivesAsString", "true").json(path)
 
@@ -755,8 +752,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
   test(
     "Loading a JSON dataset primitivesAsString returns complex fields as strings") {
-    val jsonDF = sqlContext.read
-      .option("primitivesAsString", "true")
+    val jsonDF = sqlContext.read.option("primitivesAsString", "true")
       .json(complexFieldAndType1)
 
     val expectedSchema = StructType(
@@ -871,8 +867,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
   test(
     "Loading a JSON dataset floatAsBigDecimal returns schema with float types as BigDecimal") {
-    val jsonDF = sqlContext.read
-      .option("floatAsBigDecimal", "true")
+    val jsonDF = sqlContext.read.option("floatAsBigDecimal", "true")
       .json(primitiveFieldAndType)
 
     val expectedSchema = StructType(
@@ -905,8 +900,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val dir = Utils.createTempDir()
     dir.delete()
     val path = dir.getCanonicalPath
-    primitiveFieldAndType
-      .map(record => record.replaceAll("\n", " "))
+    primitiveFieldAndType.map(record => record.replaceAll("\n", " "))
       .saveAsTextFile(path)
 
     sql(s"""
@@ -934,8 +928,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val dir = Utils.createTempDir()
     dir.delete()
     val path = dir.getCanonicalPath
-    primitiveFieldAndType
-      .map(record => record.replaceAll("\n", " "))
+    primitiveFieldAndType.map(record => record.replaceAll("\n", " "))
       .saveAsTextFile(path)
 
     val schema = StructType(
@@ -987,8 +980,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
   test("Applying schemas with MapType") {
     val schemaWithSimpleMap = StructType(
       StructField("map", MapType(StringType, IntegerType, true), false) :: Nil)
-    val jsonWithSimpleMap = sqlContext.read
-      .schema(schemaWithSimpleMap)
+    val jsonWithSimpleMap = sqlContext.read.schema(schemaWithSimpleMap)
       .json(mapType1)
 
     jsonWithSimpleMap.registerTempTable("jsonWithSimpleMap")
@@ -1015,8 +1007,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val schemaWithComplexMap = StructType(
       StructField("map", MapType(StringType, innerStruct, true), false) :: Nil)
 
-    val jsonWithComplexMap = sqlContext.read
-      .schema(schemaWithComplexMap)
+    val jsonWithComplexMap = sqlContext.read.schema(schemaWithComplexMap)
       .json(mapType2)
 
     jsonWithComplexMap.registerTempTable("jsonWithComplexMap")
@@ -1101,20 +1092,14 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val schema = StructType(StructField("a", StringType, true) :: Nil)
     // `FAILFAST` mode should throw an exception for corrupt records.
     val exceptionOne = intercept[SparkException] {
-      sqlContext.read
-        .option("mode", "FAILFAST")
-        .json(corruptRecords)
-        .collect()
+      sqlContext.read.option("mode", "FAILFAST").json(corruptRecords).collect()
     }
     assert(
       exceptionOne.getMessage.contains("Malformed line in FAILFAST mode: {"))
 
     val exceptionTwo = intercept[SparkException] {
-      sqlContext.read
-        .option("mode", "FAILFAST")
-        .schema(schema)
-        .json(corruptRecords)
-        .collect()
+      sqlContext.read.option("mode", "FAILFAST").schema(schema)
+        .json(corruptRecords).collect()
     }
     assert(
       exceptionTwo.getMessage.contains("Malformed line in FAILFAST mode: {"))
@@ -1127,16 +1112,13 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         StructField("c", StringType, true) :: Nil)
     val schemaTwo = StructType(StructField("a", StringType, true) :: Nil)
     // `DROPMALFORMED` mode should skip corrupt records
-    val jsonDFOne = sqlContext.read
-      .option("mode", "DROPMALFORMED")
+    val jsonDFOne = sqlContext.read.option("mode", "DROPMALFORMED")
       .json(corruptRecords)
     checkAnswer(jsonDFOne, Row("str_a_4", "str_b_4", "str_c_4") :: Nil)
     assert(jsonDFOne.schema === schemaOne)
 
-    val jsonDFTwo = sqlContext.read
-      .option("mode", "DROPMALFORMED")
-      .schema(schemaTwo)
-      .json(corruptRecords)
+    val jsonDFTwo = sqlContext.read.option("mode", "DROPMALFORMED")
+      .schema(schemaTwo).json(corruptRecords)
     checkAnswer(jsonDFTwo, Row("str_a_4") :: Nil)
     assert(jsonDFTwo.schema === schemaTwo)
   }
@@ -1380,9 +1362,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
   test("JSONRelation equality test") {
     withTempPath(dir => {
       val path = dir.getCanonicalFile.toURI.toString
-      sparkContext
-        .parallelize(1 to 100)
-        .map(i => s"""{"a": 1, "b": "str$i"}""")
+      sparkContext.parallelize(1 to 100).map(i => s"""{"a": 1, "b": "str$i"}""")
         .saveAsTextFile(path)
 
       val d1 = DataSource(
@@ -1435,10 +1415,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
   }
 
   test("SPARK-8093 Erase empty structs") {
-    val emptySchema = InferSchema.infer(
-      emptyRecords,
-      "",
-      new JSONOptions(Map()))
+    val emptySchema = InferSchema
+      .infer(emptyRecords, "", new JSONOptions(Map()))
     assert(StructType(Seq()) === emptySchema)
   }
 
@@ -1457,8 +1435,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       val d1 = new File(root, "d1=1")
       // root/dt=1/col1=abc
       val p1_col1 = makePartition(
-        sparkContext
-          .parallelize(2 to 5)
+        sparkContext.parallelize(2 to 5)
           .map(i => s"""{"a": 1, "b": "str$i"}"""),
         d1,
         "col1",
@@ -1466,15 +1443,13 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
       // root/dt=1/col1=abd
       val p2 = makePartition(
-        sparkContext
-          .parallelize(6 to 10)
+        sparkContext.parallelize(6 to 10)
           .map(i => s"""{"a": 1, "b": "str$i"}"""),
         d1,
         "col1",
         "abd")
 
-      sqlContext.read
-        .json(root.getAbsolutePath)
+      sqlContext.read.json(root.getAbsolutePath)
         .registerTempTable("test_myjson_with_part")
       checkAnswer(
         sql(
@@ -1569,9 +1544,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // scalastyle:on
 
     // Generate data for the current version.
-    val df = sqlContext.createDataFrame(
-      sqlContext.sparkContext.parallelize(data, 1),
-      schema)
+    val df = sqlContext
+      .createDataFrame(sqlContext.sparkContext.parallelize(data, 1), schema)
     withTempPath { path =>
       df.write.format("json").mode("overwrite").save(path.getCanonicalPath)
 
@@ -1601,9 +1575,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         Row.fromSeq(Seq(v) ++ constantValues)
       }
       checkAnswer(
-        sqlContext.read
-          .format("json")
-          .schema(schema)
+        sqlContext.read.format("json").schema(schema)
           .load(path.getCanonicalPath),
         expectedResult)
     }
@@ -1654,8 +1626,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         }
 
         {
-          val jsonDF = sqlContext.read
-            .schema(schema)
+          val jsonDF = sqlContext.read.schema(schema)
             .json(additionalCorruptRecords)
           jsonDF.registerTempTable("jsonTable")
 
@@ -1682,8 +1653,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       val dir = Utils.createTempDir()
       dir.delete()
       val path = dir.getCanonicalPath
-      arrayAndStructRecords
-        .map(record => record.replaceAll("\n", " "))
+      arrayAndStructRecords.map(record => record.replaceAll("\n", " "))
         .saveAsTextFile(path)
 
       val schema = StructType(
@@ -1700,25 +1670,18 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       val dir = Utils.createTempDir()
       dir.delete()
       val path = dir.getCanonicalPath
-      primitiveFieldAndType
-        .map(record => record.replaceAll("\n", " "))
+      primitiveFieldAndType.map(record => record.replaceAll("\n", " "))
         .saveAsTextFile(path)
 
       val jsonDF = sqlContext.read.json(path)
       val jsonDir = new File(dir, "json").getCanonicalPath
-      jsonDF
-        .coalesce(1)
-        .write
-        .format("json")
-        .option("compression", "gZiP")
+      jsonDF.coalesce(1).write.format("json").option("compression", "gZiP")
         .save(jsonDir)
 
       val compressedFiles = new File(jsonDir).listFiles()
       assert(compressedFiles.exists(_.getName.endsWith(".json.gz")))
 
-      val jsonCopy = sqlContext.read
-        .format("json")
-        .load(jsonDir)
+      val jsonCopy = sqlContext.read.format("json").load(jsonDir)
 
       assert(jsonCopy.count == jsonDF.count)
       val jsonCopySome = jsonCopy.selectExpr("string", "long", "boolean")
@@ -1729,46 +1692,35 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
   test("SPARK-13543 Write the output as uncompressed via option()") {
     val clonedConf = new Configuration(hadoopConfiguration)
-    hadoopConfiguration.set(
-      "mapreduce.output.fileoutputformat.compress",
-      "true")
     hadoopConfiguration
-      .set(
-        "mapreduce.output.fileoutputformat.compress.type",
-        CompressionType.BLOCK.toString)
-    hadoopConfiguration
-      .set(
-        "mapreduce.output.fileoutputformat.compress.codec",
-        classOf[GzipCodec].getName)
-    hadoopConfiguration.set("mapreduce.map.output.compress", "true")
+      .set("mapreduce.output.fileoutputformat.compress", "true")
     hadoopConfiguration.set(
-      "mapreduce.map.output.compress.codec",
+      "mapreduce.output.fileoutputformat.compress.type",
+      CompressionType.BLOCK.toString)
+    hadoopConfiguration.set(
+      "mapreduce.output.fileoutputformat.compress.codec",
       classOf[GzipCodec].getName)
+    hadoopConfiguration.set("mapreduce.map.output.compress", "true")
+    hadoopConfiguration
+      .set("mapreduce.map.output.compress.codec", classOf[GzipCodec].getName)
     withTempDir { dir =>
       try {
         val dir = Utils.createTempDir()
         dir.delete()
 
         val path = dir.getCanonicalPath
-        primitiveFieldAndType
-          .map(record => record.replaceAll("\n", " "))
+        primitiveFieldAndType.map(record => record.replaceAll("\n", " "))
           .saveAsTextFile(path)
 
         val jsonDF = sqlContext.read.json(path)
         val jsonDir = new File(dir, "json").getCanonicalPath
-        jsonDF
-          .coalesce(1)
-          .write
-          .format("json")
-          .option("compression", "none")
+        jsonDF.coalesce(1).write.format("json").option("compression", "none")
           .save(jsonDir)
 
         val compressedFiles = new File(jsonDir).listFiles()
         assert(compressedFiles.exists(!_.getName.endsWith(".json.gz")))
 
-        val jsonCopy = sqlContext.read
-          .format("json")
-          .load(jsonDir)
+        val jsonCopy = sqlContext.read.format("json").load(jsonDir)
 
         assert(jsonCopy.count == jsonDF.count)
         val jsonCopySome = jsonCopy.selectExpr("string", "long", "boolean")

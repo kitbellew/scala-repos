@@ -39,8 +39,6 @@ final class Search(collection: Coll) {
   }
 
   def apply(q: String): Fu[List[Question]] =
-    collection
-      .find(BSONDocument("$text" -> BSONDocument("$search" -> q)))
-      .cursor[Question]()
-      .collect[List]()
+    collection.find(BSONDocument("$text" -> BSONDocument("$search" -> q)))
+      .cursor[Question]().collect[List]()
 }

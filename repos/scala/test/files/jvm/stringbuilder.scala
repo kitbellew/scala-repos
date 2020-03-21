@@ -46,12 +46,10 @@ object Test2 {
   def run() {
     val j0 = new java.lang.StringBuilder("abc")
     val s0 = new StringBuilder("abc")
-    j0 append true append (
-      1.toByte
-    ) append 'a' append 9 append -1L append 1.2e-10f append -2.1e+100d
-    s0 append true append (
-      1.toByte
-    ) append 'a' append 9 append -1L append 1.2e-10f append -2.1e+100d
+    j0 append true append (1
+      .toByte) append 'a' append 9 append -1L append 1.2e-10f append -2.1e+100d
+    s0 append true append (1
+      .toByte) append 'a' append 9 append -1L append 1.2e-10f append -2.1e+100d
     println(
       "s0.toString equals j0.toString = " + (s0.toString equals j0.toString))
 

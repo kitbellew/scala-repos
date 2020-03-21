@@ -19,11 +19,8 @@ class MergeServiceSpec extends FunSpec {
     val dir = createTestRepository(getRepositoryDir(owner, name))
     using(Git.open(dir)) { git =>
       createFile(git, s"refs/heads/master", "test.txt", "hoge")
-      git
-        .branchCreate()
-        .setStartPoint(s"refs/heads/master")
-        .setName(s"refs/pull/${issueId}/head")
-        .call()
+      git.branchCreate().setStartPoint(s"refs/heads/master")
+        .setName(s"refs/pull/${issueId}/head").call()
     }
     dir
   }
@@ -125,8 +122,8 @@ class MergeServiceSpec extends FunSpec {
         createFile(git, s"refs/pull/${issueId}/head", "test.txt", "hoge2")
         val committer = new PersonIdent("dummy2", "dummy2@example.com")
         assert(getFile(git, branch, "test.txt").content.get == "hoge")
-        val requestBranchId = git.getRepository.resolve(
-          s"refs/pull/${issueId}/head")
+        val requestBranchId = git.getRepository
+          .resolve(s"refs/pull/${issueId}/head")
         val masterId = git.getRepository.resolve(branch)
         service.mergePullRequest(git, branch, issueId, "merged", committer)
         val lastCommitId = git.getRepository.resolve(branch)

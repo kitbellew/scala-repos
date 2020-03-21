@@ -61,9 +61,8 @@ private[concurrent] object ExecutionContextImpl {
       currentNumberOfThreads.get() match {
         case `maxThreads` | Int.`MaxValue` => false
         case other =>
-          currentNumberOfThreads.compareAndSet(
-            other,
-            other + 1) || reserveThread()
+          currentNumberOfThreads
+            .compareAndSet(other, other + 1) || reserveThread()
       }
 
     @tailrec
@@ -71,9 +70,8 @@ private[concurrent] object ExecutionContextImpl {
       currentNumberOfThreads.get() match {
         case 0 => false
         case other =>
-          currentNumberOfThreads.compareAndSet(
-            other,
-            other - 1) || deregisterThread()
+          currentNumberOfThreads
+            .compareAndSet(other, other - 1) || deregisterThread()
       }
 
     def wire[T <: Thread](thread: T): T = {
@@ -109,8 +107,10 @@ private[concurrent] object ExecutionContextImpl {
                 result =
                   try {
                     // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
-                    BlockContext.withBlockContext(
-                      BlockContext.defaultBlockContext) { thunk }
+                    BlockContext
+                      .withBlockContext(BlockContext.defaultBlockContext) {
+                        thunk
+                      }
                   } finally { isdone = true }
 
                 true
@@ -129,9 +129,8 @@ private[concurrent] object ExecutionContextImpl {
       (try System.getProperty(name, default)
       catch { case e: SecurityException => default }) match {
         case s if s.charAt(0) == 'x' =>
-          (Runtime.getRuntime.availableProcessors * s
-            .substring(1)
-            .toDouble).ceil.toInt
+          (Runtime.getRuntime.availableProcessors * s.substring(1).toDouble)
+            .ceil.toInt
         case other => other.toInt
       }
 

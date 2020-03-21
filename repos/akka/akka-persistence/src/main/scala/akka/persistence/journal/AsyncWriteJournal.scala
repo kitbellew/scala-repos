@@ -29,10 +29,10 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
 
   private val breaker = {
     val maxFailures = config.getInt("circuit-breaker.max-failures")
-    val callTimeout =
-      config.getDuration("circuit-breaker.call-timeout", MILLISECONDS).millis
-    val resetTimeout =
-      config.getDuration("circuit-breaker.reset-timeout", MILLISECONDS).millis
+    val callTimeout = config
+      .getDuration("circuit-breaker.call-timeout", MILLISECONDS).millis
+    val resetTimeout = config
+      .getDuration("circuit-breaker.reset-timeout", MILLISECONDS).millis
     CircuitBreaker(
       context.system.scheduler,
       maxFailures,
@@ -40,22 +40,22 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
       resetTimeout)
   }
 
-  private val replayFilterMode: ReplayFilter.Mode =
-    config.getString("replay-filter.mode").toLowerCase(Locale.ROOT) match {
-      case "off" ⇒ ReplayFilter.Disabled
-      case "repair-by-discard-old" ⇒ ReplayFilter.RepairByDiscardOld
-      case "fail" ⇒ ReplayFilter.Fail
-      case "warn" ⇒ ReplayFilter.Warn
-      case other ⇒
-        throw new IllegalArgumentException(
-          s"invalid replay-filter.mode [$other], supported values [off, repair, fail, warn]")
-    }
+  private val replayFilterMode: ReplayFilter.Mode = config
+    .getString("replay-filter.mode").toLowerCase(Locale.ROOT) match {
+    case "off" ⇒ ReplayFilter.Disabled
+    case "repair-by-discard-old" ⇒ ReplayFilter.RepairByDiscardOld
+    case "fail" ⇒ ReplayFilter.Fail
+    case "warn" ⇒ ReplayFilter.Warn
+    case other ⇒
+      throw new IllegalArgumentException(
+        s"invalid replay-filter.mode [$other], supported values [off, repair, fail, warn]")
+  }
   private def isReplayFilterEnabled: Boolean =
     replayFilterMode != ReplayFilter.Disabled
-  private val replayFilterWindowSize: Int = config.getInt(
-    "replay-filter.window-size")
-  private val replayFilterMaxOldWriters: Int = config.getInt(
-    "replay-filter.max-old-writers")
+  private val replayFilterWindowSize: Int = config
+    .getInt("replay-filter.window-size")
+  private val replayFilterMaxOldWriters: Int = config
+    .getInt("replay-filter.max-old-writers")
 
   private val resequencer = context.actorOf(Props[Resequencer]())
   private var resequencerCounter = 1L
@@ -176,10 +176,8 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
           else persistentActor
 
         val readHighestSequenceNrFrom = math.max(0L, fromSequenceNr - 1)
-        breaker
-          .withCircuitBreaker(asyncReadHighestSequenceNr(
-            persistenceId,
-            readHighestSequenceNrFrom))
+        breaker.withCircuitBreaker(
+          asyncReadHighestSequenceNr(persistenceId, readHighestSequenceNrFrom))
           .flatMap { highSeqNr ⇒
             val toSeqNr = math.min(toSequenceNr, highSeqNr)
             if (highSeqNr == 0L || fromSequenceNr > toSeqNr)
@@ -198,11 +196,9 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
                     }
               }.map(_ ⇒ highSeqNr)
             }
-          }
-          .map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }
-          .recover { case e ⇒ ReplayMessagesFailure(e) }
-          .pipeTo(replyTo)
-          .onSuccess {
+          }.map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }.recover {
+            case e ⇒ ReplayMessagesFailure(e)
+          }.pipeTo(replyTo).onSuccess {
             case _ ⇒ if (publish) context.system.eventStream.publish(r)
           }
 

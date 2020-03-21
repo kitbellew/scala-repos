@@ -67,24 +67,20 @@ class ScAnnotationImpl private (
       attributeName: String): PsiAnnotationMemberValue = {
     constructor.args match {
       case Some(args) =>
-        args.exprs
-          .map(expr =>
-            expr match {
-              case ass: ScAssignStmt => ass.getLExpression match {
-                  case ref: ScReferenceExpression
-                      if ref.refName == attributeName =>
-                    ass.getRExpression match {
-                      case Some(expr) => (true, expr)
-                      case _          => (false, expr)
-                    }
-                  case _ => (false, expr)
-                }
-              case _ if attributeName == "value" => (true, expr)
-              case _                             => (false, expr)
-            })
-          .find(p => p._1)
-          .getOrElse(false, null)
-          ._2
+        args.exprs.map(expr =>
+          expr match {
+            case ass: ScAssignStmt => ass.getLExpression match {
+                case ref: ScReferenceExpression
+                    if ref.refName == attributeName =>
+                  ass.getRExpression match {
+                    case Some(expr) => (true, expr)
+                    case _          => (false, expr)
+                  }
+                case _ => (false, expr)
+              }
+            case _ if attributeName == "value" => (true, expr)
+            case _                             => (false, expr)
+          }).find(p => p._1).getOrElse(false, null)._2
       case None => null
     }
   }
@@ -128,15 +124,17 @@ class ScAnnotationImpl private (
             var prev = elem.getPrevSibling
             while (prev != null && (ScalaPsiUtil.isLineTerminator(prev) || prev
                      .isInstanceOf[PsiWhiteSpace])) prev = prev.getPrevSibling
-            if (prev != null && prev.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
+            if (prev != null && prev.getNode.getElementType == ScalaTokenTypes
+                  .tCOMMA) {
               elem.delete()
               prev.delete()
             } else {
               var next = elem.getNextSibling
-              while (next != null && (ScalaPsiUtil.isLineTerminator(
-                       next) || next.isInstanceOf[PsiWhiteSpace]))
-                next = next.getNextSibling
-              if (next != null && next.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
+              while (next != null && (ScalaPsiUtil
+                       .isLineTerminator(next) || next
+                       .isInstanceOf[PsiWhiteSpace])) next = next.getNextSibling
+              if (next != null && next.getNode.getElementType == ScalaTokenTypes
+                    .tCOMMA) {
                 elem.delete()
                 next.delete()
               } else { elem.delete() }
@@ -159,13 +157,13 @@ class ScAnnotationImpl private (
         val params: Seq[ScExpression] = args.flatMap(arg => arg.exprs)
         if (params.length == 1 && !params(0).isInstanceOf[ScAssignStmt]) {
           params(0).replace(ScalaPsiElementFactory.createExpressionFromText(
-            PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME + " = " + params(
-              0).getText,
+            PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME + " = " + params(0)
+              .getText,
             params(0).getManager))
         }
         var allowNoName: Boolean = params.length == 0 &&
-          (PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME.equals(
-            attributeName) || null == attributeName)
+          (PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME
+            .equals(attributeName) || null == attributeName)
         var namePrefix: String = null
         if (allowNoName) { namePrefix = "" }
         else { namePrefix = attributeName + " = " }

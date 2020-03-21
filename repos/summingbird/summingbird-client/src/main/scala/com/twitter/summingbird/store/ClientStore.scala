@@ -167,9 +167,8 @@ class ClientStore[K, V: Semigroup](
    * ReadableStore[(K, BatchID), V]
    */
   def multiGetBatch[K1 <: K](batch: BatchID, ks: Set[K1]): Map[K1, FOpt[V]] = {
-    val offlineResult: Map[K1, FOpt[(BatchID, V)]] = offlineStore
-      .multiGet(ks)
-      /*
+    val offlineResult: Map[K1, FOpt[(BatchID, V)]] = offlineStore.multiGet(ks)
+    /*
        * The offline BatchID is an *exclusive* upper bound (see decrementOfflineBatch below).
        * As a result we can just look at the offline store if the that
        * offline batch <= batch.next
@@ -198,8 +197,8 @@ class ClientStore[K, V: Semigroup](
       collector.asInstanceOf[FutureCollector[(K1, Iterable[BatchID])]])
 
     val m: Future[Map[K1, FOpt[V]]] = fOnlineKeys.map { onlineKeys =>
-      val onlineResult: Map[(K1, BatchID), FOpt[V]] = onlineStore.multiGet(
-        onlineKeys)
+      val onlineResult: Map[(K1, BatchID), FOpt[V]] = onlineStore
+        .multiGet(onlineKeys)
       val liftedOnline: Map[K1, Future[Seq[Option[(BatchID, V)]]]] =
         pivotBatches(onlineResult)
       val merged: Map[K1, FOpt[(BatchID, V)]] = mergeResults(

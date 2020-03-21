@@ -75,8 +75,7 @@ class AsyncRDDActionsSuite
     zeroPartRdd.foreachPartitionAsync(iter => Unit).get()
 
     val accum = sc.accumulator(0)
-    sc.parallelize(1 to 1000, 9)
-      .foreachPartitionAsync { iter => accum += 1 }
+    sc.parallelize(1 to 1000, 9).foreachPartitionAsync { iter => accum += 1 }
       .get()
     assert(accum.value === 9)
   }
@@ -139,10 +138,9 @@ class AsyncRDDActionsSuite
     * of a failed job execution.
     */
   test("async failure handling") {
-    val f = sc
-      .parallelize(1 to 10, 2)
-      .map { i => throw new Exception("intentional"); i }
-      .countAsync()
+    val f = sc.parallelize(1 to 10, 2).map { i =>
+      throw new Exception("intentional"); i
+    }.countAsync()
 
     // Use a semaphore to make sure onFailure and onComplete's failure path will be called.
     // If not, the test will hang.
@@ -170,24 +168,19 @@ class AsyncRDDActionsSuite
     * Awaiting FutureAction results
     */
   test("FutureAction result, infinite wait") {
-    val f = sc
-      .parallelize(1 to 100, 4)
-      .countAsync()
+    val f = sc.parallelize(1 to 100, 4).countAsync()
     assert(Await.result(f, Duration.Inf) === 100)
   }
 
   test("FutureAction result, finite wait") {
-    val f = sc
-      .parallelize(1 to 100, 4)
-      .countAsync()
+    val f = sc.parallelize(1 to 100, 4).countAsync()
     assert(Await.result(f, Duration(30, "seconds")) === 100)
   }
 
   test("FutureAction result, timeout") {
-    val f = sc
-      .parallelize(1 to 100, 4)
-      .mapPartitions(itr => { Thread.sleep(20); itr })
-      .countAsync()
+    val f = sc.parallelize(1 to 100, 4).mapPartitions(itr => {
+      Thread.sleep(20); itr
+    }).countAsync()
     intercept[TimeoutException] {
       Await.result(f, Duration(20, "milliseconds"))
     }

@@ -50,9 +50,8 @@ class ScIfStmtImpl(node: ASTNode)
         getLastChild match {
           case expression: ScExpression => expression
           case _ =>
-            PsiTreeUtil.getPrevSiblingOfType(
-              getLastChild,
-              classOf[ScExpression])
+            PsiTreeUtil
+              .getPrevSiblingOfType(getLastChild, classOf[ScExpression])
         }
     if (t == null) None
     else
@@ -91,8 +90,8 @@ class ScIfStmtImpl(node: ASTNode)
              et <- e.getType(TypingContext.empty)) yield {
           Bounds.weakLub(tt, et)
         }
-      case (Some(t), None) =>
-        t.getType(TypingContext.empty).map(tt => Bounds.weakLub(tt, types.Unit))
+      case (Some(t), None) => t.getType(TypingContext.empty)
+          .map(tt => Bounds.weakLub(tt, types.Unit))
       case _ => Failure(ScalaBundle.message("nothing.to.type"), Some(this))
     }
   }

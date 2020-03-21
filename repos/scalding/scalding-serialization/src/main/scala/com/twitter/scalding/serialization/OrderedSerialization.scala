@@ -221,9 +221,10 @@ final case class DeserializingOrderedSerialization[T](
   final override def hash(t: T) = serialization.hash(t)
   final override def compare(a: T, b: T) = ordering.compare(a, b)
   final override def compareBinary(a: InputStream, b: InputStream) =
-    try OrderedSerialization.resultFrom {
-      compare(read(a).get, read(b).get)
-    } catch { case NonFatal(e) => OrderedSerialization.CompareFailure(e) }
+    try OrderedSerialization
+      .resultFrom { compare(read(a).get, read(b).get) } catch {
+      case NonFatal(e) => OrderedSerialization.CompareFailure(e)
+    }
   final override def staticSize = serialization.staticSize
   final override def dynamicSize(t: T) = serialization.dynamicSize(t)
 }

@@ -67,35 +67,24 @@ object ZkSecurityMigrator extends Logging {
   def run(args: Array[String]) {
     var jaasFile = System.getProperty(JaasUtils.JAVA_LOGIN_CONFIG_PARAM)
     val parser = new OptionParser()
-    val zkAclOpt = parser
-      .accepts(
-        "zookeeper.acl",
-        "Indicates whether to make the Kafka znodes in ZooKeeper secure or unsecure."
-          + " The options are 'secure' and 'unsecure'")
-      .withRequiredArg()
+    val zkAclOpt = parser.accepts(
+      "zookeeper.acl",
+      "Indicates whether to make the Kafka znodes in ZooKeeper secure or unsecure."
+        + " The options are 'secure' and 'unsecure'").withRequiredArg()
       .ofType(classOf[String])
-    val zkUrlOpt = parser
-      .accepts(
-        "zookeeper.connect",
-        "Sets the ZooKeeper connect string (ensemble). This parameter " +
-          "takes a comma-separated list of host:port pairs.")
-      .withRequiredArg()
-      .defaultsTo("localhost:2181")
-      .ofType(classOf[String])
-    val zkSessionTimeoutOpt = parser
-      .accepts(
-        "zookeeper.session.timeout",
-        "Sets the ZooKeeper session timeout.")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(30000)
-    val zkConnectionTimeoutOpt = parser
-      .accepts(
-        "zookeeper.connection.timeout",
-        "Sets the ZooKeeper connection timeout.")
-      .withRequiredArg()
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(30000)
+    val zkUrlOpt = parser.accepts(
+      "zookeeper.connect",
+      "Sets the ZooKeeper connect string (ensemble). This parameter " +
+        "takes a comma-separated list of host:port pairs.").withRequiredArg()
+      .defaultsTo("localhost:2181").ofType(classOf[String])
+    val zkSessionTimeoutOpt = parser.accepts(
+      "zookeeper.session.timeout",
+      "Sets the ZooKeeper session timeout.").withRequiredArg()
+      .ofType(classOf[java.lang.Integer]).defaultsTo(30000)
+    val zkConnectionTimeoutOpt = parser.accepts(
+      "zookeeper.connection.timeout",
+      "Sets the ZooKeeper connection timeout.").withRequiredArg()
+      .ofType(classOf[java.lang.Integer]).defaultsTo(30000)
     val helpOpt = parser.accepts("help", "Print usage information.")
 
     val options = parser.parse(args: _*)
@@ -157,11 +146,8 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
 
   private def getChildren(path: String, childrenPromise: Promise[String]) = {
     info("Getting children to set ACLs for path %s".format(path))
-    zkUtils.zkConnection.getZookeeper.getChildren(
-      path,
-      false,
-      GetChildrenCallback,
-      childrenPromise)
+    zkUtils.zkConnection.getZookeeper
+      .getChildren(path, false, GetChildrenCallback, childrenPromise)
   }
 
   private def setAclIndividually(path: String) = {
@@ -192,14 +178,12 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
       Code.get(rc) match {
         case Code.OK =>
           // Set ACL for each child
-          children.asScala
-            .map { child =>
-              path match {
-                case "/"  => s"/$child"
-                case path => s"$path/$child"
-              }
+          children.asScala.map { child =>
+            path match {
+              case "/"  => s"/$child"
+              case path => s"$path/$child"
             }
-            .foreach(setAclsRecursively)
+          }.foreach(setAclsRecursively)
           promise success "done"
         case Code.CONNECTIONLOSS =>
           zkHandle.getChildren(path, false, GetChildrenCallback, ctx)
@@ -212,12 +196,12 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
           // Starting a new session isn't really a problem, but it'd complicate
           // the logic of the tool, so we quit and let the user re-run it.
           System.out.println("ZooKeeper session expired while changing ACLs")
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException
+            .create(KeeperException.create(Code.get(rc)))
         case _ =>
           System.out.println("Unexpected return code: %d".format(rc))
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException
+            .create(KeeperException.create(Code.get(rc)))
       }
     }
   }
@@ -247,12 +231,12 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
           // Starting a new session isn't really a problem, but it'd complicate
           // the logic of the tool, so we quit and let the user re-run it.
           System.out.println("ZooKeeper session expired while changing ACLs")
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException
+            .create(KeeperException.create(Code.get(rc)))
         case _ =>
           System.out.println("Unexpected return code: %d".format(rc))
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException
+            .create(KeeperException.create(Code.get(rc)))
       }
     }
   }

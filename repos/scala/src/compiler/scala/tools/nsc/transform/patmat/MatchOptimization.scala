@@ -72,7 +72,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             dependencies find {
               case (priorTest, deps) =>
                 ((simplify(
-                  priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
+                  priorTest
+                    .prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
                   (
                     nonTrivial subsetOf deps
                   ) // or if it depends on a superset of our conditions
@@ -117,9 +118,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         val (sharedPrefix, suffix) = tests span { test =>
           (test.prop == True) || (for (reusedTest <- test.reuses;
                                        nextDeps <- dependencies.get(reusedTest);
-                                       diff <- (
-                                         nextDeps -- currDeps
-                                       ).headOption;
+                                       diff <- (nextDeps -- currDeps)
+                                         .headOption;
                                        _ <- Some(currDeps = nextDeps))
             yield diff).nonEmpty
         }
@@ -139,17 +139,17 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             // if the shared prefix contains interesting conditions (!= True)
             // and the last of such interesting shared conditions reuses another treemaker's test
             // replace the whole sharedPrefix by a ReusingCondTreeMaker
-            for (lastShared <- sharedPrefix.reverse
-                   .dropWhile(_.prop == True)
+            for (lastShared <- sharedPrefix.reverse.dropWhile(_.prop == True)
                    .headOption;
                  lastReused <- lastShared.reuses)
               yield ReusingCondTreeMaker(sharedPrefix, reusedOrOrig) :: suffix
                 .map(_.treeMaker)
           }
 
-        collapsedTreeMakers getOrElse tests.map(
-          _.treeMaker
-        ) // sharedPrefix need not be empty (but it only contains True-tests, which are dropped above)
+        collapsedTreeMakers getOrElse tests
+          .map(
+            _.treeMaker
+          ) // sharedPrefix need not be empty (but it only contains True-tests, which are dropped above)
       }
       okToCall = true // TODO: remove (debugging)
 
@@ -192,8 +192,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           next: Tree)(
           casegen: Casegen): Tree = // assert(codegen eq optimizedCodegen)
         atPos(pos)(
-          casegen
-            .asInstanceOf[optimizedCodegen.OptimizedCasegen]
+          casegen.asInstanceOf[optimizedCodegen.OptimizedCasegen]
             .flatMapCondStored(
               cond,
               storedCond,
@@ -242,8 +241,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
 
       lazy val lastReusedTreeMaker = sharedPrefix.reverse
         .flatMap(tm => tm.reuses map (test => toReused(test.treeMaker)))
-        .collectFirst { case x: ReusedCondTreeMaker => x }
-        .head
+        .collectFirst { case x: ReusedCondTreeMaker => x }.head
 
       def chainBefore(next: Tree)(casegen: Casegen): Tree = {
         // TODO: finer-grained duplication -- MUST duplicate though, or we'll get VerifyErrors since sharing trees confuses lambdalift,
@@ -431,9 +429,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
               }
             }
 
-          if (unguardedComesLastOrAbsent /*(1)*/ && impliesCurr.forall(
-                caseEquals(currCase)
-              ) /*(2)*/ ) {
+          if (unguardedComesLastOrAbsent /*(1)*/ && impliesCurr
+                .forall(caseEquals(currCase)) /*(2)*/ ) {
             collapsed += (if (impliesCurr.isEmpty && !isGuardedCase(currCase))
                             currCase
                           else collapse(currCase :: impliesCurr, currIsDefault))
@@ -542,8 +539,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                     // SI-7290 Discard duplicate alternatives that would crash the backend
                     val distinctAlts = distinctBy(switchableAlts)(extractConst)
                     if (distinctAlts.size < switchableAlts.size) {
-                      val duplicated = switchableAlts
-                        .groupBy(extractConst)
+                      val duplicated = switchableAlts.groupBy(extractConst)
                         .flatMap(
                           _._2.drop(1).take(1)
                         ) // report the first duplicated

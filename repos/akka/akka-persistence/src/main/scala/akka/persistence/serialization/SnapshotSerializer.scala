@@ -151,12 +151,10 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
       SnapshotHeader(serializerId, manifest)
     }
 
-    serialization
-      .deserialize(
-        snapshotBytes,
-        header.serializerId,
-        header.manifest.getOrElse(""))
-      .get
+    serialization.deserialize(
+      snapshotBytes,
+      header.serializerId,
+      header.manifest.getOrElse("")).get
   }
 
   private def writeInt(outputStream: OutputStream, i: Int) =
@@ -211,8 +209,9 @@ object SnapshotSerializer {
       if (uid == replacement.toSeq) {
         // running on 2.11
         true
-      } else if (uid == (key
-                   .slice(offset, offset + replacement.length): Seq[Byte])) {
+      } else if (uid == (
+                   key.slice(offset, offset + replacement.length): Seq[Byte]
+                 )) {
         // running on 2.10, need to switch out UID between key and replacement
         val len = replacement.length
         val tmp = new Array[Byte](len)

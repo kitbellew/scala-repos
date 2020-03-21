@@ -12,8 +12,7 @@ object SimulateMesosMain extends MarathonApp {
     new AbstractModule {
       override def configure(): Unit = {
         bind(classOf[SchedulerDriverFactory])
-          .to(classOf[SimulatedSchedulerDriverFactory])
-          .in(Scopes.SINGLETON)
+          .to(classOf[SimulatedSchedulerDriverFactory]).in(Scopes.SINGLETON)
       }
     }
   }

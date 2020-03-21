@@ -13,9 +13,8 @@ final class DummyTask(val taskDef: TaskDef, runner: BaseRunner) extends Task {
       loggers: Array[Logger]): Array[Task] = {
     try {
       // Just create a new instance.
-      val inst = TestUtils.newInstance(
-        taskDef.fullyQualifiedName,
-        runner.testClassLoader)(Seq())
+      val inst = TestUtils
+        .newInstance(taskDef.fullyQualifiedName, runner.testClassLoader)(Seq())
 
       eventHandler.handle(new DummyEvent(taskDef, None))
       loggers.foreach(_.info(s"Success: ${taskDef.fullyQualifiedName}"))
@@ -47,8 +46,8 @@ final class DummyTask(val taskDef: TaskDef, runner: BaseRunner) extends Task {
 
     val status: Status = if (t.isDefined) Status.Error else Status.Success
 
-    val throwable: OptionalThrowable = t.fold(new OptionalThrowable)(
-      new OptionalThrowable(_))
+    val throwable: OptionalThrowable = t
+      .fold(new OptionalThrowable)(new OptionalThrowable(_))
 
     val duration: Long = -1L
   }

@@ -95,8 +95,7 @@ class FutureTests extends MinimalScalaTest {
       p.toString mustBe expectNotCompleteString
       Promise[Int]().success(s).toString mustBe expectSuccessString
       Promise[Int]().failure(f).toString mustBe expectFailureString
-      Await
-        .ready(Future { throw f }, 2000 millis)
+      Await.ready(Future { throw f }, 2000 millis)
         .toString mustBe expectFailureString
       Await.ready(Future { s }, 2000 millis).toString mustBe expectSuccessString
 
@@ -244,11 +243,12 @@ class FutureTests extends MinimalScalaTest {
           fail("transformWith should not have been called"))(ec) eq test)
       ECNotUsed(ec => test.map(identity)(ec) eq test)
       ECNotUsed(ec =>
-        test.flatMap(_ => fail("flatMap should not have been called"))(
-          ec) eq test)
+        test
+          .flatMap(_ => fail("flatMap should not have been called"))(
+            ec) eq test)
       ECNotUsed(ec =>
-        test.filter(_ => fail("filter should not have been called"))(
-          ec) eq test)
+        test
+          .filter(_ => fail("filter should not have been called"))(ec) eq test)
       ECNotUsed(ec =>
         test.collect({ case _ => fail("collect should not have been called") })(
           ec) eq test)
@@ -273,9 +273,8 @@ class FutureTests extends MinimalScalaTest {
     "report uncaught exceptions" in {
       val p = Promise[Throwable]()
       val logThrowable: Throwable => Unit = p.trySuccess(_)
-      val ec: ExecutionContext = ExecutionContext.fromExecutor(
-        null,
-        logThrowable)
+      val ec: ExecutionContext = ExecutionContext
+        .fromExecutor(null, logThrowable)
 
       val t = new InterruptedException()
       val f = Future(throw t)(ec)
@@ -554,9 +553,10 @@ class FutureTests extends MinimalScalaTest {
           .successful[Int](5)
 
       Await.result(Future.firstCompletedOf(futures), defaultTimeout) mustBe (5)
-      Await.result(
-        Future.firstCompletedOf(futures.iterator),
-        defaultTimeout) mustBe (5)
+      Await
+        .result(
+          Future.firstCompletedOf(futures.iterator),
+          defaultTimeout) mustBe (5)
     }
 
     "find" in {
@@ -595,28 +595,24 @@ class FutureTests extends MinimalScalaTest {
       val timeout = 10000 millis
       val f = new IllegalStateException("test")
       intercept[IllegalStateException] {
-        val failed = Future
-          .failed[String](f)
+        val failed = Future.failed[String](f)
           .zipWith(Future.successful("foo")) { _ -> _ }
         Await.result(failed, timeout)
       } mustBe (f)
 
       intercept[IllegalStateException] {
-        val failed = Future
-          .successful("foo")
+        val failed = Future.successful("foo")
           .zipWith(Future.failed[String](f)) { _ -> _ }
         Await.result(failed, timeout)
       } mustBe (f)
 
       intercept[IllegalStateException] {
-        val failed = Future
-          .failed[String](f)
+        val failed = Future.failed[String](f)
           .zipWith(Future.failed[String](f)) { _ -> _ }
         Await.result(failed, timeout)
       } mustBe (f)
 
-      val successful = Future
-        .successful("foo")
+      val successful = Future.successful("foo")
         .zipWith(Future.successful("foo")) { _ -> _ }
       Await.result(successful, timeout) mustBe (("foo", "foo"))
 
@@ -671,9 +667,8 @@ class FutureTests extends MinimalScalaTest {
         }
       def futures = (0 to 9) map { idx => async(idx, idx * 10) }
       val folded = Future.fold(futures)(0)(_ + _)
-      intercept[IllegalArgumentException] {
-        Await.result(folded, timeout)
-      }.getMessage mustBe ("shouldFoldResultsWithException: expected")
+      intercept[IllegalArgumentException] { Await.result(folded, timeout) }
+        .getMessage mustBe ("shouldFoldResultsWithException: expected")
     }
 
     "fold mutable zeroes safely" in {
@@ -726,9 +721,8 @@ class FutureTests extends MinimalScalaTest {
       val timeout = 10000 millis
       def futures = (1 to 10) map { idx => async(idx, idx * 10) }
       val failed = Future.reduce(futures)(_ + _)
-      intercept[IllegalArgumentException] {
-        Await.result(failed, timeout)
-      }.getMessage mustBe ("shouldFoldResultsWithException: expected")
+      intercept[IllegalArgumentException] { Await.result(failed, timeout) }
+        .getMessage mustBe ("shouldFoldResultsWithException: expected")
     }
 
     "shouldReduceThrowNSEEOnEmptyInput" in {
@@ -867,10 +861,11 @@ class FutureTests extends MinimalScalaTest {
         blocking {
           val nested = Future(())
           for (_ <- nested) l1.open()
-          Await.ready(
-            l1,
-            TestLatch.DefaultTimeout
-          ) // make sure nested is completed
+          Await
+            .ready(
+              l1,
+              TestLatch.DefaultTimeout
+            ) // make sure nested is completed
           for (_ <- nested) l2.open()
           Await.ready(l2, TestLatch.DefaultTimeout)
         }

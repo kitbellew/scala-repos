@@ -38,10 +38,8 @@ object DeltaSimRankRDD {
     var index = 0
     for (index <- 1 to kvPairs.size - 1) union = union ++ kvPairs(index)
 
-    val newDelta = union
-      .reduceByKey(_ + _)
-      .map(k =>
-        (k._1, k._2 * decay / (outDegreeMap(k._1._1) * outDegreeMap(k._1._2))))
+    val newDelta = union.reduceByKey(_ + _).map(k =>
+      (k._1, k._2 * decay / (outDegreeMap(k._1._1) * outDegreeMap(k._1._2))))
     newDelta
   }
 
@@ -78,10 +76,7 @@ object DeltaSimRankRDD {
 
   def getOutdegreeMap(
       g: Graph[Int, Int]): scala.collection.Map[VertexId, Long] = {
-    g.edges
-      .map(edge => (edge.srcId, 1L))
-      .reduceByKey(_ + _)
-      .collectAsMap()
+    g.edges.map(edge => (edge.srcId, 1L)).reduceByKey(_ + _).collectAsMap()
   }
 
   def compute(

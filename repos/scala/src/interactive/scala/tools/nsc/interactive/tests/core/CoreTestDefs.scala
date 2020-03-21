@@ -26,11 +26,9 @@ private[tests] trait CoreTestDefs
             reporter.println("retrieved %d members".format(members.size))
             compiler ask { () =>
               val filtered = members.filterNot(member =>
-                (
-                  member.sym.name string_== "getClass"
-                ) || member.sym.isConstructor)
-              reporter println (filtered
-                .map(_.forceInfoString)
+                (member.sym.name string_== "getClass") || member.sym
+                  .isConstructor)
+              reporter println (filtered.map(_.forceInfoString)
                 .sorted mkString "\n")
             }
           }
@@ -57,8 +55,8 @@ private[tests] trait CoreTestDefs
 
             reporter.println("retrieved %d members".format(filtered.size))
             compiler ask { () =>
-              reporter.println(
-                filtered.map(_.forceInfoString).sorted mkString "\n")
+              reporter
+                .println(filtered.map(_.forceInfoString).sorted mkString "\n")
             }
           } catch { case t: Throwable => t.printStackTrace() }
 
@@ -118,8 +116,9 @@ private[tests] trait CoreTestDefs
                       if (tree.symbol.pos.isDefined) tree.symbol.pos else pos
                     withResponseDelimiter {
                       reporter.println(
-                        "[response] found askHyperlinkPos for `" + tree.symbol.name + "` at " + format(
-                          resolvedPos) + " " + tree.symbol.sourceFile.name)
+                        "[response] found askHyperlinkPos for `" + tree.symbol
+                          .name + "` at " + format(resolvedPos) + " " + tree
+                          .symbol.sourceFile.name)
                     }
                   case Right(ex) => ex.printStackTrace()
                 }

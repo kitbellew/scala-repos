@@ -59,11 +59,8 @@ trait RedisClientTest extends RedisTest with BeforeAndAfterAll {
 
   protected def withRedisClient(testCode: TransactionalClient => Any) {
     val client = TransactionalClient(
-      ClientBuilder()
-        .codec(new Redis())
-        .hosts(RedisCluster.hostAddresses())
-        .hostConnectionLimit(1)
-        .buildFactory())
+      ClientBuilder().codec(new Redis()).hosts(RedisCluster.hostAddresses())
+        .hostConnectionLimit(1).buildFactory())
     Await.result(client.flushAll)
     try { testCode(client) }
     finally { client.release }
@@ -74,23 +71,16 @@ trait RedisClientServerIntegrationTest
     extends RedisTest
     with BeforeAndAfterAll {
 
-  private[this] lazy val svcClient = ClientBuilder()
-    .name("redis-client")
-    .codec(Redis())
-    .hosts(RedisCluster.hostAddresses())
-    .hostConnectionLimit(2)
-    .retries(2)
-    .build()
+  private[this] lazy val svcClient = ClientBuilder().name("redis-client")
+    .codec(Redis()).hosts(RedisCluster.hostAddresses()).hostConnectionLimit(2)
+    .retries(2).build()
 
   private[this] val service = new Service[Command, Reply] {
     def apply(cmd: Command): Future[Reply] = { svcClient(cmd) }
   }
 
-  private[this] val server = ServerBuilder()
-    .name("redis-server")
-    .codec(Redis())
-    .bindTo(new InetSocketAddress(0))
-    .build(service)
+  private[this] val server = ServerBuilder().name("redis-server").codec(Redis())
+    .bindTo(new InetSocketAddress(0)).build(service)
 
   override def beforeAll(): Unit = RedisCluster.start()
   override def afterAll(): Unit = RedisCluster.stop()
@@ -98,13 +88,9 @@ trait RedisClientServerIntegrationTest
   protected val OKStatusReply = StatusReply("OK")
 
   protected def withRedisClient(testCode: Service[Command, Reply] => Any) {
-    val client = ClientBuilder()
-      .name("redis-client")
-      .codec(Redis())
+    val client = ClientBuilder().name("redis-client").codec(Redis())
       .hosts(server.boundAddress.asInstanceOf[InetSocketAddress])
-      .hostConnectionLimit(1)
-      .retries(2)
-      .build()
+      .hostConnectionLimit(1).retries(2).build()
     Await.result(client(FlushAll))
     try { testCode(client) }
     finally { client.close() }
@@ -126,9 +112,9 @@ trait RedisClientServerIntegrationTest
               assert(doesMBulkReplyContainMessage == true)
             })
           case false =>
-            val actualMessages = ReplyFormat
-              .toChannelBuffers(msgs)
-              .map({ msg => chanBuf2String(msg) })
+            val actualMessages = ReplyFormat.toChannelBuffers(msgs).map({ msg =>
+              chanBuf2String(msg)
+            })
             assert(actualMessages == expects)
         }
       case EmptyMBulkReply() => {

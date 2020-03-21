@@ -76,8 +76,8 @@ abstract class BaseScalaApplicationConfigurationProducer[
       context: ConfigurationContext,
       location: Location[_ <: PsiElement],
       configuration: T): Unit = {
-    configuration.MAIN_CLASS_NAME = JavaExecutionUtil.getRuntimeQualifiedName(
-      aClass)
+    configuration.MAIN_CLASS_NAME = JavaExecutionUtil
+      .getRuntimeQualifiedName(aClass)
     configuration.setName(configuration.suggestedName())
     setupConfigurationModule(context, configuration)
     JavaRunConfigurationExtensionManager.getInstance
@@ -122,18 +122,14 @@ abstract class BaseScalaApplicationConfigurationProducer[
     val aClass: PsiClass = getMainClass(context.getPsiLocation)
     if (aClass == null) return false
     val predefinedModule: Module = RunManagerEx
-      .getInstanceEx(location.getProject)
-      .asInstanceOf[RunManagerImpl]
-      .getConfigurationTemplate(getConfigurationFactory)
-      .getConfiguration
-      .asInstanceOf[T]
-      .getConfigurationModule
-      .getModule
-    JavaExecutionUtil.getRuntimeQualifiedName(
-      aClass) == configuration.MAIN_CLASS_NAME &&
-    (
-      location.getModule == configuration.getConfigurationModule.getModule || predefinedModule == configuration.getConfigurationModule.getModule
-    )
+      .getInstanceEx(location.getProject).asInstanceOf[RunManagerImpl]
+      .getConfigurationTemplate(getConfigurationFactory).getConfiguration
+      .asInstanceOf[T].getConfigurationModule.getModule
+    JavaExecutionUtil.getRuntimeQualifiedName(aClass) == configuration
+      .MAIN_CLASS_NAME &&
+    (location.getModule == configuration.getConfigurationModule
+      .getModule || predefinedModule == configuration.getConfigurationModule
+      .getModule)
   }
 
   override def setupConfigurationFromContext(

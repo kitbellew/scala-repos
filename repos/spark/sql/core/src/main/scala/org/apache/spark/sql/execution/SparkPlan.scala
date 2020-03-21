@@ -322,14 +322,12 @@ abstract class SparkPlan
         if (buf.size == 0) { numPartsToTry = totalParts - 1 }
         else { numPartsToTry = (1.5 * n * partsScanned / buf.size).toInt }
       }
-      numPartsToTry = math.max(
-        0,
-        numPartsToTry
-      ) // guard against negative num of partitions
+      numPartsToTry = math
+        .max(0, numPartsToTry) // guard against negative num of partitions
 
       val left = n - buf.size
-      val p = partsScanned.until(
-        math.min(partsScanned + numPartsToTry, totalParts).toInt)
+      val p = partsScanned
+        .until(math.min(partsScanned + numPartsToTry, totalParts).toInt)
       val sc = sqlContext.sparkContext
       val res = sc.runJob(
         childRDD,
@@ -353,10 +351,8 @@ abstract class SparkPlan
       inputSchema: Seq[Attribute],
       useSubexprElimination: Boolean = false): () => MutableProjection = {
     log.debug(s"Creating MutableProj: $expressions, inputSchema: $inputSchema")
-    GenerateMutableProjection.generate(
-      expressions,
-      inputSchema,
-      useSubexprElimination)
+    GenerateMutableProjection
+      .generate(expressions, inputSchema, useSubexprElimination)
   }
 
   protected def newPredicate(

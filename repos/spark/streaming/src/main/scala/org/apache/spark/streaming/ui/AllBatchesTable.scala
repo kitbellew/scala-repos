@@ -50,18 +50,16 @@ private[ui] abstract class BatchTableBase(
   }
 
   protected def getFirstFailureTableCell(batch: BatchUIData): Seq[Node] = {
-    val firstFailureReason =
-      batch.outputOperations.flatMap(_._2.failureReason).headOption
-    firstFailureReason
-      .map { failureReason =>
-        val failureReasonForUI = UIUtils.createOutputOperationFailureForUI(
-          failureReason)
-        UIUtils.failureReasonCell(
-          failureReasonForUI,
-          rowspan = 1,
-          includeFirstLineInExpandDetails = false)
-      }
-      .getOrElse(<td>-</td>)
+    val firstFailureReason = batch.outputOperations.flatMap(_._2.failureReason)
+      .headOption
+    firstFailureReason.map { failureReason =>
+      val failureReasonForUI = UIUtils
+        .createOutputOperationFailureForUI(failureReason)
+      UIUtils.failureReasonCell(
+        failureReasonForUI,
+        rowspan = 1,
+        includeFirstLineInExpandDetails = false)
+    }.getOrElse(<td>-</td>)
   }
 
   protected def baseRow(batch: BatchUIData): Seq[Node] = {
@@ -70,12 +68,10 @@ private[ui] abstract class BatchTableBase(
     val eventCount = batch.numRecords
     val schedulingDelay = batch.schedulingDelay
     val formattedSchedulingDelay = schedulingDelay
-      .map(SparkUIUtils.formatDuration)
-      .getOrElse("-")
+      .map(SparkUIUtils.formatDuration).getOrElse("-")
     val processingTime = batch.processingDelay
     val formattedProcessingTime = processingTime
-      .map(SparkUIUtils.formatDuration)
-      .getOrElse("-")
+      .map(SparkUIUtils.formatDuration).getOrElse("-")
     val batchTimeId = s"batch-$batchTime"
 
     <td id={batchTimeId} sorttable_customkey={batchTime.toString}
@@ -195,8 +191,7 @@ private[ui] class CompletedBatchTable(
 
   private def completedBatchRow(batch: BatchUIData): Seq[Node] = {
     val totalDelay = batch.totalDelay
-    val formattedTotalDelay = totalDelay
-      .map(SparkUIUtils.formatDuration)
+    val formattedTotalDelay = totalDelay.map(SparkUIUtils.formatDuration)
       .getOrElse("-")
 
     baseRow(batch) ++ {

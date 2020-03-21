@@ -513,8 +513,8 @@ private[akka] class ActorCell(
 
   //Memory consistency is handled by the Mailbox (reading mailbox status then processing messages, then writing mailbox status
   final def invoke(messageHandle: Envelope): Unit = {
-    val influenceReceiveTimeout =
-      !messageHandle.message.isInstanceOf[NotInfluenceReceiveTimeout]
+    val influenceReceiveTimeout = !messageHandle.message
+      .isInstanceOf[NotInfluenceReceiveTimeout]
     try {
       currentMessage = messageHandle
       if (influenceReceiveTimeout) cancelReceiveTimeout()
@@ -727,7 +727,8 @@ private[akka] class ActorCell(
             "self",
             self))
         throw new IllegalActorStateException(
-          actorInstance.getClass + " is not an Actor since it have not mixed in the 'Actor' trait")
+          actorInstance
+            .getClass + " is not an Actor since it have not mixed in the 'Actor' trait")
     }
 
   // logging is not the main purpose, and if it fails there’s nothing we can do

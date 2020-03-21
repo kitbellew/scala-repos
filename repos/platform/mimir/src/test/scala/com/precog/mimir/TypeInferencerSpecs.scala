@@ -57,8 +57,8 @@ trait TypeInferencerSpecs[M[+_]]
   def flattenType(jtpe: JType): Map[JPath, Set[CType]] = {
     def flattenAux(jtpe: JType): Set[(JPath, Option[CType])] =
       jtpe match {
-        case p: JPrimitiveType =>
-          Schema.ctypes(p).map(tpe => (JPath.Identity, Some(tpe)))
+        case p: JPrimitiveType => Schema.ctypes(p)
+            .map(tpe => (JPath.Identity, Some(tpe)))
 
         case JArrayFixedT(elems) =>
           for ((i, jtpe) <- elems.toSet; (path, ctpes) <- flattenAux(jtpe))

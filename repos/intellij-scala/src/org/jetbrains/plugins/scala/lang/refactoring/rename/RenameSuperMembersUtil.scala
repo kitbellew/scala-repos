@@ -78,9 +78,7 @@ object RenameSuperMembersUtil {
       allRenames.put(elem, newName)
       superMembersToRename -= elem
       import scala.collection.JavaConverters._
-      RenamePsiElementProcessor
-        .allForElement(elem)
-        .asScala
+      RenamePsiElementProcessor.allForElement(elem).asScala
         .foreach(_.prepareRenaming(elem, newName, allRenames))
     }
   }
@@ -96,8 +94,8 @@ object RenameSuperMembersUtil {
       return
     }
     val allElements = superMembers :+ element
-    val classes: Seq[PsiClass] = allElements.map(
-      PsiTreeUtil.getParentOfType(_, classOf[PsiClass], false))
+    val classes: Seq[PsiClass] = allElements
+      .map(PsiTreeUtil.getParentOfType(_, classOf[PsiClass], false))
     val oneSuperClass = superMembers.size == 1
     val renameAllMarkerObject = ScalaPsiElementFactory.createObjectWithContext(
       "object RenameAll",
@@ -115,9 +113,7 @@ object RenameSuperMembersUtil {
         else {
           val mainOne = classesToNamed(classes(0))
           superMembersToRename.clear()
-          superMembersToRename ++= classes
-            .dropRight(1)
-            .drop(1)
+          superMembersToRename ++= classes.dropRight(1).drop(1)
             .map(classesToNamed)
           action(mainOne)
         }
@@ -167,8 +163,8 @@ object RenameSuperMembersUtil {
         }
 
         override def getContainerText(clazz: PsiClass, name: String): String = {
-          if (clazz == renameAllMarkerObject || clazz == classes.last || oneSuperClass)
-            null //don't show package name
+          if (clazz == renameAllMarkerObject || clazz == classes
+                .last || oneSuperClass) null //don't show package name
           else super.getContainerText(clazz, name)
         }
       },
@@ -219,8 +215,8 @@ object RenameSuperMembersUtil {
       if (withSelfType) TypeDefinitionMembers.getSelfTypeTypes(aClass)
       else TypeDefinitionMembers.getTypes(aClass)
     val forName = types.forName(named.name)._1
-    val typeAliases = forName.filter(ta =>
-      ScalaNamesUtil.scalaName(ta._1) == named.name)
+    val typeAliases = forName
+      .filter(ta => ScalaNamesUtil.scalaName(ta._1) == named.name)
     typeAliases.flatMap(ta => ta._2.supers.map(_.info))
   }
 

@@ -195,12 +195,10 @@ private[jackson] class JsValueDeserializer(
         v
 
       case maybeValue =>
-        val toPass = maybeValue
-          .map { v =>
-            val previous :: stack = nextContext
-            (previous.addValue(v)) +: stack
-          }
-          .getOrElse(nextContext)
+        val toPass = maybeValue.map { v =>
+          val previous :: stack = nextContext
+          (previous.addValue(v)) +: stack
+        }.getOrElse(nextContext)
 
         deserialize(jp, ctxt, toPass)
 
@@ -279,8 +277,8 @@ private[json] object JacksonJson {
 
   def prettyPrint(jsValue: JsValue): String = {
     val sw = new java.io.StringWriter
-    val gen = stringJsonGenerator(sw).setPrettyPrinter(
-      new DefaultPrettyPrinter())
+    val gen = stringJsonGenerator(sw)
+      .setPrettyPrinter(new DefaultPrettyPrinter())
     val writer: ObjectWriter = mapper.writerWithDefaultPrettyPrinter()
     writer.writeValue(gen, jsValue)
     sw.flush()

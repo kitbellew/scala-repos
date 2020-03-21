@@ -58,8 +58,8 @@ class TwitterCacheResolver extends Resolver {
 
       // twcache!zkhost:2181!/twitter/service/cache/<stage>/<name>
       case Array(zkHosts, path) =>
-        val zkClient =
-          DefaultZkClientFactory.get(DefaultZkClientFactory.hostSet(zkHosts))._1
+        val zkClient = DefaultZkClientFactory
+          .get(DefaultZkClientFactory.hostSet(zkHosts))._1
         val group = CacheNodeGroup.newZkCacheNodeGroup(
           path,
           zkClient,
@@ -87,11 +87,8 @@ class TwitterCacheResolver extends Resolver {
 object CacheNodeGroup {
   // <host1>:<port>:<weight>:<key>,<host2>:<port>:<weight>:<key>,<host3>:<port>:<weight>:<key>
   def apply(hosts: String) = {
-    val hostSeq = hosts
-      .split(Array(' ', ','))
-      .filter((_ != ""))
-      .map(_.split(":"))
-      .map {
+    val hostSeq = hosts.split(Array(' ', ',')).filter((_ != ""))
+      .map(_.split(":")).map {
         case Array(host)               => (host, 11211, 1, None)
         case Array(host, port)         => (host, port.toInt, 1, None)
         case Array(host, port, weight) => (host, port.toInt, weight.toInt, None)
@@ -259,8 +256,7 @@ object CachePoolConfig {
   val jsonCodec: Codec[CachePoolConfig] = JsonCodec.create(
     classOf[CachePoolConfig],
     new GsonBuilder()
-      .setExclusionStrategies(JsonCodec.getThriftExclusionStrategy())
-      .create())
+      .setExclusionStrategies(JsonCodec.getThriftExclusionStrategy()).create())
 }
 
 /**
@@ -337,8 +333,8 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   }
 
   // continuously gauging underlying cluster size
-  private[this] val underlyingSizeGauge = statsReceiver.addGauge(
-    "underlyingPoolSize") { underlyingSize }
+  private[this] val underlyingSizeGauge = statsReceiver
+    .addGauge("underlyingPoolSize") { underlyingSize }
 
   // Falling back to use the backup pool (if provided) after a certain timeout.
   // Meanwhile, the first time invoke of updating pool will still proceed once it successfully
@@ -356,8 +352,8 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
 
   override def applyZKData(data: Array[Byte]): Unit = {
     if (data != null) {
-      val cachePoolConfig = CachePoolConfig.jsonCodec.deserialize(
-        new ByteArrayInputStream(data))
+      val cachePoolConfig = CachePoolConfig.jsonCodec
+        .deserialize(new ByteArrayInputStream(data))
 
       // apply the cache pool config to the cluster
       val expectedClusterSize = cachePoolConfig.cachePoolSize
@@ -438,13 +434,13 @@ class ZookeeperCacheNodeGroup(
         CacheNode(ep.getHost, ep.getPort, 1, shardInfo)
     }
 
-  private[this] val underlyingSizeGauge = statsReceiver.addGauge(
-    "underlyingPoolSize") { zkGroup.members.size }
+  private[this] val underlyingSizeGauge = statsReceiver
+    .addGauge("underlyingPoolSize") { zkGroup.members.size }
 
   def applyZKData(data: Array[Byte]) {
     if (data != null) {
-      val cachePoolConfig = CachePoolConfig.jsonCodec.deserialize(
-        new ByteArrayInputStream(data))
+      val cachePoolConfig = CachePoolConfig.jsonCodec
+        .deserialize(new ByteArrayInputStream(data))
 
       detectKeyRemapping = cachePoolConfig.detectKeyRemapping
 
@@ -473,8 +469,8 @@ class ZookeeperCacheNodeGroup(
         // pick up the diff only if new members contains exactly the same set of cache node keys,
         // e.g. certain cache node key is re-assigned to another host
         if (removed.forall(_.key.isDefined) && added.forall(_.key.isDefined) &&
-            removed.size == added.size && removed.map(_.key.get) == added.map(
-              _.key.get)) { set() = newMembers }
+            removed.size == added.size && removed.map(_.key.get) == added
+              .map(_.key.get)) { set() = newMembers }
       }
     }
 }

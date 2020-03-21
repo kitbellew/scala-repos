@@ -142,8 +142,7 @@ object Markdown {
             (link.substring(0, i), link.substring(i + 1))
           } else { (link, link) }
 
-        val url = repository.httpUrl
-          .replaceFirst("/git/", "/")
+        val url = repository.httpUrl.replaceFirst("/git/", "/")
           .stripSuffix(".git") + "/wiki/" + StringUtil.urlEncode(page)
         if (pages.contains(page)) {
           "<a href=\"" + url + "\">" + escape(label) + "</a>"
@@ -166,8 +165,7 @@ object Markdown {
           val branch =
             if (paths.length > 3) paths.drop(4).mkString("/")
             else repository.repository.defaultBranch
-          repository.httpUrl
-            .replaceFirst("/git/", "/")
+          repository.httpUrl.replaceFirst("/git/", "/")
             .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
             if (isImage) "?raw=true" else ""
           )
@@ -176,15 +174,13 @@ object Markdown {
           val branch =
             if (paths.length > 3) paths.last
             else repository.repository.defaultBranch
-          repository.httpUrl
-            .replaceFirst("/git/", "/")
+          repository.httpUrl.replaceFirst("/git/", "/")
             .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
             if (isImage) "?raw=true" else ""
           )
         }
       } else {
-        repository.httpUrl
-          .replaceFirst("/git/", "/")
+        repository.httpUrl.replaceFirst("/git/", "/")
           .stripSuffix(".git") + "/wiki/_blob/" + url
       }
     }
@@ -192,9 +188,7 @@ object Markdown {
   }
 
   def escapeTaskList(text: String): String = {
-    Pattern
-      .compile("""^( *)- \[([x| ])\] """, Pattern.MULTILINE)
-      .matcher(text)
+    Pattern.compile("""^( *)- \[([x| ])\] """, Pattern.MULTILINE).matcher(text)
       .replaceAll("$1* task:$2: ")
   }
 
@@ -208,10 +202,9 @@ object Markdown {
 
   def convertCheckBox(text: String, hasWritePermission: Boolean): String = {
     val disabled = if (hasWritePermission) "" else "disabled"
-    text
-      .replaceAll(
-        "task:x:",
-        """<input type="checkbox" class="task-list-item-checkbox" checked="checked" """ + disabled + "/>")
+    text.replaceAll(
+      "task:x:",
+      """<input type="checkbox" class="task-list-item-checkbox" checked="checked" """ + disabled + "/>")
       .replaceAll(
         "task: :",
         """<input type="checkbox" class="task-list-item-checkbox" """ + disabled + "/>")

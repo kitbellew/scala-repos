@@ -219,9 +219,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractShardId,
       allocationStrategy,
       handOffStopMessage)
-    val Started(shardRegion) = Await.result(
-      guardian ? startMsg,
-      timeout.duration)
+    val Started(shardRegion) = Await
+      .result(guardian ? startMsg, timeout.duration)
     regions.put(typeName, shardRegion)
     shardRegion
   }
@@ -378,9 +377,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       settings,
       extractEntityId,
       extractShardId)
-    val Started(shardRegion) = Await.result(
-      guardian ? startMsg,
-      timeout.duration)
+    val Started(shardRegion) = Await
+      .result(guardian ? startMsg, timeout.duration)
     regions.put(typeName, shardRegion)
     shardRegion
   }
@@ -498,39 +496,32 @@ private[akka] class ClusterShardingGuardian extends Actor {
             else
               ShardCoordinator
                 .props(typeName, settings, allocationStrategy, replicator)
-          val singletonProps = BackoffSupervisor
-            .props(
-              childProps = coordinatorProps,
-              childName = "coordinator",
-              minBackoff = coordinatorFailureBackoff,
-              maxBackoff = coordinatorFailureBackoff * 5,
-              randomFactor = 0.2)
-            .withDeploy(Deploy.local)
+          val singletonProps = BackoffSupervisor.props(
+            childProps = coordinatorProps,
+            childName = "coordinator",
+            minBackoff = coordinatorFailureBackoff,
+            maxBackoff = coordinatorFailureBackoff * 5,
+            randomFactor = 0.2).withDeploy(Deploy.local)
           val singletonSettings = settings.coordinatorSingletonSettings
-            .withSingletonName("singleton")
-            .withRole(role)
+            .withSingletonName("singleton").withRole(role)
           context.actorOf(
-            ClusterSingletonManager
-              .props(
-                singletonProps,
-                terminationMessage = PoisonPill,
-                singletonSettings)
-              .withDispatcher(context.props.dispatcher),
+            ClusterSingletonManager.props(
+              singletonProps,
+              terminationMessage = PoisonPill,
+              singletonSettings).withDispatcher(context.props.dispatcher),
             name = cName)
         }
 
         context.actorOf(
-          ShardRegion
-            .props(
-              typeName = typeName,
-              entityProps = entityProps,
-              settings = settings,
-              coordinatorPath = cPath,
-              extractEntityId = extractEntityId,
-              extractShardId = extractShardId,
-              handOffStopMessage = handOffStopMessage
-            )
-            .withDispatcher(context.props.dispatcher),
+          ShardRegion.props(
+            typeName = typeName,
+            entityProps = entityProps,
+            settings = settings,
+            coordinatorPath = cPath,
+            extractEntityId = extractEntityId,
+            extractShardId = extractShardId,
+            handOffStopMessage = handOffStopMessage
+          ).withDispatcher(context.props.dispatcher),
           name = encName
         )
       }
@@ -542,13 +533,12 @@ private[akka] class ClusterShardingGuardian extends Actor {
       val cPath = coordinatorPath(encName)
       val shardRegion = context.child(encName).getOrElse {
         context.actorOf(
-          ShardRegion
-            .proxyProps(
-              typeName = typeName,
-              settings = settings,
-              coordinatorPath = cPath,
-              extractEntityId = extractEntityId,
-              extractShardId = extractShardId)
+          ShardRegion.proxyProps(
+            typeName = typeName,
+            settings = settings,
+            coordinatorPath = cPath,
+            extractEntityId = extractEntityId,
+            extractShardId = extractShardId)
             .withDispatcher(context.props.dispatcher),
           name = encName
         )

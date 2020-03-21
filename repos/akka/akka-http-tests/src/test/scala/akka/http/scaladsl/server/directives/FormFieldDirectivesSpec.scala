@@ -15,10 +15,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
   // FIXME: unfortunately, it has make a come back, this time it's reproducible ...
   import akka.http.scaladsl.server.directives.FormFieldDirectives.FieldMagnet
 
-  implicit val nodeSeqUnmarshaller = ScalaXmlSupport.nodeSeqUnmarshaller(
-    `text/xml`,
-    `text/html`,
-    `text/plain`)
+  implicit val nodeSeqUnmarshaller = ScalaXmlSupport
+    .nodeSeqUnmarshaller(`text/xml`, `text/html`, `text/plain`)
 
   val nodeSeq: xml.NodeSeq = <b>yes</b>
   val urlEncodedForm = FormData(Map("firstName" -> "Mike", "age" -> "42"))
@@ -41,8 +39,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
       "super" -> HttpEntity("no")
     )
   }
-  val multipartFormWithFile = Multipart.FormData(
-    Multipart.FormData.BodyPart.Strict(
+  val multipartFormWithFile = Multipart
+    .FormData(Multipart.FormData.BodyPart.Strict(
       "file",
       HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<int>42</int>"),
       Map("filename" -> "age.xml")))

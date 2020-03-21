@@ -284,10 +284,8 @@ trait ItemsListEditor[T <: Mapper[T]] {
         ".fields" #> eachField(
           item,
           { f: MappedField[_, T] => ".form" #> <strike>{f.asHtml}</strike> }) &
-          ".removeBtn" #> SHtml.submit(
-            ?("Remove"),
-            () => onRemove(item),
-            noPrompt) &
+          ".removeBtn" #> SHtml
+            .submit(?("Remove"), () => onRemove(item), noPrompt) &
           ".msg" #> Text(?("Deleted"))
     }
 
@@ -296,10 +294,8 @@ trait ItemsListEditor[T <: Mapper[T]] {
         ".fields" #> eachField(
           item,
           { f: MappedField[_, T] => ".form" #> f.toForm }) &
-          ".removeBtn" #> SHtml.submit(
-            ?("Remove"),
-            () => onRemove(item),
-            noPrompt) &
+          ".removeBtn" #> SHtml
+            .submit(?("Remove"), () => onRemove(item), noPrompt) &
           ".msg" #> {
             item.validate match {
               case Nil =>

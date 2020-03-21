@@ -52,8 +52,7 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
     else {
       val flowCopy = flow.module.carbonCopy
       new Source(
-        module
-          .fuse(flowCopy, shape.out, flowCopy.shape.inlets.head, combine)
+        module.fuse(flowCopy, shape.out, flowCopy.shape.inlets.head, combine)
           .replaceShape(SourceShape(flowCopy.shape.outlets.head)))
     }
   }
@@ -87,10 +86,8 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
   override private[scaladsl] def deprecatedAndThen[U](
       op: StageModule): Repr[U] = {
     // No need to copy here, op is a fresh instance
-    new Source(
-      module
-        .fuse(op, shape.out, op.inPort)
-        .replaceShape(SourceShape(op.outPort)))
+    new Source(module.fuse(op, shape.out, op.inPort).replaceShape(SourceShape(
+      op.outPort)))
   }
 
   /**
@@ -249,8 +246,7 @@ object Source {
     * beginning) regardless of when they subscribed.
     */
   def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] =
-    single(iterable)
-      .mapConcat(ConstantFun.scalaIdentityFunction)
+    single(iterable).mapConcat(ConstantFun.scalaIdentityFunction)
       .withAttributes(DefaultAttributes.iterableSource)
 
   /**
@@ -491,8 +487,8 @@ object Source {
     */
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
       : Source[T, SourceQueueWithComplete[T]] =
-    Source.fromGraph(
-      new QueueSource(bufferSize, overflowStrategy).withAttributes(
+    Source
+      .fromGraph(new QueueSource(bufferSize, overflowStrategy).withAttributes(
         DefaultAttributes.queueSource))
 
 }

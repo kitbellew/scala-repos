@@ -41,13 +41,10 @@ class RidgeRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
   def predictionError(
       predictions: Seq[Double],
       input: Seq[LabeledPoint]): Double = {
-    predictions
-      .zip(input)
-      .map {
-        case (prediction, expected) =>
-          (prediction - expected.label) * (prediction - expected.label)
-      }
-      .sum / predictions.size
+    predictions.zip(input).map {
+      case (prediction, expected) =>
+        (prediction - expected.label) * (prediction - expected.label)
+    }.sum / predictions.size
   }
 
   test("ridge regression can help avoid overfitting") {
@@ -63,12 +60,8 @@ class RidgeRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
     val w = Array.fill(numFeatures)(random.nextDouble() - 0.5)
 
     // Use half of data for training and other half for validation
-    val data = LinearDataGenerator.generateLinearInput(
-      3.0,
-      w,
-      2 * numExamples,
-      42,
-      10.0)
+    val data = LinearDataGenerator
+      .generateLinearInput(3.0, w, 2 * numExamples, 42, 10.0)
     val testData = data.take(numExamples)
     val validationData = data.takeRight(numExamples)
 
@@ -77,9 +70,7 @@ class RidgeRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // First run without regularization.
     val linearReg = new LinearRegressionWithSGD()
-    linearReg.optimizer
-      .setNumIterations(200)
-      .setStepSize(1.0)
+    linearReg.optimizer.setNumIterations(200).setStepSize(1.0)
 
     val linearModel = linearReg.run(testRDD)
     val linearErr = predictionError(
@@ -87,10 +78,7 @@ class RidgeRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
       validationData)
 
     val ridgeReg = new RidgeRegressionWithSGD()
-    ridgeReg.optimizer
-      .setNumIterations(200)
-      .setRegParam(0.1)
-      .setStepSize(1.0)
+    ridgeReg.optimizer.setNumIterations(200).setRegParam(0.1).setStepSize(1.0)
     val ridgeModel = ridgeReg.run(testRDD)
     val ridgeErr = predictionError(
       ridgeModel.predict(validationRDD.map(_.features)).collect(),
@@ -125,14 +113,12 @@ class RidgeRegressionClusterSuite
   test("task size should be small in both training and prediction") {
     val m = 4
     val n = 200000
-    val points = sc
-      .parallelize(0 until m, 2)
-      .mapPartitionsWithIndex { (idx, iter) =>
+    val points = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
+      (idx, iter) =>
         val random = new Random(idx)
         iter.map(i =>
           LabeledPoint(1.0, Vectors.dense(Array.fill(n)(random.nextDouble()))))
-      }
-      .cache()
+    }.cache()
     // If we serialize data directly in the task closure, the size of the serialized task would be
     // greater than 1MB and hence Spark would throw an error.
     val model = RidgeRegressionWithSGD.train(points, 2)

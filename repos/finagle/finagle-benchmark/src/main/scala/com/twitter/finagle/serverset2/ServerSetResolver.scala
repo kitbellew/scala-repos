@@ -65,8 +65,8 @@ class ServerSetResolver {
       stabilizationWindow,
       stabilizationWindow)
 
-    val serverSetPaths = LocalServerSetService.createServerSetPaths(
-      serverSetsToResolve)
+    val serverSetPaths = LocalServerSetService
+      .createServerSetPaths(serverSetsToResolve)
 
     // For the lifetime of this test, monitor changes to all N serversets
     // (The resolver is always monitoring changes)

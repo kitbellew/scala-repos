@@ -67,8 +67,8 @@ object StepWise {
     protected def getFrames: Array[StackTraceElement] =
       Thread.currentThread.getStackTrace.dropWhile { elem ⇒
         val name = elem.getClassName
-        name.startsWith("java.lang.Thread") || name.startsWith(
-          "akka.typed.StepWise")
+        name.startsWith("java.lang.Thread") || name
+          .startsWith("akka.typed.StepWise")
       }
   }
   private class WithTrace extends Trace {
@@ -139,9 +139,10 @@ object StepWise {
       copy(ops = Failure(
         timeout,
         (failed, value) ⇒
-          f.asInstanceOf[(Failed, Any) ⇒ Failed.Decision](
-            failed,
-            value) -> value,
+          f
+            .asInstanceOf[(Failed, Any) ⇒ Failed.Decision](
+              failed,
+              value) -> value,
         getTrace()) :: ops)
 
     def expectTerminationKeep(timeout: FiniteDuration)(

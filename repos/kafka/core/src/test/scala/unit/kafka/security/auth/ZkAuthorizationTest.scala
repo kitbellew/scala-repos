@@ -139,8 +139,8 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
   @Test
   def testDelete() {
     info(s"zkConnect string: $zkConnect")
-    ZkSecurityMigrator.run(
-      Array("--zookeeper.acl=secure", s"--zookeeper.connect=$zkConnect"))
+    ZkSecurityMigrator
+      .run(Array("--zookeeper.acl=secure", s"--zookeeper.connect=$zkConnect"))
     deleteAllUnsecure()
   }
 
@@ -204,8 +204,8 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
         secondZk.createPersistentPath(ZkUtils.ConsumersPath)
         "unsecure"
     }
-    ZkSecurityMigrator.run(
-      Array(s"--zookeeper.acl=$secureOpt", s"--zookeeper.connect=$zkUrl"))
+    ZkSecurityMigrator
+      .run(Array(s"--zookeeper.acl=$secureOpt", s"--zookeeper.connect=$zkUrl"))
     info("Done with migration")
     for (path <- secondZk.securePersistentZkPaths) {
       val listParent = (secondZk.zkConnection.getAcl(path)).getKey
@@ -216,8 +216,8 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
       assertTrue(childPath, isAclCorrect(listChild, secondZk.isSecure))
     }
     // Check consumers path.
-    val consumersAcl =
-      (firstZk.zkConnection.getAcl(ZkUtils.ConsumersPath)).getKey
+    val consumersAcl = (firstZk.zkConnection.getAcl(ZkUtils.ConsumersPath))
+      .getKey
     assertTrue(ZkUtils.ConsumersPath, isAclCorrect(consumersAcl, false))
   }
 

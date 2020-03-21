@@ -211,8 +211,8 @@ class PriorityMailboxSpec extends MailboxSpec {
   val comparator = PriorityGenerator(_.##)
   lazy val name = "The priority mailbox implementation"
   def factory = {
-    case UnboundedMailbox() ⇒
-      new UnboundedPriorityMailbox(comparator).create(None, None)
+    case UnboundedMailbox() ⇒ new UnboundedPriorityMailbox(comparator)
+        .create(None, None)
     case BoundedMailbox(capacity, pushTimeOut) ⇒
       new BoundedPriorityMailbox(comparator, capacity, pushTimeOut)
         .create(None, None)
@@ -223,8 +223,8 @@ class StablePriorityMailboxSpec extends MailboxSpec {
   val comparator = PriorityGenerator(_.##)
   lazy val name = "The stable priority mailbox implementation"
   def factory = {
-    case UnboundedMailbox() ⇒
-      new UnboundedStablePriorityMailbox(comparator).create(None, None)
+    case UnboundedMailbox() ⇒ new UnboundedStablePriorityMailbox(comparator)
+        .create(None, None)
     case BoundedMailbox(capacity, pushTimeOut) ⇒
       new BoundedStablePriorityMailbox(comparator, capacity, pushTimeOut)
         .create(None, None)
@@ -234,8 +234,8 @@ class StablePriorityMailboxSpec extends MailboxSpec {
 class ControlAwareMailboxSpec extends MailboxSpec {
   lazy val name = "The control aware mailbox implementation"
   def factory = {
-    case UnboundedMailbox() ⇒
-      new UnboundedControlAwareMailbox().create(None, None)
+    case UnboundedMailbox() ⇒ new UnboundedControlAwareMailbox()
+        .create(None, None)
     case BoundedMailbox(capacity, pushTimeOut) ⇒
       new BoundedControlAwareMailbox(capacity, pushTimeOut).create(None, None)
   }
@@ -274,12 +274,8 @@ class CustomMailboxSpec extends AkkaSpec(CustomMailboxSpec.config) {
         },
         1 second,
         10 millis)
-      val queue = actor
-        .asInstanceOf[ActorRefWithCell]
-        .underlying
-        .asInstanceOf[ActorCell]
-        .mailbox
-        .messageQueue
+      val queue = actor.asInstanceOf[ActorRefWithCell].underlying
+        .asInstanceOf[ActorCell].mailbox.messageQueue
       queue.getClass should ===(classOf[CustomMailboxSpec.MyMailbox])
     }
   }
@@ -289,10 +285,10 @@ class SingleConsumerOnlyMailboxSpec extends MailboxSpec {
   lazy val name = "The single-consumer-only mailbox implementation"
   override def maxConsumers = 1
   def factory = {
-    case u: UnboundedMailbox ⇒
-      SingleConsumerOnlyUnboundedMailbox().create(None, None)
-    case b @ BoundedMailbox(capacity, _) ⇒
-      NonBlockingBoundedMailbox(capacity).create(None, None)
+    case u: UnboundedMailbox ⇒ SingleConsumerOnlyUnboundedMailbox()
+        .create(None, None)
+    case b @ BoundedMailbox(capacity, _) ⇒ NonBlockingBoundedMailbox(capacity)
+        .create(None, None)
   }
 }
 

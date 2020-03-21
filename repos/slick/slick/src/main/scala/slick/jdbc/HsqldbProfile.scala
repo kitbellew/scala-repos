@@ -62,8 +62,8 @@ trait HsqldbProfile extends JdbcProfile {
     MTable.getTables(None, None, None, Some(Seq("TABLE")))
 
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler.replace(
-      Phase.resolveZipJoinsRownumStyle) + Phase.specializeParameters - Phase.fixRowNumberOrdering
+    super.computeQueryCompiler.replace(Phase.resolveZipJoinsRownumStyle) + Phase
+      .specializeParameters - Phase.fixRowNumberOrdering
   override val columnTypes = new JdbcTypes
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)

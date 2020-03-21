@@ -20,8 +20,8 @@ trait RemoteResourceOwner {
   protected val serverAlias = "compile-server"
 
   def send(command: String, arguments: Seq[String], client: Client) {
-    val encodedArgs = arguments.map(s =>
-      Base64Converter.encode(s.getBytes("UTF-8")))
+    val encodedArgs = arguments
+      .map(s => Base64Converter.encode(s.getBytes("UTF-8")))
     using(new Socket(address, port)) { socket =>
       using(new DataOutputStream(new BufferedOutputStream(
         socket.getOutputStream))) { output =>
@@ -51,9 +51,8 @@ trait RemoteResourceOwner {
                 val s = new String(data)
                 if (s.length > 50) s.substring(0, 50) + "..." else s
               }
-              client.message(
-                Kind.ERROR,
-                "Unable to read an event from: " + chars)
+              client
+                .message(Kind.ERROR, "Unable to read an event from: " + chars)
               client.trace(e)
           }
         // Main server class redirects all (unexpected) stdout data to stderr.

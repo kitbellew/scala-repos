@@ -46,19 +46,19 @@ private[spark] class IndexShuffleBlockResolver(
     extends ShuffleBlockResolver
     with Logging {
 
-  private lazy val blockManager = Option(_blockManager).getOrElse(
-    SparkEnv.get.blockManager)
+  private lazy val blockManager = Option(_blockManager)
+    .getOrElse(SparkEnv.get.blockManager)
 
   private val transportConf = SparkTransportConf.fromSparkConf(conf, "shuffle")
 
   def getDataFile(shuffleId: Int, mapId: Int): File = {
-    blockManager.diskBlockManager.getFile(
-      ShuffleDataBlockId(shuffleId, mapId, NOOP_REDUCE_ID))
+    blockManager.diskBlockManager
+      .getFile(ShuffleDataBlockId(shuffleId, mapId, NOOP_REDUCE_ID))
   }
 
   private def getIndexFile(shuffleId: Int, mapId: Int): File = {
-    blockManager.diskBlockManager.getFile(
-      ShuffleIndexBlockId(shuffleId, mapId, NOOP_REDUCE_ID))
+    blockManager.diskBlockManager
+      .getFile(ShuffleIndexBlockId(shuffleId, mapId, NOOP_REDUCE_ID))
   }
 
   /**
@@ -167,8 +167,8 @@ private[spark] class IndexShuffleBlockResolver(
           throw new IOException(
             "fail to rename file " + indexTmp + " to " + indexFile)
         }
-        if (dataTmp != null && dataTmp.exists() && !dataTmp.renameTo(
-              dataFile)) {
+        if (dataTmp != null && dataTmp.exists() && !dataTmp
+              .renameTo(dataFile)) {
           throw new IOException(
             "fail to rename file " + dataTmp + " to " + dataFile)
         }

@@ -91,8 +91,8 @@ class DStreamScopeSuite
     val mappedScope1 = mappedStream.getOrCompute(Time(1000)).get.scope
     val mappedScope2 = mappedStream.getOrCompute(Time(2000)).get.scope
     val mappedScope3 = mappedStream.getOrCompute(Time(3000)).get.scope
-    val filteredScopeBase = filteredStream.baseScope.map(
-      RDDOperationScope.fromJson)
+    val filteredScopeBase = filteredStream.baseScope
+      .map(RDDOperationScope.fromJson)
     val filteredScope1 = filteredStream.getOrCompute(Time(1000)).get.scope
     val filteredScope2 = filteredStream.getOrCompute(Time(2000)).get.scope
     val filteredScope3 = filteredStream.getOrCompute(Time(3000)).get.scope
@@ -161,8 +161,8 @@ class DStreamScopeSuite
     }
     transformedStream.initialize(Time(0))
 
-    val transformScopeBase = transformedStream.baseScope.map(
-      RDDOperationScope.fromJson)
+    val transformScopeBase = transformedStream.baseScope
+      .map(RDDOperationScope.fromJson)
     val transformScope1 = transformedStream.getOrCompute(Time(1000)).get.scope
     val transformScope2 = transformedStream.getOrCompute(Time(2000)).get.scope
     val transformScope3 = transformedStream.getOrCompute(Time(3000)).get.scope
@@ -200,10 +200,7 @@ class DStreamScopeSuite
     batchCounter.waitUntilBatchesCompleted(3, 10000)
     assert(generatedRDDs.size === 3)
 
-    val foreachBaseScope = ssc.graph
-      .getOutputStreams()
-      .head
-      .baseScope
+    val foreachBaseScope = ssc.graph.getOutputStreams().head.baseScope
       .map(RDDOperationScope.fromJson)
     assertDefined(foreachBaseScope)
     assert(foreachBaseScope.get.name === "foreachRDD")

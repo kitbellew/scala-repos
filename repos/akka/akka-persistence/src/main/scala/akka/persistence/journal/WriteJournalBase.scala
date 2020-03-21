@@ -19,17 +19,17 @@ private[akka] trait WriteJournalBase {
     rb.collect { // collect instead of flatMap to avoid Some allocations
       case a: AtomicWrite ⇒
         // don't store sender
-        a.copy(payload = a.payload.map(p ⇒
-          adaptToJournal(p.update(sender = Actor.noSender))))
+        a.copy(payload = a.payload
+          .map(p ⇒ adaptToJournal(p.update(sender = Actor.noSender))))
     }
 
   /** INTERNAL API */
   private[akka] final def adaptFromJournal(
       repr: PersistentRepr): immutable.Seq[PersistentRepr] =
-    eventAdapters
-      .get(repr.payload.getClass)
-      .fromJournal(repr.payload, repr.manifest)
-      .events map { adaptedPayload ⇒ repr.withPayload(adaptedPayload) }
+    eventAdapters.get(repr.payload.getClass)
+      .fromJournal(repr.payload, repr.manifest).events map { adaptedPayload ⇒
+      repr.withPayload(adaptedPayload)
+    }
 
   /** INTERNAL API */
   private[akka] final def adaptToJournal(
@@ -44,8 +44,7 @@ private[akka] trait WriteJournalBase {
     if (adapter == IdentityEventAdapter || adapter
           .isInstanceOf[NoopWriteEventAdapter]) repr
     else {
-      repr
-        .withPayload(adapter.toJournal(payload))
+      repr.withPayload(adapter.toJournal(payload))
         .withManifest(adapter.manifest(payload))
     }
   }

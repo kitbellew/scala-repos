@@ -98,11 +98,10 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
       return false
     }
 
-    if (tokenType == DOC_LINK_TAG && builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && !isEndOfComment) {
-      StableId.parse(
-        new ScalaPsiBuilderImpl(builder),
-        true,
-        DOC_CODE_LINK_VALUE)
+    if (tokenType == DOC_LINK_TAG && builder.getTokenType == ScalaTokenTypes
+          .tIDENTIFIER && !isEndOfComment) {
+      StableId
+        .parse(new ScalaPsiBuilderImpl(builder), true, DOC_CODE_LINK_VALUE)
     }
 
     while (!isEndOfComment) {
@@ -128,7 +127,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
         case DOC_HEADER =>
           val headerEnd = builder.getTokenText
           builder.advanceLexer()
-          if (tokenType == VALID_DOC_HEADER && tokenText.length <= headerEnd.length) {
+          if (tokenType == VALID_DOC_HEADER && tokenText.length <= headerEnd
+                .length) {
             canHaveTags = true
             marker.done(tokenType)
             return true
@@ -203,7 +203,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     }
     builder.advanceLexer()
 
-    while (!isEndOfComment && builder.getTokenType != DOC_INNER_CLOSE_CODE_TAG) {
+    while (!isEndOfComment && builder
+             .getTokenType != DOC_INNER_CLOSE_CODE_TAG) {
       builder.advanceLexer()
     }
     if (isEndOfComment) { builder.error("Unclosed code tag") }
@@ -233,15 +234,12 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
       tagName match {
         case THROWS_TAG =>
           if (!isEndOfComment) { builder.advanceLexer() }
-          StableId.parse(
-            new ScalaPsiBuilderImpl(builder),
-            true,
-            DOC_TAG_VALUE_TOKEN)
+          StableId
+            .parse(new ScalaPsiBuilderImpl(builder), true, DOC_TAG_VALUE_TOKEN)
         case PARAM_TAG | TYPE_PARAM_TAG | DEFINE_TAG =>
-          if (!ParserUtils.lookAhead(
-                builder,
-                builder.getTokenType,
-                DOC_TAG_VALUE_TOKEN)) builder.error("Missing tag param")
+          if (!ParserUtils
+                .lookAhead(builder, builder.getTokenType, DOC_TAG_VALUE_TOKEN))
+            builder.error("Missing tag param")
         case SEE_TAG | AUTHOR_TAG | NOTE_TAG | RETURN_TAG | SINCE_TAG |
             VERSION_TAG | USECASE_TAG | EXAMPLE_TAG | TODO_TAG |
             INHERITDOC_TAG | CONSTRUCTOR_TAG =>

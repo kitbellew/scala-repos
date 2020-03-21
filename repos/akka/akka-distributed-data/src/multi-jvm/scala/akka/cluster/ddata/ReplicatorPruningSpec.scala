@@ -45,8 +45,7 @@ class ReplicatorPruningSpec
   val maxPruningDissemination = 3.seconds
   val replicator = system.actorOf(
     Replicator.props(
-      ReplicatorSettings(system)
-        .withGossipInterval(1.second)
+      ReplicatorSettings(system).withGossipInterval(1.second)
         .withPruning(pruningInterval = 1.second, maxPruningDissemination)),
     "replicator")
   val timeout = 2.seconds.dilated
@@ -81,13 +80,10 @@ class ReplicatorPruningSpec
         initialStateMode = InitialStateAsEvents,
         classOf[MemberUp])
       val thirdUniqueAddress = {
-        val member = memberProbe
-          .fishForMessage(3.seconds) {
-            case MemberUp(m) if m.address == node(third).address ⇒ true
-            case _ ⇒ false
-          }
-          .asInstanceOf[MemberUp]
-          .member
+        val member = memberProbe.fishForMessage(3.seconds) {
+          case MemberUp(m) if m.address == node(third).address ⇒ true
+          case _ ⇒ false
+        }.asInstanceOf[MemberUp].member
         member.uniqueAddress
       }
 

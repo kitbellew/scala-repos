@@ -108,8 +108,8 @@ object SparkSubmit {
     printStream.println("Warning: " + str)
   private[spark] def printErrorAndExit(str: String): Unit = {
     printStream.println("Error: " + str)
-    printStream.println(
-      "Run with --help for usage help or --verbose for debug output")
+    printStream
+      .println("Run with --help for usage help or --verbose for debug output")
     exitFn(1)
   }
   private[spark] def printVersionAndExit(): Unit = {
@@ -143,8 +143,7 @@ object SparkSubmit {
     * Kill an existing submission using the REST protocol. Standalone and Mesos cluster mode only.
     */
   private def kill(args: SparkSubmitArguments): Unit = {
-    new RestSubmissionClient(args.master)
-      .killSubmission(args.submissionToKill)
+    new RestSubmissionClient(args.master).killSubmission(args.submissionToKill)
   }
 
   /**
@@ -193,8 +192,8 @@ object SparkSubmit {
             // detect exceptions with empty stack traces here, and treat them differently.
             if (e.getStackTrace().length == 0) {
               // scalastyle:off println
-              printStream.println(
-                s"ERROR: ${e.getClass().getName()}: ${e.getMessage()}")
+              printStream
+                .println(s"ERROR: ${e.getClass().getName()}: ${e.getMessage()}")
               // scalastyle:on println
               exitFn(1)
             } else { throw e }
@@ -292,8 +291,9 @@ object SparkSubmit {
       }
 
       // Make sure YARN is included in our build if we're trying to use it
-      if (!Utils.classIsLoadable(
-            "org.apache.spark.deploy.yarn.Client") && !Utils.isTesting) {
+      if (!Utils
+            .classIsLoadable("org.apache.spark.deploy.yarn.Client") && !Utils
+            .isTesting) {
         printErrorAndExit(
           "Could not load YARN classes. " +
             "This copy of Spark may not have been compiled with YARN support.")
@@ -391,8 +391,8 @@ object SparkSubmit {
         // If a python file is provided, add it to the child arguments and list of files to deploy.
         // Usage: PythonAppRunner <main python file> <extra python files> [app arguments]
         args.mainClass = "org.apache.spark.deploy.PythonRunner"
-        args.childArgs =
-          ArrayBuffer(args.primaryResource, args.pyFiles) ++ args.childArgs
+        args.childArgs = ArrayBuffer(args.primaryResource, args.pyFiles) ++ args
+          .childArgs
         if (clusterManager != YARN) {
           // The YARN backend distributes the primary file differently, so don't merge it.
           args.files = mergeFileLists(args.files, args.primaryResource)
@@ -422,8 +422,8 @@ object SparkSubmit {
         printErrorAndExit(
           s"$SPARKR_PACKAGE_ARCHIVE does not exist for R application in YARN mode.")
       }
-      val sparkRPackageURI =
-        Utils.resolveURI(sparkRPackageFile.getAbsolutePath).toString
+      val sparkRPackageURI = Utils.resolveURI(sparkRPackageFile.getAbsolutePath)
+        .toString
 
       // Distribute the SparkR package.
       // Assigns a symbol link name "sparkr" to the shipped package.
@@ -433,15 +433,14 @@ object SparkSubmit {
 
       // Distribute the R package archive containing all the built R packages.
       if (!RUtils.rPackages.isEmpty) {
-        val rPackageFile = RPackageUtils.zipRLibraries(
-          new File(RUtils.rPackages.get),
-          R_PACKAGE_ARCHIVE)
+        val rPackageFile = RPackageUtils
+          .zipRLibraries(new File(RUtils.rPackages.get), R_PACKAGE_ARCHIVE)
         if (!rPackageFile.exists()) {
           printErrorAndExit("Failed to zip all the built R packages.")
         }
 
-        val rPackageURI =
-          Utils.resolveURI(rPackageFile.getAbsolutePath).toString
+        val rPackageURI = Utils.resolveURI(rPackageFile.getAbsolutePath)
+          .toString
         // Assigns a symbol link name "rpkg" to the shipped package.
         args.archives = mergeFileLists(args.archives, rPackageURI + "#rpkg")
       }
@@ -653,9 +652,7 @@ object SparkSubmit {
     // For YARN cluster mode, the jar is already distributed on each node as "app.jar"
     // For python and R files, the primary resource is already distributed as a regular file
     if (!isYarnCluster && !args.isPython && !args.isR) {
-      var jars = sysProps
-        .get("spark.jars")
-        .map(x => x.split(",").toSeq)
+      var jars = sysProps.get("spark.jars").map(x => x.split(",").toSeq)
         .getOrElse(Seq.empty)
       if (isUserJar(args.primaryResource)) {
         jars = jars ++ Seq(args.primaryResource)
@@ -769,8 +766,7 @@ object SparkSubmit {
     // explicitly sets `spark.submit.pyFiles` in his/her default properties file.
     sysProps.get("spark.submit.pyFiles").foreach { pyFiles =>
       val resolvedPyFiles = Utils.resolveURIs(pyFiles)
-      val formattedPyFiles = PythonRunner
-        .formatPaths(resolvedPyFiles)
+      val formattedPyFiles = PythonRunner.formatPaths(resolvedPyFiles)
         .mkString(",")
       sysProps("spark.submit.pyFiles") = formattedPyFiles
     }
@@ -795,15 +791,14 @@ object SparkSubmit {
       printStream.println(s"Main class:\n$childMainClass")
       printStream.println(s"Arguments:\n${childArgs.mkString("\n")}")
       printStream.println(s"System properties:\n${sysProps.mkString("\n")}")
-      printStream.println(
-        s"Classpath elements:\n${childClasspath.mkString("\n")}")
+      printStream
+        .println(s"Classpath elements:\n${childClasspath.mkString("\n")}")
       printStream.println("\n")
     }
     // scalastyle:on println
 
     val loader =
-      if (sysProps
-            .getOrElse("spark.driver.userClassPathFirst", "false")
+      if (sysProps.getOrElse("spark.driver.userClassPathFirst", "false")
             .toBoolean) {
         new ChildFirstURLClassLoader(
           new Array[URL](0),
@@ -941,9 +936,7 @@ object SparkSubmit {
     * no files, into a single comma-separated string.
     */
   private def mergeFileLists(lists: String*): String = {
-    val merged = lists
-      .filterNot(StringUtils.isBlank)
-      .flatMap(_.split(","))
+    val merged = lists.filterNot(StringUtils.isBlank).flatMap(_.split(","))
       .mkString(",")
     if (merged == "") null else merged
   }
@@ -1057,8 +1050,8 @@ private[spark] object SparkSubmitUtils {
       "[revision]",
       "[type]s",
       "[artifact](-[classifier]).[ext]").mkString(File.separator)
-    localIvy.addIvyPattern(
-      localIvyRoot.getAbsolutePath + File.separator + ivyPattern)
+    localIvy
+      .addIvyPattern(localIvyRoot.getAbsolutePath + File.separator + ivyPattern)
     localIvy.setName("local-ivy-cache")
     cr.add(localIvy)
 
@@ -1088,13 +1081,11 @@ private[spark] object SparkSubmitUtils {
   def resolveDependencyPaths(
       artifacts: Array[AnyRef],
       cacheDirectory: File): String = {
-    artifacts
-      .map { artifactInfo =>
-        val artifact = artifactInfo.asInstanceOf[Artifact].getModuleRevisionId
-        cacheDirectory.getAbsolutePath + File.separator +
-          s"${artifact.getOrganisation}_${artifact.getName}-${artifact.getRevision}.jar"
-      }
-      .mkString(",")
+    artifacts.map { artifactInfo =>
+      val artifact = artifactInfo.asInstanceOf[Artifact].getModuleRevisionId
+      cacheDirectory.getAbsolutePath + File.separator +
+        s"${artifact.getOrganisation}_${artifact.getName}-${artifact.getRevision}.jar"
+    }.mkString(",")
   }
 
   /** Adds the given maven coordinates to Ivy's module descriptor. */
@@ -1103,10 +1094,8 @@ private[spark] object SparkSubmitUtils {
       artifacts: Seq[MavenCoordinate],
       ivyConfName: String): Unit = {
     artifacts.foreach { mvn =>
-      val ri = ModuleRevisionId.newInstance(
-        mvn.groupId,
-        mvn.artifactId,
-        mvn.version)
+      val ri = ModuleRevisionId
+        .newInstance(mvn.groupId, mvn.artifactId, mvn.version)
       val dd = new DefaultDependencyDescriptor(ri, false, false)
       dd.addDependencyConfiguration(ivyConfName, ivyConfName)
       // scalastyle:off println
@@ -1197,8 +1186,8 @@ private[spark] object SparkSubmitUtils {
         // scalastyle:off println
         printStream.println(
           s"Ivy Default Cache set to: ${ivySettings.getDefaultCache.getAbsolutePath}")
-        printStream.println(
-          s"The jars for the packages stored in: $packagesDirectory")
+        printStream
+          .println(s"The jars for the packages stored in: $packagesDirectory")
         // scalastyle:on println
         // create a pattern matcher
         ivySettings.addMatcher(new GlobPatternMatcher)

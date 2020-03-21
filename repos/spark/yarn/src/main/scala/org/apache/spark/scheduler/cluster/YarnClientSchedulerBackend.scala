@@ -113,8 +113,7 @@ private[spark] class YarnClientSchedulerBackend(
     // The app name is a special case because "spark.app.name" is required of all applications.
     // As a result, the corresponding "SPARK_YARN_APP_NAME" is already handled preemptively in
     // SparkSubmitArguments if "spark.app.name" is not explicitly set by the user. (SPARK-5222)
-    sc.getConf
-      .getOption("spark.app.name")
+    sc.getConf.getOption("spark.app.name")
       .foreach(v => extraArgs += ("--name", v))
     extraArgs
   }
@@ -128,10 +127,8 @@ private[spark] class YarnClientSchedulerBackend(
     assert(
       client != null && appId.isDefined,
       "Application has not been submitted yet!")
-    val (state, _) = client.monitorApplication(
-      appId.get,
-      returnOnRunning = true
-    ) // blocking
+    val (state, _) = client
+      .monitorApplication(appId.get, returnOnRunning = true) // blocking
     if (state == YarnApplicationState.FINISHED ||
         state == YarnApplicationState.FAILED ||
         state == YarnApplicationState.KILLED) {
@@ -156,9 +153,8 @@ private[spark] class YarnClientSchedulerBackend(
 
     override def run() {
       try {
-        val (state, _) = client.monitorApplication(
-          appId.get,
-          logApplicationReport = false)
+        val (state, _) = client
+          .monitorApplication(appId.get, logApplicationReport = false)
         logError(s"Yarn application has already exited with state $state!")
         allowInterrupt = false
         sc.stop()

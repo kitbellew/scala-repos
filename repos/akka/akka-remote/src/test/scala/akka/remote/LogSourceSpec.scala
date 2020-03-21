@@ -50,8 +50,8 @@ class LogSourceSpec
       reporter ! "hello"
       val info = logProbe.expectMsgType[Info]
       info.message should ===("hello")
-      val defaultAddress =
-        system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+      val defaultAddress = system.asInstanceOf[ExtendedActorSystem].provider
+        .getDefaultAddress
       info.logSource should include(defaultAddress.toString)
     }
   }

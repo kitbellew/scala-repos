@@ -65,15 +65,12 @@ final case class AssociationErrorEvent(
 final case class RemotingListenEvent(listenAddresses: Set[Address])
     extends RemotingLifecycleEvent {
   def getListenAddresses: java.util.Set[Address] =
-    scala.collection.JavaConverters
-      .setAsJavaSetConverter(listenAddresses)
+    scala.collection.JavaConverters.setAsJavaSetConverter(listenAddresses)
       .asJava
   override def logLevel: Logging.LogLevel = Logging.InfoLevel
   override def toString: String =
-    "Remoting now listens on addresses: " + listenAddresses.mkString(
-      "[",
-      ", ",
-      "]")
+    "Remoting now listens on addresses: " + listenAddresses
+      .mkString("[", ", ", "]")
 }
 
 @SerialVersionUID(1L)

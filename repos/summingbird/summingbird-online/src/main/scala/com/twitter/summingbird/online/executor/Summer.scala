@@ -99,7 +99,8 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
   override def init(runtimeContext: RC) {
     super.init(runtimeContext)
     storePromise.setValue(storeBox.get.mergeableStore())
-    store.toString // Do the lazy evaluation now so we can connect before tuples arrive.
+    store
+      .toString // Do the lazy evaluation now so we can connect before tuples arrive.
 
     successHandlerOpt =
       if (includeSuccessHandler.get) Some(successHandlerBox.get) else None
@@ -114,19 +115,14 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
 
   private def handleResult(kvs: Map[Key, (Seq[InputState[S]], Value)])
       : TraversableOnce[(Seq[InputState[S]], Future[TraversableOnce[Event]])] =
-    store
-      .multiMerge(kvs.mapValues(_._2))
-      .iterator
-      .map {
-        case (k, beforeF) =>
-          val (tups, delta) = kvs(k)
-          (
-            tups,
-            beforeF
-              .flatMap { before => lockedOp.get.apply((k, (before, delta))) }
-              .onSuccess { _ => successHandlerOpt.get.handlerFn.apply() })
-      }
-      .toList
+    store.multiMerge(kvs.mapValues(_._2)).iterator.map {
+      case (k, beforeF) =>
+        val (tups, delta) = kvs(k)
+        (
+          tups,
+          beforeF.flatMap { before => lockedOp.get.apply((k, (before, delta))) }
+            .onSuccess { _ => successHandlerOpt.get.handlerFn.apply() })
+    }.toList
 
   override def tick = sSummer.tick.map(handleResult(_))
 

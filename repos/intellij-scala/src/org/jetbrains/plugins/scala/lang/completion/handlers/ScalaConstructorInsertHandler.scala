@@ -54,8 +54,7 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           editor.getCaretModel.moveToOffset(endOffset)
           context.setLaterRunnable(new Runnable {
             def run() {
-              AutoPopupController
-                .getInstance(context.getProject)
+              AutoPopupController.getInstance(context.getProject)
                 .scheduleAutoPopup(
                   context.getEditor,
                   new Condition[PsiFile] {
@@ -87,8 +86,7 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           endOffset += 2
           editor.getCaretModel.moveToOffset(endOffset - 1)
         } else if (item.typeParameters.nonEmpty) {
-          val str = item.typeParameters
-            .map(ScType.canonicalText)
+          val str = item.typeParameters.map(ScType.canonicalText)
             .mkString("[", ", ", "]")
           document.insertString(endOffset, str)
           endOffset += str.length()
@@ -108,14 +106,12 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           if (!item.typeParametersProblem)
             editor.getCaretModel.moveToOffset(endOffset - 1)
         }
-        PsiDocumentManager
-          .getInstance(context.getProject)
+        PsiDocumentManager.getInstance(context.getProject)
           .commitDocument(document)
         val file = context.getFile
         val element = file.findElementAt(endOffset - 1)
-        val newT = PsiTreeUtil.getParentOfType(
-          element,
-          classOf[ScNewTemplateDefinition])
+        val newT = PsiTreeUtil
+          .getParentOfType(element, classOf[ScNewTemplateDefinition])
         if (newT != null) {
           newT.extendsBlock.templateParents match {
             case Some(tp: ScTemplateParents) =>
@@ -134,15 +130,11 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                 }
                 if (ref != null && !isRenamed) {
                   if (item.prefixCompletion) {
-                    val newRefText = clazz.qualifiedName
-                      .split('.')
-                      .takeRight(2)
+                    val newRefText = clazz.qualifiedName.split('.').takeRight(2)
                       .mkString(".")
-                    val newRef = ScalaPsiElementFactory.createReferenceFromText(
-                      newRefText,
-                      clazz.getManager)
-                    val replaced = ref
-                      .replace(newRef)
+                    val newRef = ScalaPsiElementFactory
+                      .createReferenceFromText(newRefText, clazz.getManager)
+                    val replaced = ref.replace(newRef)
                       .asInstanceOf[ScStableCodeReferenceElement]
                     replaced.bindToElement(clazz)
                   } else { ref.bindToElement(clazz) }
@@ -154,8 +146,8 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
         }
 
         if ((clazz.isInterface || clazz.isInstanceOf[ScTrait] ||
-            clazz.hasModifierPropertyScala(
-              "abstract")) && !item.typeParametersProblem) {
+            clazz.hasModifierPropertyScala("abstract")) && !item
+              .typeParametersProblem) {
           context.setLaterRunnable(new Runnable {
             def run() {
               val file = context.getFile
@@ -166,8 +158,8 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                 case (_: ScTemplateBody) childOf ((
                       _: ScExtendsBlock
                     ) childOf (newTemplateDef: ScNewTemplateDefinition)) =>
-                  val members = ScalaOIUtil.getMembersToImplement(
-                    newTemplateDef)
+                  val members = ScalaOIUtil
+                    .getMembersToImplement(newTemplateDef)
                   ScalaOIUtil.runAction(
                     members.toSeq,
                     isImplement = true,

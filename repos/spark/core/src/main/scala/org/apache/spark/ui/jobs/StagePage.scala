@@ -111,23 +111,20 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       val parameterTaskPrevPageSize = request.getParameter("task.prevPageSize")
 
       val taskPage = Option(parameterTaskPage).map(_.toInt).getOrElse(1)
-      val taskSortColumn = Option(parameterTaskSortColumn)
-        .map { sortColumn => UIUtils.decodeURLParameter(sortColumn) }
-        .getOrElse("Index")
-      val taskSortDesc = Option(parameterTaskSortDesc)
-        .map(_.toBoolean)
+      val taskSortColumn = Option(parameterTaskSortColumn).map { sortColumn =>
+        UIUtils.decodeURLParameter(sortColumn)
+      }.getOrElse("Index")
+      val taskSortDesc = Option(parameterTaskSortDesc).map(_.toBoolean)
         .getOrElse(false)
-      val taskPageSize = Option(parameterTaskPageSize)
-        .map(_.toInt)
+      val taskPageSize = Option(parameterTaskPageSize).map(_.toInt)
         .getOrElse(100)
-      val taskPrevPageSize = Option(parameterTaskPrevPageSize)
-        .map(_.toInt)
+      val taskPrevPageSize = Option(parameterTaskPrevPageSize).map(_.toInt)
         .getOrElse(taskPageSize)
 
       val stageId = parameterId.toInt
       val stageAttemptId = parameterAttempt.toInt
-      val stageDataOption = progressListener.stageIdToData.get(
-        (stageId, stageAttemptId))
+      val stageDataOption = progressListener.stageIdToData
+        .get((stageId, stageAttemptId))
 
       val stageHeader = s"Details for Stage $stageId (Attempt $stageAttemptId)"
       if (stageDataOption.isEmpty) {
@@ -151,8 +148,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       val tasks = stageData.taskData.values.toSeq.sortBy(_.taskInfo.launchTime)
       val numCompleted = tasks.count(_.taskInfo.finished)
 
-      val allAccumulables =
-        progressListener.stageIdToData((stageId, stageAttemptId)).accumulables
+      val allAccumulables = progressListener
+        .stageIdToData((stageId, stageAttemptId)).accumulables
       val externalAccumulables = allAccumulables.values.filter { acc =>
         !acc.internal
       }
@@ -385,8 +382,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         else taskTable.dataSource.slicedTaskIds
 
       // Excludes tasks which failed and have incomplete metrics
-      val validTasks = tasks.filter(t =>
-        t.taskInfo.status == "SUCCESS" && t.taskMetrics.isDefined)
+      val validTasks = tasks
+        .filter(t => t.taskInfo.status == "SUCCESS" && t.taskMetrics.isDefined)
 
       val summaryTable: Option[Seq[Node]] =
         if (validTasks.size == 0) { None }
@@ -399,8 +396,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             }
           }
           def getFormattedSizeQuantiles(data: Seq[Double]): Seq[Elem] = {
-            getDistributionQuantiles(data).map(d =>
-              <td>{Utils.bytesToString(d.toLong)}</td>)
+            getDistributionQuantiles(data)
+              .map(d => <td>{Utils.bytesToString(d.toLong)}</td>)
           }
 
           val deserializationTimes = validTasks.map {
@@ -510,17 +507,13 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
           val outputSizes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
-              metrics.get.outputMetrics
-                .map(_.bytesWritten)
-                .getOrElse(0L)
+              metrics.get.outputMetrics.map(_.bytesWritten).getOrElse(0L)
                 .toDouble
           }
 
           val outputRecords = validTasks.map {
             case TaskUIData(_, metrics, _) =>
-              metrics.get.outputMetrics
-                .map(_.recordsWritten)
-                .getOrElse(0L)
+              metrics.get.outputMetrics.map(_.recordsWritten).getOrElse(0L)
                 .toDouble
           }
 
@@ -529,9 +522,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
           val shuffleReadBlockedTimes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
-              metrics.get.shuffleReadMetrics
-                .map(_.fetchWaitTime)
-                .getOrElse(0L)
+              metrics.get.shuffleReadMetrics.map(_.fetchWaitTime).getOrElse(0L)
                 .toDouble
           }
           val shuffleReadBlockedQuantiles =
@@ -545,16 +536,12 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
           val shuffleReadTotalSizes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
-              metrics.get.shuffleReadMetrics
-                .map(_.totalBytesRead)
-                .getOrElse(0L)
+              metrics.get.shuffleReadMetrics.map(_.totalBytesRead).getOrElse(0L)
                 .toDouble
           }
           val shuffleReadTotalRecords = validTasks.map {
             case TaskUIData(_, metrics, _) =>
-              metrics.get.shuffleReadMetrics
-                .map(_.recordsRead)
-                .getOrElse(0L)
+              metrics.get.shuffleReadMetrics.map(_.recordsRead).getOrElse(0L)
                 .toDouble
           }
           val shuffleReadTotalQuantiles =
@@ -570,10 +557,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
           val shuffleReadRemoteSizes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
-              metrics.get.shuffleReadMetrics
-                .map(_.remoteBytesRead)
-                .getOrElse(0L)
-                .toDouble
+              metrics.get.shuffleReadMetrics.map(_.remoteBytesRead)
+                .getOrElse(0L).toDouble
           }
           val shuffleReadRemoteQuantiles =
             <td>
@@ -586,18 +571,14 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
           val shuffleWriteSizes = validTasks.map {
             case TaskUIData(_, metrics, _) =>
-              metrics.get.shuffleWriteMetrics
-                .map(_.bytesWritten)
-                .getOrElse(0L)
+              metrics.get.shuffleWriteMetrics.map(_.bytesWritten).getOrElse(0L)
                 .toDouble
           }
 
           val shuffleWriteRecords = validTasks.map {
             case TaskUIData(_, metrics, _) =>
-              metrics.get.shuffleWriteMetrics
-                .map(_.recordsWritten)
-                .getOrElse(0L)
-                .toDouble
+              metrics.get.shuffleWriteMetrics.map(_.recordsWritten)
+                .getOrElse(0L).toDouble
           }
 
           val shuffleWriteQuantiles = <td>Shuffle Write Size / Records</td> +:
@@ -690,8 +671,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           showAdditionalMetrics ++
           makeTimeline(
             // Only show the tasks in the table
-            stageData.taskData.values.toSeq.filter(t =>
-              taskIdsInPage.contains(t.taskInfo.taskId)),
+            stageData.taskData.values.toSeq
+              .filter(t => taskIdsInPage.contains(t.taskInfo.taskId)),
             currentTime) ++
           <h4>Summary Metrics for {numCompleted} Completed Tasks</h4> ++
           <div>{
@@ -700,11 +681,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           <h4>Aggregated Metrics by Executor</h4> ++ executorTable.toNodeSeq ++
           maybeAccumulableTable ++
           <h4 id="tasks-section">Tasks</h4> ++ taskTableHTML ++ jsForScrollingDownToTaskTable
-      UIUtils.headerSparkPage(
-        stageHeader,
-        content,
-        parent,
-        showVisualization = true)
+      UIUtils
+        .headerSparkPage(stageHeader, content, parent, showVisualization = true)
     }
   }
 
@@ -713,10 +691,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
     var minLaunchTime = Long.MaxValue
     var maxFinishTime = Long.MinValue
 
-    val executorsArrayStr = tasks
-      .sortBy(-_.taskInfo.launchTime)
-      .take(MAX_TIMELINE_TASKS)
-      .map { taskUIData =>
+    val executorsArrayStr = tasks.sortBy(-_.taskInfo.launchTime)
+      .take(MAX_TIMELINE_TASKS).map { taskUIData =>
         val taskInfo = taskUIData.taskInfo
         val executorId = taskInfo.executorId
         val host = taskInfo.host
@@ -733,22 +709,17 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
 
         val metricsOpt = taskUIData.taskMetrics
         val shuffleReadTime = metricsOpt
-          .flatMap(_.shuffleReadMetrics.map(_.fetchWaitTime))
-          .getOrElse(0L)
+          .flatMap(_.shuffleReadMetrics.map(_.fetchWaitTime)).getOrElse(0L)
         val shuffleReadTimeProportion = toProportion(shuffleReadTime)
         val shuffleWriteTime = (metricsOpt
-          .flatMap(
-            _.shuffleWriteMetrics
-              .map(_.writeTime))
-          .getOrElse(0L) / 1e6).toLong
+          .flatMap(_.shuffleWriteMetrics.map(_.writeTime)).getOrElse(0L) / 1e6)
+          .toLong
         val shuffleWriteTimeProportion = toProportion(shuffleWriteTime)
 
-        val serializationTime = metricsOpt
-          .map(_.resultSerializationTime)
+        val serializationTime = metricsOpt.map(_.resultSerializationTime)
           .getOrElse(0L)
         val serializationTimeProportion = toProportion(serializationTime)
-        val deserializationTime = metricsOpt
-          .map(_.executorDeserializeTime)
+        val deserializationTime = metricsOpt.map(_.executorDeserializeTime)
           .getOrElse(0L)
         val deserializationTimeProportion = toProportion(deserializationTime)
         val gettingResultTime = getGettingResultTime(
@@ -756,8 +727,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           currentTime)
         val gettingResultTimeProportion = toProportion(gettingResultTime)
         val schedulerDelay = metricsOpt
-          .map(getSchedulerDelay(taskInfo, _, currentTime))
-          .getOrElse(0L)
+          .map(getSchedulerDelay(taskInfo, _, currentTime)).getOrElse(0L)
         val schedulerDelayProportion = toProportion(schedulerDelay)
 
         val executorOverhead = serializationTime + deserializationTime
@@ -765,10 +735,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           if (taskInfo.running) {
             totalExecutionTime - executorOverhead - gettingResultTime
           } else {
-            metricsOpt
-              .map(_.executorRunTime)
-              .getOrElse(
-                totalExecutionTime - executorOverhead - gettingResultTime)
+            metricsOpt.map(_.executorRunTime).getOrElse(
+              totalExecutionTime - executorOverhead - gettingResultTime)
           }
         val executorComputingTime =
           executorRunTime - shuffleReadTime - shuffleWriteTime
@@ -820,7 +788,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                    |width="$serializationTimeProportion%"></rect>
                  |<rect class="getting-result-time-proportion"
                    |x="$gettingResultTimeProportionPos%" y="0px" height="26px"
-                   |width="$gettingResultTimeProportion%"></rect></svg>""".stripMargin
+                   |width="$gettingResultTimeProportion%"></rect></svg>"""
+              .stripMargin
           }
         val timelineObject =
           s"""
@@ -834,41 +803,38 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                  |Status: ${taskInfo.status}<br>
                  |Launch Time: ${UIUtils.formatDate(new Date(launchTime))}
                  |${if (!taskInfo.running) {
-               s"""<br>Finish Time: ${UIUtils.formatDate(
-                 new Date(finishTime))}"""
+               s"""<br>Finish Time: ${UIUtils
+                 .formatDate(new Date(finishTime))}"""
              } else { "" }}
                  |<br>Scheduler Delay: $schedulerDelay ms
-                 |<br>Task Deserialization Time: ${UIUtils.formatDuration(
-               deserializationTime)}
-                 |<br>Shuffle Read Time: ${UIUtils.formatDuration(
-               shuffleReadTime)}
-                 |<br>Executor Computing Time: ${UIUtils.formatDuration(
-               executorComputingTime)}
-                 |<br>Shuffle Write Time: ${UIUtils.formatDuration(
-               shuffleWriteTime)}
-                 |<br>Result Serialization Time: ${UIUtils.formatDuration(
-               serializationTime)}
-                 |<br>Getting Result Time: ${UIUtils.formatDuration(
-               gettingResultTime)}">
+                 |<br>Task Deserialization Time: ${UIUtils
+               .formatDuration(deserializationTime)}
+                 |<br>Shuffle Read Time: ${UIUtils
+               .formatDuration(shuffleReadTime)}
+                 |<br>Executor Computing Time: ${UIUtils
+               .formatDuration(executorComputingTime)}
+                 |<br>Shuffle Write Time: ${UIUtils
+               .formatDuration(shuffleWriteTime)}
+                 |<br>Result Serialization Time: ${UIUtils
+               .formatDuration(serializationTime)}
+                 |<br>Getting Result Time: ${UIUtils
+               .formatDuration(gettingResultTime)}">
                  |$svgTag',
                |'start': new Date($launchTime),
                |'end': new Date($finishTime)
              |}
            |""".stripMargin.replaceAll("""[\r\n]+""", " ")
         timelineObject
-      }
-      .mkString("[", ",", "]")
+      }.mkString("[", ",", "]")
 
-    val groupArrayStr = executorsSet
-      .map {
-        case (executorId, host) => s"""
+    val groupArrayStr = executorsSet.map {
+      case (executorId, host) => s"""
             {
               'id': '$executorId',
               'content': '$executorId / $host',
             }
           """
-      }
-      .mkString("[", ",", "]")
+    }.mkString("[", ",", "]")
 
     <span class="expand-task-assignment-timeline">
       <span class="expand-task-assignment-timeline-arrow arrow-closed"></span>
@@ -1031,21 +997,17 @@ private[ui] class TaskDataSource(
     val formatDuration =
       if (info.status == "RUNNING") UIUtils.formatDuration(duration)
       else
-        metrics
-          .map(m => UIUtils.formatDuration(m.executorRunTime))
+        metrics.map(m => UIUtils.formatDuration(m.executorRunTime))
           .getOrElse("")
-    val schedulerDelay = metrics
-      .map(getSchedulerDelay(info, _, currentTime))
+    val schedulerDelay = metrics.map(getSchedulerDelay(info, _, currentTime))
       .getOrElse(0L)
     val gcTime = metrics.map(_.jvmGCTime).getOrElse(0L)
-    val taskDeserializationTime = metrics
-      .map(_.executorDeserializeTime)
+    val taskDeserializationTime = metrics.map(_.executorDeserializeTime)
       .getOrElse(0L)
     val serializationTime = metrics.map(_.resultSerializationTime).getOrElse(0L)
     val gettingResultTime = getGettingResultTime(info, currentTime)
 
-    val externalAccumulableReadable = info.accumulables
-      .filterNot(_.internal)
+    val externalAccumulableReadable = info.accumulables.filterNot(_.internal)
       .flatMap { a =>
         (a.name, a.update) match {
           case (Some(name), Some(update)) =>
@@ -1053,77 +1015,63 @@ private[ui] class TaskDataSource(
           case _ => None
         }
       }
-    val peakExecutionMemoryUsed = metrics
-      .map(_.peakExecutionMemory)
+    val peakExecutionMemoryUsed = metrics.map(_.peakExecutionMemory)
       .getOrElse(0L)
 
     val maybeInput = metrics.flatMap(_.inputMetrics)
     val inputSortable = maybeInput.map(_.bytesRead).getOrElse(0L)
-    val inputReadable = maybeInput
-      .map(m =>
-        s"${Utils.bytesToString(m.bytesRead)} (${m.readMethod.toString.toLowerCase()})")
+    val inputReadable = maybeInput.map(m =>
+      s"${Utils.bytesToString(m.bytesRead)} (${m.readMethod.toString.toLowerCase()})")
       .getOrElse("")
     val inputRecords = maybeInput.map(_.recordsRead.toString).getOrElse("")
 
     val maybeOutput = metrics.flatMap(_.outputMetrics)
     val outputSortable = maybeOutput.map(_.bytesWritten).getOrElse(0L)
     val outputReadable = maybeOutput
-      .map(m => s"${Utils.bytesToString(m.bytesWritten)}")
-      .getOrElse("")
+      .map(m => s"${Utils.bytesToString(m.bytesWritten)}").getOrElse("")
     val outputRecords = maybeOutput.map(_.recordsWritten.toString).getOrElse("")
 
     val maybeShuffleRead = metrics.flatMap(_.shuffleReadMetrics)
-    val shuffleReadBlockedTimeSortable = maybeShuffleRead
-      .map(_.fetchWaitTime)
+    val shuffleReadBlockedTimeSortable = maybeShuffleRead.map(_.fetchWaitTime)
       .getOrElse(0L)
     val shuffleReadBlockedTimeReadable = maybeShuffleRead
-      .map(ms => UIUtils.formatDuration(ms.fetchWaitTime))
-      .getOrElse("")
+      .map(ms => UIUtils.formatDuration(ms.fetchWaitTime)).getOrElse("")
 
     val totalShuffleBytes = maybeShuffleRead.map(_.totalBytesRead)
     val shuffleReadSortable = totalShuffleBytes.getOrElse(0L)
-    val shuffleReadReadable = totalShuffleBytes
-      .map(Utils.bytesToString)
+    val shuffleReadReadable = totalShuffleBytes.map(Utils.bytesToString)
       .getOrElse("")
-    val shuffleReadRecords = maybeShuffleRead
-      .map(_.recordsRead.toString)
+    val shuffleReadRecords = maybeShuffleRead.map(_.recordsRead.toString)
       .getOrElse("")
 
     val remoteShuffleBytes = maybeShuffleRead.map(_.remoteBytesRead)
     val shuffleReadRemoteSortable = remoteShuffleBytes.getOrElse(0L)
-    val shuffleReadRemoteReadable = remoteShuffleBytes
-      .map(Utils.bytesToString)
+    val shuffleReadRemoteReadable = remoteShuffleBytes.map(Utils.bytesToString)
       .getOrElse("")
 
     val maybeShuffleWrite = metrics.flatMap(_.shuffleWriteMetrics)
-    val shuffleWriteSortable = maybeShuffleWrite
-      .map(_.bytesWritten)
+    val shuffleWriteSortable = maybeShuffleWrite.map(_.bytesWritten)
       .getOrElse(0L)
     val shuffleWriteReadable = maybeShuffleWrite
-      .map(m => s"${Utils.bytesToString(m.bytesWritten)}")
-      .getOrElse("")
-    val shuffleWriteRecords = maybeShuffleWrite
-      .map(_.recordsWritten.toString)
+      .map(m => s"${Utils.bytesToString(m.bytesWritten)}").getOrElse("")
+    val shuffleWriteRecords = maybeShuffleWrite.map(_.recordsWritten.toString)
       .getOrElse("")
 
     val maybeWriteTime = metrics.flatMap(_.shuffleWriteMetrics).map(_.writeTime)
     val writeTimeSortable = maybeWriteTime.getOrElse(0L)
-    val writeTimeReadable = maybeWriteTime
-      .map(t => t / (1000 * 1000))
-      .map { ms => if (ms == 0) "" else UIUtils.formatDuration(ms) }
-      .getOrElse("")
+    val writeTimeReadable = maybeWriteTime.map(t => t / (1000 * 1000)).map {
+      ms => if (ms == 0) "" else UIUtils.formatDuration(ms)
+    }.getOrElse("")
 
     val maybeMemoryBytesSpilled = metrics.map(_.memoryBytesSpilled)
     val memoryBytesSpilledSortable = maybeMemoryBytesSpilled.getOrElse(0L)
     val memoryBytesSpilledReadable = maybeMemoryBytesSpilled
-      .map(Utils.bytesToString)
-      .getOrElse("")
+      .map(Utils.bytesToString).getOrElse("")
 
     val maybeDiskBytesSpilled = metrics.map(_.diskBytesSpilled)
     val diskBytesSpilledSortable = maybeDiskBytesSpilled.getOrElse(0L)
     val diskBytesSpilledReadable = maybeDiskBytesSpilled
-      .map(Utils.bytesToString)
-      .getOrElse("")
+      .map(Utils.bytesToString).getOrElse("")
 
     val input =
       if (hasInput) {
@@ -1446,9 +1394,8 @@ private[ui] class TaskPagedTable(
     extends PagedTable[TaskTableRowData] {
 
   // We only track peak memory used for unsafe operators
-  private val displayPeakExecutionMemory = conf.getBoolean(
-    "spark.sql.unsafe.enabled",
-    true)
+  private val displayPeakExecutionMemory = conf
+    .getBoolean("spark.sql.unsafe.enabled", true)
 
   override def tableId: String = "task-table"
 

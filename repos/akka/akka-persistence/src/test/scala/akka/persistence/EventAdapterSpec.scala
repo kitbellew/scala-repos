@@ -14,9 +14,8 @@ import scala.collection.immutable
 
 object EventAdapterSpec {
 
-  final val JournalModelClassName =
-    classOf[EventAdapterSpec].getCanonicalName + "$" + classOf[
-      JournalModel].getSimpleName
+  final val JournalModelClassName = classOf[EventAdapterSpec]
+    .getCanonicalName + "$" + classOf[JournalModel].getSimpleName
   trait JournalModel {
     def payload: Any
     def tags: immutable.Set[String]
@@ -27,9 +26,8 @@ object EventAdapterSpec {
     override def tags = Set.empty
   }
 
-  final val DomainEventClassName =
-    classOf[EventAdapterSpec].getCanonicalName + "$" + classOf[
-      DomainEvent].getSimpleName
+  final val DomainEventClassName = classOf[EventAdapterSpec]
+    .getCanonicalName + "$" + classOf[DomainEvent].getSimpleName
   trait DomainEvent
   final case class TaggedDataChanged(tags: immutable.Set[String], value: Int)
       extends DomainEvent
@@ -115,12 +113,15 @@ class EventAdapterSpec(
     this(
       "inmem",
       PersistenceSpec.config("inmem", "InmemPersistentTaggingSpec"),
-      ConfigFactory.parseString(s"""
+      ConfigFactory
+        .parseString(s"""
          |akka.persistence.journal {
          |
          |  common-event-adapters {
-         |    age                 = "${classOf[EventAdapterSpec].getCanonicalName}$$UserAgeTaggingAdapter"
-         |    replay-pass-through = "${classOf[EventAdapterSpec].getCanonicalName}$$ReplayPassThroughAdapter"
+         |    age                 = "${classOf[EventAdapterSpec]
+                          .getCanonicalName}$$UserAgeTaggingAdapter"
+         |    replay-pass-through = "${classOf[EventAdapterSpec]
+                          .getCanonicalName}$$ReplayPassThroughAdapter"
          |  }
          |
          |  inmem {
@@ -171,16 +172,12 @@ class EventAdapterSpec(
       name)
 
   def toJournal(in: Any, journalId: String = journalName) =
-    Persistence(system)
-      .adaptersFor("akka.persistence.journal." + journalId)
-      .get(in.getClass)
-      .toJournal(in)
+    Persistence(system).adaptersFor("akka.persistence.journal." + journalId)
+      .get(in.getClass).toJournal(in)
 
   def fromJournal(in: Any, journalId: String = journalName) =
-    Persistence(system)
-      .adaptersFor("akka.persistence.journal." + journalId)
-      .get(in.getClass)
-      .fromJournal(in, "")
+    Persistence(system).adaptersFor("akka.persistence.journal." + journalId)
+      .get(in.getClass).fromJournal(in, "")
 
   "EventAdapter" must {
 

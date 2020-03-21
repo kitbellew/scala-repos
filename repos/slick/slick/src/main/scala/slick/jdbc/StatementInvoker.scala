@@ -52,8 +52,7 @@ abstract class StatementInvoker[+R] extends Invoker[R] {
             val meta = rs.getMetaData
             Vector(
               1.to(meta.getColumnCount).map(_.toString),
-              1.to(meta.getColumnCount)
-                .map(idx => meta.getColumnLabel(idx))
+              1.to(meta.getColumnCount).map(idx => meta.getColumnLabel(idx))
                 .to[ArrayBuffer])
           } else null
         val logBuffer =
@@ -63,13 +62,12 @@ abstract class StatementInvoker[+R] extends Invoker[R] {
           def close() = {
             st.close()
             if (doLogResult) {
-              StatementInvoker
-                .tableDump(logHeader, logBuffer)
+              StatementInvoker.tableDump(logHeader, logBuffer)
                 .foreach(s => StatementInvoker.resultLogger.debug(s))
               val rest = rowCount - logBuffer.length
               if (rest > 0)
-                StatementInvoker.resultLogger.debug(
-                  s"$rest more rows read ($rowCount total)")
+                StatementInvoker.resultLogger
+                  .debug(s"$rest more rows read ($rowCount total)")
             }
           }
         }
@@ -77,10 +75,8 @@ abstract class StatementInvoker[+R] extends Invoker[R] {
           def extractValue(pr: PositionedResult) = {
             if (doLogResult) {
               if (logBuffer.length < StatementInvoker.maxLogResults)
-                logBuffer += 1
-                  .to(logHeader(0).length)
-                  .map(idx => rs.getObject(idx): Any)
-                  .to[ArrayBuffer]
+                logBuffer += 1.to(logHeader(0).length)
+                  .map(idx => rs.getObject(idx): Any).to[ArrayBuffer]
               rowCount += 1
             }
             self.extractValue(pr)

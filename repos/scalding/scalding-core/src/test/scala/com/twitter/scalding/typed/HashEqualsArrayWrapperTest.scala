@@ -25,8 +25,7 @@ object HashArrayEqualsWrapperLaws {
       if (lenCmp != 0) { cmp.signum == lenCmp.signum }
       else {
         cmp.signum == slowOrd
-          .compare(leftWrapped.wrapped.toSeq, rightWrapped.wrapped.toSeq)
-          .signum
+          .compare(leftWrapped.wrapped.toSeq, rightWrapped.wrapped.toSeq).signum
       }
     }
 
@@ -114,10 +113,11 @@ class HashArrayEqualsWrapperTest extends FunSuite {
 
   test("classForTag works correctly") {
     assert(
-      HashEqualsArrayWrapper.classForTag(
-        implicitly[ClassTag[String]]) === classOf[String])
+      HashEqualsArrayWrapper
+        .classForTag(implicitly[ClassTag[String]]) === classOf[String])
     assert(
-      HashEqualsArrayWrapper.classForTag(
-        implicitly[ClassTag[Array[Byte]]]) === classOf[Array[Byte]])
+      HashEqualsArrayWrapper
+        .classForTag(implicitly[ClassTag[Array[Byte]]]) === classOf[
+        Array[Byte]])
   }
 }

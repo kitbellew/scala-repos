@@ -38,12 +38,9 @@ trait Versions {
 
   protected def loadVersionsOf(entity: Entity): Array[String] = {
     loadVersionsFrom(entity.url, { case releaseVersionLine(number) => number })
-      .getOrElse(entity.hardcodedVersions)
-      .map(Version(_))
+      .getOrElse(entity.hardcodedVersions).map(Version(_))
       .filter(_ >= entity.minVersion)
-      .sorted(implicitly[Ordering[Version]].reverse)
-      .map(_.number)
-      .toArray
+      .sorted(implicitly[Ordering[Version]].reverse).map(_.number).toArray
   }
 
   protected def loadVersionsFrom(

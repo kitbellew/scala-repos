@@ -61,9 +61,7 @@ class SourceSpec extends WordSpec with Matchers {
         .source(AddOneTsv("input"), List((0, "0"), (1, "1")))
         .sink[(String, String)](RemoveOneTsv("output")) { buf =>
           buf.toSet shouldBe Set(("0", "0"), ("1", "1"))
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 }
@@ -104,6 +102,5 @@ case class RemoveOneTsv(p: String)
 class AddRemoveOneJob(args: Args) extends Job(args) {
   AddOneTsv("input").read
   //just for fun lets just switch all 1s with 2s
-    .map('three -> 'three) { s: String => "2" }
-    .write(RemoveOneTsv("output"))
+    .map('three -> 'three) { s: String => "2" }.write(RemoveOneTsv("output"))
 }

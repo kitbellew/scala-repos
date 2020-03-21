@@ -34,10 +34,8 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
     // expectations
     val Ew = 1.0
     val Emu = Vectors.dense(5.0, 10.0)
-    val Esigma = Matrices.dense(
-      2,
-      2,
-      Array(2.0 / 3.0, -2.0 / 3.0, -2.0 / 3.0, 2.0 / 3.0))
+    val Esigma = Matrices
+      .dense(2, 2, Array(2.0 / 3.0, -2.0 / 3.0, -2.0 / 3.0, 2.0 / 3.0))
 
     val seeds = Array(314589, 29032897, 50181, 494821, 4660)
     seeds.foreach { seed =>
@@ -70,9 +68,7 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
       Matrices.dense(1, 1, Array(1.1098)),
       Matrices.dense(1, 1, Array(0.86644)))
 
-    val gmm = new GaussianMixture()
-      .setK(2)
-      .setInitialModel(initialGmm)
+    val gmm = new GaussianMixture().setK(2).setInitialModel(initialGmm)
       .run(data)
 
     assert(gmm.weights(0) ~== Ew(0) absTol 1e-3)
@@ -90,9 +86,7 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
     val d = data.first().size
     assert(GaussianMixture.shouldDistributeGaussians(k, d))
 
-    val gmm = new GaussianMixture()
-      .setK(k)
-      .run(data)
+    val gmm = new GaussianMixture().setK(k).run(data)
 
     assert(gmm.k === k)
   }
@@ -130,8 +124,8 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("two clusters with sparse data") {
     val data = sc.parallelize(GaussianTestData.data)
-    val sparseData = data.map(point =>
-      Vectors.sparse(1, Array(0), point.toArray))
+    val sparseData = data
+      .map(point => Vectors.sparse(1, Array(0), point.toArray))
     // we set an initial gaussian to induce expected results
     val initialGmm = new GaussianMixtureModel(
       Array(0.5, 0.5),
@@ -149,9 +143,7 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
       Matrices.dense(1, 1, Array(1.1098)),
       Matrices.dense(1, 1, Array(0.86644)))
 
-    val sparseGMM = new GaussianMixture()
-      .setK(2)
-      .setInitialModel(initialGmm)
+    val sparseGMM = new GaussianMixture().setK(2).setInitialModel(initialGmm)
       .run(sparseData)
 
     assert(sparseGMM.weights(0) ~== Ew(0) absTol 1e-3)

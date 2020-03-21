@@ -30,10 +30,8 @@ class ContentionSnapshot {
   def snap(): Snapshot = {
     val bean = ManagementFactory.getThreadMXBean
 
-    val blocked = bean
-      .getThreadInfo(bean.getAllThreadIds, true, true)
-      .filter(_ != null)
-      .collect { case Blocked(info) => info }
+    val blocked = bean.getThreadInfo(bean.getAllThreadIds, true, true)
+      .filter(_ != null).collect { case Blocked(info) => info }
 
     val ownerIds = blocked map (_.getLockOwnerId) filter (_ != -1)
     val owners =

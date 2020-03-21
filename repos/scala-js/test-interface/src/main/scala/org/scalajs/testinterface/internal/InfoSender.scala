@@ -17,8 +17,8 @@ final class InfoSender(frameworkName: String) {
 
   private def sendFrameworkInfo(): Unit = {
     val framework = FrameworkLoader.loadFramework(frameworkName)
-    val fingerprints =
-      framework.fingerprints.map(FingerprintSerializer.serialize).toJSArray
+    val fingerprints = framework.fingerprints
+      .map(FingerprintSerializer.serialize).toJSArray
     val data = lit(name = framework.name, fingerprints = fingerprints)
     Com.send(js.JSON.stringify(data))
   }

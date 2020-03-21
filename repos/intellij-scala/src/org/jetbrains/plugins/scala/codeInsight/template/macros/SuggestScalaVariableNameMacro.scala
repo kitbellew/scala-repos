@@ -65,29 +65,24 @@ object SuggestNamesUtil {
     val p: Array[String] = params.map(_.calculateResult(context).toString)
     val offset = context.getStartOffset
     val editor = context.getEditor
-    val file = PsiDocumentManager
-      .getInstance(editor.getProject)
+    val file = PsiDocumentManager.getInstance(editor.getProject)
       .getPsiFile(editor.getDocument)
-    PsiDocumentManager
-      .getInstance(editor.getProject)
+    PsiDocumentManager.getInstance(editor.getProject)
       .commitDocument(editor.getDocument)
     val element = file.findElementAt(offset)
     val typez: ScType = p match {
       case x if x.length == 0 => return Array[String]("x") //todo:
       case x if x(0) == "option" || x(0) == "foreach" =>
         try {
-          val items = (new ScalaVariableOfTypeMacro)
-            .calculateLookupItems(
-              Array[String](x(0) match {
-                case "option"  => "scala.Option"
-                case "foreach" => "foreach"
-              }),
-              context,
-              showOne = true)
-            .map(_.getObject)
+          val items = (new ScalaVariableOfTypeMacro).calculateLookupItems(
+            Array[String](x(0) match {
+              case "option"  => "scala.Option"
+              case "foreach" => "foreach"
+            }),
+            context,
+            showOne = true).map(_.getObject)
             .filter(_.isInstanceOf[PsiNamedElement])
-            .map(_.asInstanceOf[PsiNamedElement])
-            .filter(_.name == x(1))
+            .map(_.asInstanceOf[PsiNamedElement]).filter(_.name == x(1))
           if (items.length == 0) return Array[String]("x")
           items(0) match {
             case typed: ScTypedDefinition =>

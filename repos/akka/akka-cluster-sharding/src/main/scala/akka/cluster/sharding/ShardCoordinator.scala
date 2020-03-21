@@ -183,9 +183,9 @@ object ShardCoordinator {
       if (rebalanceInProgress.size < maxSimultaneousRebalance) {
         val (regionWithLeastShards, leastShards) = currentShardAllocations
           .minBy { case (_, v) ⇒ v.size }
-        val mostShards = currentShardAllocations
-          .collect { case (_, v) ⇒ v.filterNot(s ⇒ rebalanceInProgress(s)) }
-          .maxBy(_.size)
+        val mostShards = currentShardAllocations.collect {
+          case (_, v) ⇒ v.filterNot(s ⇒ rebalanceInProgress(s))
+        }.maxBy(_.size)
         if (mostShards.size - leastShards.size >= rebalanceThreshold)
           Future.successful(Set(mostShards.head))
         else emptyRebalanceResult
@@ -513,11 +513,8 @@ abstract class ShardCoordinator(
   var regionTerminationInProgress = Set.empty[ActorRef]
 
   import context.dispatcher
-  val rebalanceTask = context.system.scheduler.schedule(
-    rebalanceInterval,
-    rebalanceInterval,
-    self,
-    RebalanceTick)
+  val rebalanceTask = context.system.scheduler
+    .schedule(rebalanceInterval, rebalanceInterval, self, RebalanceTick)
 
   cluster.subscribe(
     self,
@@ -533,8 +530,8 @@ abstract class ShardCoordinator(
   def isMember(region: ActorRef): Boolean = {
     val regionAddress = region.path.address
     (region.path.address == self.path.address ||
-    cluster.state.members.exists(m ⇒
-      m.address == regionAddress && m.status == MemberStatus.Up))
+    cluster.state.members
+      .exists(m ⇒ m.address == regionAddress && m.status == MemberStatus.Up))
   }
 
   def active: Receive =
@@ -585,27 +582,22 @@ abstract class ShardCoordinator(
               val activeRegions = state.regions -- gracefulShutdownInProgress
               if (activeRegions.nonEmpty) {
                 val getShardHomeSender = sender()
-                val regionFuture = allocationStrategy.allocateShard(
-                  getShardHomeSender,
-                  shard,
-                  activeRegions)
+                val regionFuture = allocationStrategy
+                  .allocateShard(getShardHomeSender, shard, activeRegions)
                 regionFuture.value match {
                   case Some(Success(region)) ⇒
                     continueGetShardHome(shard, region, getShardHomeSender)
                   case _ ⇒
                     // continue when future is completed
-                    regionFuture
-                      .map { region ⇒
-                        AllocateShardResult(
-                          shard,
-                          Some(region),
-                          getShardHomeSender)
-                      }
-                      .recover {
-                        case _ ⇒
-                          AllocateShardResult(shard, None, getShardHomeSender)
-                      }
-                      .pipeTo(self)
+                    regionFuture.map { region ⇒
+                      AllocateShardResult(
+                        shard,
+                        Some(region),
+                        getShardHomeSender)
+                    }.recover {
+                      case _ ⇒
+                        AllocateShardResult(shard, None, getShardHomeSender)
+                    }.pipeTo(self)
                 }
               }
           }
@@ -630,17 +622,15 @@ abstract class ShardCoordinator(
         }
 
       case RebalanceTick ⇒ if (state.regions.nonEmpty) {
-          val shardsFuture = allocationStrategy.rebalance(
-            state.regions,
-            rebalanceInProgress)
+          val shardsFuture = allocationStrategy
+            .rebalance(state.regions, rebalanceInProgress)
           shardsFuture.value match {
             case Some(Success(shards)) ⇒ continueRebalance(shards)
             case _ ⇒
               // continue when future is completed
-              shardsFuture
-                .map { shards ⇒ RebalanceResult(shards) }
-                .recover { case _ ⇒ RebalanceResult(Set.empty) }
-                .pipeTo(self)
+              shardsFuture.map { shards ⇒ RebalanceResult(shards) }.recover {
+                case _ ⇒ RebalanceResult(Set.empty)
+              }.pipeTo(self)
           }
         }
 
@@ -676,29 +666,25 @@ abstract class ShardCoordinator(
       case ShardRegion.GetClusterShardingStats(waitMax) ⇒
         import akka.pattern.ask
         implicit val timeout: Timeout = waitMax
-        Future
-          .sequence(aliveRegions.map { regionActor ⇒
-            (regionActor ? ShardRegion.GetShardRegionStats)
-              .mapTo[ShardRegion.ShardRegionStats]
-              .map(stats ⇒ regionActor -> stats)
-          })
-          .map { allRegionStats ⇒
-            ShardRegion.ClusterShardingStats(allRegionStats.map {
-              case (region, stats) ⇒
-                val regionAddress = region.path.address
-                val address: Address =
-                  if (regionAddress.hasLocalScope && regionAddress.system == cluster.selfAddress.system)
-                    cluster.selfAddress
-                  else regionAddress
+        Future.sequence(aliveRegions.map { regionActor ⇒
+          (regionActor ? ShardRegion.GetShardRegionStats)
+            .mapTo[ShardRegion.ShardRegionStats]
+            .map(stats ⇒ regionActor -> stats)
+        }).map { allRegionStats ⇒
+          ShardRegion.ClusterShardingStats(allRegionStats.map {
+            case (region, stats) ⇒
+              val regionAddress = region.path.address
+              val address: Address =
+                if (regionAddress.hasLocalScope && regionAddress
+                      .system == cluster.selfAddress.system) cluster.selfAddress
+                else regionAddress
 
-                address -> stats
-            }.toMap)
-          }
-          .recover {
-            case x: AskTimeoutException ⇒
-              ShardRegion.ClusterShardingStats(Map.empty)
-          }
-          .pipeTo(sender())
+              address -> stats
+          }.toMap)
+        }.recover {
+          case x: AskTimeoutException ⇒
+            ShardRegion.ClusterShardingStats(Map.empty)
+        }.pipeTo(sender())
 
       case ShardHome(_, _) ⇒
       //On rebalance, we send ourselves a GetShardHome message to reallocate a
@@ -722,8 +708,8 @@ abstract class ShardCoordinator(
   def receiveTerminated: Receive = {
     case t @ Terminated(ref) ⇒
       if (state.regions.contains(ref)) {
-        if (removalMargin != Duration.Zero && t.addressTerminated && aliveRegions(
-              ref)) {
+        if (removalMargin != Duration.Zero && t
+              .addressTerminated && aliveRegions(ref)) {
           context.system.scheduler.scheduleOnce(
             removalMargin,
             self,
@@ -926,8 +912,7 @@ class PersistentShardCoordinator(
         stateInitialized()
         context.become(active.orElse[Any, Unit](receiveSnapshotResult))
 
-    }: Receive)
-      .orElse[Any, Unit](receiveTerminated)
+    }: Receive).orElse[Any, Unit](receiveTerminated)
       .orElse[Any, Unit](receiveSnapshotResult)
 
   def receiveSnapshotResult: Receive = {
@@ -973,8 +958,8 @@ class DDataShardCoordinator(
   implicit val node = Cluster(context.system)
   val CoordinatorStateKey = LWWRegisterKey[State](
     s"${typeName}CoordinatorState")
-  val initEmptyState = State.empty.withRememberEntities(
-    settings.rememberEntities)
+  val initEmptyState = State.empty
+    .withRememberEntities(settings.rememberEntities)
 
   node.subscribe(self, ClusterShuttingDown.getClass)
 
@@ -987,9 +972,7 @@ class DDataShardCoordinator(
   def waitingForState: Receive =
     ({
       case g @ GetSuccess(CoordinatorStateKey, _) ⇒
-        state = g
-          .get(CoordinatorStateKey)
-          .value
+        state = g.get(CoordinatorStateKey).value
           .withRememberEntities(settings.rememberEntities)
         context.become(waitingForStateInitialized)
         // note that watchStateActors may call update

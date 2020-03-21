@@ -137,8 +137,7 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         out.headerMap.foreach {
           case (k, v) =>
             assert(
-              in.headers.getAll(k).asScala.toSet == out.headerMap
-                .getAll(k)
+              in.headers.getAll(k).asScala.toSet == out.headerMap.getAll(k)
                 .toSet)
         }
     }
@@ -156,8 +155,7 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         out.headerMap.foreach {
           case (k, v) =>
             assert(
-              in.headers.getAll(k).asScala.toSet == out.headerMap
-                .getAll(k)
+              in.headers.getAll(k).asScala.toSet == out.headerMap.getAll(k)
                 .toSet)
         }
     }
@@ -174,8 +172,7 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         in.headerMap.foreach {
           case (k, v) =>
             assert(
-              out.headers.getAll(k).asScala.toSet == in.headerMap
-                .getAll(k)
+              out.headers.getAll(k).asScala.toSet == in.headerMap.getAll(k)
                 .toSet)
         }
     }
@@ -194,8 +191,7 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
         in.headerMap.foreach {
           case (k, v) =>
             assert(
-              out.headers.getAll(k).asScala.toSet == in.headerMap
-                .getAll(k)
+              out.headers.getAll(k).asScala.toSet == in.headerMap.getAll(k)
                 .toSet)
         }
     }

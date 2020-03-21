@@ -136,8 +136,7 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
       // expr = (not leaf-0)
       assertResult(10) {
         sql("SELECT name, contacts FROM t where age > 5").rdd
-          .flatMap(_.getAs[Seq[_]]("contacts"))
-          .count()
+          .flatMap(_.getAs[Seq[_]]("contacts")).count()
       }
 
       // ppd:
@@ -307,11 +306,7 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
 
-      sqlContext
-        .range(0, 10)
-        .select('id as "Acol")
-        .write
-        .format("orc")
+      sqlContext.range(0, 10).select('id as "Acol").write.format("orc")
         .save(path)
       sqlContext.read.format("orc").load(path).schema("Acol")
       intercept[IllegalArgumentException] {
@@ -334,9 +329,7 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
                |LOCATION '$path'
              """.stripMargin)
 
-          val emptyDF = Seq
-            .empty[(Int, String)]
-            .toDF("key", "value")
+          val emptyDF = Seq.empty[(Int, String)].toDF("key", "value")
             .coalesce(1)
           emptyDF.registerTempTable("empty")
 

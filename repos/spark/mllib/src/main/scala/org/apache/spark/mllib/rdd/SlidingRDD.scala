@@ -66,16 +66,13 @@ private[mllib] class SlidingRDD[T: ClassTag](
       split: Partition,
       context: TaskContext): Iterator[Array[T]] = {
     val part = split.asInstanceOf[SlidingRDDPartition[T]]
-    (firstParent[T].iterator(part.prev, context) ++ part.tail)
-      .drop(part.offset)
-      .sliding(windowSize, step)
-      .withPartial(false)
-      .map(_.toArray)
+    (firstParent[T].iterator(part.prev, context) ++ part.tail).drop(part.offset)
+      .sliding(windowSize, step).withPartial(false).map(_.toArray)
   }
 
   override def getPreferredLocations(split: Partition): Seq[String] =
-    firstParent[T].preferredLocations(
-      split.asInstanceOf[SlidingRDDPartition[T]].prev)
+    firstParent[T]
+      .preferredLocations(split.asInstanceOf[SlidingRDDPartition[T]].prev)
 
   override def getPartitions: Array[Partition] = {
     val parentPartitions = parent.partitions
@@ -86,13 +83,10 @@ private[mllib] class SlidingRDD[T: ClassTag](
     } else {
       val w1 = windowSize - 1
       // Get partition sizes and first w1 elements.
-      val (sizes, heads) = parent
-        .mapPartitions { iter =>
-          val w1Array = iter.take(w1).toArray
-          Iterator.single((w1Array.length + iter.length, w1Array))
-        }
-        .collect()
-        .unzip
+      val (sizes, heads) = parent.mapPartitions { iter =>
+        val w1Array = iter.take(w1).toArray
+        Iterator.single((w1Array.length + iter.length, w1Array))
+      }.collect().unzip
       val partitions = mutable.ArrayBuffer.empty[SlidingRDDPartition[T]]
       var i = 0
       var cumSize = 0

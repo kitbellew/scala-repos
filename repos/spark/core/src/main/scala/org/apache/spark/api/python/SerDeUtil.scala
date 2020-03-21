@@ -91,8 +91,7 @@ private[spark] object SerDeUtil extends Logging {
       else if (args.length == 2 && args(1).isInstanceOf[String]) {
         val typecode = args(0).asInstanceOf[String].charAt(0)
         // This must be ISO 8859-1 / Latin 1, not UTF-8, to interoperate correctly
-        val data = args(1)
-          .asInstanceOf[String]
+        val data = args(1).asInstanceOf[String]
           .getBytes(StandardCharsets.ISO_8859_1)
         construct(typecode, machineCodes(typecode), data)
       } else { super.construct(args) }
@@ -117,12 +116,10 @@ private[spark] object SerDeUtil extends Logging {
     * It is only used by pyspark.sql.
     */
   def toJavaArray(jrdd: JavaRDD[Any]): JavaRDD[Array[_]] = {
-    jrdd.rdd
-      .map {
-        case objs: JArrayList[_]         => objs.toArray
-        case obj if obj.getClass.isArray => obj.asInstanceOf[Array[_]].toArray
-      }
-      .toJavaRDD()
+    jrdd.rdd.map {
+      case objs: JArrayList[_]         => objs.toArray
+      case obj if obj.getClass.isArray => obj.asInstanceOf[Array[_]].toArray
+    }.toJavaRDD()
   }
 
   /**
@@ -162,21 +159,19 @@ private[spark] object SerDeUtil extends Logging {
   def pythonToJava(
       pyRDD: JavaRDD[Array[Byte]],
       batched: Boolean): JavaRDD[Any] = {
-    pyRDD.rdd
-      .mapPartitions { iter =>
-        initialize()
-        val unpickle = new Unpickler
-        iter.flatMap { row =>
-          val obj = unpickle.loads(row)
-          if (batched) {
-            obj match {
-              case array: Array[Any] => array.toSeq
-              case _                 => obj.asInstanceOf[JArrayList[_]].asScala
-            }
-          } else { Seq(obj) }
-        }
+    pyRDD.rdd.mapPartitions { iter =>
+      initialize()
+      val unpickle = new Unpickler
+      iter.flatMap { row =>
+        val obj = unpickle.loads(row)
+        if (batched) {
+          obj match {
+            case array: Array[Any] => array.toSeq
+            case _                 => obj.asInstanceOf[JArrayList[_]].asScala
+          }
+        } else { Seq(obj) }
       }
-      .toJavaRDD()
+    }.toJavaRDD()
   }
 
   private def checkPickle(t: (Any, Any)): (Boolean, Boolean) = {
@@ -186,20 +181,24 @@ private[spark] object SerDeUtil extends Logging {
     (kt, vt) match {
       case (Failure(kf), Failure(vf)) =>
         logWarning(s"""
-               |Failed to pickle Java object as key: ${t._1.getClass.getSimpleName}, falling back
+               |Failed to pickle Java object as key: ${t._1.getClass
+                        .getSimpleName}, falling back
                |to 'toString'. Error: ${kf.getMessage}""".stripMargin)
         logWarning(s"""
-               |Failed to pickle Java object as value: ${t._2.getClass.getSimpleName}, falling back
+               |Failed to pickle Java object as value: ${t._2.getClass
+                        .getSimpleName}, falling back
                |to 'toString'. Error: ${vf.getMessage}""".stripMargin)
         (true, true)
       case (Failure(kf), _) =>
         logWarning(s"""
-               |Failed to pickle Java object as key: ${t._1.getClass.getSimpleName}, falling back
+               |Failed to pickle Java object as key: ${t._1.getClass
+                        .getSimpleName}, falling back
                |to 'toString'. Error: ${kf.getMessage}""".stripMargin)
         (true, false)
       case (_, Failure(vf)) =>
         logWarning(s"""
-               |Failed to pickle Java object as value: ${t._2.getClass.getSimpleName}, falling back
+               |Failed to pickle Java object as value: ${t._2.getClass
+                        .getSimpleName}, falling back
                |to 'toString'. Error: ${vf.getMessage}""".stripMargin)
         (false, true)
       case _ => (false, false)

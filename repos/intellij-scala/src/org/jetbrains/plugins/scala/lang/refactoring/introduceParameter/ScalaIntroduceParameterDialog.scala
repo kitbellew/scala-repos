@@ -124,15 +124,12 @@ class ScalaIntroduceParameterDialog(
   override protected def decorateParameterTable(table: JBTable): JPanel = {
     table.setCellSelectionEnabled(false)
     table.setRowSelectionAllowed(true)
-    table.getSelectionModel.setSelectionMode(
-      ListSelectionModel.SINGLE_SELECTION)
+    table.getSelectionModel
+      .setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     table.setSurrendersFocusOnKeystroke(true)
-    val buttonsPanel: JPanel = ToolbarDecorator
-      .createDecorator(table)
-      .setMoveUpAction(upAction)
-      .setMoveDownAction(downAction)
-      .disableAddAction()
-      .disableRemoveAction()
+    val buttonsPanel: JPanel = ToolbarDecorator.createDecorator(table)
+      .setMoveUpAction(upAction).setMoveDownAction(downAction)
+      .disableAddAction().disableRemoveAction()
       .addExtraActions(createAddClauseButton(), createRemoveClauseButton())
       .createPanel
     myParametersTableModel.addTableModelListener(mySignatureUpdater)
@@ -166,8 +163,8 @@ class ScalaIntroduceParameterDialog(
     typeCombobox = new ComboBox()
     val typeLabel = new JLabel("Type:")
     typeLabel.setLabelFor(typeCombobox)
-    typeMap = ScalaRefactoringUtil.getCompatibleTypeNames(
-      introduceData.possibleTypes)
+    typeMap = ScalaRefactoringUtil
+      .getCompatibleTypeNames(introduceData.possibleTypes)
     for (typeName <- typeMap.keySet.asScala) {
       JListCompatibility.addItem(typeCombobox, typeName)
     }

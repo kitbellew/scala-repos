@@ -31,7 +31,8 @@ import scala.util.{Failure, Success}
   */
 class GroupManager @Singleton @Inject() (
     @Named(
-      ModuleNames.SERIALIZE_GROUP_UPDATES) serializeUpdates: CapConcurrentExecutions,
+      ModuleNames
+        .SERIALIZE_GROUP_UPDATES) serializeUpdates: CapConcurrentExecutions,
     scheduler: MarathonSchedulerService,
     groupRepo: GroupRepository,
     appRepo: AppRepository,
@@ -167,10 +168,8 @@ class GroupManager @Singleton @Inject() (
         from <- rootGroup()
         (toUnversioned, resolve) <- resolveStoreUrls(
           assignDynamicServicePorts(from, change(from)))
-        to = GroupVersioningUtil.updateVersionInfoForChangedApps(
-          version,
-          from,
-          toUnversioned)
+        to = GroupVersioningUtil
+          .updateVersionInfoForChangedApps(version, from, toUnversioned)
         _ = validateOrThrow(to)(Group.validGroupWithConfig(config.maxApps.get))
         plan = DeploymentPlan(from, to, resolve, version, toKill)
         _ = validateOrThrow(plan)
@@ -178,8 +177,8 @@ class GroupManager @Singleton @Inject() (
         _ <- scheduler.deploy(plan, force)
         _ <- storeUpdatedApps(plan)
         _ <- groupRepo.store(zkName, plan.target)
-        _ = log.info(
-          s"Updated groups/apps according to deployment plan ${plan.id}")
+        _ = log
+          .info(s"Updated groups/apps according to deployment plan ${plan.id}")
       } yield plan
 
       deployment.onComplete {
@@ -191,8 +190,8 @@ class GroupManager @Singleton @Inject() (
             ) => // If the request was not authorized, we should not publish an event
         case Failure(ex) =>
           log.warn(s"Deployment failed for change: $version", ex)
-          eventBus.publish(
-            GroupChangeFailed(gid, version.toString, ex.getMessage))
+          eventBus
+            .publish(GroupChangeFailed(gid, version.toString, ex.getMessage))
       }
       deployment
     }
@@ -201,10 +200,8 @@ class GroupManager @Singleton @Inject() (
       group: Group): Future[(Group, Seq[ResolveArtifacts])] = {
     def url2Path(url: String): Future[(String, String)] =
       contentPath(new URL(url)).map(url -> _)
-    Future
-      .sequence(group.transitiveApps.flatMap(_.storeUrls).map(url2Path))
-      .map(_.toMap)
-      .map { paths =>
+    Future.sequence(group.transitiveApps.flatMap(_.storeUrls).map(url2Path))
+      .map(_.toMap).map { paths =>
         //Filter out all items with already existing path.
         //Since the path is derived from the content itself,
         //it will only change, if the content changes.
@@ -240,12 +237,10 @@ class GroupManager @Singleton @Inject() (
 
     def nextGlobalFreePort: Int =
       synchronized {
-        val port = portRange
-          .find(!taken.contains(_))
-          .getOrElse(
-            throw new PortRangeExhaustedException(
-              config.localPortMin(),
-              config.localPortMax()))
+        val port = portRange.find(!taken.contains(_)).getOrElse(
+          throw new PortRangeExhaustedException(
+            config.localPortMin(),
+            config.localPortMax()))
         log.info(s"Take next configured free port: $port")
         taken += port
         port
@@ -254,15 +249,13 @@ class GroupManager @Singleton @Inject() (
     def mergeServicePortsAndPortDefinitions(
         portDefinitions: Seq[PortDefinition],
         servicePorts: Seq[Int]) = {
-      portDefinitions
-        .zipAll(
-          servicePorts,
-          AppDefinition.RandomPortDefinition,
-          AppDefinition.RandomPortValue)
-        .map {
-          case (portDefinition, servicePort) =>
-            portDefinition.copy(port = servicePort)
-        }
+      portDefinitions.zipAll(
+        servicePorts,
+        AppDefinition.RandomPortDefinition,
+        AppDefinition.RandomPortValue).map {
+        case (portDefinition, servicePort) =>
+          portDefinition.copy(port = servicePort)
+      }
     }
 
     def assignPorts(app: AppDefinition): AppDefinition = {
@@ -270,10 +263,8 @@ class GroupManager @Singleton @Inject() (
       //all ports that are already assigned in old app definition, but not used in the new definition
       //if the app uses dynamic ports (0), it will get always the same ports assigned
       val assignedAndAvailable = mutable.Queue(
-        from
-          .app(app.id)
-          .map(_.portNumbers.filter(p =>
-            portRange.contains(p) && !app.servicePorts.contains(p)))
+        from.app(app.id).map(_.portNumbers.filter(p =>
+          portRange.contains(p) && !app.servicePorts.contains(p)))
           .getOrElse(Nil): _*)
 
       def nextFreeAppPort: Int =

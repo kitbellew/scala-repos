@@ -48,8 +48,8 @@ class PsiClassWrapper(
   override def equals(obj: Any): Boolean = {
     obj match {
       case wrapper: PsiClassWrapper =>
-        definition.equals(
-          wrapper.definition) && qualName == wrapper.qualName && name == wrapper.name
+        definition.equals(wrapper.definition) && qualName == wrapper
+          .qualName && name == wrapper.name
       case _ => false
     }
   }
@@ -189,10 +189,8 @@ class PsiClassWrapper(
   def findMethodsAndTheirSubstitutorsByName(
       name: String,
       checkBases: Boolean): util.List[Pair[PsiMethod, PsiSubstitutor]] = {
-    PsiClassImplUtil.findMethodsAndTheirSubstitutorsByName(
-      this,
-      name,
-      checkBases)
+    PsiClassImplUtil
+      .findMethodsAndTheirSubstitutorsByName(this, name, checkBases)
   }
 
   def getAllMethodsAndTheirSubstitutors
@@ -216,9 +214,8 @@ class PsiClassWrapper(
     definition match {
       case o: ScObject =>
         baseClass.getQualifiedName == "java.lang.Object" ||
-          (
-            baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated
-          )
+          (baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass
+            .isDeprecated)
       case _ => false
     }
   }
@@ -227,9 +224,8 @@ class PsiClassWrapper(
     definition match {
       case o: ScObject =>
         baseClass.getQualifiedName == "java.lang.Object" ||
-          (
-            baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated
-          )
+          (baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass
+            .isDeprecated)
       case _ => false
     }
   }

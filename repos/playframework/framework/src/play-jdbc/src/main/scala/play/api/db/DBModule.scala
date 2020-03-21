@@ -22,8 +22,8 @@ final class DBModule extends Module {
       configuration: Configuration): Seq[Binding[_]] = {
     val dbKey = configuration.underlying.getString("play.db.config")
     val default = configuration.underlying.getString("play.db.default")
-    val dbs =
-      configuration.getConfig(dbKey).getOrElse(Configuration.empty).subKeys
+    val dbs = configuration.getConfig(dbKey).getOrElse(Configuration.empty)
+      .subKeys
     Seq(bind[DBApi].toProvider[DBApiProvider]) ++ namedDatabaseBindings(
       dbs) ++ defaultDatabaseBinding(default, dbs)
   }
@@ -81,8 +81,7 @@ class DBApiProvider @Inject() (
       defaultConnectionPool)
     val configs =
       if (config.hasPath(dbKey)) {
-        PlayConfig(config)
-          .getPrototypedMap(dbKey, "play.db.prototype")
+        PlayConfig(config).getPrototypedMap(dbKey, "play.db.prototype")
           .mapValues(_.underlying)
       } else Map.empty[String, Config]
     val db = new DefaultDBApi(configs, pool, environment)

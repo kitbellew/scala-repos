@@ -116,9 +116,8 @@ class FakeTaskScheduler(
 
   def addExecutor(execId: String, host: String) {
     executors.put(execId, host)
-    val executorsOnHost = executorsByHost.getOrElseUpdate(
-      host,
-      new mutable.HashSet[String])
+    val executorsOnHost = executorsByHost
+      .getOrElseUpdate(host, new mutable.HashSet[String])
     executorsOnHost += execId
     executorIdToHost += execId -> host
     for (rack <- getRackForHost(host)) {
@@ -413,10 +412,9 @@ class TaskSetManagerSuite
   test(
     "executors should be blacklisted after task failure, in spite of locality preferences") {
     val rescheduleDelay = 300L
-    val conf = new SparkConf()
-      .set(
-        "spark.scheduler.executorTaskBlacklistTime",
-        rescheduleDelay.toString)
+    val conf = new SparkConf().set(
+      "spark.scheduler.executorTaskBlacklistTime",
+      rescheduleDelay.toString)
       .
       // don't wait to jump locality levels in this test
       set("spark.locality.wait", "0")
@@ -883,8 +881,8 @@ class TaskSetManagerSuite
 
   private def createTaskResult(
       id: Int,
-      accumUpdates: Seq[AccumulableInfo] = Seq
-        .empty[AccumulableInfo]): DirectTaskResult[Int] = {
+      accumUpdates: Seq[AccumulableInfo] = Seq.empty[AccumulableInfo])
+      : DirectTaskResult[Int] = {
     val valueSer = SparkEnv.get.serializer.newInstance()
     new DirectTaskResult[Int](valueSer.serialize(id), accumUpdates)
   }

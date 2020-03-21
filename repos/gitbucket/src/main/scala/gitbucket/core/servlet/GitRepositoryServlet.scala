@@ -47,8 +47,8 @@ class GitRepositoryServlet extends GitServlet with SystemSettingsService {
       res: HttpServletResponse): Unit = {
     val agent = req.getHeader("USER-AGENT")
     val index = req.getRequestURI.indexOf(".git")
-    if (index >= 0 && (agent == null || agent.toLowerCase.indexOf(
-          "git/") < 0)) {
+    if (index >= 0 && (agent == null || agent.toLowerCase
+          .indexOf("git/") < 0)) {
       // redirect for browsers
       val paths = req.getRequestURI.substring(0, index).split("/")
       res.sendRedirect(
@@ -69,14 +69,11 @@ class GitBucketRepositoryResolver(parent: FileResolver[HttpServletRequest])
 
   override def open(req: HttpServletRequest, name: String): Repository = {
     // Rewrite repository path if routing is marched
-    PluginRegistry()
-      .getRepositoryRouting("/" + name)
-      .map {
-        case GitRepositoryRouting(urlPattern, localPath, _) =>
-          val path = urlPattern.r.replaceFirstIn(name, localPath)
-          resolver.open(req, path)
-      }
-      .getOrElse { parent.open(req, name) }
+    PluginRegistry().getRepositoryRouting("/" + name).map {
+      case GitRepositoryRouting(urlPattern, localPath, _) =>
+        val path = urlPattern.r.replaceFirstIn(name, localPath)
+        resolver.open(req, path)
+    }.getOrElse { parent.open(req, name) }
   }
 
 }
@@ -85,19 +82,17 @@ class GitBucketReceivePackFactory
     extends ReceivePackFactory[HttpServletRequest]
     with SystemSettingsService {
 
-  private val logger = LoggerFactory.getLogger(
-    classOf[GitBucketReceivePackFactory])
+  private val logger = LoggerFactory
+    .getLogger(classOf[GitBucketReceivePackFactory])
 
   override def create(
       request: HttpServletRequest,
       db: Repository): ReceivePack = {
     val receivePack = new ReceivePack(db)
 
-    if (PluginRegistry()
-          .getRepositoryRouting(request.gitRepositoryPath)
+    if (PluginRegistry().getRepositoryRouting(request.gitRepositoryPath)
           .isEmpty) {
-      val pusher = request
-        .getAttribute(Keys.Request.UserName)
+      val pusher = request.getAttribute(Keys.Request.UserName)
         .asInstanceOf[String]
 
       logger.debug("requestURI: " + request.getRequestURI)
@@ -150,14 +145,11 @@ class CommitLogHook(
     try {
       commands.asScala.foreach { command =>
         // call pre-commit hook
-        PluginRegistry().getReceiveHooks
-          .flatMap(
-            _.preReceive(owner, repository, receivePack, command, pusher))
-          .headOption
-          .foreach { error =>
-            command.setResult(
-              ReceiveCommand.Result.REJECTED_OTHER_REASON,
-              error)
+        PluginRegistry().getReceiveHooks.flatMap(
+          _.preReceive(owner, repository, receivePack, command, pusher))
+          .headOption.foreach { error =>
+            command
+              .setResult(ReceiveCommand.Result.REJECTED_OTHER_REASON, error)
           }
       }
       using(Git.open(Directory.getRepositoryDir(owner, repository))) { git =>
@@ -212,14 +204,15 @@ class CommitLogHook(
           // Extract new commit and apply issue comment
           val defaultBranch = repositoryInfo.repository.defaultBranch
           val newCommits = commits.flatMap { commit =>
-            if (!existIds.contains(commit.id) && !pushedIds.contains(
-                  commit.id)) {
+            if (!existIds.contains(commit.id) && !pushedIds
+                  .contains(commit.id)) {
               if (issueCount > 0) {
                 pushedIds.add(commit.id)
                 createIssueComment(owner, repository, commit)
                 // close issues
                 if (refName(
-                      1) == "heads" && branchName == defaultBranch && command.getType == ReceiveCommand.Type.UPDATE) {
+                      1) == "heads" && branchName == defaultBranch && command
+                      .getType == ReceiveCommand.Type.UPDATE) {
                   closeIssuesFromMessage(
                     commit.fullMessage,
                     pusher,

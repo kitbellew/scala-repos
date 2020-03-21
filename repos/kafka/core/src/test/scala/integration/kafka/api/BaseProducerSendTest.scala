@@ -42,13 +42,12 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
     val overridingProps = new Properties()
     val numServers = 2
     overridingProps.put(KafkaConfig.NumPartitionsProp, 4.toString)
-    TestUtils
-      .createBrokerConfigs(
-        numServers,
-        zkConnect,
-        false,
-        interBrokerSecurityProtocol = Some(securityProtocol),
-        trustStoreFile = trustStoreFile)
+    TestUtils.createBrokerConfigs(
+      numServers,
+      zkConnect,
+      false,
+      interBrokerSecurityProtocol = Some(securityProtocol),
+      trustStoreFile = trustStoreFile)
       .map(KafkaConfig.fromProps(_, overridingProps))
   }
 
@@ -292,9 +291,8 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       // create topic
       val topicProps = new Properties()
       if (timestampType == TimestampType.LOG_APPEND_TIME)
-        topicProps.setProperty(
-          LogConfig.MessageTimestampTypeProp,
-          "LogAppendTime")
+        topicProps
+          .setProperty(LogConfig.MessageTimestampTypeProp, "LogAppendTime")
       else
         topicProps.setProperty(LogConfig.MessageTimestampTypeProp, "CreateTime")
       TestUtils.createTopic(zkUtils, topic, 1, 2, servers, topicProps)
@@ -400,16 +398,14 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         if (leader1.get == configs(0).brokerId) {
           consumer1.fetch(
             new FetchRequestBuilder()
-              .addFetch(topic, partition, 0, Int.MaxValue)
-              .build())
+              .addFetch(topic, partition, 0, Int.MaxValue).build())
         } else {
           consumer2.fetch(
             new FetchRequestBuilder()
-              .addFetch(topic, partition, 0, Int.MaxValue)
-              .build())
+              .addFetch(topic, partition, 0, Int.MaxValue).build())
         }
-      val messageSet1 =
-        fetchResponse1.messageSet(topic, partition).iterator.toBuffer
+      val messageSet1 = fetchResponse1.messageSet(topic, partition).iterator
+        .toBuffer
       assertEquals(
         "Should have fetched " + numRecords + " messages",
         numRecords,
@@ -508,13 +504,11 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       val fetchResponse =
         if (leader0.get == configs(0).brokerId) {
           consumer1.fetch(
-            new FetchRequestBuilder()
-              .addFetch(topic, 0, 0, Int.MaxValue)
+            new FetchRequestBuilder().addFetch(topic, 0, 0, Int.MaxValue)
               .build())
         } else {
           consumer2.fetch(
-            new FetchRequestBuilder()
-              .addFetch(topic, 0, 0, Int.MaxValue)
+            new FetchRequestBuilder().addFetch(topic, 0, 0, Int.MaxValue)
               .build())
         }
       assertEquals(
@@ -569,19 +563,17 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         val fetchResponse =
           if (leader.get == configs(0).brokerId) {
             consumer1.fetch(
-              new FetchRequestBuilder()
-                .addFetch(topic, 0, 0, Int.MaxValue)
+              new FetchRequestBuilder().addFetch(topic, 0, 0, Int.MaxValue)
                 .build())
           } else {
             consumer2.fetch(
-              new FetchRequestBuilder()
-                .addFetch(topic, 0, 0, Int.MaxValue)
+              new FetchRequestBuilder().addFetch(topic, 0, 0, Int.MaxValue)
                 .build())
           }
         val expectedNumRecords = (i + 1) * numRecords
         assertEquals(
-          "Fetch response to partition 0 should have %d messages.".format(
-            expectedNumRecords),
+          "Fetch response to partition 0 should have %d messages."
+            .format(expectedNumRecords),
           expectedNumRecords,
           fetchResponse.messageSet(topic, 0).size)
       } finally { producer.close() }
@@ -591,21 +583,18 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
   @Test
   def testSendWithInvalidCreateTime() {
     val topicProps = new Properties()
-    topicProps.setProperty(
-      LogConfig.MessageTimestampDifferenceMaxMsProp,
-      "1000");
+    topicProps
+      .setProperty(LogConfig.MessageTimestampDifferenceMaxMsProp, "1000");
     TestUtils.createTopic(zkUtils, topic, 1, 2, servers, topicProps)
 
     val producer = createProducer(brokerList = brokerList)
     try {
-      producer
-        .send(new ProducerRecord(
-          topic,
-          0,
-          System.currentTimeMillis() - 1001,
-          "key".getBytes,
-          "value".getBytes))
-        .get()
+      producer.send(new ProducerRecord(
+        topic,
+        0,
+        System.currentTimeMillis() - 1001,
+        "key".getBytes,
+        "value".getBytes)).get()
       fail("Should throw CorruptedRecordException")
     } catch {
       case e: ExecutionException => assertTrue(
@@ -619,14 +608,12 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       brokerList = brokerList,
       props = Some(producerProps))
     try {
-      compressedProducer
-        .send(new ProducerRecord(
-          topic,
-          0,
-          System.currentTimeMillis() - 1001,
-          "key".getBytes,
-          "value".getBytes))
-        .get()
+      compressedProducer.send(new ProducerRecord(
+        topic,
+        0,
+        System.currentTimeMillis() - 1001,
+        "key".getBytes,
+        "value".getBytes)).get()
       fail("Should throw CorruptedRecordException")
     } catch {
       case e: ExecutionException => assertTrue(

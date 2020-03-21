@@ -31,10 +31,8 @@ object ComparingDiffCollectionKinds extends SimplificationType {
             exprToConvert,
             "to" + otherKind)
           Seq(
-            replace(expr)
-              .withText(convertText)
-              .withHint(convertHint(side, otherKind))
-              .highlightRef)
+            replace(expr).withText(convertText)
+              .withHint(convertHint(side, otherKind)).highlightRef)
         }
         convertSimplification(leftSide = true) ++ convertSimplification(
           leftSide = false)

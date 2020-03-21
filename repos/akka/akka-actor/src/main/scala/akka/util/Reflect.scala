@@ -97,15 +97,14 @@ private[akka] object Reflect {
       else {
         val length = args.length
         val candidates =
-          clazz.getDeclaredConstructors
-            .asInstanceOf[Array[Constructor[T]]]
+          clazz.getDeclaredConstructors.asInstanceOf[Array[Constructor[T]]]
             .iterator filter { c ⇒
             val parameterTypes = c.getParameterTypes
             parameterTypes.length == length &&
             (parameterTypes.iterator zip args.iterator forall {
               case (found, required) ⇒
-                found.isInstance(required) || BoxedType(found).isInstance(
-                  required) ||
+                found.isInstance(required) || BoxedType(found)
+                  .isInstance(required) ||
                   (required == null && !found.isPrimitive)
             })
           }
@@ -133,8 +132,8 @@ private[akka] object Reflect {
   def findMarker(root: Class[_], marker: Class[_]): Type = {
     @tailrec
     def rec(curr: Class[_]): Type = {
-      if (curr.getSuperclass != null && marker.isAssignableFrom(
-            curr.getSuperclass)) rec(curr.getSuperclass)
+      if (curr.getSuperclass != null && marker
+            .isAssignableFrom(curr.getSuperclass)) rec(curr.getSuperclass)
       else
         curr.getGenericInterfaces collectFirst {
           case c: Class[_] if marker isAssignableFrom c ⇒ c

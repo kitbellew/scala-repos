@@ -46,12 +46,11 @@ sealed trait Task {
     launched.flatMap(_.status.mesosStatus).orElse {
       launchedMesosId.map { mesosId =>
         val taskStatusBuilder = MesosProtos.TaskStatus.newBuilder
-          .setState(TaskState.TASK_STAGING)
-          .setTaskId(mesosId)
+          .setState(TaskState.TASK_STAGING).setTaskId(mesosId)
 
         agentInfo.agentId.foreach { slaveId =>
-          taskStatusBuilder.setSlaveId(
-            MesosProtos.SlaveID.newBuilder().setValue(slaveId))
+          taskStatusBuilder
+            .setSlaveId(MesosProtos.SlaveID.newBuilder().setValue(slaveId))
         }
 
         taskStatusBuilder.build()
@@ -63,8 +62,8 @@ sealed trait Task {
     launched.map(_.ipAddresses).getOrElse(Iterable.empty)
 
   def effectiveIpAddress(app: AppDefinition): String = {
-    val maybeContainerIp: Option[String] =
-      ipAddresses.map(_.getIpAddress).headOption
+    val maybeContainerIp: Option[String] = ipAddresses.map(_.getIpAddress)
+      .headOption
 
     maybeContainerIp match {
       case Some(ipAddress) if app.ipAddress.isDefined => ipAddress
@@ -115,8 +114,8 @@ object Task {
             current <- status.mesosStatus
             update <- taskStatus.mesosStatus
             newStatus <- updatedHealthOrState(current, update)
-          } yield TaskStateChange.Update(
-            copy(status = status.copy(mesosStatus = Some(newStatus))))
+          } yield TaskStateChange
+            .Update(copy(status = status.copy(mesosStatus = Some(newStatus))))
 
           healthOrStateChange.getOrElse {
             log.debug(
@@ -221,8 +220,8 @@ object Task {
             current <- status.mesosStatus
             update <- taskStatus.mesosStatus
             newStatus <- updatedHealthOrState(current, update)
-          } yield TaskStateChange.Update(
-            copy(status = status.copy(mesosStatus = Some(newStatus))))
+          } yield TaskStateChange
+            .Update(copy(status = status.copy(mesosStatus = Some(newStatus))))
 
           healthOrStateChange.getOrElse {
             log.debug(
@@ -252,9 +251,8 @@ object Task {
       current: MesosProtos.TaskStatus,
       update: MesosProtos.TaskStatus): Option[MesosProtos.TaskStatus] = {
 
-    val healthy = update.hasHealthy && (
-      !current.hasHealthy || current.getHealthy != update.getHealthy
-    )
+    val healthy = update.hasHealthy && (!current.hasHealthy || current
+      .getHealthy != update.getHealthy)
     val changed = healthy || current.getState != update.getState
     if (changed) { Some(update) }
     else { None }
@@ -264,10 +262,8 @@ object Task {
     tasks.iterator.map(task => task.taskId -> task).toMap
 
   case class Id(idString: String) {
-    lazy val mesosTaskId: MesosProtos.TaskID = MesosProtos.TaskID
-      .newBuilder()
-      .setValue(idString)
-      .build()
+    lazy val mesosTaskId: MesosProtos.TaskID = MesosProtos.TaskID.newBuilder()
+      .setValue(idString).build()
     lazy val appId: PathId = Id.appId(idString)
     override def toString: String = s"task [$idString]"
   }
@@ -275,8 +271,8 @@ object Task {
   object Id {
     private val appDelimiter = "."
     private val TaskIdRegex = """^(.+)[\._]([^_\.]+)$""".r
-    private val uuidGenerator = Generators.timeBasedGenerator(
-      EthernetAddress.fromInterface())
+    private val uuidGenerator = Generators
+      .timeBasedGenerator(EthernetAddress.fromInterface())
 
     def appId(taskId: String): PathId = {
       taskId match {
@@ -357,15 +353,15 @@ object Task {
 
   case class LocalVolumeId(appId: PathId, containerPath: String, uuid: String) {
     import LocalVolumeId._
-    lazy val idString =
-      appId.safePath + delimiter + containerPath + delimiter + uuid
+    lazy val idString = appId
+      .safePath + delimiter + containerPath + delimiter + uuid
 
     override def toString: String = s"LocalVolume [$idString]"
   }
 
   object LocalVolumeId {
-    private val uuidGenerator = Generators.timeBasedGenerator(
-      EthernetAddress.fromInterface())
+    private val uuidGenerator = Generators
+      .timeBasedGenerator(EthernetAddress.fromInterface())
     private val delimiter = "#"
     private val LocalVolumeEncoderRE =
       s"^([^.]+)[$delimiter]([^.]+)[$delimiter]([^.]+)$$".r

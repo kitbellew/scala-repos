@@ -91,9 +91,8 @@ abstract class CommonWriteAheadLogTests(
     }
 
     val logDirectoryPath = new Path(testDir)
-    val fileSystem = HdfsUtils.getFileSystemForPath(
-      logDirectoryPath,
-      hadoopConf)
+    val fileSystem = HdfsUtils
+      .getFileSystemForPath(logDirectoryPath, hadoopConf)
     assert(fileSystem.exists(logDirectoryPath) === true)
 
     // Read data using manager and verify
@@ -420,8 +419,8 @@ class FileBasedWriteAheadLogSuite
       allowBatching = false)
 
     // Get a random order of these segments and read them back
-    val writtenDataAndSegments =
-      writtenData.zip(segments).toSeq.permutations.take(10).flatten
+    val writtenDataAndSegments = writtenData.zip(segments).toSeq.permutations
+      .take(10).flatten
     val reader = new FileBasedWriteAheadLogRandomReader(testFile, hadoopConf)
     writtenDataAndSegments.foreach {
       case (data, segment) =>
@@ -507,11 +506,10 @@ class BatchedWriteAheadLogSuite
     super.beforeEach()
     wal = mock[WriteAheadLog]
     walHandle = mock[WriteAheadLogRecordHandle]
-    walBatchingThreadPool = ThreadUtils.newDaemonFixedThreadPool(
-      8,
-      "wal-test-thread-pool")
-    walBatchingExecutionContext = ExecutionContext.fromExecutorService(
-      walBatchingThreadPool)
+    walBatchingThreadPool = ThreadUtils
+      .newDaemonFixedThreadPool(8, "wal-test-thread-pool")
+    walBatchingExecutionContext = ExecutionContext
+      .fromExecutorService(walBatchingThreadPool)
   }
 
   override def afterEach(): Unit = {
@@ -528,20 +526,18 @@ class BatchedWriteAheadLogSuite
       BatchAllocationEvent(null, null),
       BatchCleanupEvent(Nil))
 
-    val buffers = events.map(e =>
-      Record(ByteBuffer.wrap(Utils.serialize(e)), 0L, null))
+    val buffers = events
+      .map(e => Record(ByteBuffer.wrap(Utils.serialize(e)), 0L, null))
     val batched = BatchedWriteAheadLog.aggregate(buffers)
-    val deaggregate = BatchedWriteAheadLog
-      .deaggregate(batched)
-      .map(buffer =>
-        Utils.deserialize[ReceivedBlockTrackerLogEvent](buffer.array()))
+    val deaggregate = BatchedWriteAheadLog.deaggregate(batched).map(buffer =>
+      Utils.deserialize[ReceivedBlockTrackerLogEvent](buffer.array()))
 
     assert(deaggregate.toSeq === events)
   }
 
   test("BatchedWriteAheadLog - failures in wrappedLog get bubbled up") {
-    when(wal.write(any[ByteBuffer], anyLong)).thenThrow(new RuntimeException(
-      "Hello!"))
+    when(wal.write(any[ByteBuffer], anyLong))
+      .thenThrow(new RuntimeException("Hello!"))
     // the BatchedWriteAheadLog should bubble up any exceptions that may have happened during writes
     val batchedWal = new BatchedWriteAheadLog(wal, sparkConf)
 
@@ -610,8 +606,7 @@ class BatchedWriteAheadLogSuite
       // in order of timestamp, and we need the last element.
       val bufferCaptor = ArgumentCaptor.forClass(classOf[ByteBuffer])
       verify(wal, times(1)).write(bufferCaptor.capture(), meq(12L))
-      val records = BatchedWriteAheadLog
-        .deaggregate(bufferCaptor.getValue)
+      val records = BatchedWriteAheadLog.deaggregate(bufferCaptor.getValue)
         .map(byteBufferToString)
       assert(records.toSet === queuedEvents)
     }
@@ -788,17 +783,14 @@ object WriteAheadLogSuite {
   /** Get the log files in a directory. */
   def getLogFilesInDirectory(directory: String): Seq[String] = {
     val logDirectoryPath = new Path(directory)
-    val fileSystem = HdfsUtils.getFileSystemForPath(
-      logDirectoryPath,
-      hadoopConf)
+    val fileSystem = HdfsUtils
+      .getFileSystemForPath(logDirectoryPath, hadoopConf)
 
     if (fileSystem.exists(logDirectoryPath) &&
         fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
-      fileSystem
-        .listStatus(logDirectoryPath)
-        .map { _.getPath() }
-        .sortBy { _.getName().split("-")(1).toLong }
-        .map { _.toString.stripPrefix("file:") }
+      fileSystem.listStatus(logDirectoryPath).map { _.getPath() }.sortBy {
+        _.getName().split("-")(1).toLong
+      }.map { _.toString.stripPrefix("file:") }
     } else { Seq.empty }
   }
 

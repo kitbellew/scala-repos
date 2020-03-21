@@ -86,8 +86,7 @@ abstract class CreateTypeDefinitionQuickFix(
         throw new IllegalStateException(
           s"Cannot find directory for the package `${psiPackage.getName}`")
       case dirs =>
-        val currentDir = dirs
-          .find(PsiTreeUtil.isAncestor(_, ref, true))
+        val currentDir = dirs.find(PsiTreeUtil.isAncestor(_, ref, true))
           .orElse(dirs.find(
             ScalaPsiUtil.getModule(_) == ScalaPsiUtil.getModule(ref)))
         currentDir.getOrElse(dirs(0))
@@ -106,14 +105,12 @@ abstract class CreateTypeDefinitionQuickFix(
       parent: PsiElement,
       anchorAfter: Option[PsiElement]): Unit = {
     try {
-      if (!FileModificationService.getInstance.preparePsiElementForWrite(
-            parent)) return
+      if (!FileModificationService.getInstance
+            .preparePsiElementForWrite(parent)) return
 
       val text = s"${kind.keyword} $name"
-      val newTd = ScalaPsiElementFactory.createTemplateDefinitionFromText(
-        text,
-        parent,
-        parent.getFirstChild)
+      val newTd = ScalaPsiElementFactory
+        .createTemplateDefinitionFromText(text, parent, parent.getFirstChild)
       val anchor = anchorAfter.orNull
       parent.addBefore(
         ScalaPsiElementFactory.createNewLine(parent.getManager),
@@ -132,9 +129,8 @@ abstract class CreateTypeDefinitionQuickFix(
           case f: PsiFile                            => "New file"
           case td: ScTypeDefinition if td.isTopLevel => "Top level in this file"
           case _ childOf (tb: ScTemplateBody) =>
-            val containingClass = PsiTreeUtil.getParentOfType(
-              tb,
-              classOf[ScTemplateDefinition])
+            val containingClass = PsiTreeUtil
+              .getParentOfType(tb, classOf[ScTemplateDefinition])
             s"Inner in ${containingClass.name}"
           case _ => "Local scope"
         }
@@ -154,14 +150,12 @@ abstract class CreateTypeDefinitionQuickFix(
             false
           }
         }
-        NavigationUtil
-          .getPsiElementPopup(
-            siblings.toArray,
-            renderer,
-            "Choose level",
-            processor,
-            selection)
-          .showInBestPositionFor(editor)
+        NavigationUtil.getPsiElementPopup(
+          siblings.toArray,
+          renderer,
+          "Choose level",
+          processor,
+          selection).showInBestPositionFor(editor)
     }
   }
 
@@ -211,8 +205,8 @@ abstract class CreateTypeDefinitionQuickFix(
 
     val template = builder.buildTemplate()
     val targetFile = clazz.getContainingFile
-    val isScalaConsole =
-      targetFile.getName == ScalaLanguageConsoleView.SCALA_CONSOLE
+    val isScalaConsole = targetFile.getName == ScalaLanguageConsoleView
+      .SCALA_CONSOLE
 
     if (!isScalaConsole) {
       val newEditor = positionCursor(clazz.nameId)
@@ -220,8 +214,7 @@ abstract class CreateTypeDefinitionQuickFix(
         val range = clazz.getTextRange
         newEditor.getDocument
           .deleteString(range.getStartOffset, range.getEndOffset)
-        TemplateManager
-          .getInstance(clazz.getProject)
+        TemplateManager.getInstance(clazz.getProject)
           .startTemplate(newEditor, template)
       }
     }
@@ -232,8 +225,8 @@ abstract class CreateTypeDefinitionQuickFix(
       case pt: ScParameterizedTypeElement =>
         val paramsText = pt.typeArgList.typeArgs match {
           case args if args.size == 1 => "[T]"
-          case args =>
-            args.indices.map(i => s"T${i + 1}").mkString("[", ", ", "]")
+          case args => args.indices.map(i => s"T${i + 1}")
+              .mkString("[", ", ", "]")
         }
         val nameId = clazz.nameId
         val clause = ScalaPsiElementFactory
@@ -250,10 +243,8 @@ abstract class CreateTypeDefinitionQuickFix(
       case cl: ScClass =>
         val constr = cl.constructor.get
         val text = parametersText(ref)
-        val parameters = ScalaPsiElementFactory.createParamClausesWithContext(
-          text,
-          constr,
-          constr.getFirstChild)
+        val parameters = ScalaPsiElementFactory
+          .createParamClausesWithContext(text, constr, constr.getFirstChild)
         constr.parameterList.replace(parameters)
       case _ =>
     }

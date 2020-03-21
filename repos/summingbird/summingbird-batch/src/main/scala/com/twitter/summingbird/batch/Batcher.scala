@@ -209,9 +209,8 @@ trait Batcher extends Serializable {
   def enclosedBy(batchID: BatchID, other: Batcher): Iterable[BatchID] = {
     val earliestInclusive = earliestTimeOf(batchID)
     val latestInclusive = latestTimeOf(batchID)
-    BatchID.range(
-      other.batchOf(earliestInclusive),
-      other.batchOf(latestInclusive))
+    BatchID
+      .range(other.batchOf(earliestInclusive), other.batchOf(latestInclusive))
   }
 
   def enclosedBy(
@@ -219,10 +218,7 @@ trait Batcher extends Serializable {
       other: Batcher): Iterable[BatchID] = {
     val (bottom, top) = extremities
     SortedSet(
-      BatchID
-        .range(bottom, top)
-        .toSeq
-        .flatMap(enclosedBy(_, other)): _*)
+      BatchID.range(bottom, top).toSeq.flatMap(enclosedBy(_, other)): _*)
   }
 }
 

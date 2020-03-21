@@ -175,18 +175,16 @@ class ConcurrentMemoryLaws extends WordSpec {
     val source = sourceMaker(original)
     val store: ConcurrentMemory#Store[K, V] = new ConcurrentHashMap[K, V]()
 
-    val prod = TestGraphs.jobWithStats[ConcurrentMemory, T, K, V](
-      jobID,
-      source,
-      store)(t => fn(t))
+    val prod = TestGraphs
+      .jobWithStats[ConcurrentMemory, T, K, V](jobID, source, store)(t => fn(t))
     Await.result(mem.plan(prod).run, Duration.Inf)
     //mem.run(mem.plan(prod))
 
-    val origCounter =
-      mem.counter(Group("counter.test"), Name("orig_counter")).get
+    val origCounter = mem.counter(Group("counter.test"), Name("orig_counter"))
+      .get
     val fmCounter = mem.counter(Group("counter.test"), Name("fm_counter")).get
-    val fltrCounter =
-      mem.counter(Group("counter.test"), Name("fltr_counter")).get
+    val fltrCounter = mem.counter(Group("counter.test"), Name("fltr_counter"))
+      .get
 
     (origCounter == original.size) &&
     (fmCounter == (original.flatMap(fn).size * 2)) &&
@@ -243,13 +241,10 @@ class ConcurrentMemoryLaws extends WordSpec {
         new ConcurrentHashMap[Int, Int]()
       val sink: ConcurrentMemory#Sink[Int] = new LinkedBlockingQueue[Int]()
 
-      val summed = source
-        .map { v => (v, v) }
-        .sumByKey(store)
-        .map {
-          case (_, (None, currentEvent))      => currentEvent
-          case (_, (Some(old), currentEvent)) => old + currentEvent
-        }
+      val summed = source.map { v => (v, v) }.sumByKey(store).map {
+        case (_, (None, currentEvent))      => currentEvent
+        case (_, (Some(old), currentEvent)) => old + currentEvent
+      }
 
       val write1 = summed.write(sink)
       val write2 = summed.write(sink)

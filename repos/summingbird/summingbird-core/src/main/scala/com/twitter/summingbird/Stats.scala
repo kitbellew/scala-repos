@@ -81,9 +81,8 @@ object SummingbirdRuntimeStats {
       provRef <- platformStatProviders.toSeq
       prov <- provRef.get
       incr <- prov.counterIncrementor(jobID, group, name)
-    } yield incr).toList.headOption
-      .getOrElse(sys.error(
-        "Could not find the platform stat provider for jobID " + jobID))
+    } yield incr).toList.headOption.getOrElse(sys.error(
+      "Could not find the platform stat provider for jobID " + jobID))
   }
 }
 

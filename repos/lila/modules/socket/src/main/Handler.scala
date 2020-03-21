@@ -76,11 +76,8 @@ object Handler {
             case Some(req) =>
               member push lila.socket.Socket.makeMessage(
                 "dests",
-                Json.obj(
-                  "dests" -> req.dests,
-                  "path" -> req.path) ++ req.opening.?? { o =>
-                  Json.obj("opening" -> o)
-                })
+                Json.obj("dests" -> req.dests, "path" -> req.path) ++ req
+                  .opening.?? { o => Json.obj("opening" -> o) })
             case None =>
               member push lila.socket.Socket
                 .makeMessage("destsFailure", "Bad dests request")
@@ -91,12 +88,10 @@ object Handler {
 
     def iteratee(controller: Controller, member: SocketMember): JsIteratee = {
       val control = controller orElse baseController(member)
-      Iteratee
-        .foreach[JsValue](jsv =>
-          jsv.asOpt[JsObject] foreach { obj =>
-            obj str "t" foreach { t => control.lift(t -> obj) }
-          })
-        .map(_ => socket ! Quit(uid))
+      Iteratee.foreach[JsValue](jsv =>
+        jsv.asOpt[JsObject] foreach { obj =>
+          obj str "t" foreach { t => control.lift(t -> obj) }
+        }).map(_ => socket ! Quit(uid))
     }
 
     socket ? join map connecter map {

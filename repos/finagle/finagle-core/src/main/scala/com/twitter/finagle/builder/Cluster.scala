@@ -81,10 +81,8 @@ trait Cluster[T] {
                       Cluster.Rem(u)
 
                     case None =>
-                      Logger
-                        .getLogger("")
-                        .warning(
-                          "cluster does not have removed key, regenerating")
+                      Logger.getLogger("").warning(
+                        "cluster does not have removed key, regenerating")
                       Cluster.Rem(f(t))
                   }
               }

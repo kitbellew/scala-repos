@@ -40,22 +40,16 @@ trait AccessTokenService {
 
   def getAccountByAccessToken(token: String)(implicit
       s: Session): Option[Account] =
-    Accounts
-      .innerJoin(AccessTokens)
-      .filter {
-        case (ac, t) =>
-          (ac.userName === t.userName) && (t.tokenHash === tokenToHash(
-            token).bind) && (ac.removed === false.bind)
-      }
-      .map { case (ac, t) => ac }
-      .firstOption
+    Accounts.innerJoin(AccessTokens).filter {
+      case (ac, t) =>
+        (ac.userName === t.userName) && (t.tokenHash === tokenToHash(token)
+          .bind) && (ac.removed === false.bind)
+    }.map { case (ac, t) => ac }.firstOption
 
   def getAccessTokens(userName: String)(implicit
       s: Session): List[AccessToken] =
-    AccessTokens
-      .filter(_.userName === userName.bind)
-      .sortBy(_.accessTokenId.desc)
-      .list
+    AccessTokens.filter(_.userName === userName.bind)
+      .sortBy(_.accessTokenId.desc).list
 
   def deleteAccessToken(userName: String, accessTokenId: Int)(implicit
       s: Session): Unit =

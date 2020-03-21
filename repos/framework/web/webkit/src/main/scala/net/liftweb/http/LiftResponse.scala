@@ -53,8 +53,8 @@ case class CreatedResponse(
 
   def code = 201
 
-  val headers: List[(String, String)] = S.getResponseHeaders(
-    ("Content-Type" -> mime) :: addlHeaders)
+  val headers: List[(String, String)] = S
+    .getResponseHeaders(("Content-Type" -> mime) :: addlHeaders)
 
   def cookies: List[HTTPCookie] = Nil
 
@@ -69,14 +69,14 @@ case class CreatedResponse(
   */
 object CreatedResponse {
 
-  lazy val jsonPrinter: JsonAST.JValue => String =
-    LiftRules.jsonOutputConverter.vend
+  lazy val jsonPrinter: JsonAST.JValue => String = LiftRules.jsonOutputConverter
+    .vend
 
   def apply(
       json: JsonAST.JValue,
       addlHeaders: List[(String, String)]): LiftResponse = {
-    val headers: List[(String, String)] =
-      S.getResponseHeaders(Nil) ++ addlHeaders
+    val headers: List[(String, String)] = S
+      .getResponseHeaders(Nil) ++ addlHeaders
 
     new JsonResponse(
       new JsExp {
@@ -377,8 +377,8 @@ object JsonResponse {
       code)
   }
 
-  lazy val jsonPrinter: JsonAST.JValue => String =
-    LiftRules.jsonOutputConverter.vend
+  lazy val jsonPrinter: JsonAST.JValue => String = LiftRules.jsonOutputConverter
+    .vend
 }
 
 case class JsonResponse(
@@ -736,10 +736,8 @@ trait NodeResponse extends LiftResponse {
     }
   }
 
-  protected lazy val _encoding: String = LiftRules.calculateXmlHeader(
-    this,
-    out,
-    headers.ciGet("Content-Type"))
+  protected lazy val _encoding: String = LiftRules
+    .calculateXmlHeader(this, out, headers.ciGet("Content-Type"))
 
   def toResponse = {
     val bos = new ByteArrayOutputStream(64000)
@@ -834,17 +832,17 @@ case class XhtmlResponse(
     htmlProperties.htmlOutputHeader.foreach { writer.append }
   }
 
-  override protected lazy val _encoding: String =
-    htmlProperties.encoding openOr ""
+  override protected lazy val _encoding: String = htmlProperties
+    .encoding openOr ""
 
-  val headers: List[(String, String)] =
-    _headers.find(_._1 equalsIgnoreCase "content-type") match {
-      case Some(_) => _headers
-      case _ => htmlProperties.contentType match {
-          case Full(ct) => ("Content-Type" -> ct) :: _headers
-          case _        => _headers
-        }
-    }
+  val headers: List[(String, String)] = _headers
+    .find(_._1 equalsIgnoreCase "content-type") match {
+    case Some(_) => _headers
+    case _ => htmlProperties.contentType match {
+        case Full(ct) => ("Content-Type" -> ct) :: _headers
+        case _        => _headers
+      }
+  }
 }
 
 /**
@@ -860,8 +858,8 @@ case class XmlMimeResponse(
 
   def code = 200
 
-  val headers: List[(String, String)] = S.getResponseHeaders(
-    ("Content-Type" -> mime) :: addlHeaders)
+  val headers: List[(String, String)] = S
+    .getResponseHeaders(("Content-Type" -> mime) :: addlHeaders)
 
   def cookies: List[HTTPCookie] = Nil
 
@@ -877,8 +875,8 @@ class XmlResponse(
     extends XmlNodeResponse {
   def docType = Empty
 
-  val headers: List[(String, String)] = S.getResponseHeaders(
-    ("Content-Type" -> mime) :: addlHeaders)
+  val headers: List[(String, String)] = S
+    .getResponseHeaders(("Content-Type" -> mime) :: addlHeaders)
 
   def out: Node = xml
 }

@@ -158,10 +158,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     require(ops.size >= 2)
     def ruleTraceNonTerminalKey = reify(RuleTrace.Sequence).tree
     def renderInner(wrapped: Boolean): Tree =
-      ops
-        .map(_.render(wrapped))
-        .reduceLeft((l, r) ⇒
-          q"val l = $l; if (l) $r else false") // work-around for https://issues.scala-lang.org/browse/SI-8657"
+      ops.map(_.render(wrapped)).reduceLeft((l, r) ⇒
+        q"val l = $l; if (l) $r else false") // work-around for https://issues.scala-lang.org/browse/SI-8657"
   }
 
   case class Cut(lhs: OpTree, rhs: OpTree) extends DefaultNonTerminalOpTree {
@@ -186,8 +184,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
   case class FirstOf(ops: Seq[OpTree]) extends DefaultNonTerminalOpTree {
     def ruleTraceNonTerminalKey = reify(RuleTrace.FirstOf).tree
     def renderInner(wrapped: Boolean): Tree =
-      q"""val mark = __saveState; ${ops
-        .map(_.render(wrapped))
+      q"""val mark = __saveState; ${ops.map(_.render(wrapped))
         .reduceLeft((l, r) ⇒
           q"val l = $l; if (!l) { __restoreState(mark); $r } else true // work-around for https://issues.scala-lang.org/browse/SI-8657")}"""
   }
@@ -543,9 +540,11 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
           case x: RuleCall ⇒
             q"akka.parboiled2.RuleTrace.NotPredicate.RuleCall(${x.calleeNameTree})"
           case x: StringMatch ⇒
-            q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x.stringTree} + '"')"""
+            q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x
+              .stringTree} + '"')"""
           case x: IgnoreCaseString ⇒
-            q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x.stringTree} + '"')"""
+            q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x
+              .stringTree} + '"')"""
           case x: Named ⇒
             q"akka.parboiled2.RuleTrace.NotPredicate.Named(${x.stringTree})"
           case _ ⇒ q"akka.parboiled2.RuleTrace.NotPredicate.Anonymous"
@@ -618,13 +617,10 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
                         "akka.parboiled2.Rule") ⇒ expand(x, wrapped)
                   case x ⇒ q"__push($x)"
                 }
-              val valDefs = args
-                .zip(argTypeTrees)
-                .map {
-                  case (a, t) ⇒
-                    q"val ${a.name} = valueStack.pop().asInstanceOf[${t.tpe}]"
-                }
-                .reverse
+              val valDefs = args.zip(argTypeTrees).map {
+                case (a, t) ⇒
+                  q"val ${a.name} = valueStack.pop().asInstanceOf[${t.tpe}]"
+              }.reverse
               block(valDefs, rewrite(body))
 
             case x ⇒
@@ -859,9 +855,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
         Match(selector, cases.map(expand(_, wrapped).asInstanceOf[CaseDef]))
       case CaseDef(pat, guard, body) ⇒
         CaseDef(pat, guard, expand(body, wrapped))
-      case x ⇒
-        opTreePF
-          .andThen(_.render(wrapped))
+      case x ⇒ opTreePF.andThen(_.render(wrapped))
           .applyOrElse(tree, (t: Tree) ⇒ q"$t ne null")
     }
 

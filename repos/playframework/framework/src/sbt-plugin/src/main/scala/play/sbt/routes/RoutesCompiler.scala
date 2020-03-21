@@ -77,34 +77,31 @@ object RoutesCompiler extends AutoPlugin {
       routesCompilerTasks <<= Def.taskDyn {
 
         // Aggregate all the routes file tasks that we want to compile the reverse routers for.
-        aggregateReverseRoutes.value
-          .map { agg =>
-            routesCompilerTasks in (agg.project, configuration.value)
-          }
-          .join
-          .map {
-            aggTasks: Seq[Seq[RoutesCompilerTask]] =>
-              // Aggregated tasks need to have forwards router compilation disabled and reverse router compilation enabled.
-              val reverseRouterTasks = aggTasks.flatten.map { task =>
-                task.copy(forwardsRouter = false, reverseRouter = true)
-              }
+        aggregateReverseRoutes.value.map { agg =>
+          routesCompilerTasks in (agg.project, configuration.value)
+        }.join.map {
+          aggTasks: Seq[Seq[RoutesCompilerTask]] =>
+            // Aggregated tasks need to have forwards router compilation disabled and reverse router compilation enabled.
+            val reverseRouterTasks = aggTasks.flatten.map { task =>
+              task.copy(forwardsRouter = false, reverseRouter = true)
+            }
 
-              // Find the routes compile tasks for this project
-              val thisProjectTasks = (sources in routes).value.map { file =>
-                RoutesCompilerTask(
-                  file,
-                  routesImport.value,
-                  forwardsRouter = true,
-                  reverseRouter = generateReverseRouter.value,
-                  namespaceReverseRouter = namespaceReverseRouter.value)
-              }
+            // Find the routes compile tasks for this project
+            val thisProjectTasks = (sources in routes).value.map { file =>
+              RoutesCompilerTask(
+                file,
+                routesImport.value,
+                forwardsRouter = true,
+                reverseRouter = generateReverseRouter.value,
+                namespaceReverseRouter = namespaceReverseRouter.value)
+            }
 
-              thisProjectTasks ++ reverseRouterTasks
-          }
+            thisProjectTasks ++ reverseRouterTasks
+        }
       },
       watchSources in Defaults.ConfigGlobal <++= sources in routes,
-      target in routes := crossTarget.value / "routes" / Defaults.nameForSrc(
-        configuration.value.name),
+      target in routes := crossTarget.value / "routes" / Defaults
+        .nameForSrc(configuration.value.name),
       routes <<= compileRoutesFiles,
       sourceGenerators <+= routes,
       managedSourceDirectories <+= target in routes
@@ -119,23 +116,20 @@ object RoutesCompiler extends AutoPlugin {
       // reverse router for it.
       generateReverseRouter <<= Def.settingDyn {
         val projectRef = thisProjectRef.value
-        val dependencies = buildDependencies.value.classpathTransitiveRefs(
-          projectRef)
+        val dependencies = buildDependencies.value
+          .classpathTransitiveRefs(projectRef)
 
         // Go through each dependency of this project
-        dependencies
-          .map { dep =>
-            // Get the aggregated reverse routes projects for the dependency, if defined
-            Def.optional(aggregateReverseRoutes in dep)(
-              _.map(_.map(_.project)).getOrElse(Nil))
+        dependencies.map { dep =>
+          // Get the aggregated reverse routes projects for the dependency, if defined
+          Def.optional(aggregateReverseRoutes in dep)(
+            _.map(_.map(_.project)).getOrElse(Nil))
 
-          }
-          .join
-          .apply { aggregated: Seq[Seq[ProjectReference]] =>
-            val localProject = LocalProject(projectRef.project)
-            // Return false if this project is aggregated by one of our dependencies
-            !aggregated.flatten.contains(localProject)
-          }
+        }.join.apply { aggregated: Seq[Seq[ProjectReference]] =>
+          val localProject = LocalProject(projectRef.project)
+          // Return false if this project is aggregated by one of our dependencies
+          !aggregated.flatten.contains(localProject)
+        }
       },
       namespaceReverseRouter := false,
       routesGenerator := InjectedRoutesGenerator, // changed from StaticRoutesGenerator in 2.5.0
@@ -157,8 +151,8 @@ object RoutesCompiler extends AutoPlugin {
       generatedDir: File,
       cacheDirectory: File,
       log: Logger): Seq[File] = {
-    val ops = tasks.map(task =>
-      RoutesCompilerOp(task, generator.id, PlayVersion.current))
+    val ops = tasks
+      .map(task => RoutesCompilerOp(task, generator.id, PlayVersion.current))
     val (products, errors) = syncIncremental(cacheDirectory, ops) {
       opsToRun: Seq[RoutesCompilerOp] =>
         val results = opsToRun.map { op =>
@@ -196,8 +190,7 @@ object RoutesCompiler extends AutoPlugin {
       error: PlayException.ExceptionSource) = {
     // log the source file and line number with the error message
     log.error(
-      Option(error.sourceName).getOrElse("") + Option(error.line)
-        .map(":" + _)
+      Option(error.sourceName).getOrElse("") + Option(error.line).map(":" + _)
         .getOrElse("") + ": " + error.getMessage)
     Option(error.interestingLines(0)).map(_.focus).flatMap(_.headOption) map {
       line =>

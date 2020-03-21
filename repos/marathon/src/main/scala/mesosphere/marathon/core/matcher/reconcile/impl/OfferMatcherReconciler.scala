@@ -49,8 +49,9 @@ private[reconcile] class OfferMatcherReconciler(
     val resourcesByTaskId: Map[Id, Iterable[Resource]] = {
       import scala.collection.JavaConverters._
       offer.getResourcesList.asScala
-        .groupBy(TaskLabels.taskIdForResource(frameworkId, _))
-        .collect { case (Some(taskId), resources) => taskId -> resources }
+        .groupBy(TaskLabels.taskIdForResource(frameworkId, _)).collect {
+          case (Some(taskId), resources) => taskId -> resources
+        }
     }
 
     processResourcesByTaskId(offer, resourcesByTaskId)
@@ -70,16 +71,14 @@ private[reconcile] class OfferMatcherReconciler(
         def spurious(taskId: Id): Boolean =
           tasksByApp.task(taskId).isEmpty || rootGroup.app(taskId.appId).isEmpty
 
-        val taskOps = resourcesByTaskId.iterator
-          .collect {
-            case (taskId, spuriousResources) if spurious(taskId) =>
-              val unreserveAndDestroy = TaskOp.UnreserveAndDestroyVolumes(
-                taskId = taskId,
-                oldTask = tasksByApp.task(taskId),
-                resources = spuriousResources.to[Seq])
-              TaskOpWithSource(source(offer.getId), unreserveAndDestroy)
-          }
-          .to[Seq]
+        val taskOps = resourcesByTaskId.iterator.collect {
+          case (taskId, spuriousResources) if spurious(taskId) =>
+            val unreserveAndDestroy = TaskOp.UnreserveAndDestroyVolumes(
+              taskId = taskId,
+              oldTask = tasksByApp.task(taskId),
+              resources = spuriousResources.to[Seq])
+            TaskOpWithSource(source(offer.getId), unreserveAndDestroy)
+        }.to[Seq]
 
         MatchedTaskOps(offer.getId, taskOps, resendThisOffer = true)
       }

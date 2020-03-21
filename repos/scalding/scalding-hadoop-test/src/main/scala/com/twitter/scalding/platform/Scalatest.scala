@@ -23,14 +23,11 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
   */
 trait HadoopPlatformTest extends BeforeAndAfterEach {
   this: Suite =>
-  org.apache.log4j.Logger
-    .getLogger("org.apache.hadoop")
+  org.apache.log4j.Logger.getLogger("org.apache.hadoop")
     .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
-    .getLogger("org.mortbay")
+  org.apache.log4j.Logger.getLogger("org.mortbay")
     .setLevel(org.apache.log4j.Level.ERROR)
-  org.apache.log4j.Logger
-    .getLogger("org.apache.hadoop.metrics2.util")
+  org.apache.log4j.Logger.getLogger("org.apache.hadoop.metrics2.util")
     .setLevel(org.apache.log4j.Level.ERROR)
 
   val cluster = LocalCluster()

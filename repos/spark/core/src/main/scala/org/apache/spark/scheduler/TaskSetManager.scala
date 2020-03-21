@@ -65,15 +65,13 @@ private[spark] class TaskSetManager(
    * this temporarily prevents a task from re-launching on an executor where
    * it just failed.
    */
-  private val EXECUTOR_TASK_BLACKLIST_TIMEOUT = conf.getLong(
-    "spark.scheduler.executorTaskBlacklistTime",
-    0L)
+  private val EXECUTOR_TASK_BLACKLIST_TIMEOUT = conf
+    .getLong("spark.scheduler.executorTaskBlacklistTime", 0L)
 
   // Quantile of tasks at which to start speculation
   val SPECULATION_QUANTILE = conf.getDouble("spark.speculation.quantile", 0.75)
-  val SPECULATION_MULTIPLIER = conf.getDouble(
-    "spark.speculation.multiplier",
-    1.5)
+  val SPECULATION_MULTIPLIER = conf
+    .getDouble("spark.speculation.multiplier", 1.5)
 
   // Limit of bytes for total size of results (default is 1GB)
   val maxResultSize = Utils.getMaxResultSize(conf)
@@ -149,9 +147,8 @@ private[spark] class TaskSetManager(
   val taskInfos = new HashMap[Long, TaskInfo]
 
   // How frequently to reprint duplicate exceptions in full, in milliseconds
-  val EXCEPTION_PRINT_INTERVAL = conf.getLong(
-    "spark.logging.exceptionPrintInterval",
-    10000)
+  val EXCEPTION_PRINT_INTERVAL = conf
+    .getLong("spark.logging.exceptionPrintInterval", 10000)
 
   // Map of recent exceptions (identified by string representation and top stack frame) to
   // duplicate count (how many times the same exception has appeared) and time the full exception
@@ -169,9 +166,8 @@ private[spark] class TaskSetManager(
 
   // Figure out which locality levels we have in our TaskSet, so we can do delay scheduling
   var myLocalityLevels = computeValidLocalityLevels()
-  var localityWaits = myLocalityLevels.map(
-    getLocalityWait
-  ) // Time to wait at each level
+  var localityWaits = myLocalityLevels
+    .map(getLocalityWait) // Time to wait at each level
 
   // Delay scheduling variables: we keep track of our current locality level and the time we
   // last launched a task at that level, and move up a level when localityWaits[curLevel] expires.
@@ -192,17 +188,15 @@ private[spark] class TaskSetManager(
     for (loc <- tasks(index).preferredLocations) {
       loc match {
         case e: ExecutorCacheTaskLocation =>
-          pendingTasksForExecutor.getOrElseUpdate(
-            e.executorId,
-            new ArrayBuffer) += index
+          pendingTasksForExecutor
+            .getOrElseUpdate(e.executorId, new ArrayBuffer) += index
         case e: HDFSCacheTaskLocation => {
           val exe = sched.getExecutorsAliveOnHost(loc.host)
           exe match {
             case Some(set) => {
               for (e <- set) {
-                pendingTasksForExecutor.getOrElseUpdate(
-                  e,
-                  new ArrayBuffer) += index
+                pendingTasksForExecutor
+                  .getOrElseUpdate(e, new ArrayBuffer) += index
               }
               logInfo(
                 s"Pending task $index has a cached location at ${e.host} " +
@@ -292,8 +286,7 @@ private[spark] class TaskSetManager(
       val failed = failedExecutors.get(taskId).get
 
       return failed.contains(execId) &&
-        clock.getTimeMillis() - failed
-          .get(execId)
+        clock.getTimeMillis() - failed.get(execId)
           .get < EXECUTOR_TASK_BLACKLIST_TIMEOUT
     }
 
@@ -310,8 +303,8 @@ private[spark] class TaskSetManager(
       execId: String,
       host: String,
       locality: TaskLocality.Value): Option[(Int, TaskLocality.Value)] = {
-    speculatableTasks.retain(index =>
-      !successful(index)) // Remove finished tasks from set
+    speculatableTasks
+      .retain(index => !successful(index)) // Remove finished tasks from set
 
     def canRunOnHost(index: Int): Boolean =
       !hasAttemptOnHost(index, host) && !executorIsBlacklisted(execId, index)
@@ -357,8 +350,7 @@ private[spark] class TaskSetManager(
       if (TaskLocality.isAllowed(locality, TaskLocality.RACK_LOCAL)) {
         for (rack <- sched.getRackForHost(host)) {
           for (index <- speculatableTasks if canRunOnHost(index)) {
-            val racks = tasks(index).preferredLocations
-              .map(_.host)
+            val racks = tasks(index).preferredLocations.map(_.host)
               .flatMap(sched.getRackForHost)
             if (racks.contains(rack)) {
               speculatableTasks -= index
@@ -502,7 +494,8 @@ private[spark] class TaskSetManager(
                 abort(s"$msg Exception during serialization: $e")
                 throw new TaskNotSerializableException(e)
             }
-          if (serializedTask.limit > TaskSetManager.TASK_SIZE_TO_WARN_KB * 1024 &&
+          if (serializedTask.limit > TaskSetManager
+                .TASK_SIZE_TO_WARN_KB * 1024 &&
               !emittedTaskSizeWarning) {
             emittedTaskSizeWarning = true
             logWarning(
@@ -680,7 +673,8 @@ private[spark] class TaskSetManager(
       if (tasksSuccessful == numTasks) { isZombie = true }
     } else {
       logInfo(
-        "Ignoring task-finished event for " + info.id + " in stage " + taskSet.id +
+        "Ignoring task-finished event for " + info.id + " in stage " + taskSet
+          .id +
           " because task " + index + " has already completed successfully")
     }
     failedExecutors.remove(index)
@@ -746,7 +740,8 @@ private[spark] class TaskSetManager(
         if (printFull) { logWarning(failureReason) }
         else {
           logInfo(
-            s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid) on executor ${info.host}: " +
+            s"Lost task ${info.id} in stage ${taskSet
+              .id} (TID $tid) on executor ${info.host}: " +
               s"${ef.className} (${ef.description}) [duplicate $dupCount]")
         }
         ef.exception
@@ -767,8 +762,7 @@ private[spark] class TaskSetManager(
         None
     }
     // always add to failed executors
-    failedExecutors
-      .getOrElseUpdate(index, new HashMap[String, Long]())
+    failedExecutors.getOrElseUpdate(index, new HashMap[String, Long]())
       .put(info.executorId, clock.getTimeMillis())
     sched.dagScheduler.taskEnded(tasks(index), reason, null, accumUpdates, info)
     addPendingTask(index)
@@ -778,10 +772,9 @@ private[spark] class TaskSetManager(
       assert(null != failureReason)
       numFailures(index) += 1
       if (numFailures(index) >= maxTaskFailures) {
-        logError("Task %d in stage %s failed %d times; aborting job".format(
-          index,
-          taskSet.id,
-          maxTaskFailures))
+        logError(
+          "Task %d in stage %s failed %d times; aborting job"
+            .format(index, taskSet.id, maxTaskFailures))
         abort(
           "Task %d in stage %s failed %d times, most recent failure: %s\nDriver stacktrace:"
             .format(index, taskSet.id, maxTaskFailures, failureReason),
@@ -839,8 +832,8 @@ private[spark] class TaskSetManager(
     // and we are not using an external shuffle server which could serve the shuffle outputs.
     // The reason is the next stage wouldn't be able to fetch the data from this dead executor
     // so we would need to rerun these tasks on other executors.
-    if (tasks(0).isInstanceOf[
-          ShuffleMapTask] && !env.blockManager.externalShuffleServiceEnabled) {
+    if (tasks(0).isInstanceOf[ShuffleMapTask] && !env.blockManager
+          .externalShuffleServiceEnabled) {
       for ((tid, info) <- taskInfos if info.executorId == execId) {
         val index = taskInfos(tid).index
         if (successful(index)) {
@@ -890,14 +883,14 @@ private[spark] class TaskSetManager(
     // zombie.
     if (isZombie || numTasks == 1) { return false }
     var foundTasks = false
-    val minFinishedForSpeculation =
-      (SPECULATION_QUANTILE * numTasks).floor.toInt
+    val minFinishedForSpeculation = (SPECULATION_QUANTILE * numTasks).floor
+      .toInt
     logDebug(
       "Checking for speculative tasks: minFinished = " + minFinishedForSpeculation)
     if (tasksSuccessful >= minFinishedForSpeculation && tasksSuccessful > 0) {
       val time = clock.getTimeMillis()
-      val durations =
-        taskInfos.values.filter(_.successful).map(_.duration).toArray
+      val durations = taskInfos.values.filter(_.successful).map(_.duration)
+        .toArray
       Arrays.sort(durations)
       val medianDuration = durations(
         min((0.5 * tasksSuccessful).round.toInt, durations.length - 1))
@@ -907,8 +900,8 @@ private[spark] class TaskSetManager(
       logDebug("Task length threshold for speculation: " + threshold)
       for ((tid, info) <- taskInfos) {
         val index = info.index
-        if (!successful(index) && copiesRunning(index) == 1 && info.timeRunning(
-              time) > threshold &&
+        if (!successful(index) && copiesRunning(index) == 1 && info
+              .timeRunning(time) > threshold &&
             !speculatableTasks.contains(index)) {
           logInfo(
             "Marking task %d in stage %s (on %s) as speculatable because it ran more than %.0f ms"

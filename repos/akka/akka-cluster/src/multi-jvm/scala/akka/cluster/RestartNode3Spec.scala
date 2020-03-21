@@ -25,9 +25,8 @@ object RestartNode3MultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        "akka.cluster.auto-down-unreachable-after = off"))
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      "akka.cluster.auto-down-unreachable-after = off"))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 
   testTransport(on = true)
@@ -54,9 +53,8 @@ abstract class RestartNode3Spec
 
   lazy val restartedSecondSystem = ActorSystem(
     system.name,
-    ConfigFactory
-      .parseString(
-        "akka.remote.netty.tcp.port=" + secondUniqueAddress.address.port.get)
+    ConfigFactory.parseString(
+      "akka.remote.netty.tcp.port=" + secondUniqueAddress.address.port.get)
       .withFallback(system.settings.config))
 
   override def afterAll(): Unit = {
@@ -92,9 +90,10 @@ abstract class RestartNode3Spec
         enterBarrier("second-address-receiver-ready")
         secondUniqueAddress = Cluster(secondSystem).selfUniqueAddress
         List(first, third) foreach { r ⇒
-          system.actorSelection(
-            RootActorPath(
-              r) / "user" / "address-receiver") ! secondUniqueAddress
+          system
+            .actorSelection(
+              RootActorPath(
+                r) / "user" / "address-receiver") ! secondUniqueAddress
           expectMsg(5.seconds, "ok")
         }
       }
@@ -146,7 +145,8 @@ abstract class RestartNode3Spec
         awaitAssert {
           Cluster(system).readView.members.size should ===(3)
           Cluster(system).readView.members.exists { m ⇒
-            m.address == secondUniqueAddress.address && m.uniqueAddress.uid != secondUniqueAddress.uid
+            m.address == secondUniqueAddress.address && m.uniqueAddress
+              .uid != secondUniqueAddress.uid
           }
         }
       }

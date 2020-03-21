@@ -33,9 +33,8 @@ object Executor {
       if (args.boolean("local")) { Storm.local(config.getNamedOptions) }
       else { Storm.remote(config.getNamedOptions) }
 
-    storm
-      .withRegistrars(config.registrars)
-      .withConfigUpdater { c => c.updated(config.transformConfig(c.toMap)) }
-      .run(config.graph, config.name)
+    storm.withRegistrars(config.registrars).withConfigUpdater { c =>
+      c.updated(config.transformConfig(c.toMap))
+    }.run(config.graph, config.name)
   }
 }

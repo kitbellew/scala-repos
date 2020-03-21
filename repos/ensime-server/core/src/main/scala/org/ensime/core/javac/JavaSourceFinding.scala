@@ -34,16 +34,14 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
       OffsetSourcePosition(
         new File(path.getCompilationUnit.getSourceFile.getName),
         info.getTrees.getSourcePositions
-          .getStartPosition(path.getCompilationUnit, path.getLeaf)
-          .toInt)
+          .getStartPosition(path.getCompilationUnit, path.getLeaf).toInt)
     }
   }
 
   protected def findDeclPos(
       info: CompilationInfo,
       path: TreePath): Option[SourcePosition] = {
-    element(info, path)
-      .flatMap(elementPosition(info, _))
+    element(info, path).flatMap(elementPosition(info, _))
       .orElse(findInIndexer(info, path))
   }
 
@@ -54,8 +52,7 @@ trait JavaSourceFinding extends Helpers with SLF4JLogging {
     val query = javaFqn.map(_.toFqnString).getOrElse("")
     val hit = search.findUnique(query)
     log.debug(s"search: '$query' = $hit")
-    hit
-      .flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
+    hit.flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
       .flatMap { sourcePos =>
         if (sourcePos.file.getName.endsWith(".java") && sourcePos.file.exists)
           javaFqn

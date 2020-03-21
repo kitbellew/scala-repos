@@ -66,21 +66,19 @@ object LJavaEventStore {
     val limitInt = limit.map(_.intValue())
 
     JavaConversions.seqAsJavaList(
-      LEventStore
-        .findByEntity(
-          appName,
-          entityType,
-          entityId,
-          channelName,
-          eventNamesSeq,
-          targetEntityType,
-          targetEntityId,
-          startTime,
-          untilTime,
-          limitInt,
-          latest,
-          timeout)
-        .toSeq)
+      LEventStore.findByEntity(
+        appName,
+        entityType,
+        entityId,
+        channelName,
+        eventNamesSeq,
+        targetEntityType,
+        targetEntityId,
+        startTime,
+        untilTime,
+        limitInt,
+        latest,
+        timeout).toSeq)
   }
 
   /** Reads events generically. If entityType or entityId is not specified, it
@@ -125,19 +123,17 @@ object LJavaEventStore {
     val limitInt = limit.map(_.intValue())
 
     JavaConversions.seqAsJavaList(
-      LEventStore
-        .find(
-          appName,
-          entityType,
-          entityId,
-          channelName,
-          eventNamesSeq,
-          targetEntityType,
-          targetEntityId,
-          startTime,
-          untilTime,
-          limitInt,
-          timeout)
-        .toSeq)
+      LEventStore.find(
+        appName,
+        entityType,
+        entityId,
+        channelName,
+        eventNamesSeq,
+        targetEntityType,
+        targetEntityId,
+        startTime,
+        untilTime,
+        limitInt,
+        timeout).toSeq)
   }
 }

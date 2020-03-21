@@ -40,8 +40,7 @@ private[spark] object SerializationDebugger extends Logging {
     if (enableDebugging && reflect != null) {
       try {
         new NotSerializableException(
-          e.getMessage + "\nSerialization stack:\n" + find(obj)
-            .map("\t- " + _)
+          e.getMessage + "\nSerialization stack:\n" + find(obj).map("\t- " + _)
             .mkString("\n"))
       } catch {
         case NonFatal(t) =>
@@ -70,10 +69,8 @@ private[spark] object SerializationDebugger extends Logging {
   }
 
   private[serializer] var enableDebugging: Boolean = {
-    !AccessController
-      .doPrivileged(new sun.security.action.GetBooleanAction(
-        "sun.io.serialization.extendedDebugInfo"))
-      .booleanValue()
+    !AccessController.doPrivileged(new sun.security.action.GetBooleanAction(
+      "sun.io.serialization.extendedDebugInfo")).booleanValue()
   }
 
   private class SerializationDebugger {
@@ -95,12 +92,13 @@ private[spark] object SerializationDebugger extends Logging {
           case _ if o.getClass.isPrimitive => List.empty
           case _: String                   => List.empty
           case _
-              if o.getClass.isArray && o.getClass.getComponentType.isPrimitive =>
-            List.empty
+              if o.getClass.isArray && o.getClass.getComponentType
+                .isPrimitive => List.empty
 
           // Traverse non primitive array.
           case a: Array[_]
-              if o.getClass.isArray && !o.getClass.getComponentType.isPrimitive =>
+              if o.getClass.isArray && !o.getClass.getComponentType
+                .isPrimitive =>
             val elem = s"array (class ${a.getClass.getName}, size ${a.length})"
             visitArray(o.asInstanceOf[Array[_]], elem :: stack)
 
@@ -375,16 +373,16 @@ private[spark] object SerializationDebugger extends Logging {
 
     /** ObjectStreamClass.hasWriteObjectMethod */
     val HasWriteObjectMethod: Method = {
-      val f = classOf[ObjectStreamClass].getDeclaredMethod(
-        "hasWriteObjectMethod")
+      val f = classOf[ObjectStreamClass]
+        .getDeclaredMethod("hasWriteObjectMethod")
       f.setAccessible(true)
       f
     }
 
     /** ObjectStreamClass.hasWriteReplaceMethod */
     val HasWriteReplaceMethod: Method = {
-      val f = classOf[ObjectStreamClass].getDeclaredMethod(
-        "hasWriteReplaceMethod")
+      val f = classOf[ObjectStreamClass]
+        .getDeclaredMethod("hasWriteReplaceMethod")
       f.setAccessible(true)
       f
     }
@@ -417,8 +415,7 @@ private[spark] object SerializationDebugger extends Logging {
     /** ObjectStreamClass$ClassDataSlot.desc field */
     val DescField: Field = {
       // scalastyle:off classforname
-      val f = Class
-        .forName("java.io.ObjectStreamClass$ClassDataSlot")
+      val f = Class.forName("java.io.ObjectStreamClass$ClassDataSlot")
         .getDeclaredField("desc")
       // scalastyle:on classforname
       f.setAccessible(true)

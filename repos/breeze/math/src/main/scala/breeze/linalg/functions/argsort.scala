@@ -36,11 +36,10 @@ object argtopk extends UFunc with LowPriorityArgTopK {
       : Impl2[DenseVector[T], Int, IndexedSeq[Int]] = {
     new Impl2[DenseVector[T], Int, IndexedSeq[Int]] {
       override def apply(v: DenseVector[T], k: Int): IndexedSeq[Int] = {
-        implicit val orderingInt: Ordering[Int] =
-          Ordering[T].on((x: Int) => v(x)).reverse
+        implicit val orderingInt: Ordering[Int] = Ordering[T]
+          .on((x: Int) => v(x)).reverse
         val ints = VectorBuilder.range(v.length)
-        quickSelect
-          .implFromOrdering[Int, collection.mutable.IndexedSeq[Int]]
+        quickSelect.implFromOrdering[Int, collection.mutable.IndexedSeq[Int]]
           .apply(ints: collection.mutable.IndexedSeq[Int], k)
         ints.take(k)
       }

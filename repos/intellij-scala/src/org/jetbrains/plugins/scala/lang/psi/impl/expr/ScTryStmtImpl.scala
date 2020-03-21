@@ -49,8 +49,7 @@ class ScTryStmtImpl(node: ASTNode)
               expr.getType(TypingContext.empty) match {
                 case Success(tp, _) =>
                   val tp = expr.getType(TypingContext.empty).getOrAny
-                  val throwable = ScalaPsiManager
-                    .instance(expr.getProject)
+                  val throwable = ScalaPsiManager.instance(expr.getProject)
                     .getCachedClass(expr.getResolveScope, "java.lang.Throwable")
                   throwable.fold(lifted) { throwable =>
                     val throwableType = ScDesignatorType(throwable)

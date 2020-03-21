@@ -87,8 +87,8 @@ class GroupManagerTest
     )
     val update = manager(10, 20).assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
-    update.transitiveApps.flatMap(
-      _.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 5
+    update.transitiveApps
+      .flatMap(_.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 5
   }
 
   test("Assign dynamic service ports specified in the container") {
@@ -125,8 +125,8 @@ class GroupManagerTest
     val update = manager(minServicePort = 10, maxServicePort = 20)
       .assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
-    update.transitiveApps.flatMap(
-      _.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 2
+    update.transitiveApps
+      .flatMap(_.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 2
   }
 
   //regression for #2743
@@ -189,8 +189,8 @@ class GroupManagerTest
     )
     val update = manager(10, 20).assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
-    update.transitiveApps.flatMap(
-      _.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 5
+    update.transitiveApps
+      .flatMap(_.portNumbers.filter(x => x >= 10 && x <= 20)) should have size 5
   }
 
   // Regression test for #2868
@@ -295,10 +295,10 @@ class GroupManagerTest
       .copy(versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1)))
     val groupWithVersionInfo = Group(PathId.empty, Set(appWithVersionInfo))
       .copy(version = Timestamp(1))
-    when(f.appRepo.store(any())).thenReturn(Future.successful(
-      appWithVersionInfo))
-    when(f.groupRepo.store(any(), any())).thenReturn(Future.successful(
-      groupWithVersionInfo))
+    when(f.appRepo.store(any()))
+      .thenReturn(Future.successful(appWithVersionInfo))
+    when(f.groupRepo.store(any(), any()))
+      .thenReturn(Future.successful(groupWithVersionInfo))
 
     Await.result(
       f.manager.update(group.id, _ => group, version = Timestamp(1)),
@@ -322,8 +322,8 @@ class GroupManagerTest
       .thenReturn(Future.successful(Some(group)))
     when(f.scheduler.deploy(any(), any())).thenReturn(Future.successful(()))
     when(f.appRepo.expunge(any())).thenReturn(Future.successful(Seq(true)))
-    when(f.groupRepo.store(any(), any())).thenReturn(Future.successful(
-      groupEmpty))
+    when(f.groupRepo.store(any(), any()))
+      .thenReturn(Future.successful(groupEmpty))
 
     Await.result(
       f.manager.update(group.id, _ => groupEmpty, version = Timestamp(1)),

@@ -269,8 +269,7 @@ class FieldTypeTestRecord private () extends Record[FieldTypeTestRecord] {
   object optionalJodaTimeField extends OptionalJodaTimeField(this)
 
   def fieldsToCompare = {
-    fields
-      .filterNot(_.name == "mandatoryBinaryField") // binarys don't compare
+    fields.filterNot(_.name == "mandatoryBinaryField") // binarys don't compare
       .filterNot(
         _.name == "mandatoryDateTimeField"
       ) // toInternetDate is lossy (doesn't retain time to ms precision)

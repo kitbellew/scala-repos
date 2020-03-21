@@ -74,22 +74,23 @@ private[spark] class PartitionerAwareUnionRDD[T: ClassTag](
 
   override def getPartitions: Array[Partition] = {
     val numPartitions = partitioner.get.numPartitions
-    (0 until numPartitions)
-      .map(index => { new PartitionerAwareUnionRDDPartition(rdds, index) })
-      .toArray
+    (0 until numPartitions).map(index => {
+      new PartitionerAwareUnionRDDPartition(rdds, index)
+    }).toArray
   }
 
   // Get the location where most of the partitions of parent RDDs are located
   override def getPreferredLocations(s: Partition): Seq[String] = {
     logDebug(
       "Finding preferred location for " + this + ", partition " + s.index)
-    val parentPartitions =
-      s.asInstanceOf[PartitionerAwareUnionRDDPartition].parents
+    val parentPartitions = s.asInstanceOf[PartitionerAwareUnionRDDPartition]
+      .parents
     val locations = rdds.zip(parentPartitions).flatMap {
       case (rdd, part) => {
         val parentLocations = currPrefLocs(rdd, part)
         logDebug(
-          "Location of " + rdd + " partition " + part.index + " = " + parentLocations)
+          "Location of " + rdd + " partition " + part
+            .index + " = " + parentLocations)
         parentLocations
       }
     }
@@ -100,13 +101,14 @@ private[spark] class PartitionerAwareUnionRDD[T: ClassTag](
         Some(locations.groupBy(x => x).maxBy(_._2.length)._1)
       }
     logDebug(
-      "Selected location for " + this + ", partition " + s.index + " = " + location)
+      "Selected location for " + this + ", partition " + s
+        .index + " = " + location)
     location.toSeq
   }
 
   override def compute(s: Partition, context: TaskContext): Iterator[T] = {
-    val parentPartitions =
-      s.asInstanceOf[PartitionerAwareUnionRDDPartition].parents
+    val parentPartitions = s.asInstanceOf[PartitionerAwareUnionRDDPartition]
+      .parents
     rdds.zip(parentPartitions).iterator.flatMap {
       case (rdd, p) => rdd.iterator(p, context)
     }

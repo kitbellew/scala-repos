@@ -166,6 +166,6 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
 }
 
 object AsyncSemaphore {
-  private val MaxWaitersExceededException = Future.exception(
-    new RejectedExecutionException("Max waiters exceeded"))
+  private val MaxWaitersExceededException = Future
+    .exception(new RejectedExecutionException("Max waiters exceeded"))
 }

@@ -29,16 +29,14 @@ class ScalaChangeSignatureRowEditor(
   private val separatorColor: Color = dialog.clauseSeparatorColor
 
   private val table = dialog.parametersTable
-  val typeDoc = PsiDocumentManager
-    .getInstance(project)
+  val typeDoc = PsiDocumentManager.getInstance(project)
     .getDocument(item.typeCodeFragment)
   val myTypeEditor: EditorTextField =
     new EditorTextField(typeDoc, project, fileType)
 
   val myNameEditor: EditorTextField =
     new EditorTextField(item.parameter.getName, project, fileType)
-  val defaultValueDoc = PsiDocumentManager
-    .getInstance(project)
+  val defaultValueDoc = PsiDocumentManager.getInstance(project)
     .getDocument(item.defaultValueCodeFragment)
 
   val myDefaultValueEditor =
@@ -90,8 +88,8 @@ class ScalaChangeSignatureRowEditor(
 
   def addDefaultValueEditor(additionalPanel: JPanel) {
     myDefaultValueEditor.setPreferredWidth(table.getWidth / 2)
-    myDefaultValueEditor.addDocumentListener(
-      new this.RowEditorChangeListener(2))
+    myDefaultValueEditor
+      .addDocumentListener(new this.RowEditorChangeListener(2))
     myDefaultValueEditor.addDocumentListener(new DocumentAdapter {
       override def documentChanged(e: DocumentEvent): Unit = {
         item.parameter.defaultValue = myDefaultValueEditor.getText.trim

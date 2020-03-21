@@ -198,8 +198,8 @@ object KafkaUtils {
       kc: KafkaCluster,
       offsetRanges: Array[OffsetRange])
       : Map[TopicAndPartition, (String, Int)] = {
-    val topics =
-      offsetRanges.map(o => TopicAndPartition(o.topic, o.partition)).toSet
+    val topics = offsetRanges.map(o => TopicAndPartition(o.topic, o.partition))
+      .toSet
     val leaders = kc.findLeaders(topics)
     KafkaCluster.checkErrors(leaders)
   }
@@ -234,9 +234,8 @@ object KafkaUtils {
       topicPartitions <- kc.getPartitions(topics).right
       leaderOffsets <- (if (reset == Some("smallest")) {
                           kc.getEarliestLeaderOffsets(topicPartitions)
-                        } else {
-                          kc.getLatestLeaderOffsets(topicPartitions)
-                        }).right
+                        } else { kc.getLatestLeaderOffsets(topicPartitions) })
+        .right
     } yield { leaderOffsets.map { case (tp, lo) => (tp, lo.offset) } }
     KafkaCluster.checkErrors(result)
   }
@@ -774,12 +773,13 @@ private[kafka] class KafkaUtilsPythonHelper {
           Set(topics.asScala.toSeq: _*))
       }
 
-    KafkaUtils.createDirectStream[Array[Byte], Array[
-      Byte], DefaultDecoder, DefaultDecoder, V](
-      jssc.ssc,
-      Map(kafkaParams.asScala.toSeq: _*),
-      Map(currentFromOffsets.toSeq: _*),
-      messageHandler)
+    KafkaUtils
+      .createDirectStream[Array[Byte], Array[
+        Byte], DefaultDecoder, DefaultDecoder, V](
+        jssc.ssc,
+        Map(kafkaParams.asScala.toSeq: _*),
+        Map(currentFromOffsets.toSeq: _*),
+        messageHandler)
   }
 
   def createOffsetRange(
@@ -797,8 +797,8 @@ private[kafka] class KafkaUtilsPythonHelper {
 
   def offsetRangesOfKafkaRDD(rdd: RDD[_]): JList[OffsetRange] = {
     val parentRDDs = rdd.getNarrowAncestors
-    val kafkaRDDs = parentRDDs.filter(rdd =>
-      rdd.isInstanceOf[KafkaRDD[_, _, _, _, _]])
+    val kafkaRDDs = parentRDDs
+      .filter(rdd => rdd.isInstanceOf[KafkaRDD[_, _, _, _, _]])
 
     require(
       kafkaRDDs.length == 1,

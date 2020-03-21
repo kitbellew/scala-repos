@@ -135,8 +135,7 @@ trait CheckAnalysis {
             def checkValidJoinConditionExprs(expr: Expression): Unit =
               expr match {
                 case p: Predicate =>
-                  p.asInstanceOf[Expression]
-                    .children
+                  p.asInstanceOf[Expression].children
                     .foreach(checkValidJoinConditionExprs)
                 case e if e.dataType.isInstanceOf[BinaryType] =>
                   failAnalysis(
@@ -220,11 +219,10 @@ trait CheckAnalysis {
                 s"${right.output.length}")
 
           case s: Union
-              if s.children.exists(
-                _.output.length != s.children.head.output.length) =>
+              if s.children
+                .exists(_.output.length != s.children.head.output.length) =>
             val firstError = s.children
-              .find(_.output.length != s.children.head.output.length)
-              .get
+              .find(_.output.length != s.children.head.output.length).get
             failAnalysis(s"""
                 |Unions can only be performed on tables with the same number of columns,
                 | but one table has '${firstError.output.length}' columns and another table has

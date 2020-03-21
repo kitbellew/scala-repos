@@ -54,12 +54,10 @@ class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
 
       val slow = system
         .actorOf(Props(new DelayableActor(50, finishedCounter)).withDispatcher(
-          delayableActorDispatcher))
-        .asInstanceOf[ActorRefWithCell]
+          delayableActorDispatcher)).asInstanceOf[ActorRefWithCell]
       val fast = system
         .actorOf(Props(new DelayableActor(10, finishedCounter)).withDispatcher(
-          delayableActorDispatcher))
-        .asInstanceOf[ActorRefWithCell]
+          delayableActorDispatcher)).asInstanceOf[ActorRefWithCell]
 
       var sentToFast = 0
 
@@ -81,31 +79,16 @@ class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
       }
 
       finishedCounter.await(5, TimeUnit.SECONDS)
-      fast.underlying
-        .asInstanceOf[ActorCell]
-        .mailbox
-        .asInstanceOf[Mailbox]
+      fast.underlying.asInstanceOf[ActorCell].mailbox.asInstanceOf[Mailbox]
         .hasMessages should ===(false)
-      slow.underlying
-        .asInstanceOf[ActorCell]
-        .mailbox
-        .asInstanceOf[Mailbox]
+      slow.underlying.asInstanceOf[ActorCell].mailbox.asInstanceOf[Mailbox]
         .hasMessages should ===(false)
-      fast.underlying
-        .asInstanceOf[ActorCell]
-        .actor
-        .asInstanceOf[DelayableActor]
+      fast.underlying.asInstanceOf[ActorCell].actor.asInstanceOf[DelayableActor]
         .invocationCount should be > sentToFast
-      fast.underlying
-        .asInstanceOf[ActorCell]
-        .actor
-        .asInstanceOf[DelayableActor]
+      fast.underlying.asInstanceOf[ActorCell].actor.asInstanceOf[DelayableActor]
         .invocationCount should be >
-        (slow.underlying
-          .asInstanceOf[ActorCell]
-          .actor
-          .asInstanceOf[DelayableActor]
-          .invocationCount)
+        (slow.underlying.asInstanceOf[ActorCell].actor
+          .asInstanceOf[DelayableActor].invocationCount)
       system.stop(slow)
       system.stop(fast)
     }

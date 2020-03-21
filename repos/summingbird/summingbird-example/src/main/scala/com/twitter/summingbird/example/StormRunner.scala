@@ -58,10 +58,8 @@ object StormRunner {
     *
     * http://tugdualgrall.blogspot.com/2012/11/couchbase-create-large-dataset-using.html
     */
-  lazy val config = new ConfigurationBuilder()
-    .setOAuthConsumerKey("mykey")
-    .setOAuthConsumerSecret("mysecret")
-    .setOAuthAccessToken("token")
+  lazy val config = new ConfigurationBuilder().setOAuthConsumerKey("mykey")
+    .setOAuthConsumerSecret("mysecret").setOAuthAccessToken("token")
     .setOAuthAccessTokenSecret("tokensecret")
     .setJSONStoreEnabled(true) // required for JSON serialization
     .build
@@ -92,8 +90,8 @@ object StormRunner {
     *
     * First, the backing store:
     */
-  lazy val stringLongStore = Memcache.mergeable[(String, BatchID), Long](
-    "urlCount")
+  lazy val stringLongStore = Memcache
+    .mergeable[(String, BatchID), Long]("urlCount")
 
   /**
     * the param to store is by name, so this is still not created created
@@ -127,10 +125,8 @@ object StormRunner {
 
       override def getNamedOptions: Map[String, Options] =
         Map(
-          "DEFAULT" -> Options()
-            .set(SummerParallelism(2))
-            .set(FlatMapParallelism(80))
-            .set(SourceParallelism(16))
+          "DEFAULT" -> Options().set(SummerParallelism(2))
+            .set(FlatMapParallelism(80)).set(SourceParallelism(16))
             .set(CacheSize(100)))
       override def graph = wordCount[Storm](spout, storeSupplier)
     }

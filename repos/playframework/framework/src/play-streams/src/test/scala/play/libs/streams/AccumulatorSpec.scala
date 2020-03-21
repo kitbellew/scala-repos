@@ -74,9 +74,8 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
         await(fAcc.run(source, m)) must throwA[ExecutionException].like {
           case ex =>
             val cause = ex.getCause
-            cause.isInstanceOf[RuntimeException] must beTrue and (
-              cause.getMessage must_== "failed"
-            )
+            cause.isInstanceOf[RuntimeException] must beTrue and (cause
+              .getMessage must_== "failed")
         }
       }
 
@@ -89,24 +88,22 @@ object AccumulatorSpec extends org.specs2.mutable.Specification {
         await(fAcc.run(errorSource, m)) must throwA[ExecutionException].like {
           case ex =>
             val cause = ex.getCause
-            cause.isInstanceOf[RuntimeException] must beTrue and (
-              cause.getMessage must_== "error"
-            )
+            cause.isInstanceOf[RuntimeException] must beTrue and (cause
+              .getMessage must_== "error")
         }
       }
     }
 
     "be compatible with Java accumulator" in {
       "Java asScala" in withMaterializer { implicit m =>
-        val sink = sum.toSink.mapMaterializedValue(
-          new JFn[CompletionStage[Int], Future[Int]] {
+        val sink = sum.toSink
+          .mapMaterializedValue(new JFn[CompletionStage[Int], Future[Int]] {
             def apply(f: CompletionStage[Int]): Future[Int] =
               FutureConverters.toScala(f)
           })
 
         sawait(
-          play.api.libs.streams
-            .Accumulator(sink.asScala)
+          play.api.libs.streams.Accumulator(sink.asScala)
             .run(source.asScala)) must_== 6
       }
     }

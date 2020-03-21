@@ -78,8 +78,8 @@ class ScalaMoveDirectoryWithClassesHelper
     for (packageName <- packageNames) {
       val aPackage: PsiPackage = psiFacade.findPackage(packageName)
       if (aPackage != null) {
-        val remainsNothing: Boolean = aPackage.getDirectories.exists(
-          !isUnderRefactoring(_, directoriesToMove))
+        val remainsNothing: Boolean = aPackage.getDirectories
+          .exists(!isUnderRefactoring(_, directoriesToMove))
 
         if (remainsNothing) {
           import scala.collection.JavaConversions._
@@ -87,9 +87,8 @@ class ScalaMoveDirectoryWithClassesHelper
                  .search(aPackage, GlobalSearchScope.projectScope(project))
                  .findAll()) {
             val element: PsiElement = reference.getElement
-            val importStmt = PsiTreeUtil.getParentOfType(
-              element,
-              classOf[ScImportStmt])
+            val importStmt = PsiTreeUtil
+              .getParentOfType(element, classOf[ScImportStmt])
             if (importStmt != null) {
               usages.add(new ImportStatementToRemoveUsage(importStmt))
             }
@@ -110,9 +109,8 @@ class ScalaMoveDirectoryWithClassesHelper
       clazz match {
         case o: ScObject if o.isPackageObject =>
           val oldElems = o.namedElements
-          val newClass: PsiClass = MoveClassesOrPackagesUtil.doMoveClass(
-            clazz,
-            moveDestination)
+          val newClass: PsiClass = MoveClassesOrPackagesUtil
+            .doMoveClass(clazz, moveDestination)
           oldToNewElementsMapping.put(clazz, newClass)
           listener.elementMoved(newClass)
 
@@ -127,9 +125,8 @@ class ScalaMoveDirectoryWithClassesHelper
           }
 
         case _ =>
-          val newClass: PsiClass = MoveClassesOrPackagesUtil.doMoveClass(
-            clazz,
-            moveDestination)
+          val newClass: PsiClass = MoveClassesOrPackagesUtil
+            .doMoveClass(clazz, moveDestination)
           oldToNewElementsMapping.put(clazz, newClass)
           listener.elementMoved(newClass)
       }

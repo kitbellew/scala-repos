@@ -55,8 +55,8 @@ final class RegressionEvaluator @Since("1.4.0") (
     */
   @Since("1.4.0")
   val metricName: Param[String] = {
-    val allowedParams = ParamValidators.inArray(
-      Array("mse", "rmse", "r2", "mae"))
+    val allowedParams = ParamValidators
+      .inArray(Array("mse", "rmse", "r2", "mae"))
     new Param(
       this,
       "metricName",
@@ -98,14 +98,11 @@ final class RegressionEvaluator @Since("1.4.0") (
       labelType == FloatType || labelType == DoubleType,
       s"Label column $labelColName must be of type float or double, but not $labelType")
 
-    val predictionAndLabels = dataset
-      .select(
-        col($(predictionCol)).cast(DoubleType),
-        col($(labelCol)).cast(DoubleType))
-      .rdd
-      .map {
-        case Row(prediction: Double, label: Double) => (prediction, label)
-      }
+    val predictionAndLabels = dataset.select(
+      col($(predictionCol)).cast(DoubleType),
+      col($(labelCol)).cast(DoubleType)).rdd.map {
+      case Row(prediction: Double, label: Double) => (prediction, label)
+    }
     val metrics = new RegressionMetrics(predictionAndLabels)
     val metric = $(metricName) match {
       case "rmse" => metrics.rootMeanSquaredError

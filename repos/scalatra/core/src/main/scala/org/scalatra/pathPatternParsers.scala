@@ -76,8 +76,8 @@ class SinatraPathPatternParser extends RegexPathPatternParser {
   def apply(pattern: String): PathPattern =
     parseAll(pathPattern, pattern) match {
       case Success(pathPattern, _) =>
-        (PartialPathPattern("^") + pathPattern + PartialPathPattern(
-          "$")).toPathPattern
+        (PartialPathPattern("^") + pathPattern + PartialPathPattern("$"))
+          .toPathPattern
       case _ =>
         throw new IllegalArgumentException("Invalid path pattern: " + pattern)
     }
@@ -123,9 +123,8 @@ class RailsPathPatternParser extends RegexPathPatternParser {
 
   private def target =
     expr ^^ { e =>
-      PartialPathPattern(
-        "\\A" + e.regex + "\\Z",
-        e.captureGroupNames).toPathPattern
+      PartialPathPattern("\\A" + e.regex + "\\Z", e.captureGroupNames)
+        .toPathPattern
     }
 
   private def expr = rep1(token) ^^ { _.reduceLeft { _ + _ } }

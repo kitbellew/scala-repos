@@ -52,11 +52,8 @@ trait ServerIntegrationSpecification extends PendingUntilFixed with AroundEach {
       port: Int,
       application: Application = play.api.PlayCoreTestApplication(),
       sslPort: Option[Int] = None): play.api.test.TestServer = {
-    play.api.test.TestServer(
-      port,
-      application,
-      sslPort,
-      Some(integrationServerProvider))
+    play.api.test
+      .TestServer(port, application, sslPort, Some(integrationServerProvider))
   }
 
   /**

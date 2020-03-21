@@ -61,7 +61,8 @@ class GzipCompressor extends DeflateCompressor {
     def int32(i: Int): ByteString = ByteString(i, i >> 8, i >> 16, i >> 24)
     val crc = checkSum.getValue.toInt
     val tot =
-      bytesRead.toInt // truncated to 32bit as specified in https://tools.ietf.org/html/rfc1952#section-2
+      bytesRead
+        .toInt // truncated to 32bit as specified in https://tools.ietf.org/html/rfc1952#section-2
     val trailer = int32(crc) ++ int32(tot)
 
     trailer
@@ -122,7 +123,8 @@ class GzipDecompressor(maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
           import reader._
           if (readIntLE() != crc32.getValue.toInt)
             fail("Corrupt data (CRC32 checksum error)")
-          if (readIntLE() != inflater.getBytesWritten.toInt /* truncated to 32bit */ )
+          if (readIntLE() != inflater.getBytesWritten
+                .toInt /* truncated to 32bit */ )
             fail("Corrupt GZIP trailer ISIZE")
           ParseResult(None, ReadHeaders, true)
         }

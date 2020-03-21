@@ -133,10 +133,8 @@ class MarathonSchedulerService @Inject() (
 
   def deploy(plan: DeploymentPlan, force: Boolean = false): Future[Unit] = {
     log.info(s"Deploy plan with force=$force:\n$plan ")
-    val future: Future[Any] = PromiseActor.askWithoutTimeout(
-      system,
-      schedulerActor,
-      Deploy(plan, force))
+    val future: Future[Any] = PromiseActor
+      .askWithoutTimeout(system, schedulerActor, Deploy(plan, force))
     future.map {
       case DeploymentStarted(_) => ()
       case CommandFailed(_, t)  => throw t
@@ -149,14 +147,11 @@ class MarathonSchedulerService @Inject() (
     Await.result(appRepository.listVersions(appId), config.zkTimeoutDuration)
 
   def listRunningDeployments(): Future[Seq[DeploymentStepInfo]] =
-    (schedulerActor ? RetrieveRunningDeployments)
-      .recoverWith {
-        case _: TimeoutException =>
-          Future.failed(new TimeoutException(
-            s"Can not retrieve the list of running deployments in time"))
-      }
-      .mapTo[RunningDeployments]
-      .map(_.plans)
+    (schedulerActor ? RetrieveRunningDeployments).recoverWith {
+      case _: TimeoutException =>
+        Future.failed(new TimeoutException(
+          s"Can not retrieve the list of running deployments in time"))
+    }.mapTo[RunningDeployments].map(_.plans)
 
   def getApp(appId: PathId, version: Timestamp): Option[AppDefinition] = {
     Await.result(appRepository.app(appId, version), config.zkTimeoutDuration)
@@ -292,8 +287,8 @@ class MarathonSchedulerService @Inject() (
         migration.migrate()
 
         //run all leadership callbacks
-        log.info(
-          s"""Call onElected leadership callbacks on ${leadershipCallbacks
+        log
+          .info(s"""Call onElected leadership callbacks on ${leadershipCallbacks
             .mkString(", ")}""")
         Await.result(
           Future.sequence(leadershipCallbacks.map(_.onElected)),

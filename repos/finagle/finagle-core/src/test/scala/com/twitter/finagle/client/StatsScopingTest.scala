@@ -37,9 +37,7 @@ class StatsScopingTest extends FunSuite with AssertionsForJUnit {
         scoper: StatsScoping.ScoperFunction) = {
       val factory =
         new StackBuilder[ServiceFactory[String, Unit]](nilStack[String, Unit])
-          .push(counterServiceModule)
-          .push(StatsScoping.module)
-          .make(
+          .push(counterServiceModule).push(StatsScoping.module).make(
             Stack.Params.empty
               + Stats(stats)
               + StatsScoping.Scoper(scoper)

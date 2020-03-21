@@ -141,8 +141,8 @@ object ScrollEvent {
   /**
     * This event occurs when a scrolling gesture ends.
     */
-  val ScrollFinished: EventType[jfxsi.ScrollEvent] =
-    jfxsi.ScrollEvent.SCROLL_FINISHED
+  val ScrollFinished: EventType[jfxsi.ScrollEvent] = jfxsi.ScrollEvent
+    .SCROLL_FINISHED
   @deprecated(
     "Use ScrollFinished; SCROLL_FINISHED will be removed in a future release",
     "8.0.60-R10")
@@ -151,8 +151,8 @@ object ScrollEvent {
   /**
     * This event occurs when a scrolling gesture is detected.
     */
-  val ScrollStarted: EventType[jfxsi.ScrollEvent] =
-    jfxsi.ScrollEvent.SCROLL_STARTED
+  val ScrollStarted: EventType[jfxsi.ScrollEvent] = jfxsi.ScrollEvent
+    .SCROLL_STARTED
   @deprecated(
     "Use ScrollStarted; SCROLL_STARTED will be removed in a future release",
     "8.0.60-R10")
@@ -186,8 +186,8 @@ class ScrollEvent(override val delegate: jfxsi.ScrollEvent)
     * Gets the horizontal scrolling units for text-based scrolling.
     */
   def textDeltaXUnits: ScrollEvent.HorizontalTextScrollUnits =
-    ScrollEvent.HorizontalTextScrollUnits.jfxEnum2sfx(
-      delegate.getTextDeltaXUnits)
+    ScrollEvent.HorizontalTextScrollUnits
+      .jfxEnum2sfx(delegate.getTextDeltaXUnits)
 
   /**
     * Gets the vertical text-based scroll amount.

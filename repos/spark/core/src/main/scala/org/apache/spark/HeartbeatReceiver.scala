@@ -98,8 +98,8 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     .newDaemonSingleThreadScheduledExecutor(
       "heartbeat-receiver-event-loop-thread")
 
-  private val killExecutorThread = ThreadUtils.newDaemonSingleThreadExecutor(
-    "kill-executor-thread")
+  private val killExecutorThread = ThreadUtils
+    .newDaemonSingleThreadExecutor("kill-executor-thread")
 
   override def onStart(): Unit = {
     timeoutCheckingTask = eventLoopThread.scheduleAtFixedRate(

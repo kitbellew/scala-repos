@@ -31,12 +31,10 @@ class CollectionFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(Size(a1), 0)
     checkEvaluation(Size(a2), 2)
 
-    val m0 = Literal.create(
-      Map("a" -> "a", "b" -> "b"),
-      MapType(StringType, StringType))
-    val m1 = Literal.create(
-      Map[String, String](),
-      MapType(StringType, StringType))
+    val m0 = Literal
+      .create(Map("a" -> "a", "b" -> "b"), MapType(StringType, StringType))
+    val m1 = Literal
+      .create(Map[String, String](), MapType(StringType, StringType))
     val m2 = Literal.create(Map("a" -> "a"), MapType(StringType, StringType))
 
     checkEvaluation(Size(m0), 2)

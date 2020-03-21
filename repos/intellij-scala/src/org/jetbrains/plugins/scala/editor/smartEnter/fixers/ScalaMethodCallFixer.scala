@@ -41,11 +41,11 @@ class ScalaMethodCallFixer extends ScalaFixer {
               if (cl.length < 2) return NoOperation
 
               val rightArgs = {
-                var currentPsi = psiElement.getContainingFile.findElementAt(
-                  editor.getCaretModel.getOffset)
+                var currentPsi = psiElement.getContainingFile
+                  .findElementAt(editor.getCaretModel.getOffset)
 
-                while (currentPsi != null && methodCall.getTextRange.contains(
-                         currentPsi.getTextRange) &&
+                while (currentPsi != null && methodCall.getTextRange
+                         .contains(currentPsi.getTextRange) &&
                        !currentPsi.isInstanceOf[ScArgumentExprList]) {
                   currentPsi = currentPsi.getParent
                 }

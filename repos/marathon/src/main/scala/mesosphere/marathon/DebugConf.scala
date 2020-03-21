@@ -102,8 +102,7 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
     conf.logLevel.get.foreach { levelName =>
       val level = Level.toLevel(
         if ("fatal".equalsIgnoreCase(levelName)) "fatal" else levelName)
-      val rootLogger = LoggerFactory
-        .getLogger(Logger.ROOT_LOGGER_NAME)
+      val rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
         .asInstanceOf[ch.qos.logback.classic.Logger]
       rootLogger.setLevel(level)
     }
@@ -114,8 +113,7 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
     val tracingBehavior =
       if (conf.enableDebugTracing) Some(new TracingBehavior(metricsProvider))
       else None
-    val metricsBehavior = conf.metrics.get
-      .filter(identity)
+    val metricsBehavior = conf.metrics.get.filter(identity)
       .map(_ => new MetricsBehavior(metricsProvider))
 
     val behaviors = (tracingBehavior :: metricsBehavior :: Nil).flatten

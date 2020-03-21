@@ -45,8 +45,8 @@ package object config {
   private[spark] val EXECUTOR_USER_CLASS_PATH_FIRST = ConfigBuilder(
     "spark.executor.userClassPathFirst").booleanConf.withDefault(false)
 
-  private[spark] val IS_PYTHON_APP = ConfigBuilder(
-    "spark.yarn.isPython").internal.booleanConf.withDefault(false)
+  private[spark] val IS_PYTHON_APP = ConfigBuilder("spark.yarn.isPython")
+    .internal.booleanConf.withDefault(false)
 
   private[spark] val CPUS_PER_TASK = ConfigBuilder("spark.task.cpus").intConf
     .withDefault(1)
@@ -65,14 +65,10 @@ package object config {
     "spark.shuffle.service.enabled").booleanConf.withDefault(false)
 
   private[spark] val KEYTAB = ConfigBuilder("spark.yarn.keytab")
-    .doc("Location of user's keytab.")
-    .stringConf
-    .optional
+    .doc("Location of user's keytab.").stringConf.optional
 
   private[spark] val PRINCIPAL = ConfigBuilder("spark.yarn.principal")
-    .doc("Name of the Kerberos principal.")
-    .stringConf
-    .optional
+    .doc("Name of the Kerberos principal.").stringConf.optional
 
   private[spark] val EXECUTOR_INSTANCES = ConfigBuilder(
     "spark.executor.instances").intConf.optional

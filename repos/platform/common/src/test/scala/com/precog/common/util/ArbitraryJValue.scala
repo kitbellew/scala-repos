@@ -77,10 +77,10 @@ trait ArbitraryJValue {
       mantissa <- arbitrary[Long]
       exponent <- arbitrary[Int]
 
-      adjusted = if (exponent.toLong + mantissa.toString.length >= Int.MaxValue.toLong)
-        exponent - mantissa.toString.length
-      else if (exponent.toLong - mantissa.toString.length <= Int.MinValue.toLong)
-        exponent + mantissa.toString.length
+      adjusted = if (exponent.toLong + mantissa.toString.length >= Int.MaxValue
+                       .toLong) exponent - mantissa.toString.length
+      else if (exponent.toLong - mantissa.toString.length <= Int.MinValue
+                 .toLong) exponent + mantissa.toString.length
       else exponent
     } yield BigDecimal(mantissa, adjusted, java.math.MathContext.UNLIMITED))
 }

@@ -34,12 +34,9 @@ object LDASuite {
     val sc = sql.sparkContext
     val rng = new java.util.Random()
     rng.setSeed(1)
-    val rdd = sc
-      .parallelize(1 to rows)
-      .map { i =>
-        Vectors.dense(Array.fill(vocabSize)(rng.nextInt(2 * avgWC).toDouble))
-      }
-      .map(v => new TestRow(v))
+    val rdd = sc.parallelize(1 to rows).map { i =>
+      Vectors.dense(Array.fill(vocabSize)(rng.nextInt(2 * avgWC).toDouble))
+    }.map(v => new TestRow(v))
     sql.createDataFrame(rdd)
   }
 
@@ -92,13 +89,8 @@ class LDASuite
   }
 
   test("set parameters") {
-    val lda = new LDA()
-      .setFeaturesCol("test_feature")
-      .setMaxIter(33)
-      .setSeed(123)
-      .setCheckpointInterval(7)
-      .setK(9)
-      .setTopicConcentration(0.56)
+    val lda = new LDA().setFeaturesCol("test_feature").setMaxIter(33)
+      .setSeed(123).setCheckpointInterval(7).setK(9).setTopicConcentration(0.56)
       .setTopicDistributionCol("myOutput")
 
     assert(lda.getFeaturesCol === "test_feature")
@@ -137,8 +129,7 @@ class LDASuite
       new LDA().setTopicConcentration(-1.1)
     }
 
-    val dummyDF = sqlContext
-      .createDataFrame(Seq((1, Vectors.dense(1.0, 2.0))))
+    val dummyDF = sqlContext.createDataFrame(Seq((1, Vectors.dense(1.0, 2.0))))
       .toDF("id", "features")
     // validate parameters
     lda.transformSchema(dummyDF.schema)
@@ -208,8 +199,8 @@ class LDASuite
       case r: Row =>
         val termWeights = r.getAs[Seq[Double]](0)
         assert(
-          termWeights.length === 3 && termWeights.forall(w =>
-            w >= 0.0 && w <= 1.0))
+          termWeights.length === 3 && termWeights
+            .forall(w => w >= 0.0 && w <= 1.0))
     }
   }
 

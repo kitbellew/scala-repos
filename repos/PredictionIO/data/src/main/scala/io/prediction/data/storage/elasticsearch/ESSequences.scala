@@ -43,19 +43,14 @@ class ESSequences(client: Client, config: StorageClientConfig, index: String)
           ("_all" -> ("enabled" -> 0)) ~
           ("_type" -> ("index" -> "no")) ~
           ("enabled" -> 0))
-    indices
-      .preparePutMapping(index)
-      .setType(estype)
-      .setSource(compact(render(mappingJson)))
-      .get
+    indices.preparePutMapping(index).setType(estype)
+      .setSource(compact(render(mappingJson))).get
   }
 
   def genNext(name: String): Int = {
     try {
-      val response = client
-        .prepareIndex(index, estype, name)
-        .setSource(compact(render("n" -> name)))
-        .get
+      val response = client.prepareIndex(index, estype, name)
+        .setSource(compact(render("n" -> name))).get
       response.getVersion().toInt
     } catch {
       case e: ElasticsearchException =>

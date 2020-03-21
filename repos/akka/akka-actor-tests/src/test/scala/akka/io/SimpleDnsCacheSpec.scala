@@ -12,9 +12,8 @@ class SimpleDnsCacheSpec extends WordSpec with ShouldMatchers {
       val cache: SimpleDnsCache = new SimpleDnsCache() {
         override protected def clock() = localClock.get
       }
-      val cacheEntry = Dns.Resolved(
-        "test.local",
-        Seq(InetAddress.getByName("127.0.0.1")))
+      val cacheEntry = Dns
+        .Resolved("test.local", Seq(InetAddress.getByName("127.0.0.1")))
       cache.put(cacheEntry, 5000)
 
       cache.cached("test.local") should equal(Some(cacheEntry))
@@ -29,9 +28,8 @@ class SimpleDnsCacheSpec extends WordSpec with ShouldMatchers {
       val cache: SimpleDnsCache = new SimpleDnsCache() {
         override protected def clock() = localClock.get
       }
-      val cacheEntry = Dns.Resolved(
-        "test.local",
-        Seq(InetAddress.getByName("127.0.0.1")))
+      val cacheEntry = Dns
+        .Resolved("test.local", Seq(InetAddress.getByName("127.0.0.1")))
       cache.put(cacheEntry, 5000)
 
       cache.cached("test.local") should equal(Some(cacheEntry))

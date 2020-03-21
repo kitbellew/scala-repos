@@ -118,15 +118,13 @@ final class OneVsRestModel private[ml] (
               predictions + ((index, prediction(1)))
           }
           val transformedDataset = model.transform(df).select(columns: _*)
-          val updatedDataset = transformedDataset
-            .withColumn(
-              tmpColName,
-              updateUDF(col(accColName), col(rawPredictionCol)))
+          val updatedDataset = transformedDataset.withColumn(
+            tmpColName,
+            updateUDF(col(accColName), col(rawPredictionCol)))
           val newColumns = origCols ++ List(col(tmpColName))
 
           // switch out the intermediate column with the accumulator column
-          updatedDataset
-            .select(newColumns: _*)
+          updatedDataset.select(newColumns: _*)
             .withColumnRenamed(tmpColName, accColName)
       }
 
@@ -205,8 +203,7 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
       // classes are assumed to be numbered from 0,...,maxLabelIndex
       maxLabelIndex.toInt + 1
     }
-    val numClasses = MetadataUtils
-      .getNumClasses(labelSchema)
+    val numClasses = MetadataUtils.getNumClasses(labelSchema)
       .fold(computeNumClasses())(identity)
 
     val multiclassLabeled = dataset.select($(labelCol), $(featuresCol))
@@ -218,25 +215,22 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     }
 
     // create k columns, one for each binary classifier.
-    val models = Range(0, numClasses).par
-      .map { index =>
-        // generate new label metadata for the binary problem.
-        val newLabelMeta = BinaryAttribute.defaultAttr
-          .withName("label")
-          .toMetadata()
-        val labelColName = "mc2b$" + index
-        val trainingDataset = multiclassLabeled.withColumn(
-          labelColName,
-          when(col($(labelCol)) === index.toDouble, 1.0).otherwise(0.0),
-          newLabelMeta)
-        val classifier = getClassifier
-        val paramMap = new ParamMap()
-        paramMap.put(classifier.labelCol -> labelColName)
-        paramMap.put(classifier.featuresCol -> getFeaturesCol)
-        paramMap.put(classifier.predictionCol -> getPredictionCol)
-        classifier.fit(trainingDataset, paramMap)
-      }
-      .toArray[ClassificationModel[_, _]]
+    val models = Range(0, numClasses).par.map { index =>
+      // generate new label metadata for the binary problem.
+      val newLabelMeta = BinaryAttribute.defaultAttr.withName("label")
+        .toMetadata()
+      val labelColName = "mc2b$" + index
+      val trainingDataset = multiclassLabeled.withColumn(
+        labelColName,
+        when(col($(labelCol)) === index.toDouble, 1.0).otherwise(0.0),
+        newLabelMeta)
+      val classifier = getClassifier
+      val paramMap = new ParamMap()
+      paramMap.put(classifier.labelCol -> labelColName)
+      paramMap.put(classifier.featuresCol -> getFeaturesCol)
+      paramMap.put(classifier.predictionCol -> getPredictionCol)
+      classifier.fit(trainingDataset, paramMap)
+    }.toArray[ClassificationModel[_, _]]
 
     if (handlePersistence) { multiclassLabeled.unpersist() }
 

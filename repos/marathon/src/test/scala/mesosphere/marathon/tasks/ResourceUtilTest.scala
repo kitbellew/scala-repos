@@ -14,9 +14,8 @@ class ResourceUtilTest
     with Assertions
     with Matchers {
   test("no base resources") {
-    val leftOvers = ResourceUtil.consumeResources(
-      Seq(),
-      Seq(ports("ports", 2 to 12)))
+    val leftOvers = ResourceUtil
+      .consumeResources(Seq(), Seq(ports("ports", 2 to 12)))
     assert(leftOvers == Seq())
   }
 
@@ -62,27 +61,15 @@ class ResourceUtilTest
   }
 
   test("resource consumption considers reservation state") {
-    val reservationInfo = ReservationInfo
-      .newBuilder()
-      .setPrincipal("principal")
+    val reservationInfo = ReservationInfo.newBuilder().setPrincipal("principal")
       .build()
 
-    val disk = DiskInfo
-      .newBuilder()
-      .setPersistence(Persistence.newBuilder().setId("persistenceId"))
-      .build()
-    val resourceWithReservation = MTH.scalarResource(
-      "disk",
-      1024,
-      "role",
-      Some(reservationInfo),
-      Some(disk))
-    val resourceWithoutReservation = MTH.scalarResource(
-      "disk",
-      1024,
-      "role",
-      None,
-      None)
+    val disk = DiskInfo.newBuilder()
+      .setPersistence(Persistence.newBuilder().setId("persistenceId")).build()
+    val resourceWithReservation = MTH
+      .scalarResource("disk", 1024, "role", Some(reservationInfo), Some(disk))
+    val resourceWithoutReservation = MTH
+      .scalarResource("disk", 1024, "role", None, None)
 
     // simple case: Only exact match contained
 
@@ -130,31 +117,17 @@ class ResourceUtilTest
   }
 
   test("resource consumption considers reservation labels") {
-    val reservationInfo1 = ReservationInfo
-      .newBuilder()
-      .setPrincipal("principal")
-      .build()
-    val labels = Protos.Labels
-      .newBuilder()
+    val reservationInfo1 = ReservationInfo.newBuilder()
+      .setPrincipal("principal").build()
+    val labels = Protos.Labels.newBuilder()
       .addLabels(Protos.Label.newBuilder().setKey("key").setValue("value"))
-    val reservationInfo2 = ReservationInfo
-      .newBuilder()
-      .setPrincipal("principal")
-      .setLabels(labels)
-      .build()
+    val reservationInfo2 = ReservationInfo.newBuilder()
+      .setPrincipal("principal").setLabels(labels).build()
 
-    val resourceWithReservation1 = MTH.scalarResource(
-      "disk",
-      1024,
-      "role",
-      Some(reservationInfo1),
-      None)
-    val resourceWithReservation2 = MTH.scalarResource(
-      "disk",
-      1024,
-      "role",
-      Some(reservationInfo2),
-      None)
+    val resourceWithReservation1 = MTH
+      .scalarResource("disk", 1024, "role", Some(reservationInfo1), None)
+    val resourceWithReservation2 = MTH
+      .scalarResource("disk", 1024, "role", Some(reservationInfo2), None)
 
     // simple case: Only exact match contained
 
@@ -202,40 +175,24 @@ class ResourceUtilTest
   }
 
   test("display resources indicates reservation") {
-    val reservationInfo = ReservationInfo
-      .newBuilder()
-      .setPrincipal("principal")
+    val reservationInfo = ReservationInfo.newBuilder().setPrincipal("principal")
       .build()
-    val resource = MTH.scalarResource(
-      "disk",
-      1024,
-      "role",
-      Some(reservationInfo),
-      None)
-    val resourceString = ResourceUtil.displayResources(
-      Seq(resource),
-      maxRanges = 10)
+    val resource = MTH
+      .scalarResource("disk", 1024, "role", Some(reservationInfo), None)
+    val resourceString = ResourceUtil
+      .displayResources(Seq(resource), maxRanges = 10)
     resourceString should equal("disk(role, RESERVED for principal) 1024.0")
   }
 
   test("display resources displays disk and reservation info") {
-    val reservationInfo = ReservationInfo
-      .newBuilder()
-      .setPrincipal("principal")
+    val reservationInfo = ReservationInfo.newBuilder().setPrincipal("principal")
       .build()
-    val disk = DiskInfo
-      .newBuilder()
-      .setPersistence(Persistence.newBuilder().setId("persistenceId"))
-      .build()
-    val resource = MTH.scalarResource(
-      "disk",
-      1024,
-      "role",
-      Some(reservationInfo),
-      Some(disk))
-    val resourceString = ResourceUtil.displayResources(
-      Seq(resource),
-      maxRanges = 10)
+    val disk = DiskInfo.newBuilder()
+      .setPersistence(Persistence.newBuilder().setId("persistenceId")).build()
+    val resource = MTH
+      .scalarResource("disk", 1024, "role", Some(reservationInfo), Some(disk))
+    val resourceString = ResourceUtil
+      .displayResources(Seq(resource), maxRanges = 10)
     resourceString should equal(
       "disk(role, RESERVED for principal, diskId persistenceId) 1024.0")
   }
@@ -329,12 +286,8 @@ class ResourceUtilTest
   }
 
   private[this] def set(name: String, labels: Set[String]): Resource = {
-    Resource
-      .newBuilder()
-      .setName(name)
-      .setType(Value.Type.SET)
-      .setSet(Value.Set.newBuilder().addAllItem(labels.asJava))
-      .build()
+    Resource.newBuilder().setName(name).setType(Value.Type.SET)
+      .setSet(Value.Set.newBuilder().addAllItem(labels.asJava)).build()
   }
 
   private[this] def portsTest(
@@ -354,19 +307,12 @@ class ResourceUtilTest
 
   private[this] def ports(name: String, ranges: Range.Inclusive*): Resource = {
     def toRange(range: Range.Inclusive): Value.Range =
-      Value.Range
-        .newBuilder()
-        .setBegin(range.start.toLong)
-        .setEnd(range.end.toLong)
-        .build()
+      Value.Range.newBuilder().setBegin(range.start.toLong)
+        .setEnd(range.end.toLong).build()
 
-    Resource
-      .newBuilder()
-      .setName(name)
-      .setType(Value.Type.RANGES)
-      .setRanges(
-        Value.Ranges.newBuilder().addAllRange(ranges.map(toRange).asJava))
-      .build()
+    Resource.newBuilder().setName(name).setType(Value.Type.RANGES)
+      .setRanges(Value.Ranges.newBuilder().addAllRange(
+        ranges.map(toRange).asJava)).build()
   }
 
   private[this] def scalarTest(

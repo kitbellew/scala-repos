@@ -31,8 +31,7 @@ class ScalaFileNameInspection extends LocalInspectionTool {
       manager: InspectionManager,
       isOnTheFly: Boolean): Array[ProblemDescriptor] = {
     if (!file.isInstanceOf[ScalaFile] ||
-        InjectedLanguageManager
-          .getInstance(file.getProject)
+        InjectedLanguageManager.getInstance(file.getProject)
           .isInjectedFragment(file) ||
         !IntentionAvailabilityChecker.checkInspection(this, file))
       return Array.empty

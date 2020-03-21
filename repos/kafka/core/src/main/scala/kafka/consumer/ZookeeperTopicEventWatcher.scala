@@ -34,8 +34,8 @@ class ZookeeperTopicEventWatcher(
     val topicEventListener = new ZkTopicEventListener()
     zkUtils.makeSurePersistentPathExists(ZkUtils.BrokerTopicsPath)
 
-    zkUtils.zkClient.subscribeStateChanges(new ZkSessionExpireListener(
-      topicEventListener))
+    zkUtils.zkClient
+      .subscribeStateChanges(new ZkSessionExpireListener(topicEventListener))
 
     val topics = zkUtils.zkClient
       .subscribeChildChanges(ZkUtils.BrokerTopicsPath, topicEventListener)
@@ -65,8 +65,8 @@ class ZookeeperTopicEventWatcher(
       lock.synchronized {
         try {
           if (zkUtils != null) {
-            val latestTopics =
-              zkUtils.zkClient.getChildren(ZkUtils.BrokerTopicsPath).toList
+            val latestTopics = zkUtils.zkClient
+              .getChildren(ZkUtils.BrokerTopicsPath).toList
             debug("all topics: %s".format(latestTopics))
             eventHandler.handleTopicEvent(latestTopics)
           }

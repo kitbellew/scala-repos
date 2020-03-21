@@ -64,10 +64,8 @@ trait ScNamedElement
       case _ => null
     }
 
-    val parentMember: ScMember = PsiTreeUtil.getParentOfType(
-      this,
-      classOf[ScMember],
-      false)
+    val parentMember: ScMember = PsiTreeUtil
+      .getParentOfType(this, classOf[ScMember], false)
     new ItemPresentation {
       def getPresentableText: String = name
       def getTextAttributesKey: TextAttributesKey = null
@@ -105,8 +103,7 @@ trait ScNamedElement
               elem,
               true,
               classOf[ScBlock],
-              classOf[ScMember])))
-            .map(new LocalSearchScope(_))
+              classOf[ScMember]))).map(new LocalSearchScope(_))
         case _ => None
       }
     )

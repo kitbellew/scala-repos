@@ -28,8 +28,8 @@ import com.typesafe.config.ConfigFactory
 class ReplicatedDataSerializerSpec
     extends TestKit(ActorSystem(
       "ReplicatedDataSerializerSpec",
-      ConfigFactory.parseString(
-        """
+      ConfigFactory
+        .parseString("""
     akka.actor.provider=akka.cluster.ClusterActorRefProvider
     akka.remote.netty.tcp.port=0
     """)
@@ -98,10 +98,7 @@ class ReplicatedDataSerializerSpec
       checkSerialization(ORSet().add(address1, 1).add(address2, 2))
       checkSerialization(ORSet().add(address1, 1L).add(address2, 2L))
       checkSerialization(
-        ORSet()
-          .add(address1, "a")
-          .add(address2, 2)
-          .add(address3, 3L)
+        ORSet().add(address1, "a").add(address2, 2).add(address3, 3L)
           .add(address3, address3))
 
       val s1 = ORSet().add(address1, "a").add(address2, "b")
@@ -135,9 +132,7 @@ class ReplicatedDataSerializerSpec
 
       checkSameContent(
         GCounter().increment(address1, 2).increment(address2, 5),
-        GCounter()
-          .increment(address2, 5)
-          .increment(address1, 1)
+        GCounter().increment(address2, 5).increment(address1, 1)
           .increment(address1, 1))
       checkSameContent(
         GCounter().increment(address1, 2).increment(address3, 5),
@@ -152,28 +147,20 @@ class ReplicatedDataSerializerSpec
       checkSerialization(
         PNCounter().increment(address1, 2).increment(address2, 5))
       checkSerialization(
-        PNCounter()
-          .increment(address1, 2)
-          .increment(address2, 5)
+        PNCounter().increment(address1, 2).increment(address2, 5)
           .decrement(address1, 1))
 
       checkSameContent(
         PNCounter().increment(address1, 2).increment(address2, 5),
-        PNCounter()
-          .increment(address2, 5)
-          .increment(address1, 1)
+        PNCounter().increment(address2, 5).increment(address1, 1)
           .increment(address1, 1))
       checkSameContent(
         PNCounter().increment(address1, 2).increment(address3, 5),
         PNCounter().increment(address3, 5).increment(address1, 2))
       checkSameContent(
-        PNCounter()
-          .increment(address1, 2)
-          .decrement(address1, 1)
+        PNCounter().increment(address1, 2).decrement(address1, 1)
           .increment(address3, 5),
-        PNCounter()
-          .increment(address3, 5)
-          .increment(address1, 2)
+        PNCounter().increment(address3, 5).increment(address1, 2)
           .decrement(address1, 1)
       )
     }
@@ -182,8 +169,7 @@ class ReplicatedDataSerializerSpec
       checkSerialization(ORMap())
       checkSerialization(ORMap().put(address1, "a", GSet() + "A"))
       checkSerialization(
-        ORMap()
-          .put(address1, "a", GSet() + "A")
+        ORMap().put(address1, "a", GSet() + "A")
           .put(address2, "b", GSet() + "B"))
     }
 
@@ -192,8 +178,7 @@ class ReplicatedDataSerializerSpec
       checkSerialization(
         LWWMap().put(address1, "a", "value1", LWWRegister.defaultClock[Any]))
       checkSerialization(
-        LWWMap()
-          .put(address1, "a", "value1", LWWRegister.defaultClock[Any])
+        LWWMap().put(address1, "a", "value1", LWWRegister.defaultClock[Any])
           .put(address2, "b", 17, LWWRegister.defaultClock[Any]))
     }
 
@@ -201,9 +186,7 @@ class ReplicatedDataSerializerSpec
       checkSerialization(PNCounterMap())
       checkSerialization(PNCounterMap().increment(address1, "a", 3))
       checkSerialization(
-        PNCounterMap()
-          .increment(address1, "a", 3)
-          .decrement(address2, "a", 2)
+        PNCounterMap().increment(address1, "a", 3).decrement(address2, "a", 2)
           .increment(address2, "b", 5))
     }
 
@@ -211,18 +194,13 @@ class ReplicatedDataSerializerSpec
       checkSerialization(ORMultiMap())
       checkSerialization(ORMultiMap().addBinding(address1, "a", "A"))
       checkSerialization(
-        ORMultiMap
-          .empty[String]
-          .addBinding(address1, "a", "A1")
+        ORMultiMap.empty[String].addBinding(address1, "a", "A1")
           .put(address2, "b", Set("B1", "B2", "B3"))
           .addBinding(address2, "a", "A2"))
 
-      val m1 = ORMultiMap
-        .empty[String]
-        .addBinding(address1, "a", "A1")
+      val m1 = ORMultiMap.empty[String].addBinding(address1, "a", "A1")
         .addBinding(address2, "a", "A2")
-      val m2 = ORMultiMap
-        .empty[String]
+      val m2 = ORMultiMap.empty[String]
         .put(address2, "b", Set("B1", "B2", "B3"))
       checkSameContent(m1.merge(m2), m2.merge(m1))
     }

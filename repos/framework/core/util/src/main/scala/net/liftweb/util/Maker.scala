@@ -45,8 +45,7 @@ trait SimpleInjector extends Injector {
     * appropriate Manifest will be
     */
   implicit def inject[T](implicit man: Manifest[T]): Box[T] =
-    (Box !! diHash.get(man.toString))
-      .flatMap(f => Helpers.tryo(f.apply()))
+    (Box !! diHash.get(man.toString)).flatMap(f => Helpers.tryo(f.apply()))
       .asInstanceOf[Box[T]]
 
   /**

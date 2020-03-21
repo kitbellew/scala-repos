@@ -23,8 +23,8 @@ final case class SingletonClusterMultiNodeConfig(failureDetectorPuppet: Boolean)
         auto-down-unreachable-after = 0s
         failure-detector.threshold = 4
       }
-    """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
+    """)).withFallback(MultiNodeClusterSpec.clusterConfig(
+        failureDetectorPuppet)))
 
 }
 

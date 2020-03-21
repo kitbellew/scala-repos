@@ -60,8 +60,8 @@ class ChannelTransport[In, Out](ch: Channel)
         need(-1)
 
       case e: ChannelStateEvent
-          if e.getState == ChannelState.OPEN && e.getValue != java.lang.Boolean.TRUE =>
-        fail(new ChannelClosedException(ch.getRemoteAddress))
+          if e.getState == ChannelState.OPEN && e.getValue != java.lang.Boolean
+            .TRUE => fail(new ChannelClosedException(ch.getRemoteAddress))
 
       case e: ChannelStateEvent if e.getState == ChannelState.INTEREST_OPS =>
         // Make sure we have the right interest ops. This allows us to fix

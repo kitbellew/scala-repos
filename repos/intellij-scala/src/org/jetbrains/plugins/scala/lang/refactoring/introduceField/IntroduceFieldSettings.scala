@@ -15,8 +15,8 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
   private[this] var replAll = scalaSettings.INTRODUCE_FIELD_REPLACE_ALL
   private[this] var visLevel = scalaSettings.INTRODUCE_FIELD_VISIBILITY
   private[this] var explType = scalaSettings.INTRODUCE_FIELD_EXPLICIT_TYPE
-  private[this] var initInDecl =
-    scalaSettings.INTRODUCE_FIELD_INITIALIZE_IN_DECLARATION
+  private[this] var initInDecl = scalaSettings
+    .INTRODUCE_FIELD_INITIALIZE_IN_DECLARATION
   private[this] var initInDeclEn: Boolean = true
   private[this] var initLocEn: Boolean = true
 
@@ -25,10 +25,10 @@ class IntroduceFieldSettings[T <: PsiElement](ifc: IntroduceFieldContext[T]) {
   var explicitTypeChbEnabled: Boolean = true
 
   val canBeInitInDeclaration: Boolean = ifc.canBeInitInDecl
-  val canBeInitLocalIfReplaceAll: Boolean = ifc.canBeInitLocally(replaceAll =
-    true)
-  val canBeInitLocalOneOccurrence: Boolean = ifc.canBeInitLocally(replaceAll =
-    false)
+  val canBeInitLocalIfReplaceAll: Boolean = ifc
+    .canBeInitLocally(replaceAll = true)
+  val canBeInitLocalOneOccurrence: Boolean = ifc
+    .canBeInitLocally(replaceAll = false)
   val canBeInitLocally: Boolean =
     canBeInitLocalIfReplaceAll || canBeInitLocalOneOccurrence
 

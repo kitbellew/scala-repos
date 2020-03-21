@@ -83,9 +83,7 @@ case class BroadcastHashJoin(
     streamedPlan.execute().mapPartitions { streamedIter =>
       val joinedRow = new JoinedRow()
       val hashTable = broadcastRelation.value
-      TaskContext
-        .get()
-        .taskMetrics()
+      TaskContext.get().taskMetrics()
         .incPeakExecutionMemory(hashTable.getMemorySize)
       val keyGenerator = streamSideKeyGenerator
       val resultProj = createResultProjection
@@ -182,8 +180,8 @@ case class BroadcastHashJoin(
       (ev, ev.isNull)
     } else {
       // generate the join key as UnsafeRow
-      val keyExpr = streamedKeys.map(
-        BindReferences.bindReference(_, streamedPlan.output))
+      val keyExpr = streamedKeys
+        .map(BindReferences.bindReference(_, streamedPlan.output))
       val ev = GenerateUnsafeProjection.createCode(ctx, keyExpr)
       (ev, s"${ev.value}.anyNull()")
     }
@@ -242,8 +240,7 @@ case class BroadcastHashJoin(
         // filter the output via condition
         ctx.currentVars = input ++ buildVars
         val ev = BindReferences
-          .bindReference(expr, streamedPlan.output ++ buildPlan.output)
-          .gen(ctx)
+          .bindReference(expr, streamedPlan.output ++ buildPlan.output).gen(ctx)
         s"""
          |$eval
          |${ev.code}
@@ -260,7 +257,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashedRelation
-         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv.value});
+         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv
+           .value});
          |if ($matched == null) continue;
          |$checkCondition
          |$numOutput.add(1);
@@ -277,7 +275,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashRelation
-         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv.value});
+         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv
+           .value});
          |if ($matches == null) continue;
          |int $size = $matches.size();
          |for (int $i = 0; $i < $size; $i++) {
@@ -314,8 +313,7 @@ case class BroadcastHashJoin(
           expr.references)
         ctx.currentVars = input ++ buildVars
         val ev = BindReferences
-          .bindReference(expr, streamedPlan.output ++ buildPlan.output)
-          .gen(ctx)
+          .bindReference(expr, streamedPlan.output ++ buildPlan.output).gen(ctx)
         s"""
          |boolean $conditionPassed = true;
          |${eval.trim}
@@ -335,14 +333,13 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashedRelation
-         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv.value});
+         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv
+           .value});
          |${checkCondition.trim}
          |if (!$conditionPassed) {
          |  $matched = null;
          |  // reset the variables those are already evaluated.
-         |  ${buildVars
-           .filter(_.code == "")
-           .map(v => s"${v.isNull} = true;")
+         |  ${buildVars.filter(_.code == "").map(v => s"${v.isNull} = true;")
            .mkString("\n")}
          |}
          |$numOutput.add(1);
@@ -360,7 +357,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashRelation
-         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv.value});
+         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv
+           .value});
          |int $size = $matches != null ? $matches.size() : 0;
          |boolean $found = false;
          |// the last iteration of this loop is to emit an empty row if there is no matched rows.
@@ -397,8 +395,7 @@ case class BroadcastHashJoin(
         // filter the output via condition
         ctx.currentVars = input ++ buildVars
         val ev = BindReferences
-          .bindReference(expr, streamedPlan.output ++ buildPlan.output)
-          .gen(ctx)
+          .bindReference(expr, streamedPlan.output ++ buildPlan.output).gen(ctx)
         s"""
          |$eval
          |${ev.code}
@@ -411,7 +408,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashedRelation
-         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv.value});
+         |UnsafeRow $matched = $anyNull ? null: (UnsafeRow)$relationTerm.getValue(${keyEv
+           .value});
          |if ($matched == null) continue;
          |$checkCondition
          |$numOutput.add(1);
@@ -427,7 +425,8 @@ case class BroadcastHashJoin(
          |// generate join key for stream side
          |${keyEv.code}
          |// find matches from HashRelation
-         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv.value});
+         |$bufferType $matches = $anyNull ? null : ($bufferType)$relationTerm.get(${keyEv
+           .value});
          |if ($matches == null) continue;
          |int $size = $matches.size();
          |boolean $found = false;

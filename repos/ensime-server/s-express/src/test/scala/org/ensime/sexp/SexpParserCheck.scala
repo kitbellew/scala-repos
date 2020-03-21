@@ -35,8 +35,7 @@ trait ArbitrarySexp {
 
   // avoid stackoverflows with http://stackoverflow.com/questions/19829293
 
-  lazy val genSexpSymbol: Gen[SexpSymbol] = alphaStr
-    .filter(_.nonEmpty)
+  lazy val genSexpSymbol: Gen[SexpSymbol] = alphaStr.filter(_.nonEmpty)
     .map(SexpSymbol)
 
   lazy val genSexpKey: Gen[SexpSymbol] = alphaStr.filter(_.nonEmpty).map { s =>

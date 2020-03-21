@@ -134,12 +134,8 @@ class ShowImplicitParametersAction
     if (editor.getSelectionModel.hasSelection) {
       val selectionStart = editor.getSelectionModel.getSelectionStart
       val selectionEnd = editor.getSelectionModel.getSelectionEnd
-      val opt = ScalaRefactoringUtil.getExpression(
-        project,
-        editor,
-        file,
-        selectionStart,
-        selectionEnd)
+      val opt = ScalaRefactoringUtil
+        .getExpression(project, editor, file, selectionStart, selectionEnd)
       opt match {
         case Some((expr, _)) => forExpr(expr)
         case _               =>
@@ -236,8 +232,7 @@ class ShowImplicitParametersAction
               succeeded.set(true)
             } else { succeeded.set(false) }
           } else { succeeded.set(false) }
-          IdeDocumentHistory
-            .getInstance(project)
+          IdeDocumentHistory.getInstance(project)
             .includeCurrentCommandAsNavigation()
         }
       },
@@ -274,20 +269,15 @@ class ShowImplicitParametersAction
     panel.add(scrollPane, BorderLayout.CENTER)
 
     val F4: Array[Shortcut] = ActionManager.getInstance
-      .getAction(IdeActions.ACTION_EDIT_SOURCE)
-      .getShortcutSet
+      .getAction(IdeActions.ACTION_EDIT_SOURCE).getShortcutSet.getShortcuts
+    val ENTER: Array[Shortcut] = CustomShortcutSet.fromString("ENTER")
       .getShortcuts
-    val ENTER: Array[Shortcut] =
-      CustomShortcutSet.fromString("ENTER").getShortcuts
     val shortcutSet: CustomShortcutSet = new CustomShortcutSet(
       ArrayUtil.mergeArrays(F4, ENTER): _*)
 
-    val popup: JBPopup = JBPopupFactory
-      .getInstance()
-      .createComponentPopupBuilder(panel, jTree)
-      .setRequestFocus(true)
-      .setResizable(true)
-      .setTitle("Implicit parameters:")
+    val popup: JBPopup = JBPopupFactory.getInstance()
+      .createComponentPopupBuilder(panel, jTree).setRequestFocus(true)
+      .setResizable(true).setTitle("Implicit parameters:")
       .setMinSize(new Dimension(minSize.width + 500, minSize.height))
       .createPopup
 
@@ -338,8 +328,8 @@ class ImplicitParametersTreeStructure(
 
             override def update(data: PresentationData): Unit = {
               data.setPresentableText(errorText)
-              data.setAttributesKey(
-                CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
+              data
+                .setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
             }
           })
         }
@@ -394,8 +384,8 @@ class ImplicitParametersTreeStructure(
                   data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
                   ": Diverging implicit"
                 case Some(CantInferTypeParameterResult) =>
-                  data.setTooltip(
-                    "Can't infer proper types for type parameters")
+                  data
+                    .setTooltip("Can't infer proper types for type parameters")
                   data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
                   ": Type Parameter"
                 case Some(ImplicitParameterNotFoundResult) =>

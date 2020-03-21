@@ -46,7 +46,7 @@ object TestProject extends Build {
       if (servletAPI.isEmpty)
         sys.error("Servlet API should have been included in " + label + ".")
     } else
-      servletAPI.foreach(s =>
-        sys.error(s + " incorrectly included in " + label + "."))
+      servletAPI
+        .foreach(s => sys.error(s + " incorrectly included in " + label + "."))
   }
 }

@@ -185,8 +185,7 @@ trait ScPattern extends ScalaPsiElement {
           if fun.name == "unapply" && ScPattern.isQuasiquote(fun) =>
         val tpe = getContext.getContext match {
           case ip: ScInterpolationPattern =>
-            val parts = getParent
-              .asInstanceOf[ScalaPsiElement]
+            val parts = getParent.asInstanceOf[ScalaPsiElement]
               .findChildrenByType(ScalaTokenTypes.tINTERPOLATED_STRING)
               .map(_.getText)
             if (argIndex < parts.length && parts(argIndex).endsWith("..."))
@@ -215,14 +214,12 @@ trait ScPattern extends ScalaPsiElement {
                   (p.name, ScalaPsiUtil.getPsiElementId(p)),
                   ScUndefinedType(new ScTypeParameterType(p, substitutor)))
             }
-            val clazz = ScalaPsiUtil.getContextOfType(
-              this,
-              true,
-              classOf[ScTemplateDefinition])
+            val clazz = ScalaPsiUtil
+              .getContextOfType(this, true, classOf[ScTemplateDefinition])
             clazz match {
               case clazz: ScTemplateDefinition =>
-                undefSubst = undefSubst.followed(new ScSubstitutor(ScThisType(
-                  clazz)))
+                undefSubst = undefSubst
+                  .followed(new ScSubstitutor(ScThisType(clazz)))
               case _ =>
             }
             val firstParameterType =
@@ -271,12 +268,12 @@ trait ScPattern extends ScalaPsiElement {
         val subst =
           if (fun.typeParameters.isEmpty) substitutor
           else {
-            val undefSubst = substitutor followed fun.typeParameters.foldLeft(
-              ScSubstitutor.empty) { (s, p) =>
-              s.bindT(
-                (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                ScUndefinedType(new ScTypeParameterType(p, substitutor)))
-            }
+            val undefSubst = substitutor followed fun.typeParameters
+              .foldLeft(ScSubstitutor.empty) { (s, p) =>
+                s.bindT(
+                  (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                  ScUndefinedType(new ScTypeParameterType(p, substitutor)))
+              }
             val firstParameterRetTp =
               fun.parameters.head.getType(TypingContext.empty) match {
                 case Success(tp, _) => tp
@@ -321,8 +318,7 @@ trait ScPattern extends ScalaPsiElement {
               subst: ScSubstitutor)) if cl.isCase && cl.tooBigForUnapply =>
         val undefSubst = subst.followed(new ScSubstitutor(ScThisType(cl)))
         val params: Seq[ScParameter] = cl.parameters
-        val types = params
-          .map(_.getType(TypingContext.empty).getOrAny)
+        val types = params.map(_.getType(TypingContext.empty).getOrAny)
           .map(undefSubst.subst)
         val args =
           if (types.nonEmpty && params.last.isVarArgs) {
@@ -390,8 +386,8 @@ trait ScPattern extends ScalaPsiElement {
 
             tuple.expectedType.flatMap {
               case ScTupleType(comps) =>
-                for ((t, p) <- comps.iterator.zip(
-                       patternList.patterns.iterator)) {
+                for ((t, p) <- comps.iterator
+                       .zip(patternList.patterns.iterator)) {
                   if (p == this) return Some(t)
                 }
                 None
@@ -427,8 +423,7 @@ trait ScPattern extends ScalaPsiElement {
               case _       => None
             }
           case b: ScBlockExpr if b.getContext.isInstanceOf[ScCatchBlock] =>
-            val thr = ScalaPsiManager
-              .instance(getProject)
+            val thr = ScalaPsiManager.instance(getProject)
               .getCachedClass(getResolveScope, "java.lang.Throwable")
             thr.map(ScType.designator(_))
           case b: ScBlockExpr => b.expectedType(fromUnderscore = false) match {
@@ -542,8 +537,8 @@ object ScPattern {
         case _                                   => return Seq.empty
       }
 
-      val receiverType = findMember("get", returnType, place).getOrElse(
-        return Seq.empty)
+      val receiverType = findMember("get", returnType, place)
+        .getOrElse(return Seq.empty)
       extractPossibleProductParts(receiverType, place, isOneArgCaseClass)
     }
 
@@ -562,13 +557,12 @@ object ScPattern {
                   else {
                     val productFqn = "scala.Product" + productChance.length
                     (for {
-                      productClass <- ScalaPsiManager
-                        .instance(place.getProject)
+                      productClass <- ScalaPsiManager.instance(place.getProject)
                         .getCachedClass(place.getResolveScope, productFqn)
                       clazz <- ScType.extractClass(tp, Some(place.getProject))
-                    } yield clazz == productClass || clazz.isInheritor(
-                      productClass,
-                      true)).filter(identity).fold(Seq(tp))(_ => productChance)
+                    } yield clazz == productClass || clazz
+                      .isInheritor(productClass, true)).filter(identity)
+                      .fold(Seq(tp))(_ => productChance)
                   }
                 }
                 args.head match {
@@ -587,9 +581,10 @@ object ScPattern {
   def isQuasiquote(fun: ScFunction) = {
     val fqnO = Option(fun.containingClass).map(_.qualifiedName)
     fqnO.exists(fqn =>
-      fqn.contains('.') && fqn.substring(
-        0,
-        fqn.lastIndexOf('.')) == "scala.reflect.api.Quasiquotes.Quasiquote")
+      fqn.contains('.') && fqn
+        .substring(
+          0,
+          fqn.lastIndexOf('.')) == "scala.reflect.api.Quasiquotes.Quasiquote")
   }
 
 }

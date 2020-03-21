@@ -25,9 +25,8 @@ private[wiki] final class Fetch(gitUrl: String, markdownPath: String)(implicit
           page.copy(slug = default.slug)
         }
       }).flatten
-      $remove($select.all) >> (
-        newLangPages ::: defaultPages
-      ).map($insert(_)).sequenceFu.void
+      $remove($select.all) >> (newLangPages ::: defaultPages).map($insert(_))
+        .sequenceFu.void
     }
 
   private def filePage(file: File): Option[Page] = {
@@ -39,11 +38,7 @@ private[wiki] final class Fetch(gitUrl: String, markdownPath: String)(implicit
     Future {
       val dir = Files.createTempDir
       dir.deleteOnExit
-      Git.cloneRepository
-        .setURI(gitUrl)
-        .setDirectory(dir)
-        .setBare(false)
-        .call
+      Git.cloneRepository.setURI(gitUrl).setDirectory(dir).setBare(false).call
       dir.listFiles.toList filter (_.isFile) sortBy (_.getName)
     }
 

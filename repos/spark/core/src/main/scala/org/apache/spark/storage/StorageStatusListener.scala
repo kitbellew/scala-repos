@@ -36,9 +36,8 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
     .Map[String, StorageStatus]()
   private[storage] val deadExecutorStorageStatus =
     new mutable.ListBuffer[StorageStatus]()
-  private[this] val retainedDeadExecutors = conf.getInt(
-    "spark.ui.retainedDeadExecutors",
-    100)
+  private[this] val retainedDeadExecutors = conf
+    .getInt("spark.ui.retainedDeadExecutors", 100)
 
   def storageStatusList: Seq[StorageStatus] =
     synchronized { executorIdToStorageStatus.values.toSeq }

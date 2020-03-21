@@ -53,8 +53,8 @@ trait ExecutionContext {
   private def updateStepConfigWithDescriptions(
       step: BaseFlowStep[JobConf]): Unit = {
     val conf = step.getConfig
-    getIdentifierOpt(ExecutionContext.getDesc(step)).foreach(
-      descriptionString => {
+    getIdentifierOpt(ExecutionContext.getDesc(step))
+      .foreach(descriptionString => {
         conf.set(Config.StepDescriptions, descriptionString)
       })
   }
@@ -102,12 +102,11 @@ trait ExecutionContext {
       mode match {
         case _: HadoopMode =>
           val reducerEstimatorStrategy: Seq[FlowStepStrategy[JobConf]] = config
-            .get(Config.ReducerEstimators)
-            .toList
+            .get(Config.ReducerEstimators).toList
             .map(_ => ReducerEstimatorStepStrategy)
 
-          val otherStrategies: Seq[FlowStepStrategy[JobConf]] =
-            config.getFlowStepStrategies.map {
+          val otherStrategies: Seq[FlowStepStrategy[JobConf]] = config
+            .getFlowStepStrategies.map {
               case Success(fn) => fn(mode, configWithId)
               case Failure(e) =>
                 throw new Exception(
@@ -115,8 +114,8 @@ trait ExecutionContext {
                   e)
             }
 
-          val optionalFinalStrategy = FlowStepStrategies().sumOption(
-            reducerEstimatorStrategy ++ otherStrategies)
+          val optionalFinalStrategy = FlowStepStrategies()
+            .sumOption(reducerEstimatorStrategy ++ otherStrategies)
 
           optionalFinalStrategy.foreach { strategy =>
             flow.setFlowStepStrategy(strategy)

@@ -162,16 +162,14 @@ private[http] final object HtmlNormalizer {
   private[this] def jsForEventAttributes(
       elementId: String,
       eventAttributes: List[EventAttribute]): JsCmd = {
-    eventAttributes
-      .map {
-        case EventAttribute(name, handlerJs) =>
-          Call(
-            "lift.onEvent",
-            elementId,
-            name,
-            AnonFunc("event", JsRaw(handlerJs).cmd)).cmd
-      }
-      .foldLeft(Noop)(_ & _)
+    eventAttributes.map {
+      case EventAttribute(name, handlerJs) =>
+        Call(
+          "lift.onEvent",
+          elementId,
+          name,
+          AnonFunc("event", JsRaw(handlerJs).cmd)).cmd
+    }.foldLeft(Noop)(_ & _)
   }
 
   private[http] def normalizeElementAndAttributes(
@@ -186,19 +184,19 @@ private[http] final object HtmlNormalizer {
         contextPath,
         shouldRewriteUrl)
 
-    val attributesIncludingEventsAsData =
-      LiftRules.attributeForRemovedEventAttributes match {
-        case Some(attribute) if eventAttributes.nonEmpty =>
-          val removedAttributes = eventAttributes.map {
-            case EventAttribute(event, _) => s"on$event"
-          }
-          new UnprefixedAttribute(
-            attribute,
-            removedAttributes.mkString(" "),
-            normalizedAttributes)
+    val attributesIncludingEventsAsData = LiftRules
+      .attributeForRemovedEventAttributes match {
+      case Some(attribute) if eventAttributes.nonEmpty =>
+        val removedAttributes = eventAttributes.map {
+          case EventAttribute(event, _) => s"on$event"
+        }
+        new UnprefixedAttribute(
+          attribute,
+          removedAttributes.mkString(" "),
+          normalizedAttributes)
 
-        case _ => normalizedAttributes
-      }
+      case _ => normalizedAttributes
+    }
 
     id.map { foundId =>
       NodeAndEventJs(
@@ -276,11 +274,9 @@ private[http] final object HtmlNormalizer {
                 contextPath,
                 stripComments)
 
-            soFar
-              .append(js)
-              .append(
-                normalizedElement.copy(child = normalizedChildren),
-                childJs)
+            soFar.append(js).append(
+              normalizedElement.copy(child = normalizedChildren),
+              childJs)
 
           case node => soFar.append(node)
         } getOrElse { soFar }

@@ -33,10 +33,7 @@ object Foo {
     // get the quick access implicit defs in scope (_package(s), _class(es), _trait(s), object(s) _method(s), _value(s))
     import access._
 
-    val a = rootPackage
-      ._package("org")
-      ._package("foo")
-      ._object("Foo")
+    val a = rootPackage._package("org")._package("foo")._object("Foo")
       ._method("test")
     val throws = a.comment.get.throws
     val allbodies = Body(throws.values.flatMap(_.blocks).toSeq)

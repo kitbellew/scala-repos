@@ -63,8 +63,7 @@ object ShardRegion {
       coordinatorPath,
       extractEntityId,
       extractShardId,
-      PoisonPill))
-      .withDeploy(Deploy.local)
+      PoisonPill)).withDeploy(Deploy.local)
 
   /**
     * Marker type of entity identifier (`String`).
@@ -399,8 +398,8 @@ class ShardRegion(
 
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
-  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
-    ageOrdering)
+  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet
+    .empty(ageOrdering)
 
   var regions = Map.empty[ActorRef, Set[ShardId]]
   var regionByShard = Map.empty[ShardId, ActorRef]
@@ -416,11 +415,8 @@ class ShardRegion(
     shardBuffers.foldLeft(0) { (sum, entity) ⇒ sum + entity._2.size }
 
   import context.dispatcher
-  val retryTask = context.system.scheduler.schedule(
-    retryInterval,
-    retryInterval,
-    self,
-    Retry)
+  val retryTask = context.system.scheduler
+    .schedule(retryInterval, retryInterval, self, Retry)
   var retryCount = 0
 
   // subscribe to MemberEvent, re-subscribe when restart
@@ -498,9 +494,8 @@ class ShardRegion(
       case HostShard(shard) ⇒
         log.debug("Host Shard [{}] ", shard)
         regionByShard = regionByShard.updated(shard, self)
-        regions = regions.updated(
-          self,
-          regions.getOrElse(self, Set.empty) + shard)
+        regions = regions
+          .updated(self, regions.getOrElse(self, Set.empty) + shard)
 
         //Start the shard, if already started this does nothing
         getShard(shard)
@@ -517,9 +512,8 @@ class ShardRegion(
           case _ ⇒
         }
         regionByShard = regionByShard.updated(shard, ref)
-        regions = regions.updated(
-          ref,
-          regions.getOrElse(ref, Set.empty) + shard)
+        regions = regions
+          .updated(ref, regions.getOrElse(ref, Set.empty) + shard)
 
         if (ref != self) context.watch(ref)
 
@@ -635,27 +629,23 @@ class ShardRegion(
   }
 
   def replyToRegionStateQuery(ref: ActorRef): Unit = {
-    askAllShards[Shard.CurrentShardState](Shard.GetCurrentShardState)
-      .map { shardStates ⇒
+    askAllShards[Shard.CurrentShardState](Shard.GetCurrentShardState).map {
+      shardStates ⇒
         CurrentShardRegionState(shardStates.map {
           case (shardId, state) ⇒
             ShardRegion.ShardState(shardId, state.entityIds)
         }.toSet)
-      }
-      .recover {
-        case x: AskTimeoutException ⇒ CurrentShardRegionState(Set.empty)
-      }
-      .pipeTo(ref)
+    }.recover {
+      case x: AskTimeoutException ⇒ CurrentShardRegionState(Set.empty)
+    }.pipeTo(ref)
   }
 
   def replyToRegionStatsQuery(ref: ActorRef): Unit = {
-    askAllShards[Shard.ShardStats](Shard.GetShardStats)
-      .map { shardStats ⇒
-        ShardRegionStats(shardStats.map {
-          case (shardId, stats) ⇒ (shardId, stats.entityCount)
-        }.toMap)
-      }
-      .recover { case x: AskTimeoutException ⇒ ShardRegionStats(Map.empty) }
+    askAllShards[Shard.ShardStats](Shard.GetShardStats).map { shardStats ⇒
+      ShardRegionStats(shardStats.map {
+        case (shardId, stats) ⇒ (shardId, stats.entityCount)
+      }.toMap)
+    }.recover { case x: AskTimeoutException ⇒ ShardRegionStats(Map.empty) }
       .pipeTo(ref)
   }
 
@@ -668,9 +658,10 @@ class ShardRegion(
 
   private def tryCompleteGracefulShutdown() =
     if (gracefulShutdownInProgress && shards.isEmpty && shardBuffers.isEmpty)
-      context.stop(
-        self
-      ) // all shards have been rebalanced, complete graceful shutdown
+      context
+        .stop(
+          self
+        ) // all shards have been rebalanced, complete graceful shutdown
 
   def register(): Unit = {
     coordinatorSelection.foreach(_ ! registrationMessage)
@@ -796,34 +787,30 @@ class ShardRegion(
   def getShard(id: ShardId): Option[ActorRef] = {
     if (startingShards.contains(id)) None
     else {
-      shards
-        .get(id)
-        .orElse(entityProps match {
-          case Some(props) if !shardsByRef.values.exists(_ == id) ⇒
-            log.debug("Starting shard [{}] in region", id)
+      shards.get(id).orElse(entityProps match {
+        case Some(props) if !shardsByRef.values.exists(_ == id) ⇒
+          log.debug("Starting shard [{}] in region", id)
 
-            val name = URLEncoder.encode(id, "utf-8")
-            val shard = context.watch(context.actorOf(
-              Shard
-                .props(
-                  typeName,
-                  id,
-                  props,
-                  settings,
-                  extractEntityId,
-                  extractShardId,
-                  handOffStopMessage)
-                .withDispatcher(context.props.dispatcher),
-              name))
-            shardsByRef = shardsByRef.updated(shard, id)
-            shards = shards.updated(id, shard)
-            startingShards += id
-            None
-          case Some(props) ⇒ None
-          case None ⇒
-            throw new IllegalStateException(
-              "Shard must not be allocated to a proxy only ShardRegion")
-        })
+          val name = URLEncoder.encode(id, "utf-8")
+          val shard = context.watch(context.actorOf(
+            Shard.props(
+              typeName,
+              id,
+              props,
+              settings,
+              extractEntityId,
+              extractShardId,
+              handOffStopMessage).withDispatcher(context.props.dispatcher),
+            name))
+          shardsByRef = shardsByRef.updated(shard, id)
+          shards = shards.updated(id, shard)
+          startingShards += id
+          None
+        case Some(props) ⇒ None
+        case None ⇒
+          throw new IllegalStateException(
+            "Shard must not be allocated to a proxy only ShardRegion")
+      })
     }
   }
 

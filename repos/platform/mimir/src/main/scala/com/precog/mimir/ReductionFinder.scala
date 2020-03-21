@@ -67,9 +67,8 @@ trait ReductionFinderModule[M[+_]]
         def append(x: List[dag.Reduce], y: => List[dag.Reduce]) = x ::: y
       }
 
-      val reduces = node
-        .foldDown[List[dag.Reduce]](true) {
-          case r: dag.Reduce => List(r)
+      val reduces = node.foldDown[List[dag.Reduce]](true) {
+        case r: dag.Reduce => List(r)
       } distinct
 
       val info: List[ReduceInfo] = reduces map {
@@ -77,15 +76,15 @@ trait ReductionFinderModule[M[+_]]
       }
 
       // for each reduce node, associate it with its ancestor
-      val (ancestorByReduce, specByParent) = info.foldLeft(
-        (Map[dag.Reduce, DepGraph](), Map[DepGraph, TransSpec1]())) {
-        case (
-              (ancestorByReduce, specByParent),
-              ReduceInfo(reduce, spec, ancestor)) =>
-          (
-            ancestorByReduce + (reduce -> ancestor),
-            specByParent + (reduce.parent -> spec))
-      }
+      val (ancestorByReduce, specByParent) = info
+        .foldLeft((Map[dag.Reduce, DepGraph](), Map[DepGraph, TransSpec1]())) {
+          case (
+                (ancestorByReduce, specByParent),
+                ReduceInfo(reduce, spec, ancestor)) =>
+            (
+              ancestorByReduce + (reduce -> ancestor),
+              specByParent + (reduce.parent -> spec))
+        }
 
       // for each ancestor, assemble a list of the parents it created
       val parentsByAncestor = (info groupBy { _.ancestor })
@@ -140,8 +139,8 @@ trait ReductionFinderModule[M[+_]]
               result
             }
 
-            val firstIndex =
-              st.parentsByAncestor(ancestor).reverse indexOf parent
+            val firstIndex = st.parentsByAncestor(ancestor)
+              .reverse indexOf parent
             val secondIndex = st.reducesByParent(parent).reverse indexOf graph
 
             dag.Join(

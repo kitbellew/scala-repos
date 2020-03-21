@@ -51,13 +51,10 @@ trait LzoCodec[T]
 
   override def toIterator(implicit config: Config, mode: Mode): Iterator[T] = {
     val tap = createTap(Read)(mode)
-    mode
-      .openForRead(config, tap)
-      .asScala
-      .flatMap { te =>
-        fromBytes(
-          te.selectTuple(sourceFields).getObject(0).asInstanceOf[Array[Byte]])
-      }
+    mode.openForRead(config, tap).asScala.flatMap { te =>
+      fromBytes(
+        te.selectTuple(sourceFields).getObject(0).asInstanceOf[Array[Byte]])
+    }
   }
 }
 

@@ -28,14 +28,11 @@ import scala.sys.process._
 
 object Runner extends Logging {
   def envStringToMap(env: String): Map[String, String] =
-    env
-      .split(',')
-      .flatMap(p =>
-        p.split('=') match {
-          case Array(k, v) => List(k -> v)
-          case _           => Nil
-        })
-      .toMap
+    env.split(',').flatMap(p =>
+      p.split('=') match {
+        case Array(k, v) => List(k -> v)
+        case _           => Nil
+      }).toMap
 
   def argumentValue(
       arguments: Seq[String],
@@ -54,8 +51,8 @@ object Runner extends Logging {
     val localFilePath = localFile.getCanonicalPath
     (fileSystem, uri) match {
       case (Some(fs), Some(u)) =>
-        val dest = fs.makeQualified(
-          Path.mergePaths(new Path(u), new Path(localFilePath)))
+        val dest = fs
+          .makeQualified(Path.mergePaths(new Path(u), new Path(localFilePath)))
         info(s"Copying $localFile to ${dest.toString}")
         fs.copyFromLocalFile(new Path(localFilePath), dest)
         dest.toUri.toString
@@ -111,10 +108,8 @@ object Runner extends Logging {
     }
 
     // Collect and serialize PIO_* environmental variables
-    val pioEnvVars = sys.env
-      .filter(kv => kv._1.startsWith("PIO_"))
-      .map(kv => s"${kv._1}=${kv._2}")
-      .mkString(",")
+    val pioEnvVars = sys.env.filter(kv => kv._1.startsWith("PIO_"))
+      .map(kv => s"${kv._1}=${kv._2}").mkString(",")
 
     // Location of Spark
     val sparkHome = ca.common.sparkHome

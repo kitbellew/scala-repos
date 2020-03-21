@@ -384,9 +384,8 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
       case ManyVersionVector(vs2) ⇒
         var mergedVersions = vs2
         for ((node, time) ← versions) {
-          val mergedVersionsCurrentTime = mergedVersions.getOrElse(
-            node,
-            Timestamp.Zero)
+          val mergedVersionsCurrentTime = mergedVersions
+            .getOrElse(node, Timestamp.Zero)
           if (time > mergedVersionsCurrentTime)
             mergedVersions = mergedVersions.updated(node, time)
         }
@@ -411,7 +410,6 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
     VersionVector(versions = versions - removedNode)
 
   override def toString: String =
-    versions
-      .map { case ((n, v)) ⇒ n + " -> " + v }
+    versions.map { case ((n, v)) ⇒ n + " -> " + v }
       .mkString("VersionVector(", ", ", ")")
 }

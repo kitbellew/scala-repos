@@ -34,8 +34,7 @@ class MessageTest extends FunSuite with AssertionsForJUnit {
   val goodDurationLeases = Seq(Message.Tlease.MinLease, Message.Tlease.MaxLease)
   val goodTimeLeases = Seq(Time.epoch, Time.now, Time.now + 5.minutes)
   val goodContexts =
-    Seq() ++ (for { k <- goodKeys; v <- goodBufs } yield (k, v))
-      .combinations(2)
+    Seq() ++ (for { k <- goodKeys; v <- goodBufs } yield (k, v)).combinations(2)
       .toSeq
 
   test("d(e(m)) == m") {

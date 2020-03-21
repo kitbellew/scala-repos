@@ -103,9 +103,8 @@ private[streaming] class BlockGenerator(
   }
   import GeneratorState._
 
-  private val blockIntervalMs = conf.getTimeAsMs(
-    "spark.streaming.blockInterval",
-    "200ms")
+  private val blockIntervalMs = conf
+    .getTimeAsMs("spark.streaming.blockInterval", "200ms")
   require(
     blockIntervalMs > 0,
     s"'spark.streaming.blockInterval' should be a positive value")

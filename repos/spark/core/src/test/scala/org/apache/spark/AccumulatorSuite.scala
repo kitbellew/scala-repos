@@ -81,8 +81,8 @@ class AccumulatorSuite
     val maxI = 1000
     for (nThreads <- List(1, 10)) { // test single & multi-threaded
       sc = new SparkContext("local[" + nThreads + "]", "test")
-      val acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
-        new mutable.HashSet[Any]())
+      val acc: Accumulable[mutable.Set[Any], Any] = sc
+        .accumulable(new mutable.HashSet[Any]())
       val d = sc.parallelize(1 to maxI)
       d.foreach { x => acc += x }
       val v = acc.value.asInstanceOf[mutable.Set[Int]]
@@ -95,8 +95,8 @@ class AccumulatorSuite
     val maxI = 1000
     for (nThreads <- List(1, 10)) { // test single & multi-threaded
       sc = new SparkContext("local[" + nThreads + "]", "test")
-      val acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
-        new mutable.HashSet[Any]())
+      val acc: Accumulable[mutable.Set[Any], Any] = sc
+        .accumulable(new mutable.HashSet[Any]())
       val d = sc.parallelize(1 to maxI)
       an[SparkException] should be thrownBy {
         d.foreach { x => acc.value += x }
@@ -135,8 +135,8 @@ class AccumulatorSuite
     val maxI = 1000
     for (nThreads <- List(1, 10)) { // test single & multi-threaded
       sc = new SparkContext("local[" + nThreads + "]", "test")
-      val acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
-        new mutable.HashSet[Any]())
+      val acc: Accumulable[mutable.Set[Any], Any] = sc
+        .accumulable(new mutable.HashSet[Any]())
       val groupedInts = (1 to (maxI / 20)).map { x =>
         (20 * (x - 1) to 20 * x).toSet
       }
@@ -150,8 +150,8 @@ class AccumulatorSuite
   test("garbage collection") {
     // Create an accumulator and let it go out of scope to test that it's properly garbage collected
     sc = new SparkContext("local", "test")
-    var acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
-      new mutable.HashSet[Any]())
+    var acc: Accumulable[mutable.Set[Any], Any] = sc
+      .accumulable(new mutable.HashSet[Any]())
     val accId = acc.id
     val ref = WeakReference(acc)
 
@@ -295,11 +295,8 @@ class AccumulatorSuite
     // Set some values; these should not be observed later on the "executors"
     acc1.setValue(10)
     acc2.setValue(20L)
-    internalAccums
-      .find(_.name == Some(InternalAccumulator.TEST_ACCUM))
-      .get
-      .asInstanceOf[Accumulator[Long]]
-      .setValue(30L)
+    internalAccums.find(_.name == Some(InternalAccumulator.TEST_ACCUM)).get
+      .asInstanceOf[Accumulator[Long]].setValue(30L)
     // Simulate the task being serialized and sent to the executors.
     val dummyTask = new DummyTask(internalAccums, externalAccums)
     val serInstance = new JavaSerializer(new SparkConf).newInstance()
@@ -338,8 +335,8 @@ private[spark] object AccumulatorSuite {
     sc.listenerBus.waitUntilEmpty(10 * 1000)
     val accums = listener.getCompletedStageInfos.flatMap(_.accumulables.values)
     val isSet = accums.exists { a =>
-      a.name == Some(PEAK_EXECUTION_MEMORY) && a.value.exists(
-        _.asInstanceOf[Long] > 0L)
+      a.name == Some(PEAK_EXECUTION_MEMORY) && a.value
+        .exists(_.asInstanceOf[Long] > 0L)
     }
     if (!isSet) {
       throw new TestFailedException(

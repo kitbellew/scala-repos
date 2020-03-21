@@ -60,9 +60,7 @@ class RateControllerSuite extends TestSuiteBase {
         estimator.updateRate(rate)
         eventually(timeout(5.seconds)) {
           assert(
-            RateTestReceiver
-              .getActive()
-              .get
+            RateTestReceiver.getActive().get
               .getDefaultBlockGeneratorRateLimit() === rate)
         }
       }

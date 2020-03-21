@@ -48,8 +48,7 @@ class ClusterDomainEventPublisherSpec
   val dUp = TestMember(Address("akka.tcp", "sys", "d", 2552), Up, Set("GRP"))
 
   val g0 = Gossip(members = SortedSet(aUp)).seen(aUp.uniqueAddress)
-  val g1 = Gossip(members = SortedSet(aUp, cJoining))
-    .seen(aUp.uniqueAddress)
+  val g1 = Gossip(members = SortedSet(aUp, cJoining)).seen(aUp.uniqueAddress)
     .seen(cJoining.uniqueAddress)
   val g2 = Gossip(members = SortedSet(aUp, bExiting, cUp))
     .seen(aUp.uniqueAddress)
@@ -57,19 +56,17 @@ class ClusterDomainEventPublisherSpec
   val g4 = Gossip(members = SortedSet(a51Up, aUp, bExiting, cUp))
     .seen(aUp.uniqueAddress)
   val g5 = Gossip(members = SortedSet(a51Up, aUp, bExiting, cUp))
-    .seen(aUp.uniqueAddress)
-    .seen(bExiting.uniqueAddress)
-    .seen(cUp.uniqueAddress)
-    .seen(a51Up.uniqueAddress)
+    .seen(aUp.uniqueAddress).seen(bExiting.uniqueAddress)
+    .seen(cUp.uniqueAddress).seen(a51Up.uniqueAddress)
   val g6 = Gossip(members = SortedSet(aLeaving, bExiting, cUp))
     .seen(aUp.uniqueAddress)
   val g7 = Gossip(members = SortedSet(aExiting, bExiting, cUp))
     .seen(aUp.uniqueAddress)
   val g8 = Gossip(
     members = SortedSet(aUp, bExiting, cUp, dUp),
-    overview = GossipOverview(reachability = Reachability.empty.unreachable(
-      aUp.uniqueAddress,
-      dUp.uniqueAddress))).seen(aUp.uniqueAddress)
+    overview = GossipOverview(reachability = Reachability.empty
+      .unreachable(aUp.uniqueAddress, dUp.uniqueAddress)))
+    .seen(aUp.uniqueAddress)
 
   // created in beforeEach
   var memberSubscriber: TestProbe = _

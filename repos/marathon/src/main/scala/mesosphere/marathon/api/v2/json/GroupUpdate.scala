@@ -29,21 +29,18 @@ case class GroupUpdate(
       val groupUpdates = changedIdList
         .flatMap(gid => current.groups.find(_.id == gid))
         .zip(changedIdList.flatMap(gid =>
-          updates.find(_.groupId.canonicalPath(current.id) == gid)))
-        .map { case (group, groupUpdate) => groupUpdate(group, timestamp) }
-      val groupAdditions = groupIds
-        .diff(changedIds)
-        .flatMap(gid =>
-          updates.find(_.groupId.canonicalPath(current.id) == gid))
-        .map(update =>
-          update.toGroup(update.groupId.canonicalPath(current.id), timestamp))
+          updates.find(_.groupId.canonicalPath(current.id) == gid))).map {
+          case (group, groupUpdate) => groupUpdate(group, timestamp)
+        }
+      val groupAdditions = groupIds.diff(changedIds).flatMap(gid =>
+        updates.find(_.groupId.canonicalPath(current.id) == gid)).map(update =>
+        update.toGroup(update.groupId.canonicalPath(current.id), timestamp))
       groupUpdates.toSet ++ groupAdditions
     }
-    val effectiveApps: Set[AppDefinition] = apps
-      .getOrElse(current.apps)
+    val effectiveApps: Set[AppDefinition] = apps.getOrElse(current.apps)
       .map(toApp(current.id, _, timestamp))
-    val effectiveDependencies = dependencies.fold(current.dependencies)(_.map(
-      _.canonicalPath(current.id)))
+    val effectiveDependencies = dependencies
+      .fold(current.dependencies)(_.map(_.canonicalPath(current.id)))
     Group(
       current.id,
       effectiveApps,
@@ -67,8 +64,7 @@ case class GroupUpdate(
     Group(
       gid,
       apps.getOrElse(Set.empty).map(toApp(gid, _, version)),
-      groups
-        .getOrElse(Set.empty)
+      groups.getOrElse(Set.empty)
         .map(sub => sub.toGroup(sub.groupId.canonicalPath(gid), version)),
       dependencies.fold(Set.empty[PathId])(_.map(_.canonicalPath(gid))),
       version

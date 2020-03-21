@@ -35,14 +35,10 @@ object FreeApUsage extends App {
     new (ParseOp ~> Option) {
       def apply[A](fa: ParseOp[A]) =
         fa match {
-          case ParseInt(key) =>
-            input
-              .get(key)
+          case ParseInt(key) => input.get(key)
               .flatMap(parseOpt[java.lang.Integer](_).map(x => (x: Int)))
           case ParseString(key) => input.get(key).flatMap(parseOpt[String])
-          case ParseBool(key) =>
-            input
-              .get(key)
+          case ParseBool(key) => input.get(key)
               .flatMap(parseOpt[java.lang.Boolean](_).map(x => (x: Boolean)))
         }
     }
@@ -53,14 +49,11 @@ object FreeApUsage extends App {
     new (ParseOp ~> ValidatedParse) {
       def apply[A](fa: ParseOp[A]) =
         fa match {
-          case s @ ParseInt(_) =>
-            toOption(input)(s)
+          case s @ ParseInt(_) => toOption(input)(s)
               .toSuccessNel(s"${s.key} not found with type Int")
-          case s @ ParseString(_) =>
-            toOption(input)(s)
+          case s @ ParseString(_) => toOption(input)(s)
               .toSuccessNel(s"${s.key} not found with type String")
-          case i @ ParseBool(_) =>
-            toOption(input)(i)
+          case i @ ParseBool(_) => toOption(input)(i)
               .toSuccessNel(s"${i.key} not found with type Boolean")
         }
     }

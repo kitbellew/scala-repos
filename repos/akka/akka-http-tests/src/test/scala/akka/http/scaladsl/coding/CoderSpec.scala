@@ -74,27 +74,22 @@ abstract class CoderSpec
     }
     "properly round-trip encode/decode an HttpRequest" in {
       val request = HttpRequest(POST, entity = HttpEntity(largeText))
-      Coder
-        .decode(Coder.encode(request))
-        .toStrict(1.second)
+      Coder.decode(Coder.encode(request)).toStrict(1.second)
         .awaitResult(1.second) should equal(request)
     }
 
     if (corruptInputCheck) {
       "throw an error on corrupt input" in {
-        (the[RuntimeException] thrownBy {
-          ourDecode(corruptContent)
-        }).getCause should be(a[DataFormatException])
+        (the[RuntimeException] thrownBy { ourDecode(corruptContent) })
+          .getCause should be(a[DataFormatException])
       }
     }
 
     "not throw an error if a subsequent block is corrupt" in {
       pending // FIXME: should we read as long as possible and only then report an error, that seems somewhat arbitrary
       ourDecode(
-        Seq(
-          encode("Hello,"),
-          encode(" dear "),
-          corruptContent).join) should readAs("Hello, dear ")
+        Seq(encode("Hello,"), encode(" dear "), corruptContent)
+          .join) should readAs("Hello, dear ")
     }
     "decompress in very small chunks" in {
       val compressed = encode("Hello")
@@ -139,12 +134,9 @@ abstract class CoderSpec
       util.Arrays.fill(array, 1.toByte)
       val compressed = streamEncode(ByteString(array))
       val limit = 10000
-      val resultBs = Source
-        .single(compressed)
-        .via(Coder.withMaxBytesPerChunk(limit).decoderFlow)
-        .limit(4200)
-        .runWith(Sink.seq)
-        .awaitResult(1.second)
+      val resultBs = Source.single(compressed)
+        .via(Coder.withMaxBytesPerChunk(limit).decoderFlow).limit(4200)
+        .runWith(Sink.seq).awaitResult(1.second)
 
       forAll(resultBs) { bs ⇒
         bs.length should be < limit
@@ -164,8 +156,7 @@ abstract class CoderSpec
 
       val sizesAfterRoundtrip = Source
         .fromIterator(() ⇒ sizes.toIterator.map(createByteString))
-        .via(Coder.encoderFlow)
-        .via(Coder.decoderFlow)
+        .via(Coder.encoderFlow).via(Coder.decoderFlow)
         .runFold(Seq.empty[Int])(_ :+ _.size)
 
       sizes shouldEqual sizesAfterRoundtrip.awaitResult(1.second)

@@ -175,12 +175,11 @@ class VerifiableProperties(val props: Properties) extends Logging {
     try {
       val m = CoreUtils.parseCsvMap(getString(name, ""))
       m.foreach {
-        case (key, value) => if (!valid(value))
+        case (key, value) =>
+          if (!valid(value))
             throw new IllegalArgumentException(
-              "Invalid entry '%s' = '%s' for property '%s'".format(
-                key,
-                value,
-                name))
+              "Invalid entry '%s' = '%s' for property '%s'"
+                .format(key, value, name))
       }
       m
     } catch {

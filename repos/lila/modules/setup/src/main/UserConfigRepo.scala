@@ -15,8 +15,7 @@ private[setup] object UserConfigRepo {
   def update(user: User)(f: UserConfig => UserConfig): Funit =
     config(user) flatMap { config =>
       userConfigTube.coll
-        .update(BSONDocument("_id" -> config.id), f(config), upsert = true)
-        .void
+        .update(BSONDocument("_id" -> config.id), f(config), upsert = true).void
     }
 
   def config(user: User): Fu[UserConfig] =

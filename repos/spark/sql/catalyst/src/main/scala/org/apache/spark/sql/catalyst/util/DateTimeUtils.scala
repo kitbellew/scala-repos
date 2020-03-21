@@ -94,8 +94,8 @@ object DateTimeUtils {
   def millisToDays(millisUtc: Long): SQLDate = {
     // SPARK-6785: use Math.floor so negative number of days (dates before 1970)
     // will correctly work as input for function toJavaDate(Int)
-    val millisLocal =
-      millisUtc + threadLocalLocalTimeZone.get().getOffset(millisUtc)
+    val millisLocal = millisUtc + threadLocalLocalTimeZone.get()
+      .getOffset(millisUtc)
     Math.floor(millisLocal.toDouble / MILLIS_PER_DAY).toInt
   }
 
@@ -411,8 +411,8 @@ object DateTimeUtils {
   }
 
   private def localTimestamp(microsec: SQLTimestamp): SQLTimestamp = {
-    absoluteMicroSecond(microsec) + defaultTimeZone.getOffset(
-      microsec / 1000) * 1000L
+    absoluteMicroSecond(microsec) + defaultTimeZone
+      .getOffset(microsec / 1000) * 1000L
   }
 
   /**

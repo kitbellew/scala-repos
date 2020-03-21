@@ -117,8 +117,8 @@ class SparkJLineCompletion(val intp: SparkIMain)
         var upgraded = false
         lazy val upgrade = {
           intp rebind param
-          intp.reporter.printMessage(
-            "\nRebinding stable value %s from %s to %s".format(
+          intp.reporter
+            .printMessage("\nRebinding stable value %s from %s to %s".format(
               param.name,
               tp,
               param.tpe))
@@ -386,12 +386,9 @@ class SparkJLineCompletion(val intp: SparkIMain)
     // This is jline's entry point for completion.
     override def complete(buf: String, cursor: Int): Candidates = {
       verbosity = if (isConsecutiveTabs(buf, cursor)) verbosity + 1 else 0
-      logDebug("\ncomplete(%s, %d) last = (%s, %d), verbosity: %s".format(
-        buf,
-        cursor,
-        lastBuf,
-        lastCursor,
-        verbosity))
+      logDebug(
+        "\ncomplete(%s, %d) last = (%s, %d), verbosity: %s"
+          .format(buf, cursor, lastBuf, lastCursor, verbosity))
 
       // we don't try lower priority completions unless higher ones return no results.
       def tryCompletion(

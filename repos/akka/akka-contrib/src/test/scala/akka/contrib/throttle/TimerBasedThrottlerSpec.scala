@@ -48,8 +48,8 @@ class TimerBasedThrottlerSpec
       //#demo-code
       val printer = system.actorOf(Props[PrintActor])
       // The throttler for this example, setting the rate
-      val throttler = system.actorOf(
-        Props(classOf[TimerBasedThrottler], 3 msgsPer 1.second))
+      val throttler = system
+        .actorOf(Props(classOf[TimerBasedThrottler], 3 msgsPer 1.second))
       // Set the target
       throttler ! SetTarget(Some(printer))
       // These three messages will be sent to the target immediately

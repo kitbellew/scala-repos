@@ -155,8 +155,7 @@ final class ParIncOptimizer(
 
     /** UPDATE PASS ONLY. */
     def tagCallersOfStatic(methodName: String): Unit =
-      callersOfStatic
-        .remove(methodName)
+      callersOfStatic.remove(methodName)
         .foreach(_.keysIterator.foreach(_.tag()))
   }
 

@@ -45,9 +45,7 @@ case class Dependency(
 
 object Dependency {
   def dependenciesIn(scope: PsiElement): Seq[Dependency] = {
-    scope.depthFirst
-      .filterByType(classOf[ScReferenceElement])
-      .toList
+    scope.depthFirst.filterByType(classOf[ScReferenceElement]).toList
       .flatMap(reference => dependencyFor(reference).toList)
   }
 
@@ -100,8 +98,8 @@ object Dependency {
               e.qualifiedName)
           case (function: ScFunctionDefinition) && ContainingClass(
                 obj: ScObject)
-              if function.isSynthetic || function.name == "apply" || function.name == "unapply" =>
-            withEntity(obj.qualifiedName)
+              if function.isSynthetic || function.name == "apply" || function
+                .name == "unapply" => withEntity(obj.qualifiedName)
           case (member: ScMember) && ContainingClass(obj: ScObject) =>
             val memberName = member match {
               case named: ScNamedElement => named.name
@@ -119,8 +117,9 @@ object Dependency {
               if method.getModifierList.hasModifierProperty("static") =>
             withMember(e.qualifiedName, method.getName)
           case (member: PsiMember) && ContainingClass(e: PsiClass) =>
-            fromType.flatMap(it =>
-              ScType.extractClass(it, Some(e.getProject))) match {
+            fromType
+              .flatMap(it =>
+                ScType.extractClass(it, Some(e.getProject))) match {
               case Some(entity: ScObject) =>
                 val memberName = member match {
                   case named: ScNamedElement => named.name

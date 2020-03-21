@@ -169,8 +169,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     // TODO Get rid of this when we break backward binary compatibility
     private lazy val hasNewRuntimeLong = {
-      val rtLongClass = classEmitter.linkedClassByName(
-        LongImpl.RuntimeLongClass)
+      val rtLongClass = classEmitter
+        .linkedClassByName(LongImpl.RuntimeLongClass)
       rtLongClass.memberMethods.exists { linkedMethod =>
         linkedMethod.tree.name.name == LongImpl.initFromParts
       }
@@ -442,13 +442,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             (newArgs, env0) =>
               implicit val env = env0
 
-              val linkedClass = classEmitter.linkedClassByName(
-                enclosingClassName)
+              val linkedClass = classEmitter
+                .linkedClassByName(enclosingClassName)
 
               val superCtorCall = {
                 outputMode match {
-                  case OutputMode.ECMAScript51Global |
-                      OutputMode.ECMAScript51Isolated =>
+                  case OutputMode.ECMAScript51Global | OutputMode
+                        .ECMAScript51Isolated =>
                     val superCtor = genRawJSClassConstructor(
                       getSuperClassOfJSClass(linkedClass))
 
@@ -509,8 +509,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   js.StringLiteral("writable") -> js.BooleanLiteral(true),
                   js.StringLiteral("value") -> transformExpr(zeroOf(ftpe))
                 ))
-                val descriptors = js.ObjectConstr(List(
-                  transformedName -> descriptor))
+                val descriptors = js
+                  .ObjectConstr(List(transformedName -> descriptor))
                 js.Apply(defineProperties, List(js.This(), descriptors))
               }
 
@@ -982,8 +982,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         */
       def extractLet(inner: Tree => js.Tree): js.Tree = {
         outputMode match {
-          case OutputMode.ECMAScript51Global |
-              OutputMode.ECMAScript51Isolated => inner(lhs)
+          case OutputMode.ECMAScript51Global | OutputMode
+                .ECMAScript51Isolated => inner(lhs)
           case OutputMode.ECMAScript6 => lhs match {
               case VarDef(name, tpe, mutable, oldRhs) =>
                 js.Block(
@@ -1393,8 +1393,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                         Assign(JSBracketSelect(objVarDef.ref, prop), value)
                     }
                     (namesSeen + name, stat :: statsAcc)
-                }
-                ._2
+                }._2
               redo { Block(objVarDef :: assignFields ::: objVarDef.ref :: Nil) }
             } else {
               val names = fields map (_._1)

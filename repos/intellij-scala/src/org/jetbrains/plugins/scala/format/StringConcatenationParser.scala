@@ -37,12 +37,9 @@ object StringConcatenationParser extends StringParser {
     exp match {
       case interpolated: ScInterpolatedStringLiteral =>
         InterpolatedStringParser.parse(interpolated).getOrElse(Nil).toList
-      case literal: ScLiteral =>
-        Text(literal.getValue.toString).withEscapedPercent(exp.getManager)
-      case it =>
-        FormattedStringParser
-          .parse(it)
-          .map(_.toList)
+      case literal: ScLiteral => Text(literal.getValue.toString)
+          .withEscapedPercent(exp.getManager)
+      case it => FormattedStringParser.parse(it).map(_.toList)
           .getOrElse(Injection(it, None) :: Nil)
     }
   }

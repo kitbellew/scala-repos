@@ -15,8 +15,7 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
   "extractClientIP-example" in {
     val route = extractClientIP { ip =>
       complete(
-        "Client's ip is " + ip.toOption
-          .map(_.getHostAddress)
+        "Client's ip is " + ip.toOption.map(_.getHostAddress)
           .getOrElse("unknown"))
     }
 

@@ -26,8 +26,7 @@ object ServerSSLEngine {
     val providerClassName = serverConfig.configuration.underlying
       .getString("play.server.https.engineProvider")
 
-    val classLoader = applicationProvider.get
-      .map(_.classloader)
+    val classLoader = applicationProvider.get.map(_.classloader)
       .getOrElse(this.getClass.getClassLoader)
     val providerClass = classLoader.loadClass(providerClassName)
 
@@ -77,8 +76,7 @@ object ServerSSLEngine {
 
     def javaAppProvider = {
       val javaApplication = applicationProvider.get
-        .map(a => a.injector.instanceOf[play.Application])
-        .getOrElse(null)
+        .map(a => a.injector.instanceOf[play.Application]).getOrElse(null)
       new play.server.ApplicationProvider(javaApplication)
     }
 
@@ -87,12 +85,10 @@ object ServerSSLEngine {
         .newInstance(serverConfig, javaAppProvider)
         .asInstanceOf[JavaSSLEngineProvider]
     } else if (providerArgsConstructor != null) {
-      providerArgsConstructor
-        .newInstance(javaAppProvider)
+      providerArgsConstructor.newInstance(javaAppProvider)
         .asInstanceOf[JavaSSLEngineProvider]
     } else if (noArgsConstructor != null) {
-      noArgsConstructor
-        .newInstance()
+      noArgsConstructor.newInstance()
         .asInstanceOf[play.server.SSLEngineProvider]
     } else {
       throw new ClassCastException(
@@ -120,17 +116,16 @@ object ServerSSLEngine {
           .asInstanceOf[Constructor[ScalaSSLEngineProvider]]
       } else if (parameterTypes.length == 2 &&
                  classOf[ServerConfig].isAssignableFrom(parameterTypes(0)) &&
-                 classOf[ApplicationProvider].isAssignableFrom(parameterTypes(
-                   1))) {
+                 classOf[ApplicationProvider]
+                   .isAssignableFrom(parameterTypes(1))) {
         serverConfigProviderArgsConstructor = constructor
           .asInstanceOf[Constructor[ScalaSSLEngineProvider]]
       }
     }
 
     if (serverConfigProviderArgsConstructor != null) {
-      serverConfigProviderArgsConstructor.newInstance(
-        serverConfig,
-        applicationProvider)
+      serverConfigProviderArgsConstructor
+        .newInstance(serverConfig, applicationProvider)
     } else if (providerArgsConstructor != null) {
       providerArgsConstructor.newInstance(applicationProvider)
     } else if (noArgsConstructor != null) { noArgsConstructor.newInstance() }

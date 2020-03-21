@@ -15,9 +15,8 @@ object Foldable1Test extends SpecLite {
   }
   "maximumBy1" ! forAll { (xs: NonEmptyList[Int]) =>
     val f: Int => String = _.toString
-    (
-      xs maximumBy1 f
-    ) must_=== ((xs.list zip (xs.list map f)).toList.maxBy(_._2)._1)
+    (xs maximumBy1 f) must_=== ((xs.list zip (xs.list map f)).toList.maxBy(_._2)
+      ._1)
   }
   "minimum1" ! forAll { (xs: NonEmptyList[Int]) =>
     (xs.minimum1) must_=== (xs.list.toList.min)
@@ -28,9 +27,8 @@ object Foldable1Test extends SpecLite {
   }
   "minimumBy1" ! forAll { (xs: NonEmptyList[Int]) =>
     val f: Int => String = _.toString
-    (
-      xs minimumBy1 f
-    ) must_=== ((xs.list zip (xs.list map f)).toList.minBy(_._2)._1)
+    (xs minimumBy1 f) must_=== ((xs.list zip (xs.list map f)).toList.minBy(_._2)
+      ._1)
   }
 
   "distinct1" ! forAll { (xs: NonEmptyList[Int]) =>

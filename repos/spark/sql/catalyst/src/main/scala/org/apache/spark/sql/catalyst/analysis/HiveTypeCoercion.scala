@@ -242,8 +242,9 @@ object HiveTypeCoercion {
 
         case s: Union
             if s.childrenResolved &&
-              s.children.forall(
-                _.output.length == s.children.head.output.length) && !s.resolved =>
+              s.children
+                .forall(_.output.length == s.children.head.output.length) && !s
+              .resolved =>
           val newChildren: Seq[LogicalPlan] = buildNewChildrenWithWiderTypes(
             s.children)
           s.makeCopy(Array(newChildren))
@@ -574,28 +575,25 @@ object HiveTypeCoercion {
       plan resolveExpressions {
         case c: CaseWhen if c.childrenResolved && !c.valueTypesEqual =>
           val maybeCommonType = findWiderCommonType(c.valueTypes)
-          maybeCommonType
-            .map { commonType =>
-              var changed = false
-              val newBranches = c.branches.map {
-                case (condition, value) =>
-                  if (value.dataType.sameType(commonType)) {
-                    (condition, value)
-                  } else {
-                    changed = true
-                    (condition, Cast(value, commonType))
-                  }
-              }
-              val newElseValue = c.elseValue.map { value =>
-                if (value.dataType.sameType(commonType)) { value }
+          maybeCommonType.map { commonType =>
+            var changed = false
+            val newBranches = c.branches.map {
+              case (condition, value) =>
+                if (value.dataType.sameType(commonType)) { (condition, value) }
                 else {
                   changed = true
-                  Cast(value, commonType)
+                  (condition, Cast(value, commonType))
                 }
-              }
-              if (changed) CaseWhen(newBranches, newElseValue) else c
             }
-            .getOrElse(c)
+            val newElseValue = c.elseValue.map { value =>
+              if (value.dataType.sameType(commonType)) { value }
+              else {
+                changed = true
+                Cast(value, commonType)
+              }
+            }
+            if (changed) CaseWhen(newBranches, newElseValue) else c
+          }.getOrElse(c)
       }
   }
 
@@ -608,17 +606,14 @@ object HiveTypeCoercion {
         case e if !e.childrenResolved => e
         // Find tightest common type for If, if the true value and false value have different types.
         case i @ If(pred, left, right) if left.dataType != right.dataType =>
-          findWiderTypeForTwo(left.dataType, right.dataType)
-            .map { widestType =>
-              val newLeft =
-                if (left.dataType == widestType) left
-                else Cast(left, widestType)
-              val newRight =
-                if (right.dataType == widestType) right
-                else Cast(right, widestType)
-              If(pred, newLeft, newRight)
-            }
-            .getOrElse(i) // If there is no applicable conversion, leave expression unchanged.
+          findWiderTypeForTwo(left.dataType, right.dataType).map { widestType =>
+            val newLeft =
+              if (left.dataType == widestType) left else Cast(left, widestType)
+            val newRight =
+              if (right.dataType == widestType) right
+              else Cast(right, widestType)
+            If(pred, newLeft, newRight)
+          }.getOrElse(i) // If there is no applicable conversion, leave expression unchanged.
         // Convert If(null literal, _, _) into boolean type.
         // In the optimizer, we should short-circuit this directly into false value.
         case If(pred, left, right) if pred.dataType == NullType =>
@@ -662,8 +657,8 @@ object HiveTypeCoercion {
 
         case b @ BinaryOperator(left, right)
             if left.dataType != right.dataType =>
-          findTightestCommonTypeOfTwo(left.dataType, right.dataType)
-            .map { commonType =>
+          findTightestCommonTypeOfTwo(left.dataType, right.dataType).map {
+            commonType =>
               if (b.inputType.acceptsType(commonType)) {
                 // If the expression accepts the tightest common type, cast to that.
                 val newLeft =
@@ -677,8 +672,7 @@ object HiveTypeCoercion {
                 // Otherwise, don't do anything with the expression.
                 b
               }
-            }
-            .getOrElse(b) // If there is no applicable conversion, leave expression unchanged.
+          }.getOrElse(b) // If there is no applicable conversion, leave expression unchanged.
 
         case e: ImplicitCastInputTypes if e.inputTypes.nonEmpty =>
           val children: Seq[Expression] = e.children.zip(e.inputTypes).map {

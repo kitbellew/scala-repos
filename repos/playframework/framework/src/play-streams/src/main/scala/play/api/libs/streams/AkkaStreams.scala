@@ -37,16 +37,16 @@ object AkkaStreams {
       mergeStrategy: Graph[UniformFanInShape[Out, Out], _] =
         onlyFirstCanFinishMerge[Out](2))
       : Flow[FlowIn, Out, _] => Flow[In, Out, _] = { flow =>
-    val bypasser = Flow.fromGraph(
-      GraphDSL.create[FlowShape[Either[FlowIn, Out], Out]]() {
+    val bypasser = Flow
+      .fromGraph(GraphDSL.create[FlowShape[Either[FlowIn, Out], Out]]() {
         implicit builder =>
           import GraphDSL.Implicits._
 
           // Eager cancel must be true so that if the flow cancels, that will be propagated upstream.
           // However, that means the bypasser must block cancel, since when this flow finishes, the merge
           // will result in a cancel flowing up through the bypasser, which could lead to dropped messages.
-          val broadcast = builder.add(
-            Broadcast[Either[FlowIn, Out]](2, eagerCancel = true))
+          val broadcast = builder
+            .add(Broadcast[Either[FlowIn, Out]](2, eagerCancel = true))
           val merge = builder.add(mergeStrategy)
 
           // Normal flow

@@ -214,8 +214,8 @@ class VecCheck extends Specification with ScalaCheck {
 
     "foldLeft works" in {
       forAll { (v: Vec[Double]) =>
-        val res = v.foldLeft(0)((c: Int, x: Double) =>
-          c + { if (x.isNaN) 0 else 1 })
+        val res = v
+          .foldLeft(0)((c: Int, x: Double) => c + { if (x.isNaN) 0 else 1 })
         val exp = v.count
         res must_== exp
       }
@@ -231,8 +231,9 @@ class VecCheck extends Specification with ScalaCheck {
 
     "foldLeftWhile works" in {
       forAll { (v: Vec[Double]) =>
-        val res = v.foldLeftWhile(0)((c: Int, x: Double) => c + 1)(
-          (c: Int, x: Double) => c < 3)
+        val res = v
+          .foldLeftWhile(0)((c: Int, x: Double) => c + 1)((c: Int, x: Double) =>
+            c < 3)
         var c = 0
         val exp = v.contents.takeWhile { (v: Double) =>
           v.isNaN || { c += 1; c <= 3 }
@@ -355,8 +356,11 @@ class VecCheck extends Specification with ScalaCheck {
 
     "pad works" in {
       Vec[Double](1d, na, na, 2d).pad must_== Vec[Double](1d, 1d, 1d, 2d)
-      Vec[Double](1d, na, na, 2d)
-        .padAtMost(1) must_== Vec[Double](1d, 1d, na, 2d)
+      Vec[Double](1d, na, na, 2d).padAtMost(1) must_== Vec[Double](
+        1d,
+        1d,
+        na,
+        2d)
 
       forAll { (v: Vec[Double]) =>
         (v.length > 0 && v.at(0).isNA) || (v.pad.hasNA must beFalse)

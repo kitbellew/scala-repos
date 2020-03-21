@@ -145,8 +145,7 @@ private[deploy] class DriverRunner(
     val localJarFile = new File(driverDir, jarFileName)
     val localJarFilename = localJarFile.getAbsolutePath
 
-    if (!localJarFile
-          .exists()) { // May already exist if running multiple workers on one node
+    if (!localJarFile.exists()) { // May already exist if running multiple workers on one node
       logInfo(s"Copying user jar $jarPath to $destPath")
       Utils.fetchFile(
         driverDesc.jarUrl,
@@ -179,9 +178,8 @@ private[deploy] class DriverRunner(
       val stderr = new File(baseDir, "stderr")
       val formattedCommand = builder.command.asScala
         .mkString("\"", "\" \"", "\"")
-      val header = "Launch Command: %s\n%s\n\n".format(
-        formattedCommand,
-        "=" * 40)
+      val header = "Launch Command: %s\n%s\n\n"
+        .format(formattedCommand, "=" * 40)
       Files.append(header, stderr, StandardCharsets.UTF_8)
       CommandUtils.redirectStream(process.getErrorStream, stderr)
     }

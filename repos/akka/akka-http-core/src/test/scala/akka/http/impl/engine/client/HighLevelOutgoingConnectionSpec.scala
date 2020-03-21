@@ -29,23 +29,22 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
 
         val binding = Http().bindAndHandleSync(
           r ⇒
-            HttpResponse(entity =
-              r.uri.toString.reverse.takeWhile(Character.isDigit).reverse),
+            HttpResponse(entity = r.uri.toString.reverse
+              .takeWhile(Character.isDigit).reverse),
           serverHostName,
           serverPort)
 
         val N = 100
-        val result = Source
-          .fromIterator(() ⇒ Iterator.from(1))
-          .take(N)
+        val result = Source.fromIterator(() ⇒ Iterator.from(1)).take(N)
           .map(id ⇒ HttpRequest(uri = s"/r$id"))
           .via(Http().outgoingConnection(serverHostName, serverPort))
-          .mapAsync(4)(_.entity.toStrict(1.second))
-          .map { r ⇒ val s = r.data.utf8String; log.debug(s); s.toInt }
-          .runFold(0)(_ + _)
+          .mapAsync(4)(_.entity.toStrict(1.second)).map { r ⇒
+            val s = r.data.utf8String; log.debug(s); s.toInt
+          }.runFold(0)(_ + _)
 
-        result
-          .futureValue(PatienceConfig(10.seconds)) shouldEqual N * (N + 1) / 2
+        result.futureValue(PatienceConfig(10.seconds)) shouldEqual N * (
+          N + 1
+        ) / 2
         binding.futureValue.unbind()
       }
 
@@ -56,8 +55,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
 
         val binding = Http().bindAndHandleSync(
           r ⇒
-            HttpResponse(entity =
-              r.uri.toString.reverse.takeWhile(Character.isDigit).reverse),
+            HttpResponse(entity = r.uri.toString.reverse
+              .takeWhile(Character.isDigit).reverse),
           serverHostName,
           serverPort)
 
@@ -75,14 +74,11 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
         })
 
         val N = 100
-        val result = Source
-          .fromIterator(() ⇒ Iterator.from(1))
-          .take(N)
-          .map(id ⇒ HttpRequest(uri = s"/r$id"))
-          .via(doubleConnection)
-          .mapAsync(4)(_.entity.toStrict(1.second))
-          .map { r ⇒ val s = r.data.utf8String; log.debug(s); s.toInt }
-          .runFold(0)(_ + _)
+        val result = Source.fromIterator(() ⇒ Iterator.from(1)).take(N)
+          .map(id ⇒ HttpRequest(uri = s"/r$id")).via(doubleConnection)
+          .mapAsync(4)(_.entity.toStrict(1.second)).map { r ⇒
+            val s = r.data.utf8String; log.debug(s); s.toInt
+          }.runFold(0)(_ + _)
 
         result.futureValue(PatienceConfig(10.seconds)) shouldEqual C * N * (
           N + 1
@@ -103,10 +99,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
         serverHostName,
         serverPort)
 
-      val x = Source(List("/a", "/b", "/c"))
-        .map(path ⇒ HttpRequest(uri = path))
-        .via(Http().outgoingConnection(serverHostName, serverPort))
-        .grouped(10)
+      val x = Source(List("/a", "/b", "/c")).map(path ⇒ HttpRequest(uri = path))
+        .via(Http().outgoingConnection(serverHostName, serverPort)).grouped(10)
         .runWith(Sink.head)
 
       a[One2OneBidiFlow.OutputTruncationException.type] should be thrownBy Await

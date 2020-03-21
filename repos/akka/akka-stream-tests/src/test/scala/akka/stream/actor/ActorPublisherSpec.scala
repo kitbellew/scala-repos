@@ -323,13 +323,11 @@ class ActorPublisherSpec
         val probe = TestProbe()
 
         val source: Source[Int, ActorRef] = Source.actorPublisher(senderProps)
-        val sink: Sink[String, ActorRef] = Sink.actorSubscriber(receiverProps(
-          probe.ref))
+        val sink: Sink[String, ActorRef] = Sink
+          .actorSubscriber(receiverProps(probe.ref))
 
-        val (snd, rcv) = source
-          .collect { case n if n % 2 == 0 ⇒ "elem-" + n }
-          .toMat(sink)(Keep.both)
-          .run()
+        val (snd, rcv) = source.collect { case n if n % 2 == 0 ⇒ "elem-" + n }
+          .toMat(sink)(Keep.both).run()
 
         (1 to 3) foreach { snd ! _ }
         probe.expectMsg("elem-2")
@@ -357,8 +355,8 @@ class ActorPublisherSpec
 
       val sink1 = Sink.fromSubscriber(
         ActorSubscriber[String](system.actorOf(receiverProps(probe1.ref))))
-      val sink2: Sink[String, ActorRef] = Sink.actorSubscriber(receiverProps(
-        probe2.ref))
+      val sink2: Sink[String, ActorRef] = Sink
+        .actorSubscriber(receiverProps(probe2.ref))
 
       val senderRef2 = RunnableGraph
         .fromGraph(GraphDSL.create(Source.actorPublisher[Int](senderProps)) {
@@ -376,8 +374,7 @@ class ActorPublisherSpec
             bcast.out(0).map(_ + "mark") ~> sink1
             bcast.out(1) ~> sink2
             ClosedShape
-        })
-        .run()
+        }).run()
 
       (0 to 10).foreach {
         senderRef1 ! _
@@ -433,11 +430,9 @@ class ActorPublisherSpec
       implicit val materializer = ActorMaterializer(
         ActorMaterializerSettings(system).withDispatcher("my-dispatcher1"))
       val s = TestSubscriber.manualProbe[String]()
-      val ref = Source
-        .actorPublisher(
-          testPublisherProps(testActor, useTestDispatcher = false))
-        .to(Sink.fromSubscriber(s))
-        .run()
+      val ref = Source.actorPublisher(
+        testPublisherProps(testActor, useTestDispatcher = false))
+        .to(Sink.fromSubscriber(s)).run()
       ref ! ThreadName
       expectMsgType[String] should include("my-dispatcher1")
     }
@@ -445,12 +440,10 @@ class ActorPublisherSpec
     "use dispatcher from operation attributes" in {
       implicit val materializer = ActorMaterializer()
       val s = TestSubscriber.manualProbe[String]()
-      val ref = Source
-        .actorPublisher(
-          testPublisherProps(testActor, useTestDispatcher = false))
+      val ref = Source.actorPublisher(
+        testPublisherProps(testActor, useTestDispatcher = false))
         .withAttributes(ActorAttributes.dispatcher("my-dispatcher1"))
-        .to(Sink.fromSubscriber(s))
-        .run()
+        .to(Sink.fromSubscriber(s)).run()
       ref ! ThreadName
       expectMsgType[String] should include("my-dispatcher1")
     }
@@ -458,13 +451,11 @@ class ActorPublisherSpec
     "use dispatcher from props" in {
       implicit val materializer = ActorMaterializer()
       val s = TestSubscriber.manualProbe[String]()
-      val ref = Source
-        .actorPublisher(
-          testPublisherProps(testActor, useTestDispatcher = false)
-            .withDispatcher("my-dispatcher1"))
+      val ref = Source.actorPublisher(
+        testPublisherProps(testActor, useTestDispatcher = false)
+          .withDispatcher("my-dispatcher1"))
         .withAttributes(ActorAttributes.dispatcher("my-dispatcher2"))
-        .to(Sink.fromSubscriber(s))
-        .run()
+        .to(Sink.fromSubscriber(s)).run()
       ref ! ThreadName
       expectMsgType[String] should include("my-dispatcher1")
     }

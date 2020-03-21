@@ -85,11 +85,9 @@ class AppsResource @Inject() (
           checkAuthorization(CreateApp, app)
 
           def createOrThrow(opt: Option[AppDefinition]) =
-            opt
-              .map(_ =>
-                throw new ConflictingChangeException(
-                  s"An app with id [${app.id}] already exists."))
-              .getOrElse(app)
+            opt.map(_ =>
+              throw new ConflictingChangeException(
+                s"An app with id [${app.id}] already exists.")).getOrElse(app)
 
           val plan = result(
             groupManager.updateApp(app.id, createOrThrow, app.version, force))
@@ -101,10 +99,8 @@ class AppsResource @Inject() (
             maybeDeployments = Some(Seq(Identifiable(plan.id))))
 
           maybePostEvent(req, appWithDeployments.app)
-          Response
-            .created(new URI(app.id.toString))
-            .entity(jsonString(appWithDeployments))
-            .build()
+          Response.created(new URI(app.id.toString))
+            .entity(jsonString(appWithDeployments)).build()
       }
     }
 
@@ -115,22 +111,21 @@ class AppsResource @Inject() (
       @Context
       req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
-      val resolvedEmbed =
-        InfoEmbedResolver.resolveApp(embed.asScala.toSet) ++ Set(
-          // deprecated. For compatibility.
-          AppInfo.Embed.Counts,
-          AppInfo.Embed.Tasks,
-          AppInfo.Embed.LastTaskFailure,
-          AppInfo.Embed.Deployments)
+      val resolvedEmbed = InfoEmbedResolver
+        .resolveApp(embed.asScala.toSet) ++ Set(
+        // deprecated. For compatibility.
+        AppInfo.Embed.Counts,
+        AppInfo.Embed.Tasks,
+        AppInfo.Embed.LastTaskFailure,
+        AppInfo.Embed.Deployments)
 
       def transitiveApps(groupId: PathId): Response = {
         result(groupManager.group(groupId)) match {
           case Some(group) =>
             checkAuthorization(ViewGroup, group)
-            val appsWithTasks = result(appInfoService.selectAppsInGroup(
-              groupId,
-              allAuthorized,
-              resolvedEmbed))
+            val appsWithTasks = result(
+              appInfoService
+                .selectAppsInGroup(groupId, allAuthorized, resolvedEmbed))
             ok(jsonObjString("*" -> appsWithTasks))
           case None => unknownGroup(groupId)
         }
@@ -171,9 +166,7 @@ class AppsResource @Inject() (
             now,
             force))
 
-          val response = plan.original
-            .app(appId)
-            .map(_ => Response.ok())
+          val response = plan.original.app(appId).map(_ => Response.ok())
             .getOrElse(Response.created(new URI(appId.toString)))
           maybePostEvent(req, plan.target.app(appId).get)
           deploymentResult(plan, response)
@@ -251,9 +244,7 @@ class AppsResource @Inject() (
       val appId = id.toRootPath
 
       def markForRestartingOrThrow(opt: Option[AppDefinition]) = {
-        opt
-          .map(checkAuthorization(UpdateApp, _))
-          .map(_.markedForRestarting)
+        opt.map(checkAuthorization(UpdateApp, _)).map(_.markedForRestarting)
           .getOrElse(throw UnknownAppException(appId))
       }
 
@@ -283,8 +274,7 @@ class AppsResource @Inject() (
     }
 
     def rollback(current: AppDefinition, version: Timestamp): AppDefinition = {
-      val app = service
-        .getApp(appId, version)
+      val app = service.getApp(appId, version)
         .getOrElse(throw UnknownAppException(appId))
       checkAuthorization(ViewApp, app)
       checkAuthorization(UpdateApp, current)
@@ -292,9 +282,7 @@ class AppsResource @Inject() (
     }
 
     def updateOrRollback(current: AppDefinition): AppDefinition =
-      appUpdate.version
-        .map(rollback(current, _))
-        .getOrElse(updateApp(current))
+      appUpdate.version.map(rollback(current, _)).getOrElse(updateApp(current))
 
     existing match {
       case Some(app) =>

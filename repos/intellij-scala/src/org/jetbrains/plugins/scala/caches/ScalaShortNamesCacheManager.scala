@@ -186,15 +186,12 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
       list.toSeq
     }
     def javaMethods: Seq[PsiMethod] = {
-      PsiShortNamesCache
-        .getInstance(project)
-        .getMethodsByName(name, scope)
+      PsiShortNamesCache.getInstance(project).getMethodsByName(name, scope)
         .filter {
           case f: ScFunction       => false
           case f: LightScalaMethod => false
           case _                   => true
-        }
-        .toSeq
+        }.toSeq
     }
     scalaMethods ++ javaMethods
   }
@@ -282,8 +279,7 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
       val qualName =
         if (psiPackage.getQualifiedName.isEmpty) clazzName
         else psiPackage.getQualifiedName + "." + clazzName
-      val c = ScalaPsiManager
-        .instance(project)
+      val c = ScalaPsiManager.instance(project)
         .getCachedClasses(scope, qualName)
       result ++= c
     }

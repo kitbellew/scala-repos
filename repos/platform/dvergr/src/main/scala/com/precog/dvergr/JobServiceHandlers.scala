@@ -372,11 +372,9 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
     import scalaz.std.option._
 
     val result = for {
-      timestamp <- (obj \? "timestamp")
-        .map(_.validated[DateTime])
+      timestamp <- (obj \? "timestamp").map(_.validated[DateTime])
         .sequence[({ type λ[α] = Validation[Error, α] })#λ, DateTime]
-      reason <- (obj \? "reason")
-        .map(_.validated[String])
+      reason <- (obj \? "reason").map(_.validated[String])
         .sequence[({ type λ[α] = Validation[Error, α] })#λ, String]
     } yield (timestamp getOrElse (new DateTime), reason)
 
@@ -407,8 +405,8 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
             obj =>
               (obj \ "state") match {
                 case JString("started") => transition(obj) { (timestamp, _) =>
-                    jobs.start(jobId, timestamp) map (Validation.fromEither(
-                      _)) map (_ map (_.state))
+                    jobs.start(jobId, timestamp) map (Validation
+                      .fromEither(_)) map (_ map (_.state))
                   }
 
                 case JString("cancelled") => transition(obj) {
@@ -421,8 +419,8 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
                   }
 
                 case JString("finished") => transition(obj) { (timestamp, _) =>
-                    jobs.finish(jobId, timestamp) map (Validation.fromEither(
-                      _)) map (_ map (_.state))
+                    jobs.finish(jobId, timestamp) map (Validation
+                      .fromEither(_)) map (_ map (_.state))
                   }
 
                 case JString("aborted") => transition(obj) {
@@ -435,8 +433,8 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
                   }
 
                 case JString("expired") => transition(obj) { (timestamp, _) =>
-                    jobs.expire(jobId, timestamp) map (Validation.fromEither(
-                      _)) map (_ map (_.state))
+                    jobs.expire(jobId, timestamp) map (Validation
+                      .fromEither(_)) map (_ map (_.state))
                   }
 
                 case JString(state) =>
@@ -454,8 +452,8 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
                   Future(HttpResponse[JValue](
                     BadRequest,
                     content = Some(JString(
-                      "Invalid 'state given: %s is not a string.".format(
-                        other.renderCompact)))))
+                      "Invalid 'state given: %s is not a string."
+                        .format(other.renderCompact)))))
               }
           }
         }
@@ -497,8 +495,8 @@ class CreateResultHandler(jobs: JobManager[Future])(implicit
       Future(HttpResponse[ByteChunk](
         BadRequest,
         content = Some(ByteChunk(
-          "Missing required 'jobId parameter or request body.".getBytes(
-            "UTF-8")))))
+          "Missing required 'jobId parameter or request body."
+            .getBytes("UTF-8")))))
     })
   }
 

@@ -50,9 +50,8 @@ object MarathonBuild extends Build {
         buildInfoPackage := "mesosphere.marathon",
         fork in Test := true
       )
-  ).configs(IntegrationTest)
-    .dependsOn(pluginInterface)
-    // run mesos-simulation/test:test when running test
+  ).configs(IntegrationTest).dependsOn(pluginInterface)
+  // run mesos-simulation/test:test when running test
     .settings(
       (test in Test) <<= (test in Test) dependsOn (test in Test in LocalProject(
         "mesos-simulation")))
@@ -103,9 +102,7 @@ object MarathonBuild extends Build {
 
   lazy val scalaStyleSettings = styleSettings ++ Seq(
     testScalaStyle := {
-      org.scalastyle.sbt.ScalastylePlugin.scalastyle
-        .in(Compile)
-        .toTask("")
+      org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("")
         .value
     },
     (test in Test) <<= (test in Test) dependsOn testScalaStyle)
@@ -174,8 +171,7 @@ object MarathonBuild extends Build {
 
   lazy val formatSettings = scalariformSettings ++ Seq(
     ScalariformKeys.preferences := FormattingPreferences()
-      .setPreference(IndentWithTabs, false)
-      .setPreference(IndentSpaces, 2)
+      .setPreference(IndentWithTabs, false).setPreference(IndentSpaces, 2)
       .setPreference(AlignParameters, true)
       .setPreference(DoubleIndentClassDeclaration, true)
       .setPreference(MultilineScaladocCommentsStartOnFirstLine, false)
@@ -286,10 +282,8 @@ object Dependencies {
     Test.scalatest % "test",
     Test.mockito % "test",
     Test.akkaTestKit % "test"
-  ).map(
-    _.excludeAll(excludeSlf4jLog4j12)
-      .excludeAll(excludeLog4j)
-      .excludeAll(excludeJCL))
+  ).map(_.excludeAll(excludeSlf4jLog4j12).excludeAll(excludeLog4j).excludeAll(
+    excludeJCL))
 }
 
 object Dependency {
@@ -339,42 +333,40 @@ object Dependency {
     "mesosphere" %% "chaos" % V.Chaos exclude ("org.glassfish.web", "javax.el")
   val guava = "com.google.guava" % "guava" % V.Guava
   val mesosUtils = "mesosphere" %% "mesos-utils" % V.MesosUtils
-  val jacksonCaseClass =
-    "mesosphere" %% "jackson-case-class-module" % V.JacksonCCM
+  val jacksonCaseClass = "mesosphere" %% "jackson-case-class-module" % V
+    .JacksonCCM
   val jerseyServlet = "com.sun.jersey" % "jersey-servlet" % V.Jersey
-  val jettyEventSource =
-    "org.eclipse.jetty" % "jetty-servlets" % V.JettyServlets
-  val jerseyMultiPart =
-    "com.sun.jersey.contribs" % "jersey-multipart" % V.Jersey
+  val jettyEventSource = "org.eclipse.jetty" % "jetty-servlets" % V
+    .JettyServlets
+  val jerseyMultiPart = "com.sun.jersey.contribs" % "jersey-multipart" % V
+    .Jersey
   val jodaTime = "joda-time" % "joda-time" % V.JodaTime
   val jodaConvert = "org.joda" % "joda-convert" % V.JodaConvert
-  val twitterCommons =
-    "com.twitter.common.zookeeper" % "candidate" % V.TwitterCommons
-  val uuidGenerator =
-    "com.fasterxml.uuid" % "java-uuid-generator" % V.UUIDGenerator
+  val twitterCommons = "com.twitter.common.zookeeper" % "candidate" % V
+    .TwitterCommons
+  val uuidGenerator = "com.fasterxml.uuid" % "java-uuid-generator" % V
+    .UUIDGenerator
   val jGraphT = "org.javabits.jgrapht" % "jgrapht-core" % V.JGraphT
   val hadoopHdfs = "org.apache.hadoop" % "hadoop-hdfs" % V.Hadoop excludeAll (
     excludeMortbayJetty, excludeJavaxServlet
   )
-  val hadoopCommon =
-    "org.apache.hadoop" % "hadoop-common" % V.Hadoop excludeAll (
-      excludeMortbayJetty,
-      excludeJavaxServlet
+  val hadoopCommon = "org.apache.hadoop" % "hadoop-common" % V
+    .Hadoop excludeAll (
+    excludeMortbayJetty,
+    excludeJavaxServlet
   )
   val beanUtils = "commons-beanutils" % "commons-beanutils" % "1.9.2"
   val scallop = "org.rogach" %% "scallop" % V.Scallop
-  val jsonSchemaValidator =
-    "com.github.fge" % "json-schema-validator" % V.JsonSchemaValidator
+  val jsonSchemaValidator = "com.github.fge" % "json-schema-validator" % V
+    .JsonSchemaValidator
   val twitterZk = "com.twitter" %% "util-zk" % V.TwitterZk
   val rxScala = "io.reactivex" %% "rxscala" % V.RxScala
   val marathonUI = "mesosphere.marathon" % "ui" % V.MarathonUI
-  val marathonApiConsole =
-    "mesosphere.marathon" % "api-console" % V.MarathonApiConsole
+  val marathonApiConsole = "mesosphere.marathon" % "api-console" % V
+    .MarathonApiConsole
   val graphite = "io.dropwizard.metrics" % "metrics-graphite" % V.Graphite
-  val datadog =
-    "org.coursera" % "dropwizard-metrics-datadog" % V.DataDog exclude (
-      "ch.qos.logback", "logback-classic"
-  )
+  val datadog = "org.coursera" % "dropwizard-metrics-datadog" % V
+    .DataDog exclude ("ch.qos.logback", "logback-classic")
   val wixAccord = "com.wix" %% "accord-core" % V.WixAccord
 
   object Test {

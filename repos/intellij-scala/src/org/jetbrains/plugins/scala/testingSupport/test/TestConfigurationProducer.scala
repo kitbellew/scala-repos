@@ -29,12 +29,10 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
   protected def isObjectInheritor(
       clazz: ScTypeDefinition,
       fqn: String): Boolean = {
-    val suiteClazz = ScalaPsiManager
-      .instance(clazz.getProject)
-      .getCachedClass(
-        fqn,
-        clazz.getResolveScope,
-        ScalaPsiManager.ClassCategory.OBJECT)
+    val suiteClazz = ScalaPsiManager.instance(clazz.getProject).getCachedClass(
+      fqn,
+      clazz.getResolveScope,
+      ScalaPsiManager.ClassCategory.OBJECT)
     if (suiteClazz == null) return false
     ScalaPsiUtil.cachedDeepIsInheritor(clazz, suiteClazz)
   }
@@ -84,18 +82,17 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
     val runnerClassName = configuration.mainClass
 
     if (runnerClassName != null && runnerClassName == configuration.mainClass) {
-      val configurationModule: Module =
-        configuration.getConfigurationModule.getModule
+      val configurationModule: Module = configuration.getConfigurationModule
+        .getModule
       if (context.getLocation != null) {
         isConfigurationByLocation(configuration, context.getLocation)
       } else {
         (context.getModule == configurationModule ||
-        context.getRunManager
-          .getConfigurationTemplate(getConfigurationFactory)
-          .getConfiguration
-          .asInstanceOf[AbstractTestRunConfiguration]
+        context.getRunManager.getConfigurationTemplate(getConfigurationFactory)
+          .getConfiguration.asInstanceOf[AbstractTestRunConfiguration]
           .getConfigurationModule
-          .getModule == configurationModule) && configuration.getTestClassPath == null && configuration.getTestName == null
+          .getModule == configurationModule) && configuration
+          .getTestClassPath == null && configuration.getTestName == null
       }
     } else false
   }

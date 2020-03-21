@@ -44,9 +44,9 @@ class ScalaEvaluatorCompileHelper(project: Project)
     override def sessionDetached(session: DebuggerSession) = {
       clearTempFiles()
 
-      if (!ScalaCompileServerSettings
-            .getInstance()
-            .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper.needCompileServer) {
+      if (!ScalaCompileServerSettings.getInstance()
+            .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper
+            .needCompileServer) {
         CompileServerLauncher.ensureNotRunning(project)
       }
     }
@@ -54,15 +54,13 @@ class ScalaEvaluatorCompileHelper(project: Project)
 
   override def projectOpened(): Unit = {
     if (!ApplicationManager.getApplication.isUnitTestMode) {
-      DebuggerManagerEx
-        .getInstanceEx(project)
+      DebuggerManagerEx.getInstanceEx(project)
         .addDebuggerManagerListener(listener)
     }
   }
 
   override def projectClosed(): Unit = {
-    DebuggerManagerEx
-      .getInstanceEx(project)
+    DebuggerManagerEx.getInstanceEx(project)
       .removeDebuggerManagerListener(listener)
   }
 

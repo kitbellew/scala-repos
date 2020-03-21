@@ -31,14 +31,10 @@ class StarJoinJob(args: Args) extends Job(args) {
     input
   }
 
-  in0
-    .coGroupBy('x0) {
-      _.coGroup('x1, in1, OuterJoinMode)
-        .coGroup('x2, in2, OuterJoinMode)
-        .coGroup('x3, in3, OuterJoinMode)
-    }
-    .project('x0, 'a, 'b, 'c, 'd)
-    .write(Tsv("output"))
+  in0.coGroupBy('x0) {
+    _.coGroup('x1, in1, OuterJoinMode).coGroup('x2, in2, OuterJoinMode)
+    .coGroup('x3, in3, OuterJoinMode)
+  }.project('x0, 'a, 'b, 'c, 'd).write(Tsv("output"))
 }
 
 class CoGroupTest extends WordSpec with Matchers {
@@ -58,8 +54,6 @@ class CoGroupTest extends WordSpec with Matchers {
             (3, 2, 2, 0, 0))
           out shouldBe expected
         }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 }

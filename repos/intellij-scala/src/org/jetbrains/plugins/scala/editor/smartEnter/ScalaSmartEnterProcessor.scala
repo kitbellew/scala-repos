@@ -42,12 +42,12 @@ object ScalaSmartEnterProcessor {
 }
 
 class ScalaSmartEnterProcessor extends SmartEnterProcessor {
-  private final val SMART_ENTER_TIMESTAMP: Key[Long] = Key.create(
-    "smartEnterOriginalTimestamp")
+  private final val SMART_ENTER_TIMESTAMP: Key[Long] = Key
+    .create("smartEnterOriginalTimestamp")
 
   def process(project: Project, editor: Editor, psiFile: PsiFile) = {
-    FeatureUsageTracker.getInstance.triggerFeatureUsed(
-      "codeassists.complete.statement")
+    FeatureUsageTracker.getInstance
+      .triggerFeatureUsed("codeassists.complete.statement")
 
     try {
       editor.putUserData(
@@ -127,10 +127,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       atCaret.getClass)
 
     for (processor <- ScalaSmartEnterProcessor.myEnterProcessors) {
-      if (atCaret != null && processor.doEnter(
-            editor,
-            atCaret,
-            isModified(editor))) return
+      if (atCaret != null && processor
+            .doEnter(editor, atCaret, isModified(editor))) return
     }
 
     if (!isModified(editor)) plainEnter(editor)
@@ -210,8 +208,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
   }
 
   protected def getEnterHandler =
-    EditorActionManager.getInstance.getActionHandler(
-      IdeActions.ACTION_EDITOR_ENTER)
+    EditorActionManager.getInstance
+      .getActionHandler(IdeActions.ACTION_EDITOR_ENTER)
 
   protected def isModified(editor: Editor): Boolean = {
     val timestamp: Long = editor.getUserData(SMART_ENTER_TIMESTAMP)

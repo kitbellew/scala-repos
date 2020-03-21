@@ -176,8 +176,7 @@ class ActorEventBusSpec(conf: Config)
 
   def this() {
     this(
-      ConfigFactory
-        .parseString("akka.actor.debug.event-stream = on")
+      ConfigFactory.parseString("akka.actor.debug.event-stream = on")
         .withFallback(AkkaSpec.testConf))
   }
 
@@ -239,9 +238,10 @@ class ActorEventBusSpec(conf: Config)
     a1 ! PoisonPill
     expectTerminated(a1)
 
-    bus.publish(m(
-      2
-    )) // even though a1 has terminated, classification still applies
+    bus
+      .publish(m(
+        2
+      )) // even though a1 has terminated, classification still applies
     expectMsg(m(2))
 
     disposeSubscriber(system, subs)

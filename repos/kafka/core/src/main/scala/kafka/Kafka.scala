@@ -29,12 +29,10 @@ object Kafka extends Logging {
 
   def getPropsFromArgs(args: Array[String]): Properties = {
     val optionParser = new OptionParser
-    val overrideOpt = optionParser
-      .accepts(
-        "override",
-        "Optional property that should override values set in server.properties file")
-      .withRequiredArg()
-      .ofType(classOf[String])
+    val overrideOpt = optionParser.accepts(
+      "override",
+      "Optional property that should override values set in server.properties file")
+      .withRequiredArg().ofType(classOf[String])
 
     if (args.length == 0) {
       CommandLineUtils.printUsageAndDie(
@@ -51,10 +49,8 @@ object Kafka extends Logging {
       if (options.nonOptionArguments().size() > 0) {
         CommandLineUtils.printUsageAndDie(
           optionParser,
-          "Found non argument parameters: " + options
-            .nonOptionArguments()
-            .toArray
-            .mkString(","))
+          "Found non argument parameters: " + options.nonOptionArguments()
+            .toArray.mkString(","))
       }
 
       props.putAll(
@@ -69,11 +65,9 @@ object Kafka extends Logging {
       val kafkaServerStartable = KafkaServerStartable.fromProps(serverProps)
 
       // attach shutdown handler to catch control-c
-      Runtime
-        .getRuntime()
-        .addShutdownHook(new Thread() {
-          override def run() = { kafkaServerStartable.shutdown }
-        })
+      Runtime.getRuntime().addShutdownHook(new Thread() {
+        override def run() = { kafkaServerStartable.shutdown }
+      })
 
       kafkaServerStartable.startup
       kafkaServerStartable.awaitShutdown

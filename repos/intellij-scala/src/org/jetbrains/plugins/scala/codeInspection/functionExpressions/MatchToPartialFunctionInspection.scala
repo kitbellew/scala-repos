@@ -36,15 +36,14 @@ class MatchToPartialFunctionInspection
     case fun @ ScFunctionExpr(
           Seq(param),
           Some(ms @ ScMatchStmt(ref: ScReferenceExpression, _)))
-        if ref.resolve() == param && !(
-          param.typeElement.isDefined && notExpectedType(fun)
-        ) && checkSameResolve(fun) => registerProblem(holder, ms, fun)
+        if ref.resolve() == param && !(param.typeElement
+          .isDefined && notExpectedType(fun)) && checkSameResolve(fun) =>
+      registerProblem(holder, ms, fun)
     case fun @ ScFunctionExpr(
           Seq(param),
           Some(ScBlock(ms @ ScMatchStmt(ref: ScReferenceExpression, _))))
-        if ref.resolve() == param && !(
-          param.typeElement.isDefined && notExpectedType(fun)
-        ) && checkSameResolve(fun) =>
+        if ref.resolve() == param && !(param.typeElement
+          .isDefined && notExpectedType(fun)) && checkSameResolve(fun) =>
       registerProblem(
         holder,
         ms,
@@ -74,8 +73,8 @@ class MatchToPartialFunctionInspection
       }
     }
     for (offset <- leftBraceOffset(ms)) {
-      val endOffsetInParent =
-        offset - fExprToReplace.getTextRange.getStartOffset
+      val endOffsetInParent = offset - fExprToReplace.getTextRange
+        .getStartOffset
       val rangeInParent = new TextRange(0, endOffsetInParent)
       val fix = new MatchToPartialFunctionQuickFix(ms, fExprToReplace)
       holder.registerProblem(
@@ -137,12 +136,10 @@ class MatchToPartialFunctionQuickFix(
     if (leftBrace == null) return
 
     addNamingPatterns(matchStmtCopy, needNamingPattern(mStmt))
-    matchStmtCopy.deleteChildRange(
-      matchStmtCopy.getFirstChild,
-      leftBrace.getPrevSibling)
-    val newBlock = ScalaPsiElementFactory.createExpressionFromText(
-      matchStmtCopy.getText,
-      mStmt.getManager)
+    matchStmtCopy
+      .deleteChildRange(matchStmtCopy.getFirstChild, leftBrace.getPrevSibling)
+    val newBlock = ScalaPsiElementFactory
+      .createExpressionFromText(matchStmtCopy.getText, mStmt.getManager)
     CodeEditUtil.setOldIndentation(
       newBlock.getNode.asInstanceOf[TreeElement],
       CodeEditUtil.getOldIndentation(matchStmtCopy.getNode))
@@ -166,10 +163,8 @@ class MatchToPartialFunctionQuickFix(
       case ScMatchStmt(expr: ScReferenceExpression, _) =>
         val arg = expr.resolve()
         if (arg == null) return Nil
-        val refs = ReferencesSearch
-          .search(arg, new LocalSearchScope(matchStmt))
-          .findAll()
-          .asScala
+        val refs = ReferencesSearch.search(arg, new LocalSearchScope(matchStmt))
+          .findAll().asScala
         for {
           (clause, index) <- matchStmt.caseClauses.zipWithIndex
           if refs.exists(ref =>
@@ -183,11 +178,9 @@ class MatchToPartialFunctionQuickFix(
       matchStmt: ScMatchStmt,
       indexes: Seq[Int]): Unit = {
     val clauses = matchStmt.caseClauses
-    val name = matchStmt.expr
-      .map(_.getText)
-      .getOrElse(
-        return
-      )
+    val name = matchStmt.expr.map(_.getText).getOrElse(
+      return
+    )
     indexes.map(i => clauses(i).pattern).foreach {
       case Some(w: ScWildcardPattern) =>
         w.replace(ScalaPsiElementFactory.createPatternFromText(

@@ -84,21 +84,15 @@ class MonitorFilterTest
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val service = mock[Service[String, String]]
     when(service.close(any[Time])) thenReturn Future.Done
-    val server = ServerBuilder()
-      .codec(StringCodec)
-      .name("FakeService2")
-      .bindTo(address)
-      .monitor((_, _) => monitor)
-      .logger(mockLogger)
+    val server = ServerBuilder().codec(StringCodec).name("FakeService2")
+      .bindTo(address).monitor((_, _) => monitor).logger(mockLogger)
       .build(service)
 
     // We cannot mock "service" directly, because we are testing an internal filter defined in the ServerBuilder
     // that sits on top of "service". Therefore we need to create a client to initiates the requests.
-    val client = ClientBuilder()
-      .codec(StringCodec)
+    val client = ClientBuilder().codec(StringCodec)
       .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
-      .hostConnectionLimit(1)
-      .build()
+      .hostConnectionLimit(1).build()
 
     when(
       service(
@@ -137,9 +131,7 @@ class MonitorFilterTest
       any[ServiceFactory[String, String]],
       any[Stack.Params])) thenReturn preparedFactory
 
-    val client = m.clientBuilder
-      .monitor(_ => monitor)
-      .logger(mockLogger)
+    val client = m.clientBuilder.monitor(_ => monitor).logger(mockLogger)
       .build()
 
     val requestFuture = client("123")

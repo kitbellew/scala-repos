@@ -67,10 +67,8 @@ private[hive] class SparkHiveWriterContainer(
   // Add table properties from storage handler to jobConf, so any custom storage
   // handler settings can be set to jobConf
   if (tableDesc != null) {
-    HiveTableUtil.configureJobPropertiesForStorageHandler(
-      tableDesc,
-      jobConf,
-      false)
+    HiveTableUtil
+      .configureJobPropertiesForStorageHandler(tableDesc, jobConf, false)
     Utilities.copyTableJobPropertiesToConf(tableDesc, jobConf)
   }
   protected val conf = new SerializableJobConf(jobConf)
@@ -111,10 +109,8 @@ private[hive] class SparkHiveWriterContainer(
     val numberFormat = NumberFormat.getInstance()
     numberFormat.setMinimumIntegerDigits(5)
     numberFormat.setGroupingUsed(false)
-    val extension = Utilities.getFileExtension(
-      conf.value,
-      fileSinkConf.getCompressed,
-      outputFormat)
+    val extension = Utilities
+      .getFileExtension(conf.value, fileSinkConf.getCompressed, outputFormat)
     "part-" + numberFormat.format(splitID) + extension
   }
 
@@ -171,8 +167,7 @@ private[hive] class SparkHiveWriterContainer(
   }
 
   def newSerializer(tableDesc: TableDesc): Serializer = {
-    val serializer = tableDesc.getDeserializerClass
-      .newInstance()
+    val serializer = tableDesc.getDeserializerClass.newInstance()
       .asInstanceOf[Serializer]
     serializer.initialize(null, tableDesc.getProperties)
     serializer
@@ -180,15 +175,12 @@ private[hive] class SparkHiveWriterContainer(
 
   protected def prepareForWrite() = {
     val serializer = newSerializer(fileSinkConf.getTableInfo)
-    val standardOI = ObjectInspectorUtils
-      .getStandardObjectInspector(
-        fileSinkConf.getTableInfo.getDeserializer.getObjectInspector,
-        ObjectInspectorCopyOption.JAVA)
-      .asInstanceOf[StructObjectInspector]
+    val standardOI = ObjectInspectorUtils.getStandardObjectInspector(
+      fileSinkConf.getTableInfo.getDeserializer.getObjectInspector,
+      ObjectInspectorCopyOption.JAVA).asInstanceOf[StructObjectInspector]
 
     val fieldOIs = standardOI.getAllStructFieldRefs.asScala
-      .map(_.getFieldObjectInspector)
-      .toArray
+      .map(_.getFieldObjectInspector).toArray
     val dataTypes = inputSchema.map(_.dataType)
     val wrappers = fieldOIs.zip(dataTypes).map {
       case (f, dt) => wrapperFor(f, dt)
@@ -317,9 +309,8 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
     }
 
     // Returns the partition path given a partition key.
-    val getPartitionString = UnsafeProjection.create(
-      Concat(partitionStringExpression) :: Nil,
-      partitionOutput)
+    val getPartitionString = UnsafeProjection
+      .create(Concat(partitionStringExpression) :: Nil, partitionOutput)
 
     // If anything below fails, we should abort the task.
     try {

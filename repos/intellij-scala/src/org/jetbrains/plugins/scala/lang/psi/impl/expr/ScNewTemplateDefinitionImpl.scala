@@ -55,14 +55,14 @@ class ScNewTemplateDefinitionImpl private (
   override def getIcon(flags: Int) = Icons.CLASS
 
   protected override def innerType(ctx: TypingContext) = {
-    val earlyHolders: Seq[ScDeclaredElementsHolder] =
-      extendsBlock.earlyDefinitions match {
-        case Some(e: ScEarlyDefinitions) => e.members.flatMap {
-            case holder: ScDeclaredElementsHolder => Seq(holder)
-            case _                                => Seq.empty
-          }
-        case None => Seq.empty
-      }
+    val earlyHolders: Seq[ScDeclaredElementsHolder] = extendsBlock
+      .earlyDefinitions match {
+      case Some(e: ScEarlyDefinitions) => e.members.flatMap {
+          case holder: ScDeclaredElementsHolder => Seq(holder)
+          case _                                => Seq.empty
+        }
+      case None => Seq.empty
+    }
 
     val (holders, aliases): (Seq[ScDeclaredElementsHolder], Seq[ScTypeAlias]) =
       extendsBlock.templateBody match {
@@ -135,11 +135,8 @@ class ScNewTemplateDefinitionImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    super[ScNewTemplateDefinition].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place)
+    super[ScNewTemplateDefinition]
+      .processDeclarations(processor, state, lastParent, place)
   }
 
   override def getExtendsListTypes: Array[PsiClassType] = innerExtendsListTypes
@@ -225,10 +222,9 @@ class ScNewTemplateDefinitionImpl private (
   override def getAllMethods: Array[PsiMethod] = {
     val res = new ArrayBuffer[PsiMethod]()
     TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
-      this.processPsiMethodsForNode(
-        node,
-        isStatic = false,
-        isInterface = false)(res += _)
+      this
+        .processPsiMethodsForNode(node, isStatic = false, isInterface = false)(
+          res += _)
     }
     res.toArray
   }

@@ -180,8 +180,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     for (i ← 0 until a) decoded(i) = input.getShort(byteOrder)
     input.getShorts(decoded, a, b - a)(byteOrder)
     for (i ← b until n) decoded(i) = input.getShort(byteOrder)
-    (decoded.toSeq == reference.toSeq) && (input.toSeq == bytes.drop(
-      n * elemSize))
+    (decoded.toSeq == reference.toSeq) && (input.toSeq == bytes
+      .drop(n * elemSize))
   }
 
   def testIntDecoding(slice: ByteStringSlice, byteOrder: ByteOrder): Boolean = {
@@ -195,8 +195,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     for (i ← 0 until a) decoded(i) = input.getInt(byteOrder)
     input.getInts(decoded, a, b - a)(byteOrder)
     for (i ← b until n) decoded(i) = input.getInt(byteOrder)
-    (decoded.toSeq == reference.toSeq) && (input.toSeq == bytes.drop(
-      n * elemSize))
+    (decoded.toSeq == reference.toSeq) && (input.toSeq == bytes
+      .drop(n * elemSize))
   }
 
   def testLongDecoding(
@@ -212,8 +212,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     for (i ← 0 until a) decoded(i) = input.getLong(byteOrder)
     input.getLongs(decoded, a, b - a)(byteOrder)
     for (i ← b until n) decoded(i) = input.getLong(byteOrder)
-    (decoded.toSeq == reference.toSeq) && (input.toSeq == bytes.drop(
-      n * elemSize))
+    (decoded.toSeq == reference.toSeq) && (input.toSeq == bytes
+      .drop(n * elemSize))
   }
 
   def testFloatDecoding(
@@ -229,9 +229,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     for (i ← 0 until a) decoded(i) = input.getFloat(byteOrder)
     input.getFloats(decoded, a, b - a)(byteOrder)
     for (i ← b until n) decoded(i) = input.getFloat(byteOrder)
-    ((decoded.toSeq map floatToRawIntBits) == (
-      reference.toSeq map floatToRawIntBits
-    )) &&
+    ((decoded.toSeq map floatToRawIntBits) == (reference
+      .toSeq map floatToRawIntBits)) &&
     (input.toSeq == bytes.drop(n * elemSize))
   }
 
@@ -248,9 +247,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     for (i ← 0 until a) decoded(i) = input.getDouble(byteOrder)
     input.getDoubles(decoded, a, b - a)(byteOrder)
     for (i ← b until n) decoded(i) = input.getDouble(byteOrder)
-    ((decoded.toSeq map doubleToRawLongBits) == (
-      reference.toSeq map doubleToRawLongBits
-    )) &&
+    ((decoded.toSeq map doubleToRawLongBits) == (reference
+      .toSeq map doubleToRawLongBits)) &&
     (input.toSeq == bytes.drop(n * elemSize))
   }
 
@@ -314,8 +312,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
             if byteOrder == ByteOrder.BIG_ENDIAN && i % elemSize >= (
               elemSize - nBytes
             ) ⇒ r
-      })
-      .toSeq == builder.result
+      }).toSeq == builder.result
   }
 
   def testFloatEncoding(
@@ -411,8 +408,7 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { (a: ByteString) ⇒ a.asByteBuffers.forall(_.isReadOnly) }
         check { (a: ByteString) ⇒
           import scala.collection.JavaConverters.iterableAsScalaIterableConverter;
-          a.asByteBuffers
-            .zip(a.getByteBuffers().asScala)
+          a.asByteBuffers.zip(a.getByteBuffers().asScala)
             .forall(x ⇒ x._1 == x._2)
         }
       }
@@ -693,9 +689,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
 
           (output.toSeq.drop(a) == bytes.drop(a)) &&
           (input.asInputStream.read() == -1) &&
-          ((output.length < 1) || (
-            input.asInputStream.read(output, 0, 1) == -1
-          ))
+          ((output.length < 1) || (input.asInputStream
+            .read(output, 0, 1) == -1))
         }
       }
 

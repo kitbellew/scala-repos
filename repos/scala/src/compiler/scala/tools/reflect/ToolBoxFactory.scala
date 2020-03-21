@@ -128,10 +128,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
                     else freeTermRef
                   case _ =>
                     throw new Error(
-                      "internal error: %s (%s, %s) is not supported".format(
-                        tree,
-                        tree.productPrefix,
-                        tree.getClass))
+                      "internal error: %s (%s, %s) is not supported"
+                        .format(tree, tree.productPrefix, tree.getClass))
                 }
               } else { super.transform(tree) }
           }.transform(expr0)
@@ -167,15 +165,14 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
           // it inaccessible then please put it somewhere designed for that
           // rather than polluting the empty package with synthetics.
           // [Eugene] how can we implement that?
-          val ownerClass = rootMirror.EmptyPackageClass.newClassSymbol(
-            newTypeName("<expression-owner>"))
+          val ownerClass = rootMirror.EmptyPackageClass
+            .newClassSymbol(newTypeName("<expression-owner>"))
           build.setInfo(
             ownerClass,
             ClassInfoType(List(ObjectTpe), newScope, ownerClass))
           val owner = ownerClass.newLocalDummy(expr2.pos)
           val currentTyper = analyzer.newTyper(
-            analyzer
-              .rootContext(NoCompilationUnit, EmptyTree)
+            analyzer.rootContext(NoCompilationUnit, EmptyTree)
               .make(expr2, owner))
           val withImplicitFlag =
             if (!withImplicitViewsDisabled)
@@ -191,9 +188,11 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
           run.symSource(ownerClass) =
             NoAbstractFile // need to set file to something different from null, so that currentRun.defines works
           phase =
-            run.typerPhase // need to set a phase to something <= typerPhase, otherwise implicits in typedSelect will be disabled
+            run
+              .typerPhase // need to set a phase to something <= typerPhase, otherwise implicits in typedSelect will be disabled
           globalPhase =
-            run.typerPhase // amazing... looks like phase and globalPhase are different things, so we need to set them separately
+            run
+              .typerPhase // amazing... looks like phase and globalPhase are different things, so we need to set them separately
           currentTyper.context
             .initRootContext() // need to manually set context mode, otherwise typer.silent will throw exceptions
           reporter.reset()
@@ -312,10 +311,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         val expr = build.SyntacticBlock(expr0 :: Nil)
 
         val freeTerms =
-          expr.freeTerms // need to calculate them here, because later on they will be erased
+          expr
+            .freeTerms // need to calculate them here, because later on they will be erased
         val thunks = freeTerms map (fte =>
           () =>
-            fte.value) // need to be lazy in order not to distort evaluation order
+            fte
+              .value) // need to be lazy in order not to distort evaluation order
         verify(expr)
 
         def wrapInModule(expr0: Tree): ModuleDef = {
@@ -385,15 +386,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         val className = msym.fullName
         if (settings.debug) println("generated: " + className)
         def moduleFileName(className: String) = className + "$"
-        val jclazz = jClass.forName(
-          moduleFileName(className),
-          true,
-          classLoader)
-        val jmeth =
-          jclazz.getDeclaredMethods.find(_.getName == wrapperMethodName).get
+        val jclazz = jClass
+          .forName(moduleFileName(className), true, classLoader)
+        val jmeth = jclazz.getDeclaredMethods
+          .find(_.getName == wrapperMethodName).get
         val jfield = jclazz.getDeclaredFields
-          .find(_.getName == NameTransformer.MODULE_INSTANCE_NAME)
-          .get
+          .find(_.getName == NameTransformer.MODULE_INSTANCE_NAME).get
         val singleton = jfield.get(null)
 
         // @odersky writes: Not sure we will be able to drop this. I forgot the reason why we dereference () functions,
@@ -409,9 +407,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         //   applyMeth.invoke(result)
         // }
         () => {
-          val result = jmeth.invoke(
-            singleton,
-            thunks map (_.asInstanceOf[AnyRef]): _*)
+          val result = jmeth
+            .invoke(singleton, thunks map (_.asInstanceOf[AnyRef]): _*)
           if (jmeth.getReturnType == java.lang.Void.TYPE) () else result
         }
       }
@@ -461,9 +458,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
       def throwIfErrors() = {
         if (frontEnd.hasErrors)
           throw ToolBoxError(
-            "reflective compilation has failed:" + EOL + EOL + (
-              frontEnd.infos map (_.msg) mkString EOL
-            ))
+            "reflective compilation has failed:" + EOL + EOL + (frontEnd
+              .infos map (_.msg) mkString EOL))
       }
     }
 
@@ -571,8 +567,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         silent: Boolean = true,
         withMacrosDisabled: Boolean = false,
         pos: u.Position = u.NoPosition): u.Tree = {
-      val functionTypeCtor =
-        u.definitions.FunctionClass(1).asClass.toTypeConstructor
+      val functionTypeCtor = u.definitions.FunctionClass(1).asClass
+        .toTypeConstructor
       val viewTpe = u.appliedType(functionTypeCtor, List(from, to))
       inferImplicit(
         tree,
@@ -600,10 +596,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         val cpos: compiler.Position = importer.importPosition(pos)
 
         if (compiler.settings.verbose)
-          println("inferring implicit %s of type %s, macros = %s".format(
-            if (isView) "view" else "value",
-            pt,
-            !withMacrosDisabled))
+          println(
+            "inferring implicit %s of type %s, macros = %s"
+              .format(if (isView) "view" else "value", pt, !withMacrosDisabled))
         val itree: compiler.Tree = compiler.inferImplicit(
           ctree,
           cpt,
@@ -651,8 +646,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
         import compilerApi._
 
         if (compiler.settings.verbose) println("importing " + tree)
-        val ctree: compiler.ImplDef = importer
-          .importTree(tree)
+        val ctree: compiler.ImplDef = importer.importTree(tree)
           .asInstanceOf[compiler.ImplDef]
 
         if (compiler.settings.verbose) println("defining " + ctree)

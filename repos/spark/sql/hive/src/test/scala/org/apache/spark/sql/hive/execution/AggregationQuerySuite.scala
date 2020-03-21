@@ -94,13 +94,9 @@ class ScalaAggregateFunctionWithoutInputSchema
 
 class LongProductSum extends UserDefinedAggregateFunction {
   def inputSchema: StructType =
-    new StructType()
-      .add("a", LongType)
-      .add("b", LongType)
+    new StructType().add("a", LongType).add("b", LongType)
 
-  def bufferSchema: StructType =
-    new StructType()
-      .add("product", LongType)
+  def bufferSchema: StructType = new StructType().add("product", LongType)
 
   def dataType: DataType = LongType
 
@@ -373,8 +369,8 @@ abstract class AggregationQuerySuite
     )
 
     checkAnswer(
-      sqlContext.sql(
-        """
+      sqlContext
+        .sql("""
           |SELECT sum(distinct value1), kEY - 100, count(distinct value1)
           |FROM agg2
           |GROUP BY Key - 100
@@ -725,14 +721,9 @@ abstract class AggregationQuerySuite
   }
 
   test("pearson correlation") {
-    val df = Seq
-      .tabulate(10)(i => (1.0 * i, 2.0 * i, i * -1.0))
+    val df = Seq.tabulate(10)(i => (1.0 * i, 2.0 * i, i * -1.0))
       .toDF("a", "b", "c")
-    val corr1 = df
-      .repartition(2)
-      .groupBy()
-      .agg(corr("a", "b"))
-      .collect()(0)
+    val corr1 = df.repartition(2).groupBy().agg(corr("a", "b")).collect()(0)
       .getDouble(0)
     assert(math.abs(corr1 - 1.0) < 1e-12)
     val corr2 = df.groupBy().agg(corr("a", "c")).collect()(0).getDouble(0)
@@ -749,8 +740,7 @@ abstract class AggregationQuerySuite
     // > b <- mapply(function(x) x * x - 2 * x + 3.5, a)
     // > cor(a, b)
     // [1] 0.957233913947585835
-    val df2 = Seq
-      .tabulate(20)(x => (1.0 * x, x * x - 2 * x + 3.5))
+    val df2 = Seq.tabulate(20)(x => (1.0 * x, x * x - 2 * x + 3.5))
       .toDF("a", "b")
     val corr3 = df2.groupBy().agg(corr("a", "b")).collect()(0).getDouble(0)
     assert(math.abs(corr3 - 0.95723391394758572) < 1e-12)
@@ -760,11 +750,7 @@ abstract class AggregationQuerySuite
     assert(corr4 == Row(null))
 
     val df4 = Seq.tabulate(10)(i => (1 * i, 2 * i, i * -1)).toDF("a", "b", "c")
-    val corr5 = df4
-      .repartition(2)
-      .groupBy()
-      .agg(corr("a", "b"))
-      .collect()(0)
+    val corr5 = df4.repartition(2).groupBy().agg(corr("a", "b")).collect()(0)
       .getDouble(0)
     assert(math.abs(corr5 - 1.0) < 1e-12)
     val corr6 = df4.groupBy().agg(corr("a", "c")).collect()(0).getDouble(0)
@@ -819,9 +805,7 @@ abstract class AggregationQuerySuite
         Row(6, Double.NaN) :: Nil
     )
 
-    val corr7 = sqlContext
-      .sql("SELECT corr(b, c) FROM covar_tab")
-      .collect()(0)
+    val corr7 = sqlContext.sql("SELECT corr(b, c) FROM covar_tab").collect()(0)
       .getDouble(0)
     assert(math.abs(corr7 - 0.6633880657639323) < 1e-12)
   }
@@ -835,35 +819,22 @@ abstract class AggregationQuerySuite
     // 595.0
     // >>> np.cov(a, b, bias = 1)[0][1]
     // 565.25
-    val df = Seq
-      .tabulate(20)(x => (1.0 * x, x * x - 2 * x + 3.5))
+    val df = Seq.tabulate(20)(x => (1.0 * x, x * x - 2 * x + 3.5))
       .toDF("a", "b")
-    val cov_samp = df
-      .groupBy()
-      .agg(covar_samp("a", "b"))
-      .collect()(0)
+    val cov_samp = df.groupBy().agg(covar_samp("a", "b")).collect()(0)
       .getDouble(0)
     assert(math.abs(cov_samp - 595.0) < 1e-12)
 
-    val cov_pop = df
-      .groupBy()
-      .agg(covar_pop("a", "b"))
-      .collect()(0)
+    val cov_pop = df.groupBy().agg(covar_pop("a", "b")).collect()(0)
       .getDouble(0)
     assert(math.abs(cov_pop - 565.25) < 1e-12)
 
     val df2 = Seq.tabulate(20)(x => (1 * x, x * x * x - 2)).toDF("a", "b")
-    val cov_samp2 = df2
-      .groupBy()
-      .agg(covar_samp("a", "b"))
-      .collect()(0)
+    val cov_samp2 = df2.groupBy().agg(covar_samp("a", "b")).collect()(0)
       .getDouble(0)
     assert(math.abs(cov_samp2 - 11564.0) < 1e-12)
 
-    val cov_pop2 = df2
-      .groupBy()
-      .agg(covar_pop("a", "b"))
-      .collect()(0)
+    val cov_pop2 = df2.groupBy().agg(covar_pop("a", "b")).collect()(0)
       .getDouble(0)
     assert(math.abs(cov_pop2 - 10985.799999999999) < 1e-12)
 
@@ -874,13 +845,8 @@ abstract class AggregationQuerySuite
   }
 
   test("no aggregation function (SPARK-11486)") {
-    val df = sqlContext
-      .range(20)
-      .selectExpr("id", "repeat(id, 1) as s")
-      .groupBy("s")
-      .count()
-      .groupBy()
-      .count()
+    val df = sqlContext.range(20).selectExpr("id", "repeat(id, 1) as s")
+      .groupBy("s").count().groupBy().count()
     checkAnswer(df, Row(20) :: Nil)
   }
 
@@ -932,9 +898,8 @@ abstract class AggregationQuerySuite
           dataType = schemaForGenerator,
           nullable = true,
           new Random(System.nanoTime()))
-        val dataGenerator = maybeDataGenerator
-          .getOrElse(fail(
-            s"Failed to create data generator for schema $schemaForGenerator"))
+        val dataGenerator = maybeDataGenerator.getOrElse(fail(
+          s"Failed to create data generator for schema $schemaForGenerator"))
         val data = (1 to 50).map { i =>
           dataGenerator.apply() match {
             case row: Row => Row.fromSeq(i +: row.toSeq)
@@ -952,8 +917,7 @@ abstract class AggregationQuerySuite
         val df = sqlContext.createDataFrame(rdd, schema)
 
         val allColumns = df.schema.fields.map(f => col(f.name))
-        val expectedAnswer = data
-          .find(r => r.getInt(0) == 50)
+        val expectedAnswer = data.find(r => r.getInt(0) == 50)
           .getOrElse(fail("A row with id 50 should be the expected answer."))
         checkAnswer(
           df.groupBy().agg(udaf(allColumns: _*)),
@@ -976,8 +940,7 @@ abstract class AggregationQuerySuite
           StructField(
             "myArray",
             ArrayType(StructType(StructField("v", IntegerType) :: Nil))) :: Nil)
-      sqlContext
-        .createDataFrame(sparkContext.parallelize(data, 2), schema)
+      sqlContext.createDataFrame(sparkContext.parallelize(data, 2), schema)
         .registerTempTable("noInputSchemaUDAF")
 
       checkAnswer(
@@ -1007,7 +970,8 @@ class TungstenAggregationQueryWithControlledFallbackSuite
       expectedAnswer: Seq[Row]): Unit = {
     (0 to 2).foreach { fallbackStartsAt =>
       withSQLConf(
-        "spark.sql.TungstenAggregate.testFallbackStartsAt" -> fallbackStartsAt.toString) {
+        "spark.sql.TungstenAggregate.testFallbackStartsAt" -> fallbackStartsAt
+          .toString) {
         // Create a new df to make sure its physical operator picks up
         // spark.sql.TungstenAggregate.testFallbackStartsAt.
         // todo: remove it?

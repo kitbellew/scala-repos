@@ -62,8 +62,7 @@ object ScalaExtractMethodUtils {
         param.fromElement.getProject,
         param.isCallByNameParameter)
 
-    val parameters = settings.parameters
-      .filter(_.passAsParameter)
+    val parameters = settings.parameters.filter(_.passAsParameter)
       .map(paramText)
     val paramsText =
       if (parameters.nonEmpty) parameters.mkString("(", ", ", ")") else ""
@@ -71,12 +70,11 @@ object ScalaExtractMethodUtils {
     val project = settings.elements(0).getProject
     val codeStyleSettings = ScalaCodeStyleSettings.getInstance(project)
     val retType =
-      if (settings.calcReturnTypeIsUnit && !codeStyleSettings.ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT)
-        ""
+      if (settings.calcReturnTypeIsUnit && !codeStyleSettings
+            .ENFORCE_FUNCTIONAL_SYNTAX_FOR_UNIT) ""
       else s": ${settings.calcReturnTypeText} ="
 
-    val notPassedParams = settings.parameters
-      .filter(p => !p.passAsParameter)
+    val notPassedParams = settings.parameters.filter(p => !p.passAsParameter)
       .map { p =>
         val nameAndType = typedName(
           p.oldName,
@@ -156,9 +154,8 @@ object ScalaExtractMethodUtils {
                 s"Left($retExprText)")
             case None => "" //should not occur
           }
-          val retElem = ScalaPsiElementFactory.createExpressionFromText(
-            s"return $newText",
-            ret.getManager)
+          val retElem = ScalaPsiElementFactory
+            .createExpressionFromText(s"return $newText", ret.getManager)
           ret.replace(retElem)
         }
       }
@@ -172,7 +169,8 @@ object ScalaExtractMethodUtils {
                 ScalaResolveResult(
                   named: PsiNamedElement,
                   subst: ScSubstitutor)) =>
-            if (named.getContainingFile == method.getContainingFile && named.getTextOffset < offset &&
+            if (named.getContainingFile == method.getContainingFile && named
+                  .getTextOffset < offset &&
                 !named.name.startsWith("_")) {
               val oldName = named.name
               var break = false
@@ -234,8 +232,7 @@ object ScalaExtractMethodUtils {
         element match {
           case named: PsiNamedElement
               if named != method && named.getTextOffset < offset =>
-            settings.parameters
-              .find(p => p.oldName == named.name)
+            settings.parameters.find(p => p.oldName == named.name)
               .filter(p => p.oldName != p.newName)
               .foreach(p => bindTo += ((named, p.newName)))
           case _ =>
@@ -264,7 +261,8 @@ object ScalaExtractMethodUtils {
       if (elements.length > 0) {
         val startOffset = elements(0).getTextRange.getStartOffset
         val endOffset = elements(elements.length - 1).getTextRange.getEndOffset
-        definition.getTextOffset >= startOffset && definition.getTextOffset < endOffset
+        definition.getTextOffset >= startOffset && definition
+          .getTextOffset < endOffset
       } else false
     val retType = definition.getType(TypingContext.empty).getOrNothing
     val tp = definition match {
@@ -296,9 +294,8 @@ object ScalaExtractMethodUtils {
     val outputs = settings.outputs
     val lastExprType = settings.lastExprType
     if (settings.lastReturn) { return prepareResult(returnStmtType.get) }
-    if (outputs.length == 0 && returnStmtType.isEmpty && lastExprType.isDefined) {
-      return prepareResult(lastExprType.get)
-    }
+    if (outputs.length == 0 && returnStmtType.isEmpty && lastExprType
+          .isDefined) { return prepareResult(lastExprType.get) }
     def byOutputsSize[T](ifZero: => T, ifOne: => T, ifMany: => T): T = {
       outputs.length match {
         case 0 => ifZero
@@ -334,8 +331,8 @@ object ScalaExtractMethodUtils {
       outputs.length match {
         case 0 => ""
         case 1 => outputs(0).returnType.presentableText
-        case _ =>
-          outputs.map(_.returnType.presentableText).mkString("(", ", ", ")")
+        case _ => outputs.map(_.returnType.presentableText)
+            .mkString("(", ", ", ")")
       }
     }
   }
@@ -348,9 +345,8 @@ object ScalaExtractMethodUtils {
       elements: Array[PsiElement]) = {
     var buffer: ArrayBuffer[VariableData] = new ArrayBuffer[VariableData]
     for (input <- myInput) {
-      var d: VariableData = ScalaExtractMethodUtils.convertVariableData(
-        input,
-        elements)
+      var d: VariableData = ScalaExtractMethodUtils
+        .convertVariableData(input, elements)
       if (d != null) buffer += d
     }
     val data = buffer.toArray
@@ -374,9 +370,8 @@ object ScalaExtractMethodUtils {
     val list: util.ArrayList[ExtractMethodOutput] =
       new util.ArrayList[ExtractMethodOutput]
     for (info <- myOutput) {
-      val data: ScalaVariableData = ScalaExtractMethodUtils.convertVariableData(
-        info,
-        elements)
+      val data: ScalaVariableData = ScalaExtractMethodUtils
+        .convertVariableData(info, elements)
       list.add(ExtractMethodOutput.from(data))
     }
     list.toArray(new Array[ExtractMethodOutput](list.size))
@@ -413,10 +408,8 @@ object ScalaExtractMethodUtils {
     val visibility = settings.visibility
     val prefix = s"${visibility}def $methodName"
     val typeParamsText = typeParametersText(settings)
-    val paramsText = settings.parameters
-      .filter(_.passAsParameter)
-      .map(p => nameAndType(p))
-      .mkString("(", s", ", ")")
+    val paramsText = settings.parameters.filter(_.passAsParameter)
+      .map(p => nameAndType(p)).mkString("(", s", ", ")")
     val returnTypeText = calcReturnType(settings)
     s"$classText$prefix$typeParamsText$paramsText: $returnTypeText"
   }
@@ -432,8 +425,7 @@ object ScalaExtractMethodUtils {
       elements: Seq[PsiElement],
       parameterText: ExtractMethodParameter => String,
       outputName: ExtractMethodOutput => String) {
-    val element = elements
-      .find(elem => elem.isInstanceOf[ScalaPsiElement])
+    val element = elements.find(elem => elem.isInstanceOf[ScalaPsiElement])
       .getOrElse(
         return
       )
@@ -456,8 +448,7 @@ object ScalaExtractMethodUtils {
     }
     val mFreshName = generateFreshName(settings.methodName + "Result")
 
-    val params = settings.parameters
-      .filter(_.passAsParameter)
+    val params = settings.parameters.filter(_.passAsParameter)
       .map(param => parameterText(param) + (if (param.isFunction) " _" else ""))
 
     val paramsText =
@@ -482,9 +473,8 @@ object ScalaExtractMethodUtils {
 
     def insertCallStmt(): PsiElement = {
       def insertExpression(text: String): PsiElement = {
-        val expr = ScalaPsiElementFactory.createExpressionFromText(
-          text,
-          manager)
+        val expr = ScalaPsiElementFactory
+          .createExpressionFromText(text, manager)
         elements.head.replace(expr)
       }
       if (settings.lastReturn) insertExpression(s"return $methodCallText")
@@ -526,15 +516,10 @@ object ScalaExtractMethodUtils {
                   |  case Right(result) $arrow result
                   |}""".stripMargin.replace("\r", "")
         }
-        val expr = ScalaPsiElementFactory.createExpressionFromText(
-          exprText,
-          manager)
-        val declaration = ScalaPsiElementFactory.createDeclaration(
-          pattern,
-          "",
-          isVariable = !isVal,
-          expr,
-          manager)
+        val expr = ScalaPsiElementFactory
+          .createExpressionFromText(exprText, manager)
+        val declaration = ScalaPsiElementFactory
+          .createDeclaration(pattern, "", isVariable = !isVal, expr, manager)
         val result = elements.head.replace(declaration)
         TypeAdjuster.markToAdjust(result)
         result
@@ -578,9 +563,8 @@ object ScalaExtractMethodUtils {
         if (allVals || allVars) {
           val patternArgsText = outputTypedNames.mkString("(", ", ", ")")
           val patternText = ics.className + patternArgsText
-          val expr = ScalaPsiElementFactory.createExpressionFromText(
-            mFreshName,
-            manager)
+          val expr = ScalaPsiElementFactory
+            .createExpressionFromText(mFreshName, manager)
           val stmt = ScalaPsiElementFactory.createDeclaration(
             patternText,
             "",

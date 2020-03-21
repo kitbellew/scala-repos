@@ -72,8 +72,7 @@ object CORSHeaderHandler {
         r.method match {
           case HttpMethods.OPTIONS => Success(
               Promise.successful(HttpResponse(headers = corsHeaders))(executor))
-          case _ =>
-            delegateService.service(r).map {
+          case _ => delegateService.service(r).map {
               _.map {
                 case resp @ HttpResponse(_, headers, _, _) =>
                   resp.copy(headers = headers ++ corsHeaders)

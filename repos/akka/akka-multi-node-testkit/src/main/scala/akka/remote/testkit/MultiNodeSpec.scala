@@ -101,15 +101,15 @@ abstract class MultiNodeConfig {
   private[testkit] def config: Config = {
     val transportConfig =
       if (_testTransport)
-        ConfigFactory.parseString(
-          """
+        ConfigFactory
+          .parseString("""
            akka.remote.netty.tcp.applied-adapters = [trttl, gremlin]
         """)
       else ConfigFactory.empty
 
-    val configs = (
-      _nodeConf get myself
-    ).toList ::: _commonConf.toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec.baseConfig :: Nil
+    val configs = (_nodeConf get myself).toList ::: _commonConf
+      .toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec
+      .baseConfig :: Nil
     configs reduceLeft (_ withFallback _)
   }
 
@@ -220,8 +220,8 @@ object MultiNodeSpec {
     "akka.remote.netty.tcp.hostname" -> selfName,
     "akka.remote.netty.tcp.port" -> selfPort))
 
-  private[testkit] val baseConfig: Config = ConfigFactory.parseString(
-    """
+  private[testkit] val baseConfig: Config = ConfigFactory
+    .parseString("""
       akka {
         loggers = ["akka.testkit.TestEventListener"]
         loglevel = "WARNING"
@@ -399,8 +399,8 @@ abstract class MultiNodeSpec(
       sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {
       def mute(clazz: Class[_]): Unit =
-        sys.eventStream.publish(Mute(
-          DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
+        sys.eventStream
+          .publish(Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
       if (messageClasses.isEmpty) mute(classOf[AnyRef])
       else messageClasses foreach mute
     }
@@ -449,8 +449,8 @@ abstract class MultiNodeSpec(
                     // might happen if all test cases are ignored (excluded) and
                     // controller node is finished/exited before r.addr is run
                     // on the other nodes
-                    val unresolved =
-                      "akka://unresolved-replacement-" + r.role.name
+                    val unresolved = "akka://unresolved-replacement-" + r.role
+                      .name
                     log.warning(unresolved + " due to: " + e.getMessage)
                     unresolved
                 }
@@ -470,8 +470,8 @@ abstract class MultiNodeSpec(
 
   injectDeployments(system, myself)
 
-  protected val myAddress =
-    system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+  protected val myAddress = system.asInstanceOf[ExtendedActorSystem].provider
+    .getDefaultAddress
 
   // useful to see which jvm is running which role, used by LogRoleReplace utility
   log.info("Role [{}] started with address [{}]", myself.name, myAddress)
@@ -488,9 +488,8 @@ abstract class MultiNodeSpec(
     * system.
     */
   protected def startNewSystem(): ActorSystem = {
-    val config = ConfigFactory
-      .parseString(
-        s"akka.remote.netty.tcp{port=${myAddress.port.get}\nhostname=${myAddress.host.get}}")
+    val config = ConfigFactory.parseString(
+      s"akka.remote.netty.tcp{port=${myAddress.port.get}\nhostname=${myAddress.host.get}}")
       .withFallback(system.settings.config)
     val sys = ActorSystem(system.name, config)
     injectDeployments(sys, myself)

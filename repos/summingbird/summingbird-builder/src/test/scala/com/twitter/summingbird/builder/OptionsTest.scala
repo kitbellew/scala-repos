@@ -39,11 +39,11 @@ class TestJob1(env: Env) extends AbstractJob(env) {
   implicit def batcher = Batcher.ofHours(1)
 
   try {
-    EventSource[Long](Some(null), None)
-      .withTime(new java.util.Date(_))
-      .map { e => (e % 2, e) }
-      .groupAndSumTo(CompoundStore.fromOffline[Long, Long](
-        new InitialBatchedStore(BatchID(12L), null)))
+    EventSource[Long](Some(null), None).withTime(new java.util.Date(_)).map {
+      e =>
+        (e % 2, e)
+    }.groupAndSumTo(CompoundStore.fromOffline[Long, Long](
+      new InitialBatchedStore(BatchID(12L), null)))
       .set(BMonoidIsCommutative(true))
   } catch { case t: Throwable => t.printStackTrace }
 }
@@ -55,7 +55,8 @@ class OptionsTest extends WordSpec {
       Array("-Dcascading.aggregateby.threshold=100000", "--test", "arg"))
 
     assert(
-      scalding.build.platform.jobName == "com.twitter.summingbird.builder.TestJob1")
+      scalding.build.platform
+        .jobName == "com.twitter.summingbird.builder.TestJob1")
 
     val conf = new Configuration
     val cfg = scalding.build.platform.buildConfig(conf)
@@ -72,10 +73,9 @@ class OptionsTest extends WordSpec {
     assert(summers.size == 1)
     val names = dependants.namesOf(summers.head).map(_.id)
     assert(
-      Scalding
-        .getCommutativity(
-          names,
-          opts,
-          summers.head.asInstanceOf[Summer[Scalding, _, _]]) == Commutative)
+      Scalding.getCommutativity(
+        names,
+        opts,
+        summers.head.asInstanceOf[Summer[Scalding, _, _]]) == Commutative)
   }
 }

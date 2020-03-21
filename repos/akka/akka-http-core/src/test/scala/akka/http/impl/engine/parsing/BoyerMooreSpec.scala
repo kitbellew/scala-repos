@@ -22,16 +22,15 @@ class BoyerMooreSpec extends WordSpec with Matchers {
     "perform identically to a regex search" in {
       val random = new Random()
       // the alphabet base is a random shuffle of 8 distinct alphanumeric chars
-      val alphabetBase
-          : IndexedSeq[Byte] = random.shuffle(0 to 255).take(8).map(_.toByte)
+      val alphabetBase: IndexedSeq[Byte] = random.shuffle(0 to 255).take(8)
+        .map(_.toByte)
 
       val haystackLen = 1000
       (0 to 9) foreach { run ⇒
-        val alphabet = alphabetBase.take(
-          4 + random.nextInt(5)
-        ) // 4 to 8 distinct alphanumeric chars
-        val randomAlphabetChars = Stream.continually(alphabet(
-          random.nextInt(alphabet.length)))
+        val alphabet = alphabetBase
+          .take(4 + random.nextInt(5)) // 4 to 8 distinct alphanumeric chars
+        val randomAlphabetChars = Stream
+          .continually(alphabet(random.nextInt(alphabet.length)))
         def randomBytes(num: Int): ByteString =
           ByteString(randomAlphabetChars.take(num): _*)
         val haystack = randomBytes(haystackLen)
@@ -52,10 +51,10 @@ class BoyerMooreSpec extends WordSpec with Matchers {
                |${" " * (3 + math.min(8, ix) * 3)}${"^" * len(needle.length)}
                |""".stripMargin
           }
-          val foundOnlyByBM =
-            bmFinds.filterNot(reFinds.contains).map(showFind).mkString
-          val foundOnlyByRE =
-            reFinds.filterNot(bmFinds.contains).map(showFind).mkString
+          val foundOnlyByBM = bmFinds.filterNot(reFinds.contains).map(showFind)
+            .mkString
+          val foundOnlyByRE = reFinds.filterNot(bmFinds.contains).map(showFind)
+            .mkString
           fail(s"""alphabet: ${showBytes(alphabet)}
                    |needle: ${showBytes(needle)}
                    |found only by boyer moore:
@@ -94,10 +93,6 @@ class BoyerMooreSpec extends WordSpec with Matchers {
   }
 
   def findWithRegex(needle: ByteString, haystack: ByteString): Seq[Int] =
-    Pattern
-      .quote(needle.map(_.toChar).mkString)
-      .r
-      .findAllMatchIn(haystack.map(_.toChar).mkString)
-      .map(_.start)
-      .toSeq
+    Pattern.quote(needle.map(_.toChar).mkString).r
+      .findAllMatchIn(haystack.map(_.toChar).mkString).map(_.start).toSeq
 }

@@ -71,9 +71,8 @@ trait Helpers {
 
   implicit class TestSimilarMods(mods: Modifiers) {
     def ≈(other: Modifiers) =
-      (mods.flags == other.flags) && (
-        mods.privateWithin ≈ other.privateWithin
-      ) && (mods.annotations ≈ other.annotations)
+      (mods.flags == other.flags) && (mods.privateWithin ≈ other
+        .privateWithin) && (mods.annotations ≈ other.annotations)
   }
 
   def assertThrows[T <: AnyRef](f: => Any)(implicit

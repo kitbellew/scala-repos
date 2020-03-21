@@ -10,8 +10,8 @@ class TableDump(maxColumnWidth: Int = 20) {
        "\u2501\u250f\u2533\u2513\u2523\u254b\u252b\u2517\u253b\u251b\u2503"
      else "-/+\\|+|\\+/|").map(_.toString)
 
-  protected[this] val dashes =
-    Iterator.fill(maxColumnWidth + 2)(box(0)).mkString
+  protected[this] val dashes = Iterator.fill(maxColumnWidth + 2)(box(0))
+    .mkString
   protected[this] val spaces = Iterator.fill(maxColumnWidth + 2)(' ').mkString
 
   protected[this] def formatLine(line: IndexedSeq[Any]): IndexedSeq[String] =
@@ -30,8 +30,7 @@ class TableDump(maxColumnWidth: Int = 20) {
       math.min(maxColumnWidth, texts.map(_.apply(idx).length).max)
     }
     val buf = new ArrayBuffer[String](data.length + 4)
-    buf += cBlue + widths
-      .map(l => dashes.substring(0, l + 2))
+    buf += cBlue + widths.map(l => dashes.substring(0, l + 2))
       .mkString(box(1), box(2), box(3)) + cNormal
     def pad(s: String, len: Int): String = {
       val slen = s.codePointCount(0, s.length)
@@ -48,8 +47,7 @@ class TableDump(maxColumnWidth: Int = 20) {
           .map((s, len) => color + " " + pad(s, len) + " ")
           .mkString(cBlue + box(10), cBlue + box(10), cBlue + box(10) + cNormal)
         if (lno == headers.length - 1)
-          buf += cBlue + widths
-            .map(l => dashes.substring(0, l + 2))
+          buf += cBlue + widths.map(l => dashes.substring(0, l + 2))
             .mkString(box(4), box(5), box(6)) + cNormal
       } else {
         buf += (line, widths).zipped
@@ -57,8 +55,7 @@ class TableDump(maxColumnWidth: Int = 20) {
           .mkString(cBlue + box(10), cBlue + box(10), cBlue + box(10) + cNormal)
       }
     }
-    buf += cBlue + widths
-      .map(l => dashes.substring(0, l + 2))
+    buf += cBlue + widths.map(l => dashes.substring(0, l + 2))
       .mkString(box(7), box(8), box(9)) + cNormal
     buf
   }

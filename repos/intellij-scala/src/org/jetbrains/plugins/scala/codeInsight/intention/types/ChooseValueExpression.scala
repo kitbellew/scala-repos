@@ -25,16 +25,15 @@ abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
 
   def calcLookupElements(): Seq[LookupElementBuilder] =
     lookupItems.map { elem =>
-      LookupElementBuilder
-        .create(elem, lookupString(elem))
+      LookupElementBuilder.create(elem, lookupString(elem))
         .withInsertHandler(new InsertHandler[LookupElement] {
           override def handleInsert(
               context: InsertionContext,
               item: LookupElement): Unit = {
-            val topLevelEditor = InjectedLanguageUtil.getTopLevelEditor(
-              context.getEditor)
-            val templateState = TemplateManagerImpl.getTemplateState(
-              topLevelEditor)
+            val topLevelEditor = InjectedLanguageUtil
+              .getTopLevelEditor(context.getEditor)
+            val templateState = TemplateManagerImpl
+              .getTemplateState(topLevelEditor)
             if (templateState != null) {
               val range = templateState.getCurrentVariableRange
               if (range != null) {
@@ -68,8 +67,8 @@ class ChooseTypeTextExpression(
   def this(lookupItems: Seq[ScTypeText]) { this(lookupItems, lookupItems.head) }
 
   override def lookupString(elem: ScTypeText): String = {
-    val useCanonicalText: Boolean =
-      lookupItems.count(_.presentableText == elem.presentableText) > 1
+    val useCanonicalText: Boolean = lookupItems
+      .count(_.presentableText == elem.presentableText) > 1
     if (useCanonicalText) elem.canonicalText.replace("_root_.", "")
     else elem.presentableText
   }

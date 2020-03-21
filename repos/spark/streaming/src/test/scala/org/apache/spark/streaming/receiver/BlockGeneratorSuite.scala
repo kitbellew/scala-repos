@@ -113,13 +113,13 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     listener.addedData.asScala.toSeq should contain theSameElementsInOrderAs (
       data2
     )
-    listener.addedMetadata.asScala.toSeq should contain theSameElementsInOrderAs (
-      metadata2
-    )
+    listener.addedMetadata.asScala
+      .toSeq should contain theSameElementsInOrderAs (metadata2)
     clock.advance(blockIntervalMs) // advance clock to generate blocks
     eventually(timeout(1 second)) {
       val combined = data1 ++ data2
-      listener.pushedData.asScala.toSeq should contain theSameElementsInOrderAs combined
+      listener.pushedData.asScala
+        .toSeq should contain theSameElementsInOrderAs combined
     }
 
     // Verify addMultipleDataWithCallback() add data+metadata and and callbacks are called correctly
@@ -127,15 +127,13 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     val metadata3 = "metadata"
     blockGenerator.addMultipleDataWithCallback(data3.iterator, metadata3)
     val combinedMetadata = metadata2 :+ metadata3
-    listener.addedMetadata.asScala.toSeq should contain theSameElementsInOrderAs (
-      combinedMetadata
-    )
+    listener.addedMetadata.asScala
+      .toSeq should contain theSameElementsInOrderAs (combinedMetadata)
     clock.advance(blockIntervalMs) // advance clock to generate blocks
     eventually(timeout(1 second)) {
       val combinedData = data1 ++ data2 ++ data3
-      listener.pushedData.asScala.toSeq should contain theSameElementsInOrderAs (
-        combinedData
-      )
+      listener.pushedData.asScala
+        .toSeq should contain theSameElementsInOrderAs (combinedData)
     }
 
     // Stop the block generator by starting the stop on a different thread and
@@ -173,9 +171,10 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     // - First, stop receiving new data
     // - Second, wait for final block with all buffered data to be generated
     // - Finally, wait for all blocks to be pushed
-    clock.advance(
-      1
-    ) // to make sure that the timer for another interval to complete
+    clock
+      .advance(
+        1
+      ) // to make sure that the timer for another interval to complete
     val thread = stopBlockGenerator(blockGenerator)
     eventually(timeout(1 second), interval(10 milliseconds)) {
       assert(blockGenerator.isActive() === false)

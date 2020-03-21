@@ -28,10 +28,8 @@ class MetricNumericConverterSpec
     }
 
     "define a new metric" in {
-      val Some(metric) = Metric.create(
-        HeapMemoryUsed,
-        256L,
-        decayFactor = Some(0.18))
+      val Some(metric) = Metric
+        .create(HeapMemoryUsed, 256L, decayFactor = Some(0.18))
       metric.name should ===(HeapMemoryUsed)
       metric.value should ===(256L)
       metric.isSmooth should ===(true)
@@ -41,8 +39,7 @@ class MetricNumericConverterSpec
     "define an undefined value with a None " in {
       Metric.create("x", -1, None).isDefined should ===(false)
       Metric.create("x", java.lang.Double.NaN, None).isDefined should ===(false)
-      Metric
-        .create("x", Failure(new RuntimeException), None)
+      Metric.create("x", Failure(new RuntimeException), None)
         .isDefined should ===(false)
     }
 

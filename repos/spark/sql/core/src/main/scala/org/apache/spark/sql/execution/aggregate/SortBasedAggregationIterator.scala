@@ -58,14 +58,13 @@ class SortBasedAggregationIterator(
     val bufferRowSize: Int = bufferSchema.length
 
     val genericMutableBuffer = new GenericMutableRow(bufferRowSize)
-    val useUnsafeBuffer = bufferSchema
-      .map(_.dataType)
+    val useUnsafeBuffer = bufferSchema.map(_.dataType)
       .forall(UnsafeRow.isMutable)
 
     val buffer =
       if (useUnsafeBuffer) {
-        val unsafeProjection = UnsafeProjection.create(
-          bufferSchema.map(_.dataType))
+        val unsafeProjection = UnsafeProjection
+          .create(bufferSchema.map(_.dataType))
         unsafeProjection.apply(genericMutableBuffer)
       } else { genericMutableBuffer }
     initializeBuffer(buffer)

@@ -75,8 +75,7 @@ private[yarn] class ExecutorRunnable(
   def startContainer(): java.util.Map[String, ByteBuffer] = {
     logInfo("Setting up ContainerLaunchContext")
 
-    val ctx = Records
-      .newRecord(classOf[ContainerLaunchContext])
+    val ctx = Records.newRecord(classOf[ContainerLaunchContext])
       .asInstanceOf[ContainerLaunchContext]
 
     val localResources = prepareLocalResources
@@ -161,13 +160,11 @@ private[yarn] class ExecutorRunnable(
 
     // Set extra Java options for the executor, if defined
     sparkConf.get(EXECUTOR_JAVA_OPTIONS).foreach { opts =>
-      javaOpts ++= Utils
-        .splitCommandString(opts)
+      javaOpts ++= Utils.splitCommandString(opts)
         .map(YarnSparkHadoopUtil.escapeForShell)
     }
     sys.env.get("SPARK_JAVA_OPTS").foreach { opts =>
-      javaOpts ++= Utils
-        .splitCommandString(opts)
+      javaOpts ++= Utils.splitCommandString(opts)
         .map(YarnSparkHadoopUtil.escapeForShell)
     }
     sparkConf.get(EXECUTOR_LIBRARY_PATH).foreach { p =>
@@ -184,12 +181,11 @@ private[yarn] class ExecutorRunnable(
     // registers with the Scheduler and transfers the spark configs. Since the Executor backend
     // uses RPC to connect to the scheduler, the RPC settings are needed as well as the
     // authentication settings.
-    sparkConf.getAll
-      .filter { case (k, v) => SparkConf.isExecutorStartupConf(k) }
-      .foreach {
-        case (k, v) =>
-          javaOpts += YarnSparkHadoopUtil.escapeForShell(s"-D$k=$v")
-      }
+    sparkConf.getAll.filter {
+      case (k, v) => SparkConf.isExecutorStartupConf(k)
+    }.foreach {
+      case (k, v) => javaOpts += YarnSparkHadoopUtil.escapeForShell(s"-D$k=$v")
+    }
 
     // Commenting it out for now - so that people can refer to the properties if required. Remove
     // it once cpuset version is pushed out.
@@ -218,25 +214,21 @@ private[yarn] class ExecutorRunnable(
      */
 
     // For log4j configuration to reference
-    javaOpts += (
-      "-Dspark.yarn.app.container.log.dir=" + ApplicationConstants.LOG_DIR_EXPANSION_VAR
-    )
+    javaOpts += ("-Dspark.yarn.app.container.log.dir=" + ApplicationConstants
+      .LOG_DIR_EXPANSION_VAR)
     YarnCommandBuilderUtils.addPermGenSizeOpt(javaOpts)
 
-    val userClassPath = Client
-      .getUserClasspath(sparkConf)
-      .flatMap { uri =>
-        val absPath =
-          if (new File(uri.getPath()).isAbsolute()) {
-            Client.getClusterPath(sparkConf, uri.getPath())
-          } else { Client.buildPath(Environment.PWD.$(), uri.getPath()) }
-        Seq("--user-class-path", "file:" + absPath)
-      }
-      .toSeq
+    val userClassPath = Client.getUserClasspath(sparkConf).flatMap { uri =>
+      val absPath =
+        if (new File(uri.getPath()).isAbsolute()) {
+          Client.getClusterPath(sparkConf, uri.getPath())
+        } else { Client.buildPath(Environment.PWD.$(), uri.getPath()) }
+      Seq("--user-class-path", "file:" + absPath)
+    }.toSeq
 
     val commands = prefixEnv ++ Seq(
-      YarnSparkHadoopUtil.expandEnvironment(
-        Environment.JAVA_HOME) + "/bin/java",
+      YarnSparkHadoopUtil
+        .expandEnvironment(Environment.JAVA_HOME) + "/bin/java",
       "-server",
       // Kill if OOM is raised - leverage yarn's failure handling to cause rescheduling.
       // Not killing the task leaves various aspects of the executor and (to some extent) the jvm in
@@ -292,15 +284,12 @@ private[yarn] class ExecutorRunnable(
     val localResources = HashMap[String, LocalResource]()
 
     if (System.getenv("SPARK_YARN_CACHE_FILES") != null) {
-      val timeStamps = System
-        .getenv("SPARK_YARN_CACHE_FILES_TIME_STAMPS")
+      val timeStamps = System.getenv("SPARK_YARN_CACHE_FILES_TIME_STAMPS")
         .split(',')
-      val fileSizes = System
-        .getenv("SPARK_YARN_CACHE_FILES_FILE_SIZES")
+      val fileSizes = System.getenv("SPARK_YARN_CACHE_FILES_FILE_SIZES")
         .split(',')
       val distFiles = System.getenv("SPARK_YARN_CACHE_FILES").split(',')
-      val visibilities = System
-        .getenv("SPARK_YARN_CACHE_FILES_VISIBILITIES")
+      val visibilities = System.getenv("SPARK_YARN_CACHE_FILES_VISIBILITIES")
         .split(',')
       for (i <- 0 to distFiles.length - 1) {
         setupDistributedCache(
@@ -314,15 +303,12 @@ private[yarn] class ExecutorRunnable(
     }
 
     if (System.getenv("SPARK_YARN_CACHE_ARCHIVES") != null) {
-      val timeStamps = System
-        .getenv("SPARK_YARN_CACHE_ARCHIVES_TIME_STAMPS")
+      val timeStamps = System.getenv("SPARK_YARN_CACHE_ARCHIVES_TIME_STAMPS")
         .split(',')
-      val fileSizes = System
-        .getenv("SPARK_YARN_CACHE_ARCHIVES_FILE_SIZES")
+      val fileSizes = System.getenv("SPARK_YARN_CACHE_ARCHIVES_FILE_SIZES")
         .split(',')
       val distArchives = System.getenv("SPARK_YARN_CACHE_ARCHIVES").split(',')
-      val visibilities = System
-        .getenv("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES")
+      val visibilities = System.getenv("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES")
         .split(',')
       for (i <- 0 to distArchives.length - 1) {
         setupDistributedCache(
@@ -379,11 +365,9 @@ private[yarn] class ExecutorRunnable(
       env("SPARK_LOG_URL_STDOUT") = s"$baseUrl/stdout?start=-4096"
     }
 
-    System
-      .getenv()
-      .asScala
-      .filterKeys(_.startsWith("SPARK"))
-      .foreach { case (k, v) => env(k) = v }
+    System.getenv().asScala.filterKeys(_.startsWith("SPARK")).foreach {
+      case (k, v) => env(k) = v
+    }
     env
   }
 }

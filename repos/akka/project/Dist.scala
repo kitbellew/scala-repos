@@ -84,9 +84,7 @@ object Dist {
       projectRef: ProjectRef,
       structure: Load.BuildStructure,
       exclude: Seq[String]): Seq[String] = {
-    val aggregate = Project
-      .getProject(projectRef, structure)
-      .toSeq
+    val aggregate = Project.getProject(projectRef, structure).toSeq
       .flatMap(_.aggregate)
     aggregate flatMap { ref =>
       if (exclude contains ref.project) Seq.empty
@@ -159,7 +157,8 @@ object Dist {
       overwrite: Boolean,
       preserveLastModified: Boolean,
       setExecutable: Boolean)(source: File, target: File): File = {
-    if (overwrite || !target.exists || source.lastModified > target.lastModified) {
+    if (overwrite || !target.exists || source.lastModified > target
+          .lastModified) {
       if (source.isDirectory) IO.createDirectory(target)
       else {
         IO.createDirectory(target.getParentFile)

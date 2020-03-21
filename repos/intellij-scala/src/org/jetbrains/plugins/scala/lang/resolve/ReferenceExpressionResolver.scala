@@ -45,9 +45,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           isUnderscore = false)
       case call: ScMethodCall =>
         val args = call.argumentExpressions ++ call.getContext
-          .asInstanceOf[ScAssignStmt]
-          .getRExpression
-          .toList
+          .asInstanceOf[ScAssignStmt].getRExpression.toList
         ContextInfo(Some(args), () => None, isUnderscore = false)
       case section: ScUnderscoreSection =>
         ContextInfo(None, () => section.expectedType(), isUnderscore = true)
@@ -107,8 +105,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
       else reference.refName
 
     if (name == ScImplicitlyConvertible.IMPLICIT_REFERENCE_NAME) {
-      val data = reference.getUserData(
-        ScImplicitlyConvertible.FAKE_RESOLVE_RESULT_KEY)
+      val data = reference
+        .getUserData(ScImplicitlyConvertible.FAKE_RESOLVE_RESULT_KEY)
       if (data != null) return Array(data)
     }
 
@@ -139,8 +137,7 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
             if (!smartProcessor) super.candidatesS
             else {
               val iterator = reference.shapeResolve
-                .map(_.asInstanceOf[ScalaResolveResult])
-                .iterator
+                .map(_.asInstanceOf[ScalaResolveResult]).iterator
               while (iterator.hasNext) { levelSet.add(iterator.next()) }
               super.candidatesS
             }
@@ -149,13 +146,12 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
 
       var result: Array[ResolveResult] = Array.empty
       if (shapesOnly) {
-        result = reference.doResolve(
-          reference,
-          processor(smartProcessor = false))
+        result = reference
+          .doResolve(reference, processor(smartProcessor = false))
       } else {
         val candidatesS =
-          processor(smartProcessor =
-            true).candidatesS //let's try to avoid treeWalkUp
+          processor(smartProcessor = true)
+            .candidatesS //let's try to avoid treeWalkUp
         if (candidatesS.isEmpty || candidatesS.forall(!_.isApplicable())) {
           // it has another resolve only in one case:
           // clazz.ref(expr)
@@ -163,9 +159,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           // so shape resolve return this wrong result
           // however there is implicit conversion with right argument
           // this is ugly, but it can improve performance
-          result = reference.doResolve(
-            reference,
-            processor(smartProcessor = false))
+          result = reference
+            .doResolve(reference, processor(smartProcessor = false))
         } else { result = candidatesS.toArray }
       }
       if (result.isEmpty && reference.isAssignmentOperator) {

@@ -51,8 +51,8 @@ class SearchServiceSpec
   it should "remove classfiles that have been deleted" in {
     withSearchService { (config, service) =>
       implicit val s = service
-      val classfile =
-        config.subprojects.head.targetDirs.head / "org/example/Foo.class"
+      val classfile = config.subprojects.head.targetDirs
+        .head / "org/example/Foo.class"
 
       classfile shouldBe 'exists
 
@@ -157,8 +157,9 @@ class SearchServiceSpec
 
   "exact searches" should "find type aliases" in withSearchService {
     implicit service =>
-      service.findUnique(
-        "org.scalatest.fixture.ConfigMapFixture$FixtureParam") shouldBe defined
+      service
+        .findUnique(
+          "org.scalatest.fixture.ConfigMapFixture$FixtureParam") shouldBe defined
   }
 }
 

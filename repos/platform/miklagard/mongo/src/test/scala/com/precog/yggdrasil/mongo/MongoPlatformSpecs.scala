@@ -132,14 +132,13 @@ object MongoPlatformSpecEngine extends Logging {
         if (file.getName.endsWith(".json")) {
           try {
             val collectionName = path + file.getName.replace(".json", "")
-            logger.debug(
-              "Loading %s into /test/%s".format(file, collectionName))
+            logger
+              .debug("Loading %s into /test/%s".format(file, collectionName))
             val collection = db.getCollection(collectionName)
             JParser.parseManyFromFile(file) match {
               case Success(data) =>
                 val objs = data.map { jv =>
-                  JsonToMongo
-                    .apply(jv.asInstanceOf[JObject])
+                  JsonToMongo.apply(jv.asInstanceOf[JObject])
                     .fold(e => throw new Exception(e.toString), s => s)
                 }.toArray
                 collection.insert(objs, WriteConcern.FSYNC_SAFE)
@@ -217,8 +216,8 @@ trait MongoPlatformSpecs
           case orig: StrColumn =>
             new StrColumn {
               def apply(row: Int): String = {
-                val newPath =
-                  "/test/" + orig(row).replaceAll("^/|/$", "").replace('/', '_')
+                val newPath = "/test/" + orig(row).replaceAll("^/|/$", "")
+                  .replace('/', '_')
                 logger.debug("Fixed %s to %s".format(orig(row), newPath))
                 newPath
               }

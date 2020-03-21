@@ -127,8 +127,8 @@ class MaxAbsScalerModel private[ml] (
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
     // TODO: this looks hack, we may have to handle sparse and dense vectors separately.
-    val maxAbsUnzero = Vectors.dense(
-      maxAbs.toArray.map(x => if (x == 0) 1 else x))
+    val maxAbsUnzero = Vectors
+      .dense(maxAbs.toArray.map(x => if (x == 0) 1 else x))
     val reScale = udf { (vector: Vector) =>
       val brz = vector.toBreeze / maxAbsUnzero.toBreeze
       Vectors.fromBreeze(brz)
@@ -162,10 +162,7 @@ object MaxAbsScalerModel extends MLReadable[MaxAbsScalerModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       val data = new Data(instance.maxAbs)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -177,10 +174,8 @@ object MaxAbsScalerModel extends MLReadable[MaxAbsScalerModel] {
     override def load(path: String): MaxAbsScalerModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val Row(maxAbs: Vector) = sqlContext.read
-        .parquet(dataPath)
-        .select("maxAbs")
-        .head()
+      val Row(maxAbs: Vector) = sqlContext.read.parquet(dataPath)
+        .select("maxAbs").head()
       val model = new MaxAbsScalerModel(metadata.uid, maxAbs)
       DefaultParamsReader.getAndSetParams(model, metadata)
       model

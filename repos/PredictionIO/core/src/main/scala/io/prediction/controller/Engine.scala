@@ -237,41 +237,37 @@ class Engine[TD, EI, PD, Q, P, A](
         persistedModels
       }
 
-    models
-      .zip(algorithms)
-      .zip(algoParamsList)
-      .zipWithIndex
-      .map {
-        case (((model, algo), (algoName, algoParams)), ax) => {
-          model match {
-            case modelManifest: PersistentModelManifest => {
+    models.zip(algorithms).zip(algoParamsList).zipWithIndex.map {
+      case (((model, algo), (algoName, algoParams)), ax) => {
+        model match {
+          case modelManifest: PersistentModelManifest => {
+            logger.info(
+              "Custom-persisted model detected for algorithm " +
+                algo.getClass.getName)
+            SparkWorkflowUtils.getPersistentModel(
+              modelManifest,
+              Seq(engineInstanceId, ax, algoName).mkString("-"),
+              algoParams,
+              Some(sc),
+              getClass.getClassLoader)
+          }
+          case m => {
+            try {
               logger.info(
-                "Custom-persisted model detected for algorithm " +
-                  algo.getClass.getName)
-              SparkWorkflowUtils.getPersistentModel(
-                modelManifest,
-                Seq(engineInstanceId, ax, algoName).mkString("-"),
-                algoParams,
-                Some(sc),
-                getClass.getClassLoader)
-            }
-            case m => {
-              try {
-                logger.info(
-                  s"Loaded model ${m.getClass.getName} for algorithm " +
-                    s"${algo.getClass.getName}")
-                sc.stop
+                s"Loaded model ${m.getClass.getName} for algorithm " +
+                  s"${algo.getClass.getName}")
+              sc.stop
+              m
+            } catch {
+              case e: NullPointerException =>
+                logger.warn(
+                  s"Null model detected for algorithm ${algo.getClass.getName}")
                 m
-              } catch {
-                case e: NullPointerException =>
-                  logger.warn(
-                    s"Null model detected for algorithm ${algo.getClass.getName}")
-                  m
-              }
             }
-          } // model match
-        }
+          }
+        } // model match
       }
+    }
   }
 
   /** Extract model for persistent layer.
@@ -298,15 +294,14 @@ class Engine[TD, EI, PD, Q, P, A](
 
     logger.info(s"engineInstanceId=$engineInstanceId")
 
-    algoTuples.zipWithIndex
-      .map {
-        case ((name, params, algo, model), ax) =>
-          algo.makePersistentModel(
-            sc = sc,
-            modelId = Seq(engineInstanceId, ax, name).mkString("-"),
-            algoParams = params,
-            bm = model)
-      }
+    algoTuples.zipWithIndex.map {
+      case ((name, params, algo, model), ax) =>
+        algo.makePersistentModel(
+          sc = sc,
+          modelId = Seq(engineInstanceId, ax, name).mkString("-"),
+          algoParams = params,
+          bm = model)
+    }
   }
 
   /** This is implemented such that [[io.prediction.controller.Evaluation]] can
@@ -754,24 +749,18 @@ object Engine {
     logger.info(s"AlgorithmList: $algorithmList")
     logger.info(s"Serving: $serving")
 
-    val algoMap: Map[AX, BaseAlgorithm[PD, _, Q, P]] =
-      algorithmList.zipWithIndex
-        .map(_.swap)
-        .toMap
+    val algoMap: Map[AX, BaseAlgorithm[PD, _, Q, P]] = algorithmList
+      .zipWithIndex.map(_.swap).toMap
     val algoCount = algoMap.size
 
     val evalTupleMap: Map[EX, (TD, EI, RDD[(Q, A)])] = dataSource
-      .readEvalBase(sc)
-      .zipWithIndex
-      .map(_.swap)
-      .toMap
+      .readEvalBase(sc).zipWithIndex.map(_.swap).toMap
 
     val evalCount = evalTupleMap.size
 
     val evalTrainMap: Map[EX, TD] = evalTupleMap.mapValues(_._1)
     val evalInfoMap: Map[EX, EI] = evalTupleMap.mapValues(_._2)
-    val evalQAsMap: Map[EX, RDD[(QX, (Q, A))]] = evalTupleMap
-      .mapValues(_._3)
+    val evalQAsMap: Map[EX, RDD[(QX, (Q, A))]] = evalTupleMap.mapValues(_._3)
       .mapValues { _.zipWithUniqueId().map(_.swap) }
 
     val preparedMap: Map[EX, PD] = evalTrainMap.mapValues { td =>
@@ -793,26 +782,22 @@ object Engine {
 
           val qs: RDD[(QX, Q)] = suppQAsMap(ex).mapValues(_._1)
 
-          val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount)
-            .map { ax =>
+          val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount).map {
+            ax =>
               {
                 val algo = algoMap(ax)
                 val model = modelMap(ax)
-                val rawPredicts: RDD[(QX, P)] = algo.batchPredictBase(
-                  sc,
-                  model,
-                  qs)
+                val rawPredicts: RDD[(QX, P)] = algo
+                  .batchPredictBase(sc, model, qs)
                 val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
                   case (qx, p) => { (qx, (ax, p)) }
                 }
                 predicts
               }
-            }
+          }
 
-          val unionAlgoPredicts: RDD[(QX, Seq[P])] = sc
-            .union(algoPredicts)
-            .groupByKey()
-            .mapValues { ps =>
+          val unionAlgoPredicts: RDD[(QX, Seq[P])] = sc.union(algoPredicts)
+            .groupByKey().mapValues { ps =>
               {
                 assert(
                   ps.size == algoCount,
@@ -826,26 +811,24 @@ object Engine {
         }
     }.toMap
 
-    val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap
-      .map {
-        case (ex, psMap) => {
-          // The query passed to serving.serve is the original one, not
-          // supplemented.
-          val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
-          val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
-            .join(qasMap)
-            .map { case (qx, t) => (qx, t._2._1, t._1, t._2._2) }
-
-          val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
-            case (qx, q, ps, a) => (q, serving.serveBase(q, ps), a)
-          }
-          (ex, qpaMap)
+    val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap.map {
+      case (ex, psMap) => {
+        // The query passed to serving.serve is the original one, not
+        // supplemented.
+        val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
+        val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap.join(qasMap).map {
+          case (qx, t) => (qx, t._2._1, t._1, t._2._2)
         }
-      }
 
-    (0 until evalCount).map { ex =>
-      { (evalInfoMap(ex), servingQPAMap(ex)) }
-    }.toSeq
+        val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
+          case (qx, q, ps, a) => (q, serving.serveBase(q, ps), a)
+        }
+        (ex, qpaMap)
+      }
+    }
+
+    (0 until evalCount).map { ex => { (evalInfoMap(ex), servingQPAMap(ex)) } }
+      .toSeq
   }
 }
 

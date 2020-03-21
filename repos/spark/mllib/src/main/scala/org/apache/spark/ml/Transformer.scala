@@ -46,9 +46,7 @@ abstract class Transformer extends PipelineStage {
       dataset: DataFrame,
       firstParamPair: ParamPair[_],
       otherParamPairs: ParamPair[_]*): DataFrame = {
-    val map = new ParamMap()
-      .put(firstParamPair)
-      .put(otherParamPairs: _*)
+    val map = new ParamMap().put(firstParamPair).put(otherParamPairs: _*)
     transform(dataset, map)
   }
 

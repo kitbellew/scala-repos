@@ -206,11 +206,12 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
 
       // FIXME #3074 how do we solve this with actorSelection?
       val async =
-        try actorFor(endpoint.path).ask(messageFor(exchange))(Timeout(
-          endpoint.replyTimeout))
+        try actorFor(endpoint.path)
+          .ask(messageFor(exchange))(Timeout(endpoint.replyTimeout))
         catch { case NonFatal(e) ⇒ Future.failed(e) }
       implicit val ec =
-        camel.system.dispatcher // FIXME which ExecutionContext should be used here?
+        camel.system
+          .dispatcher // FIXME which ExecutionContext should be used here?
       async.onComplete(action andThen { _ ⇒ callback.done(false) })
       false
     }
@@ -298,10 +299,8 @@ object CamelPath {
       actorRef: ActorRef,
       autoAck: Boolean,
       replyTimeout: Duration): String =
-    "%s?autoAck=%s&replyTimeout=%s".format(
-      actorRef.path.toString,
-      autoAck,
-      replyTimeout.toString)
+    "%s?autoAck=%s&replyTimeout=%s"
+      .format(actorRef.path.toString, autoAck, replyTimeout.toString)
 }
 
 /**

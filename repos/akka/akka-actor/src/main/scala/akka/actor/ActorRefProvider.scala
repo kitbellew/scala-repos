@@ -555,9 +555,10 @@ private[akka] class LocalActorRefProvider private[akka] (
           existenceConfirmed = true,
           addressTerminated = true
         )) //Idempotent
-        terminationPromise.tryCompleteWith(
-          causeOfTermination.future
-        ) // Signal termination downstream, idempotent
+        terminationPromise
+          .tryCompleteWith(
+            causeOfTermination.future
+          ) // Signal termination downstream, idempotent
       }
 
       @deprecated(
@@ -613,11 +614,9 @@ private[akka] class LocalActorRefProvider private[akka] (
     extraNames ++= _extras
 
   private def guardianSupervisorStrategyConfigurator =
-    dynamicAccess
-      .createInstanceFor[SupervisorStrategyConfigurator](
-        settings.SupervisorStrategyClass,
-        EmptyImmutableSeq)
-      .get
+    dynamicAccess.createInstanceFor[SupervisorStrategyConfigurator](
+      settings.SupervisorStrategyClass,
+      EmptyImmutableSeq).get
 
   /**
     * Overridable supervision strategy to be used by the “/user” guardian.
@@ -641,11 +640,11 @@ private[akka] class LocalActorRefProvider private[akka] (
   protected def systemGuardianStrategy: SupervisorStrategy =
     SupervisorStrategy.defaultStrategy
 
-  private lazy val defaultDispatcher =
-    system.dispatchers.defaultGlobalDispatcher
+  private lazy val defaultDispatcher = system.dispatchers
+    .defaultGlobalDispatcher
 
-  private lazy val defaultMailbox = system.mailboxes.lookup(
-    Mailboxes.DefaultMailboxId)
+  private lazy val defaultMailbox = system.mailboxes
+    .lookup(Mailboxes.DefaultMailboxId)
 
   override lazy val rootGuardian: LocalActorRef = new LocalActorRef(
     system,
@@ -659,8 +658,8 @@ private[akka] class LocalActorRefProvider private[akka] (
       name match {
         case "temp" ⇒ tempContainer
         case "deadLetters" ⇒ deadLetters
-        case other ⇒
-          extraNames.get(other).getOrElse(super.getSingleChild(other))
+        case other ⇒ extraNames.get(other)
+            .getOrElse(super.getSingleChild(other))
       }
   }
 
@@ -869,15 +868,15 @@ private[akka] class LocalActorRefProvider private[akka] (
         } catch {
           case NonFatal(e) ⇒
             throw new ConfigurationException(
-              s"configuration problem while creating [$path] with dispatcher [${props2.dispatcher}] and mailbox [${props2.mailbox}]",
+              s"configuration problem while creating [$path] with dispatcher [${props2
+                .dispatcher}] and mailbox [${props2.mailbox}]",
               e)
         }
 
       case router ⇒
         val lookup = if (lookupDeploy) deployer.lookup(path) else None
         val r = router :: deploy.map(_.routerConfig).toList ::: lookup
-          .map(_.routerConfig)
-          .toList reduce ((a, b) ⇒ b withFallback a)
+          .map(_.routerConfig).toList reduce ((a, b) ⇒ b withFallback a)
         val p = props.withRouter(r)
 
         if (!system.dispatchers.hasDispatcher(p.dispatcher))
@@ -894,8 +893,8 @@ private[akka] class LocalActorRefProvider private[akka] (
         val routeeProps = p.withRouter(NoRouter)
 
         try {
-          val routerDispatcher = system.dispatchers.lookup(
-            p.routerConfig.routerDispatcher)
+          val routerDispatcher = system.dispatchers
+            .lookup(p.routerConfig.routerDispatcher)
           val routerMailbox = system.mailboxes
             .getMailboxType(routerProps, routerDispatcher.configurator.config)
 
@@ -916,8 +915,10 @@ private[akka] class LocalActorRefProvider private[akka] (
         } catch {
           case NonFatal(e) ⇒
             throw new ConfigurationException(
-              s"configuration problem while creating [$path] with router dispatcher [${routerProps.dispatcher}] and mailbox [${routerProps.mailbox}] " +
-                s"and routee dispatcher [${routeeProps.dispatcher}] and mailbox [${routeeProps.mailbox}]",
+              s"configuration problem while creating [$path] with router dispatcher [${routerProps
+                .dispatcher}] and mailbox [${routerProps.mailbox}] " +
+                s"and routee dispatcher [${routeeProps
+                  .dispatcher}] and mailbox [${routeeProps.mailbox}]",
               e)
         }
     }

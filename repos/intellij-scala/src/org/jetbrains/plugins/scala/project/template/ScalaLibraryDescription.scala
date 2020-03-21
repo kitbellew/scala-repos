@@ -62,15 +62,12 @@ object ScalaLibraryDescription extends ScalaLibraryDescription {
 
   private def findScalaDirectoriesIn(directory: String): Seq[String] = {
     val subdirectories = new File(directory).listFiles.toSeq
-    subdirectories
-      .filter(_.getName.toLowerCase.startsWith("scala"))
+    subdirectories.filter(_.getName.toLowerCase.startsWith("scala"))
       .map(_.getPath)
   }
 
   private def findScalaInCommandPath(path: String): Option[String] =
-    path
-      .split(File.pathSeparator)
-      .find(_.toLowerCase.contains("scala"))
+    path.split(File.pathSeparator).find(_.toLowerCase.contains("scala"))
       .map(_.replaceFirst("""[/\\]?bin[/\\]?$""", ""))
 }
 
@@ -95,8 +92,7 @@ trait ScalaLibraryDescription extends CustomLibraryDescription {
 
   def sdks(contextDirectory: VirtualFile): Seq[SdkChoice] = {
     val localSdks = Option(contextDirectory).toSeq
-      .map(cDir => virtualToIoFile(contextDirectory) / "lib")
-      .flatMap(sdkIn)
+      .map(cDir => virtualToIoFile(contextDirectory) / "lib").flatMap(sdkIn)
     localSdks.map(SdkChoice(_, "Project")) ++
       ivySdks.sortBy(_.version).map(SdkChoice(_, "Ivy")) ++
       mavenSdks.sortBy(_.version).map(SdkChoice(_, "Maven"))
@@ -109,8 +105,7 @@ trait ScalaLibraryDescription extends CustomLibraryDescription {
       contextDirectory: VirtualFile) = {
     implicit val ordering = implicitly[Ordering[Version]].reverse
     Option(dialog(parentComponent, () => sdks(contextDirectory).asJava).open())
-      .map(_.createNewLibraryConfiguration())
-      .orNull
+      .map(_.createNewLibraryConfiguration()).orNull
   }
 
   protected def discoverComponents(root: File) =
@@ -124,11 +119,8 @@ trait ScalaLibraryDescription extends CustomLibraryDescription {
   protected def mavenSdks = sdksIn(mavenScalaRoot)
 
   private def sdksIn(root: File): Seq[SdkDescriptor] = {
-    discoverComponents(root)
-      .groupBy(_.version)
-      .mapValues(sdkDescriptor.from)
-      .toSeq
-      .collect { case (Some(version), Right(sdk)) => sdk }
+    discoverComponents(root).groupBy(_.version).mapValues(sdkDescriptor.from)
+      .toSeq.collect { case (Some(version), Right(sdk)) => sdk }
   }
 }
 

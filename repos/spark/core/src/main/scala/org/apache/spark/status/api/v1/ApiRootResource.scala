@@ -195,11 +195,9 @@ private[spark] trait UIRoot {
       appId: String,
       attemptId: Option[String],
       zipStream: ZipOutputStream): Unit = {
-    Response
-      .serverError()
+    Response.serverError()
       .entity("Event logs are only available through the history server.")
-      .status(Response.Status.SERVICE_UNAVAILABLE)
-      .build()
+      .status(Response.Status.SERVICE_UNAVAILABLE).build()
   }
 
   /**
@@ -240,17 +238,13 @@ private[v1] trait UIRootFromServletContext {
 private[v1] class NotFoundException(msg: String)
     extends WebApplicationException(
       new NoSuchElementException(msg),
-      Response
-        .status(Response.Status.NOT_FOUND)
-        .entity(ErrorWrapper(msg))
+      Response.status(Response.Status.NOT_FOUND).entity(ErrorWrapper(msg))
         .build())
 
 private[v1] class BadParameterException(msg: String)
     extends WebApplicationException(
       new IllegalArgumentException(msg),
-      Response
-        .status(Response.Status.BAD_REQUEST)
-        .entity(ErrorWrapper(msg))
+      Response.status(Response.Status.BAD_REQUEST).entity(ErrorWrapper(msg))
         .build()) {
   def this(param: String, exp: String, actual: String) = {
     this(

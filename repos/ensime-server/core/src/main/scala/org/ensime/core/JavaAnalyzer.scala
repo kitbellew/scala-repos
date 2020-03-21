@@ -62,18 +62,14 @@ class JavaAnalyzer(
       sender() ! VoidResponse
 
     case CompletionsReq(file, point, maxResults, caseSens, _) =>
-      sender() ! javaCompiler.askCompletionsAtPoint(
-        file,
-        point,
-        maxResults,
-        caseSens)
+      sender() ! javaCompiler
+        .askCompletionsAtPoint(file, point, maxResults, caseSens)
 
     case DocUriAtPointReq(file, range) =>
       sender() ! javaCompiler.askDocSignatureAtPoint(file, range.from)
 
     case TypeAtPointReq(file, range) =>
-      sender() ! javaCompiler
-        .askTypeAtPoint(file, range.from)
+      sender() ! javaCompiler.askTypeAtPoint(file, range.from)
         .getOrElse(FalseResponse)
 
     case SymbolDesignationsReq(f, start, end, tpes) =>
@@ -81,8 +77,7 @@ class JavaAnalyzer(
       sender ! SymbolDesignations(f.file, Nil)
 
     case SymbolAtPointReq(file, point) =>
-      sender() ! javaCompiler
-        .askSymbolAtPoint(file, point)
+      sender() ! javaCompiler.askSymbolAtPoint(file, point)
         .getOrElse(FalseResponse)
 
     case ImplicitInfoReq(file, range: OffsetRange) =>

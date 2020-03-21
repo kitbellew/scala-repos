@@ -69,25 +69,23 @@ object GraphLoader extends Logging {
       if (numEdgePartitions > 0) {
         sc.textFile(path, numEdgePartitions).coalesce(numEdgePartitions)
       } else { sc.textFile(path) }
-    val edges = lines
-      .mapPartitionsWithIndex { (pid, iter) =>
-        val builder = new EdgePartitionBuilder[Int, Int]
-        iter.foreach { line =>
-          if (!line.isEmpty && line(0) != '#') {
-            val lineArray = line.split("\\s+")
-            if (lineArray.length < 2) {
-              throw new IllegalArgumentException("Invalid line: " + line)
-            }
-            val srcId = lineArray(0).toLong
-            val dstId = lineArray(1).toLong
-            if (canonicalOrientation && srcId > dstId) {
-              builder.add(dstId, srcId, 1)
-            } else { builder.add(srcId, dstId, 1) }
+    val edges = lines.mapPartitionsWithIndex { (pid, iter) =>
+      val builder = new EdgePartitionBuilder[Int, Int]
+      iter.foreach { line =>
+        if (!line.isEmpty && line(0) != '#') {
+          val lineArray = line.split("\\s+")
+          if (lineArray.length < 2) {
+            throw new IllegalArgumentException("Invalid line: " + line)
           }
+          val srcId = lineArray(0).toLong
+          val dstId = lineArray(1).toLong
+          if (canonicalOrientation && srcId > dstId) {
+            builder.add(dstId, srcId, 1)
+          } else { builder.add(srcId, dstId, 1) }
         }
-        Iterator((pid, builder.toEdgePartition))
       }
-      .persist(edgeStorageLevel)
+      Iterator((pid, builder.toEdgePartition))
+    }.persist(edgeStorageLevel)
       .setName("GraphLoader.edgeListFile - edges (%s)".format(path))
     edges.count()
 

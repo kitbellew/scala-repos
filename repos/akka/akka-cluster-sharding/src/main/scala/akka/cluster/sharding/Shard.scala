@@ -105,8 +105,7 @@ private[akka] object Shard {
         settings,
         extractEntityId,
         extractShardId,
-        handOffStopMessage))
-        .withDeploy(Deploy.local)
+        handOffStopMessage)).withDeploy(Deploy.local)
     else
       Props(new Shard(
         typeName,
@@ -115,8 +114,7 @@ private[akka] object Shard {
         settings,
         extractEntityId,
         extractShardId,
-        handOffStopMessage))
-        .withDeploy(Deploy.local)
+        handOffStopMessage)).withDeploy(Deploy.local)
   }
 }
 

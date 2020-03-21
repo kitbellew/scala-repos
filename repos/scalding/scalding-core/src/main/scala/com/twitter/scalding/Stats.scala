@@ -73,8 +73,7 @@ private[scalding] case class HadoopFlowPCounterImpl(
     fp: HadoopFlowProcess,
     statKey: StatKey)
     extends CounterImpl {
-  private[this] val cntr = fp
-    .getReporter()
+  private[this] val cntr = fp.getReporter()
     .getCounter(statKey.group, statKey.counter)
   override def increment(amount: Long): Unit = cntr.increment(amount)
 }
@@ -173,9 +172,8 @@ object RuntimeStats extends java.io.Serializable {
       val uniqueJobIdObj = fp.getProperty(UniqueID.UNIQUE_JOB_ID)
       if (uniqueJobIdObj != null) {
         // for speed concern, use a while loop instead of foreach here
-        var splitted = StringUtility.fastSplit(
-          uniqueJobIdObj.asInstanceOf[String],
-          ",")
+        var splitted = StringUtility
+          .fastSplit(uniqueJobIdObj.asInstanceOf[String], ",")
         while (!splitted.isEmpty) {
           val uniqueId = splitted.head
           splitted = splitted.tail
@@ -215,10 +213,10 @@ class StatsFlowListener(f: Map[StatKey, Long] => Try[Unit])
   override def onCompleted(flow: Flow[_]): Unit = {
     if (success) {
       val stats = flow.getFlowStats
-      val keys = stats.getCounterGroups.asScala.flatMap(g =>
-        stats.getCountersFor(g).asScala.map(c => StatKey(c, g)))
-      val values =
-        keys.map(k => (k, stats.getCounterValue(k.group, k.counter))).toMap
+      val keys = stats.getCounterGroups.asScala
+        .flatMap(g => stats.getCountersFor(g).asScala.map(c => StatKey(c, g)))
+      val values = keys.map(k => (k, stats.getCounterValue(k.group, k.counter)))
+        .toMap
       f(values).get
     }
   }

@@ -85,22 +85,18 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
 
       // At this point we have completed all valid writes, so we open readonly + no locks, allowing for concurrent use of sorted data
       //println("opening: " + dbFile.getCanonicalPath)
-      val db = DBMaker
-        .openFile(dbFile.getCanonicalPath)
-        .readonly()
-        .disableLocking()
-        .make()
+      val db = DBMaker.openFile(dbFile.getCanonicalPath).readonly()
+        .disableLocking().make()
       try {
-        val index: SortedMap[Array[Byte], Array[Byte]] = db.getTreeMap(
-          indexName)
+        val index: SortedMap[Array[Byte], Array[Byte]] = db
+          .getTreeMap(indexName)
 
         if (index == null) {
           throw new IllegalArgumentException(
             "No such index in DB: %s:%s".format(dbFile, indexName))
         }
 
-        val constrainedMap = id
-          .map { idKey => index.tailMap(idKey) }
+        val constrainedMap = id.map { idKey => index.tailMap(idKey) }
           .getOrElse(index)
         val iteratorSetup = () => {
           val rawIterator = constrainedMap.entrySet.iterator.asScala
@@ -131,21 +127,18 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
 
         if (iterator.isEmpty) { None }
         else {
-          val keyColumns = sortKeyRefs.map(
-            JDBMSlice.columnFor(CPath("[0]"), sliceSize))
-          val valColumns = valRefs.map(
-            JDBMSlice.columnFor(CPath("[1]"), sliceSize))
+          val keyColumns = sortKeyRefs
+            .map(JDBMSlice.columnFor(CPath("[0]"), sliceSize))
+          val valColumns = valRefs
+            .map(JDBMSlice.columnFor(CPath("[1]"), sliceSize))
 
-          val keyColumnDecoder = keyFormat.ColumnDecoder(
-            keyColumns.map(_._2)(collection.breakOut))
-          val valColumnDecoder = rowFormat.ColumnDecoder(
-            valColumns.map(_._2)(collection.breakOut))
+          val keyColumnDecoder = keyFormat
+            .ColumnDecoder(keyColumns.map(_._2)(collection.breakOut))
+          val valColumnDecoder = rowFormat
+            .ColumnDecoder(valColumns.map(_._2)(collection.breakOut))
 
-          val (firstKey, lastKey, rows) = JDBMSlice.load(
-            sliceSize,
-            iteratorSetup,
-            keyColumnDecoder,
-            valColumnDecoder)
+          val (firstKey, lastKey, rows) = JDBMSlice
+            .load(sliceSize, iteratorSetup, keyColumnDecoder, valColumnDecoder)
 
           val slice = new Slice {
             val size = rows

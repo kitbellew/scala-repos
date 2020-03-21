@@ -60,8 +60,8 @@ trait SFXEnumDelegateCompanion[
   protected def unsortedValues: Array[S]
 
   /** Returns a List containing the constants of this `enum` type, in the order they are declared. */
-  lazy val values: List[S] =
-    unsortedValues.sortWith(_.delegate.ordinal < _.delegate.ordinal).toList
+  lazy val values: List[S] = unsortedValues
+    .sortWith(_.delegate.ordinal < _.delegate.ordinal).toList
 
   /**
     *  Returns the `enum` constant of this type with the specified name.

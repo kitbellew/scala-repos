@@ -170,8 +170,7 @@ object StreamLayout {
   }
   case class Atomic(module: Module) extends MaterializedValueNode {
     override def toString: String =
-      f"Atomic(${module.attributes.nameOrDefault(
-        module.getClass.getName)}[${System.identityHashCode(module)}%08x])"
+      f"Atomic(${module.attributes.nameOrDefault(module.getClass.getName)}[${System.identityHashCode(module)}%08x])"
   }
   case class Transform(f: Any ⇒ Any, dep: MaterializedValueNode)
       extends MaterializedValueNode {
@@ -487,17 +486,15 @@ object StreamLayout {
       f"""CompositeModule [${System.identityHashCode(this)}%08x]
          |  Name: ${this.attributes.nameOrDefault("unnamed")}
          |  Modules:
-         |    ${subModules.iterator
-           .map(m ⇒
-             s"(${m.attributes.nameLifted.getOrElse("unnamed")}) ${m.toString
-               .replaceAll("\n", "\n    ")}")
-           .mkString("\n    ")}
-         |  Downstreams: ${downstreams.iterator
-           .map { case (in, out) ⇒ s"\n    $in -> $out" }
-           .mkString("")}
-         |  Upstreams: ${upstreams.iterator
-           .map { case (out, in) ⇒ s"\n    $out -> $in" }
-           .mkString("")}
+         |    ${subModules.iterator.map(m ⇒
+           s"(${m.attributes.nameLifted.getOrElse("unnamed")}) ${m.toString
+             .replaceAll("\n", "\n    ")}").mkString("\n    ")}
+         |  Downstreams: ${downstreams.iterator.map {
+           case (in, out) ⇒ s"\n    $in -> $out"
+         }.mkString("")}
+         |  Upstreams: ${upstreams.iterator.map {
+           case (out, in) ⇒ s"\n    $out -> $in"
+         }.mkString("")}
          |  MatValue: $materializedValueComputation""".stripMargin
   }
 
@@ -540,17 +537,16 @@ object StreamLayout {
       f"""FusedModule [${System.identityHashCode(this)}%08x]
          |  Name: ${this.attributes.nameOrDefault("unnamed")}
          |  Modules:
-         |    ${subModules.iterator
-           .map(m ⇒
-             m.attributes.nameLifted.getOrElse(
-               m.toString.replaceAll("\n", "\n    ")))
+         |    ${subModules.iterator.map(m ⇒
+           m.attributes.nameLifted
+             .getOrElse(m.toString.replaceAll("\n", "\n    ")))
            .mkString("\n    ")}
-         |  Downstreams: ${downstreams.iterator
-           .map { case (in, out) ⇒ s"\n    $in -> $out" }
-           .mkString("")}
-         |  Upstreams: ${upstreams.iterator
-           .map { case (out, in) ⇒ s"\n    $out -> $in" }
-           .mkString("")}
+         |  Downstreams: ${downstreams.iterator.map {
+           case (in, out) ⇒ s"\n    $in -> $out"
+         }.mkString("")}
+         |  Upstreams: ${upstreams.iterator.map {
+           case (out, in) ⇒ s"\n    $out -> $in"
+         }.mkString("")}
          |  MatValue: $materializedValueComputation""".stripMargin
   }
 
@@ -785,8 +781,8 @@ private[stream] final class VirtualProcessor[T]
             val ex = new IllegalStateException(noDemand)
             getAndSet(Inert) match {
               case Inert => // nothing to be done
-              case _ =>
-                ErrorPublisher(ex, "failed-VirtualProcessor").subscribe(s)
+              case _ => ErrorPublisher(ex, "failed-VirtualProcessor")
+                  .subscribe(s)
             }
             throw ex
           case Inert | _: Publisher[_] => // nothing to be done
@@ -953,16 +949,14 @@ private[stream] abstract class MaterializerSession(
 
     // When we exit the scope of a copied module,  pick up the Subscribers/Publishers belonging to exposed ports of
     // the original module and assign them to the copy ports in the outer scope that we will return to
-    enclosing.copyOf.shape.inlets.iterator
-      .zip(enclosing.shape.inlets.iterator)
+    enclosing.copyOf.shape.inlets.iterator.zip(enclosing.shape.inlets.iterator)
       .foreach {
         case (original, exposed) ⇒
           assignPort(exposed, scopeSubscribers.get(original))
       }
 
     enclosing.copyOf.shape.outlets.iterator
-      .zip(enclosing.shape.outlets.iterator)
-      .foreach {
+      .zip(enclosing.shape.outlets.iterator).foreach {
         case (original, exposed) ⇒
           assignPort(exposed, scopePublishers.get(original))
       }
@@ -976,8 +970,8 @@ private[stream] abstract class MaterializerSession(
       "An empty module cannot be materialized (EmptyModule was given)")
     require(
       topLevel.isRunnable,
-      s"The top level module cannot be materialized because it has unconnected ports: ${(topLevel.inPorts ++ topLevel.outPorts)
-        .mkString(", ")}"
+      s"The top level module cannot be materialized because it has unconnected ports: ${(topLevel
+        .inPorts ++ topLevel.outPorts).mkString(", ")}"
     )
     try materializeModule(topLevel, initialAttributes and topLevel.attributes)
     catch {
@@ -1027,9 +1021,8 @@ private[stream] abstract class MaterializerSession(
           materializeAtomic(atomic, subEffectiveAttributes, materializedValues)
         case copied: CopiedModule ⇒
           enterScope(copied)
-          materializedValues.put(
-            copied,
-            materializeModule(copied, subEffectiveAttributes))
+          materializedValues
+            .put(copied, materializeModule(copied, subEffectiveAttributes))
           exitScope(copied)
         case composite @ (_: CompositeModule | _: FusedModule) ⇒
           materializedValues.put(
@@ -1040,12 +1033,11 @@ private[stream] abstract class MaterializerSession(
     }
 
     if (MaterializerSession.Debug) {
-      println(f"resolving module [${System.identityHashCode(
-        module)}%08x] computation ${module.materializedValueComputation}")
+      println(
+        f"resolving module [${System.identityHashCode(module)}%08x] computation ${module.materializedValueComputation}")
       println(s"  matValSrc = $matValSrc")
-      println(s"  matVals =\n    ${materializedValues.asScala
-        .map(p ⇒ "%08x".format(System.identityHashCode(p._1)) -> p._2)
-        .mkString("\n    ")}")
+      println(s"  matVals =\n    ${materializedValues.asScala.map(p ⇒
+        "%08x".format(System.identityHashCode(p._1)) -> p._2).mkString("\n    ")}")
     }
 
     val ret = resolveMaterialized(

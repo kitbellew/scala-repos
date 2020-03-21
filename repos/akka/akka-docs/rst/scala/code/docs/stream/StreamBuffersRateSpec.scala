@@ -11,11 +11,9 @@ class StreamBuffersRateSpec extends AkkaSpec {
   "Demonstrate pipelining" in {
     def println(s: Any) = ()
     //#pipelining
-    Source(1 to 3)
-      .map { i => println(s"A: $i"); i }
-      .map { i => println(s"B: $i"); i }
-      .map { i => println(s"C: $i"); i }
-      .runWith(Sink.ignore)
+    Source(1 to 3).map { i => println(s"A: $i"); i }.map { i =>
+      println(s"B: $i"); i
+    }.map { i => println(s"C: $i"); i }.runWith(Sink.ignore)
     //#pipelining
   }
 
@@ -27,12 +25,10 @@ class StreamBuffersRateSpec extends AkkaSpec {
     //#materializer-buffer
 
     //#section-buffer
-    val section = Flow[Int]
-      .map(_ * 2)
+    val section = Flow[Int].map(_ * 2)
       .withAttributes(Attributes.inputBuffer(initial = 1, max = 1))
-    val flow = section.via(
-      Flow[Int].map(_ / 2)
-    ) // the buffer size of this map is the default
+    val flow = section
+      .via(Flow[Int].map(_ / 2)) // the buffer size of this map is the default
     //#section-buffer
   }
 
@@ -46,15 +42,13 @@ class StreamBuffersRateSpec extends AkkaSpec {
 
       val zipper = b.add(ZipWith[Tick, Int, Int]((tick, count) => count))
 
-      Source.tick(
-        initialDelay = 3.second,
-        interval = 3.second,
-        Tick()) ~> zipper.in0
-
       Source
-        .tick(initialDelay = 1.second, interval = 1.second, "message!")
-        .conflateWithSeed(seed = (_) => 1)((count, _) =>
-          count + 1) ~> zipper.in1
+        .tick(initialDelay = 3.second, interval = 3.second, Tick()) ~> zipper
+        .in0
+
+      Source.tick(initialDelay = 1.second, interval = 1.second, "message!")
+        .conflateWithSeed(seed = (_) => 1)((count, _) => count + 1) ~> zipper
+        .in1
 
       zipper.out ~> Sink.foreach(println)
       ClosedShape

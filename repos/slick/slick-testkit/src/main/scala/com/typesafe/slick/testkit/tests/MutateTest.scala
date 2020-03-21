@@ -17,23 +17,21 @@ class MutateTest extends AsyncTest[JdbcTestDB] {
 
       var seenEndMarker = false
       db.run(
-          data.schema.create >> (
-            data ++= Seq((1, "a"), (2, "b"), (3, "c"), (4, "d"))
-          ))
-        .flatMap { _ =>
-          foreach(db.stream(data.mutate.transactionally)) { m =>
-            if (!m.end) {
-              if (m.row._1 == 1) m.row = m.row.copy(_2 = "aa")
-              else if (m.row._1 == 2) m.delete
-              else if (m.row._1 == 3) m += ((5, "ee"))
-            } else seenEndMarker = true
-          }
+        data.schema.create >> (
+          data ++= Seq((1, "a"), (2, "b"), (3, "c"), (4, "d"))
+        )).flatMap { _ =>
+        foreach(db.stream(data.mutate.transactionally)) { m =>
+          if (!m.end) {
+            if (m.row._1 == 1) m.row = m.row.copy(_2 = "aa")
+            else if (m.row._1 == 2) m.delete
+            else if (m.row._1 == 3) m += ((5, "ee"))
+          } else seenEndMarker = true
         }
-        .flatMap { _ =>
-          seenEndMarker shouldBe false
-          db.run(data.sortBy(_.id).result)
-            .map(_ shouldBe Seq((1, "aa"), (3, "c"), (4, "d"), (5, "ee")))
-        }
+      }.flatMap { _ =>
+        seenEndMarker shouldBe false
+        db.run(data.sortBy(_.id).result)
+          .map(_ shouldBe Seq((1, "aa"), (3, "c"), (4, "d"), (5, "ee")))
+      }
     }
 
   def testDeleteMutate =
@@ -51,8 +49,7 @@ class MutateTest extends AsyncTest[JdbcTestDB] {
         ts.schema.create,
         ts ++= Seq((1, 1), (1, 2), (1, 3), (1, 4)),
         ts ++= Seq((2, 5), (2, 6), (2, 7), (2, 8))) andThen tsByA(1)
-        .mutate(sendEndMarker = true)
-        .transactionally
+        .mutate(sendEndMarker = true).transactionally
 
       foreach(db.stream(a)) { m =>
         if (!m.end) m.delete

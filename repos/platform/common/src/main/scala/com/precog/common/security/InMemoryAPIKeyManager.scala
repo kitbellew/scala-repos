@@ -140,14 +140,11 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
     grants.values.filter(_.parentIds.contains(gid)).toSet.point[M]
 
   def addGrants(apiKey: APIKey, grants: Set[GrantId]) = {
-    apiKeys
-      .get(apiKey)
-      .map { record =>
-        val updated = record.copy(grants = record.grants ++ grants)
-        apiKeys.put(apiKey, updated)
-        updated
-      }
-      .point[M]
+    apiKeys.get(apiKey).map { record =>
+      val updated = record.copy(grants = record.grants ++ grants)
+      apiKeys.put(apiKey, updated)
+      updated
+    }.point[M]
   }
 
   def listDeletedAPIKeys() = deletedAPIKeys.values.toList.point[M]
@@ -162,36 +159,27 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
     deletedGrants.values.filter(_.parentIds.contains(gid)).toSet.point[M]
 
   def removeGrants(apiKey: APIKey, grants: Set[GrantId]) = {
-    apiKeys
-      .get(apiKey)
-      .flatMap { record =>
-        if (grants.subsetOf(record.grants)) {
-          val updated = record.copy(grants = record.grants -- grants)
-          apiKeys.put(apiKey, updated)
-          Some(updated)
-        } else None
-      }
-      .point[M]
+    apiKeys.get(apiKey).flatMap { record =>
+      if (grants.subsetOf(record.grants)) {
+        val updated = record.copy(grants = record.grants -- grants)
+        apiKeys.put(apiKey, updated)
+        Some(updated)
+      } else None
+    }.point[M]
   }
 
   def deleteAPIKey(apiKey: APIKey) =
-    apiKeys
-      .get(apiKey)
-      .flatMap { record =>
-        deletedAPIKeys.put(apiKey, record)
-        apiKeys.remove(apiKey)
-      }
-      .point[M]
+    apiKeys.get(apiKey).flatMap { record =>
+      deletedAPIKeys.put(apiKey, record)
+      apiKeys.remove(apiKey)
+    }.point[M]
 
   def deleteGrant(gid: GrantId) = {
     def deleteGrantAux(gid: GrantId): Set[Grant] = {
-      grants
-        .remove(gid)
-        .map { grant =>
-          val children = grants.values.filter(_.parentIds.contains(gid))
-          Set(grant) ++ children.flatMap(grant => deleteGrantAux(grant.grantId))
-        }
-        .getOrElse(Set.empty)
+      grants.remove(gid).map { grant =>
+        val children = grants.values.filter(_.parentIds.contains(gid))
+        Set(grant) ++ children.flatMap(grant => deleteGrantAux(grant.grantId))
+      }.getOrElse(Set.empty)
     }
     deleteGrantAux(gid).point[M]
   }

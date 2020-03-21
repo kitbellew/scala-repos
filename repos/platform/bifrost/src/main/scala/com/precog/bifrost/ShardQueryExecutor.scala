@@ -106,8 +106,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
       with QueryExecutor[N, (Set[Fault], StreamT[N, Slice])] {
 
     type YggConfig <: ShardQueryExecutorConfig
-    protected lazy val queryLogger = LoggerFactory.getLogger(
-      "com.precog.bifrost.ShardQueryExecutor")
+    protected lazy val queryLogger = LoggerFactory
+      .getLogger("com.precog.bifrost.ShardQueryExecutor")
 
     implicit val M: Monad[M]
     private implicit val N: Monad[N] = N0
@@ -149,8 +149,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
 
             val resultVN: N[EvaluationError \/ Table] = {
               bytecode map { instrs =>
-                ((systemError _) <-: (StackException(_)) <-: decorate(
-                  instrs).disjunction) traverse { dag =>
+                ((systemError _) <-: (StackException(_)) <-: decorate(instrs)
+                  .disjunction) traverse { dag =>
                   applyQueryOptions(opts) {
                     logger.debug("[QID:%d] Evaluating query".format(qid))
 

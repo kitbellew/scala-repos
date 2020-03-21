@@ -174,12 +174,9 @@ class LinearRegression @Since("1.3.0") (
 
   override protected def train(dataset: DataFrame): LinearRegressionModel = {
     // Extract the number of features before deciding optimization solver.
-    val numFeatures = dataset
-      .select(col($(featuresCol)))
-      .limit(1)
-      .rdd
-      .map { case Row(features: Vector) => features.size }
-      .first()
+    val numFeatures = dataset.select(col($(featuresCol))).limit(1).rdd.map {
+      case Row(features: Vector) => features.size
+    }.first()
     val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
 
     if (($(solver) == "auto" && $(elasticNetParam) == 0.0 &&
@@ -192,9 +189,7 @@ class LinearRegression @Since("1.3.0") (
       // For low dimensional data, WeightedLeastSquares is more efficiently since the
       // training algorithm only requires one pass through the data. (SPARK-10668)
       val instances: RDD[Instance] = dataset
-        .select(col($(labelCol)), w, col($(featuresCol)))
-        .rdd
-        .map {
+        .select(col($(labelCol)), w, col($(featuresCol))).rdd.map {
           case Row(label: Double, weight: Double, features: Vector) =>
             Instance(label, weight, features)
         }
@@ -226,9 +221,7 @@ class LinearRegression @Since("1.3.0") (
     }
 
     val instances: RDD[Instance] = dataset
-      .select(col($(labelCol)), w, col($(featuresCol)))
-      .rdd
-      .map {
+      .select(col($(labelCol)), w, col($(featuresCol))).rdd.map {
         case Row(label: Double, weight: Double, features: Vector) =>
           Instance(label, weight, features)
       }
@@ -498,8 +491,8 @@ class LinearRegressionModel private[ml] (
       : (LinearRegressionModel, String) = {
     $(predictionCol) match {
       case "" =>
-        val predictionColName =
-          "prediction_" + java.util.UUID.randomUUID.toString()
+        val predictionColName = "prediction_" + java.util.UUID.randomUUID
+          .toString()
         (
           copy(ParamMap.empty).setPredictionCol(predictionColName),
           predictionColName)
@@ -557,10 +550,7 @@ object LinearRegressionModel extends MLReadable[LinearRegressionModel] {
       // Save model data: intercept, coefficients
       val data = Data(instance.intercept, instance.coefficients)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -575,11 +565,8 @@ object LinearRegressionModel extends MLReadable[LinearRegressionModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .format("parquet")
-        .load(dataPath)
-        .select("intercept", "coefficients")
-        .head()
+      val data = sqlContext.read.format("parquet").load(dataPath)
+        .select("intercept", "coefficients").head()
       val intercept = data.getDouble(0)
       val coefficients = data.getAs[Vector](1)
       val model =
@@ -639,10 +626,9 @@ class LinearRegressionSummary private[regression] (
 
   @transient
   private val metrics = new RegressionMetrics(
-    predictions
-      .select(predictionCol, labelCol)
-      .rdd
-      .map { case Row(pred: Double, label: Double) => (pred, label) },
+    predictions.select(predictionCol, labelCol).rdd.map {
+      case Row(pred: Double, label: Double) => (pred, label)
+    },
     !model.getFitIntercept)
 
   /**
@@ -719,16 +705,11 @@ class LinearRegressionSummary private[regression] (
     val weighted =
       if (model.getWeightCol.isEmpty) lit(1.0)
       else sqrt(col(model.getWeightCol))
-    val dr = predictions
-      .select(
-        col(model.getLabelCol)
-          .minus(col(model.getPredictionCol))
-          .multiply(weighted)
-          .as("weightedResiduals"))
-      .select(
-        min(col("weightedResiduals")).as("min"),
-        max(col("weightedResiduals")).as("max"))
-      .first()
+    val dr = predictions.select(
+      col(model.getLabelCol).minus(col(model.getPredictionCol))
+        .multiply(weighted).as("weightedResiduals")).select(
+      min(col("weightedResiduals")).as("min"),
+      max(col("weightedResiduals")).as("max")).first()
     Array(dr.getDouble(0), dr.getDouble(1))
   }
 
@@ -746,14 +727,11 @@ class LinearRegressionSummary private[regression] (
           val t = udf { (pred: Double, label: Double, weight: Double) =>
             math.pow(label - pred, 2.0) * weight
           }
-          predictions
-            .select(
-              t(
-                col(model.getPredictionCol),
-                col(model.getLabelCol),
-                col(model.getWeightCol)).as("wse"))
-            .agg(sum(col("wse")))
-            .first()
+          predictions.select(
+            t(
+              col(model.getPredictionCol),
+              col(model.getLabelCol),
+              col(model.getWeightCol)).as("wse")).agg(sum(col("wse"))).first()
             .getDouble(0)
         }
       val sigma2 = rss / degreesOfFreedom
@@ -918,8 +896,8 @@ private class LeastSquaresAggregator(
     (coefficientsArray, offset, coefficientsArray.length)
   }
 
-  private val effectiveCoefficientsVector = Vectors.dense(
-    effectiveCoefficientsArray)
+  private val effectiveCoefficientsVector = Vectors
+    .dense(effectiveCoefficientsArray)
 
   private val gradientSumArray = Array.ofDim[Double](dim)
 

@@ -70,8 +70,7 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
       servers = Seq(server))
 
     // send some messages
-    sent1
-      .map(value => producer.send(new ProducerRecord(topic, 0, value)))
+    sent1.map(value => producer.send(new ProducerRecord(topic, 0, value)))
       .foreach(_.get)
 
     // do a clean shutdown and check that offset checkpoint file exists
@@ -98,9 +97,7 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
     var fetchedMessage: ByteBufferMessageSet = null
     while (fetchedMessage == null || fetchedMessage.validBytes == 0) {
       val fetched = consumer.fetch(
-        new FetchRequestBuilder()
-          .addFetch(topic, 0, 0, 10000)
-          .maxWait(0)
+        new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).maxWait(0)
           .build())
       fetchedMessage = fetched.messageSet(topic, 0)
     }
@@ -110,8 +107,7 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
     val newOffset = fetchedMessage.last.nextOffset
 
     // send some more messages
-    sent2
-      .map(value => producer.send(new ProducerRecord(topic, 0, value)))
+    sent2.map(value => producer.send(new ProducerRecord(topic, 0, value)))
       .foreach(_.get)
 
     fetchedMessage = null
@@ -182,10 +178,7 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
   def verifyNonDaemonThreadsStatus() {
     assertEquals(
       0,
-      Thread.getAllStackTraces
-        .keySet()
-        .toArray
-        .map { _.asInstanceOf[Thread] }
+      Thread.getAllStackTraces.keySet().toArray.map { _.asInstanceOf[Thread] }
         .count(isNonDaemonKafkaThread))
   }
 

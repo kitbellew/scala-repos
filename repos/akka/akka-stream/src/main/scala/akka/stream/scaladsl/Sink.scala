@@ -131,10 +131,8 @@ object Sink {
     * See also [[headOption]].
     */
   def head[T]: Sink[T, Future[T]] =
-    Sink
-      .fromGraph(new HeadOptionStage[T])
-      .withAttributes(DefaultAttributes.headSink)
-      .mapMaterializedValue(e ⇒
+    Sink.fromGraph(new HeadOptionStage[T])
+      .withAttributes(DefaultAttributes.headSink).mapMaterializedValue(e ⇒
         e.map(_.getOrElse(
           throw new NoSuchElementException("head of empty stream")))(
           ExecutionContexts.sameThreadExecutionContext))
@@ -147,8 +145,7 @@ object Sink {
     * See also [[head]].
     */
   def headOption[T]: Sink[T, Future[Option[T]]] =
-    Sink
-      .fromGraph(new HeadOptionStage[T])
+    Sink.fromGraph(new HeadOptionStage[T])
       .withAttributes(DefaultAttributes.headOptionSink)
 
   /**
@@ -159,10 +156,8 @@ object Sink {
     * See also [[lastOption]].
     */
   def last[T]: Sink[T, Future[T]] =
-    Sink
-      .fromGraph(new LastOptionStage[T])
-      .withAttributes(DefaultAttributes.lastSink)
-      .mapMaterializedValue(e ⇒
+    Sink.fromGraph(new LastOptionStage[T])
+      .withAttributes(DefaultAttributes.lastSink).mapMaterializedValue(e ⇒
         e.map(_.getOrElse(
           throw new NoSuchElementException("last of empty stream")))(
           ExecutionContexts.sameThreadExecutionContext))
@@ -175,8 +170,7 @@ object Sink {
     * See also [[last]].
     */
   def lastOption[T]: Sink[T, Future[Option[T]]] =
-    Sink
-      .fromGraph(new LastOptionStage[T])
+    Sink.fromGraph(new LastOptionStage[T])
       .withAttributes(DefaultAttributes.lastOptionSink)
 
   /**
@@ -267,8 +261,7 @@ object Sink {
     */
   def foreachParallel[T](parallelism: Int)(f: T ⇒ Unit)(implicit
       ec: ExecutionContext): Sink[T, Future[Done]] =
-    Flow[T]
-      .mapAsyncUnordered(parallelism)(t ⇒ Future(f(t)))
+    Flow[T].mapAsyncUnordered(parallelism)(t ⇒ Future(f(t)))
       .toMat(Sink.ignore)(Keep.right)
 
   /**
@@ -318,9 +311,7 @@ object Sink {
       }
     }
 
-    Flow[T]
-      .transform(newOnCompleteStage)
-      .to(Sink.ignore)
+    Flow[T].transform(newOnCompleteStage).to(Sink.ignore)
       .named("onCompleteSink")
   }
 

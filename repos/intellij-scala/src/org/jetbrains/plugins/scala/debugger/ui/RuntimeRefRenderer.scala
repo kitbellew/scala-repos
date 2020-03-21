@@ -39,8 +39,7 @@ class RuntimeRefRenderer extends NodeRendererImpl {
 
   override def isApplicable(t: Type): Boolean = {
     t != null && t.name() != null && t.name().startsWith("scala.runtime.") && t
-      .name()
-      .endsWith("Ref")
+      .name().endsWith("Ref")
   }
 
   override def buildChildren(
@@ -97,9 +96,7 @@ class RuntimeRefRenderer extends NodeRendererImpl {
   private def autoRenderer(
       debugProcess: DebugProcess,
       valueDescriptor: ValueDescriptor) = {
-    debugProcess
-      .asInstanceOf[DebugProcessImpl]
-      .getAutoRenderer(valueDescriptor)
+    debugProcess.asInstanceOf[DebugProcessImpl].getAutoRenderer(valueDescriptor)
       .asInstanceOf[NodeRendererImpl]
   }
 
@@ -129,8 +126,7 @@ class RuntimeRefRenderer extends NodeRendererImpl {
       value: Value,
       evaluationContext: EvaluationContext,
       labelListener: DescriptorLabelListener): String = {
-    BatchEvaluator
-      .getBatchEvaluator(evaluationContext.getDebugProcess)
+    BatchEvaluator.getBatchEvaluator(evaluationContext.getDebugProcess)
       .invoke(new ToStringCommand(evaluationContext, value) {
         def evaluationResult(message: String) {
           valueDescriptor.setValueLabel(StringUtil.notNullize(message))

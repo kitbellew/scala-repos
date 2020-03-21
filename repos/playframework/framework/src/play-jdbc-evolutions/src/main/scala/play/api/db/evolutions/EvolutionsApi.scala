@@ -118,19 +118,18 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       val application = evolutions.reverse
       val database = databaseEvolutions()
 
-      val (nonConflictingDowns, dRest) = database.span(e =>
-        !application.headOption.exists(e.revision <= _.revision))
-      val (nonConflictingUps, uRest) = application.span(e =>
-        !database.headOption.exists(_.revision >= e.revision))
+      val (nonConflictingDowns, dRest) = database
+        .span(e => !application.headOption.exists(e.revision <= _.revision))
+      val (nonConflictingUps, uRest) = application
+        .span(e => !database.headOption.exists(_.revision >= e.revision))
 
-      val (conflictingDowns, conflictingUps) = Evolutions.conflictings(
-        dRest,
-        uRest)
+      val (conflictingDowns, conflictingUps) = Evolutions
+        .conflictings(dRest, uRest)
 
-      val ups = (nonConflictingUps ++ conflictingUps).reverseMap(e =>
-        UpScript(e))
-      val downs = (nonConflictingDowns ++ conflictingDowns).map(e =>
-        DownScript(e))
+      val ups = (nonConflictingUps ++ conflictingUps)
+        .reverseMap(e => UpScript(e))
+      val downs = (nonConflictingDowns ++ conflictingDowns)
+        .map(e => DownScript(e))
 
       downs ++ ups
     } else Nil
@@ -187,7 +186,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         }
         case DownScript(e) => {
           execute(
-            "update ${schema}play_evolutions set state = 'applying_down' where id = " + e.revision)
+            "update ${schema}play_evolutions set state = 'applying_down' where id = " + e
+              .revision)
         }
       }
     }
@@ -196,7 +196,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       script match {
         case UpScript(e) => {
           execute(
-            "update ${schema}play_evolutions set state = 'applied' where id = " + e.revision)
+            "update ${schema}play_evolutions set state = 'applied' where id = " + e
+              .revision)
         }
         case DownScript(e) => {
           execute(
@@ -237,7 +238,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       case NonFatal(e) => {
         val message = e match {
           case ex: SQLException =>
-            ex.getMessage + " [ERROR:" + ex.getErrorCode + ", SQLSTATE:" + ex.getSQLState + "]"
+            ex.getMessage + " [ERROR:" + ex.getErrorCode + ", SQLSTATE:" + ex
+              .getSQLState + "]"
           case ex => ex.getMessage
         }
         if (!autocommit) {
@@ -245,13 +247,12 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
           connection.rollback()
 
-          val humanScript =
-            "# --- Rev:" + lastScript.evolution.revision + "," + (
-              if (lastScript.isInstanceOf[UpScript]) "Ups" else "Downs"
-            ) + " - " + lastScript.evolution.hash + "\n\n" + (
-              if (lastScript.isInstanceOf[UpScript]) lastScript.evolution.sql_up
-              else lastScript.evolution.sql_down
-            )
+          val humanScript = "# --- Rev:" + lastScript.evolution
+            .revision + "," + (if (lastScript.isInstanceOf[UpScript]) "Ups"
+                               else "Downs") + " - " + lastScript.evolution
+            .hash + "\n\n" + (if (lastScript.isInstanceOf[UpScript])
+                                lastScript.evolution.sql_up
+                              else lastScript.evolution.sql_down)
 
           throw InconsistentDatabase(
             database.name,
@@ -476,41 +477,35 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
       case _             => false
     }
 
-    Collections
-      .unfoldLeft(1) { revision =>
-        loadResource(db, revision).map { stream =>
-          (
-            revision + 1,
-            (revision, PlayIO.readStreamAsString(stream)(Codec.UTF8)))
-        }
+    Collections.unfoldLeft(1) { revision =>
+      loadResource(db, revision).map { stream =>
+        (
+          revision + 1,
+          (revision, PlayIO.readStreamAsString(stream)(Codec.UTF8)))
       }
-      .sortBy(_._1)
-      .map {
-        case (revision, script) => {
+    }.sortBy(_._1).map {
+      case (revision, script) => {
 
-          val parsed = Collections
-            .unfoldLeft(("", script.split('\n').toList.map(_.trim))) {
-              case (_, Nil) => None
-              case (context, lines) => {
-                val (some, next) = lines.span(l => !isMarker(l))
-                Some((
-                  next.headOption
-                    .map(c => (mapUpsAndDowns(c), next.tail))
-                    .getOrElse("" -> Nil),
-                  context -> some.mkString("\n")))
-              }
+        val parsed = Collections
+          .unfoldLeft(("", script.split('\n').toList.map(_.trim))) {
+            case (_, Nil) => None
+            case (context, lines) => {
+              val (some, next) = lines.span(l => !isMarker(l))
+              Some((
+                next.headOption.map(c => (mapUpsAndDowns(c), next.tail))
+                  .getOrElse("" -> Nil),
+                context -> some.mkString("\n")))
             }
-            .reverse
-            .drop(1)
-            .groupBy(i => i._1)
-            .mapValues { _.map(_._2).mkString("\n").trim }
+          }.reverse.drop(1).groupBy(i => i._1).mapValues {
+            _.map(_._2).mkString("\n").trim
+          }
 
-          Evolution(
-            revision,
-            parsed.getOrElse(UPS, ""),
-            parsed.getOrElse(DOWNS, ""))
-        }
+        Evolution(
+          revision,
+          parsed.getOrElse(UPS, ""),
+          parsed.getOrElse(DOWNS, ""))
       }
+    }
 
   }
 }
@@ -523,10 +518,8 @@ class EnvironmentEvolutionsReader @Inject() (environment: Environment)
     extends ResourceEvolutionsReader {
 
   def loadResource(db: String, revision: Int) = {
-    environment
-      .getExistingFile(Evolutions.fileName(db, revision))
-      .map(new FileInputStream(_))
-      .orElse {
+    environment.getExistingFile(Evolutions.fileName(db, revision))
+      .map(new FileInputStream(_)).orElse {
         environment.resourceAsStream(Evolutions.resourceName(db, revision))
       }
   }
@@ -540,8 +533,8 @@ class EnvironmentEvolutionsReader @Inject() (environment: Environment)
   *               evolutions in different environments to work with different databases.
   */
 class ClassLoaderEvolutionsReader(
-    classLoader: ClassLoader =
-      classOf[ClassLoaderEvolutionsReader].getClassLoader,
+    classLoader: ClassLoader = classOf[ClassLoaderEvolutionsReader]
+      .getClassLoader,
     prefix: String = "")
     extends ResourceEvolutionsReader {
   def loadResource(db: String, revision: Int) = {

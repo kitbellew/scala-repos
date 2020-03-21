@@ -132,18 +132,13 @@ object HMSet {
       "HMSET requires a hash key and at least one field and value")
 
     val key = ChannelBuffers.wrappedBuffer(args(0))
-    val fv = args
-      .drop(1)
-      .grouped(2)
-      .map {
-        case field :: value :: Nil =>
-          (
-            ChannelBuffers.wrappedBuffer(field),
-            ChannelBuffers.wrappedBuffer(value))
-        case _ =>
-          throw ClientError("Unexpected uneven pair of elements in HMSET")
-      }
-      .toMap
+    val fv = args.drop(1).grouped(2).map {
+      case field :: value :: Nil =>
+        (
+          ChannelBuffers.wrappedBuffer(field),
+          ChannelBuffers.wrappedBuffer(value))
+      case _ => throw ClientError("Unexpected uneven pair of elements in HMSET")
+    }.toMap
 
     new HMSet(key, fv)
   }

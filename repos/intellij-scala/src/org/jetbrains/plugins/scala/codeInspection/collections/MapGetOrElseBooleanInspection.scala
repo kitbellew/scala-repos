@@ -25,8 +25,7 @@ abstract class MapGetOrElseBoolean(
       case qual `.map` (f @ returnsBoolean()) `.getOrElse`(literal(
             `defaultValue`)) if isOption(qual) =>
         Some(
-          replace(expr)
-            .withText(invocationText(qual, newMethodName, f))
+          replace(expr).withText(invocationText(qual, newMethodName, f))
             .highlightFrom(qual))
       case _ => None
     }

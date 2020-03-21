@@ -38,7 +38,8 @@ class MapGetOrElseTest extends OperationsOnCollectionInspectionTest {
 
   def test_3() {
     val selected = s"""val function: (Any) => Boolean = _ => true
-                      |(None ${START}map function).getOrElse(false)$END""".stripMargin
+                      |(None ${START}map function).getOrElse(false)$END"""
+      .stripMargin
     check(selected)
     val text = """val function: (Any) => Int = _ => 0
                  |(None map function).getOrElse(1)""".stripMargin

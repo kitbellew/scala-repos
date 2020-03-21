@@ -152,10 +152,9 @@ abstract class TreeCheckers extends Analyzer {
 
       // duplicate defs
       for ((sym, defs) <- defSyms; if defs.size > 1) {
-        errorFn("%s DefTrees with symbol '%s': %s".format(
-          defs.size,
-          ownerstr(sym),
-          defs map beststr mkString ", "))
+        errorFn(
+          "%s DefTrees with symbol '%s': %s"
+            .format(defs.size, ownerstr(sym), defs map beststr mkString ", "))
       }
       defSyms.clear()
     }
@@ -208,8 +207,8 @@ abstract class TreeCheckers extends Analyzer {
 
   def checkTrees() {
     if (settings.verbose)
-      Console.println(
-        "[consistency check at the beginning of phase " + phase + "]")
+      Console
+        .println("[consistency check at the beginning of phase " + phase + "]")
 
     currentRun.units foreach (x => wrap(x)(check(x)))
   }
@@ -341,8 +340,8 @@ abstract class TreeCheckers extends Analyzer {
             if (sym.hasGetter && !sym.isOuterField && !sym.isOuterAccessor) {
               assertFn(
                 sym.getterIn(sym.owner) != NoSymbol,
-                ownerstr(
-                  sym) + " has getter but cannot be found. " + sym.ownerChain)
+                ownerstr(sym) + " has getter but cannot be found. " + sym
+                  .ownerChain)
             }
           case Apply(fn, args) => if (args exists (_ == EmptyTree))
               errorFn(
@@ -370,12 +369,12 @@ abstract class TreeCheckers extends Analyzer {
 
           tree match {
             case x: PackageDef =>
-              if ((
-                    sym.ownerChain contains currentOwner
-                  ) || currentOwner.isEmptyPackageClass) ()
+              if ((sym.ownerChain contains currentOwner) || currentOwner
+                    .isEmptyPackageClass) ()
               else
                 fail(
-                  sym + " owner chain does not contain currentOwner " + currentOwner + sym.ownerChain)
+                  sym + " owner chain does not contain currentOwner " + currentOwner + sym
+                    .ownerChain)
             case _ =>
               def cond(s: Symbol) = !s.isTerm || s.isMethod || s == sym.owner
 
@@ -386,7 +385,8 @@ abstract class TreeCheckers extends Analyzer {
                   }
                 if (sym.owner != expected) fail(sm"""|
                             | currentOwner chain: ${currentOwner.ownerChain take 3 mkString " -> "}
-                            |       symbol chain: ${sym.ownerChain mkString " -> "}""")
+                            |       symbol chain: ${sym
+                  .ownerChain mkString " -> "}""")
               }
           }
         }
@@ -416,17 +416,14 @@ abstract class TreeCheckers extends Analyzer {
         def isEligible(sym: Symbol) =
           (sym ne NoSymbol) && (sym.isTypeParameter
             || sym.isLocalToBlock)
-        val referencedSymbols =
-          (treeSym :: referencesInType(treeInfo)).distinct filter (sym =>
-            isEligible(sym) && !isOk(sym))
+        val referencedSymbols = (treeSym :: referencesInType(treeInfo))
+          .distinct filter (sym => isEligible(sym) && !isOk(sym))
         def mk[T](
             what: String,
             x: T,
             str: T => String = (x: T) => "" + x): ((Any, String)) =
-          x -> s"%10s  %-20s %s".format(
-            what,
-            classString(x),
-            truncate(str(x), 80).trim)
+          x -> s"%10s  %-20s %s"
+            .format(what, classString(x), truncate(str(x), 80).trim)
 
         def encls =
           enclosingMemberDefs.filterNot(_.symbol == treeSym).zipWithIndex map {
@@ -491,7 +488,8 @@ abstract class TreeCheckers extends Analyzer {
             tpeOfTree get tree foreach { oldtpe =>
               if (tree.tpe eq null)
                 errorFn(
-                  s"tree.tpe=null for " + tree.shortClass + " (symbol: " + classString(
+                  s"tree.tpe=null for " + tree
+                    .shortClass + " (symbol: " + classString(
                     tree.symbol) + " " + signature(
                     tree.symbol) + "), last seen tpe was " + oldtpe)
               else if (oldtpe =:= tree.tpe) ()

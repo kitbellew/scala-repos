@@ -112,10 +112,8 @@ object ActorSystemSpec {
           mbox: Mailbox,
           hasMessageHint: Boolean,
           hasSystemMessageHint: Boolean): Boolean = {
-        val ret = super.registerForExecution(
-          mbox,
-          hasMessageHint,
-          hasSystemMessageHint)
+        val ret = super
+          .registerForExecution(mbox, hasMessageHint, hasSystemMessageHint)
         doneIt.switchOn {
           TestKit.awaitCond(mbox.actor.actor != null, 1.second)
           mbox.actor.actor match {
@@ -164,11 +162,9 @@ class ActorSystemSpec
   "An ActorSystem" must {
 
     "use scala.concurrent.Future's InternalCallbackEC" in {
-      system
-        .asInstanceOf[ActorSystemImpl]
-        .internalCallingThreadExecutionContext
-        .getClass
-        .getName should ===("scala.concurrent.Future$InternalCallbackExecutor$")
+      system.asInstanceOf[ActorSystemImpl].internalCallingThreadExecutionContext
+        .getClass.getName should ===(
+        "scala.concurrent.Future$InternalCallbackExecutor$")
     }
 
     "reject invalid names" in {
@@ -210,17 +206,16 @@ class ActorSystemSpec
     "log dead letters" in {
       val sys = ActorSystem(
         "LogDeadLetters",
-        ConfigFactory
-          .parseString("akka.loglevel=INFO")
+        ConfigFactory.parseString("akka.loglevel=INFO")
           .withFallback(AkkaSpec.testConf))
       try {
         val a = sys.actorOf(Props[ActorSystemSpec.Terminater])
         watch(a)
         a ! "run"
         expectTerminated(a)
-        EventFilter
-          .info(pattern = "not delivered", occurrences = 1)
-          .intercept { a ! "boom" }(sys)
+        EventFilter.info(pattern = "not delivered", occurrences = 1).intercept {
+          a ! "boom"
+        }(sys)
       } finally shutdown(sys)
     }
 
@@ -296,9 +291,11 @@ class ActorSystemSpec
       val waves =
         for (i ← 1 to 3)
           yield system.actorOf(Props[ActorSystemSpec.Waves]) ? 50000
-      Await.result(
-        Future.sequence(waves),
-        timeout.duration + 5.seconds) should ===(Vector("done", "done", "done"))
+      Await
+        .result(
+          Future.sequence(waves),
+          timeout.duration + 5.seconds) should ===(
+        Vector("done", "done", "done"))
     }
 
     "find actors that just have been created" in {
@@ -330,9 +327,7 @@ class ActorSystemSpec
       }
 
       created filter (ref ⇒
-        !ref.isTerminated && !ref
-          .asInstanceOf[ActorRefWithCell]
-          .underlying
+        !ref.isTerminated && !ref.asInstanceOf[ActorRefWithCell].underlying
           .isInstanceOf[UnstartedCell]) should ===(Seq.empty[ActorRef])
     }
 
@@ -347,9 +342,8 @@ class ActorSystemSpec
     "allow configuration of guardian supervisor strategy" in {
       implicit val system = ActorSystem(
         "Stop",
-        ConfigFactory
-          .parseString(
-            "akka.actor.guardian-supervisor-strategy=akka.actor.StoppingSupervisorStrategy")
+        ConfigFactory.parseString(
+          "akka.actor.guardian-supervisor-strategy=akka.actor.StoppingSupervisorStrategy")
           .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
         def receive = { case "die" ⇒ throw new Exception("hello") }
@@ -367,9 +361,8 @@ class ActorSystemSpec
     "shut down when /user escalates" in {
       implicit val system = ActorSystem(
         "Stop",
-        ConfigFactory
-          .parseString(
-            "akka.actor.guardian-supervisor-strategy=\"akka.actor.ActorSystemSpec$Strategy\"")
+        ConfigFactory.parseString(
+          "akka.actor.guardian-supervisor-strategy=\"akka.actor.ActorSystemSpec$Strategy\"")
           .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
         def receive = { case "die" ⇒ throw new Exception("hello") }

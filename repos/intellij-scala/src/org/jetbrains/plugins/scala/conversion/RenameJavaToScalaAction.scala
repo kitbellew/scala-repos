@@ -74,37 +74,33 @@ class RenameJavaToScalaAction extends AnAction {
                   val existingFile: VirtualFile = directory.getVirtualFile
                     .findChild(nameWithExtension)
                   if (existingFile != null) {
-                    NotificationUtil
-                      .builder(
-                        directory.getProject,
-                        s"File $nameWithExtension already exists")
+                    NotificationUtil.builder(
+                      directory.getProject,
+                      s"File $nameWithExtension already exists")
                       .setDisplayType(NotificationDisplayType.BALLOON)
                       .setNotificationType(NotificationType.ERROR)
                       .setGroup("rename.java.to.scala")
-                      .setTitle("Cannot create file")
-                      .show()
+                      .setTitle("Cannot create file").show()
                     return
                   }
                   val file = directory.createFile(name + ".scala")
                   val newText = JavaToScala.convertPsiToText(jFile).trim
-                  val document = PsiDocumentManager
-                    .getInstance(file.getProject)
+                  val document = PsiDocumentManager.getInstance(file.getProject)
                     .getDocument(file)
                   document.insertString(0, newText)
-                  PsiDocumentManager
-                    .getInstance(file.getProject)
+                  PsiDocumentManager.getInstance(file.getProject)
                     .commitDocument(document)
-                  val manager: CodeStyleManager = CodeStyleManager.getInstance(
-                    file.getProject)
+                  val manager: CodeStyleManager = CodeStyleManager
+                    .getInstance(file.getProject)
                   val settings = CodeStyleSettingsManager
                     .getSettings(file.getProject)
                     .getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
-                  val keep_blank_lines_in_code =
-                    settings.KEEP_BLANK_LINES_IN_CODE
-                  val keep_blank_lines_in_declarations =
-                    settings.KEEP_BLANK_LINES_IN_DECLARATIONS
-                  val keep_blank_lines_before_rbrace =
-                    settings.KEEP_BLANK_LINES_BEFORE_RBRACE
+                  val keep_blank_lines_in_code = settings
+                    .KEEP_BLANK_LINES_IN_CODE
+                  val keep_blank_lines_in_declarations = settings
+                    .KEEP_BLANK_LINES_IN_DECLARATIONS
+                  val keep_blank_lines_before_rbrace = settings
+                    .KEEP_BLANK_LINES_BEFORE_RBRACE
                   settings.KEEP_BLANK_LINES_IN_CODE = 0
                   settings.KEEP_BLANK_LINES_IN_DECLARATIONS = 0
                   settings.KEEP_BLANK_LINES_BEFORE_RBRACE = 0

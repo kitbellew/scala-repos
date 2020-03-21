@@ -22,11 +22,9 @@ object ConcurrentSpec
       mustExecute(38) { foldEC =>
         val (broadcaster, pushHere) = Concurrent.broadcast[String]
         val results = Future.sequence(
-          Range(1, 20)
-            .map(_ =>
-              Iteratee.fold[String, String]("") { (s, e) => s + e }(foldEC))
-            .map(broadcaster.apply)
-            .map(_.flatMap(_.run)))
+          Range(1, 20).map(_ =>
+            Iteratee.fold[String, String]("") { (s, e) => s + e }(foldEC))
+            .map(broadcaster.apply).map(_.flatMap(_.run)))
         pushHere.push("beep")
         pushHere.push("beep")
         pushHere.eofAndEnd()
@@ -59,9 +57,8 @@ object ConcurrentSpec
       val (broadcaster, pushHere) = Concurrent.broadcast[String]
       val result1 = broadcaster |>>> Iteratee.getChunks[String]
       pushHere.end(new RuntimeException("foo"))
-      Await
-        .result(result1, Duration.Inf) must throwA[RuntimeException](message =
-        "foo")
+      Await.result(result1, Duration.Inf) must throwA[RuntimeException](
+        message = "foo")
       pushHere.end()
       val result2 = broadcaster |>>> Iteratee.getChunks[String]
       Await.result(result2, Duration.Inf) must_== Nil
@@ -166,8 +163,8 @@ object ConcurrentSpec
 
       val fastEnumerator = Enumerator((1 to 10): _*) >>> Enumerator.eof
       val result = Try(await(
-        fastEnumerator &> Concurrent.lazyAndErrIfNotReady(
-          50) |>>> slowIteratee))
+        fastEnumerator &> Concurrent
+          .lazyAndErrIfNotReady(50) |>>> slowIteratee))
       // We've got our result (hopefully a timeout), so let the iteratee
       // complete.
       gotResult.countDown()
@@ -255,9 +252,10 @@ object ConcurrentSpec
           endInvokedTwice.countDown()
         })(unicastEC)
 
-        Await.result(
-          enumerator |>>> Iteratee.getChunks[String],
-          Duration.Inf) must_== Nil
+        Await
+          .result(
+            enumerator |>>> Iteratee.getChunks[String],
+            Duration.Inf) must_== Nil
         endInvokedTwice.await(10, TimeUnit.SECONDS) must_== true
       }
     }
@@ -269,9 +267,8 @@ object ConcurrentSpec
         })(unicastEC)
 
         val result = enumerator |>>> Iteratee.getChunks[String]
-        Await
-          .result(result, Duration.Inf) must throwA[RuntimeException](message =
-          "foo")
+        Await.result(result, Duration.Inf) must throwA[RuntimeException](
+          message = "foo")
       }
     }
 

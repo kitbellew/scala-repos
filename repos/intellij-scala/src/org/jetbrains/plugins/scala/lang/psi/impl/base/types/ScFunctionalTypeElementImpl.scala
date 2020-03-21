@@ -34,14 +34,11 @@ class ScFunctionalTypeElementImpl(node: ASTNode)
       case other => Seq(other)
     }
     val n = paramTypes.length
-    val newTypeText =
-      s"_root_.scala.Function$n[${paramTypes.map(_.getText).mkString(",")}${if (n == 0) ""
-      else ", "}" +
-        s"${returnTypeElement.map(_.getText).getOrElse("Any")}]"
-    val newTypeElement = ScalaPsiElementFactory.createTypeElementFromText(
-      newTypeText,
-      getContext,
-      this)
+    val newTypeText = s"_root_.scala.Function$n[${paramTypes.map(_.getText)
+      .mkString(",")}${if (n == 0) "" else ", "}" +
+      s"${returnTypeElement.map(_.getText).getOrElse("Any")}]"
+    val newTypeElement = ScalaPsiElementFactory
+      .createTypeElementFromText(newTypeText, getContext, this)
     newTypeElement match {
       case p: ScParameterizedTypeElement => Some(p)
       case _                             => None

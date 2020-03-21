@@ -82,9 +82,8 @@ case class AddScheduledQueryRequest(
 object AddScheduledQueryRequest {
   import CronExpressionSerialization._
 
-  implicit val iso = Iso.hlist(
-    AddScheduledQueryRequest.apply _,
-    AddScheduledQueryRequest.unapply _)
+  implicit val iso = Iso
+    .hlist(AddScheduledQueryRequest.apply _, AddScheduledQueryRequest.unapply _)
 
   val schemaV1 =
     "schedule" :: "owners" :: "context" :: "source" :: "sink" :: "timeout" :: HNil
@@ -153,8 +152,8 @@ class AddScheduledQueryServiceHandler(
               clock.instant))
 
             readError = (!okToRead).option(nels(
-              "The API Key does not have permission to execute %s".format(
-                sreq.source.path)))
+              "The API Key does not have permission to execute %s"
+                .format(sreq.source.path)))
             writeError = (!okToWrite).option(nels(
               "The API Key does not have permission to write to %s as %s"
                 .format(sreq.sink.path, authorities.render)))
@@ -200,8 +199,7 @@ class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
   import com.precog.util._
   val service = (request: HttpRequest[A]) => {
     for {
-      idStr <- request.parameters
-        .get('scheduleId)
+      idStr <- request.parameters.get('scheduleId)
         .toSuccess(DispatchError(BadRequest, "scheduleId parameter required"))
       id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap {
         error =>
@@ -227,8 +225,7 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
   import com.precog.util._
   val service = (request: HttpRequest[A]) => {
     for {
-      idStr <- request.parameters
-        .get('scheduleId)
+      idStr <- request.parameters.get('scheduleId)
         .toSuccess(DispatchError(BadRequest, "Missing schedule Id for status."))
       id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap { ex =>
         DispatchError(

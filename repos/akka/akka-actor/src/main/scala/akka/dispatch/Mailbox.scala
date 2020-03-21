@@ -158,10 +158,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
 
   @inline
   protected final def setStatus(newStatus: Status): Unit =
-    Unsafe.instance.putIntVolatile(
-      this,
-      AbstractMailbox.mailboxStatusOffset,
-      newStatus)
+    Unsafe.instance
+      .putIntVolatile(this, AbstractMailbox.mailboxStatusOffset, newStatus)
 
   /**
     * Reduce the suspend count by one. Caller does not need to worry about whether
@@ -306,10 +304,9 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
           throw new InterruptedException(
             "Interrupted while processing actor messages")
         processAllSystemMessages()
-        if ((left > 1) && ((
-              dispatcher.isThroughputDeadlineTimeDefined == false
-            ) || (System.nanoTime - deadlineNs) < 0))
-          processMailbox(left - 1, deadlineNs)
+        if ((left > 1) && ((dispatcher
+              .isThroughputDeadlineTimeDefined == false) || (System
+              .nanoTime - deadlineNs) < 0)) processMailbox(left - 1, deadlineNs)
       }
     }
 
@@ -329,7 +326,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       msg.unlink()
       if (debug)
         println(
-          actor.self + " processing system message " + msg + " with " + actor.childrenRefs)
+          actor.self + " processing system message " + msg + " with " + actor
+            .childrenRefs)
       // we know here that systemInvoke ensures that only "fatal" exceptions get rethrown
       actor systemInvoke msg
       if (Thread.interrupted())
@@ -356,7 +354,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
             e,
             actor.self.path.toString,
             this.getClass,
-            "error while enqueuing " + msg + " to deadLetters: " + e.getMessage))
+            "error while enqueuing " + msg + " to deadLetters: " + e
+              .getMessage))
       }
     }
     // if we got an interrupted exception while handling system messages, then rethrow it
@@ -468,13 +467,9 @@ class BoundedNodeMessageQueue(capacity: Int)
 
   final def enqueue(receiver: ActorRef, handle: Envelope): Unit =
     if (!add(handle))
-      receiver
-        .asInstanceOf[InternalActorRef]
-        .provider
-        .deadLetters
-        .tell(
-          DeadLetter(handle.message, handle.sender, receiver),
-          handle.sender)
+      receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+        DeadLetter(handle.message, handle.sender, receiver),
+        handle.sender)
 
   final def dequeue(): Envelope = poll()
 
@@ -615,13 +610,9 @@ trait BoundedQueueBasedMessageQueue
   def enqueue(receiver: ActorRef, handle: Envelope): Unit =
     if (pushTimeOut.length >= 0) {
       if (!queue.offer(handle, pushTimeOut.length, pushTimeOut.unit))
-        receiver
-          .asInstanceOf[InternalActorRef]
-          .provider
-          .deadLetters
-          .tell(
-            DeadLetter(handle.message, handle.sender, receiver),
-            handle.sender)
+        receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+          DeadLetter(handle.message, handle.sender, receiver),
+          handle.sender)
     } else queue put handle
 
   def dequeue(): Envelope = queue.poll()
@@ -674,25 +665,17 @@ trait BoundedDequeBasedMessageQueue
   def enqueue(receiver: ActorRef, handle: Envelope): Unit =
     if (pushTimeOut.length >= 0) {
       if (!queue.offer(handle, pushTimeOut.length, pushTimeOut.unit))
-        receiver
-          .asInstanceOf[InternalActorRef]
-          .provider
-          .deadLetters
-          .tell(
-            DeadLetter(handle.message, handle.sender, receiver),
-            handle.sender)
+        receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+          DeadLetter(handle.message, handle.sender, receiver),
+          handle.sender)
     } else queue put handle
 
   def enqueueFirst(receiver: ActorRef, handle: Envelope): Unit =
     if (pushTimeOut.length >= 0) {
       if (!queue.offerFirst(handle, pushTimeOut.length, pushTimeOut.unit))
-        receiver
-          .asInstanceOf[InternalActorRef]
-          .provider
-          .deadLetters
-          .tell(
-            DeadLetter(handle.message, handle.sender, receiver),
-            handle.sender)
+        receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+          DeadLetter(handle.message, handle.sender, receiver),
+          handle.sender)
     } else queue putFirst handle
 
   def dequeue(): Envelope = queue.poll()
@@ -1164,13 +1147,9 @@ object BoundedControlAwareMailbox {
         } finally { putLock.unlock() }
 
       if (!inserted) {
-        receiver
-          .asInstanceOf[InternalActorRef]
-          .provider
-          .deadLetters
-          .tell(
-            DeadLetter(envelope.message, envelope.sender, receiver),
-            envelope.sender)
+        receiver.asInstanceOf[InternalActorRef].provider.deadLetters.tell(
+          DeadLetter(envelope.message, envelope.sender, receiver),
+          envelope.sender)
       }
     }
   }

@@ -356,14 +356,11 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     createGroup(form.groupName, form.url)
     updateGroupMembers(
       form.groupName,
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
+      form.members.split(",").map {
+        _.split(":") match {
+          case Array(userName, isManager) => (userName, isManager.toBoolean)
         }
-        .toList)
+      }.toList)
     updateImage(form.groupName, form.fileId, false)
     redirect(s"/${form.groupName}")
   })
@@ -385,12 +382,12 @@ trait AccountControllerBase extends AccountManagementControllerBase {
         getRepositoryNamesOfUser(groupName).foreach {
           repositoryName =>
             deleteRepository(groupName, repositoryName)
-            FileUtils.deleteDirectory(
-              getRepositoryDir(groupName, repositoryName))
-            FileUtils.deleteDirectory(
-              getWikiRepositoryDir(groupName, repositoryName))
-            FileUtils.deleteDirectory(
-              getTemporaryDir(groupName, repositoryName))
+            FileUtils
+              .deleteDirectory(getRepositoryDir(groupName, repositoryName))
+            FileUtils
+              .deleteDirectory(getWikiRepositoryDir(groupName, repositoryName))
+            FileUtils
+              .deleteDirectory(getTemporaryDir(groupName, repositoryName))
         }
     }
     redirect("/")
@@ -399,14 +396,11 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   post("/:groupName/_editgroup", editGroupForm)(managersOnly { form =>
     defining(
       params("groupName"),
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
+      form.members.split(",").map {
+        _.split(":") match {
+          case Array(userName, isManager) => (userName, isManager.toBoolean)
         }
-        .toList) {
+      }.toList) {
       case (groupName, members) =>
         getAccountByUserName(groupName, true).map {
           account =>
@@ -560,8 +554,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           params: Map[String, String],
           messages: Messages): Option[String] =
         params.get("owner").flatMap { userName =>
-          getRepositoryNamesOfUser(userName)
-            .find(_ == value)
+          getRepositoryNamesOfUser(userName).find(_ == value)
             .map(_ => "Repository already exists.")
         }
     }

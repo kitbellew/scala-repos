@@ -88,10 +88,8 @@ class KMeansModel @Since("1.1.0") (
   def computeCost(data: RDD[Vector]): Double = {
     val centersWithNorm = clusterCentersWithNorm
     val bcCentersWithNorm = data.context.broadcast(centersWithNorm)
-    data
-      .map(p =>
-        KMeans.pointCost(bcCentersWithNorm.value, new VectorWithNorm(p)))
-      .sum()
+    data.map(p =>
+      KMeans.pointCost(bcCentersWithNorm.value, new VectorWithNorm(p))).sum()
   }
 
   private def clusterCentersWithNorm: Iterable[VectorWithNorm] =
@@ -134,10 +132,9 @@ object KMeansModel extends Loader[KMeansModel] {
           "k" -> model.k
         )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
-      val dataRDD = sc
-        .parallelize(model.clusterCenters.zipWithIndex)
-        .map { case (point, id) => Cluster(id, point) }
-        .toDF()
+      val dataRDD = sc.parallelize(model.clusterCenters.zipWithIndex).map {
+        case (point, id) => Cluster(id, point)
+      }.toDF()
       dataRDD.write.parquet(Loader.dataPath(path))
     }
 

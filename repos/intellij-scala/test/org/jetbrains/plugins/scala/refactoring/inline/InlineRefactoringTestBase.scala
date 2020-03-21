@@ -31,8 +31,8 @@ abstract class InlineRefactoringTestBase
   protected def doTest() {
     import _root_.junit.framework.Assert._
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem.getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -42,13 +42,13 @@ abstract class InlineRefactoringTestBase
     assert(
       offset != -1,
       "Not specified caret marker in test case. Use /*caret*/ in scala file for this.")
-    val editor = CommonDataKeys.EDITOR.getData(
-      DataManager.getInstance().getDataContextFromFocus.getResult)
+    val editor = CommonDataKeys.EDITOR
+      .getData(DataManager.getInstance().getDataContextFromFocus.getResult)
     editor.getCaretModel.moveToOffset(offset)
 
     val scalaFile = getFileAdapter.asInstanceOf[ScalaFile]
-    var element = CommonDataKeys.PSI_ELEMENT.getData(
-      DataManager.getInstance().getDataContextFromFocus.getResult)
+    var element = CommonDataKeys.PSI_ELEMENT
+      .getData(DataManager.getInstance().getDataContextFromFocus.getResult)
     if (element == null) {
       element = BaseRefactoringAction.getElementAtCaret(editor, scalaFile)
     }
@@ -71,9 +71,9 @@ abstract class InlineRefactoringTestBase
         },
         getProjectAdapter,
         "Test")
-      res = scalaFile.getText
-        .substring(0, lastPsi.getTextOffset)
-        .trim //getImportStatements.map(_.getText()).mkString("\n")
+      res =
+        scalaFile.getText.substring(0, lastPsi.getTextOffset)
+          .trim //getImportStatements.map(_.getText()).mkString("\n")
     } catch {
       case e: RefactoringErrorHintException =>
         assert(

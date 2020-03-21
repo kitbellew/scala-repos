@@ -29,16 +29,16 @@ object TypeUtils {
     if (dt.isInstanceOf[NumericType] || dt == NullType) {
       TypeCheckResult.TypeCheckSuccess
     } else {
-      TypeCheckResult.TypeCheckFailure(
-        s"$caller requires numeric types, not $dt")
+      TypeCheckResult
+        .TypeCheckFailure(s"$caller requires numeric types, not $dt")
     }
   }
 
   def checkForOrderingExpr(dt: DataType, caller: String): TypeCheckResult = {
     if (RowOrdering.isOrderable(dt)) { TypeCheckResult.TypeCheckSuccess }
     else {
-      TypeCheckResult.TypeCheckFailure(
-        s"$caller does not support ordering on type $dt")
+      TypeCheckResult
+        .TypeCheckFailure(s"$caller does not support ordering on type $dt")
     }
   }
 

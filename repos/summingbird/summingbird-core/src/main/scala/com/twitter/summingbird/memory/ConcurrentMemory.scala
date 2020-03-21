@@ -183,11 +183,12 @@ class ConcurrentMemory(implicit
             case Nil           => (planned0, NullTarget)
             case single :: Nil => toPhys[U](deps, planned0, single)
             case many =>
-              val res = many.scanLeft(
-                (planned0, None: Option[PhysicalNode[U]])) { (hm, p) =>
-                val (post, phys) = toPhys[U](deps, hm._1, p)
-                (post, Some(phys))
-              }
+              val res = many
+                .scanLeft((planned0, None: Option[PhysicalNode[U]])) {
+                  (hm, p) =>
+                    val (post, phys) = toPhys[U](deps, hm._1, p)
+                    (post, Some(phys))
+                }
               (
                 res.last._1,
                 FanOut[U](res.collect { case (_, Some(phys)) => phys }))
@@ -256,8 +257,7 @@ class ConcurrentMemory(implicit
      * Register the counters
      */
     val registeredCounters: Seq[(Group, Name)] = JobCounters
-      .getCountersForJob(jobID)
-      .getOrElse(Nil)
+      .getCountersForJob(jobID).getOrElse(Nil)
 
     if (!registeredCounters.isEmpty) {
       MemoryStatProvider.registerCounters(jobID, registeredCounters)
@@ -268,25 +268,20 @@ class ConcurrentMemory(implicit
      * recursive function (removing no-op nodes and converting optionMap and KeyFlatMap to just
      * flatMap)
      */
-    val ourRule = OptionToFlatMap
-      .orElse(KeyFlatMapToFlatMap)
-      .orElse(FlatMapFusion)
-      .orElse(RemoveNames)
-      .orElse(RemoveIdentityKeyed)
+    val ourRule = OptionToFlatMap.orElse(KeyFlatMapToFlatMap)
+      .orElse(FlatMapFusion).orElse(RemoveNames).orElse(RemoveIdentityKeyed)
       .orElse(ValueFlatMapToFlatMap)
 
     val deps = Dependants(optimize(prod, ourRule))
     val heads = deps.nodes.collect { case s @ Source(_) => s }
-    heads
-      .foldLeft(
-        (HMap.empty[ProdCons, PhysicalNode], NullPlan: ConcurrentMemoryPlan)) {
-        case ((hm, plan), head) =>
-          val (nextHm, plannedSource) = toPhys(deps, hm, head)
-          // All sources should be planned to source nodes
-          val sourceNode = plannedSource.asInstanceOf[SourceNode[_]]
-          val nextPlan = Monoid.plus(plan, sourceNode)
-          (nextHm, nextPlan)
-      }
-      ._2
+    heads.foldLeft(
+      (HMap.empty[ProdCons, PhysicalNode], NullPlan: ConcurrentMemoryPlan)) {
+      case ((hm, plan), head) =>
+        val (nextHm, plannedSource) = toPhys(deps, hm, head)
+        // All sources should be planned to source nodes
+        val sourceNode = plannedSource.asInstanceOf[SourceNode[_]]
+        val nextPlan = Monoid.plus(plan, sourceNode)
+        (nextHm, nextPlan)
+    }._2
   }
 }

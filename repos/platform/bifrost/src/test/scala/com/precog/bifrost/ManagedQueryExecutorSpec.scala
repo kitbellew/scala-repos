@@ -62,8 +62,8 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
 
   val actorSystem = ActorSystem("managedQueryModuleSpec")
   val jobActorSystem = ActorSystem("managedQueryModuleSpecJobActorSystem")
-  implicit val executionContext = ExecutionContext.defaultExecutionContext(
-    actorSystem)
+  implicit val executionContext = ExecutionContext
+    .defaultExecutionContext(actorSystem)
   implicit val M: Monad[Future] with Comonad[Future] =
     new blueeyes.bkka.UnsafeFutureComonad(
       executionContext,
@@ -97,10 +97,8 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
         Path("/\\\\/\\///\\/"),
         Path.Root,
         clock.now())
-      result <- executor.execute(
-        numTicks.toString,
-        ctx,
-        QueryOptions(timeout = timeout))
+      result <- executor
+        .execute(numTicks.toString, ctx, QueryOptions(timeout = timeout))
     } yield result
 
     executionResult.valueOr(err => sys.error(err.toString))
@@ -108,10 +106,8 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
 
   def cancel(jobId: JobId, ticks: Int): Future[Boolean] =
     schedule(ticks) {
-      jobManager
-        .cancel(jobId, "Yarrrr", yggConfig.clock.now())
-        .map(_.fold(_ => false, _ => true))
-        .copoint
+      jobManager.cancel(jobId, "Yarrrr", yggConfig.clock.now())
+        .map(_.fold(_ => false, _ => true)).copoint
     }
 
   def poll(jobId: JobId): Future[Option[(Option[MimeType], String)]] = {

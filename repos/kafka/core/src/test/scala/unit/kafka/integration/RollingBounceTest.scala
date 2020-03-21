@@ -32,8 +32,8 @@ class RollingBounceTest extends ZooKeeperTestHarness {
   override def setUp() {
     super.setUp()
     // controlled.shutdown.enable is true by default
-    val configs = (0 until 4).map(i =>
-      TestUtils.createBrokerConfig(i, zkConnect))
+    val configs = (0 until 4)
+      .map(i => TestUtils.createBrokerConfig(i, zkConnect))
     configs(3).put("controlled.shutdown.retry.backoff.ms", "100")
 
     // start all the servers

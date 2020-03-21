@@ -118,8 +118,8 @@ trait IndicesSpec[M[+_]]
       val keySpecs = Array(groupkey("a"), groupkey("b"))
       val valSpec = valuekey("c")
 
-      val index: TableIndex =
-        TableIndex.createFromTable(table, keySpecs, valSpec).copoint
+      val index: TableIndex = TableIndex
+        .createFromTable(table, keySpecs, valSpec).copoint
 
       index.getUniqueKeys(0).size must_== 0
       index.getSubTable(Array(0), Array(CString("a"))).size == ExactSize(0)
@@ -147,8 +147,8 @@ trait IndicesSpec[M[+_]]
     val keySpecs = Array(groupkey("a"), groupkey("b"))
     val valSpec = valuekey("c")
 
-    val index: TableIndex =
-      TableIndex.createFromTable(table, keySpecs, valSpec).copoint
+    val index: TableIndex = TableIndex.createFromTable(table, keySpecs, valSpec)
+      .copoint
 
     "determine unique groupkey values" in {
       index.getUniqueKeys(0) must_== Set(
@@ -212,12 +212,10 @@ trait IndicesSpec[M[+_]]
     }
 
     val index1 = TableIndex
-      .createFromTable(table, Array(groupkey("a")), valuekey("c"))
-      .copoint
+      .createFromTable(table, Array(groupkey("a")), valuekey("c")).copoint
 
     val index2 = TableIndex
-      .createFromTable(table, Array(groupkey("b")), valuekey("c"))
-      .copoint
+      .createFromTable(table, Array(groupkey("b")), valuekey("c")).copoint
 
     "efficiently combine to produce unions" in {
 

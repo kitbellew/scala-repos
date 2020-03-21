@@ -34,8 +34,8 @@ object UntrustedSpec {
     context.actorOf(Props(classOf[FakeUser], testActor), "user")
 
     def receive = {
-      case IdentifyReq(path) ⇒
-        context.actorSelection(path).tell(Identify(None), sender())
+      case IdentifyReq(path) ⇒ context.actorSelection(path)
+          .tell(Identify(None), sender())
       case StopChild(name) ⇒ context.child(name) foreach context.stop
       case msg ⇒ testActor forward msg
     }
@@ -68,23 +68,21 @@ akka.loglevel = DEBUG
 
   val client = ActorSystem(
     "UntrustedSpec-client",
-    ConfigFactory.parseString(
-      """
+    ConfigFactory
+      .parseString("""
       akka.actor.provider = akka.remote.RemoteActorRefProvider
       akka.remote.netty.tcp.port = 0
   """)
   )
   val addr = system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 
-  val receptionist = system.actorOf(
-    Props(classOf[Receptionist], testActor),
-    "receptionist")
+  val receptionist = system
+    .actorOf(Props(classOf[Receptionist], testActor), "receptionist")
 
   lazy val remoteDaemon = {
     {
       val p = TestProbe()(client)
-      client
-        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
+      client.actorSelection(RootActorPath(addr) / receptionist.path.elements)
         .tell(IdentifyReq("/remote"), p.ref)
       p.expectMsgType[ActorIdentity].ref.get
     }
@@ -92,8 +90,7 @@ akka.loglevel = DEBUG
 
   lazy val target2 = {
     val p = TestProbe()(client)
-    client
-      .actorSelection(RootActorPath(addr) / receptionist.path.elements)
+    client.actorSelection(RootActorPath(addr) / receptionist.path.elements)
       .tell(IdentifyReq("child2"), p.ref)
     p.expectMsgType[ActorIdentity].ref.get
   }
@@ -106,8 +103,8 @@ akka.loglevel = DEBUG
   "UntrustedMode" must {
 
     "allow actor selection to configured white list" in {
-      val sel = client.actorSelection(
-        RootActorPath(addr) / receptionist.path.elements)
+      val sel = client
+        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
       sel ! "hello"
       expectMsg("hello")
     }
@@ -157,16 +154,15 @@ akka.loglevel = DEBUG
     }
 
     "discard actor selection" in {
-      val sel = client.actorSelection(
-        RootActorPath(addr) / testActor.path.elements)
+      val sel = client
+        .actorSelection(RootActorPath(addr) / testActor.path.elements)
       sel ! "hello"
       expectNoMsg(1.second)
     }
 
     "discard actor selection with non root anchor" in {
       val p = TestProbe()(client)
-      client
-        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
+      client.actorSelection(RootActorPath(addr) / receptionist.path.elements)
         .tell(Identify(None), p.ref)
       val clientReceptionistRef = p.expectMsgType[ActorIdentity].ref.get
 
@@ -185,15 +181,15 @@ akka.loglevel = DEBUG
     }
 
     "discard actor selection with wildcard" in {
-      val sel = client.actorSelection(
-        RootActorPath(addr) / receptionist.path.elements / "*")
+      val sel = client
+        .actorSelection(RootActorPath(addr) / receptionist.path.elements / "*")
       sel ! "hello"
       expectNoMsg(1.second)
     }
 
     "discard actor selection containing harmful message" in {
-      val sel = client.actorSelection(
-        RootActorPath(addr) / receptionist.path.elements)
+      val sel = client
+        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
       sel ! PoisonPill
       expectNoMsg(1.second)
     }

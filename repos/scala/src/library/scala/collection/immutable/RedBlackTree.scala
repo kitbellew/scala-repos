@@ -638,8 +638,8 @@ private[collection] object RedBlackTree {
       final val right: Tree[A, B])
       extends Serializable {
     @(inline @getter)
-    final val count: Int =
-      1 + RedBlackTree.count(left) + RedBlackTree.count(right)
+    final val count: Int = 1 + RedBlackTree.count(left) + RedBlackTree
+      .count(right)
     def black: Tree[A, B]
     def red: Tree[A, B]
   }

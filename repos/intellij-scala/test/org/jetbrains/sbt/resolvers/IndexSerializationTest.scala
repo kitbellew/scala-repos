@@ -38,8 +38,7 @@ class IndexSerializationTest extends ScalaFixtureTestCase {
   def testIndexLoading() = {
     myFixture.setTestDataPath(rootPath)
     val testIndexDir = new File(
-      myFixture
-        .copyDirectoryToProject("sbt/resolvers/testIndex", "testIndex")
+      myFixture.copyDirectoryToProject("sbt/resolvers/testIndex", "testIndex")
         .getPath)
     val storingManager = new SbtResolverIndexesManager(Some(testIndexDir))
 

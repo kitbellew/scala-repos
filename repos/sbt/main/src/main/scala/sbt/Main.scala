@@ -69,8 +69,8 @@ object StandardMain {
   }
 
   /** The common interface to standard output, used for all built-in ConsoleLoggers. */
-  val console = ConsoleOut.systemOutOverwrite(
-    ConsoleOut.overwriteContaining("Resolving "))
+  val console = ConsoleOut
+    .systemOutOverwrite(ConsoleOut.overwriteContaining("Resolving "))
 
   def initialGlobalLogging: GlobalLogging =
     GlobalLogging.initial(
@@ -173,8 +173,8 @@ object BuiltinCommands {
     }
 
   def setLogLevel =
-    Command.arb(const(logLevelParser), logLevelHelp)(
-      LogManager.setGlobalLogLevel)
+    Command
+      .arb(const(logLevelParser), logLevelHelp)(LogManager.setGlobalLogLevel)
   private[this] def logLevelParser: Parser[Level.Value] =
     oneOf(Level.values.toSeq.map(v => v.toString ^^^ v))
 
@@ -194,8 +194,8 @@ object BuiltinCommands {
       val version = e.getOpt(Keys.version) match {
         case None => ""; case Some(v) => " " + v
       }
-      val current = "The current project is " + Reference.display(
-        e.currentRef) + version + "\n"
+      val current = "The current project is " + Reference
+        .display(e.currentRef) + version + "\n"
       val sc = aboutScala(s, e)
       val built =
         if (sc.isEmpty) ""
@@ -205,24 +205,22 @@ object BuiltinCommands {
 
   def aboutPlugins(e: Extracted): String = {
     def list(b: BuildUnit) =
-      b.plugins.detected.autoPlugins
-        .map(_.value.label) ++ b.plugins.detected.plugins.names
-    val allPluginNames =
-      e.structure.units.values.flatMap(u => list(u.unit)).toSeq.distinct
+      b.plugins.detected.autoPlugins.map(_.value.label) ++ b.plugins.detected
+        .plugins.names
+    val allPluginNames = e.structure.units.values.flatMap(u => list(u.unit))
+      .toSeq.distinct
     if (allPluginNames.isEmpty) ""
     else allPluginNames.mkString("Available Plugins: ", ", ", "")
   }
   def aboutScala(s: State, e: Extracted): String = {
     val scalaVersion = e.getOpt(Keys.scalaVersion)
     val scalaHome = e.getOpt(Keys.scalaHome).flatMap(idFun)
-    val instance = e
-      .getOpt(Keys.scalaInstance.task)
+    val instance = e.getOpt(Keys.scalaInstance.task)
       .flatMap(_ => quiet(e.runTask(Keys.scalaInstance, s)._2))
     (scalaVersion, scalaHome, instance) match {
       case (sv, Some(home), Some(si)) =>
-        "local Scala version " + selectScalaVersion(
-          sv,
-          si) + " at " + home.getAbsolutePath
+        "local Scala version " + selectScalaVersion(sv, si) + " at " + home
+          .getAbsolutePath
       case (_, Some(home), None) =>
         "a local Scala build at " + home.getAbsolutePath
       case (sv, None, Some(si))   => "Scala " + selectScalaVersion(sv, si)
@@ -287,7 +285,8 @@ object BuiltinCommands {
       keepKeys: AttributeKey[_] => Boolean): Parser[String] =
     singleArgument(allTaskAndSettingKeys(s).filter(keepKeys).map(_.label).toSet)
   def verbosityParser: Parser[Int] =
-    success(1) | ((Space ~ "-") ~> ('v'.id.+.map(_.size + 1) |
+    success(1) | ((Space ~ "-") ~> ('v'.id
+      .+.map(_.size + 1) |
       ("V" ^^^ Int.MaxValue)))
   def taskDetail(keys: Seq[AttributeKey[_]]): Seq[(String, String)] =
     sortByLabel(withDescription(keys)) flatMap taskStrings
@@ -296,19 +295,14 @@ object BuiltinCommands {
     val extracted = Project.extract(s)
     import extracted._
     val index = structure.index
-    index.keyIndex
-      .keys(Some(currentRef))
-      .toSeq
-      .map { key =>
-        try Some(index.keyMap(key))
-        catch {
-          case NonFatal(ex) =>
-            s.log error ex.getMessage
-            None
-        }
+    index.keyIndex.keys(Some(currentRef)).toSeq.map { key =>
+      try Some(index.keyMap(key))
+      catch {
+        case NonFatal(ex) =>
+          s.log error ex.getMessage
+          None
       }
-      .collect { case Some(s) => s }
-      .distinct
+    }.collect { case Some(s) => s }.distinct
   }
 
   def sortByLabel(keys: Seq[AttributeKey[_]]): Seq[AttributeKey[_]] =
@@ -320,7 +314,8 @@ object BuiltinCommands {
   def isTask(mf: Manifest[_])(implicit
       taskMF: Manifest[Task[_]],
       inputMF: Manifest[InputTask[_]]): Boolean =
-    mf.runtimeClass == taskMF.runtimeClass || mf.runtimeClass == inputMF.runtimeClass
+    mf.runtimeClass == taskMF.runtimeClass || mf.runtimeClass == inputMF
+      .runtimeClass
   def topNRanked(n: Int) =
     (keys: Seq[AttributeKey[_]]) => sortByRank(keys).take(n)
   def highPass(rankCutoff: Int) =
@@ -362,16 +357,14 @@ object BuiltinCommands {
   private[this] def loadedEval(s: State, arg: String): Unit = {
     val extracted = Project extract s
     import extracted._
-    val result = session
-      .currentEval()
+    val result = session.currentEval()
       .eval(arg, srcName = "<eval>", imports = autoImports(extracted))
     s.log.info(s"ans: ${result.tpe} = ${result.getValue(currentLoader)}")
   }
   private[this] def rawEval(s: State, arg: String): Unit = {
     val app = s.configuration.provider
     val classpath = app.mainClasspath ++ app.scalaProvider.jars
-    val result = Load
-      .mkEval(classpath, s.baseDir, Nil)
+    val result = Load.mkEval(classpath, s.baseDir, Nil)
       .eval(arg, srcName = "<eval>", imports = new EvalImports(Nil, ""))
     s.log.info(s"ans: ${result.tpe} = ${result.getValue(app.loader)}")
   }
@@ -454,10 +447,8 @@ object BuiltinCommands {
       val extracted = Project.extract(s)
       import extracted._
       token(Space ~> flag("every" ~ Space)) ~
-        SettingCompletions.settingParser(
-          structure.data,
-          structure.index.keyMap,
-          currentProject)
+        SettingCompletions
+          .settingParser(structure.data, structure.index.keyMap, currentProject)
     }
 
   @deprecated("Use Inspect.parser", "0.13.0")
@@ -471,8 +462,8 @@ object BuiltinCommands {
   def allKeyParser(s: State): Parser[AttributeKey[_]] = Inspect.allKeyParser(s)
 
   @deprecated("Use Inspect.spacedKeyParser", "0.13.0")
-  val spacedKeyParser: State => Parser[Def.ScopedKey[_]] =
-    Inspect.spacedKeyParser
+  val spacedKeyParser: State => Parser[Def.ScopedKey[_]] = Inspect
+    .spacedKeyParser
 
   val spacedAggregatedParser = (s: State) =>
     Act.requireSession(s, token(Space) ~> Act.aggregatedKeyParser(s))
@@ -484,8 +475,8 @@ object BuiltinCommands {
   private[sbt] def exportParser0(s: State): Parser[() => State] = {
     val extracted = Project extract s
     import extracted.{showKey, structure}
-    val keysParser =
-      token(flag("--last" <~ Space)) ~ Act.aggregatedKeyParser(extracted)
+    val keysParser = token(flag("--last" <~ Space)) ~ Act
+      .aggregatedKeyParser(extracted)
     val show = Aggregation.ShowConfig(
       settingValues = true,
       taskValues = false,
@@ -634,8 +625,8 @@ object BuiltinCommands {
     val removeBase = token(Space ~> "remove") ~> token(
       Space ~> Uri(Project.extraBuilds(s).toSet)).+
     addBase.map(toAdd => (xs: List[URI]) => (toAdd.toList ::: xs).distinct) |
-      removeBase.map(toRemove =>
-        (xs: List[URI]) => xs.filterNot(toRemove.toSet))
+      removeBase
+        .map(toRemove => (xs: List[URI]) => xs.filterNot(toRemove.toSet))
   }
 
   def project =

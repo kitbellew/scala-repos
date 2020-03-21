@@ -552,11 +552,11 @@ trait ProtoUser {
     */
   final case object AddUserMenusUnder extends Loc.LocParam[Any]
 
-  private lazy val AfterUnapply = SiteMap.buildMenuMatcher(
-    _ == AddUserMenusAfter)
+  private lazy val AfterUnapply = SiteMap
+    .buildMenuMatcher(_ == AddUserMenusAfter)
   private lazy val HereUnapply = SiteMap.buildMenuMatcher(_ == AddUserMenusHere)
-  private lazy val UnderUnapply = SiteMap.buildMenuMatcher(
-    _ == AddUserMenusUnder)
+  private lazy val UnderUnapply = SiteMap
+    .buildMenuMatcher(_ == AddUserMenusUnder)
 
   /**
     * The SiteMap mutator function
@@ -582,8 +582,7 @@ trait ProtoUser {
 
   def userMenu: List[Node] = {
     val li = loggedIn_?
-    ItemList
-      .filter(i => i.display && i.loggedIn == li)
+    ItemList.filter(i => i.display && i.loggedIn == li)
       .map(i => (<a href={i.pathStr}>{i.name}</a>))
   }
 
@@ -623,8 +622,7 @@ trait ProtoUser {
 
   def logUserIn(who: TheUserType, postLogin: () => Nothing): Nothing = {
     if (destroySessionOnLogin) {
-      S.session
-        .openOrThrowException("we have a session here")
+      S.session.openOrThrowException("we have a session here")
         .destroySessionAndContinueInNewSession(() => {
           logUserIn(who)
           postLogin()
@@ -1104,9 +1102,8 @@ trait ProtoUser {
 
     val bind = {
       // Use the same password input for both new password fields.
-      val passwordInput = SHtml.password_*(
-        "",
-        LFuncHolder(s => newPassword = s))
+      val passwordInput = SHtml
+        .password_*("", LFuncHolder(s => newPassword = s))
 
       ".old-password" #> SHtml.password("", s => oldPassword = s) &
         ".new-password" #> passwordInput &

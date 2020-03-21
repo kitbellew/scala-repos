@@ -138,9 +138,10 @@ sealed trait HttpMessage extends jm.HttpMessage {
   /** Java API */
   def getHeader(headerName: String): Optional[jm.HttpHeader] = {
     val lowerCased = headerName.toRootLowerCase
-    Util.convertOption(
-      headers.find(_.is(lowerCased))
-    ) // Upcast because of invariance
+    Util
+      .convertOption(
+        headers.find(_.is(lowerCased))
+      ) // Upcast because of invariance
   }
 
   /** Java API */
@@ -324,8 +325,8 @@ object HttpRequest {
       uri.toEffectiveHttpRequestUri(host, port, securedConnection)
     } else // http://tools.ietf.org/html/rfc7230#section-5.4
     if (hostHeader.isEmpty || uri.authority.isEmpty && hostHeader.get.isEmpty ||
-        hostHeader.get.host.equalsIgnoreCase(
-          uri.authority.host) && hostHeader.get.port == uri.authority.port) uri
+        hostHeader.get.host.equalsIgnoreCase(uri.authority.host) && hostHeader
+          .get.port == uri.authority.port) uri
     else
       throw IllegalUriException(
         s"'Host' header value of request to `$uri` doesn't match request target authority",

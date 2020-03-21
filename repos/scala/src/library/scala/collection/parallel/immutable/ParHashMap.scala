@@ -187,8 +187,8 @@ private[parallel] abstract class HashMapCombiner[K, V]
     val bucks = buckets.filter(_ != null).map(_.headPtr)
     val root = new Array[HashMap[K, V]](bucks.length)
 
-    combinerTaskSupport.executeAndWaitResult(
-      new CreateTrie(bucks, root, 0, bucks.length))
+    combinerTaskSupport
+      .executeAndWaitResult(new CreateTrie(bucks, root, 0, bucks.length))
 
     var bitmap = 0
     var i = 0

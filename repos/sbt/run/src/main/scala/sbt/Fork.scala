@@ -117,8 +117,8 @@ sealed class Fork(val commandName: String, val runnerClass: Option[String]) {
           Process(builder).run(logger, connectInput)
         }
       case LoggedOutput(logger) => Process(builder).run(logger, connectInput)
-      case CustomOutput(output) =>
-        (Process(builder) #> output).run(connectInput)
+      case CustomOutput(output) => (Process(builder) #> output)
+          .run(connectInput)
     }
   }
   private[this] def makeOptions(
@@ -129,8 +129,7 @@ sealed class Fork(val commandName: String, val runnerClass: Option[String]) {
       if (bootJars.isEmpty) None
       else
         Some(
-          "-Xbootclasspath/a:" + bootJars
-            .map(_.getAbsolutePath)
+          "-Xbootclasspath/a:" + bootJars.map(_.getAbsolutePath)
             .mkString(File.pathSeparator))
     jvmOptions ++ boot.toList ++ runnerClass.toList ++ arguments
   }
@@ -161,10 +160,8 @@ object Fork {
   private[this] def optionsTooLong(options: Seq[String]): Boolean =
     options.mkString(" ").length > MaxConcatenatedOptionLength
 
-  private[this] val isWindows: Boolean = System
-    .getProperty("os.name")
-    .toLowerCase(Locale.ENGLISH)
-    .contains("windows")
+  private[this] val isWindows: Boolean = System.getProperty("os.name")
+    .toLowerCase(Locale.ENGLISH).contains("windows")
   private[this] def convertClasspathToEnv(
       options: Seq[String]): (Option[String], Seq[String]) = {
     val (preCP, cpAndPost) = options.span(opt => !isClasspathOption(opt))
@@ -215,13 +212,8 @@ object Fork {
         workingDirectory: Option[File],
         env: Map[String, String],
         outputStrategy: OutputStrategy): Int =
-      fork(
-        javaHome,
-        options,
-        workingDirectory,
-        env,
-        false,
-        outputStrategy).exitValue
+      fork(javaHome, options, workingDirectory, env, false, outputStrategy)
+        .exitValue
 
     @deprecated("Use apply(ForkOptions, Seq[String])", "0.13.0")
     def fork(
@@ -243,8 +235,8 @@ object Fork {
             Process(builder).run(logger, connectInput)
           }
         case LoggedOutput(logger) => Process(builder).run(logger, connectInput)
-        case CustomOutput(output) =>
-          (Process(builder) #> output).run(connectInput)
+        case CustomOutput(output) => (Process(builder) #> output)
+            .run(connectInput)
       }
     }
   }
@@ -330,8 +322,7 @@ object Fork {
         outputStrategy: OutputStrategy): Process = {
       if (scalaJars.isEmpty) sys.error("Scala jars not specified")
       val scalaClasspathString = "-Xbootclasspath/a:" + scalaJars
-        .map(_.getAbsolutePath)
-        .mkString(File.pathSeparator)
+        .map(_.getAbsolutePath).mkString(File.pathSeparator)
       val mainClass = if (mainClassName.isEmpty) Nil else mainClassName :: Nil
       val options =
         jvmOptions ++ (scalaClasspathString :: mainClass ::: arguments.toList)

@@ -119,8 +119,8 @@ object HandlerInvokerFactory {
         // they could reference controllers relative to their own package.
         if (handlerDef.routerPackage.length > 0) {
           try {
-            handlerDef.classLoader.loadClass(
-              handlerDef.routerPackage + "." + handlerDef.controller)
+            handlerDef.classLoader
+              .loadClass(handlerDef.routerPackage + "." + handlerDef.controller)
           } catch { case NonFatal(_) => throw e }
         } else throw e
     }
@@ -152,8 +152,8 @@ object HandlerInvokerFactory {
                 with RequestTaggingHandler {
                 val annotations = cachedAnnotations
                 val parser = {
-                  val javaParser = components.getBodyParser(
-                    cachedAnnotations.parser)
+                  val javaParser = components
+                    .getBodyParser(cachedAnnotations.parser)
                   javaBodyParserToScala(javaParser)
                 }
                 def invocation: CompletionStage[JResult] = resultCall(call)
@@ -168,8 +168,7 @@ object HandlerInvokerFactory {
   private[play] def javaBodyParserToScala(
       parser: play.mvc.BodyParser[_]): BodyParser[RequestBody] =
     BodyParser { request =>
-      val accumulator = parser
-        .apply(new play.core.j.RequestHeaderImpl(request))
+      val accumulator = parser.apply(new play.core.j.RequestHeaderImpl(request))
         .asScala()
       import play.api.libs.iteratee.Execution.Implicits.trampoline
       accumulator.map { javaEither =>
@@ -258,40 +257,34 @@ object HandlerInvokerFactory {
         new HandlerInvoker[JWebSocket] {
           def call(call: => JWebSocket) =
             WebSocket.acceptOrResult[Message, Message] { request =>
-              FutureConverters
-                .toScala(call(new j.RequestHeaderImpl(request)))
+              FutureConverters.toScala(call(new j.RequestHeaderImpl(request)))
                 .map { resultOrFlow =>
                   if (resultOrFlow.left.isPresent) {
                     Left(resultOrFlow.left.get.asScala())
                   } else {
                     Right(
-                      Flow[Message]
-                        .map {
-                          case TextMessage(text)   => new JMessage.Text(text)
-                          case BinaryMessage(data) => new JMessage.Binary(data)
-                          case PingMessage(data)   => new JMessage.Ping(data)
-                          case PongMessage(data)   => new JMessage.Pong(data)
-                          case CloseMessage(code, reason) =>
-                            new JMessage.Close(
-                              OptionConverters
-                                .toJava(code)
-                                .asInstanceOf[Optional[Integer]],
-                              reason)
-                        }
-                        .via(resultOrFlow.right.get.asScala)
-                        .map {
-                          case text: JMessage.Text => TextMessage(text.data)
-                          case binary: JMessage.Binary =>
-                            BinaryMessage(binary.data)
-                          case ping: JMessage.Ping => PingMessage(ping.data)
-                          case pong: JMessage.Pong => PongMessage(pong.data)
-                          case close: JMessage.Close =>
-                            CloseMessage(
-                              OptionConverters
-                                .toScala(close.code)
-                                .asInstanceOf[Option[Int]],
-                              close.reason)
-                        })
+                      Flow[Message].map {
+                        case TextMessage(text)   => new JMessage.Text(text)
+                        case BinaryMessage(data) => new JMessage.Binary(data)
+                        case PingMessage(data)   => new JMessage.Ping(data)
+                        case PongMessage(data)   => new JMessage.Pong(data)
+                        case CloseMessage(code, reason) =>
+                          new JMessage.Close(
+                            OptionConverters.toJava(code)
+                              .asInstanceOf[Optional[Integer]],
+                            reason)
+                      }.via(resultOrFlow.right.get.asScala).map {
+                        case text: JMessage.Text => TextMessage(text.data)
+                        case binary: JMessage.Binary =>
+                          BinaryMessage(binary.data)
+                        case ping: JMessage.Ping => PingMessage(ping.data)
+                        case pong: JMessage.Pong => PongMessage(pong.data)
+                        case close: JMessage.Close =>
+                          CloseMessage(
+                            OptionConverters.toScala(close.code)
+                              .asInstanceOf[Option[Int]],
+                            close.reason)
+                      })
                   }
 
                 }

@@ -50,8 +50,8 @@ abstract class ParquetReadSupport[T](val rootSchema: String)
     with Serializable {
   val tupleConverter: ParquetTupleConverter[T]
 
-  lazy val rootType: MessageType = MessageTypeParser.parseMessageType(
-    rootSchema)
+  lazy val rootType: MessageType = MessageTypeParser
+    .parseMessageType(rootSchema)
 
   override def init(
       configuration: Configuration,
@@ -73,8 +73,8 @@ class ReadSupportInstanceProxy[T] extends ReadSupport[T] {
     require(
       readSupport != null && !readSupport.isEmpty,
       "no read support instance is configured")
-    val readSupportInstance = ParquetInputOutputFormat.injection.invert(
-      readSupport)
+    val readSupportInstance = ParquetInputOutputFormat.injection
+      .invert(readSupport)
 
     readSupportInstance match {
       case Success(obj) => obj.asInstanceOf[ReadSupport[T]]
@@ -91,11 +91,8 @@ class ReadSupportInstanceProxy[T] extends ReadSupport[T] {
       keyValueMetaData: JMap[String, String],
       fileSchema: MessageType,
       readContext: ReadContext): RecordMaterializer[T] = {
-    getDelegateInstance(configuration).prepareForRead(
-      configuration,
-      keyValueMetaData,
-      fileSchema,
-      readContext)
+    getDelegateInstance(configuration)
+      .prepareForRead(configuration, keyValueMetaData, fileSchema, readContext)
   }
 }
 
@@ -115,8 +112,8 @@ abstract class ParquetWriteSupport[T](val rootSchema: String)
 
   var recordConsumer: RecordConsumer = null
 
-  lazy val rootType: MessageType = MessageTypeParser.parseMessageType(
-    rootSchema)
+  lazy val rootType: MessageType = MessageTypeParser
+    .parseMessageType(rootSchema)
 
   override def init(configuration: Configuration): WriteContext =
     new WriteSupport.WriteContext(rootType, new JHashMap[String, String])
@@ -132,8 +129,8 @@ abstract class ParquetWriteSupport[T](val rootSchema: String)
 object ParquetInputOutputFormat {
   val READ_SUPPORT_INSTANCE = "scalding.parquet.read.support.instance"
   val WRITE_SUPPORT_INSTANCE = "scalding.parquet.write.support.instance"
-  val injection: Injection[Any, String] = KryoInjection.andThen(
-    Injection.connect[Array[Byte], GZippedBase64String, String])
+  val injection: Injection[Any, String] = KryoInjection
+    .andThen(Injection.connect[Array[Byte], GZippedBase64String, String])
 }
 
 class ParquetOutputFormatFromWriteSupportInstance[T]
@@ -143,8 +140,8 @@ class ParquetOutputFormatFromWriteSupportInstance[T]
     require(
       writeSupport != null && !writeSupport.isEmpty,
       "no write support instance is configured")
-    val writeSupportInstance = ParquetInputOutputFormat.injection.invert(
-      writeSupport)
+    val writeSupportInstance = ParquetInputOutputFormat.injection
+      .invert(writeSupport)
     writeSupportInstance match {
       case Success(obj) => obj.asInstanceOf[WriteSupport[T]]
       case Failure(e)   => throw e
@@ -190,9 +187,8 @@ class TypedParquetTupleScheme[T](
     jobConf.set(
       ParquetInputOutputFormat.READ_SUPPORT_INSTANCE,
       ParquetInputOutputFormat.injection(readSupport))
-    ParquetInputFormat.setReadSupportClass(
-      jobConf,
-      classOf[ReadSupportInstanceProxy[_]])
+    ParquetInputFormat
+      .setReadSupportClass(jobConf, classOf[ReadSupportInstanceProxy[_]])
   }
 
   override def source(
@@ -227,7 +223,8 @@ class TypedParquetTupleScheme[T](
     val tuple = sinkCall.getOutgoingEntry
     require(
       tuple.size == 1,
-      "TypedParquetTupleScheme expects tuple with an arity of exactly 1, but found " + tuple.getFields)
+      "TypedParquetTupleScheme expects tuple with an arity of exactly 1, but found " + tuple
+        .getFields)
     val value = tuple.getObject(0).asInstanceOf[T]
     val outputCollector = sinkCall.getOutput
     outputCollector.collect(null, value)

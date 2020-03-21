@@ -29,19 +29,13 @@ abstract class StockStrategy[M: ClassTag]
 
     val rawData = trainingData.rawDataB.value
 
-    val dataView: DataView = rawData.view(
-      queryDate.idx,
-      trainingData.maxWindowSize)
+    val dataView: DataView = rawData
+      .view(queryDate.idx, trainingData.maxWindowSize)
 
     val active = rawData._activeFrame
 
-    val activeTickers = dataView
-      .activeFrame()
-      .rowAt(0)
-      .filter(identity)
-      .index
-      .toVec
-      .contents
+    val activeTickers = dataView.activeFrame().rowAt(0).filter(identity).index
+      .toVec.contents
 
     val query = Query(
       idx = queryDate.idx,

@@ -60,8 +60,8 @@ private[persistence] trait AsyncWriteProxy
   def asyncWriteMessages(
       messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
     store match {
-      case Some(s) ⇒
-        (s ? WriteMessages(messages)).mapTo[immutable.Seq[Try[Unit]]]
+      case Some(s) ⇒ (s ? WriteMessages(messages))
+          .mapTo[immutable.Seq[Try[Unit]]]
       case None ⇒ storeNotInitialized
     }
 
@@ -69,8 +69,8 @@ private[persistence] trait AsyncWriteProxy
       persistenceId: String,
       toSequenceNr: Long): Future[Unit] =
     store match {
-      case Some(s) ⇒
-        (s ? DeleteMessagesTo(persistenceId, toSequenceNr)).mapTo[Unit]
+      case Some(s) ⇒ (s ? DeleteMessagesTo(persistenceId, toSequenceNr))
+          .mapTo[Unit]
       case None ⇒ storeNotInitialized
     }
 

@@ -14,8 +14,8 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.config.Config
 
 object SnapshotStoreSpec {
-  val config = ConfigFactory.parseString(
-    "akka.persistence.publish-plugin-commands = on")
+  val config = ConfigFactory
+    .parseString("akka.persistence.publish-plugin-commands = on")
 }
 
 /**
@@ -127,9 +127,10 @@ abstract class SnapshotStoreSpec(config: Config)
         LoadSnapshotResult(Some(SelectedSnapshot(metadata(2), s"s-3")), 13))
     }
     "delete a single snapshot identified by sequenceNr in snapshot metadata" in {
-      val md = metadata(2).copy(timestamp =
-        0L
-      ) // don't care about timestamp for delete of single snap
+      val md = metadata(2)
+        .copy(timestamp =
+          0L
+        ) // don't care about timestamp for delete of single snap
       val cmd = DeleteSnapshot(md)
       val sub = TestProbe()
 

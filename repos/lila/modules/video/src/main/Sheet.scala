@@ -19,45 +19,39 @@ private[video] final class Sheet(url: String, api: VideoApi) {
 
   def fetchAll: Funit =
     fetch map (_ filter select) flatMap { entries =>
-      entries
-        .map { entry =>
-          api.video
-            .find(entry.youtubeId)
-            .flatMap {
-              case Some(video) =>
-                val updated = video.copy(
-                  title = entry.title,
-                  author = entry.author,
-                  targets = entry.targets,
-                  tags = entry.tags,
-                  lang = entry.lang,
-                  ads = entry.ads,
-                  startTime = entry.startTime)
-                (video != updated) ?? {
-                  logger.info(s"sheet update $updated")
-                  api.video.save(updated)
-                }
-              case None =>
-                val video = Video(
-                  _id = entry.youtubeId,
-                  title = entry.title,
-                  author = entry.author,
-                  targets = entry.targets,
-                  tags = entry.tags,
-                  lang = entry.lang,
-                  ads = entry.ads,
-                  startTime = entry.startTime,
-                  metadata = Youtube.empty,
-                  createdAt = DateTime.now
-                )
-                logger.info(s"sheet insert $video")
-                api.video.save(video)
-              case _ => funit
+      entries.map { entry =>
+        api.video.find(entry.youtubeId).flatMap {
+          case Some(video) =>
+            val updated = video.copy(
+              title = entry.title,
+              author = entry.author,
+              targets = entry.targets,
+              tags = entry.tags,
+              lang = entry.lang,
+              ads = entry.ads,
+              startTime = entry.startTime)
+            (video != updated) ?? {
+              logger.info(s"sheet update $updated")
+              api.video.save(updated)
             }
-            .recover { case e: Exception => logger.warn("sheet update", e) }
-        }
-        .sequenceFu
-        .void >>
+          case None =>
+            val video = Video(
+              _id = entry.youtubeId,
+              title = entry.title,
+              author = entry.author,
+              targets = entry.targets,
+              tags = entry.tags,
+              lang = entry.lang,
+              ads = entry.ads,
+              startTime = entry.startTime,
+              metadata = Youtube.empty,
+              createdAt = DateTime.now
+            )
+            logger.info(s"sheet insert $video")
+            api.video.save(video)
+          case _ => funit
+        }.recover { case e: Exception => logger.warn("sheet update", e) }
+      }.sequenceFu.void >>
         api.video.removeNotIn(entries.map(_.youtubeId)) >>
         api.video.count.clearCache >>
         api.tag.clearCache
@@ -96,10 +90,7 @@ object Sheet {
     def targets =
       `gsx$target`.toString.split(';').map(_.trim).toList flatMap parseIntOption
     def tags =
-      `gsx$tags`.toString
-        .split(';')
-        .map(_.trim.toLowerCase)
-        .toList
+      `gsx$tags`.toString.split(';').map(_.trim.toLowerCase).toList
         .filter(_.nonEmpty) ::: {
         if (targets contains 1) List("beginner")
         else if (targets contains 3) List("advanced")

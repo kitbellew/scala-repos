@@ -62,13 +62,12 @@ private[impl] class LaunchQueueActor(
   var suspendedLauncherPathIds = Set.empty[PathId]
 
   /** ActorRefs of the actors have been currently suspended because we wait for their termination. */
-  var suspendedLaunchersMessages = Map
-    .empty[ActorRef, Vector[DeferredMessage]]
+  var suspendedLaunchersMessages = Map.empty[ActorRef, Vector[DeferredMessage]]
     .withDefaultValue(Vector.empty)
 
   /** The timeout for asking any children of this actor. */
-  implicit val askTimeout: Timeout =
-    launchQueueConfig.launchQueueRequestTimeout().milliseconds
+  implicit val askTimeout: Timeout = launchQueueConfig
+    .launchQueueRequestTimeout().milliseconds
 
   override def receive: Receive =
     LoggingReceive {
@@ -118,8 +117,8 @@ private[impl] class LaunchQueueActor(
                 pathId,
                 actorRef)
             case Some(deferredMessages) =>
-              deferredMessages.foreach(msg =>
-                self.tell(msg.message, msg.sender))
+              deferredMessages
+                .foreach(msg => self.tell(msg.message, msg.sender))
 
               suspendedLauncherPathIds -= pathId
               suspendedLaunchersMessages -= actorRef
@@ -173,8 +172,7 @@ private[impl] class LaunchQueueActor(
       import context.dispatcher
       val scatter = launchers.keys
         .map(appId => (self ? Count(appId)).mapTo[Option[QueuedTaskInfo]])
-      val gather: Future[Seq[QueuedTaskInfo]] = Future
-        .sequence(scatter)
+      val gather: Future[Seq[QueuedTaskInfo]] = Future.sequence(scatter)
         .map(_.flatten.to[Seq])
       gather.pipeTo(sender())
 
@@ -204,8 +202,8 @@ private[impl] class LaunchQueueActor(
           eventualCount.map(_ => ()).pipeTo(sender())
       }
 
-    case msg @ RateLimiterActor.DelayUpdate(app, _) =>
-      launchers.get(app.id).foreach(_.forward(msg))
+    case msg @ RateLimiterActor.DelayUpdate(app, _) => launchers.get(app.id)
+        .foreach(_.forward(msg))
   }
 
   private[this] def createAppTaskLauncher(

@@ -27,9 +27,7 @@ object ListTest extends SpecLite {
   "intersperse then remove odd items is identity" ! forAll {
     (a: List[Int], b: Int) =>
       val isEven = (_: Int) % 2 == 0
-      a.intersperse(b)
-        .zipWithIndex
-        .filter(p => isEven(p._2))
+      a.intersperse(b).zipWithIndex.filter(p => isEven(p._2))
         .map(_._1) must_=== (a)
   }
 
@@ -116,12 +114,11 @@ object ListTest extends SpecLite {
   "takeWhileM example" in {
     def takeWhileN[A](as: List[A], n: Int)(f: A => Boolean): List[A] =
       as.takeWhileM[State[Int, ?]](a =>
-          State { i =>
-            val j = i + (if (f(a)) 0 else 1)
-            val done = j >= n
-            (j, !done)
-          })
-        .evalZero[Int]
+        State { i =>
+          val j = i + (if (f(a)) 0 else 1)
+          val done = j >= n
+          (j, !done)
+        }).evalZero[Int]
 
     val actual = takeWhileN("/abc/def/hij/klm".toList, 4)(_ != '/').mkString
     actual must_=== ("/abc/def/hij")
@@ -157,9 +154,10 @@ object ListTest extends SpecLite {
 
   "mapAccumRight" ! forAll { (xs: List[Int]) =>
     val f = (_: Int) + 1
-    xs.mapAccumRight(
-      List[Int](),
-      (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
+    xs
+      .mapAccumRight(
+        List[Int](),
+        (c: List[Int], a) => (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
   }
 
   checkAll(FoldableTests.anyAndAllLazy[List])

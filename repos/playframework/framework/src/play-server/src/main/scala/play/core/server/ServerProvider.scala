@@ -60,8 +60,7 @@ object ServerProvider {
       classLoader: ClassLoader,
       configuration: Configuration): ServerProvider = {
     val ClassNameConfigKey = "play.server.provider"
-    val className: String = configuration
-      .getString(ClassNameConfigKey)
+    val className: String = configuration.getString(ClassNameConfigKey)
       .getOrElse(
         throw new ServerStartException(
           s"No ServerProvider configured with key '$ClassNameConfigKey'"))
@@ -90,11 +89,8 @@ object ServerProvider {
     */
   implicit lazy val defaultServerProvider: ServerProvider = {
     val classLoader = this.getClass.getClassLoader
-    val config = Configuration.load(
-      classLoader,
-      System.getProperties,
-      Map.empty,
-      true)
+    val config = Configuration
+      .load(classLoader, System.getProperties, Map.empty, true)
     fromConfiguration(classLoader, config)
   }
 

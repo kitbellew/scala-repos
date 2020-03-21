@@ -51,29 +51,27 @@ object ExecutionApp {
 
     // This adds a look back mechanism to match on other hadoop args we need to support
     // currently thats just libjars
-    val (hadoopArgs, tmpNonHadoop, finalLast) = argsWithLibJars.foldLeft(
-      Array[String](),
-      Array[String](),
-      Option.empty[String]) {
-      // Current is a -D, so store the last in non hadoop, and add current to hadoop args
-      case ((hadoopArgs, nonHadoop, Some(l)), current)
-          if dArgPattern.findFirstIn(current).isDefined =>
-        (hadoopArgs :+ current, nonHadoop :+ l, None)
-      // Current is a -D, but no last to concern with, and add current to hadoop args
-      case ((hadoopArgs, nonHadoop, None), current)
-          if dArgPattern.findFirstIn(current).isDefined =>
-        (hadoopArgs :+ current, nonHadoop, None)
-      // Current is ignored, but last was hadoop reserved arg so store them both in the hadoop args
-      case ((hadoopArgs, nonHadoop, Some(x)), current)
-          if hadoopReservedArgs.contains(x) =>
-        (hadoopArgs ++ Array(x, current), nonHadoop, None)
-      // Have a last but nothing matches current. So store last in non-hadoop and current in the last holder
-      case ((hadoopArgs, nonHadoop, Some(l)), current) =>
-        (hadoopArgs, nonHadoop :+ l, Some(current))
-      // Have no last, and nothing matches. So just store current in the last spot
-      case ((hadoopArgs, nonHadoop, None), current) =>
-        (hadoopArgs, nonHadoop, Some(current))
-    }
+    val (hadoopArgs, tmpNonHadoop, finalLast) = argsWithLibJars
+      .foldLeft(Array[String](), Array[String](), Option.empty[String]) {
+        // Current is a -D, so store the last in non hadoop, and add current to hadoop args
+        case ((hadoopArgs, nonHadoop, Some(l)), current)
+            if dArgPattern.findFirstIn(current).isDefined =>
+          (hadoopArgs :+ current, nonHadoop :+ l, None)
+        // Current is a -D, but no last to concern with, and add current to hadoop args
+        case ((hadoopArgs, nonHadoop, None), current)
+            if dArgPattern.findFirstIn(current).isDefined =>
+          (hadoopArgs :+ current, nonHadoop, None)
+        // Current is ignored, but last was hadoop reserved arg so store them both in the hadoop args
+        case ((hadoopArgs, nonHadoop, Some(x)), current)
+            if hadoopReservedArgs.contains(x) =>
+          (hadoopArgs ++ Array(x, current), nonHadoop, None)
+        // Have a last but nothing matches current. So store last in non-hadoop and current in the last holder
+        case ((hadoopArgs, nonHadoop, Some(l)), current) =>
+          (hadoopArgs, nonHadoop :+ l, Some(current))
+        // Have no last, and nothing matches. So just store current in the last spot
+        case ((hadoopArgs, nonHadoop, None), current) =>
+          (hadoopArgs, nonHadoop, Some(current))
+      }
     // We can have something left in the last bucket, so extract it.
     val nonHadoop = finalLast match {
       case Some(x) => tmpNonHadoop :+ x
@@ -82,8 +80,8 @@ object ExecutionApp {
 
     // Throwaway hadoop config
     // see which of our hadoop config args are not ones
-    val unparsed =
-      (new GenericOptionsParser(new Configuration, hadoopArgs)).getRemainingArgs
+    val unparsed = (new GenericOptionsParser(new Configuration, hadoopArgs))
+      .getRemainingArgs
 
     (
       HadoopArgs(hadoopArgs.filter(!unparsed.contains(_))),

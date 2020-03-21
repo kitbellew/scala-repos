@@ -44,34 +44,26 @@ class RFormulaParserSuite extends SparkFunSuite {
   }
 
   test("parse dot") {
-    val schema = (new StructType)
-      .add("a", "int", true)
-      .add("b", "long", false)
+    val schema = (new StructType).add("a", "int", true).add("b", "long", false)
       .add("c", "string", true)
     checkParse("a ~ .", "a", Seq("b", "c"), schema)
   }
 
   test("parse deletion") {
-    val schema = (new StructType)
-      .add("a", "int", true)
-      .add("b", "long", false)
+    val schema = (new StructType).add("a", "int", true).add("b", "long", false)
       .add("c", "string", true)
     checkParse("a ~ c - b", "a", Seq("c"), schema)
   }
 
   test("parse additions and deletions in order") {
-    val schema = (new StructType)
-      .add("a", "int", true)
-      .add("b", "long", false)
+    val schema = (new StructType).add("a", "int", true).add("b", "long", false)
       .add("c", "string", true)
     checkParse("a ~ . - b + . - c", "a", Seq("b"), schema)
   }
 
   test("dot ignores complex column types") {
-    val schema = (new StructType)
-      .add("a", "int", true)
-      .add("b", "tinyint", false)
-      .add("c", "map<string, string>", true)
+    val schema = (new StructType).add("a", "int", true)
+      .add("b", "tinyint", false).add("c", "map<string, string>", true)
     checkParse("a ~ .", "a", Seq("b"), schema)
   }
 
@@ -97,11 +89,8 @@ class RFormulaParserSuite extends SparkFunSuite {
   }
 
   test("parse basic interactions with dot") {
-    val schema = (new StructType)
-      .add("a", "int", true)
-      .add("b", "long", false)
-      .add("c", "string", true)
-      .add("d", "string", true)
+    val schema = (new StructType).add("a", "int", true).add("b", "long", false)
+      .add("c", "string", true).add("d", "string", true)
     checkParse("a ~ .:b", "a", Seq("b", "c:b", "d:b"), schema)
     checkParse("a ~ b:.", "a", Seq("b", "b:c", "b:d"), schema)
     checkParse("a ~ .:b:.:.:c:d:.", "a", Seq("b:c:d"), schema)
@@ -109,12 +98,9 @@ class RFormulaParserSuite extends SparkFunSuite {
 
   // Test data generated in R with terms.formula(y ~ .:., data = iris)
   test("parse all to all iris interactions") {
-    val schema = (new StructType)
-      .add("Sepal.Length", "double", true)
-      .add("Sepal.Width", "double", true)
-      .add("Petal.Length", "double", true)
-      .add("Petal.Width", "double", true)
-      .add("Species", "string", true)
+    val schema = (new StructType).add("Sepal.Length", "double", true)
+      .add("Sepal.Width", "double", true).add("Petal.Length", "double", true)
+      .add("Petal.Width", "double", true).add("Species", "string", true)
     checkParse(
       "y ~ .:.",
       "y",
@@ -141,12 +127,9 @@ class RFormulaParserSuite extends SparkFunSuite {
 
   // Test data generated in R with terms.formula(y ~ .:. - Species:., data = iris)
   test("parse interaction negation with iris") {
-    val schema = (new StructType)
-      .add("Sepal.Length", "double", true)
-      .add("Sepal.Width", "double", true)
-      .add("Petal.Length", "double", true)
-      .add("Petal.Width", "double", true)
-      .add("Species", "string", true)
+    val schema = (new StructType).add("Sepal.Length", "double", true)
+      .add("Sepal.Width", "double", true).add("Petal.Length", "double", true)
+      .add("Petal.Width", "double", true).add("Species", "string", true)
     checkParse("y ~ .:. - .:.", "y", Nil, schema)
     checkParse(
       "y ~ .:. - Species:.",

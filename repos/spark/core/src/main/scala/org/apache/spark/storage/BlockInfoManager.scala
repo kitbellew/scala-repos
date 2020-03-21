@@ -160,8 +160,7 @@ private[storage] class BlockInfoManager extends Logging {
     * [[BlockInfo.NON_TASK_WRITER]] if called by a non-task thread.
     */
   private def currentTaskAttemptId: TaskAttemptId = {
-    Option(TaskContext.get())
-      .map(_.taskAttemptId())
+    Option(TaskContext.get()).map(_.taskAttemptId())
       .getOrElse(BlockInfo.NON_TASK_WRITER)
   }
 
@@ -234,7 +233,8 @@ private[storage] class BlockInfoManager extends Logging {
             if (info.writerTask == currentTaskAttemptId) {
               throw new IllegalStateException(
                 s"Task $currentTaskAttemptId has already locked $blockId for writing")
-            } else if (info.writerTask == BlockInfo.NO_WRITER && info.readerCount == 0) {
+            } else if (info.writerTask == BlockInfo.NO_WRITER && info
+                         .readerCount == 0) {
               info.writerTask = currentTaskAttemptId
               writeLocksByTask.addBinding(currentTaskAttemptId, blockId)
               logTrace(

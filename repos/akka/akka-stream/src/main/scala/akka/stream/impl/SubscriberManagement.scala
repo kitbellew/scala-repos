@@ -177,13 +177,12 @@ private[akka] trait SubscriberManagement[T]
           maxRequested(tail, math.max(head.totalDemand, result))
         case _ ⇒ result
       }
-    val desired = Math
-      .min(
-        Int.MaxValue,
-        Math.min(
+    val desired = Math.min(
+      Int.MaxValue,
+      Math
+        .min(
           maxRequested(subscriptions),
-          buffer.maxAvailable) - pendingFromUpstream)
-      .toInt
+          buffer.maxAvailable) - pendingFromUpstream).toInt
     if (desired > 0) {
       pendingFromUpstream += desired
       requestFromUpstream(desired)

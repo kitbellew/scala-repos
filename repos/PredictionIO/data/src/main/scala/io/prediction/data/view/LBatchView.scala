@@ -101,8 +101,7 @@ class EventSeq(val events: List[Event]) {
       startTimeOpt: Option[DateTime] = None,
       untilTimeOpt: Option[DateTime] = None): EventSeq = {
 
-    events
-      .filter(ViewPredicates.getEventPredicate(eventOpt))
+    events.filter(ViewPredicates.getEventPredicate(eventOpt))
       .filter(ViewPredicates.getStartTimePredicate(startTimeOpt))
       .filter(ViewPredicates.getUntilTimePredicate(untilTimeOpt))
       .filter(ViewPredicates.getEntityTypePredicate(entityTypeOpt))
@@ -113,10 +112,8 @@ class EventSeq(val events: List[Event]) {
   def aggregateByEntityOrdered[T](
       init: T,
       op: (T, Event) => T): Map[String, T] = {
-    events
-      .groupBy(_.entityId)
-      .mapValues(_.sortBy(_.eventTime.getMillis).foldLeft[T](init)(op))
-      .toMap
+    events.groupBy(_.entityId)
+      .mapValues(_.sortBy(_.eventTime.getMillis).foldLeft[T](init)(op)).toMap
   }
 
 }
@@ -132,8 +129,7 @@ class LBatchView(
 
   @transient
   lazy val _events = eventsDb
-    .find(appId = appId, startTime = startTime, untilTime = untilTime)
-    .toList
+    .find(appId = appId, startTime = startTime, untilTime = untilTime).toList
 
   @transient
   lazy val events: EventSeq = new EventSeq(_events)
@@ -151,14 +147,13 @@ class LBatchView(
       startTimeOpt: Option[DateTime] = None,
       untilTimeOpt: Option[DateTime] = None): Map[String, DataMap] = {
 
-    events
-      .filter(entityTypeOpt = Some(entityType))
+    events.filter(entityTypeOpt = Some(entityType))
       .filter(e => EventValidation.isSpecialEvents(e.event))
       .aggregateByEntityOrdered(
         init = None,
-        op = ViewAggregators.getDataMapAggregator())
-      .filter { case (k, v) => (v != None) }
-      .mapValues(_.get)
+        op = ViewAggregators.getDataMapAggregator()).filter {
+        case (k, v) => (v != None)
+      }.mapValues(_.get)
 
   }
 

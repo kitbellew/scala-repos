@@ -82,19 +82,16 @@ class BacktestingEvaluator(val params: BacktestingParams)
     val todayIdx = queryDate.idx
 
     // Decide enter / exit, also sort by pValue desc
-    val data = prediction.data
-      .map {
-        case (ticker, pValue) => {
-          val dir = pValue match {
-            case p if p >= params.enterThreshold => 1
-            case p if p <= params.exitThreshold  => -1
-            case _                               => 0
-          }
-          (ticker, dir, pValue)
+    val data = prediction.data.map {
+      case (ticker, pValue) => {
+        val dir = pValue match {
+          case p if p >= params.enterThreshold => 1
+          case p if p <= params.exitThreshold  => -1
+          case _                               => 0
         }
+        (ticker, dir, pValue)
       }
-      .toArray
-      .sortBy(-_._3)
+    }.toArray.sortBy(-_._3)
 
     val toEnter = data.filter(_._2 == 1).map(_._1)
     val toExit = data.filter(_._2 == -1).map(_._1)
@@ -107,11 +104,7 @@ class BacktestingEvaluator(val params: BacktestingParams)
 
   def evaluateAll(
       input: Seq[(DataParams, Seq[DailyResult])]): BacktestingResult = {
-    var dailyResultsSeq = input
-      .map(_._2)
-      .flatten
-      .toArray
-      .sortBy(_.dateIdx)
+    var dailyResultsSeq = input.map(_._2).flatten.toArray.sortBy(_.dateIdx)
 
     var rawData = input.head._1.rawDataB.value
     val retFrame = rawData._retFrame
@@ -152,15 +145,13 @@ class BacktestingEvaluator(val params: BacktestingParams)
       // Determine enter
       val slack = maxPositions - positions.size
       val money = cash / slack
-      daily.toEnter
-        .filter(t => !positions.contains(t))
-        .take(slack)
-        .map { ticker =>
+      daily.toEnter.filter(t => !positions.contains(t)).take(slack).map {
+        ticker =>
           {
             cash -= money
             positions += (ticker -> money)
           }
-        }
+      }
 
       // Book keeping
       val nav = cash + positions.values.sum

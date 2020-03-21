@@ -95,8 +95,7 @@ class VectorSlicerSuite
       StructType(
         Array(attrGroup.toStructField(), resultAttrGroup.toStructField())))
 
-    val vectorSlicer = new VectorSlicer()
-      .setInputCol("features")
+    val vectorSlicer = new VectorSlicer().setInputCol("features")
       .setOutputCol("result")
 
     def validateResults(df: DataFrame): Unit = {
@@ -104,11 +103,10 @@ class VectorSlicerSuite
         case Row(vec1: Vector, vec2: Vector) => assert(vec1 === vec2)
       }
       val resultMetadata = AttributeGroup.fromStructField(df.schema("result"))
-      val expectedMetadata = AttributeGroup.fromStructField(
-        df.schema("expected"))
+      val expectedMetadata = AttributeGroup
+        .fromStructField(df.schema("expected"))
       assert(resultMetadata.numAttributes === expectedMetadata.numAttributes)
-      resultMetadata.attributes.get
-        .zip(expectedMetadata.attributes.get)
+      resultMetadata.attributes.get.zip(expectedMetadata.attributes.get)
         .foreach { case (a, b) => assert(a === b) }
     }
 
@@ -123,10 +121,8 @@ class VectorSlicerSuite
   }
 
   test("read/write") {
-    val t = new VectorSlicer()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setIndices(Array(1, 3))
+    val t = new VectorSlicer().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setIndices(Array(1, 3))
       .setNames(Array("a", "d"))
     testDefaultReadWrite(t)
   }

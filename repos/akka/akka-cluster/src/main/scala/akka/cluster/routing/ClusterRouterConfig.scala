@@ -32,12 +32,12 @@ import scala.collection.immutable
 object ClusterRouterGroupSettings {
   def fromConfig(config: Config): ClusterRouterGroupSettings =
     ClusterRouterGroupSettings(
-      totalInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
-        config),
+      totalInstances = ClusterRouterSettingsBase
+        .getMaxTotalNrOfInstances(config),
       routeesPaths = immutableSeq(config.getStringList("routees.paths")),
       allowLocalRoutees = config.getBoolean("cluster.allow-local-routees"),
-      useRole = ClusterRouterSettingsBase.useRoleOption(
-        config.getString("cluster.use-role"))
+      useRole = ClusterRouterSettingsBase
+        .useRoleOption(config.getString("cluster.use-role"))
     )
 }
 
@@ -85,13 +85,13 @@ final case class ClusterRouterGroupSettings(
 object ClusterRouterPoolSettings {
   def fromConfig(config: Config): ClusterRouterPoolSettings =
     ClusterRouterPoolSettings(
-      totalInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
-        config),
-      maxInstancesPerNode = config.getInt(
-        "cluster.max-nr-of-instances-per-node"),
+      totalInstances = ClusterRouterSettingsBase
+        .getMaxTotalNrOfInstances(config),
+      maxInstancesPerNode = config
+        .getInt("cluster.max-nr-of-instances-per-node"),
       allowLocalRoutees = config.getBoolean("cluster.allow-local-routees"),
-      useRole = ClusterRouterSettingsBase.useRoleOption(
-        config.getString("cluster.use-role"))
+      useRole = ClusterRouterSettingsBase
+        .useRoleOption(config.getString("cluster.use-role"))
     )
 }
 
@@ -232,12 +232,10 @@ final case class ClusterRouterPool(
       routeeProps: Props,
       context: ActorContext): Routee = {
     val name = "c" + childNameCounter.incrementAndGet
-    val ref = context
-      .asInstanceOf[ActorCell]
-      .attachChild(
-        local.enrichWithPoolDispatcher(routeeProps, context),
-        name,
-        systemService = false)
+    val ref = context.asInstanceOf[ActorCell].attachChild(
+      local.enrichWithPoolDispatcher(routeeProps, context),
+      name,
+      systemService = false)
     ActorRefRoutee(ref)
   }
 
@@ -334,15 +332,16 @@ private[akka] class ClusterRouterPoolActor(
   def selectDeploymentTarget: Option[Address] = {
     val currentRoutees = cell.router.routees
     val currentNodes = availableNodes
-    if (currentNodes.isEmpty || currentRoutees.size >= settings.totalInstances) {
-      None
-    } else {
+    if (currentNodes.isEmpty || currentRoutees.size >= settings
+          .totalInstances) { None }
+    else {
       // find the node with least routees
-      val numberOfRouteesPerNode: Map[Address, Int] = currentRoutees.foldLeft(
-        currentNodes.map(_ -> 0).toMap.withDefaultValue(0)) { (acc, x) ⇒
-        val address = fullAddress(x)
-        acc + (address -> (acc(address) + 1))
-      }
+      val numberOfRouteesPerNode: Map[Address, Int] = currentRoutees
+        .foldLeft(currentNodes.map(_ -> 0).toMap.withDefaultValue(0)) {
+          (acc, x) ⇒
+            val address = fullAddress(x)
+            acc + (address -> (acc(address) + 1))
+        }
 
       val (address, count) = numberOfRouteesPerNode.minBy(_._2)
       if (count < settings.maxInstancesPerNode) Some(address) else None
@@ -363,7 +362,8 @@ private[akka] class ClusterRouterGroupActor(
     case x: Group ⇒ x
     case other ⇒
       throw ActorInitializationException(
-        "ClusterRouterGroupActor can only be used with group, not " + other.getClass)
+        "ClusterRouterGroupActor can only be used with group, not " + other
+          .getClass)
   }
 
   override def receive = clusterReceive orElse super.receive
@@ -399,9 +399,9 @@ private[akka] class ClusterRouterGroupActor(
   def selectDeploymentTarget: Option[(Address, String)] = {
     val currentRoutees = cell.router.routees
     val currentNodes = availableNodes
-    if (currentNodes.isEmpty || currentRoutees.size >= settings.totalInstances) {
-      None
-    } else {
+    if (currentNodes.isEmpty || currentRoutees.size >= settings
+          .totalInstances) { None }
+    else {
       // find the node with least routees
       val unusedNodes = currentNodes filterNot usedRouteePaths.contains
 

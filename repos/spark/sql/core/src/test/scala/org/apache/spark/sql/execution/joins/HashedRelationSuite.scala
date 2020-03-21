@@ -150,8 +150,8 @@ class HashedRelationSuite extends SparkFunSuite with SharedSQLContext {
       BoundReference(0, IntegerType, false),
       BoundReference(1, IntegerType, true)))
     val rows = (0 until 100).map(i => unsafeProj(InternalRow(i, i + 1)).copy())
-    val keyProj = UnsafeProjection.create(Seq(
-      BoundReference(0, IntegerType, false)))
+    val keyProj = UnsafeProjection
+      .create(Seq(BoundReference(0, IntegerType, false)))
     val longRelation = LongHashedRelation(rows.iterator, keyProj, 100)
     assert(longRelation.isInstanceOf[LongArrayRelation])
     val longArrayRelation = longRelation.asInstanceOf[LongArrayRelation]

@@ -20,9 +20,7 @@ class TimeoutsSpec extends AkkaSpec {
 
     "pass through elements unmodified" in assertAllStagesStopped {
       Await.result(
-        Source(1 to 100)
-          .initialTimeout(2.seconds)
-          .grouped(200)
+        Source(1 to 100).initialTimeout(2.seconds).grouped(200)
           .runWith(Sink.head),
         3.seconds) should ===(1 to 100)
     }
@@ -30,20 +28,15 @@ class TimeoutsSpec extends AkkaSpec {
     "pass through error unmodified" in assertAllStagesStopped {
       a[TE] shouldBe thrownBy {
         Await.result(
-          Source(1 to 100)
-            .concat(Source.failed(TE("test")))
-            .initialTimeout(2.seconds)
-            .grouped(200)
-            .runWith(Sink.head),
+          Source(1 to 100).concat(Source.failed(TE("test")))
+            .initialTimeout(2.seconds).grouped(200).runWith(Sink.head),
           3.seconds)
       }
     }
 
     "fail if no initial element passes until timeout" in assertAllStagesStopped {
       val downstreamProbe = TestSubscriber.probe[Int]()
-      Source
-        .maybe[Int]
-        .initialTimeout(1.second)
+      Source.maybe[Int].initialTimeout(1.second)
         .runWith(Sink.fromSubscriber(downstreamProbe))
 
       downstreamProbe.expectSubscription()
@@ -60,9 +53,7 @@ class TimeoutsSpec extends AkkaSpec {
 
     "pass through elements unmodified" in assertAllStagesStopped {
       Await.result(
-        Source(1 to 100)
-          .completionTimeout(2.seconds)
-          .grouped(200)
+        Source(1 to 100).completionTimeout(2.seconds).grouped(200)
           .runWith(Sink.head),
         3.seconds) should ===(1 to 100)
     }
@@ -70,11 +61,8 @@ class TimeoutsSpec extends AkkaSpec {
     "pass through error unmodified" in assertAllStagesStopped {
       a[TE] shouldBe thrownBy {
         Await.result(
-          Source(1 to 100)
-            .concat(Source.failed(TE("test")))
-            .completionTimeout(2.seconds)
-            .grouped(200)
-            .runWith(Sink.head),
+          Source(1 to 100).concat(Source.failed(TE("test")))
+            .completionTimeout(2.seconds).grouped(200).runWith(Sink.head),
           3.seconds)
       }
     }
@@ -82,9 +70,7 @@ class TimeoutsSpec extends AkkaSpec {
     "fail if not completed until timeout" in assertAllStagesStopped {
       val upstreamProbe = TestPublisher.probe[Int]()
       val downstreamProbe = TestSubscriber.probe[Int]()
-      Source
-        .fromPublisher(upstreamProbe)
-        .completionTimeout(2.seconds)
+      Source.fromPublisher(upstreamProbe).completionTimeout(2.seconds)
         .runWith(Sink.fromSubscriber(downstreamProbe))
 
       upstreamProbe.sendNext(1)
@@ -113,11 +99,8 @@ class TimeoutsSpec extends AkkaSpec {
     "pass through error unmodified" in assertAllStagesStopped {
       a[TE] shouldBe thrownBy {
         Await.result(
-          Source(1 to 100)
-            .concat(Source.failed(TE("test")))
-            .idleTimeout(2.seconds)
-            .grouped(200)
-            .runWith(Sink.head),
+          Source(1 to 100).concat(Source.failed(TE("test")))
+            .idleTimeout(2.seconds).grouped(200).runWith(Sink.head),
           3.seconds)
       }
     }
@@ -125,9 +108,7 @@ class TimeoutsSpec extends AkkaSpec {
     "fail if time between elements is too large" in assertAllStagesStopped {
       val upstreamProbe = TestPublisher.probe[Int]()
       val downstreamProbe = TestSubscriber.probe[Int]()
-      Source
-        .fromPublisher(upstreamProbe)
-        .idleTimeout(1.seconds)
+      Source.fromPublisher(upstreamProbe).idleTimeout(1.seconds)
         .runWith(Sink.fromSubscriber(downstreamProbe))
 
       // Two seconds in overall, but won't timeout until time between elements is large enough
@@ -148,8 +129,7 @@ class TimeoutsSpec extends AkkaSpec {
 
     "not signal error in simple loopback case and pass through elements unmodified" in assertAllStagesStopped {
       val timeoutIdentity = BidiFlow
-        .bidirectionalIdleTimeout[Int, Int](2.seconds)
-        .join(Flow[Int])
+        .bidirectionalIdleTimeout[Int, Int](2.seconds).join(Flow[Int])
 
       Await.result(
         Source(1 to 100).via(timeoutIdentity).grouped(200).runWith(Sink.head),
@@ -169,8 +149,7 @@ class TimeoutsSpec extends AkkaSpec {
 
       val assembly: RunnableGraph[(Future[Done], Future[Done])] = upstream
         .joinMat(BidiFlow.bidirectionalIdleTimeout[Int, String](2.seconds))(
-          Keep.left)
-        .joinMat(downstream)(Keep.both)
+          Keep.left).joinMat(downstream)(Keep.both)
 
       val (upFinished, downFinished) = assembly.run()
 
@@ -195,18 +174,16 @@ class TimeoutsSpec extends AkkaSpec {
       val downWrite = TestPublisher.probe[Int]()
       val downRead = TestSubscriber.probe[String]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          import GraphDSL.Implicits._
-          val timeoutStage = b.add(
-            BidiFlow.bidirectionalIdleTimeout[String, Int](2.seconds))
-          Source.fromPublisher(upWrite) ~> timeoutStage.in1;
-          timeoutStage.out1 ~> Sink.fromSubscriber(downRead)
-          Sink.fromSubscriber(upRead) <~ timeoutStage.out2;
-          timeoutStage.in2 <~ Source.fromPublisher(downWrite)
-          ClosedShape
-        })
-        .run()
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        import GraphDSL.Implicits._
+        val timeoutStage = b
+          .add(BidiFlow.bidirectionalIdleTimeout[String, Int](2.seconds))
+        Source.fromPublisher(upWrite) ~> timeoutStage.in1;
+        timeoutStage.out1 ~> Sink.fromSubscriber(downRead)
+        Sink.fromSubscriber(upRead) <~ timeoutStage.out2;
+        timeoutStage.in2 <~ Source.fromPublisher(downWrite)
+        ClosedShape
+      }).run()
 
       // Request enough for the whole test
       upRead.request(100)
@@ -246,18 +223,16 @@ class TimeoutsSpec extends AkkaSpec {
       val downWrite = TestPublisher.probe[Int]()
       val downRead = TestSubscriber.probe[String]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          import GraphDSL.Implicits._
-          val timeoutStage = b.add(
-            BidiFlow.bidirectionalIdleTimeout[String, Int](2.seconds))
-          Source.fromPublisher(upWrite) ~> timeoutStage.in1;
-          timeoutStage.out1 ~> Sink.fromSubscriber(downRead)
-          Sink.fromSubscriber(upRead) <~ timeoutStage.out2;
-          timeoutStage.in2 <~ Source.fromPublisher(downWrite)
-          ClosedShape
-        })
-        .run()
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        import GraphDSL.Implicits._
+        val timeoutStage = b
+          .add(BidiFlow.bidirectionalIdleTimeout[String, Int](2.seconds))
+        Source.fromPublisher(upWrite) ~> timeoutStage.in1;
+        timeoutStage.out1 ~> Sink.fromSubscriber(downRead)
+        Sink.fromSubscriber(upRead) <~ timeoutStage.out2;
+        timeoutStage.in2 <~ Source.fromPublisher(downWrite)
+        ClosedShape
+      }).run()
 
       val te = TE("test")
 

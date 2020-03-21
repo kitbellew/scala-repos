@@ -18,8 +18,8 @@ class ConvertExpressionToSAMInspectionTest
   override protected def setUp(): Unit = {
     super.setUp()
 
-    val defaultProfile =
-      ScalaCompilerConfiguration.instanceIn(getProject).defaultProfile
+    val defaultProfile = ScalaCompilerConfiguration.instanceIn(getProject)
+      .defaultProfile
     val newSettings = defaultProfile.getSettings
     newSettings.experimental = true
     defaultProfile.setSettings(newSettings)

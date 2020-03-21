@@ -161,9 +161,8 @@ object LineNumbers {
       skipID(dis)
       skipVersion(dis)
       implicit val constants = getConstants(dis)
-      if (debug)
-        println(
-          s"LNB:   fwd(${constants.fwd.size}) rev(${constants.rev.size}) ${constants.fwd.keys.toList.sorted}")
+      if (debug) println(s"LNB:   fwd(${constants.fwd.size}) rev(${constants.rev
+        .size}) ${constants.fwd.keys.toList.sorted}")
       skipClassInfo(dis)
       skipInterfaceInfo(dis)
       skipFields(dis)
@@ -282,8 +281,7 @@ object LineNumbers {
     if (debug) println(s"LNB: reading $count methods")
     if (c.contains("Code") && c.contains("LineNumberTable")) {
       (1 to count)
-        .map(_ ⇒ readMethod(d, c("Code"), c("LineNumberTable"), filter))
-        .flatten
+        .map(_ ⇒ readMethod(d, c("Code"), c("LineNumberTable"), filter)).flatten
         .foldLeft(Int.MaxValue -> 0) {
           case ((low, high), (start, end)) ⇒
             (Math.min(low, start), Math.max(high, end))

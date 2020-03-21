@@ -127,14 +127,14 @@ trait PrecogLibModule[M[+_]]
           // A list of (row, definedness) pairs. The row is the first row with
           // a particular unique combo of params.
           val paramsOrder = params.order
-          val chunks0: List[(Int, BitSet)] = range.foldLeft(
-            List.empty[(Int, BitSet)]) {
-            case (acc, row) if urls.isDefinedAt(row) =>
-              addOrCreate(row, acc, paramsOrder) map { pair =>
-                pair :: acc
-              } getOrElse acc
-            case (acc, _) => acc
-          }
+          val chunks0: List[(Int, BitSet)] = range
+            .foldLeft(List.empty[(Int, BitSet)]) {
+              case (acc, row) if urls.isDefinedAt(row) =>
+                addOrCreate(row, acc, paramsOrder) map { pair =>
+                  pair :: acc
+                } getOrElse acc
+              case (acc, _) => acc
+            }
 
           val options = params.deref(CPathField("options"))
           // TODO: Add these values to MorphContext.
@@ -208,8 +208,8 @@ trait PrecogLibModule[M[+_]]
 
           resultsM map (_.sequence: Result[List[Slice]]) flatMap {
             case Success(slices) =>
-              val resultSlice =
-                slices.foldLeft(Slice(Map.empty, slice.size))(_ zip _).columns
+              val resultSlice = slices
+                .foldLeft(Slice(Map.empty, slice.size))(_ zip _).columns
               M point resultSlice
 
             case Failure(errors) =>

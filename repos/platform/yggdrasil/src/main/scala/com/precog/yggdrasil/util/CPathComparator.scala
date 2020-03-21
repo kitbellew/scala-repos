@@ -221,8 +221,8 @@ object CPathComparator {
       case (CDate, rCol: DateColumn) =>
         new HalfArrayCPathComparator[DateTime, DateTime](lPath, lCol, rCol(_))
       case (tpe1, _) =>
-        val ordering = MaybeOrdering.fromInt(
-          implicitly[scalaz.Order[CType]].apply(tpe1, rCol.tpe).toInt)
+        val ordering = MaybeOrdering
+          .fromInt(implicitly[scalaz.Order[CType]].apply(tpe1, rCol.tpe).toInt)
         new CPathComparator with ArrayCPathComparatorSupport {
           val mask = makeMask(lPath)
           val selector = new ArraySelector()(tpe1.manifest)

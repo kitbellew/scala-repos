@@ -80,31 +80,22 @@ class EventsByTagSpec
       expectMsg(s"a green leaf-done")
 
       val greenSrc = queries.currentEventsByTag(tag = "green", offset = 0L)
-      greenSrc
-        .runWith(TestSink.probe[Any])
-        .request(2)
+      greenSrc.runWith(TestSink.probe[Any]).request(2)
         .expectNext(EventEnvelope(1L, "a", 2L, "a green apple"))
         .expectNext(EventEnvelope(2L, "a", 3L, "a green banana"))
-        .expectNoMsg(500.millis)
-        .request(2)
-        .expectNext(EventEnvelope(3L, "b", 2L, "a green leaf"))
-        .expectComplete()
+        .expectNoMsg(500.millis).request(2)
+        .expectNext(EventEnvelope(3L, "b", 2L, "a green leaf")).expectComplete()
 
       val blackSrc = queries.currentEventsByTag(tag = "black", offset = 0L)
-      blackSrc
-        .runWith(TestSink.probe[Any])
-        .request(5)
-        .expectNext(EventEnvelope(1L, "b", 1L, "a black car"))
-        .expectComplete()
+      blackSrc.runWith(TestSink.probe[Any]).request(5)
+        .expectNext(EventEnvelope(1L, "b", 1L, "a black car")).expectComplete()
     }
 
     "not see new events after demand request" in {
       val c = system.actorOf(TestActor.props("c"))
 
       val greenSrc = queries.currentEventsByTag(tag = "green", offset = 0L)
-      val probe = greenSrc
-        .runWith(TestSink.probe[Any])
-        .request(2)
+      val probe = greenSrc.runWith(TestSink.probe[Any]).request(2)
         .expectNext(EventEnvelope(1L, "a", 2L, "a green apple"))
         .expectNext(EventEnvelope(2L, "a", 3L, "a green banana"))
         .expectNoMsg(100.millis)
@@ -112,18 +103,14 @@ class EventsByTagSpec
       c ! "a green cucumber"
       expectMsg(s"a green cucumber-done")
 
-      probe
-        .expectNoMsg(100.millis)
-        .request(5)
+      probe.expectNoMsg(100.millis).request(5)
         .expectNext(EventEnvelope(3L, "b", 2L, "a green leaf"))
         .expectComplete() // green cucumber not seen
     }
 
     "find events from offset" in {
       val greenSrc = queries.currentEventsByTag(tag = "green", offset = 2L)
-      val probe = greenSrc
-        .runWith(TestSink.probe[Any])
-        .request(10)
+      val probe = greenSrc.runWith(TestSink.probe[Any]).request(10)
         .expectNext(EventEnvelope(2L, "a", 3L, "a green banana"))
         .expectNext(EventEnvelope(3L, "b", 2L, "a green leaf"))
         .expectNext(EventEnvelope(4L, "c", 1L, "a green cucumber"))
@@ -136,9 +123,7 @@ class EventsByTagSpec
       val d = system.actorOf(TestActor.props("d"))
 
       val blackSrc = queries.eventsByTag(tag = "black", offset = 0L)
-      val probe = blackSrc
-        .runWith(TestSink.probe[Any])
-        .request(2)
+      val probe = blackSrc.runWith(TestSink.probe[Any]).request(2)
         .expectNext(EventEnvelope(1L, "b", 1L, "a black car"))
         .expectNoMsg(100.millis)
 
@@ -147,18 +132,14 @@ class EventsByTagSpec
       d ! "a black night"
       expectMsg(s"a black night-done")
 
-      probe
-        .expectNext(EventEnvelope(2L, "d", 1L, "a black dog"))
-        .expectNoMsg(100.millis)
-        .request(10)
+      probe.expectNext(EventEnvelope(2L, "d", 1L, "a black dog"))
+        .expectNoMsg(100.millis).request(10)
         .expectNext(EventEnvelope(3L, "d", 2L, "a black night"))
     }
 
     "find events from offset" in {
       val greenSrc = queries.eventsByTag(tag = "green", offset = 2L)
-      val probe = greenSrc
-        .runWith(TestSink.probe[Any])
-        .request(10)
+      val probe = greenSrc.runWith(TestSink.probe[Any]).request(10)
         .expectNext(EventEnvelope(2L, "a", 3L, "a green banana"))
         .expectNext(EventEnvelope(3L, "b", 2L, "a green leaf"))
         .expectNext(EventEnvelope(4L, "c", 1L, "a green cucumber"))

@@ -76,8 +76,7 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
 
       def makeReduction(jtpe: JType): Reduction = {
         val jtypes: List[Option[JType]] = {
-          val grouped = Schema
-            .flatten(jtpe, List.empty[ColumnRef])
+          val grouped = Schema.flatten(jtpe, List.empty[ColumnRef])
             .groupBy(_.selector)
           val numerics = grouped filter {
             case (cpath, refs) => refs.map(_.ctype).exists(_.isNumeric)
@@ -157,9 +156,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         } yield { tbls zip schemas }
 
         val resultTables: M[Seq[Table]] = tablesWithType flatMap {
-          _.map {
-            case (table, jtype) => reduceTable(table, jtype, ctx)
-          }.toStream.sequence map (_.toSeq)
+          _.map { case (table, jtype) => reduceTable(table, jtype, ctx) }
+          .toStream.sequence map (_.toSeq)
         }
 
         val objectTables: M[Seq[Table]] = resultTables map {
@@ -175,9 +173,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         val spec = OuterObjectConcat(Leaf(SourceLeft), Leaf(SourceRight))
 
         val res = objectTables map {
-          _.reduceOption { (tl, tr) =>
-            tl.cross(tr)(spec)
-          } getOrElse Table.empty
+          _.reduceOption { (tl, tr) => tl.cross(tr)(spec) } getOrElse Table
+            .empty
         }
 
         res map { _.transform(buildConstantWrapSpec(TransSpec1.Id)) }

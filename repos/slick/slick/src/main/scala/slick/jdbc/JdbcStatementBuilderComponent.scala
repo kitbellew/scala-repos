@@ -97,11 +97,12 @@ trait JdbcStatementBuilderComponent {
       if (ibr.table.baseIdentity != standardInsert.table.baseIdentity)
         throw new SlickException(
           "Returned key columns must be from same table as inserted columns (" +
-            ibr.table.baseIdentity + " != " + standardInsert.table.baseIdentity + ")")
+            ibr.table.baseIdentity + " != " + standardInsert.table
+            .baseIdentity + ")")
       val returnOther = ibr.fields.length > 1 || !ibr.fields.head.options
         .contains(ColumnOption.AutoInc)
-      if (!capabilities.contains(
-            JdbcCapabilities.returnInsertOther) && returnOther)
+      if (!capabilities
+            .contains(JdbcCapabilities.returnInsertOther) && returnOther)
         throw new SlickException(
           "This DBMS allows only a single AutoInc column to be returned from an INSERT")
       (
@@ -178,11 +179,9 @@ trait JdbcStatementBuilderComponent {
       val (from, on) = flattenJoins(c.sym, c.from)
       val oldUniqueFrom = currentUniqueFrom
       def containsSymbolInSubquery(s: TermSymbol) =
-        c.children.iterator
-          .drop(1)
-          .flatMap(_.collect { case c: Comprehension => c }.toSeq.flatMap(
-            _.findNode(_ == Ref(s))))
-          .nonEmpty
+        c.children.iterator.drop(1).flatMap(
+          _.collect { case c: Comprehension => c }.toSeq.flatMap(_.findNode(
+            _ == Ref(s)))).nonEmpty
       currentUniqueFrom = from match {
         case Seq((s, _: TableNode)) if !containsSymbolInSubquery(s) => Some(s)
         case Seq((s, _))
@@ -414,7 +413,8 @@ trait JdbcStatementBuilderComponent {
                 skipParens)
             case RewriteBooleans.ToRealBoolean(ch) =>
               expr(
-                Library.==.typed[Boolean](ch, LiteralNode(true).infer()),
+                Library
+                  .==.typed[Boolean](ch, LiteralNode(true).infer()),
                 skipParens)
             case Library.Exists(c: Comprehension) =>
               /* If tuples are not supported, selecting multiple individial columns
@@ -425,8 +425,8 @@ trait JdbcStatementBuilderComponent {
             case Library.Concat(l, r) if concatOperator.isDefined =>
               b"\($l${concatOperator.get}$r\)"
             case Library.User()
-                if !capabilities.contains(
-                  RelationalCapabilities.functionUser) => b += "''"
+                if !capabilities
+                  .contains(RelationalCapabilities.functionUser) => b += "''"
             case Library.Database()
                 if !capabilities.contains(
                   RelationalCapabilities.functionDatabase) => b += "''"
@@ -488,7 +488,8 @@ trait JdbcStatementBuilderComponent {
               b")"
             case n =>
               throw new SlickException(
-                "Unexpected function call " + n + " -- SQL prefix: " + b.build.sql)
+                "Unexpected function call " + n + " -- SQL prefix: " + b.build
+                  .sql)
           }
         case c: IfThenElse =>
           b"(case"
@@ -630,8 +631,7 @@ trait JdbcStatementBuilderComponent {
       case Select(_, fs: FieldSymbol) => fs
     }
     protected lazy val allNames = syms.map(fs => quoteIdentifier(fs.name))
-    protected lazy val allVars = syms.iterator
-      .map(_ => "?")
+    protected lazy val allVars = syms.iterator.map(_ => "?")
       .mkString("(", ",", ")")
     protected lazy val tableName = quoteTableName(table)
 
@@ -663,16 +663,16 @@ trait JdbcStatementBuilderComponent {
         n: Node,
         order: IndexedSeq[FieldSymbol]): Node = {
       val newIndices = order.zipWithIndex.groupBy(_._1)
-      lazy val reordering: ConstArray[IndexedSeq[Int]] = syms.map(fs =>
-        newIndices(fs).map(_._2 + 1))
+      lazy val reordering: ConstArray[IndexedSeq[Int]] = syms
+        .map(fs => newIndices(fs).map(_._2 + 1))
       n.replace(
         {
           case InsertColumn(
                 ConstArray(Select(ref, ElementSymbol(idx))),
                 fs,
                 tpe) =>
-            val newPaths = reordering(idx - 1).map(i =>
-              Select(ref, ElementSymbol(i)))
+            val newPaths = reordering(idx - 1)
+              .map(i => Select(ref, ElementSymbol(i)))
             InsertColumn(ConstArray.from(newPaths), fs, tpe) :@ tpe
         },
         keepType = true
@@ -682,23 +682,21 @@ trait JdbcStatementBuilderComponent {
 
   /** Builder for upsert statements, builds standard SQL MERGE statements by default. */
   class UpsertBuilder(ins: Insert) extends InsertBuilder(ins) {
-    protected lazy val (pkSyms, softSyms) = syms.toSeq.partition(
-      _.options.contains(ColumnOption.PrimaryKey))
+    protected lazy val (pkSyms, softSyms) = syms.toSeq
+      .partition(_.options.contains(ColumnOption.PrimaryKey))
     protected lazy val pkNames = pkSyms.map { fs => quoteIdentifier(fs.name) }
     protected lazy val softNames = softSyms.map { fs =>
       quoteIdentifier(fs.name)
     }
-    protected lazy val nonAutoIncSyms = syms.filter(s =>
-      !(s.options contains ColumnOption.AutoInc))
-    protected lazy val nonAutoIncNames = nonAutoIncSyms.map(fs =>
-      quoteIdentifier(fs.name))
+    protected lazy val nonAutoIncSyms = syms
+      .filter(s => !(s.options contains ColumnOption.AutoInc))
+    protected lazy val nonAutoIncNames = nonAutoIncSyms
+      .map(fs => quoteIdentifier(fs.name))
 
     override def buildInsert: InsertBuilderResult = {
       val start = buildMergeStart
       val end = buildMergeEnd
-      val paramSel = "select " + allNames
-        .map(n => "? as " + n)
-        .iterator
+      val paramSel = "select " + allNames.map(n => "? as " + n).iterator
         .mkString(",") + scalarFrom.map(n => " from " + n).getOrElse("")
       // We'd need a way to alias the column names at the top level in order to support merges from a source Query
       new InsertBuilderResult(table, start + paramSel + end, syms)
@@ -708,7 +706,7 @@ trait JdbcStatementBuilderComponent {
 
     protected def buildMergeEnd: String = {
       val updateCols = softNames.map(n => s"t.$n=s.$n").mkString(", ")
-      val insertCols = nonAutoIncNames /*.map(n => s"t.$n")*/.mkString(", ")
+      val insertCols = nonAutoIncNames /*.map(n => s"t.$n")*/ .mkString(", ")
       val insertVals = nonAutoIncNames.map(n => s"s.$n").mkString(", ")
       val cond = pkNames.map(n => s"t.$n=s.$n").mkString(" and ")
       s") s on ($cond) when matched then update set $updateCols when not matched then insert ($insertCols) values ($insertVals)"
@@ -722,8 +720,7 @@ trait JdbcStatementBuilderComponent {
     override def buildInsert: InsertBuilderResult =
       new InsertBuilderResult(
         table,
-        pkNames
-          .map(n => s"$n=?")
+        pkNames.map(n => s"$n=?")
           .mkString(s"select 1 from $tableName where ", " and ", ""),
         ConstArray.from(pkSyms))
   }
@@ -734,10 +731,8 @@ trait JdbcStatementBuilderComponent {
     override def buildInsert: InsertBuilderResult =
       new InsertBuilderResult(
         table,
-        "update " + tableName + " set " + softNames
-          .map(n => s"$n=?")
-          .mkString(",") + " where " + pkNames
-          .map(n => s"$n=?")
+        "update " + tableName + " set " + softNames.map(n => s"$n=?")
+          .mkString(",") + " where " + pkNames.map(n => s"$n=?")
           .mkString(" and "),
         ConstArray.from(softSyms ++ pkSyms))
 
@@ -748,12 +743,10 @@ trait JdbcStatementBuilderComponent {
   /** Builder for various DDL statements. */
   class TableDDLBuilder(val table: Table[_]) {
     self =>
-    protected val tableNode = table.toNode
-      .asInstanceOf[TableExpansion]
-      .table
+    protected val tableNode = table.toNode.asInstanceOf[TableExpansion].table
       .asInstanceOf[TableNode]
-    protected val columns: Iterable[ColumnDDLBuilder] = table.create_*.map(fs =>
-      createColumnDDLBuilder(fs, table))
+    protected val columns: Iterable[ColumnDDLBuilder] = table.create_*
+      .map(fs => createColumnDDLBuilder(fs, table))
     protected val indexes: Iterable[Index] = table.indexes
     protected val foreignKeys: Iterable[ForeignKey] = table.foreignKeys
     protected val primaryKeys: Iterable[PrimaryKey] = table.primaryKeys
@@ -767,8 +760,8 @@ trait JdbcStatementBuilderComponent {
     }
 
     protected def createPhase1 =
-      Iterable(createTable) ++ primaryKeys.map(createPrimaryKey) ++ indexes.map(
-        createIndex)
+      Iterable(createTable) ++ primaryKeys.map(createPrimaryKey) ++ indexes
+        .map(createIndex)
     protected def createPhase2 = foreignKeys.map(createForeignKey)
     protected def dropPhase1 = foreignKeys.map(dropForeignKey)
     protected def dropPhase2 =

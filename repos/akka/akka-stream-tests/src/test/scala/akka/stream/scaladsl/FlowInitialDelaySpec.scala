@@ -18,9 +18,7 @@ class FlowInitialDelaySpec extends AkkaSpec {
 
     "work with zero delay" in Utils.assertAllStagesStopped {
       Await.result(
-        Source(1 to 10)
-          .initialDelay(Duration.Zero)
-          .grouped(100)
+        Source(1 to 10).initialDelay(Duration.Zero).grouped(100)
           .runWith(Sink.head),
         1.second) should ===(1 to 10)
     }
@@ -29,17 +27,13 @@ class FlowInitialDelaySpec extends AkkaSpec {
       .assertAllStagesStopped {
         a[TimeoutException] shouldBe thrownBy {
           Await.result(
-            Source(1 to 10)
-              .initialDelay(2.seconds)
-              .initialTimeout(1.second)
+            Source(1 to 10).initialDelay(2.seconds).initialTimeout(1.second)
               .runWith(Sink.ignore),
             2.seconds)
         }
 
         Await.ready(
-          Source(1 to 10)
-            .initialDelay(1.seconds)
-            .initialTimeout(2.second)
+          Source(1 to 10).initialDelay(1.seconds).initialTimeout(2.second)
             .runWith(Sink.ignore),
           2.seconds)
       }
@@ -47,8 +41,7 @@ class FlowInitialDelaySpec extends AkkaSpec {
     "properly ignore timer while backpressured" in Utils
       .assertAllStagesStopped {
         val probe = TestSubscriber.probe[Int]()
-        Source(1 to 10)
-          .initialDelay(0.5.second)
+        Source(1 to 10).initialDelay(0.5.second)
           .runWith(Sink.fromSubscriber(probe))
 
         probe.ensureSubscription()

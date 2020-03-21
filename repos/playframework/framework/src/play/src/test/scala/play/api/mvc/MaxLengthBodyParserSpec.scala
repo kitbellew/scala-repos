@@ -33,19 +33,16 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
   def bodyParser
       : (Accumulator[ByteString, Either[Result, ByteString]], Future[Unit]) = {
     val bodyParsed = Promise[Unit]()
-    val parser = Accumulator(
-      Sink
-        .seq[ByteString]
-        .mapMaterializedValue(future =>
-          future.transform(
-            { bytes =>
-              bodyParsed.success(())
-              Right(bytes.fold(ByteString.empty)(_ ++ _))
-            },
-            { t =>
-              bodyParsed.failure(t)
-              t
-            })))
+    val parser = Accumulator(Sink.seq[ByteString].mapMaterializedValue(future =>
+      future.transform(
+        { bytes =>
+          bodyParsed.success(())
+          Right(bytes.fold(ByteString.empty)(_ ++ _))
+        },
+        { t =>
+          bodyParsed.failure(t)
+          t
+        })))
     (parser, bodyParsed.future)
   }
 
@@ -88,8 +85,7 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "be exceeded when using the maxLength body parser" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
-          .maxLength(MaxLength10, BodyParser(req => parser))
+        BodyParsers.parse.maxLength(MaxLength10, BodyParser(req => parser))
           .apply(req))
       maxLengthParserEnforced(result)
       assertDidNotParse(parsed)
@@ -98,11 +94,10 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "be exceeded when using the maxLength body parser and an equal enforceMaxLength" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
-          .maxLength(
-            MaxLength10,
-            BodyParser(req =>
-              BodyParsers.parse.enforceMaxLength(req, MaxLength10, parser)))
+        BodyParsers.parse.maxLength(
+          MaxLength10,
+          BodyParser(req =>
+            BodyParsers.parse.enforceMaxLength(req, MaxLength10, parser)))
           .apply(req))
       maxLengthParserEnforced(result)
       assertDidNotParse(parsed)
@@ -111,11 +106,10 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "be exceeded when using the maxLength body parser and a longer enforceMaxLength" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
-          .maxLength(
-            MaxLength10,
-            BodyParser(req =>
-              BodyParsers.parse.enforceMaxLength(req, MaxLength20, parser)))
+        BodyParsers.parse.maxLength(
+          MaxLength10,
+          BodyParser(req =>
+            BodyParsers.parse.enforceMaxLength(req, MaxLength20, parser)))
           .apply(req))
       maxLengthParserEnforced(result)
       assertDidNotParse(parsed)
@@ -124,11 +118,10 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "be exceeded when using enforceMaxLength and a longer maxLength body parser" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
-          .maxLength(
-            MaxLength20,
-            BodyParser(req =>
-              BodyParsers.parse.enforceMaxLength(req, MaxLength10, parser)))
+        BodyParsers.parse.maxLength(
+          MaxLength20,
+          BodyParser(req =>
+            BodyParsers.parse.enforceMaxLength(req, MaxLength10, parser)))
           .apply(req))
       enforceMaxLengthEnforced(result)
       assertDidNotParse(parsed)
@@ -137,11 +130,10 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
     "not be exceeded when nothing is exceeded" in {
       val (parser, parsed) = bodyParser
       val result = feed(
-        BodyParsers.parse
-          .maxLength(
-            MaxLength20,
-            BodyParser(req =>
-              BodyParsers.parse.enforceMaxLength(req, MaxLength20, parser)))
+        BodyParsers.parse.maxLength(
+          MaxLength20,
+          BodyParser(req =>
+            BodyParsers.parse.enforceMaxLength(req, MaxLength20, parser)))
           .apply(req))
       result must beRight.which { inner => inner must beRight(Body15) }
       Await.result(parsed, 5.seconds) must_== ()

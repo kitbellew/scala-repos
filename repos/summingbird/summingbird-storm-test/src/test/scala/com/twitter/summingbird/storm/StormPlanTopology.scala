@@ -44,8 +44,8 @@ object StormPlanTopology extends Properties("StormDag") {
 
   implicit def testStore: Storm#Store[Int, Int] =
     MergeableStoreFactory.from {
-      MergeableStore.fromStore[(Int, BatchID), Int](
-        new JMapStore[(Int, BatchID), Int]())
+      MergeableStore
+        .fromStore[(Int, BatchID), Int](new JMapStore[(Int, BatchID), Int]())
     }
 
   implicit def arbSource1: Arbitrary[Producer[Storm, Int]] =

@@ -17,12 +17,12 @@ private[launcher] class TaskLauncherImpl(
     extends TaskLauncher {
   private[this] val log = LoggerFactory.getLogger(getClass)
 
-  private[this] val usedOffersMeter = metrics.meter(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "usedOffers"))
-  private[this] val launchedTasksMeter = metrics.meter(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "launchedTasks"))
-  private[this] val declinedOffersMeter = metrics.meter(
-    metrics.name(MetricPrefixes.SERVICE, getClass, "declinedOffers"))
+  private[this] val usedOffersMeter = metrics
+    .meter(metrics.name(MetricPrefixes.SERVICE, getClass, "usedOffers"))
+  private[this] val launchedTasksMeter = metrics
+    .meter(metrics.name(MetricPrefixes.SERVICE, getClass, "launchedTasks"))
+  private[this] val declinedOffersMeter = metrics
+    .meter(metrics.name(MetricPrefixes.SERVICE, getClass, "declinedOffers"))
 
   override def acceptOffer(offerID: OfferID, taskOps: Seq[TaskOp]): Boolean = {
     val accepted = withDriver(s"launchTasks($offerID)") { driver =>
@@ -55,12 +55,8 @@ private[launcher] class TaskLauncherImpl(
       offerID: OfferID,
       refuseMilliseconds: Option[Long]): Unit = {
     val declined = withDriver(s"declineOffer(${offerID.getValue})") {
-      val filters = refuseMilliseconds
-        .map(seconds =>
-          Protos.Filters
-            .newBuilder()
-            .setRefuseSeconds(seconds / 1000.0)
-            .build())
+      val filters = refuseMilliseconds.map(seconds =>
+        Protos.Filters.newBuilder().setRefuseSeconds(seconds / 1000.0).build())
         .getOrElse(Protos.Filters.getDefaultInstance)
       _.declineOffer(offerID, filters)
     }

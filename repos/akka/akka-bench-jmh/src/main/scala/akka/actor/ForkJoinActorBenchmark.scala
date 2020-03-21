@@ -73,12 +73,12 @@ class ForkJoinActorBenchmark {
   def floodPipe(): Unit = {
 
     val end = system.actorOf(Props(classOf[ForkJoinActorBenchmark.Pipe], None))
-    val middle = system.actorOf(
-      Props(classOf[ForkJoinActorBenchmark.Pipe], Some(end)))
-    val penultimate = system.actorOf(
-      Props(classOf[ForkJoinActorBenchmark.Pipe], Some(middle)))
-    val beginning = system.actorOf(
-      Props(classOf[ForkJoinActorBenchmark.Pipe], Some(penultimate)))
+    val middle = system
+      .actorOf(Props(classOf[ForkJoinActorBenchmark.Pipe], Some(end)))
+    val penultimate = system
+      .actorOf(Props(classOf[ForkJoinActorBenchmark.Pipe], Some(middle)))
+    val beginning = system
+      .actorOf(Props(classOf[ForkJoinActorBenchmark.Pipe], Some(penultimate)))
 
     val p = TestProbe()
     p.watch(end)

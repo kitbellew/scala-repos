@@ -66,11 +66,9 @@ object StripNamedNode {
       * We use a Map here because the traversals can be ordered slightly differently
       */
     def transIrr(p: Producer[P, Any]): Map[Any, Int] =
-      (p :: Producer.transitiveDependenciesOf(p))
-        .map(irreducible)
-        .collect { case Some(irr) => irr }
-        .groupBy(identity)
-        .mapValues(_.size)
+      (p :: Producer.transitiveDependenciesOf(p)).map(irreducible).collect {
+        case Some(irr) => irr
+      }.groupBy(identity).mapValues(_.size)
 
     val dependants = Dependants(tail)
     val newDependants = Dependants(newTail)
@@ -79,8 +77,8 @@ object StripNamedNode {
       * Each bag of irreducibles can point to more than one node because not all nodes have anything
       * irreducible (such as NamedProducer, IdentityKeyedProducer, MergedProducer, etc...)
       */
-    val oldIrrToNode: Map[Map[Any, Int], List[Producer[P, Any]]] =
-      dependants.nodes.groupBy(transIrr)
+    val oldIrrToNode: Map[Map[Any, Int], List[Producer[P, Any]]] = dependants
+      .nodes.groupBy(transIrr)
 
     /**
       * Basically do a graph walk on the list of irreducibles for each node

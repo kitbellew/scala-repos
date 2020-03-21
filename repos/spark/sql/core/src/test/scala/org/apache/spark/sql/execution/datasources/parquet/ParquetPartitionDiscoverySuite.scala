@@ -87,10 +87,8 @@ class ParquetPartitionDiscoverySuite
         true,
         Set.empty[Path])
     }
-    assert(
-      exception
-        .getMessage()
-        .contains("Conflicting directory structures detected"))
+    assert(exception.getMessage().contains(
+      "Conflicting directory structures detected"))
 
     // Valid
     paths = Seq(
@@ -145,10 +143,8 @@ class ParquetPartitionDiscoverySuite
         true,
         Set(new Path("hdfs://host:9000/path/")))
     }
-    assert(
-      exception
-        .getMessage()
-        .contains("Conflicting directory structures detected"))
+    assert(exception.getMessage().contains(
+      "Conflicting directory structures detected"))
 
     // Invalid
     // Conflicting directory structure:
@@ -169,10 +165,8 @@ class ParquetPartitionDiscoverySuite
         true,
         Set(new Path("hdfs://host:9000/tmp/tables/")))
     }
-    assert(
-      exception
-        .getMessage()
-        .contains("Conflicting directory structures detected"))
+    assert(exception.getMessage().contains(
+      "Conflicting directory structures detected"))
   }
 
   test("parse partition") {
@@ -584,8 +578,7 @@ class ParquetPartitionDiscoverySuite
           makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
       }
 
-      val parquetRelation = sqlContext.read
-        .format("parquet")
+      val parquetRelation = sqlContext.read.format("parquet")
         .load(base.getCanonicalPath)
       parquetRelation.registerTempTable("t")
 
@@ -627,8 +620,7 @@ class ParquetPartitionDiscoverySuite
           makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
       }
 
-      val parquetRelation = sqlContext.read
-        .format("parquet")
+      val parquetRelation = sqlContext.read.format("parquet")
         .load(base.getCanonicalPath)
       parquetRelation.registerTempTable("t")
 
@@ -661,38 +653,30 @@ class ParquetPartitionDiscoverySuite
         (1 to 10).map(i => (i, i.toString)).toDF("intField", "stringField"),
         makePartitionDir(base, defaultPartitionName, "pi" -> 2))
 
-      sqlContext.read
-        .option("mergeSchema", "true")
-        .format("parquet")
-        .load(base.getCanonicalPath)
-        .registerTempTable("t")
+      sqlContext.read.option("mergeSchema", "true").format("parquet")
+        .load(base.getCanonicalPath).registerTempTable("t")
 
       withTempTable("t") {
         checkAnswer(
           sql("SELECT * FROM t"),
-          (1 to 10).map(i => Row(i, null, 1)) ++ (1 to 10).map(i =>
-            Row(i, i.toString, 2)))
+          (1 to 10).map(i => Row(i, null, 1)) ++ (1 to 10)
+            .map(i => Row(i, i.toString, 2)))
       }
     }
   }
 
   test("SPARK-7749 Non-partitioned table should have empty partition spec") {
     withTempPath { dir =>
-      (1 to 10)
-        .map(i => (i, i.toString))
-        .toDF("a", "b")
-        .write
+      (1 to 10).map(i => (i, i.toString)).toDF("a", "b").write
         .parquet(dir.getCanonicalPath)
-      val queryExecution =
-        sqlContext.read.parquet(dir.getCanonicalPath).queryExecution
-      queryExecution.analyzed
-        .collectFirst {
-          case LogicalRelation(relation: HadoopFsRelation, _, _) =>
-            assert(relation.partitionSpec === PartitionSpec.emptySpec)
-        }
-        .getOrElse {
-          fail(s"Expecting a ParquetRelation2, but got:\n$queryExecution")
-        }
+      val queryExecution = sqlContext.read.parquet(dir.getCanonicalPath)
+        .queryExecution
+      queryExecution.analyzed.collectFirst {
+        case LogicalRelation(relation: HadoopFsRelation, _, _) =>
+          assert(relation.partitionSpec === PartitionSpec.emptySpec)
+      }.getOrElse {
+        fail(s"Expecting a ParquetRelation2, but got:\n$queryExecution")
+      }
     }
   }
 
@@ -739,14 +723,11 @@ class ParquetPartitionDiscoverySuite
     }
 
     val schema = StructType(partitionColumns :+ StructField(s"i", StringType))
-    val df = sqlContext.createDataFrame(
-      sparkContext.parallelize(row :: Nil),
-      schema)
+    val df = sqlContext
+      .createDataFrame(sparkContext.parallelize(row :: Nil), schema)
 
     withTempPath { dir =>
-      df.write
-        .format("parquet")
-        .partitionBy(partitionColumns.map(_.name): _*)
+      df.write.format("parquet").partitionBy(partitionColumns.map(_.name): _*)
         .save(dir.toString)
       val fields = schema.map(f => Column(f.name).cast(f.dataType))
       checkAnswer(sqlContext.read.load(dir.toString).select(fields: _*), row)
@@ -757,14 +738,12 @@ class ParquetPartitionDiscoverySuite
     withTempPath { dir =>
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-      df.write
-        .format("parquet")
-        .partitionBy("b", "c", "d")
+      df.write.format("parquet").partitionBy("b", "c", "d")
         .save(dir.getCanonicalPath)
 
       Files.touch(new File(s"${dir.getCanonicalPath}/b=1", ".DS_Store"))
-      Files.createParentDirs(new File(
-        s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
+      Files
+        .createParentDirs(new File(s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
 
       checkAnswer(
         sqlContext.read.format("parquet").load(dir.getCanonicalPath),
@@ -778,14 +757,12 @@ class ParquetPartitionDiscoverySuite
       val tablePath = new File(dir, "key=value")
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-      df.write
-        .format("parquet")
-        .partitionBy("b", "c", "d")
+      df.write.format("parquet").partitionBy("b", "c", "d")
         .save(tablePath.getCanonicalPath)
 
       Files.touch(new File(s"${tablePath.getCanonicalPath}/", "_SUCCESS"))
-      Files.createParentDirs(new File(
-        s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
+      Files
+        .createParentDirs(new File(s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
 
       checkAnswer(
         sqlContext.read.format("parquet").load(tablePath.getCanonicalPath),
@@ -798,14 +775,12 @@ class ParquetPartitionDiscoverySuite
 
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-      df.write
-        .format("parquet")
-        .partitionBy("b", "c", "d")
+      df.write.format("parquet").partitionBy("b", "c", "d")
         .save(tablePath.getCanonicalPath)
 
       Files.touch(new File(s"${tablePath.getCanonicalPath}/", "_SUCCESS"))
-      Files.createParentDirs(new File(
-        s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
+      Files
+        .createParentDirs(new File(s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
 
       checkAnswer(
         sqlContext.read.format("parquet").load(tablePath.getCanonicalPath),
@@ -818,24 +793,20 @@ class ParquetPartitionDiscoverySuite
       val tablePath = new File(dir, "table")
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-      df.write
-        .format("parquet")
-        .partitionBy("b", "c", "d")
+      df.write.format("parquet").partitionBy("b", "c", "d")
         .save(tablePath.getCanonicalPath)
 
       val twoPartitionsDF = sqlContext.read
-        .option("basePath", tablePath.getCanonicalPath)
-        .parquet(
+        .option("basePath", tablePath.getCanonicalPath).parquet(
           s"${tablePath.getCanonicalPath}/b=1",
           s"${tablePath.getCanonicalPath}/b=2")
 
       checkAnswer(twoPartitionsDF, df.filter("b != 3"))
 
       intercept[AssertionError] {
-        sqlContext.read
-          .parquet(
-            s"${tablePath.getCanonicalPath}/b=1",
-            s"${tablePath.getCanonicalPath}/b=2")
+        sqlContext.read.parquet(
+          s"${tablePath.getCanonicalPath}/b=1",
+          s"${tablePath.getCanonicalPath}/b=2")
       }
     }
   }
@@ -845,18 +816,17 @@ class ParquetPartitionDiscoverySuite
       // We have two paths to list files, one at driver side, another one that we use
       // a Spark job. We need to test both ways.
       withSQLConf(
-        SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD.key -> threshold.toString) {
+        SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD.key -> threshold
+          .toString) {
         withTempPath { dir =>
           val tablePath = new File(dir, "table")
           val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
 
-          df.write
-            .format("parquet")
-            .partitionBy("b", "c", "d")
+          df.write.format("parquet").partitionBy("b", "c", "d")
             .save(tablePath.getCanonicalPath)
 
-          Files.touch(
-            new File(s"${tablePath.getCanonicalPath}/b=1", "_SUCCESS"))
+          Files
+            .touch(new File(s"${tablePath.getCanonicalPath}/b=1", "_SUCCESS"))
           Files.touch(
             new File(s"${tablePath.getCanonicalPath}/b=1/c=1", "_SUCCESS"))
           Files.touch(
@@ -873,11 +843,9 @@ class ParquetPartitionDiscoverySuite
     def makeExpectedMessage(
         colNameLists: Seq[String],
         paths: Seq[String]): String = {
-      val conflictingColNameLists = colNameLists.zipWithIndex
-        .map {
-          case (list, index) => s"\tPartition column name list #$index: $list"
-        }
-        .mkString("\n", "\n", "\n")
+      val conflictingColNameLists = colNameLists.zipWithIndex.map {
+        case (list, index) => s"\tPartition column name list #$index: $list"
+      }.mkString("\n", "\n", "\n")
 
       // scalastyle:off
       s"""Conflicting partition column names detected:
@@ -933,9 +901,7 @@ class ParquetPartitionDiscoverySuite
     withTempPath { dir =>
       withSQLConf(SQLConf.PARALLEL_PARTITION_DISCOVERY_THRESHOLD.key -> "1") {
         val path = dir.getCanonicalPath
-        val df = sqlContext
-          .range(5)
-          .select('id as 'a, 'id as 'b, 'id as 'c)
+        val df = sqlContext.range(5).select('id as 'a, 'id as 'b, 'id as 'c)
           .coalesce(1)
         df.write.partitionBy("b", "c").parquet(path)
         checkAnswer(sqlContext.read.parquet(path), df)

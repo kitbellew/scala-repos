@@ -93,13 +93,10 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
     val props = new java.util.Properties()
     configs.foreach { case (key, value) => props.put(key, value.toString) }
 
-    superUsers = configs
-      .get(SimpleAclAuthorizer.SuperUsersProp)
-      .collect {
-        case str: String if str.nonEmpty =>
-          str.split(";").map(s => KafkaPrincipal.fromString(s.trim)).toSet
-      }
-      .getOrElse(Set.empty[KafkaPrincipal])
+    superUsers = configs.get(SimpleAclAuthorizer.SuperUsersProp).collect {
+      case str: String if str.nonEmpty =>
+        str.split(";").map(s => KafkaPrincipal.fromString(s.trim)).toSet
+    }.getOrElse(Set.empty[KafkaPrincipal])
 
     shouldAllowEveryoneIfNoAclIsFound = configs
       .get(SimpleAclAuthorizer.AllowEveryoneIfNoAclIsFoundProp)
@@ -109,17 +106,13 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
     // means that `KafkaConfig.zkConnect` must always be set by the user (even if `SimpleAclAuthorizer.ZkUrlProp` is also
     // set).
     val kafkaConfig = KafkaConfig.fromProps(props, doLog = false)
-    val zkUrl = configs
-      .get(SimpleAclAuthorizer.ZkUrlProp)
-      .map(_.toString)
+    val zkUrl = configs.get(SimpleAclAuthorizer.ZkUrlProp).map(_.toString)
       .getOrElse(kafkaConfig.zkConnect)
     val zkConnectionTimeoutMs = configs
-      .get(SimpleAclAuthorizer.ZkConnectionTimeOutProp)
-      .map(_.toString.toInt)
+      .get(SimpleAclAuthorizer.ZkConnectionTimeOutProp).map(_.toString.toInt)
       .getOrElse(kafkaConfig.zkConnectionTimeoutMs)
     val zkSessionTimeOutMs = configs
-      .get(SimpleAclAuthorizer.ZkSessionTimeOutProp)
-      .map(_.toString.toInt)
+      .get(SimpleAclAuthorizer.ZkSessionTimeOutProp).map(_.toString.toInt)
       .getOrElse(kafkaConfig.zkSessionTimeoutMs)
 
     zkUtils = ZkUtils(
@@ -211,20 +204,16 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       host: String,
       permissionType: PermissionType,
       acls: Set[Acl]): Boolean = {
-    acls
-      .find(acl =>
-        acl.permissionType == permissionType
-          && (
-            acl.principal == principal || acl.principal == Acl.WildCardPrincipal
-          )
-          && (operations == acl.operation || acl.operation == All)
-          && (acl.host == host || acl.host == Acl.WildCardHost))
-      .map { acl: Acl =>
-        authorizerLogger.debug(
-          s"operation = $operations on resource = $resource from host = $host is $permissionType based on acl = $acl")
-        true
-      }
-      .getOrElse(false)
+    acls.find(acl =>
+      acl.permissionType == permissionType
+        && (acl.principal == principal || acl.principal == Acl
+          .WildCardPrincipal)
+        && (operations == acl.operation || acl.operation == All)
+        && (acl.host == host || acl.host == Acl.WildCardHost)).map { acl: Acl =>
+      authorizerLogger.debug(
+        s"operation = $operations on resource = $resource from host = $host is $permissionType based on acl = $acl")
+      true
+    }.getOrElse(false)
   }
 
   override def addAcls(acls: Set[Acl], resource: Resource) {
@@ -262,12 +251,9 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
 
   override def getAcls(principal: KafkaPrincipal): Map[Resource, Set[Acl]] = {
     inReadLock(lock) {
-      aclCache
-        .mapValues { versionedAcls =>
-          versionedAcls.acls.filter(_.principal == principal)
-        }
-        .filter { case (_, acls) => acls.nonEmpty }
-        .toMap
+      aclCache.mapValues { versionedAcls =>
+        versionedAcls.acls.filter(_.principal == principal)
+      }.filter { case (_, acls) => acls.nonEmpty }.toMap
     }
   }
 
@@ -285,8 +271,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       val resourceTypes = zkUtils.getChildren(SimpleAclAuthorizer.AclZkPath)
       for (rType <- resourceTypes) {
         val resourceType = ResourceType.fromString(rType)
-        val resourceTypePath =
-          SimpleAclAuthorizer.AclZkPath + "/" + resourceType.name
+        val resourceTypePath = SimpleAclAuthorizer
+          .AclZkPath + "/" + resourceType.name
         val resourceNames = zkUtils.getChildren(resourceTypePath)
         for (resourceName <- resourceNames) {
           val versionedAcls = getAclsFromZk(
@@ -298,7 +284,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   }
 
   def toResourcePath(resource: Resource): String = {
-    SimpleAclAuthorizer.AclZkPath + "/" + resource.resourceType + "/" + resource.name
+    SimpleAclAuthorizer.AclZkPath + "/" + resource.resourceType + "/" + resource
+      .name
   }
 
   private def logAuditMessage(
@@ -386,10 +373,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       data: String,
       expectedVersion: Int): (Boolean, Int) = {
     try {
-      zkUtils.conditionalUpdatePersistentPathIfExists(
-        path,
-        data,
-        expectedVersion)
+      zkUtils
+        .conditionalUpdatePersistentPathIfExists(path, data, expectedVersion)
     } catch {
       case e: ZkNoNodeException =>
         try {
@@ -423,7 +408,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
 
   private def updateAclChangedFlag(resource: Resource) {
     zkUtils.createSequentialPersistentPath(
-      SimpleAclAuthorizer.AclChangedZkPath + "/" + SimpleAclAuthorizer.AclChangedPrefix,
+      SimpleAclAuthorizer.AclChangedZkPath + "/" + SimpleAclAuthorizer
+        .AclChangedPrefix,
       resource.toString)
   }
 

@@ -232,7 +232,8 @@ private[internal] trait TypeConstraints {
               case _ =>
             }
           } else {
-            if (bound.typeSymbol != NothingClass && bound.typeSymbol != tparam) {
+            if (bound.typeSymbol != NothingClass && bound
+                  .typeSymbol != tparam) {
               debuglog(
                 s"$tvar addLoBound $bound.instantiateTypeParams($tparams, $tvars)")
               tvar addLoBound bound.instantiateTypeParams(tparams, tvars)

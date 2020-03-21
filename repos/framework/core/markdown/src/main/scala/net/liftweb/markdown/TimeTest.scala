@@ -46,8 +46,8 @@ trait TimedTransformer {
   def apply(s: String) = {
 
     //first, run the input through the line parser
-    val (ms1, lineReader: MarkdownLineReader) = TimeTest.executionTime(() =>
-      lineTokenizer.tokenize(s))
+    val (ms1, lineReader: MarkdownLineReader) = TimeTest
+      .executionTime(() => lineTokenizer.tokenize(s))
 
     //then, run it through the block parser
     val (ms2, result) = TimeTest.executionTime(() => blockParser(lineReader))
@@ -87,8 +87,8 @@ object TimeTest {
   def testRun(markdown: String, iterations: Int) {
     println("Running Actuarius " + iterations + " times...")
     println(
-      "... took " + (
-        executionTime(() => runActuarius(markdown, iterations)))._1 + "ms")
+      "... took " + (executionTime(() => runActuarius(markdown, iterations)))
+        ._1 + "ms")
   }
 
   object testParser extends BaseParsers {
@@ -102,8 +102,8 @@ object TimeTest {
   }
 
   def runActuarius = {
-    val markdown =
-      readFile("/home/chris/sbt_projects/markdown_race/test.txt").mkString * 100
+    val markdown = readFile("/home/chris/sbt_projects/markdown_race/test.txt")
+      .mkString * 100
     val iterations = 10
     println("==== First run to warm up the VM: ====")
     testRun(markdown, iterations)

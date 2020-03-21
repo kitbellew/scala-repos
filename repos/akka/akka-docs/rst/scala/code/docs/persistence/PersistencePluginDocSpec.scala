@@ -82,8 +82,7 @@ class PersistencePluginDocSpec extends WordSpec {
 
     val system = ActorSystem(
       "PersistencePluginDocSpec",
-      ConfigFactory
-        .parseString(providerConfig)
+      ConfigFactory.parseString(providerConfig)
         .withFallback(ConfigFactory.parseString(
           PersistencePluginDocSpec.config)))
     try { Persistence(system) }
@@ -114,8 +113,9 @@ object SharedLeveldbPluginDocSpec {
   //#shared-store-usage
   trait SharedStoreUsage extends Actor {
     override def preStart(): Unit = {
-      context.actorSelection(
-        "akka.tcp://example@127.0.0.1:2552/user/store") ! Identify(1)
+      context
+        .actorSelection(
+          "akka.tcp://example@127.0.0.1:2552/user/store") ! Identify(1)
     }
 
     def receive = {
@@ -216,8 +216,8 @@ object PersistenceTCKDoc {
     //#journal-tck-before-after-scala
     class MyJournalSpec
         extends JournalSpec(
-          config = ConfigFactory.parseString(
-            """
+          config = ConfigFactory
+            .parseString("""
         akka.persistence.journal.plugin = "my.journal.plugin"
         """)) {
 

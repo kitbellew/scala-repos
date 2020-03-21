@@ -31,9 +31,8 @@ object TestStore {
   private val testStores = new WeakHashMap[String, TestStore[_, _]]
 
   def apply[K, V: Semigroup](storeID: String): Option[TestStore[K, V]] =
-    (Option(testStores.get(storeID)).map { s =>
-      s.asInstanceOf[TestStore[K, V]]
-    })
+    (Option(testStores.get(storeID))
+      .map { s => s.asInstanceOf[TestStore[K, V]] })
 
   private def buildStore[K, V: Semigroup](initialData: Map[K, V]): String = {
     val storeID = UUID.randomUUID.toString
@@ -49,21 +48,18 @@ object TestStore {
       : (String, MergeableStoreFactory[(K, BatchID), V]) = {
 
     val storeID = buildStore[(K, BatchID), V](initialData)
-    val supplier = MergeableStoreFactory.from(
-      TestStore
-        .apply[(K, BatchID), V](storeID)
-        .getOrElse(sys.error("Weak hash map no longer contains store")))
+    val supplier = MergeableStoreFactory
+      .from(TestStore.apply[(K, BatchID), V](storeID).getOrElse(sys.error(
+        "Weak hash map no longer contains store")))
     (storeID, supplier)
   }
 
-  def createStore[K, V: Semigroup](
-      initialData: Map[K, V] = Map
-        .empty[K, V]): (String, MergeableStoreFactory[(K, BatchID), V]) = {
+  def createStore[K, V: Semigroup](initialData: Map[K, V] = Map.empty[K, V])
+      : (String, MergeableStoreFactory[(K, BatchID), V]) = {
     val storeID = buildStore[K, V](initialData)
-    val supplier = MergeableStoreFactory.fromOnlineOnly(
-      TestStore
-        .apply[K, V](storeID)
-        .getOrElse(sys.error("Weak hash map no longer contains store")))
+    val supplier = MergeableStoreFactory
+      .fromOnlineOnly(TestStore.apply[K, V](storeID).getOrElse(sys.error(
+        "Weak hash map no longer contains store")))
 
     (storeID, supplier)
   }
@@ -71,8 +67,8 @@ object TestStore {
 
 case class TestStore[K, V: Semigroup](storeID: String, initialData: Map[K, V])
     extends MergeableStore[K, V] {
-  private val backingStore: JMap[K, Option[V]] = Collections.synchronizedMap(
-    new HashMap[K, Option[V]]())
+  private val backingStore: JMap[K, Option[V]] = Collections
+    .synchronizedMap(new HashMap[K, Option[V]]())
   val updates: AtomicInteger = new AtomicInteger(0)
   val reads: AtomicInteger = new AtomicInteger(0)
 

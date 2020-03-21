@@ -84,15 +84,14 @@ abstract class MixinNodes {
       }
       val thisMap: NodesMap = toNodesMap(
         getOrElse(convertedName, new ArrayBuffer))
-      val maps: List[NodesMap] = supersList.map(sup =>
-        toNodesMap(sup.getOrElse(convertedName, new ArrayBuffer)))
+      val maps: List[NodesMap] = supersList
+        .map(sup => toNodesMap(sup.getOrElse(convertedName, new ArrayBuffer)))
       val supers = mergeWithSupers(thisMap, mergeSupers(maps))
       val list = supersList.flatMap(
         _.privatesMap.getOrElse(convertedName, new ArrayBuffer[(T, Node)]))
       val supersPrivates = toNodesSeq(list)
       val thisPrivates = toNodesSeq(
-        privatesMap
-          .getOrElse(convertedName, new ArrayBuffer[(T, Node)])
+        privatesMap.getOrElse(convertedName, new ArrayBuffer[(T, Node)])
           .toList ::: list)
       val thisAllNodes = new AllNodes(thisMap, thisPrivates)
       val supersAllNodes = new AllNodes(supers, supersPrivates)
@@ -391,8 +390,7 @@ abstract class MixinNodes {
                 zSubst)
             case template: ScTemplateDefinition =>
               place = Option(
-                template
-                  .asInstanceOf[ScalaStubBasedElementImpl[_]]
+                template.asInstanceOf[ScalaStubBasedElementImpl[_]]
                   .getLastChildStub)
               processScala(
                 template,
@@ -446,14 +444,13 @@ abstract class MixinNodes {
           // Do not include scala.ScalaObject to Predef's base types to prevent SOE
           if (!(superClass.qualifiedName == "scala.ScalaObject" && isPredef)) {
             val dependentSubst = superType match {
-              case p @ ScProjectionType(proj, eem, _) =>
-                new ScSubstitutor(proj).followed(p.actualSubst)
+              case p @ ScProjectionType(proj, eem, _) => new ScSubstitutor(proj)
+                  .followed(p.actualSubst)
               case ScParameterizedType(p @ ScProjectionType(proj, _, _), _) =>
                 new ScSubstitutor(proj).followed(p.actualSubst)
               case _ => ScSubstitutor.empty
             }
-            val newSubst = combine(s, subst, superClass)
-              .followed(thisTypeSubst)
+            val newSubst = combine(s, subst, superClass).followed(thisTypeSubst)
               .followed(dependentSubst)
             val newMap = new Map
             superClass match {
@@ -461,8 +458,7 @@ abstract class MixinNodes {
                 processScala(template, newSubst, newMap, place, base = false)
               case syn: ScSyntheticClass =>
                 //it's required to do like this to have possibility mix Synthetic types
-                val clazz = ScalaPsiManager
-                  .instance(syn.getProject)
+                val clazz = ScalaPsiManager.instance(syn.getProject)
                   .getCachedClass(
                     syn.getQualifiedName,
                     GlobalSearchScope.allScope(syn.getProject),
@@ -560,8 +556,8 @@ object MixinNodes {
               clazz.getTypeParameters.map(tp =>
                 ScalaPsiManager.instance(clazz.getProject).typeVariable(tp)))
         clazz match {
-          case td: ScTypeDefinition =>
-            td.getType(TypingContext.empty).getOrElse(default)
+          case td: ScTypeDefinition => td.getType(TypingContext.empty)
+              .getOrElse(default)
           case _ => default
         }
       }
@@ -616,8 +612,8 @@ object MixinNodes {
     def add(tp: ScType) {
       ScType.extractClass(tp, project) match {
         case Some(clazz)
-            if clazz.qualifiedName != null && !set.contains(classString(
-              clazz)) =>
+            if clazz.qualifiedName != null && !set
+              .contains(classString(clazz)) =>
           tp +=: buffer
           set += classString(clazz)
         case Some(clazz) if clazz.getTypeParameters.nonEmpty =>

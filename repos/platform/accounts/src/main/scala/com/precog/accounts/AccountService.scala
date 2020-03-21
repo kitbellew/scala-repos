@@ -91,10 +91,8 @@ trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
                 case Success(account) => f(account)
                 case Failure(error) =>
                   logger.warn(
-                    "Authentication failure from %s for %s: %s".format(
-                      NetUtils.remoteIpFrom(request),
-                      email,
-                      error))
+                    "Authentication failure from %s for %s: %s"
+                      .format(NetUtils.remoteIpFrom(request), email, error))
                   Future(err(AuthMismatch(
                     "Credentials provided were formatted correctly, but did not match a known account.")))
               }
@@ -191,8 +189,8 @@ trait AccountService
                 }
               } ~
                 orFail { req: HttpRequest[ByteChunk] =>
-                  self.logger.error(
-                    "Request " + req + " could not be serviced.")
+                  self.logger
+                    .error("Request " + req + " could not be serviced.")
                   (
                     HttpStatusCodes.NotFound,
                     "Request " + req + " could not be serviced.")

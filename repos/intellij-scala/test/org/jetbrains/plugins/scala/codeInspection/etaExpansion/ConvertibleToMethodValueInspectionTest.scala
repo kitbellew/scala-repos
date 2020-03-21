@@ -14,8 +14,8 @@ import org.jetbrains.plugins.scala.codeInspection.{
 class ConvertibleToMethodValueInspectionTest
     extends ScalaLightInspectionFixtureTestAdapter {
   val annotation = InspectionBundle.message("convertible.to.method.value.name")
-  val hintAnon = InspectionBundle.message(
-    "convertible.to.method.value.anonymous.hint")
+  val hintAnon = InspectionBundle
+    .message("convertible.to.method.value.anonymous.hint")
   val hintEta = InspectionBundle.message("convertible.to.method.value.eta.hint")
 
   protected def classOfInspection: Class[_ <: LocalInspectionTool] =

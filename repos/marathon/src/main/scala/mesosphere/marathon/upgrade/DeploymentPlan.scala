@@ -87,27 +87,27 @@ final case class DeploymentPlan(
     steps.flatMap(_.actions.map(_.app)).toSet
 
   /** @return all ids of apps which are referenced in any deployment actions */
-  lazy val affectedApplicationIds: Set[PathId] =
-    steps.flatMap(_.actions.map(_.app.id)).toSet
+  lazy val affectedApplicationIds: Set[PathId] = steps
+    .flatMap(_.actions.map(_.app.id)).toSet
 
   def isAffectedBy(other: DeploymentPlan): Boolean =
     // FIXME: check for group change conflicts?
     affectedApplicationIds.intersect(other.affectedApplicationIds).nonEmpty
 
   def createdOrUpdatedApps: Seq[AppDefinition] = {
-    target.transitiveApps.toIndexedSeq.filter(app =>
-      affectedApplicationIds(app.id))
+    target.transitiveApps.toIndexedSeq
+      .filter(app => affectedApplicationIds(app.id))
   }
 
   override def toString: String = {
     def appString(app: AppDefinition): String = {
       val cmdString = app.cmd.fold("")(cmd => ", cmd=\"" + cmd + "\"")
-      val argsString = app.args.fold("")(args =>
-        ", args=\"" + args.mkString(" ") + "\"")
-      val maybeDockerImage: Option[String] = app.container.flatMap(
-        _.docker.map(_.image))
-      val dockerImageString = maybeDockerImage.fold("")(image =>
-        ", image=\"" + image + "\"")
+      val argsString = app.args
+        .fold("")(args => ", args=\"" + args.mkString(" ") + "\"")
+      val maybeDockerImage: Option[String] = app.container
+        .flatMap(_.docker.map(_.image))
+      val dockerImageString = maybeDockerImage
+        .fold("")(image => ", image=\"" + image + "\"")
 
       s"App(${app.id}$dockerImageString$cmdString$argsString))"
     }
@@ -117,8 +117,7 @@ final case class DeploymentPlan(
           s"Start(${appString(app)}, instances=$scale)"
         case StopApplication(app) => s"Stop(${appString(app)})"
         case ScaleApplication(app, scale, toKill) =>
-          val killTasksString = toKill
-            .filter(_.nonEmpty)
+          val killTasksString = toKill.filter(_.nonEmpty)
             .map(", killTasks=" + _.map(_.taskId.idString).mkString(","))
             .getOrElse("")
           s"Scale(${appString(app)}, instances=$scale$killTasksString)"
@@ -128,13 +127,10 @@ final case class DeploymentPlan(
       }
     val stepString =
       if (steps.nonEmpty) {
-        steps
-          .map { _.actions.map(actionString).mkString("  * ", "\n  * ", "") }
-          .zipWithIndex
-          .map {
+        steps.map { _.actions.map(actionString).mkString("  * ", "\n  * ", "") }
+          .zipWithIndex.map {
             case (stepsString, index) => s"step ${index + 1}:\n$stepsString"
-          }
-          .mkString("\n", "\n", "")
+          }.mkString("\n", "\n", "")
       } else " NO STEPS"
     s"DeploymentPlan $version$stepString\n"
   }
@@ -150,12 +146,9 @@ final case class DeploymentPlan(
       version = Timestamp(msg.getVersion)).copy(id = msg.getId)
 
   override def toProto: Protos.DeploymentPlanDefinition =
-    Protos.DeploymentPlanDefinition.newBuilder
-      .setId(id)
-      .setOriginal(original.toProto)
-      .setTarget(target.toProto)
-      .setVersion(version.toString)
-      .build()
+    Protos.DeploymentPlanDefinition.newBuilder.setId(id)
+      .setOriginal(original.toProto).setTarget(target.toProto)
+      .setVersion(version.toString).build()
 }
 
 object DeploymentPlan {
@@ -212,9 +205,9 @@ object DeploymentPlan {
 
       if (outgoingEdges.isEmpty) Seq(vertex)
       else
-        outgoingEdges
-          .map { e => vertex +: longestPathFromVertex(g, g.getEdgeTarget(e)) }
-          .maxBy(_.length)
+        outgoingEdges.map { e =>
+          vertex +: longestPathFromVertex(g, g.getEdgeTarget(e))
+        }.maxBy(_.length)
 
     }
 
@@ -233,14 +226,14 @@ object DeploymentPlan {
       original: Group,
       target: Group,
       toKill: Map[PathId, Iterable[Task]]): Seq[DeploymentStep] = {
-    val originalApps: Map[PathId, AppDefinition] =
-      original.transitiveApps.map(app => app.id -> app).toMap
+    val originalApps: Map[PathId, AppDefinition] = original.transitiveApps
+      .map(app => app.id -> app).toMap
 
     val appsByLongestPath: SortedMap[Int, Set[AppDefinition]] =
       appsGroupedByLongestPath(target)
 
-    appsByLongestPath.valuesIterator
-      .map { (equivalenceClass: Set[AppDefinition]) =>
+    appsByLongestPath.valuesIterator.map {
+      (equivalenceClass: Set[AppDefinition]) =>
         val actions: Set[DeploymentAction] = equivalenceClass.flatMap {
           (newApp: AppDefinition) =>
             originalApps.get(newApp.id) match {
@@ -264,8 +257,7 @@ object DeploymentPlan {
         }
 
         DeploymentStep(actions.to[Seq])
-      }
-      .to[Seq]
+    }.to[Seq]
   }
 
   /**
@@ -285,11 +277,11 @@ object DeploymentPlan {
       toKill: Map[PathId, Iterable[Task]] = Map.empty): DeploymentPlan = {
 
     // Lookup maps for original and target apps.
-    val originalApps: Map[PathId, AppDefinition] =
-      original.transitiveApps.map(app => app.id -> app).toMap
+    val originalApps: Map[PathId, AppDefinition] = original.transitiveApps
+      .map(app => app.id -> app).toMap
 
-    val targetApps: Map[PathId, AppDefinition] =
-      target.transitiveApps.map(app => app.id -> app).toMap
+    val targetApps: Map[PathId, AppDefinition] = target.transitiveApps
+      .map(app => app.id -> app).toMap
 
     // A collection of deployment steps for this plan.
     val steps = Seq.newBuilder[DeploymentStep]
@@ -299,17 +291,17 @@ object DeploymentPlan {
 
     // 1. Destroy apps that do not exist in the target.
     steps += DeploymentStep(
-      (originalApps -- targetApps.keys).valuesIterator
-        .map { oldApp => StopApplication(oldApp) }
-        .to[Seq])
+      (originalApps -- targetApps.keys).valuesIterator.map { oldApp =>
+        StopApplication(oldApp)
+      }.to[Seq])
 
     // 2. Start apps that do not exist in the original, requiring only 0
     //    instances.  These are scaled as needed in the dependency-ordered
     //    steps that follow.
     steps += DeploymentStep(
-      (targetApps -- originalApps.keys).valuesIterator
-        .map { newApp => StartApplication(newApp, 0) }
-        .to[Seq])
+      (targetApps -- originalApps.keys).valuesIterator.map { newApp =>
+        StartApplication(newApp, 0)
+      }.to[Seq])
 
     // 3. For each app in each dependency class,
     //

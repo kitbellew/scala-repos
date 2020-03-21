@@ -1,4 +1,5 @@
-package somereallylongpackagenamethatwilltestsbtsanalyzer_somereallylongpackagenamethatwilltestsbtsanalyzer.somereallylongpackagenamethatwilltestsbtsanalyzer
+package somereallylongpackagenamethatwilltestsbtsanalyzer_somereallylongpackagenamethatwilltestsbtsanalyzer
+  .somereallylongpackagenamethatwilltestsbtsanalyzer
 
 object T {
   val y = List(3)

@@ -40,8 +40,7 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
     if (!commentText.endsWith(expectedCommentEnd)) return false
     val containingFile: PsiFile = comment.getContainingFile
     val language: Language = comment.getParent.getLanguage
-    val lexer: Lexer = LanguageParserDefinitions.INSTANCE
-      .forLanguage(language)
+    val lexer: Lexer = LanguageParserDefinitions.INSTANCE.forLanguage(language)
       .createLexer(containingFile.getProject)
     val commentPrefix: String =
       if (docComment) commenter.getDocumentationCommentPrefix
@@ -50,9 +49,8 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
       commentText,
       if (commentPrefix eq null) 0 else commentPrefix.length,
       commentText.length)
-    val fileTypeHandler: QuoteHandler = TypedHandler.getQuoteHandler(
-      containingFile,
-      editor)
+    val fileTypeHandler: QuoteHandler = TypedHandler
+      .getQuoteHandler(containingFile, editor)
     val javaLikeQuoteHandler: JavaLikeQuoteHandler = fileTypeHandler match {
       case quoteHandler: JavaLikeQuoteHandler => quoteHandler
       case _                                  => null
@@ -60,14 +58,14 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
     while (true) {
       val tokenType: IElementType = lexer.getTokenType
       if (tokenType eq null) { return false }
-      if (javaLikeQuoteHandler != null && javaLikeQuoteHandler.getStringTokenTypes != null &&
+      if (javaLikeQuoteHandler != null && javaLikeQuoteHandler
+            .getStringTokenTypes != null &&
           javaLikeQuoteHandler.getStringTokenTypes.contains(tokenType)) {
-        val text: String = commentText.substring(
-          lexer.getTokenStart,
-          lexer.getTokenEnd)
+        val text: String = commentText
+          .substring(lexer.getTokenStart, lexer.getTokenEnd)
         val endOffset: Int = comment.getTextRange.getEndOffset
-        if (text.endsWith(
-              expectedCommentEnd) && endOffset < containingFile.getTextLength && containingFile.getText
+        if (text.endsWith(expectedCommentEnd) && endOffset < containingFile
+              .getTextLength && containingFile.getText
               .charAt(endOffset) == '\n') { return true }
       }
       var continue = false
@@ -81,13 +79,13 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
           continue = true
         } else if (isInvalidPsi(comment)) { return false }
         else {
-          return lexer.getTokenEnd - lexer.getTokenStart == 2 //difference from EnterHandler
+          return lexer.getTokenEnd - lexer
+            .getTokenStart == 2 //difference from EnterHandler
         }
       }
-      if (!continue && (
-            tokenType == commenter.getDocumentationCommentTokenType ||
-            tokenType == commenter.getBlockCommentTokenType
-          )) { return false }
+      if (!continue && (tokenType == commenter
+            .getDocumentationCommentTokenType ||
+          tokenType == commenter.getBlockCommentTokenType)) { return false }
       else if (!continue) { lexer.advance() }
     }
     false

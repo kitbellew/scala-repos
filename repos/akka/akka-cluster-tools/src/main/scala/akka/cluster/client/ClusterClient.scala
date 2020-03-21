@@ -52,19 +52,17 @@ object ClusterClientSettings {
     */
   def apply(config: Config): ClusterClientSettings = {
     val initialContacts = immutableSeq(config.getStringList("initial-contacts"))
-      .map(ActorPath.fromString)
-      .toSet
+      .map(ActorPath.fromString).toSet
     new ClusterClientSettings(
       initialContacts,
       establishingGetContactsInterval = config
-        .getDuration("establishing-get-contacts-interval", MILLISECONDS)
-        .millis,
-      refreshContactsInterval =
-        config.getDuration("refresh-contacts-interval", MILLISECONDS).millis,
+        .getDuration("establishing-get-contacts-interval", MILLISECONDS).millis,
+      refreshContactsInterval = config
+        .getDuration("refresh-contacts-interval", MILLISECONDS).millis,
       heartbeatInterval =
         config.getDuration("heartbeat-interval", MILLISECONDS).millis,
-      acceptableHeartbeatPause =
-        config.getDuration("acceptable-heartbeat-pause", MILLISECONDS).millis,
+      acceptableHeartbeatPause = config
+        .getDuration("acceptable-heartbeat-pause", MILLISECONDS).millis,
       bufferSize = config.getInt("buffer-size"),
       reconnectTimeout = config.getString("reconnect-timeout") match {
         case "off" ⇒ None
@@ -293,17 +291,14 @@ final class ClusterClient(settings: ClusterClientSettings)
   val failureDetector =
     new DeadlineFailureDetector(acceptableHeartbeatPause, heartbeatInterval)
 
-  val initialContactsSel: immutable.IndexedSeq[ActorSelection] =
-    initialContacts.map(context.actorSelection).toVector
+  val initialContactsSel: immutable.IndexedSeq[ActorSelection] = initialContacts
+    .map(context.actorSelection).toVector
   var contacts = initialContactsSel
   sendGetContacts()
 
   import context.dispatcher
-  val heartbeatTask = context.system.scheduler.schedule(
-    heartbeatInterval,
-    heartbeatInterval,
-    self,
-    HeartbeatTick)
+  val heartbeatTask = context.system.scheduler
+    .schedule(heartbeatInterval, heartbeatInterval, self, HeartbeatTick)
   var refreshContactsTask: Option[Cancellable] = None
   scheduleRefreshContactsTick(establishingGetContactsInterval)
   self ! RefreshContactsTick
@@ -312,11 +307,9 @@ final class ClusterClient(settings: ClusterClientSettings)
 
   def scheduleRefreshContactsTick(interval: FiniteDuration): Unit = {
     refreshContactsTask foreach { _.cancel() }
-    refreshContactsTask = Some(context.system.scheduler.schedule(
-      interval,
-      interval,
-      self,
-      RefreshContactsTick))
+    refreshContactsTask = Some(
+      context.system.scheduler
+        .schedule(interval, interval, self, RefreshContactsTick))
   }
 
   override def postStop(): Unit = {
@@ -364,10 +357,8 @@ final class ClusterClient(settings: ClusterClientSettings)
 
   def active(receptionist: ActorRef): Actor.Receive = {
     case Send(path, msg, localAffinity) ⇒
-      receptionist forward DistributedPubSubMediator.Send(
-        path,
-        msg,
-        localAffinity)
+      receptionist forward DistributedPubSubMediator
+        .Send(path, msg, localAffinity)
     case SendToAll(path, msg) ⇒
       receptionist forward DistributedPubSubMediator.SendToAll(path, msg)
     case Publish(topic, msg) ⇒
@@ -396,8 +387,8 @@ final class ClusterClient(settings: ClusterClientSettings)
       if (contacts.isEmpty) initialContactsSel
       else if (contacts.size == 1) (initialContactsSel union contacts)
       else contacts
-    if (log.isDebugEnabled)
-      log.debug(s"""Sending GetContacts to [${sendTo.mkString(",")}]""")
+    if (log.isDebugEnabled) log.debug(s"""Sending GetContacts to [${sendTo
+      .mkString(",")}]""")
     sendTo.foreach { _ ! GetContacts }
   }
 
@@ -461,8 +452,8 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * receptionist.
     */
   def isTerminated: Boolean =
-    Cluster(system).isTerminated || !role.forall(
-      Cluster(system).selfRoles.contains)
+    Cluster(system).isTerminated || !role
+      .forall(Cluster(system).selfRoles.contains)
 
   /**
     * Register the actors that should be reachable for the clients in this [[DistributedPubSubMediator]].
@@ -482,8 +473,8 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     * but it can also be explicitly unregistered before termination.
     */
   def unregisterService(actor: ActorRef): Unit =
-    pubSubMediator ! DistributedPubSubMediator.Remove(
-      actor.path.toStringWithoutAddress)
+    pubSubMediator ! DistributedPubSubMediator
+      .Remove(actor.path.toStringWithoutAddress)
 
   /**
     * Register an actor that should be reachable for the clients to a named topic.
@@ -515,8 +506,7 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
       // important to use val mediator here to activate it outside of ClusterReceptionist constructor
       val mediator = pubSubMediator
       system.systemActorOf(
-        ClusterReceptionist
-          .props(mediator, ClusterReceptionistSettings(config))
+        ClusterReceptionist.props(mediator, ClusterReceptionistSettings(config))
           .withDispatcher(dispatcher),
         name)
     }
@@ -541,8 +531,7 @@ object ClusterReceptionistSettings {
       role = roleOption(config.getString("role")),
       numberOfContacts = config.getInt("number-of-contacts"),
       responseTunnelReceiveTimeout = config
-        .getDuration("response-tunnel-receive-timeout", MILLISECONDS)
-        .millis)
+        .getDuration("response-tunnel-receive-timeout", MILLISECONDS).millis)
 
   /**
     * Java API: Create settings from the default configuration
@@ -781,8 +770,8 @@ final class ClusterReceptionist(
       } else {
         // using toStringWithAddress in case the client is local, normally it is not, and
         // toStringWithAddress will use the remote address of the client
-        val a = consistentHash.nodeFor(
-          sender().path.toStringWithAddress(cluster.selfAddress))
+        val a = consistentHash
+          .nodeFor(sender().path.toStringWithAddress(cluster.selfAddress))
         val slice = {
           val first = nodes.from(a).tail.take(numberOfContacts)
           if (first.size == numberOfContacts) first

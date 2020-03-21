@@ -31,8 +31,7 @@ class MarathonLeaderInfoTest
   test("currentLeaderHostPort handles exceptions and returns None") {
     Given("a leaderInfo with a candidate which throws exceptions")
     val f = new Fixture
-    Mockito
-      .when(f.candidate.getLeaderData)
+    Mockito.when(f.candidate.getLeaderData)
       .thenThrow(new RuntimeException("test failure!"))
 
     When("querying for currentLeaderHostPort")

@@ -175,9 +175,7 @@ class LBFGSB(
     var fSecondDerivative = (-1.0 * theta) * fDerivative - p.dot(M * p)
     var dtMin = -(fDerivative / fSecondDerivative)
     var oldT = 0.0
-    val sortedIndeces = t
-      .map(x => x._1)
-      .toArray
+    val sortedIndeces = t.map(x => x._1).toArray
       .sortWith((ia, ib) => t(ia)._2 < t(ib)._2)
 
     var i = sortedIndeces.indexWhere(idx => 0 != t(idx)._2)

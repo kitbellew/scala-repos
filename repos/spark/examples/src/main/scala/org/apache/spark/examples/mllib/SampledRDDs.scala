@@ -42,9 +42,8 @@ object SampledRDDs {
     val parser = new OptionParser[Params]("SampledRDDs") {
       head(
         "SampledRDDs: an example app for randomly generated and sampled RDDs.")
-      opt[String]("input")
-        .text(
-          s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
+      opt[String]("input").text(
+        s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
         .action((x, c) => c.copy(input = x))
       note(
         """
@@ -78,13 +77,11 @@ object SampledRDDs {
     val expectedSampleSize = (numExamples * fraction).toInt
     println(
       s"Sampling RDD using fraction $fraction.  Expected sample size = $expectedSampleSize.")
-    val sampledRDD = examples.sample(
-      withReplacement = true,
-      fraction = fraction)
+    val sampledRDD = examples
+      .sample(withReplacement = true, fraction = fraction)
     println(s"  RDD.sample(): sample has ${sampledRDD.count()} examples")
-    val sampledArray = examples.takeSample(
-      withReplacement = true,
-      num = expectedSampleSize)
+    val sampledArray = examples
+      .takeSample(withReplacement = true, num = expectedSampleSize)
     println(s"  RDD.takeSample(): sample has ${sampledArray.length} examples")
 
     println()
@@ -97,9 +94,8 @@ object SampledRDDs {
 
     //  Subsample, and count examples per label in sampled data. (approximate)
     val fractions = keyCounts.keys.map((_, fraction)).toMap
-    val sampledByKeyRDD = keyedRDD.sampleByKey(
-      withReplacement = true,
-      fractions = fractions)
+    val sampledByKeyRDD = keyedRDD
+      .sampleByKey(withReplacement = true, fractions = fractions)
     val keyCountsB = sampledByKeyRDD.countByKey()
     val sizeB = keyCountsB.values.sum
     println(
@@ -107,9 +103,8 @@ object SampledRDDs {
         " ==> Approx Sample")
 
     //  Subsample, and count examples per label in sampled data. (approximate)
-    val sampledByKeyRDDExact = keyedRDD.sampleByKeyExact(
-      withReplacement = true,
-      fractions = fractions)
+    val sampledByKeyRDDExact = keyedRDD
+      .sampleByKeyExact(withReplacement = true, fractions = fractions)
     val keyCountsBExact = sampledByKeyRDDExact.countByKey()
     val sizeBExact = keyCountsBExact.values.sum
     println(

@@ -109,50 +109,50 @@ abstract class ScaladocModelTest extends DirectTest {
       def _class(name: String): DocTemplateEntity =
         getTheFirst(_classes(name), tpl.qualifiedName + ".class(" + name + ")")
       def _classes(name: String): List[DocTemplateEntity] =
-        tpl.templates
-          .filter(_.name == name)
-          .collect({ case c: DocTemplateEntity with Class => c })
+        tpl.templates.filter(_.name == name).collect({
+          case c: DocTemplateEntity with Class => c
+        })
 
       def _classMbr(name: String): MemberTemplateEntity =
         getTheFirst(
           _classesMbr(name),
           tpl.qualifiedName + ".classMember(" + name + ")")
       def _classesMbr(name: String): List[MemberTemplateEntity] =
-        tpl.templates
-          .filter(_.name == name)
-          .collect({ case c: MemberTemplateEntity if c.isClass => c })
+        tpl.templates.filter(_.name == name).collect({
+          case c: MemberTemplateEntity if c.isClass => c
+        })
 
       def _trait(name: String): DocTemplateEntity =
         getTheFirst(_traits(name), tpl.qualifiedName + ".trait(" + name + ")")
       def _traits(name: String): List[DocTemplateEntity] =
-        tpl.templates
-          .filter(_.name == name)
-          .collect({ case t: DocTemplateEntity with Trait => t })
+        tpl.templates.filter(_.name == name).collect({
+          case t: DocTemplateEntity with Trait => t
+        })
 
       def _traitMbr(name: String): MemberTemplateEntity =
         getTheFirst(
           _traitsMbr(name),
           tpl.qualifiedName + ".traitMember(" + name + ")")
       def _traitsMbr(name: String): List[MemberTemplateEntity] =
-        tpl.templates
-          .filter(_.name == name)
-          .collect({ case t: MemberTemplateEntity if t.isTrait => t })
+        tpl.templates.filter(_.name == name).collect({
+          case t: MemberTemplateEntity if t.isTrait => t
+        })
 
       def _object(name: String): DocTemplateEntity =
         getTheFirst(_objects(name), tpl.qualifiedName + ".object(" + name + ")")
       def _objects(name: String): List[DocTemplateEntity] =
-        tpl.templates
-          .filter(_.name == name)
-          .collect({ case o: DocTemplateEntity with Object => o })
+        tpl.templates.filter(_.name == name).collect({
+          case o: DocTemplateEntity with Object => o
+        })
 
       def _objectMbr(name: String): MemberTemplateEntity =
         getTheFirst(
           _objectsMbr(name),
           tpl.qualifiedName + ".objectMember(" + name + ")")
       def _objectsMbr(name: String): List[MemberTemplateEntity] =
-        tpl.templates
-          .filter(_.name == name)
-          .collect({ case o: MemberTemplateEntity if o.isObject => o })
+        tpl.templates.filter(_.name == name).collect({
+          case o: MemberTemplateEntity if o.isObject => o
+        })
 
       def _method(name: String): Def =
         getTheFirst(_methods(name), tpl.qualifiedName + ".method(" + name + ")")
@@ -234,13 +234,12 @@ abstract class ScaladocModelTest extends DirectTest {
         case 0 => sys.error("Error getting " + expl + ": No such element.")
         case _ =>
           sys.error(
-            "Error getting " + expl + ": " + list.length + " elements with this name. " +
-              "All elements in list: [" + list
-              .map({
-                case ent: Entity => ent.kind + " " + ent.qualifiedName
-                case other       => other.toString
-              })
-              .mkString(", ") + "]")
+            "Error getting " + expl + ": " + list
+              .length + " elements with this name. " +
+              "All elements in list: [" + list.map({
+              case ent: Entity => ent.kind + " " + ent.qualifiedName
+              case other       => other.toString
+            }).mkString(", ") + "]")
       }
 
     def extractCommentText(c: Any) = {
@@ -280,10 +279,12 @@ abstract class ScaladocModelTest extends DirectTest {
       assert(diag.isDefined, doc.qualifiedName + " diagram missing")
       assert(
         diag.get.nodes.length == nodes,
-        doc.qualifiedName + "'s diagram: node count " + diag.get.nodes.length + " == " + nodes)
+        doc.qualifiedName + "'s diagram: node count " + diag.get.nodes
+          .length + " == " + nodes)
       assert(
         diag.get.edges.map(_._2.length).sum == edges,
-        doc.qualifiedName + "'s diagram: edge count " + diag.get.edges.length + " == " + edges)
+        doc.qualifiedName + "'s diagram: edge count " + diag.get.edges
+          .length + " == " + edges)
     }
   }
 }

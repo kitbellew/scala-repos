@@ -105,8 +105,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     // ClassBTypes mentioned in the source code to exist in the map.
 
     val nilLookupDesc = MethodBType(Nil, jliMethodHandlesLookupRef).descriptor
-    val serlamObjDesc =
-      MethodBType(jliSerializedLambdaRef :: Nil, ObjectRef).descriptor
+    val serlamObjDesc = MethodBType(jliSerializedLambdaRef :: Nil, ObjectRef)
+      .descriptor
 
     {
       val mv = cw.visitMethod(
@@ -145,10 +145,10 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
         case callGraph.LambdaMetaFactoryCall(indy, _, _, _) =>
           indy.bsmArgs match {
             case Array(_, _, _, flags: Integer, xs @ _*)
-                if (
-                  flags.intValue & LambdaMetafactory.FLAG_SERIALIZABLE
-                ) != 0 => hasSerializableClosureInstantiation = true
-            case _     =>
+                if (flags.intValue & LambdaMetafactory
+                  .FLAG_SERIALIZABLE) != 0 =>
+              hasSerializableClosureInstantiation = true
+            case _ =>
           }
         case _ =>
       }
@@ -169,12 +169,10 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   private val anonfunAdaptedName = """.*\$anonfun\$\d+\$adapted""".r
   def hasAdaptedImplMethod(closureInit: ClosureInstantiation): Boolean = {
     isrJFunctionType(
-      Type
-        .getReturnType(closureInit.lambdaMetaFactoryCall.indy.desc)
+      Type.getReturnType(closureInit.lambdaMetaFactoryCall.indy.desc)
         .getInternalName) &&
     anonfunAdaptedName.pattern
-      .matcher(closureInit.lambdaMetaFactoryCall.implMethod.getName)
-      .matches
+      .matcher(closureInit.lambdaMetaFactoryCall.implMethod.getName).matches
   }
 
   private def primitiveAsmTypeToBType(primitiveType: Type): PrimitiveBType =
@@ -193,8 +191,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def isScalaBox(insn: MethodInsnNode): Boolean = {
     insn.owner == srBoxesRunTimeRef.internalName && {
       val args = Type.getArgumentTypes(insn.desc)
-      args.length == 1 && (srBoxesRuntimeBoxToMethods.get(
-        primitiveAsmTypeToBType(args(0))) match {
+      args.length == 1 && (srBoxesRuntimeBoxToMethods
+        .get(primitiveAsmTypeToBType(args(0))) match {
         case Some(MethodNameAndType(name, tp)) =>
           name == insn.name && tp.descriptor == insn.desc
         case _ => false
@@ -214,8 +212,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
 
   def isScalaUnbox(insn: MethodInsnNode): Boolean = {
     insn.owner == srBoxesRunTimeRef.internalName && (
-      srBoxesRuntimeUnboxToMethods.get(primitiveAsmTypeToBType(
-        Type.getReturnType(insn.desc))) match {
+      srBoxesRuntimeUnboxToMethods
+        .get(primitiveAsmTypeToBType(Type.getReturnType(insn.desc))) match {
         case Some(MethodNameAndType(name, tp)) =>
           name == insn.name && tp.descriptor == insn.desc
         case _ => false
@@ -249,16 +247,16 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     calleeInMap(insn, javaUnboxMethods)
 
   def isPredefAutoBox(insn: MethodInsnNode): Boolean = {
-    insn.owner == PredefRef.internalName && (predefAutoBoxMethods.get(
-      insn.name) match {
+    insn.owner == PredefRef.internalName && (predefAutoBoxMethods
+      .get(insn.name) match {
       case Some(tp) => insn.desc == tp.descriptor
       case _        => false
     })
   }
 
   def isPredefAutoUnbox(insn: MethodInsnNode): Boolean = {
-    insn.owner == PredefRef.internalName && (predefAutoUnboxMethods.get(
-      insn.name) match {
+    insn.owner == PredefRef.internalName && (predefAutoUnboxMethods
+      .get(insn.name) match {
       case Some(tp) => insn.desc == tp.descriptor
       case _        => false
     })
@@ -286,9 +284,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def isModuleLoad(insn: AbstractInsnNode, moduleName: InternalName): Boolean =
     insn match {
       case fi: FieldInsnNode =>
-        fi.getOpcode == GETSTATIC && fi.owner == moduleName && fi.name == "MODULE$" && fi.desc == (
-          "L" + moduleName + ";"
-        )
+        fi.getOpcode == GETSTATIC && fi.owner == moduleName && fi
+          .name == "MODULE$" && fi.desc == ("L" + moduleName + ";")
       case _ => false
     }
 
@@ -336,7 +333,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def isBoxedUnit(insn: AbstractInsnNode) = {
     insn.getOpcode == GETSTATIC && {
       val fi = insn.asInstanceOf[FieldInsnNode]
-      fi.owner == srBoxedUnitRef.internalName && fi.name == "UNIT" && fi.desc == srBoxedUnitRef.descriptor
+      fi.owner == srBoxedUnitRef.internalName && fi.name == "UNIT" && fi
+        .desc == srBoxedUnitRef.descriptor
     }
   }
 
@@ -417,8 +415,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     }
 
     visitInternalName(classNode.name)
-    innerClasses ++= classBTypeFromParsedClassfile(
-      classNode.name).info.get.nestedClasses
+    innerClasses ++= classBTypeFromParsedClassfile(classNode.name).info.get
+      .nestedClasses
 
     visitInternalName(classNode.superName)
     classNode.interfaces.asScala foreach visitInternalName
@@ -556,10 +554,11 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
           insn match {
             case v: VarInsnNode =>
               val longSize = if (isSize2LoadOrStore(v.getOpcode)) 1 else 0
-              maxLocals = math.max(
-                maxLocals,
-                v.`var` + longSize + 1
-              ) // + 1 because local numbers are 0-based
+              maxLocals = math
+                .max(
+                  maxLocals,
+                  v.`var` + longSize + 1
+                ) // + 1 because local numbers are 0-based
 
             case i: IincInsnNode => maxLocals = math.max(maxLocals, i.`var` + 1)
 

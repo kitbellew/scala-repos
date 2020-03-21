@@ -18,8 +18,8 @@ class AdminAPISpec extends Specification {
     accessKeyClient = Storage.getMetaDataAccessKeys,
     eventClient = Storage.getLEvents())
 
-  val adminActor = system.actorOf(
-    Props(classOf[AdminServiceActor], commandClient))
+  val adminActor = system
+    .actorOf(Props(classOf[AdminServiceActor], commandClient))
 
   "GET / request" should {
     "properly produce OK HttpResponses" in {

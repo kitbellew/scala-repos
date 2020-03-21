@@ -290,8 +290,8 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
         |    
         |    Some notes on implementation performance, the function runs in O(1).
         |    <br>
-        |<DD><DL><DT><b>Parameters:</b><DD><code>i</code> - An important parameter""".stripMargin
-        .replaceAll("\r", "")
+        |<DD><DL><DT><b>Parameters:</b><DD><code>i</code> - An important parameter"""
+        .stripMargin.replaceAll("\r", "")
 
     generateNested(fileText, "B", "f", test)
   }

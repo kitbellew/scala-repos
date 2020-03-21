@@ -29,8 +29,8 @@ object Scheduler {
       extends RuntimeException(msg, e)
 
   @volatile
-  private var service = Executors.newSingleThreadScheduledExecutor(
-    SchedulerThreadFactory)
+  private var service = Executors
+    .newSingleThreadScheduledExecutor(SchedulerThreadFactory)
 
   /**
     * Schedules to send the specified message to the receiver after initialDelay and then repeated after delay
@@ -42,15 +42,13 @@ object Scheduler {
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
     try {
-      service
-        .scheduleAtFixedRate(
-          new Runnable {
-            def run = receiver ! message
-          },
-          initialDelay,
-          delay,
-          timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
+      service.scheduleAtFixedRate(
+        new Runnable {
+          def run = receiver ! message
+        },
+        initialDelay,
+        delay,
+        timeUnit).asInstanceOf[ScheduledFuture[AnyRef]]
     } catch {
       case e: Exception =>
         val error = SchedulerException(
@@ -88,8 +86,7 @@ object Scheduler {
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
     try {
-      service
-        .scheduleAtFixedRate(runnable, initialDelay, delay, timeUnit)
+      service.scheduleAtFixedRate(runnable, initialDelay, delay, timeUnit)
         .asInstanceOf[ScheduledFuture[AnyRef]]
     } catch {
       case e: Exception =>
@@ -108,14 +105,12 @@ object Scheduler {
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
     try {
-      service
-        .schedule(
-          new Runnable {
-            def run = receiver ! message
-          },
-          delay,
-          timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
+      service.schedule(
+        new Runnable {
+          def run = receiver ! message
+        },
+        delay,
+        timeUnit).asInstanceOf[ScheduledFuture[AnyRef]]
     } catch {
       case e: Exception =>
         val error = SchedulerException(
@@ -150,8 +145,7 @@ object Scheduler {
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
     try {
-      service
-        .schedule(runnable, delay, timeUnit)
+      service.schedule(runnable, delay, timeUnit)
         .asInstanceOf[ScheduledFuture[AnyRef]]
     } catch {
       case e: Exception =>
@@ -166,8 +160,8 @@ object Scheduler {
   def restart() {
     synchronized {
       shutdown()
-      service = Executors.newSingleThreadScheduledExecutor(
-        SchedulerThreadFactory)
+      service = Executors
+        .newSingleThreadScheduledExecutor(SchedulerThreadFactory)
     }
   }
 }

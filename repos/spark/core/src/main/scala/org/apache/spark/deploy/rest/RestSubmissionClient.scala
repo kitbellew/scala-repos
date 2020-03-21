@@ -333,8 +333,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
           "Application successfully submitted, but submission ID was not provided!")
       }
     } else {
-      val failMessage = Option(submitResponse.message)
-        .map { ": " + _ }
+      val failMessage = Option(submitResponse.message).map { ": " + _ }
         .getOrElse("")
       logError(s"Application submission failed$failMessage")
     }
@@ -456,8 +455,9 @@ private[spark] object RestSubmissionClient {
       env: Map[String, String]): Map[String, String] = {
     env.filterKeys { k =>
       // SPARK_HOME is filtered out because it is usually wrong on the remote machine (SPARK-12345)
-      (k.startsWith(
-        "SPARK_") && k != "SPARK_ENV_LOADED" && k != "SPARK_HOME") ||
+      (k
+        .startsWith(
+          "SPARK_") && k != "SPARK_ENV_LOADED" && k != "SPARK_HOME") ||
       k.startsWith("MESOS_")
     }
   }

@@ -102,8 +102,8 @@ object ThreadPoolsSpec extends PlaySpecification {
       #my-context-config """) { implicit app =>
       val akkaSystem = app.actorSystem
       //#my-context-usage
-      val myExecutionContext: ExecutionContext = akkaSystem.dispatchers.lookup(
-        "my-context")
+      val myExecutionContext: ExecutionContext = akkaSystem.dispatchers
+        .lookup("my-context")
       //#my-context-usage
       await(
         Future(Thread.currentThread().getName)(
@@ -191,12 +191,12 @@ object ThreadPoolsSpec extends PlaySpecification {
       object Contexts {
         implicit val simpleDbLookups: ExecutionContext = akkaSystem.dispatchers
           .lookup("contexts.simple-db-lookups")
-        implicit val expensiveDbLookups: ExecutionContext =
-          akkaSystem.dispatchers.lookup("contexts.expensive-db-lookups")
-        implicit val dbWriteOperations: ExecutionContext =
-          akkaSystem.dispatchers.lookup("contexts.db-write-operations")
-        implicit val expensiveCpuOperations: ExecutionContext =
-          akkaSystem.dispatchers.lookup("contexts.expensive-cpu-operations")
+        implicit val expensiveDbLookups: ExecutionContext = akkaSystem
+          .dispatchers.lookup("contexts.expensive-db-lookups")
+        implicit val dbWriteOperations: ExecutionContext = akkaSystem
+          .dispatchers.lookup("contexts.db-write-operations")
+        implicit val expensiveCpuOperations: ExecutionContext = akkaSystem
+          .dispatchers.lookup("contexts.expensive-cpu-operations")
       }
       //#many-specific-contexts
       def test(context: ExecutionContext, name: String) = {
@@ -213,8 +213,8 @@ object ThreadPoolsSpec extends PlaySpecification {
 
   def runningWithConfig[T: AsResult](config: String)(
       block: Application => T) = {
-    val parsed: java.util.Map[String, Object] =
-      ConfigFactory.parseString(config).root.unwrapped
+    val parsed: java.util.Map[String, Object] = ConfigFactory
+      .parseString(config).root.unwrapped
     running(_.configure(Configuration(ConfigFactory.parseString(config))))(
       block)
   }

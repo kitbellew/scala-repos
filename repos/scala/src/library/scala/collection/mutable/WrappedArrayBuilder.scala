@@ -35,8 +35,7 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
   private def mkArray(size: Int): WrappedArray[A] = {
     val runtimeClass = arrayElementClass(tag)
     val newelems = runtimeClass match {
-      case java.lang.Byte.TYPE =>
-        new WrappedArray.ofByte(new Array[Byte](size))
+      case java.lang.Byte.TYPE => new WrappedArray.ofByte(new Array[Byte](size))
           .asInstanceOf[WrappedArray[A]]
       case java.lang.Short.TYPE =>
         new WrappedArray.ofShort(new Array[Short](size))
@@ -47,8 +46,7 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
       case java.lang.Integer.TYPE =>
         new WrappedArray.ofInt(new Array[Int](size))
           .asInstanceOf[WrappedArray[A]]
-      case java.lang.Long.TYPE =>
-        new WrappedArray.ofLong(new Array[Long](size))
+      case java.lang.Long.TYPE => new WrappedArray.ofLong(new Array[Long](size))
           .asInstanceOf[WrappedArray[A]]
       case java.lang.Float.TYPE =>
         new WrappedArray.ofFloat(new Array[Float](size))
@@ -59,8 +57,7 @@ class WrappedArrayBuilder[A](tag: ClassTag[A])
       case java.lang.Boolean.TYPE =>
         new WrappedArray.ofBoolean(new Array[Boolean](size))
           .asInstanceOf[WrappedArray[A]]
-      case java.lang.Void.TYPE =>
-        new WrappedArray.ofUnit(new Array[Unit](size))
+      case java.lang.Void.TYPE => new WrappedArray.ofUnit(new Array[Unit](size))
           .asInstanceOf[WrappedArray[A]]
       case _ =>
         new WrappedArray.ofRef[A with AnyRef](

@@ -42,8 +42,7 @@ class BucketedReadSuite
     with TestHiveSingleton {
   import testImplicits._
 
-  private val df = (0 until 50)
-    .map(i => (i % 5, i % 13, i.toString))
+  private val df = (0 until 50).map(i => (i % 5, i % 13, i.toString))
     .toDF("i", "j", "k")
   private val nullDF =
     (for {
@@ -53,10 +52,7 @@ class BucketedReadSuite
 
   test("read bucketed data") {
     withTable("bucketed_table") {
-      df.write
-        .format("parquet")
-        .partitionBy("i")
-        .bucketBy(8, "j", "k")
+      df.write.format("parquet").partitionBy("i").bucketBy(8, "j", "k")
         .saveAsTable("bucketed_table")
 
       for (i <- 0 until 5) {
@@ -89,25 +85,24 @@ class BucketedReadSuite
       originalDataFrame: DataFrame): Unit = {
     // This test verifies parts of the plan. Disable whole stage codegen.
     withSQLConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key -> "false") {
-      val bucketedDataFrame = hiveContext
-        .table("bucketed_table")
+      val bucketedDataFrame = hiveContext.table("bucketed_table")
         .select("i", "j", "k")
       val BucketSpec(numBuckets, bucketColumnNames, _) = bucketSpec
       // Limit: bucket pruning only works when the bucket column has one and only one column
       assert(bucketColumnNames.length == 1)
-      val bucketColumnIndex = bucketedDataFrame.schema.fieldIndex(
-        bucketColumnNames.head)
-      val bucketColumn = bucketedDataFrame.schema.toAttributes(
-        bucketColumnIndex)
+      val bucketColumnIndex = bucketedDataFrame.schema
+        .fieldIndex(bucketColumnNames.head)
+      val bucketColumn = bucketedDataFrame.schema
+        .toAttributes(bucketColumnIndex)
       val matchedBuckets = new BitSet(numBuckets)
       bucketValues.foreach { value =>
-        matchedBuckets.set(
-          DataSourceStrategy.getBucketId(bucketColumn, numBuckets, value))
+        matchedBuckets
+          .set(DataSourceStrategy.getBucketId(bucketColumn, numBuckets, value))
       }
 
       // Filter could hide the bug in bucket pruning. Thus, skipping all the filters
-      val plan =
-        bucketedDataFrame.filter(filterCondition).queryExecution.executedPlan
+      val plan = bucketedDataFrame.filter(filterCondition).queryExecution
+        .executedPlan
       val rdd = plan.find(_.isInstanceOf[DataSourceScan])
       assert(rdd.isDefined, plan)
 
@@ -135,10 +130,7 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      df.write
-        .format("json")
-        .partitionBy("i")
-        .bucketBy(numBuckets, "j")
+      df.write.format("json").partitionBy("i").bucketBy(numBuckets, "j")
         .saveAsTable("bucketed_table")
 
       for (j <- 0 until 13) {
@@ -171,9 +163,7 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      df.write
-        .format("json")
-        .bucketBy(numBuckets, "j")
+      df.write.format("json").bucketBy(numBuckets, "j")
         .saveAsTable("bucketed_table")
 
       for (j <- 0 until 13) {
@@ -191,10 +181,7 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      nullDF.write
-        .format("json")
-        .partitionBy("i")
-        .bucketBy(numBuckets, "j")
+      nullDF.write.format("json").partitionBy("i").bucketBy(numBuckets, "j")
         .saveAsTable("bucketed_table")
 
       // Case 1: isNull
@@ -218,10 +205,7 @@ class BucketedReadSuite
       val numBuckets = 8
       val bucketSpec = BucketSpec(numBuckets, Seq("j"), Nil)
       // json does not support predicate push-down, and thus json is used here
-      df.write
-        .format("json")
-        .partitionBy("i")
-        .bucketBy(numBuckets, "j")
+      df.write.format("json").partitionBy("i").bucketBy(numBuckets, "j")
         .saveAsTable("bucketed_table")
 
       for (j <- 0 until 13) {
@@ -240,14 +224,10 @@ class BucketedReadSuite
     }
   }
 
-  private val df1 = (0 until 50)
-    .map(i => (i % 5, i % 13, i.toString))
-    .toDF("i", "j", "k")
-    .as("df1")
-  private val df2 = (0 until 50)
-    .map(i => (i % 7, i % 11, i.toString))
-    .toDF("i", "j", "k")
-    .as("df2")
+  private val df1 = (0 until 50).map(i => (i % 5, i % 13, i.toString))
+    .toDF("i", "j", "k").as("df1")
+  private val df2 = (0 until 50).map(i => (i % 7, i % 11, i.toString))
+    .toDF("i", "j", "k").as("df2")
 
   /**
     * A helper method to test the bucket read functionality using join.  It will save `df1` and `df2`
@@ -265,14 +245,12 @@ class BucketedReadSuite
       def withBucket(
           writer: DataFrameWriter,
           bucketSpec: Option[BucketSpec]): DataFrameWriter = {
-        bucketSpec
-          .map { spec =>
-            writer.bucketBy(
-              spec.numBuckets,
-              spec.bucketColumnNames.head,
-              spec.bucketColumnNames.tail: _*)
-          }
-          .getOrElse(writer)
+        bucketSpec.map { spec =>
+          writer.bucketBy(
+            spec.numBuckets,
+            spec.bucketColumnNames.head,
+            spec.bucketColumnNames.tail: _*)
+        }.getOrElse(writer)
       }
 
       withBucket(df1.write.format("parquet"), bucketSpecLeft)
@@ -290,8 +268,7 @@ class BucketedReadSuite
         // First check the result is corrected.
         checkAnswer(
           joined.sort("bucketed_table1.k", "bucketed_table2.k"),
-          df1
-            .join(df2, joinCondition(df1, df2, joinColumns))
+          df1.join(df2, joinCondition(df1, df2, joinColumns))
             .sort("df1.k", "df2.k"))
 
         assert(joined.queryExecution.executedPlan.isInstanceOf[SortMergeJoin])
@@ -299,14 +276,12 @@ class BucketedReadSuite
           .asInstanceOf[SortMergeJoin]
 
         assert(
-          joinOperator.left
-            .find(_.isInstanceOf[ShuffleExchange])
+          joinOperator.left.find(_.isInstanceOf[ShuffleExchange])
             .isDefined == shuffleLeft,
           s"expected shuffle in plan to be $shuffleLeft but found\n${joinOperator.left}"
         )
         assert(
-          joinOperator.right
-            .find(_.isInstanceOf[ShuffleExchange])
+          joinOperator.right.find(_.isInstanceOf[ShuffleExchange])
             .isDefined == shuffleRight,
           s"expected shuffle in plan to be $shuffleRight but found\n${joinOperator.right}"
         )
@@ -401,9 +376,7 @@ class BucketedReadSuite
 
   test("avoid shuffle when grouping keys are equal to bucket keys") {
     withTable("bucketed_table") {
-      df1.write
-        .format("parquet")
-        .bucketBy(8, "i", "j")
+      df1.write.format("parquet").bucketBy(8, "i", "j")
         .saveAsTable("bucketed_table")
       val tbl = hiveContext.table("bucketed_table")
       val agged = tbl.groupBy("i", "j").agg(max("k"))
@@ -413,8 +386,7 @@ class BucketedReadSuite
         df1.groupBy("i", "j").agg(max("k")).sort("i", "j"))
 
       assert(
-        agged.queryExecution.executedPlan
-          .find(_.isInstanceOf[ShuffleExchange])
+        agged.queryExecution.executedPlan.find(_.isInstanceOf[ShuffleExchange])
           .isEmpty)
     }
   }
@@ -430,8 +402,7 @@ class BucketedReadSuite
         df1.groupBy("i", "j").agg(max("k")).sort("i", "j"))
 
       assert(
-        agged.queryExecution.executedPlan
-          .find(_.isInstanceOf[ShuffleExchange])
+        agged.queryExecution.executedPlan.find(_.isInstanceOf[ShuffleExchange])
           .isEmpty)
     }
   }

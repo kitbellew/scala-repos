@@ -39,8 +39,8 @@ trait JodaTimeSteroids {
     def getSeconds: Long = date.getMillis / 1000
     def getDate: java.util.Date = date.toDate
   }
-  implicit val dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(
-    _ isBefore _)
+  implicit val dateTimeOrdering: Ordering[DateTime] = Ordering
+    .fromLessThan(_ isBefore _)
 }
 
 trait ListSteroids {

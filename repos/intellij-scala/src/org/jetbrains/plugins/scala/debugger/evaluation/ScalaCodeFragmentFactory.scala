@@ -39,8 +39,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
     fragment.setContext(wrapContext(project, context), null)
 
     def evaluateType(expr: ScExpression): ScType = {
-      val debuggerContext: DebuggerContextImpl =
-        DebuggerManagerEx.getInstanceEx(project).getContext
+      val debuggerContext: DebuggerContextImpl = DebuggerManagerEx
+        .getInstanceEx(project).getContext
       val debuggerSession = debuggerContext.getDebuggerSession
       if (debuggerSession != null) {
         val semaphore: Semaphore = new Semaphore
@@ -99,8 +99,10 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
 
   def isContextAccepted(contextElement: PsiElement): Boolean = {
     if (contextElement.isInstanceOf[PsiCodeBlock]) {
-      return contextElement.getContext != null && contextElement.getContext.getContext != null &&
-        contextElement.getContext.getContext.getLanguage == ScalaFileType.SCALA_LANGUAGE
+      return contextElement.getContext != null && contextElement.getContext
+        .getContext != null &&
+        contextElement.getContext.getContext.getLanguage == ScalaFileType
+          .SCALA_LANGUAGE
     }
     if (contextElement == null) return false
     contextElement.getLanguage == ScalaFileType.SCALA_LANGUAGE
@@ -115,11 +117,11 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
       originalContext: PsiElement): PsiElement = {
     if (project.isDefault) return originalContext
     var context: PsiElement = originalContext
-    val session: XDebugSession =
-      XDebuggerManager.getInstance(project).getCurrentSession
+    val session: XDebugSession = XDebuggerManager.getInstance(project)
+      .getCurrentSession
     if (session != null) {
-      val markers: XValueMarkers[_, _] =
-        session.asInstanceOf[XDebugSessionImpl].getValueMarkers
+      val markers: XValueMarkers[_, _] = session.asInstanceOf[XDebugSessionImpl]
+        .getValueMarkers
       val markupMap =
         if (markers != null) markers.getAllMarkers.asScala.toMap else null
       if (markupMap != null && markupMap.nonEmpty) {
@@ -158,8 +160,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
     val names = markupMap.collect {
       case (obj: ObjectReference, markup: ValueMarkup)
           if StringUtil.isJavaIdentifier(markup.getText) =>
-        val labelName =
-          markup.getText + CodeFragmentFactoryContextWrapper.DEBUG_LABEL_SUFFIX
+        val labelName = markup.getText + CodeFragmentFactoryContextWrapper
+          .DEBUG_LABEL_SUFFIX
         reverseMap.put(labelName, obj)
         labelName
     }

@@ -23,36 +23,33 @@ private[netty4] object Netty4Transporter {
     new Transporter[In, Out] {
       def apply(addr: SocketAddress): Future[Transport[In, Out]] = {
         val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
-        val LatencyCompensation
-          .Compensation(compensation) = params[LatencyCompensation.Compensation]
-        val Transporter
-          .ConnectTimeout(connectTimeout) = params[Transporter.ConnectTimeout]
-        val Transport
-          .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
+        val LatencyCompensation.Compensation(compensation) = params[
+          LatencyCompensation.Compensation]
+        val Transporter.ConnectTimeout(connectTimeout) = params[
+          Transporter.ConnectTimeout]
+        val Transport.BufferSizes(sendBufSize, recvBufSize) = params[
+          Transport.BufferSizes]
 
         // max connect timeout is ~24.8 days
-        val compensatedConnectTimeoutMs =
-          (compensation + connectTimeout).inMillis.min(Int.MaxValue)
+        val compensatedConnectTimeoutMs = (compensation + connectTimeout)
+          .inMillis.min(Int.MaxValue)
 
-        val bootstrap = new Bootstrap()
-          .group(WorkerPool)
+        val bootstrap = new Bootstrap().group(WorkerPool)
           .channel(classOf[NioSocketChannel])
           // todo: investigate pooled allocator CSL-2089
           .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
           .option[JBool](ChannelOption.TCP_NODELAY, noDelay)
-          .option[JBool](ChannelOption.SO_REUSEADDR, reuseAddr)
-          .option[JBool](
+          .option[JBool](ChannelOption.SO_REUSEADDR, reuseAddr).option[JBool](
             ChannelOption.AUTO_READ,
             false
           ) // backpressure! no reads on transport => no reads on the socket
           .option[JInt](
             ChannelOption.CONNECT_TIMEOUT_MILLIS,
-            compensatedConnectTimeoutMs.toInt)
-          .handler(init)
+            compensatedConnectTimeoutMs.toInt).handler(init)
 
         val Transport.Liveness(_, _, keepAlive) = params[Transport.Liveness]
-        keepAlive.foreach(
-          bootstrap.option[JBool](ChannelOption.SO_KEEPALIVE, _))
+        keepAlive
+          .foreach(bootstrap.option[JBool](ChannelOption.SO_KEEPALIVE, _))
         sendBufSize.foreach(bootstrap.option[JInt](ChannelOption.SO_SNDBUF, _))
         recvBufSize.foreach(bootstrap.option[JInt](ChannelOption.SO_RCVBUF, _))
 

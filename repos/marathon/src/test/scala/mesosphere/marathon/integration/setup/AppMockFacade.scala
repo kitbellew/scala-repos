@@ -20,9 +20,7 @@ class AppMockFacade(https: Boolean = false, waitTime: Duration = 30.seconds)(
       Thread.sleep(waitForNextTry.toMillis)
       block
     })
-    val firstSuccess = attempts
-      .take(retries - 1)
-      .find(_.isSuccess)
+    val firstSuccess = attempts.take(retries - 1).find(_.isSuccess)
       .flatMap(_.toOption)
     firstSuccess.getOrElse(block)
   }
@@ -35,8 +33,7 @@ class AppMockFacade(https: Boolean = false, waitTime: Duration = 30.seconds)(
 
   def custom(uri: String)(host: String, port: Int): RestResult[String] = {
     retry() {
-      RestResult
-        .await(pipeline(Get(s"$scheme://$host:$port$uri")), waitTime)
+      RestResult.await(pipeline(Get(s"$scheme://$host:$port$uri")), waitTime)
         .map(_.entity.asString)
     }
   }

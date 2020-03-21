@@ -16,10 +16,8 @@ class FileUploadExample
     MultipartConfig(maxFileSize = Some(3 * 1024 * 1024)))
 
   def displayPage(content: Seq[Node]) =
-    Template.page(
-      "File upload example",
-      content,
-      url(_, includeServletPath = false))
+    Template
+      .page("File upload example", content, url(_, includeServletPath = false))
 
   error {
     case e: SizeConstraintExceededException =>
@@ -47,11 +45,10 @@ class FileUploadExample
       case Some(file) => Ok(
           file.get(),
           Map(
-            "Content-Type" -> (file.contentType.getOrElse(
-              "application/octet-stream")),
-            "Content-Disposition" -> (
-              "attachment; filename=\"" + file.name + "\""
-            ))
+            "Content-Type" -> (file.contentType
+              .getOrElse("application/octet-stream")),
+            "Content-Disposition" -> ("attachment; filename=\"" + file
+              .name + "\""))
         )
 
       case None => BadRequest(displayPage(<p>

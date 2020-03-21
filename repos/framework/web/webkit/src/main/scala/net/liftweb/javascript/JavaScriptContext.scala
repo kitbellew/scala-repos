@@ -35,17 +35,16 @@ object JavaScriptContext {
 
     LiftRules.dataAttributeProcessor.append {
       case ("jssource", value, elem, session) =>
-        val (rule, v2): (NodeSeq => NodeSeq, Box[String]) =
-          value.roboSplit("\\#\\>") match {
-            case x :: Nil         => (PassThru, Full(x))
-            case x :: "it" :: Nil => session.buildXformer(x, Nil) -> Empty
-            case x :: str :: Nil if str.startsWith("it.") =>
-              session.buildXformer(
-                x,
-                str.roboSplit("\\.").filter(_ != "it")) -> Empty
-            case x :: xs => session.buildXformer(x, Nil) -> Full(xs.mkString)
-            case _       => (PassThru, Full(value))
-          }
+        val (rule, v2): (NodeSeq => NodeSeq, Box[String]) = value
+          .roboSplit("\\#\\>") match {
+          case x :: Nil         => (PassThru, Full(x))
+          case x :: "it" :: Nil => session.buildXformer(x, Nil) -> Empty
+          case x :: str :: Nil if str.startsWith("it.") =>
+            session
+              .buildXformer(x, str.roboSplit("\\.").filter(_ != "it")) -> Empty
+          case x :: xs => session.buildXformer(x, Nil) -> Full(xs.mkString)
+          case _       => (PassThru, Full(value))
+        }
 
         v2 match {
           case Full(v22) => exec(v22) match {

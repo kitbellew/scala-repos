@@ -246,8 +246,7 @@ trait ListHelpers {
             (z: @unchecked) match {
               case x :: xs => permuteList(xs).map(x :: _)
             })
-          ret ::: rot
-            .map(z => (z: @unchecked) match { case x :: xs => xs })
+          ret ::: rot.map(z => (z: @unchecked) match { case x :: xs => xs })
             .flatMap(internal(_))
       }
     internal(in.toList).distinct.sortWith(_.length > _.length)

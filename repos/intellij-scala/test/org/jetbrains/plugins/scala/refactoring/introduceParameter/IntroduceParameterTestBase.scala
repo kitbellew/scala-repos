@@ -42,8 +42,8 @@ abstract class IntroduceParameterTestBase
     import _root_.junit.framework.Assert._
     val project = getProjectAdapter
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem.getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     val fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -59,9 +59,8 @@ abstract class IntroduceParameterTestBase
       "Not specified end marker in test case. Use /*end*/ in scala file for this.")
 
     val fileEditorManager = FileEditorManager.getInstance(project)
-    val editor = fileEditorManager.openTextEditor(
-      new OpenFileDescriptor(project, file, startOffset),
-      false)
+    val editor = fileEditorManager
+      .openTextEditor(new OpenFileDescriptor(project, file, startOffset), false)
 
     var res: String = null
 
@@ -96,19 +95,18 @@ abstract class IntroduceParameterTestBase
               ScalaRefactoringUtil.trimSpacesAndComments(editor, scalaFile)
               PsiDocumentManager.getInstance(project).commitAllDocuments()
               val handler = new ScalaIntroduceParameterHandler()
-              val (exprWithTypes, elems) =
-                handler.selectedElements(scalaFile, project, editor) match {
-                  case Some((x, y)) => (x, y)
-                  case None         => return
-                }
+              val (exprWithTypes, elems) = handler
+                .selectedElements(scalaFile, project, editor) match {
+                case Some((x, y)) => (x, y)
+                case None         => return
+              }
 
               val (methodLike: ScMethodLike, returnType) =
                 if (toPrimaryConstructor)
                   (
                     PsiTreeUtil
                       .getContextOfType(elems.head, true, classOf[ScClass])
-                      .constructor
-                      .get,
+                      .constructor.get,
                     StdType.ANY)
                 else {
                   val fun = PsiTreeUtil.getContextOfType(

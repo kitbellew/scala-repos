@@ -35,8 +35,7 @@ class ScalaNameSuggestionProvider extends NameSuggestionProvider {
       case clazz: ScTemplateDefinition => Seq[String](clazz.name)
       case typed: ScTypedDefinition =>
         typed.name +: NameSuggester
-          .suggestNamesByType(typed.getType(TypingContext.empty).getOrAny)
-          .toSeq
+          .suggestNamesByType(typed.getType(TypingContext.empty).getOrAny).toSeq
       case expr: ScExpression     => NameSuggester.suggestNames(expr).toSeq
       case named: ScNamedElement  => Seq[String](named.name)
       case named: PsiNamedElement => Seq[String](named.getName)

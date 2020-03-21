@@ -67,10 +67,8 @@ class FsHistoryProviderSuite
       inProgress: Boolean,
       codec: Option[String] = None): File = {
     val ip = if (inProgress) EventLoggingListener.IN_PROGRESS else ""
-    val logUri = EventLoggingListener.getLogPath(
-      testDir.toURI,
-      appId,
-      appAttemptId)
+    val logUri = EventLoggingListener
+      .getLogPath(testDir.toURI, appId, appAttemptId)
     val logPath = new URI(logUri).getPath + ip
     new File(logPath)
   }
@@ -214,8 +212,7 @@ class FsHistoryProviderSuite
       SparkListenerApplicationEnd(2L))
     updateAndCheck(provider) { list =>
       list.size should be(1)
-      list.head.attempts.head
-        .asInstanceOf[FsApplicationAttemptInfo]
+      list.head.attempts.head.asInstanceOf[FsApplicationAttemptInfo]
         .logPath should
         endWith(EventLoggingListener.IN_PROGRESS)
     }
@@ -223,8 +220,7 @@ class FsHistoryProviderSuite
     logFile1.renameTo(newLogFile("app1", None, inProgress = false))
     updateAndCheck(provider) { list =>
       list.size should be(1)
-      list.head.attempts.head
-        .asInstanceOf[FsApplicationAttemptInfo]
+      list.head.attempts.head.asInstanceOf[FsApplicationAttemptInfo]
         .logPath should not
       endWith(EventLoggingListener.IN_PROGRESS)
     }
@@ -523,8 +519,7 @@ class FsHistoryProviderSuite
       codec: Option[CompressionCodec],
       events: SparkListenerEvent*) = {
     val fstream = new FileOutputStream(file)
-    val cstream = codec
-      .map(_.compressedOutputStream(fstream))
+    val cstream = codec.map(_.compressedOutputStream(fstream))
       .getOrElse(fstream)
     val bstream = new BufferedOutputStream(cstream)
     if (isNewFormat) {

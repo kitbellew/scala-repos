@@ -45,19 +45,14 @@ object ScroogeUnionOrderedBuf {
 
     val dispatcher = buildDispatcher
 
-    val subClasses: List[Type] =
-      outerType.typeSymbol.asClass.knownDirectSubclasses
-        .map(_.asType.toType)
-        .toList
+    val subClasses: List[Type] = outerType.typeSymbol.asClass
+      .knownDirectSubclasses.map(_.asType.toType).toList
 
     val subData: List[(Int, Type, Option[TreeOrderedBuf[c.type]])] = subClasses
       .map { t =>
         if (t.typeSymbol.name.toString == "UnknownUnionField") { (t, None) }
         else { (t, Some(dispatcher(t))) }
-      }
-      .zipWithIndex
-      .map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }
-      .toList
+      }.zipWithIndex.map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }.toList
 
     require(subData.size > 0, "Must have some sub types on a union?")
 
@@ -81,9 +76,7 @@ object ScroogeUnionOrderedBuf {
       override def length(element: Tree): CompileTimeLengthTypes[c.type] =
         UnionLike.length(c)(element)(subData)
       override val lazyOuterVariables: Map[String, ctx.Tree] = subData
-        .flatMap(_._3)
-        .map(_.lazyOuterVariables)
-        .reduce(_ ++ _)
+        .flatMap(_._3).map(_.lazyOuterVariables).reduce(_ ++ _)
     }
   }
 }

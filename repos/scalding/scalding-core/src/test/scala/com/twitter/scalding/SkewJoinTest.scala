@@ -35,14 +35,10 @@ class SkewJoinJob(args: Args) extends Job(args) {
     input: (Int, Int, Int) => input
   }
 
-  in0
-    .skewJoinWithSmaller('y1 -> 'y2, in1, sampleRate, reducers, replicator)
-    .project('x1, 'y1, 's1, 'x2, 'y2, 's2)
-    .write(Tsv("output"))
+  in0.skewJoinWithSmaller('y1 -> 'y2, in1, sampleRate, reducers, replicator)
+    .project('x1, 'y1, 's1, 'x2, 'y2, 's2).write(Tsv("output"))
   // Normal inner join:
-  in0
-    .joinWithSmaller('y1 -> 'y2, in1)
-    .project('x1, 'y1, 's1, 'x2, 'y2, 's2)
+  in0.joinWithSmaller('y1 -> 'y2, in1).project('x1, 'y1, 's1, 'x2, 'y2, 's2)
     .write(Tsv("jws-output"))
 }
 
@@ -66,8 +62,7 @@ object JoinTestHelper {
 
     val skewResult = Buffer[JoinResult]()
     val innerResult = Buffer[JoinResult]()
-    JobTest(fn)
-      .arg("sampleRate", sampleRate.toString)
+    JobTest(fn).arg("sampleRate", sampleRate.toString)
       .arg("reducers", reducers.toString)
       .arg("replicationFactor", replicationFactor.toString)
       .arg("replicator", replicator.toString)
@@ -75,11 +70,9 @@ object JoinTestHelper {
       .source(Tsv("input1"), generateInput(100, 100))
       .sink[(Int, Int, Int, Int, Int, Int)](Tsv("output")) { outBuf =>
         skewResult ++= outBuf
-      }
-      .sink[(Int, Int, Int, Int, Int, Int)](Tsv("jws-output")) { outBuf =>
+      }.sink[(Int, Int, Int, Int, Int, Int)](Tsv("jws-output")) { outBuf =>
         innerResult ++= outBuf
-      }
-      .run
+      }.run
       //.runHadoop //this takes MUCH longer to run. Commented out by default, but tests pass on my machine
       .finish
     (skewResult.toList.sorted, innerResult.toList.sorted)
@@ -180,15 +173,12 @@ class CollidingKeySkewJoinJob(args: Args) extends Job(args) {
     input: (Int, Int, Int) => input
   }
 
-  in0
-    .skewJoinWithSmaller('k3 -> 'k3, in1, sampleRate, reducers, replicator)
+  in0.skewJoinWithSmaller('k3 -> 'k3, in1, sampleRate, reducers, replicator)
     .project('k1, 'k3, 'v1, 'k2, 'v2)
     .insert('z, 0) // Make it have the same schema as the non-colliding job
     .write(Tsv("output"))
   // Normal inner join:
-  in0
-    .joinWithSmaller('k3 -> 'k3, in1)
-    .project('k1, 'k3, 'v1, 'k2, 'v2)
+  in0.joinWithSmaller('k3 -> 'k3, in1).project('k1, 'k3, 'v1, 'k2, 'v2)
     .insert('z, 0) // Make it have the same schema as the non-colliding job
     .write(Tsv("jws-output"))
 }

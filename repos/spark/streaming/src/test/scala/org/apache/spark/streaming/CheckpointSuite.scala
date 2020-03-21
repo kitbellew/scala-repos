@@ -113,8 +113,8 @@ trait DStreamCheckpointTester {
     val batchDurationMillis = batchDuration.milliseconds
 
     // Setup the stream computation
-    val checkpointDir =
-      Utils.createTempDir(this.getClass.getSimpleName()).toString
+    val checkpointDir = Utils.createTempDir(this.getClass.getSimpleName())
+      .toString
     logDebug(s"Using checkpoint directory $checkpointDir")
     val ssc = createContextForCheckpointOperation(batchDuration)
     require(
@@ -154,8 +154,7 @@ trait DStreamCheckpointTester {
 
   protected def createContextForCheckpointOperation(
       batchDuration: Duration): StreamingContext = {
-    val conf = new SparkConf()
-      .setMaster("local")
+    val conf = new SparkConf().setMaster("local")
       .setAppName(this.getClass.getSimpleName)
     conf.set("spark.streaming.clock", classOf[ManualClock].getName())
     new StreamingContext(SparkContext.getOrCreate(conf), batchDuration)
@@ -196,8 +195,9 @@ trait DStreamCheckpointTester {
 
       eventually(timeout(10 seconds)) {
         val checkpointFilesOfLatestTime = Checkpoint
-          .getCheckpointFiles(checkpointDir)
-          .filter { _.toString.contains(clock.getTimeMillis.toString) }
+          .getCheckpointFiles(checkpointDir).filter {
+            _.toString.contains(clock.getTimeMillis.toString)
+          }
         // Checkpoint files are written twice for every batch interval. So assert that both
         // are written to make sure that both of them have been written.
         assert(checkpointFilesOfLatestTime.size === 2)
@@ -263,8 +263,8 @@ class CheckpointSuite
     val stateStreamCheckpointInterval = Seconds(1)
     val fs = FileSystem.getLocal(new Configuration())
     // this ensure checkpointing occurs at least once
-    val firstNumBatches =
-      (stateStreamCheckpointInterval / batchDuration).toLong * 2
+    val firstNumBatches = (stateStreamCheckpointInterval / batchDuration)
+      .toLong * 2
     val secondNumBatches = firstNumBatches
 
     // Setup the streams
@@ -273,14 +273,12 @@ class CheckpointSuite
       val updateFunc = (values: Seq[Int], state: Option[Int]) => {
         Some(values.sum + state.getOrElse(0))
       }
-      st.map(x => (x, 1))
-        .updateStateByKey(updateFunc)
-        .checkpoint(stateStreamCheckpointInterval)
-        .map(t => (t._1, t._2))
+      st.map(x => (x, 1)).updateStateByKey(updateFunc)
+        .checkpoint(stateStreamCheckpointInterval).map(t => (t._1, t._2))
     }
     var ssc = setupStreams(input, operation)
-    var stateStream =
-      ssc.graph.getOutputStreams().head.dependencies.head.dependencies.head
+    var stateStream = ssc.graph.getOutputStreams().head.dependencies.head
+      .dependencies.head
 
     // Run till a time such that at least one RDD in the stream should have been checkpointed,
     // then check whether some RDD has been checkpointed or not
@@ -301,8 +299,8 @@ class CheckpointSuite
 
     // Run till a further time such that previous checkpoint files in the stream would be deleted
     // and check whether the earlier checkpoint files are deleted
-    val checkpointFiles = stateStream.checkpointData.currentCheckpointFiles.map(
-      x => new File(x._2))
+    val checkpointFiles = stateStream.checkpointData.currentCheckpointFiles
+      .map(x => new File(x._2))
     advanceTimeWithRealDelay(ssc, secondNumBatches)
     checkpointFiles.foreach(file =>
       assert(!file.exists, "Checkpoint file '" + file + "' was not deleted"))
@@ -311,8 +309,8 @@ class CheckpointSuite
     // Restart stream computation using the checkpoint file and check whether
     // checkpointed RDDs have been restored or not
     ssc = new StreamingContext(checkpointDir)
-    stateStream =
-      ssc.graph.getOutputStreams().head.dependencies.head.dependencies.head
+    stateStream = ssc.graph.getOutputStreams().head.dependencies.head
+      .dependencies.head
     logInfo(
       "Restored data of state stream = \n[" + stateStream.generatedRDDs
         .mkString("\n") + "]")
@@ -340,8 +338,8 @@ class CheckpointSuite
     // Restart stream computation from the new checkpoint file to see whether that file has
     // correct checkpoint data
     ssc = new StreamingContext(checkpointDir)
-    stateStream =
-      ssc.graph.getOutputStreams().head.dependencies.head.dependencies.head
+    stateStream = ssc.graph.getOutputStreams().head.dependencies.head
+      .dependencies.head
     logInfo(
       "Restored data of state stream = \n[" + stateStream.generatedRDDs
         .mkString("\n") + "]")
@@ -620,10 +618,8 @@ class CheckpointSuite
       val updateFunc = (values: Seq[Int], state: Option[Int]) => {
         Some((values.sum + state.getOrElse(0)))
       }
-      st.map(x => (x, 1))
-        .updateStateByKey(updateFunc)
-        .checkpoint(batchDuration * 2)
-        .map(t => (t._1, t._2))
+      st.map(x => (x, 1)).updateStateByKey(updateFunc)
+        .checkpoint(batchDuration * 2).map(t => (t._1, t._2))
     }
     testCheckpointedOperation(input, operation, output, 7)
   }
@@ -653,9 +649,7 @@ class CheckpointSuite
 
     eventually(timeout(10.seconds)) {
       assert(
-        RateTestReceiver
-          .getActive()
-          .get
+        RateTestReceiver.getActive().get
           .getDefaultBlockGeneratorRateLimit() === 200)
     }
     ssc.stop()
@@ -690,9 +684,7 @@ class CheckpointSuite
       * Returns ids that identify which files which have been recorded by the file input stream.
       */
     def recordedFiles(ssc: StreamingContext): Seq[Int] = {
-      val fileInputDStream = ssc.graph
-        .getInputStreams()
-        .head
+      val fileInputDStream = ssc.graph.getInputStreams().head
         .asInstanceOf[FileInputDStream[_, _, _]]
       val filenames = fileInputDStream.batchTimeToSelectedFiles.synchronized {
         fileInputDStream.batchTimeToSelectedFiles.values.flatten
@@ -723,10 +715,8 @@ class CheckpointSuite
 
         // Reducing over a large window to ensure that recovery from driver failure
         // requires reprocessing of all the files seen before the failure
-        val reducedStream = mappedStream.reduceByWindow(
-          _ + _,
-          batchDuration * 30,
-          batchDuration)
+        val reducedStream = mappedStream
+          .reduceByWindow(_ + _, batchDuration * 30, batchDuration)
         val outputStream = new TestOutputStream(reducedStream, outputBuffer)
         outputStream.register()
         ssc.start()
@@ -749,10 +739,8 @@ class CheckpointSuite
         eventually(eventuallyTimeout) {
           // Wait until all files have been recorded and all batches have started
           assert(
-            recordedFiles(ssc) === Seq(
-              1,
-              2,
-              3) && batchCounter.getNumStartedBatches === 3)
+            recordedFiles(ssc) === Seq(1, 2, 3) && batchCounter
+              .getNumStartedBatches === 3)
         }
         clock.advance(batchDuration.milliseconds)
         // Wait for a checkpoint to be written
@@ -785,15 +773,12 @@ class CheckpointSuite
         // with the batch time, we need to add the offset "batchDuration.milliseconds / 2".
         ssc.conf.set(
           "spark.streaming.manualClock.jump",
-          (
-            batchDuration.milliseconds / 2 + batchDuration.milliseconds * 3
-          ).toString)
+          (batchDuration.milliseconds / 2 + batchDuration.milliseconds * 3)
+            .toString)
         val oldClockTime = clock.getTimeMillis() // 15000ms
         clock = ssc.scheduler.clock.asInstanceOf[ManualClock]
         val batchCounter = new BatchCounter(ssc)
-        val outputStream = ssc.graph
-          .getOutputStreams()
-          .head
+        val outputStream = ssc.graph.getOutputStreams().head
           .asInstanceOf[TestOutputStream[Int]]
         // Check that we remember files that were recorded before the restart
         assert(recordedFiles(ssc) === Seq(1, 2, 3))
@@ -816,7 +801,8 @@ class CheckpointSuite
           clock.advance(batchDuration.milliseconds)
           eventually(eventuallyTimeout) {
             assert(
-              batchCounter.getNumCompletedBatches === index + numBatchesAfterRestart + 1)
+              batchCounter
+                .getNumCompletedBatches === index + numBatchesAfterRestart + 1)
           }
         }
         logInfo(
@@ -861,11 +847,8 @@ class CheckpointSuite
     }
     logInfo("*********** RESTARTING ************")
     withStreamingContext(new StreamingContext(checkpointDir)) { ssc =>
-      val checkpointData = ssc.graph
-        .getInputStreams()
-        .head
-        .asInstanceOf[CheckpointInputDStream]
-        .checkpointData
+      val checkpointData = ssc.graph.getInputStreams().head
+        .asInstanceOf[CheckpointInputDStream].checkpointData
       assert(checkpointData.restoredTimes === 1)
       ssc.start()
       ssc.stop()
@@ -922,9 +905,7 @@ class CheckpointSuite
       Time(1000),
       bytes2,
       clearCheckpointDataLater = true).run()
-    val checkpointFiles = Checkpoint
-      .getCheckpointFiles(checkpointDir)
-      .reverse
+    val checkpointFiles = Checkpoint.getCheckpointFiles(checkpointDir).reverse
       .map { path => new File(path.toUri) }
     assert(checkpointFiles.size === 2)
     // Although bytes2 was written with an old time, it contains the latest status, so we should
@@ -975,34 +956,29 @@ class CheckpointSuite
     var shouldCheckpointAllMarkedRDDs = false
     @volatile
     var rddsCheckpointed = false
-    inputDStream
-      .map(i => (i, i))
-      .updateStateByKey(updateFunc)
-      .checkpoint(batchDuration)
-      .updateStateByKey(updateFunc)
-      .checkpoint(batchDuration)
-      .foreachRDD { rdd =>
+    inputDStream.map(i => (i, i)).updateStateByKey(updateFunc)
+      .checkpoint(batchDuration).updateStateByKey(updateFunc)
+      .checkpoint(batchDuration).foreachRDD { rdd =>
         /**
           * Find all RDDs that are marked for checkpointing in the specified RDD and its ancestors.
           */
         def findAllMarkedRDDs(rdd: RDD[_]): List[RDD[_]] = {
-          val markedRDDs =
-            rdd.dependencies.flatMap(dep => findAllMarkedRDDs(dep.rdd)).toList
+          val markedRDDs = rdd.dependencies
+            .flatMap(dep => findAllMarkedRDDs(dep.rdd)).toList
           if (rdd.checkpointData.isDefined) { rdd :: markedRDDs }
           else { markedRDDs }
         }
 
         shouldCheckpointAllMarkedRDDs = Option(
-          rdd.sparkContext.getLocalProperty(
-            RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
-          .map(_.toBoolean)
-          .getOrElse(false)
+          rdd.sparkContext
+            .getLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
+          .map(_.toBoolean).getOrElse(false)
 
         val stateRDDs = findAllMarkedRDDs(rdd)
         rdd.count()
         // Check the two state RDDs are both checkpointed
-        rddsCheckpointed =
-          stateRDDs.size == 2 && stateRDDs.forall(_.isCheckpointed)
+        rddsCheckpointed = stateRDDs.size == 2 && stateRDDs
+          .forall(_.isCheckpointed)
       }
     ssc.start()
     batchCounter.waitUntilBatchesCompleted(1, 10000)

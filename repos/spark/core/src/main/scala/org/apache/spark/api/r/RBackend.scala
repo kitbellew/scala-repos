@@ -48,34 +48,26 @@ private[spark] class RBackend {
     val workerGroup = bossGroup
     val handler = new RBackendHandler(this)
 
-    bootstrap = new ServerBootstrap()
-      .group(bossGroup, workerGroup)
+    bootstrap = new ServerBootstrap().group(bossGroup, workerGroup)
       .channel(classOf[NioServerSocketChannel])
 
     bootstrap.childHandler(new ChannelInitializer[SocketChannel]() {
       def initChannel(ch: SocketChannel): Unit = {
-        ch.pipeline()
-          .addLast("encoder", new ByteArrayEncoder())
-          .addLast(
-            "frameDecoder",
-            // maxFrameLength = 2G
-            // lengthFieldOffset = 0
-            // lengthFieldLength = 4
-            // lengthAdjustment = 0
-            // initialBytesToStrip = 4, i.e. strip out the length field itself
-            new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4)
-          )
-          .addLast("decoder", new ByteArrayDecoder())
-          .addLast("handler", handler)
+        ch.pipeline().addLast("encoder", new ByteArrayEncoder()).addLast(
+          "frameDecoder",
+          // maxFrameLength = 2G
+          // lengthFieldOffset = 0
+          // lengthFieldLength = 4
+          // lengthAdjustment = 0
+          // initialBytesToStrip = 4, i.e. strip out the length field itself
+          new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4)
+        ).addLast("decoder", new ByteArrayDecoder()).addLast("handler", handler)
       }
     })
 
     channelFuture = bootstrap.bind(new InetSocketAddress("localhost", 0))
     channelFuture.syncUninterruptibly()
-    channelFuture
-      .channel()
-      .localAddress()
-      .asInstanceOf[InetSocketAddress]
+    channelFuture.channel().localAddress().asInstanceOf[InetSocketAddress]
       .getPort()
   }
 

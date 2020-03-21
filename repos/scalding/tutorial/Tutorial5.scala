@@ -53,8 +53,7 @@ class Tutorial5(args: Args) extends Job(args) {
   the 'num field to be 'score. Also, we want to normalize
   the words to be lowercase.
   **/
-  val scores = TextLine(args("words")).read
-    .rename('offset, 'score)
+  val scores = TextLine(args("words")).read.rename('offset, 'score)
     .map('line -> 'dictWord) { line: String => line.toLowerCase }
     .project('score, 'dictWord)
 

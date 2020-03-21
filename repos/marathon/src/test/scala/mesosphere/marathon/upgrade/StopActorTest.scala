@@ -27,8 +27,8 @@ class StopActorTest
             NoAutoPilot
         }
     })
-    val ref = system.actorOf(
-      Props(classOf[StopActor], probe.ref, promise, new Exception))
+    val ref = system
+      .actorOf(Props(classOf[StopActor], probe.ref, promise, new Exception))
 
     watch(ref)
     expectTerminated(ref)

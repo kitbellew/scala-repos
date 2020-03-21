@@ -120,8 +120,7 @@ trait ScopeAnnotator {
     if (f.parameters.isEmpty) ""
     else
       f.paramClauses.clauses
-        .map(clause => format(clause.parameters, clause.paramTypes))
-        .mkString
+        .map(clause => format(clause.parameters, clause.paramTypes)).mkString
   }
 
   private def eraseType(s: String) =

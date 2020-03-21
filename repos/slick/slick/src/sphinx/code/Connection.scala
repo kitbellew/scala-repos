@@ -30,8 +30,8 @@ object Connection extends App {
   if (false) {
     val dataSource = null.asInstanceOf[slick.jdbc.DatabaseUrlDataSource]
     //#forDatabaseURL
-    val db = Database.forDataSource(
-      dataSource: slick.jdbc.DatabaseUrlDataSource)
+    val db = Database
+      .forDataSource(dataSource: slick.jdbc.DatabaseUrlDataSource)
     //#forDatabaseURL
   }
   if (false) {
@@ -48,9 +48,8 @@ object Connection extends App {
   };
   {
     //#forURL
-    val db = Database.forURL(
-      "jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1",
-      driver = "org.h2.Driver")
+    val db = Database
+      .forURL("jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
     //#forURL
     db.close
   };

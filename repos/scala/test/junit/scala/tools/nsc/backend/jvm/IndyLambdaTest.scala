@@ -23,8 +23,8 @@ class IndyLambdaTest extends ClearAfterClass {
   @Test
   def boxingBridgeMethodUsedSelectively(): Unit = {
     def implMethodDescriptorFor(code: String): String = {
-      val method =
-        compileMethods(compiler)(s"""def f = $code """).find(_.name == "f").get
+      val method = compileMethods(compiler)(s"""def f = $code """)
+        .find(_.name == "f").get
       val x = method.instructions.iterator.asScala.toList
       x.flatMap {
         case insn: InvokeDynamicInsnNode => insn.bsmArgs.collect {

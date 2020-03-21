@@ -195,7 +195,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment() == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment()}"
+      s"Expected partitions ${subscriptions.asJava} but actually got ${this
+        .consumers(0).assignment()}"
     )
 
     val topic4 = "tsomec" // matches subscribed pattern
@@ -212,7 +213,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment() == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment()}"
+      s"Expected partitions ${subscriptions.asJava} but actually got ${this
+        .consumers(0).assignment()}"
     )
 
     this.consumers(0).unsubscribe()
@@ -231,8 +233,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
     assertEquals(0, this.consumers(0).assignment().size)
 
-    this
-      .consumers(0)
+    this.consumers(0)
       .subscribe(Pattern.compile("t.*c"), new TestConsumerReassignmentListener)
     this.consumers(0).poll(50)
 
@@ -247,7 +248,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment() == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment()}"
+      s"Expected partitions ${subscriptions.asJava} but actually got ${this
+        .consumers(0).assignment()}"
     )
 
     this.consumers(0).unsubscribe()
@@ -291,34 +293,28 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment}"
+      s"Expected partitions ${subscriptions.asJava} but actually got ${this
+        .consumers(0).assignment}"
     )
 
-    TestUtils.createTopic(
-      this.zkUtils,
-      otherTopic,
-      2,
-      serverCount,
-      this.servers)
+    TestUtils
+      .createTopic(this.zkUtils, otherTopic, 2, serverCount, this.servers)
     this.consumers(0).subscribe(List(topic, otherTopic).asJava)
     TestUtils.waitUntilTrue(
       () => {
         this.consumers(0).poll(50)
         this.consumers(0).assignment == expandedSubscriptions.asJava
       },
-      s"Expected partitions ${expandedSubscriptions.asJava} but actually got ${this.consumers(0).assignment}"
+      s"Expected partitions ${expandedSubscriptions
+        .asJava} but actually got ${this.consumers(0).assignment}"
     )
   }
 
   @Test
   def testShrinkingTopicSubscriptions() {
     val otherTopic = "other"
-    TestUtils.createTopic(
-      this.zkUtils,
-      otherTopic,
-      2,
-      serverCount,
-      this.servers)
+    TestUtils
+      .createTopic(this.zkUtils, otherTopic, 2, serverCount, this.servers)
     val subscriptions = Set(
       new TopicPartition(topic, 0),
       new TopicPartition(topic, 1),
@@ -333,7 +329,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment == subscriptions.asJava
       },
-      s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment}"
+      s"Expected partitions ${subscriptions.asJava} but actually got ${this
+        .consumers(0).assignment}"
     )
 
     this.consumers(0).subscribe(List(topic).asJava)
@@ -342,7 +339,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         this.consumers(0).poll(50)
         this.consumers(0).assignment == shrunkenSubscriptions.asJava
       },
-      s"Expected partitions ${shrunkenSubscriptions.asJava} but actually got ${this.consumers(0).assignment}"
+      s"Expected partitions ${shrunkenSubscriptions
+        .asJava} but actually got ${this.consumers(0).assignment}"
     )
   }
 
@@ -426,9 +424,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     producerProps.setProperty(
       ProducerConfig.COMPRESSION_TYPE_CONFIG,
       CompressionType.GZIP.name)
-    producerProps.setProperty(
-      ProducerConfig.LINGER_MS_CONFIG,
-      Long.MaxValue.toString)
+    producerProps
+      .setProperty(ProducerConfig.LINGER_MS_CONFIG, Long.MaxValue.toString)
     val producer = TestUtils.createNewProducer(
       brokerList,
       securityProtocol = securityProtocol,
@@ -746,15 +743,10 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
     // produce records
     val numRecords = 10
-    (0 until numRecords)
-      .map { i =>
-        testProducer.send(new ProducerRecord(
-          tp.topic(),
-          tp.partition(),
-          s"key $i",
-          s"value $i"))
-      }
-      .foreach(_.get)
+    (0 until numRecords).map { i =>
+      testProducer.send(
+        new ProducerRecord(tp.topic(), tp.partition(), s"key $i", s"value $i"))
+    }.foreach(_.get)
     assertEquals(numRecords, MockProducerInterceptor.ONSEND_COUNT.intValue())
     assertEquals(
       numRecords,
@@ -800,8 +792,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     // commit sync and verify onCommit is called
     val commitCountBefore = MockConsumerInterceptor.ON_COMMIT_COUNT.intValue()
     testConsumer.commitSync(
-      Map[TopicPartition, OffsetAndMetadata](
-        (tp, new OffsetAndMetadata(2L))).asJava)
+      Map[TopicPartition, OffsetAndMetadata]((tp, new OffsetAndMetadata(2L)))
+        .asJava)
     assertEquals(2, testConsumer.committed(tp).offset)
     assertEquals(
       commitCountBefore + 1,
@@ -810,8 +802,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     // commit async and verify onCommit is called
     val commitCallback = new CountConsumerCommitCallback()
     testConsumer.commitAsync(
-      Map[TopicPartition, OffsetAndMetadata](
-        (tp, new OffsetAndMetadata(5L))).asJava,
+      Map[TopicPartition, OffsetAndMetadata]((tp, new OffsetAndMetadata(5L)))
+        .asJava,
       commitCallback)
     awaitCommitCallback(testConsumer, commitCallback)
     assertEquals(5, testConsumer.committed(tp).offset)
@@ -838,15 +830,10 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       this.producerConfig,
       new StringSerializer,
       new StringSerializer)
-    (0 until numRecords)
-      .map { i =>
-        testProducer.send(new ProducerRecord(
-          tp.topic(),
-          tp.partition(),
-          s"key $i",
-          s"value $i"))
-      }
-      .foreach(_.get)
+    (0 until numRecords).map { i =>
+      testProducer.send(
+        new ProducerRecord(tp.topic(), tp.partition(), s"key $i", s"value $i"))
+    }.foreach(_.get)
 
     // create consumer with interceptor
     this.consumerConfig
@@ -1053,8 +1040,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     if (closeConsumer) timeoutConsumer.close()
 
     val maxSessionTimeout = this.serverConfig
-      .getProperty(KafkaConfig.GroupMaxSessionTimeoutMsProp)
-      .toLong
+      .getProperty(KafkaConfig.GroupMaxSessionTimeoutMsProp).toLong
     validateGroupAssignment(
       consumerPollers,
       subscriptions,

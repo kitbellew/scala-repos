@@ -48,25 +48,18 @@ trait DocFinding {
   self: RichPresentationCompiler =>
 
   private def isRoot(s: Symbol) =
-    (
-      s eq NoSymbol
-    ) || s.isRootSymbol || s.isEmptyPackage || s.isEmptyPackageClass
+    (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage || s
+      .isEmptyPackageClass
 
   private def fullPackage(sym: Symbol): String =
-    sym.ownerChain.reverse
-      .filterNot(isRoot)
-      .takeWhile(_.hasPackageFlag)
-      .map(_.nameString)
-      .mkString(".")
+    sym.ownerChain.reverse.filterNot(isRoot).takeWhile(_.hasPackageFlag)
+      .map(_.nameString).mkString(".")
 
   private def fullTypeName(
       sym: Symbol,
       nestedTypeSep: String,
       nameString: (Symbol => String)): String =
-    sym.ownerChain
-      .takeWhile(!_.hasPackageFlag)
-      .reverse
-      .map(nameString)
+    sym.ownerChain.takeWhile(!_.hasPackageFlag).reverse.map(nameString)
       .mkString(nestedTypeSep)
 
   private val ScalaPrim =
@@ -82,13 +75,10 @@ trait DocFinding {
       case DocFqn("scala", ScalaPrim(datatype)) =>
         DocFqn("", datatype.toLowerCase)
       case DocFqn("scala", ScalaAny(datatype)) => DocFqn("java.lang", "Object")
-      case DocFqn("scala", "Array") =>
-        tpe.typeArgs.headOption
-          .map { tpe =>
-            val fqn = javaFqn(tpe)
-            fqn.copy(typeName = fqn.typeName + "[]")
-          }
-          .getOrElse(s)
+      case DocFqn("scala", "Array") => tpe.typeArgs.headOption.map { tpe =>
+          val fqn = javaFqn(tpe)
+          fqn.copy(typeName = fqn.typeName + "[]")
+        }.getOrElse(s)
       case _ => s
     }
   }
@@ -112,9 +102,9 @@ trait DocFinding {
     sym.nameString + (if (java) {
                         if (sym.paramLists.isEmpty) ""
                         else
-                          sym.paramLists
-                            .flatMap(_.map { sym => javaFqn(sym.tpe).mkString })
-                            .mkString("(", ", ", ")")
+                          sym.paramLists.flatMap(_.map { sym =>
+                            javaFqn(sym.tpe).mkString
+                          }).mkString("(", ", ", ")")
                       } else sym.signatureString.replaceAll("[\\s]", ""))
   }
 
@@ -123,9 +113,10 @@ trait DocFinding {
       val owner = sym.owner
       if (sym.isCaseApplyOrUnapply) {
         DocSig(linkName(owner.companionClass, java), None)
-      } else if (sym.isClass || sym.isModule || sym.isTrait || sym.hasPackageFlag)
-        DocSig(linkName(sym, java), None)
-      else if (owner.isClass || owner.isModule || owner.isTrait || owner.hasPackageFlag) {
+      } else if (sym.isClass || sym.isModule || sym.isTrait || sym
+                   .hasPackageFlag) DocSig(linkName(sym, java), None)
+      else if (owner.isClass || owner.isModule || owner.isTrait || owner
+                 .hasPackageFlag) {
         val ownerAtSite = pos.flatMap(specificOwnerOfSymbolAt).getOrElse(owner)
         DocSig(linkName(ownerAtSite, java), Some(signatureString(sym, java)))
       } else DocSig(linkName(sym.tpe.typeSymbol, java), None)

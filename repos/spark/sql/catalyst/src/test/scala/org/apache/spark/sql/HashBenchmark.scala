@@ -35,10 +35,9 @@ object HashBenchmark {
     val attrs = schema.toAttributes
     val safeProjection = GenerateSafeProjection.generate(attrs, attrs)
 
-    val rows = (1 to numRows)
-      .map(_ =>
-        // The output of encoder is UnsafeRow, use safeProjection to turn in into safe format.
-        safeProjection(encoder.toRow(generator().asInstanceOf[Row])).copy())
+    val rows = (1 to numRows).map(_ =>
+      // The output of encoder is UnsafeRow, use safeProjection to turn in into safe format.
+      safeProjection(encoder.toRow(generator().asInstanceOf[Row])).copy())
       .toArray
 
     val benchmark = new Benchmark("Hash For " + name, iters * numRows)
@@ -53,9 +52,8 @@ object HashBenchmark {
       }
     }
 
-    val getHashCode = UnsafeProjection.create(
-      new Murmur3Hash(attrs) :: Nil,
-      attrs)
+    val getHashCode = UnsafeProjection
+      .create(new Murmur3Hash(attrs) :: Nil, attrs)
     benchmark.addCase("codegen version") { _: Int =>
       for (_ <- 0L until iters) {
         var sum = 0
@@ -80,20 +78,12 @@ object HashBenchmark {
      */
     test("simple", simple, 1 << 13, 1 << 14)
 
-    val normal = new StructType()
-      .add("null", NullType)
-      .add("boolean", BooleanType)
-      .add("byte", ByteType)
-      .add("short", ShortType)
-      .add("int", IntegerType)
-      .add("long", LongType)
-      .add("float", FloatType)
-      .add("double", DoubleType)
-      .add("bigDecimal", DecimalType.SYSTEM_DEFAULT)
-      .add("smallDecimal", DecimalType.USER_DEFAULT)
-      .add("string", StringType)
-      .add("binary", BinaryType)
-      .add("date", DateType)
+    val normal = new StructType().add("null", NullType)
+      .add("boolean", BooleanType).add("byte", ByteType).add("short", ShortType)
+      .add("int", IntegerType).add("long", LongType).add("float", FloatType)
+      .add("double", DoubleType).add("bigDecimal", DecimalType.SYSTEM_DEFAULT)
+      .add("smallDecimal", DecimalType.USER_DEFAULT).add("string", StringType)
+      .add("binary", BinaryType).add("date", DateType)
       .add("timestamp", TimestampType)
     /*
     Intel(R) Core(TM) i7-4960HQ CPU @ 2.60GHz
@@ -105,8 +95,7 @@ object HashBenchmark {
     test("normal", normal, 1 << 10, 1 << 11)
 
     val arrayOfInt = ArrayType(IntegerType)
-    val array = new StructType()
-      .add("array", arrayOfInt)
+    val array = new StructType().add("array", arrayOfInt)
       .add("arrayOfArray", ArrayType(arrayOfInt))
     /*
     Intel(R) Core(TM) i7-4960HQ CPU @ 2.60GHz
@@ -118,8 +107,7 @@ object HashBenchmark {
     test("array", array, 1 << 8, 1 << 9)
 
     val mapOfInt = MapType(IntegerType, IntegerType)
-    val map = new StructType()
-      .add("map", mapOfInt)
+    val map = new StructType().add("map", mapOfInt)
       .add("mapOfMap", MapType(IntegerType, mapOfInt))
     /*
     Intel(R) Core(TM) i7-4960HQ CPU @ 2.60GHz

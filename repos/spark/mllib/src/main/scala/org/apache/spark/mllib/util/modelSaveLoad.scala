@@ -105,10 +105,10 @@ private[mllib] object Loader {
     */
   def checkSchema[Data: TypeTag](loadedSchema: StructType): Unit = {
     // Check schema explicitly since erasure makes it hard to use match-case for checking.
-    val expectedFields: Array[StructField] =
-      ScalaReflection.schemaFor[Data].dataType.asInstanceOf[StructType].fields
-    val loadedFields: Map[String, DataType] =
-      loadedSchema.map(field => field.name -> field.dataType).toMap
+    val expectedFields: Array[StructField] = ScalaReflection.schemaFor[Data]
+      .dataType.asInstanceOf[StructType].fields
+    val loadedFields: Map[String, DataType] = loadedSchema
+      .map(field => field.name -> field.dataType).toMap
     expectedFields.foreach { field =>
       assert(
         loadedFields.contains(field.name),

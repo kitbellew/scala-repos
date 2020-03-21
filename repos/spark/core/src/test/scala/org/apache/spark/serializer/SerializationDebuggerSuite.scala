@@ -126,8 +126,8 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
   test("object containing writeReplace() which returns serializable object") {
     assert(
-      find(
-        new SerializableClassWithWriteReplace(new SerializableClass1)).isEmpty)
+      find(new SerializableClassWithWriteReplace(new SerializableClass1))
+        .isEmpty)
   }
 
   test("object containing writeObject() and not serializable field") {
@@ -140,8 +140,8 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
   test("object containing writeObject() and serializable field") {
     assert(
-      find(
-        new SerializableClassWithWriteObject(new SerializableClass1)).isEmpty)
+      find(new SerializableClassWithWriteObject(new SerializableClass1))
+        .isEmpty)
   }
 
   test(
@@ -202,10 +202,8 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
     val originalException = new NotSerializableException("someClass")
     // verify that original exception is returned on failure
-    assert(
-      SerializationDebugger
-        .improveException(o, originalException)
-        .eq(originalException))
+    assert(SerializationDebugger.improveException(o, originalException).eq(
+      originalException))
   }
 }
 

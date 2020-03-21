@@ -74,18 +74,15 @@ class ScalaPullUpProcessor(
       } {
         handleOldMember(info)
 
-        templateBody.addBefore(
-          ScalaPsiElementFactory.createNewLine(manager),
-          anchor)
-        val added = templateBody
-          .addBefore(memberCopy, anchor)
+        templateBody
+          .addBefore(ScalaPsiElementFactory.createNewLine(manager), anchor)
+        val added = templateBody.addBefore(memberCopy, anchor)
           .asInstanceOf[ScMember]
         if (info.isToAbstract) TypeAdjuster.markToAdjust(added)
         else movedDefinitions += added
       }
-      templateBody.addBefore(
-        ScalaPsiElementFactory.createNewLine(manager),
-        anchor)
+      templateBody
+        .addBefore(ScalaPsiElementFactory.createNewLine(manager), anchor)
 
       ScalaChangeContextUtil.decodeContextInfo(movedDefinitions)
     }
@@ -100,16 +97,15 @@ class ScalaPullUpProcessor(
   private def reformatAfter() {
     val documentManager = PsiDocumentManager.getInstance(project)
     val csManager = CodeStyleManager.getInstance(project)
-    val targetDocument = documentManager.getDocument(
-      targetClass.getContainingFile)
+    val targetDocument = documentManager
+      .getDocument(targetClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(targetDocument)
     csManager.reformat(targetClass)
-    val sourceDocument = documentManager.getDocument(
-      sourceClass.getContainingFile)
+    val sourceDocument = documentManager
+      .getDocument(sourceClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(sourceDocument)
-    csManager.adjustLineIndent(
-      sourceClass.getContainingFile,
-      sourceClass.getTextRange)
+    csManager
+      .adjustLineIndent(sourceClass.getContainingFile, sourceClass.getTextRange)
   }
 
   private def memberCopiesToExtract(
@@ -120,8 +116,7 @@ class ScalaPullUpProcessor(
         Seq(member)
       case ScalaExtractMemberInfo(m, true) =>
         declarationsText(m).map(
-          ScalaPsiElementFactory
-            .createDeclarationFromText(_, m.getParent, m)
+          ScalaPsiElementFactory.createDeclarationFromText(_, m.getParent, m)
             .asInstanceOf[ScMember])
       case ScalaExtractMemberInfo(m, false)
           if m.hasModifierProperty("override") =>

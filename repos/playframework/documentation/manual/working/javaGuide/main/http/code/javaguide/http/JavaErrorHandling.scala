@@ -15,11 +15,9 @@ object JavaErrorHandling extends PlaySpecification with WsTestClient {
 
   def fakeApp[A](implicit ct: ClassTag[A]) = {
     GuiceApplicationBuilder()
-      .configure("play.http.errorHandler" -> ct.runtimeClass.getName)
-      .routes {
+      .configure("play.http.errorHandler" -> ct.runtimeClass.getName).routes {
         case (_, "/error") => Action(_ => throw new RuntimeException("foo"))
-      }
-      .build()
+      }.build()
   }
 
   "java error handling" should {

@@ -71,8 +71,7 @@ object CascadingBinaryComparator {
              * Scalding typed-API ALWAYS puts the key into field position 0.
              * If OrderedSerialization is enabled, this must be a CascadingBinaryComparator
              */
-            if (fields
-                  .getComparators()(0)
+            if (fields.getComparators()(0)
                   .isInstanceOf[CascadingBinaryComparator[_]]) Success(())
             else
               error(
@@ -92,9 +91,9 @@ object CascadingBinaryComparator {
       else None
 
     // Get all the steps that have missing OrderedSerializations
-    val missing = flow.getFlowSteps.asScala
-      .map { case bfs: BaseFlowStep[_] => getDescriptionsForMissingOrdSer(bfs) }
-      .collect { case Some(desc) => desc }
+    val missing = flow.getFlowSteps.asScala.map {
+      case bfs: BaseFlowStep[_] => getDescriptionsForMissingOrdSer(bfs)
+    }.collect { case Some(desc) => desc }
 
     if (missing.isEmpty) Success(())
     else {

@@ -58,12 +58,9 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
-        .via(new PrepareResponse(parserSettings))
+      Source.fromPublisher(inProbe).via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val inSub = inProbe.expectSubscription()
       val responseSub = responseProbe.expectSubscription()
@@ -104,12 +101,9 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
-        .via(new PrepareResponse(parserSettings))
+      Source.fromPublisher(inProbe).via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val inSub = inProbe.expectSubscription()
       val responseSub = responseProbe.expectSubscription()
@@ -141,12 +135,9 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
-        .via(new PrepareResponse(parserSettings))
+      Source.fromPublisher(inProbe).via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val inSub = inProbe.expectSubscription()
       val responseSub = responseProbe.expectSubscription()
@@ -183,12 +174,9 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
-        .via(new PrepareResponse(parserSettings))
+      Source.fromPublisher(inProbe).via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val inSub = inProbe.expectSubscription()
       val responseSub = responseProbe.expectSubscription()
@@ -212,12 +200,9 @@ class PrepareResponseSpec extends AkkaSpec {
       val inProbe = TestPublisher.manualProbe[ParserOutput.ResponseOutput]()
       val responseProbe = TestSubscriber.manualProbe[HttpResponse]
 
-      Source
-        .fromPublisher(inProbe)
-        .via(new PrepareResponse(parserSettings))
+      Source.fromPublisher(inProbe).via(new PrepareResponse(parserSettings))
         .to(Sink.fromSubscriber(responseProbe))
-        .withAttributes(Attributes.inputBuffer(1, 1))
-        .run()
+        .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
       val inSub = inProbe.expectSubscription()
       val responseSub = responseProbe.expectSubscription()

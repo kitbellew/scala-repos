@@ -42,8 +42,7 @@ abstract class DeterministicOldestWhenJoiningSpec
   // reverse order because that expose the bug in issue #18554
   def seedNodes: immutable.IndexedSeq[Address] =
     Vector(address(seed1), address(seed2), address(seed3))
-      .sorted(Member.addressOrdering)
-      .reverse
+      .sorted(Member.addressOrdering).reverse
   val roleByAddress = Map(
     address(seed1) -> seed1,
     address(seed2) -> seed2,

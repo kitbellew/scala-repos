@@ -31,12 +31,10 @@ class SupervisorTreeSpec
             }
           })
           val headActor = system.actorOf(p)
-          val middleActor = Await.result(
-            (headActor ? p).mapTo[ActorRef],
-            timeout.duration)
-          val lastActor = Await.result(
-            (middleActor ? p).mapTo[ActorRef],
-            timeout.duration)
+          val middleActor = Await
+            .result((headActor ? p).mapTo[ActorRef], timeout.duration)
+          val lastActor = Await
+            .result((middleActor ? p).mapTo[ActorRef], timeout.duration)
 
           middleActor ! Kill
           expectMsg(middleActor.path)

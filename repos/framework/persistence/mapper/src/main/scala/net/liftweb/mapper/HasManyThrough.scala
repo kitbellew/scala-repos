@@ -33,15 +33,15 @@ class HasManyThrough[From <: KeyedMapper[ThroughType, From], To <: Mapper[
 
   private val others = FatLazy[List[To]] {
     DB.use(owner.connectionIdentifier) { conn =>
-      val query =
-        "SELECT DISTINCT " + otherSingleton._dbTableNameLC + ".* FROM " + otherSingleton._dbTableNameLC + "," +
-          through._dbTableNameLC + " WHERE " +
-          otherSingleton._dbTableNameLC + "." + otherSingleton
-          .indexedField(otherSingleton.asInstanceOf[To])
-          .openOrThrowException("legacy code")
-          ._dbColumnNameLC + " = " +
-          through._dbTableNameLC + "." + throughToField._dbColumnNameLC + " AND " +
-          through._dbTableNameLC + "." + throughFromField._dbColumnNameLC + " = ?"
+      val query = "SELECT DISTINCT " + otherSingleton
+        ._dbTableNameLC + ".* FROM " + otherSingleton._dbTableNameLC + "," +
+        through._dbTableNameLC + " WHERE " +
+        otherSingleton._dbTableNameLC + "." + otherSingleton
+        .indexedField(otherSingleton.asInstanceOf[To])
+        .openOrThrowException("legacy code")._dbColumnNameLC + " = " +
+        through._dbTableNameLC + "." + throughToField
+        ._dbColumnNameLC + " AND " +
+        through._dbTableNameLC + "." + throughFromField._dbColumnNameLC + " = ?"
       DB.prepareStatement(query, conn) { st =>
         owner.getSingleton.indexedField(owner).map { indVal =>
           if (indVal.dbIgnoreSQLType_?) st.setObject(1, indVal.jdbcFriendly)
@@ -74,14 +74,14 @@ class HasManyThrough[From <: KeyedMapper[ThroughType, From], To <: Mapper[
   }
 
   override def afterUpdate {
-    val current = through.findAll(
-      By(throughFromField, owner.primaryKeyField.get))
+    val current = through
+      .findAll(By(throughFromField, owner.primaryKeyField.get))
 
     val newKeys = new HashSet[ThroughType];
 
     theSetList.foreach(i => newKeys += i)
-    val toDelete = current.filter(c =>
-      !newKeys.contains(throughToField.actualField(c).get))
+    val toDelete = current
+      .filter(c => !newKeys.contains(throughToField.actualField(c).get))
     toDelete.foreach(_.delete_!)
 
     val oldKeys = new HashSet[ThroughType];

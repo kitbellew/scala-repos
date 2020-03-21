@@ -50,10 +50,8 @@ object CustomRoute {
       }
       override def onRouteDefinition =
         (rd) =>
-          rd.onException(classOf[Exception])
-            .handled(true)
-            .transform(Builder.exceptionMessage)
-            .end
+          rd.onException(classOf[Exception]).handled(true)
+            .transform(Builder.exceptionMessage).end
 
       final override def preRestart(reason: Throwable, message: Option[Any]) {
         sender() ! Failure(reason)

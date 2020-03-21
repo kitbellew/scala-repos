@@ -38,8 +38,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val underlyingService = mock[Service[Int, Int]]
     when(underlyingService.close(any[Time])) thenReturn Future.Done
     when(underlyingService.status) thenReturn Status.Open
-    when(underlyingService(Matchers.anyInt)) thenReturn Future.exception(
-      new Exception)
+    when(underlyingService(Matchers.anyInt)) thenReturn Future
+      .exception(new Exception)
 
     val underlying = mock[ServiceFactory[Int, Int]]
     when(underlying.close(any[Time])) thenReturn Future.Done
@@ -192,8 +192,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     val underlyingService = mock[Service[Int, Int]]
     when(underlyingService.close(any[Time])) thenReturn Future.Done
     when(underlyingService.status) thenReturn Status.Open
-    when(underlyingService(Matchers.anyInt)) thenReturn Future.exception(
-      new Exception)
+    when(underlyingService(Matchers.anyInt)) thenReturn Future
+      .exception(new Exception)
 
     val underlying = mock[ServiceFactory[Int, Int]]
     when(underlying.close(any[Time])) thenReturn Future.Done
@@ -642,9 +642,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
   test("param") {
     import FailureAccrualFactory._
 
-    val failureAccrualPolicy = FailureAccrualPolicy.consecutiveFailures(
-      42,
-      Backoff.const(10.seconds))
+    val failureAccrualPolicy = FailureAccrualPolicy
+      .consecutiveFailures(42, Backoff.const(10.seconds))
 
     val p1: Param = Param.Configured(() => failureAccrualPolicy)
     val p2: Param = Replaced(_ => ServiceFactoryWrapper.identity)
@@ -690,8 +689,7 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
   test("module") {
     val h = new Helper(consecutiveFailures)
     val s: Stack[ServiceFactory[Int, Int]] = FailureAccrualFactory
-      .module[Int, Int]
-      .toStack(Stack.Leaf(Stack.Role("Service"), h.underlying))
+      .module[Int, Int].toStack(Stack.Leaf(Stack.Role("Service"), h.underlying))
 
     val ps: Stack.Params = Stack.Params.empty + param.Stats(h.statsReceiver)
 
@@ -703,7 +701,7 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     // replaced
     Await.ready(
       s.make(
-          ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
+        ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
         .toService(10))
     assert(
       !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))

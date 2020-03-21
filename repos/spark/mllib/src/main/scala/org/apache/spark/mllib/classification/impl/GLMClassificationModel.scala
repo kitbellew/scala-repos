@@ -79,8 +79,7 @@ private[classification] object GLMClassificationModel {
       val datapath = Loader.dataPath(path)
       val sqlContext = SQLContext.getOrCreate(sc)
       val dataRDD = sqlContext.read.parquet(datapath)
-      val dataArray = dataRDD
-        .select("weights", "intercept", "threshold")
+      val dataArray = dataRDD.select("weights", "intercept", "threshold")
         .take(1)
       assert(
         dataArray.length == 1,

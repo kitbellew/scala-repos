@@ -106,15 +106,12 @@ object Reporter {
     val service = ClientBuilder() // these are from the zipkin tracer
       .name("exception_reporter")
       .hosts(new InetSocketAddress(scribeHost, scribePort))
-      .codec(ThriftClientFramedCodec())
-      .reportTo(ClientStatsReceiver)
+      .codec(ThriftClientFramedCodec()).reportTo(ClientStatsReceiver)
       .hostConnectionLimit(5)
       // using an arbitrary, but bounded number of waiters to avoid memory leaks
       .hostConnectionMaxWaiters(250)
       // somewhat arbitrary, but bounded timeouts
-      .timeout(1.second)
-      .daemon(true)
-      .build()
+      .timeout(1.second).daemon(true).build()
 
     new Scribe$FinagleClient(service, Protocols.binaryFactory())
   }
@@ -141,8 +138,8 @@ sealed case class Reporter(
     extends Monitor {
 
   private[this] val okCounter = statsReceiver.counter("report_exception_ok")
-  private[this] val tryLaterCounter = statsReceiver.counter(
-    "report_exception_ok")
+  private[this] val tryLaterCounter = statsReceiver
+    .counter("report_exception_ok")
 
   /**
     * Add a modifier to append a client address (i.e. endpoint) to a generated ServiceException.
@@ -206,14 +203,13 @@ object host
       "Host to scribe exception messages")
 
 class ExceptionReporter extends ReporterFactory {
-  private[this] val client = Reporter.makeClient(
-    host().getHostName,
-    host().getPort)
+  private[this] val client = Reporter
+    .makeClient(host().getHostName, host().getPort)
 
   def apply(name: String, addr: Option[SocketAddress]): Reporter =
     addr match {
-      case Some(a: InetSocketAddress) =>
-        new Reporter(client, name).withClient(a.getAddress)
+      case Some(a: InetSocketAddress) => new Reporter(client, name)
+          .withClient(a.getAddress)
       case _ => new Reporter(client, name)
     }
 }

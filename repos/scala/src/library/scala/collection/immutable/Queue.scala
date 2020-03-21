@@ -95,8 +95,8 @@ class Queue[+A] protected (
   override def +:[B >: A, That](elem: B)(implicit
       bf: CanBuildFrom[Queue[A], B, That]): That =
     bf match {
-      case _: Queue.GenericCanBuildFrom[_] =>
-        new Queue(in, elem :: out).asInstanceOf[That]
+      case _: Queue.GenericCanBuildFrom[_] => new Queue(in, elem :: out)
+          .asInstanceOf[That]
       case _ => super.+:(elem)(bf)
     }
 

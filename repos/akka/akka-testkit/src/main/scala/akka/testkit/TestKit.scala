@@ -137,9 +137,7 @@ trait TestKitBase {
   val testActor: ActorRef = {
     val impl = system.asInstanceOf[ExtendedActorSystem]
     val ref = impl.systemActorOf(
-      TestActor
-        .props(queue)
-        .withDispatcher(CallingThreadDispatcher.Id),
+      TestActor.props(queue).withDispatcher(CallingThreadDispatcher.Id),
       "%s-%d".format(testActorName, TestKit.testActorId.incrementAndGet))
     awaitCond(
       ref match {

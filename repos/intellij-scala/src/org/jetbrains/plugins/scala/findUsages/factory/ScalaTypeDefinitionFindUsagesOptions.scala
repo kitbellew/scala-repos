@@ -23,7 +23,8 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
     o match {
       case other: ScalaTypeDefinitionFindUsagesOptions =>
         if (!super.equals(o)) return false
-        if (other.isImplementingTypeDefinitions != isImplementingTypeDefinitions)
+        if (other
+              .isImplementingTypeDefinitions != isImplementingTypeDefinitions)
           return false
         if (other.isMembersUsages != isMembersUsages) return false
         if (other.isSearchCompanionModule != isSearchCompanionModule)
@@ -47,8 +48,8 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
     }
 
     if (isImplementingTypeDefinitions) {
-      strings.add(
-        ScalaBundle.message("find.usages.implementing.type.definition"))
+      strings
+        .add(ScalaBundle.message("find.usages.implementing.type.definition"))
     }
 
     if (isSearchCompanionModule) {

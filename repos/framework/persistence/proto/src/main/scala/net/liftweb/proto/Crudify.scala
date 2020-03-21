@@ -760,10 +760,8 @@ trait Crudify {
       def error(field: BaseField): NodeSeq = {
         field.uniqueFieldId match {
           case fid @ Full(id) =>
-            S.getNotices
-              .filter(_._3 == fid)
-              .flatMap(err =>
-                List(Text(" "), <span class={editErrorClass}>{err._2}</span>))
+            S.getNotices.filter(_._3 == fid).flatMap(err =>
+              List(Text(" "), <span class={editErrorClass}>{err._2}</span>))
 
           case _ => NodeSeq.Empty
         }

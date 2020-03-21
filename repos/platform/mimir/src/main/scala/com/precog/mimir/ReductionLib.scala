@@ -631,9 +631,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
       def extract(res: Result): Table =
-        perform(res) map { v =>
-          Table.constDecimal(Set(v))
-        } getOrElse Table.empty
+        perform(res) map { v => Table.constDecimal(Set(v)) } getOrElse Table
+          .empty
 
       def extractValue(res: Result) = perform(res) map { CNum(_) }
     }
@@ -659,9 +658,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
       def extract(res: Result): Table =
-        perform(res) map { v =>
-          Table.constDecimal(Set(v))
-        } getOrElse Table.empty
+        perform(res) map { v => Table.constDecimal(Set(v)) } getOrElse Table
+          .empty
 
       // todo using toDouble is BAD
       def extractValue(res: Result) = perform(res) map { CNum(_) }

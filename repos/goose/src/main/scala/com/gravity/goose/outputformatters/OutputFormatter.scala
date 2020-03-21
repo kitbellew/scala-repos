@@ -80,14 +80,9 @@ trait OutputFormatter {
     topNode match {
       case null => ""
       case node => {
-        (
-          node
-            .children()
-            .map((e: Element) => {
-              StringEscapeUtils.unescapeHtml(e.text).trim
-            }))
-          .toList
-          .mkString("\n\n")
+        (node.children().map((e: Element) => {
+          StringEscapeUtils.unescapeHtml(e.text).trim
+        })).toList.mkString("\n\n")
       }
 
     }
@@ -182,8 +177,7 @@ trait OutputFormatter {
       for (el <- allNodes) {
         try {
           val stopWords = StopWords.getStopWordCount(el.text)
-          if (stopWords.getStopWordCount < 3 && el
-                .getElementsByTag("object")
+          if (stopWords.getStopWordCount < 3 && el.getElementsByTag("object")
                 .size == 0 && el.getElementsByTag("embed").size == 0) {
             logger.debug(
               "removeParagraphsWithFewWords - swcnt: %d removing text: %s"
@@ -200,8 +194,8 @@ trait OutputFormatter {
           // check for open parens as the first paragraph, e.g. businessweek4.txt (IT)
           val trimmed = firstModdedNode.text().trim()
           if (trimmed.startsWith("(") && trimmed.endsWith(")")) {
-            logger.trace(
-              "Removing parenthesis paragraph that is first paragraph")
+            logger
+              .trace("Removing parenthesis paragraph that is first paragraph")
             firstModdedNode.remove()
           }
         }

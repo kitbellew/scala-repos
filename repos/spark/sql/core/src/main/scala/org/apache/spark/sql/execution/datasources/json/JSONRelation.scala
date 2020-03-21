@@ -123,22 +123,19 @@ class DefaultSource extends FileFormat with DataSourceRegister {
 
     if (paths.nonEmpty) { FileInputFormat.setInputPaths(job, paths: _*) }
 
-    sqlContext.sparkContext
-      .hadoopRDD(
-        conf.asInstanceOf[JobConf],
-        classOf[TextInputFormat],
-        classOf[LongWritable],
-        classOf[Text])
-      .map(_._2.toString) // get the text line
+    sqlContext.sparkContext.hadoopRDD(
+      conf.asInstanceOf[JobConf],
+      classOf[TextInputFormat],
+      classOf[LongWritable],
+      classOf[Text]).map(_._2.toString) // get the text line
   }
 
   /** Constraints to be imposed on schema to be stored. */
   private def checkConstraints(schema: StructType): Unit = {
     if (schema.fieldNames.length != schema.fieldNames.distinct.length) {
-      val duplicateColumns = schema.fieldNames
-        .groupBy(identity)
-        .collect { case (x, ys) if ys.length > 1 => "\"" + x + "\"" }
-        .mkString(", ")
+      val duplicateColumns = schema.fieldNames.groupBy(identity).collect {
+        case (x, ys) if ys.length > 1 => "\"" + x + "\""
+      }.mkString(", ")
       throw new AnalysisException(
         s"Duplicate column(s) : $duplicateColumns found, " +
           s"cannot save to JSON format")
@@ -159,8 +156,7 @@ private[json] class JsonOutputWriter(
 
   private[this] val writer = new CharArrayWriter()
   // create the Generator without separator inserted between 2 records
-  private[this] val gen = new JsonFactory()
-    .createGenerator(writer)
+  private[this] val gen = new JsonFactory().createGenerator(writer)
     .setRootValueSeparator(null)
   private[this] val result = new Text()
 
@@ -170,12 +166,11 @@ private[json] class JsonOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId = configuration.get(
-          "spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration
+          .get("spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
-        val bucketString = bucketId
-          .map(BucketingUtils.bucketIdToString)
+        val bucketString = bucketId.map(BucketingUtils.bucketIdToString)
           .getOrElse("")
         new Path(
           path,

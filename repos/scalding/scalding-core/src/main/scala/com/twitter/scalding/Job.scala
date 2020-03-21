@@ -55,11 +55,8 @@ object Job {
     * jars included via -libjar can be found.
     */
   def apply(jobName: String, args: Args): Job = {
-    Class
-      .forName(jobName, true, Thread.currentThread().getContextClassLoader)
-      .getConstructor(classOf[Args])
-      .newInstance(args)
-      .asInstanceOf[Job]
+    Class.forName(jobName, true, Thread.currentThread().getContextClassLoader)
+      .getConstructor(classOf[Args]).newInstance(args).asInstanceOf[Job]
   }
 }
 
@@ -133,9 +130,7 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
 
   // Override this if you want to change how the mapred.job.name is written in Hadoop
   def name: String =
-    Config
-      .defaultFrom(mode)
-      .toMap
+    Config.defaultFrom(mode).toMap
       .getOrElse("mapred.job.name", getClass.getName)
 
   //This is the FlowDef used by all Sources this job creates
@@ -154,10 +149,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     * By default, this uses reflection and the single argument Args constructor
     */
   def clone(nextargs: Args): Job =
-    this.getClass
-      .getConstructor(classOf[Args])
-      .newInstance(Mode.putMode(mode, nextargs))
-      .asInstanceOf[Job]
+    this.getClass.getConstructor(classOf[Args])
+      .newInstance(Mode.putMode(mode, nextargs)).asInstanceOf[Job]
 
   /**
     * Implement this method if you want some other jobs to run after the current
@@ -193,8 +186,7 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     * This returns Map[AnyRef, AnyRef] for compatibility with older code
     */
   def config: Map[AnyRef, AnyRef] = {
-    val base = Config.empty
-      .setListSpillThreshold(defaultSpillThreshold)
+    val base = Config.empty.setListSpillThreshold(defaultSpillThreshold)
       .setMapSpillThreshold(defaultSpillThreshold)
       .setMapSideAggregationThreshold(defaultSpillThreshold)
 
@@ -210,20 +202,12 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
 
     val init = base ++ modeConf
 
-    defaultComparator
-      .map(init.setDefaultComparator)
-      .getOrElse(init)
+    defaultComparator.map(init.setDefaultComparator).getOrElse(init)
       .setSerialization(
         Right(classOf[serialization.KryoHadoop]),
-        ioSerializations)
-      .setScaldingVersion
-      .setCascadingAppName(name)
-      .setCascadingAppId(name)
-      .setScaldingFlowClass(getClass)
-      .setArgs(args)
-      .maybeSetSubmittedTimestamp()
-      ._2
-      .toMap
+        ioSerializations).setScaldingVersion.setCascadingAppName(name)
+      .setCascadingAppId(name).setScaldingFlowClass(getClass).setArgs(args)
+      .maybeSetSubmittedTimestamp()._2.toMap
       .toMap // the second one is to lift from String -> AnyRef
   }
 
@@ -251,25 +235,22 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     * combine the config, flowDef and the Mode to produce a flow
     */
   def buildFlow: Flow[_] =
-    executionContext
-      .flatMap(_.buildFlow)
-      .map { flow =>
-        listeners.foreach { flow.addListener(_) }
-        stepListeners.foreach { flow.addStepListener(_) }
-        skipStrategy.foreach { flow.setFlowSkipStrategy(_) }
-        stepStrategy.foreach { strategy =>
-          val existing = flow.getFlowStepStrategy
-          val composed =
-            if (existing == null) strategy
-            else
-              FlowStepStrategies[Any].plus(
-                existing.asInstanceOf[FlowStepStrategy[Any]],
-                strategy.asInstanceOf[FlowStepStrategy[Any]])
-          flow.setFlowStepStrategy(composed)
-        }
-        flow
+    executionContext.flatMap(_.buildFlow).map { flow =>
+      listeners.foreach { flow.addListener(_) }
+      stepListeners.foreach { flow.addStepListener(_) }
+      skipStrategy.foreach { flow.setFlowSkipStrategy(_) }
+      stepStrategy.foreach { strategy =>
+        val existing = flow.getFlowStepStrategy
+        val composed =
+          if (existing == null) strategy
+          else
+            FlowStepStrategies[Any].plus(
+              existing.asInstanceOf[FlowStepStrategy[Any]],
+              strategy.asInstanceOf[FlowStepStrategy[Any]])
+        flow.setFlowStepStrategy(composed)
       }
-      .get
+      flow
+    }.get
 
   // called before run
   // only override if you do not use flowDef
@@ -283,9 +264,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     scaldingCascadingStats = Some(statsData)
     // TODO: Why the two ways to do stats? Answer: jank-den.
     if (args.boolean("scalding.flowstats")) {
-      val statsFilename = args.getOrElse(
-        "scalding.flowstats",
-        name + "._flowstats.json")
+      val statsFilename = args
+        .getOrElse("scalding.flowstats", name + "._flowstats.json")
       val br = new BufferedWriter(
         new OutputStreamWriter(new FileOutputStream(statsFilename), "utf-8"))
       br.write(JobStats(statsData).toJson)
@@ -363,8 +343,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
   /*
    * Need to be lazy to be used within pipes.
    */
-  private lazy val timeoutExecutor = Executors.newSingleThreadExecutor(
-    new NamedPoolThreadFactory("job-timer", true))
+  private lazy val timeoutExecutor = Executors
+    .newSingleThreadExecutor(new NamedPoolThreadFactory("job-timer", true))
 
   /*
    * Safely execute some operation within a deadline.
@@ -488,13 +468,11 @@ abstract class ExecutionJob[+T](args: Args) extends Job(args) {
         "You cannot print the graph as it may be dynamically built or recurrent")
 
   final override def run = {
-    val r = Config
-      .tryFrom(config)
-      .map { conf =>
-        Await.result(
-          execution.run(conf, mode)(concurrentExecutionContext),
-          scala.concurrent.duration.Duration.Inf)
-      }
+    val r = Config.tryFrom(config).map { conf =>
+      Await.result(
+        execution.run(conf, mode)(concurrentExecutionContext),
+        scala.concurrent.duration.Duration.Inf)
+    }
     if (!resultPromise.tryComplete(r)) {
       // The test framework can call this more than once.
       println(
@@ -516,8 +494,7 @@ class ScriptJob(cmds: Iterable[String]) extends Job(Args("")) {
     try {
       cmds.dropWhile { cmd: String =>
         {
-          new java.lang.ProcessBuilder("bash", "-c", cmd)
-            .start()
+          new java.lang.ProcessBuilder("bash", "-c", cmd).start()
             .waitFor() match {
             case x if x != 0 =>
               println(cmd + " failed, exitStatus: " + x)

@@ -22,10 +22,7 @@ private[i18n] final class Context(
   private val cache = AsyncCache.single[Contexts](fetch, timeToLive = 1 hour)
 
   private def parse(text: String): Contexts =
-    text.lines.toList
-      .map(_.trim)
-      .filter(_.nonEmpty)
-      .map(_.split('='))
+    text.lines.toList.map(_.trim).filter(_.nonEmpty).map(_.split('='))
       .foldLeft(Map[String, String]()) {
         case (cs, Array(key, text)) if (keySet contains key) =>
           cs + (key -> text)
@@ -52,11 +49,7 @@ private[i18n] final class Context(
     Future {
       val dir = Files.createTempDir
       dir.deleteOnExit
-      Git.cloneRepository
-        .setURI(gitUrl)
-        .setDirectory(dir)
-        .setBare(false)
-        .call
+      Git.cloneRepository.setURI(gitUrl).setDirectory(dir).setBare(false).call
       dir
     }
 

@@ -120,7 +120,8 @@ trait LowPriorityTypes {
               _,
               cpdTpe,
               List(ConstantType(Constant(ignored: String)), tTpe))
-            if cpdTpe.asType.toType.typeConstructor =:= lowPriorityForIgnoringTpe &&
+            if cpdTpe.asType.toType
+              .typeConstructor =:= lowPriorityForIgnoringTpe &&
               ignored.nonEmpty => Some(ignored, tTpe)
         case _                 => None
       }

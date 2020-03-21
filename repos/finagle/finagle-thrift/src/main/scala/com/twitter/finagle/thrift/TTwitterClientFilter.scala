@@ -120,10 +120,8 @@ private[thrift] class TTwitterClientFilter(
       reply map { response =>
         if (isUpgraded) {
           // Peel off the ResponseHeader.
-          InputBuffer.peelMessage(
-            response,
-            new thrift.ResponseHeader,
-            protocolFactory)
+          InputBuffer
+            .peelMessage(response, new thrift.ResponseHeader, protocolFactory)
         } else response
       }
     }

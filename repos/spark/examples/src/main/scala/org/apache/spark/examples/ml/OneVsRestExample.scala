@@ -68,31 +68,24 @@ object OneVsRestExample {
       head("OneVsRest Example: multiclass to binary reduction using OneVsRest")
       opt[String]("input")
         .text("input path to labeled examples. This path must be specified")
-        .required()
-        .action((x, c) => c.copy(input = x))
-      opt[Double]("fracTest")
-        .text(
-          s"fraction of data to hold out for testing.  If given option testInput, " +
-            s"this option is ignored. default: ${defaultParams.fracTest}")
+        .required().action((x, c) => c.copy(input = x))
+      opt[Double]("fracTest").text(
+        s"fraction of data to hold out for testing.  If given option testInput, " +
+          s"this option is ignored. default: ${defaultParams.fracTest}")
         .action((x, c) => c.copy(fracTest = x))
-      opt[String]("testInput")
-        .text(
-          "input path to test dataset.  If given, option fracTest is ignored")
+      opt[String]("testInput").text(
+        "input path to test dataset.  If given, option fracTest is ignored")
         .action((x, c) => c.copy(testInput = Some(x)))
-      opt[Int]("maxIter")
-        .text(
-          s"maximum number of iterations for Logistic Regression." +
-            s" default: ${defaultParams.maxIter}")
+      opt[Int]("maxIter").text(
+        s"maximum number of iterations for Logistic Regression." +
+          s" default: ${defaultParams.maxIter}")
         .action((x, c) => c.copy(maxIter = x))
-      opt[Double]("tol")
-        .text(
-          s"the convergence tolerance of iterations for Logistic Regression." +
-            s" default: ${defaultParams.tol}")
-        .action((x, c) => c.copy(tol = x))
-      opt[Boolean]("fitIntercept")
-        .text(
-          s"fit intercept for Logistic Regression." +
-            s" default: ${defaultParams.fitIntercept}")
+      opt[Double]("tol").text(
+        s"the convergence tolerance of iterations for Logistic Regression." +
+          s" default: ${defaultParams.tol}").action((x, c) => c.copy(tol = x))
+      opt[Boolean]("fitIntercept").text(
+        s"fit intercept for Logistic Regression." +
+          s" default: ${defaultParams.fitIntercept}")
         .action((x, c) => c.copy(fitIntercept = x))
       opt[Double]("regParam")
         .text(s"the regularization parameter for Logistic Regression.")
@@ -125,9 +118,7 @@ object OneVsRestExample {
         // compute the number of features in the training set.
         val numFeatures = inputData.first().getAs[Vector](1).size
         val testData = sqlContext.read
-          .option("numFeatures", numFeatures.toString)
-          .format("libsvm")
-          .load(t)
+          .option("numFeatures", numFeatures.toString).format("libsvm").load(t)
         Array[DataFrame](inputData, testData)
       }
       case None => {
@@ -138,10 +129,8 @@ object OneVsRestExample {
     val Array(train, test) = data.map(_.cache())
 
     // instantiate the base classifier
-    val classifier = new LogisticRegression()
-      .setMaxIter(params.maxIter)
-      .setTol(params.tol)
-      .setFitIntercept(params.fitIntercept)
+    val classifier = new LogisticRegression().setMaxIter(params.maxIter)
+      .setTol(params.tol).setFitIntercept(params.fitIntercept)
 
     // Set regParam, elasticNetParam if specified in params
     params.regParam.foreach(classifier.setRegParam)
@@ -159,9 +148,7 @@ object OneVsRestExample {
     val (predictionDuration, predictions) = time(ovrModel.transform(test))
 
     // evaluate the model
-    val predictionsAndLabels = predictions
-      .select("prediction", "label")
-      .rdd
+    val predictionsAndLabels = predictions.select("prediction", "label").rdd
       .map(row => (row.getDouble(0), row.getDouble(1)))
 
     val metrics = new MulticlassMetrics(predictionsAndLabels)
@@ -171,8 +158,8 @@ object OneVsRestExample {
     // compute the false positive rate per label
     val predictionColSchema = predictions.schema("prediction")
     val numClasses = MetadataUtils.getNumClasses(predictionColSchema).get
-    val fprs = Range(0, numClasses).map(p =>
-      (p, metrics.falsePositiveRate(p.toDouble)))
+    val fprs = Range(0, numClasses)
+      .map(p => (p, metrics.falsePositiveRate(p.toDouble)))
 
     println(s" Training Time ${trainingDuration} sec\n")
 

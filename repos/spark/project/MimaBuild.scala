@@ -82,8 +82,8 @@ object MimaBuild {
       else { IO.read(memberExcludeFilePath).split("\n") }
 
     defaultExcludes ++ ignoredClasses.flatMap(excludeClass) ++
-      ignoredMembers.flatMap(excludeMember) ++ MimaExcludes.excludes(
-      currentSparkVersion)
+      ignoredMembers.flatMap(excludeMember) ++ MimaExcludes
+      .excludes(currentSparkVersion)
   }
 
   def mimaSettings(sparkHome: File, projectRef: ProjectRef) = {

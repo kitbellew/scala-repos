@@ -207,11 +207,9 @@ final object Aggregation {
       // Once that is addressed, the tasks constructed by the input tasks would need to be combined with the explicit tasks.
       if (inputTasks.nonEmpty) {
         if (other.nonEmpty) {
-          val inputStrings = inputTasks
-            .map(_.key)
+          val inputStrings = inputTasks.map(_.key)
             .mkString("Input task(s):\n\t", "\n\t", "\n")
-          val otherStrings = other
-            .map(_.key)
+          val otherStrings = other.map(_.key)
             .mkString("Task(s)/setting(s):\n\t", "\n\t", "\n")
           failure(
             s"Cannot mix input tasks with plain tasks/settings.  $inputStrings $otherStrings")
@@ -289,9 +287,8 @@ final object Aggregation {
     }
 
   def aggregationEnabled(key: ScopedKey[_], data: Settings[Scope]): Boolean =
-    Keys.aggregate in Scope.fillTaskAxis(
-      key.scope,
-      key.key) get data getOrElse true
+    Keys.aggregate in Scope
+      .fillTaskAxis(key.scope, key.key) get data getOrElse true
 
   @deprecated("Use BuildUtil.aggregationRelation", "0.13.0")
   def relation(

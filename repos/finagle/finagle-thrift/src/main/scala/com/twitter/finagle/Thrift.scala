@@ -146,13 +146,12 @@ object Thrift
 
     // We must do 'preparation' this way in order to let Finagle set up tracing & so on.
     val stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] =
-      StackClient.newStack
-        .replace(StackClient.Role.prepConn, preparer)
+      StackClient.newStack.replace(StackClient.Role.prepConn, preparer)
   }
 
   case class Client(
-      stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] =
-        Client.stack,
+      stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] = Client
+        .stack,
       params: Stack.Params =
         StackClient.defaultParams + ProtocolLibrary("thrift"))
       extends StdStackClient[ThriftClientRequest, Array[Byte], Client]
@@ -161,8 +160,8 @@ object Thrift
       with ThriftRichClient {
 
     protected def copy1(
-        stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] =
-          this.stack,
+        stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] = this
+          .stack,
         params: Stack.Params = this.params): Client = copy(stack, params)
 
     protected lazy val Label(defaultClientName) = params[Label]
@@ -171,8 +170,8 @@ object Thrift
     protected type Out = Array[Byte]
 
     val param.Framed(framed) = params[param.Framed]
-    protected val param
-      .ProtocolFactory(protocolFactory) = params[param.ProtocolFactory]
+    protected val param.ProtocolFactory(protocolFactory) = params[
+      param.ProtocolFactory]
     override protected lazy val Stats(stats) = params[Stats]
 
     protected def newTransporter(): Transporter[In, Out] = {
@@ -214,8 +213,8 @@ object Thrift
       val classifier =
         if (params.contains[com.twitter.finagle.param.ResponseClassifier]) {
           ThriftResponseClassifier.usingDeserializeCtx(
-            params[
-              com.twitter.finagle.param.ResponseClassifier].responseClassifier)
+            params[com.twitter.finagle.param.ResponseClassifier]
+              .responseClassifier)
         } else { ThriftResponseClassifier.DeserializeCtxOnly }
       configured(com.twitter.finagle.param.ResponseClassifier(classifier))
     }
@@ -305,9 +304,8 @@ object Thrift
         }
       }
 
-    val stack: Stack[ServiceFactory[Array[Byte], Array[Byte]]] =
-      StackServer.newStack
-        .replace(StackServer.Role.preparer, preparer)
+    val stack: Stack[ServiceFactory[Array[Byte], Array[Byte]]] = StackServer
+      .newStack.replace(StackServer.Role.preparer, preparer)
   }
 
   case class Server(
@@ -324,8 +322,8 @@ object Thrift
     protected type Out = Array[Byte]
 
     val param.Framed(framed) = params[param.Framed]
-    protected val param
-      .ProtocolFactory(protocolFactory) = params[param.ProtocolFactory]
+    protected val param.ProtocolFactory(protocolFactory) = params[
+      param.ProtocolFactory]
 
     protected def newListener(): Listener[In, Out] = {
       val pipeline =

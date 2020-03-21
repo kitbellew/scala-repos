@@ -28,12 +28,8 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
   before {
     testServer = TestMemcachedServer.start()
     if (testServer.isDefined) {
-      val service = ClientBuilder()
-        .hosts(Seq(testServer.get.address))
-        .reportTo(stats)
-        .codec(new Memcached())
-        .hostConnectionLimit(1)
-        .build()
+      val service = ClientBuilder().hosts(Seq(testServer.get.address))
+        .reportTo(stats).codec(new Memcached()).hostConnectionLimit(1).build()
       client = Client(service)
     }
   }
@@ -58,9 +54,9 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
   test("get") {
     Await.result(client.set("foo", Buf.Utf8("bar")))
     Await.result(client.set("baz", Buf.Utf8("boing")))
-    val result = Await
-      .result(client.get(Seq("foo", "baz", "notthere")))
-      .map { case (key, Buf.Utf8(value)) => (key, value) }
+    val result = Await.result(client.get(Seq("foo", "baz", "notthere"))).map {
+      case (key, Buf.Utf8(value)) => (key, value)
+    }
     assert(result == Map("foo" -> "bar", "baz" -> "boing"))
   }
 
@@ -70,8 +66,7 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
       Await.result(client.set("bazs", Buf.Utf8("xyz")))
       Await.result(client.set("bazs", Buf.Utf8("zyx")))
       val result = Await
-        .result(client.gets(Seq("foos", "bazs", "somethingelse")))
-        .map {
+        .result(client.gets(Seq("foos", "bazs", "somethingelse"))).map {
           case (key, (Buf.Utf8(value), Buf.Utf8(casUnique))) =>
             (key, (value, casUnique))
         }

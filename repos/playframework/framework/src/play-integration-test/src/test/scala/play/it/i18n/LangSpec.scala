@@ -17,8 +17,7 @@ class LangSpec extends PlaySpecification {
       val enUs = Lang("en-US")
 
       implicit val app = GuiceApplicationBuilder()
-        .configure("play.i18n.langs" -> Seq(enUs, esEs, de).map(_.code))
-        .build()
+        .configure("play.i18n.langs" -> Seq(enUs, esEs, de).map(_.code)).build()
       val langs = app.injector.instanceOf[Langs]
 
       "with exact match" in { langs.preferred(Seq(esEs)) must_== esEs }
@@ -122,9 +121,8 @@ class LangSpec extends PlaySpecification {
         val zhHans = Lang("zh-Hans")
         val zhHant = Lang("zh-Hant")
 
-        implicit val app = GuiceApplicationBuilder()
-          .configure(
-            "play.i18n.langs" -> Seq(zhHans, zh, azCyrl, enUS).map(_.code))
+        implicit val app = GuiceApplicationBuilder().configure(
+          "play.i18n.langs" -> Seq(zhHans, zh, azCyrl, enUS).map(_.code))
           .build()
         val langs = app.injector.instanceOf[Langs]
 

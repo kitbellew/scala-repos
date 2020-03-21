@@ -24,8 +24,7 @@ class ScalaArrayAccessEvaluator(
     myEvaluatedIndex = 0
     myEvaluatedArrayReference = null
     val indexValue: Value = indexEvaluator.evaluate(context).asInstanceOf[Value]
-    val arrayValue: Value = arrayReferenceEvaluator
-      .evaluate(context)
+    val arrayValue: Value = arrayReferenceEvaluator.evaluate(context)
       .asInstanceOf[Value]
     if (!arrayValue.isInstanceOf[ArrayReference]) {
       throw EvaluationException(

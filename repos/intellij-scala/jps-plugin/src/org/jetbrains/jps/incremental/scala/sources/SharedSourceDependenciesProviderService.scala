@@ -14,13 +14,13 @@ class SharedSourceDependenciesProviderService
   def getSourceDependenciesFor(chunk: ModuleChunk) = {
     val modules = chunk.getModules.asScala.toSeq
 
-    val dependencies = modules.flatMap(
-      _.getDependenciesList.getDependencies.asScala)
+    val dependencies = modules
+      .flatMap(_.getDependenciesList.getDependencies.asScala)
 
     dependencies.collect {
       case it: JpsModuleDependency
-          if it.getModule != null && it.getModule.getModuleType == SharedSourcesModuleType.INSTANCE =>
-        it.getModule
+          if it.getModule != null && it.getModule
+            .getModuleType == SharedSourcesModuleType.INSTANCE => it.getModule
     }
   }
 }

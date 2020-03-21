@@ -41,12 +41,8 @@ object MyExecJob extends ExecutionApp {
     Execution.getConfig.flatMap { config =>
       val args = config.getArgs
 
-      TypedPipe
-        .from(TextLine(args("input")))
-        .flatMap(_.split("\\s+"))
-        .map((_, 1L))
-        .sumByKey
-        .toIterableExecution
+      TypedPipe.from(TextLine(args("input"))).flatMap(_.split("\\s+"))
+        .map((_, 1L)).sumByKey.toIterableExecution
         // toIterableExecution will materialize the outputs to submitter node when finish.
         // We can also write the outputs on HDFS via .writeExecution(TypedTsv(args("output")))
         .onComplete { t =>

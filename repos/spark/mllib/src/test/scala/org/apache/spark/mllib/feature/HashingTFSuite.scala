@@ -49,7 +49,6 @@ class HashingTFSuite extends SparkFunSuite with MLlibTestSparkContext {
     val docs = sc.parallelize(localDocs, 2)
     assert(
       hashingTF.transform(docs).collect().toSet === localDocs
-        .map(hashingTF.transform)
-        .toSet)
+        .map(hashingTF.transform).toSet)
   }
 }

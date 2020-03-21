@@ -47,20 +47,20 @@ object MouseEvent {
 
   val MouseEntered: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_ENTERED
 
-  val MouseEnteredTarget: EventType[jfxsi.MouseEvent] =
-    jfxsi.MouseEvent.MOUSE_ENTERED_TARGET
+  val MouseEnteredTarget: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent
+    .MOUSE_ENTERED_TARGET
 
   val MouseExited: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_EXITED
 
-  val MouseExitedTarget: EventType[jfxsi.MouseEvent] =
-    jfxsi.MouseEvent.MOUSE_EXITED_TARGET
+  val MouseExitedTarget: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent
+    .MOUSE_EXITED_TARGET
 
   val MouseMoved: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_MOVED
 
   val MousePressed: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent.MOUSE_PRESSED
 
-  val MouseReleased: EventType[jfxsi.MouseEvent] =
-    jfxsi.MouseEvent.MOUSE_RELEASED
+  val MouseReleased: EventType[jfxsi.MouseEvent] = jfxsi.MouseEvent
+    .MOUSE_RELEASED
 
 }
 

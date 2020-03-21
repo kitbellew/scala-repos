@@ -84,8 +84,8 @@ private[streaming] class ReceiverSchedulingPolicy {
     }
 
     val hostToExecutors = executors.groupBy(_.host)
-    val scheduledLocations = Array.fill(receivers.length)(
-      new mutable.ArrayBuffer[TaskLocation])
+    val scheduledLocations = Array
+      .fill(receivers.length)(new mutable.ArrayBuffer[TaskLocation])
     val numReceiversOnExecutor = mutable
       .HashMap[ExecutorCacheTaskLocation, Int]()
     // Set the initial value to 0
@@ -100,8 +100,8 @@ private[streaming] class ReceiverSchedulingPolicy {
           case Some(executorsOnHost) =>
             // preferredLocation is a known host. Select an executor that has the least receivers in
             // this host
-            val leastScheduledExecutor = executorsOnHost.minBy(executor =>
-              numReceiversOnExecutor(executor))
+            val leastScheduledExecutor = executorsOnHost
+              .minBy(executor => numReceiversOnExecutor(executor))
             scheduledLocations(i) += leastScheduledExecutor
             numReceiversOnExecutor(leastScheduledExecutor) =
               numReceiversOnExecutor(leastScheduledExecutor) + 1
@@ -124,8 +124,8 @@ private[streaming] class ReceiverSchedulingPolicy {
     for (scheduledLocationsForOneReceiver <- scheduledLocations.filter(
            _.isEmpty)) {
       // Select the executor that has the least receivers
-      val (leastScheduledExecutor, numReceivers) = numReceiversOnExecutor.minBy(
-        _._2)
+      val (leastScheduledExecutor, numReceivers) = numReceiversOnExecutor
+        .minBy(_._2)
       scheduledLocationsForOneReceiver += leastScheduledExecutor
       numReceiversOnExecutor(leastScheduledExecutor) = numReceivers + 1
     }
@@ -184,8 +184,7 @@ private[streaming] class ReceiverSchedulingPolicy {
 
     val executorWeights: Map[ExecutorCacheTaskLocation, Double] = {
       receiverTrackingInfoMap.values
-        .flatMap(convertReceiverTrackingInfoToExecutorWeights)
-        .groupBy(_._1)
+        .flatMap(convertReceiverTrackingInfoToExecutorWeights).groupBy(_._1)
         .mapValues(_.map(_._2).sum) // Sum weights for each executor
     }
 
@@ -196,8 +195,7 @@ private[streaming] class ReceiverSchedulingPolicy {
       val sortedExecutors = executorWeights.toSeq.sortBy(_._2)
       if (sortedExecutors.nonEmpty) {
         val minWeight = sortedExecutors(0)._2
-        scheduledLocations ++= sortedExecutors
-          .takeWhile(_._2 == minWeight)
+        scheduledLocations ++= sortedExecutors.takeWhile(_._2 == minWeight)
           .map(_._1)
       } else {
         // This should not happen since "executors" is not empty
@@ -223,8 +221,7 @@ private[streaming] class ReceiverSchedulingPolicy {
         val scheduledLocations = receiverTrackingInfo.scheduledLocations.get
         // The probability that a scheduled receiver will run in an executor is
         // 1.0 / scheduledLocations.size
-        scheduledLocations
-          .filter(_.isInstanceOf[ExecutorCacheTaskLocation])
+        scheduledLocations.filter(_.isInstanceOf[ExecutorCacheTaskLocation])
           .map { location =>
             location.asInstanceOf[ExecutorCacheTaskLocation] -> (
               1.0 / scheduledLocations.size

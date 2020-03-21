@@ -79,8 +79,8 @@ class StringEncodedRow(
         case Type.Double   => DoubleValue(str.toDouble)
         case Type.Year     => ShortValue(str.toShort)
         // Nonbinary strings as stored in the CHAR, VARCHAR, and TEXT data types
-        case Type.VarChar | Type.String | Type.VarString | Type.TinyBlob |
-            Type.Blob | Type.MediumBlob if !Charset.isBinary(field.charset) =>
+        case Type.VarChar | Type.String | Type.VarString | Type.TinyBlob | Type
+              .Blob | Type.MediumBlob if !Charset.isBinary(field.charset) =>
           StringValue(str)
         // LongBlobs indicate a sequence of bytes with length >= 2^24 which
         // can't fit into a Array[Byte]. This should be streamed and
@@ -145,8 +145,8 @@ class BinaryEncodedRow(
           // Nonbinary strings as stored in the CHAR, VARCHAR, and TEXT data types
           case Type.VarChar | Type.String | Type.VarString | Type.TinyBlob |
               Type.Blob | Type.MediumBlob
-              if !Charset.isBinary(field.charset) && Charset.isCompatible(
-                field.charset) =>
+              if !Charset.isBinary(field.charset) && Charset
+                .isCompatible(field.charset) =>
             StringValue(buffer.readLengthCodedString(Charset(field.charset)))
 
           case Type.LongBlob =>

@@ -32,8 +32,8 @@ class PartitionBatchPruningSuite
   import testImplicits._
 
   private lazy val originalColumnBatchSize = sqlContext.conf.columnBatchSize
-  private lazy val originalInMemoryPartitionPruning =
-    sqlContext.conf.inMemoryPartitionPruning
+  private lazy val originalInMemoryPartitionPruning = sqlContext.conf
+    .inMemoryPartitionPruning
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
@@ -58,14 +58,12 @@ class PartitionBatchPruningSuite
     super.beforeEach()
     // This creates accumulators, which get cleaned up after every single test,
     // so we need to do this before every test.
-    val pruningData = sparkContext
-      .makeRDD(
-        (1 to 100).map { key =>
-          val string = if (((key - 1) / 10) % 2 == 0) null else key.toString
-          TestData(key, string)
-        },
-        5)
-      .toDF()
+    val pruningData = sparkContext.makeRDD(
+      (1 to 100).map { key =>
+        val string = if (((key - 1) / 10) % 2 == 0) null else key.toString
+        TestData(key, string)
+      },
+      5).toDF()
     pruningData.registerTempTable("pruningData")
     sqlContext.cacheTable("pruningData")
   }

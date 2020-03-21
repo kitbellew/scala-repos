@@ -108,20 +108,17 @@ object Challenge {
     }
 
   private def perfTypeOf(variant: Variant, timeControl: TimeControl): PerfType =
-    PerfPicker
-      .perfType(
-        speedOf(timeControl),
-        variant,
-        timeControl match {
-          case TimeControl.Correspondence(d) => d.some
-          case _                             => none
-        })
-      .orElse {
-        (variant == FromPosition) option perfTypeOf(
-          chess.variant.Standard,
-          timeControl)
-      }
-      .|(PerfType.Correspondence)
+    PerfPicker.perfType(
+      speedOf(timeControl),
+      variant,
+      timeControl match {
+        case TimeControl.Correspondence(d) => d.some
+        case _                             => none
+      }).orElse {
+      (variant == FromPosition) option perfTypeOf(
+        chess.variant.Standard,
+        timeControl)
+    }.|(PerfType.Correspondence)
 
   private val idSize = 8
 

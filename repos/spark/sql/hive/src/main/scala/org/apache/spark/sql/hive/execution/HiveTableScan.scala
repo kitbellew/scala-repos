@@ -68,8 +68,7 @@ private[hive] case class HiveTableScan(
   // Bind all partition key attribute references in the partition pruning predicate for later
   // evaluation.
   private[this] val boundPruningPred = partitionPruningPred
-    .reduceLeftOption(And)
-    .map { pred =>
+    .reduceLeftOption(And).map { pred =>
       require(
         pred.dataType == BooleanType,
         s"Data type of predicate $pred must be BooleanType rather than ${pred.dataType}.")
@@ -95,25 +94,20 @@ private[hive] case class HiveTableScan(
 
   private def addColumnMetadataToConf(hiveConf: HiveConf) {
     // Specifies needed column IDs for those non-partitioning columns.
-    val neededColumnIDs = attributes
-      .flatMap(relation.columnOrdinals.get)
+    val neededColumnIDs = attributes.flatMap(relation.columnOrdinals.get)
       .map(o => o: Integer)
 
-    HiveShim.appendReadColumns(
-      hiveConf,
-      neededColumnIDs,
-      attributes.map(_.name))
+    HiveShim
+      .appendReadColumns(hiveConf, neededColumnIDs, attributes.map(_.name))
 
     val tableDesc = relation.tableDesc
     val deserializer = tableDesc.getDeserializerClass.newInstance
     deserializer.initialize(hiveConf, tableDesc.getProperties)
 
     // Specifies types and object inspectors of columns to be scanned.
-    val structOI = ObjectInspectorUtils
-      .getStandardObjectInspector(
-        deserializer.getObjectInspector,
-        ObjectInspectorCopyOption.JAVA)
-      .asInstanceOf[StructObjectInspector]
+    val structOI = ObjectInspectorUtils.getStandardObjectInspector(
+      deserializer.getObjectInspector,
+      ObjectInspectorCopyOption.JAVA).asInstanceOf[StructObjectInspector]
 
     val columnTypeNames = structOI.getAllStructFieldRefs.asScala
       .map(_.getFieldObjectInspector)
@@ -137,9 +131,9 @@ private[hive] case class HiveTableScan(
       case None => partitions
       case Some(shouldKeep) => partitions.filter { part =>
           val dataTypes = relation.partitionKeys.map(_.dataType)
-          val castedValues = part.getValues.asScala
-            .zip(dataTypes)
-            .map { case (value, dataType) => castFromString(value, dataType) }
+          val castedValues = part.getValues.asScala.zip(dataTypes).map {
+            case (value, dataType) => castFromString(value, dataType)
+          }
 
           // Only partitioned values are needed here, since the predicate has already been bound to
           // partition key attribute references.

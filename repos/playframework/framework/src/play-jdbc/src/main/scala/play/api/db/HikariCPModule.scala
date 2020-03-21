@@ -99,8 +99,7 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
     val config = configuration.get[PlayConfig]("hikaricp")
 
     // Essentials configurations
-    config
-      .get[Option[String]]("dataSourceClassName")
+    config.get[Option[String]]("dataSourceClassName")
       .foreach(hikariConfig.setDataSourceClassName)
 
     dbConfig.url.foreach(hikariConfig.setJdbcUrl)
@@ -122,32 +121,29 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
 
     // Frequently used
     hikariConfig.setAutoCommit(config.get[Boolean]("autoCommit"))
-    hikariConfig.setConnectionTimeout(toMillis(
-      config.get[Duration]("connectionTimeout")))
+    hikariConfig
+      .setConnectionTimeout(toMillis(config.get[Duration]("connectionTimeout")))
     hikariConfig.setIdleTimeout(toMillis(config.get[Duration]("idleTimeout")))
     hikariConfig.setMaxLifetime(toMillis(config.get[Duration]("maxLifetime")))
-    config
-      .get[Option[String]]("connectionTestQuery")
+    config.get[Option[String]]("connectionTestQuery")
       .foreach(hikariConfig.setConnectionTestQuery)
     config.get[Option[Int]]("minimumIdle").foreach(hikariConfig.setMinimumIdle)
     hikariConfig.setMaximumPoolSize(config.get[Int]("maximumPoolSize"))
     config.get[Option[String]]("poolName").foreach(hikariConfig.setPoolName)
 
     // Infrequently used
-    hikariConfig.setInitializationFailFast(
-      config.get[Boolean]("initializationFailFast"))
-    hikariConfig.setIsolateInternalQueries(
-      config.get[Boolean]("isolateInternalQueries"))
-    hikariConfig.setAllowPoolSuspension(
-      config.get[Boolean]("allowPoolSuspension"))
+    hikariConfig
+      .setInitializationFailFast(config.get[Boolean]("initializationFailFast"))
+    hikariConfig
+      .setIsolateInternalQueries(config.get[Boolean]("isolateInternalQueries"))
+    hikariConfig
+      .setAllowPoolSuspension(config.get[Boolean]("allowPoolSuspension"))
     hikariConfig.setReadOnly(config.get[Boolean]("readOnly"))
     hikariConfig.setRegisterMbeans(config.get[Boolean]("registerMbeans"))
-    config
-      .get[Option[String]]("connectionInitSql")
+    config.get[Option[String]]("connectionInitSql")
       .foreach(hikariConfig.setConnectionInitSql)
     config.get[Option[String]]("catalog").foreach(hikariConfig.setCatalog)
-    config
-      .get[Option[String]]("transactionIsolation")
+    config.get[Option[String]]("transactionIsolation")
       .foreach(hikariConfig.setTransactionIsolation)
     hikariConfig.setValidationTimeout(
       config.get[FiniteDuration]("validationTimeout").toMillis)

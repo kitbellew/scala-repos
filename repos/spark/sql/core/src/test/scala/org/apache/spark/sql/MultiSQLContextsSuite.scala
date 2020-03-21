@@ -34,9 +34,7 @@ class MultiSQLContextsSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     SQLContext.clearActive()
     SQLContext.clearInstantiatedContext()
-    sparkConf = new SparkConf(false)
-      .setMaster("local[*]")
-      .setAppName("test")
+    sparkConf = new SparkConf(false).setMaster("local[*]").setAppName("test")
       .set("spark.ui.enabled", "false")
       .set("spark.driver.allowMultipleContexts", "true")
   }
@@ -44,8 +42,8 @@ class MultiSQLContextsSuite extends SparkFunSuite with BeforeAndAfterAll {
   override protected def afterAll(): Unit = {
     // Set these states back.
     originalActiveSQLContext.foreach(ctx => SQLContext.setActive(ctx))
-    originalInstantiatedSQLContext.foreach(ctx =>
-      SQLContext.setInstantiatedContext(ctx))
+    originalInstantiatedSQLContext
+      .foreach(ctx => SQLContext.setInstantiatedContext(ctx))
   }
 
   def testNewSession(rootSQLContext: SQLContext): Unit = {
@@ -67,9 +65,8 @@ class MultiSQLContextsSuite extends SparkFunSuite with BeforeAndAfterAll {
         SQLContext.clearActive()
       } else {
         // If allowsMultipleContexts is false, make sure we can get the error.
-        val message = intercept[SparkException] {
-          new SQLContext(sparkContext)
-        }.getMessage
+        val message = intercept[SparkException] { new SQLContext(sparkContext) }
+          .getMessage
         assert(
           message.contains("Only one SQLContext/HiveContext may be running"))
       }
@@ -78,10 +75,9 @@ class MultiSQLContextsSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   test("test the flag to disallow creating multiple root SQLContext") {
     Seq(false, true).foreach { allowMultipleSQLContexts =>
-      val conf = sparkConf.clone
-        .set(
-          SQLConf.ALLOW_MULTIPLE_CONTEXTS.key,
-          allowMultipleSQLContexts.toString)
+      val conf = sparkConf.clone.set(
+        SQLConf.ALLOW_MULTIPLE_CONTEXTS.key,
+        allowMultipleSQLContexts.toString)
       val sc = new SparkContext(conf)
       try {
         val rootSQLContext = new SQLContext(sc)

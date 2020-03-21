@@ -84,20 +84,19 @@ class AppliedTypeLambdaCanBeSimplifiedInspection extends LocalInspectionTool {
                       val name1 = typeProjection.nameId
                       val name2 = typeAliasDefinition.nameId
                       if (name1.getText == name2.getText) {
-                        val at: TypeResult[ScType] =
-                          typeAliasDefinition.aliasedType
+                        val at: TypeResult[ScType] = typeAliasDefinition
+                          .aliasedType
                         val params = typeAliasDefinition.typeParameters
                         val typeArgs = paramType.typeArgList.typeArgs
                         if (params.length == typeArgs.length) {
                           def simplified(): String = {
-                            val aliased =
-                              typeAliasDefinition.aliasedType.getOrAny
-                            val subst = params
-                              .zip(typeArgs)
+                            val aliased = typeAliasDefinition.aliasedType
+                              .getOrAny
+                            val subst = params.zip(typeArgs)
                               .foldLeft(ScSubstitutor.empty) {
                                 case (res, (param, arg)) =>
-                                  val typeVar = ScalaPsiManager.typeVariable(
-                                    param)
+                                  val typeVar = ScalaPsiManager
+                                    .typeVariable(param)
                                   res.bindT(
                                     (typeVar.name, typeVar.getId),
                                     arg.calcType)

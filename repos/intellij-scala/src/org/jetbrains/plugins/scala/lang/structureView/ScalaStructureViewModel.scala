@@ -74,9 +74,7 @@ class ScalaStructureViewModel(
                     test2: TestStructureViewElement)   => 0
               case (_, test: TestStructureViewElement) => -1
               case (test: TestStructureViewElement, _) => 1
-              case _ =>
-                SorterUtil
-                  .getStringPresentation(o1)
+              case _ => SorterUtil.getStringPresentation(o1)
                   .compareToIgnoreCase(SorterUtil.getStringPresentation(o2))
             }
         }

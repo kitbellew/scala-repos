@@ -106,8 +106,7 @@ final class SetClientIntegrationSuite extends RedisClientTest {
         Await.result(client.sAdd(key, List(boo))) == oneElemAdded,
         oneElemAddErrorMessage)
 
-      val strings: CollectionSet[String] = Await
-        .result(client.sMembers(key))
+      val strings: CollectionSet[String] = Await.result(client.sMembers(key))
         .map(chanBuf2String(_))
       assert(strings == CollectionSet("moo", "boo"))
 

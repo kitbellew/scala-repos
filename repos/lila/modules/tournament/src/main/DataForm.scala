@@ -60,8 +60,7 @@ final class DataForm {
       "mode" -> optional(number.verifying(Mode.all map (_.id) contains _)),
       "private" -> optional(text.verifying("on" == _))
     )(TournamentSetup.apply)(TournamentSetup.unapply)
-      .verifying("Invalid clock", _.validClock)
-      .verifying(
+      .verifying("Invalid clock", _.validClock).verifying(
         "Increase tournament duration, or decrease game clock",
         _.validTiming)) fill TournamentSetup(
     clockTime = clockTimeDefault,

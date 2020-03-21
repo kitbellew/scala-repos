@@ -50,19 +50,19 @@ object HttpEventActor {
     private val pre = MetricPrefixes.SERVICE
     private val clazz = classOf[HttpEventActor]
     // the number of requests that are open without response
-    val outstandingCallbacks = metrics.counter(
-      metrics.name(pre, clazz, "outstanding-callbacks"))
+    val outstandingCallbacks = metrics
+      .counter(metrics.name(pre, clazz, "outstanding-callbacks"))
     // the number of events that are broadcast
     val eventMeter = metrics.meter(metrics.name(pre, clazz, "events"))
     // the number of events that are not send to callback listeners due to backoff
-    val skippedCallbacks = metrics.meter(
-      metrics.name(pre, clazz, "skipped-callbacks"))
+    val skippedCallbacks = metrics
+      .meter(metrics.name(pre, clazz, "skipped-callbacks"))
     // the number of callbacks that have failed during delivery
-    val failedCallbacks = metrics.meter(
-      metrics.name(pre, clazz, "failed-callbacks"))
+    val failedCallbacks = metrics
+      .meter(metrics.name(pre, clazz, "failed-callbacks"))
     // the response time of the callback listeners
-    val callbackResponseTime = metrics.timer(
-      metrics.name(pre, clazz, "callback-response-time"))
+    val callbackResponseTime = metrics
+      .timer(metrics.name(pre, clazz, "callback-response-time"))
   }
 }
 
@@ -80,8 +80,7 @@ class HttpEventActor(
       ec: ExecutionContext): HttpRequest => Future[HttpResponse] = {
     addHeader("Accept", "application/json") ~> sendReceive
   }
-  var limiter = Map
-    .empty[String, EventNotificationLimit]
+  var limiter = Map.empty[String, EventNotificationLimit]
     .withDefaultValue(NoLimit)
 
   def receive: Receive = {
@@ -97,27 +96,22 @@ class HttpEventActor(
     log.info("POSTing to all endpoints.")
     val me = self
     import context.dispatcher
-    (subscribersKeeper ? GetSubscribers)
-      .mapTo[EventSubscribers]
-      .map { subscribers => me ! Broadcast(event, subscribers) }
-      .onFailure {
-        case NonFatal(e) =>
-          log.error("While trying to resolve subscribers for event {}", event)
-      }
+    (subscribersKeeper ? GetSubscribers).mapTo[EventSubscribers].map {
+      subscribers => me ! Broadcast(event, subscribers)
+    }.onFailure {
+      case NonFatal(e) =>
+        log.error("While trying to resolve subscribers for event {}", event)
+    }
   }
 
   def broadcast(event: MarathonEvent, subscribers: EventSubscribers): Unit = {
     val (active, limited) = subscribers.urls.partition(limiter(_).notLimited)
     if (limited.nonEmpty) {
-      log.info(
-        s"""Will not send event ${event.eventType} to unresponsive hosts: ${limited
-          .mkString(" ")}""")
+      log.info(s"""Will not send event ${event
+        .eventType} to unresponsive hosts: ${limited.mkString(" ")}""")
     }
     //remove all unsubscribed callback listener
-    limiter = limiter
-      .filterKeys(subscribers.urls)
-      .iterator
-      .toMap
+    limiter = limiter.filterKeys(subscribers.urls).iterator.toMap
       .withDefaultValue(NoLimit)
     metrics.skippedCallbacks.mark(limited.size)
     active.foreach(post(_, event, self))
@@ -148,8 +142,8 @@ class HttpEventActor(
         metrics.failedCallbacks.mark()
         eventActor ! NotificationFailed(url)
       case Failure(ex) =>
-        log.warning(
-          s"Failed to post $event to $url because ${ex.getClass.getSimpleName}: ${ex.getMessage}")
+        log.warning(s"Failed to post $event to $url because ${ex.getClass
+          .getSimpleName}: ${ex.getMessage}")
         metrics.failedCallbacks.mark()
         eventActor ! NotificationFailed(url)
     }

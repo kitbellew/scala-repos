@@ -52,8 +52,7 @@ object ValidationTest extends SpecLite {
       val fail1 = Failure("1").toValidationNel
       val fail2 = Failure("2").toValidationNel
       val f = (_: Int) + (_: Int)
-      Apply[ValidationNel[String, ?]]
-        .ap2(fail1, fail2)(Success(f))
+      Apply[ValidationNel[String, ?]].ap2(fail1, fail2)(Success(f))
         .shows must_=== ("""Failure(["1","2"])""")
     }
   }
@@ -121,12 +120,14 @@ object ValidationTest extends SpecLite {
   "ensure" in {
     import syntax.std.string._
     import syntax.validation._
-    List("1", "2") map (
-      _.parseInt.leftMap(_.toString).ensure("Fail")(_ >= 0)
-    ) must_=== (List(1.success[String], 2.success[String]))
-    List("1", "-2") map (
-      _.parseInt.leftMap(_.toString).ensure("Fail")(_ >= 0)
-    ) must_=== (List(1.success[String], "Fail".failure[Int]))
+    List("1", "2") map (_.parseInt.leftMap(_.toString)
+    .ensure("Fail")(_ >= 0)) must_=== (List(
+      1.success[String],
+      2.success[String]))
+    List("1", "-2") map (_.parseInt.leftMap(_.toString)
+    .ensure("Fail")(_ >= 0)) must_=== (List(
+      1.success[String],
+      "Fail".failure[Int]))
   }
 
   "toMaybe" ! forAll { x: Validation[String, Int] =>

@@ -108,8 +108,8 @@ class ClientTest extends FunSuite with IntegrationClient {
     }
 
     test("query: select values") {
-      val selectResult = Await.result(
-        c.select("SELECT * FROM `finagle-mysql-test`") { row =>
+      val selectResult = Await
+        .result(c.select("SELECT * FROM `finagle-mysql-test`") { row =>
           val StringValue(event) = row("event").get
           val FloatValue(time) = row("time").get
           val StringValue(name) = row("name").get

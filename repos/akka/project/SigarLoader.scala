@@ -14,8 +14,8 @@ object SigarLoader {
   import Dependencies.Compile.Provided.sigarLoader
 
   /** Enable Sigar java agent injection during tests. */
-  lazy val sigarTestEnabled =
-    sys.props.get("akka.test.sigar").getOrElse("false").toBoolean
+  lazy val sigarTestEnabled = sys.props.get("akka.test.sigar")
+    .getOrElse("false").toBoolean
 
   lazy val sigarArtifact = TaskKey[File](
     "sigar-artifact",

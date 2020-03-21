@@ -45,8 +45,8 @@ class OstrichExporter extends HttpMuxHandler {
       case (Some(period), _) =>
         val duration = period.toInt.seconds
         StatsListener(duration, Stats, regexes).get(filtered)
-      case (None, Some(namespace)) =>
-        StatsListener(namespace, Stats).get(filtered)
+      case (None, Some(namespace)) => StatsListener(namespace, Stats)
+          .get(filtered)
       case _ => Stats.get()
     }
 

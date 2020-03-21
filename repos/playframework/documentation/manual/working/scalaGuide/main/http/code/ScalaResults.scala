@@ -61,8 +61,7 @@ package scalaguide.http.scalaresults {
         //#discarding-cookies
         testHeader(result2, SET_COOKIE, "theme=;")
         //#setting-discarding-cookies
-        val result3 = result
-          .withCookies(Cookie("theme", "blue"))
+        val result3 = result.withCookies(Cookie("theme", "blue"))
           .discardingCookies(DiscardingCookie("skin"))
         //#setting-discarding-cookies
         testHeader(result3, SET_COOKIE, "skin=;")

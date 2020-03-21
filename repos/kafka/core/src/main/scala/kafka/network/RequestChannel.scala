@@ -88,10 +88,8 @@ object RequestChannel extends Logging {
       ApiKeys.CONTROLLED_SHUTDOWN_KEY.id -> ControlledShutdownRequest.readFrom)
 
     // TODO: this will be removed once we migrated to client-side format
-    val requestObj = keyToNameAndDeserializerMap
-      .get(requestId)
-      .map(readFrom => readFrom(buffer))
-      .orNull
+    val requestObj = keyToNameAndDeserializerMap.get(requestId)
+      .map(readFrom => readFrom(buffer)).orNull
 
     // if we failed to find a server-side mapping, then try using the
     // client-side request / response format
@@ -112,7 +110,8 @@ object RequestChannel extends Logging {
         catch {
           case ex: Throwable =>
             throw new InvalidRequestException(
-              s"Error getting request for apiKey: ${header.apiKey} and apiVersion: ${header.apiVersion}",
+              s"Error getting request for apiKey: ${header
+                .apiKey} and apiVersion: ${header.apiVersion}",
               ex)
         }
       else null
@@ -154,11 +153,11 @@ object RequestChannel extends Logging {
       var metricsList = List(
         RequestMetrics.metricsMap(ApiKeys.forId(requestId).name))
       if (requestId == ApiKeys.FETCH.id) {
-        val isFromFollower =
-          requestObj.asInstanceOf[FetchRequest].isFromFollower
+        val isFromFollower = requestObj.asInstanceOf[FetchRequest]
+          .isFromFollower
         metricsList ::= (if (isFromFollower)
-                           RequestMetrics.metricsMap(
-                             RequestMetrics.followFetchMetricName)
+                           RequestMetrics
+                             .metricsMap(RequestMetrics.followFetchMetricName)
                          else
                            RequestMetrics.metricsMap(
                              RequestMetrics.consumerFetchMetricName))
@@ -318,8 +317,8 @@ object RequestMetrics {
   val consumerFetchMetricName = ApiKeys.FETCH.name + "Consumer"
   val followFetchMetricName = ApiKeys.FETCH.name + "Follower"
   (ApiKeys.values().toList.map(e => e.name)
-    ++ List(consumerFetchMetricName, followFetchMetricName)).foreach(name =>
-    metricsMap.put(name, new RequestMetrics(name)))
+    ++ List(consumerFetchMetricName, followFetchMetricName))
+    .foreach(name => metricsMap.put(name, new RequestMetrics(name)))
 }
 
 class RequestMetrics(name: String) extends KafkaMetricsGroup {

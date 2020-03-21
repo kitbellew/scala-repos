@@ -160,10 +160,9 @@ trait TypeDiagnostics {
         if (getter.setterIn(member.owner) != NoSymbol) DEFERRED.toLong | MUTABLE
         else DEFERRED
 
-      getter.owner.newValue(
-        getter.name.toTermName,
-        getter.pos,
-        flags) setInfo getter.tpe.resultType
+      getter.owner
+        .newValue(getter.name.toTermName, getter.pos, flags) setInfo getter.tpe
+        .resultType
     }
 
   def treeSymTypeMsg(tree: Tree): String = {
@@ -255,11 +254,8 @@ trait TypeDiagnostics {
                 )
                 val explainDef = {
                   val prepend = if (isJava) "Java-defined " else ""
-                  "%s%s is %s in %s.".format(
-                    prepend,
-                    reqsym,
-                    param.variance,
-                    param)
+                  "%s%s is %s in %s."
+                    .format(prepend, reqsym, param.variance, param)
                 }
                 // Don't suggest they change the class declaration if it's somewhere
                 // under scala.* or defined in a java class, because attempting either
@@ -269,10 +265,8 @@ trait TypeDiagnostics {
                     "investigate a wildcard type such as `_ %s %s`. (SLS 3.2.10)"
                       .format(op, reqArg)
                   else
-                    "define %s as %s%s instead. (SLS 4.5)".format(
-                      param.name,
-                      suggest,
-                      param.name)
+                    "define %s as %s%s instead. (SLS 4.5)"
+                      .format(param.name, suggest, param.name)
                 )
 
                 Some("Note: " + explainFound + explainDef + suggestChange)
@@ -498,13 +492,13 @@ trait TypeDiagnostics {
         def localVars = defnSymbols filter (t => t.isLocalToBlock && t.isVar)
 
         def qualifiesTerm(sym: Symbol) =
-          ((
-            sym.isModule || sym.isMethod || sym.isPrivateLocal || sym.isLocalToBlock
-          )
+          ((sym.isModule || sym.isMethod || sym.isPrivateLocal || sym
+            .isLocalToBlock)
             && !nme.isLocalName(sym.name)
             && !sym.isParameter
             && !sym.isParamAccessor // could improve this, but it's a pain
-            && !sym.isEarlyInitialized // lots of false positives in the way these are encoded
+            && !sym
+              .isEarlyInitialized // lots of false positives in the way these are encoded
             && !(sym.isGetter && sym.accessed.isEarlyInitialized))
         def qualifiesType(sym: Symbol) = !sym.isDefinedInPackage
         def qualifies(sym: Symbol) =
@@ -556,9 +550,8 @@ trait TypeDiagnostics {
             && !isConstantType(
               m.info.resultType
             ) // subject to constant inlining
-            && !treeTypes.exists(
-              _ contains m
-            ) // e.g. val a = new Foo ; new a.Bar
+            && !treeTypes
+              .exists(_ contains m) // e.g. val a = new Foo ; new a.Bar
           )
         def unusedTypes = defnTrees.toList filter (t => isUnusedType(t.symbol))
         def unusedTerms = defnTrees.toList filter (v => isUnusedTerm(v.symbol))
@@ -585,8 +578,8 @@ trait TypeDiagnostics {
             (if (sym.isDefaultGetter) "default argument"
              else if (sym.isConstructor) "constructor"
              else if (sym.isVar || sym.isGetter && sym.accessed.isVar) "var"
-             else if (sym.isVal || sym.isGetter && sym.accessed.isVal || sym.isLazy)
-               "val"
+             else if (sym.isVal || sym.isGetter && sym.accessed.isVal || sym
+                        .isLazy) "val"
              else if (sym.isSetter) "setter"
              else if (sym.isMethod) "method"
              else if (sym.isModule) "object"
@@ -601,9 +594,8 @@ trait TypeDiagnostics {
         p.unusedTypes foreach { t =>
           val sym = t.symbol
           val why = if (sym.isPrivate) "private" else "local"
-          reporter.warning(
-            t.pos,
-            s"$why ${sym.fullLocationString} is never used")
+          reporter
+            .warning(t.pos, s"$why ${sym.fullLocationString} is never used")
         }
       }
     }
@@ -615,9 +607,10 @@ trait TypeDiagnostics {
 
       private def exprOK =
         (expr != Object_synchronized) &&
-          !(expr.isLabel && treeInfo.isSynthCaseSymbol(
-            expr
-          )) // it's okay to jump to matchEnd (or another case) with an argument of type nothing
+          !(expr.isLabel && treeInfo
+            .isSynthCaseSymbol(
+              expr
+            )) // it's okay to jump to matchEnd (or another case) with an argument of type nothing
 
       private def treeOK(tree: Tree) = {
         val isLabelDef = tree match {
@@ -628,7 +621,8 @@ trait TypeDiagnostics {
 
       @inline
       def updateExpr[A](fn: Tree)(f: => A) = {
-        if (fn.symbol != null && fn.symbol.isMethod && !fn.symbol.isConstructor) {
+        if (fn.symbol != null && fn.symbol.isMethod && !fn.symbol
+              .isConstructor) {
           exprStack push fn.symbol
           try f
           finally exprStack.pop()
@@ -673,11 +667,11 @@ trait TypeDiagnostics {
 
     // warn about class/method/type-members' type parameters that shadow types already in scope
     def warnTypeParameterShadow(tparams: List[TypeDef], sym: Symbol): Unit =
-      if (settings.warnTypeParameterShadow && !isPastTyper && !sym.isSynthetic) {
+      if (settings.warnTypeParameterShadow && !isPastTyper && !sym
+            .isSynthetic) {
         def enclClassOrMethodOrTypeMember(c: Context): Context =
-          if (!c.owner.exists || c.owner.isClass || c.owner.isMethod || (
-                c.owner.isType && !c.owner.isParameter
-              )) c
+          if (!c.owner.exists || c.owner.isClass || c.owner.isMethod || (c.owner
+                .isType && !c.owner.isParameter)) c
           else enclClassOrMethodOrTypeMember(c.outer)
 
         tparams.filter(_.name != typeNames.WILDCARD).foreach { tp =>

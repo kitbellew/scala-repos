@@ -17,10 +17,9 @@ import mutable.ListBuffer
 trait Picklers {
   self: Global =>
 
-  lazy val freshRunReq = unitPickler
-    .wrapped { _ => new FreshRunReq } { x => () }
-    .labelled("FreshRunReq")
-    .cond(_.isInstanceOf[FreshRunReq])
+  lazy val freshRunReq = unitPickler.wrapped { _ => new FreshRunReq } { x =>
+    ()
+  }.labelled("FreshRunReq").cond(_.isInstanceOf[FreshRunReq])
 
   lazy val shutdownReq = singletonPickler(ShutdownReq)
 
@@ -31,8 +30,7 @@ trait Picklers {
     freshRunReq | shutdownReq | defaultThrowable
 
   implicit def abstractFile: Pickler[AbstractFile] =
-    pkl[String]
-      .wrapped[AbstractFile] { new PlainFile(_) } { _.path }
+    pkl[String].wrapped[AbstractFile] { new PlainFile(_) } { _.path }
       .asClass(classOf[PlainFile])
 
   private val sourceFilesSeen = new mutable.HashMap[AbstractFile, Array[Char]] {
@@ -63,10 +61,9 @@ trait Picklers {
   }
 
   implicit lazy val sourceFile: Pickler[SourceFile] =
-    (pkl[AbstractFile] ~ pkl[Diff])
-      .wrapped[SourceFile] {
-        case f ~ d => new BatchSourceFile(f, patch(f, d))
-      } { f => f.file ~ delta(f.file, f.content) }
+    (pkl[AbstractFile] ~ pkl[Diff]).wrapped[SourceFile] {
+      case f ~ d => new BatchSourceFile(f, patch(f, d))
+    } { f => f.file ~ delta(f.file, f.content) }
       .asClass(classOf[BatchSourceFile])
 
   lazy val offsetPosition: CondPickler[Position] = (pkl[SourceFile] ~ pkl[Int])
@@ -74,20 +71,16 @@ trait Picklers {
     .asClass(classOf[Position])
 
   lazy val rangePosition: CondPickler[Position] =
-    (pkl[SourceFile] ~ pkl[Int] ~ pkl[Int] ~ pkl[Int])
-      .wrapped {
-        case source ~ start ~ point ~ end =>
-          Position.range(source, start, point, end)
-      } { p => p.source ~ p.start ~ p.point ~ p.end }
-      .asClass(classOf[Position])
+    (pkl[SourceFile] ~ pkl[Int] ~ pkl[Int] ~ pkl[Int]).wrapped {
+      case source ~ start ~ point ~ end =>
+        Position.range(source, start, point, end)
+    } { p => p.source ~ p.start ~ p.point ~ p.end }.asClass(classOf[Position])
 
   lazy val transparentPosition: CondPickler[Position] =
-    (pkl[SourceFile] ~ pkl[Int] ~ pkl[Int] ~ pkl[Int])
-      .wrapped {
-        case source ~ start ~ point ~ end =>
-          Position.range(source, start, point, end).makeTransparent
-      } { p => p.source ~ p.start ~ p.point ~ p.end }
-      .asClass(classOf[Position])
+    (pkl[SourceFile] ~ pkl[Int] ~ pkl[Int] ~ pkl[Int]).wrapped {
+      case source ~ start ~ point ~ end =>
+        Position.range(source, start, point, end).makeTransparent
+    } { p => p.source ~ p.start ~ p.point ~ p.end }.asClass(classOf[Position])
 
   lazy val noPosition = singletonPickler(NoPosition)
 
@@ -133,10 +126,9 @@ trait Picklers {
   }
 
   implicit def workEvent: Pickler[WorkEvent] = {
-    (pkl[Int] ~ pkl[Long])
-      .wrapped { case id ~ ms => WorkEvent(id, ms) } { w =>
-        w.atNode ~ w.atMillis
-      }
+    (pkl[Int] ~ pkl[Long]).wrapped { case id ~ ms => WorkEvent(id, ms) } { w =>
+      w.atNode ~ w.atMillis
+    }
   }
 
   implicit def interruptReq: Pickler[InterruptReq] = {
@@ -147,73 +139,60 @@ trait Picklers {
   }
 
   implicit def reloadItem: CondPickler[ReloadItem] =
-    pkl[List[SourceFile]]
-      .wrapped { ReloadItem(_, new Response) } { _.sources }
+    pkl[List[SourceFile]].wrapped { ReloadItem(_, new Response) } { _.sources }
       .asClass(classOf[ReloadItem])
 
   implicit def askTypeAtItem: CondPickler[AskTypeAtItem] =
-    pkl[Position]
-      .wrapped { new AskTypeAtItem(_, new Response) } { _.pos }
+    pkl[Position].wrapped { new AskTypeAtItem(_, new Response) } { _.pos }
       .asClass(classOf[AskTypeAtItem])
 
   implicit def askTypeItem: CondPickler[AskTypeItem] =
-    (pkl[SourceFile] ~ pkl[Boolean])
-      .wrapped {
-        case source ~ forceReload =>
-          new AskTypeItem(source, forceReload, new Response)
-      } { w => w.source ~ w.forceReload }
-      .asClass(classOf[AskTypeItem])
+    (pkl[SourceFile] ~ pkl[Boolean]).wrapped {
+      case source ~ forceReload =>
+        new AskTypeItem(source, forceReload, new Response)
+    } { w => w.source ~ w.forceReload }.asClass(classOf[AskTypeItem])
 
   implicit def askTypeCompletionItem: CondPickler[AskTypeCompletionItem] =
-    pkl[Position]
-      .wrapped { new AskTypeCompletionItem(_, new Response) } { _.pos }
-      .asClass(classOf[AskTypeCompletionItem])
+    pkl[Position].wrapped { new AskTypeCompletionItem(_, new Response) } {
+      _.pos
+    }.asClass(classOf[AskTypeCompletionItem])
 
   implicit def askScopeCompletionItem: CondPickler[AskScopeCompletionItem] =
-    pkl[Position]
-      .wrapped { new AskScopeCompletionItem(_, new Response) } { _.pos }
-      .asClass(classOf[AskScopeCompletionItem])
+    pkl[Position].wrapped { new AskScopeCompletionItem(_, new Response) } {
+      _.pos
+    }.asClass(classOf[AskScopeCompletionItem])
 
   implicit def askToDoFirstItem: CondPickler[AskToDoFirstItem] =
-    pkl[SourceFile]
-      .wrapped { new AskToDoFirstItem(_) } { _.source }
+    pkl[SourceFile].wrapped { new AskToDoFirstItem(_) } { _.source }
       .asClass(classOf[AskToDoFirstItem])
 
   implicit def askLinkPosItem: CondPickler[AskLinkPosItem] =
-    (pkl[Symbol] ~ pkl[SourceFile])
-      .wrapped {
-        case sym ~ source => new AskLinkPosItem(sym, source, new Response)
-      } { item => item.sym ~ item.source }
-      .asClass(classOf[AskLinkPosItem])
+    (pkl[Symbol] ~ pkl[SourceFile]).wrapped {
+      case sym ~ source => new AskLinkPosItem(sym, source, new Response)
+    } { item => item.sym ~ item.source }.asClass(classOf[AskLinkPosItem])
 
   implicit def askDocCommentItem: CondPickler[AskDocCommentItem] =
     (pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~ pkl[List[(
         Symbol,
-        SourceFile)]])
-      .wrapped {
-        case sym ~ source ~ site ~ fragments =>
-          new AskDocCommentItem(sym, source, site, fragments, new Response)
-      } { item => item.sym ~ item.source ~ item.site ~ item.fragments }
+        SourceFile)]]).wrapped {
+      case sym ~ source ~ site ~ fragments =>
+        new AskDocCommentItem(sym, source, site, fragments, new Response)
+    } { item => item.sym ~ item.source ~ item.site ~ item.fragments }
       .asClass(classOf[AskDocCommentItem])
 
   implicit def askLoadedTypedItem: CondPickler[AskLoadedTypedItem] =
-    pkl[SourceFile]
-      .wrapped { source =>
-        new AskLoadedTypedItem(source, false, new Response)
-      } { _.source }
-      .asClass(classOf[AskLoadedTypedItem])
+    pkl[SourceFile].wrapped { source =>
+      new AskLoadedTypedItem(source, false, new Response)
+    } { _.source }.asClass(classOf[AskLoadedTypedItem])
 
   implicit def askParsedEnteredItem: CondPickler[AskParsedEnteredItem] =
-    (pkl[SourceFile] ~ pkl[Boolean])
-      .wrapped {
-        case source ~ keepLoaded =>
-          new AskParsedEnteredItem(source, keepLoaded, new Response)
-      } { w => w.source ~ w.keepLoaded }
-      .asClass(classOf[AskParsedEnteredItem])
+    (pkl[SourceFile] ~ pkl[Boolean]).wrapped {
+      case source ~ keepLoaded =>
+        new AskParsedEnteredItem(source, keepLoaded, new Response)
+    } { w => w.source ~ w.keepLoaded }.asClass(classOf[AskParsedEnteredItem])
 
   implicit def emptyAction: CondPickler[EmptyAction] =
-    pkl[Unit]
-      .wrapped { _ => new EmptyAction } { _ => () }
+    pkl[Unit].wrapped { _ => new EmptyAction } { _ => () }
       .asClass(classOf[EmptyAction])
 
   implicit def action: Pickler[() => Unit] =

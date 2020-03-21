@@ -2824,9 +2824,8 @@ object Forms {
     */
   def jodaDate(
       pattern: String,
-      timeZone: org.joda.time.DateTimeZone =
-        org.joda.time.DateTimeZone.getDefault)
-      : Mapping[org.joda.time.DateTime] =
+      timeZone: org.joda.time.DateTimeZone = org.joda.time.DateTimeZone
+        .getDefault): Mapping[org.joda.time.DateTime] =
     of[org.joda.time.DateTime] as jodaDateTimeFormat(pattern, timeZone)
 
   /**

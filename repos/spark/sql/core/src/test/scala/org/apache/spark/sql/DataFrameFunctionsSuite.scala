@@ -289,8 +289,7 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df3 = Seq(("xxx", "x")).toDF("a", "b")
     assert(
       intercept[AnalysisException] { df3.selectExpr("sort_array(a)").collect() }
-        .getMessage()
-        .contains("only supports array input"))
+        .getMessage().contains("only supports array input"))
   }
 
   test("array size function") {

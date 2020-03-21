@@ -133,8 +133,8 @@ private[graphx] object BytecodeUtils {
               itf: Boolean) {
             if (op == INVOKEVIRTUAL || op == INVOKESPECIAL || op == INVOKESTATIC) {
               if (!skipClass(owner)) {
-                methodsInvoked.add(
-                  (Utils.classForName(owner.replace("/", ".")), name))
+                methodsInvoked
+                  .add((Utils.classForName(owner.replace("/", ".")), name))
               }
             }
           }

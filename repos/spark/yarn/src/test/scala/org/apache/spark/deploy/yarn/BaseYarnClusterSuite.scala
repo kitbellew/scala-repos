@@ -156,13 +156,9 @@ abstract class BaseYarnClusterSuite
       launcher.setMainClass(klass)
       launcher.setAppResource(fakeSparkJar.getAbsolutePath())
     }
-    launcher
-      .setSparkHome(sys.props("spark.test.home"))
-      .setMaster("yarn")
-      .setDeployMode(deployMode)
-      .setConf("spark.executor.instances", "1")
-      .setPropertiesFile(propsFile)
-      .addAppArgs(appArgs.toArray: _*)
+    launcher.setSparkHome(sys.props("spark.test.home")).setMaster("yarn")
+      .setDeployMode(deployMode).setConf("spark.executor.instances", "1")
+      .setPropertiesFile(propsFile).addAppArgs(appArgs.toArray: _*)
 
     sparkArgs.foreach {
       case (name, value) =>
@@ -210,24 +206,20 @@ abstract class BaseYarnClusterSuite
     val props = new Properties()
     props.put(SPARK_JARS.key, "local:" + fakeSparkJar.getAbsolutePath())
 
-    val testClasspath = new TestClasspathBuilder()
-      .buildClassPath(
-        logConfDir.getAbsolutePath() +
-          File.pathSeparator +
-          extraClassPath.mkString(File.pathSeparator))
-      .asScala
+    val testClasspath = new TestClasspathBuilder().buildClassPath(
+      logConfDir.getAbsolutePath() +
+        File.pathSeparator +
+        extraClassPath.mkString(File.pathSeparator)).asScala
       .mkString(File.pathSeparator)
 
     props.put("spark.driver.extraClassPath", testClasspath)
     props.put("spark.executor.extraClassPath", testClasspath)
 
     // SPARK-4267: make sure java options are propagated correctly.
-    props.setProperty(
-      "spark.driver.extraJavaOptions",
-      "-Dfoo=\"one two three\"")
-    props.setProperty(
-      "spark.executor.extraJavaOptions",
-      "-Dfoo=\"one two three\"")
+    props
+      .setProperty("spark.driver.extraJavaOptions", "-Dfoo=\"one two three\"")
+    props
+      .setProperty("spark.executor.extraJavaOptions", "-Dfoo=\"one two three\"")
 
     yarnCluster.getConfig().asScala.foreach { e =>
       props.setProperty("spark.hadoop." + e.getKey(), e.getValue())

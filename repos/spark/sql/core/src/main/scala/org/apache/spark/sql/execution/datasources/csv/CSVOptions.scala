@@ -64,8 +64,8 @@ private[sql] class CSVOptions(
     else { throw new Exception(s"$paramName flag can be true or false") }
   }
 
-  val delimiter = CSVTypeCast.toChar(
-    parameters.getOrElse("sep", parameters.getOrElse("delimiter", ",")))
+  val delimiter = CSVTypeCast
+    .toChar(parameters.getOrElse("sep", parameters.getOrElse("delimiter", ",")))
   private val parseMode = parameters.getOrElse("mode", "PERMISSIVE")
   val charset = parameters.getOrElse(
     "encoding",

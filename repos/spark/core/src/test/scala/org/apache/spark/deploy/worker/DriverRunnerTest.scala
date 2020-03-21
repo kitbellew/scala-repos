@@ -77,10 +77,7 @@ class DriverRunnerTest extends SparkFunSuite {
 
     val (processBuilder, process) = createProcessBuilderAndProcess()
     // fail, fail, fail, success
-    when(process.waitFor())
-      .thenReturn(-1)
-      .thenReturn(-1)
-      .thenReturn(-1)
+    when(process.waitFor()).thenReturn(-1).thenReturn(-1).thenReturn(-1)
       .thenReturn(0)
     runner.runCommandWithRetry(processBuilder, p => (), supervise = true)
 
@@ -137,23 +134,16 @@ class DriverRunnerTest extends SparkFunSuite {
 
     val (processBuilder, process) = createProcessBuilderAndProcess()
 
-    when(process.waitFor())
-      .thenReturn(-1) // fail 1
+    when(process.waitFor()).thenReturn(-1) // fail 1
       .thenReturn(-1) // fail 2
       .thenReturn(-1) // fail 3
       .thenReturn(-1) // fail 4
       .thenReturn(0) // success
-    when(clock.getTimeMillis())
-      .thenReturn(0)
-      .thenReturn(1000) // fail 1 (short)
-      .thenReturn(1000)
-      .thenReturn(2000) // fail 2 (short)
-      .thenReturn(2000)
-      .thenReturn(10000) // fail 3 (long)
-      .thenReturn(10000)
-      .thenReturn(11000) // fail 4 (short)
-      .thenReturn(11000)
-      .thenReturn(21000) // success (long)
+    when(clock.getTimeMillis()).thenReturn(0).thenReturn(1000) // fail 1 (short)
+      .thenReturn(1000).thenReturn(2000) // fail 2 (short)
+      .thenReturn(2000).thenReturn(10000) // fail 3 (long)
+      .thenReturn(10000).thenReturn(11000) // fail 4 (short)
+      .thenReturn(11000).thenReturn(21000) // success (long)
 
     runner.runCommandWithRetry(processBuilder, p => (), supervise = true)
 

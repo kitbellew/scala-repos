@@ -107,8 +107,8 @@ class DotProcess(settings: doc.Settings) {
       assert(!inputString.isSet)
       assert(!outputString.isSet)
       inputString.put(input)
-      var result = outputString.take(
-        settings.docDiagramsDotTimeout.value * 1000L)
+      var result = outputString
+        .take(settings.docDiagramsDotTimeout.value * 1000L)
       if (error) result = null
 
       result
@@ -153,8 +153,8 @@ class DotProcess(settings: doc.Settings) {
         settings.printMsg(
           "  Cleanup: Last dot input: \n    " + templateInput
             .replaceAll("\n", "\n    ") + "\n")
-        settings.printMsg(
-          "  Cleanup: Dot path: " + settings.docDiagramsDotPath.value)
+        settings
+          .printMsg("  Cleanup: Dot path: " + settings.docDiagramsDotPath.value)
         if (process != null)
           settings.printMsg("  Cleanup: Dot exit code: " + process.exitValue)
         settings.printMsg(
@@ -167,7 +167,8 @@ class DotProcess(settings: doc.Settings) {
         settings.printMsg(
           "These are usually spurious errors, but if you notice a persistent error on")
         settings.printMsg(
-          "a diagram, please use the " + settings.docDiagramsDebug.name + " flag and report a bug with the output.")
+          "a diagram, please use the " + settings.docDiagramsDebug
+            .name + " flag and report a bug with the output.")
       }
     }
   }

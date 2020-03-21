@@ -109,8 +109,7 @@ class EngineManifestSerializer
                 JField("name", JString(enginemanifest.name)) ::
                 JField(
                   "description",
-                  enginemanifest.description
-                    .map(x => JString(x))
+                  enginemanifest.description.map(x => JString(x))
                     .getOrElse(JNothing)) ::
                 JField(
                   "files",

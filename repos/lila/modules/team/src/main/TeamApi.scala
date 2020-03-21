@@ -104,10 +104,8 @@ final class TeamApi(
   def createRequest(team: Team, setup: RequestSetup, user: User): Funit =
     requestable(team, user) flatMap {
       _ ?? {
-        val request = Request.make(
-          team = team.id,
-          user = user.id,
-          message = setup.message)
+        val request = Request
+          .make(team = team.id, user = user.id, message = setup.message)
         val rwu = RequestWithUser(request, user)
         $insert(request) >> (cached.nbRequests remove team.createdBy)
       }
@@ -118,10 +116,8 @@ final class TeamApi(
       _ ← $remove(request)
       _ ← cached.nbRequests remove team.createdBy
       userOption ← $find.byId[User](request.user)
-      _ ← userOption
-        .filter(_ => accept)
-        .??(user =>
-          doJoin(team, user.id) >>- notifier.acceptRequest(team, request))
+      _ ← userOption.filter(_ => accept).??(user =>
+        doJoin(team, user.id) >>- notifier.acceptRequest(team, request))
     } yield ()
 
   def doJoin(team: Team, userId: String): Funit =

@@ -141,15 +141,12 @@ class NettyServer(
       case Jdk    => classOf[NioServerSocketChannel]
     }
 
-    val bootstrap = new Bootstrap()
-      .channel(channelClass)
-      .group(serverChannelEventLoop)
-      .option(
+    val bootstrap = new Bootstrap().channel(channelClass)
+      .group(serverChannelEventLoop).option(
         ChannelOption.AUTO_READ,
         java.lang.Boolean.FALSE
       ) // publisher does ctx.read()
-      .handler(channelPublisher)
-      .localAddress(address)
+      .handler(channelPublisher).localAddress(address)
 
     setOptions(bootstrap.option, nettyConfig.getConfig("option"))
 
@@ -165,8 +162,7 @@ class NettyServer(
   private def channelSink(secure: Boolean): Sink[Channel, Future[Done]] = {
     Sink.foreach[Channel] { (connChannel: Channel) =>
       // Setup the channel for explicit reads
-      connChannel
-        .config()
+      connChannel.config()
         .setOption(ChannelOption.AUTO_READ, java.lang.Boolean.FALSE)
 
       setOptions(
@@ -178,12 +174,14 @@ class NettyServer(
         sslEngineProvider.map { sslEngineProvider =>
           val sslEngine = sslEngineProvider.createSSLEngine()
           sslEngine.setUseClientMode(false)
-          if (config.configuration
-                .getBoolean("play.server.https.wantClientAuth")
-                .getOrElse(false)) { sslEngine.setWantClientAuth(true) }
-          if (config.configuration
-                .getBoolean("play.server.https.needClientAuth")
-                .getOrElse(false)) { sslEngine.setNeedClientAuth(true) }
+          if (config.configuration.getBoolean(
+                "play.server.https.wantClientAuth").getOrElse(false)) {
+            sslEngine.setWantClientAuth(true)
+          }
+          if (config.configuration.getBoolean(
+                "play.server.https.needClientAuth").getOrElse(false)) {
+            sslEngine.setNeedClientAuth(true)
+          }
           pipeline.addLast("ssl", new SslHandler(sslEngine))
         }
       }
@@ -277,8 +275,7 @@ class NettyServer(
   }
 
   override lazy val mainAddress = {
-    (httpChannel orElse httpsChannel).get
-      .localAddress()
+    (httpChannel orElse httpsChannel).get.localAddress()
       .asInstanceOf[InetSocketAddress]
   }
 
@@ -312,7 +309,8 @@ object NettyServer {
 
   def main(args: Array[String]) {
     System.err.println(
-      s"NettyServer.main is deprecated. Please start your Play server with the ${ProdServerStart.getClass.getName}.main.")
+      s"NettyServer.main is deprecated. Please start your Play server with the ${ProdServerStart
+        .getClass.getName}.main.")
     ProdServerStart.main(args)
   }
 
@@ -360,8 +358,8 @@ trait NettyServerComponents {
       application.actorSystem)(application.materializer)
   }
 
-  lazy val environment: Environment = Environment.simple(mode =
-    serverConfig.mode)
+  lazy val environment: Environment = Environment
+    .simple(mode = serverConfig.mode)
   lazy val sourceMapper: Option[SourceMapper] = None
   lazy val webCommands: WebCommands = new DefaultWebCommands
   lazy val configuration: Configuration = Configuration(ConfigFactory.load())

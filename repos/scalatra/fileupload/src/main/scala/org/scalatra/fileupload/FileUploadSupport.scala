@@ -82,25 +82,26 @@ trait FileUploadSupport extends ServletBase {
       case None =>
         val upload = newServletFileUpload
         val items = upload.parseRequest(req).asInstanceOf[JList[FileItem]]
-        val bodyParams = items.foldRight(
-          BodyParams(FileMultiParams(), Map.empty)) { (item, params) =>
-          if (item.isFormField)
-            BodyParams(
-              params.fileParams,
-              params.formParams + (
-                (
-                  item.getFieldName,
-                  fileItemToString(req, item) :: params.formParams
-                    .getOrElse(item.getFieldName, List[String]()))))
-          else
-            BodyParams(
-              params.fileParams + (
-                (
-                  item.getFieldName,
-                  item +: params.fileParams
-                    .getOrElse(item.getFieldName, List[FileItem]()))),
-              params.formParams)
-        }
+        val bodyParams = items
+          .foldRight(BodyParams(FileMultiParams(), Map.empty)) {
+            (item, params) =>
+              if (item.isFormField)
+                BodyParams(
+                  params.fileParams,
+                  params.formParams + (
+                    (
+                      item.getFieldName,
+                      fileItemToString(req, item) :: params.formParams
+                        .getOrElse(item.getFieldName, List[String]()))))
+              else
+                BodyParams(
+                  params.fileParams + (
+                    (
+                      item.getFieldName,
+                      item +: params.fileParams
+                        .getOrElse(item.getFieldName, List[FileItem]()))),
+                  params.formParams)
+          }
         req(BodyParamsKey) = bodyParams
         bodyParams
     }

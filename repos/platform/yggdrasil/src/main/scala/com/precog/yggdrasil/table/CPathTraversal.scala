@@ -99,8 +99,8 @@ sealed trait CPathTraversal {
           }
 
         case Sequence(ts) =>
-          val comparators: Array[CPathComparator] = ts.map(
-            plan0(_, paths, idx))(collection.breakOut)
+          val comparators: Array[CPathComparator] = ts
+            .map(plan0(_, paths, idx))(collection.breakOut)
 
           new CPathComparator {
             def compare(
@@ -109,9 +109,8 @@ sealed trait CPathTraversal {
                 indices: Array[Int]): MaybeOrdering = {
               var i = 0
               var result: MaybeOrdering = NoComp
-              while ((
-                       result == Eq || result == NoComp
-                     ) && i < comparators.length) {
+              while ((result == Eq || result == NoComp) && i < comparators
+                       .length) {
                 val iResult = comparators(i).compare(r1, r2, indices)
                 if (iResult != NoComp) { result = iResult }
 
@@ -352,8 +351,8 @@ object CPathTraversal {
         r1: Option[Int],
         l2: Int,
         r2: Option[Int]): Boolean = {
-      (l2 >= l1 && l2 <= r1.getOrElse(l2)) || (l1 >= l2 && l1 <= r2.getOrElse(
-        l1))
+      (l2 >= l1 && l2 <= r1.getOrElse(l2)) || (l1 >= l2 && l1 <= r2
+        .getOrElse(l1))
     }
 
     /**
@@ -470,11 +469,11 @@ object CPathTraversal {
     def disjointOrder(paths: List[CPath]): List[List[CPathPosition]] = {
       import scalaz.std.list._
 
-      val pq = mutable.PriorityQueue[List[CPathPosition]](
-        paths map (position(_)): _*) {
-        implicitly[
-          scalaz.Order[List[CPathPosition]]].reverseOrder.toScalaOrdering
-      }
+      val pq = mutable
+        .PriorityQueue[List[CPathPosition]](paths map (position(_)): _*) {
+          implicitly[scalaz.Order[List[CPathPosition]]].reverseOrder
+            .toScalaOrdering
+        }
 
       @tailrec
       def rec(

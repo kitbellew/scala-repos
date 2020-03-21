@@ -127,8 +127,8 @@ private[sql] class ExchangeCoordinator(
     // a post shuffle task.
     val targetPostShuffleInputSize = minNumPostShufflePartitions match {
       case Some(numPartitions) =>
-        val totalPostShuffleInputSize =
-          mapOutputStatistics.map(_.bytesByPartitionId.sum).sum
+        val totalPostShuffleInputSize = mapOutputStatistics
+          .map(_.bytesByPartitionId.sum).sum
         // The max at here is to make sure that when we have an empty table, we
         // only have a single post-shuffle partition.
         // There is no particular reason that we pick 16. We just need a number to
@@ -146,8 +146,8 @@ private[sql] class ExchangeCoordinator(
         s"targetPostShuffleInputSize $targetPostShuffleInputSize.")
 
     // Make sure we do get the same number of pre-shuffle partitions for those stages.
-    val distinctNumPreShufflePartitions =
-      mapOutputStatistics.map(stats => stats.bytesByPartitionId.length).distinct
+    val distinctNumPreShufflePartitions = mapOutputStatistics
+      .map(stats => stats.bytesByPartitionId.length).distinct
     // The reason that we are expecting a single value of the number of pre-shuffle partitions
     // is that when we add Exchanges, we set the number of pre-shuffle partitions
     // (i.e. map output partitions) using a static setting, which is the value of

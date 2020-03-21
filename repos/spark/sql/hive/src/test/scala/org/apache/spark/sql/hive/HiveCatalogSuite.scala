@@ -31,13 +31,11 @@ import org.apache.spark.util.Utils
 class HiveCatalogSuite extends CatalogTestCases {
 
   private val client: HiveClient = {
-    IsolatedClientLoader
-      .forVersion(
-        hiveMetastoreVersion = HiveContext.hiveExecutionVersion,
-        hadoopVersion = VersionInfo.getVersion,
-        sparkConf = new SparkConf(),
-        hadoopConf = new Configuration())
-      .createClient()
+    IsolatedClientLoader.forVersion(
+      hiveMetastoreVersion = HiveContext.hiveExecutionVersion,
+      hadoopVersion = VersionInfo.getVersion,
+      sparkConf = new SparkConf(),
+      hadoopConf = new Configuration()).createClient()
   }
 
   protected override val utils: CatalogTestUtils = new CatalogTestUtils {

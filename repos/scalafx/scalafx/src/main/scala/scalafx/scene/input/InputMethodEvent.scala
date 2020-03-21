@@ -39,8 +39,8 @@ object InputMethodEvent {
       ime: InputMethodEvent): jfxsi.InputMethodEvent =
     if (ime != null) ime.delegate else null
 
-  val InputMethodTextChanged: EventType[jfxsi.InputMethodEvent] =
-    jfxsi.InputMethodEvent.INPUT_METHOD_TEXT_CHANGED
+  val InputMethodTextChanged: EventType[jfxsi.InputMethodEvent] = jfxsi
+    .InputMethodEvent.INPUT_METHOD_TEXT_CHANGED
 }
 
 class InputMethodEvent(override val delegate: jfxsi.InputMethodEvent)

@@ -985,9 +985,10 @@ object JsonAST {
       case JArray(arr)   => bufRenderArr(arr, buf, settings, indentLevel)
       case JObject(obj)  => bufRenderObj(obj, buf, settings, indentLevel)
       case JNothing =>
-        sys.error(
-          "can't render 'nothing'"
-        ) //TODO: this should not throw an exception
+        sys
+          .error(
+            "can't render 'nothing'"
+          ) //TODO: this should not throw an exception
     }
 
   private def bufRenderArr(

@@ -469,12 +469,12 @@ trait AnnotationInfos extends api.Annotations {
             case Nil => Nil
           }
         val atp = tpt.tpe
-        if (atp != null && (
-              atp.typeSymbol isNonBottomSubClass StaticAnnotationClass
-            )) AnnotationInfo(atp, args, Nil)
-        else if (atp != null && (
-                   atp.typeSymbol isNonBottomSubClass ClassfileAnnotationClass
-                 )) AnnotationInfo(atp, Nil, encodeJavaArgs(args))
+        if (atp != null && (atp
+              .typeSymbol isNonBottomSubClass StaticAnnotationClass))
+          AnnotationInfo(atp, args, Nil)
+        else if (atp != null && (atp
+                   .typeSymbol isNonBottomSubClass ClassfileAnnotationClass))
+          AnnotationInfo(atp, Nil, encodeJavaArgs(args))
         else
           throw new Exception(
             s"unexpected annotation type $atp: only subclasses of StaticAnnotation and ClassfileAnnotation are supported")

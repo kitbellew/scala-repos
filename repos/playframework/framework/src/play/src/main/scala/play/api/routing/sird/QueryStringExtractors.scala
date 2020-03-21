@@ -35,19 +35,12 @@ trait QueryStringParameterExtractor[T] {
 
 object QueryStringParameterExtractor {
   private def parse(query: String): QueryString = {
-    Option(query)
-      .map(
-        _.split("&").toSeq
-          .map { keyValue =>
-            keyValue.split("=", 2) match {
-              case Array(key, value) => key -> value
-              case Array(key)        => key -> ""
-            }
-          }
-          .groupBy(_._1)
-          .mapValues(_.map(_._2))
-          .toMap)
-      .getOrElse(Map.empty)
+    Option(query).map(_.split("&").toSeq.map { keyValue =>
+      keyValue.split("=", 2) match {
+        case Array(key, value) => key -> value
+        case Array(key)        => key -> ""
+      }
+    }.groupBy(_._1).mapValues(_.map(_._2)).toMap).getOrElse(Map.empty)
   }
 
   def required(name: String) = new RequiredQueryStringParameter(name)

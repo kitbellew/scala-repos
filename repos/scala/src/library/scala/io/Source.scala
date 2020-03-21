@@ -102,9 +102,8 @@ object Source {
       inputStream,
       bufferSize,
       () => fromFile(file, bufferSize)(codec),
-      () => inputStream.close())(codec) withDescription (
-      "file:" + file.getAbsolutePath
-    )
+      () => inputStream.close())(codec) withDescription ("file:" + file
+      .getAbsolutePath)
   }
 
   /** Create a `Source` from array of bytes, decoding
@@ -189,8 +188,7 @@ object Source {
     */
   def fromResource(
       resource: String,
-      classLoader: ClassLoader = Thread
-        .currentThread()
+      classLoader: ClassLoader = Thread.currentThread()
         .getContextClassLoader())(implicit codec: Codec): BufferedSource =
     fromInputStream(classLoader.getResourceAsStream(resource))
 
@@ -332,13 +330,8 @@ abstract class Source extends Iterator[Char] with Closeable {
     val line = Position line pos
     val col = Position column pos
 
-    out println "%s:%d:%d: %s%s%s^".format(
-      descr,
-      line,
-      col,
-      msg,
-      lineNum(line),
-      spaces(col - 1))
+    out println "%s:%d:%d: %s%s%s^"
+      .format(descr, line, col, msg, lineNum(line), spaces(col - 1))
   }
 
   /**

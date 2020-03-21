@@ -202,8 +202,8 @@ class AlgebraicTest extends SpireProperties {
     } yield Rational(n, d)
 
   def genRationalPoly: Gen[Polynomial[Rational]] =
-    for { coeffs <- Gen.listOf(genRational) } yield Polynomial.dense(
-      coeffs.toArray)
+    for { coeffs <- Gen.listOf(genRational) } yield Polynomial
+      .dense(coeffs.toArray)
 
   /**
     * An algebraic expression + the exact rational value of this expression.

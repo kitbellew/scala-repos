@@ -46,8 +46,8 @@ class ScalaModuleBuilder(
 
   override def modifySettingsStep(
       settingsStep: SettingsStep): ModuleWizardStep = {
-    librariesContainer = LibrariesContainerFactory.createContainer(
-      settingsStep.getContext.getProject)
+    librariesContainer = LibrariesContainerFactory
+      .createContainer(settingsStep.getContext.getProject)
 
     new ScalaStep(settingsStep)
   }

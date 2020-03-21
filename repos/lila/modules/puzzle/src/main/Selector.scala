@@ -38,10 +38,8 @@ private[puzzle] final class Selector(
     val isMate = scala.util.Random.nextBoolean
     me match {
       case None =>
-        puzzleColl
-          .find(popularSelector(isMate) ++ mateSelector(isMate))
-          .options(QueryOpts(skipN = Random nextInt anonSkipMax))
-          .one[Puzzle]
+        puzzleColl.find(popularSelector(isMate) ++ mateSelector(isMate))
+          .options(QueryOpts(skipN = Random nextInt anonSkipMax)).one[Puzzle]
       case Some(user) if user.perfs.puzzle.nb > maxAttempts => fuccess(none)
       case Some(user) =>
         val rating = user.perfs.puzzle.intRating min 2300 max 900
@@ -66,15 +64,13 @@ private[puzzle] final class Selector(
       decay: Int,
       ids: BSONArray,
       isMate: Boolean): Fu[Option[Puzzle]] =
-    puzzleColl
-      .find(
-        mateSelector(isMate) ++ BSONDocument(
-          Puzzle.BSONFields.id -> BSONDocument("$nin" -> ids),
-          Puzzle.BSONFields.rating -> BSONDocument(
-            "$gt" -> BSONInteger(rating - tolerance + decay),
-            "$lt" -> BSONInteger(rating + tolerance + decay))
-        ))
-      .sort(BSONDocument(Puzzle.BSONFields.voteSum -> -1))
+    puzzleColl.find(
+      mateSelector(isMate) ++ BSONDocument(
+        Puzzle.BSONFields.id -> BSONDocument("$nin" -> ids),
+        Puzzle.BSONFields.rating -> BSONDocument(
+          "$gt" -> BSONInteger(rating - tolerance + decay),
+          "$lt" -> BSONInteger(rating + tolerance + decay))
+      )).sort(BSONDocument(Puzzle.BSONFields.voteSum -> -1))
       .one[Puzzle] flatMap {
       case None if (tolerance + step) <= toleranceMax =>
         tryRange(rating, tolerance + step, step, decay, ids, isMate)

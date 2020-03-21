@@ -20,8 +20,7 @@ class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
     for (field <- list) {
       val name: String = field.name
       if (name != null && name.startsWith("$outer")) {
-        val rv: ObjectReference = objRef
-          .getValue(field)
+        val rv: ObjectReference = objRef.getValue(field)
           .asInstanceOf[ObjectReference]
         if (rv != null) { return rv }
       }

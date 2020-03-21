@@ -33,17 +33,14 @@ case class BitwiseAnd(left: Expression, right: Expression)
   override def symbol: String = "&"
 
   private lazy val and: (Any, Any) => Any = dataType match {
-    case ByteType =>
-      ((evalE1: Byte, evalE2: Byte) => (evalE1 & evalE2).toByte)
+    case ByteType => ((evalE1: Byte, evalE2: Byte) => (evalE1 & evalE2).toByte)
         .asInstanceOf[(Any, Any) => Any]
     case ShortType =>
       ((evalE1: Short, evalE2: Short) => (evalE1 & evalE2).toShort)
         .asInstanceOf[(Any, Any) => Any]
-    case IntegerType =>
-      ((evalE1: Int, evalE2: Int) => evalE1 & evalE2)
+    case IntegerType => ((evalE1: Int, evalE2: Int) => evalE1 & evalE2)
         .asInstanceOf[(Any, Any) => Any]
-    case LongType =>
-      ((evalE1: Long, evalE2: Long) => evalE1 & evalE2)
+    case LongType => ((evalE1: Long, evalE2: Long) => evalE1 & evalE2)
         .asInstanceOf[(Any, Any) => Any]
   }
 
@@ -64,17 +61,14 @@ case class BitwiseOr(left: Expression, right: Expression)
   override def symbol: String = "|"
 
   private lazy val or: (Any, Any) => Any = dataType match {
-    case ByteType =>
-      ((evalE1: Byte, evalE2: Byte) => (evalE1 | evalE2).toByte)
+    case ByteType => ((evalE1: Byte, evalE2: Byte) => (evalE1 | evalE2).toByte)
         .asInstanceOf[(Any, Any) => Any]
     case ShortType =>
       ((evalE1: Short, evalE2: Short) => (evalE1 | evalE2).toShort)
         .asInstanceOf[(Any, Any) => Any]
-    case IntegerType =>
-      ((evalE1: Int, evalE2: Int) => evalE1 | evalE2)
+    case IntegerType => ((evalE1: Int, evalE2: Int) => evalE1 | evalE2)
         .asInstanceOf[(Any, Any) => Any]
-    case LongType =>
-      ((evalE1: Long, evalE2: Long) => evalE1 | evalE2)
+    case LongType => ((evalE1: Long, evalE2: Long) => evalE1 | evalE2)
         .asInstanceOf[(Any, Any) => Any]
   }
 
@@ -95,17 +89,14 @@ case class BitwiseXor(left: Expression, right: Expression)
   override def symbol: String = "^"
 
   private lazy val xor: (Any, Any) => Any = dataType match {
-    case ByteType =>
-      ((evalE1: Byte, evalE2: Byte) => (evalE1 ^ evalE2).toByte)
+    case ByteType => ((evalE1: Byte, evalE2: Byte) => (evalE1 ^ evalE2).toByte)
         .asInstanceOf[(Any, Any) => Any]
     case ShortType =>
       ((evalE1: Short, evalE2: Short) => (evalE1 ^ evalE2).toShort)
         .asInstanceOf[(Any, Any) => Any]
-    case IntegerType =>
-      ((evalE1: Int, evalE2: Int) => evalE1 ^ evalE2)
+    case IntegerType => ((evalE1: Int, evalE2: Int) => evalE1 ^ evalE2)
         .asInstanceOf[(Any, Any) => Any]
-    case LongType =>
-      ((evalE1: Long, evalE2: Long) => evalE1 ^ evalE2)
+    case LongType => ((evalE1: Long, evalE2: Long) => evalE1 ^ evalE2)
         .asInstanceOf[(Any, Any) => Any]
   }
 
@@ -127,10 +118,10 @@ case class BitwiseNot(child: Expression)
   override def toString: String = s"~$child"
 
   private lazy val not: (Any) => Any = dataType match {
-    case ByteType =>
-      ((evalE: Byte) => (~evalE).toByte).asInstanceOf[(Any) => Any]
-    case ShortType =>
-      ((evalE: Short) => (~evalE).toShort).asInstanceOf[(Any) => Any]
+    case ByteType => ((evalE: Byte) => (~evalE).toByte)
+        .asInstanceOf[(Any) => Any]
+    case ShortType => ((evalE: Short) => (~evalE).toShort)
+        .asInstanceOf[(Any) => Any]
     case IntegerType => ((evalE: Int) => ~evalE).asInstanceOf[(Any) => Any]
     case LongType    => ((evalE: Long) => ~evalE).asInstanceOf[(Any) => Any]
   }

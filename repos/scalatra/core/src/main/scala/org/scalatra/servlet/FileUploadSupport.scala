@@ -111,20 +111,21 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
       case Some(bodyParams) => bodyParams
 
       case None => {
-        val bodyParams = getParts(req).foldRight(
-          BodyParams(FileMultiParams(), Map.empty)) { (part, params) =>
-          val item = FileItem(part)
+        val bodyParams = getParts(req)
+          .foldRight(BodyParams(FileMultiParams(), Map.empty)) {
+            (part, params) =>
+              val item = FileItem(part)
 
-          if (!(item.isFormField)) {
-            BodyParams(
-              params.fileParams + (
-                (
-                  item.getFieldName,
-                  item +: params.fileParams
-                    .getOrElse(item.getFieldName, List[FileItem]()))),
-              params.formParams)
-          } else { BodyParams(params.fileParams, params.formParams) }
-        }
+              if (!(item.isFormField)) {
+                BodyParams(
+                  params.fileParams + (
+                    (
+                      item.getFieldName,
+                      item +: params.fileParams
+                        .getOrElse(item.getFieldName, List[FileItem]()))),
+                  params.formParams)
+              } else { BodyParams(params.fileParams, params.formParams) }
+          }
 
         req.setAttribute(BodyParamsKey, bodyParams)
         bodyParams
@@ -253,8 +254,8 @@ case class FileItem(part: Part) {
   val fieldName: String = part.getName
   val name: String = Util.partAttribute(part, "content-disposition", "filename")
   val contentType: Option[String] = part.getContentType.blankOption
-  val charset: Option[String] =
-    Util.partAttribute(part, "content-type", "charset").blankOption
+  val charset: Option[String] = Util
+    .partAttribute(part, "content-type", "charset").blankOption
 
   def getName: String = name
 
@@ -290,9 +291,7 @@ object Util {
       case Some(value) => {
         value.split(";").find(_.trim().startsWith(attributeName)) match {
           case Some(attributeValue) =>
-            attributeValue
-              .substring(attributeValue.indexOf('=') + 1)
-              .trim()
+            attributeValue.substring(attributeValue.indexOf('=') + 1).trim()
               .replace("\"", "")
           case _ => defaultValue
         }

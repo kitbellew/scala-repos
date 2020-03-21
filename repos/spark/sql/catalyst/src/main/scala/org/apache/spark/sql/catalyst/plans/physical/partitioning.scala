@@ -180,17 +180,14 @@ sealed trait Partitioning {
 object Partitioning {
   def allCompatible(partitionings: Seq[Partitioning]): Boolean = {
     // Note: this assumes transitivity
-    partitionings
-      .sliding(2)
-      .map {
-        case Seq(a) => true
-        case Seq(a, b) =>
-          if (a.numPartitions != b.numPartitions) {
-            assert(!a.compatibleWith(b) && !b.compatibleWith(a))
-            false
-          } else { a.compatibleWith(b) && b.compatibleWith(a) }
-      }
-      .forall(_ == true)
+    partitionings.sliding(2).map {
+      case Seq(a) => true
+      case Seq(a, b) =>
+        if (a.numPartitions != b.numPartitions) {
+          assert(!a.compatibleWith(b) && !b.compatibleWith(a))
+          false
+        } else { a.compatibleWith(b) && b.compatibleWith(a) }
+    }.forall(_ == true)
   }
 }
 
@@ -308,9 +305,7 @@ case class RangePartitioning(ordering: Seq[SortOrder], numPartitions: Int)
       case OrderedDistribution(requiredOrdering) =>
         val minSize = Seq(requiredOrdering.size, ordering.size).min
         requiredOrdering.take(minSize) == ordering.take(minSize)
-      case ClusteredDistribution(requiredClustering) =>
-        ordering
-          .map(_.child)
+      case ClusteredDistribution(requiredClustering) => ordering.map(_.child)
           .forall(x => requiredClustering.exists(_.semanticEquals(x)))
       case _ => false
     }

@@ -7,16 +7,15 @@ object PartestUtil {
       globalBase: File,
       testBase: File) {
     private val testCaseDir = new SimpleFileFilter(f =>
-      f.isDirectory && f.listFiles.nonEmpty && !(
-        f.getParentFile / (f.name + ".res")
-      ).exists)
+      f.isDirectory && f.listFiles.nonEmpty && !(f.getParentFile / (f
+        .name + ".res")).exists)
     private val testCaseFilter =
       GlobFilter("*.scala") | GlobFilter("*.java") | GlobFilter(
         "*.res") || testCaseDir
     private def testCaseFinder =
       (testBase / srcPath).*(AllPassFilter).*(testCaseFilter)
-    private val basePaths =
-      allTestCases.map(_._2.split('/').take(3).mkString("/") + "/").distinct
+    private val basePaths = allTestCases
+      .map(_._2.split('/').take(3).mkString("/") + "/").distinct
 
     def allTestCases = testCaseFinder.pair(relativeTo(globalBase))
     def basePathExamples = new FixedSetExamples(basePaths)
@@ -96,15 +95,14 @@ object PartestUtil {
             val Pattern = ("(?i)" + x).r
             testFiles.allTestCases.filter {
               case (testFile, testPath) =>
-                val assocFiles = List(".check", ".flags").map(
-                  testFile.getParentFile / _)
+                val assocFiles = List(".check", ".flags")
+                  .map(testFile.getParentFile / _)
                 val sourceFiles =
                   if (testFile.isFile) List(testFile)
                   else testFile.**(AllPassFilter).get.toList
                 val allFiles = testFile :: assocFiles ::: sourceFiles
                 allFiles.exists { f =>
-                  f.exists && f.isFile && Pattern
-                    .findFirstIn(IO.read(f))
+                  f.exists && f.isFile && Pattern.findFirstIn(IO.read(f))
                     .isDefined
                 }
             }
@@ -139,8 +137,7 @@ object PartestUtil {
     }
     val P = oneOf(
       knownUnaryOptions.map(x => token(x))) | SrcPath | TestPathParser | Grep
-    (
-      Space ~> repsep(P, oneOrMore(Space))
-    ).map(_.mkString(" ")).?.map(_.getOrElse("")) <~ OptSpace
+    (Space ~> repsep(P, oneOrMore(Space))).map(_.mkString(" "))
+      .?.map(_.getOrElse("")) <~ OptSpace
   }
 }

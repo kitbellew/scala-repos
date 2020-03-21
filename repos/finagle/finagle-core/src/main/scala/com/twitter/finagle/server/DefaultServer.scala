@@ -57,8 +57,7 @@ case class DefaultServer[Req, Rep, In, Out](
       TraceInitializerFilter.serverModule[Req, Rep])
     extends Server[Req, Rep] {
 
-  val stack = StackServer
-    .newStack[Req, Rep]
+  val stack = StackServer.newStack[Req, Rep]
     .replace(StackServer.Role.preparer, prepare)
     .replace(TraceInitializerFilter.role, newTraceInitializer)
 
@@ -87,14 +86,10 @@ case class DefaultServer[Req, Rep, In, Out](
     if (maxConcurrentRequests == Int.MaxValue) None
     else Some(new AsyncSemaphore(maxConcurrentRequests, 0))
 
-  val configured = underlying
-    .configured(param.Label(name))
-    .configured(param.Timer(timer))
-    .configured(param.Monitor(monitor))
-    .configured(param.Logger(logger))
-    .configured(param.Stats(statsReceiver))
-    .configured(param.Tracer(tracer))
-    .configured(param.Reporter(reporter))
+  val configured = underlying.configured(param.Label(name))
+    .configured(param.Timer(timer)).configured(param.Monitor(monitor))
+    .configured(param.Logger(logger)).configured(param.Stats(statsReceiver))
+    .configured(param.Tracer(tracer)).configured(param.Reporter(reporter))
     .configured(MaskCancelFilter.Param(!cancelOnHangup))
     .configured(TimeoutFilter.Param(requestTimeout))
     .configured(RequestSemaphoreFilter.Param(sem))

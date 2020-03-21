@@ -59,9 +59,7 @@ class DataServiceHandler[A](
       import ResourceError._
 
       (apiKey: APIKey, path: Path) => {
-        val mimeTypes = request.headers
-          .header[Accept]
-          .toSeq
+        val mimeTypes = request.headers.header[Accept].toSeq
           .flatMap(_.mimeTypes)
         platform.vfs
           .readResource(apiKey, path, Version.Current, AccessMode.Read)
@@ -119,9 +117,8 @@ class DataServiceHandler[A](
                           content = Some(Left(
                             JObject(
                               "errors" -> JArray(
-                                userError.messages.list.map(
-                                  JString(_)): _*)).renderPretty
-                              .getBytes("UTF-8")))
+                                userError.messages.list.map(JString(_)): _*))
+                              .renderPretty.getBytes("UTF-8")))
                         )
                     )
                 }

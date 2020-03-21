@@ -52,8 +52,7 @@ object CustomRuntime {
         }
 
         val length = reader.readLength()
-        val newArray = java.lang.reflect.Array
-          .newInstance(elemClass, length)
+        val newArray = java.lang.reflect.Array.newInstance(elemClass, length)
           .asInstanceOf[Array[AnyRef]]
 
         var i = 0
@@ -78,7 +77,8 @@ object CustomRuntime {
               throw PicklingException(
                 s"""exception in unpickle of 'mkRuntimeTravPickler':
                                        |collTag: '${collTag.key}'
-                                       |elemTag: '${elemTag.key}'""".stripMargin,
+                                       |elemTag: '${elemTag.key}'"""
+                  .stripMargin,
                 Some(e)
               )
           }
@@ -125,8 +125,7 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
           Defaults.nullPickler.asInstanceOf[Pickler[Any]])
       } else {
         val clazz = value.getClass
-        val tag = FastTypeTag
-          .mkRaw(clazz, reflectRuntime.currentMirror)
+        val tag = FastTypeTag.mkRaw(clazz, reflectRuntime.currentMirror)
           .asInstanceOf[FastTypeTag[Any]]
         val pickler = scala.pickling.internal.currentRuntime.picklers
           .genPickler(clazz.getClassLoader, clazz, tag)

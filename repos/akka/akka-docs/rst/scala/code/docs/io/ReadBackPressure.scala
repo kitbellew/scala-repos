@@ -68,9 +68,8 @@ class PullReadingSpec extends AkkaSpec with ImplicitSender {
 
   "demonstrate pull reading" in {
     val probe = TestProbe()
-    system.actorOf(
-      Props(classOf[PullReadingExample.Listener], probe.ref),
-      "server")
+    system
+      .actorOf(Props(classOf[PullReadingExample.Listener], probe.ref), "server")
     val listenAddress = probe.expectMsgType[InetSocketAddress]
 
     //#pull-mode-connect

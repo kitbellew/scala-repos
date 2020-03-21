@@ -90,16 +90,16 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       val result = decorate(
         Vector(Line(1, 1, ""), PushString("/foo"), instructions.AbsoluteLoad))
       result mustEqual Right(
-        dag.AbsoluteLoad(Const(CString("/foo"))(Line(1, 1, "")))(
-          Line(1, 1, "")))
+        dag
+          .AbsoluteLoad(Const(CString("/foo"))(Line(1, 1, "")))(Line(1, 1, "")))
     }
 
     "parse out relative_load" in {
       val result = decorate(
         Vector(Line(1, 1, ""), PushString("/foo"), instructions.RelativeLoad))
       result mustEqual Right(
-        dag.RelativeLoad(Const(CString("/foo"))(Line(1, 1, "")))(
-          Line(1, 1, "")))
+        dag
+          .RelativeLoad(Const(CString("/foo"))(Line(1, 1, "")))(Line(1, 1, "")))
     }
 
     "parse out map1" in {
@@ -112,8 +112,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       val result = decorate(Vector(
         Line(1, 1, ""),
         PushFalse,
-        instructions.Reduce(BuiltInReduction(
-          Reduction(Vector(), "count", 0x2000)))))
+        instructions
+          .Reduce(BuiltInReduction(Reduction(Vector(), "count", 0x2000)))))
       result mustEqual Right(
         dag.Reduce(
           Reduction(Vector(), "count", 0x2000),
@@ -137,21 +137,21 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         Dup,
         PushString("Weight"),
         Map2Cross(DerefObject),
-        instructions.Reduce(BuiltInReduction(
-          Reduction(Vector(), "max", 0x2001))),
+        instructions
+          .Reduce(BuiltInReduction(Reduction(Vector(), "max", 0x2001))),
         Map1(WrapArray),
         Swap(1),
         PushString("HeightIncm"),
         Map2Cross(DerefObject),
-        instructions.Reduce(BuiltInReduction(
-          Reduction(Vector(), "max", 0x2001))),
+        instructions
+          .Reduce(BuiltInReduction(Reduction(Vector(), "max", 0x2001))),
         Map1(WrapArray),
         Map2Cross(JoinArray)
       ))
 
       val line = Line(1, 1, "")
-      val medals = dag.AbsoluteLoad(
-        Const(CString("/summer_games/london_medals"))(line))(line)
+      val medals = dag
+        .AbsoluteLoad(Const(CString("/summer_games/london_medals"))(line))(line)
 
       val expected = Join(
         JoinArray,
@@ -532,8 +532,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         Map2Cross(WrapObject),
         PushString("num"),
         PushGroup(4),
-        instructions.Reduce(BuiltInReduction(
-          Reduction(Vector(), "count", 0x002000))),
+        instructions
+          .Reduce(BuiltInReduction(Reduction(Vector(), "count", 0x002000))),
         Map2Cross(WrapObject),
         Map2Cross(JoinObject),
         Merge
@@ -583,9 +583,9 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         ),
         dag.Group(
           4,
-          dag.AbsoluteLoad(
-            Const(CString("/campaigns"))(line),
-            JType.JUniverseT)(line),
+          dag
+            .AbsoluteLoad(Const(CString("/campaigns"))(line), JType.JUniverseT)(
+              line),
           UnfixedSolution(
             3,
             Join(
@@ -816,8 +816,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       }
 
       "reduce" >> { // similar to map1, only one underflow case!
-        val instr = instructions.Reduce(BuiltInReduction(
-          Reduction(Vector(), "count", 0x2000)))
+        val instr = instructions
+          .Reduce(BuiltInReduction(Reduction(Vector(), "count", 0x2000)))
         decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
           StackUnderflow(instr))
       }

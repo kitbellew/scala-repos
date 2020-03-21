@@ -51,11 +51,9 @@ case class SimplePrunedScan(from: Int, to: Int)(
       case "b" => (i: Int) => Seq(i * 2)
     }
 
-    sqlContext.sparkContext
-      .parallelize(from to to)
-      .map(i =>
-        Row.fromSeq(
-          rowBuilders.map(_(i)).reduceOption(_ ++ _).getOrElse(Seq.empty)))
+    sqlContext.sparkContext.parallelize(from to to).map(i =>
+      Row.fromSeq(
+        rowBuilders.map(_(i)).reduceOption(_ ++ _).getOrElse(Seq.empty)))
   }
 }
 

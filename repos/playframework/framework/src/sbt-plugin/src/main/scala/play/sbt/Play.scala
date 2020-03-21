@@ -72,7 +72,8 @@ object PlayNettyServer extends AutoPlugin {
       if (PlayKeys.playPlugin.value) { Nil }
       else {
         Seq(
-          "com.typesafe.play" %% "play-netty-server" % play.core.PlayVersion.current)
+          "com.typesafe.play" %% "play-netty-server" % play.core.PlayVersion
+            .current)
       }
     })
 }
@@ -85,5 +86,6 @@ object PlayAkkaHttpServer extends AutoPlugin {
 
   override def projectSettings =
     Seq(
-      libraryDependencies += "com.typesafe.play" %% "play-akka-http-server-experimental" % play.core.PlayVersion.current)
+      libraryDependencies += "com.typesafe.play" %% "play-akka-http-server-experimental" % play
+        .core.PlayVersion.current)
 }

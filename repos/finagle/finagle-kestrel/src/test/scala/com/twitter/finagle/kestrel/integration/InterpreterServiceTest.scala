@@ -20,15 +20,10 @@ class InterpreterServiceTest extends FunSuite {
   def exec(fn: Service[Command, Response] => Unit) {
     val server: Server = new Server(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-    val address: InetSocketAddress = server
-      .start()
-      .boundAddress
+    val address: InetSocketAddress = server.start().boundAddress
       .asInstanceOf[InetSocketAddress]
-    val client: Service[Command, Response] = ClientBuilder()
-      .hosts(address)
-      .codec(Kestrel())
-      .hostConnectionLimit(1)
-      .build()
+    val client: Service[Command, Response] = ClientBuilder().hosts(address)
+      .codec(Kestrel()).hostConnectionLimit(1).build()
 
     fn(client)
 

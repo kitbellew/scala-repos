@@ -352,14 +352,8 @@ private[spark] object Utils extends Logging {
     // `file` and `localhost` are not used. Just to prevent URI from parsing `fileName` as
     // scheme or host. The prefix "/" is required because URI doesn't accept a relative path.
     // We should remove it after we get the raw path.
-    new URI(
-      "file",
-      null,
-      "localhost",
-      -1,
-      "/" + fileName,
-      null,
-      null).getRawPath.substring(1)
+    new URI("file", null, "localhost", -1, "/" + fileName, null, null)
+      .getRawPath.substring(1)
   }
 
   /**
@@ -395,9 +389,8 @@ private[spark] object Utils extends Logging {
       useCache: Boolean) {
     val fileName = decodeFileNameInURI(new URI(url))
     val targetFile = new File(targetDir, fileName)
-    val fetchCacheEnabled = conf.getBoolean(
-      "spark.files.useFetchCache",
-      defaultValue = true)
+    val fetchCacheEnabled = conf
+      .getBoolean("spark.files.useFetchCache", defaultValue = true)
     if (useCache && fetchCacheEnabled) {
       val cachedFileName = s"${url.hashCode}${timestamp}_cache"
       val lockFileName = s"${url.hashCode}${timestamp}_lock"
@@ -580,9 +573,8 @@ private[spark] object Utils extends Logging {
       hadoopConf: Configuration) {
     val targetFile = new File(targetDir, filename)
     val uri = new URI(url)
-    val fileOverwrite = conf.getBoolean(
-      "spark.files.overwrite",
-      defaultValue = false)
+    val fileOverwrite = conf
+      .getBoolean("spark.files.overwrite", defaultValue = false)
     Option(uri.getScheme).getOrElse("file") match {
       case "spark" =>
         if (SparkEnv.get == null) {
@@ -714,9 +706,8 @@ private[spark] object Utils extends Logging {
     * logic of locating the local directories according to deployment mode.
     */
   def getConfiguredLocalDirs(conf: SparkConf): Array[String] = {
-    val shuffleServiceEnabled = conf.getBoolean(
-      "spark.shuffle.service.enabled",
-      false)
+    val shuffleServiceEnabled = conf
+      .getBoolean("spark.shuffle.service.enabled", false)
     if (isRunningInYarnContainer(conf)) {
       // If we are in yarn mode, systems can have different disk layouts so we must set it
       // to what Yarn on this system said was available. Note this assumes that Yarn has
@@ -727,8 +718,8 @@ private[spark] object Utils extends Logging {
       conf.getenv("SPARK_EXECUTOR_DIRS").split(File.pathSeparator)
     } else if (conf.getenv("SPARK_LOCAL_DIRS") != null) {
       conf.getenv("SPARK_LOCAL_DIRS").split(",")
-    } else if (conf.getenv(
-                 "MESOS_DIRECTORY") != null && !shuffleServiceEnabled) {
+    } else if (conf
+                 .getenv("MESOS_DIRECTORY") != null && !shuffleServiceEnabled) {
       // Mesos already creates a directory per Mesos task. Spark should use that directory
       // instead so all temporary files are automatically cleaned up when the Mesos task ends.
       // Note that we don't want this if the shuffle service is enabled because we want to
@@ -743,8 +734,7 @@ private[spark] object Utils extends Logging {
       // In non-Yarn mode (or for the driver in yarn-client mode), we cannot trust the user
       // configuration to point to a secure directory. So create a subdirectory with restricted
       // permissions under each listed directory.
-      conf
-        .get("spark.local.dir", System.getProperty("java.io.tmpdir"))
+      conf.get("spark.local.dir", System.getProperty("java.io.tmpdir"))
         .split(",")
     }
   }
@@ -825,35 +815,36 @@ private[spark] object Utils extends Logging {
         // getNetworkInterfaces returns ifs in reverse order compared to ifconfig output order
         // on unix-like system. On windows, it returns in index order.
         // It's more proper to pick ip address following system output order.
-        val activeNetworkIFs =
-          NetworkInterface.getNetworkInterfaces.asScala.toSeq
+        val activeNetworkIFs = NetworkInterface.getNetworkInterfaces.asScala
+          .toSeq
         val reOrderedNetworkIFs =
           if (isWindows) activeNetworkIFs else activeNetworkIFs.reverse
 
         for (ni <- reOrderedNetworkIFs) {
-          val addresses = ni.getInetAddresses.asScala
-            .filterNot(addr =>
-              addr.isLinkLocalAddress || addr.isLoopbackAddress)
-            .toSeq
+          val addresses = ni.getInetAddresses.asScala.filterNot(addr =>
+            addr.isLinkLocalAddress || addr.isLoopbackAddress).toSeq
           if (addresses.nonEmpty) {
-            val addr = addresses
-              .find(_.isInstanceOf[Inet4Address])
+            val addr = addresses.find(_.isInstanceOf[Inet4Address])
               .getOrElse(addresses.head)
             // because of Inet6Address.toHostName may add interface at the end if it knows about it
             val strippedAddress = InetAddress.getByAddress(addr.getAddress)
             // We've found an address that looks reasonable!
             logWarning(
-              "Your hostname, " + InetAddress.getLocalHost.getHostName + " resolves to" +
+              "Your hostname, " + InetAddress.getLocalHost
+                .getHostName + " resolves to" +
                 " a loopback address: " + address.getHostAddress + "; using " +
-                strippedAddress.getHostAddress + " instead (on interface " + ni.getName + ")")
+                strippedAddress.getHostAddress + " instead (on interface " + ni
+                .getName + ")")
             logWarning(
               "Set SPARK_LOCAL_IP if you need to bind to another address")
             return strippedAddress
           }
         }
         logWarning(
-          "Your hostname, " + InetAddress.getLocalHost.getHostName + " resolves to" +
-            " a loopback address: " + address.getHostAddress + ", but we couldn't find any" +
+          "Your hostname, " + InetAddress.getLocalHost
+            .getHostName + " resolves to" +
+            " a loopback address: " + address
+            .getHostAddress + ", but we couldn't find any" +
             " external IP address!")
         logWarning("Set SPARK_LOCAL_IP if you need to bind to another address")
       }
@@ -861,8 +852,8 @@ private[spark] object Utils extends Logging {
     }
   }
 
-  private var customHostname: Option[String] = sys.env.get(
-    "SPARK_LOCAL_HOSTNAME")
+  private var customHostname: Option[String] = sys.env
+    .get("SPARK_LOCAL_HOSTNAME")
 
   /**
     * Allow setting a custom host name because when we run on Mesos we need to use the same
@@ -981,8 +972,7 @@ private[spark] object Utils extends Logging {
       if (file.getParent() == null) { file }
       else { new File(file.getParentFile().getCanonicalFile(), file.getName()) }
 
-    !fileInCanonicalDir
-      .getCanonicalFile()
+    !fileInCanonicalDir.getCanonicalFile()
       .equals(fileInCanonicalDir.getAbsoluteFile())
   }
 
@@ -1001,8 +991,7 @@ private[spark] object Utils extends Logging {
     val cutoffTimeInMillis = System.currentTimeMillis - (cutoff * 1000)
 
     filesAndDirs.exists(_.lastModified() > cutoffTimeInMillis) ||
-    filesAndDirs
-      .filter(_.isDirectory)
+    filesAndDirs.filter(_.isDirectory)
       .exists(subdir => doesDirectoryContainAnyNewFiles(subdir, cutoff))
   }
 
@@ -1323,12 +1312,13 @@ private[spark] object Utils extends Logging {
     // A regular expression to match classes of the internal Spark API's
     // that we want to skip when finding the call site of a method.
     val SPARK_CORE_CLASS_REGEX =
-      """^org\.apache\.spark(\.api\.java)?(\.util)?(\.rdd)?(\.broadcast)?\.[A-Z]""".r
+      """^org\.apache\.spark(\.api\.java)?(\.util)?(\.rdd)?(\.broadcast)?\.[A-Z]"""
+        .r
     val SPARK_SQL_CLASS_REGEX = """^org\.apache\.spark\.sql.*""".r
     val SCALA_CORE_CLASS_PREFIX = "scala"
-    val isSparkClass =
-      SPARK_CORE_CLASS_REGEX.findFirstIn(className).isDefined ||
-        SPARK_SQL_CLASS_REGEX.findFirstIn(className).isDefined
+    val isSparkClass = SPARK_CORE_CLASS_REGEX.findFirstIn(className)
+      .isDefined ||
+      SPARK_SQL_CLASS_REGEX.findFirstIn(className).isDefined
     val isScalaClass = className.startsWith(SCALA_CORE_CLASS_PREFIX)
     // If the class is a Spark internal class or a Scala class, then exclude.
     isSparkClass || isScalaClass
@@ -1364,8 +1354,8 @@ private[spark] object Utils extends Logging {
             lastSparkMethod =
               if (ste.getMethodName == "<init>") {
                 // Spark method is a constructor; get its class name
-                ste.getClassName.substring(
-                  ste.getClassName.lastIndexOf('.') + 1)
+                ste.getClassName
+                  .substring(ste.getClassName.lastIndexOf('.') + 1)
               } else { ste.getMethodName }
             callStack(0) =
               ste.toString // Put last Spark method on top of the stack trace.
@@ -1441,14 +1431,13 @@ private[spark] object Utils extends Logging {
 
       if (startIndex <= startIndexOfFile && endIndex >= endIndexOfFile) {
         // Case C: read the whole file
-        stringBuffer.append(
-          offsetBytes(file.getAbsolutePath, 0, fileToLength(file)))
+        stringBuffer
+          .append(offsetBytes(file.getAbsolutePath, 0, fileToLength(file)))
       } else if (startIndex > startIndexOfFile && startIndex < endIndexOfFile) {
         // Case A and B: read from [start of required range] to [end of file / end of range]
         val effectiveStartIndex = startIndex - startIndexOfFile
-        val effectiveEndIndex = math.min(
-          endIndex - startIndexOfFile,
-          fileToLength(file))
+        val effectiveEndIndex = math
+          .min(endIndex - startIndexOfFile, fileToLength(file))
         stringBuffer.append(Utils.offsetBytes(
           file.getAbsolutePath,
           effectiveStartIndex,
@@ -1586,11 +1575,8 @@ private[spark] object Utils extends Logging {
     * properties which have been set explicitly, as well as those for which only a default value
     * has been defined. */
   def getSystemProperties: Map[String, String] = {
-    System.getProperties
-      .stringPropertyNames()
-      .asScala
-      .map(key => (key, System.getProperty(key)))
-      .toMap
+    System.getProperties.stringPropertyNames().asScala
+      .map(key => (key, System.getProperty(key))).toMap
   }
 
   /**
@@ -1776,9 +1762,7 @@ private[spark] object Utils extends Logging {
     val terminated = Utils.waitForProcess(process, timeoutMs)
     if (terminated) {
       Some(
-        Source
-          .fromInputStream(process.getErrorStream)
-          .getLines()
+        Source.fromInputStream(process.getErrorStream).getLines()
           .mkString("\n"))
     } else { None }
   }
@@ -1883,13 +1867,13 @@ private[spark] object Utils extends Logging {
       filePath: String = null): String = {
     val path = Option(filePath).getOrElse(getDefaultPropertiesFile())
     Option(path).foreach { confFile =>
-      getPropertiesFromFile(confFile)
-        .filter { case (k, v) => k.startsWith("spark.") }
-        .foreach {
-          case (k, v) =>
-            conf.setIfMissing(k, v)
-            sys.props.getOrElseUpdate(k, v)
-        }
+      getPropertiesFromFile(confFile).filter {
+        case (k, v) => k.startsWith("spark.")
+      }.foreach {
+        case (k, v) =>
+          conf.setIfMissing(k, v)
+          sys.props.getOrElseUpdate(k, v)
+      }
     }
     path
   }
@@ -1905,11 +1889,8 @@ private[spark] object Utils extends Logging {
     try {
       val properties = new Properties()
       properties.load(inReader)
-      properties
-        .stringPropertyNames()
-        .asScala
-        .map(k => (k, properties.getProperty(k).trim))
-        .toMap
+      properties.stringPropertyNames().asScala
+        .map(k => (k, properties.getProperty(k).trim)).toMap
     } catch {
       case e: IOException =>
         throw new SparkException(
@@ -1920,13 +1901,10 @@ private[spark] object Utils extends Logging {
 
   /** Return the path of the default Spark properties file. */
   def getDefaultPropertiesFile(env: Map[String, String] = sys.env): String = {
-    env
-      .get("SPARK_CONF_DIR")
-      .orElse(env.get("SPARK_HOME").map { t => s"$t${File.separator}conf" })
-      .map { t => new File(s"$t${File.separator}spark-defaults.conf") }
-      .filter(_.isFile)
-      .map(_.getAbsolutePath)
-      .orNull
+    env.get("SPARK_CONF_DIR").orElse(env.get("SPARK_HOME").map { t =>
+      s"$t${File.separator}conf"
+    }).map { t => new File(s"$t${File.separator}spark-defaults.conf") }
+      .filter(_.isFile).map(_.getAbsolutePath).orNull
   }
 
   /**
@@ -1948,8 +1926,7 @@ private[spark] object Utils extends Logging {
     // We need to filter out null values here because dumpAllThreads() may return null array
     // elements for threads that are dead / don't exist.
     val threadInfos = ManagementFactory.getThreadMXBean
-      .dumpAllThreads(true, true)
-      .filter(_ != null)
+      .dumpAllThreads(true, true).filter(_ != null)
     threadInfos.sortBy(_.getThreadId).map {
       case threadInfo =>
         val stackTrace = threadInfo.getStackTrace.map(_.toString).mkString("\n")
@@ -1967,9 +1944,9 @@ private[spark] object Utils extends Logging {
   def sparkJavaOpts(
       conf: SparkConf,
       filterKey: (String => Boolean) = _ => true): Seq[String] = {
-    conf.getAll
-      .filter { case (k, _) => filterKey(k) }
-      .map { case (k, v) => s"-D$k=$v" }
+    conf.getAll.filter { case (k, _) => filterKey(k) }.map {
+      case (k, v) => s"-D$k=$v"
+    }
   }
 
   /**
@@ -2127,10 +2104,8 @@ private[spark] object Utils extends Logging {
     val libraryPathScriptVar =
       if (isWindows) { s"%${libraryPathEnvName}%" }
       else { "$" + libraryPathEnvName }
-    val libraryPath = (libraryPaths :+ libraryPathScriptVar).mkString(
-      "\"",
-      File.pathSeparator,
-      "\"")
+    val libraryPath = (libraryPaths :+ libraryPathScriptVar)
+      .mkString("\"", File.pathSeparator, "\"")
     val ampersand =
       if (Utils.isWindows) { " &" }
       else { "" }
@@ -2168,9 +2143,8 @@ private[spark] object Utils extends Logging {
       if (uri.getScheme != "spark" ||
           host == null ||
           port < 0 ||
-          (
-            uri.getPath != null && !uri.getPath.isEmpty
-          ) || // uri.getPath returns "" instead of null
+          (uri.getPath != null && !uri.getPath
+            .isEmpty) || // uri.getPath returns "" instead of null
           uri.getFragment != null ||
           uri.getQuery != null ||
           uri.getUserInfo != null) {
@@ -2256,17 +2230,15 @@ private[spark] object Utils extends Logging {
     */
   def isDynamicAllocationEnabled(conf: SparkConf): Boolean = {
     val numExecutor = conf.getInt("spark.executor.instances", 0)
-    val dynamicAllocationEnabled = conf.getBoolean(
-      "spark.dynamicAllocation.enabled",
-      false)
+    val dynamicAllocationEnabled = conf
+      .getBoolean("spark.dynamicAllocation.enabled", false)
     if (numExecutor != 0 && dynamicAllocationEnabled) {
       logWarning(
         "Dynamic Allocation and num executors both set, thus dynamic allocation disabled.")
     }
     numExecutor == 0 && dynamicAllocationEnabled &&
-    (!isLocalMaster(conf) || conf.getBoolean(
-      "spark.dynamicAllocation.testing",
-      false))
+    (!isLocalMaster(conf) || conf
+      .getBoolean("spark.dynamicAllocation.testing", false))
   }
 
   def tryWithResource[R <: Closeable, T](createResource: => R)(f: R => T): T = {

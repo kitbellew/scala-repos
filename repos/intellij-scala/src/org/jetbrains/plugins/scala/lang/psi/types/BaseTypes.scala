@@ -48,8 +48,7 @@ object BaseTypes {
           visitedAliases = visitedAliases + ta)
       case ScThisType(clazz) =>
         BaseTypes.get(
-          clazz
-            .getTypeWithProjections(TypingContext.empty)
+          clazz.getTypeWithProjections(TypingContext.empty)
             .getOrElse(return Seq.empty),
           visitedAliases = visitedAliases)
       case ScTypeParameterType(_, Nil, _, upper, _) =>
@@ -69,8 +68,8 @@ object BaseTypes {
             args) =>
         if (visitedAliases.contains(ta)) return Seq.empty
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta.typeParameters.map(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
+          ta.typeParameters
+            .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           args)
         BaseTypes.get(
           genericSubst.subst(ta.aliasedType.getOrElse(return Seq.empty)),
@@ -80,8 +79,8 @@ object BaseTypes {
         val ta = p.actualElement.asInstanceOf[ScTypeAliasDefinition]
         if (visitedAliases.contains(ta)) return Seq.empty
         val genericSubst = ScalaPsiUtil.typesCallSubstitutor(
-          ta.typeParameters.map(tp =>
-            (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
+          ta.typeParameters
+            .map(tp => (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           args)
         val s = p.actualSubst.followed(genericSubst)
         BaseTypes.get(
@@ -128,9 +127,9 @@ object BaseTypes {
           case td: ScTypeDefinition =>
             reduce(td.superTypes.flatMap { tp =>
               if (!notAll)
-                BaseTypes.get(
-                  s.subst(tp),
-                  visitedAliases = visitedAliases) ++ Seq(s.subst(tp))
+                BaseTypes
+                  .get(s.subst(tp), visitedAliases = visitedAliases) ++ Seq(
+                  s.subst(tp))
               else Seq(s.subst(tp))
             })
           case c: PsiClass =>

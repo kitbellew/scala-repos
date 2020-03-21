@@ -26,12 +26,12 @@ class DarkTrafficFilter[Req, Rep](
       statsReceiver: StatsReceiver) =
     this(darkService, enableSampling, statsReceiver, false)
 
-  private[this] val scopedStatsReceiver = statsReceiver.scope(
-    "darkTrafficFilter")
-  private[this] val requestsForwardedCounter = scopedStatsReceiver.counter(
-    "forwarded")
-  private[this] val requestsSkippedCounter = scopedStatsReceiver.counter(
-    "skipped")
+  private[this] val scopedStatsReceiver = statsReceiver
+    .scope("darkTrafficFilter")
+  private[this] val requestsForwardedCounter = scopedStatsReceiver
+    .counter("forwarded")
+  private[this] val requestsSkippedCounter = scopedStatsReceiver
+    .counter("skipped")
   private[this] val failedCounter = scopedStatsReceiver.counter("failed")
   private[this] val log = Logger.get("DarkTrafficFilter")
 

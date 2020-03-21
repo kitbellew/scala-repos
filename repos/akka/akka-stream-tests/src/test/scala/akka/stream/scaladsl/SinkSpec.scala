@@ -37,13 +37,14 @@ class SinkSpec extends AkkaSpec {
 
     "be composable with importing 1 module" in {
       val probes = Array.fill(3)(TestSubscriber.manualProbe[Int])
-      val sink = Sink.fromGraph(
-        GraphDSL.create(Sink.fromSubscriber(probes(0))) { implicit b ⇒ s0 ⇒
-          val bcast = b.add(Broadcast[Int](3))
-          bcast.out(0) ~> Flow[Int].filter(_ == 0) ~> s0.in
-          for (i ← 1 to 2)
-            bcast.out(i).filter(_ == i) ~> Sink.fromSubscriber(probes(i))
-          SinkShape(bcast.in)
+      val sink = Sink
+        .fromGraph(GraphDSL.create(Sink.fromSubscriber(probes(0))) {
+          implicit b ⇒ s0 ⇒
+            val bcast = b.add(Broadcast[Int](3))
+            bcast.out(0) ~> Flow[Int].filter(_ == 0) ~> s0.in
+            for (i ← 1 to 2)
+              bcast.out(i).filter(_ == i) ~> Sink.fromSubscriber(probes(i))
+            SinkShape(bcast.in)
         })
       Source(List(0, 1, 2)).runWith(sink)
 
@@ -138,17 +139,12 @@ class SinkSpec extends AkkaSpec {
 
     "suitably override attribute handling methods" in {
       import Attributes._
-      val s: Sink[Int, Future[Int]] = Sink
-        .head[Int]
-        .async
-        .addAttributes(none)
+      val s: Sink[Int, Future[Int]] = Sink.head[Int].async.addAttributes(none)
         .named("")
     }
 
     "support contramap" in {
-      Source(0 to 9)
-        .toMat(Sink.seq.contramap(_ + 1))(Keep.right)
-        .run()
+      Source(0 to 9).toMat(Sink.seq.contramap(_ + 1))(Keep.right).run()
         .futureValue should ===(1 to 10)
     }
   }

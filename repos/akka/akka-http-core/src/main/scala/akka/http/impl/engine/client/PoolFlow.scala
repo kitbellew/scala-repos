@@ -78,21 +78,19 @@ private object PoolFlow {
       log: LoggingAdapter)(implicit
       system: ActorSystem,
       fm: Materializer): Flow[RequestContext, ResponseContext, NotUsed] =
-    Flow.fromGraph(
-      GraphDSL.create[FlowShape[RequestContext, ResponseContext]]() {
+    Flow
+      .fromGraph(GraphDSL.create[FlowShape[RequestContext, ResponseContext]]() {
         implicit b ⇒
           import settings._
           import GraphDSL.Implicits._
 
-          val conductor = b.add(
-            PoolConductor(maxConnections, pipeliningLimit, log))
-          val slots = Vector
-            .tabulate(maxConnections)(
-              PoolSlot(_, connectionFlow, remoteAddress, settings))
-            .map(b.add(_))
+          val conductor = b
+            .add(PoolConductor(maxConnections, pipeliningLimit, log))
+          val slots = Vector.tabulate(maxConnections)(
+            PoolSlot(_, connectionFlow, remoteAddress, settings)).map(b.add(_))
           val responseMerge = b.add(Merge[ResponseContext](maxConnections))
-          val slotEventMerge = b.add(
-            Merge[PoolSlot.RawSlotEvent](maxConnections))
+          val slotEventMerge = b
+            .add(Merge[PoolSlot.RawSlotEvent](maxConnections))
 
           slotEventMerge.out ~> conductor.slotEventIn
           for ((slot, ix) ← slots.zipWithIndex) {

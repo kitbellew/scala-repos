@@ -35,12 +35,11 @@ private[summingbird] object ConfigBijection {
         conf
       }
       override def invert(config: Configuration) =
-        config.asScala
-          .foldLeft(Map[String, AnyRef]()) { (m, entry) =>
-            val k = entry.getKey
-            val v = entry.getValue
-            m + (k -> v)
-          }
+        config.asScala.foldLeft(Map[String, AnyRef]()) { (m, entry) =>
+          val k = entry.getKey
+          val v = entry.getValue
+          m + (k -> v)
+        }
     }
   val fromJavaMap: Bijection[JMap[String, AnyRef], Configuration] = Bijection
     .connect[JMap[String, AnyRef], Map[String, AnyRef], Configuration]

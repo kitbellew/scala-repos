@@ -27,8 +27,7 @@ object AllowedHostsFilterSpec extends PlaySpecification {
       hostHeader: String,
       uri: String = "/",
       headers: Seq[(String, String)] = Seq()) = {
-    val req = FakeRequest(method = "GET", path = uri)
-      .withHeaders(headers: _*)
+    val req = FakeRequest(method = "GET", path = uri).withHeaders(headers: _*)
       .withHeaders(HOST -> hostHeader)
     route(req).get
   }
@@ -44,13 +43,10 @@ object AllowedHostsFilterSpec extends PlaySpecification {
       result: RequestHeader => Result,
       config: String): Application = {
     new GuiceApplicationBuilder()
-      .configure(Configuration(ConfigFactory.parseString(config)))
-      .overrides(
-        bind[Router].to(Router.from {
-          case request => Action(result(request))
-        }),
-        bind[HttpFilters].to[Filters])
-      .build()
+      .configure(Configuration(ConfigFactory.parseString(config))).overrides(
+        bind[Router]
+          .to(Router.from { case request => Action(result(request)) }),
+        bind[HttpFilters].to[Filters]).build()
   }
 
   def withApplication[T](result: RequestHeader => Result, config: String)(
@@ -173,10 +169,8 @@ object AllowedHostsFilterSpec extends PlaySpecification {
       """
         |play.filters.hosts.allowed = ["localhost"]
       """.stripMargin) { ws =>
-      val wsRequest = ws
-        .url(s"http://localhost:$TestServerPort")
-        .withHeaders(X_FORWARDED_HOST -> "evil.com")
-        .get()
+      val wsRequest = ws.url(s"http://localhost:$TestServerPort")
+        .withHeaders(X_FORWARDED_HOST -> "evil.com").get()
       val wsResponse = Await.result(wsRequest, 1.second)
       wsResponse.status must_== OK
       wsResponse.body must_== s"localhost:$TestServerPort"

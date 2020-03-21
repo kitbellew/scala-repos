@@ -46,10 +46,8 @@ object RichPipe extends java.io.Serializable {
     */
   def setReducers(p: Pipe, reducers: Int): Pipe = {
     if (reducers > 0) {
-      p.getStepConfigDef()
-        .setProperty(REDUCER_KEY, reducers.toString)
-      p.getStepConfigDef()
-        .setProperty(Config.WithReducersSetExplicitly, "true")
+      p.getStepConfigDef().setProperty(REDUCER_KEY, reducers.toString)
+      p.getStepConfigDef().setProperty(Config.WithReducersSetExplicitly, "true")
     } else if (reducers != -1) {
       throw new IllegalArgumentException(
         s"Number of reducers must be non-negative. Got: ${reducers}")
@@ -60,9 +58,7 @@ object RichPipe extends java.io.Serializable {
   // A pipe can have more than one description when merged together, so we store them delimited with 255.toChar.
   // Cannot use 1.toChar as we get an error if it is not a printable character.
   private def encodePipeDescriptions(descriptions: Seq[String]): String = {
-    descriptions
-      .map(_.replace(255.toChar, ' '))
-      .filter(_.nonEmpty)
+    descriptions.map(_.replace(255.toChar, ' ')).filter(_.nonEmpty)
       .mkString(255.toChar.toString)
   }
 
@@ -80,18 +76,15 @@ object RichPipe extends java.io.Serializable {
           override def update(s: String, s1: String): String = ???
           override def get(s: String): String = null
         })
-      Option(encodedResult)
-        .filterNot(_.isEmpty)
-        .map(decodePipeDescriptions)
+      Option(encodedResult).filterNot(_.isEmpty).map(decodePipeDescriptions)
         .getOrElse(Nil)
     }
   }
 
   def setPipeDescriptions(p: Pipe, descriptions: Seq[String]): Pipe = {
-    p.getStepConfigDef()
-      .setProperty(
-        Config.PipeDescriptions,
-        encodePipeDescriptions(getPipeDescriptions(p) ++ descriptions))
+    p.getStepConfigDef().setProperty(
+      Config.PipeDescriptions,
+      encodePipeDescriptions(getPipeDescriptions(p) ++ descriptions))
     p
   }
 
@@ -269,9 +262,9 @@ class RichPipe(val pipe: Pipe)
     * or count all the rows.
     */
   def groupAll(gs: GroupBuilder => GroupBuilder) =
-    map(() -> '__groupAll__) { (u: Unit) => 1 }
-      .groupBy('__groupAll__) { gs(_).reducers(1) }
-      .discard('__groupAll__)
+    map(() -> '__groupAll__) { (u: Unit) => 1 }.groupBy('__groupAll__) {
+      gs(_).reducers(1)
+    }.discard('__groupAll__)
 
   /**
     * Force a random shuffle of all the data to exactly n reducers
@@ -305,10 +298,9 @@ class RichPipe(val pipe: Pipe)
   // to themselves
   protected def groupRandomlyAux(n: Int, optSeed: Option[Long])(
       gs: GroupBuilder => GroupBuilder): Pipe = {
-    using(statefulRandom(optSeed))
-      .map(() -> '__shard__) { (r: Random, _: Unit) => r.nextInt(n) }
-      .groupBy('__shard__) { gs(_).reducers(n) }
-      .discard('__shard__)
+    using(statefulRandom(optSeed)).map(() -> '__shard__) {
+      (r: Random, _: Unit) => r.nextInt(n)
+    }.groupBy('__shard__) { gs(_).reducers(n) }.discard('__shard__)
   }
 
   private def statefulRandom(optSeed: Option[Long]): Random with Stateful = {
@@ -343,12 +335,11 @@ class RichPipe(val pipe: Pipe)
 
   private def groupAndShuffleRandomlyAux(reducers: Int, optSeed: Option[Long])(
       gs: GroupBuilder => GroupBuilder): Pipe = {
-    using(statefulRandom(optSeed))
-      .map(() -> ('__shuffle__)) { (r: Random, _: Unit) => r.nextDouble() }
-      .groupRandomlyAux(reducers, optSeed) { g: GroupBuilder =>
-        gs(g.sortBy('__shuffle__))
-      }
-      .discard('__shuffle__)
+    using(statefulRandom(optSeed)).map(() -> ('__shuffle__)) {
+      (r: Random, _: Unit) => r.nextDouble()
+    }.groupRandomlyAux(reducers, optSeed) { g: GroupBuilder =>
+      gs(g.sortBy('__shuffle__))
+    }.discard('__shuffle__)
   }
 
   /**
@@ -441,11 +432,9 @@ class RichPipe(val pipe: Pipe)
     tmpFields.setComparator("__temp__", ord)
 
     map(fromFields -> tmpFields)(fn)(conv, TupleSetter.singleSetter[R])
-      .groupBy(tmpFields)(builder)
-      .map[R, R](tmpFields -> toFields) { (r: R) => r }(
-        TupleConverter.singleConverter[R],
-        rset)
-      .discard(tmpFields)
+      .groupBy(tmpFields)(builder).map[R, R](tmpFields -> toFields) { (r: R) =>
+        r
+      }(TupleConverter.singleConverter[R], rset).discard(tmpFields)
   }
 
   /**
@@ -609,8 +598,7 @@ class RichPipe(val pipe: Pipe)
       fieldDef._2.size == 2,
       "Must specify exactly two Field names for the results")
     // toKeyValueList comes from TupleConversions
-    pipe
-      .flatMap(fieldDef) { te: TupleEntry => TupleConverter.KeyValueList(te) }
+    pipe.flatMap(fieldDef) { te: TupleEntry => TupleConverter.KeyValueList(te) }
       .discard(fieldDef._1)
   }
 
@@ -772,12 +760,9 @@ class RichPipe(val pipe: Pipe)
     * Set of pipes reachable from this pipe (transitive closure of 'Pipe.getPrevious')
     */
   def upstreamPipes: Set[Pipe] =
-    Iterator
-      .iterate(Seq(pipe))(pipes =>
-        for (p <- pipes; prev <- p.getPrevious) yield prev)
-      .takeWhile(_.length > 0)
-      .flatten
-      .toSet
+    Iterator.iterate(Seq(pipe))(pipes =>
+      for (p <- pipes; prev <- p.getPrevious) yield prev)
+      .takeWhile(_.length > 0).flatten.toSet
 
   /**
     * This finds all the boxed serializations stored in the flow state map for this
@@ -795,8 +780,8 @@ class RichPipe(val pipe: Pipe)
 
     @annotation.tailrec
     def go(p: Pipe, visited: Set[Pipe], toVisit: ToVisit[Pipe]): Set[Pipe] = {
-      val notSeen: Set[Pipe] =
-        p.getPrevious.filter(i => !visited.contains(i)).toSet
+      val notSeen: Set[Pipe] = p.getPrevious.filter(i => !visited.contains(i))
+        .toSet
       val nextVisited: Set[Pipe] = visited + p
       val nextToVisit = notSeen.foldLeft(toVisit) {
         case (prev, n) => prev.maybeAdd(n)

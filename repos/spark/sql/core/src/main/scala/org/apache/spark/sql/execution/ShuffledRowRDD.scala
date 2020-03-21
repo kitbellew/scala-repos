@@ -83,9 +83,8 @@ class CoalescedPartitioner(
   override def equals(other: Any): Boolean =
     other match {
       case c: CoalescedPartitioner =>
-        c.parent == parent && Arrays.equals(
-          c.partitionStartIndices,
-          partitionStartIndices)
+        c.parent == parent && Arrays
+          .equals(c.partitionStartIndices, partitionStartIndices)
       case _ => false
     }
 
@@ -124,8 +123,8 @@ class ShuffledRowRDD(
     specifiedPartitionStartIndices: Option[Array[Int]] = None)
     extends RDD[InternalRow](dependency.rdd.context, Nil) {
 
-  private[this] val numPreShufflePartitions =
-    dependency.partitioner.numPartitions
+  private[this] val numPreShufflePartitions = dependency.partitioner
+    .numPartitions
 
   private[this] val partitionStartIndices: Array[Int] =
     specifiedPartitionStartIndices match {

@@ -102,15 +102,15 @@ trait JoinOptimizerSpecs[M[+_]]
         | a := //users
         | b := //heightWeight
         | a ~ b
-        |   { name: a.name, height: b.height } where a.userid = b.userId """.stripMargin
+        |   { name: a.name, height: b.height } where a.userid = b.userId """
+          .stripMargin
 
       val line = Line(1, 1, "")
-      val users = dag.AbsoluteLoad(
-        Const(CString("/hom/users"))(line),
-        JUniverseT)(line)
-      val heightWeight = dag.AbsoluteLoad(
-        Const(CString("/hom/heightWeight"))(line),
-        JUniverseT)(line)
+      val users = dag
+        .AbsoluteLoad(Const(CString("/hom/users"))(line), JUniverseT)(line)
+      val heightWeight = dag
+        .AbsoluteLoad(Const(CString("/hom/heightWeight"))(line), JUniverseT)(
+          line)
       val height = Const(CString("height"))(line)
       val name = Const(CString("name"))(line)
       val userId = Const(CString("userId"))(line)
@@ -199,15 +199,15 @@ trait JoinOptimizerSpecs[M[+_]]
         | a := //users
         | b := //heightWeight
         | a ~ b
-        |   { name: a.name, height: b.height } where std::string::toLowerCase(a.userId) = b.userId """.stripMargin
+        |   { name: a.name, height: b.height } where std::string::toLowerCase(a.userId) = b.userId """
+          .stripMargin
 
       val line = Line(1, 1, "")
-      val users = dag.AbsoluteLoad(
-        Const(CString("/hom/users"))(line),
-        JUniverseT)(line)
-      val heightWeight = dag.AbsoluteLoad(
-        Const(CString("/hom/heightWeight"))(line),
-        JUniverseT)(line)
+      val users = dag
+        .AbsoluteLoad(Const(CString("/hom/users"))(line), JUniverseT)(line)
+      val heightWeight = dag
+        .AbsoluteLoad(Const(CString("/hom/heightWeight"))(line), JUniverseT)(
+          line)
       val height = Const(CString("height"))(line)
       val name = Const(CString("name"))(line)
       val userId = Const(CString("userId"))(line)
@@ -301,15 +301,15 @@ trait JoinOptimizerSpecs[M[+_]]
         | a := //users
         | b := //heightWeight
         | a ~ b
-        |   std::math::hypot(a.weight, b.height) where a.userid = b.userId """.stripMargin
+        |   std::math::hypot(a.weight, b.height) where a.userid = b.userId """
+          .stripMargin
 
       val line = Line(1, 1, "")
-      val users = dag.AbsoluteLoad(
-        Const(CString("/hom/users"))(line),
-        JUniverseT)(line)
-      val heightWeight = dag.AbsoluteLoad(
-        Const(CString("/hom/heightWeight"))(line),
-        JUniverseT)(line)
+      val users = dag
+        .AbsoluteLoad(Const(CString("/hom/users"))(line), JUniverseT)(line)
+      val heightWeight = dag
+        .AbsoluteLoad(Const(CString("/hom/heightWeight"))(line), JUniverseT)(
+          line)
       val height = Const(CString("height"))(line)
       val weight = Const(CString("weight"))(line)
       val userId = Const(CString("userId"))(line)
@@ -384,12 +384,11 @@ trait JoinOptimizerSpecs[M[+_]]
         """.stripMargin
 
       val line = Line(1, 1, "")
-      val users = dag.AbsoluteLoad(
-        Const(CString("/hom/users"))(line),
-        JUniverseT)(line)
-      val heightWeight = dag.AbsoluteLoad(
-        Const(CString("/hom/heightWeight"))(line),
-        JUniverseT)(line)
+      val users = dag
+        .AbsoluteLoad(Const(CString("/hom/users"))(line), JUniverseT)(line)
+      val heightWeight = dag
+        .AbsoluteLoad(Const(CString("/hom/heightWeight"))(line), JUniverseT)(
+          line)
       val height = Const(CString("height"))(line)
       val name = Const(CString("name"))(line)
       val userId = Const(CString("userId"))(line)
@@ -497,12 +496,11 @@ trait JoinOptimizerSpecs[M[+_]]
         """.stripMargin
 
       val line = Line(1, 1, "")
-      val users = dag.AbsoluteLoad(
-        Const(CString("/hom/users"))(line),
-        JUniverseT)(line)
-      val heightWeight = dag.AbsoluteLoad(
-        Const(CString("/hom/heightWeight"))(line),
-        JUniverseT)(line)
+      val users = dag
+        .AbsoluteLoad(Const(CString("/hom/users"))(line), JUniverseT)(line)
+      val heightWeight = dag
+        .AbsoluteLoad(Const(CString("/hom/heightWeight"))(line), JUniverseT)(
+          line)
 
       val input = Filter(
         IdentitySort,
@@ -530,12 +528,11 @@ trait JoinOptimizerSpecs[M[+_]]
         """.stripMargin
 
       val line = Line(1, 1, "")
-      val users = dag.AbsoluteLoad(
-        Const(CString("/hom/users"))(line),
-        JUniverseT)(line)
-      val heightWeight = dag.AbsoluteLoad(
-        Const(CString("/hom/heightWeight"))(line),
-        JUniverseT)(line)
+      val users = dag
+        .AbsoluteLoad(Const(CString("/hom/users"))(line), JUniverseT)(line)
+      val heightWeight = dag
+        .AbsoluteLoad(Const(CString("/hom/heightWeight"))(line), JUniverseT)(
+          line)
       val height = Const(CString("height"))(line)
       val name = Const(CString("name"))(line)
       val userId = Const(CString("userId"))(line)
@@ -591,12 +588,10 @@ trait JoinOptimizerSpecs[M[+_]]
       """.stripMargin
 
       val line = Line(1, 1, "")
-      val clicksData = dag.AbsoluteLoad(
-        Const(CString("/clicks"))(line),
-        JUniverseT)(line)
-      val conversionsData = dag.AbsoluteLoad(
-        Const(CString("/conversions"))(line),
-        JUniverseT)(line)
+      val clicksData = dag
+        .AbsoluteLoad(Const(CString("/clicks"))(line), JUniverseT)(line)
+      val conversionsData = dag
+        .AbsoluteLoad(Const(CString("/conversions"))(line), JUniverseT)(line)
       val clicks = Const(CString("clicks"))(line)
       val price = Const(CString("price"))(line)
       val id = Const(CString("ID"))(line)
@@ -706,12 +701,11 @@ trait JoinOptimizerSpecs[M[+_]]
         |   [b.height, a.name] where a.userId = b.userId """.stripMargin
 
       val line = Line(1, 1, "")
-      val users = dag.AbsoluteLoad(
-        Const(CString("/hom/users"))(line),
-        JUniverseT)(line)
-      val heightWeight = dag.AbsoluteLoad(
-        Const(CString("/hom/heightWeight"))(line),
-        JUniverseT)(line)
+      val users = dag
+        .AbsoluteLoad(Const(CString("/hom/users"))(line), JUniverseT)(line)
+      val heightWeight = dag
+        .AbsoluteLoad(Const(CString("/hom/heightWeight"))(line), JUniverseT)(
+          line)
       val height = Const(CString("height"))(line)
       val name = Const(CString("name"))(line)
       val userId = Const(CString("userId"))(line)
@@ -791,12 +785,13 @@ trait JoinOptimizerSpecs[M[+_]]
         | a := //users
         | b := //heightWeight
         | a ~ b
-        |   { name: a.name, height: b.height, weight: b.weight } where a.userId = b.userId """.stripMargin
+        |   { name: a.name, height: b.height, weight: b.weight } where a.userId = b.userId """
+          .stripMargin
 
       val line = Line(1, 1, "")
       val users = dag.AbsoluteLoad(Const(CString("/users"))(line))(line)
-      val heightWeight = dag.AbsoluteLoad(
-        Const(CString("/heightWeight"))(line))(line)
+      val heightWeight = dag
+        .AbsoluteLoad(Const(CString("/heightWeight"))(line))(line)
       val userId = Const(CString("userId"))(line)
       val name = Const(CString("name"))(line)
       val height = Const(CString("height"))(line)
@@ -901,8 +896,8 @@ trait JoinOptimizerSpecs[M[+_]]
       val line = Line(1, 1, "")
 
       lazy val users = dag.AbsoluteLoad(Const(CString("/users"))(line))(line)
-      lazy val heightWeight = dag.AbsoluteLoad(
-        Const(CString("/heightWeight"))(line))(line)
+      lazy val heightWeight = dag
+        .AbsoluteLoad(Const(CString("/heightWeight"))(line))(line)
       lazy val userId = Const(CString("userId"))(line)
       lazy val name = Const(CString("name"))(line)
       lazy val key = Const(CString("key"))(line)
@@ -989,8 +984,8 @@ trait JoinOptimizerSpecs[M[+_]]
       val line = Line(1, 1, "")
 
       val name = Const(CString("Name"))(line)
-      val medals = dag.AbsoluteLoad(
-        Const(CString("/summer_games/london_medals"))(line))(line)
+      val medals = dag
+        .AbsoluteLoad(Const(CString("/summer_games/london_medals"))(line))(line)
       val newMedals = dag.New(medals)(line)
       val key = Const(CString("key"))(line)
       val value = Const(CString("value"))(line)
@@ -1088,8 +1083,8 @@ trait JoinOptimizerSpecs[M[+_]]
 
       val country = Const(CString("Country"))(line)
       val total = Const(CString("Total"))(line)
-      val medals = dag.AbsoluteLoad(
-        Const(CString("/summer_games/london_medals"))(line))(line)
+      val medals = dag
+        .AbsoluteLoad(Const(CString("/summer_games/london_medals"))(line))(line)
       val medalsP = dag.Filter(
         IdentitySort,
         medals,
@@ -1178,10 +1173,10 @@ trait JoinOptimizerSpecs[M[+_]]
 
       val line = Line(1, 1, "")
 
-      val medals = dag.AbsoluteLoad(
-        Const(CString("/summer_games/london_medals"))(line))(line)
-      val athletes = dag.AbsoluteLoad(
-        Const(CString("/summer_games/athletes"))(line))(line)
+      val medals = dag
+        .AbsoluteLoad(Const(CString("/summer_games/london_medals"))(line))(line)
+      val athletes = dag
+        .AbsoluteLoad(Const(CString("/summer_games/athletes"))(line))(line)
 
       def wrapName(graph: DepGraph) =
         Join(

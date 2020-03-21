@@ -27,10 +27,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null) return false
 
     val thenBranch = ifStmt.thenBranch.orNull
@@ -40,9 +38,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
       return false
 
     val offset = editor.getCaretModel.getOffset
-    if (!(
-          thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch.getTextRange.getStartOffset
-        )) return false
+    if (!(thenBranch.getTextRange.getEndOffset <= offset && offset <= elseBranch
+          .getTextRange.getStartOffset)) return false
 
     thenBranch match {
       case tb: ScBlockExpr =>
@@ -61,10 +58,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val manager: PsiManager = PsiManager.getInstance(project)
-    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScIfStmt],
-      false)
+    val ifStmt: ScIfStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScIfStmt], false)
     if (ifStmt == null || !ifStmt.isValid) return
 
     val thenBranch = ifStmt.thenBranch.getOrElse(
@@ -78,15 +73,13 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
 
     val children = elseBranch.copy().children.toList
     var from = children
-      .find(_.getNode.getElementType != ScalaTokenTypes.tLBRACE)
-      .getOrElse(
+      .find(_.getNode.getElementType != ScalaTokenTypes.tLBRACE).getOrElse(
         return
       )
     if (ScalaTokenTypes.WHITES_SPACES_TOKEN_SET.contains(
           from.getNode.getElementType)) from = from.getNextSibling
     val to = children.reverse
-      .find(_.getNode.getElementType != ScalaTokenTypes.tRBRACE)
-      .getOrElse(
+      .find(_.getNode.getElementType != ScalaTokenTypes.tRBRACE).getOrElse(
         return
       )
 

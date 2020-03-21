@@ -313,9 +313,10 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
         expectMsg(ToClient(Done))
         b ! Remove(B)
         b ! Remove(A)
-        EventFilter.warning(
-          start = "cannot remove",
-          occurrences = 1) intercept { b ! Remove(A) }
+        EventFilter
+          .warning(start = "cannot remove", occurrences = 1) intercept {
+          b ! Remove(A)
+        }
         Thread.sleep(5000)
       }
     }

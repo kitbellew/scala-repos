@@ -105,8 +105,7 @@ class BlockManagerSuite
     super.beforeEach()
     // Set the arch to 64-bit and compressedOops to true to get a deterministic test-case
     System.setProperty("os.arch", "amd64")
-    conf = new SparkConf(false)
-      .set("spark.app.id", "test")
+    conf = new SparkConf(false).set("spark.app.id", "test")
       .set("spark.kryoserializer.buffer", "1m")
       .set("spark.test.useCompressedOops", "true")
       .set("spark.storage.unrollFraction", "0.4")
@@ -465,9 +464,8 @@ class BlockManagerSuite
       master.getLocations("a1").size == 0,
       "a1 was not removed from master")
 
-    val reregister =
-      !master.driverEndpoint.askWithRetry[Boolean](BlockManagerHeartbeat(
-        store.blockManagerId))
+    val reregister = !master.driverEndpoint
+      .askWithRetry[Boolean](BlockManagerHeartbeat(store.blockManagerId))
     assert(reregister == true)
   }
 
@@ -888,8 +886,8 @@ class BlockManagerSuite
   }
 
   test("negative byte values in ByteBufferInputStream") {
-    val buffer = ByteBuffer.wrap(
-      Array[Int](254, 255, 0, 1, 2).map(_.toByte).toArray)
+    val buffer = ByteBuffer
+      .wrap(Array[Int](254, 255, 0, 1, 2).map(_.toByte).toArray)
     val stream = new ByteBufferInputStream(buffer)
     val temp = new Array[Byte](10)
     assert(stream.read() === 254, "unexpected byte read")
@@ -1350,10 +1348,8 @@ class BlockManagerSuite
     assert(memoryStore.currentUnrollMemoryForThisTask === 0)
 
     // Unroll with all the space in the world. This should succeed.
-    var putResult = memoryStore.putIterator(
-      "unroll",
-      smallList.iterator,
-      StorageLevel.MEMORY_ONLY)
+    var putResult = memoryStore
+      .putIterator("unroll", smallList.iterator, StorageLevel.MEMORY_ONLY)
     assert(putResult.isRight)
     assert(memoryStore.currentUnrollMemoryForThisTask === 0)
     smallList.iterator.zip(memoryStore.getValues("unroll").get).foreach {
@@ -1371,10 +1367,8 @@ class BlockManagerSuite
       "someBlock2",
       smallList.iterator,
       StorageLevel.MEMORY_ONLY))
-    putResult = memoryStore.putIterator(
-      "unroll",
-      smallList.iterator,
-      StorageLevel.MEMORY_ONLY)
+    putResult = memoryStore
+      .putIterator("unroll", smallList.iterator, StorageLevel.MEMORY_ONLY)
     assert(putResult.isRight)
     assert(memoryStore.currentUnrollMemoryForThisTask === 0)
     assert(memoryStore.contains("someBlock2"))
@@ -1392,10 +1386,8 @@ class BlockManagerSuite
       "someBlock3",
       smallList.iterator,
       StorageLevel.MEMORY_ONLY))
-    putResult = memoryStore.putIterator(
-      "unroll",
-      bigList.iterator,
-      StorageLevel.MEMORY_ONLY)
+    putResult = memoryStore
+      .putIterator("unroll", bigList.iterator, StorageLevel.MEMORY_ONLY)
     assert(
       memoryStore.currentUnrollMemoryForThisTask > 0
     ) // we returned an iterator
@@ -1619,16 +1611,16 @@ class BlockManagerSuite
 
   test(
     "SPARK-13328: refresh block locations (fetch should succeed after location refresh)") {
-    val maxFailuresBeforeLocationRefresh = conf.getInt(
-      "spark.block.failures.beforeLocationRefresh",
-      5)
+    val maxFailuresBeforeLocationRefresh = conf
+      .getInt("spark.block.failures.beforeLocationRefresh", 5)
     val mockBlockManagerMaster = mock(classOf[BlockManagerMaster])
     val mockBlockTransferService =
       new MockBlockTransferService(maxFailuresBeforeLocationRefresh)
     // make sure we have more than maxFailuresBeforeLocationRefresh locations
     // so that we have a chance to do location refresh
-    val blockManagerIds = (0 to maxFailuresBeforeLocationRefresh)
-      .map { i => BlockManagerId(s"id-$i", s"host-$i", i + 1) }
+    val blockManagerIds = (0 to maxFailuresBeforeLocationRefresh).map { i =>
+      BlockManagerId(s"id-$i", s"host-$i", i + 1)
+    }
     when(mockBlockManagerMaster.getLocations(mc.any[BlockId]))
       .thenReturn(blockManagerIds)
     store = makeBlockManager(
@@ -1636,9 +1628,7 @@ class BlockManagerSuite
       "executor1",
       mockBlockManagerMaster,
       transferService = Option(mockBlockTransferService))
-    val block = store
-      .getRemoteBytes("item")
-      .asInstanceOf[Option[ByteBuffer]]
+    val block = store.getRemoteBytes("item").asInstanceOf[Option[ByteBuffer]]
     assert(block.isDefined)
     verify(mockBlockManagerMaster, times(2)).getLocations("item")
   }

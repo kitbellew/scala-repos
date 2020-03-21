@@ -51,13 +51,10 @@ trait EntityRepository[T <: MarathonState[_, T]]
     timedRead {
       val prefix = versionKeyPrefix(id)
       this.store.names().map { names =>
-        names
-          .collect {
-            case name: String if name.startsWith(prefix) =>
-              Timestamp(name.substring(prefix.length))
-          }
-          .sorted
-          .reverse
+        names.collect {
+          case name: String if name.startsWith(prefix) =>
+            Timestamp(name.substring(prefix.length))
+        }.sorted.reverse
       }
     }
 
@@ -79,10 +76,8 @@ trait EntityRepository[T <: MarathonState[_, T]]
       id: String): Future[Iterable[Boolean]] = {
     val maximum = maxVersions.map { maximum =>
       listVersions(id).flatMap { versions =>
-        Future.sequence(
-          versions
-            .drop(maximum)
-            .map(version => store.expunge(versionKey(id, version))))
+        Future.sequence(versions.drop(maximum).map(version =>
+          store.expunge(versionKey(id, version))))
       }
     }
     maximum.getOrElse(Future.successful(Nil))

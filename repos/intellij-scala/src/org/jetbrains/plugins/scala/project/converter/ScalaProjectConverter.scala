@@ -24,8 +24,8 @@ class ScalaProjectConverter(context: ConversionContext)
   private var createdSettingsFiles: Seq[File] = Seq.empty
 
   override def getAdditionalAffectedFiles = {
-    val filesToDelete = obsoleteProjectLibraries.flatMap(
-      _.libraryStorageFileIn(context))
+    val filesToDelete = obsoleteProjectLibraries
+      .flatMap(_.libraryStorageFileIn(context))
     val filesToUpdate = scalaProjectSettings.getFilesToUpdate(context)
     (filesToDelete ++ filesToUpdate).asJava
   }
@@ -69,13 +69,9 @@ private object ScalaProjectConverter {
 
   private def scalaCompilerSettingsIn(
       context: ConversionContext): Map[String, ScalaCompilerSettings] =
-    modulesIn(context)
-      .flatMap(module =>
-        ScalaFacetData
-          .findIn(module)
-          .toSeq
-          .map(facet => (module.getModuleName, facet.compilerSettings))
-          .toSeq)
+    modulesIn(context).flatMap(module =>
+      ScalaFacetData.findIn(module).toSeq
+        .map(facet => (module.getModuleName, facet.compilerSettings)).toSeq)
       .toMap
 
   private def basePackagesIn(context: ConversionContext): Seq[String] =
@@ -101,11 +97,11 @@ private object ScalaProjectConverter {
 
   private def merge(moduleSettings: Map[String, ScalaCompilerSettings])
       : ScalaCompilerConfiguration = {
-    val settingsToModules =
-      moduleSettings.groupBy(_._2).mapValues(_.keys.toSet).toSeq
+    val settingsToModules = moduleSettings.groupBy(_._2).mapValues(_.keys.toSet)
+      .toSeq
 
-    val sortedSettingsToModules =
-      settingsToModules.sortBy(p => (p._2.size, p._1.isDefault)).reverse
+    val sortedSettingsToModules = settingsToModules
+      .sortBy(p => (p._2.size, p._1.isDefault)).reverse
 
     val profiles = sortedSettingsToModules.zipWithIndex.map {
       case ((settings, modules), i) =>
@@ -115,8 +111,8 @@ private object ScalaProjectConverter {
           settings)
     }
 
-    val defaultSettings = profiles.headOption.fold(
-      ScalaCompilerSettings.Default)(_.settings)
+    val defaultSettings = profiles.headOption
+      .fold(ScalaCompilerSettings.Default)(_.settings)
     val customProfiles = profiles.drop(1)
 
     new ScalaCompilerConfiguration(defaultSettings, customProfiles)

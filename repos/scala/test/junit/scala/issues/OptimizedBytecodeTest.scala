@@ -111,7 +111,8 @@ class OptimizedBytecodeTest extends ClearAfterClass {
       """ErrorHandler$::defaultIfIOException(Lscala/Function0;Lscala/Function0;)Ljava/lang/Object; is annotated @inline but could not be inlined:
         |The operand stack at the callsite in C::t()V contains more values than the
         |arguments expected by the callee ErrorHandler$::defaultIfIOException(Lscala/Function0;Lscala/Function0;)Ljava/lang/Object;. These values would be discarded
-        |when entering an exception handler declared in the inlined method.""".stripMargin
+        |when entering an exception handler declared in the inlined method."""
+        .stripMargin
 
     compileClasses(compiler)(code, allowMessage = _.msg == msg)
   }
@@ -352,8 +353,8 @@ class OptimizedBytecodeTest extends ClearAfterClass {
       """.stripMargin
     val List(c) = compileClasses(compiler)(
       code,
-      allowMessage = _.msg.contains(
-        "exception handler declared in the inlined method"))
+      allowMessage = _.msg
+      .contains("exception handler declared in the inlined method"))
     assertInvoke(getSingleMethod(c, "f1a"), "C", "C$$$anonfun$1")
     assertInvoke(getSingleMethod(c, "f1b"), "C", "wrapper1")
     assertInvoke(getSingleMethod(c, "f2a"), "C", "C$$$anonfun$3")

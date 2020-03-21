@@ -39,10 +39,8 @@ object ReassignPartitionsCommand extends Logging {
         opts.parser,
         "Command must include exactly one action: --generate, --execute or --verify")
 
-    CommandLineUtils.checkRequiredArgs(
-      opts.parser,
-      opts.options,
-      opts.zkConnectOpt)
+    CommandLineUtils
+      .checkRequiredArgs(opts.parser, opts.options, opts.zkConnectOpt)
 
     val zkConnect = opts.options.valueOf(opts.zkConnectOpt)
     val zkUtils = ZkUtils(
@@ -75,8 +73,8 @@ object ReassignPartitionsCommand extends Logging {
         "If --verify option is used, command must include --reassignment-json-file that was used during the --execute option")
     val jsonFile = opts.options.valueOf(opts.reassignmentJsonFileOpt)
     val jsonString = Utils.readFileAsString(jsonFile)
-    val partitionsToBeReassigned = zkUtils.parsePartitionReassignmentData(
-      jsonString)
+    val partitionsToBeReassigned = zkUtils
+      .parsePartitionReassignmentData(jsonString)
 
     println("Status of partition reassignment:")
     val reassignedPartitionsStatus = checkIfReassignmentSucceeded(
@@ -99,17 +97,15 @@ object ReassignPartitionsCommand extends Logging {
   def generateAssignment(
       zkUtils: ZkUtils,
       opts: ReassignPartitionsCommandOptions) {
-    if (!(opts.options.has(opts.topicsToMoveJsonFileOpt) && opts.options.has(
-          opts.brokerListOpt)))
+    if (!(opts.options.has(opts.topicsToMoveJsonFileOpt) && opts.options
+          .has(opts.brokerListOpt)))
       CommandLineUtils.printUsageAndDie(
         opts.parser,
         "If --generate option is used, command must include both --topics-to-move-json-file and --broker-list options")
-    val topicsToMoveJsonFile = opts.options.valueOf(
-      opts.topicsToMoveJsonFileOpt)
-    val brokerListToReassign = opts.options
-      .valueOf(opts.brokerListOpt)
-      .split(',')
-      .map(_.toInt)
+    val topicsToMoveJsonFile = opts.options
+      .valueOf(opts.topicsToMoveJsonFileOpt)
+    val brokerListToReassign = opts.options.valueOf(opts.brokerListOpt)
+      .split(',').map(_.toInt)
     val duplicateReassignments = CoreUtils.duplicates(brokerListToReassign)
     if (duplicateReassignments.nonEmpty)
       throw new AdminCommandFailedException(
@@ -140,16 +136,14 @@ object ReassignPartitionsCommand extends Logging {
       throw new AdminCommandFailedException(
         "List of topics to reassign contains duplicate entries: %s".format(
           duplicateTopicsToReassign.mkString(",")))
-    val currentAssignment = zkUtils.getReplicaAssignmentForTopics(
-      topicsToReassign)
+    val currentAssignment = zkUtils
+      .getReplicaAssignmentForTopics(topicsToReassign)
 
     val groupedByTopic = currentAssignment.groupBy { case (tp, _) => tp.topic }
     val rackAwareMode =
       if (disableRackAware) RackAwareMode.Disabled else RackAwareMode.Enforced
-    val brokerMetadatas = AdminUtils.getBrokerMetadatas(
-      zkUtils,
-      rackAwareMode,
-      Some(brokerListToReassign))
+    val brokerMetadatas = AdminUtils
+      .getBrokerMetadatas(zkUtils, rackAwareMode, Some(brokerListToReassign))
 
     val partitionsToBeReassigned = mutable.Map[TopicAndPartition, Seq[Int]]()
     groupedByTopic.foreach {
@@ -175,8 +169,8 @@ object ReassignPartitionsCommand extends Logging {
       CommandLineUtils.printUsageAndDie(
         opts.parser,
         "If --execute option is used, command must include --reassignment-json-file that was output " + "during the --generate option")
-    val reassignmentJsonFile = opts.options.valueOf(
-      opts.reassignmentJsonFileOpt)
+    val reassignmentJsonFile = opts.options
+      .valueOf(opts.reassignmentJsonFileOpt)
     val reassignmentJsonString = Utils.readFileAsString(reassignmentJsonFile)
     val partitionsToBeReassigned = zkUtils
       .parsePartitionReassignmentDataWithoutDedup(reassignmentJsonString)
@@ -184,24 +178,21 @@ object ReassignPartitionsCommand extends Logging {
       throw new AdminCommandFailedException(
         "Partition reassignment data file %s is empty".format(
           reassignmentJsonFile))
-    val duplicateReassignedPartitions = CoreUtils.duplicates(
-      partitionsToBeReassigned.map { case (tp, replicas) => tp })
+    val duplicateReassignedPartitions = CoreUtils
+      .duplicates(partitionsToBeReassigned.map { case (tp, replicas) => tp })
     if (duplicateReassignedPartitions.nonEmpty)
       throw new AdminCommandFailedException(
         "Partition reassignment contains duplicate topic partitions: %s".format(
           duplicateReassignedPartitions.mkString(",")))
-    val duplicateEntries = partitionsToBeReassigned
-      .map { case (tp, replicas) => (tp, CoreUtils.duplicates(replicas)) }
-      .filter { case (tp, duplicatedReplicas) => duplicatedReplicas.nonEmpty }
+    val duplicateEntries = partitionsToBeReassigned.map {
+      case (tp, replicas) => (tp, CoreUtils.duplicates(replicas))
+    }.filter { case (tp, duplicatedReplicas) => duplicatedReplicas.nonEmpty }
     if (duplicateEntries.nonEmpty) {
-      val duplicatesMsg = duplicateEntries
-        .map {
-          case (tp, duplicateReplicas) =>
-            "%s contains multiple entries for %s".format(
-              tp,
-              duplicateReplicas.mkString(","))
-        }
-        .mkString(". ")
+      val duplicatesMsg = duplicateEntries.map {
+        case (tp, duplicateReplicas) =>
+          "%s contains multiple entries for %s"
+            .format(tp, duplicateReplicas.mkString(","))
+      }.mkString(". ")
       throw new AdminCommandFailedException(
         "Partition replica lists may not contain duplicate entries: %s".format(
           duplicatesMsg))
@@ -228,8 +219,7 @@ object ReassignPartitionsCommand extends Logging {
       zkUtils: ZkUtils,
       partitionsToBeReassigned: Map[TopicAndPartition, Seq[Int]])
       : Map[TopicAndPartition, ReassignmentStatus] = {
-    val partitionsBeingReassigned = zkUtils
-      .getPartitionsBeingReassigned()
+    val partitionsBeingReassigned = zkUtils.getPartitionsBeingReassigned()
       .mapValues(_.newReplicas)
     partitionsToBeReassigned.map { topicAndPartition =>
       (
@@ -274,14 +264,11 @@ object ReassignPartitionsCommand extends Logging {
   class ReassignPartitionsCommandOptions(args: Array[String]) {
     val parser = new OptionParser
 
-    val zkConnectOpt = parser
-      .accepts(
-        "zookeeper",
-        "REQUIRED: The connection string for the zookeeper connection in the " +
-          "form host:port. Multiple URLS can be given to allow fail-over.")
-      .withRequiredArg
-      .describedAs("urls")
-      .ofType(classOf[String])
+    val zkConnectOpt = parser.accepts(
+      "zookeeper",
+      "REQUIRED: The connection string for the zookeeper connection in the " +
+        "form host:port. Multiple URLS can be given to allow fail-over.")
+      .withRequiredArg.describedAs("urls").ofType(classOf[String])
     val generateOpt = parser.accepts(
       "generate",
       "Generate a candidate partition reassignment configuration." +
@@ -293,38 +280,27 @@ object ReassignPartitionsCommand extends Logging {
     val verifyOpt = parser.accepts(
       "verify",
       "Verify if the reassignment completed as specified by the --reassignment-json-file option.")
-    val reassignmentJsonFileOpt = parser
-      .accepts(
-        "reassignment-json-file",
-        "The JSON file with the partition reassignment configuration" +
-          "The format to use is - \n" +
-          "{\"partitions\":\n\t[{\"topic\": \"foo\",\n\t  \"partition\": 1,\n\t  \"replicas\": [1,2,3] }],\n\"version\":1\n}"
-      )
-      .withRequiredArg
-      .describedAs("manual assignment json file path")
+    val reassignmentJsonFileOpt = parser.accepts(
+      "reassignment-json-file",
+      "The JSON file with the partition reassignment configuration" +
+        "The format to use is - \n" +
+        "{\"partitions\":\n\t[{\"topic\": \"foo\",\n\t  \"partition\": 1,\n\t  \"replicas\": [1,2,3] }],\n\"version\":1\n}"
+    ).withRequiredArg.describedAs("manual assignment json file path")
       .ofType(classOf[String])
-    val topicsToMoveJsonFileOpt = parser
-      .accepts(
-        "topics-to-move-json-file",
-        "Generate a reassignment configuration to move the partitions" +
-          " of the specified topics to the list of brokers specified by the --broker-list option. The format to use is - \n" +
-          "{\"topics\":\n\t[{\"topic\": \"foo\"},{\"topic\": \"foo1\"}],\n\"version\":1\n}"
-      )
-      .withRequiredArg
-      .describedAs("topics to reassign json file path")
+    val topicsToMoveJsonFileOpt = parser.accepts(
+      "topics-to-move-json-file",
+      "Generate a reassignment configuration to move the partitions" +
+        " of the specified topics to the list of brokers specified by the --broker-list option. The format to use is - \n" +
+        "{\"topics\":\n\t[{\"topic\": \"foo\"},{\"topic\": \"foo1\"}],\n\"version\":1\n}"
+    ).withRequiredArg.describedAs("topics to reassign json file path")
       .ofType(classOf[String])
-    val brokerListOpt = parser
-      .accepts(
-        "broker-list",
-        "The list of brokers to which the partitions need to be reassigned" +
-          " in the form \"0,1,2\". This is required if --topics-to-move-json-file is used to generate reassignment configuration"
-      )
-      .withRequiredArg
-      .describedAs("brokerlist")
-      .ofType(classOf[String])
-    val disableRackAware = parser.accepts(
-      "disable-rack-aware",
-      "Disable rack aware replica assignment")
+    val brokerListOpt = parser.accepts(
+      "broker-list",
+      "The list of brokers to which the partitions need to be reassigned" +
+        " in the form \"0,1,2\". This is required if --topics-to-move-json-file is used to generate reassignment configuration"
+    ).withRequiredArg.describedAs("brokerlist").ofType(classOf[String])
+    val disableRackAware = parser
+      .accepts("disable-rack-aware", "Disable rack aware replica assignment")
 
     if (args.length == 0)
       CommandLineUtils.printUsageAndDie(
@@ -341,12 +317,12 @@ class ReassignPartitionsCommand(
     extends Logging {
   def reassignPartitions(): Boolean = {
     try {
-      val validPartitions = partitions.filter(p =>
-        validatePartition(zkUtils, p._1.topic, p._1.partition))
+      val validPartitions = partitions
+        .filter(p => validatePartition(zkUtils, p._1.topic, p._1.partition))
       if (validPartitions.isEmpty) { false }
       else {
-        val jsonReassignmentData = zkUtils.getPartitionReassignmentZkData(
-          validPartitions)
+        val jsonReassignmentData = zkUtils
+          .getPartitionReassignmentZkData(validPartitions)
         zkUtils.createPersistentPath(
           ZkUtils.ReassignPartitionsPath,
           jsonReassignmentData)
@@ -357,8 +333,8 @@ class ReassignPartitionsCommand(
         val partitionsBeingReassigned = zkUtils.getPartitionsBeingReassigned()
         throw new AdminCommandFailedException(
           "Partition reassignment currently in " +
-            "progress for %s. Aborting operation".format(
-              partitionsBeingReassigned))
+            "progress for %s. Aborting operation"
+              .format(partitionsBeingReassigned))
       case e: Throwable => error("Admin command failed", e); false
     }
   }

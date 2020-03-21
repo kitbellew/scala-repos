@@ -33,8 +33,8 @@ object FileSourceSpec {
 
 class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
-  val settings = ActorMaterializerSettings(system).withDispatcher(
-    "akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system)
+    .withDispatcher("akka.actor.default-dispatcher")
   implicit val materializer = ActorMaterializer(settings)
 
   val TestText = {
@@ -48,8 +48,7 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
   val testFile = {
     val f = File.createTempFile("file-source-spec", ".tmp")
-    new OutputStreamWriter(new FileOutputStream(f), UTF_8)
-      .append(TestText)
+    new OutputStreamWriter(new FileOutputStream(f), UTF_8).append(TestText)
       .close()
     f
   }
@@ -76,10 +75,8 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       val chunkSize = 512
       val bufferAttributes = Attributes.inputBuffer(1, 2)
 
-      val p = FileIO
-        .fromFile(testFile, chunkSize)
-        .withAttributes(bufferAttributes)
-        .runWith(Sink.asPublisher(false))
+      val p = FileIO.fromFile(testFile, chunkSize)
+        .withAttributes(bufferAttributes).runWith(Sink.asPublisher(false))
       val c = TestSubscriber.manualProbe[ByteString]()
       p.subscribe(c)
       val sub = c.expectSubscription()
@@ -114,10 +111,8 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
       val demandAllButOneChunks = TestText.length / chunkSize - 1
 
-      val p = FileIO
-        .fromFile(testFile, chunkSize)
-        .withAttributes(bufferAttributes)
-        .runWith(Sink.asPublisher(false))
+      val p = FileIO.fromFile(testFile, chunkSize)
+        .withAttributes(bufferAttributes).runWith(Sink.asPublisher(false))
 
       val c = TestSubscriber.manualProbe[ByteString]()
       p.subscribe(c)
@@ -161,8 +156,7 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       import settings._
 
       s"count lines in real file (chunkSize = $chunkSize, readAhead = $readAhead)" in {
-        val s = FileIO
-          .fromFile(manyLines, chunkSize = chunkSize)
+        val s = FileIO.fromFile(manyLines, chunkSize = chunkSize)
           .withAttributes(Attributes.inputBuffer(readAhead, readAhead))
 
         val f = s.runWith(Sink.fold(0) {
@@ -182,13 +176,10 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       try {
         val p = FileIO.fromFile(manyLines).runWith(TestSink.probe)(materializer)
 
-        materializer
-          .asInstanceOf[ActorMaterializerImpl]
-          .supervisor
+        materializer.asInstanceOf[ActorMaterializerImpl].supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
         val ref = expectMsgType[Children].children
-          .find(_.path.toString contains "fileSource")
-          .get
+          .find(_.path.toString contains "fileSource").get
         try assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
         finally p.cancel()
       } finally shutdown(sys)
@@ -202,30 +193,23 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       implicit val timeout = Timeout(500.millis)
 
       try {
-        val p = FileIO
-          .fromFile(manyLines)
+        val p = FileIO.fromFile(manyLines)
           .withAttributes(ActorAttributes.dispatcher(
             "akka.actor.default-dispatcher"))
           .runWith(TestSink.probe)(materializer)
 
-        materializer
-          .asInstanceOf[ActorMaterializerImpl]
-          .supervisor
+        materializer.asInstanceOf[ActorMaterializerImpl].supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
         val ref = expectMsgType[Children].children
-          .find(_.path.toString contains "File")
-          .get
+          .find(_.path.toString contains "File").get
         try assertDispatcher(ref, "akka.actor.default-dispatcher")
         finally p.cancel()
       } finally shutdown(sys)
     }
 
     "not signal onComplete more than once" in {
-      FileIO
-        .fromFile(testFile, 2 * TestText.length)
-        .runWith(TestSink.probe)
-        .requestNext(ByteString(TestText, UTF_8.name))
-        .expectComplete()
+      FileIO.fromFile(testFile, 2 * TestText.length).runWith(TestSink.probe)
+        .requestNext(ByteString(TestText, UTF_8.name)).expectComplete()
         .expectNoMsg(1.second)
     }
   }

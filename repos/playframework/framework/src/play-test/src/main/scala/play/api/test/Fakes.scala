@@ -59,8 +59,8 @@ case class FakeRequest[A](
       headers: Headers = this.headers,
       remoteAddress: String = this.remoteAddress,
       secure: Boolean = this.secure,
-      clientCertificateChain: Option[Seq[X509Certificate]] =
-        this.clientCertificateChain,
+      clientCertificateChain: Option[Seq[X509Certificate]] = this
+        .clientCertificateChain,
       body: B = this.body): FakeRequest[B] = {
     new FakeRequest[B](
       method,
@@ -83,8 +83,8 @@ case class FakeRequest[A](
   /**
     * The request query String
     */
-  lazy val queryString: Map[String, Seq[String]] =
-    play.core.parsers.FormUrlEncodedParser.parse(rawQueryString)
+  lazy val queryString: Map[String, Seq[String]] = play.core.parsers
+    .FormUrlEncodedParser.parse(rawQueryString)
 
   /**
     * Constructs a new request with additional headers. Any existing headers of the same name will be replaced.
@@ -223,21 +223,18 @@ import play.api.Application
 @deprecated("Use GuiceApplicationBuilder instead.", "2.5.0")
 case class FakeApplication(
     override val path: java.io.File = new java.io.File("."),
-    override val classloader: ClassLoader =
-      classOf[FakeApplication].getClassLoader,
+    override val classloader: ClassLoader = classOf[FakeApplication]
+      .getClassLoader,
     additionalConfiguration: Map[String, _ <: Any] = Map.empty,
     @deprecated("Use dependency injection", "2.5.0") withGlobal: Option[
       GlobalSettings] = None,
-    withRoutes: PartialFunction[(String, String), Handler] =
-      PartialFunction.empty)
+    withRoutes: PartialFunction[(String, String), Handler] = PartialFunction
+      .empty)
     extends Application {
 
   private val app: Application = new GuiceApplicationBuilder()
-    .in(Environment(path, classloader, Mode.Test))
-    .global(withGlobal.orNull)
-    .configure(additionalConfiguration)
-    .routes(withRoutes)
-    .build
+    .in(Environment(path, classloader, Mode.Test)).global(withGlobal.orNull)
+    .configure(additionalConfiguration).routes(withRoutes).build
 
   override def mode: Mode.Mode = app.mode
   @deprecated("Use dependency injection", "2.5.0")

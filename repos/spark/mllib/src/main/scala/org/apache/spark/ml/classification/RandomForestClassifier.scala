@@ -117,16 +117,16 @@ final class RandomForestClassifier @Since("1.4.0") (
       dataset: DataFrame): RandomForestClassificationModel = {
     val categoricalFeatures: Map[Int, Int] = MetadataUtils
       .getCategoricalFeatures(dataset.schema($(featuresCol)))
-    val numClasses: Int =
-      MetadataUtils.getNumClasses(dataset.schema($(labelCol))) match {
-        case Some(n: Int) => n
-        case None =>
-          throw new IllegalArgumentException(
-            "RandomForestClassifier was given input" +
-              s" with invalid label column ${$(labelCol)}, without the number of classes" +
-              " specified. See StringIndexer.")
-        // TODO: Automatically index labels: SPARK-7126
-      }
+    val numClasses: Int = MetadataUtils
+      .getNumClasses(dataset.schema($(labelCol))) match {
+      case Some(n: Int) => n
+      case None =>
+        throw new IllegalArgumentException(
+          "RandomForestClassifier was given input" +
+            s" with invalid label column ${$(labelCol)}, without the number of classes" +
+            " specified. See StringIndexer.")
+      // TODO: Automatically index labels: SPARK-7126
+    }
     val oldDataset: RDD[LabeledPoint] = extractLabeledPoints(dataset)
     val strategy = super.getOldStrategy(
       categoricalFeatures,
@@ -150,13 +150,13 @@ object RandomForestClassifier {
 
   /** Accessor for supported impurity settings: entropy, gini */
   @Since("1.4.0")
-  final val supportedImpurities: Array[String] =
-    TreeClassifierParams.supportedImpurities
+  final val supportedImpurities: Array[String] = TreeClassifierParams
+    .supportedImpurities
 
   /** Accessor for supported featureSubsetStrategy settings: auto, all, onethird, sqrt, log2 */
   @Since("1.4.0")
-  final val supportedFeatureSubsetStrategies: Array[String] =
-    RandomForestParams.supportedFeatureSubsetStrategies
+  final val supportedFeatureSubsetStrategies: Array[String] = RandomForestParams
+    .supportedFeatureSubsetStrategies
 }
 
 /**
@@ -198,8 +198,8 @@ final class RandomForestClassificationModel private[ml] (
     _trees.asInstanceOf[Array[DecisionTreeModel]]
 
   // Note: We may add support for weights (based on tree performance) later on.
-  private lazy val _treeWeights: Array[Double] = Array.fill[Double](numTrees)(
-    1.0)
+  private lazy val _treeWeights: Array[Double] = Array
+    .fill[Double](numTrees)(1.0)
 
   @Since("1.4.0")
   override def treeWeights: Array[Double] = _treeWeights
@@ -218,8 +218,8 @@ final class RandomForestClassificationModel private[ml] (
     // Ignore the tree weights since all are 1.0 for now.
     val votes = Array.fill[Double](numClasses)(0.0)
     _trees.view.foreach { tree =>
-      val classCounts: Array[Double] =
-        tree.rootNode.predictImpl(features).impurityStats.stats
+      val classCounts: Array[Double] = tree.rootNode.predictImpl(features)
+        .impurityStats.stats
       val total = classCounts.sum
       if (total != 0) {
         var i = 0
@@ -249,8 +249,7 @@ final class RandomForestClassificationModel private[ml] (
   override def copy(extra: ParamMap): RandomForestClassificationModel = {
     copyValues(
       new RandomForestClassificationModel(uid, _trees, numFeatures, numClasses),
-      extra)
-      .setParent(parent)
+      extra).setParent(parent)
   }
 
   @Since("1.4.0")
@@ -273,9 +272,8 @@ final class RandomForestClassificationModel private[ml] (
     *  - Normalize feature importance vector to sum to 1.
     */
   @Since("1.5.0")
-  lazy val featureImportances: Vector = RandomForest.featureImportances(
-    trees,
-    numFeatures)
+  lazy val featureImportances: Vector = RandomForest
+    .featureImportances(trees, numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
   private[ml] def toOld: OldRandomForestModel = {

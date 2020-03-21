@@ -89,8 +89,7 @@ object Test extends Properties("TreeSet") {
 
   property("drop") = forAll { (subject: TreeSet[Int]) =>
     val n = choose(0, subject.size).sample.get
-    (subject.size - n) == subject.drop(n).size && subject
-      .drop(n)
+    (subject.size - n) == subject.drop(n).size && subject.drop(n)
       .forall(subject.contains)
   }
 
@@ -115,8 +114,7 @@ object Test extends Properties("TreeSet") {
   property("slice") = forAll(genSliceParms) {
     case (subject, from, until) =>
       val slice = subject.slice(from, until)
-      slice.size == until - from && subject.toSeq == subject
-        .take(from)
+      slice.size == until - from && subject.toSeq == subject.take(from)
         .toSeq ++ slice ++ subject.drop(until)
   }
 
@@ -139,8 +137,7 @@ object Test extends Properties("TreeSet") {
     subject.nonEmpty ==> {
       val n = choose(0, subject.size - 1).sample.get
       val from = subject.drop(n).firstKey
-      subject.from(from).firstKey == from && subject
-        .from(from)
+      subject.from(from).firstKey == from && subject.from(from)
         .forall(_ >= from)
     }
   }
@@ -158,8 +155,7 @@ object Test extends Properties("TreeSet") {
       val n = choose(1, subject.size - 1).sample.get
       val until = subject.drop(n).firstKey
       subject.until(until).lastKey == subject.take(n).lastKey && subject
-        .until(until)
-        .forall(_ <= until)
+        .until(until).forall(_ <= until)
     }
   }
 
@@ -167,8 +163,8 @@ object Test extends Properties("TreeSet") {
     subject.nonEmpty ==> {
       val element = oneOf(subject.toSeq).sample.get
       val removed = subject - element
-      subject.contains(element) && !removed.contains(
-        element) && subject.size - 1 == removed.size
+      subject.contains(element) && !removed.contains(element) && subject
+        .size - 1 == removed.size
     }
   }
 

@@ -105,12 +105,14 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
             file,
             startOffset,
             element2.getTextRange.getStartOffset)
-        if (ScalaTokenTypes.COMMENTS_TOKEN_SET contains element1.getNode.getElementType)
+        if (ScalaTokenTypes.COMMENTS_TOKEN_SET contains element1.getNode
+              .getElementType)
           return findExpressionInRange(
             file,
             element1.getTextRange.getEndOffset,
             endOffset)
-        if (ScalaTokenTypes.COMMENTS_TOKEN_SET contains element2.getNode.getElementType)
+        if (ScalaTokenTypes.COMMENTS_TOKEN_SET contains element2.getNode
+              .getElementType)
           return findExpressionInRange(
             file,
             startOffset,
@@ -130,8 +132,8 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
              !element.isInstanceOf[ScVariable] && !element
                .isInstanceOf[PsiWhiteSpace] &&
              element.getNode.getElementType != ScalaTokenTypes.tSEMICOLON &&
-             !ScalaTokenTypes.COMMENTS_TOKEN_SET.contains(
-               element.getNode.getElementType) ||
+             !ScalaTokenTypes.COMMENTS_TOKEN_SET
+               .contains(element.getNode.getElementType) ||
              (element.getParent.getTextRange.getStartOffset == startOffset &&
              (element.getParent.isInstanceOf[ScExpression] ||
              element.getParent.isInstanceOf[ScValue] ||
@@ -140,8 +142,8 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
              element.getParent.isInstanceOf[ScTypeAlias]) &&
              element.getParent.getTextRange.getEndOffset <= endOffset)) {
         element = element.getParent
-        if (element == null || element.getTextRange == null || element.getTextRange.getStartOffset != startOffset)
-          return null
+        if (element == null || element.getTextRange == null || element
+              .getTextRange.getStartOffset != startOffset) return null
       }
       if (element == null) return null
       val result: Array[PsiElement] = Array.apply(element)

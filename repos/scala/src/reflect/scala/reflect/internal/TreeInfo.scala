@@ -134,9 +134,8 @@ abstract class TreeInfo {
       sym: Symbol,
       tree: Tree,
       allowVolatile: Boolean): Boolean =
-    (symOk(sym) && (
-      !sym.isTerm || (sym.isStable && (allowVolatile || !sym.hasVolatileType))
-    ) &&
+    (symOk(sym) && (!sym.isTerm || (sym.isStable && (allowVolatile || !sym
+      .hasVolatileType))) &&
       typeOk(tree.tpe) && (allowVolatile || !hasVolatileType(
       tree)) && !definitions.isByNameParamType(tree.tpe))
 
@@ -145,16 +144,15 @@ abstract class TreeInfo {
       && tree.symbol.isStable
       && !definitions.isByNameParamType(tree.tpe)
       && !definitions.isByName(tree.symbol)
-      && (
-        allowVolatile || !tree.symbol.hasVolatileType
-      ) // TODO SPEC: not required by spec
+      && (allowVolatile || !tree.symbol
+        .hasVolatileType) // TODO SPEC: not required by spec
     )
 
   /** Is `tree`'s type volatile? (Ignored if its symbol has the @uncheckedStable annotation.)
     */
   def hasVolatileType(tree: Tree): Boolean =
-    symOk(tree.symbol) && tree.tpe.isVolatile && !tree.symbol.hasAnnotation(
-      uncheckedStableClass)
+    symOk(tree.symbol) && tree.tpe.isVolatile && !tree.symbol
+      .hasAnnotation(uncheckedStableClass)
 
   /** Is `tree` either a non-volatile type,
     *  or a path that does not include any of:
@@ -206,8 +204,8 @@ abstract class TreeInfo {
         // Apply(function, Nil) trees. To prevent them from being treated as pure,
         // we check that the callee is a method.
         // The callee might also be a Block, which has a null symbol, so we guard against that (SI-7185)
-        fn.symbol != null && fn.symbol.isMethod && !fn.symbol.isLazy && isExprSafeToInline(
-          fn)
+        fn.symbol != null && fn.symbol.isMethod && !fn.symbol
+          .isLazy && isExprSafeToInline(fn)
       case Typed(expr, _) => isExprSafeToInline(expr)
       case Block(stats, expr) =>
         (stats forall isPureDef) && isExprSafeToInline(expr)
@@ -228,8 +226,8 @@ abstract class TreeInfo {
         def isWarnableRefTree =
           tree match {
             case t: RefTree =>
-              isExprSafeToInline(
-                t.qualifier) && t.symbol != null && t.symbol.isAccessor
+              isExprSafeToInline(t.qualifier) && t.symbol != null && t.symbol
+                .isAccessor
             case _ => false
           }
         def isWarnableSymbol = {
@@ -442,7 +440,8 @@ abstract class TreeInfo {
   private[internal] def detectTypecheckedTree(tree: Tree) =
     tree.hasExistingSymbol || tree.exists {
       case dd: DefDef =>
-        dd.mods.hasAccessorFlag || dd.mods.isSynthetic // for untypechecked trees
+        dd.mods.hasAccessorFlag || dd.mods
+          .isSynthetic // for untypechecked trees
       case md: MemberDef => md.hasExistingSymbol
       case _             => false
     }
@@ -956,9 +955,8 @@ abstract class TreeInfo {
   }
 
   def isApplyDynamicName(name: Name) =
-    (name == nme.updateDynamic) || (name == nme.selectDynamic) || (
-      name == nme.applyDynamic
-    ) || (name == nme.applyDynamicNamed)
+    (name == nme.updateDynamic) || (name == nme.selectDynamic) || (name == nme
+      .applyDynamic) || (name == nme.applyDynamicNamed)
 
   class DynamicApplicationExtractor(nameTest: Name => Boolean) {
     def unapply(tree: Tree) =

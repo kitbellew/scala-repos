@@ -55,19 +55,17 @@ trait ClassTag[T]
     runtimeClass match {
       case java.lang.Byte.TYPE  => new Array[Byte](len).asInstanceOf[Array[T]]
       case java.lang.Short.TYPE => new Array[Short](len).asInstanceOf[Array[T]]
-      case java.lang.Character.TYPE =>
-        new Array[Char](len).asInstanceOf[Array[T]]
+      case java.lang.Character.TYPE => new Array[Char](len)
+          .asInstanceOf[Array[T]]
       case java.lang.Integer.TYPE => new Array[Int](len).asInstanceOf[Array[T]]
       case java.lang.Long.TYPE    => new Array[Long](len).asInstanceOf[Array[T]]
       case java.lang.Float.TYPE   => new Array[Float](len).asInstanceOf[Array[T]]
-      case java.lang.Double.TYPE =>
-        new Array[Double](len).asInstanceOf[Array[T]]
-      case java.lang.Boolean.TYPE =>
-        new Array[Boolean](len).asInstanceOf[Array[T]]
+      case java.lang.Double.TYPE => new Array[Double](len)
+          .asInstanceOf[Array[T]]
+      case java.lang.Boolean.TYPE => new Array[Boolean](len)
+          .asInstanceOf[Array[T]]
       case java.lang.Void.TYPE => new Array[Unit](len).asInstanceOf[Array[T]]
-      case _ =>
-        java.lang.reflect.Array
-          .newInstance(runtimeClass, len)
+      case _ => java.lang.reflect.Array.newInstance(runtimeClass, len)
           .asInstanceOf[Array[T]]
     }
 
@@ -104,8 +102,7 @@ trait ClassTag[T]
   override def canEqual(x: Any) = x.isInstanceOf[ClassTag[_]]
   override def equals(x: Any) =
     x.isInstanceOf[ClassTag[_]] && this.runtimeClass == x
-      .asInstanceOf[ClassTag[_]]
-      .runtimeClass
+      .asInstanceOf[ClassTag[_]].runtimeClass
   override def hashCode = scala.runtime.ScalaRunTime.hash(runtimeClass)
   override def toString = {
     def prettyprint(clazz: jClass[_]): String =

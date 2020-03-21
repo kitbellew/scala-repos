@@ -284,30 +284,26 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
 
   private def insertInto(tableIdent: TableIdentifier): Unit = {
     assertNotBucketed()
-    val partitions = normalizedParCols.map(
-      _.map(col => col -> (None: Option[String])).toMap)
+    val partitions = normalizedParCols
+      .map(_.map(col => col -> (None: Option[String])).toMap)
     val overwrite = mode == SaveMode.Overwrite
 
     // A partitioned relation's schema can be different from the input logicalPlan, since
     // partition columns are all moved after data columns. We Project to adjust the ordering.
     // TODO: this belongs to the analyzer.
-    val input = normalizedParCols
-      .map { parCols =>
-        val (inputPartCols, inputDataCols) = df.logicalPlan.output.partition {
-          attr => parCols.contains(attr.name)
-        }
-        Project(inputDataCols ++ inputPartCols, df.logicalPlan)
+    val input = normalizedParCols.map { parCols =>
+      val (inputPartCols, inputDataCols) = df.logicalPlan.output.partition {
+        attr => parCols.contains(attr.name)
       }
-      .getOrElse(df.logicalPlan)
+      Project(inputDataCols ++ inputPartCols, df.logicalPlan)
+    }.getOrElse(df.logicalPlan)
 
-    df.sqlContext
-      .executePlan(InsertIntoTable(
-        UnresolvedRelation(tableIdent),
-        partitions.getOrElse(Map.empty[String, Option[String]]),
-        input,
-        overwrite,
-        ifNotExists = false))
-      .toRdd
+    df.sqlContext.executePlan(InsertIntoTable(
+      UnresolvedRelation(tableIdent),
+      partitions.getOrElse(Map.empty[String, Option[String]]),
+      input,
+      overwrite,
+      ifNotExists = false)).toRdd
   }
 
   private def normalizedParCols: Option[Seq[String]] =
@@ -334,8 +330,7 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
       // partitionBy columns cannot be used in bucketBy
       if (normalizedParCols.nonEmpty &&
           normalizedBucketColNames.get.toSet
-            .intersect(normalizedParCols.get.toSet)
-            .nonEmpty) {
+            .intersect(normalizedParCols.get.toSet).nonEmpty) {
         throw new AnalysisException(
           s"bucketBy columns '${bucketColumnNames.get.mkString(", ")}' should not be part of " +
             s"partitionBy columns '${partitioningColumns.get.mkString(", ")}'")

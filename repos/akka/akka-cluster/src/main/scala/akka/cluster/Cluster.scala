@@ -36,11 +36,11 @@ object Cluster extends ExtensionId[Cluster] with ExtensionIdProvider {
   /**
     * INTERNAL API
     */
-  private[cluster] final val isAssertInvariantsEnabled: Boolean =
-    System.getProperty("akka.cluster.assert", "off").toLowerCase match {
-      case "on" | "true" ⇒ true
-      case _ ⇒ false
-    }
+  private[cluster] final val isAssertInvariantsEnabled: Boolean = System
+    .getProperty("akka.cluster.assert", "off").toLowerCase match {
+    case "on" | "true" ⇒ true
+    case _ ⇒ false
+  }
 }
 
 /**
@@ -72,7 +72,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
         AddressUidExtension(system).addressUid)
     case other ⇒
       throw new ConfigurationException(
-        s"ActorSystem [${system}] needs to have a 'ClusterActorRefProvider' enabled in the configuration, currently uses [${other.getClass.getName}]")
+        s"ActorSystem [${system}] needs to have a 'ClusterActorRefProvider' enabled in the configuration, currently uses [${other
+          .getClass.getName}]")
   }
 
   /**
@@ -124,23 +125,20 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
         SchedulerTickDuration.toMillis
       )
 
-      val cfg = ConfigFactory
-        .parseString(
-          s"akka.scheduler.tick-duration=${SchedulerTickDuration.toMillis}ms")
+      val cfg = ConfigFactory.parseString(
+        s"akka.scheduler.tick-duration=${SchedulerTickDuration.toMillis}ms")
         .withFallback(system.settings.config)
       val threadFactory = system.threadFactory match {
         case tf: MonitorableThreadFactory ⇒
           tf.withName(tf.name + "-cluster-scheduler")
         case tf ⇒ tf
       }
-      system.dynamicAccess
-        .createInstanceFor[Scheduler](
-          system.settings.SchedulerClass,
-          immutable.Seq(
-            classOf[Config] -> cfg,
-            classOf[LoggingAdapter] -> log,
-            classOf[ThreadFactory] -> threadFactory))
-        .get
+      system.dynamicAccess.createInstanceFor[Scheduler](
+        system.settings.SchedulerClass,
+        immutable.Seq(
+          classOf[Config] -> cfg,
+          classOf[LoggingAdapter] -> log,
+          classOf[ThreadFactory] -> threadFactory)).get
     } else {
       // delegate to system.scheduler, but don't close over system
       val systemScheduler = system.scheduler
@@ -167,8 +165,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   // create supervisor for daemons under path "/system/cluster"
   private val clusterDaemons: ActorRef = {
     system.systemActorOf(
-      Props(classOf[ClusterDaemon], settings)
-        .withDispatcher(UseDispatcher)
+      Props(classOf[ClusterDaemon], settings).withDispatcher(UseDispatcher)
         .withDeploy(Deploy.local),
       name = "cluster")
   }
@@ -259,12 +256,11 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       "at least one `ClusterDomainEvent` class is required")
     require(
       to.forall(classOf[ClusterDomainEvent].isAssignableFrom),
-      s"subscribe to `akka.cluster.ClusterEvent.ClusterDomainEvent` or subclasses, was [${to.map(_.getName).mkString(", ")}]"
+      s"subscribe to `akka.cluster.ClusterEvent.ClusterDomainEvent` or subclasses, was [${to
+        .map(_.getName).mkString(", ")}]"
     )
-    clusterCore ! InternalClusterAction.Subscribe(
-      subscriber,
-      initialStateMode,
-      to.toSet)
+    clusterCore ! InternalClusterAction
+      .Subscribe(subscriber, initialStateMode, to.toSet)
   }
 
   /**
@@ -316,8 +312,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     * cluster or to join the same cluster again.
     */
   def joinSeedNodes(seedNodes: immutable.Seq[Address]): Unit =
-    clusterCore ! InternalClusterAction.JoinSeedNodes(
-      seedNodes.toVector.map(fillLocal))
+    clusterCore ! InternalClusterAction
+      .JoinSeedNodes(seedNodes.toVector.map(fillLocal))
 
   /**
     * Java API
@@ -396,8 +392,8 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   def registerOnMemberRemoved(callback: Runnable): Unit = {
     if (_isTerminated.get()) callback.run()
     else
-      clusterDaemons ! InternalClusterAction.AddOnMemberRemovedListener(
-        callback)
+      clusterDaemons ! InternalClusterAction
+        .AddOnMemberRemovedListener(callback)
   }
 
   /**

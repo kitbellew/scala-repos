@@ -57,8 +57,7 @@ private[timeline] final class Push(
     }
 
   private def makeEntry(users: List[String], data: Atom): Fu[Entry] =
-    Entry
-      .make(users, data)
+    Entry.make(users, data)
       .fold(fufail[Entry]("[timeline] invalid entry data " + data)) { entry =>
         entryRepo.findRecent(entry.typ, DateTime.now minusMinutes 50) flatMap {
           entries =>

@@ -150,8 +150,8 @@ object RawHandlerSpecs extends Specification with ScalaCheck {
       val s2 = h2.snapshot(None).segments
       val s2R = h2.snapshotRef(None).segments
 
-      implicit val ord: Ordering[Segment] = Ordering.by[Segment, String](
-        _.toString)
+      implicit val ord: Ordering[Segment] = Ordering
+        .by[Segment, String](_.toString)
 
       events.toSet must_== Set(18)
       s2.sorted must_== s1.sorted

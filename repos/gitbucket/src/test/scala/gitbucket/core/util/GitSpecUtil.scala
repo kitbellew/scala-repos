@@ -73,9 +73,8 @@ object GitSpecUtil {
     inserter.close()
   }
   def getFile(git: Git, branch: String, path: String) = {
-    val revCommit = JGitUtil.getRevCommitFromId(
-      git,
-      git.getRepository.resolve(branch))
+    val revCommit = JGitUtil
+      .getRevCommitFromId(git, git.getRepository.resolve(branch))
     val objectId = using(new TreeWalk(git.getRepository)) { walk =>
       walk.addTree(revCommit.getTree)
       walk.setRecursive(true)

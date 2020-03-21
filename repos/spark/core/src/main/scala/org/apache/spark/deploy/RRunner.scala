@@ -39,16 +39,15 @@ object RRunner {
     val otherArgs = args.slice(1, args.length)
 
     // Time to wait for SparkR backend to initialize in seconds
-    val backendTimeout =
-      sys.env.getOrElse("SPARKR_BACKEND_TIMEOUT", "120").toInt
+    val backendTimeout = sys.env.getOrElse("SPARKR_BACKEND_TIMEOUT", "120")
+      .toInt
     val rCommand = {
       // "spark.sparkr.r.command" is deprecated and replaced by "spark.r.command",
       // but kept here for backward compatibility.
       var cmd = sys.props.getOrElse("spark.sparkr.r.command", "Rscript")
       cmd = sys.props.getOrElse("spark.r.command", cmd)
-      if (sys.props.getOrElse(
-            "spark.submit.deployMode",
-            "client") == "client") {
+      if (sys.props
+            .getOrElse("spark.submit.deployMode", "client") == "client") {
         cmd = sys.props.getOrElse("spark.r.driver.command", cmd)
       }
       cmd
@@ -92,9 +91,10 @@ object RRunner {
             "R_PROFILE_USER",
             Seq(rPackageDir(0), "SparkR", "profile", "general.R")
               .mkString(File.separator))
-          builder.redirectErrorStream(
-            true
-          ) // Ugly but needed for stdout and stderr to synchronize
+          builder
+            .redirectErrorStream(
+              true
+            ) // Ugly but needed for stdout and stderr to synchronize
           val process = builder.start()
 
           new RedirectThread(

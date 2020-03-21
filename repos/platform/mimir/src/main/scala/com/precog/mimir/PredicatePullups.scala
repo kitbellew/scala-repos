@@ -59,10 +59,10 @@ trait PredicatePullupsModule[M[+_]] extends TransSpecableModule[M] {
 
           extractFilter(gchild) match {
             case Some((booleans @ (_ :: _), newChildren @ (_ :: _))) => {
-              val newChild = newChildren.reduceLeft(
-                dag.IntersectBucketSpec(_, _))
-              val boolean = booleans.reduceLeft(
-                Join(And, IdentitySort, _, _)(s.loc))
+              val newChild = newChildren
+                .reduceLeft(dag.IntersectBucketSpec(_, _))
+              val boolean = booleans
+                .reduceLeft(Join(And, IdentitySort, _, _)(s.loc))
               val newTarget = Filter(IdentitySort, target, boolean)(target.loc)
               List(GroupEdit(g, target -> newTarget, gchild -> newChild))
             }

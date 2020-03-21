@@ -176,8 +176,8 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
       // creates a pseudo marshaller for X, that applies for all the given content types
       trait X
       object X extends X
-      implicit val marshallers: ToEntityMarshaller[X] = Marshaller.oneOf(
-        alternatives map {
+      implicit val marshallers: ToEntityMarshaller[X] = Marshaller
+        .oneOf(alternatives map {
           case Alternative.ContentType(ct) ⇒ Marshaller.withFixedContentType(
               ct)((s: X) ⇒ HttpEntity(ct, ByteString("The X")))
           case Alternative.MediaType(mt) ⇒ Marshaller.withOpenCharset(mt)(
@@ -185,12 +185,8 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
         }: _*)
 
       Await.result(
-        Marshal(X)
-          .toResponseFor(request)
-          .fast
-          .map(response ⇒ Some(response.entity.contentType))
-          .fast
-          .recover {
+        Marshal(X).toResponseFor(request).fast
+          .map(response ⇒ Some(response.entity.contentType)).fast.recover {
             case _: Marshal.UnacceptableResponseContentTypeException ⇒ None
           },
         1.second

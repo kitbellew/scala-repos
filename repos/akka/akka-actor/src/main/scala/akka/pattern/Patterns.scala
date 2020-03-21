@@ -402,9 +402,8 @@ object PatternsCS {
       actor: ActorRef,
       message: Any,
       timeoutMillis: Long): CompletionStage[AnyRef] =
-    scalaAsk(actor, message)(
-      new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(actor, message)(new Timeout(timeoutMillis, TimeUnit.MILLISECONDS))
+      .toJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
     * A variation of ask which allows to implement "replyTo" pattern by including
@@ -425,9 +424,8 @@ object PatternsCS {
       actor: ActorRef,
       messageFactory: japi.Function[ActorRef, Any],
       timeoutMillis: Long): CompletionStage[AnyRef] =
-    scalaAsk(actor, messageFactory.apply _)(
-      Timeout(timeoutMillis.millis)).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(actor, messageFactory.apply _)(Timeout(timeoutMillis.millis))
+      .toJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
     * <i>Java API for `akka.pattern.ask`:</i>
@@ -521,9 +519,8 @@ object PatternsCS {
       selection: ActorSelection,
       messageFactory: japi.Function[ActorRef, Any],
       timeoutMillis: Long): CompletionStage[AnyRef] =
-    scalaAsk(selection, messageFactory.apply _)(
-      Timeout(timeoutMillis.millis)).toJava
-      .asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(selection, messageFactory.apply _)(Timeout(timeoutMillis.millis))
+      .toJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
     * Register an onComplete callback on this [[java.util.concurrent.CompletionStage]] to send

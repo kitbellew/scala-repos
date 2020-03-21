@@ -587,7 +587,8 @@ trait MapTest {
 
 object MapFactory {
   def allFactories: Iterator[MapFactory] =
-    HashMapFactory.allFactories ++ SortedMapFactory.allFactories ++ ConcurrentMapFactory.allFactories
+    HashMapFactory.allFactories ++ SortedMapFactory
+      .allFactories ++ ConcurrentMapFactory.allFactories
 }
 
 trait MapFactory {

@@ -25,8 +25,9 @@ object ApiCommitListItem {
       commit = Commit(
         message = commit.fullMessage,
         author = ApiPersonIdent.author(commit),
-        committer = ApiPersonIdent
-          .committer(commit))(commit.id, repositoryName),
+        committer = ApiPersonIdent.committer(commit))(
+        commit.id,
+        repositoryName),
       author = None,
       committer = None,
       parents = commit.parents.map(Parent(_)(repositoryName))

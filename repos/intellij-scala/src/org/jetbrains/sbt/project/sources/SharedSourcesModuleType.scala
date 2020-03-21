@@ -24,6 +24,5 @@ class SharedSourcesModuleType
 object SharedSourcesModuleType {
   val instance = Class
     .forName("org.jetbrains.sbt.project.sources.SharedSourcesModuleType")
-    .newInstance
-    .asInstanceOf[SharedSourcesModuleType]
+    .newInstance.asInstanceOf[SharedSourcesModuleType]
 }

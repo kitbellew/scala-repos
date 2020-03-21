@@ -193,8 +193,8 @@ object Transport {
   }
 
   object Options {
-    implicit val param: Stack.Param[Options] = Stack.Param(
-      Options(noDelay = true, reuseAddr = true))
+    implicit val param: Stack.Param[Options] = Stack
+      .Param(Options(noDelay = true, reuseAddr = true))
   }
 
   /**

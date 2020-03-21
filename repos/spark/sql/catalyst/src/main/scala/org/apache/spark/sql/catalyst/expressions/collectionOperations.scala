@@ -151,32 +151,28 @@ case class ArrayContains(left: Expression, right: Expression)
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (right.dataType == NullType) {
-      TypeCheckResult.TypeCheckFailure(
-        "Null typed values cannot be used as arguments")
+      TypeCheckResult
+        .TypeCheckFailure("Null typed values cannot be used as arguments")
     } else if (!left.dataType.isInstanceOf[ArrayType]
-               || left.dataType
-                 .asInstanceOf[ArrayType]
-                 .elementType != right.dataType) {
+               || left.dataType.asInstanceOf[ArrayType].elementType != right
+                 .dataType) {
       TypeCheckResult.TypeCheckFailure(
         "Arguments must be an array followed by a value of same type as the array members")
     } else { TypeCheckResult.TypeCheckSuccess }
   }
 
   override def nullable: Boolean = {
-    left.nullable || right.nullable || left.dataType
-      .asInstanceOf[ArrayType]
+    left.nullable || right.nullable || left.dataType.asInstanceOf[ArrayType]
       .containsNull
   }
 
   override def nullSafeEval(arr: Any, value: Any): Any = {
     var hasNull = false
-    arr
-      .asInstanceOf[ArrayData]
-      .foreach(
-        right.dataType,
-        (i, v) =>
-          if (v == null) { hasNull = true }
-          else if (v == value) { return true })
+    arr.asInstanceOf[ArrayData].foreach(
+      right.dataType,
+      (i, v) =>
+        if (v == null) { hasNull = true }
+        else if (v == value) { return true })
     if (hasNull) { null }
     else { false }
   }

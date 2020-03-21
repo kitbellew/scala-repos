@@ -52,18 +52,14 @@ class CascadeTestJob(args: Args) extends CascadeJob(args) {
 
 class TwoPhaseCascadeTest extends WordSpec with Matchers with FieldConversions {
   "A Cascade job" should {
-    CascadeTest("com.twitter.scalding.CascadeTestJob")
-      .arg("input0", "input0")
-      .arg("output0", "output0")
-      .arg("output1", "output1")
-      .source(
+    CascadeTest("com.twitter.scalding.CascadeTestJob").arg("input0", "input0")
+      .arg("output0", "output0").arg("output1", "output1").source(
         Tsv("input0", ('line)),
         List(
           Tuple1("line1"),
           Tuple1("line2"),
           Tuple1("line3"),
-          Tuple1("line4")))
-      .sink[String](Tsv("output1")) { ob =>
+          Tuple1("line4"))).sink[String](Tsv("output1")) { ob =>
         "verify output got changed by both flows" in {
           ob.toList shouldBe List(
             "job2job1:line1",
@@ -71,9 +67,7 @@ class TwoPhaseCascadeTest extends WordSpec with Matchers with FieldConversions {
             "job2job1:line3",
             "job2job1:line4")
         }
-      }
-      .runHadoop
-      .finish
+      }.runHadoop.finish
   }
 
   "A Cascade job run though Tool.main" should {

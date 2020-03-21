@@ -40,8 +40,7 @@ object TestConfigurationUtil {
       case pack: PsiPackage => pack
     }
     if (pack == null) return null
-    val settings = RunManager
-      .getInstance(location.getProject)
+    val settings = RunManager.getInstance(location.getProject)
       .createRunConfiguration(displayName, confFactory)
     val configuration = settings.getConfiguration
       .asInstanceOf[AbstractTestRunConfiguration]
@@ -65,15 +64,15 @@ object TestConfigurationUtil {
     if (pack == null) return false
     configuration match {
       case configuration: AbstractTestRunConfiguration =>
-        configuration.getTestKind == TestRunConfigurationForm.TestKind.ALL_IN_PACKAGE &&
+        configuration.getTestKind == TestRunConfigurationForm.TestKind
+          .ALL_IN_PACKAGE &&
           configuration.getTestPackagePath == pack.getQualifiedName
       case _ => false
     }
   }
 
   def isInheritor(clazz: ScTemplateDefinition, fqn: String): Boolean = {
-    val suiteClazz = ScalaPsiManager
-      .instance(clazz.getProject)
+    val suiteClazz = ScalaPsiManager.instance(clazz.getProject)
       .getCachedClass(clazz.getResolveScope, fqn)
     suiteClazz.fold(false)(ScalaPsiUtil.cachedDeepIsInheritor(clazz, _))
   }
@@ -88,22 +87,22 @@ object TestConfigurationUtil {
     def processNoArgMethods(refExpr: ScReferenceExpression) =
       if (refExpr.refName == "toString") {
         //special handling for now, since only toString is allowed on integers
-        refExpr.smartQualifier.flatMap(
-          getStaticTestNameElement(_, allowSymbolLiterals) match {
+        refExpr.smartQualifier
+          .flatMap(getStaticTestNameElement(_, allowSymbolLiterals) match {
             case Some(string: String) => Some(string)
             case Some(number: Number) => Some(number.toString)
             case _                    => None
           })
       } else
         refExpr.smartQualifier
-          .flatMap(getStaticTestNameRaw(_, allowSymbolLiterals))
-          .flatMap { expr =>
-            refExpr.refName match {
-              case "toLowerCase" => Some(expr.toLowerCase)
-              case "trim"        => Some(expr.trim)
-              case "toString"    => Some(expr)
-              case _             => None
-            }
+          .flatMap(getStaticTestNameRaw(_, allowSymbolLiterals)).flatMap {
+            expr =>
+              refExpr.refName match {
+                case "toLowerCase" => Some(expr.toLowerCase)
+                case "trim"        => Some(expr.trim)
+                case "toString"    => Some(expr)
+                case _             => None
+              }
           }
 
     element match {
@@ -200,8 +199,7 @@ object TestConfigurationUtil {
       element: PsiElement,
       allowSymbolLiterals: Boolean): Option[String] =
     getStaticTestNameElement(element, allowSymbolLiterals)
-      .filter(_.isInstanceOf[String])
-      .map(_.asInstanceOf[String])
+      .filter(_.isInstanceOf[String]).map(_.asInstanceOf[String])
 
   def getStaticTestName(
       element: PsiElement,

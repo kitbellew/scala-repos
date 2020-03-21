@@ -143,9 +143,7 @@ private[streaming] class ReceivedBlockTracker(
   /** Get the blocks allocated to the given batch. */
   def getBlocksOfBatch(batchTime: Time): Map[Int, Seq[ReceivedBlockInfo]] =
     synchronized {
-      timeToAllocatedBlocks
-        .get(batchTime)
-        .map { _.streamIdToAllocatedBlocks }
+      timeToAllocatedBlocks.get(batchTime).map { _.streamIdToAllocatedBlocks }
         .getOrElse(Map.empty)
     }
 
@@ -154,9 +152,7 @@ private[streaming] class ReceivedBlockTracker(
       batchTime: Time,
       streamId: Int): Seq[ReceivedBlockInfo] = {
     synchronized {
-      timeToAllocatedBlocks
-        .get(batchTime)
-        .map { _.getBlocksOfStream(streamId) }
+      timeToAllocatedBlocks.get(batchTime).map { _.getBlocksOfStream(streamId) }
         .getOrElse(Seq.empty)
     }
   }
@@ -187,8 +183,8 @@ private[streaming] class ReceivedBlockTracker(
       logInfo(s"Deleting batches: ${timesToCleanup.mkString(" ")}")
       if (writeToLog(BatchCleanupEvent(timesToCleanup))) {
         timeToAllocatedBlocks --= timesToCleanup
-        writeAheadLogOption.foreach(
-          _.clean(cleanupThreshTime.milliseconds, waitForCompletion))
+        writeAheadLogOption
+          .foreach(_.clean(cleanupThreshTime.milliseconds, waitForCompletion))
       } else {
         logWarning(
           "Failed to acknowledge batch clean up in the Write Ahead Log.")
@@ -269,16 +265,15 @@ private[streaming] class ReceivedBlockTracker(
 
   /** Get the queue of received blocks belonging to a particular stream */
   private def getReceivedBlockQueue(streamId: Int): ReceivedBlockQueue = {
-    streamIdToUnallocatedBlockQueues.getOrElseUpdate(
-      streamId,
-      new ReceivedBlockQueue)
+    streamIdToUnallocatedBlockQueues
+      .getOrElseUpdate(streamId, new ReceivedBlockQueue)
   }
 
   /** Optionally create the write ahead log manager only if the feature is enabled */
   private def createWriteAheadLog(): Option[WriteAheadLog] = {
     checkpointDirOption.map { checkpointDir =>
-      val logDir = ReceivedBlockTracker.checkpointDirToLogDir(
-        checkpointDirOption.get)
+      val logDir = ReceivedBlockTracker
+        .checkpointDirToLogDir(checkpointDirOption.get)
       WriteAheadLogUtils.createLogForDriver(conf, logDir, hadoopConf)
     }
   }

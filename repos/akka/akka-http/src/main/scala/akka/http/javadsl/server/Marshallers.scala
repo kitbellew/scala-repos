@@ -37,8 +37,7 @@ object Marshallers {
       mediaType: MediaType.WithOpenCharset,
       convert: function.Function[T, String]): Marshaller[T] =
     MarshallerImpl(_ ⇒
-      ScalaMarshaller
-        .stringMarshaller(mediaType.asScala)
+      ScalaMarshaller.stringMarshaller(mediaType.asScala)
         .compose[T](convert(_)))
 
   /**
@@ -49,8 +48,7 @@ object Marshallers {
       mediaType: MediaType.WithFixedCharset,
       convert: function.Function[T, String]): Marshaller[T] =
     MarshallerImpl(_ ⇒
-      ScalaMarshaller
-        .stringMarshaller(mediaType.asScala)
+      ScalaMarshaller.stringMarshaller(mediaType.asScala)
         .compose[T](convert(_)))
 
   /**
@@ -91,7 +89,7 @@ object Marshallers {
       contentType: ContentType,
       convert: function.Function[T, HttpResponse]): Marshaller[T] =
     MarshallerImpl { _ ⇒
-      ScalaMarshaller.withFixedContentType(contentType.asScala)(t ⇒
-        convert(t).asScala)
+      ScalaMarshaller
+        .withFixedContentType(contentType.asScala)(t ⇒ convert(t).asScala)
     }
 }

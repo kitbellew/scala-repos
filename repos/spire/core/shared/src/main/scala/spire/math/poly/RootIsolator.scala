@@ -142,8 +142,7 @@ object RootIsolator {
     } else {
       val zeroInterval = Interval.point(Rational.zero)
       val posRoots = rec(TransformedPoly(poly, 1, 0, 0, 1) :: Nil)
-      val negRoots = rec(TransformedPoly(poly.flip, 1, 0, 0, 1) :: Nil)
-        .map(-_)
+      val negRoots = rec(TransformedPoly(poly.flip, 1, 0, 0, 1) :: Nil).map(-_)
         .filter(_ != zeroInterval)
       negRoots ++ posRoots
     }

@@ -129,8 +129,7 @@ class VecStatsCheck extends Specification with ScalaCheck {
 
       forAll { (v: Vec[Double]) =>
         val data = v.contents
-        v.countif(_ > 0.5) must_== data
-          .filter(_ > 0.5)
+        v.countif(_ > 0.5) must_== data.filter(_ > 0.5)
           .foldLeft(0)((x, y) => x + 1)
       }
     }
@@ -140,8 +139,7 @@ class VecStatsCheck extends Specification with ScalaCheck {
 
       forAll { (v: Vec[Double]) =>
         val data = v.contents.filter(!_.isNaN)
-        v.countif(_ > 0.5) must_== data
-          .filter(_ > 0.5)
+        v.countif(_ > 0.5) must_== data.filter(_ > 0.5)
           .foldLeft(0)((x, y) => x + 1)
       }
     }

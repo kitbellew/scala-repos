@@ -21,10 +21,8 @@ object CircuitBreakerSpec {
     val openLatch = new TestLatch(1)
     val closedLatch = new TestLatch(1)
     def apply(): CircuitBreaker = instance
-    instance
-      .onClose(closedLatch.countDown())
-      .onHalfOpen(halfOpenLatch.countDown())
-      .onOpen(openLatch.countDown())
+    instance.onClose(closedLatch.countDown())
+      .onHalfOpen(halfOpenLatch.countDown()).onOpen(openLatch.countDown())
   }
 
   def shortCallTimeoutCb()(implicit
@@ -214,9 +212,10 @@ class CircuitBreakerSpec extends AkkaSpec with BeforeAndAfter {
       val breaker = CircuitBreakerSpec.shortResetTimeoutCb()
       breaker().withCircuitBreaker(Future(throwException))
       checkLatch(breaker.halfOpenLatch)
-      Await.result(
-        breaker().withCircuitBreaker(Future(sayHi)),
-        awaitTimeout) should ===("hi")
+      Await
+        .result(
+          breaker().withCircuitBreaker(Future(sayHi)),
+          awaitTimeout) should ===("hi")
       checkLatch(breaker.closedLatch)
     }
 
@@ -245,9 +244,10 @@ class CircuitBreakerSpec extends AkkaSpec with BeforeAndAfter {
   "An asynchronous circuit breaker that is closed" must {
     "allow calls through" in {
       val breaker = CircuitBreakerSpec.longCallTimeoutCb()
-      Await.result(
-        breaker().withCircuitBreaker(Future(sayHi)),
-        awaitTimeout) should ===("hi")
+      Await
+        .result(
+          breaker().withCircuitBreaker(Future(sayHi)),
+          awaitTimeout) should ===("hi")
     }
 
     "increment failure count on exception" in {

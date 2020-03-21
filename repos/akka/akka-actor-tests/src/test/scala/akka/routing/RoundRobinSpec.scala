@@ -18,11 +18,8 @@ import akka.actor.ActorRef
 class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
   def routeeSize(router: ActorRef): Int =
-    Await
-      .result(router ? GetRoutees, timeout.duration)
-      .asInstanceOf[Routees]
-      .routees
-      .size
+    Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[Routees]
+      .routees.size
 
   "round robin pool" must {
 
@@ -144,9 +141,8 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         ref.path.toStringWithoutAddress
       }
 
-      val actor = system.actorOf(
-        RoundRobinGroup(paths).props(),
-        "round-robin-group1")
+      val actor = system
+        .actorOf(RoundRobinGroup(paths).props(), "round-robin-group1")
 
       for (_ ← 1 to iterationCount; _ ← 1 to connectionCount) {
         val id = Await.result((actor ? "hit").mapTo[String], timeout.duration)

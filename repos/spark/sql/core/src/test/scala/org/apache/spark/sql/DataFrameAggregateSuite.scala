@@ -86,28 +86,23 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
         Row(null, null, 113000.0) :: Nil
     )
 
-    val df0 = sqlContext.sparkContext
-      .parallelize(Seq(
-        Fact(20151123, 18, 35, "room1", 18.6),
-        Fact(20151123, 18, 35, "room2", 22.4),
-        Fact(20151123, 18, 36, "room1", 17.4),
-        Fact(20151123, 18, 36, "room2", 25.6)))
-      .toDF()
+    val df0 = sqlContext.sparkContext.parallelize(Seq(
+      Fact(20151123, 18, 35, "room1", 18.6),
+      Fact(20151123, 18, 35, "room2", 22.4),
+      Fact(20151123, 18, 36, "room1", 17.4),
+      Fact(20151123, 18, 36, "room2", 25.6))).toDF()
 
-    val cube0 = df0
-      .cube("date", "hour", "minute", "room_name")
+    val cube0 = df0.cube("date", "hour", "minute", "room_name")
       .agg(Map("temp" -> "avg"))
     assert(cube0.where("date IS NULL").count > 0)
   }
 
   test("grouping and grouping_id") {
     checkAnswer(
-      courseSales
-        .cube("course", "year")
-        .agg(
-          grouping("course"),
-          grouping("year"),
-          grouping_id("course", "year")),
+      courseSales.cube("course", "year").agg(
+        grouping("course"),
+        grouping("year"),
+        grouping_id("course", "year")),
       Row("Java", 2012, 0, 0, 0) ::
         Row("Java", 2013, 0, 0, 0) ::
         Row("Java", null, 0, 1, 1) ::
@@ -131,15 +126,12 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
 
     val w = Window.orderBy(sum("earnings"))
     checkAnswer(
-      courseSales
-        .cube("course", "year")
-        .agg(
-          sum("earnings"),
-          grouping_id("course", "year"),
-          rank().over(
-            Window
-              .partitionBy(grouping_id("course", "year"))
-              .orderBy(sum("earnings")))),
+      courseSales.cube("course", "year").agg(
+        sum("earnings"),
+        grouping_id("course", "year"),
+        rank()
+          .over(Window.partitionBy(grouping_id("course", "year")).orderBy(sum(
+            "earnings")))),
       Row("Java", 2012, 20000.0, 0, 2) ::
         Row("Java", 2013, 30000.0, 0, 3) ::
         Row("Java", null, 50000.0, 1, 1) ::
@@ -154,8 +146,7 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
 
   test("rollup overlapping columns") {
     checkAnswer(
-      testData2
-        .rollup($"a" + $"b" as "foo", $"b" as "bar")
+      testData2.rollup($"a" + $"b" as "foo", $"b" as "bar")
         .agg(sum($"a" - $"b") as "foo"),
       Row(2, 1, 0) :: Row(3, 2, -1) :: Row(3, 1, 1) :: Row(4, 2, 0) :: Row(
         4,
@@ -303,8 +294,7 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
       ("a", "b", "c"),
       ("a", "b", "d"),
       ("x", "y", "z"),
-      ("x", "q", null.asInstanceOf[String]))
-      .toDF("key1", "key2", "key3")
+      ("x", "q", null.asInstanceOf[String])).toDF("key1", "key2", "key3")
 
     checkAnswer(df1.agg(countDistinct('key1, 'key2)), Row(3))
 

@@ -97,12 +97,10 @@ abstract class ScTypeDefinitionImpl protected (
   }
 
   override def isAnnotationType: Boolean = {
-    val annotation = ScalaPsiManager
-      .instance(getProject)
-      .getCachedClass(
-        "scala.annotation.Annotation",
-        getResolveScope,
-        ScalaPsiManager.ClassCategory.TYPE)
+    val annotation = ScalaPsiManager.instance(getProject).getCachedClass(
+      "scala.annotation.Annotation",
+      getResolveScope,
+      ScalaPsiManager.ClassCategory.TYPE)
     if (annotation == null) return false
     ScalaPsiManager.instance(getProject).cachedDeepIsInheritor(this, annotation)
   }
@@ -126,16 +124,16 @@ abstract class ScTypeDefinitionImpl protected (
               ScThisType(parentClass),
               this,
               superReference = false),
-            typeParameters.map(
-              new ScTypeParameterType(_, ScSubstitutor.empty))),
+            typeParameters
+              .map(new ScTypeParameterType(_, ScSubstitutor.empty))),
           Some(this)
         )
       } else {
         Success(
           ScParameterizedType(
             ScType.designator(this),
-            typeParameters.map(
-              new ScTypeParameterType(_, ScSubstitutor.empty))),
+            typeParameters
+              .map(new ScTypeParameterType(_, ScSubstitutor.empty))),
           Some(this))
       }
     }
@@ -153,12 +151,10 @@ abstract class ScTypeDefinitionImpl protected (
     if (parentClazz != null) {
       val tpe: ScType =
         if (!thisProjections)
-          parentClazz
-            .getTypeWithProjections(
-              TypingContext.empty,
-              thisProjections = false)
-            .getOrElse(
-              return Failure("Cannot resolve parent class", Some(this)))
+          parentClazz.getTypeWithProjections(
+            TypingContext.empty,
+            thisProjections = false).getOrElse(
+            return Failure("Cannot resolve parent class", Some(this)))
         else ScThisType(parentClazz)
 
       val innerProjection = ScProjectionType(tpe, this, superReference = false)
@@ -189,25 +185,23 @@ abstract class ScTypeDefinitionImpl protected (
     }
 
   def getSourceMirrorClass: PsiClass = {
-    val classParent = PsiTreeUtil.getParentOfType(
-      this,
-      classOf[ScTypeDefinition],
-      true)
+    val classParent = PsiTreeUtil
+      .getParentOfType(this, classOf[ScTypeDefinition], true)
     val name = this.name
     if (classParent == null) {
-      val classes: Array[PsiClass] =
-        getContainingFile.getNavigationElement match {
-          case o: ScalaFile     => o.typeDefinitions.toArray
-          case o: PsiClassOwner => o.getClasses
-        }
+      val classes: Array[PsiClass] = getContainingFile
+        .getNavigationElement match {
+        case o: ScalaFile     => o.typeDefinitions.toArray
+        case o: PsiClassOwner => o.getClasses
+      }
       val classesIterator = classes.iterator
       while (classesIterator.hasNext) {
         val c = classesIterator.next()
         if (name == c.name && hasSameScalaKind(c)) return c
       }
     } else {
-      val parentSourceMirror =
-        classParent.asInstanceOf[ScTypeDefinitionImpl].getSourceMirrorClass
+      val parentSourceMirror = classParent.asInstanceOf[ScTypeDefinitionImpl]
+        .getSourceMirrorClass
       parentSourceMirror match {
         case td: ScTypeDefinitionImpl =>
           for (i <- td.typeDefinitions if name == i.name && hasSameScalaKind(i))
@@ -227,9 +221,8 @@ abstract class ScTypeDefinitionImpl protected (
       case memberOrLocal: ScMemberOrLocal => return memberOrLocal.isLocal
       case _                              =>
     }
-    containingClass == null && PsiTreeUtil.getParentOfType(
-      this,
-      classOf[ScTemplateDefinition]) != null
+    containingClass == null && PsiTreeUtil
+      .getParentOfType(this, classOf[ScTemplateDefinition]) != null
   }
 
   def nameId: PsiElement =
@@ -252,14 +245,11 @@ abstract class ScTypeDefinitionImpl protected (
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   private def javaQualName(): String = {
-    var res = qualifiedName(".", encodeName = true)
-      .split('.')
-      .map { s =>
-        if (s.startsWith("`") && s.endsWith("`") && s.length > 2)
-          s.drop(1).dropRight(1)
-        else s
-      }
-      .mkString(".")
+    var res = qualifiedName(".", encodeName = true).split('.').map { s =>
+      if (s.startsWith("`") && s.endsWith("`") && s.length > 2)
+        s.drop(1).dropRight(1)
+      else s
+    }.mkString(".")
     this match {
       case o: ScObject =>
         if (o.isPackageObject) res = res + ".package$" else res = res + "$"
@@ -419,9 +409,7 @@ abstract class ScTypeDefinitionImpl protected (
     var toDelete: PsiElement = this
     var parent: PsiElement = getParent
     while (parent.isInstanceOf[ScToplevelElement] && parent
-             .asInstanceOf[ScToplevelElement]
-             .typeDefinitions
-             .length == 1) {
+             .asInstanceOf[ScToplevelElement].typeDefinitions.length == 1) {
       toDelete = parent
       parent = toDelete.getParent
     }
@@ -446,12 +434,9 @@ abstract class ScTypeDefinitionImpl protected (
     super[ScTypeDefinition].isInheritor(baseClass, deep)
 
   def signaturesByName(name: String): Seq[PhysicalSignature] = {
-    (for ((s: PhysicalSignature, _) <- TypeDefinitionMembers
-            .getSignatures(this)
-            .forName(name)
-            ._1) yield s) ++
-      syntheticMethodsNoOverride
-        .filter(_.name == name)
+    (for ((s: PhysicalSignature, _) <- TypeDefinitionMembers.getSignatures(this)
+            .forName(name)._1) yield s) ++
+      syntheticMethodsNoOverride.filter(_.name == name)
         .map(new PhysicalSignature(_, ScSubstitutor.empty))
   }
 
@@ -500,9 +485,7 @@ abstract class ScTypeDefinitionImpl protected (
 
   override def getInnerClasses: Array[PsiClass] = {
     def ownInnerClasses =
-      members
-        .filter(_.isInstanceOf[PsiClass])
-        .map(_.asInstanceOf[PsiClass])
+      members.filter(_.isInstanceOf[PsiClass]).map(_.asInstanceOf[PsiClass])
         .toArray
 
     ScalaPsiUtil.getBaseCompanionModule(this) match {

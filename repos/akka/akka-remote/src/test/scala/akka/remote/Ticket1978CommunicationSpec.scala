@@ -22,8 +22,8 @@ import scala.util.control.NonFatal
 object Configuration {
   // set this in your JAVA_OPTS to see all ssl debug info: "-Djavax.net.debug=ssl,keymanager"
   // The certificate will expire in 2109
-  private val trustStore =
-    getClass.getClassLoader.getResource("truststore").getPath
+  private val trustStore = getClass.getClassLoader.getResource("truststore")
+    .getPath
   private val keyStore = getClass.getClassLoader.getResource("keystore").getPath
   private val conf = """
     akka {
@@ -75,8 +75,7 @@ object Configuration {
         keyStore,
         cipher,
         enabled.mkString(", ")))
-      val fullConfig = config
-        .withFallback(AkkaSpec.testConf)
+      val fullConfig = config.withFallback(AkkaSpec.testConf)
         .withFallback(ConfigFactory.load)
         .getConfig("akka.remote.netty.ssl.security")
       val settings = new SSLSettings(fullConfig)
@@ -90,10 +89,10 @@ object Configuration {
         rng.getAlgorithm == sRng || (throw new NoSuchAlgorithmException(sRng))
       }
 
-      val engine =
-        NettySSLSupport.initializeClientSSL(settings, NoLogging).getEngine
-      val gotAllSupported =
-        enabled.toSet diff engine.getSupportedCipherSuites.toSet
+      val engine = NettySSLSupport.initializeClientSSL(settings, NoLogging)
+        .getEngine
+      val gotAllSupported = enabled.toSet diff engine.getSupportedCipherSuites
+        .toSet
       val gotAllEnabled = enabled.toSet diff engine.getEnabledCipherSuites.toSet
       gotAllSupported.isEmpty || (throw new IllegalArgumentException(
         "Cipher Suite not supported: " + gotAllSupported))
@@ -211,17 +210,14 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
           }
         }),
         "echo")
-      val otherAddress = other
-        .asInstanceOf[ExtendedActorSystem]
-        .provider
-        .asInstanceOf[RemoteActorRefProvider]
-        .transport
-        .defaultAddress
+      val otherAddress = other.asInstanceOf[ExtendedActorSystem].provider
+        .asInstanceOf[RemoteActorRefProvider].transport.defaultAddress
 
       "support tell" in within(timeout.duration) {
         val here = {
-          system.actorSelection(
-            otherAddress.toString + "/user/echo") ! Identify(None)
+          system
+            .actorSelection(otherAddress.toString + "/user/echo") ! Identify(
+            None)
           expectMsgType[ActorIdentity].ref.get
         }
 
@@ -234,17 +230,16 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
       "support ask" in within(timeout.duration) {
         import system.dispatcher
         val here = {
-          system.actorSelection(
-            otherAddress.toString + "/user/echo") ! Identify(None)
+          system
+            .actorSelection(otherAddress.toString + "/user/echo") ! Identify(
+            None)
           expectMsgType[ActorIdentity].ref.get
         }
 
         val f =
           for (i ← 1 to 1000)
             yield here ? (("ping", i)) mapTo classTag[((String, Int), ActorRef)]
-        Await
-          .result(Future.sequence(f), remaining)
-          .map(_._1._1)
+        Await.result(Future.sequence(f), remaining).map(_._1._1)
           .toSet should ===(Set("pong"))
       }
 

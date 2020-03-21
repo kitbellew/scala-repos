@@ -141,9 +141,7 @@ object Act {
 
   def showAmbiguous(keys: Seq[ScopedKey[_]])(implicit
       show: Show[ScopedKey[_]]): String =
-    keys
-      .take(3)
-      .map(x => show(x))
+    keys.take(3).map(x => show(x))
       .mkString("", ", ", if (keys.size > 3) ", ..." else "")
 
   def isValid(data: Settings[Scope])(parsed: ParsedKey): Boolean = {
@@ -182,8 +180,8 @@ object Act {
       index: KeyIndex): Seq[Option[String]] =
     explicit match {
       case Omitted =>
-        None +: defaultConfigurations(proj, index, defaultConfigs).flatMap(
-          nonEmptyConfig(index, proj))
+        None +: defaultConfigurations(proj, index, defaultConfigs)
+          .flatMap(nonEmptyConfig(index, proj))
       case ParsedGlobal       => None :: Nil
       case pv: ParsedValue[x] => Some(pv.value) :: Nil
     }
@@ -271,9 +269,8 @@ object Act {
     }
     if (validKeys.isEmpty) failure("No valid extra keys.")
     else
-      rep1sep(
-        extraParser(validKeys, knownValues),
-        spacedComma) map AttributeMap.apply
+      rep1sep(extraParser(validKeys, knownValues), spacedComma) map AttributeMap
+        .apply
   }
 
   def extraParser(
@@ -283,8 +280,8 @@ object Act {
       knownIDParser(knownKeys, "Not a valid extra key") <~ token(':' ~ OptSpace)
     keyp flatMap {
       case key: AttributeKey[t] =>
-        val valueMap: Map[String, t] =
-          knownValues(key).map(v => (v.toString, v)).toMap
+        val valueMap: Map[String, t] = knownValues(key)
+          .map(v => (v.toString, v)).toMap
         knownIDParser(valueMap, "extra value") map { value =>
           AttributeEntry(key, value)
         }
@@ -320,8 +317,8 @@ object Act {
     def projectRef(uri: URI) = projectID(uri) map { id => ProjectRef(uri, id) }
 
     val uris = index.buildURIs
-    val resolvedURI = Uri(uris).map(uri =>
-      Scope.resolveBuild(currentBuild, uri))
+    val resolvedURI = Uri(uris)
+      .map(uri => Scope.resolveBuild(currentBuild, uri))
     val buildRef = token('{' ~> resolvedURI <~ '}').?
 
     buildRef flatMap {
@@ -353,14 +350,12 @@ object Act {
       val akp = aggregatedKeyParser(extracted)
       def evaluate(kvs: Seq[ScopedKey[_]]): Parser[() => State] = {
         val preparedPairs = anyKeyValues(structure, kvs)
-        val showConfig = Aggregation.defaultShow(
-          state,
-          showTasks = action == ShowAction)
+        val showConfig = Aggregation
+          .defaultShow(state, showTasks = action == ShowAction)
         evaluatingParser(state, structure, showConfig)(preparedPairs) map {
           evaluate => () =>
             {
-              val keyStrings = preparedPairs
-                .map(pp => showKey(pp.key))
+              val keyStrings = preparedPairs.map(pp => showKey(pp.key))
                 .mkString(", ")
               state.log.debug("Evaluating tasks: " + keyStrings)
               evaluate()
@@ -369,8 +364,8 @@ object Act {
       }
       action match {
         case SingleAction => akp flatMap evaluate
-        case ShowAction | MultiAction =>
-          rep1sep(akp, token(Space)).flatMap(kvss => evaluate(kvss.flatten))
+        case ShowAction | MultiAction => rep1sep(akp, token(Space))
+            .flatMap(kvss => evaluate(kvss.flatten))
       }
     }
   }

@@ -76,7 +76,9 @@ object MiscTests extends TestSuite {
       implicit val logger = fastparse.Logger(logged.append(_))
 
       val DeepFailure = P("C")
-      val Foo = P((DeepFailure.log() | "A".log()) ~ "B".!.log()).log()
+      val Foo = P(
+        (DeepFailure.log() | "A".log()) ~ "B"
+          .!.log()).log()
 
       Foo.parse("AB")
 

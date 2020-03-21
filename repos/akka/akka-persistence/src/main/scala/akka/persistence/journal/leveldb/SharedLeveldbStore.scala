@@ -48,8 +48,8 @@ class SharedLeveldbStore extends {
 
       writeResult.pipeTo(sender())
 
-    case DeleteMessagesTo(pid, tsnr) ⇒
-      asyncDeleteMessagesTo(pid, tsnr).pipeTo(sender())
+    case DeleteMessagesTo(pid, tsnr) ⇒ asyncDeleteMessagesTo(pid, tsnr)
+        .pipeTo(sender())
 
     case ReplayMessages(persistenceId, fromSequenceNr, toSequenceNr, max) ⇒
       // TODO it would be nice to DRY this with AsyncWriteJournal, but this is using
@@ -67,9 +67,8 @@ class SharedLeveldbStore extends {
                   adaptFromJournal(p).foreach(replyTo ! _)
             }.map(_ ⇒ highSeqNr)
           }
-        }
-        .map { highSeqNr ⇒ ReplaySuccess(highSeqNr) }
-        .recover { case e ⇒ ReplayFailure(e) }
-        .pipeTo(replyTo)
+        }.map { highSeqNr ⇒ ReplaySuccess(highSeqNr) }.recover {
+          case e ⇒ ReplayFailure(e)
+        }.pipeTo(replyTo)
   }
 }

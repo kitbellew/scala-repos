@@ -27,9 +27,7 @@ class BasicTest extends SlickOsgiHelper {
   def testPlainSQL: Unit =
     wrap {
       import slick.jdbc.H2Profile.api._
-      val a = sql"select {fn database()}"
-        .as[String]
-        .head
+      val a = sql"select {fn database()}".as[String].head
         .map(res => assertEquals("TEST-OSGI", res))
       val db = Database.forURL("jdbc:h2:mem:test-osgi")
       try Await.result(db.run(a), Duration.Inf)

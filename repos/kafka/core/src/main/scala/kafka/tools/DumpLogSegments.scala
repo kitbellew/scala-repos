@@ -46,37 +46,26 @@ object DumpLogSegments {
       "if set, just checks the index sanity without printing its content. " +
         "This is the same check that is executed on broker startup to determine if an index needs rebuilding or not."
     )
-    val filesOpt = parser
-      .accepts(
-        "files",
-        "REQUIRED: The comma separated list of data and index log files to be dumped")
-      .withRequiredArg
-      .describedAs("file1, file2, ...")
-      .ofType(classOf[String])
+    val filesOpt = parser.accepts(
+      "files",
+      "REQUIRED: The comma separated list of data and index log files to be dumped")
+      .withRequiredArg.describedAs("file1, file2, ...").ofType(classOf[String])
     val maxMessageSizeOpt = parser
-      .accepts("max-message-size", "Size of largest message.")
-      .withRequiredArg
-      .describedAs("size")
-      .ofType(classOf[java.lang.Integer])
+      .accepts("max-message-size", "Size of largest message.").withRequiredArg
+      .describedAs("size").ofType(classOf[java.lang.Integer])
       .defaultsTo(5 * 1024 * 1024)
     val deepIterationOpt = parser.accepts(
       "deep-iteration",
       "if set, uses deep instead of shallow iteration")
-    val valueDecoderOpt = parser
-      .accepts(
-        "value-decoder-class",
-        "if set, used to deserialize the messages. This class should implement kafka.serializer.Decoder trait. Custom jar should be available in kafka/libs directory."
-      )
-      .withOptionalArg()
-      .ofType(classOf[java.lang.String])
+    val valueDecoderOpt = parser.accepts(
+      "value-decoder-class",
+      "if set, used to deserialize the messages. This class should implement kafka.serializer.Decoder trait. Custom jar should be available in kafka/libs directory."
+    ).withOptionalArg().ofType(classOf[java.lang.String])
       .defaultsTo("kafka.serializer.StringDecoder")
-    val keyDecoderOpt = parser
-      .accepts(
-        "key-decoder-class",
-        "if set, used to deserialize the keys. This class should implement kafka.serializer.Decoder trait. Custom jar should be available in kafka/libs directory."
-      )
-      .withOptionalArg()
-      .ofType(classOf[java.lang.String])
+    val keyDecoderOpt = parser.accepts(
+      "key-decoder-class",
+      "if set, used to deserialize the keys. This class should implement kafka.serializer.Decoder trait. Custom jar should be available in kafka/libs directory."
+    ).withOptionalArg().ofType(classOf[java.lang.String])
       .defaultsTo("kafka.serializer.StringDecoder")
     val offsetsOpt = parser.accepts(
       "offsets-decoder",
@@ -141,8 +130,8 @@ object DumpLogSegments {
       case (fileName, listOfMismatches) => {
         System.err.println("Mismatches in :" + fileName)
         listOfMismatches.foreach(m => {
-          System.err.println(
-            "  Index offset: %d, log offset: %d".format(m._1, m._2))
+          System.err
+            .println("  Index offset: %d, log offset: %d".format(m._1, m._2))
         })
       }
     }
@@ -179,16 +168,14 @@ object DumpLogSegments {
 
     for (i <- 0 until index.entries) {
       val entry = index.entry(i)
-      val partialFileMessageSet: FileMessageSet = messageSet.read(
-        entry.position,
-        maxMessageSize)
+      val partialFileMessageSet: FileMessageSet = messageSet
+        .read(entry.position, maxMessageSize)
       val messageAndOffset = getIterator(
         partialFileMessageSet.head,
         isDeepIteration = true).next()
       if (messageAndOffset.offset != entry.offset + index.baseOffset) {
-        var misMatchesSeq = misMatchesForIndexFilesMap.getOrElse(
-          file.getAbsolutePath,
-          List[(Long, Long)]())
+        var misMatchesSeq = misMatchesForIndexFilesMap
+          .getOrElse(file.getAbsolutePath, List[(Long, Long)]())
         misMatchesSeq ::= (
           entry.offset + index.baseOffset, messageAndOffset.offset
         )
@@ -253,20 +240,18 @@ object DumpLogSegments {
       val group = GroupMetadataManager.readGroupMessageValue(groupId, payload)
       val protocolType = group.protocolType
 
-      val assignment = group.allMemberMetadata
-        .map { member =>
-          if (protocolType == ConsumerProtocol.PROTOCOL_TYPE) {
-            val partitionAssignment = ConsumerProtocol.deserializeAssignment(
-              ByteBuffer.wrap(member.assignment))
-            val userData = hex(Utils.toArray(partitionAssignment.userData()))
+      val assignment = group.allMemberMetadata.map { member =>
+        if (protocolType == ConsumerProtocol.PROTOCOL_TYPE) {
+          val partitionAssignment = ConsumerProtocol
+            .deserializeAssignment(ByteBuffer.wrap(member.assignment))
+          val userData = hex(Utils.toArray(partitionAssignment.userData()))
 
-            if (userData.isEmpty)
-              s"${member.memberId}=${partitionAssignment.partitions()}"
-            else
-              s"${member.memberId}=${partitionAssignment.partitions()}:${userData}"
-          } else { s"${member.memberId}=${hex(member.assignment)}" }
-        }
-        .mkString("{", ",", "}")
+          if (userData.isEmpty)
+            s"${member.memberId}=${partitionAssignment.partitions()}"
+          else
+            s"${member.memberId}=${partitionAssignment.partitions()}:${userData}"
+        } else { s"${member.memberId}=${hex(member.assignment)}" }
+      }.mkString("{", ",", "}")
 
       val keyString = s"metadata::${groupId}"
       val valueString =
@@ -316,18 +301,19 @@ object DumpLogSegments {
 
         if (lastOffset == -1) lastOffset = messageAndOffset.offset
         // If we are iterating uncompressed messages, offsets must be consecutive
-        else if (msg.compressionCodec == NoCompressionCodec && messageAndOffset.offset != lastOffset + 1) {
+        else if (msg.compressionCodec == NoCompressionCodec && messageAndOffset
+                   .offset != lastOffset + 1) {
           var nonConsecutivePairsSeq = nonConsecutivePairsForLogFilesMap
             .getOrElse(file.getAbsolutePath, List[(Long, Long)]())
           nonConsecutivePairsSeq ::= (lastOffset, messageAndOffset.offset)
-          nonConsecutivePairsForLogFilesMap.put(
-            file.getAbsolutePath,
-            nonConsecutivePairsSeq)
+          nonConsecutivePairsForLogFilesMap
+            .put(file.getAbsolutePath, nonConsecutivePairsSeq)
         }
         lastOffset = messageAndOffset.offset
 
         print(
-          "offset: " + messageAndOffset.offset + " position: " + validBytes + " isvalid: " + msg.isValid +
+          "offset: " + messageAndOffset
+            .offset + " position: " + validBytes + " isvalid: " + msg.isValid +
             " payloadsize: " + msg.payloadSize + " magic: " + msg.magic +
             " compresscodec: " + msg.compressionCodec + " crc: " + msg.checksum)
         if (msg.hasKey) print(" keysize: " + msg.keySize)

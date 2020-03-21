@@ -13,9 +13,7 @@ object Test extends ScaladocModelTest {
     import access._
 
     // just need to check the member exists, access methods will throw an error if there's a problem
-    val base = rootPackage
-      ._package("scala")
-      ._package("test")
+    val base = rootPackage._package("scala")._package("test")
       ._package("scaladoc")
 
     val diagrams = base._package("diagrams")

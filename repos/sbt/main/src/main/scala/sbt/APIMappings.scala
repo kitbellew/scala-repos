@@ -18,8 +18,7 @@ private[sbt] object APIMappings {
       log: Logger): Option[(File, URL)] =
     entry.get(Keys.entryApiURL) match {
       case Some(u) => Some((entry.data, u))
-      case None =>
-        entry.get(Keys.moduleID.key).flatMap { mid =>
+      case None => entry.get(Keys.moduleID.key).flatMap { mid =>
           extractFromID(entry.data, mid, log)
         }
     }

@@ -300,8 +300,8 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   test("json_tuple - hive key 5 - null and empty fields") {
     checkJsonTuple(
       JsonTuple(Literal("""{"f1": "", "f5": null}""") :: jsonTupleQuery),
-      InternalRow.fromSeq(
-        Seq(UTF8String.fromString(""), null, null, null, null)))
+      InternalRow
+        .fromSeq(Seq(UTF8String.fromString(""), null, null, null, null)))
   }
 
   test("json_tuple - hive key 6 - invalid json (array)") {

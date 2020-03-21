@@ -65,10 +65,9 @@ trait MethodSynthesis {
         original: Symbol,
         f: Symbol => Tree,
         name: Name): Tree = {
-      val m = original.cloneSymbol(
-        clazz,
-        newMethodFlags(original),
-        name) setPos clazz.pos.focus
+      val m = original
+        .cloneSymbol(clazz, newMethodFlags(original), name) setPos clazz.pos
+        .focus
       finishMethod(clazz.info.decls enter m, f)
     }
 
@@ -105,8 +104,8 @@ trait MethodSynthesis {
         val default = DEFAULT ==> Throw(
           IndexOutOfBoundsExceptionClass.tpe_*,
           fn(arg0, nme.toString_))
-        val cases =
-          range.map(num => CASE(LIT(num)) ==> f(num)).toList :+ default
+        val cases = range.map(num => CASE(LIT(num)) ==> f(num))
+          .toList :+ default
 
         Match(arg0, cases)
       }
@@ -240,8 +239,8 @@ trait MethodSynthesis {
               // Shouldn't happen, but let's give ourselves a reasonable error when it does
               context.error(
                 cd.pos,
-                s"Internal error: Symbol for synthetic factory method not found among ${context.unit.synthetics.keys
-                  .mkString(", ")}")
+                s"Internal error: Symbol for synthetic factory method not found among ${context
+                  .unit.synthetics.keys.mkString(", ")}")
               // Soldier on for the sake of the presentation compiler
               List(cd)
           }
@@ -422,7 +421,8 @@ trait MethodSynthesis {
         if (result == NoSymbol || result.isOverloaded)
           context.error(
             tree.pos,
-            s"Internal error: Unable to find the synthetic factory method corresponding to implicit class $name in $enclClass / ${enclClass.info.decls}")
+            s"Internal error: Unable to find the synthetic factory method corresponding to implicit class $name in $enclClass / ${enclClass
+              .info.decls}")
         result
       }
       def derivedTree: DefDef = factoryMeth(derivedMods, name, tree)
@@ -464,11 +464,11 @@ trait MethodSynthesis {
           // Range position errors ensue if we don't duplicate this in some
           // circumstances (at least: concrete vals with existential types.)
           case _: ExistentialType =>
-            TypeTree() setOriginal (
-              tree.tpt.duplicate setPos tree.tpt.pos.focus
-            )
+            TypeTree() setOriginal (tree.tpt.duplicate setPos tree.tpt.pos
+              .focus)
           case _ if isDeferred =>
-            TypeTree() setOriginal tree.tpt // keep type tree of original abstract field
+            TypeTree() setOriginal tree
+              .tpt // keep type tree of original abstract field
           case _ => TypeTree(getterTp)
         }
         tpt setPos tree.tpt.pos.focus
@@ -510,7 +510,8 @@ trait MethodSynthesis {
             rhs1 // TODO move tree.symbol.owner.isTrait into noFieldFor
           else gen.mkAssignAndReturn(basisSym, rhs1)
 
-        derivedSym setPos tree.pos // cannot set it at createAndEnterSymbol because basisSym can possibly still have NoPosition
+        derivedSym setPos tree
+          .pos // cannot set it at createAndEnterSymbol because basisSym can possibly still have NoPosition
         val ddefRes = DefDef(
           derivedSym,
           new ChangeOwnerAndModuleClassTraverser(basisSym, derivedSym)(body))

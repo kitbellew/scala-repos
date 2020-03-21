@@ -29,9 +29,8 @@ object Macros {
     val rupkg = c.mirror.staticModule("scala.reflect.runtime.package")
     val rusym = reificationSupport.selectTerm(rupkg, "universe")
     val NullaryMethodType(rutpe) = rusym.info
-    val ru = reificationSupport.newFreeTerm(
-      "ru",
-      scala.reflect.runtime.universe)
+    val ru = reificationSupport
+      .newFreeTerm("ru", scala.reflect.runtime.universe)
     reificationSupport.setInfo(ru, rutpe)
 
     val tree2 = Apply(

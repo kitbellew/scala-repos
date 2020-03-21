@@ -65,11 +65,9 @@ abstract class MBeanSpec
 
     "change attributes after startup" taggedAs LongRunningTest in {
       runOn(first) {
-        mbeanServer
-          .getAttribute(mbeanName, "Available")
+        mbeanServer.getAttribute(mbeanName, "Available")
           .asInstanceOf[Boolean] should ===(false)
-        mbeanServer
-          .getAttribute(mbeanName, "Singleton")
+        mbeanServer.getAttribute(mbeanName, "Singleton")
           .asInstanceOf[Boolean] should ===(false)
         mbeanServer.getAttribute(mbeanName, "Leader") should ===("")
         mbeanServer.getAttribute(mbeanName, "Members") should ===("")
@@ -84,14 +82,12 @@ abstract class MBeanSpec
         awaitAssert(
           mbeanServer.getAttribute(mbeanName, "Leader") should ===(
             address(first).toString))
-        mbeanServer
-          .getAttribute(mbeanName, "Singleton")
+        mbeanServer.getAttribute(mbeanName, "Singleton")
           .asInstanceOf[Boolean] should ===(true)
         mbeanServer.getAttribute(mbeanName, "Members") should ===(
           address(first).toString)
         mbeanServer.getAttribute(mbeanName, "Unreachable") should ===("")
-        mbeanServer
-          .getAttribute(mbeanName, "Available")
+        mbeanServer.getAttribute(mbeanName, "Available")
           .asInstanceOf[Boolean] should ===(true)
       }
       enterBarrier("after-3")
@@ -119,8 +115,7 @@ abstract class MBeanSpec
       awaitAssert(
         mbeanServer.getAttribute(mbeanName, "Leader") should ===(
           expectedLeader.toString))
-      mbeanServer
-        .getAttribute(mbeanName, "Singleton")
+      mbeanServer.getAttribute(mbeanName, "Singleton")
         .asInstanceOf[Boolean] should ===(false)
 
       enterBarrier("after-4")
@@ -138,8 +133,7 @@ abstract class MBeanSpec
           mbeanServer.getAttribute(mbeanName, "Unreachable") should ===(
             fourthAddress.toString))
         val expectedMembers = Seq(first, second, third, fourth).sorted
-          .map(address(_))
-          .mkString(",")
+          .map(address(_)).mkString(",")
         awaitAssert(
           mbeanServer.getAttribute(mbeanName, "Members") should ===(
             expectedMembers))
@@ -243,8 +237,7 @@ abstract class MBeanSpec
       runOn(first, second) {
         awaitMembersUp(2)
         assertMembers(clusterView.members, first, second)
-        val expectedMembers = Seq(first, second).sorted
-          .map(address(_))
+        val expectedMembers = Seq(first, second).sorted.map(address(_))
           .mkString(",")
         awaitAssert(
           mbeanServer.getAttribute(mbeanName, "Members") should ===(

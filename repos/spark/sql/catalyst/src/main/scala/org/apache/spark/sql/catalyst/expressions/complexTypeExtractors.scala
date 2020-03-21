@@ -258,8 +258,8 @@ case class GetArrayItem(child: Expression, ordinal: Expression)
   protected override def nullSafeEval(value: Any, ordinal: Any): Any = {
     val baseValue = value.asInstanceOf[ArrayData]
     val index = ordinal.asInstanceOf[Number].intValue()
-    if (index >= baseValue.numElements() || index < 0 || baseValue.isNullAt(
-          index)) { null }
+    if (index >= baseValue.numElements() || index < 0 || baseValue
+          .isNullAt(index)) { null }
     else { baseValue.get(index, dataType) }
   }
 
@@ -346,8 +346,8 @@ case class GetMapValue(child: Expression, key: Expression)
         int $index = 0;
         boolean $found = false;
         while ($index < $length && !$found) {
-          final ${ctx
-          .javaType(keyType)} $key = ${ctx.getValue(keys, keyType, index)};
+          final ${ctx.javaType(keyType)} $key = ${ctx
+          .getValue(keys, keyType, index)};
           if (${ctx.genEqual(keyType, key, eval2)}) {
             $found = true;
           } else {

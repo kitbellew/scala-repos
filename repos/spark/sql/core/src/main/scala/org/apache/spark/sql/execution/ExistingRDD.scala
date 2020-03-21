@@ -44,8 +44,8 @@ object RDDConversions {
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
-      val converters = outputTypes.map(
-        CatalystTypeConverters.createToCatalystConverter)
+      val converters = outputTypes
+        .map(CatalystTypeConverters.createToCatalystConverter)
       iterator.map { r =>
         var i = 0
         while (i < numColumns) {
@@ -67,8 +67,8 @@ object RDDConversions {
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
-      val converters = outputTypes.map(
-        CatalystTypeConverters.createToCatalystConverter)
+      val converters = outputTypes
+        .map(CatalystTypeConverters.createToCatalystConverter)
       iterator.map { r =>
         var i = 0
         while (i < numColumns) {
@@ -165,10 +165,7 @@ private[sql] case class DataSourceScan(
 
   val outputUnsafeRows = relation match {
     case r: HadoopFsRelation if r.fileFormat.isInstanceOf[ParquetSource] =>
-      !SQLContext
-        .getActive()
-        .get
-        .conf
+      !SQLContext.getActive().get.conf
         .getConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED)
     case _: HadoopFsRelation => true
     case _                   => false
@@ -189,13 +186,11 @@ private[sql] case class DataSourceScan(
             s"(${output.map(_.name).mkString(", ")})")
       }
 
-    bucketSpec
-      .map { spec =>
-        val numBuckets = spec.numBuckets
-        val bucketColumns = spec.bucketColumnNames.map(toAttribute)
-        HashPartitioning(bucketColumns, numBuckets)
-      }
-      .getOrElse { UnknownPartitioning(0) }
+    bucketSpec.map { spec =>
+      val numBuckets = spec.numBuckets
+      val bucketColumns = spec.bucketColumnNames.map(toAttribute)
+      HashPartitioning(bucketColumns, numBuckets)
+    }.getOrElse { UnknownPartitioning(0) }
   }
 
   protected override def doExecute(): RDD[InternalRow] = {
@@ -218,8 +213,8 @@ private[sql] case class DataSourceScan(
   override def simpleString: String = {
     val metadataEntries =
       for ((key, value) <- metadata.toSeq.sorted) yield s"$key: $value"
-    s"Scan $nodeName${output
-      .mkString("[", ",", "]")}${metadataEntries.mkString(" ", ", ", "")}"
+    s"Scan $nodeName${output.mkString("[", ",", "]")}${metadataEntries
+      .mkString(" ", ", ", "")}"
   }
 
   override def upstreams(): Seq[RDD[InternalRow]] = { rdd :: Nil }
@@ -240,8 +235,8 @@ private[sql] case class DataSourceScan(
     ctx.addMutableState(columnarBatchClz, batch, s"$batch = null;")
     ctx.addMutableState("int", idx, s"$idx = 0;")
 
-    val exprs = output.zipWithIndex.map(x =>
-      new BoundReference(x._2, x._1.dataType, true))
+    val exprs = output.zipWithIndex
+      .map(x => new BoundReference(x._2, x._1.dataType, true))
     val row = ctx.freshName("row")
     val numOutputRows = metricTerm(ctx, "numOutputRows")
 

@@ -92,8 +92,7 @@ private[sql] case class InMemoryRelation(
 
   private def computeSizeInBytes = {
     val sizeOfRow: Expression = BindReferences.bindReference(
-      output
-        .map(a => partitionStatistics.forAttribute(a).sizeInBytes)
+      output.map(a => partitionStatistics.forAttribute(a).sizeInBytes)
         .reduce(Add),
       partitionStatistics.schema)
 
@@ -140,64 +139,60 @@ private[sql] case class InMemoryRelation(
 
   private def buildBuffers(): Unit = {
     val output = child.output
-    val cached = child
-      .execute()
-      .mapPartitionsInternal { rowIterator =>
-        new Iterator[CachedBatch] {
-          def next(): CachedBatch = {
-            val columnBuilders = output.map { attribute =>
-              ColumnBuilder(
-                attribute.dataType,
-                batchSize,
-                attribute.name,
-                useCompression)
-            }.toArray
+    val cached = child.execute().mapPartitionsInternal { rowIterator =>
+      new Iterator[CachedBatch] {
+        def next(): CachedBatch = {
+          val columnBuilders = output.map { attribute =>
+            ColumnBuilder(
+              attribute.dataType,
+              batchSize,
+              attribute.name,
+              useCompression)
+          }.toArray
 
-            var rowCount = 0
-            var totalSize = 0L
-            while (rowIterator.hasNext && rowCount < batchSize
-                   && totalSize < ColumnBuilder.MAX_BATCH_SIZE_IN_BYTE) {
-              val row = rowIterator.next()
+          var rowCount = 0
+          var totalSize = 0L
+          while (rowIterator.hasNext && rowCount < batchSize
+                 && totalSize < ColumnBuilder.MAX_BATCH_SIZE_IN_BYTE) {
+            val row = rowIterator.next()
 
-              // Added for SPARK-6082. This assertion can be useful for scenarios when something
-              // like Hive TRANSFORM is used. The external data generation script used in TRANSFORM
-              // may result malformed rows, causing ArrayIndexOutOfBoundsException, which is somewhat
-              // hard to decipher.
-              assert(
-                row.numFields == columnBuilders.length,
-                s"Row column number mismatch, expected ${output.size} columns, " +
-                  s"but got ${row.numFields}." +
-                  s"\nRow content: $row"
-              )
+            // Added for SPARK-6082. This assertion can be useful for scenarios when something
+            // like Hive TRANSFORM is used. The external data generation script used in TRANSFORM
+            // may result malformed rows, causing ArrayIndexOutOfBoundsException, which is somewhat
+            // hard to decipher.
+            assert(
+              row.numFields == columnBuilders.length,
+              s"Row column number mismatch, expected ${output.size} columns, " +
+                s"but got ${row.numFields}." +
+                s"\nRow content: $row"
+            )
 
-              var i = 0
-              totalSize = 0
-              while (i < row.numFields) {
-                columnBuilders(i).appendFrom(row, i)
-                totalSize += columnBuilders(i).columnStats.sizeInBytes
-                i += 1
-              }
-              rowCount += 1
+            var i = 0
+            totalSize = 0
+            while (i < row.numFields) {
+              columnBuilders(i).appendFrom(row, i)
+              totalSize += columnBuilders(i).columnStats.sizeInBytes
+              i += 1
             }
-
-            val stats = InternalRow.fromSeq(
-              columnBuilders
-                .map(_.columnStats.collectedStatistics)
-                .flatMap(_.values))
-
-            batchStats += stats
-            CachedBatch(
-              rowCount,
-              columnBuilders.map { builder =>
-                JavaUtils.bufferToArray(builder.build())
-              },
-              stats)
+            rowCount += 1
           }
 
-          def hasNext: Boolean = rowIterator.hasNext
+          val stats = InternalRow.fromSeq(
+            columnBuilders.map(_.columnStats.collectedStatistics)
+              .flatMap(_.values))
+
+          batchStats += stats
+          CachedBatch(
+            rowCount,
+            columnBuilders.map { builder =>
+              JavaUtils.bufferToArray(builder.build())
+            },
+            stats)
         }
+
+        def hasNext: Boolean = rowIterator.hasNext
       }
-      .persist(storageLevel)
+    }.persist(storageLevel)
 
     cached.setName(
       tableName.map(n => s"In-memory table $n").getOrElse(child.toString))
@@ -320,15 +315,14 @@ private[sql] case class InMemoryColumnarTableScan(
   }
 
   lazy val enableAccumulators: Boolean = sqlContext
-    .getConf("spark.sql.inMemoryTableScanStatistics.enable", "false")
-    .toBoolean
+    .getConf("spark.sql.inMemoryTableScanStatistics.enable", "false").toBoolean
 
   // Accumulators used for testing purposes
   lazy val readPartitions: Accumulator[Int] = sparkContext.accumulator(0)
   lazy val readBatches: Accumulator[Int] = sparkContext.accumulator(0)
 
-  private val inMemoryPartitionPruningEnabled =
-    sqlContext.conf.inMemoryPartitionPruning
+  private val inMemoryPartitionPruningEnabled = sqlContext.conf
+    .inMemoryPartitionPruning
 
   protected override def doExecute(): RDD[InternalRow] = {
     val numOutputRows = longMetric("numOutputRows")
@@ -361,13 +355,11 @@ private[sql] case class InMemoryColumnarTableScan(
           cachedBatchIterator.filter { cachedBatch =>
             if (!partitionFilter(cachedBatch.stats)) {
               def statsString: String =
-                schemaIndex
-                  .map {
-                    case (a, i) =>
-                      val value = cachedBatch.stats.get(i, a.dataType)
-                      s"${a.name}: $value"
-                  }
-                  .mkString(", ")
+                schemaIndex.map {
+                  case (a, i) =>
+                    val value = cachedBatch.stats.get(i, a.dataType)
+                    s"${a.name}: $value"
+                }.mkString(", ")
               logInfo(s"Skipping partition based on stats $statsString")
               false
             } else {
@@ -388,10 +380,8 @@ private[sql] case class InMemoryColumnarTableScan(
         case other                   => other
       }.toArray
       val columnarIterator = GenerateColumnAccessor.generate(columnTypes)
-      columnarIterator.initialize(
-        withMetrics,
-        columnTypes,
-        requestedColumnIndices.toArray)
+      columnarIterator
+        .initialize(withMetrics, columnTypes, requestedColumnIndices.toArray)
       if (enableAccumulators && columnarIterator.hasNext) {
         readPartitions += 1
       }

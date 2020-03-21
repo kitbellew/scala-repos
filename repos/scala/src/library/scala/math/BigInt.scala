@@ -140,7 +140,8 @@ final class BigInt(val bigInteger: BigInteger)
     val bitLen = bitLength
     (bitLen <= 24 || {
       val lowest = lowestSetBit
-      bitLen <= java.lang.Float.MAX_EXPONENT + 1 && // exclude this < -2^128 && this >= 2^128
+      bitLen <= java.lang.Float
+        .MAX_EXPONENT + 1 && // exclude this < -2^128 && this >= 2^128
       lowest >= bitLen - 24 &&
       lowest < java.lang.Float.MAX_EXPONENT + 1 // exclude this == -2^128
     }) && !bitLengthOverflow
@@ -152,7 +153,8 @@ final class BigInt(val bigInteger: BigInteger)
     val bitLen = bitLength
     (bitLen <= 53 || {
       val lowest = lowestSetBit
-      bitLen <= java.lang.Double.MAX_EXPONENT + 1 && // exclude this < -2^1024 && this >= 2^1024
+      bitLen <= java.lang.Double
+        .MAX_EXPONENT + 1 && // exclude this < -2^1024 && this >= 2^1024
       lowest >= bitLen - 53 &&
       lowest < java.lang.Double.MAX_EXPONENT + 1 // exclude this == -2^1024
     }) && !bitLengthOverflow

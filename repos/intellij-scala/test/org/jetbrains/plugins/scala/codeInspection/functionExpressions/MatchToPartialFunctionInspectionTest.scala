@@ -12,8 +12,8 @@ class MatchToPartialFunctionInspectionTest
     extends ScalaLightInspectionFixtureTestAdapter {
   protected val classOfInspection: Class[_ <: LocalInspectionTool] = classOf[
     MatchToPartialFunctionInspection]
-  protected val annotation: String =
-    MatchToPartialFunctionInspection.inspectionName
+  protected val annotation: String = MatchToPartialFunctionInspection
+    .inspectionName
 
   def testInVal() = {
     val text = s"""val f: (Int) => Null = ${START}_ match $END{

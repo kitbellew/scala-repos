@@ -35,8 +35,7 @@ object GaussianMixtureExample {
     // Load and parse the data
     val data = sc.textFile("data/mllib/gmm_data.txt")
     val parsedData = data
-      .map(s => Vectors.dense(s.trim.split(' ').map(_.toDouble)))
-      .cache()
+      .map(s => Vectors.dense(s.trim.split(' ').map(_.toDouble))).cache()
 
     // Cluster the data into two classes using GaussianMixture
     val gmm = new GaussianMixture().setK(2).run(parsedData)

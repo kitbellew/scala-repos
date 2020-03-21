@@ -58,21 +58,19 @@ case class Hook(
   def lame = user ?? (_.lame)
 
   def render: JsObject =
-    Json
-      .obj(
-        "id" -> id,
-        "uid" -> uid,
-        "u" -> user.map(_.username),
-        "rating" -> rating,
-        "variant" -> realVariant.exotic.option(realVariant.key),
-        "ra" -> realMode.rated.option(1),
-        "clock" -> clock.show,
-        "t" -> clock.estimateTotalTime,
-        "s" -> speed.id,
-        "c" -> chess.Color(color).map(_.name),
-        "perf" -> perfType.map(_.name)
-      )
-      .noNull
+    Json.obj(
+      "id" -> id,
+      "uid" -> uid,
+      "u" -> user.map(_.username),
+      "rating" -> rating,
+      "variant" -> realVariant.exotic.option(realVariant.key),
+      "ra" -> realMode.rated.option(1),
+      "clock" -> clock.show,
+      "t" -> clock.estimateTotalTime,
+      "s" -> speed.id,
+      "c" -> chess.Color(color).map(_.name),
+      "perf" -> perfType.map(_.name)
+    ).noNull
 
   lazy val perfType = PerfPicker.perfType(speed, realVariant, none)
 

@@ -28,9 +28,8 @@ object Test extends DirectTest {
     val termMembers = viewType.nonPrivateMembers.toList filter (
       _.isTerm
     ) map fullyInitializeSymbol
-    val inheritedFromGenericCollection = termMembers filterNot (
-      _.owner.name.decoded contains "ViewLike"
-    ) filterNot (_.owner == viewType.typeSymbol)
+    val inheritedFromGenericCollection = termMembers filterNot (_.owner.name
+    .decoded contains "ViewLike") filterNot (_.owner == viewType.typeSymbol)
     def returnsView(sym: Symbol) =
       viewType.memberType(sym).finalResultType contains viewType.typeSymbol
     val needOverride =
@@ -39,12 +38,10 @@ object Test extends DirectTest {
     val grouped = needOverride.groupBy(_.owner).toSeq.sortBy {
       case (owner, _) => viewType baseTypeIndex owner
     }
-    val report = grouped
-      .map {
-        case (owner, syms) =>
-          s"\n$owner\n${"-" * 70}\n${syms.map(_.defString).sorted.mkString("\n")}"
-      }
-      .mkString("\n")
+    val report = grouped.map {
+      case (owner, syms) =>
+        s"\n$owner\n${"-" * 70}\n${syms.map(_.defString).sorted.mkString("\n")}"
+    }.mkString("\n")
     println(report)
   }
 

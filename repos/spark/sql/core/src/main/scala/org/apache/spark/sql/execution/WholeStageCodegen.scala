@@ -130,9 +130,7 @@ trait CodegenSupport extends SparkPlan {
     * them to be evaluated twice.
     */
   protected def evaluateVariables(variables: Seq[ExprCode]): String = {
-    val evaluate = variables
-      .filter(_.code != "")
-      .map(_.code.trim)
+    val evaluate = variables.filter(_.code != "").map(_.code.trim)
       .mkString("\n")
     variables.foreach(_.code = "")
     evaluate
@@ -184,8 +182,8 @@ trait CodegenSupport extends SparkPlan {
         ctx.currentVars = null
         ctx.INPUT_ROW = row
         child.output.zipWithIndex.map {
-          case (attr, i) =>
-            BoundReference(i, attr.dataType, attr.nullable).gen(ctx)
+          case (attr, i) => BoundReference(i, attr.dataType, attr.nullable)
+              .gen(ctx)
         }
       } else { input }
 
@@ -250,8 +248,8 @@ case class InputAdapter(child: SparkPlan)
       input,
       s"$input = inputs[0];")
 
-    val exprs = output.zipWithIndex.map(x =>
-      new BoundReference(x._2, x._1.dataType, true))
+    val exprs = output.zipWithIndex
+      .map(x => new BoundReference(x._2, x._1.dataType, true))
     val row = ctx.freshName("row")
     ctx.INPUT_ROW = row
     ctx.currentVars = null
@@ -351,8 +349,7 @@ case class WholeStageCodegen(child: SparkPlan)
     if (rdds.length == 1) {
       rdds.head.mapPartitions { iter =>
         val clazz = CodeGenerator.compile(cleanedSource)
-        val buffer = clazz
-          .generate(references)
+        val buffer = clazz.generate(references)
           .asInstanceOf[BufferedRowIterator]
         buffer.init(Array(iter))
         new Iterator[InternalRow] {
@@ -364,8 +361,7 @@ case class WholeStageCodegen(child: SparkPlan)
       // Right now, we support up to two upstreams.
       rdds.head.zipPartitions(rdds(1)) { (leftIter, rightIter) =>
         val clazz = CodeGenerator.compile(cleanedSource)
-        val buffer = clazz
-          .generate(references)
+        val buffer = clazz.generate(references)
           .asInstanceOf[BufferedRowIterator]
         buffer.init(Array(leftIter, rightIter))
         new Iterator[InternalRow] {
@@ -452,8 +448,8 @@ case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
   private def supportCodegen(plan: SparkPlan): Boolean =
     plan match {
       case plan: CodegenSupport if plan.supportCodegen =>
-        val willFallback = plan.expressions.exists(
-          _.find(e => !supportCodegen(e)).isDefined)
+        val willFallback = plan.expressions
+          .exists(_.find(e => !supportCodegen(e)).isDefined)
         // the generated code will be huge if there are too many columns
         val haveManyColumns = plan.output.length > 200
         !willFallback && !haveManyColumns

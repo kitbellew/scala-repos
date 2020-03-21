@@ -85,9 +85,7 @@ trait ProdConsAnalyzerImpl {
       slot: Int): Set[AbstractInsnNode] = {
     producersForValueAt(insn, slot).flatMap(prod => {
       val outputNumber = outputValueSlots(prod).indexOf(slot)
-      _consumersOfOutputsFrom
-        .get(prod)
-        .map(v => { v(outputNumber) })
+      _consumersOfOutputsFrom.get(prod).map(v => { v(outputNumber) })
         .getOrElse(Set.empty)
     })
   }
@@ -107,12 +105,9 @@ trait ProdConsAnalyzerImpl {
       case ExceptionProducer(handlerLabel, handlerFrame) =>
         consumersOfValueAt(handlerLabel, handlerFrame.stackTop)
       case _ =>
-        _consumersOfOutputsFrom
-          .get(insn)
-          .map(v =>
-            v.indices
-              .flatMap(v.apply)(collection.breakOut): Set[AbstractInsnNode])
-          .getOrElse(Set.empty)
+        _consumersOfOutputsFrom.get(insn).map(v =>
+          v.indices.flatMap(v.apply)(collection.breakOut): Set[
+            AbstractInsnNode]).getOrElse(Set.empty)
     }
 
   /**
@@ -139,8 +134,7 @@ trait ProdConsAnalyzerImpl {
               insn,
               producedSlot)
             sourceValue.insns.iterator.asScala
-              .flatMap(initialProducers(_, sourceValueSlot))
-              .toSet
+              .flatMap(initialProducers(_, sourceValueSlot)).toSet
           }
         )
       } else { Set(insn) }
@@ -182,8 +176,7 @@ trait ProdConsAnalyzerImpl {
   def initialProducersForInputsOf(
       insn: AbstractInsnNode): Set[AbstractInsnNode] = {
     inputValueSlots(insn)
-      .flatMap(slot => initialProducersForValueAt(insn, slot))
-      .toSet
+      .flatMap(slot => initialProducersForValueAt(insn, slot)).toSet
   }
 
   def ultimateConsumersOfOutputsFrom(
@@ -197,8 +190,7 @@ trait ProdConsAnalyzerImpl {
           case _                                  => insn.getNext
         }
         outputValueSlots(insn)
-          .flatMap(slot => ultimateConsumersOfValueAt(next, slot))
-          .toSet
+          .flatMap(slot => ultimateConsumersOfValueAt(next, slot)).toSet
     }
 
   private def isCopyOperation(insn: AbstractInsnNode): Boolean = {

@@ -66,8 +66,7 @@ class AkkaProtocolSpec
 
         use-passive-connections = on
       }
-  """)
-    .withFallback(system.settings.config)
+  """).withFallback(system.settings.config)
 
   val localAddress = Address("test", "testsystem", "testhost", 1234)
   val localAkkaAddress = Address("akka.test", "testsystem", "testhost", 1234)
@@ -77,16 +76,10 @@ class AkkaProtocolSpec
 
   val codec = AkkaPduProtobufCodec
 
-  val testMsg = WireFormats.SerializedMessage
-    .newBuilder()
-    .setSerializerId(0)
-    .setMessage(PByteString.copyFromUtf8("foo"))
-    .build
-  val testEnvelope = codec.constructMessage(
-    localAkkaAddress,
-    testActor,
-    testMsg,
-    None)
+  val testMsg = WireFormats.SerializedMessage.newBuilder().setSerializerId(0)
+    .setMessage(PByteString.copyFromUtf8("foo")).build
+  val testEnvelope = codec
+    .constructMessage(localAkkaAddress, testActor, testMsg, None)
   val testMsgPdu: ByteString = codec.constructPayload(testEnvelope)
 
   def testHeartbeat = InboundPayload(codec.constructHeartbeat)
@@ -133,7 +126,8 @@ class AkkaProtocolSpec
             if sender == localAddress && recipient == remoteAddress ⇒
           codec.decodePdu(payload) match {
             case Associate(info) ⇒
-              info.cookie == cookie && info.origin == localAddress && info.uid == uid
+              info.cookie == cookie && info.origin == localAddress && info
+                .uid == uid
             case _ ⇒ false
           }
         case _ ⇒ false
@@ -191,8 +185,8 @@ class AkkaProtocolSpec
           h
       }
 
-      wrappedHandle.readHandlerPromise.success(ActorHandleEventListener(
-        testActor))
+      wrappedHandle.readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       failureDetector.called should ===(true)
 
@@ -275,8 +269,7 @@ class AkkaProtocolSpec
         handle,
         ActorAssociationEventListener(testActor),
         new AkkaProtocolSettings(
-          ConfigFactory
-            .parseString("akka.remote.require-cookie = on")
+          ConfigFactory.parseString("akka.remote.require-cookie = on")
             .withFallback(conf)),
         codec,
         failureDetector
@@ -298,8 +291,7 @@ class AkkaProtocolSpec
         handle,
         ActorAssociationEventListener(testActor),
         new AkkaProtocolSettings(
-          ConfigFactory
-            .parseString("akka.remote.require-cookie = on")
+          ConfigFactory.parseString("akka.remote.require-cookie = on")
             .withFallback(conf)),
         codec,
         failureDetector
@@ -315,8 +307,8 @@ class AkkaProtocolSpec
           h
       }
 
-      wrappedHandle.readHandlerPromise.success(ActorHandleEventListener(
-        testActor))
+      wrappedHandle.readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       failureDetector.called should ===(true)
 
@@ -336,8 +328,7 @@ class AkkaProtocolSpec
         statusPromise,
         transport,
         new AkkaProtocolSettings(
-          ConfigFactory
-            .parseString("akka.remote.require-cookie = on")
+          ConfigFactory.parseString("akka.remote.require-cookie = on")
             .withFallback(conf)),
         codec,
         failureDetector,
@@ -378,8 +369,8 @@ class AkkaProtocolSpec
         case _ ⇒ fail()
       }
 
-      wrappedHandle.readHandlerPromise.success(ActorHandleEventListener(
-        testActor))
+      wrappedHandle.readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       reader ! testDisassociate(AssociationHandle.Unknown)
 
@@ -416,8 +407,8 @@ class AkkaProtocolSpec
         case _ ⇒ fail()
       }
 
-      wrappedHandle.readHandlerPromise.success(ActorHandleEventListener(
-        testActor))
+      wrappedHandle.readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       reader ! Disassociated(AssociationHandle.Unknown)
 
@@ -454,8 +445,8 @@ class AkkaProtocolSpec
         case _ ⇒ fail()
       }
 
-      wrappedHandle.readHandlerPromise.success(ActorHandleEventListener(
-        testActor))
+      wrappedHandle.readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       //wait for one heartbeat
       awaitCond(lastActivityIsHeartbeat(registry))
@@ -497,8 +488,8 @@ class AkkaProtocolSpec
 
       stateActor ! Disassociated(AssociationHandle.Unknown)
 
-      wrappedHandle.readHandlerPromise.success(ActorHandleEventListener(
-        testActor))
+      wrappedHandle.readHandlerPromise
+        .success(ActorHandleEventListener(testActor))
 
       expectMsg(Disassociated(AssociationHandle.Unknown))
 

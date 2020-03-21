@@ -43,10 +43,7 @@ final class BSONAdapter[A: BSONDocumentReader](
   def nbResults: Fu[Int] = collection.count(Some(selector))
 
   def slice(offset: Int, length: Int): Fu[Seq[A]] =
-    collection
-      .find(selector, projection)
-      .sort(sort)
+    collection.find(selector, projection).sort(sort)
       .copy(options = QueryOpts(skipN = offset))
-      .cursor[A](readPreference = readPreference)
-      .collect[List](length)
+      .cursor[A](readPreference = readPreference).collect[List](length)
 }

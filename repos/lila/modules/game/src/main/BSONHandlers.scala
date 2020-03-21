@@ -28,10 +28,7 @@ object BSONHandlers {
       def reads(r: BSON.Reader) =
         Crazyhouse.Data(
           pockets = {
-            val (white, black) = r
-              .str("p")
-              .toList
-              .flatMap(chess.Piece.fromChar)
+            val (white, black) = r.str("p").toList.flatMap(chess.Piece.fromChar)
               .partition(_ is chess.White)
             Pockets(
               white = Pocket(white.map(_.role)),
@@ -69,8 +66,8 @@ object BSONHandlers {
           color: Color,
           id: Player.Id,
           uid: Player.UserId): Player = {
-        val builder =
-          r.getO[Player.Builder](field)(playerBSONHandler) | emptyPlayerBuilder
+        val builder = r
+          .getO[Player.Builder](field)(playerBSONHandler) | emptyPlayerBuilder
         val win = winC map (_ == color)
         builder(color)(id)(uid)(win)
       }
@@ -102,16 +99,16 @@ object BSONHandlers {
         binaryMoveTimes = (r bytesO moveTimes) | ByteArray.empty,
         mode = Mode(r boolD rated),
         variant = realVariant,
-        crazyData =
-          (realVariant == Crazyhouse) option r.get[Crazyhouse.Data](crazyData),
+        crazyData = (realVariant == Crazyhouse) option r
+          .get[Crazyhouse.Data](crazyData),
         next = r strO next,
         bookmarks = r intD bookmarks,
         createdAt = createdAtValue,
         updatedAt = r dateO updatedAt,
         metadata = Metadata(
           source = r intO source flatMap Source.apply,
-          pgnImport = r.getO[PgnImport](pgnImport)(
-            PgnImport.pgnImportBSONHandler),
+          pgnImport = r
+            .getO[PgnImport](pgnImport)(PgnImport.pgnImportBSONHandler),
           tournamentId = r strO tournamentId,
           simulId = r strO simulId,
           tvAt = r dateO tvAt,
@@ -124,8 +121,8 @@ object BSONHandlers {
       BSONDocument(
         id -> o.id,
         playerIds -> (o.whitePlayer.id + o.blackPlayer.id),
-        playerUids -> w.listO(
-          List(~o.whitePlayer.userId, ~o.blackPlayer.userId)),
+        playerUids -> w
+          .listO(List(~o.whitePlayer.userId, ~o.blackPlayer.userId)),
         whitePlayer -> w.docO(
           playerBSONHandler write ((_: Color) =>
             (_: Player.Id) =>
@@ -170,8 +167,7 @@ object BSONHandlers {
       blackBerserk: Boolean) =
     new BSONReader[BSONBinary, Color => Clock] {
       def read(bin: BSONBinary) =
-        BinaryFormat
-          .clock(since)
+        BinaryFormat.clock(since)
           .read(ByteArrayBSONHandler read bin, whiteBerserk, blackBerserk)
     }
   private[game] def clockBSONWrite(since: DateTime, clock: Clock) =

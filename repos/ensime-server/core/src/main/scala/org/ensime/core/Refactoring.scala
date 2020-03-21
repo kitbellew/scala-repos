@@ -120,19 +120,17 @@ trait RefactoringHandler {
 
   def handleFormatFiles(files: List[File]): Unit = {
     val cs = charset
-    val changeList = files
-      .map { f =>
-        FileUtils.readFile(f, cs) match {
-          case Right(contents) =>
-            Try(ScalaFormatter.format(contents, config.formattingPrefs))
-              .map((f, contents, _))
-          case Left(e) => throw e
-        }
+    val changeList = files.map { f =>
+      FileUtils.readFile(f, cs) match {
+        case Right(contents) =>
+          Try(ScalaFormatter.format(contents, config.formattingPrefs))
+            .map((f, contents, _))
+        case Left(e) => throw e
       }
-      .collect {
-        case Success((f, contents, formatted)) =>
-          TextEdit(f, 0, contents.length, formatted)
-      }
+    }.collect {
+      case Success((f, contents, formatted)) =>
+        TextEdit(f, 0, contents.length, formatted)
+    }
     FileUtils.writeChanges(changeList, cs)
   }
 
@@ -150,8 +148,8 @@ trait RefactoringControl {
   def askPrepareRefactor(
       procId: Int,
       refactor: RefactorDesc): Either[RefactorFailure, RefactorEffect] = {
-    askOption(prepareRefactor(procId, refactor)).getOrElse(Left(
-      RefactorFailure(procId, "Refactor call failed")))
+    askOption(prepareRefactor(procId, refactor))
+      .getOrElse(Left(RefactorFailure(procId, "Refactor call failed")))
   }
 
   def askExecRefactor(

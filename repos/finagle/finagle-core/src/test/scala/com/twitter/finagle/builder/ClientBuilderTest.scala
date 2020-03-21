@@ -38,8 +38,7 @@ class ClientBuilderTest
     val m = new MockChannel
     when(m.codec.prepareConnFactory(
       any[ServiceFactory[String, String]],
-      any[Stack.Params]))
-      .thenReturn(preparedFactory)
+      any[Stack.Params])).thenReturn(preparedFactory)
   }
 
   test("ClientBuilder should invoke prepareConnFactory on connection") {
@@ -71,8 +70,8 @@ class ClientBuilderTest
         build
 
         val entries = GlobalRegistry.get.toSet
-        val unspecified = entries.count(
-          _.key.startsWith(Seq("client", "not-specified")))
+        val unspecified = entries
+          .count(_.key.startsWith(Seq("client", "not-specified")))
         assert(
           unspecified == 0,
           "saw registry keys with 'not-specified' protocol")
@@ -86,12 +85,8 @@ class ClientBuilderTest
     val ctx = new ClientBuilderHelper {}
     when(ctx.m.codec.protocolLibraryName).thenReturn("fancy")
 
-    ClientBuilder()
-      .name("test")
-      .hostConnectionLimit(1)
-      .codec(ctx.m.codec)
-      .hosts("")
-      .build()
+    ClientBuilder().name("test").hostConnectionLimit(1).codec(ctx.m.codec)
+      .hosts("").build()
   }
 
   verifyProtocolRegistry("#codec(CodecFactory)", expected = "fancy") {
@@ -102,11 +97,7 @@ class ClientBuilderTest
       override def protocolLibraryName = "fancy"
     }
 
-    ClientBuilder()
-      .name("test")
-      .hostConnectionLimit(1)
-      .codec(cf)
-      .hosts("")
+    ClientBuilder().name("test").hostConnectionLimit(1).codec(cf).hosts("")
       .build()
   }
 
@@ -118,12 +109,8 @@ class ClientBuilderTest
       (_: ClientCodecConfig) => ctx.m.codec
     }
 
-    ClientBuilder()
-      .name("test")
-      .hostConnectionLimit(1)
-      .codec(cfClient)
-      .hosts("")
-      .build()
+    ClientBuilder().name("test").hostConnectionLimit(1).codec(cfClient)
+      .hosts("").build()
   }
 
   verifyProtocolRegistry("configured protocol", expected = "extra fancy") {
@@ -135,20 +122,13 @@ class ClientBuilderTest
     }
 
     val stk = ClientBuilder.stackClientOfCodec(cfClient)
-    ClientBuilder()
-      .name("test")
-      .hostConnectionLimit(1)
-      .hosts("")
-      .stack(stk.configured(ProtocolLibrary("extra fancy")))
-      .build()
+    ClientBuilder().name("test").hostConnectionLimit(1).hosts("")
+      .stack(stk.configured(ProtocolLibrary("extra fancy"))).build()
   }
 
   test("ClientBuilder should close properly") {
     new ClientBuilderHelper {
-      val svc = ClientBuilder()
-        .hostConnectionLimit(1)
-        .codec(m.codec)
-        .hosts("")
+      val svc = ClientBuilder().hostConnectionLimit(1).codec(m.codec).hosts("")
         .build()
       val f = svc.close()
       eventually { f.isDefined }
@@ -164,13 +144,9 @@ class ClientBuilderTest
   test("ClientBuilder should collect stats on 'tries' for retrypolicy") {
     new ClientBuilderHelper {
       val inMemory = new InMemoryStatsReceiver
-      val builder = ClientBuilder()
-        .name("test")
-        .hostConnectionLimit(1)
-        .codec(m.codec)
-        .daemon(true) // don't create an exit guard
-        .hosts(Seq(m.clientAddress))
-        .retryPolicy(retryMyExceptionOnce)
+      val builder = ClientBuilder().name("test").hostConnectionLimit(1)
+        .codec(m.codec).daemon(true) // don't create an exit guard
+        .hosts(Seq(m.clientAddress)).retryPolicy(retryMyExceptionOnce)
         .reportTo(inMemory)
       val client = builder.build()
 
@@ -192,20 +168,16 @@ class ClientBuilderTest
   test("ClientBuilder should collect stats on 'tries' with no retrypolicy") {
     new ClientBuilderHelper {
       val inMemory = new InMemoryStatsReceiver
-      val builder = ClientBuilder()
-        .name("test")
-        .hostConnectionLimit(1)
-        .codec(m.codec)
-        .daemon(true) // don't create an exit guard
-        .hosts(Seq(m.clientAddress))
-        .reportTo(inMemory)
+      val builder = ClientBuilder().name("test").hostConnectionLimit(1)
+        .codec(m.codec).daemon(true) // don't create an exit guard
+        .hosts(Seq(m.clientAddress)).reportTo(inMemory)
 
       val client = builder.build()
       val numFailures = 5
 
       val service = mock[Service[String, String]]
-      when(service("123")) thenReturn Future.exception(WriteException(
-        new Exception()))
+      when(service("123")) thenReturn Future
+        .exception(WriteException(new Exception()))
       when(service.close(any[Time])) thenReturn Future.Done
       preparedServicePromise() = Return(service)
 
@@ -224,13 +196,9 @@ class ClientBuilderTest
     "ClientBuilder with stack should collect stats on 'tries' for retrypolicy") {
     new ClientBuilderHelper {
       val inMemory = new InMemoryStatsReceiver
-      val builder = ClientBuilder()
-        .name("test")
-        .hostConnectionLimit(1)
-        .stack(m.client)
-        .daemon(true) // don't create an exit guard
-        .hosts(Seq(m.clientAddress))
-        .retryPolicy(retryMyExceptionOnce)
+      val builder = ClientBuilder().name("test").hostConnectionLimit(1)
+        .stack(m.client).daemon(true) // don't create an exit guard
+        .hosts(Seq(m.clientAddress)).retryPolicy(retryMyExceptionOnce)
         .reportTo(inMemory)
       val client = builder.build()
 
@@ -254,20 +222,16 @@ class ClientBuilderTest
     new ClientBuilderHelper {
       val inMemory = new InMemoryStatsReceiver
       val numFailures = 21 // There will be 20 requeues by default
-      val builder = ClientBuilder()
-        .name("test")
-        .hostConnectionLimit(1)
-        .stack(m.client)
-        .daemon(true) // don't create an exit guard
+      val builder = ClientBuilder().name("test").hostConnectionLimit(1)
+        .stack(m.client).daemon(true) // don't create an exit guard
         .hosts(Seq(m.clientAddress))
-        .failureAccrualParams(25 -> Duration.fromSeconds(10))
-        .reportTo(inMemory)
+        .failureAccrualParams(25 -> Duration.fromSeconds(10)).reportTo(inMemory)
 
       val client = builder.build()
 
       val service = mock[Service[String, String]]
-      when(service("123")) thenReturn Future.exception(WriteException(
-        new Exception()))
+      when(service("123")) thenReturn Future
+        .exception(WriteException(new Exception()))
       when(service.close(any[Time])) thenReturn Future.Done
       preparedServicePromise() = Return(service)
 
@@ -289,11 +253,8 @@ class ClientBuilderTest
       val specificExceptionRetry: PartialFunction[Try[Nothing], Boolean] = {
         case Throw(e: SpecificException) => true
       }
-      val builder = ClientBuilder()
-        .name("test")
-        .hostConnectionLimit(1)
-        .stack(m.client)
-        .daemon(true) // don't create an exit guard
+      val builder = ClientBuilder().name("test").hostConnectionLimit(1)
+        .stack(m.client).daemon(true) // don't create an exit guard
         .hosts(Seq(m.clientAddress))
         .retryPolicy(RetryPolicy.tries(2, specificExceptionRetry))
         .reportTo(NullStatsReceiver)

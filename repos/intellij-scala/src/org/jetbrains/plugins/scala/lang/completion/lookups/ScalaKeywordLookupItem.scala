@@ -15,9 +15,7 @@ import org.jetbrains.plugins.scala.ScalaFileType
 object ScalaKeywordLookupItem {
   def getLookupElement(keyword: String, position: PsiElement): LookupElement = {
     val keywordPsi: PsiElement = ScalaLightKeyword(position.getManager, keyword)
-    LookupElementBuilder
-      .create(keywordPsi, keyword)
-      .withBoldness(true)
+    LookupElementBuilder.create(keywordPsi, keyword).withBoldness(true)
       .withIcon(new EmptyIcon(16, 16))
       .withInsertHandler(new KeywordInsertHandler(keyword))
   }
@@ -47,7 +45,8 @@ object ScalaKeywordLookupItem {
         case THIS | FALSE | TRUE | NULL | SUPER => // do nothing
         case _ =>
           def addSpace(addCompletionChar: Boolean = false) {
-            if (context.getFile.getViewProvider.getFileType != ScalaFileType.SCALA_FILE_TYPE) { // for play2 - we shouldn't add space in templates (like @if, @while etc)
+            if (context.getFile.getViewProvider.getFileType != ScalaFileType
+                  .SCALA_FILE_TYPE) { // for play2 - we shouldn't add space in templates (like @if, @while etc)
               val offset = context.getStartOffset
               val docStart = Math.max(0, context.getStartOffset - 1)
 
@@ -58,13 +57,12 @@ object ScalaKeywordLookupItem {
             }
 
             context.setAddCompletionChar(addCompletionChar)
-            if (document.getTextLength <= offset || document.getText.charAt(
-                  offset) != ' ') document.insertString(offset, " ")
+            if (document.getTextLength <= offset || document.getText
+                  .charAt(offset) != ' ') document.insertString(offset, " ")
             editor.getCaretModel.moveToOffset(offset + 1)
           }
           val settings = CodeStyleSettingsManager
-            .getInstance(context.getProject)
-            .getCurrentSettings
+            .getInstance(context.getProject).getCurrentSettings
             .getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
           context.getCompletionChar match {
             case '(' if parentheses.contains(keyword) =>
@@ -99,11 +97,9 @@ object ScalaKeywordLookupItem {
             manager.commitDocument(document)
             val file = manager.getPsiFile(document)
             if (file == null) return
-            CodeStyleManager
-              .getInstance(context.getProject)
-              .adjustLineIndent(
-                file,
-                new TextRange(context.getStartOffset, offset))
+            CodeStyleManager.getInstance(context.getProject).adjustLineIndent(
+              file,
+              new TextRange(context.getStartOffset, offset))
           }
       }
     }

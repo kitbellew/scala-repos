@@ -41,11 +41,10 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
     }
   }
 
-  private val host_ = System.getProperty(
-    "net.liftweb.webapptest.oneshot.host",
-    reachableLocalAddress)
-  private val port_ =
-    System.getProperty("net.liftweb.webapptest.oneshot.port", "8181").toInt
+  private val host_ = System
+    .getProperty("net.liftweb.webapptest.oneshot.host", reachableLocalAddress)
+  private val port_ = System
+    .getProperty("net.liftweb.webapptest.oneshot.port", "8181").toInt
 
   private lazy val baseUrl_ = new URL("http://%s:%s".format(host_, port_))
 

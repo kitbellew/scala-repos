@@ -71,8 +71,7 @@ class InMemoryStatsReceiver extends StatsReceiver {
           if (vals.length <= 3) { vals.mkString("[", ",", "]") }
           else {
             val numOmitted = vals.length - 3
-            vals
-              .take(3)
+            vals.take(3)
               .mkString("[", ",", s"... (omitted $numOmitted value(s))]")
           }
         s"Stat(${name.mkString("/")}=$valStr)"

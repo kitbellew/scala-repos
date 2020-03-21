@@ -15,45 +15,34 @@ trait ActivityService {
 
   def getActivitiesByUser(activityUserName: String, isPublic: Boolean)(implicit
       s: Session): List[Activity] =
-    Activities
-      .innerJoin(Repositories)
-      .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName))
-      .filter {
+    Activities.innerJoin(Repositories)
+      .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName)).filter {
         case (t1, t2) =>
           if (isPublic) {
-            (t1.activityUserName === activityUserName.bind) && (
-              t2.isPrivate === false.bind
-            )
+            (t1.activityUserName === activityUserName.bind) && (t2
+              .isPrivate === false.bind)
           } else { (t1.activityUserName === activityUserName.bind) }
-      }
-      .sortBy { case (t1, t2) => t1.activityId desc }
-      .map { case (t1, t2) => t1 }
-      .take(30)
-      .list
+      }.sortBy { case (t1, t2) => t1.activityId desc }.map {
+        case (t1, t2) => t1
+      }.take(30).list
 
   def getRecentActivities()(implicit s: Session): List[Activity] =
-    Activities
-      .innerJoin(Repositories)
-      .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName))
-      .filter { case (t1, t2) => t2.isPrivate === false.bind }
-      .sortBy { case (t1, t2) => t1.activityId desc }
-      .map { case (t1, t2) => t1 }
-      .take(30)
-      .list
+    Activities.innerJoin(Repositories)
+      .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName)).filter {
+        case (t1, t2) => t2.isPrivate === false.bind
+      }.sortBy { case (t1, t2) => t1.activityId desc }.map {
+        case (t1, t2) => t1
+      }.take(30).list
 
   def getRecentActivitiesByOwners(owners: Set[String])(implicit
       s: Session): List[Activity] =
-    Activities
-      .innerJoin(Repositories)
-      .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName))
-      .filter {
+    Activities.innerJoin(Repositories)
+      .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName)).filter {
         case (t1, t2) =>
           (t2.isPrivate === false.bind) || (t2.userName inSetBind owners)
-      }
-      .sortBy { case (t1, t2) => t1.activityId desc }
-      .map { case (t1, t2) => t1 }
-      .take(30)
-      .list
+      }.sortBy { case (t1, t2) => t1.activityId desc }.map {
+        case (t1, t2) => t1
+      }.take(30).list
 
   def recordCreateRepositoryActivity(
       userName: String,
@@ -225,8 +214,7 @@ trait ActivityService {
       "push",
       s"[user:${activityUserName}] pushed to [branch:${userName}/${repositoryName}#${branchName}] at [repo:${userName}/${repositoryName}]",
       Some(
-        commits
-          .map { commit => commit.id + ":" + commit.shortMessage }
+        commits.map { commit => commit.id + ":" + commit.shortMessage }
           .mkString("\n")),
       currentDate
     )

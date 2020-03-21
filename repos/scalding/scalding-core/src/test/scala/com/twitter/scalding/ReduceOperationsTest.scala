@@ -19,50 +19,38 @@ import org.scalatest.{Matchers, WordSpec}
 
 class SortWithTakeJob(args: Args) extends Job(args) {
   try {
-    Tsv("input0", ('key, 'item_id, 'score)).read
-      .groupBy('key) {
-        _.sortWithTake[(Long, Double)]((('item_id, 'score), 'top_items), 5) {
-          (item_0: (Long, Double), item_1: (Long, Double)) =>
-            if (item_0._2 == item_1._2) { item_0._1 > item_1._1 }
-            else { item_0._2 > item_1._2 }
-        }
+    Tsv("input0", ('key, 'item_id, 'score)).read.groupBy('key) {
+      _.sortWithTake[(Long, Double)]((('item_id, 'score), 'top_items), 5) {
+        (item_0: (Long, Double), item_1: (Long, Double)) =>
+          if (item_0._2 == item_1._2) { item_0._1 > item_1._1 }
+          else { item_0._2 > item_1._2 }
       }
-      .map('top_items -> 'top_items) {
-        //used to test that types are correct
-        topItems: List[(Long, Double)] => topItems
-      }
-      .project('key, 'top_items)
-      .write(Tsv("output0"))
+    }.map('top_items -> 'top_items) {
+      //used to test that types are correct
+      topItems: List[(Long, Double)] => topItems
+    }.project('key, 'top_items).write(Tsv("output0"))
   } catch { case e: Exception => e.printStackTrace() }
 }
 
 class SortedReverseTakeJob(args: Args) extends Job(args) {
   try {
-    Tsv("input0", ('key, 'item_id, 'score)).read
-      .groupBy('key) {
-        _.sortedReverseTake[(Long, Double)]((('item_id, 'score), 'top_items), 5)
-      }
-      .map('top_items -> 'top_items) {
-        //used to test that types are correct
-        topItems: List[(Long, Double)] => topItems
-      }
-      .project('key, 'top_items)
-      .write(Tsv("output0"))
+    Tsv("input0", ('key, 'item_id, 'score)).read.groupBy('key) {
+      _.sortedReverseTake[(Long, Double)]((('item_id, 'score), 'top_items), 5)
+    }.map('top_items -> 'top_items) {
+      //used to test that types are correct
+      topItems: List[(Long, Double)] => topItems
+    }.project('key, 'top_items).write(Tsv("output0"))
   } catch { case e: Exception => e.printStackTrace() }
 }
 
 class SortedTakeJob(args: Args) extends Job(args) {
   try {
-    Tsv("input0", ('key, 'item_id, 'score)).read
-      .groupBy('key) {
-        _.sortedTake[(Long, Double)]((('item_id, 'score), 'top_items), 5)
-      }
-      .map('top_items -> 'top_items) {
-        //used to test that types are correct
-        topItems: List[(Long, Double)] => topItems
-      }
-      .project('key, 'top_items)
-      .write(Tsv("output0"))
+    Tsv("input0", ('key, 'item_id, 'score)).read.groupBy('key) {
+      _.sortedTake[(Long, Double)]((('item_id, 'score), 'top_items), 5)
+    }.map('top_items -> 'top_items) {
+      //used to test that types are correct
+      topItems: List[(Long, Double)] => topItems
+    }.project('key, 'top_items).write(Tsv("output0"))
   } catch { case e: Exception => e.printStackTrace() }
 }
 
@@ -70,9 +58,9 @@ class ApproximateUniqueCountJob(args: Args) extends Job(args) {
   implicit def utf8ToBytes(s: String) = com.twitter.bijection.Injection.utf8(s)
 
   try {
-    Tsv("input0", ('category, 'model, 'os)).read
-      .groupBy('category) { _.approximateUniqueCount[String]('os -> 'os_count) }
-      .map('os_count -> 'os_count) { osCount: Double => osCount.toLong }
+    Tsv("input0", ('category, 'model, 'os)).read.groupBy('category) {
+      _.approximateUniqueCount[String]('os -> 'os_count)
+    }.map('os_count -> 'os_count) { osCount: Double => osCount.toLong }
       .write(Tsv("output0"))
   } catch { case e: Exception => e.printStackTrace() }
 }
@@ -97,23 +85,15 @@ class ReduceOperationsTest extends WordSpec with Matchers {
         "grouped list" in {
           val whatWeWant: Map[String, String] = Map(
             "a" -> List((1L, 3.5), (3L, 3.0), (2L, 3.0)).toString,
-            "b" -> List(
-              (1L, 6.0),
-              (2L, 5.0),
-              (3L, 4.0),
-              (4L, 3.0),
-              (5L, 2.0)).toString)
+            "b" -> List((1L, 6.0), (2L, 5.0), (3L, 4.0), (4L, 3.0), (5L, 2.0))
+              .toString)
           val whatWeGet: Map[String, List[(Long, Double)]] = buf.toMap
-          whatWeGet.get("a").getOrElse("apples") shouldBe (
-            whatWeWant.get("a").getOrElse("oranges")
-          )
-          whatWeGet.get("b").getOrElse("apples") shouldBe (
-            whatWeWant.get("b").getOrElse("oranges")
-          )
+          whatWeGet.get("a").getOrElse("apples") shouldBe (whatWeWant.get("a")
+            .getOrElse("oranges"))
+          whatWeGet.get("b").getOrElse("apples") shouldBe (whatWeWant.get("b")
+            .getOrElse("oranges"))
         }
-      }
-      .runHadoop
-      .finish
+      }.runHadoop.finish
   }
   "A sortedTake job" should {
     JobTest(new SortedTakeJob(_))
@@ -122,23 +102,15 @@ class ReduceOperationsTest extends WordSpec with Matchers {
         "grouped list" in {
           val whatWeWant: Map[String, String] = Map(
             "a" -> List((1L, 3.5), (2L, 3.0), (3L, 3.0)).toString,
-            "b" -> List(
-              (1L, 6.0),
-              (2L, 5.0),
-              (3L, 4.0),
-              (4L, 3.0),
-              (5L, 2.0)).toString)
+            "b" -> List((1L, 6.0), (2L, 5.0), (3L, 4.0), (4L, 3.0), (5L, 2.0))
+              .toString)
           val whatWeGet: Map[String, List[(Long, Double)]] = buf.toMap
-          whatWeGet.get("a").getOrElse("apples") shouldBe (
-            whatWeWant.get("a").getOrElse("oranges")
-          )
-          whatWeGet.get("b").getOrElse("apples") shouldBe (
-            whatWeWant.get("b").getOrElse("oranges")
-          )
+          whatWeGet.get("a").getOrElse("apples") shouldBe (whatWeWant.get("a")
+            .getOrElse("oranges"))
+          whatWeGet.get("b").getOrElse("apples") shouldBe (whatWeWant.get("b")
+            .getOrElse("oranges"))
         }
-      }
-      .runHadoop
-      .finish
+      }.runHadoop.finish
   }
 
   "A sortedReverseTake job" should {
@@ -148,23 +120,15 @@ class ReduceOperationsTest extends WordSpec with Matchers {
         "grouped list" in {
           val whatWeWant: Map[String, String] = Map(
             "a" -> List((3L, 3.0), (2L, 3.0), (1L, 3.5)).toString,
-            "b" -> List(
-              (6L, 1.0),
-              (5L, 2.0),
-              (4L, 3.0),
-              (3L, 4.0),
-              (2L, 5.0)).toString)
+            "b" -> List((6L, 1.0), (5L, 2.0), (4L, 3.0), (3L, 4.0), (2L, 5.0))
+              .toString)
           val whatWeGet: Map[String, List[(Long, Double)]] = buf.toMap
-          whatWeGet.get("a").getOrElse("apples") shouldBe (
-            whatWeWant.get("a").getOrElse("oranges")
-          )
-          whatWeGet.get("b").getOrElse("apples") shouldBe (
-            whatWeWant.get("b").getOrElse("oranges")
-          )
+          whatWeGet.get("a").getOrElse("apples") shouldBe (whatWeWant.get("a")
+            .getOrElse("oranges"))
+          whatWeGet.get("b").getOrElse("apples") shouldBe (whatWeWant.get("b")
+            .getOrElse("oranges"))
         }
-      }
-      .runHadoop
-      .finish
+      }.runHadoop.finish
   }
 
   "An approximateUniqueCount job" should {
@@ -180,15 +144,11 @@ class ReduceOperationsTest extends WordSpec with Matchers {
           val whatWeWant: Map[String, Long] = Map("laptop" -> 1, "mobile" -> 2)
           val whatWeGet: Map[String, Long] = buf.toMap
           whatWeGet should have size 2
-          whatWeGet.get("laptop").getOrElse("apples") shouldBe (
-            whatWeWant.get("laptop").getOrElse("oranges")
-          )
-          whatWeGet.get("mobile").getOrElse("apples") shouldBe (
-            whatWeWant.get("mobile").getOrElse("oranges")
-          )
+          whatWeGet.get("laptop").getOrElse("apples") shouldBe (whatWeWant
+            .get("laptop").getOrElse("oranges"))
+          whatWeGet.get("mobile").getOrElse("apples") shouldBe (whatWeWant
+            .get("mobile").getOrElse("oranges"))
         }
-      }
-      .runHadoop
-      .finish
+      }.runHadoop.finish
   }
 }

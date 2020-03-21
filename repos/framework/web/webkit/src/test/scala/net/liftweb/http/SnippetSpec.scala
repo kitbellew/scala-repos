@@ -97,9 +97,8 @@ object SnippetSpec extends Specification with XmlMatchers {
 
       val ret = S.statelessInit(Req.nil) {
         S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <lift:foo>{res}</lift:foo>)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
         }
       }
 
@@ -111,9 +110,8 @@ object SnippetSpec extends Specification with XmlMatchers {
 
       val ret = S.statelessInit(Req.nil) {
         S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <l:foo>{res}</l:foo>)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <l:foo>{res}</l:foo>)
         }
       }
 
@@ -125,9 +123,8 @@ object SnippetSpec extends Specification with XmlMatchers {
 
       val ret = S.statelessInit(Req.nil) {
         S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <div class="l:foo" />)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <div class="l:foo" />)
         }
       }
 
@@ -189,9 +186,8 @@ object SnippetSpec extends Specification with XmlMatchers {
       val ret = S.statelessInit(Req.nil) {
         S.mapSnippetsWith("foo" -> testAttrs _) {
           val clStr = "l:foo?bing=bong&amp;fuzz=faz+snark&amp;noodle=FatPoodle"
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <div class={clStr} />)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <div class={clStr} />)
         }
       }
 
@@ -224,9 +220,8 @@ object SnippetSpec extends Specification with XmlMatchers {
 
       val ret = S.statelessInit(Req.nil) {
         S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <div class='lift:foo' />)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <div class='lift:foo' />)
         }
       }
 
@@ -236,14 +231,13 @@ object SnippetSpec extends Specification with XmlMatchers {
     "Snippet invocation fails class='l:bar'" in {
       val ret = S.statelessInit(Req.nil) {
         S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <div class="lift:bar" />)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <div class="lift:bar" />)
         }
       }
 
-      (ret.openOrThrowException(
-        "legacy code") \ "@class").text must_== "snippeterror"
+      (ret.openOrThrowException("legacy code") \ "@class")
+        .text must_== "snippeterror"
     }
 
     object myInfo extends SessionVar("")
@@ -267,14 +261,13 @@ object SnippetSpec extends Specification with XmlMatchers {
 
       val ret = S.statelessInit(Req.nil) {
         S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <lift:foo>{res}</lift:foo>)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
         }
       }
 
-      (ret.openOrThrowException(
-        "legacy code") \ "@class").text must_== "snippeterror"
+      (ret.openOrThrowException("legacy code") \ "@class")
+        .text must_== "snippeterror"
     }
 
     "Snippet invocation succeeds in normal mode" in {
@@ -283,9 +276,8 @@ object SnippetSpec extends Specification with XmlMatchers {
 
       val ret = S.init(makeReq, session) {
         S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <lift:foo>{res}</lift:foo>)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
         }
       }
 
@@ -297,14 +289,13 @@ object SnippetSpec extends Specification with XmlMatchers {
 
       val ret = S.statelessInit(Req.nil) {
         S.mapSnippetsWith("foo" -> Funky.foo _) {
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <lift:foo>{res}</lift:foo>)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
         }
       }
 
-      (ret.openOrThrowException(
-        "legacy code") \ "@class").text must_== "snippeterror"
+      (ret.openOrThrowException("legacy code") \ "@class")
+        .text must_== "snippeterror"
     }
 
     "Snippet invocation succeeds in normal mode (function table)" in {
@@ -313,9 +304,8 @@ object SnippetSpec extends Specification with XmlMatchers {
 
       val ret = S.init(makeReq, session) {
         S.mapSnippetsWith("foo" -> Funky.foo _) {
-          for { s <- S.session } yield s.processSurroundAndInclude(
-            "test",
-            <lift:foo>{res}</lift:foo>)
+          for { s <- S.session } yield s
+            .processSurroundAndInclude("test", <lift:foo>{res}</lift:foo>)
         }
       }
 
@@ -340,9 +330,8 @@ object SnippetSpec extends Specification with XmlMatchers {
         val ret = SHtml.onSubmitBoolean(s => ())(<input type="checkbox"/>)
 
         ret.size must_== 2
-        (
-          ret \\ "input"
-        ).flatMap(_ \ "@name").map(_.text).mkString.length must be > 0
+        (ret \\ "input").flatMap(_ \ "@name").map(_.text).mkString
+          .length must be > 0
       }
     }
 

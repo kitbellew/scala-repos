@@ -36,8 +36,8 @@ private[testkit] class TestSinkStage[T, M](
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes) = {
     stageUnderTest.shape.in.id = in.id
-    val (logic, mat) = stageUnderTest.createLogicAndMaterializedValue(
-      inheritedAttributes)
+    val (logic, mat) = stageUnderTest
+      .createLogicAndMaterializedValue(inheritedAttributes)
 
     val inHandler = logic.handlers(in.id).asInstanceOf[InHandler]
     logic.handlers(in.id) = new InHandler {
@@ -76,8 +76,8 @@ private[testkit] class TestSourceStage[T, M](
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes) = {
     stageUnderTest.shape.out.id = out.id
-    val (logic, mat) = stageUnderTest.createLogicAndMaterializedValue(
-      inheritedAttributes)
+    val (logic, mat) = stageUnderTest
+      .createLogicAndMaterializedValue(inheritedAttributes)
 
     val outHandler = logic.handlers(out.id).asInstanceOf[OutHandler]
     logic.handlers(out.id) = new OutHandler {

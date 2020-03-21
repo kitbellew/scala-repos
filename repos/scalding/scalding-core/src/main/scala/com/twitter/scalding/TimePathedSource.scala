@@ -31,9 +31,9 @@ object TimePathedSource {
       "%1$tH" -> Hours(1),
       "%1$td" -> Days(1)(tz),
       "%1$tm" -> Months(1)(tz),
-      "%1$tY" -> Years(1)(tz))
-      .find { unitDur: (String, Duration) => pattern.contains(unitDur._1) }
-      .map(_._2)
+      "%1$tY" -> Years(1)(tz)).find { unitDur: (String, Duration) =>
+      pattern.contains(unitDur._1)
+    }.map(_._2)
 
   /**
     * Gives all paths in the given daterange with windows based on the provided duration.
@@ -44,9 +44,9 @@ object TimePathedSource {
       dateRange: DateRange,
       tz: TimeZone): Iterable[String] =
     // This method is exhaustive, but too expensive for Cascading's JobConf writing.
-    dateRange
-      .each(duration)
-      .map { dr: DateRange => toPath(pattern, dr.start, tz) }
+    dateRange.each(duration).map { dr: DateRange =>
+      toPath(pattern, dr.start, tz)
+    }
 
   /**
     * Gives all read paths in the given daterange.
@@ -83,8 +83,9 @@ abstract class TimeSeqPathedSource(
     extends FileSource {
 
   override def hdfsPaths =
-    patterns
-      .flatMap { pattern: String => Globifier(pattern)(tz).globify(dateRange) }
+    patterns.flatMap { pattern: String =>
+      Globifier(pattern)(tz).globify(dateRange)
+    }
 
   /**
     * Override this if you have for instance an hourly pattern but want to run every 6 hours.
@@ -115,8 +116,8 @@ abstract class TimeSeqPathedSource(
     getPathStatuses(conf).forall {
       case (path, good) =>
         if (!good) {
-          System.err.println(
-            "[ERROR] Path: " + path + " is missing in: " + toString)
+          System.err
+            .println("[ERROR] Path: " + path + " is missing in: " + toString)
         }
         good
     }
@@ -154,8 +155,9 @@ abstract class TimePathedSource(
     TimePathedSource.writePathFor(pattern, dateRange, tz)
 
   override def localPaths =
-    patterns
-      .flatMap { pattern: String => Globifier(pattern)(tz).globify(dateRange) }
+    patterns.flatMap { pattern: String =>
+      Globifier(pattern)(tz).globify(dateRange)
+    }
 }
 
 /*
@@ -168,11 +170,8 @@ abstract class MostRecentGoodSource(p: String, dr: DateRange, t: TimeZone)
     "MostRecentGoodSource(" + p + ", " + dr + ", " + t + ")"
 
   override protected def goodHdfsPaths(hdfsMode: Hdfs) =
-    getPathStatuses(hdfsMode.jobConf).toList.reverse
-      .find(_._2)
-      .map(_._1)
+    getPathStatuses(hdfsMode.jobConf).toList.reverse.find(_._2).map(_._1)
 
   override def hdfsReadPathsAreGood(conf: Configuration) =
-    getPathStatuses(conf)
-      .exists(_._2)
+    getPathStatuses(conf).exists(_._2)
 }

@@ -40,11 +40,10 @@ class ScalaTestLocationProvider extends SMTestLocator {
     protocolId match {
       case "scala" => locationData match {
           case SpecsHintPattern(className, fileName, lineNumber) =>
-            val clazzes = ScalaShortNamesCacheManager
-              .getInstance(project)
+            val clazzes = ScalaShortNamesCacheManager.getInstance(project)
               .getClassesByFQName(className, scope)
-            val found = clazzes.find(c =>
-              Option(c.getContainingFile).exists(_.name == fileName))
+            val found = clazzes
+              .find(c => Option(c.getContainingFile).exists(_.name == fileName))
 
             found match {
               case Some(file) =>
@@ -62,20 +61,16 @@ class ScalaTestLocationProvider extends SMTestLocator {
         val res = new ArrayList[Location[_ <: PsiElement]]()
         locationData match {
           case ScalaTestTopOfClassPattern(classFqn, testName) =>
-            val classes = ScalaShortNamesCacheManager
-              .getInstance(project)
+            val classes = ScalaShortNamesCacheManager.getInstance(project)
               .getClassesByFQName(classFqn, scope)
-            val clazz = classes
-              .find(!_.isInstanceOf[ScObject])
+            val clazz = classes.find(!_.isInstanceOf[ScObject])
               .orElse(classes.headOption)
             clazz.foreach(c =>
               res.add(new PsiLocationWithName(project, c, testName)))
           case ScalaTestTopOfMethodPattern(classFqn, methodName, testName) =>
-            val classes = ScalaShortNamesCacheManager
-              .getInstance(project)
+            val classes = ScalaShortNamesCacheManager.getInstance(project)
               .getClassesByFQName(classFqn, GlobalSearchScope.allScope(project))
-            val methodOwner = classes
-              .find(!_.isInstanceOf[ScObject])
+            val methodOwner = classes.find(!_.isInstanceOf[ScObject])
               .orElse(classes.headOption)
             methodOwner match {
               case Some(td: ScTypeDefinition) =>
@@ -99,11 +94,10 @@ class ScalaTestLocationProvider extends SMTestLocator {
                 fileName,
                 lineNumber,
                 testName) =>
-            val clazzes = ScalaPsiManager
-              .instance(project)
+            val clazzes = ScalaPsiManager.instance(project)
               .getCachedClass(GlobalSearchScope.allScope(project), classFqn)
-            val found = clazzes.find(c =>
-              Option(c.getContainingFile).exists(_.name == fileName))
+            val found = clazzes
+              .find(c => Option(c.getContainingFile).exists(_.name == fileName))
             found match {
               case Some(file) =>
                 res.add(createLocationFor(
@@ -124,12 +118,10 @@ class ScalaTestLocationProvider extends SMTestLocator {
       project: Project,
       locationData: String): ArrayList[Location[_ <: PsiElement]] = {
     val res = new ArrayList[Location[_ <: PsiElement]]()
-    val clazz: PsiClass = ScalaPsiManager
-      .instance(project)
-      .getCachedClass(
-        locationData,
-        GlobalSearchScope.allScope(project),
-        ScalaPsiManager.ClassCategory.TYPE)
+    val clazz: PsiClass = ScalaPsiManager.instance(project).getCachedClass(
+      locationData,
+      GlobalSearchScope.allScope(project),
+      ScalaPsiManager.ClassCategory.TYPE)
     if (clazz != null)
       res.add(PsiLocation.fromPsiElement[PsiClass](project, clazz))
     res
@@ -141,8 +133,7 @@ class ScalaTestLocationProvider extends SMTestLocator {
       lineNum: Int,
       withName: Option[String] = None): Location[_ <: PsiElement] = {
     assert(lineNum > 0)
-    val doc: Document = PsiDocumentManager
-      .getInstance(project)
+    val doc: Document = PsiDocumentManager.getInstance(project)
       .getDocument(psiFile)
     if (doc == null) { return null }
     val lineCount: Int = doc.getLineCount

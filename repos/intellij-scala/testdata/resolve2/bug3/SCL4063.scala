@@ -14,8 +14,7 @@ object FunnyBusiness {
   }
 
   MyConverter.newFoo.hello() // Nothing wrong with this hello, but...
-  MyConverter
-    .convert(3)
+  MyConverter.convert(3)
     . /*line: 11*/ hello() // This hello is not recognized (does not appear in autocomplete, can't ctrl-click)
 
 }

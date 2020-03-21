@@ -28,8 +28,9 @@ class ALSModel(
       user: Int,
       num: Int,
       categoryItems: Array[Set[Int]]) = {
-    val filteredProductFeatures = productFeatures
-      .filter { case (id, _) => categoryItems.exists(_.contains(id)) }
+    val filteredProductFeatures = productFeatures.filter {
+      case (id, _) => categoryItems.exists(_.contains(id))
+    }
     recommend(userFeatures.lookup(user).head, filteredProductFeatures, num)
       .map(t => Rating(user, t._1, t._2))
   }
@@ -85,11 +86,9 @@ object ALSModel extends IPersistentModelLoader[ALSAlgorithmParams, ALSModel] {
       userFeatures = sc.get.objectFile(s"/tmp/${id}/userFeatures"),
       productFeatures = sc.get.objectFile(s"/tmp/${id}/productFeatures"),
       userStringIntMap = sc.get
-        .objectFile[BiMap[String, Int]](s"/tmp/${id}/userStringIntMap")
-        .first,
+        .objectFile[BiMap[String, Int]](s"/tmp/${id}/userStringIntMap").first,
       itemStringIntMap = sc.get
-        .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap")
-        .first,
+        .objectFile[BiMap[String, Int]](s"/tmp/${id}/itemStringIntMap").first,
       categoryItemsMap = sc.get
         .objectFile[Map[String, Set[Int]]](s"/tmp/${id}/categoryItemsMap")
         .first)

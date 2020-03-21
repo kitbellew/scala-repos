@@ -6,7 +6,8 @@ class X extends Raw_1[X] {
 object Test extends App {
   def c(s: X) = {
     val raw = s.raw
-    raw.t.exxx // java.lang.ClassCastException: java.lang.String cannot be cast to X
+    raw.t
+      .exxx // java.lang.ClassCastException: java.lang.String cannot be cast to X
   }
   c(new X())
 }

@@ -54,7 +54,8 @@ trait StringHelper {
     }
 
   private val urlRegex =
-    """(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s<>]+|\(([^\s<>]+|(\([^\s<>]+\)))*\))+(?:\(([^\s<>]+|(\([^\s<>]+\)))*\)|[^\s`!\[\]{};:'".,<>?«»“”‘’]))""".r
+    """(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s<>]+|\(([^\s<>]+|(\([^\s<>]+\)))*\))+(?:\(([^\s<>]+|(\([^\s<>]+\)))*\)|[^\s`!\[\]{};:'".,<>?«»“”‘’]))"""
+      .r
 
   def addLinks(text: String) =
     urlRegex.replaceAllIn(
@@ -89,13 +90,11 @@ trait StringHelper {
     Html {
       s match {
         case NumberFirstRegex(number, text) =>
-          "<strong>%s</strong><br />%s".format(
-            (~parseIntOption(number)).localize,
-            text)
+          "<strong>%s</strong><br />%s"
+            .format((~parseIntOption(number)).localize, text)
         case NumberLastRegex(text, number) =>
-          "%s<br /><strong>%s</strong>".format(
-            text,
-            (~parseIntOption(number)).localize)
+          "%s<br /><strong>%s</strong>"
+            .format(text, (~parseIntOption(number)).localize)
         case h => h.replace("\n", "<br />")
       }
     }

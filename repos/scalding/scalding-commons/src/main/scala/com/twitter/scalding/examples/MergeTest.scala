@@ -8,22 +8,19 @@ import com.twitter.scalding._
   * This example job does not yet work.  It is a test for Kyro serialization
   */
 class MergeTest(args: Args) extends Job(args) {
-  TextLine(args("input"))
-    .flatMapTo('word) { _.split("""\s+""") }
+  TextLine(args("input")).flatMapTo('word) { _.split("""\s+""") }
     .groupBy('word) { _.size }
     //Now, let's get the top 10 words:
     .groupAll {
       _.mapReduceMap(('word, 'size) -> 'list) /* map1 */ {
-        tup: (String, Long) =>
-          List(tup)
+        tup: (String, Long) => List(tup)
       } /* reduce */ { (l1: List[(String, Long)], l2: List[(String, Long)]) =>
         mergeSort2(l1, l2, 10, cmpTup)
       } /* map2 */ { lout: List[(String, Long)] => lout }
     }
     //Now expand out the list.
     .flatMap('list -> ('word, 'cnt)) { list: List[(String, Long)] => list }
-    .project('word, 'cnt)
-    .write(Tsv(args("output")))
+    .project('word, 'cnt).write(Tsv(args("output")))
 
   //Reverse sort to get the top items
   def cmpTup(t1: (String, Long), t2: (String, Long)) = t2._2.compareTo(t1._2)

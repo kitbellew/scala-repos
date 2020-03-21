@@ -91,8 +91,8 @@ private[akka] trait MetricsKitOps extends MetricKeyDSL {
 
   /** Enable GC measurements */
   def measureGc(key: MetricKey) =
-    registry.registerAll(
-      new jvm.GarbageCollectorMetricSet() with MetricsPrefix {
+    registry
+      .registerAll(new jvm.GarbageCollectorMetricSet() with MetricsPrefix {
         val prefix = key / "gc"
       })
 
@@ -110,8 +110,7 @@ private[metrics] trait MetricsPrefix extends MetricSet {
   abstract override def getMetrics: util.Map[String, Metric] = {
     // does not have to be fast, is only called once during registering registry
     import collection.JavaConverters._
-    (super.getMetrics.asScala.map {
-      case (k, v) ⇒ (prefix / k).toString -> v
-    }).asJava
+    (super.getMetrics.asScala.map { case (k, v) ⇒ (prefix / k).toString -> v })
+      .asJava
   }
 }

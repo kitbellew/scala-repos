@@ -108,7 +108,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 case ScParameterizedType(tpe, Seq(arg)) if !elementAdded =>
                   ScType.extractClass(tpe, Some(elem.getProject)) match {
                     case Some(clazz)
-                        if clazz.qualifiedName == "scala.Option" || clazz.qualifiedName == "scala.Some" =>
+                        if clazz.qualifiedName == "scala.Option" || clazz
+                          .qualifiedName == "scala.Some" =>
                       if (!scType.equiv(Nothing) && scType.conforms(arg)) {
                         el.someSmartCompletion = true
                         if (etaExpanded) el.etaExpanded = true
@@ -131,12 +132,10 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       case r: ScalaResolveResult if !r.isNamedParameter =>
                         import org.jetbrains.plugins.scala.lang.psi.types.Nothing
                         val qualifier = r.fromType.getOrElse(Nothing)
-                        val newElem = LookupElementManager
-                          .getLookupElement(
-                            r,
-                            qualifierType = qualifier,
-                            isInStableCodeReference = false)
-                          .head
+                        val newElem = LookupElementManager.getLookupElement(
+                          r,
+                          qualifierType = qualifier,
+                          isInStableCodeReference = false).head
                         applyVariant(new ScalaChainLookupElement(el, newElem))
                       case _ =>
                     }
@@ -149,11 +148,12 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           }
           if (!el.isNamedParameterOrAssignment) elem match {
             case fun: ScSyntheticFunction =>
-              val second =
-                checkForSecondCompletion && fun.paramClauses.flatten.isEmpty
+              val second = checkForSecondCompletion && fun.paramClauses.flatten
+                .isEmpty
               checkType(fun.retType, ScSubstitutor.empty, second)
             case fun: ScFunction =>
-              if (fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef") {
+              if (fun.containingClass != null && fun.containingClass
+                    .qualifiedName == "scala.Predef") {
                 fun.name match {
                   case "implicitly" | "identity" | "locally" => return
                   case _                                     =>
@@ -163,10 +163,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 if (chainVariant) ScSubstitutor.empty
                 else ScalaPsiUtil.inferMethodTypesArgs(fun, subst)
               val second = checkForSecondCompletion &&
-                fun.paramClauses.clauses
-                  .filterNot(_.isImplicit)
-                  .flatMap(_.parameters)
-                  .isEmpty
+                fun.paramClauses.clauses.filterNot(_.isImplicit)
+                  .flatMap(_.parameters).isEmpty
               val added = fun.returnType match {
                 case Success(tp, _) => checkType(tp, infer, second)
                 case _              => false
@@ -179,8 +177,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 }
               }
             case method: PsiMethod =>
-              val second =
-                checkForSecondCompletion && method.getParameterList.getParametersCount == 0
+              val second = checkForSecondCompletion && method.getParameterList
+                .getParametersCount == 0
               val infer =
                 if (chainVariant) ScSubstitutor.empty
                 else ScalaPsiUtil.inferMethodTypesArgs(method, subst)
@@ -217,51 +215,43 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           def checkObject(o: ScObject) {
             o.members.foreach {
               case function: ScFunction =>
-                val lookup = LookupElementManager
-                  .getLookupElement(
-                    new ScalaResolveResult(function),
-                    isClassName = true,
-                    isOverloadedForClassName = false,
-                    shouldImport = true,
-                    isInStableCodeReference = false)
-                  .head
+                val lookup = LookupElementManager.getLookupElement(
+                  new ScalaResolveResult(function),
+                  isClassName = true,
+                  isOverloadedForClassName = false,
+                  shouldImport = true,
+                  isInStableCodeReference = false).head
                 lookup.addLookupStrings(o.name + "." + function.name)
                 applyVariant(lookup)
               case v: ScValue =>
                 v.declaredElements.foreach(td => {
-                  val lookup = LookupElementManager
-                    .getLookupElement(
-                      new ScalaResolveResult(td),
-                      isClassName = true,
-                      isOverloadedForClassName = false,
-                      shouldImport = true,
-                      isInStableCodeReference = false)
-                    .head
+                  val lookup = LookupElementManager.getLookupElement(
+                    new ScalaResolveResult(td),
+                    isClassName = true,
+                    isOverloadedForClassName = false,
+                    shouldImport = true,
+                    isInStableCodeReference = false).head
                   lookup.addLookupStrings(o.name + "." + td.name)
                   applyVariant(lookup)
                 })
               case v: ScVariable =>
                 v.declaredElements.foreach(td => {
-                  val lookup = LookupElementManager
-                    .getLookupElement(
-                      new ScalaResolveResult(td),
-                      isClassName = true,
-                      isOverloadedForClassName = false,
-                      shouldImport = true,
-                      isInStableCodeReference = false)
-                    .head
+                  val lookup = LookupElementManager.getLookupElement(
+                    new ScalaResolveResult(td),
+                    isClassName = true,
+                    isOverloadedForClassName = false,
+                    shouldImport = true,
+                    isInStableCodeReference = false).head
                   lookup.addLookupStrings(o.name + "." + td.name)
                   applyVariant(lookup)
                 })
               case obj: ScObject =>
-                val lookup = LookupElementManager
-                  .getLookupElement(
-                    new ScalaResolveResult(obj),
-                    isClassName = true,
-                    isOverloadedForClassName = false,
-                    shouldImport = true,
-                    isInStableCodeReference = false)
-                  .head
+                val lookup = LookupElementManager.getLookupElement(
+                  new ScalaResolveResult(obj),
+                  isClassName = true,
+                  isOverloadedForClassName = false,
+                  shouldImport = true,
+                  isInStableCodeReference = false).head
                 lookup.addLookupStrings(o.name + "." + obj.name)
                 applyVariant(lookup)
               case _ =>
@@ -277,9 +267,9 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       if ResolveUtils.isAccessible(
                         o,
                         place,
-                        forCompletion = true) && ScalaPsiUtil.hasStablePath(
-                        o) => checkObject(o)
-                  case _   =>
+                        forCompletion = true) && ScalaPsiUtil
+                        .hasStablePath(o) => checkObject(o)
+                  case _                  =>
                 }
               case _ =>
             }
@@ -288,7 +278,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           def checkType(tp: ScType) {
             ScType.extractClass(tp) match {
               case Some(c: ScClass)
-                  if c.qualifiedName == "scala.Option" || c.qualifiedName == "scala.Some" =>
+                  if c.qualifiedName == "scala.Option" || c
+                    .qualifiedName == "scala.Some" =>
                 tp match {
                   case ScParameterizedType(_, Seq(scType)) => checkType(scType)
                   case _                                   =>
@@ -301,26 +292,22 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       if ResolveUtils.isAccessible(
                         o,
                         place,
-                        forCompletion = true) && ScalaPsiUtil.hasStablePath(
-                        o) => checkObject(o)
-                  case _   => //do nothing
+                        forCompletion = true) && ScalaPsiUtil
+                        .hasStablePath(o) => checkObject(o)
+                  case _                  => //do nothing
                 }
               case Some(p: PsiClass)
-                  if ResolveUtils.isAccessible(
-                    p,
-                    place,
-                    forCompletion = true) =>
+                  if ResolveUtils
+                    .isAccessible(p, place, forCompletion = true) =>
                 p.getAllMethods.foreach(method => {
                   if (method.hasModifierProperty("static") && ResolveUtils
                         .isAccessible(method, place, forCompletion = true)) {
-                    val lookup = LookupElementManager
-                      .getLookupElement(
-                        new ScalaResolveResult(method),
-                        isClassName = true,
-                        isOverloadedForClassName = false,
-                        shouldImport = true,
-                        isInStableCodeReference = false)
-                      .head
+                    val lookup = LookupElementManager.getLookupElement(
+                      new ScalaResolveResult(method),
+                      isClassName = true,
+                      isOverloadedForClassName = false,
+                      shouldImport = true,
+                      isInStableCodeReference = false).head
                     lookup.addLookupStrings(p.getName + "." + method.getName)
                     applyVariant(lookup)
                   }
@@ -328,14 +315,12 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 p.getFields.foreach(field => {
                   if (field.hasModifierProperty("static") && ResolveUtils
                         .isAccessible(field, place, forCompletion = true)) {
-                    val lookup = LookupElementManager
-                      .getLookupElement(
-                        new ScalaResolveResult(field),
-                        isClassName = true,
-                        isOverloadedForClassName = false,
-                        shouldImport = true,
-                        isInStableCodeReference = false)
-                      .head
+                    val lookup = LookupElementManager.getLookupElement(
+                      new ScalaResolveResult(field),
+                      isClassName = true,
+                      isOverloadedForClassName = false,
+                      shouldImport = true,
+                      isInStableCodeReference = false).head
                     lookup.addLookupStrings(p.getName + "." + field.getName)
                     applyVariant(lookup)
                   }
@@ -368,8 +353,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                     val lookupString =
                       (if (foundClazz) t.name + "." else "") + "this"
                     val el = new ScalaLookupItem(t, lookupString)
-                    if (!scType.equiv(Nothing) && typez.exists(
-                          scType conforms _)) {
+                    if (!scType.equiv(Nothing) && typez
+                          .exists(scType conforms _)) {
                       if (!foundClazz) el.bold = true
                       result.addElement(el)
                     } else {
@@ -377,13 +362,14 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       typez.foreach {
                         case ScParameterizedType(tp, Seq(arg))
                             if !elementAdded =>
-                          ScType.extractClass(
-                            tp,
-                            Some(place.getProject)) match {
+                          ScType
+                            .extractClass(tp, Some(place.getProject)) match {
                             case Some(clazz)
-                                if clazz.qualifiedName == "scala.Option" || clazz.qualifiedName == "scala.Some" =>
-                              if (!scType.equiv(Nothing) && scType.conforms(
-                                    arg)) {
+                                if clazz
+                                  .qualifiedName == "scala.Option" || clazz
+                                  .qualifiedName == "scala.Some" =>
+                              if (!scType.equiv(Nothing) && scType
+                                    .conforms(arg)) {
                                 el.someSmartCompletion = true
                                 result.addElement(el)
                                 elementAdded = true
@@ -526,8 +512,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           def renderElement(
               element: LookupElement,
               presentation: LookupElementPresentation) {
-            val arrowText = ScalaPsiUtil.functionArrow(
-              referenceExpression.getProject)
+            val arrowText = ScalaPsiUtil
+              .functionArrow(referenceExpression.getProject)
             val text = ScalaCompletionUtil.generateAnonymousFunctionText(
               braceArgs,
               presentableParams,
@@ -547,9 +533,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                         canonical = false,
                         withoutEnd = true,
                         arrowText = arrowText)
-                    if (realPresentation.hasEnoughSpaceFor(
-                          prefix + suffix,
-                          false)) {
+                    if (realPresentation
+                          .hasEnoughSpaceFor(prefix + suffix, false)) {
                       presentation.setItemText(prefix + suffix)
                       end = true
                     } else prefixIndex -= 1
@@ -561,18 +546,18 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
             }
           }
         }
-        val builder = LookupElementBuilder
-          .create("")
+        val builder = LookupElementBuilder.create("")
           .withRenderer(anonFunRenderer)
-          .withInsertHandler(
-            new ScalaGenerateAnonymousFunctionInsertHandler(params, braceArgs))
+          .withInsertHandler(new ScalaGenerateAnonymousFunctionInsertHandler(
+            params,
+            braceArgs))
         val lookupElement =
           if (ApplicationManager.getApplication.isUnitTestMode)
             builder.withAutoCompletionPolicy(
               AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE)
           else
-            builder.withAutoCompletionPolicy(
-              AutoCompletionPolicy.NEVER_AUTOCOMPLETE)
+            builder
+              .withAutoCompletionPolicy(AutoCompletionPolicy.NEVER_AUTOCOMPLETE)
         result.addElement(lookupElement)
       }
     }
@@ -1046,12 +1031,9 @@ private[completion] object ScalaSmartCompletionContributor {
   def superParentPattern(
       clazz: java.lang.Class[_ <: PsiElement]): ElementPattern[PsiElement] = {
     StandardPatterns.or(
-      PlatformPatterns
-        .psiElement(ScalaTokenTypes.tIDENTIFIER)
-        .withParent(classOf[ScReferenceExpression])
-        .withSuperParent(2, clazz),
-      PlatformPatterns
-        .psiElement(ScalaTokenTypes.tIDENTIFIER)
+      PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER)
+        .withParent(classOf[ScReferenceExpression]).withSuperParent(2, clazz),
+      PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER)
         .withParent(classOf[ScReferenceExpression])
         .withSuperParent(2, classOf[ScReferenceExpression])
         .withSuperParent(3, clazz)
@@ -1061,8 +1043,7 @@ private[completion] object ScalaSmartCompletionContributor {
   def superParentsPattern(
       classes: Class[_ <: PsiElement]*): ElementPattern[PsiElement] = {
     var pattern: Capture[PsiElement] = PlatformPatterns
-      .psiElement(ScalaTokenTypes.tIDENTIFIER)
-      .withParent(classes(0))
+      .psiElement(ScalaTokenTypes.tIDENTIFIER).withParent(classes(0))
     for (i <- 1 until classes.length) {
       pattern = pattern.withSuperParent(i + 1, classes(i))
     }

@@ -26,8 +26,8 @@ class FilePublisherTest extends AkkaPublisherVerification[ByteString] {
     _system = ActorSystem(
       Logging.simpleName(getClass),
       UnboundedMailboxConfig.withFallback(AkkaSpec.testConf))
-    _system.eventStream.publish(TestEvent.Mute(
-      EventFilter[RuntimeException]("Test exception")))
+    _system.eventStream
+      .publish(TestEvent.Mute(EventFilter[RuntimeException]("Test exception")))
   }
 
   val file = {
@@ -40,9 +40,7 @@ class FilePublisherTest extends AkkaPublisherVerification[ByteString] {
   }
 
   def createPublisher(elements: Long): Publisher[ByteString] =
-    FileIO
-      .fromFile(file, chunkSize = 512)
-      .take(elements)
+    FileIO.fromFile(file, chunkSize = 512).take(elements)
       .runWith(Sink.asPublisher(false))
 
   @AfterClass

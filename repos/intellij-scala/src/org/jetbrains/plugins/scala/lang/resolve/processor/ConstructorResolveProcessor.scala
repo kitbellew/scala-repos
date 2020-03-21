@@ -97,12 +97,10 @@ class ConstructorResolveProcessor(
             boundClass = getBoundClass(state),
             fromType = fromType,
             isAccessible = true)
-          val tp = ta
-            .aliasedType(TypingContext.empty)
-            .getOrElse({
-              addResult(r)
-              return true
-            })
+          val tp = ta.aliasedType(TypingContext.empty).getOrElse({
+            addResult(r)
+            return true
+          })
           ScType.extractClassType(tp) match {
             case Some((clazz, s)) =>
               val constructors: Array[PsiMethod] =

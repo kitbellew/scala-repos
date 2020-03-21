@@ -44,17 +44,12 @@ class TaskStatsByVersionFormatTest
     When("serializing to JSON")
     val json = Json.toJson(fullTaskStats)
     Then("we get the correct json")
-    JsonTestHelper
-      .assertThatJsonOf(json)
-      .correspondsToJsonOf(Json.obj(
-        "stats" -> Json.obj(
-          "counts" -> Json.obj(
-            "staged" -> 1,
-            "running" -> 2,
-            "healthy" -> 3,
-            "unhealthy" -> 4),
-          "lifeTime" -> Json
-            .obj("averageSeconds" -> 20.0, "medianSeconds" -> 10.0))))
+    JsonTestHelper.assertThatJsonOf(json).correspondsToJsonOf(Json.obj(
+      "stats" -> Json.obj(
+        "counts" -> Json
+          .obj("staged" -> 1, "running" -> 2, "healthy" -> 3, "unhealthy" -> 4),
+        "lifeTime" -> Json
+          .obj("averageSeconds" -> 20.0, "medianSeconds" -> 10.0))))
   }
 
   test(
@@ -62,15 +57,13 @@ class TaskStatsByVersionFormatTest
     When("serializing to JSON")
     val json = Json.toJson(fullTaskStats.copy(maybeLifeTime = None))
     Then("we get the correct json")
-    JsonTestHelper
-      .assertThatJsonOf(json)
-      .correspondsToJsonOf(Json.obj(
-        "stats" -> Json.obj(
-          "counts" -> Json.obj(
-            "staged" -> 1,
-            "running" -> 2,
-            "healthy" -> 3,
-            "unhealthy" -> 4))))
+    JsonTestHelper.assertThatJsonOf(json).correspondsToJsonOf(Json.obj(
+      "stats" -> Json.obj(
+        "counts" -> Json.obj(
+          "staged" -> 1,
+          "running" -> 2,
+          "healthy" -> 3,
+          "unhealthy" -> 4))))
   }
 
   test("full task stats by version get rendered correctly") {

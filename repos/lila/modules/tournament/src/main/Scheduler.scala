@@ -49,10 +49,10 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
       val tomorrow = rightNow plusDays 1
       val lastDayOfMonth = today.dayOfMonth.withMaximumValue
       val firstDayOfMonth = today.dayOfMonth.withMinimumValue
-      val lastSundayOfCurrentMonth = lastDayOfMonth.minusDays(
-        lastDayOfMonth.getDayOfWeek % 7)
-      val firstSundayOfCurrentMonth = firstDayOfMonth.plusDays(
-        7 - firstDayOfMonth.getDayOfWeek)
+      val lastSundayOfCurrentMonth = lastDayOfMonth
+        .minusDays(lastDayOfMonth.getDayOfWeek % 7)
+      val firstSundayOfCurrentMonth = firstDayOfMonth
+        .plusDays(7 - firstDayOfMonth.getDayOfWeek)
       val nextSaturday = today.plusDays((13 - today.getDayOfWeek) % 7)
 
       def orTomorrow(date: DateTime) =
@@ -63,10 +63,10 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
       val isHalloween = today.getMonthOfYear == 10 && today.getDayOfMonth == 31
 
       val std = StartingPosition.initial
-      val opening1 =
-        isHalloween ? StartingPosition.presets.halloween | StartingPosition.randomFeaturable
-      val opening2 =
-        isHalloween ? StartingPosition.presets.frankenstein | StartingPosition.randomFeaturable
+      val opening1 = isHalloween ? StartingPosition.presets
+        .halloween | StartingPosition.randomFeaturable
+      val opening2 = isHalloween ? StartingPosition.presets
+        .frankenstein | StartingPosition.randomFeaturable
 
       val nextSchedules: List[Schedule] = List(
         // Schedule(Marathon, Blitz, Standard, std, at(firstSundayOfCurrentMonth, 2, 0) |> orNextMonth),
@@ -233,12 +233,8 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
             .fold[Schedule.Speed](HyperBullet, Bullet)
           List(
             Schedule(Hourly, Bullet, Standard, std, at(date, hour)).some,
-            Schedule(
-              Hourly,
-              bulletType,
-              Standard,
-              std,
-              at(date, hour, 30)).some,
+            Schedule(Hourly, bulletType, Standard, std, at(date, hour, 30))
+              .some,
             Schedule(Hourly, SuperBlitz, Standard, std, at(date, hour)).some,
             Schedule(Hourly, Blitz, Standard, std, at(date, hour)).some,
             (

@@ -24,10 +24,8 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config)
             answer
           } catch {
             case e: UnknownHostException ⇒
-              val answer = Dns.Resolved(
-                name,
-                immutable.Seq.empty,
-                immutable.Seq.empty)
+              val answer = Dns
+                .Resolved(name, immutable.Seq.empty, immutable.Seq.empty)
               cache.put(answer, negativeTtl)
               answer
           }

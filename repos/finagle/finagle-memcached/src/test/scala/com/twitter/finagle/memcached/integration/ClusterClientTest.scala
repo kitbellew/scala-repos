@@ -96,8 +96,8 @@ class ClusterClientTest
       boundedWait(zookeeperClient.get().setData(zkPath, output.toByteArray, -1))
 
       // a separate client which only does zk discovery for integration test
-      zookeeperClient = zookeeperServer.createClient(
-        ZooKeeperClient.digestCredentials("user", "pass"))
+      zookeeperClient = zookeeperServer
+        .createClient(ZooKeeperClient.digestCredentials("user", "pass"))
 
       // destination of the test cache endpoints
       dest = Resolver.eval(
@@ -130,10 +130,11 @@ class ClusterClientTest
       zookeeperClient,
       ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
       zkPath))
-    Await.result(
-      mycluster.ready,
-      TimeOut
-    ) // give it sometime for the cluster to get the initial set of memberships
+    Await
+      .result(
+        mycluster.ready,
+        TimeOut
+      ) // give it sometime for the cluster to get the initial set of memberships
     val client = Client(mycluster)
 
     val count = 100
@@ -146,12 +147,8 @@ class ClusterClientTest
     val tmpClients = testServers map {
       case (server) =>
         Client(
-          ClientBuilder()
-            .hosts(server.address)
-            .codec(new Memcached)
-            .hostConnectionLimit(1)
-            .daemon(true)
-            .build())
+          ClientBuilder().hosts(server.address).codec(new Memcached)
+            .hostConnectionLimit(1).daemon(true).build())
     }
 
     (0 until count).foreach { n =>
@@ -342,15 +339,10 @@ class ClusterClientTest
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
     test("Ketama ClusterClient using a distributor - set & get") {
-      val client = KetamaClientBuilder()
-        .clientBuilder(
-          ClientBuilder()
-            .hostConnectionLimit(1)
-            .codec(Memcached())
-            .failFast(false))
-        .failureAccrualParams(Int.MaxValue, Duration.Top)
-        .dest(dest)
-        .build()
+      val client = KetamaClientBuilder().clientBuilder(
+        ClientBuilder().hostConnectionLimit(1).codec(Memcached())
+          .failFast(false)).failureAccrualParams(Int.MaxValue, Duration.Top)
+        .dest(dest).build()
 
       Await.result(client.delete("foo"), TimeOut)
       assert(Await.result(client.get("foo"), TimeOut) == None)
@@ -362,16 +354,10 @@ class ClusterClientTest
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
     test("Ketama ClusterClient using a distributor - many keys") {
-      val client = KetamaClientBuilder()
-        .clientBuilder(
-          ClientBuilder()
-            .hostConnectionLimit(1)
-            .codec(Memcached())
-            .failFast(false))
-        .failureAccrualParams(Int.MaxValue, Duration.Top)
-        .dest(dest)
-        .build()
-        .asInstanceOf[PartitionedClient]
+      val client = KetamaClientBuilder().clientBuilder(
+        ClientBuilder().hostConnectionLimit(1).codec(Memcached())
+          .failFast(false)).failureAccrualParams(Int.MaxValue, Duration.Top)
+        .dest(dest).build().asInstanceOf[PartitionedClient]
 
       val count = 100
       Await.result(
@@ -408,15 +394,10 @@ class ClusterClientTest
           Some(customKey + shardId.toString))
       }
     }
-    val client = KetamaClientBuilder()
-      .clientBuilder(
-        ClientBuilder()
-          .hostConnectionLimit(1)
-          .codec(Memcached())
-          .failFast(false))
+    val client = KetamaClientBuilder().clientBuilder(
+      ClientBuilder().hostConnectionLimit(1).codec(Memcached()).failFast(false))
       .failureAccrualParams(Int.MaxValue, Duration.Top)
-      .cachePoolCluster(myClusterWithCustomKey)
-      .build()
+      .cachePoolCluster(myClusterWithCustomKey).build()
 
     assert(trackCacheShards(client.asInstanceOf[PartitionedClient]).size == 5)
   }
@@ -426,16 +407,10 @@ class ClusterClientTest
       // create my cluster client solely based on a zk client and a path
       val mycluster = initializePool(5)
 
-      val client = KetamaClientBuilder()
-        .clientBuilder(
-          ClientBuilder()
-            .hostConnectionLimit(1)
-            .codec(Memcached())
-            .failFast(false))
-        .failureAccrualParams(Int.MaxValue, Duration.Top)
-        .cachePoolCluster(mycluster)
-        .build()
-        .asInstanceOf[PartitionedClient]
+      val client = KetamaClientBuilder().clientBuilder(
+        ClientBuilder().hostConnectionLimit(1).codec(Memcached())
+          .failFast(false)).failureAccrualParams(Int.MaxValue, Duration.Top)
+        .cachePoolCluster(mycluster).build().asInstanceOf[PartitionedClient]
 
       // initially there should be 5 cache shards being used
       assert(trackCacheShards(client).size == 5)
@@ -542,16 +517,10 @@ class ClusterClientTest
       // create my cluster client solely based on a zk client and a path
       val mycluster = initializePool(5, ignoreConfigData = true)
 
-      val client = KetamaClientBuilder()
-        .clientBuilder(
-          ClientBuilder()
-            .hostConnectionLimit(1)
-            .codec(Memcached())
-            .failFast(false))
-        .failureAccrualParams(Int.MaxValue, Duration.Top)
-        .cachePoolCluster(mycluster)
-        .build()
-        .asInstanceOf[PartitionedClient]
+      val client = KetamaClientBuilder().clientBuilder(
+        ClientBuilder().hostConnectionLimit(1).codec(Memcached())
+          .failFast(false)).failureAccrualParams(Int.MaxValue, Duration.Top)
+        .cachePoolCluster(mycluster).build().asInstanceOf[PartitionedClient]
 
       // initially there should be 5 cache shards being used
       assert(trackCacheShards(client).size == 5)
@@ -610,10 +579,8 @@ class ClusterClientTest
       ignoreConfigData: Boolean = false): Cluster[CacheNode] = {
     val myCachePool =
       if (!ignoreConfigData)
-        CachePoolCluster.newZkCluster(
-          zkPath,
-          zookeeperClient,
-          backupPool = backupPool)
+        CachePoolCluster
+          .newZkCluster(zkPath, zookeeperClient, backupPool = backupPool)
       else CachePoolCluster.newUnmanagedZkCluster(zkPath, zookeeperClient)
 
     Await.result(myCachePool.ready, TimeOut) // wait until the pool is ready

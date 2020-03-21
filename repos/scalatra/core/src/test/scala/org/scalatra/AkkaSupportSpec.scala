@@ -16,8 +16,8 @@ class AkkaSupportServlet extends ScalatraServlet with FutureSupport {
   protected implicit val executor = system.dispatcher
   override def asyncTimeout = 2 seconds
 
-  private val futureEC = ExecutionContext.fromExecutor(
-    Executors.newFixedThreadPool(1))
+  private val futureEC = ExecutionContext
+    .fromExecutor(Executors.newFixedThreadPool(1))
 
   get("/redirect") {
     new AsyncResult {
@@ -64,9 +64,8 @@ class AkkaSupportServlet extends ScalatraServlet with FutureSupport {
   asyncGet("/*.jpg") { "jpeg" }
 
   override protected def contentTypeInferrer =
-    ({
-      case "jpeg" => "image/jpeg"
-    }: ContentTypeInferrer) orElse super.contentTypeInferrer
+    ({ case "jpeg" => "image/jpeg" }: ContentTypeInferrer) orElse super
+      .contentTypeInferrer
 
   error { case e: FailException => "caught" }
 
@@ -136,8 +135,8 @@ class AkkaSupportSpec extends MutableScalatraSpec {
     }
 
     "should not leak attributes between requests" in {
-      implicit val multiClentEc = ExecutionContext.fromExecutor(
-        Executors.newFixedThreadPool(50))
+      implicit val multiClentEc = ExecutionContext
+        .fromExecutor(Executors.newFixedThreadPool(50))
       val ids = (1 to 50).map(_ => scala.util.Random.nextInt())
       val serverBaseUrl = baseUrl
       val idsToResponseFs = ids.map { id =>

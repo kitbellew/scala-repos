@@ -76,15 +76,14 @@ object GenerateOrdering
     * Generates the code for ordering based on the given order.
     */
   def genComparisons(ctx: CodegenContext, ordering: Seq[SortOrder]): String = {
-    val comparisons = ordering
-      .map { order =>
-        val eval = order.child.gen(ctx)
-        val asc = order.direction == Ascending
-        val isNullA = ctx.freshName("isNullA")
-        val primitiveA = ctx.freshName("primitiveA")
-        val isNullB = ctx.freshName("isNullB")
-        val primitiveB = ctx.freshName("primitiveB")
-        s"""
+    val comparisons = ordering.map { order =>
+      val eval = order.child.gen(ctx)
+      val asc = order.direction == Ascending
+      val isNullA = ctx.freshName("isNullA")
+      val primitiveA = ctx.freshName("primitiveA")
+      val isNullB = ctx.freshName("isNullB")
+      val primitiveB = ctx.freshName("primitiveB")
+      s"""
           ${ctx.INPUT_ROW} = a;
           boolean $isNullA;
           ${ctx.javaType(order.child.dataType)} $primitiveA;
@@ -108,17 +107,14 @@ object GenerateOrdering
           } else if ($isNullB) {
             return ${if (order.direction == Ascending) "1" else "-1"};
           } else {
-            int comp = ${ctx.genComp(
-          order.child.dataType,
-          primitiveA,
-          primitiveB)};
+            int comp = ${ctx
+        .genComp(order.child.dataType, primitiveA, primitiveB)};
             if (comp != 0) {
               return ${if (asc) "comp" else "-comp"};
             }
           }
       """
-      }
-      .mkString("\n")
+    }.mkString("\n")
     comparisons
   }
 
@@ -150,9 +146,7 @@ object GenerateOrdering
 
     logDebug(s"Generated Ordering: ${CodeFormatter.format(code)}")
 
-    CodeGenerator
-      .compile(code)
-      .generate(ctx.references.toArray)
+    CodeGenerator.compile(code).generate(ctx.references.toArray)
       .asInstanceOf[BaseOrdering]
   }
 }

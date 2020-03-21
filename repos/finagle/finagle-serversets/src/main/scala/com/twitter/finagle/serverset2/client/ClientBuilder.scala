@@ -85,8 +85,7 @@ private[serverset2] object ClientBuilder {
 
 private[client] class ClientBuilder(config: ClientConfig) {
   private def resolve[T <: ZooKeeperClient](cap: Capability) =
-    LoadService[ClientFactory[T]]()
-      .filter(_.capabilities.contains(cap))
+    LoadService[ClientFactory[T]]().filter(_.capabilities.contains(cap))
       .sortBy(_.priority) match {
       case Seq() =>
         throw new RuntimeException("No ZooKeeper ClientFactory Found")
@@ -144,9 +143,8 @@ private[client] class ClientBuilder(config: ClientConfig) {
     * @return configured ClientBuilder
     */
   def hosts(zkHosts: Seq[InetSocketAddress]): ClientBuilder =
-    hosts(zkHosts.map { h =>
-      "%s:%d,".format(h.getHostName, h.getPort)
-    }.mkString)
+    hosts(zkHosts.map { h => "%s:%d,".format(h.getHostName, h.getPort) }
+      .mkString)
 
   /**
     * Configure builder with a session timeout.

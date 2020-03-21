@@ -53,11 +53,8 @@ object BlobMetadata {
     new Extractor[MimeType] {
       def validated(jv: JValue) =
         jv.validated[String].flatMap { ms =>
-          MimeTypes
-            .parseMimeTypes(ms)
-            .headOption
-            .toSuccess(Error.invalid(
-              "Could not extract mime type from '%s'".format(ms)))
+          MimeTypes.parseMimeTypes(ms).headOption.toSuccess(Error.invalid(
+            "Could not extract mime type from '%s'".format(ms)))
         }
     }
 

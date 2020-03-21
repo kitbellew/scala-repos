@@ -194,19 +194,15 @@ private[coordinator] class GroupMetadata(
     val candidates = candidateProtocols
 
     // let each member vote for one of the protocols and choose the one with the most votes
-    val votes: List[(String, Int)] = allMemberMetadata
-      .map(_.vote(candidates))
-      .groupBy(identity)
-      .mapValues(_.size)
-      .toList
+    val votes: List[(String, Int)] = allMemberMetadata.map(_.vote(candidates))
+      .groupBy(identity).mapValues(_.size).toList
 
     votes.maxBy(_._2)._1
   }
 
   private def candidateProtocols = {
     // get the set of protocols that are commonly supported by all members
-    allMemberMetadata
-      .map(_.protocols)
+    allMemberMetadata.map(_.protocols)
       .reduceLeft((commonProtocols, protocols) => commonProtocols & protocols)
   }
 
@@ -263,10 +259,7 @@ private[coordinator] class GroupMetadata(
   }
 
   override def toString = {
-    "[%s,%s,%s,%s]".format(
-      groupId,
-      protocolType,
-      currentState.toString,
-      members)
+    "[%s,%s,%s,%s]"
+      .format(groupId, protocolType, currentState.toString, members)
   }
 }

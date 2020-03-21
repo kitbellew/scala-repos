@@ -53,8 +53,8 @@ object TextFormatter {
     * This string converter converts the text to the same String value. This might be useful for cases where you
     * want to manipulate with the text through the value or you need to provide a default text value.
     */
-  val IdentityStringConverter: StringConverter[String] =
-    jfxsc.TextFormatter.IDENTITY_STRING_CONVERTER
+  val IdentityStringConverter: StringConverter[String] = jfxsc.TextFormatter
+    .IDENTITY_STRING_CONVERTER
 
   object Change {
     implicit def sfxTextFormatterChange2jfx[V](

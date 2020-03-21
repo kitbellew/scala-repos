@@ -90,8 +90,7 @@ object WorksheetSourceProcessor {
     @inline
     def withCompilerVersion[T](if210: => T, if211: => T, dflt: => T) =
       Option(RunWorksheetAction getModuleFor srcFile) flatMap {
-        case module =>
-          module.scalaSdk.flatMap(_.compilerVersion).collect {
+        case module => module.scalaSdk.flatMap(_.compilerVersion).collect {
             case v if v.startsWith("2.10") => if210
             case v if v.startsWith("2.11") => if211
           }
@@ -165,7 +164,8 @@ object WorksheetSourceProcessor {
           }
 
           val start =
-            actualPsi.getTextRange.getStartOffset //actualPsi for start and psi for end - it is intentional
+            actualPsi.getTextRange
+              .getStartOffset //actualPsi for start and psi for end - it is intentional
           val end = psi.getTextRange.getEndOffset
           s"${document getLineNumber start}|${document getLineNumber end}"
       }
@@ -198,8 +198,8 @@ object WorksheetSourceProcessor {
       }
 
       ifDocument map { document =>
-        document.getLineNumber(range.getEndOffset) - document.getLineNumber(
-          range.getStartOffset) + (1 - backOffset)
+        document.getLineNumber(range.getEndOffset) - document
+          .getLineNumber(range.getStartOffset) + (1 - backOffset)
       } map {
         case differ =>
           for (_ <- 0 until differ)
@@ -218,8 +218,8 @@ object WorksheetSourceProcessor {
 
       val count = ifDocument map {
         case d =>
-          d.getLineNumber(range.getEndOffset) - d.getLineNumber(
-            range.getStartOffset) + 1
+          d.getLineNumber(range.getEndOffset) - d
+            .getLineNumber(range.getStartOffset) + 1
       } getOrElse countNls(comment.getText)
 
       for (_ <- 0 until count) classRes append "//\n"
@@ -360,11 +360,10 @@ object WorksheetSourceProcessor {
 
         withPrecomputeLines(
           fun, {
-            objectRes append (
-              printMethodName + "(\"" + fun.getName + ": \" + " + macroPrinterName +
-                s".printGeneric({import $instanceName._ ;" + fun.getText
-                .stripPrefix(hadMods) + " })" + eraseClassName + ")\n"
-            )
+            objectRes append (printMethodName + "(\"" + fun
+              .getName + ": \" + " + macroPrinterName +
+              s".printGeneric({import $instanceName._ ;" + fun.getText
+              .stripPrefix(hadMods) + " })" + eraseClassName + ")\n")
           }
         )
       case tpeDef: ScTypeDefinition => withPrecomputeLines(
@@ -414,12 +413,10 @@ object WorksheetSourceProcessor {
               case (tpe, el) => el.name + ": " + tpe.getText
             }).mkString("(", ",", ")") + " = { " + expr.getText + ";}"
           case (_, Some(expr)) =>
-            "var " + varDef.declaredElements
-              .map {
-                case tpePattern: ScTypedPattern => writeTypedPatter(tpePattern)
-                case a                          => a.name
-              }
-              .mkString("(", ",", ")") + " = { " + expr.getText + ";}"
+            "var " + varDef.declaredElements.map {
+              case tpePattern: ScTypedPattern => writeTypedPatter(tpePattern)
+              case a                          => a.name
+            }.mkString("(", ",", ")") + " = { " + expr.getText + ";}"
           case _ => varDef.getText
         }
 
@@ -439,7 +436,8 @@ object WorksheetSourceProcessor {
         val lineNums = psiToLineNumbers(assign)
         val defName = s"`get$$$$instance_$assignCount$$$$$pName`"
 
-        classRes append s"def $defName = { $END_GENERATED_MARKER${assign.getText}}${insertNlsFromWs(assign)}"
+        classRes append s"def $defName = { $END_GENERATED_MARKER${assign
+          .getText}}${insertNlsFromWs(assign)}"
         objectRes append s"$instanceName.$defName; " append (
           printMethodName + "(\"" + startText + pName + ": \" + " +
             withTempVar(pName) + ")\n"
@@ -482,8 +480,7 @@ object WorksheetSourceProcessor {
   }
 
   private def isForObject(file: ScalaFile) = {
-    val isEclipseMode = ScalaProjectSettings
-      .getInstance(file.getProject)
+    val isEclipseMode = ScalaProjectSettings.getInstance(file.getProject)
       .isUseEclipseCompatibility
 
     @tailrec

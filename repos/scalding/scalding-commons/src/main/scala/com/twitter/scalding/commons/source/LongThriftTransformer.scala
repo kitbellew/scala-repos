@@ -46,7 +46,6 @@ trait LongThriftTransformer[V <: TBase[_, _]] extends Source {
       (key, value)
     }
   }
-  lazy val typeRef = ThriftUtils
-    .getTypeRef(mt.runtimeClass)
+  lazy val typeRef = ThriftUtils.getTypeRef(mt.runtimeClass)
     .asInstanceOf[TypeRef[TBase[_, _]]]
 }

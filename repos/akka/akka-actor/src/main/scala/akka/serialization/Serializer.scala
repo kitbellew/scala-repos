@@ -166,8 +166,8 @@ trait BaseSerializer extends Serializer {
     * INTERNAL API
     */
   private[akka] def identifierFromConfig: Int =
-    system.settings.config
-      .getInt(s"""${SerializationIdentifiers}."${getClass.getName}"""")
+    system.settings.config.getInt(s"""${SerializationIdentifiers}."${getClass
+      .getName}"""")
 }
 
 /**

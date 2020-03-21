@@ -17,8 +17,8 @@ class AddModifierTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       modifier: String,
       value: Boolean) {
     configureFromFileTextAdapter("dummy.scala", fileText)
-    val place = getFileAdapter.findElementAt(
-      getEditorAdapter.getCaretModel.getOffset)
+    val place = getFileAdapter
+      .findElementAt(getEditorAdapter.getCaretModel.getOffset)
     val owner = PsiTreeUtil.getParentOfType(place, classOf[ScModifierListOwner])
     assert(owner != null)
     inWriteAction(owner.setModifierProperty(modifier, value))

@@ -84,8 +84,8 @@ object PlayForkProcess {
       // wait a bit for clean exit
       timedWaitFor(process, shutdownTimeout.toMillis) match {
         case None =>
-          log.info(
-            "Forked Play process did not exit on its own, terminating it")
+          log
+            .info("Forked Play process did not exit on its own, terminating it")
           // fire-and-forget sigterm, may or may not work
           process.destroy()
         case Some(x) => log.info(s"Forked Play process exited with status: $x")
@@ -133,10 +133,8 @@ object PlayForkProcess {
     } else { (None, options) }
   }
 
-  val isWindows: Boolean = sys
-    .props("os.name")
-    .toLowerCase(java.util.Locale.ENGLISH)
-    .contains("windows")
+  val isWindows: Boolean = sys.props("os.name")
+    .toLowerCase(java.util.Locale.ENGLISH).contains("windows")
 
   val MaxOptionsLength = 5000
 

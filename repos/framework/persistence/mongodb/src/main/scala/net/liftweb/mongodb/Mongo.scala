@@ -126,7 +126,8 @@ object MongoDB {
       case Some(collection) => collection
       case _ =>
         throw new MongoException(
-          "Mongo not found: " + collectionName + ". ConnectionIdentifier: " + name.toString)
+          "Mongo not found: " + collectionName + ". ConnectionIdentifier: " + name
+            .toString)
     }
 
     f(coll)
@@ -141,7 +142,8 @@ object MongoDB {
         case Some(collection) => collection
         case _ =>
           throw new MongoException(
-            "Mongo not found: " + collectionName + ". ConnectionIdentifier: " + DefaultConnectionIdentifier.toString)
+            "Mongo not found: " + collectionName + ". ConnectionIdentifier: " + DefaultConnectionIdentifier
+              .toString)
       }
 
     f(coll)

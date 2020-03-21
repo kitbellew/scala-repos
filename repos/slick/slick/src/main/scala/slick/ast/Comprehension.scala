@@ -19,8 +19,8 @@ final case class Comprehension(
     extends DefNode {
   type Self = Comprehension
   lazy val children =
-    (ConstArray.newBuilder() + from + select ++ where ++ groupBy ++ orderBy.map(
-      _._1) ++ having ++ distinct ++ fetch ++ offset).result
+    (ConstArray.newBuilder() + from + select ++ where ++ groupBy ++ orderBy
+      .map(_._1) ++ having ++ distinct ++ fetch ++ offset).result
   override def childNames =
     Seq("from " + sym, "select") ++
       where.map(_ => "where") ++
@@ -36,17 +36,15 @@ final case class Comprehension(
     val whereOffset = 2
     val newWhere = ch.slice(whereOffset, whereOffset + where.productArity)
     val groupByOffset = whereOffset + newWhere.length
-    val newGroupBy = ch.slice(
-      groupByOffset,
-      groupByOffset + groupBy.productArity)
+    val newGroupBy = ch
+      .slice(groupByOffset, groupByOffset + groupBy.productArity)
     val orderByOffset = groupByOffset + newGroupBy.length
     val newOrderBy = ch.slice(orderByOffset, orderByOffset + orderBy.length)
     val havingOffset = orderByOffset + newOrderBy.length
     val newHaving = ch.slice(havingOffset, havingOffset + having.productArity)
     val distinctOffset = havingOffset + newHaving.length
-    val newDistinct = ch.slice(
-      distinctOffset,
-      distinctOffset + distinct.productArity)
+    val newDistinct = ch
+      .slice(distinctOffset, distinctOffset + distinct.productArity)
     val fetchOffset = distinctOffset + newDistinct.length
     val newFetch = ch.slice(fetchOffset, fetchOffset + fetch.productArity)
     val offsetOffset = fetchOffset + newFetch.length

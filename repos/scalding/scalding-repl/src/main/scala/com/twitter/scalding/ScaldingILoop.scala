@@ -31,16 +31,14 @@ object ScaldingILoop {
   private[scalding] def findAllUpPath(currentDir: String)(
       filename: String): List[File] = {
     val matchingFiles = for {
-      ancestor <- Iterator
-        .iterate(currentDir)(new File(_).getParent)
+      ancestor <- Iterator.iterate(currentDir)(new File(_).getParent)
         .takeWhile(_ != "/")
 
-      children: Array[File] = Option(new File(ancestor).listFiles)
-        .getOrElse {
-          println(
-            s"The directory '$ancestor' could not be accessed while looking for '$filename'")
-          Array.empty
-        }
+      children: Array[File] = Option(new File(ancestor).listFiles).getOrElse {
+        println(
+          s"The directory '$ancestor' could not be accessed while looking for '$filename'")
+        Array.empty
+      }
 
       child <- children if child.toString.endsWith(filename)
     } yield child

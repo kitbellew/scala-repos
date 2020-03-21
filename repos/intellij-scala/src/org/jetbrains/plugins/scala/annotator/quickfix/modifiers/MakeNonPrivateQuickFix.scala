@@ -18,14 +18,11 @@ class MakeNonPrivateQuickFix(member: ScModifierListOwner, toProtected: Boolean)
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     member.setModifierProperty("private", value = false)
     if (toProtected) member.setModifierProperty("protected", value = true)
-    PsiDocumentManager
-      .getInstance(project)
+    PsiDocumentManager.getInstance(project)
       .doPostponedOperationsAndUnblockDocument(editor.getDocument)
-    CodeStyleManager
-      .getInstance(project)
-      .adjustLineIndent(
-        file,
-        member.getModifierList.getTextRange.getStartOffset)
+    CodeStyleManager.getInstance(project).adjustLineIndent(
+      file,
+      member.getModifierList.getTextRange.getStartOffset)
   }
 
   def getText: String =

@@ -54,8 +54,7 @@ trait SequentialProvider extends Actor {
   private def debugQueue {
     if (debug) queue.size match {
       case size if (size == 50 || (size >= 100 && size % 100 == 0)) =>
-        logger
-          .branch("SequentialProvider")
+        logger.branch("SequentialProvider")
           .warn(s"Seq[$name] queue = $size, mps = ${windowCount.get}")
       case _ =>
     }
@@ -71,15 +70,11 @@ trait SequentialProvider extends Actor {
       // we don't want to send Done after actor death
       case SequentialProvider.Terminate => self ! PoisonPill
       case Envelope(msg, replyTo) =>
-        (process orElse fallback)(msg)
-          .withTimeout(
-            futureTimeout,
-            LilaException(s"Sequential provider timeout: $futureTimeout"))(
-            context.system)
-          .pipeTo(replyTo) andThenAnyway { self ! Done }
-      case x =>
-        logger
-          .branch("SequentialProvider")
+        (process orElse fallback)(msg).withTimeout(
+          futureTimeout,
+          LilaException(s"Sequential provider timeout: $futureTimeout"))(
+          context.system).pipeTo(replyTo) andThenAnyway { self ! Done }
+      case x => logger.branch("SequentialProvider")
           .warn(s"should never have received $x")
     }
   }

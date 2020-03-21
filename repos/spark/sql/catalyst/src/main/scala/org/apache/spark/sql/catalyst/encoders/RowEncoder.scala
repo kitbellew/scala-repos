@@ -40,8 +40,8 @@ object RowEncoder {
     val cls = classOf[Row]
     val inputObject = BoundReference(0, ObjectType(cls), nullable = true)
     // We use an If expression to wrap extractorsFor result of StructType
-    val extractExpressions =
-      extractorsFor(inputObject, schema).asInstanceOf[If].falseValue
+    val extractExpressions = extractorsFor(inputObject, schema).asInstanceOf[If]
+      .falseValue
     val constructExpression = constructorFor(schema)
     new ExpressionEncoder[Row](
       schema,

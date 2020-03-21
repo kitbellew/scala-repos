@@ -152,8 +152,7 @@ trait ScFunction
   }
 
   def removeAllClauses() {
-    paramClauses.clauses.headOption
-      .zip(paramClauses.clauses.lastOption)
+    paramClauses.clauses.headOption.zip(paramClauses.clauses.lastOption)
       .foreach { p => paramClauses.deleteChildRange(p._1, p._2) }
   }
 
@@ -209,13 +208,8 @@ trait ScFunction
                   (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
                   new ScTypeParameterType(newParam, subst))
             }
-            Some(
-              typeParamSubst
-                .followed(subst)
-                .subst(ScType.create(
-                  fun.getReturnType,
-                  getProject,
-                  getResolveScope)))
+            Some(typeParamSubst.followed(subst).subst(
+              ScType.create(fun.getReturnType, getProject, getResolveScope)))
           case _ => None
         }
         superReturnType
@@ -319,8 +313,8 @@ trait ScFunction
   def hasExplicitType = returnTypeElement.isDefined
 
   def removeExplicitType() {
-    val colon = children.find(
-      _.getNode.getElementType == ScalaTokenTypes.tCOLON)
+    val colon = children
+      .find(_.getNode.getElementType == ScalaTokenTypes.tCOLON)
     (colon, returnTypeElement) match {
       case (Some(first), Some(last)) => deleteChildRange(first, last)
       case _                         =>
@@ -353,9 +347,8 @@ trait ScFunction
             fun.returnTypeInner
           case _ =>
         }
-        parent.putUserData(
-          ScFunction.calculatedBlockKey,
-          java.lang.Boolean.TRUE)
+        parent
+          .putUserData(ScFunction.calculatedBlockKey, java.lang.Boolean.TRUE)
         returnTypeInner
       }
     } else returnTypeInner
@@ -382,19 +375,15 @@ trait ScFunction
         case owner: ScTypeParametersOwner =>
           if (hasImplicit) None
           else
-            ScalaPsiUtil.syntheticParamClause(
-              owner,
-              paramClauses,
-              classParam = false)
+            ScalaPsiUtil
+              .syntheticParamClause(owner, paramClauses, classParam = false)
         case _ => None
       }
     } else {
       if (hasImplicit) None
       else
-        ScalaPsiUtil.syntheticParamClause(
-          this,
-          paramClauses,
-          classParam = false)
+        ScalaPsiUtil
+          .syntheticParamClause(this, paramClauses, classParam = false)
     }
   }
 
@@ -412,19 +401,17 @@ trait ScFunction
       case -1 => parameters.find {
           case param =>
             ScalaPsiUtil.memberNamesEquals(param.name, name) ||
-              param.deprecatedName.exists(
-                ScalaPsiUtil.memberNamesEquals(_, name))
+              param.deprecatedName
+                .exists(ScalaPsiUtil.memberNamesEquals(_, name))
         }
       case i if i < 0 || i >= effectiveParameterClauses.length => None
       case _ =>
-        effectiveParameterClauses
-          .apply(clausePosition)
-          .effectiveParameters
+        effectiveParameterClauses.apply(clausePosition).effectiveParameters
           .find {
             case param =>
               ScalaPsiUtil.memberNamesEquals(param.name, name) ||
-                param.deprecatedName.exists(
-                  ScalaPsiUtil.memberNamesEquals(_, name))
+                param.deprecatedName
+                  .exists(ScalaPsiUtil.memberNamesEquals(_, name))
           }
     }
   }
@@ -537,9 +524,8 @@ trait ScFunction
   override def getIcon(flags: Int) = Icons.FUNCTION
 
   def getReturnType: PsiType = {
-    if (DumbService
-          .getInstance(getProject)
-          .isDumb || !SyntheticClasses.get(getProject).isClassesRegistered) {
+    if (DumbService.getInstance(getProject).isDumb || !SyntheticClasses
+          .get(getProject).isClassesRegistered) {
       return null //no resolve during dumb mode or while synthetic classes is not registered
     }
     getReturnTypeImpl
@@ -558,15 +544,13 @@ trait ScFunction
   def superMethods: Seq[PsiMethod] = {
     val clazz = containingClass
     if (clazz != null)
-      TypeDefinitionMembers
-        .getSignatures(clazz)
-        .forName(ScalaPsiUtil.convertMemberName(name))
-        ._1
+      TypeDefinitionMembers.getSignatures(clazz)
+        .forName(ScalaPsiUtil.convertMemberName(name))._1
         .get(new PhysicalSignature(this, ScSubstitutor.empty))
-        .getOrElse(return Seq.empty)
-        .supers
-        .filter(_.info.isInstanceOf[PhysicalSignature])
-        .map { _.info.asInstanceOf[PhysicalSignature].method }
+        .getOrElse(return Seq.empty).supers
+        .filter(_.info.isInstanceOf[PhysicalSignature]).map {
+          _.info.asInstanceOf[PhysicalSignature].method
+        }
     else Seq.empty
   }
 
@@ -575,16 +559,12 @@ trait ScFunction
   def superMethodAndSubstitutor: Option[(PsiMethod, ScSubstitutor)] = {
     val clazz = containingClass
     if (clazz != null) {
-      val option = TypeDefinitionMembers
-        .getSignatures(clazz)
-        .forName(name)
-        ._1
+      val option = TypeDefinitionMembers.getSignatures(clazz).forName(name)._1
         .fastPhysicalSignatureGet(new PhysicalSignature(
           this,
           ScSubstitutor.empty))
       if (option.isEmpty) return None
-      option.get.primarySuper
-        .filter(_.info.isInstanceOf[PhysicalSignature])
+      option.get.primarySuper.filter(_.info.isInstanceOf[PhysicalSignature])
         .map(node =>
           (
             node.info.asInstanceOf[PhysicalSignature].method,
@@ -596,10 +576,8 @@ trait ScFunction
     val clazz = containingClass
     val s = new PhysicalSignature(this, ScSubstitutor.empty)
     if (clazz == null) return Seq(s)
-    val t = TypeDefinitionMembers
-      .getSignatures(clazz)
-      .forName(ScalaPsiUtil.convertMemberName(name))
-      ._1
+    val t = TypeDefinitionMembers.getSignatures(clazz)
+      .forName(ScalaPsiUtil.convertMemberName(name))._1
       .fastPhysicalSignatureGet(s) match {
       case Some(x) => x.supers.map { _.info }
       case None    => Seq[Signature]()
@@ -613,31 +591,25 @@ trait ScFunction
     if (clazz == null) return Seq(s)
     val withSelf = clazz.selfType.isDefined
     if (withSelf) {
-      val signs = TypeDefinitionMembers
-        .getSelfTypeSignatures(clazz)
-        .forName(ScalaPsiUtil.convertMemberName(name))
-        ._1
+      val signs = TypeDefinitionMembers.getSelfTypeSignatures(clazz)
+        .forName(ScalaPsiUtil.convertMemberName(name))._1
       signs.fastPhysicalSignatureGet(s) match {
         case Some(x) if x.info.namedElement == this => x.supers.map { _.info }
         case Some(x) =>
-          x.supers.filter { _.info.namedElement != this }.map {
-            _.info
-          } :+ x.info
+          x.supers.filter { _.info.namedElement != this }.map { _.info } :+ x
+            .info
         case None => signs.get(s) match {
             case Some(x) if x.info.namedElement == this =>
               x.supers.map { _.info }
             case Some(x) =>
-              x.supers.filter { _.info.namedElement != this }.map {
-                _.info
-              } :+ x.info
+              x.supers.filter { _.info.namedElement != this }
+                .map { _.info } :+ x.info
             case None => Seq.empty
           }
       }
     } else {
-      TypeDefinitionMembers
-        .getSignatures(clazz)
-        .forName(ScalaPsiUtil.convertMemberName(name))
-        ._1
+      TypeDefinitionMembers.getSignatures(clazz)
+        .forName(ScalaPsiUtil.convertMemberName(name))._1
         .fastPhysicalSignatureGet(s) match {
         case Some(x) => x.supers.map { _.info }
         case None    => Seq.empty
@@ -659,7 +631,8 @@ trait ScFunction
   def findSuperMethods(checkAccess: Boolean) = PsiMethod.EMPTY_ARRAY
 
   def findSuperMethods =
-    superMethods.toArray // TODO which other xxxSuperMethods can/should be implemented?
+    superMethods
+      .toArray // TODO which other xxxSuperMethods can/should be implemented?
 
   def findDeepestSuperMethods = PsiMethod.EMPTY_ARRAY
 
@@ -684,8 +657,7 @@ trait ScFunction
     new FakePsiReferenceList(getManager, getLanguage, Role.THROWS_LIST) {
       override def getReferenceElements: Array[PsiJavaCodeReferenceElement] = {
         getReferencedTypes.map { tp =>
-          PsiElementFactory.SERVICE
-            .getInstance(getProject)
+          PsiElementFactory.SERVICE.getInstance(getProject)
             .createReferenceElementByType(tp)
         }
       }
@@ -693,9 +665,7 @@ trait ScFunction
       override def getReferencedTypes: Array[PsiClassType] = {
         hasAnnotation("scala.throws") match {
           case Some(annotation) =>
-            annotation.constructor.args
-              .map(_.exprs)
-              .getOrElse(Seq.empty)
+            annotation.constructor.args.map(_.exprs).getOrElse(Seq.empty)
               .flatMap { expr =>
                 expr.getType(TypingContext.empty) match {
                   case Success(ScParameterizedType(des, Seq(arg)), _) =>
@@ -710,8 +680,7 @@ trait ScFunction
                     }
                   case _ => Seq.empty
                 }
-              }
-              .toArray
+              }.toArray
           case _ => PsiClassType.EMPTY_ARRAY
         }
       }
@@ -794,8 +763,8 @@ trait ScFunction
     if (buf.isEmpty) this
     else if (buf.length == 1) buf(0)
     else {
-      val filter = buf.filter(
-        isSimilarMemberForNavigation(_, strictCheck = true))
+      val filter = buf
+        .filter(isSimilarMemberForNavigation(_, strictCheck = true))
       if (filter.isEmpty) buf(0) else filter(0)
     }
   }
@@ -824,8 +793,8 @@ trait ScFunction
     while (i >= 0) {
       val cl = paramClauses.clauses.apply(i)
       if (!cl.isImplicit) {
-        val paramTypes: Seq[TypeResult[ScType]] = cl.parameters.map(_.getType(
-          TypingContext.empty))
+        val paramTypes: Seq[TypeResult[ScType]] = cl.parameters
+          .map(_.getType(TypingContext.empty))
         if (paramTypes.exists(_.isEmpty)) return None
         res += paramTypes.map(_.get)
       }
@@ -865,8 +834,8 @@ object ScFunction {
   /** Is this function sometimes invoked without it's name appearing at the call site? */
   def isSpecial(name: String): Boolean = Name.Special(name)
 
-  private val calculatedBlockKey: Key[java.lang.Boolean] = Key.create(
-    "calculated.function.returns.block")
+  private val calculatedBlockKey: Key[java.lang.Boolean] = Key
+    .create("calculated.function.returns.block")
 
   @tailrec
   def getCompoundCopy(

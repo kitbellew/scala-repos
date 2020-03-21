@@ -207,10 +207,10 @@ abstract class AbstractShape extends Shape {
     */
   def allOutlets: java.util.List[Outlet[_]]
 
-  final override lazy val inlets: immutable.Seq[Inlet[_]] =
-    allInlets.asScala.toList
-  final override lazy val outlets: immutable.Seq[Outlet[_]] =
-    allOutlets.asScala.toList
+  final override lazy val inlets: immutable.Seq[Inlet[_]] = allInlets.asScala
+    .toList
+  final override lazy val outlets: immutable.Seq[Outlet[_]] = allOutlets.asScala
+    .toList
 
   final override def getInlets = allInlets
   final override def getOutlets = allOutlets

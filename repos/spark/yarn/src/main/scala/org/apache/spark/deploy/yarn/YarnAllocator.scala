@@ -115,27 +115,23 @@ private[yarn] class YarnAllocator(
   // Executor memory in MB.
   protected val executorMemory = args.executorMemory
   // Additional memory overhead.
-  protected val memoryOverhead: Int = sparkConf
-    .get(EXECUTOR_MEMORY_OVERHEAD)
-    .getOrElse(math.max(
+  protected val memoryOverhead: Int =
+    sparkConf.get(EXECUTOR_MEMORY_OVERHEAD).getOrElse(math.max(
       (MEMORY_OVERHEAD_FACTOR * executorMemory).toInt,
-      MEMORY_OVERHEAD_MIN))
-    .toInt
+      MEMORY_OVERHEAD_MIN)).toInt
   // Number of cores per executor.
   protected val executorCores = args.executorCores
   // Resource capability requested for each executors
-  private[yarn] val resource = Resource.newInstance(
-    executorMemory + memoryOverhead,
-    executorCores)
+  private[yarn] val resource = Resource
+    .newInstance(executorMemory + memoryOverhead, executorCores)
 
   private val launcherPool = ThreadUtils.newDaemonCachedThreadPool(
     "ContainerLauncher",
     sparkConf.get(CONTAINER_LAUNCH_MAX_THREADS))
 
   // For testing
-  private val launchContainers = sparkConf.getBoolean(
-    "spark.yarn.launchContainers",
-    true)
+  private val launchContainers = sparkConf
+    .getBoolean("spark.yarn.launchContainers", true)
 
   private val labelExpression = sparkConf.get(EXECUTOR_NODE_LABEL_EXPRESSION)
 
@@ -184,11 +180,8 @@ private[yarn] class YarnAllocator(
     * fulfilled.
     */
   private def getPendingAtLocation(location: String): Seq[ContainerRequest] = {
-    amClient
-      .getMatchingRequests(RM_REQUEST_PRIORITY, location, resource)
-      .asScala
-      .flatMap(_.asScala)
-      .toSeq
+    amClient.getMatchingRequests(RM_REQUEST_PRIORITY, location, resource)
+      .asScala.flatMap(_.asScala).toSeq
   }
 
   /**
@@ -320,16 +313,16 @@ private[yarn] class YarnAllocator(
       val newLocalityRequests = new mutable.ArrayBuffer[ContainerRequest]
       containerLocalityPreferences.foreach {
         case ContainerLocalityPreferences(nodes, racks) if nodes != null =>
-          newLocalityRequests.append(
-            createContainerRequest(resource, nodes, racks))
+          newLocalityRequests
+            .append(createContainerRequest(resource, nodes, racks))
         case _ =>
       }
 
       if (availableContainers >= newLocalityRequests.size) {
         // more containers are available than needed for locality, fill in requests for any host
         for (i <- 0 until (availableContainers - newLocalityRequests.size)) {
-          newLocalityRequests.append(
-            createContainerRequest(resource, null, null))
+          newLocalityRequests
+            .append(createContainerRequest(resource, null, null))
         }
       } else {
         val numToCancel = newLocalityRequests.size - availableContainers
@@ -351,16 +344,10 @@ private[yarn] class YarnAllocator(
       val numToCancel = math.min(numPendingAllocate, -missing)
       logInfo(s"Canceling requests for $numToCancel executor containers")
 
-      val matchingRequests = amClient.getMatchingRequests(
-        RM_REQUEST_PRIORITY,
-        ANY_HOST,
-        resource)
+      val matchingRequests = amClient
+        .getMatchingRequests(RM_REQUEST_PRIORITY, ANY_HOST, resource)
       if (!matchingRequests.isEmpty) {
-        matchingRequests
-          .iterator()
-          .next()
-          .asScala
-          .take(numToCancel)
+        matchingRequests.iterator().next().asScala.take(numToCancel)
           .foreach(amClient.removeContainerRequest)
       } else {
         logWarning("Expected to find pending requests, but found none.")
@@ -383,18 +370,19 @@ private[yarn] class YarnAllocator(
       resource: Resource,
       nodes: Array[String],
       racks: Array[String]): ContainerRequest = {
-    nodeLabelConstructor
-      .map { constructor =>
-        constructor.newInstance(
-          resource,
-          nodes,
-          racks,
-          RM_REQUEST_PRIORITY,
-          true: java.lang.Boolean,
-          labelExpression.orNull)
-      }
-      .getOrElse(
-        new ContainerRequest(resource, nodes, racks, RM_REQUEST_PRIORITY))
+    nodeLabelConstructor.map { constructor =>
+      constructor.newInstance(
+        resource,
+        nodes,
+        racks,
+        RM_REQUEST_PRIORITY,
+        true: java.lang.Boolean,
+        labelExpression.orNull)
+    }.getOrElse(new ContainerRequest(
+      resource,
+      nodes,
+      racks,
+      RM_REQUEST_PRIORITY))
   }
 
   /**
@@ -422,8 +410,7 @@ private[yarn] class YarnAllocator(
     val remainingAfterRackMatches = new ArrayBuffer[Container]
     for (allocatedContainer <- remainingAfterHostMatches) {
       val rack = RackResolver
-        .resolve(conf, allocatedContainer.getNodeId.getHost)
-        .getNetworkLocation
+        .resolve(conf, allocatedContainer.getNodeId.getHost).getNetworkLocation
       matchContainerToRequest(
         allocatedContainer,
         rack,
@@ -513,9 +500,8 @@ private[yarn] class YarnAllocator(
       executorIdToContainer(executorId) = container
       containerIdToExecutorId(container.getId) = executorId
 
-      val containerSet = allocatedHostToContainersMap.getOrElseUpdate(
-        executorHostname,
-        new HashSet[ContainerId])
+      val containerSet = allocatedHostToContainersMap
+        .getOrElseUpdate(executorHostname, new HashSet[ContainerId])
 
       containerSet += containerId
       allocatedContainerToHostMap.put(containerId, executorHostname)
@@ -714,10 +700,10 @@ private[yarn] class YarnAllocator(
 
 private object YarnAllocator {
   val MEM_REGEX = "[0-9.]+ [KMG]B"
-  val PMEM_EXCEEDED_PATTERN = Pattern.compile(
-    s"$MEM_REGEX of $MEM_REGEX physical memory used")
-  val VMEM_EXCEEDED_PATTERN = Pattern.compile(
-    s"$MEM_REGEX of $MEM_REGEX virtual memory used")
+  val PMEM_EXCEEDED_PATTERN = Pattern
+    .compile(s"$MEM_REGEX of $MEM_REGEX physical memory used")
+  val VMEM_EXCEEDED_PATTERN = Pattern
+    .compile(s"$MEM_REGEX of $MEM_REGEX virtual memory used")
   val VMEM_EXCEEDED_EXIT_CODE = -103
   val PMEM_EXCEEDED_EXIT_CODE = -104
 

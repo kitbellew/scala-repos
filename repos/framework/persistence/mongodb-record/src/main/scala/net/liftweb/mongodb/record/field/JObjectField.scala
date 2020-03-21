@@ -70,8 +70,7 @@ class JObjectField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
   def toForm: Box[NodeSeq] = Empty
 
   def asDBObject: DBObject =
-    valueBox
-      .map { v => JObjectParser.parse(v)(owner.meta.formats) }
+    valueBox.map { v => JObjectParser.parse(v)(owner.meta.formats) }
       .openOr(new BasicDBObject)
 
   def setFromDBObject(obj: DBObject): Box[JObject] =

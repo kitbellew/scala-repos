@@ -112,7 +112,7 @@ trait ScTypePresentation {
         end: String,
         checkWildcard: Boolean = false): String = {
       ts.map(
-          innerTypeText(_, needDotType = true, checkWildcard = checkWildcard))
+        innerTypeText(_, needDotType = true, checkWildcard = checkWildcard))
         .mkString(start, sep, end)
     }
 
@@ -173,8 +173,7 @@ trait ScTypePresentation {
       def isInnerStaticJavaClassForParent(clazz: PsiClass): Boolean = {
         clazz.getLanguage != ScalaFileType.SCALA_LANGUAGE &&
         e.isInstanceOf[PsiModifierListOwner] &&
-        e.asInstanceOf[PsiModifierListOwner]
-          .getModifierList
+        e.asInstanceOf[PsiModifierListOwner].getModifierList
           .hasModifierProperty("static")
       }
       p match {
@@ -212,12 +211,10 @@ trait ScTypePresentation {
         if (comps.isEmpty) Nil
         else
           Seq(
-            comps
-              .map {
-                case tp @ ScFunctionType(_, _) => "(" + innerTypeText(tp) + ")"
-                case tp                        => innerTypeText(tp)
-              }
-              .mkString(" with "))
+            comps.map {
+              case tp @ ScFunctionType(_, _) => "(" + innerTypeText(tp) + ")"
+              case tp                        => innerTypeText(tp)
+            }.mkString(" with "))
 
       val declsTexts = (signatureMap ++ typeMap).flatMap {
         case (s: Signature, rt: ScType)
@@ -228,18 +225,14 @@ trait ScTypePresentation {
             s.typeParams.toList,
             rt,
             fun)
-          val paramClauses = funCopy.paramClauses.clauses
-            .map(
-              _.parameters
-                .map(param =>
-                  ScalaDocumentationProvider.parseParameter(param, typeText0))
-                .mkString("(", ", ", ")"))
-            .mkString("")
+          val paramClauses = funCopy.paramClauses.clauses.map(
+            _.parameters.map(param =>
+              ScalaDocumentationProvider.parseParameter(param, typeText0))
+            .mkString("(", ", ", ")")).mkString("")
           val retType = if (!compType.equiv(rt)) typeText0(rt) else "this.type"
           val typeParams =
             if (funCopy.typeParameters.length > 0)
-              funCopy.typeParameters
-                .map(typeParamText(_, ScSubstitutor.empty))
+              funCopy.typeParameters.map(typeParamText(_, ScSubstitutor.empty))
                 .mkString("[", ", ", "]")
             else ""
           Seq(s"def ${s.name}$typeParams$paramClauses: $retType")
@@ -251,13 +244,13 @@ trait ScTypePresentation {
               case bp: ScBindingPattern =>
                 val b = ScBindingPattern.getCompoundCopy(rt, bp)
                 Seq(
-                  (if (b.isVar) "var "
-                   else "val ") + b.name + " : " + typeText0(rt))
+                  (if (b.isVar) "var " else "val ") + b
+                    .name + " : " + typeText0(rt))
               case fi: ScFieldId =>
                 val f = ScFieldId.getCompoundCopy(rt, fi)
                 Seq(
-                  (if (f.isVar) "var "
-                   else "val ") + f.name + " : " + typeText0(rt))
+                  (if (f.isVar) "var " else "val ") + f
+                    .name + " : " + typeText0(rt))
               case _ => Seq.empty
             }
           }
@@ -265,19 +258,15 @@ trait ScTypePresentation {
           val ta = ScTypeAlias.getCompoundCopy(sign, sign.ta)
           val paramsText =
             if (ta.typeParameters.length > 0)
-              ta.typeParameters
-                .map(typeParamText(_, ScSubstitutor.empty))
+              ta.typeParameters.map(typeParamText(_, ScSubstitutor.empty))
                 .mkString("[", ", ", "]")
             else ""
           val decl = s"type ${ta.name}$paramsText"
           val defnText = ta match {
-            case tad: ScTypeAliasDefinition =>
-              tad.aliasedType
-                .map {
-                  case psi.types.Nothing => ""
-                  case tpe               => s" = ${typeText0(tpe)}"
-                }
-                .getOrElse("")
+            case tad: ScTypeAliasDefinition => tad.aliasedType.map {
+                case psi.types.Nothing => ""
+                case tpe               => s" = ${typeText0(tpe)}"
+              }.getOrElse("")
             case _ =>
               val (lowerBound, upperBound) =
                 (ta.lowerBound.getOrNothing, ta.upperBound.getOrAny)
@@ -331,15 +320,13 @@ trait ScTypePresentation {
               } else true
           }
           val designatorText = innerTypeText(des)
-          val typeArgsText = typeArgs
-            .map { t =>
-              replacingArgs.find(_._1 eq t) match {
-                case Some((_, wildcard)) =>
-                  existentialArgWithBounds(wildcard, "_")
-                case _ => innerTypeText(t, needDotType = true, checkWildcard)
-              }
+          val typeArgsText = typeArgs.map { t =>
+            replacingArgs.find(_._1 eq t) match {
+              case Some((_, wildcard)) =>
+                existentialArgWithBounds(wildcard, "_")
+              case _ => innerTypeText(t, needDotType = true, checkWildcard)
             }
-            .mkString("[", ", ", "]")
+          }.mkString("[", ", ", "]")
           val existentialArgsText = left
             .map(arg => existentialArgWithBounds(arg, "type " + arg.name))
             .mkString("{", "; ", "}")
@@ -347,12 +334,10 @@ trait ScTypePresentation {
           if (left.isEmpty) s"$designatorText$typeArgsText"
           else s"($designatorText$typeArgsText) forSome $existentialArgsText"
         case ScExistentialType(q, wilds) =>
-          val wildsWithBounds = wilds.map(w =>
-            existentialArgWithBounds(w, "type " + w.name))
-          wildsWithBounds.mkString(
-            s"(${innerTypeText(q)}) forSome {",
-            "; ",
-            "}")
+          val wildsWithBounds = wilds
+            .map(w => existentialArgWithBounds(w, "type " + w.name))
+          wildsWithBounds
+            .mkString(s"(${innerTypeText(q)}) forSome {", "; ", "}")
       }
     }
 
@@ -366,8 +351,7 @@ trait ScTypePresentation {
         case StdType(name, _) => name
         case f @ ScFunctionType(ret, params) if !t.isAliasType.isDefined =>
           val projectOption = ScType.extractClass(f).map(_.getProject)
-          val arrow = projectOption
-            .map(ScalaPsiUtil.functionArrow)
+          val arrow = projectOption.map(ScalaPsiUtil.functionArrow)
             .getOrElse("=>")
           typeSeqText(params, "(", ", ", s") $arrow ") + innerTypeText(ret)
         case ScThisType(clazz: ScTypeDefinition) =>
@@ -398,17 +382,15 @@ trait ScTypePresentation {
         case ex: ScExistentialType if ex != null =>
           existentialTypeText(ex, checkWildcard, needDotType)
         case ScTypePolymorphicType(internalType, typeParameters) =>
-          typeParameters
-            .map(tp => {
-              val lowerBound =
-                if (tp.lowerType().equiv(types.Nothing)) ""
-                else " >: " + tp.lowerType().toString
-              val upperBound =
-                if (tp.upperType().equiv(types.Any)) ""
-                else " <: " + tp.upperType().toString
-              tp.name + lowerBound + upperBound
-            })
-            .mkString("[", ", ", "] ") + internalType.toString
+          typeParameters.map(tp => {
+            val lowerBound =
+              if (tp.lowerType().equiv(types.Nothing)) ""
+              else " >: " + tp.lowerType().toString
+            val upperBound =
+              if (tp.upperType().equiv(types.Any)) ""
+              else " <: " + tp.upperType().toString
+            tp.name + lowerBound + upperBound
+          }).mkString("[", ", ", "] ") + internalType.toString
         case mt @ ScMethodType(retType, params, isImplicit) =>
           innerTypeText(
             ScFunctionType(retType, params.map(_.paramType))(
@@ -439,18 +421,15 @@ object ScTypePresentation {
   def shouldExpand(ta: ScTypeAliasDefinition): Boolean =
     ta match {
       case _: ScLightTypeAliasDefinition | childOf(_: ScRefinement) => true
-      case _ =>
-        ScalaPsiUtil
-          .superTypeMembers(ta)
+      case _ => ScalaPsiUtil.superTypeMembers(ta)
           .exists(_.isInstanceOf[ScTypeAliasDeclaration])
     }
 
   type A = ScTypePresentation { type B }
 
   def withoutAliases(tpe: ScType): String = {
-    val withoutAliasesType = ScType.removeAliasDefinitions(
-      tpe,
-      expandableOnly = true)
+    val withoutAliasesType = ScType
+      .removeAliasDefinitions(tpe, expandableOnly = true)
     withoutAliasesType.presentableText
   }
 }

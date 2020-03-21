@@ -89,8 +89,7 @@ object CheckBoxTreeTableCell {
   def forTreeTableColumn[S, T](selectedProperty: IntToBool)
       : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
     (column: jfxsc.TreeTableColumn[S, T]) =>
-      jfxscc.CheckBoxTreeTableCell
-        .forTreeTableColumn(selectedProperty)
+      jfxscc.CheckBoxTreeTableCell.forTreeTableColumn(selectedProperty)
         .call(column)
   }
 
@@ -118,8 +117,7 @@ object CheckBoxTreeTableCell {
       : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
     (column: jfxsc.TreeTableColumn[S, T]) =>
       jfxscc.CheckBoxTreeTableCell
-        .forTreeTableColumn(selectedProperty, showLabel)
-        .call(column)
+        .forTreeTableColumn(selectedProperty, showLabel).call(column)
   }
 
   /**
@@ -152,8 +150,7 @@ object CheckBoxTreeTableCell {
       : (jfxsc.TreeTableColumn[S, T] => TreeTableCell[S, T]) = {
     (column: jfxsc.TreeTableColumn[S, T]) =>
       jfxscc.CheckBoxTreeTableCell
-        .forTreeTableColumn(selectedProperty, converter)
-        .call(column)
+        .forTreeTableColumn(selectedProperty, converter).call(column)
   }
 
   /**

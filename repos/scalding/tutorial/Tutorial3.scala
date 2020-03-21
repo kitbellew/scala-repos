@@ -58,7 +58,5 @@ class Tutorial3(args: Args) extends Job(args) {
     For interest, though, let's stash a copy of the data before we do that.
     write() returns the pipe, so we can keep chaining our pipeline.
     **/
-    .write(Tsv("tutorial/data/tmp3.tsv"))
-    .project('word)
-    .write(output)
+    .write(Tsv("tutorial/data/tmp3.tsv")).project('word).write(output)
 }

@@ -51,18 +51,15 @@ class NewScalaTypeDefinitionAction
 
     for (template <- FileTemplateManager.getInstance(project).getAllTemplates) {
       if (isScalaTemplate(template) && checkPackageExists(directory)) {
-        builder.addKind(
-          template.getName,
-          Icons.FILE_TYPE_LOGO,
-          template.getName)
+        builder
+          .addKind(template.getName, Icons.FILE_TYPE_LOGO, template.getName)
       }
     }
 
     builder.setTitle("Create New Scala Class")
     builder.setValidator(new InputValidatorEx {
       def getErrorText(inputString: String): String = {
-        if (inputString.length > 0 && !PsiNameHelper
-              .getInstance(project)
+        if (inputString.length > 0 && !PsiNameHelper.getInstance(project)
               .isQualifiedName(inputString)) {
           return "This is not a valid Scala qualified name"
         }
@@ -109,24 +106,23 @@ class NewScalaTypeDefinitionAction
   }
 
   private def isUnderSourceRoots(dataContext: DataContext): Boolean = {
-    val module: Module = dataContext
-      .getData(LangDataKeys.MODULE.getName)
+    val module: Module = dataContext.getData(LangDataKeys.MODULE.getName)
       .asInstanceOf[Module]
     if (!Option(module).exists(_.hasScala)) { return false }
-    val view = dataContext
-      .getData(LangDataKeys.IDE_VIEW.getName)
+    val view = dataContext.getData(LangDataKeys.IDE_VIEW.getName)
       .asInstanceOf[IdeView]
-    val project = dataContext
-      .getData(CommonDataKeys.PROJECT.getName)
+    val project = dataContext.getData(CommonDataKeys.PROJECT.getName)
       .asInstanceOf[Project]
     if (view != null && project != null) {
-      val projectFileIndex =
-        ProjectRootManager.getInstance(project).getFileIndex
+      val projectFileIndex = ProjectRootManager.getInstance(project)
+        .getFileIndex
       val dirs = view.getDirectories
       for (dir <- dirs) {
         val aPackage = JavaDirectoryService.getInstance.getPackage(dir)
-        if (projectFileIndex.isInSourceContent(
-              dir.getVirtualFile) && aPackage != null) { return true }
+        if (projectFileIndex
+              .isInSourceContent(dir.getVirtualFile) && aPackage != null) {
+          return true
+        }
       }
     }
     false
@@ -165,8 +161,7 @@ object NewScalaTypeDefinitionAction {
       templateName: String,
       parameters: String*): PsiFile = {
     val project = directory.getProject
-    val template: FileTemplate = FileTemplateManager
-      .getInstance(project)
+    val template: FileTemplate = FileTemplateManager.getInstance(project)
       .getInternalTemplate(templateName)
     val properties: Properties = new Properties(
       FileTemplateManager.getInstance(project).getDefaultProperties())
@@ -191,10 +186,8 @@ object NewScalaTypeDefinitionAction {
           e)
     }
     val factory: PsiFileFactory = PsiFileFactory.getInstance(project)
-    val file: PsiFile = factory.createFileFromText(
-      fileName,
-      ScalaFileType.SCALA_FILE_TYPE,
-      text)
+    val file: PsiFile = factory
+      .createFileFromText(fileName, ScalaFileType.SCALA_FILE_TYPE, text)
     CodeStyleManager.getInstance(project).reformat(file)
     directory.add(file).asInstanceOf[PsiFile]
   }

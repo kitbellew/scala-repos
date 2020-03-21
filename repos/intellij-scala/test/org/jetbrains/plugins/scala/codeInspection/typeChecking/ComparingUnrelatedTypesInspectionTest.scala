@@ -12,8 +12,8 @@ class ComparingUnrelatedTypesInspectionTest
     extends ScalaLightInspectionFixtureTestAdapter {
   protected def classOfInspection: Class[_ <: LocalInspectionTool] =
     classOf[ComparingUnrelatedTypesInspection]
-  protected val annotation: String =
-    ComparingUnrelatedTypesInspection.inspectionName
+  protected val annotation: String = ComparingUnrelatedTypesInspection
+    .inspectionName
 
   def testWeakConformance() {
     val text1 = s"""val a = 0

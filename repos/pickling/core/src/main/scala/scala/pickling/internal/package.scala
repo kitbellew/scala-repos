@@ -37,8 +37,8 @@ package object internal {
   def GRL = currentRuntime.GRL
 
   // TOGGLE DEBUGGING
-  private val debugEnabled: Boolean =
-    System.getProperty("pickling.debug", "false").toBoolean
+  private val debugEnabled: Boolean = System
+    .getProperty("pickling.debug", "false").toBoolean
   private[pickling] def debug(output: => String) =
     if (debugEnabled) println(output)
 
@@ -50,9 +50,8 @@ package object internal {
     def isEffectivelyPrimitive =
       throw new Exception("use Type.isEffectivelyPrimitive instead")
     def isNotNullable =
-      sym.isClass && (
-        sym.asClass.isPrimitive || sym.asClass.isDerivedValueClass
-      )
+      sym.isClass && (sym.asClass.isPrimitive || sym.asClass
+        .isDerivedValueClass)
     def isNullable = sym.isClass && !isNotNullable
   }
   def currentMirror: ru.Mirror = currentRuntime.currentMirror
@@ -84,8 +83,8 @@ package object internal {
           val tycon = sym.asType.toTypeConstructor
           appliedType(
             tycon,
-            appliedTypeArgs.map(starg =>
-              typeFromString(mirror, starg.toString)))
+            appliedTypeArgs
+              .map(starg => typeFromString(mirror, starg.toString)))
         case None => sys.error(s"fatal: cannot unpickle $stpe")
       }
       typeFromStringCache(stpe) = result
@@ -99,8 +98,9 @@ package object internal {
     def key: String = {
       tpe.normalize match {
         case ExistentialType(tparams, TypeRef(pre, sym, targs))
-            if targs.nonEmpty && targs.forall(targ =>
-              tparams.contains(targ.typeSymbol)) => TypeRef(pre, sym, Nil).key
+            if targs.nonEmpty && targs
+              .forall(targ => tparams.contains(targ.typeSymbol)) =>
+          TypeRef(pre, sym, Nil).key
         case TypeRef(pre, sym, targs) if pre.typeSymbol.isModuleClass =>
           sym.fullName +
             (if (sym.isModuleClass) ".type" else "") +
@@ -113,9 +113,9 @@ package object internal {
       tpe match {
         case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
         case TypeRef(_, sym, eltpe :: Nil)
-            if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
-          true
-        case _ => false
+            if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol
+              .asClass.isPrimitive => true
+        case _                     => false
       }
   }
 

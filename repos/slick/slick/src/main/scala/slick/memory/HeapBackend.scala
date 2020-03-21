@@ -50,8 +50,7 @@ trait HeapBackend extends RelationalBackend with Logging {
     def close: Unit = ()
     def getTable(name: String): HeapTable =
       synchronized {
-        tables
-          .get(name)
+        tables.get(name)
           .getOrElse(throw new SlickException(s"Table $name does not exist"))
       }
     def createTable(
@@ -137,8 +136,8 @@ trait HeapBackend extends RelationalBackend with Logging {
     override def toString =
       name + "(" + columns.map(_.sym.name).mkString(", ") + ")"
 
-    lazy val columnIndexes: Map[TermSymbol, Int] =
-      columns.map(_.sym).zipWithIndex.toMap
+    lazy val columnIndexes: Map[TermSymbol, Int] = columns.map(_.sym)
+      .zipWithIndex.toMap
 
     val verifier = {
       val v1 = indexes.foldLeft(Verifier.empty) {
@@ -227,9 +226,9 @@ object HeapBackend extends HeapBackend {
     private[this] val autoInc = sym.options.collectFirst {
       case ColumnOption.AutoInc => new AtomicLong()
     }
-    val isUnique = sym.options
-      .collectFirst { case ColumnOption.PrimaryKey => true }
-      .getOrElse(false)
+    val isUnique = sym.options.collectFirst {
+      case ColumnOption.PrimaryKey => true
+    }.getOrElse(false)
     def createDefault: Any =
       autoInc match {
         case Some(a) =>

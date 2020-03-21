@@ -107,10 +107,8 @@ trait JdbcActionComponent extends SqlActionComponent {
       * action. */
     def transactionally: DBIOAction[R, S, E with Effect.Transactional] =
       SynchronousDatabaseAction.fuseUnsafe(
-        StartTransaction
-          .andThen(a)
-          .cleanUp(eo => if (eo.isEmpty) Commit else Rollback)(
-            DBIO.sameThreadExecutionContext)
+        StartTransaction.andThen(a).cleanUp(eo =>
+          if (eo.isEmpty) Commit else Rollback)(DBIO.sameThreadExecutionContext)
           .asInstanceOf[DBIOAction[R, S, E with Effect.Transactional]])
 
     /** Run this Action with the specified transaction isolation level. This should be used around
@@ -118,9 +116,9 @@ trait JdbcActionComponent extends SqlActionComponent {
       * database-dependent. It does not create a transaction by itself but it pins the session. */
     def withTransactionIsolation(
         ti: TransactionIsolation): DBIOAction[R, S, E] = {
-      val isolated = (new SetTransactionIsolation(ti.intValue)).flatMap(old =>
-        a.andFinally(new SetTransactionIsolation(old)))(
-        DBIO.sameThreadExecutionContext)
+      val isolated = (new SetTransactionIsolation(ti.intValue))
+        .flatMap(old => a.andFinally(new SetTransactionIsolation(old)))(
+          DBIO.sameThreadExecutionContext)
       val fused =
         if (a.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]])
           SynchronousDatabaseAction.fuseUnsafe(isolated)
@@ -257,13 +255,10 @@ trait JdbcActionComponent extends SqlActionComponent {
         else {
           val inv = createQueryInvoker[T](rsm, param, sql)
           new Mutator(
-            inv
-              .results(
-                0,
-                defaultConcurrency = invokerMutateConcurrency,
-                defaultType = invokerMutateType)(ctx.session)
-              .right
-              .get,
+            inv.results(
+              0,
+              defaultConcurrency = invokerMutateConcurrency,
+              defaultType = invokerMutateType)(ctx.session).right.get,
             ctx.bufferNext,
             inv)
         }
@@ -295,9 +290,7 @@ trait JdbcActionComponent extends SqlActionComponent {
             c.extra.asInstanceOf[SQLBuilder.Result].sql
           case ParameterSwitch(cases, default) =>
             findSql(
-              cases
-                .find { case (f, n) => f(param) }
-                .map(_._2)
+              cases.find { case (f, n) => f(param) }.map(_._2)
                 .getOrElse(default))
         }
       (tree match {
@@ -311,8 +304,7 @@ trait JdbcActionComponent extends SqlActionComponent {
             protected[this] def createInvoker(sql: Iterable[String]) =
               createQueryInvoker(rsm, param, sql.head)
             protected[this] def createBuilder =
-              ct.cons
-                .createBuilder(ct.elementType.classTag)
+              ct.cons.createBuilder(ct.elementType.classTag)
                 .asInstanceOf[Builder[Any, R]]
             def statements = List(sql)
             override def getDumpInfo = super.getDumpInfo.copy(name = "result")
@@ -349,12 +341,8 @@ trait JdbcActionComponent extends SqlActionComponent {
     def mutate(
         sendEndMarker: Boolean = false): ProfileAction[Nothing, Streaming[
       ResultSetMutator[T]], Effect.Read with Effect.Write] = {
-      val sql = tree
-        .findNode(_.isInstanceOf[CompiledStatement])
-        .get
-        .asInstanceOf[CompiledStatement]
-        .extra
-        .asInstanceOf[SQLBuilder.Result]
+      val sql = tree.findNode(_.isInstanceOf[CompiledStatement]).get
+        .asInstanceOf[CompiledStatement].extra.asInstanceOf[SQLBuilder.Result]
         .sql
       val (rsm @ ResultSetMapping(_, _, CompiledMapping(_, elemType))) :@ (
         ct: CollectionType
@@ -711,8 +699,7 @@ trait JdbcActionComponent extends SqlActionComponent {
       def run(ctx: Backend#Context, sql: Vector[String]) = {
         val sql1 = sql.head
         if (!useBatchUpdates(ctx.session) || (values
-              .isInstanceOf[IndexedSeq[_]] && values
-              .asInstanceOf[IndexedSeq[_]]
+              .isInstanceOf[IndexedSeq[_]] && values.asInstanceOf[IndexedSeq[_]]
               .length < 2))
           retMany(
             values,
@@ -913,8 +900,7 @@ trait JdbcActionComponent extends SqlActionComponent {
         .map(mux)(collection.breakOut)
 
     protected def retQuery(st: Statement, updateCount: Int) =
-      buildKeysResult(st)
-        .buildColl[Vector](null, implicitly)
+      buildKeysResult(st).buildColl[Vector](null, implicitly)
         .asInstanceOf[QueryInsertResult] // Not used with "into"
 
     protected def retOneInsertOrUpdate(

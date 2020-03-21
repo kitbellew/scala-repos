@@ -81,11 +81,8 @@ class FinagleClientThriftServerTest extends FunSuite {
       }
 
       // ** Set up the client & query the server.
-      val service = ClientBuilder()
-        .hosts(Seq(testServer.server))
-        .codec(codec)
-        .hostConnectionLimit(1)
-        .build()
+      val service = ClientBuilder().hosts(Seq(testServer.server)).codec(codec)
+        .hostConnectionLimit(1).build()
 
       val client = new B.ServiceToClient(service, new TBinaryProtocol.Factory())
 
@@ -104,11 +101,8 @@ class FinagleClientThriftServerTest extends FunSuite {
       }
 
       // ** Set up the client & query the server.
-      val service = ClientBuilder()
-        .hosts(Seq(testServer.server))
-        .codec(codec)
-        .hostConnectionLimit(1)
-        .build()
+      val service = ClientBuilder().hosts(Seq(testServer.server)).codec(codec)
+        .hostConnectionLimit(1).build()
 
       val client = new B.ServiceToClient(service, new TBinaryProtocol.Factory())
 
@@ -125,11 +119,8 @@ class FinagleClientThriftServerTest extends FunSuite {
       }
 
       // ** Set up the client & query the server.
-      val service = ClientBuilder()
-        .hosts(Seq(testServer.server))
-        .codec(codec)
-        .hostConnectionLimit(1)
-        .build()
+      val service = ClientBuilder().hosts(Seq(testServer.server)).codec(codec)
+        .hostConnectionLimit(1).build()
 
       val client = new B.ServiceToClient(service, new TBinaryProtocol.Factory())
 
@@ -148,11 +139,8 @@ class FinagleClientThriftServerTest extends FunSuite {
       }
 
       // ** Set up the client & query the server.
-      val service = ClientBuilder()
-        .hosts(Seq(testServer.server))
-        .codec(codec)
-        .hostConnectionLimit(1)
-        .build()
+      val service = ClientBuilder().hosts(Seq(testServer.server)).codec(codec)
+        .hostConnectionLimit(1).build()
 
       val client = new B.ServiceToClient(service, new TBinaryProtocol.Factory())
 
@@ -178,11 +166,8 @@ class FinagleClientThriftServerTest extends FunSuite {
         }
 
         // ** Set up the client & query the server.
-        val service = ClientBuilder()
-          .hosts(addrs.map(_.server))
-          .codec(codec)
-          .hostConnectionLimit(1)
-          .build()
+        val service = ClientBuilder().hosts(addrs.map(_.server)).codec(codec)
+          .hostConnectionLimit(1).build()
 
         val client =
           new B.ServiceToClient(service, new TBinaryProtocol.Factory())

@@ -48,8 +48,8 @@ private[tree] case class NodeIndexUpdater(split: Split, nodeIndex: Int) {
     if (split.featureType == Continuous) {
       val featureIndex = split.feature
       val binIndex = binnedFeatures(featureIndex)
-      val featureValueUpperBound =
-        bins(featureIndex)(binIndex).highSplit.threshold
+      val featureValueUpperBound = bins(featureIndex)(binIndex).highSplit
+        .threshold
       if (featureValueUpperBound <= split.threshold) {
         Node.leftChildIndex(nodeIndex)
       } else { Node.rightChildIndex(nodeIndex) }

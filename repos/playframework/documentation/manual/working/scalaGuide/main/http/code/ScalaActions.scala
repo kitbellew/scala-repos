@@ -55,8 +55,7 @@ package scalaguide.http.scalaactions {
             }
           //#json-parser-action
           ,
-          request = FakeRequest()
-            .withBody(Json.obj())
+          request = FakeRequest().withBody(Json.obj())
             .withHeaders(CONTENT_TYPE -> "application/json")
         )
       }

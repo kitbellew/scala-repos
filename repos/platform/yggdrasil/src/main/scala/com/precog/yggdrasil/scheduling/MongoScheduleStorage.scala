@@ -62,13 +62,15 @@ object MongoScheduleStorage {
 
     val mongo = RealMongo(config.detach("mongo"))
 
-    val database = mongo.database(
-      config[String]("mongo.database", "schedules_v1"))
+    val database = mongo
+      .database(config[String]("mongo.database", "schedules_v1"))
 
     val storage = new MongoScheduleStorage(mongo, database, settings)
 
-    val dbStop = Stoppable.fromFuture(
-      database.disconnect.fallbackTo(Future(())) flatMap { _ => mongo.close })
+    val dbStop = Stoppable
+      .fromFuture(database.disconnect.fallbackTo(Future(())) flatMap { _ =>
+        mongo.close
+      })
 
     (storage, dbStop)
   }
@@ -117,17 +119,17 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
     }
 
   def reportRun(report: ScheduledRunReport) =
-    database(insert(report.serialize.asInstanceOf[JObject]).into(
-      settings.reports)) map { _ => PrecogUnit }
+    database(
+      insert(report.serialize.asInstanceOf[JObject])
+        .into(settings.reports)) map { _ => PrecogUnit }
 
   def statusFor(id: UUID, limit: Option[Int]) = {
     database(
       selectOne().from(settings.tasks).where(".id" === id.toString)) flatMap {
       taskOpt =>
-        database(
-          selectAll
-            .from(settings.reports)
-            .where(".id" === id.toString) /* TODO: limit */ ) map { history =>
+        database(selectAll.from(settings.reports).where(
+          ".id" === id.toString
+        ) /* TODO: limit */ ) map { history =>
           taskOpt map { task =>
             (
               task.deserialize[ScheduledTask],

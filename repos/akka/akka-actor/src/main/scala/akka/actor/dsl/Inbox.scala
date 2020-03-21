@@ -125,8 +125,8 @@ trait Inbox {
           val overdue = clientsByTimeout.iterator.takeWhile(pred)
           while (overdue.hasNext) {
             val toKick = overdue.next()
-            toKick.client ! Status.Failure(new TimeoutException(
-              "deadline passed"))
+            toKick.client ! Status
+              .Failure(new TimeoutException("deadline passed"))
           }
           clients = clients.filterNot(pred)
           clientsByTimeout = clientsByTimeout.from(Get(now))
@@ -187,8 +187,8 @@ trait Inbox {
     def getRef: ActorRef = receiver
     def send(target: ActorRef, msg: AnyRef): Unit = target.tell(msg, receiver)
 
-    private val defaultTimeout: FiniteDuration = Extension(
-      system).DSLDefaultTimeout
+    private val defaultTimeout: FiniteDuration = Extension(system)
+      .DSLDefaultTimeout
 
     /**
       * Receive a single message from the internal `receiver` actor. The supplied

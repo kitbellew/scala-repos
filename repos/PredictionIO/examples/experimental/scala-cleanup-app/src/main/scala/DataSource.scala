@@ -39,15 +39,14 @@ class DataSource(val dsp: DataSourceParams)
     logger.info(s"Event count before cleanup: $countBefore")
 
     val countRemove = eventsDb
-      .find(appId = dsp.appId, untilTime = Some(dsp.cutoffTime))(sc)
-      .count
+      .find(appId = dsp.appId, untilTime = Some(dsp.cutoffTime))(sc).count
     logger.info(s"Number of events to remove: $countRemove")
 
     logger.info(s"Remove events from appId ${dsp.appId}")
     val eventsToRemove: Array[String] = eventsDb
-      .find(appId = dsp.appId, untilTime = Some(dsp.cutoffTime))(sc)
-      .map { case e => e.eventId.getOrElse("") }
-      .collect
+      .find(appId = dsp.appId, untilTime = Some(dsp.cutoffTime))(sc).map {
+        case e => e.eventId.getOrElse("")
+      }.collect
 
     var lastFuture: Future[Boolean] = Future[Boolean] { true }
     eventsToRemove.foreach {

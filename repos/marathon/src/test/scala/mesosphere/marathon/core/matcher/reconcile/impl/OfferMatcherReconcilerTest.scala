@@ -27,8 +27,8 @@ class OfferMatcherReconcilerTest
     Given("an offer without reservations")
     val offer = MarathonTestHelper.makeBasicOffer().build()
     When("reconciling")
-    val matchedTaskOps =
-      f.reconciler.matchOffer(Timestamp.now() + 1.day, offer).futureValue
+    val matchedTaskOps = f.reconciler.matchOffer(Timestamp.now() + 1.day, offer)
+      .futureValue
     Then("no task ops are generated")
     matchedTaskOps.ops should be(empty)
   }
@@ -42,9 +42,8 @@ class OfferMatcherReconcilerTest
       appId,
       "persistent-volume-launched",
       "uuidLaunched")
-    val offer = MarathonTestHelper.offerWithVolumes(
-      taskId.idString,
-      localVolumeIdLaunched)
+    val offer = MarathonTestHelper
+      .offerWithVolumes(taskId.idString, localVolumeIdLaunched)
 
     And("no groups")
     f.groupRepository.rootGroupOrEmpty() returns Future.successful(Group.empty)
@@ -52,8 +51,8 @@ class OfferMatcherReconcilerTest
     f.taskTracker.tasksByApp()(any) returns Future.successful(TasksByApp.empty)
 
     When("reconciling")
-    val matchedTaskOps =
-      f.reconciler.matchOffer(Timestamp.now() + 1.day, offer).futureValue
+    val matchedTaskOps = f.reconciler.matchOffer(Timestamp.now() + 1.day, offer)
+      .futureValue
 
     Then("all resources are destroyed and unreserved")
     val expectedOps = Iterable(TaskOp.UnreserveAndDestroyVolumes(
@@ -76,20 +75,19 @@ class OfferMatcherReconcilerTest
       appId,
       "persistent-volume-launched",
       "uuidLaunched")
-    val offer = MarathonTestHelper.offerWithVolumes(
-      taskId.idString,
-      localVolumeIdLaunched)
+    val offer = MarathonTestHelper
+      .offerWithVolumes(taskId.idString, localVolumeIdLaunched)
 
     And("a bogus app")
     val app = AppDefinition(appId)
-    f.groupRepository.rootGroupOrEmpty() returns Future.successful(
-      Group.empty.copy(apps = Set(app)))
+    f.groupRepository.rootGroupOrEmpty() returns Future
+      .successful(Group.empty.copy(apps = Set(app)))
     And("no tasks")
     f.taskTracker.tasksByApp()(any) returns Future.successful(TasksByApp.empty)
 
     When("reconciling")
-    val matchedTaskOps =
-      f.reconciler.matchOffer(Timestamp.now() + 1.day, offer).futureValue
+    val matchedTaskOps = f.reconciler.matchOffer(Timestamp.now() + 1.day, offer)
+      .futureValue
 
     Then("all resources are destroyed and unreserved")
     val expectedOps = Iterable(TaskOp.UnreserveAndDestroyVolumes(
@@ -112,20 +110,19 @@ class OfferMatcherReconcilerTest
       appId,
       "persistent-volume-launched",
       "uuidLaunched")
-    val offer = MarathonTestHelper.offerWithVolumes(
-      taskId.idString,
-      localVolumeIdLaunched)
+    val offer = MarathonTestHelper
+      .offerWithVolumes(taskId.idString, localVolumeIdLaunched)
 
     And("no groups")
     f.groupRepository.rootGroupOrEmpty() returns Future.successful(Group.empty)
     And("a matching bogus task")
     val bogusTask = MarathonTestHelper.mininimalTask(taskId.idString)
-    f.taskTracker.tasksByApp()(any) returns Future.successful(
-      TasksByApp.forTasks(bogusTask))
+    f.taskTracker.tasksByApp()(any) returns Future
+      .successful(TasksByApp.forTasks(bogusTask))
 
     When("reconciling")
-    val matchedTaskOps =
-      f.reconciler.matchOffer(Timestamp.now() + 1.day, offer).futureValue
+    val matchedTaskOps = f.reconciler.matchOffer(Timestamp.now() + 1.day, offer)
+      .futureValue
 
     Then("all resources are destroyed and unreserved")
     val expectedOps = Iterable(TaskOp.UnreserveAndDestroyVolumes(
@@ -149,21 +146,20 @@ class OfferMatcherReconcilerTest
       appId,
       "persistent-volume-launched",
       "uuidLaunched")
-    val offer = MarathonTestHelper.offerWithVolumes(
-      taskId.idString,
-      localVolumeIdLaunched)
+    val offer = MarathonTestHelper
+      .offerWithVolumes(taskId.idString, localVolumeIdLaunched)
 
     And("a matching bogus app")
     val app = AppDefinition(appId)
-    f.groupRepository.rootGroupOrEmpty() returns Future.successful(
-      Group.empty.copy(apps = Set(app)))
+    f.groupRepository.rootGroupOrEmpty() returns Future
+      .successful(Group.empty.copy(apps = Set(app)))
     And("a matching bogus task")
     f.taskTracker.tasksByApp()(any) returns Future.successful(
       TasksByApp.forTasks(MarathonTestHelper.mininimalTask(taskId.idString)))
 
     When("reconciling")
-    val matchedTaskOps =
-      f.reconciler.matchOffer(Timestamp.now() + 1.day, offer).futureValue
+    val matchedTaskOps = f.reconciler.matchOffer(Timestamp.now() + 1.day, offer)
+      .futureValue
 
     Then("no resources are destroyed and unreserved")
     matchedTaskOps.ops should be(empty)

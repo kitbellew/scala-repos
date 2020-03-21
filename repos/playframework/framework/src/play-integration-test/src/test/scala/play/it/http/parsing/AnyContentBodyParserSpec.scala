@@ -15,8 +15,8 @@ object AnyContentBodyParserSpec extends PlaySpecification {
 
     def parse(method: String, contentType: Option[String], body: ByteString)(
         implicit mat: Materializer) = {
-      val request = FakeRequest(method, "/x").withHeaders(
-        contentType.map(CONTENT_TYPE -> _).toSeq: _*)
+      val request = FakeRequest(method, "/x")
+        .withHeaders(contentType.map(CONTENT_TYPE -> _).toSeq: _*)
       await(BodyParsers.parse.anyContent(request).run(Source.single(body)))
     }
 

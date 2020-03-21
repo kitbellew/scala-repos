@@ -44,9 +44,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     val meanB = 0
     val stdevB = 0.001
 
-    val model = new StreamingTest()
-      .setWindowSize(0)
-      .setPeacePeriod(0)
+    val model = new StreamingTest().setWindowSize(0).setPeacePeriod(0)
       .setTestMethod(testMethod)
 
     val input = generateTestData(
@@ -82,9 +80,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     val meanB = 10
     val stdevB = 1
 
-    val model = new StreamingTest()
-      .setWindowSize(0)
-      .setPeacePeriod(0)
+    val model = new StreamingTest().setWindowSize(0).setPeacePeriod(0)
       .setTestMethod(testMethod)
 
     val input = generateTestData(
@@ -120,9 +116,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     val meanB = 0
     val stdevB = 0.001
 
-    val model = new StreamingTest()
-      .setWindowSize(0)
-      .setPeacePeriod(0)
+    val model = new StreamingTest().setWindowSize(0).setPeacePeriod(0)
       .setTestMethod(testMethod)
 
     val input = generateTestData(
@@ -158,9 +152,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     val meanB = 10
     val stdevB = 1
 
-    val model = new StreamingTest()
-      .setWindowSize(0)
-      .setPeacePeriod(0)
+    val model = new StreamingTest().setWindowSize(0).setPeacePeriod(0)
       .setTestMethod(testMethod)
 
     val input = generateTestData(
@@ -196,9 +188,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     val meanB = 10
     val stdevB = 1
 
-    val model = new StreamingTest()
-      .setWindowSize(testWindow)
-      .setPeacePeriod(0)
+    val model = new StreamingTest().setWindowSize(testWindow).setPeacePeriod(0)
 
     val input = generateTestData(
       numBatches,
@@ -222,17 +212,13 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
 
     // number of batches seen so far does not exceed testWindow, expect counts to continue growing
     for (i <- 0 until testWindow) {
-      assert(
-        outputCounts
-          .slice(2 * i, 2 * i + 2)
-          .forall(_ == (i + 1) * pointsPerBatch / 2))
+      assert(outputCounts.slice(2 * i, 2 * i + 2).forall(
+        _ == (i + 1) * pointsPerBatch / 2))
     }
 
     // number of batches seen exceeds testWindow, expect counts to be constant
-    assert(
-      outputCounts
-        .drop(2 * (testWindow - 1))
-        .forall(_ == testWindow * pointsPerBatch / 2))
+    assert(outputCounts.drop(2 * (testWindow - 1)).forall(
+      _ == testWindow * pointsPerBatch / 2))
   }
 
   test("entries in peace period are dropped") {
@@ -245,9 +231,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     val meanB = 10
     val stdevB = 1
 
-    val model = new StreamingTest()
-      .setWindowSize(0)
-      .setPeacePeriod(peacePeriod)
+    val model = new StreamingTest().setWindowSize(0).setPeacePeriod(peacePeriod)
 
     val input = generateTestData(
       numBatches,
@@ -283,9 +267,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     val meanB = 0
     val stdevB = 0.001
 
-    val model = new StreamingTest()
-      .setWindowSize(0)
-      .setPeacePeriod(0)
+    val model = new StreamingTest().setWindowSize(0).setPeacePeriod(0)
 
     val input = generateTestData(
       numBatches,
@@ -294,8 +276,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
       stdevA,
       meanB,
       stdevB,
-      42)
-      .map(batch => batch.filter(_.isExperiment)) // only keep one test group
+      42).map(batch => batch.filter(_.isExperiment)) // only keep one test group
 
     // setup and run the model
     val ssc = setupStreams(

@@ -224,17 +224,15 @@ object Parsed {
         traceData: (Int, Parser[_])) = {
       val (originalIndex, originalParser) = traceData
 
-      val mutFailure = originalParser
-        .parseRec(
-          new ParseCtx(
-            input,
-            0,
-            index,
-            originalParser,
-            originalIndex,
-            (_, _, _) => ()),
-          originalIndex)
-        .asInstanceOf[Mutable.Failure]
+      val mutFailure = originalParser.parseRec(
+        new ParseCtx(
+          input,
+          0,
+          index,
+          originalParser,
+          originalIndex,
+          (_, _, _) => ()),
+        originalIndex).asInstanceOf[Mutable.Failure]
 
       new TracedFailure(
         input,
@@ -403,9 +401,8 @@ trait Parser[+T] extends ParserResults[T] with Precedence {
       index: Int = 0,
       instrument: (Parser[_], Int, () => Parsed[_]) => Unit = null)
       : Parsed[T] = {
-    parseRec(
-      new ParseCtx(input, 0, -1, this, index, instrument),
-      index).toResult
+    parseRec(new ParseCtx(input, 0, -1, this, index, instrument), index)
+      .toResult
   }
 
   /**

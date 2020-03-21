@@ -43,15 +43,10 @@ class BucketizerSuite
       .createDataFrame(validData.zip(expectedBuckets))
       .toDF("feature", "expected")
 
-    val bucketizer: Bucketizer = new Bucketizer()
-      .setInputCol("feature")
-      .setOutputCol("result")
-      .setSplits(splits)
+    val bucketizer: Bucketizer = new Bucketizer().setInputCol("feature")
+      .setOutputCol("result").setSplits(splits)
 
-    bucketizer
-      .transform(dataFrame)
-      .select("result", "expected")
-      .collect()
+    bucketizer.transform(dataFrame).select("result", "expected").collect()
       .foreach {
         case Row(x: Double, y: Double) =>
           assert(
@@ -62,15 +57,13 @@ class BucketizerSuite
     // Check for exceptions when using a set of invalid feature values.
     val invalidData1: Array[Double] = Array(-0.9) ++ validData
     val invalidData2 = Array(0.51) ++ validData
-    val badDF1 = sqlContext
-      .createDataFrame(invalidData1.zipWithIndex)
+    val badDF1 = sqlContext.createDataFrame(invalidData1.zipWithIndex)
       .toDF("feature", "idx")
     withClue(
       "Invalid feature value -0.9 was not caught as an invalid feature!") {
       intercept[SparkException] { bucketizer.transform(badDF1).collect() }
     }
-    val badDF2 = sqlContext
-      .createDataFrame(invalidData2.zipWithIndex)
+    val badDF2 = sqlContext.createDataFrame(invalidData2.zipWithIndex)
       .toDF("feature", "idx")
     withClue(
       "Invalid feature value 0.51 was not caught as an invalid feature!") {
@@ -91,15 +84,10 @@ class BucketizerSuite
       .createDataFrame(validData.zip(expectedBuckets))
       .toDF("feature", "expected")
 
-    val bucketizer: Bucketizer = new Bucketizer()
-      .setInputCol("feature")
-      .setOutputCol("result")
-      .setSplits(splits)
+    val bucketizer: Bucketizer = new Bucketizer().setInputCol("feature")
+      .setOutputCol("result").setSplits(splits)
 
-    bucketizer
-      .transform(dataFrame)
-      .select("result", "expected")
-      .collect()
+    bucketizer.transform(dataFrame).select("result", "expected").collect()
       .foreach {
         case Row(x: Double, y: Double) =>
           assert(
@@ -131,18 +119,16 @@ class BucketizerSuite
     val data = Array.fill(100)(Random.nextDouble())
     val splits: Array[Double] = Double.NegativeInfinity +:
       Array.fill(10)(Random.nextDouble()).sorted :+ Double.PositiveInfinity
-    val bsResult = Vectors.dense(
-      data.map(x => Bucketizer.binarySearchForBuckets(splits, x)))
-    val lsResult = Vectors.dense(
-      data.map(x => BucketizerSuite.linearSearchForBuckets(splits, x)))
+    val bsResult = Vectors
+      .dense(data.map(x => Bucketizer.binarySearchForBuckets(splits, x)))
+    val lsResult = Vectors
+      .dense(data.map(x => BucketizerSuite.linearSearchForBuckets(splits, x)))
     assert(bsResult ~== lsResult absTol 1e-5)
   }
 
   test("read/write") {
-    val t = new Bucketizer()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setSplits(Array(0.1, 0.8, 0.9))
+    val t = new Bucketizer().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setSplits(Array(0.1, 0.8, 0.9))
     testDefaultReadWrite(t)
   }
 }

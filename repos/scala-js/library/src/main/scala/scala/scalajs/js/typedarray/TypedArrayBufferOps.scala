@@ -79,8 +79,7 @@ final class TypedArrayBufferOps[ // scalastyle:ignore
     *    If this buffer does not have a backing [[TypedArray]], i.e., !hasTypedArray().
     */
   def typedArray(): TypedArrayType =
-    TypedArrayBufferBridge
-      .Buffer_typedArray(buffer)
+    TypedArrayBufferBridge.Buffer_typedArray(buffer)
       .asInstanceOf[TypedArrayType]
 }
 

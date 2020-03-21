@@ -198,9 +198,7 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
   })
 
   get("/admin/users")(adminOnly {
-    val includeRemoved = params
-      .get("includeRemoved")
-      .map(_.toBoolean)
+    val includeRemoved = params.get("includeRemoved").map(_.toBoolean)
       .getOrElse(false)
     val users = getAllUsers(includeRemoved)
     val members = users.collect {
@@ -267,14 +265,11 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     createGroup(form.groupName, form.url)
     updateGroupMembers(
       form.groupName,
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
+      form.members.split(",").map {
+        _.split(":") match {
+          case Array(userName, isManager) => (userName, isManager.toBoolean)
         }
-        .toList)
+      }.toList)
     updateImage(form.groupName, form.fileId, false)
     redirect("/admin/users")
   })
@@ -290,14 +285,11 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
   post("/admin/users/:groupName/_editgroup", editGroupForm)(adminOnly { form =>
     defining(
       params("groupName"),
-      form.members
-        .split(",")
-        .map {
-          _.split(":") match {
-            case Array(userName, isManager) => (userName, isManager.toBoolean)
-          }
+      form.members.split(",").map {
+        _.split(":") match {
+          case Array(userName, isManager) => (userName, isManager.toBoolean)
         }
-        .toList) {
+      }.toList) {
       case (groupName, members) =>
         getAccountByUserName(groupName, true).map {
           account =>
@@ -314,8 +306,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
                     getRepositoryDir(groupName, repositoryName))
                   FileUtils.deleteDirectory(
                     getWikiRepositoryDir(groupName, repositoryName))
-                  FileUtils.deleteDirectory(
-                    getTemporaryDir(groupName, repositoryName))
+                  FileUtils
+                    .deleteDirectory(getTemporaryDir(groupName, repositoryName))
               }
             } else {
               // Update GROUP_MEMBER
@@ -360,8 +352,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           value: String,
           messages: Messages): Option[String] = {
         params.get(paramName).flatMap { userName =>
-          if (userName == context.loginAccount.get.userName && params.get(
-                "removed") == Some("true"))
+          if (userName == context.loginAccount.get.userName && params
+                .get("removed") == Some("true"))
             Some("You can't disable your account yourself")
           else None
         }

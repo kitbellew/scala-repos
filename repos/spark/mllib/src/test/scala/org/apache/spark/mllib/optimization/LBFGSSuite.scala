@@ -62,8 +62,8 @@ class LBFGSSuite
     "LBFGS loss should be decreasing and match the result of Gradient Descent.") {
     val regParam = 0
 
-    val initialWeightsWithIntercept = Vectors.dense(
-      1.0 +: initialWeights.toArray)
+    val initialWeightsWithIntercept = Vectors
+      .dense(1.0 +: initialWeights.toArray)
     val convergenceTol = 1e-12
     val numIterations = 10
 
@@ -221,14 +221,11 @@ class LBFGSSuite
     val numIterations = 10
 
     val lbfgsOptimizer = new LBFGS(gradient, squaredL2Updater)
-      .setNumCorrections(numCorrections)
-      .setConvergenceTol(convergenceTol)
-      .setNumIterations(numIterations)
-      .setRegParam(regParam)
+      .setNumCorrections(numCorrections).setConvergenceTol(convergenceTol)
+      .setNumIterations(numIterations).setRegParam(regParam)
 
-    val weightLBFGS = lbfgsOptimizer.optimize(
-      dataRDD,
-      initialWeightsWithIntercept)
+    val weightLBFGS = lbfgsOptimizer
+      .optimize(dataRDD, initialWeightsWithIntercept)
 
     val numGDIterations = 50
     val stepSize = 1.0
@@ -256,23 +253,18 @@ class LBFGSClusterSuite extends SparkFunSuite with LocalClusterSparkContext {
   test("task size should be small") {
     val m = 10
     val n = 200000
-    val examples = sc
-      .parallelize(0 until m, 2)
-      .mapPartitionsWithIndex { (idx, iter) =>
+    val examples = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
+      (idx, iter) =>
         val random = new Random(idx)
         iter.map(i => (1.0, Vectors.dense(Array.fill(n)(random.nextDouble))))
-      }
-      .cache()
+    }.cache()
     val lbfgs = new LBFGS(new LogisticGradient, new SquaredL2Updater)
-      .setNumCorrections(1)
-      .setConvergenceTol(1e-12)
-      .setNumIterations(1)
+      .setNumCorrections(1).setConvergenceTol(1e-12).setNumIterations(1)
       .setRegParam(1.0)
     val random = new Random(0)
     // If we serialize data directly in the task closure, the size of the serialized task would be
     // greater than 1MB and hence Spark would throw an error.
-    val weights = lbfgs.optimize(
-      examples,
-      Vectors.dense(Array.fill(n)(random.nextDouble)))
+    val weights = lbfgs
+      .optimize(examples, Vectors.dense(Array.fill(n)(random.nextDouble)))
   }
 }

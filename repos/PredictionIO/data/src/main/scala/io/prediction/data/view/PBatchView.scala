@@ -101,22 +101,19 @@ private[prediction] case class EventOp(
 
   def toDataMap(): Option[DataMap] = {
     setProp.flatMap { set =>
-      val unsetKeys: Set[String] = unsetProp
-        .map(unset =>
-          unset.fields.filter { case (k, v) => (v >= set.fields(k).t) }.keySet)
+      val unsetKeys: Set[String] = unsetProp.map(unset =>
+        unset.fields.filter { case (k, v) => (v >= set.fields(k).t) }.keySet)
         .getOrElse(Set())
 
-      val combinedFields = deleteEntity
-        .map { delete =>
-          if (delete.t >= set.t) { None }
-          else {
-            val deleteKeys: Set[String] = set.fields.filter {
-              case (k, PropTime(kv, t)) => (delete.t >= t)
-            }.keySet
-            Some(set.fields -- unsetKeys -- deleteKeys)
-          }
+      val combinedFields = deleteEntity.map { delete =>
+        if (delete.t >= set.t) { None }
+        else {
+          val deleteKeys: Set[String] = set.fields.filter {
+            case (k, PropTime(kv, t)) => (delete.t >= t)
+          }.keySet
+          Some(set.fields -- unsetKeys -- deleteKeys)
         }
-        .getOrElse { Some(set.fields -- unsetKeys) }
+      }.getOrElse { Some(set.fields -- unsetKeys) }
 
       // Note: mapValues() doesn't return concrete Map and causes
       // NotSerializableException issue. Use map(identity) to work around this.
@@ -132,8 +129,7 @@ private[prediction] object EventOp {
     val t = e.eventTime.getMillis
     e.event match {
       case "$set" => {
-        val fields = e.properties.fields
-          .mapValues(jv => PropTime(jv, t))
+        val fields = e.properties.fields.mapValues(jv => PropTime(jv, t))
           .map(identity)
 
         EventOp(setProp = Some(SetProp(fields = fields, t = t)))
@@ -176,19 +172,15 @@ class PBatchView(
       startTimeOpt: Option[DateTime] = None,
       untilTimeOpt: Option[DateTime] = None): RDD[(String, DataMap)] = {
 
-    _events
-      .filter(e =>
-        ((e.entityType == entityType) &&
-          (EventValidation.isSpecialEvents(e.event))))
-      .map(e => (e.entityId, EventOp(e)))
-      .aggregateByKey[EventOp](EventOp())(
+    _events.filter(e =>
+      ((e.entityType == entityType) &&
+        (EventValidation.isSpecialEvents(e.event))))
+      .map(e => (e.entityId, EventOp(e))).aggregateByKey[EventOp](EventOp())(
         // within same partition
         seqOp = { case (u, v) => u ++ v },
         // across partition
-        combOp = { case (accu, u) => accu ++ u })
-      .mapValues(_.toDataMap)
-      .filter { case (k, v) => v.isDefined }
-      .map { case (k, v) => (k, v.get) }
+        combOp = { case (accu, u) => accu ++ u }).mapValues(_.toDataMap)
+      .filter { case (k, v) => v.isDefined }.map { case (k, v) => (k, v.get) }
   }
 
 }

@@ -147,7 +147,7 @@ object AdminServer {
 
 object AdminRun {
   def main(args: Array[String]) {
-    AdminServer.createAdminServer(
-      AdminServerConfig(ip = "localhost", port = 7071))
+    AdminServer
+      .createAdminServer(AdminServerConfig(ip = "localhost", port = 7071))
   }
 }

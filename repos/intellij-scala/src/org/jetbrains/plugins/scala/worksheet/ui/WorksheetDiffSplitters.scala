@@ -68,10 +68,8 @@ object WorksheetDiffSplitters {
     ChangeList.build(original, viewer, project).getLineBlocks
 
   private def getVisibleInterval(editor: Editor) = {
-    val line = editor
-      .xyToLogicalPosition(
-        new Point(0, editor.getScrollingModel.getVerticalScrollOffset))
-      .line
+    val line = editor.xyToLogicalPosition(
+      new Point(0, editor.getScrollingModel.getVerticalScrollOffset)).line
     (line, editor.getComponent.getHeight / editor.getLineHeight + 1)
   }
 
@@ -93,8 +91,9 @@ object WorksheetDiffSplitters {
         val f = getProportion
 
         Option(
-          PsiDocumentManager.getInstance(
-            editor1.getProject) getCachedPsiFile editor1.getDocument) foreach {
+          PsiDocumentManager
+            .getInstance(editor1.getProject) getCachedPsiFile editor1
+            .getDocument) foreach {
           case file: ScalaFile => WorksheetEditorPrinter.saveOnlyRatio(file, f)
           case _               =>
         }
@@ -132,8 +131,7 @@ object WorksheetDiffSplitters {
           val height = getHeight
           val editorHeight = editor1.getComponent.getHeight
 
-          val gg = g
-            .create(0, height - editorHeight, width, editorHeight)
+          val gg = g.create(0, height - editorHeight, width, editorHeight)
             .asInstanceOf[Graphics2D]
           var flag = false
 

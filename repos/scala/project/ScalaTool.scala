@@ -26,14 +26,10 @@ case class ScalaTool(
       else if (SystemUtils.IS_OS_WINDOWS) {
         // When building on Windows, use a Windows classpath in the shell script (for MSYS/Cygwin).
         // This is only used for "quick", which uses absolute paths, so it is not portable anyway.
-        classpath
-          .mkString(";")
-          .replace("\\", "\\\\")
+        classpath.mkString(";").replace("\\", "\\\\")
           .replaceAll(varRegex, """\${$1}""")
       } else
-        classpath
-          .mkString(":")
-          .replace('\\', '/')
+        classpath.mkString(":").replace('\\', '/')
           .replaceAll(varRegex, """\${$1}""")
 
     val variables = Map(

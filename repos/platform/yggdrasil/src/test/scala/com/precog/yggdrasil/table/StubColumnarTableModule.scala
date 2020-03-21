@@ -83,9 +83,9 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
         if (sortOrder.isAscending) { JValue.order.toScalaOrdering }
         else { JValue.order.toScalaOrdering.reverse }
 
-      tableWithSortKey.toJson
-        .map { jvals => fromJson(jvals.toList.sortBy(_ \ "0").toStream) }
-        .map(_.transform(DerefObjectStatic(Leaf(Source), CPathField("1"))))
+      tableWithSortKey.toJson.map { jvals =>
+        fromJson(jvals.toList.sortBy(_ \ "0").toStream)
+      }.map(_.transform(DerefObjectStatic(Leaf(Source), CPathField("1"))))
     }
 
     override def load(apiKey: APIKey, jtpe: JType) =
@@ -104,9 +104,8 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
                     }
 
                     val target = path.path.replaceAll("/$", ".json")
-                    val src =
-                      io.Source fromInputStream getClass.getResourceAsStream(
-                        target)
+                    val src = io.Source fromInputStream getClass
+                      .getResourceAsStream(target)
                     val parsed = src.getLines map JParser.parse toStream
 
                     currentIndex += parsed.length

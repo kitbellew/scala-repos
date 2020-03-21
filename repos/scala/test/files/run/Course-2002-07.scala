@@ -140,8 +140,8 @@ object M3 {
     Console.println("        1 = " + Number(1).eval);
     Console.println("    0 + 1 = " + Sum(Number(0), Number(1)).eval);
     Console.println("    1 + 2 = " + Sum(Number(1), Number(2)).eval);
-    Console.println(
-      "2 + 3 + 4 = " + Sum(Sum(Number(2), Number(3)), Number(4)).eval);
+    Console
+      .println("2 + 3 + 4 = " + Sum(Sum(Number(2), Number(3)), Number(4)).eval);
     Console.println;
   }
 
@@ -158,9 +158,10 @@ object M4 {
     }
 
   def test_concat[a](xss: List[List[a]]) = {
-    Console.println(
-      concat(xss).toString + " = concat(" + xss + ")"
-    ); // !!! .toString
+    Console
+      .println(
+        concat(xss).toString + " = concat(" + xss + ")"
+      ); // !!! .toString
   }
 
   def test = {
@@ -278,9 +279,8 @@ object M7 {
     }
 
   def test_heads[a](xss: List[List[a]]) = {
-    Console.println(
-      heads(xss).toString + " = heads(" + xss + ")"
-    ); // !!! .toString
+    Console
+      .println(heads(xss).toString + " = heads(" + xss + ")"); // !!! .toString
   }
 
   def test = {
@@ -332,9 +332,8 @@ object M8 {
     }
 
   def test_heads[a](xss: List[List[a]]) = {
-    Console.println(
-      heads(xss).toString + " = heads(" + xss + ")"
-    ); // !!! .toString
+    Console
+      .println(heads(xss).toString + " = heads(" + xss + ")"); // !!! .toString
   }
 
   def test = {

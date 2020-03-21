@@ -289,8 +289,8 @@ class MacroOrderingProperties
     val serializedB = serializeSeq(i.map(_._2))
     i.foreach {
       case (a, b) =>
-        val compareBinary =
-          obuf.compareBinary(serializedA, serializedB).unsafeToInt
+        val compareBinary = obuf.compareBinary(serializedA, serializedB)
+          .unsafeToInt
         val compareMem = obuf.compare(a, b)
         if (compareBinary < 0) {
           assert(

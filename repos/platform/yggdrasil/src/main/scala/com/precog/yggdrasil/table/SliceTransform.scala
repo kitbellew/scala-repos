@@ -219,9 +219,7 @@ trait SliceTransforms[M[+_]]
 
                 class FuzzyEqColumn(left: Column, right: Column)
                     extends BoolColumn {
-                  val equality = cf.std
-                    .Eq(left, right)
-                    .get
+                  val equality = cf.std.Eq(left, right).get
                     .asInstanceOf[BoolColumn] // yay!
                   def isDefinedAt(row: Int) =
                     (left isDefinedAt row) || (right isDefinedAt row)
@@ -287,8 +285,8 @@ trait SliceTransforms[M[+_]]
                 val unifiedNum = new AndLotsColumn(testedNum)
                 val unified = new BoolColumn {
                   def isDefinedAt(row: Int): Boolean =
-                    unifiedNonNum.isDefinedAt(row) || unifiedNum.isDefinedAt(
-                      row)
+                    unifiedNonNum.isDefinedAt(row) || unifiedNum
+                      .isDefinedAt(row)
                   def apply(row: Int): Boolean = {
                     val left =
                       !unifiedNonNum.isDefinedAt(row) || unifiedNonNum(row)
@@ -440,9 +438,8 @@ trait SliceTransforms[M[+_]]
           } else {
             objects map composeSliceTransform2 reduceLeft { (l0, r0) =>
               l0.zip(r0) { (sl0, sr0) =>
-                val sl = sl0.typed(
-                  JObjectUnfixedT
-                ) // Help out the special cases.
+                val sl = sl0
+                  .typed(JObjectUnfixedT) // Help out the special cases.
                 val sr = sr0.typed(JObjectUnfixedT)
 
                 new Slice {
@@ -487,8 +484,7 @@ trait SliceTransforms[M[+_]]
 
                       result lazyMapValues { col =>
                         cf.util
-                          .filter(0, sl.size max sr.size, nonemptyBits)(col)
-                          .get
+                          .filter(0, sl.size max sr.size, nonemptyBits)(col).get
                       }
                     }
                   }
@@ -577,8 +573,7 @@ trait SliceTransforms[M[+_]]
 
                       result lazyMapValues { col =>
                         cf.util
-                          .filter(0, sl.size max sr.size, nonemptyBits)(col)
-                          .get
+                          .filter(0, sl.size max sr.size, nonemptyBits)(col).get
                       }
                     }
                   }
@@ -720,12 +715,10 @@ trait SliceTransforms[M[+_]]
                 val columns: Map[ColumnRef, Column] = {
                   predS.columns get ColumnRef(CPath.Identity, CBoolean) map {
                     predC =>
-                      val leftMask = predC
-                        .asInstanceOf[BoolColumn]
+                      val leftMask = predC.asInstanceOf[BoolColumn]
                         .asBitSet(false, size)
 
-                      val rightMask = predC
-                        .asInstanceOf[BoolColumn]
+                      val rightMask = predC.asInstanceOf[BoolColumn]
                         .asBitSet(true, size)
                       rightMask.flip(0, size)
 
@@ -741,13 +734,12 @@ trait SliceTransforms[M[+_]]
                           ref -> cf.util.filter(0, size, rightMask)(col).get
 
                         case (ref, Middle3((left :: Nil, right :: Nil))) => {
-                          val left2 =
-                            cf.util.filter(0, size, leftMask)(left).get
-                          val right2 =
-                            cf.util.filter(0, size, rightMask)(right).get
+                          val left2 = cf.util.filter(0, size, leftMask)(left)
+                            .get
+                          val right2 = cf.util.filter(0, size, rightMask)(right)
+                            .get
 
-                          ref -> cf.util
-                            .MaskedUnion(leftMask)(left2, right2)
+                          ref -> cf.util.MaskedUnion(leftMask)(left2, right2)
                             .get // safe because types are grouped
                         }
                       })(collection.breakOut)
@@ -1008,11 +1000,11 @@ trait SliceTransforms[M[+_]]
             { case (a, (((b, c), d), e), f) => ((a, b, c), (d, e, f)) },
             { case ((a, b, c), (d, e, f))   => (a, (((b, c), d), e), f) })
 
-        case (MappedState1(sta, f, g), stb) =>
-          (sta andThen stb).mapState(f <-: _, g <-: _)
+        case (MappedState1(sta, f, g), stb) => (sta andThen stb)
+            .mapState(f <-: _, g <-: _)
 
-        case (sta, MappedState1(stb, f, g)) =>
-          (sta andThen stb).mapState(_ :-> f, _ :-> g)
+        case (sta, MappedState1(stb, f, g)) => (sta andThen stb)
+            .mapState(_ :-> f, _ :-> g)
       }
     }
 
@@ -1271,8 +1263,8 @@ trait SliceTransforms[M[+_]]
         st0: SliceTransform2[A],
         st1: SliceTransform1[B]): SliceTransform2[(A, B)] = {
       (st0, st1) match {
-        case (sta, MappedState1(stb, f, g)) =>
-          chain(sta, stb).mapState(_ :-> f, _ :-> g)
+        case (sta, MappedState1(stb, f, g)) => chain(sta, stb)
+            .mapState(_ :-> f, _ :-> g)
 
         case (sta: SliceTransform2S[_], stb: SliceTransform1S[_]) =>
           chainS(sta, stb)
@@ -1306,8 +1298,8 @@ trait SliceTransforms[M[+_]]
             { case (a, (b, c)) => ((a, b), c) },
             { case ((a, b), c) => (a, (b, c)) })
 
-        case (MappedState2(sta, f, g), stb) =>
-          chain(sta, stb).mapState(f <-: _, g <-: _)
+        case (MappedState2(sta, f, g), stb) => chain(sta, stb)
+            .mapState(f <-: _, g <-: _)
       }
     }
 
@@ -1402,11 +1394,9 @@ trait ConcatHelpers {
       size: Int,
       filter: Map[ColumnRef, Column] => Map[ColumnRef, Column],
       filterEmpty: Map[ColumnRef, Column] => Map[ColumnRef, Column]) = {
-    val definedBits = filter(columns).values
-      .map(_.definedAt(0, size))
+    val definedBits = filter(columns).values.map(_.definedAt(0, size))
       .reduceOption(_ | _) getOrElse new BitSet
-    val emptyBits = filterEmpty(columns).values
-      .map(_.definedAt(0, size))
+    val emptyBits = filterEmpty(columns).values.map(_.definedAt(0, size))
       .reduceOption(_ | _) getOrElse new BitSet
     (definedBits, emptyBits)
   }

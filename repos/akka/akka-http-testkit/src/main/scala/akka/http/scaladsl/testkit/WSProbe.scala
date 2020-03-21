@@ -156,10 +156,7 @@ object WSProbe {
       def outProbe: TestPublisher.Probe[Message] = publisher
 
       private def collect[T](stream: Source[T, Any])(reduce: (T, T) ⇒ T): T =
-        stream
-          .grouped(maxChunks)
-          .runWith(Sink.head)
-          .awaitResult(maxChunkCollectionMills.millis)
-          .reduce(reduce)
+        stream.grouped(maxChunks).runWith(Sink.head)
+          .awaitResult(maxChunkCollectionMills.millis).reduce(reduce)
     }
 }

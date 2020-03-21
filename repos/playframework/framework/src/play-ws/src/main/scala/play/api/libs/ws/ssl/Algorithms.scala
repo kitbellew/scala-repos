@@ -119,9 +119,7 @@ object Algorithms {
   }
 
   def translateECKey(pubk: Key): Key = {
-    val keyFactory = Thread
-      .currentThread()
-      .getContextClassLoader
+    val keyFactory = Thread.currentThread().getContextClassLoader
       .loadClass("sun.security.ec.ECKeyFactory")
     val method = keyFactory.getMethod("toECKey", classOf[java.security.Key])
     method.invoke(null, pubk) match {

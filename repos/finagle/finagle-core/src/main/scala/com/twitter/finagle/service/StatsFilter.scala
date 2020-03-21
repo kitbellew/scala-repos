@@ -131,13 +131,13 @@ class StatsFilter[Req, Rep](
   private[this] val outstandingRequestCount = new LongAdder()
   private[this] val dispatchCount = statsReceiver.counter("requests")
   private[this] val successCount = statsReceiver.counter("success")
-  private[this] val latencyStat = statsReceiver.stat(
-    s"request_latency_$latencyStatSuffix")
+  private[this] val latencyStat = statsReceiver
+    .stat(s"request_latency_$latencyStatSuffix")
   private[this] val loadGauge = statsReceiver.addGauge("load") {
     outstandingRequestCount.sum()
   }
-  private[this] val outstandingRequestCountGauge = statsReceiver.addGauge(
-    "pending") { outstandingRequestCount.sum() }
+  private[this] val outstandingRequestCountGauge = statsReceiver
+    .addGauge("pending") { outstandingRequestCount.sum() }
 
   private[this] def isBlackholeResponse(rep: Try[Rep]): Boolean =
     rep match {

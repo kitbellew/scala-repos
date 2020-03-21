@@ -255,8 +255,7 @@ class HttpClientDispatcherTest extends FunSuite {
     val futureResult = dispatcher(sentRequest)
 
     // get the netty request out of the other end of the transporter
-    val recvNettyReq = Await
-      .result(out.read())
+    val recvNettyReq = Await.result(out.read())
       .asInstanceOf[NettyHttp.FullHttpRequest]
 
     // apply the bijection to convert the netty request to a finagle one
@@ -295,8 +294,7 @@ class HttpClientDispatcherTest extends FunSuite {
     val futureResult = dispatcher(sentRequest)
 
     // get the netty request out of the other end of the transporter
-    val recvNettyReq = Await
-      .result(out.read())
+    val recvNettyReq = Await.result(out.read())
       .asInstanceOf[NettyHttp.FullHttpRequest]
 
     // apply the bijection to convert the netty request to a finagle one
@@ -336,8 +334,7 @@ class HttpClientDispatcherTest extends FunSuite {
       val futureResult = dispatcher(sentRequest)
 
       // get the netty request out of the other end of the transporter
-      val recvNettyReq = Await
-        .result(out.read())
+      val recvNettyReq = Await.result(out.read())
         .asInstanceOf[NettyHttp.FullHttpRequest]
 
       // apply the bijection to convert the netty request to a finagle one

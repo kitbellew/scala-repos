@@ -37,8 +37,8 @@ object ClusterSpec {
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
 
-  val selfAddress =
-    system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+  val selfAddress = system.asInstanceOf[ExtendedActorSystem].provider
+    .getDefaultAddress
 
   val cluster = Cluster(system)
   def clusterView = cluster.readView
@@ -120,9 +120,10 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
       )
       try {
         val ref = sys2.actorOf(Props.empty)
-        Cluster(sys2).join(
-          ref.path.address
-        ) // address doesn't contain full address information
+        Cluster(sys2)
+          .join(
+            ref.path.address
+          ) // address doesn't contain full address information
         within(5.seconds) {
           awaitAssert {
             Cluster(sys2).state.members.size should ===(1)

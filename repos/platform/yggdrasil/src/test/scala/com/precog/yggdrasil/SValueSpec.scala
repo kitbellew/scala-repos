@@ -35,9 +35,10 @@ class SValueSpec extends Specification {
     }
 
     "set array indices" in {
-      SObject(Map())
-        .set(JPath(".foo[1].bar"), CString("baz")) must beSome(SObject(Map(
-        "foo" -> SArray(Vector(SNull, SObject(Map("bar" -> SString("baz"))))))))
+      SObject(Map()).set(JPath(".foo[1].bar"), CString("baz")) must beSome(
+        SObject(Map(
+          "foo" -> SArray(
+            Vector(SNull, SObject(Map("bar" -> SString("baz"))))))))
     }
 
     "return None for a primitive" in {

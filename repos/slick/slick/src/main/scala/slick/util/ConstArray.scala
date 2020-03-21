@@ -319,8 +319,7 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   ///////////////////////////////////////////////////////// concatenation
 
   def :+(v: T @uncheckedVariance): ConstArray[T] = {
-    val a2 = Arrays
-      .copyOf[Any](a.asInstanceOf[Array[AnyRef]], length + 1)
+    val a2 = Arrays.copyOf[Any](a.asInstanceOf[Array[AnyRef]], length + 1)
       .asInstanceOf[Array[Any]]
     a2(length) = v
     new ConstArray[T](a2)
@@ -358,8 +357,7 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
     if (from == 0) { if (until == length) this else new ConstArray(a, until) }
     else
       new ConstArray(
-        Arrays
-          .copyOfRange[AnyRef](a.asInstanceOf[Array[AnyRef]], from, until)
+        Arrays.copyOfRange[AnyRef](a.asInstanceOf[Array[AnyRef]], from, until)
           .asInstanceOf[Array[Any]])
   }
 
@@ -527,11 +525,9 @@ final class ConstArrayBuilder[T](
   private[this] def ensure(i: Int): Unit = {
     val total = len + i
     if (a.length < total)
-      a = Arrays
-        .copyOf[Any](
-          a.asInstanceOf[Array[AnyRef]],
-          math.max((a.length * growFactor).toInt, total))
-        .asInstanceOf[Array[Any]]
+      a = Arrays.copyOf[Any](
+        a.asInstanceOf[Array[AnyRef]],
+        math.max((a.length * growFactor).toInt, total)).asInstanceOf[Array[Any]]
   }
 
   def +(v: T): this.type = { this += v; this }

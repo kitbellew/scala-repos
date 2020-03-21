@@ -59,12 +59,10 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     */
   def onFinish(f: Option[Throwable] => Task[Unit]): Task[A] =
     new Task(get flatMap {
-      case -\/(e) =>
-        Task
-          .Try(f(Some(e)))
+      case -\/(e) => Task.Try(f(Some(e)))
           .fold(e2 => Future.now(-\/(e2)), _.get *> Future.now(-\/(e)))
-      case r =>
-        Task.Try(f(None)).fold(e => Future.now(-\/(e)), _.get *> Future.now(r))
+      case r => Task.Try(f(None))
+          .fold(e => Future.now(-\/(e)), _.get *> Future.now(r))
     })
 
   /**

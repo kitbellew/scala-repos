@@ -22,16 +22,16 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
   //suggest class name
   extend(
     CompletionType.BASIC,
-    ScalaSmartCompletionContributor.superParentsPattern(
-      classOf[ScTypeDefinition]),
+    ScalaSmartCompletionContributor
+      .superParentsPattern(classOf[ScTypeDefinition]),
     new CompletionProvider[CompletionParameters]() {
       def addCompletions(
           parameters: CompletionParameters,
           context: ProcessingContext,
           result: CompletionResultSet) {
         val position = positionFromParameters(parameters)
-        val fileName =
-          parameters.getOriginalFile.getVirtualFile.getNameWithoutExtension
+        val fileName = parameters.getOriginalFile.getVirtualFile
+          .getNameWithoutExtension
         val classesNames: mutable.HashSet[String] = mutable.HashSet.empty
         val objectNames: mutable.HashSet[String] = mutable.HashSet.empty
         val parent = position.getContext.getContext
@@ -47,8 +47,8 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
           case p: ScPackaging => true
           case _              => false
         }
-        if (shouldCompleteFileName && !classesNames.contains(
-              fileName) && !objectNames.contains(fileName)) {
+        if (shouldCompleteFileName && !classesNames
+              .contains(fileName) && !objectNames.contains(fileName)) {
           result.addElement(LookupElementBuilder.create(fileName))
         }
         position.getContext match {

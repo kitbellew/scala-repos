@@ -21,9 +21,8 @@ class ScalaTestFinder extends JavaTestFinder {
     val klass: PsiClass = findSourceElement(element)
     if (klass == null) return Collections.emptySet()
     val klassName = klass.getName.replace("$", "\\$")
-    val pattern = Pattern.compile(
-      ".*" + klassName + ".*",
-      Pattern.CASE_INSENSITIVE)
+    val pattern = Pattern
+      .compile(".*" + klassName + ".*", Pattern.CASE_INSENSITIVE)
     val names = new HashSet[String]()
     val frameworks: TestFrameworks = TestFrameworks.getInstance
     val cache = PsiShortNamesCache.getInstance(klass.getProject)

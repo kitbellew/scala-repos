@@ -25,15 +25,13 @@ class SetupScalaSdkNotificationProvider(
     notifications: EditorNotifications)
     extends EditorNotifications.Provider[EditorNotificationPanel] {
 
-  project.getMessageBus
-    .connect(project)
-    .subscribe(
-      ProjectTopics.PROJECT_ROOTS,
-      new ModuleRootAdapter {
-        override def rootsChanged(event: ModuleRootEvent) {
-          notifications.updateAllNotifications()
-        }
-      })
+  project.getMessageBus.connect(project).subscribe(
+    ProjectTopics.PROJECT_ROOTS,
+    new ModuleRootAdapter {
+      override def rootsChanged(event: ModuleRootEvent) {
+        notifications.updateAllNotifications()
+      }
+    })
 
   override def getKey = ProviderKey
 
@@ -41,12 +39,10 @@ class SetupScalaSdkNotificationProvider(
       file: VirtualFile,
       fileEditor: FileEditor) = {
     val hasSdk = Option(PsiManager.getInstance(project).findFile(file))
-      .filter(_.getLanguage == ScalaLanguage.Instance)
-      .filter(
+      .filter(_.getLanguage == ScalaLanguage.Instance).filter(
         !_.getName.endsWith(".sbt")
       ) // root SBT files belong to main (not *-build) modules
-      .filter(_.isWritable)
-      .flatMap(psiFile =>
+      .filter(_.isWritable).flatMap(psiFile =>
         Option(ModuleUtilCore.findModuleForPsiElement(psiFile)))
       .filter(module =>
         ModuleUtil.getModuleType(module) == JavaModuleType.getModuleType)
@@ -62,8 +58,8 @@ class SetupScalaSdkNotificationProvider(
 }
 
 object SetupScalaSdkNotificationProvider {
-  private val ProviderKey = Key.create[EditorNotificationPanel](
-    "Setup Scala SDK")
+  private val ProviderKey = Key
+    .create[EditorNotificationPanel]("Setup Scala SDK")
 
   private def createPanel(
       project: Project,
@@ -80,9 +76,8 @@ object SetupScalaSdkNotificationProvider {
 
   private def setupSdk(parent: JComponent, project: Project, file: PsiFile) {
     Option(ModuleUtilCore.findModuleForPsiElement(file)).foreach { module =>
-      val dialog = AddSupportForSingleFrameworkDialog.createDialog(
-        module,
-        new ScalaSupportProvider())
+      val dialog = AddSupportForSingleFrameworkDialog
+        .createDialog(module, new ScalaSupportProvider())
       dialog.showAndGet()
     }
   }

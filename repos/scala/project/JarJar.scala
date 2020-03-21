@@ -92,8 +92,8 @@ object JarJar {
     val processed = in.flatMap(entry => process(entry)).toSet
     val getter = processor.getClass.getDeclaredMethod("getExcludes")
     getter.setAccessible(true)
-    val excludes =
-      getter.invoke(processor).asInstanceOf[java.util.Set[String]].asScala
+    val excludes = getter.invoke(processor).asInstanceOf[java.util.Set[String]]
+      .asScala
     val excluded = excludes.map { name =>
       val f: File = outdir / name
       if (f.exists && !f.delete())

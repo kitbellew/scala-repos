@@ -123,9 +123,7 @@ abstract class BytecodeTest {
   protected def loadClassNode(
       name: String,
       skipDebugInfo: Boolean = true): ClassNode = {
-    val classBytes: InputStream = classpath
-      .findClassFile(name)
-      .map(_.input)
+    val classBytes: InputStream = classpath.findClassFile(name).map(_.input)
       .getOrElse(sys.error(
         s"failed to load class '$name'; classpath = $classpath"))
 
@@ -139,8 +137,8 @@ abstract class BytecodeTest {
     import scala.tools.nsc.util.ClassPath.DefaultJavaContext
     import scala.tools.util.PathResolver.Defaults
     // logic inspired by scala.tools.util.PathResolver implementation
-    val containers = DefaultJavaContext.classesInExpandedPath(
-      Defaults.javaUserClassPath)
+    val containers = DefaultJavaContext
+      .classesInExpandedPath(Defaults.javaUserClassPath)
     new JavaClassPath(containers, DefaultJavaContext)
   }
 }

@@ -65,11 +65,9 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
     if (!children.isEmpty) {
       tdb.cleanUpBefore()
       try {
-        val is = children.iterator
-          .map(ch => (ch, ch.cl.newInstance()))
-          .filter { case (_, to) => to.setTestDB(tdb) }
-          .zipWithIndex
-          .toIndexedSeq
+        val is = children.iterator.map(ch => (ch, ch.cl.newInstance())).filter {
+          case (_, to) => to.setTestDB(tdb)
+        }.zipWithIndex.toIndexedSeq
         val last = is.length - 1
         var previousTestObject: GenericTest[_ >: Null <: TestDB] = null
         for (((ch, preparedTestObject), idx) <- is) {
@@ -82,9 +80,8 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
             previousTestObject = null
             try ch.run(testObject)
             finally {
-              val skipCleanup =
-                idx == last || (testObject.reuseInstance && (ch.cl eq is(
-                  idx + 1)._1._1.cl))
+              val skipCleanup = idx == last || (testObject.reuseInstance && (ch
+                .cl eq is(idx + 1)._1._1.cl))
               if (skipCleanup) {
                 if (idx == last) testObject.closeKeepAlive()
                 else previousTestObject = testObject
@@ -426,8 +423,7 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
       catch {
         case ex: AssertionError =>
           ex.setStackTrace(
-            ex.getStackTrace.iterator
-              .filterNot(_.getClassName.startsWith(cln))
+            ex.getStackTrace.iterator.filterNot(_.getClassName.startsWith(cln))
               .toArray)
           throw ex
       }
@@ -450,7 +446,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
     def shouldBeA[T](implicit ct: ClassTag[T]): Unit = {
       if (!ct.runtimeClass.isInstance(v))
         fixStack(Assert.fail(
-          "Expected value of type " + ct.runtimeClass.getName + ", got " + v.getClass.getName))
+          "Expected value of type " + ct.runtimeClass.getName + ", got " + v
+            .getClass.getName))
     }
   }
 
@@ -461,8 +458,7 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
       catch {
         case ex: AssertionError =>
           ex.setStackTrace(
-            ex.getStackTrace.iterator
-              .filterNot(_.getClassName.startsWith(cln))
+            ex.getStackTrace.iterator.filterNot(_.getClassName.startsWith(cln))
               .toArray)
           throw ex
       }

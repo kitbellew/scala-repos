@@ -134,8 +134,8 @@ trait BaseParsers extends RegexParsers {
         Failure("No chars before current char, cannot look behind.", in)
       } else if (!cs.contains(source.charAt(offset - 1))) {
         Failure(
-          "Previous char was '" + source.charAt(
-            offset - 1) + "' expected one of " + cs,
+          "Previous char was '" + source
+            .charAt(offset - 1) + "' expected one of " + cs,
           in)
       } else { Success((), in) }
     }

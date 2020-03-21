@@ -434,9 +434,10 @@ class DenseMatrixTest
     assert(b * c === DenseVector(62, -21, 87).mapValues(BigDecimal(_)))
     assert(b.t * c === DenseVector(72, -18, 65).mapValues(BigDecimal(_)))
     assert(
-      a.t * DenseVector(4, 3)
-        .mapValues(BigDecimal(_)) === DenseVector(16, 23, 30).mapValues(
-        BigDecimal(_)))
+      a.t * DenseVector(4, 3).mapValues(BigDecimal(_)) === DenseVector(
+        16,
+        23,
+        30).mapValues(BigDecimal(_)))
 
     // should be dense
     val x = a * a.t
@@ -750,10 +751,8 @@ class DenseMatrixTest
       area === DenseMatrix((3, 4, 5, 6, 7), (3, 4, 5, 6, 7), (3, 4, 5, 6, 7)))
 
     assert(
-      area.t === DenseMatrix(
-        (3, 4, 5, 6, 7),
-        (3, 4, 5, 6, 7),
-        (3, 4, 5, 6, 7)).t)
+      area.t === DenseMatrix((3, 4, 5, 6, 7), (3, 4, 5, 6, 7), (3, 4, 5, 6, 7))
+        .t)
 
     val sl2t = area.t(0 until area.cols, 1 until area.rows)
     assert(
@@ -822,8 +821,8 @@ class DenseMatrixTest
 
   test("lhs scalars") {
     assert(
-      1.0 :/ (DenseMatrix.fill(2, 2)(10.0)) === DenseMatrix.fill(2, 2)(
-        1 / 10.0))
+      1.0 :/ (DenseMatrix.fill(2, 2)(10.0)) === DenseMatrix
+        .fill(2, 2)(1 / 10.0))
     assert(
       1.0 :- (DenseMatrix.fill(2, 2)(10.0)) === DenseMatrix.fill(2, 2)(-9.0))
   }

@@ -66,16 +66,10 @@ class ScTraitImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    super[ScTypeParametersOwner].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place) &&
-    super[ScTemplateDefinition].processDeclarationsForTemplateBody(
-      processor,
-      state,
-      lastParent,
-      place)
+    super[ScTypeParametersOwner]
+      .processDeclarations(processor, state, lastParent, place) &&
+    super[ScTemplateDefinition]
+      .processDeclarationsForTemplateBody(processor, state, lastParent, place)
   }
 
   override def processDeclarations(
@@ -83,11 +77,8 @@ class ScTraitImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    super[ScTemplateDefinition].processDeclarations(
-      processor,
-      state,
-      lastParent,
-      place)
+    super[ScTemplateDefinition]
+      .processDeclarations(processor, state, lastParent, place)
   }
 
   override def isInterface: Boolean = true

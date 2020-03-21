@@ -58,10 +58,9 @@ object ScaloidBuild extends Build {
         </developers>,
     scalacOptions := Seq("-target:jvm-1.6", "-deprecation", "-feature"),
     javacOptions ++= Seq("-source", "1.6", "-target", "1.6"),
-    resolvers += "Android Repository" at (
-      new File(
-        System.getenv("ANDROID_HOME")) / "extras" / "android" / "m2repository"
-    ).getCanonicalFile.toURI.toString,
+    resolvers += "Android Repository" at (new File(
+      System.getenv("ANDROID_HOME")) / "extras" / "android" / "m2repository")
+      .getCanonicalFile.toURI.toString,
     addCompilerPlugin(
       "org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   )
@@ -72,17 +71,13 @@ object ScaloidBuild extends Build {
   }
 
   //  root project
-  lazy val parent = Project("parent", file("."))
-    .settings(basicSettings: _*)
-    .settings(scaloidSettings: _*)
-    .settings(publish := {}, publishLocal := {})
+  lazy val parent = Project("parent", file(".")).settings(basicSettings: _*)
+    .settings(scaloidSettings: _*).settings(publish := {}, publishLocal := {})
     .aggregate(common, support_v4, util)
 
   lazy val common = Project("scaloid", file("scaloid-common"))
-    .settings(name := "scaloid", exportJars := true)
-    .settings(basicSettings: _*)
-    .settings(scaloidSettings: _*)
-    .settings(
+    .settings(name := "scaloid", exportJars := true).settings(basicSettings: _*)
+    .settings(scaloidSettings: _*).settings(
       libraryDependencies ++= Seq(
         robolectric,
         scalaTest,
@@ -97,16 +92,12 @@ object ScaloidBuild extends Build {
 
   lazy val support_v4 = Project("support-v4", file("scaloid-support-v4"))
     .settings(name := "scaloid-support-v4", exportJars := true)
-    .settings(basicSettings: _*)
-    .settings(scaloidSettings: _*)
+    .settings(basicSettings: _*).settings(scaloidSettings: _*)
     .settings(libraryDependencies += android_support_v4)
-    .settings(libraryDependencies += scaloid)
-    .dependsOn(common)
+    .settings(libraryDependencies += scaloid).dependsOn(common)
 
   lazy val util = Project("util", file("scaloid-util"))
     .settings(name := "scaloid-util", exportJars := true)
-    .settings(basicSettings: _*)
-    .settings(scaloidSettings: _*)
-    .settings(libraryDependencies += scaloid)
-    .dependsOn(common)
+    .settings(basicSettings: _*).settings(scaloidSettings: _*)
+    .settings(libraryDependencies += scaloid).dependsOn(common)
 }

@@ -159,8 +159,8 @@ final case class TreeLoc[A](
           case Stream.cons(t, ts) => Some(loc(t, ts, rights, parents))
           case _ =>
             for (loc1 <- parent)
-              yield loc1.modifyTree((t: Tree[A]) =>
-                Node(t.rootLabel, Stream.Empty))
+              yield loc1
+                .modifyTree((t: Tree[A]) => Node(t.rootLabel, Stream.Empty))
         }
     }
 
@@ -376,8 +376,8 @@ sealed abstract class TreeLocInstances {
         ParentsT.foldMapRight1Opt(fa.parents)(z)(f) match {
           case Some(p) =>
             fa.tree.foldRight(
-              ForestT.foldRight(fa.lefts, ForestT.foldRight(fa.rights, p)(f))(
-                f))(f)
+              ForestT
+                .foldRight(fa.lefts, ForestT.foldRight(fa.rights, p)(f))(f))(f)
           case None => ForestT.foldMapRight1Opt(fa.rights)(z)(f) match {
               case Some(r) =>
                 fa.tree.foldRight(ForestT.foldRight(fa.lefts, r)(f))(f)

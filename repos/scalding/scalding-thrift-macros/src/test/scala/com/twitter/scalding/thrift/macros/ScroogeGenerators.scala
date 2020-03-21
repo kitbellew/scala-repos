@@ -232,11 +232,8 @@ object ScroogeGenerators {
         aSetSet <- Gen
           .listOf(Gen.listOf(Gen.alphaStr).map(l => l.to[collection.Set]))
           .map(_.to[collection.Set])
-        aMapSet <- Gen
-          .listOf(
-            Gen
-              .listOf(arb[(Int, Int)])
-              .map(l => l.toMap.asInstanceOf[collection.Map[Int, Int]]))
+        aMapSet <- Gen.listOf(Gen.listOf(arb[(Int, Int)]).map(l =>
+          l.toMap.asInstanceOf[collection.Map[Int, Int]]))
           .map(_.to[collection.Set])
       } yield TestSets(
         aBoolSet,
@@ -271,33 +268,23 @@ object ScroogeGenerators {
         aDoubleMap <- Gen.listOf(arb[(Double, Byte)]).map(_.toMap)
         aStringMap <- Gen.listOf(arb[(String, Boolean)]).map(_.toMap)
         aStructMap <- Gen.listOf(arb[(TestStruct, List[String])]).map(_.toMap)
-        aListMap <- Gen
-          .listOf(arb[(List[String], TestStruct)])
-          .map(
-            _.toMap
-              .map { case (k, v) => k.to[collection.Seq] -> v }
-              .asInstanceOf[collection.Map[collection.Seq[String], TestStruct]])
-        aSetMap <- Gen
-          .listOf(arb[(Set[String], Set[String])])
-          .map(
-            _.toMap
-              .map {
-                case (k, v) => k.to[collection.Set] -> v.to[collection.Set]
-              }
-              .asInstanceOf[collection.Map[collection.Set[
-                String], collection.Set[String]]])
-        aMapMap <- Gen
-          .listOf(arb[(Map[Int, Int], Map[Int, Int])])
-          .map(
-            _.toMap
-              .map {
-                case (k, v) =>
-                  k.asInstanceOf[collection.Map[Int, Int]] -> v
-                    .asInstanceOf[collection.Map[Int, Int]]
-              }
-              .asInstanceOf[collection.Map[
-                collection.Map[Int, Int],
-                collection.Map[Int, Int]]])
+        aListMap <- Gen.listOf(arb[(List[String], TestStruct)]).map(
+          _.toMap.map { case (k, v) => k.to[collection.Seq] -> v }
+          .asInstanceOf[collection.Map[collection.Seq[String], TestStruct]])
+        aSetMap <- Gen.listOf(arb[(Set[String], Set[String])]).map(
+          _.toMap
+          .map { case (k, v) => k.to[collection.Set] -> v.to[collection.Set] }
+          .asInstanceOf[collection.Map[collection.Set[String], collection.Set[
+            String]]])
+        aMapMap <- Gen.listOf(arb[(Map[Int, Int], Map[Int, Int])]).map(
+          _.toMap.map {
+            case (k, v) =>
+              k.asInstanceOf[collection.Map[Int, Int]] -> v
+                .asInstanceOf[collection.Map[Int, Int]]
+          }
+          .asInstanceOf[collection.Map[
+            collection.Map[Int, Int],
+            collection.Map[Int, Int]]])
       } yield TestMaps(
         aBoolMap,
         aByteMap,

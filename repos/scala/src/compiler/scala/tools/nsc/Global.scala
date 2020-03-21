@@ -200,8 +200,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       print(" // " + unit.source)
       if (unit.body == null) println(": tree is null")
       else {
-        val source = util.stringFromWriter(w =>
-          newTreePrinter(w) print unit.body)
+        val source = util
+          .stringFromWriter(w => newTreePrinter(w) print unit.body)
 
         // treePrinter show unit.body
         if (lastPrintedSource == source)
@@ -342,21 +342,19 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           None
       }
 
-    val charset =
-      settings.encoding.valueSetByUser flatMap loadCharset getOrElse {
-        settings.encoding.value = defaultEncoding // A mandatory charset
-        Charset.forName(defaultEncoding)
-      }
+    val charset = settings.encoding
+      .valueSetByUser flatMap loadCharset getOrElse {
+      settings.encoding.value = defaultEncoding // A mandatory charset
+      Charset.forName(defaultEncoding)
+    }
 
     def loadReader(name: String): Option[SourceReader] = {
       def ccon =
-        Class
-          .forName(name)
+        Class.forName(name)
           .getConstructor(classOf[CharsetDecoder], classOf[Reporter])
 
       try Some(
-        ccon
-          .newInstance(charset.newDecoder(), reporter)
+        ccon.newInstance(charset.newDecoder(), reporter)
           .asInstanceOf[SourceReader])
       catch {
         case ex: Throwable =>
@@ -382,8 +380,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   // where I need it, and then an override in Global with the setting.
   override protected val etaExpandKeepsStar = settings.etaExpandKeepsStar.value
   // Here comes another one...
-  override protected val enableTypeVarExperimentals =
-    settings.Xexperimental.value
+  override protected val enableTypeVarExperimentals = settings.Xexperimental
+    .value
 
   def getSourceFile(f: AbstractFile): BatchSourceFile =
     new BatchSourceFile(f, reader read f)
@@ -819,13 +817,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     *  where the value compares unequal to the previous phase's value.
     */
   def afterEachPhase[T](op: => T): List[(Phase, T)] = { // used in tests
-    phaseDescriptors
-      .map(_.ownPhase)
-      .filterNot(_ eq NoPhase)
+    phaseDescriptors.map(_.ownPhase).filterNot(_ eq NoPhase)
       .foldLeft(List[(Phase, T)]()) { (res, ph) =>
         val value = exitingPhase(ph)(op)
         if (res.nonEmpty && res.head._2 == value) res else ((ph, value)) :: res
-    } reverse
+      } reverse
   }
 
   // ------------ REPL utilities ---------------------------------
@@ -847,8 +843,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   /** Is given package class a system package class that cannot be invalidated?
     */
   private def isSystemPackageClass(pkg: Symbol) =
-    pkg == RootClass || (pkg.hasTransOwner(
-      definitions.ScalaPackageClass) && !pkg.hasTransOwner(
+    pkg == RootClass || (pkg
+      .hasTransOwner(definitions.ScalaPackageClass) && !pkg.hasTransOwner(
       this.rootMirror.staticPackage("scala.tools").moduleClass.asClass))
 
   /** Invalidates packages that contain classes defined in a classpath entry, and
@@ -1133,8 +1129,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         try {
           // Taking 3 before, 3 after the fingered line.
           val start = 0 max (tree.pos.line - 3)
-          val xs = scala.reflect.io
-            .File(tree.pos.source.file.file)
+          val xs = scala.reflect.io.File(tree.pos.source.file.file)
             .lines drop start take 7
           val strs = xs.zipWithIndex map {
             case (line, idx) => f"${start + idx}%6d $line"
@@ -1162,13 +1157,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         "tree position" -> pos_s,
         "tree tpe" -> tpe,
         "symbol" -> Option(sym).fold("null")(_.debugLocationString),
-        "symbol definition" -> Option(sym).fold("null")(s =>
-          s.defString + s" (a ${s.shortSymbolClass})"),
+        "symbol definition" -> Option(sym)
+          .fold("null")(s => s.defString + s" (a ${s.shortSymbolClass})"),
         "symbol package" -> sym.enclosingPackage.fullName,
         "symbol owners" -> ownerChainString(sym),
-        "call site" -> (
-          site.fullLocationString + " in " + site.enclosingPackage
-        )
+        "call site" -> (site.fullLocationString + " in " + site
+          .enclosingPackage)
       )
       (
         "\n  " + errorMessage + "\n" + info1
@@ -1183,7 +1177,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     /* Only output a summary message under debug if we aren't echoing each file. */
     if (settings.debug && !(settings.verbose || currentRun.size < 5))
       inform(
-        "[running phase " + ph.name + " on " + currentRun.size + " compilation units]")
+        "[running phase " + ph.name + " on " + currentRun
+          .size + " compilation units]")
   }
 
   def newSourceFile(code: String, filename: String = "<console>") =
@@ -1315,8 +1310,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         } else phs
       }
       // Create phases and link them together. We supply the previous, and the ctor sets prev.next.
-      val last = components.foldLeft(NoPhase: Phase)((prev, c) =>
-        c newPhase prev)
+      val last = components
+        .foldLeft(NoPhase: Phase)((prev, c) => c newPhase prev)
       // rewind (Iterator.iterate(last)(_.prev) dropWhile (_.prev ne NoPhase)).next
       val first = { var p = last; while (p.prev ne NoPhase) p = p.prev; p }
       val ss = settings
@@ -1448,7 +1443,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       if (settings.target.value != supportedTarget) {
         currentRun.reporting.deprecationWarning(
           NoPosition,
-          settings.target.name + ":" + settings.target.value + " is deprecated and has no effect, setting to " + supportedTarget)
+          settings.target.name + ":" + settings.target
+            .value + " is deprecated and has no effect, setting to " + supportedTarget)
         settings.target.value = supportedTarget
       }
       settings.conflictWarning.foreach(reporter.warning(NoPosition, _))
@@ -1585,12 +1581,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
         // progress update
         informTime(globalPhase.description, startTime)
-        if ((
-              settings.Xprint containsPhase globalPhase
-            ) || settings.printLate && runIsAt(cleanupPhase)) {
+        if ((settings.Xprint containsPhase globalPhase) || settings
+              .printLate && runIsAt(cleanupPhase)) {
           // print trees
-          if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
-            nodePrinters.printAll()
+          if (settings.Xshowtrees || settings.XshowtreesCompact || settings
+                .XshowtreesStringified) nodePrinters.printAll()
           else printAllUnits()
         }
 
@@ -1734,10 +1729,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     }
 
     syms foreach { sym =>
-      val name = "\n<<-- %s %s after phase '%s' -->>".format(
-        sym.kindString,
-        sym.fullName,
-        ph.name)
+      val name = "\n<<-- %s %s after phase '%s' -->>"
+        .format(sym.kindString, sym.fullName, ph.name)
       val baseClasses = bases(sym).mkString("Base classes:\n  ", "\n  ", "")
       val contents =
         if (declsOnly) decls(sym).mkString("Declarations:\n  ", "\n  ", "")

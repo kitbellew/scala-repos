@@ -46,91 +46,70 @@ object Scalajsld {
   private implicit object OutputModeRead extends scopt.Read[OutputMode] {
     val arity = 1
     val reads = { (s: String) =>
-      OutputMode.All
-        .find(_.toString() == s)
-        .getOrElse(
-          throw new IllegalArgumentException(s"$s is not a valid output mode"))
+      OutputMode.All.find(_.toString() == s).getOrElse(
+        throw new IllegalArgumentException(s"$s is not a valid output mode"))
     }
   }
 
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[Options]("scalajsld") {
       head("scalajsld", ScalaJSVersions.current)
-      arg[File]("<value> ...")
-        .unbounded()
-        .action { (x, c) => c.copy(cp = c.cp :+ x) }
-        .text("Entries of Scala.js classpath to link")
-      opt[File]('o', "output")
-        .valueName("<file>")
-        .required()
-        .action { (x, c) => c.copy(output = x) }
-        .text("Output file of linker (required)")
-      opt[File]("jsoutput")
-        .hidden()
-        .valueName("<file>")
-        .abbr("jo")
-        .action { (_, c) => c.copy(jsoutput = true) }
-        .text("Deprecated: Does nothing but printing a warning")
-      opt[Unit]('f', "fastOpt")
-        .action { (_, c) => c.copy(noOpt = false, fullOpt = false) }
-        .text("Optimize code (this is the default)")
-      opt[Unit]('n', "noOpt")
-        .action { (_, c) => c.copy(noOpt = true, fullOpt = false) }
-        .text("Don't optimize code")
-      opt[Unit]('u', "fullOpt")
-        .action { (_, c) => c.copy(noOpt = false, fullOpt = true) }
-        .text("Fully optimize code (uses Google Closure Compiler)")
-      opt[Unit]('p', "prettyPrint")
-        .action { (_, c) => c.copy(prettyPrint = true) }
-        .text("Pretty print full opted code (meaningful with -u)")
-      opt[Unit]('s', "sourceMap")
-        .action { (_, c) => c.copy(sourceMap = true) }
+      arg[File]("<value> ...").unbounded().action { (x, c) =>
+        c.copy(cp = c.cp :+ x)
+      }.text("Entries of Scala.js classpath to link")
+      opt[File]('o', "output").valueName("<file>").required().action { (x, c) =>
+        c.copy(output = x)
+      }.text("Output file of linker (required)")
+      opt[File]("jsoutput").hidden().valueName("<file>").abbr("jo").action {
+        (_, c) => c.copy(jsoutput = true)
+      }.text("Deprecated: Does nothing but printing a warning")
+      opt[Unit]('f', "fastOpt").action { (_, c) =>
+        c.copy(noOpt = false, fullOpt = false)
+      }.text("Optimize code (this is the default)")
+      opt[Unit]('n', "noOpt").action { (_, c) =>
+        c.copy(noOpt = true, fullOpt = false)
+      }.text("Don't optimize code")
+      opt[Unit]('u', "fullOpt").action { (_, c) =>
+        c.copy(noOpt = false, fullOpt = true)
+      }.text("Fully optimize code (uses Google Closure Compiler)")
+      opt[Unit]('p', "prettyPrint").action { (_, c) =>
+        c.copy(prettyPrint = true)
+      }.text("Pretty print full opted code (meaningful with -u)")
+      opt[Unit]('s', "sourceMap").action { (_, c) => c.copy(sourceMap = true) }
         .text("Produce a source map for the produced code")
-      opt[Unit]("compliantAsInstanceOfs")
-        .action { (_, c) =>
-          c.copy(semantics = c.semantics.withAsInstanceOfs(Compliant))
-        }
-        .text("Use compliant asInstanceOfs")
-      opt[OutputMode]('m', "outputMode")
-        .action { (mode, c) => c.copy(outputMode = mode) }
-        .text("Output mode " + OutputMode.All.mkString("(", ", ", ")"))
-      opt[Unit]('b', "bypassLinkingErrors")
-        .action { (_, c) => c.copy(bypassLinkingErrors = true) }
-        .text("Only warn if there are linking errors (deprecated)")
-      opt[Unit]('c', "checkIR")
-        .action { (_, c) => c.copy(checkIR = true) }
+      opt[Unit]("compliantAsInstanceOfs").action { (_, c) =>
+        c.copy(semantics = c.semantics.withAsInstanceOfs(Compliant))
+      }.text("Use compliant asInstanceOfs")
+      opt[OutputMode]('m', "outputMode").action { (mode, c) =>
+        c.copy(outputMode = mode)
+      }.text("Output mode " + OutputMode.All.mkString("(", ", ", ")"))
+      opt[Unit]('b', "bypassLinkingErrors").action { (_, c) =>
+        c.copy(bypassLinkingErrors = true)
+      }.text("Only warn if there are linking errors (deprecated)")
+      opt[Unit]('c', "checkIR").action { (_, c) => c.copy(checkIR = true) }
         .text("Check IR before optimizing")
-      opt[File]('r', "relativizeSourceMap")
-        .valueName("<path>")
-        .action { (x, c) => c.copy(relativizeSourceMap = Some(x.toURI)) }
-        .text("Relativize source map with respect to given path (meaningful with -s)")
-      opt[Unit]("noStdlib")
-        .action { (_, c) => c.copy(stdLib = None) }
+      opt[File]('r', "relativizeSourceMap").valueName("<path>").action {
+        (x, c) => c.copy(relativizeSourceMap = Some(x.toURI))
+      }.text(
+        "Relativize source map with respect to given path (meaningful with -s)")
+      opt[Unit]("noStdlib").action { (_, c) => c.copy(stdLib = None) }
         .text("Don't automatically include Scala.js standard library")
-      opt[File]("stdlib")
-        .valueName("<scala.js stdlib jar>")
-        .hidden()
-        .action { (x, c) => c.copy(stdLib = Some(x)) }
-        .text(
-          "Location of Scala.js standard libarary. This is set by the " +
-            "runner script and automatically prepended to the classpath. " +
-            "Use -n to not include it.")
-      opt[Unit]('d', "debug")
-        .action { (_, c) => c.copy(logLevel = Level.Debug) }
-        .text("Debug mode: Show full log")
-      opt[Unit]('q', "quiet")
-        .action { (_, c) => c.copy(logLevel = Level.Warn) }
+      opt[File]("stdlib").valueName("<scala.js stdlib jar>").hidden().action {
+        (x, c) => c.copy(stdLib = Some(x))
+      }.text(
+        "Location of Scala.js standard libarary. This is set by the " +
+          "runner script and automatically prepended to the classpath. " +
+          "Use -n to not include it.")
+      opt[Unit]('d', "debug").action { (_, c) =>
+        c.copy(logLevel = Level.Debug)
+      }.text("Debug mode: Show full log")
+      opt[Unit]('q', "quiet").action { (_, c) => c.copy(logLevel = Level.Warn) }
         .text("Only show warnings & errors")
-      opt[Unit]("really-quiet")
-        .abbr("qq")
-        .action { (_, c) => c.copy(logLevel = Level.Error) }
-        .text("Only show errors")
-      version("version")
-        .abbr("v")
-        .text("Show scalajsld version")
-      help("help")
-        .abbr("h")
-        .text("prints this usage text")
+      opt[Unit]("really-quiet").abbr("qq").action { (_, c) =>
+        c.copy(logLevel = Level.Error)
+      }.text("Only show errors")
+      version("version").abbr("v").text("Show scalajsld version")
+      help("help").abbr("h").text("prints this usage text")
 
       override def showUsageOnError = true
     }
@@ -158,13 +137,11 @@ object Scalajsld {
       val semantics =
         if (options.fullOpt) options.semantics.optimized else options.semantics
 
-      val frontendConfig = LinkerFrontend
-        .Config()
+      val frontendConfig = LinkerFrontend.Config()
         .withBypassLinkingErrorsInternal(options.bypassLinkingErrors)
         .withCheckIR(options.checkIR)
 
-      val backendConfig = LinkerBackend
-        .Config()
+      val backendConfig = LinkerBackend.Config()
         .withRelativizeSourceMapBase(options.relativizeSourceMap)
         .withPrettyPrint(options.prettyPrint)
 

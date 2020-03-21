@@ -22,19 +22,18 @@ object IllegalInheritance extends AnnotatorPart[ScTemplateDefinition] {
       typeAware: Boolean) {
     if (!typeAware) return
 
-    definition.selfTypeElement
-      .flatMap(_.getType(TypingContext.empty).toOption)
-      .orElse(definition.getType(TypingContext.empty).toOption)
-      .foreach { ownType =>
-        definition.refs.foreach {
-          case (refElement, Some((SelfType(Some(aType)), subst))) =>
-            val anotherType = subst.subst(aType)
-            if (!ownType.conforms(anotherType))
-              holder.createErrorAnnotation(
-                refElement,
-                Message(ownType.presentableText, aType.presentableText))
-          case _ =>
-        }
+    definition.selfTypeElement.flatMap(_.getType(TypingContext.empty).toOption)
+      .orElse(definition.getType(TypingContext.empty).toOption).foreach {
+        ownType =>
+          definition.refs.foreach {
+            case (refElement, Some((SelfType(Some(aType)), subst))) =>
+              val anotherType = subst.subst(aType)
+              if (!ownType.conforms(anotherType))
+                holder.createErrorAnnotation(
+                  refElement,
+                  Message(ownType.presentableText, aType.presentableText))
+            case _ =>
+          }
       }
   }
 }

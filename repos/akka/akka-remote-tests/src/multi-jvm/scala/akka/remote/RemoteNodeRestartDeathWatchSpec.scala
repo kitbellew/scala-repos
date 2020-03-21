@@ -99,8 +99,8 @@ abstract class RemoteNodeRestartDeathWatchSpec
       }
 
       runOn(second) {
-        val addr =
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+        val addr = system.asInstanceOf[ExtendedActorSystem].provider
+          .getDefaultAddress
         system.actorOf(Props[Subject], "subject")
         enterBarrier("actors-started")
 

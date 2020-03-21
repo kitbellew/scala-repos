@@ -50,8 +50,7 @@ trait Loss extends Serializable {
   def computeError(
       model: TreeEnsembleModel,
       data: RDD[LabeledPoint]): Double = {
-    data
-      .map(point => computeError(model.predict(point.features), point.label))
+    data.map(point => computeError(model.predict(point.features), point.label))
       .mean()
   }
 

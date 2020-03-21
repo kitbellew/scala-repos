@@ -183,8 +183,8 @@ class IsotonicRegression @Since("1.5.0") (
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
     if (handlePersistence) instances.persist(StorageLevel.MEMORY_AND_DISK)
 
-    val isotonicRegression = new MLlibIsotonicRegression().setIsotonic($(
-      isotonic))
+    val isotonicRegression = new MLlibIsotonicRegression()
+      .setIsotonic($(isotonic))
     val oldModel = isotonicRegression.run(instances)
 
     copyValues(new IsotonicRegressionModel(uid, oldModel).setParent(this))
@@ -300,10 +300,7 @@ object IsotonicRegressionModel extends MLReadable[IsotonicRegressionModel] {
         instance.oldModel.predictions,
         instance.oldModel.isotonic)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -318,10 +315,8 @@ object IsotonicRegressionModel extends MLReadable[IsotonicRegressionModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("boundaries", "predictions", "isotonic")
-        .head()
+      val data = sqlContext.read.parquet(dataPath)
+        .select("boundaries", "predictions", "isotonic").head()
       val boundaries = data.getAs[Seq[Double]](0).toArray
       val predictions = data.getAs[Seq[Double]](1).toArray
       val isotonic = data.getBoolean(2)

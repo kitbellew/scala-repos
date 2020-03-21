@@ -12,8 +12,8 @@ import akka.http.scaladsl.model._
 import akka.http.impl.util._
 
 object TestClient extends App {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.loglevel = DEBUG
     akka.log-dead-letters = off
     akka.io.tcp.trace-logging = off""")

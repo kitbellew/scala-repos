@@ -88,10 +88,9 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
     }
     val res: Option[ScTypeElement] =
       if (getLowerText != "")
-        Some(ScalaPsiElementFactory.createTypeElementFromText(
-          getLowerText,
-          getPsi,
-          null))
+        Some(
+          ScalaPsiElementFactory
+            .createTypeElementFromText(getLowerText, getPsi, null))
       else None
     lowerElement = new SofterReference[Option[ScTypeElement]](res)
     res
@@ -106,10 +105,9 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
     }
     val res: Option[ScTypeElement] =
       if (getUpperText != "")
-        Some(ScalaPsiElementFactory.createTypeElementFromText(
-          getUpperText,
-          getPsi,
-          null))
+        Some(
+          ScalaPsiElementFactory
+            .createTypeElementFromText(getUpperText, getPsi, null))
       else None
     upperElement = new SofterReference[Option[ScTypeElement]](res)
     res
@@ -124,11 +122,11 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getViewTypeElement: Seq[ScTypeElement] = {
     if (viewElement != null) {
       val viewTypeElements = viewElement.get
-      if (viewTypeElements != null && viewTypeElements.forall(
-            _.getContext.eq(getPsi))) return viewTypeElements
+      if (viewTypeElements != null && viewTypeElements
+            .forall(_.getContext.eq(getPsi))) return viewTypeElements
     }
-    val res: Seq[ScTypeElement] = getViewText.map(
-      ScalaPsiElementFactory.createTypeElementFromText(_, getPsi, null))
+    val res: Seq[ScTypeElement] = getViewText
+      .map(ScalaPsiElementFactory.createTypeElementFromText(_, getPsi, null))
     viewElement = new SofterReference(res)
     res
   }
@@ -136,11 +134,11 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getContextBoundTypeElement: Seq[ScTypeElement] = {
     if (contextBoundElement != null) {
       val contextTypeElements = contextBoundElement.get
-      if (contextTypeElements != null && contextTypeElements.forall(
-            _.getContext.eq(getPsi))) return contextTypeElements
+      if (contextTypeElements != null && contextTypeElements
+            .forall(_.getContext.eq(getPsi))) return contextTypeElements
     }
-    val res: Seq[ScTypeElement] = getContextBoundText.map(
-      ScalaPsiElementFactory.createTypeElementFromText(_, getPsi, null))
+    val res: Seq[ScTypeElement] = getContextBoundText
+      .map(ScalaPsiElementFactory.createTypeElementFromText(_, getPsi, null))
     contextBoundElement = new SofterReference(res)
     res
   }

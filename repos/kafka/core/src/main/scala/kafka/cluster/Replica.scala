@@ -37,8 +37,8 @@ class Replica(
   // the log end offset value, kept in all replicas;
   // for local replica it is the log's end offset, for remote replicas its value is only updated by follower fetch
   @volatile
-  private[this] var logEndOffsetMetadata: LogOffsetMetadata =
-    LogOffsetMetadata.UnknownOffsetMetadata
+  private[this] var logEndOffsetMetadata: LogOffsetMetadata = LogOffsetMetadata
+    .UnknownOffsetMetadata
 
   val topic = partition.topic
   val partitionId = partition.partitionId
@@ -100,8 +100,8 @@ class Replica(
 
   def convertHWToLocalOffsetMetadata() = {
     if (isLocal) {
-      highWatermarkMetadata = log.get.convertToOffsetMetadata(
-        highWatermarkMetadata.messageOffset)
+      highWatermarkMetadata = log.get
+        .convertToOffsetMetadata(highWatermarkMetadata.messageOffset)
     } else {
       throw new KafkaException(
         "Should not construct complete high watermark on partition [%s,%d]'s non-local replica %d"

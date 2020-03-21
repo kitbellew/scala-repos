@@ -52,22 +52,18 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
 
     val q2a = for {
       a ~ b ~ c <- ts.filter(_.a === 1).map(t => t.a ~ t.b ~ 4) unionAll ts
-        .filter(_.a === 2)
-        .map(t => t.a ~ t.b ~ 5)
+        .filter(_.a === 2).map(t => t.a ~ t.b ~ 5)
     } yield a ~ b ~ (c * 2)
 
     val q2b = for {
-      (a, b, c) <- ts
-        .filter(_.a === 1)
-        .map(t => (t.a, t.b, LiteralColumn(4))) unionAll ts
-        .filter(_.a === 2)
+      (a, b, c) <- ts.filter(_.a === 1)
+        .map(t => (t.a, t.b, LiteralColumn(4))) unionAll ts.filter(_.a === 2)
         .map(t => (t.a, t.b, LiteralColumn(5)))
     } yield a ~ b ~ (c * 2)
 
     val q2c = for {
       (a, b, c) <- ts.filter(_.a === 1).map(t => (t.a, t.b, 4)) unionAll ts
-        .filter(_.a === 2)
-        .map(t => (t.a, t.b, 5))
+        .filter(_.a === 2).map(t => (t.a, t.b, 5))
     } yield a ~ b ~ (c * 2)
 
     seq(
@@ -130,8 +126,8 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     )
 
     // Get plain values out
-    val q1b = q1.map(
-      _.map(x => (x.a, x.b, x.c)).getOrElse((0, "", None: Option[Int])))
+    val q1b = q1
+      .map(_.map(x => (x.a, x.b, x.c)).getOrElse((0, "", None: Option[Int])))
     val q2b = q2.map(_.get)
     val q3b = q3.filter(_.isDefined).map(_.get)
     val q4b = q4.map(_.getOrElse(None: Option[Int]))
@@ -142,15 +138,13 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
 
     lazy val t2 = seq(
       mark("q1b", q1b.result).map(
-        _ shouldBe r
-          .map(t => Some(t))
+        _ shouldBe r.map(t => Some(t))
           .map(_.getOrElse((0, "", None: Option[String])))),
       mark("q2b", q2b.result).map(_ shouldBe r.map(t => Some(t._1)).map(_.get)),
       mark("q3b", q3b.result)
         .map(_ shouldBe r.map(t => t._3).filter(_.isDefined).map(_.get)),
       mark("a4b", q4b.result).map(
-        _ shouldBe r
-          .map(t => Some(t._3))
+        _ shouldBe r.map(t => Some(t._3))
           .map(_.getOrElse(None: Option[String])))
     )
 
@@ -187,25 +181,16 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     val q4dt: Query[Rep[Option[Int]], _, Seq] = q4d
 
     lazy val t4 = seq(
-      q1d.result
-        .named("q1d")
+      q1d.result.named("q1d")
         .map(_ shouldBe r.map(t => Some(t)).map(_.map(_._1))),
-      q1d2.result
-        .named("q1d2")
-        .map(
-          _ shouldBe r.map(t => Some(t)).map(_.map(x => (x._1, x._2, x._3)))),
-      q2d.result
-        .named("q2d")
+      q1d2.result.named("q1d2").map(
+        _ shouldBe r.map(t => Some(t)).map(_.map(x => (x._1, x._2, x._3)))),
+      q2d.result.named("q2d")
         .map(_ shouldBe r.map(t => Some(t._1)).map(_.map(_ + 1))),
-      q3d.result
-        .named("q3d")
+      q3d.result.named("q3d")
         .map(_ shouldBe r.map(t => t._3).map(_.map(s => (s, s, 1)))),
-      q4d.result
-        .named("q4d")
-        .map(
-          _ shouldBe r
-            .map(t => Some(t._3))
-            .map(_.filter(_.isDefined).map(_.get)))
+      q4d.result.named("q4d").map(
+        _ shouldBe r.map(t => Some(t._3)).map(_.filter(_.isDefined).map(_.get)))
     )
 
     // Use Option.flatMap
@@ -225,9 +210,7 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
         to.flatMap { t => t._3 }
       }),
       mark("q1e3", q1e3.result).map(
-        _ shouldBe r
-          .map(t => Some(t))
-          .map(to => Some(to))
+        _ shouldBe r.map(t => Some(t)).map(to => Some(to))
           .map(_.flatMap(identity))),
       mark("q2e", q2e.result).map(_ shouldBe r.map(t => Some(t._1)).map { io =>
         io.flatMap { i => Some(i) }
@@ -249,33 +232,26 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     val q2f3t: Query[Rep[Option[Int]], _, Seq] = q2f3
 
     lazy val t6 = seq(
-      q1f1.result
-        .named("q1f1")
-        .map(
-          _ shouldBe Vector(
-            Some(Some((1, "1", Some(1)))),
-            Some(Some((2, "2", Some(2)))),
-            Some(Some((3, "3", None))))),
-      q1f2.result
-        .named("q1f2")
-        .map(_ shouldBe r.map(t => Some(t)).map { to => Some(to).flatten }),
-      q1f3.result
-        .named("q1f3")
-        .map(
-          _ shouldBe r.map(t => Some(t)).map { to => Some(to) }.map(_.flatten)),
-      q2f1.result
-        .named("q2f1")
-        .map(_ shouldBe r.map(t => Some(t._1)).map { io => Some(io) }),
-      q2f2.result
-        .named("q2f2")
-        .map(_ shouldBe r.map(t => Some(t._1)).map { io => Some(io).flatten }),
-      q2f3.result
-        .named("q2f3")
-        .map(
-          _ shouldBe r
-            .map(t => Some(t._1))
-            .map { io => Some(io) }
-            .map(_.flatten))
+      q1f1.result.named("q1f1").map(
+        _ shouldBe Vector(
+          Some(Some((1, "1", Some(1)))),
+          Some(Some((2, "2", Some(2)))),
+          Some(Some((3, "3", None))))),
+      q1f2.result.named("q1f2").map(_ shouldBe r.map(t => Some(t)).map { to =>
+        Some(to).flatten
+      }),
+      q1f3.result.named("q1f3").map(_ shouldBe r.map(t => Some(t)).map { to =>
+        Some(to)
+      }.map(_.flatten)),
+      q2f1.result.named("q2f1").map(_ shouldBe r.map(t => Some(t._1)).map {
+        io => Some(io)
+      }),
+      q2f2.result.named("q2f2").map(_ shouldBe r.map(t => Some(t._1)).map {
+        io => Some(io).flatten
+      }),
+      q2f3.result.named("q2f3").map(_ shouldBe r.map(t => Some(t._1)).map {
+        io => Some(io)
+      }.map(_.flatten))
     )
 
     setup >> t1 >> t2 >> t3 >> t4 >> t5 >> t6

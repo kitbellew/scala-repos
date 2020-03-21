@@ -38,8 +38,8 @@ private[akka] final class FileSource(
       chunkSize,
       settings.initialInputBufferSize,
       settings.maxInputBufferSize)
-    val dispatcher =
-      context.effectiveAttributes.get[Dispatcher](IODispatcher).dispatcher
+    val dispatcher = context.effectiveAttributes.get[Dispatcher](IODispatcher)
+      .dispatcher
 
     val ref = materializer.actorOf(context, props.withDispatcher(dispatcher))
 

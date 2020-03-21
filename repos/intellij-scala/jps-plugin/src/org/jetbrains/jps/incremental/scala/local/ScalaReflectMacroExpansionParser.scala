@@ -33,9 +33,8 @@ object ScalaReflectMacroExpansionParser {
     "^performing macro expansion (.+) at source-(.+),line-(\\d+),offset=(\\d+)$",
     Pattern.DOTALL | Pattern.MULTILINE)
 //  val expansionRegex = Pattern.compile("^\\s*\\{(.+)\\}\\s+Block.*$", Pattern.DOTALL | Pattern.MULTILINE)
-  val expansionRegex = Pattern.compile(
-    "^(.+)\\n[^\\n]+$",
-    Pattern.DOTALL | Pattern.MULTILINE)
+  val expansionRegex = Pattern
+    .compile("^(.+)\\n[^\\n]+$", Pattern.DOTALL | Pattern.MULTILINE)
 
   def isMacroMessage(message: String): Boolean = {
     import ParsingState._
@@ -80,8 +79,8 @@ object ScalaReflectMacroExpansionParser {
 
   def serializeExpansions(context: CompileContext) = {
     val file = new File(
-      System.getProperty(
-        "java.io.tmpdir") + s"/../../expansion-${context.getProjectDescriptor.getProject.getName}")
+      System.getProperty("java.io.tmpdir") + s"/../../expansion-${context
+        .getProjectDescriptor.getProject.getName}")
     val fo = new BufferedOutputStream(new FileOutputStream(file))
     val so = new ObjectOutputStream(fo)
     for (expansion <- expansions) { so.writeObject(expansion) }

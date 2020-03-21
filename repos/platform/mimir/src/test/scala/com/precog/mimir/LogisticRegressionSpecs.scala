@@ -313,8 +313,8 @@ trait LogisticRegressionSpecs[M[+_]]
       IOUtils.writeSeqToFile(points, tmpFile).unsafePerformIO
 
       val pointsString0 = "filesystem" + tmpFile.toString
-      val pointsString = pointsString0.take(
-        pointsString0.length - suffix.length)
+      val pointsString = pointsString0
+        .take(pointsString0.length - suffix.length)
 
       val input = makeDAG(pointsString)
 

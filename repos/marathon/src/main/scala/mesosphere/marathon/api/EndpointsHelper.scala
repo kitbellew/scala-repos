@@ -39,9 +39,7 @@ object EndpointsHelper {
                if task.getStatus.getState == TaskState.TASK_RUNNING) {
             val taskPort = Option(task.getPortsList.get(i))
               .getOrElse(Integer.valueOf(0))
-            sb.append(task.getHost)
-              .append(':')
-              .append(taskPort)
+            sb.append(task.getHost).append(':').append(taskPort)
               .append(delimiter)
           }
           sb.append('\n')

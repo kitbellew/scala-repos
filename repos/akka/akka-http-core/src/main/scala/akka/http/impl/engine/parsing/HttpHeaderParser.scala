@@ -203,11 +203,8 @@ private[engine] final class HttpHeaderParser private (
       cursor: Int = valueStart,
       nodeIx: Int = branch.branchRootNodeIx): Int = {
     def parseAndInsertHeader() = {
-      val (header, endIx) = branch.parser(
-        this,
-        input,
-        valueStart,
-        onIllegalHeader)
+      val (header, endIx) = branch
+        .parser(this, input, valueStart, onIllegalHeader)
       if (branch.spaceLeft) try {
         insert(input, header)(cursor, endIx, nodeIx, colonIx = 0)
         values(branch.valueIx) = branch.withValueCountIncreased
@@ -624,14 +621,14 @@ private[http] object HttpHeaderParser {
         valueStart,
         valueStart + maxHeaderValueLength + 2)()
       val trimmedHeaderValue = headerValue.trim
-      val header =
-        HeaderParser.parseFull(headerName, trimmedHeaderValue, settings) match {
-          case Right(h) ⇒ h
-          case Left(error) ⇒
-            onIllegalHeader(
-              error.withSummaryPrepended(s"Illegal '$headerName' header"))
-            RawHeader(headerName, trimmedHeaderValue)
-        }
+      val header = HeaderParser
+        .parseFull(headerName, trimmedHeaderValue, settings) match {
+        case Right(h) ⇒ h
+        case Left(error) ⇒
+          onIllegalHeader(
+            error.withSummaryPrepended(s"Illegal '$headerName' header"))
+          RawHeader(headerName, trimmedHeaderValue)
+      }
       header -> endIx
     }
   }
@@ -715,8 +712,7 @@ private[http] object HttpHeaderParser {
             hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
               case -1 ⇒
                 if (sb != null)
-                  sb.append(c)
-                    .append(byteChar(input, ix + 1))
+                  sb.append(c).append(byteChar(input, ix + 1))
                     .append(byteChar(input, ix + 2))
                 else null
               case cc ⇒ appended2(cc)
@@ -730,8 +726,7 @@ private[http] object HttpHeaderParser {
             hhp.decodeByteBuffer() match { // if we cannot decode as UTF8 we don't decode but simply copy
               case -1 ⇒
                 if (sb != null)
-                  sb.append(c)
-                    .append(byteChar(input, ix + 1))
+                  sb.append(c).append(byteChar(input, ix + 1))
                     .append(byteChar(input, ix + 2))
                     .append(byteChar(input, ix + 3))
                 else null

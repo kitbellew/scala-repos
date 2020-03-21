@@ -65,16 +65,15 @@ class AttributesSpec extends AkkaSpec {
     }
 
     "keep the outermost attribute as the least specific" in {
-      val runnable = Source.empty
-        .toMat(AttributesSink())(Keep.right)
+      val runnable = Source.empty.toMat(AttributesSink())(Keep.right)
         .withAttributes(Attributes.name("new-name"))
       whenReady(runnable.run()) { attributes ⇒
         attributes.get[Name] should contain(Name("attributesSink"))
       }
     }
 
-    val attributes = Attributes.name("a") and Attributes.name(
-      "b") and Attributes.inputBuffer(1, 2)
+    val attributes = Attributes.name("a") and Attributes
+      .name("b") and Attributes.inputBuffer(1, 2)
 
     "give access to first attribute" in {
       attributes.getFirst[Name] should ===(Some(Attributes.Name("a")))

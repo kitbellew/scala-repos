@@ -38,8 +38,8 @@ object MediaErrorEvent {
       mee: MediaErrorEvent): jfxsm.MediaErrorEvent =
     if (mee != null) mee.delegate else null
 
-  val MediaError: EventType[jfxsm.MediaErrorEvent] =
-    jfxsm.MediaErrorEvent.MEDIA_ERROR
+  val MediaError: EventType[jfxsm.MediaErrorEvent] = jfxsm.MediaErrorEvent
+    .MEDIA_ERROR
   @deprecated(
     "Use MediaError; MEDIA_ERROR will be removed in a future release",
     "8.0.60-R10")

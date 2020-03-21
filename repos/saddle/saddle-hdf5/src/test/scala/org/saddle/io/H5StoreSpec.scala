@@ -149,12 +149,9 @@ class H5StoreSpec extends Specification {
       H5Store.readSeries[Double, Double](fid, "s5") must_== s5
 
       // try slicing
-      H5Store.readSeriesSlice[DateTime, Double](
-        fid,
-        "s1",
-        d2,
-        d3,
-        true) must_== s1.sliceBy(d2, d3)
+      H5Store
+        .readSeriesSlice[DateTime, Double](fid, "s1", d2, d3, true) must_== s1
+        .sliceBy(d2, d3)
 
       H5Store.closeFile(fid)
 
@@ -433,9 +430,10 @@ class H5StoreSpec extends Specification {
 
       val taskListR = for (i <- 1 to 100) yield new Callable[Unit] {
         def call() {
-          H5Store.readFrame[DateTime, Int, Double](
-            tmp,
-            "f%s".format(100 + i)) must_== df2
+          H5Store
+            .readFrame[DateTime, Int, Double](
+              tmp,
+              "f%s".format(100 + i)) must_== df2
           H5Store
             .readFrame[DateTime, Int, Double](tmp, "f%s".format(i)) must_== df1
         }
@@ -449,9 +447,10 @@ class H5StoreSpec extends Specification {
         def call() {
           if (i % 2 == 0) H5Store.writeFrame(tmp, "f%s".format(100 + i), df1)
           else
-            H5Store.readFrame[DateTime, Int, Double](
-              tmp,
-              "f%s".format(i)) must_== df1
+            H5Store
+              .readFrame[DateTime, Int, Double](
+                tmp,
+                "f%s".format(i)) must_== df1
         }
       }
 

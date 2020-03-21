@@ -67,11 +67,9 @@ private[serverset2] object LocalServerSetService extends App {
     // listening port specified by our flags
     val zkServer = new TestingServer(zkListenPort())
 
-    zkClient = CuratorFrameworkFactory
-      .builder()
+    zkClient = CuratorFrameworkFactory.builder()
       .connectString(zkServer.getConnectString)
-      .retryPolicy(new RetryOneTime(1000))
-      .build()
+      .retryPolicy(new RetryOneTime(1000)).build()
 
     logger.info(s"Connecting on localhost")
     zkClient.start()
@@ -121,9 +119,7 @@ private[serverset2] object LocalServerSetService extends App {
 
   private def addMembers(serversetIndex: Int, toAdd: Int): Unit = {
     (1 to toAdd).foreach { _ =>
-      membersets(serversetIndex) :+= zkClient
-        .create()
-        .creatingParentsIfNeeded()
+      membersets(serversetIndex) :+= zkClient.create().creatingParentsIfNeeded()
         .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
         .forPath(serversets(serversetIndex) + "/member_", nextJsonMember())
     }

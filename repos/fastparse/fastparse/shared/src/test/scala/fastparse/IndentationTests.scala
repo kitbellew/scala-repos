@@ -21,9 +21,13 @@ object IndentationTests extends TestSuite {
     * depth of indentation
     */
   class Parser(indent: Int) {
-    val number: P[Int] = P(CharIn('0' to '9').rep(1).!.map(_.toInt))
+    val number: P[Int] = P(
+      CharIn('0' to '9').rep(1)
+        .!.map(_.toInt))
 
-    val deeper: P[Int] = P(" ".rep(indent + 1).!.map(_.length))
+    val deeper: P[Int] = P(
+      " ".rep(indent + 1)
+        .!.map(_.length))
     val blockBody: P[Seq[Int]] = "\n" ~ deeper.flatMap(i =>
       new Parser(indent = i).factor.rep(1, sep = ("\n" + " " * i).~/))
     val block: P[Int] = P(CharIn("+-*/").! ~/ blockBody).map(eval)

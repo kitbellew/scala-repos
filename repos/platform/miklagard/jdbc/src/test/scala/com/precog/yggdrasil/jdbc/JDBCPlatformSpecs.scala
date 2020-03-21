@@ -146,8 +146,8 @@ object JDBCPlatformSpecEngine extends Logging {
                     jv.flattenWithPath.map {
                       case (p, v) =>
                         (
-                          JDBCColumnarTableModule.escapePath(
-                            p.toString.drop(1)),
+                          JDBCColumnarTableModule
+                            .escapePath(p.toString.drop(1)),
                           jvToSQL(v))
                     }
                 }
@@ -175,10 +175,8 @@ object JDBCPlatformSpecEngine extends Logging {
                     val columns = properties.map(_._1).mkString(", ")
                     val values = properties.map(_._2._2).mkString(", ")
 
-                    val insert = "INSERT INTO %s (%s) VALUES (%s);".format(
-                      tableName,
-                      columns,
-                      values)
+                    val insert = "INSERT INTO %s (%s) VALUES (%s);"
+                      .format(tableName, columns, values)
 
                     logger.debug("Inserting with " + insert)
 
@@ -192,8 +190,8 @@ object JDBCPlatformSpecEngine extends Logging {
                 val conn2 = DriverManager.getConnection(dbURL)
                 val stmt2 = conn2.createStatement
 
-                val rs = stmt2.executeQuery(
-                  "SELECT COUNT(*) AS total FROM " + tableName)
+                val rs = stmt2
+                  .executeQuery("SELECT COUNT(*) AS total FROM " + tableName)
 
                 rs.next
 
@@ -270,8 +268,8 @@ trait JDBCPlatformSpecs
           case orig: StrColumn =>
             new StrColumn {
               def apply(row: Int): String = {
-                val newPath =
-                  "/test/" + orig(row).replaceAll("^/|/$", "").replace('/', '_')
+                val newPath = "/test/" + orig(row).replaceAll("^/|/$", "")
+                  .replace('/', '_')
                 logger.debug("Fixed %s to %s".format(orig(row), newPath))
                 newPath
               }

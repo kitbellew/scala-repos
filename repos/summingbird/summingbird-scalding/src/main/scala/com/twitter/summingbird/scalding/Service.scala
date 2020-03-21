@@ -73,12 +73,9 @@ private[scalding] object InternalService {
       n match {
         case summer @ Summer(_, StoreService(thatStore), _)
             if thatStore == store =>
-          Producer
-            .transitiveDependenciesOf(summer)
-            .collectFirst {
-              case ljp @ LeftJoinedProducer(l, s) if ljp == joinProducer => ()
-            }
-            .isDefined
+          Producer.transitiveDependenciesOf(summer).collectFirst {
+            case ljp @ LeftJoinedProducer(l, s) if ljp == joinProducer => ()
+          }.isDefined
         case _ => false
       }
     }
@@ -93,8 +90,8 @@ private[scalding] object InternalService {
      * 1) There is only one dependant path from join to store.
      * 2) After the join, there are only flatMapValues (later we can handle merges as well)
      */
-    val summerToStore = getSummer[K, V](dag, store).getOrElse(sys.error(
-      "Could not find the Summer for store."))
+    val summerToStore = getSummer[K, V](dag, store)
+      .getOrElse(sys.error("Could not find the Summer for store."))
 
     val depsOfSummer: List[Producer[Scalding, Any]] = Producer
       .transitiveDependenciesOf(summerToStore)
@@ -146,10 +143,8 @@ private[scalding] object InternalService {
       (flowMode: (FlowDef, Mode)) =>
         val left = input(flowMode)
         val right = toJoin(flowMode)
-        LookupJoin.rightSumming(left, right, reducers)(
-          implicitly,
-          implicitly,
-          sg)
+        LookupJoin
+          .rightSumming(left, right, reducers)(implicitly, implicitly, sg)
     }
 
   /**
@@ -241,8 +236,7 @@ private[scalding] object InternalService {
       .withReducers(reducers.getOrElse(
         -1
       )) // jank, but scalding needs a way to maybe set reducers
-      .sorted
-      .scanLeft((
+      .sorted.scanLeft((
         Option.empty[(T, (V, Option[U]))],
         Option.empty[(T, (Option[U], U))])) {
         case ((_, None), (time, Left(v))) =>
@@ -250,8 +244,7 @@ private[scalding] object InternalService {
            * This is a lookup, but there is no value for this key
            */
           val joinResult = Some((time, (v, None)))
-          val sumResult = Semigroup
-            .sumOption(valueExpansion((v, None)))
+          val sumResult = Semigroup.sumOption(valueExpansion((v, None)))
             .map(u => (time, (None, u)))
           (joinResult, sumResult)
         case ((_, Some((_, (optu, u)))), (time, Left(v))) =>
@@ -262,8 +255,7 @@ private[scalding] object InternalService {
             sum(optu, u)
           ) // isn't u already a sum and optu prev value?
           val joinResult = Some((time, (v, currentU)))
-          val sumResult = Semigroup
-            .sumOption(valueExpansion((v, currentU)))
+          val sumResult = Semigroup.sumOption(valueExpansion((v, currentU)))
             .map(u => (time, (currentU, u)))
           (joinResult, sumResult)
         case ((_, None), (time, Right(u))) =>
@@ -285,8 +277,7 @@ private[scalding] object InternalService {
           val currentU = Some(sum(optu, oldu))
           val sumResult = Some((time, (currentU, u)))
           (joinResult, sumResult)
-      }
-      .toTypedPipe
+      }.toTypedPipe
       // We forceToDisk because we can't do two writes from one TypedPipe
       .forceToDisk
 

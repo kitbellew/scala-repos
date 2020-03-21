@@ -89,9 +89,8 @@ class ExtractTraitTestConflicts extends ExtractTraitTestBase {
         |  def bar() {}
         |}
       """.stripMargin
-    val message = ScalaBundle.message(
-      "super.reference.used.in.extracted.member",
-      "foo(): Unit")
+    val message = ScalaBundle
+      .message("super.reference.used.in.extracted.member", "foo(): Unit")
     checkException(
       text,
       message,
@@ -109,9 +108,8 @@ class ExtractTraitTestConflicts extends ExtractTraitTestBase {
         |  def bar() {}
         |}
       """.stripMargin
-    val message = ScalaBundle.message(
-      "type.parameters.for.self.type.not.supported",
-      "AA")
+    val message = ScalaBundle
+      .message("type.parameters.for.self.type.not.supported", "AA")
     checkException(
       text,
       message,

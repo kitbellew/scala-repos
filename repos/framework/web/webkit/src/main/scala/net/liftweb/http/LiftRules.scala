@@ -435,8 +435,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       val (which, invalid) = session.cometForHost(req.hostAndPath)
 
       // get the maximum requests given the browser type
-      val max = maxConcurrentRequests.vend(
-        req) - 2 // this request and any open comet requests
+      val max = maxConcurrentRequests
+        .vend(req) - 2 // this request and any open comet requests
 
       // dump the oldest requests
       which.drop(max).foreach { case (actor, req) => actor ! BreakOut() }
@@ -521,15 +521,15 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * requests are being serviced for a given session, messages
     * will be sent to all Comet requests to terminate
     */
-  val maxConcurrentRequests
-      : FactoryMaker[Req => Int] = new FactoryMaker((x: Req) =>
-    x match {
-      case r if r.isIPad || r.isIPhone => 1
-      case r
-          if r.isFirefox35_+ || r.isIE8 || r.isIE9 || r.isChrome3_+ || r.isOpera9 || r.isSafari3_+ =>
-        4
-      case _ => 2
-    }) {}
+  val maxConcurrentRequests: FactoryMaker[Req => Int] =
+    new FactoryMaker((x: Req) =>
+      x match {
+        case r if r.isIPad || r.isIPhone => 1
+        case r
+            if r.isFirefox35_+ || r.isIE8 || r.isIE9 || r.isChrome3_+ || r
+              .isOpera9 || r.isSafari3_+ => 4
+        case _                           => 2
+      }) {}
 
   /**
     * A partial function that determines content type based on an incoming
@@ -538,9 +538,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   @volatile
   var determineContentType: PartialFunction[(Box[Req], Box[String]), String] = {
     case (_, Full(accept))
-        if this.useXhtmlMimeType && accept.toLowerCase.contains(
-          "application/xhtml+xml") => "application/xhtml+xml; charset=utf-8"
-    case _                         => "text/html; charset=utf-8"
+        if this.useXhtmlMimeType && accept.toLowerCase
+          .contains("application/xhtml+xml") =>
+      "application/xhtml+xml; charset=utf-8"
+    case _ => "text/html; charset=utf-8"
   }
 
   lazy val liftVersion: String = {
@@ -623,8 +624,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   val handleUnmappedParameter = new FactoryMaker[(Req, String) => Unit](() => {
     (req: Req, parameterName: String) =>
       if (parameterName.startsWith("F"))
-        logger.warn(
-          "Unmapped Lift-like parameter seen in request [%s]: %s".format(
+        logger
+          .warn("Unmapped Lift-like parameter seen in request [%s]: %s".format(
             req.uri,
             parameterName))
   }) {}
@@ -2012,8 +2013,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
           else {
             val suffix = last.substring(firstDot + 1)
             // if the suffix isn't in the list of suffixes we care about, don't split it
-            if (!LiftRules.explicitlyParsedSuffixes.contains(
-                  suffix.toLowerCase)) -1
+            if (!LiftRules.explicitlyParsedSuffixes
+                  .contains(suffix.toLowerCase)) -1
             else firstDot
           }
         }
@@ -2099,8 +2100,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The meta for the detected AsyncProvider given the container we're running in
     */
-  lazy val asyncProviderMeta: Box[AsyncProviderMeta] = asyncMetaList.find(
-    _.suspendResumeSupport_?)
+  lazy val asyncProviderMeta: Box[AsyncProviderMeta] = asyncMetaList
+    .find(_.suspendResumeSupport_?)
 
   /**
     * A function that converts the current Request into an AsyncProvider.
@@ -2409,16 +2410,14 @@ trait FormVendor {
     */
   def vendForm[T](implicit man: Manifest[T]): Box[(T, T => Any) => NodeSeq] = {
     val name = man.toString
-    val first: Option[List[FormBuilderLocator[_]]] =
-      requestForms.is.get(name) orElse sessionForms.is.get(name)
+    val first: Option[List[FormBuilderLocator[_]]] = requestForms.is
+      .get(name) orElse sessionForms.is.get(name)
 
     first match {
       case Some(x :: _) => Full(x.func.asInstanceOf[(T, T => Any) => NodeSeq])
       case _ =>
         if (globalForms.containsKey(name)) {
-          globalForms
-            .get(name)
-            .headOption
+          globalForms.get(name).headOption
             .map(_.func.asInstanceOf[(T, T => Any) => NodeSeq])
         } else Empty
     }

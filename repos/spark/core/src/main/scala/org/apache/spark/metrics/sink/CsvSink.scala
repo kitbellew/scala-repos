@@ -56,12 +56,9 @@ private[spark] class CsvSink(
     case None    => CSV_DEFAULT_DIR
   }
 
-  val reporter: CsvReporter = CsvReporter
-    .forRegistry(registry)
-    .formatFor(Locale.US)
-    .convertDurationsTo(TimeUnit.MILLISECONDS)
-    .convertRatesTo(TimeUnit.SECONDS)
-    .build(new File(pollDir))
+  val reporter: CsvReporter = CsvReporter.forRegistry(registry)
+    .formatFor(Locale.US).convertDurationsTo(TimeUnit.MILLISECONDS)
+    .convertRatesTo(TimeUnit.SECONDS).build(new File(pollDir))
 
   override def start() { reporter.start(pollPeriod, pollUnit) }
 

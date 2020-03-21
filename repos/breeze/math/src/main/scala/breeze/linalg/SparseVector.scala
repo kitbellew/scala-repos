@@ -230,8 +230,7 @@ object SparseVector
   }
 
   def vertcat[V: Zero: ClassTag](vectors: SparseVector[V]*): SparseVector[V] = {
-    val resultArray = vectors
-      .map(_.array)
+    val resultArray = vectors.map(_.array)
       .foldLeft(new SparseArray[V](0))(_ concatenate _)
     new SparseVector(resultArray)
   }
@@ -239,8 +238,7 @@ object SparseVector
   def horzcat[V: Zero: ClassTag](vectors: SparseVector[V]*): CSCMatrix[V] = {
     if (!vectors.forall(_.size == vectors(0).size))
       throw new IllegalArgumentException(
-        "vector lengths must be equal, but got: " + vectors
-          .map(_.length)
+        "vector lengths must be equal, but got: " + vectors.map(_.length)
           .mkString(", "))
     val rows = vectors(0).length
     val cols = vectors.length

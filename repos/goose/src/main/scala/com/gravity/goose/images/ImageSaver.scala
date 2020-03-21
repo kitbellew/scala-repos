@@ -50,9 +50,8 @@ object ImageSaver extends Logging {
     var fileExtension: String = ""
     var mimeType: String = null
     try {
-      val imageDims: ImageDetails = ImageUtils.getImageDimensions(
-        config.imagemagickIdentifyPath,
-        fileName)
+      val imageDims: ImageDetails = ImageUtils
+        .getImageDimensions(config.imagemagickIdentifyPath, fileName)
       mimeType = imageDims.getMimeType
       if (mimeType == "GIF") {
         if (logger.isDebugEnabled) { logger.debug("SNEAKY GIF! " + fileName) }
@@ -80,9 +79,8 @@ object ImageSaver extends Logging {
       imageSrc: String): Option[HttpEntity] = {
 
     val localContext: HttpContext = new BasicHttpContext
-    localContext.setAttribute(
-      ClientContext.COOKIE_STORE,
-      HtmlFetcher.emptyCookieStore)
+    localContext
+      .setAttribute(ClientContext.COOKIE_STORE, HtmlFetcher.emptyCookieStore)
     val httpget = new HttpGet(imageSrc)
     val response = httpClient.execute(httpget, localContext)
     val respStatus: String = response.getStatusLine.toString

@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.twitter.scalding.serialization.macros.impl.ordered_serialization.providers
+package com.twitter.scalding.serialization.macros.impl.ordered_serialization
+  .providers
 
 import scala.language.experimental.macros
 import scala.reflect.macros.Context
@@ -90,8 +91,8 @@ object EitherOrderedBuf {
       val tmpGetHolder = freshT("tmpGetHolder")
       q"""
         val $tmpGetHolder = $inputStreamA.readByte
-        if($tmpGetHolder == (0: _root_.scala.Byte)) Left(${leftBuf.get(
-        inputStreamA)})
+        if($tmpGetHolder == (0: _root_.scala.Byte)) Left(${leftBuf
+        .get(inputStreamA)})
         else Right(${rightBuf.get(inputStreamA)})
       """
     }

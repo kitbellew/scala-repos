@@ -55,8 +55,7 @@ package scalaguide.akka {
       }
 
       "allow binding actors" in new WithApplication(
-        _.bindings(new modules.MyModule)
-          .configure("my.config" -> "foo")) {
+        _.bindings(new modules.MyModule).configure("my.config" -> "foo")) {
         _ =>
         import injection._
         val controller = app.injector.instanceOf[Application]
@@ -65,7 +64,7 @@ package scalaguide.akka {
 
       "allow binding actor factories" in new WithApplication(
         _.bindings(new factorymodules.MyModule)
-          .configure("my.config" -> "foo")) {
+        .configure("my.config" -> "foo")) {
         _ =>
         import play.api.inject.bind
         import akka.actor._
@@ -74,8 +73,8 @@ package scalaguide.akka {
         import akka.pattern.ask
         implicit val timeout = 5.seconds
 
-        val actor = app.injector.instanceOf(
-          bind[ActorRef].qualifiedWith("parent-actor"))
+        val actor = app.injector
+          .instanceOf(bind[ActorRef].qualifiedWith("parent-actor"))
         val futureConfig = for {
           child <- (actor ? actors.ParentActor.GetChild("my.config"))
             .mapTo[ActorRef]
@@ -95,11 +94,8 @@ package scalaguide.akka {
         //#schedule-actor
         import scala.concurrent.duration._
 
-        val cancellable = system.scheduler.schedule(
-          0.microseconds,
-          300.microseconds,
-          testActor,
-          "tick")
+        val cancellable = system.scheduler
+          .schedule(0.microseconds, 300.microseconds, testActor, "tick")
         //#schedule-actor
         ok
       }

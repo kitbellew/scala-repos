@@ -12,8 +12,8 @@ trait TypeComparers {
   import definitions._
   import TypesStats._
 
-  private final val LogPendingSubTypesThreshold =
-    TypeConstants.DefaultLogThreshhold
+  private final val LogPendingSubTypesThreshold = TypeConstants
+    .DefaultLogThreshhold
 
   private val _pendingSubTypes = new mutable.HashSet[SubTypePair]
   def pendingSubTypes = _pendingSubTypes
@@ -69,7 +69,8 @@ trait TypeComparers {
       sym2: Symbol,
       pre2: Type): Boolean =
     (if (sym1 eq sym2)
-       sym1.hasPackageFlag || sym1.owner.hasPackageFlag || phase.erasedTypes || pre1 =:= pre2
+       sym1.hasPackageFlag || sym1.owner.hasPackageFlag || phase
+         .erasedTypes || pre1 =:= pre2
      else (sym1.name == sym2.name) && isUnifiable(pre1, pre2))
 
   def isDifferentType(tp1: Type, tp2: Type): Boolean =
@@ -191,8 +192,8 @@ trait TypeComparers {
       sym2: Symbol) = {
     def ignoreVariance(sym: Symbol) =
       !(sym.isHigherOrderTypeParameter && sym.logicallyEnclosingMember.isMethod)
-    !settings.isScala211 || ignoreVariance(sym1) || ignoreVariance(
-      sym2) || sym1.variance == sym2.variance
+    !settings.isScala211 || ignoreVariance(sym1) || ignoreVariance(sym2) || sym1
+      .variance == sym2.variance
   }
 
   private def methodHigherOrderTypeParamsSubVariance(
@@ -348,12 +349,10 @@ trait TypeComparers {
       ((tp1 eq tp2)
         || isErrorOrWildcard(tp1)
         || isErrorOrWildcard(tp2)
-        || (
-          tp1 eq NoPrefix
-        ) && tp2.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
-        || (
-          tp2 eq NoPrefix
-        ) && tp1.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
+        || (tp1 eq NoPrefix) && tp2.typeSymbol
+          .isPackageClass // !! I do not see how this would be warranted by the spec
+        || (tp2 eq NoPrefix) && tp1.typeSymbol
+          .isPackageClass // !! I do not see how this would be warranted by the spec
       )
     // isFalse, assuming !isTrue
     def isFalse =
@@ -371,9 +370,8 @@ trait TypeComparers {
     typeRelationPreCheck(tp1, tp2) match {
       case state if state.isKnown => state.booleanValue
       case _ if typeHasAnnotations(tp1) || typeHasAnnotations(tp2) =>
-        annotationsConform(tp1, tp2) && (
-          tp1.withoutAnnotations <:< tp2.withoutAnnotations
-        )
+        annotationsConform(tp1, tp2) && (tp1.withoutAnnotations <:< tp2
+          .withoutAnnotations)
       case _ => isSubType2(tp1, tp2, depth)
     }
 
@@ -432,12 +430,10 @@ trait TypeComparers {
           false
       }
 
-    ((
-      tp1.typeSymbol eq NothingClass
-    ) // @M Nothing is subtype of every well-kinded type
-    || (
-      tp2.typeSymbol eq AnyClass
-    ) // @M Any is supertype of every well-kinded type (@PP: is it? What about continuations plugin?)
+    ((tp1
+      .typeSymbol eq NothingClass) // @M Nothing is subtype of every well-kinded type
+    || (tp2
+      .typeSymbol eq AnyClass) // @M Any is supertype of every well-kinded type (@PP: is it? What about continuations plugin?)
     || isSub(tp1.normalize, tp2.normalize) && annotationsConform(
       tp1,
       tp2
@@ -482,7 +478,8 @@ trait TypeComparers {
                      pre2,
                      depth)
                  else
-                   (sym1.name == sym2.name && !sym1.isModuleClass && !sym2.isModuleClass &&
+                   (sym1.name == sym2.name && !sym1.isModuleClass && !sym2
+                     .isModuleClass &&
                    (isUnifiable(pre1, pre2) ||
                    isSameSpecializedSkolem(sym1, sym2, pre1, pre2) ||
                    sym2.isAbstractType && isSubPre(pre1, pre2, sym2)))) &&

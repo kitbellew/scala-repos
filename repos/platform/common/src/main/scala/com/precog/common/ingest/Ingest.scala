@@ -175,12 +175,10 @@ case class Archive(
 object Archive {
   implicit val archiveIso = Iso.hlist(Archive.apply _, Archive.unapply _)
 
-  val schemaV1 = "apiKey" :: "path" :: "jobId" :: (
-    "timestamp" ||| EventMessage.defaultTimestamp
-  ) :: HNil
-  val schemaV0 = "tokenId" :: "path" :: Omit :: (
-    "timestamp" ||| EventMessage.defaultTimestamp
-  ) :: HNil
+  val schemaV1 = "apiKey" :: "path" :: "jobId" :: ("timestamp" ||| EventMessage
+    .defaultTimestamp) :: HNil
+  val schemaV0 = "tokenId" :: "path" :: Omit :: ("timestamp" ||| EventMessage
+    .defaultTimestamp) :: HNil
 
   val decomposerV1: Decomposer[Archive] = decomposerV[Archive](
     schemaV1,
@@ -267,8 +265,8 @@ object StreamRef {
             (other \? "replace") map { jv => (jv, Replace.apply _) }
           ) map {
             case (jv, f) =>
-              (jv.validated[UUID]("uuid") |@| jv.validated[Boolean](
-                "terminal")) { f }
+              (jv.validated[UUID]("uuid") |@| jv
+                .validated[Boolean]("terminal")) { f }
           } getOrElse {
             Failure(Invalid("Storage mode %s not recogized.".format(other)))
           }
@@ -291,10 +289,8 @@ case class StoreFile(
       storeFile: StoreFile => A): A = storeFile(this)
   def split(n: Int) = {
     val splitSize = content.data.length / n
-    content.data
-      .grouped(splitSize)
-      .map(d =>
-        this.copy(content = FileContent(d, content.mimeType, content.encoding)))
+    content.data.grouped(splitSize).map(d =>
+      this.copy(content = FileContent(d, content.mimeType, content.encoding)))
       .toList
   }
 

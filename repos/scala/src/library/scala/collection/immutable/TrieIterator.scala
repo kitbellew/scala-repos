@@ -66,8 +66,8 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
 
   final class DupIterator(xs: Array[Iterable[T]]) extends {
     override val initDepth = outer.depth
-    override val initArrayStack: Array[Array[Iterable[T @uV]]] =
-      outer.arrayStack
+    override val initArrayStack: Array[Array[Iterable[T @uV]]] = outer
+      .arrayStack
     override val initPosStack = outer.posStack
     override val initArrayD: Array[Iterable[T @uV]] = outer.arrayD
     override val initPosD = outer.posD
@@ -211,8 +211,8 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
           arrayToIterators(if (isTrie(m)) getElems(m) else collisionToArray(m))
         } else {
           // 3b) arrayD has more free elements
-          val (fst, snd) = arrayD.splitAt(
-            arrayD.length - (arrayD.length - posD + 1) / 2)
+          val (fst, snd) = arrayD
+            .splitAt(arrayD.length - (arrayD.length - posD + 1) / 2)
           arrayD = fst
           (iteratorWithSize(snd), this)
         }

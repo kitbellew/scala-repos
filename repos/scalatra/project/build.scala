@@ -59,7 +59,8 @@ object ScalatraBuild extends Build {
           organization.value % s"${name.value}_${scalaBinaryVersion.value}" % _
         }
       }
-    ) ++ net.virtualvoid.sbt.graph.Plugin.graphSettings ++ mavenCentralFrouFrou ++ scalariformSettings
+    ) ++ net.virtualvoid.sbt.graph.Plugin
+      .graphSettings ++ mavenCentralFrouFrou ++ scalariformSettings
 
   lazy val scalatraProject = Project(
     id = "scalatra-project",

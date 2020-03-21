@@ -100,14 +100,13 @@ object EvaluatePython {
 
       case (map: MapData, mt: MapType) =>
         val jmap = new java.util.HashMap[Any, Any](map.numElements())
-        map.foreach(
-          mt.keyType,
-          mt.valueType,
-          (
-              k,
-              v) => {
-            jmap.put(toJava(k, mt.keyType), toJava(v, mt.valueType))
-          })
+        map
+          .foreach(
+            mt.keyType,
+            mt.valueType,
+            (k, v) => {
+              jmap.put(toJava(k, mt.keyType), toJava(v, mt.valueType))
+            })
         jmap
 
       case (ud, udt: UserDefinedType[_]) => toJava(ud, udt.sqlType)
@@ -156,13 +155,12 @@ object EvaluatePython {
 
       case (c: String, BinaryType) => c.getBytes(StandardCharsets.UTF_8)
       case (c, BinaryType)
-          if c.getClass.isArray && c.getClass.getComponentType.getName == "byte" =>
-        c
+          if c.getClass.isArray && c.getClass.getComponentType
+            .getName == "byte" => c
 
       case (c: java.util.List[_], ArrayType(elementType, _)) =>
-        new GenericArrayData(c.asScala.map { e =>
-          fromJava(e, elementType)
-        }.toArray)
+        new GenericArrayData(c.asScala.map { e => fromJava(e, elementType) }
+          .toArray)
 
       case (c, ArrayType(elementType, _)) if c.getClass.isArray =>
         new GenericArrayData(
@@ -181,8 +179,9 @@ object EvaluatePython {
             s"Input row doesn't have expected number of values required by the schema. " +
               s"${fields.length} fields are required while ${array.length} values are provided.")
         }
-        new GenericInternalRow(
-          array.zip(fields).map { case (e, f) => fromJava(e, f.dataType) })
+        new GenericInternalRow(array.zip(fields).map {
+          case (e, f) => fromJava(e, f.dataType)
+        })
 
       case (_, udt: UserDefinedType[_]) => fromJava(obj, udt.sqlType)
 
@@ -230,8 +229,8 @@ object EvaluatePython {
       if (obj == this) {
         out.write(Opcodes.GLOBAL)
         out.write(
-          (module + "\n" + "_create_row_inbound_converter" + "\n").getBytes(
-            StandardCharsets.UTF_8))
+          (module + "\n" + "_create_row_inbound_converter" + "\n")
+            .getBytes(StandardCharsets.UTF_8))
       } else {
         // it will be memorized by Pickler to save some bytes
         pickler.save(this)

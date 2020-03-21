@@ -26,12 +26,9 @@ class MultipartTest extends FunSuite {
    * </form>
    */
   private[this] def newRequest(buf: Buf): Request =
-    RequestBuilder()
-      .url("http://example.com")
-      .add(
-        FileElement("groups", buf, Some("image/gif"), Some("dealwithit.gif")))
-      .add(SimpleElement("type", "text"))
-      .buildFormPost(multipart = true)
+    RequestBuilder().url("http://example.com").add(
+      FileElement("groups", buf, Some("image/gif"), Some("dealwithit.gif")))
+      .add(SimpleElement("type", "text")).buildFormPost(multipart = true)
 
   test("sanity check") {
     val req = Request()
@@ -53,11 +50,9 @@ class MultipartTest extends FunSuite {
     val foo = Buf.Utf8("foo")
     val multipart = newRequest(foo).multipart.get
 
-    val Multipart.InMemoryFileUpload(
-      buf,
-      contentType,
-      fileName,
-      contentTransferEncoding) = multipart.files("groups").head
+    val Multipart
+      .InMemoryFileUpload(buf, contentType, fileName, contentTransferEncoding) =
+      multipart.files("groups").head
     val attr = multipart.attributes("type").head
 
     assert(buf == foo)
@@ -71,11 +66,9 @@ class MultipartTest extends FunSuite {
     val foo = Buf.Utf8("." * (Multipart.MaxInMemoryFileSize.inBytes.toInt + 10))
     val multipart = newRequest(foo).multipart.get
 
-    val Multipart.OnDiskFileUpload(
-      file,
-      contentType,
-      fileName,
-      contentTransferEncoding) = multipart.files("groups").head
+    val Multipart
+      .OnDiskFileUpload(file, contentType, fileName, contentTransferEncoding) =
+      multipart.files("groups").head
     val attr = multipart.attributes("type").head
 
     assert(

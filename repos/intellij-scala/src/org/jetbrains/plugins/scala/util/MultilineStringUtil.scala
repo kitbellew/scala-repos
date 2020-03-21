@@ -39,12 +39,11 @@ object MultilineStringUtil {
   def inMultilineString(element: PsiElement): Boolean = {
     if (element == null) return false
     element.getNode.getElementType match {
-      case ScalaTokenTypes.tMULTILINE_STRING |
-          ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING => true
-      case ScalaTokenTypes.tINTERPOLATED_STRING_END |
-          ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION |
-          ScalaTokenTypes.tINTERPOLATED_STRING_ESCAPE =>
-        element.getParent match {
+      case ScalaTokenTypes.tMULTILINE_STRING | ScalaTokenTypes
+            .tINTERPOLATED_MULTILINE_STRING => true
+      case ScalaTokenTypes.tINTERPOLATED_STRING_END | ScalaTokenTypes
+            .tINTERPOLATED_STRING_INJECTION | ScalaTokenTypes
+            .tINTERPOLATED_STRING_ESCAPE => element.getParent match {
           case lit: ScLiteral if lit.isMultiLineString => true
           case _                                       => false
         }
@@ -80,16 +79,13 @@ object MultilineStringUtil {
   }
 
   def hasMarginChars(element: PsiElement, marginChar: String) = {
-    element.getText
-      .replace("\r", "")
-      .split(s"\n[ \t]*${escapeForRegexp(marginChar)}")
-      .length > 1
+    element.getText.replace("\r", "")
+      .split(s"\n[ \t]*${escapeForRegexp(marginChar)}").length > 1
   }
 
   def needAddStripMargin(element: PsiElement, marginChar: String): Boolean = {
-    findAllMethodCallsOnMLString(
-      element,
-      "stripMargin").isEmpty && !hasMarginChars(element, marginChar)
+    findAllMethodCallsOnMLString(element, "stripMargin")
+      .isEmpty && !hasMarginChars(element, marginChar)
   }
 
   def needAddByType(literal: ScLiteral): Boolean =
@@ -100,9 +96,8 @@ object MultilineStringUtil {
               case funDef: ScFunction =>
                 val tpe = funDef.returnType
                 tpe.exists(scType =>
-                  scType.canonicalText.endsWith(
-                    "java.lang.String") || scType.canonicalText.endsWith(
-                    "scala.Predef.String"))
+                  scType.canonicalText.endsWith("java.lang.String") || scType
+                    .canonicalText.endsWith("scala.Predef.String"))
               case _ => true
             }
           case _ => true
@@ -124,10 +119,8 @@ object MultilineStringUtil {
 
   def getMarginChar(element: PsiElement): Char = {
     val calls = findAllMethodCallsOnMLString(element, "stripMargin")
-    val defaultMargin = CodeStyleSettingsManager
-      .getInstance(element.getProject)
-      .getCurrentSettings
-      .getCustomSettings(classOf[ScalaCodeStyleSettings])
+    val defaultMargin = CodeStyleSettingsManager.getInstance(element.getProject)
+      .getCurrentSettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
       .MARGIN_CHAR
 
     if (calls.isEmpty) return defaultMargin
@@ -144,8 +137,8 @@ object MultilineStringUtil {
     val calls = new ArrayBuffer[Array[ScExpression]]()
     def callsArray = calls.toArray
 
-    var prevParent: PsiElement = findParentMLString(stringElement).getOrElse(
-      return Array.empty)
+    var prevParent: PsiElement = findParentMLString(stringElement)
+      .getOrElse(return Array.empty)
     var parent = prevParent.getParent
 
     do {
@@ -177,10 +170,9 @@ object MultilineStringUtil {
   }
 
   def findParentMLString(element: PsiElement): Option[ScLiteral] = {
-    (Iterator(element) ++ element.parentsInFile)
-      .collect { case lit: ScLiteral if lit.isMultiLineString => lit }
-      .toStream
-      .headOption
+    (Iterator(element) ++ element.parentsInFile).collect {
+      case lit: ScLiteral if lit.isMultiLineString => lit
+    }.toStream.headOption
   }
 
   def isMLString(element: PsiElement): Boolean =
@@ -207,8 +199,8 @@ object MultilineStringUtil {
     for (arg <- currentArgs) {
       val argsString = arg.map(_.getText).sorted
 
-      if (myArgs.sameElements(argsString) || myArgs.reverse.sameElements(
-            argsString)) return true
+      if (myArgs.sameElements(argsString) || myArgs.reverse
+            .sameElements(argsString)) return true
     }
 
     false
@@ -226,8 +218,7 @@ object MultilineStringUtil {
         settings.getSmartSpaces(indent) + marginChar.getOrElse(""))
     }
 
-    PsiDocumentManager
-      .getInstance(element.getProject)
+    PsiDocumentManager.getInstance(element.getProject)
       .doPostponedOperationsAndUnblockDocument(document)
 
     element match {
@@ -236,20 +227,19 @@ object MultilineStringUtil {
         val literalOffsets = Seq(
           literal.getTextRange.getStartOffset,
           literal.getTextRange.getEndOffset)
-        val Seq(startLineNumber, endLineNumber) = literalOffsets.map(
-          document.getLineNumber)
+        val Seq(startLineNumber, endLineNumber) = literalOffsets
+          .map(document.getLineNumber)
         val literalStart = literalOffsets(0)
         val (startLineOffset, startLineEndOffset) = (
           document.getLineStartOffset(startLineNumber),
           document.getLineEndOffset(startLineNumber))
 
         val startsOnNewLine = document.getText
-          .substring(startLineOffset, startLineEndOffset)
-          .trim
+          .substring(startLineOffset, startLineEndOffset).trim
           .startsWith(firstMLQuote)
         val multipleLines = endLineNumber != startLineNumber
-        val needNewLineBefore =
-          settings.quotesOnNewLine && multipleLines && !startsOnNewLine
+        val needNewLineBefore = settings
+          .quotesOnNewLine && multipleLines && !startsOnNewLine
         val marginChar = getMarginChar(literal)
 
         extensions.inWriteAction {
@@ -257,8 +247,9 @@ object MultilineStringUtil {
           if (!needNewLineBefore) {
             val quotesIndent = settings.getSmartLength(
               document.getText.substring(startLineOffset, literalStart))
-            val marginIndent = quotesIndent + interpolatorPrefixLength(
-              literal) + settings.marginIndent
+            val marginIndent =
+              quotesIndent + interpolatorPrefixLength(literal) + settings
+                .marginIndent
             for (lineNumber <- startLineNumber + 1 to endLineNumber) {
               insertIndent(lineNumber, marginIndent, Some(marginChar))
             }
@@ -266,8 +257,9 @@ object MultilineStringUtil {
             val oldIndent = settings.prefixLength(
               document.getText.substring(startLineOffset, literalStart))
             val quotesIndent = oldIndent + settings.regularIndent
-            val marginIndent = quotesIndent + interpolatorPrefixLength(
-              literal) + settings.marginIndent
+            val marginIndent =
+              quotesIndent + interpolatorPrefixLength(literal) + settings
+                .marginIndent
             for (lineNumber <- startLineNumber + 1 to endLineNumber) {
               insertIndent(lineNumber, marginIndent, Some(marginChar))
             }
@@ -283,17 +275,17 @@ object MultilineStringUtil {
 }
 
 class MultilineStringSettings(project: Project) {
-  private val settings =
-    CodeStyleSettingsManager.getInstance(project).getCurrentSettings
+  private val settings = CodeStyleSettingsManager.getInstance(project)
+    .getCurrentSettings
   private val scalaSettings: ScalaCodeStyleSettings = ScalaCodeStyleSettings
     .getInstance(project)
 
-  val defaultMarginChar =
-    settings.getCustomSettings(classOf[ScalaCodeStyleSettings]).MARGIN_CHAR
+  val defaultMarginChar = settings
+    .getCustomSettings(classOf[ScalaCodeStyleSettings]).MARGIN_CHAR
   val useTabs = settings.useTabCharacter(ScalaFileType.SCALA_FILE_TYPE)
   val tabSize = settings.getTabSize(ScalaFileType.SCALA_FILE_TYPE)
-  val regularIndent =
-    settings.getIndentOptions(ScalaFileType.SCALA_FILE_TYPE).INDENT_SIZE
+  val regularIndent = settings.getIndentOptions(ScalaFileType.SCALA_FILE_TYPE)
+    .INDENT_SIZE
   val marginIndent = scalaSettings.MULTI_LINE_STRING_MARGIN_INDENT
   val supportLevel = scalaSettings.MULTILINE_STRING_SUPORT
   val quotesOnNewLine = scalaSettings.MULTI_LINE_QUOTES_ON_NEW_LINE
@@ -307,8 +299,8 @@ class MultilineStringSettings(project: Project) {
 
   def getSmartSpaces(count: Int) =
     if (useTabs) {
-      StringUtil
-        .repeat("\t", count / tabSize) + StringUtil.repeat(" ", count % tabSize)
+      StringUtil.repeat("\t", count / tabSize) + StringUtil
+        .repeat(" ", count % tabSize)
     } else { StringUtil.repeat(" ", count) }
 
   def getSmartLength(line: String) =

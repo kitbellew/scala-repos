@@ -80,8 +80,7 @@ class QueryExecution(val sqlContext: SQLContext, val logical: LogicalPlan) {
 
   override def toString: String = {
     def output =
-      analyzed.output
-        .map(o => s"${o.name}: ${o.dataType.simpleString}")
+      analyzed.output.map(o => s"${o.name}: ${o.dataType.simpleString}")
         .mkString(", ")
 
     s"""== Parsed Logical Plan ==

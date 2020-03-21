@@ -19,8 +19,8 @@ class BufReaderTest extends FunSuite with GeneratorDrivenPropertyChecks {
   })
 
   test("readShortBE")(forAll { short: Short =>
-    val buf = Buf.ByteArray.Owned(
-      Array(((short >> 8) & 0xff).toByte, (short & 0xff).toByte))
+    val buf = Buf.ByteArray
+      .Owned(Array(((short >> 8) & 0xff).toByte, (short & 0xff).toByte))
     val br = BufReader(buf)
     // note, we need to cast here toShort so that the
     // MSB is intepreted as the sign bit.

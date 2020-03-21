@@ -24,8 +24,7 @@ object RedundantCollectionConversion extends SimplificationType {
     withGeneric match {
       case (base @ ExpressionType(baseType)) `.toCollection` ()
           if baseType.conforms(typeAfterConversion, checkWeak = false) =>
-        val simplification = replace(withGeneric)
-          .withText(base.getText)
+        val simplification = replace(withGeneric).withText(base.getText)
           .highlightFrom(base)
         Some(simplification)
       case _ => None

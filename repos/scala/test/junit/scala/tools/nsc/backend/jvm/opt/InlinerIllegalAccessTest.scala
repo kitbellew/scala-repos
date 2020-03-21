@@ -66,12 +66,10 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
     def check(classNode: ClassNode, test: Option[AbstractInsnNode] => Unit) = {
       for (m <- methods)
         test(
-          inliner
-            .findIllegalAccess(
-              m.instructions,
-              classBTypeFromParsedClassfile(cClass.name),
-              classBTypeFromParsedClassfile(classNode.name))
-            .map(_._1))
+          inliner.findIllegalAccess(
+            m.instructions,
+            classBTypeFromParsedClassfile(cClass.name),
+            classBTypeFromParsedClassfile(classNode.name)).map(_._1))
     }
 
     check(cClass, assertEmpty)
@@ -149,8 +147,8 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
 
     // set flags that Scala scala doesn't (default access, static) - a hacky way to test all access modes.
     val names = ('a' to 'h').map(_.toString).toSet
-    val List(a, b, c, d, e, f, g, h) = cCl.methods.asScala.toList.filter(m =>
-      names(m.name))
+    val List(a, b, c, d, e, f, g, h) = cCl.methods.asScala.toList
+      .filter(m => names(m.name))
 
     def checkAccess(a: MethodNode, expected: Int): Unit = {
       assert(
@@ -175,12 +173,11 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
     checkAccess(g, ACC_STATIC | ACC_PROTECTED)
     h.access |= ACC_STATIC; checkAccess(h, ACC_STATIC | ACC_PRIVATE)
 
-    val List(raC, rbC, rcC, rdC, reC, rfC, rgC, rhC) =
-      cCl.methods.asScala.toList.filter(_.name(0) == 'r').sortBy(_.name)
+    val List(raC, rbC, rcC, rdC, reC, rfC, rgC, rhC) = cCl.methods.asScala
+      .toList.filter(_.name(0) == 'r').sortBy(_.name)
 
     val List(rbD, rcD, rfD, rgD) = dCl.methods.asScala.toList
-      .filter(_.name(0) == 'r')
-      .sortBy(_.name)
+      .filter(_.name(0) == 'r').sortBy(_.name)
 
     def check(
         method: MethodNode,
@@ -188,12 +185,10 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
         dest: ClassNode,
         test: Option[AbstractInsnNode] => Unit): Unit = {
       test(
-        inliner
-          .findIllegalAccess(
-            method.instructions,
-            classBTypeFromParsedClassfile(decl.name),
-            classBTypeFromParsedClassfile(dest.name))
-          .map(_._1))
+        inliner.findIllegalAccess(
+          method.instructions,
+          classBTypeFromParsedClassfile(decl.name),
+          classBTypeFromParsedClassfile(dest.name)).map(_._1))
     }
 
     val cOrDOwner = (_: Option[AbstractInsnNode] @unchecked) match {

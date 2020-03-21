@@ -21,8 +21,8 @@ object TextBodyParserSpec extends PlaySpecification {
         implicit mat: Materializer) = {
       await(
         bodyParser(FakeRequest().withHeaders(
-          contentType.map(CONTENT_TYPE -> _).toSeq: _*))
-          .run(Source.single(ByteString(text, encoding))))
+          contentType.map(CONTENT_TYPE -> _).toSeq: _*)).run(Source.single(
+          ByteString(text, encoding))))
     }
 
     "parse text bodies" in new WithApplication() {

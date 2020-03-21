@@ -114,8 +114,7 @@ object ScalaGenerationInfo {
 
   def positionCaret(editor: Editor, element: PsiMember) {
     //hack for postformatting IDEA bug.
-    val member = CodeStyleManager
-      .getInstance(element.getProject)
+    val member = CodeStyleManager.getInstance(element.getProject)
       .reformat(element)
     //Setting selection
     val body: PsiElement = member match {
@@ -142,8 +141,8 @@ object ScalaGenerationInfo {
       case e: ScBlockExpr =>
         val statements = e.statements
         if (statements.length == 0) {
-          editor.getCaretModel.moveToOffset(
-            body.getTextRange.getStartOffset + 1)
+          editor.getCaretModel
+            .moveToOffset(body.getTextRange.getStartOffset + 1)
         } else {
           val range = new TextRange(
             statements(0).getTextRange.getStartOffset,
@@ -166,8 +165,7 @@ object ScalaGenerationInfo {
     val superOrSelfQual: String = td.selfType match {
       case None => "super."
       case Some(st: ScType) =>
-        val psiClass = ScType
-          .extractClass(st, Option(td.getProject))
+        val psiClass = ScType.extractClass(st, Option(td.getProject))
           .getOrElse(return "super.")
 
         def nonStrictInheritor(base: PsiClass, inheritor: PsiClass): Boolean = {
@@ -189,15 +187,13 @@ object ScalaGenerationInfo {
       method match {
         case fun: ScFunction =>
           val clauses = fun.paramClauses.clauses.filter(!_.isImplicit)
-          clauses
-            .map(_.parameters.map(_.name).mkString("(", ", ", ")"))
+          clauses.map(_.parameters.map(_.name).mkString("(", ", ", ")"))
             .mkString
         case method: PsiMethod =>
-          if (method.isAccessor && method.getParameterList.getParametersCount == 0)
-            ""
+          if (method.isAccessor && method.getParameterList
+                .getParametersCount == 0) ""
           else
-            method.getParameterList.getParameters
-              .map(paramText)
+            method.getParameterList.getParameters.map(paramText)
               .mkString("(", ", ", ")")
       }
     }
@@ -212,8 +208,7 @@ object ScalaGenerationInfo {
       if (isImplement) ScalaFileTemplateUtil.SCALA_IMPLEMENTED_METHOD_TEMPLATE
       else ScalaFileTemplateUtil.SCALA_OVERRIDDEN_METHOD_TEMPLATE
 
-    val template = FileTemplateManager
-      .getInstance()
+    val template = FileTemplateManager.getInstance()
       .getCodeTemplate(templateName)
 
     val properties = new Properties()
@@ -227,12 +222,10 @@ object ScalaGenerationInfo {
     properties.setProperty(
       FileTemplate.ATTRIBUTE_RETURN_TYPE,
       ScType.presentableText(returnType))
-    properties.setProperty(
-      FileTemplate.ATTRIBUTE_DEFAULT_RETURN_VALUE,
-      standardValue)
-    properties.setProperty(
-      FileTemplate.ATTRIBUTE_CALL_SUPER,
-      callSuperText(td, method))
+    properties
+      .setProperty(FileTemplate.ATTRIBUTE_DEFAULT_RETURN_VALUE, standardValue)
+    properties
+      .setProperty(FileTemplate.ATTRIBUTE_CALL_SUPER, callSuperText(td, method))
     properties.setProperty(
       "Q_MARK",
       ScalaGenerationInfo.defaultValue(returnType, td.getContainingFile))

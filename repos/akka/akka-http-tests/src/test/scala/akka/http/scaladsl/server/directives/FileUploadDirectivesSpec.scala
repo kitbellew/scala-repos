@@ -17,8 +17,8 @@ class FileUploadDirectivesSpec extends RoutingSpec {
 
       val xml = "<int>42</int>"
 
-      val simpleMultipartUpload = Multipart.FormData(
-        Multipart.FormData.BodyPart.Strict(
+      val simpleMultipartUpload = Multipart
+        .FormData(Multipart.FormData.BodyPart.Strict(
           "fieldName",
           HttpEntity(ContentTypes.`text/xml(UTF-8)`, xml),
           Map("filename" -> "age.xml")))

@@ -14,26 +14,28 @@ private[report] final class ReportApi {
 
   def create(setup: ReportSetup, by: User): Funit =
     !by.troll ?? {
-      Reason(setup.reason).fold[Funit](fufail(
-        s"Invalid report reason ${setup.reason}")) { reason =>
-        val user = setup.user
-        val report = Report.make(
-          user = setup.user,
-          reason = reason,
-          text = setup.text,
-          createdBy = by)
-        !isAlreadySlain(report, user) ?? {
-          lila.mon.mod.report.create(reason.name)
-          if (by.id == UserRepo.lichessId)
-            reportTube.coll.update(
-              selectRecent(user, reason),
-              Json.obj(
-                "$set" -> (
-                  reportTube.toMongo(report).get - "processedBy" - "_id"
-                ))) flatMap { res => (res.n == 0) ?? $insert(report) }
-          else $insert(report)
-        }
-      } >>- monitorUnprocessed
+      Reason(setup.reason)
+        .fold[Funit](fufail(s"Invalid report reason ${setup.reason}")) {
+          reason =>
+            val user = setup.user
+            val report = Report.make(
+              user = setup.user,
+              reason = reason,
+              text = setup.text,
+              createdBy = by)
+            !isAlreadySlain(report, user) ?? {
+              lila.mon.mod.report.create(reason.name)
+              if (by.id == UserRepo.lichessId)
+                reportTube.coll.update(
+                  selectRecent(user, reason),
+                  Json.obj(
+                    "$set" -> (reportTube.toMongo(report)
+                      .get - "processedBy" - "_id"))) flatMap { res =>
+                  (res.n == 0) ?? $insert(report)
+                }
+              else $insert(report)
+            }
+        } >>- monitorUnprocessed
     }
 
   private def monitorUnprocessed =
@@ -117,9 +119,10 @@ private[report] final class ReportApi {
     $find byId id flatMap {
       _ ?? { report =>
         $update(
-          Json.obj(
-            "user" -> report.user,
-            "reason" -> report.reason) ++ unprocessedSelect,
+          Json
+            .obj(
+              "user" -> report.user,
+              "reason" -> report.reason) ++ unprocessedSelect,
           $set("processedBy" -> by.id),
           multi = true)
       } >>- monitorUnprocessed >>- lila.mon.mod.report.close()

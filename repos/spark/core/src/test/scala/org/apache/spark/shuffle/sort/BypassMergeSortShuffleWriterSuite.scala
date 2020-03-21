@@ -86,12 +86,11 @@ class BypassMergeSortShuffleWriterSuite
         }
         null
       }
-    }).when(blockResolver)
-      .writeIndexFileAndCommit(
-        anyInt,
-        anyInt,
-        any(classOf[Array[Long]]),
-        any(classOf[File]))
+    }).when(blockResolver).writeIndexFileAndCommit(
+      anyInt,
+      anyInt,
+      any(classOf[Array[Long]]),
+      any(classOf[File]))
     when(blockManager.diskBlockManager).thenReturn(diskBlockManager)
     when(blockManager.getDiskWriter(
       any[BlockId],
@@ -125,8 +124,7 @@ class BypassMergeSortShuffleWriterSuite
       })
     when(diskBlockManager.getFile(any[BlockId])).thenAnswer(new Answer[File] {
       override def answer(invocation: InvocationOnMock): File = {
-        blockIdToFileMap
-          .get(invocation.getArguments.head.asInstanceOf[BlockId])
+        blockIdToFileMap.get(invocation.getArguments.head.asInstanceOf[BlockId])
           .get
       }
     })

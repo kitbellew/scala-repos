@@ -58,8 +58,8 @@ class ScalaDocParamEnterHandlerDelegate extends EnterHandlerDelegateAdapter {
       case _                                                     => 0
     })
 
-    if (document.getLineNumber(caretOffset) - 1 == document.getLineNumber(
-          tagParent.getNameElement.getTextOffset)) {
+    if (document.getLineNumber(caretOffset) - 1 == document
+          .getLineNumber(tagParent.getNameElement.getTextOffset)) {
       val toInsert = StringUtil.repeat(" ", endOffset - startOffset)
       extensions.inWriteAction {
         document.insertString(caretOffset, toInsert)

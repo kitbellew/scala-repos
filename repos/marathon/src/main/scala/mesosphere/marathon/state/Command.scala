@@ -9,9 +9,7 @@ case class Command(value: String)
     extends MarathonState[MesosProtos.CommandInfo, Command] {
 
   def toProto: MesosProtos.CommandInfo =
-    MesosProtos.CommandInfo.newBuilder
-      .setValue(this.value)
-      .build
+    MesosProtos.CommandInfo.newBuilder.setValue(this.value).build
 
   def mergeFromProto(proto: MesosProtos.CommandInfo): Command =
     Command(value = proto.getValue)

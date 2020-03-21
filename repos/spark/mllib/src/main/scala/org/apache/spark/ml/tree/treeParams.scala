@@ -254,8 +254,8 @@ private[ml] trait TreeClassifierParams extends Params {
 
 private[ml] object TreeClassifierParams {
   // These options should be lowercase.
-  final val supportedImpurities: Array[String] = Array("entropy", "gini").map(
-    _.toLowerCase)
+  final val supportedImpurities: Array[String] = Array("entropy", "gini")
+    .map(_.toLowerCase)
 }
 
 private[ml] trait DecisionTreeClassifierParams
@@ -304,8 +304,8 @@ private[ml] trait TreeRegressorParams extends Params {
 
 private[ml] object TreeRegressorParams {
   // These options should be lowercase.
-  final val supportedImpurities: Array[String] = Array("variance").map(
-    _.toLowerCase)
+  final val supportedImpurities: Array[String] = Array("variance")
+    .map(_.toLowerCase)
 }
 
 private[ml] trait DecisionTreeRegressorParams
@@ -317,10 +317,8 @@ private[ml] trait DecisionTreeRegressorParams
       schema: StructType,
       fitting: Boolean,
       featuresDataType: DataType): StructType = {
-    val newSchema = super.validateAndTransformSchema(
-      schema,
-      fitting,
-      featuresDataType)
+    val newSchema = super
+      .validateAndTransformSchema(schema, fitting, featuresDataType)
     if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
       SchemaUtils.appendColumn(newSchema, $(varianceCol), DoubleType)
     } else { newSchema }
@@ -420,11 +418,11 @@ private[ml] trait RandomForestParams extends TreeEnsembleParams {
     this,
     "featureSubsetStrategy",
     "The number of features to consider for splits at each tree node." +
-      s" Supported options: ${RandomForestParams.supportedFeatureSubsetStrategies
-        .mkString(", ")}",
+      s" Supported options: ${RandomForestParams
+        .supportedFeatureSubsetStrategies.mkString(", ")}",
     (value: String) =>
-      RandomForestParams.supportedFeatureSubsetStrategies.contains(
-        value.toLowerCase))
+      RandomForestParams.supportedFeatureSubsetStrategies
+        .contains(value.toLowerCase))
 
   setDefault(numTrees -> 20, featureSubsetStrategy -> "auto")
 
@@ -489,11 +487,9 @@ private[ml] trait GBTParams
 
   override def validateParams(): Unit = {
     require(
-      ParamValidators.inRange(
-        0,
-        1,
-        lowerInclusive = false,
-        upperInclusive = true)(getStepSize),
+      ParamValidators
+        .inRange(0, 1, lowerInclusive = false, upperInclusive = true)(
+          getStepSize),
       "GBT parameter stepSize should be in interval (0, 1], " +
         s"but it given invalid value $getStepSize."
     )
@@ -503,11 +499,8 @@ private[ml] trait GBTParams
   private[ml] def getOldBoostingStrategy(
       categoricalFeatures: Map[Int, Int],
       oldAlgo: OldAlgo.Algo): OldBoostingStrategy = {
-    val strategy = super.getOldStrategy(
-      categoricalFeatures,
-      numClasses = 2,
-      oldAlgo,
-      OldVariance)
+    val strategy = super
+      .getOldStrategy(categoricalFeatures, numClasses = 2, oldAlgo, OldVariance)
     // NOTE: The old API does not support "seed" so we ignore it.
     new OldBoostingStrategy(strategy, getOldLossType, getMaxIter, getStepSize)
   }

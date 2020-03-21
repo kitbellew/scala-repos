@@ -53,8 +53,8 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
     // otherwise, there may be funky issues with cascading
     TypedPipeFactory({ (fd, mode) =>
       val newPipe = new HashJoin(
-        RichPipe.assignName(
-          mapside.toPipe(('key, 'value))(fd, mode, tup2Setter)),
+        RichPipe
+          .assignName(mapside.toPipe(('key, 'value))(fd, mode, tup2Setter)),
         Field.singleOrdered("key")(keyOrdering),
         getForceToDiskPipeIfNecessary(fd, mode),
         Field.singleOrdered("key1")(keyOrdering),
@@ -97,8 +97,8 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
       case eachPipe: Each =>
         if (canSkipEachOperation(eachPipe.getOperation, mode)) {
           //need to recurse down to see if parent pipe is ok
-          getPreviousPipe(eachPipe).exists(prevPipe =>
-            isSafeToSkipForceToDisk(prevPipe, mode))
+          getPreviousPipe(eachPipe)
+            .exists(prevPipe => isSafeToSkipForceToDisk(prevPipe, mode))
         } else false
       case _: Checkpoint        => true
       case _: GroupBy           => true

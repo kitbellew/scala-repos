@@ -39,9 +39,8 @@ object JsonTransSpec extends Specification {
 
     "copy input JSON and update a branch (merge the updated branch with input JSON)" in {
       js.transform((__ \ 'field3).json.update(__.read[JsObject].map { o =>
-          o ++ Json.obj("field33" -> false)
-        }))
-        .get must beEqualTo(Json.obj(
+        o ++ Json.obj("field33" -> false)
+      })).get must beEqualTo(Json.obj(
         "field1" -> "alpha",
         "field2" -> 123L,
         "field3" -> Json
@@ -56,13 +55,12 @@ object JsonTransSpec extends Specification {
 
     "pick a branch and update its content" in {
       js.transform((__ \ 'field3).json.pickBranch(
-          (__ \ 'field32).json.update(Reads.of[JsNumber].map {
-            case JsNumber(nb) => JsNumber(nb + 12)
-          }) andThen
-            (__ \ 'field31).json.update(Reads.of[JsString].map {
-              case JsString(s) => JsString(s + "toto")
-            })))
-        .get must beEqualTo(Json.obj(
+        (__ \ 'field32).json.update(Reads.of[JsNumber].map {
+          case JsNumber(nb) => JsNumber(nb + 12)
+        }) andThen
+          (__ \ 'field31).json.update(Reads.of[JsString].map {
+            case JsString(s) => JsString(s + "toto")
+          }))).get must beEqualTo(Json.obj(
         "field3" -> Json.obj("field31" -> "betatoto", "field32" -> 357)))
     }
 
@@ -95,9 +93,8 @@ object JsonTransSpec extends Specification {
 
     "copy the full json and update a 2nd-level path and then prune a subbranch" in {
       js.validate((__ \ 'field3 \ 'field32).json.update(Reads.of[JsNumber].map {
-          case JsNumber(nb) => JsNumber(nb + 5)
-        }) andThen (__ \ 'field4).json.prune)
-        .get must beEqualTo(Json.obj(
+        case JsNumber(nb) => JsNumber(nb + 5)
+      }) andThen (__ \ 'field4).json.prune).get must beEqualTo(Json.obj(
         "field1" -> "alpha",
         "field2" -> 123L,
         "field3" -> Json.obj("field31" -> "beta", "field32" -> 350)))
@@ -108,8 +105,8 @@ object JsonTransSpec extends Specification {
       val jsonTransform =
         ((__ \ "key1" \ "sk1").json.copyFrom((__ \ "somekey1").json.pick)
           and
-            (__ \ "key1" \ "sk2").json
-              .copyFrom((__ \ "somekey2").json.pick)).reduce
+            (__ \ "key1" \ "sk2").json.copyFrom((__ \ "somekey2").json.pick))
+          .reduce
 
       json.validate(jsonTransform).get must beEqualTo(
         Json.obj("key1" -> Json.obj("sk1" -> 11, "sk2" -> 22)))
@@ -117,22 +114,16 @@ object JsonTransSpec extends Specification {
 
     "report the correct path in the JsError" in {
       "when the field to modify doesn't exist" in {
-        js.transform((__ \ 'field42).json.update(__.read[JsString]))
-          .asEither
-          .left
-          .get
-          .head must_== (
+        js.transform((__ \ 'field42).json.update(__.read[JsString])).asEither
+          .left.get.head must_== (
           (
             __ \ 'field42,
             Seq(ValidationError("error.path.missing"))))
       }
 
       "when the reader is the wrong type" in {
-        js.transform((__ \ 'field2).json.update(__.read[JsString]))
-          .asEither
-          .left
-          .get
-          .head must_== (
+        js.transform((__ \ 'field2).json.update(__.read[JsString])).asEither
+          .left.get.head must_== (
           (
             __ \ 'field2,
             Seq(ValidationError("error.expected.jsstring"))))

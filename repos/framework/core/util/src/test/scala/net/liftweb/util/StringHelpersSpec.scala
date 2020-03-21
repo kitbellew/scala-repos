@@ -79,9 +79,8 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
               c == '_' ||
                 correspondingIndexInCamelCase(
                   name,
-                  i) == 0 && correspondingCharInCamelCase(
-                  name,
-                  i) == c.toUpper ||
+                  i) == 0 && correspondingCharInCamelCase(name, i) == c
+                  .toUpper ||
                 !previousCharacterIsUnderscore(
                   name,
                   i) && correspondingCharInCamelCase(name, i) == c ||

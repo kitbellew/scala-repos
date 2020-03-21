@@ -64,8 +64,7 @@ private[spark] class ApplicationMaster(
 
   private val sparkConf = new SparkConf()
   private val yarnConf: YarnConfiguration = SparkHadoopUtil.get
-    .newConfiguration(sparkConf)
-    .asInstanceOf[YarnConfiguration]
+    .newConfiguration(sparkConf).asInstanceOf[YarnConfiguration]
   private val isClusterMode = args.userClass != null
 
   // Default to twice the number of executors (twice the maximum number of executors if dynamic
@@ -83,8 +82,7 @@ private[spark] class ApplicationMaster(
       if (effectiveNumExecutors > Int.MaxValue / 2) Int.MaxValue
       else (2 * effectiveNumExecutors))
 
-    sparkConf
-      .get(MAX_EXECUTOR_FAILURES)
+    sparkConf.get(MAX_EXECUTOR_FAILURES)
       .getOrElse(defaultMaxNumExecutorFailures)
   }
 
@@ -113,9 +111,8 @@ private[spark] class ApplicationMaster(
   // requests to RM.
   private val heartbeatInterval = {
     // Ensure that progress is sent before YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS elapses.
-    val expiryInterval = yarnConf.getInt(
-      YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS,
-      120000)
+    val expiryInterval = yarnConf
+      .getInt(YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS, 120000)
     math.max(
       0,
       math.min(expiryInterval / 2, sparkConf.get(RM_HEARTBEAT_INTERVAL)))
@@ -123,9 +120,8 @@ private[spark] class ApplicationMaster(
 
   // Initial wait interval before allocator poll, to allow for quicker ramp up when executors are
   // being requested.
-  private val initialAllocationInterval = math.min(
-    heartbeatInterval,
-    sparkConf.get(INITIAL_HEARTBEAT_INTERVAL))
+  private val initialAllocationInterval = math
+    .min(heartbeatInterval, sparkConf.get(INITIAL_HEARTBEAT_INTERVAL))
 
   // Next wait interval before allocator poll.
   private var nextAllocationInterval = initialAllocationInterval
@@ -170,8 +166,8 @@ private[spark] class ApplicationMaster(
       val priority = ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY - 1
       ShutdownHookManager.addShutdownHook(priority) { () =>
         val maxAppAttempts = client.getMaxRegAttempts(sparkConf, yarnConf)
-        val isLastAttempt =
-          client.getAttemptId().getAttemptId() >= maxAppAttempts
+        val isLastAttempt = client.getAttemptId()
+          .getAttemptId() >= maxAppAttempts
 
         if (!finished) {
           // The default state of ApplicationMaster is failed if it is invoked by shut down hook.
@@ -187,7 +183,8 @@ private[spark] class ApplicationMaster(
 
         if (!unregistered) {
           // we only want to unregister if we don't want the RM to retry
-          if (finalStatus == FinalApplicationStatus.SUCCEEDED || isLastAttempt) {
+          if (finalStatus == FinalApplicationStatus
+                .SUCCEEDED || isLastAttempt) {
             unregister(finalStatus, finalMsg)
             cleanupStagingDir(fs)
           }
@@ -246,8 +243,7 @@ private[spark] class ApplicationMaster(
       if (!unregistered) {
         logInfo(
           s"Unregistering ApplicationMaster with $status" +
-            Option(diagnostics)
-              .map(msg => s" (diag message: $msg)")
+            Option(diagnostics).map(msg => s" (diag message: $msg)")
               .getOrElse(""))
         unregistered = true
         client.unregister(status, Option(diagnostics).getOrElse(""))
@@ -304,15 +300,11 @@ private[spark] class ApplicationMaster(
 
     val appId = client.getAttemptId().getApplicationId().toString()
     val attemptId = client.getAttemptId().getAttemptId().toString()
-    val historyAddress = sparkConf
-      .get(HISTORY_SERVER_ADDRESS)
-      .map { text =>
-        SparkHadoopUtil.get.substituteHadoopVariables(text, yarnConf)
-      }
-      .map { address =>
-        s"${address}${HistoryServer.UI_PATH_PREFIX}/${appId}/${attemptId}"
-      }
-      .getOrElse("")
+    val historyAddress = sparkConf.get(HISTORY_SERVER_ADDRESS).map { text =>
+      SparkHadoopUtil.get.substituteHadoopVariables(text, yarnConf)
+    }.map { address =>
+      s"${address}${HistoryServer.UI_PATH_PREFIX}/${appId}/${attemptId}"
+    }.getOrElse("")
 
     val _sparkConf = if (sc != null) sc.getConf else sparkConf
     val driverUrl = RpcEndpointAddress(
@@ -452,10 +444,10 @@ private[spark] class ApplicationMaster(
             val numPendingAllocate = allocator.getPendingAllocate.size
             allocatorLock.synchronized {
               val sleepInterval =
-                if (numPendingAllocate > 0 || allocator.getNumPendingLossReasonRequests > 0) {
-                  val currentAllocationInterval = math.min(
-                    heartbeatInterval,
-                    nextAllocationInterval)
+                if (numPendingAllocate > 0 || allocator
+                      .getNumPendingLossReasonRequests > 0) {
+                  val currentAllocationInterval = math
+                    .min(heartbeatInterval, nextAllocationInterval)
                   nextAllocationInterval =
                     currentAllocationInterval * 2 // avoid overflow
                   currentAllocationInterval
@@ -510,8 +502,8 @@ private[spark] class ApplicationMaster(
       val totalWaitTime = sparkConf.get(AM_MAX_WAIT_TIME)
       val deadline = System.currentTimeMillis() + totalWaitTime
 
-      while (sparkContextRef
-               .get() == null && System.currentTimeMillis < deadline && !finished) {
+      while (sparkContextRef.get() == null && System
+               .currentTimeMillis < deadline && !finished) {
         logInfo("Waiting for spark context initialization ... ")
         sparkContextRef.wait(10000L)
       }
@@ -563,8 +555,8 @@ private[spark] class ApplicationMaster(
 
   /** Add the Yarn IP filter that is required for properly securing the UI. */
   private def addAmIpFilter() = {
-    val proxyBase = System.getenv(
-      ApplicationConstants.APPLICATION_WEB_PROXY_BASE_ENV)
+    val proxyBase = System
+      .getenv(ApplicationConstants.APPLICATION_WEB_PROXY_BASE_ENV)
     val amFilter = "org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter"
     val params = client.getAmIpFilterParams(yarnConf, proxyBase)
     if (isClusterMode) {
@@ -607,8 +599,7 @@ private[spark] class ApplicationMaster(
     if (args.primaryRFile != null && args.primaryRFile.endsWith(".R")) {
       // TODO(davies): add R dependencies here
     }
-    val mainMethod = userClassLoader
-      .loadClass(args.userClass)
+    val mainMethod = userClassLoader.loadClass(args.userClass)
       .getMethod("main", classOf[Array[String]])
 
     val userThread = new Thread {

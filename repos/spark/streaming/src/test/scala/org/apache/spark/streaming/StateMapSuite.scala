@@ -127,9 +127,10 @@ class StateMapSuite extends SparkFunSuite {
         Set((1, 1000, 100), (2, 2000, 200), (3, 3000, 300), (4, 4000, 400)))
     assert(parentMap.getAll().toSet === Set((2, 200, 2)))
 
-    map.remove(
-      2
-    ) // remove item present in parent map, so that its not visible in child map
+    map
+      .remove(
+        2
+      ) // remove item present in parent map, so that its not visible in child map
 
     // Create child map and see availability of items
     val childMap = map.copy()
@@ -257,9 +258,9 @@ class StateMapSuite extends SparkFunSuite {
     val numOpsPerSet =
       3 // to test seq of ops like update -> remove -> update in same set
     val numTotalOps = numOpsPerSet * numSets
-    val numKeys = math
-      .pow(numTypeMapOps, numTotalOps)
-      .toInt // to get all combinations of ops
+    val numKeys =
+      math.pow(numTypeMapOps, numTotalOps)
+        .toInt // to get all combinations of ops
 
     val refMap = new mutable.HashMap[Int, (Int, Long)]()
     var prevSetRefMap: immutable.Map[Int, (Int, Long)] = null
@@ -278,8 +279,7 @@ class StateMapSuite extends SparkFunSuite {
           // This is similar to finding the nth bit value of a binary number
           // E.g.  nth bit from the right of any binary number B is [ B / (2 ^ (n - 1)) ] % 2
           val opCode =
-            (keyId / math
-              .pow(numTypeMapOps, numTotalOps - opId - 1)
+            (keyId / math.pow(numTypeMapOps, numTotalOps - opId - 1)
               .toInt) % numTypeMapOps
           opCode match {
             case 0 =>
@@ -381,14 +381,14 @@ class StateMapSuite extends SparkFunSuite {
 
       // Assert that get on every key returns the right value
       for (keyId <- refMapToTestWith.keys) {
-        assert(
-          mapToTest.get(keyId) === refMapToTestWith.get(keyId).map { _._1 })
+        assert(mapToTest.get(keyId) === refMapToTestWith.get(keyId).map {
+          _._1
+        })
       }
 
       // Assert that every time threshold returns the correct data
       for (t <- 0L to (time + 1)) {
-        val expectedRecords = refMapToTestWith.iterator
-          .filter { _._2._2 < t }
+        val expectedRecords = refMapToTestWith.iterator.filter { _._2._2 < t }
           .map { x => (x._1, x._2._1, x._2._2) }
         assert(mapToTest.getByTime(t).toSet === expectedRecords.toSet)
       }

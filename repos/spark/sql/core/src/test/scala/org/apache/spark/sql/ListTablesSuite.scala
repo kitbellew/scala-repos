@@ -39,8 +39,8 @@ class ListTablesSuite
   before { df.registerTempTable("ListTablesSuiteTable") }
 
   after {
-    sqlContext.sessionState.catalog.unregisterTable(TableIdentifier(
-      "ListTablesSuiteTable"))
+    sqlContext.sessionState.catalog
+      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
   }
 
   test("get all tables") {
@@ -52,12 +52,10 @@ class ListTablesSuite
       sql("SHOW tables").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
 
-    sqlContext.sessionState.catalog.unregisterTable(TableIdentifier(
-      "ListTablesSuiteTable"))
+    sqlContext.sessionState.catalog
+      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
     assert(
-      sqlContext
-        .tables()
-        .filter("tableName = 'ListTablesSuiteTable'")
+      sqlContext.tables().filter("tableName = 'ListTablesSuiteTable'")
         .count() === 0)
   }
 
@@ -71,12 +69,10 @@ class ListTablesSuite
       sql("show TABLES in DB").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
 
-    sqlContext.sessionState.catalog.unregisterTable(TableIdentifier(
-      "ListTablesSuiteTable"))
+    sqlContext.sessionState.catalog
+      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
     assert(
-      sqlContext
-        .tables()
-        .filter("tableName = 'ListTablesSuiteTable'")
+      sqlContext.tables().filter("tableName = 'ListTablesSuiteTable'")
         .count() === 0)
   }
 
@@ -95,9 +91,7 @@ class ListTablesSuite
             "SELECT isTemporary, tableName from tables WHERE tableName = 'ListTablesSuiteTable'"),
           Row(true, "ListTablesSuiteTable"))
         checkAnswer(
-          sqlContext
-            .tables()
-            .filter("tableName = 'tables'")
+          sqlContext.tables().filter("tableName = 'tables'")
             .select("tableName", "isTemporary"),
           Row("tables", true))
         sqlContext.dropTempTable("tables")

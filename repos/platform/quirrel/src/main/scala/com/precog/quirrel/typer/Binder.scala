@@ -276,10 +276,8 @@ trait Binder extends parser.AST {
   // TODO arity and types
   case class ReductionBinding(red: Reduction) extends BuiltInBinding {
     val name = Identifier(red.namespace, red.name)
-    override val toString = "<native: %s(%d)>".format(
-      red.name,
-      1
-    ) //assumes all reductions are arity 1
+    override val toString = "<native: %s(%d)>"
+      .format(red.name, 1) //assumes all reductions are arity 1
   }
 
   case object DistinctBinding extends BuiltInBinding {

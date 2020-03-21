@@ -37,9 +37,10 @@ class HTTPRequestServlet(
   }
 
   lazy val cookies: List[HTTPCookie] = {
-    req.getSession(
-      false
-    ) // do this to make sure we capture the JSESSIONID cookie
+    req
+      .getSession(
+        false
+      ) // do this to make sure we capture the JSESSIONID cookie
     (Box !! req.getCookies).map(_.toList.map(c =>
       HTTPCookie(
         c.getName,
@@ -55,8 +56,7 @@ class HTTPRequestServlet(
 
   def headers(name: String): List[String] =
     for {
-      h <- (Box !! req.getHeaders(name))
-        .asA[java.util.Enumeration[String]]
+      h <- (Box !! req.getHeaders(name)).asA[java.util.Enumeration[String]]
         .toList
       li <- enumToList[String](h) if null != li
     } yield li
@@ -90,8 +90,8 @@ class HTTPRequestServlet(
     }
 
   lazy val params: List[HTTPParam] = enumToList[String](
-    req.getParameterNames.asInstanceOf[java.util.Enumeration[String]]).map(n =>
-    HTTPParam(n, param(n)))
+    req.getParameterNames.asInstanceOf[java.util.Enumeration[String]])
+    .map(n => HTTPParam(n, param(n)))
 
   lazy val paramNames: List[String] = params map (_.name)
 
@@ -100,9 +100,9 @@ class HTTPRequestServlet(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] = headers find (
-    _.name equalsIgnoreCase "user-agent"
-  ) flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] =
+    headers find (_.name equalsIgnoreCase "user-agent") flatMap (_.values
+    .headOption)
 
   def remotePort: Int = req.getRemotePort
 
@@ -144,8 +144,8 @@ class HTTPRequestServlet(
     (new Iterator[ParamHolder] {
       val mimeUpload = (new ServletFileUpload)
       mimeUpload.setProgressListener(new ProgressListener {
-        lazy val progList: (Long, Long, Int) => Unit = S.session.flatMap(
-          _.progressListener) openOr LiftRules.progressListener
+        lazy val progList: (Long, Long, Int) => Unit = S.session
+          .flatMap(_.progressListener) openOr LiftRules.progressListener
 
         def update(a: Long, b: Long, c: Int) { progList(a, b, c) }
       })
@@ -169,16 +169,12 @@ class HTTPRequestServlet(
             val names: List[String] =
               if (headers eq null) Nil
               else
-                headers
-                  .getHeaderNames()
-                  .asInstanceOf[java.util.Iterator[String]]
-                  .toList
+                headers.getHeaderNames()
+                  .asInstanceOf[java.util.Iterator[String]].toList
             val map: Map[String, List[String]] = Map(
               names.map(n =>
-                n -> headers
-                  .getHeaders(n)
-                  .asInstanceOf[java.util.Iterator[String]]
-                  .toList): _*)
+                n -> headers.getHeaders(n)
+                  .asInstanceOf[java.util.Iterator[String]].toList): _*)
             LiftRules.withMimeHeaders(map) {
               LiftRules.handleMimeFile(
                 f.getFieldName,
@@ -195,22 +191,20 @@ class HTTPRequestServlet(
 
   def snapshot: HTTPRequest = new OfflineRequestSnapshot(this, provider)
 
-  private lazy val asyncProvider: Box[ServletAsyncProvider] =
-    LiftRules.theServletAsyncProvider.map(_(this))
+  private lazy val asyncProvider: Box[ServletAsyncProvider] = LiftRules
+    .theServletAsyncProvider.map(_(this))
 
   def resumeInfo: Option[(Req, LiftResponse)] =
     asyncProvider.flatMap(_.resumeInfo)
 
   def suspend(timeout: Long): RetryState.Value =
-    asyncProvider
-      .openOrThrowException(
-        "open_! is bad, but presumably, the suspendResume support was checked")
+    asyncProvider.openOrThrowException(
+      "open_! is bad, but presumably, the suspendResume support was checked")
       .suspend(timeout)
 
   def resume(what: (Req, LiftResponse)): Boolean =
-    asyncProvider
-      .openOrThrowException(
-        "open_! is bad, but presumably, the suspendResume support was checked")
+    asyncProvider.openOrThrowException(
+      "open_! is bad, but presumably, the suspendResume support was checked")
       .resume(what)
 
   lazy val suspendResumeSupport_? = {
@@ -283,10 +277,7 @@ private class OfflineRequestSnapshot(
 
   lazy val serverPort: Int = req.serverPort match {
     case 80 =>
-      headers("X-SSL")
-        .flatMap(Helpers.asBoolean _)
-        .filter(a => a)
-        .map(a => 443)
+      headers("X-SSL").flatMap(Helpers.asBoolean _).filter(a => a).map(a => 443)
         .headOption getOrElse 80
     case x => x
   }
@@ -322,8 +313,8 @@ private class OfflineRequestSnapshot(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] = headers find (
-    _.name equalsIgnoreCase "user-agent"
-  ) flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] =
+    headers find (_.name equalsIgnoreCase "user-agent") flatMap (_.values
+    .headOption)
 
 }

@@ -379,23 +379,21 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
 
     config.formElements.foreach {
       case FileElement(name, content, contentType, filename) =>
-        HttpPostRequestEncoderEx.addBodyFileUpload(
-          encoder,
-          dataFactory,
-          req.httpRequest)(
-          name,
-          filename.getOrElse(""),
-          BufChannelBuffer(content),
-          contentType.getOrElse(null),
-          false)
+        HttpPostRequestEncoderEx
+          .addBodyFileUpload(encoder, dataFactory, req.httpRequest)(
+            name,
+            filename.getOrElse(""),
+            BufChannelBuffer(content),
+            contentType.getOrElse(null),
+            false)
 
       case SimpleElement(name, value) => encoder.addBodyAttribute(name, value)
     }
     val encodedReq = encoder.finalizeRequest()
 
     if (encodedReq.isChunked) {
-      val encodings = encodedReq.headers.getAll(
-        HttpHeaders.Names.TRANSFER_ENCODING)
+      val encodings = encodedReq.headers
+        .getAll(HttpHeaders.Names.TRANSFER_ENCODING)
       encodings.remove(HttpHeaders.Values.CHUNKED)
       if (encodings.isEmpty)
         encodedReq.headers.remove(HttpHeaders.Names.TRANSFER_ENCODING)

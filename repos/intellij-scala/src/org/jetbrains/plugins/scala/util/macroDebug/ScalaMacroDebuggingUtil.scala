@@ -54,9 +54,8 @@ object ScalaMacroDebuggingUtil {
     import scala.collection.JavaConversions._
 
     if (!isEnabled) return
-    val file = VfsUtil.findFileByIoFile(
-      new File(fileName stripPrefix MACRO_SIGN_PREFIX),
-      true)
+    val file = VfsUtil
+      .findFileByIoFile(new File(fileName stripPrefix MACRO_SIGN_PREFIX), true)
 
     val dataStream = SYNTHETIC_SOURCE_ATTRIBUTE writeAttribute file
     code foreach (dataStream writeUTF _.stripPrefix(MACRO_SIGN_PREFIX))
@@ -73,8 +72,8 @@ object ScalaMacroDebuggingUtil {
     val canonicalPath = file.getVirtualFile.getCanonicalPath
 
     def createFile(): PsiFile = {
-      val dataStream =
-        SYNTHETIC_SOURCE_ATTRIBUTE readAttribute file.getVirtualFile
+      val dataStream = SYNTHETIC_SOURCE_ATTRIBUTE readAttribute file
+        .getVirtualFile
       if (dataStream == null) return null
 
       var line = dataStream readUTF ()
@@ -102,15 +101,13 @@ object ScalaMacroDebuggingUtil {
 
       dataStream.close()
 
-      val synFile = PsiFileFactory
-        .getInstance(file.getManager.getProject)
+      val synFile = PsiFileFactory.getInstance(file.getManager.getProject)
         .createFileFromText(
           "expanded_" + file.getName,
           ScalaFileType.SCALA_FILE_TYPE,
           linesRed.toString(),
           file.getModificationStamp,
-          true)
-        .asInstanceOf[ScalaFile]
+          true).asInstanceOf[ScalaFile]
 
       SOURCE_CACHE += (canonicalPath -> synFile)
       PREIMAGE_CACHE += (synFile -> file)
@@ -178,18 +175,13 @@ object ScalaMacroDebuggingUtil {
   }
 
   def expandMacros(project: Project) {
-    val sourceEditor =
-      FileEditorManager.getInstance(project).getSelectedTextEditor
-    val macroEditor = WorksheetEditorPrinter
-      .newMacrosheetUiFor(
-        sourceEditor,
-        PsiDocumentManager
-          .getInstance(project)
-          .getPsiFile(sourceEditor.getDocument)
-          .getVirtualFile)
-      .getViewerEditor
-    val macrosheetFile = PsiDocumentManager
-      .getInstance(project)
+    val sourceEditor = FileEditorManager.getInstance(project)
+      .getSelectedTextEditor
+    val macroEditor = WorksheetEditorPrinter.newMacrosheetUiFor(
+      sourceEditor,
+      PsiDocumentManager.getInstance(project)
+        .getPsiFile(sourceEditor.getDocument).getVirtualFile).getViewerEditor
+    val macrosheetFile = PsiDocumentManager.getInstance(project)
       .getPsiFile(macroEditor.getDocument)
 
     copyTextBetweenEditors(sourceEditor, macroEditor, project)
@@ -197,8 +189,8 @@ object ScalaMacroDebuggingUtil {
     for (elt <- macrosToExpand.toList.sortWith((a, b) =>
            a.getTextOffset > b.getTextOffset)) {
       var macroCall = macrosheetFile.findElementAt(elt.getTextOffset)
-      while (macroCall != null && !ScalaMacroDebuggingUtil.isMacroCall(
-               macroCall)) { macroCall = macroCall.getParent }
+      while (macroCall != null && !ScalaMacroDebuggingUtil
+               .isMacroCall(macroCall)) { macroCall = macroCall.getParent }
       if (macroCall != null) {
         //        extensions.inWriteAction {
         WriteCommandAction.runWriteCommandAction(
@@ -218,8 +210,7 @@ object ScalaMacroDebuggingUtil {
                   PsiManager.getInstance(project))
               var statement = macroCall.getParent.addAfter(expansion, macroCall)
               macroCall.delete()
-              statement = CodeStyleManager
-                .getInstance(project)
+              statement = CodeStyleManager.getInstance(project)
                 .reformat(statement)
             }
           }

@@ -58,12 +58,11 @@ private[spark] class TaskResultGetter(
       override def run(): Unit =
         Utils.logUncaughtExceptions {
           try {
-            val (result, size) = serializer
-              .get()
+            val (result, size) = serializer.get()
               .deserialize[TaskResult[_]](serializedData) match {
               case directResult: DirectTaskResult[_] =>
-                if (!taskSetManager.canFetchMoreResults(
-                      serializedData.limit())) { return }
+                if (!taskSetManager
+                      .canFetchMoreResults(serializedData.limit())) { return }
                 // deserialize "value" without holding any lock so that it won't block other threads.
                 // We should call it here, so that when it's called again in
                 // "TaskSetManager.handleSuccessfulTask", it does not need to deserialize the value.
@@ -77,8 +76,8 @@ private[spark] class TaskResultGetter(
                 }
                 logDebug("Fetching indirect task result for TID %s".format(tid))
                 scheduler.handleTaskGettingResult(taskSetManager, tid)
-                val serializedTaskResult = sparkEnv.blockManager.getRemoteBytes(
-                  blockId)
+                val serializedTaskResult = sparkEnv.blockManager
+                  .getRemoteBytes(blockId)
                 if (!serializedTaskResult.isDefined) {
                   /* We won't be able to get the task result if the machine that ran the task failed
                    * between when the task ended and when we tried to fetch the result, or if the
@@ -90,8 +89,7 @@ private[spark] class TaskResultGetter(
                     TaskResultLost)
                   return
                 }
-                val deserializedResult = serializer
-                  .get()
+                val deserializedResult = serializer.get()
                   .deserialize[DirectTaskResult[_]](
                     serializedTaskResult.get.toByteBuffer)
                 sparkEnv.blockManager.master.removeBlock(blockId)
@@ -118,8 +116,8 @@ private[spark] class TaskResultGetter(
             // Matching NonFatal so we don't catch the ControlThrowable from the "return" above.
             case NonFatal(ex) =>
               logError("Exception while getting task result", ex)
-              taskSetManager.abort(
-                "Exception while getting task result: %s".format(ex))
+              taskSetManager
+                .abort("Exception while getting task result: %s".format(ex))
           }
         }
     })
@@ -138,8 +136,7 @@ private[spark] class TaskResultGetter(
             val loader = Utils.getContextOrSparkClassLoader
             try {
               if (serializedData != null && serializedData.limit() > 0) {
-                reason = serializer
-                  .get()
+                reason = serializer.get()
                   .deserialize[TaskEndReason](serializedData, loader)
               }
             } catch {

@@ -71,9 +71,8 @@ private[testutil] trait AbstractComparator extends Assertions {
       */
     private def findMethodWithManyArgs(argTypes: List[Class[_]])(
         scalaMethod: Method): Boolean =
-      (scalaMethod.getParameterTypes.length == argTypes.size) && (
-        scalaMethod.getParameterTypes.toList == argTypes
-      )
+      (scalaMethod.getParameterTypes.length == argTypes.size) && (scalaMethod
+        .getParameterTypes.toList == argTypes)
 
     /**
       *
@@ -123,9 +122,8 @@ private[testutil] trait AbstractComparator extends Assertions {
         pattern: String,
         parametersLength: Int,
         returnEvaluator: Class[_] => Boolean) =
-      m.getName.matches(pattern) && (
-        m.getParameterTypes.length == parametersLength
-      ) && returnEvaluator(m.getReturnType)
+      m.getName.matches(pattern) && (m.getParameterTypes
+        .length == parametersLength) && returnEvaluator(m.getReturnType)
 
     private def isSetter(m: Method): Boolean =
       isValid(m, setterPattern, 1, (_ == JVoid))
@@ -186,16 +184,15 @@ private[testutil] trait AbstractComparator extends Assertions {
       case (0, _)    => ""
       case (1, true) => classParameterToString(m.getParameterTypes.last, true)
       case (_, true) =>
-        m.getParameterTypes.init
-          .map(classParameterToString(_))
+        m.getParameterTypes.init.map(classParameterToString(_))
           .mkString("", ", ", ", ") +
           classParameterToString(m.getParameterTypes.last, true)
-      case (_, false) =>
-        m.getParameterTypes.map(classParameterToString(_)).mkString(", ")
+      case (_, false) => m.getParameterTypes.map(classParameterToString(_))
+          .mkString(", ")
     }
 
-    classParameterToString(
-      m.getReturnType) + " " + m.getName + "(" + strParameters + ")"
+    classParameterToString(m.getReturnType) + " " + m
+      .getName + "(" + strParameters + ")"
   }
 
   private val nameComparator: (Method, Method) => Boolean = (m1, m2) =>
@@ -216,10 +213,7 @@ private[testutil] trait AbstractComparator extends Assertions {
           isPublicMethod(m) && staticIndicator(Modifier.isStatic(
             m.getModifiers)) && !isSpecialMethodName(m.getName))
 
-    cls.getDeclaredMethods
-      .filter(isAcceptable)
-      .sortWith(nameComparator)
-      .toList
+    cls.getDeclaredMethods.filter(isAcceptable).sortWith(nameComparator).toList
   }
 
   /**
@@ -271,10 +265,9 @@ private[testutil] trait AbstractComparator extends Assertions {
 
     assert(
       methodsNotFound.isEmpty,
-      "Missing %s Methods: ".format(
-        if (useStatic) "Static" else "Declared") + methodsNotFound
-        .map(methodToString)
-        .mkString(", "))
+      "Missing %s Methods: "
+        .format(if (useStatic) "Static" else "Declared") + methodsNotFound
+        .map(methodToString).mkString(", "))
   }
 
   //////////////////

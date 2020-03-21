@@ -122,8 +122,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         case fun: ScFunction =>
           (
             fun.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
-              val paramType: ScType = subst.subst(
-                p.getType(TypingContext.empty).getOrAny)
+              val paramType: ScType = subst
+                .subst(p.getType(TypingContext.empty).getOrAny)
               new Parameter(
                 p.name,
                 p.deprecatedName,
@@ -140,8 +140,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         case f: ScPrimaryConstructor =>
           (
             f.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
-              val paramType: ScType = subst.subst(
-                p.getType(TypingContext.empty).getOrAny)
+              val paramType: ScType = subst
+                .subst(p.getType(TypingContext.empty).getOrAny)
               new Parameter(
                 p.name,
                 p.deprecatedName,
@@ -214,20 +214,14 @@ class ScSimpleTypeElementImpl(node: ASTNode)
             constr match {
               case method: ScMethodLike =>
                 val params = method.getConstructorTypeParameters
-                  .map(_.typeParameters)
-                  .getOrElse(Seq.empty)
+                  .map(_.typeParameters).getOrElse(Seq.empty)
                 val subst = new ScSubstitutor(
-                  s.typeParameters
-                    .zip(params)
-                    .map {
-                      case (tpClass: ScTypeParam, tpConstr: ScTypeParam) =>
-                        (
-                          (tpClass.name, ScalaPsiUtil.getPsiElementId(tpClass)),
-                          new ScTypeParameterType(
-                            tpConstr,
-                            ScSubstitutor.empty))
-                    }
-                    .toMap,
+                  s.typeParameters.zip(params).map {
+                    case (tpClass: ScTypeParam, tpConstr: ScTypeParam) =>
+                      (
+                        (tpClass.name, ScalaPsiUtil.getPsiElementId(tpClass)),
+                        new ScTypeParameterType(tpConstr, ScSubstitutor.empty))
+                  }.toMap,
                   Map.empty,
                   None)
                 (params, subst)
@@ -324,8 +318,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                       false,
                       0)),
                     Seq(new Expression(
-                      InferUtil
-                        .undefineSubstitutor(nonValueType.typeParameters)
+                      InferUtil.undefineSubstitutor(nonValueType.typeParameters)
                         .subst(res.inferValueType))),
                     nonValueType.typeParameters,
                     shouldUndefineParameters = false,
@@ -481,9 +474,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 (Success(parameterized, Some(this)), ss)
               case _ =>
                 (
-                  ScSimpleTypeElementImpl.calculateReferenceType(
-                    ref,
-                    shapesOnly = false),
+                  ScSimpleTypeElementImpl
+                    .calculateReferenceType(ref, shapesOnly = false),
                   ScSubstitutor.empty)
             }
             updateImplicitsWithoutLocalTypeInference(tp, ss)
@@ -504,9 +496,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 (Success(parameterized, Some(this)), ss)
               case _ =>
                 (
-                  ScSimpleTypeElementImpl.calculateReferenceType(
-                    ref,
-                    shapesOnly = false),
+                  ScSimpleTypeElementImpl
+                    .calculateReferenceType(ref, shapesOnly = false),
                   ScSubstitutor.empty)
             }
             updateImplicitsWithoutLocalTypeInference(result, ss)
@@ -520,15 +511,13 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   typeForConstructor(ref, method, subst, r.getActualElement),
                   Some(this))
               case _ =>
-                ScSimpleTypeElementImpl.calculateReferenceType(
-                  ref,
-                  shapesOnly = false)
+                ScSimpleTypeElementImpl
+                  .calculateReferenceType(ref, shapesOnly = false)
             }
         }
       case None =>
-        ScSimpleTypeElementImpl.calculateReferenceType(
-          pathElement,
-          shapesOnly = false)
+        ScSimpleTypeElementImpl
+          .calculateReferenceType(pathElement, shapesOnly = false)
     }
   }
 
@@ -574,21 +563,27 @@ object ScSimpleTypeElementImpl {
                                                    r @ ScalaResolveResult(
                                                      to: ScTypeParametersOwner,
                                                      subst: ScSubstitutor))
-                                                 if to.isInstanceOf[
-                                                   PsiNamedElement] &&
-                                                   (to.typeParameters.isEmpty || ref.getContext
-                                                     .isInstanceOf[ScParameterizedTypeElement]) =>
-                                               Some(r)
+                                                 if to
+                                                   .isInstanceOf[
+                                                     PsiNamedElement] &&
+                                                   (
+                                                     to.typeParameters
+                                                       .isEmpty || ref.getContext
+                                                       .isInstanceOf[ScParameterizedTypeElement]
+                                                   ) => Some(r)
                                              case Array(
                                                    r @ ScalaResolveResult(
                                                      to: PsiTypeParameterListOwner,
                                                      subst: ScSubstitutor))
-                                                 if to.isInstanceOf[
-                                                   PsiNamedElement] &&
-                                                   (to.getTypeParameters.isEmpty || ref.getContext
-                                                     .isInstanceOf[ScParameterizedTypeElement]) =>
-                                               Some(r)
-                                             case _ => ref.bind()
+                                                 if to
+                                                   .isInstanceOf[
+                                                     PsiNamedElement] &&
+                                                   (
+                                                     to.getTypeParameters
+                                                       .isEmpty || ref.getContext
+                                                       .isInstanceOf[ScParameterizedTypeElement]
+                                                   ) => Some(r)
+                                             case _  => ref.bind()
                                            }
                                          } else ref.bind()
                                        } else {

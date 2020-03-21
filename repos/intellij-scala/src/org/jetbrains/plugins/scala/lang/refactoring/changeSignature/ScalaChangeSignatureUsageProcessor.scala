@@ -72,9 +72,9 @@ class ScalaChangeSignatureUsageProcessor
           case _ => Nil
         }
 
-        val overriders =
-          OverridingMethodsSearch.search(method).findAll.asScala.toSeq ++
-            ScalaOverridingMemberSearcher.search(method).toSeq
+        val overriders = OverridingMethodsSearch.search(method).findAll.asScala
+          .toSeq ++
+          ScalaOverridingMemberSearcher.search(method).toSeq
         val methods = (method +: overriders ++: synthetics).map {
           case isWrapper(m) => m
           case other        => other
@@ -143,10 +143,8 @@ class ScalaChangeSignatureUsageProcessor
               element.getParent.addAfter(newElement, element)
               element.delete()
             case _: ScVariableDeclaration | _: ScValueDeclaration =>
-              val newElement = ScalaPsiElementFactory.createDeclarationFromText(
-                text,
-                element.getContext,
-                element)
+              val newElement = ScalaPsiElementFactory
+                .createDeclarationFromText(text, element.getContext, element)
               element.getParent.addAfter(newElement, element)
               element.delete()
             case _ =>
@@ -178,10 +176,8 @@ class ScalaChangeSignatureUsageProcessor
       } {
         val exprsToAdd = exprs.take(numberOfParamsToAdd(idx))
         val text = defaultArg.getMethodExpression.getText + exprsToAdd
-          .map(_.getText)
-          .mkString("(", ", ", ")")
-        val newDefaultArg = JavaPsiFacade
-          .getElementFactory(call.getProject)
+          .map(_.getText).mkString("(", ", ", ")")
+        val newDefaultArg = JavaPsiFacade.getElementFactory(call.getProject)
           .createExpressionFromText(text, defaultArg.getContext)
         defaultArg.replace(newDefaultArg)
       }
@@ -226,10 +222,8 @@ class ScalaChangeSignatureUsageProcessor
       case ScalaNamedElementUsageInfo(u: OverriderValUsageInfo) =>
         ConflictsUtil.addBindingPatternConflicts(u.namedElement, info, result)
       case javaOverriderUsage: OverriderUsageInfo =>
-        ConflictsUtil.addJavaOverriderConflicts(
-          javaOverriderUsage,
-          info,
-          result)
+        ConflictsUtil
+          .addJavaOverriderConflicts(javaOverriderUsage, info, result)
       case p: PatternUsageInfo =>
         ConflictsUtil.addUnapplyUsagesConflicts(p, info, result)
       case _ =>
@@ -328,7 +322,8 @@ class ScalaChangeSignatureUsageProcessor
       if parameters.length > oldIdx
       param = parameters(oldIdx)
       newName = paramInfo.getName
-      if oldName == param.name /*skip overriders with other param name*/ && newName != param.name
+      if oldName == param
+        .name /*skip overriders with other param name*/ && newName != param.name
     } { addParameterUsages(param, oldIdx, newName, results) }
   }
 

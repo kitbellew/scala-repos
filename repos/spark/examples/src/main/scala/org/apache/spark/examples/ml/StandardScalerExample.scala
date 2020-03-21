@@ -31,15 +31,11 @@ object StandardScalerExample {
     val sqlContext = new SQLContext(sc)
 
     // $example on$
-    val dataFrame = sqlContext.read
-      .format("libsvm")
+    val dataFrame = sqlContext.read.format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 
-    val scaler = new StandardScaler()
-      .setInputCol("features")
-      .setOutputCol("scaledFeatures")
-      .setWithStd(true)
-      .setWithMean(false)
+    val scaler = new StandardScaler().setInputCol("features")
+      .setOutputCol("scaledFeatures").setWithStd(true).setWithMean(false)
 
     // Compute summary statistics by fitting the StandardScaler.
     val scalerModel = scaler.fit(dataFrame)

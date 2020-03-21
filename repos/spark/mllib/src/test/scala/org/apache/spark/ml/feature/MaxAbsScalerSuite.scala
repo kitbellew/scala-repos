@@ -39,32 +39,25 @@ class MaxAbsScalerSuite
       Vectors.sparse(3, Array(0, 2), Array(-1, -1)),
       Vectors.sparse(3, Array(0), Array(-0.75)))
 
-    val df = sqlContext
-      .createDataFrame(data.zip(expected))
+    val df = sqlContext.createDataFrame(data.zip(expected))
       .toDF("features", "expected")
-    val scaler = new MaxAbsScaler()
-      .setInputCol("features")
+    val scaler = new MaxAbsScaler().setInputCol("features")
       .setOutputCol("scaled")
 
     val model = scaler.fit(df)
-    model
-      .transform(df)
-      .select("expected", "scaled")
-      .collect()
-      .foreach {
-        case Row(vector1: Vector, vector2: Vector) =>
-          assert(
-            vector1.equals(vector2),
-            s"MaxAbsScaler ut error: $vector2 should be $vector1")
-      }
+    model.transform(df).select("expected", "scaled").collect().foreach {
+      case Row(vector1: Vector, vector2: Vector) =>
+        assert(
+          vector1.equals(vector2),
+          s"MaxAbsScaler ut error: $vector2 should be $vector1")
+    }
 
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(model)
   }
 
   test("MaxAbsScaler read/write") {
-    val t = new MaxAbsScaler()
-      .setInputCol("myInputCol")
+    val t = new MaxAbsScaler().setInputCol("myInputCol")
       .setOutputCol("myOutputCol")
     testDefaultReadWrite(t)
   }
@@ -72,8 +65,7 @@ class MaxAbsScalerSuite
   test("MaxAbsScalerModel read/write") {
     val instance =
       new MaxAbsScalerModel("myMaxAbsScalerModel", Vectors.dense(1.0, 10.0))
-        .setInputCol("myInputCol")
-        .setOutputCol("myOutputCol")
+        .setInputCol("myInputCol").setOutputCol("myOutputCol")
     val newInstance = testDefaultReadWrite(instance)
     assert(newInstance.maxAbs === instance.maxAbs)
   }

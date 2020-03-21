@@ -71,8 +71,7 @@ private[reconcile] class OffersWantedForReconciliationActor(
         .collect { case StopApplication(app) if app.isResident => app }
 
       if (terminatedResidentApps.nonEmpty) {
-        val terminatedResidentAppsString = terminatedResidentApps
-          .map(_.id)
+        val terminatedResidentAppsString = terminatedResidentApps.map(_.id)
           .mkString(", ")
         self ! OffersWantedForReconciliationActor.RequestOffers(
           s"terminated resident app(s) $terminatedResidentAppsString")

@@ -9,9 +9,8 @@ import org.jetbrains.plugins.scala.annotator.{AnnotatorTestBase, Error, Message}
 class FinalClassInheritanceTest
     extends AnnotatorTestBase(FinalClassInheritance) {
   private val Message = "Illegal inheritance from final class (\\w+)".r
-  private val ValueClassMessage = ScalaBundle.message(
-    "illegal.inheritance.from.value.class",
-    "C")
+  private val ValueClassMessage = ScalaBundle
+    .message("illegal.inheritance.from.value.class", "C")
 
   def testOrdinaryClass(): Unit = {
     assertNothing(messages("class C; new C"))

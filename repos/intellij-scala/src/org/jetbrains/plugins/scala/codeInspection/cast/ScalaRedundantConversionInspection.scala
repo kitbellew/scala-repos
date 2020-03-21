@@ -25,8 +25,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 class ScalaRedundantConversionInspection
     extends AbstractInspection("Redundant conversion") {
   def actionFor(holder: ProblemsHolder) = {
-    case element @ ScReferenceExpression.withQualifier(
-          qualifier) && PsiReferenceEx.resolve(target) =>
+    case element @ ScReferenceExpression
+          .withQualifier(qualifier) && PsiReferenceEx.resolve(target) =>
       process(element, qualifier, target, qualifier.getTextLength, holder)
     case element @ ScPostfixExpr(
           operand,
@@ -53,9 +53,8 @@ class ScalaRedundantConversionInspection
       case f: PsiMethod
           if f.getName == "toString" &&
             f.getParameterList.getParametersCount == 0 &&
-            (
-              f.getTypeParameterList == null || f.getTypeParameterList.getTypeParameters.isEmpty
-            ) =>
+            (f.getTypeParameterList == null || f.getTypeParameterList
+              .getTypeParameters.isEmpty) =>
         for (leftType <- left.getType(TypingContext.empty)
              if leftType.canonicalText == "_root_.java.lang.String")
           registerProblem(element, left, "java.lang.String", offset, holder)
@@ -72,9 +71,8 @@ class ScalaRedundantConversionInspection
     val descriptor = {
       val range = new TextRange(offset, element.getTextLength)
 
-      val message = "Casting '%s' to '%s' is redundant".format(
-        left.getText,
-        conversionType)
+      val message = "Casting '%s' to '%s' is redundant"
+        .format(left.getText, conversionType)
 
       new ProblemDescriptorImpl(
         element,

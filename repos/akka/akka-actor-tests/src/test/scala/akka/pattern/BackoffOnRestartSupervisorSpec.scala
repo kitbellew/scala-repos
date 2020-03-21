@@ -44,16 +44,14 @@ class TestParentActor(probe: ActorRef, supervisorProps: Props) extends Actor {
 class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
 
   def supervisorProps(probeRef: ActorRef) = {
-    val options = Backoff
-      .onFailure(
-        TestActor.props(probeRef),
-        "someChildName",
-        200 millis,
-        10 seconds,
-        0.0)
-      .withSupervisorStrategy(OneForOneStrategy() {
-        case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
-      })
+    val options = Backoff.onFailure(
+      TestActor.props(probeRef),
+      "someChildName",
+      200 millis,
+      10 seconds,
+      0.0).withSupervisorStrategy(OneForOneStrategy() {
+      case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
+    })
     BackoffSupervisor.props(options)
   }
 
@@ -65,8 +63,8 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
 
   trait Setup2 {
     val probe = TestProbe()
-    val parent = system.actorOf(
-      TestParentActor.props(probe.ref, supervisorProps(probe.ref)))
+    val parent = system
+      .actorOf(TestParentActor.props(probe.ref, supervisorProps(probe.ref)))
     probe.expectMsg("STARTED")
     val child = probe.lastSender
   }
@@ -100,8 +98,8 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
         // Verify that we only have one child at this point by selecting all the children
         // under the supervisor and broadcasting to them.
         // If there exists more than one child, we will get more than one reply.
-        val supervisorChildSelection = system.actorSelection(
-          supervisor.path / "*")
+        val supervisorChildSelection = system
+          .actorSelection(supervisor.path / "*")
         supervisorChildSelection.tell("testmsg", probe.ref)
         probe.expectMsg("testmsg")
         probe.expectNoMsg
@@ -136,16 +134,14 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
 
     "accept commands while child is terminating" in {
       val postStopLatch = new CountDownLatch(1)
-      val options = Backoff
-        .onFailure(
-          Props(new SlowlyFailingActor(postStopLatch)),
-          "someChildName",
-          1 nanos,
-          1 nanos,
-          0.0)
-        .withSupervisorStrategy(OneForOneStrategy(loggingEnabled = false) {
-          case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
-        })
+      val options = Backoff.onFailure(
+        Props(new SlowlyFailingActor(postStopLatch)),
+        "someChildName",
+        1 nanos,
+        1 nanos,
+        0.0).withSupervisorStrategy(OneForOneStrategy(loggingEnabled = false) {
+        case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
+      })
       val supervisor = system.actorOf(BackoffSupervisor.props(options))
 
       supervisor ! BackoffSupervisor.GetCurrentChild

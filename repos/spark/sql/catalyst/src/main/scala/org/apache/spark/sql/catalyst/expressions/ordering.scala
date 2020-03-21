@@ -49,22 +49,16 @@ class InterpretedOrdering(ordering: Seq[SortOrder])
           case dt: AtomicType if order.direction == Descending =>
             dt.ordering.asInstanceOf[Ordering[Any]].reverse.compare(left, right)
           case a: ArrayType if order.direction == Ascending =>
-            a.interpretedOrdering
-              .asInstanceOf[Ordering[Any]]
+            a.interpretedOrdering.asInstanceOf[Ordering[Any]]
               .compare(left, right)
           case a: ArrayType if order.direction == Descending =>
-            a.interpretedOrdering
-              .asInstanceOf[Ordering[Any]]
-              .reverse
+            a.interpretedOrdering.asInstanceOf[Ordering[Any]].reverse
               .compare(left, right)
           case s: StructType if order.direction == Ascending =>
-            s.interpretedOrdering
-              .asInstanceOf[Ordering[Any]]
+            s.interpretedOrdering.asInstanceOf[Ordering[Any]]
               .compare(left, right)
           case s: StructType if order.direction == Descending =>
-            s.interpretedOrdering
-              .asInstanceOf[Ordering[Any]]
-              .reverse
+            s.interpretedOrdering.asInstanceOf[Ordering[Any]].reverse
               .compare(left, right)
           case other =>
             throw new IllegalArgumentException(

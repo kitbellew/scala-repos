@@ -30,11 +30,8 @@ class AppUpdateTest extends MarathonSpec {
         template: String): Unit = {
       val violations = validate(update)
       assert(violations.isFailure)
-      assert(
-        ValidationHelper
-          .getAllRuleConstrains(violations)
-          .exists(v =>
-            v.path.getOrElse(false) == path && v.message == template))
+      assert(ValidationHelper.getAllRuleConstrains(violations).exists(v =>
+        v.path.getOrElse(false) == path && v.message == template))
     }
 
     def shouldNotViolate(
@@ -43,10 +40,8 @@ class AppUpdateTest extends MarathonSpec {
         template: String): Unit = {
       val violations = validate(update)
       assert(
-        !ValidationHelper
-          .getAllRuleConstrains(violations)
-          .exists(v =>
-            v.path.getOrElse(false) == path && v.message == template))
+        !ValidationHelper.getAllRuleConstrains(violations).exists(v =>
+          v.path.getOrElse(false) == path && v.message == template))
     }
 
     val update = AppUpdate()
@@ -205,9 +200,8 @@ class AppUpdateTest extends MarathonSpec {
     assert(AppUpdate(version = Some(Timestamp.now())).onlyVersionOrIdSet)
 
     assert(
-      AppUpdate(
-        id = Some("foo".toPath),
-        version = Some(Timestamp.now())).onlyVersionOrIdSet)
+      AppUpdate(id = Some("foo".toPath), version = Some(Timestamp.now()))
+        .onlyVersionOrIdSet)
 
     intercept[Exception] {
       AppUpdate(cmd = Some("foo"), version = Some(Timestamp.now()))
@@ -222,8 +216,7 @@ class AppUpdateTest extends MarathonSpec {
     val unchanged = AppUpdate().apply(app).copy(versionInfo = app.versionInfo)
     assert(unchanged == app)
 
-    val changed = AppUpdate(acceptedResourceRoles = Some(Set("b")))
-      .apply(app)
+    val changed = AppUpdate(acceptedResourceRoles = Some(Set("b"))).apply(app)
       .copy(versionInfo = app.versionInfo)
     assert(changed == app.copy(acceptedResourceRoles = Some(Set("b"))))
   }

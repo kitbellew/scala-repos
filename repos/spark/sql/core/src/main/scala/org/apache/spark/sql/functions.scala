@@ -1166,9 +1166,7 @@ object functions {
     * @group normal_funcs
     */
   def expr(expr: String): Column = {
-    val parser = SQLContext
-      .getActive()
-      .map(_.sessionState.sqlParser)
+    val parser = SQLContext.getActive().map(_.sessionState.sqlParser)
       .getOrElse(new CatalystQl())
     Column(parser.parseExpression(expr))
   }
@@ -2658,8 +2656,8 @@ object functions {
     */
   def udf[RT: TypeTag, A1: TypeTag](
       f: Function1[A1, RT]): UserDefinedFunction = {
-    val inputTypes = Try(
-      ScalaReflection.schemaFor(typeTag[A1]).dataType :: Nil).toOption
+    val inputTypes = Try(ScalaReflection.schemaFor(typeTag[A1]).dataType :: Nil)
+      .toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -2677,8 +2675,7 @@ object functions {
       f: Function2[A1, A2, RT]): UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
-        .schemaFor(typeTag[A2])
-        .dataType :: Nil).toOption
+        .schemaFor(typeTag[A2]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -2696,10 +2693,8 @@ object functions {
       f: Function3[A1, A2, A3, RT]): UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
-        .schemaFor(typeTag[A2])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A3])
-        .dataType :: Nil).toOption
+        .schemaFor(typeTag[A2]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A3]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -2717,12 +2712,9 @@ object functions {
       f: Function4[A1, A2, A3, A4, RT]): UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
-        .schemaFor(typeTag[A2])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A3])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A4])
-        .dataType :: Nil).toOption
+        .schemaFor(typeTag[A2]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A3]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A4]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -2746,14 +2738,10 @@ object functions {
       f: Function5[A1, A2, A3, A4, A5, RT]): UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
-        .schemaFor(typeTag[A2])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A3])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A4])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A5])
-        .dataType :: Nil).toOption
+        .schemaFor(typeTag[A2]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A3]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A4]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A5]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -2778,16 +2766,11 @@ object functions {
       f: Function6[A1, A2, A3, A4, A5, A6, RT]): UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
-        .schemaFor(typeTag[A2])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A3])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A4])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A5])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A6])
-        .dataType :: Nil).toOption
+        .schemaFor(typeTag[A2]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A3]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A4]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A5]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A6]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -2813,18 +2796,12 @@ object functions {
       f: Function7[A1, A2, A3, A4, A5, A6, A7, RT]): UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
-        .schemaFor(typeTag[A2])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A3])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A4])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A5])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A6])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A7])
-        .dataType :: Nil).toOption
+        .schemaFor(typeTag[A2]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A3]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A4]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A5]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A6]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A7]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -2851,20 +2828,13 @@ object functions {
       f: Function8[A1, A2, A3, A4, A5, A6, A7, A8, RT]): UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
-        .schemaFor(typeTag[A2])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A3])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A4])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A5])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A6])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A7])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A8])
-        .dataType :: Nil).toOption
+        .schemaFor(typeTag[A2]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A3]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A4]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A5]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A6]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A7]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A8]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -2892,22 +2862,14 @@ object functions {
       : UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
-        .schemaFor(typeTag[A2])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A3])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A4])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A5])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A6])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A7])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A8])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A9])
-        .dataType :: Nil).toOption
+        .schemaFor(typeTag[A2]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A3]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A4]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A5]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A6]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A7]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A8]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A9]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,
@@ -2936,24 +2898,15 @@ object functions {
       : UserDefinedFunction = {
     val inputTypes = Try(
       ScalaReflection.schemaFor(typeTag[A1]).dataType :: ScalaReflection
-        .schemaFor(typeTag[A2])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A3])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A4])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A5])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A6])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A7])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A8])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A9])
-        .dataType :: ScalaReflection
-        .schemaFor(typeTag[A10])
-        .dataType :: Nil).toOption
+        .schemaFor(typeTag[A2]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A3]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A4]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A5]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A6]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A7]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A8]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A9]).dataType :: ScalaReflection
+        .schemaFor(typeTag[A10]).dataType :: Nil).toOption
     UserDefinedFunction(
       f,
       ScalaReflection.schemaFor(typeTag[RT]).dataType,

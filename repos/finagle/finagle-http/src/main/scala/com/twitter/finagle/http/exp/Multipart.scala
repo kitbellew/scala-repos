@@ -96,15 +96,13 @@ object Multipart {
 
     decoder.getBodyHttpDatas.asScala.foreach {
       case attr: multipart.Attribute =>
-        val buf = attrs.getOrElseUpdate(
-          attr.getName,
-          mutable.ListBuffer[String]())
+        val buf = attrs
+          .getOrElseUpdate(attr.getName, mutable.ListBuffer[String]())
         buf += attr.getValue
 
       case fu: multipart.FileUpload =>
-        val buf = files.getOrElseUpdate(
-          fu.getName,
-          mutable.ListBuffer[FileUpload]())
+        val buf = files
+          .getOrElseUpdate(fu.getName, mutable.ListBuffer[FileUpload]())
         if (fu.isInMemory) {
           buf += InMemoryFileUpload(
             Buf.ByteArray.Owned(fu.get()),

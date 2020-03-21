@@ -379,7 +379,8 @@ object Keys {
   // compile/doc keys
   val autoCompilerPlugins = SettingKey[Boolean](
     "auto-compiler-plugins",
-    "If true, enables automatically generating -Xplugin arguments to the compiler based on the classpath for the " + CompilerPlugin.name + " configuration.",
+    "If true, enables automatically generating -Xplugin arguments to the compiler based on the classpath for the " + CompilerPlugin
+      .name + " configuration.",
     AMinusSetting
   )
   val maxErrors = SettingKey[Int](
@@ -1141,7 +1142,8 @@ object Keys {
     ASetting)
   val artifacts = SettingKey[Seq[Artifact]](
     "artifacts",
-    "The artifact definitions for the current module.  Must be consistent with " + packagedArtifacts.key.label + ".",
+    "The artifact definitions for the current module.  Must be consistent with " + packagedArtifacts
+      .key.label + ".",
     BSetting)
   val projectDescriptors = TaskKey[Map[ModuleRevisionId, ModuleDescriptor]](
     "project-descriptors",

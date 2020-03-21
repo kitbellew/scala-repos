@@ -88,17 +88,15 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
       case JNothing | JNull if optional_? => setBox(Empty)
       case JArray(array) =>
         setBox(Full(
-          (array
-            .map {
-              case JsonObjectId(objectId) => objectId
-              case JsonRegex(regex)       => regex
-              case JsonUUID(uuid)         => uuid
-              case JsonDateTime(dt)
-                  if (mf.toString == "org.joda.time.DateTime") => dt
-              case JsonDate(date)                              => date
-              case other                                       => other.values
-            })
-            .asInstanceOf[MyType]))
+          (array.map {
+            case JsonObjectId(objectId) => objectId
+            case JsonRegex(regex)       => regex
+            case JsonUUID(uuid)         => uuid
+            case JsonDateTime(dt)
+                if (mf.toString == "org.joda.time.DateTime") => dt
+            case JsonDate(date)                              => date
+            case other                                       => other.values
+          }).asInstanceOf[MyType]))
       case other => setBox(FieldHelpers.expectedA("JArray", other))
     }
 
@@ -181,8 +179,7 @@ class MongoJsonObjectListField[OwnerType <: BsonRecord[
   override def setFromDBObject(dbo: DBObject): Box[List[JObjectType]] =
     setBox(Full(dbo.keySet.toList.map(k => {
       valueMeta.create(
-        JObjectParser
-          .serialize(dbo.get(k.toString))(owner.meta.formats)
+        JObjectParser.serialize(dbo.get(k.toString))(owner.meta.formats)
           .asInstanceOf[JObject])(owner.meta.formats)
     })))
 

@@ -37,8 +37,7 @@ object ContainerSerializer {
       case dv: DockerVolume => VolumeSerializer.toMesos(dv)
     }
     val builder = mesos.Protos.ContainerInfo.newBuilder
-      .setType(container.`type`)
-      .addAllVolumes(serializedVolumes.asJava)
+      .setType(container.`type`).addAllVolumes(serializedVolumes.asJava)
     container.docker.foreach { d =>
       builder.setDocker(DockerSerializer.toMesos(d))
     }
@@ -51,46 +50,31 @@ object VolumeSerializer {
   def toProto(volume: Volume): Protos.Volume =
     volume match {
       case p: PersistentVolume =>
-        Protos.Volume
-          .newBuilder()
-          .setContainerPath(p.containerPath)
+        Protos.Volume.newBuilder().setContainerPath(p.containerPath)
           .setPersistent(PersistentVolumeInfoSerializer.toProto(p.persistent))
-          .setMode(p.mode)
-          .build()
+          .setMode(p.mode).build()
 
       case d: DockerVolume =>
-        Protos.Volume
-          .newBuilder()
-          .setContainerPath(d.containerPath)
-          .setHostPath(d.hostPath)
-          .setMode(d.mode)
-          .build()
+        Protos.Volume.newBuilder().setContainerPath(d.containerPath)
+          .setHostPath(d.hostPath).setMode(d.mode).build()
     }
 
   /** Only DockerVolumes can be serialized into a Mesos Protobuf */
   def toMesos(volume: DockerVolume): mesos.Protos.Volume =
-    mesos.Protos.Volume.newBuilder
-      .setContainerPath(volume.containerPath)
-      .setHostPath(volume.hostPath)
-      .setMode(volume.mode)
-      .build
+    mesos.Protos.Volume.newBuilder.setContainerPath(volume.containerPath)
+      .setHostPath(volume.hostPath).setMode(volume.mode).build
 }
 
 object PersistentVolumeInfoSerializer {
   def toProto(info: PersistentVolumeInfo): Protos.Volume.PersistentVolumeInfo =
-    Protos.Volume.PersistentVolumeInfo
-      .newBuilder()
-      .setSize(info.size)
-      .build()
+    Protos.Volume.PersistentVolumeInfo.newBuilder().setSize(info.size).build()
 }
 
 object DockerSerializer {
   def toProto(
       docker: Container.Docker): Protos.ExtendedContainerInfo.DockerInfo = {
     val builder = Protos.ExtendedContainerInfo.DockerInfo.newBuilder
-      .setImage(docker.image)
-      .setPrivileged(docker.privileged)
-      .addAllParameters(
+      .setImage(docker.image).setPrivileged(docker.privileged).addAllParameters(
         docker.parameters.map(ParameterSerializer.toMesos).asJava)
       .setForcePullImage(docker.forcePullImage)
 
@@ -146,18 +130,14 @@ object PortMappingSerializer {
   def toProto(mapping: Container.Docker.PortMapping)
       : Protos.ExtendedContainerInfo.DockerInfo.PortMapping = {
     val builder = Protos.ExtendedContainerInfo.DockerInfo.PortMapping.newBuilder
-      .setContainerPort(mapping.containerPort)
-      .setHostPort(mapping.hostPort)
-      .setProtocol(mapping.protocol)
-      .setServicePort(mapping.servicePort)
+      .setContainerPort(mapping.containerPort).setHostPort(mapping.hostPort)
+      .setProtocol(mapping.protocol).setServicePort(mapping.servicePort)
 
     mapping.name.foreach(builder.setName)
-    mapping.labels
-      .map {
-        case (key, value) =>
-          mesos.Protos.Label.newBuilder.setKey(key).setValue(value).build
-      }
-      .foreach(builder.addLabels)
+    mapping.labels.map {
+      case (key, value) =>
+        mesos.Protos.Label.newBuilder.setKey(key).setValue(value).build
+    }.foreach(builder.addLabels)
 
     builder.build
   }
@@ -176,19 +156,15 @@ object PortMappingSerializer {
   def toMesos(mapping: Container.Docker.PortMapping)
       : mesos.Protos.ContainerInfo.DockerInfo.PortMapping = {
     mesos.Protos.ContainerInfo.DockerInfo.PortMapping.newBuilder
-      .setContainerPort(mapping.containerPort)
-      .setHostPort(mapping.hostPort)
-      .setProtocol(mapping.protocol)
-      .build
+      .setContainerPort(mapping.containerPort).setHostPort(mapping.hostPort)
+      .setProtocol(mapping.protocol).build
   }
 
 }
 
 object ParameterSerializer {
   def toMesos(param: Parameter): mesos.Protos.Parameter =
-    mesos.Protos.Parameter.newBuilder
-      .setKey(param.key)
-      .setValue(param.value)
+    mesos.Protos.Parameter.newBuilder.setKey(param.key).setValue(param.value)
       .build
 
 }

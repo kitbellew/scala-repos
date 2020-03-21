@@ -40,8 +40,8 @@ class GangliaSink(
   val GANGLIA_DEFAULT_UNIT: TimeUnit = TimeUnit.SECONDS
 
   val GANGLIA_KEY_MODE = "mode"
-  val GANGLIA_DEFAULT_MODE: UDPAddressingMode =
-    GMetric.UDPAddressingMode.MULTICAST
+  val GANGLIA_DEFAULT_MODE: UDPAddressingMode = GMetric.UDPAddressingMode
+    .MULTICAST
 
   // TTL for multicast messages. If listeners are X hops away in network, must be at least X.
   val GANGLIA_KEY_TTL = "ttl"
@@ -63,26 +63,21 @@ class GangliaSink(
 
   val host = propertyToOption(GANGLIA_KEY_HOST).get
   val port = propertyToOption(GANGLIA_KEY_PORT).get.toInt
-  val ttl = propertyToOption(GANGLIA_KEY_TTL)
-    .map(_.toInt)
+  val ttl = propertyToOption(GANGLIA_KEY_TTL).map(_.toInt)
     .getOrElse(GANGLIA_DEFAULT_TTL)
   val mode: UDPAddressingMode = propertyToOption(GANGLIA_KEY_MODE)
     .map(u => GMetric.UDPAddressingMode.valueOf(u.toUpperCase))
     .getOrElse(GANGLIA_DEFAULT_MODE)
-  val pollPeriod = propertyToOption(GANGLIA_KEY_PERIOD)
-    .map(_.toInt)
+  val pollPeriod = propertyToOption(GANGLIA_KEY_PERIOD).map(_.toInt)
     .getOrElse(GANGLIA_DEFAULT_PERIOD)
   val pollUnit: TimeUnit = propertyToOption(GANGLIA_KEY_UNIT)
-    .map(u => TimeUnit.valueOf(u.toUpperCase))
-    .getOrElse(GANGLIA_DEFAULT_UNIT)
+    .map(u => TimeUnit.valueOf(u.toUpperCase)).getOrElse(GANGLIA_DEFAULT_UNIT)
 
   MetricsSystem.checkMinimalPollingPeriod(pollUnit, pollPeriod)
 
   val ganglia = new GMetric(host, port, mode, ttl)
-  val reporter: GangliaReporter = GangliaReporter
-    .forRegistry(registry)
-    .convertDurationsTo(TimeUnit.MILLISECONDS)
-    .convertRatesTo(TimeUnit.SECONDS)
+  val reporter: GangliaReporter = GangliaReporter.forRegistry(registry)
+    .convertDurationsTo(TimeUnit.MILLISECONDS).convertRatesTo(TimeUnit.SECONDS)
     .build(ganglia)
 
   override def start() { reporter.start(pollPeriod, pollUnit) }

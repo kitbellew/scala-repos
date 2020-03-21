@@ -18,8 +18,8 @@ object FileUtils {
     def isClass: Boolean = !file.isDirectory && file.hasExtension("class")
 
     def isScalaOrJavaSource: Boolean =
-      !file.isDirectory && (file.hasExtension("scala") || file.hasExtension(
-        "java"))
+      !file.isDirectory && (file.hasExtension("scala") || file
+        .hasExtension("java"))
 
     // TODO do we need to check also other files using ZipMagicNumber like in scala.tools.nsc.io.Jar.isJarOrZip?
     def isJarOrZip: Boolean =
@@ -60,10 +60,11 @@ object FileUtils {
     fileName.length > 6 && fileName.substring(fileName.length - 6) == ".scala"
 
   def stripClassExtension(fileName: String): String =
-    fileName.substring(
-      0,
-      fileName.length - 6
-    ) // equivalent of fileName.length - ".class".length
+    fileName
+      .substring(
+        0,
+        fileName.length - 6
+      ) // equivalent of fileName.length - ".class".length
 
   def stripJavaExtension(fileName: String): String =
     fileName.substring(0, fileName.length - 5)

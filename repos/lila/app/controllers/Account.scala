@@ -78,10 +78,8 @@ object Account extends LilaController {
           ok ← UserRepo.checkPasswordById(me.id, data.oldPasswd)
           _ ← ok ?? UserRepo.passwd(me.id, data.newPasswd1)
         } yield {
-          val content = html.account.passwd(
-            me,
-            forms.passwd.fill(data),
-            ok.some)
+          val content = html.account
+            .passwd(me, forms.passwd.fill(data), ok.some)
           ok.fold(Ok(content), BadRequest(content))
         }
       }
@@ -89,8 +87,7 @@ object Account extends LilaController {
 
   private def emailForm(user: UserModel) =
     UserRepo email user.id map { email =>
-      Env.security.forms
-        .changeEmail(user)
+      Env.security.forms.changeEmail(user)
         .fill(lila.security.DataForm.ChangeEmail(~email, ""))
     }
 
@@ -135,12 +132,12 @@ object Account extends LilaController {
       } { password =>
         UserRepo.checkPasswordById(me.id, password) flatMap {
           case false =>
-            BadRequest(
-              html.account.close(me, Env.security.forms.closeAccount)).fuccess
+            BadRequest(html.account.close(me, Env.security.forms.closeAccount))
+              .fuccess
           case true =>
             doClose(me) inject {
-              Redirect(
-                routes.User show me.username) withCookies LilaCookie.newSession
+              Redirect(routes.User show me.username) withCookies LilaCookie
+                .newSession
             }
         }
       }

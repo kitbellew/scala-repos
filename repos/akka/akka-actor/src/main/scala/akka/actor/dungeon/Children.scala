@@ -25,8 +25,7 @@ private[akka] trait Children {
     EmptyChildrenContainer
 
   def childrenRefs: ChildrenContainer =
-    Unsafe.instance
-      .getObjectVolatile(this, AbstractActorCell.childrenOffset)
+    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.childrenOffset)
       .asInstanceOf[ChildrenContainer]
 
   final def children: immutable.Iterable[ActorRef] = childrenRefs.children
@@ -142,17 +141,13 @@ private[akka] trait Children {
   @volatile
   private var _nextNameDoNotCallMeDirectly = 0L
   final protected def randomName(sb: java.lang.StringBuilder): String = {
-    val num = Unsafe.instance.getAndAddLong(
-      this,
-      AbstractActorCell.nextNameOffset,
-      1)
+    val num = Unsafe.instance
+      .getAndAddLong(this, AbstractActorCell.nextNameOffset, 1)
     Helpers.base64(num, sb)
   }
   final protected def randomName(): String = {
-    val num = Unsafe.instance.getAndAddLong(
-      this,
-      AbstractActorCell.nextNameOffset,
-      1)
+    val num = Unsafe.instance
+      .getAndAddLong(this, AbstractActorCell.nextNameOffset, 1)
     Helpers.base64(num)
   }
 
@@ -329,30 +324,29 @@ private[akka] trait Children {
       name: String,
       async: Boolean,
       systemService: Boolean): ActorRef = {
-    if (cell.system.settings.SerializeAllCreators && !systemService && props.deploy.scope != LocalScope)
-      try {
-        val ser = SerializationExtension(cell.system)
-        props.args forall (arg ⇒
-          arg == null ||
-            arg.isInstanceOf[NoSerializationVerificationNeeded] || {
-            val o = arg.asInstanceOf[AnyRef]
-            val serializer = ser.findSerializerFor(o)
-            val bytes = serializer.toBinary(o)
-            serializer match {
-              case ser2: SerializerWithStringManifest ⇒
-                val manifest = ser2.manifest(o)
-                ser
-                  .deserialize(bytes, serializer.identifier, manifest)
-                  .get != null
-              case _ ⇒ ser.deserialize(bytes, arg.getClass).get != null
-            }
-          })
-      } catch {
-        case NonFatal(e) ⇒
-          throw new IllegalArgumentException(
-            s"pre-creation serialization check failed at [${cell.self.path}/$name]",
-            e)
-      }
+    if (cell.system.settings.SerializeAllCreators && !systemService && props
+          .deploy.scope != LocalScope) try {
+      val ser = SerializationExtension(cell.system)
+      props.args forall (arg ⇒
+        arg == null ||
+          arg.isInstanceOf[NoSerializationVerificationNeeded] || {
+          val o = arg.asInstanceOf[AnyRef]
+          val serializer = ser.findSerializerFor(o)
+          val bytes = serializer.toBinary(o)
+          serializer match {
+            case ser2: SerializerWithStringManifest ⇒
+              val manifest = ser2.manifest(o)
+              ser.deserialize(bytes, serializer.identifier, manifest)
+                .get != null
+            case _ ⇒ ser.deserialize(bytes, arg.getClass).get != null
+          }
+        })
+    } catch {
+      case NonFatal(e) ⇒
+        throw new IllegalArgumentException(
+          s"pre-creation serialization check failed at [${cell.self.path}/$name]",
+          e)
+    }
     /*
      * in case we are currently terminating, fail external attachChild requests
      * (internal calls cannot happen anyway because we are suspended)

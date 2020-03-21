@@ -65,8 +65,8 @@ class PartitionDataSend(
   private val messageSize = partitionData.messages.sizeInBytes
   private var messagesSentSize = 0
   private var pending = false
-  private val buffer = ByteBuffer.allocate(
-    4 /** partitionId **/ + FetchResponsePartitionData.headerSize)
+  private val buffer = ByteBuffer
+    .allocate(4 /** partitionId **/ + FetchResponsePartitionData.headerSize)
   buffer.putInt(partitionId)
   buffer.putShort(partitionData.error)
   buffer.putLong(partitionData.hw)
@@ -83,10 +83,8 @@ class PartitionDataSend(
     if (buffer.hasRemaining) written += channel.write(buffer)
     if (!buffer.hasRemaining) {
       if (messagesSentSize < messageSize) {
-        val bytesSent = partitionData.messages.writeTo(
-          channel,
-          messagesSentSize,
-          messageSize - messagesSentSize)
+        val bytesSent = partitionData.messages
+          .writeTo(channel, messagesSentSize, messageSize - messagesSentSize)
         messagesSentSize += bytesSent
         written += bytesSent
       }
@@ -123,8 +121,8 @@ case class TopicData(
     topic: String,
     partitionData: Map[Int, FetchResponsePartitionData]) {
   val sizeInBytes =
-    TopicData.headerSize(topic) + partitionData.values.foldLeft(0)(
-      _ + _.sizeInBytes + 4)
+    TopicData.headerSize(topic) + partitionData.values
+      .foldLeft(0)(_ + _.sizeInBytes + 4)
 
   val headerSize = TopicData.headerSize(topic)
 }
@@ -232,9 +230,8 @@ case class FetchResponse(
     case (topicAndPartition, fetchData) => topicAndPartition.topic
   }
   val headerSizeInBytes = FetchResponse.headerSize(requestVersion)
-  lazy val sizeInBytes = FetchResponse.responseSize(
-    dataGroupedByTopic,
-    requestVersion)
+  lazy val sizeInBytes = FetchResponse
+    .responseSize(dataGroupedByTopic, requestVersion)
 
   /*
    * Writes the header of the FetchResponse to the input buffer
@@ -303,8 +300,8 @@ class FetchResponseSend(val dest: String, val fetchResponse: FetchResponse)
   override def destination = dest
 
   // The throttleTimeSize will be 0 if the request was made from a client sending a V0 style request
-  private val buffer = ByteBuffer.allocate(
-    4 /* for size */ + fetchResponse.headerSizeInBytes)
+  private val buffer = ByteBuffer
+    .allocate(4 /* for size */ + fetchResponse.headerSizeInBytes)
   fetchResponse.writeHeaderTo(buffer)
   buffer.rewind()
 

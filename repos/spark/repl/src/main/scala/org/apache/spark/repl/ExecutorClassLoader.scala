@@ -64,9 +64,8 @@ class ExecutorClassLoader(
     case "spark"                  => getClassFileInputStreamFromSparkRPC
     case "http" | "https" | "ftp" => getClassFileInputStreamFromHttpServer
     case _ =>
-      val fileSystem = FileSystem.get(
-        uri,
-        SparkHadoopUtil.get.newConfiguration(conf))
+      val fileSystem = FileSystem
+        .get(uri, SparkHadoopUtil.get.newConfiguration(conf))
       getClassFileInputStreamFromFileSystem(fileSystem)
   }
 
@@ -80,8 +79,8 @@ class ExecutorClassLoader(
 
   override def findClass(name: String): Class[_] = {
     userClassPathFirst match {
-      case true =>
-        findClassLocally(name).getOrElse(parentLoader.loadClass(name))
+      case true => findClassLocally(name)
+          .getOrElse(parentLoader.loadClass(name))
       case false => {
         try { parentLoader.loadClass(name) }
         catch {
@@ -126,16 +125,13 @@ class ExecutorClassLoader(
     val url =
       if (SparkEnv.get.securityManager.isAuthenticationEnabled()) {
         val uri = new URI(classUri + "/" + urlEncode(pathInDirectory))
-        val newuri = Utils.constructURIForAuthentication(
-          uri,
-          SparkEnv.get.securityManager)
+        val newuri = Utils
+          .constructURIForAuthentication(uri, SparkEnv.get.securityManager)
         newuri.toURL
       } else { new URL(classUri + "/" + urlEncode(pathInDirectory)) }
-    val connection: HttpURLConnection = Utils
-      .setupSecureURLConnection(
-        url.openConnection(),
-        SparkEnv.get.securityManager)
-      .asInstanceOf[HttpURLConnection]
+    val connection: HttpURLConnection = Utils.setupSecureURLConnection(
+      url.openConnection(),
+      SparkEnv.get.securityManager).asInstanceOf[HttpURLConnection]
     // Set the connection timeouts (for testing purposes)
     if (httpUrlConnectionTimeoutMillis != -1) {
       connection.setConnectTimeout(httpUrlConnectionTimeoutMillis)

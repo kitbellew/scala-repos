@@ -29,8 +29,7 @@ class RecipeLoggingElements extends RecipeSpec {
 
       //#log-custom
       // customise log levels
-      mySource
-        .log("before-map")
+      mySource.log("before-map")
         .withAttributes(Attributes.logLevels(onElement = Logging.WarningLevel))
         .map(analyse)
 

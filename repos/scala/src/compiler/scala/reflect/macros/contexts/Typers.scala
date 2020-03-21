@@ -82,11 +82,8 @@ trait Typers {
       withMacrosDisabled: Boolean = false,
       pos: Position = enclosingPosition): Tree = {
     macroLogVerbose(
-      "inferring implicit view from %s to %s for %s, macros = %s".format(
-        from,
-        to,
-        tree,
-        !withMacrosDisabled))
+      "inferring implicit view from %s to %s for %s, macros = %s"
+        .format(from, to, tree, !withMacrosDisabled))
     val viewTpe = universe.appliedType(
       universe.definitions.FunctionClass(1).toTypeConstructor,
       List(from, to))

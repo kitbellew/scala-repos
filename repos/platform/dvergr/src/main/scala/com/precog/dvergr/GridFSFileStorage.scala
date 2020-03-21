@@ -85,9 +85,10 @@ trait GridFSFileStorage[M[+_]] extends FileStorage[M] {
 
   def save(file: String, data: FileData[M]): M[Unit] =
     M.point {
-      gridFS.remove(
-        file
-      ) // Ugly hack to get around Mongo not respecting new content-type.
+      gridFS
+        .remove(
+          file
+        ) // Ugly hack to get around Mongo not respecting new content-type.
       val inFile = gridFS.createFile(file)
       data.mimeType foreach { contentType =>
         inFile.setContentType(contentType.toString)

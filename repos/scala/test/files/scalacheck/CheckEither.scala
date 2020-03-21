@@ -53,8 +53,8 @@ object Test extends Properties("Either") {
     val prop_flatMapComposition = forAll((e: Either[Int, Int]) => {
       def f(x: Int) = if (x % 2 == 0) Left(x) else Right(x)
       def g(x: Int) = if (x % 7 == 0) Right(x) else Left(x)
-      e.left.flatMap(f(_)).left.flatMap(g(_)) == e.left.flatMap(
-        f(_).left.flatMap(g(_)))
+      e.left.flatMap(f(_)).left.flatMap(g(_)) == e.left
+        .flatMap(f(_).left.flatMap(g(_)))
     })
 
     val prop_mapIdentity = forAll((e: Either[Int, Int]) =>
@@ -110,8 +110,8 @@ object Test extends Properties("Either") {
     val prop_flatMapComposition = forAll((e: Either[Int, Int]) => {
       def f(x: Int) = if (x % 2 == 0) Left(x) else Right(x)
       def g(x: Int) = if (x % 7 == 0) Right(x) else Left(x)
-      e.right.flatMap(f(_)).right.flatMap(g(_)) == e.right.flatMap(
-        f(_).right.flatMap(g(_)))
+      e.right.flatMap(f(_)).right.flatMap(g(_)) == e.right
+        .flatMap(f(_).right.flatMap(g(_)))
     })
 
     val prop_mapIdentity = forAll((e: Either[Int, Int]) =>

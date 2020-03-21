@@ -29,8 +29,8 @@ private[finagle] object EndpointRecorder {
         dest match {
           case bound: Name.Bound =>
             val Label(client) = params[Label]
-            val BindingFactory
-              .BaseDtab(baseDtab) = params[BindingFactory.BaseDtab]
+            val BindingFactory.BaseDtab(baseDtab) = params[
+              BindingFactory.BaseDtab]
             new EndpointRecorder(
               next,
               EndpointRegistry.registry,

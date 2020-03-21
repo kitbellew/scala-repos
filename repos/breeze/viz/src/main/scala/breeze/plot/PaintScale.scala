@@ -69,9 +69,7 @@ object PaintScale {
     */
   def convertToColor(colorcode: String): java.awt.Color = {
     val rgbcsv = "(.*),(.*),(.*)".r
-    colorcode.toLowerCase
-      .replace(" ", "")
-      .replace("[", "")
+    colorcode.toLowerCase.replace(" ", "").replace("[", "")
       .replace("]", "") match {
       case "y" | "yellow"  => yellow
       case "m" | "magenta" => magenta

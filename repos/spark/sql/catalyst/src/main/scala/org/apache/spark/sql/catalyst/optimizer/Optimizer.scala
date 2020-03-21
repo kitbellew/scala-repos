@@ -210,7 +210,8 @@ object LimitPushDown extends Rule[LogicalPlan] {
           case LeftOuter  => join.copy(left = maybePushLimit(exp, left))
           case FullOuter => (left.maxRows, right.maxRows) match {
               case (None, None) =>
-                if (left.statistics.sizeInBytes >= right.statistics.sizeInBytes) {
+                if (left.statistics.sizeInBytes >= right.statistics
+                      .sizeInBytes) {
                   join.copy(left = maybePushLimit(exp, left))
                 } else { join.copy(right = maybePushLimit(exp, right)) }
               case (Some(_), Some(_)) => join
@@ -356,11 +357,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
           if (e.outputSet -- a.references).nonEmpty =>
         val newOutput = e.output.filter(a.references.contains(_))
         val newProjects = e.projections.map { proj =>
-          proj
-            .zip(e.output)
-            .filter { case (e, a) => newOutput.contains(a) }
-            .unzip
-            ._1
+          proj.zip(e.output).filter { case (e, a) => newOutput.contains(a) }
+            .unzip._1
         }
         a.copy(child = Expand(newProjects, newOutput, grandChild))
 
@@ -399,11 +397,9 @@ object ColumnPruning extends Rule[LogicalPlan] {
           val newOutput = prunedChild(firstChild, p.references).output
           // pruning the columns of all children based on the pruned first child.
           val newChildren = u.children.map { p =>
-            val selected = p.output.zipWithIndex
-              .filter {
-                case (a, i) => newOutput.contains(firstChild.output(i))
-              }
-              .map(_._1)
+            val selected = p.output.zipWithIndex.filter {
+              case (a, i) => newOutput.contains(firstChild.output(i))
+            }.map(_._1)
             Project(selected, p)
           }
           p.copy(child = u.withNewChildren(newChildren))
@@ -412,8 +408,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
       // Prune unnecessary window expressions
       case p @ Project(_, w: Window)
           if (w.windowOutputSet -- p.references).nonEmpty =>
-        p.copy(child = w.copy(windowExpressions = w.windowExpressions.filter(
-          p.references.contains)))
+        p.copy(child = w.copy(windowExpressions = w.windowExpressions
+          .filter(p.references.contains)))
 
       // Eliminate no-op Window
       case w: Window if w.windowExpressions.isEmpty => w.child
@@ -469,13 +465,12 @@ object CollapseProject extends Rule[LogicalPlan] {
           // eliminate it.
           // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
           // TODO: Fix TransformBase to avoid the cast below.
-          val substitutedProjection = projectList1
-            .map(_.transform { case a: Attribute => aliasMap.getOrElse(a, a) })
-            .asInstanceOf[Seq[NamedExpression]]
+          val substitutedProjection = projectList1.map(_.transform {
+            case a: Attribute => aliasMap.getOrElse(a, a)
+          }).asInstanceOf[Seq[NamedExpression]]
           // collapse 2 projects may introduce unnecessary Aliases, trim them here.
           val cleanedProjection = substitutedProjection.map(p =>
-            CleanupAliases
-              .trimNonTopLevelAliases(p)
+            CleanupAliases.trimNonTopLevelAliases(p)
               .asInstanceOf[NamedExpression])
           Project(cleanedProjection, child)
         }
@@ -503,13 +498,12 @@ object CollapseProject extends Rule[LogicalPlan] {
           // eliminate it.
           // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
           // TODO: Fix TransformBase to avoid the cast below.
-          val substitutedProjection = projectList1
-            .map(_.transform { case a: Attribute => aliasMap.getOrElse(a, a) })
-            .asInstanceOf[Seq[NamedExpression]]
+          val substitutedProjection = projectList1.map(_.transform {
+            case a: Attribute => aliasMap.getOrElse(a, a)
+          }).asInstanceOf[Seq[NamedExpression]]
           // collapse 2 projects may introduce unnecessary Aliases, trim them here.
           val cleanedProjection = substitutedProjection.map(p =>
-            CleanupAliases
-              .trimNonTopLevelAliases(p)
+            CleanupAliases.trimNonTopLevelAliases(p)
               .asInstanceOf[NamedExpression])
           agg.copy(aggregateExpressions = cleanedProjection)
         }
@@ -673,8 +667,8 @@ object InferFiltersFromConstraints
         // Only consider constraints that can be pushed down completely to either the left or the
         // right child
         val constraints = join.constraints.filter { c =>
-          c.references.subsetOf(left.outputSet) || c.references.subsetOf(
-            right.outputSet)
+          c.references.subsetOf(left.outputSet) || c.references
+            .subsetOf(right.outputSet)
         }
         // Remove those constraints that are already enforced by either the left or the right child
         val additionalConstraints =
@@ -968,7 +962,7 @@ object PushPredicateThroughProject
 
         val (deterministic, nondeterministic) = andConditions.partition(
           _.collect { case a: Attribute if aliasMap.contains(a) => aliasMap(a) }
-            .forall(_.deterministic))
+          .forall(_.deterministic))
 
         // If there is no nondeterministic conditions, push down the whole condition.
         if (nondeterministic.isEmpty) {
@@ -979,8 +973,7 @@ object PushPredicateThroughProject
           if (deterministic.isEmpty) { filter }
           else {
             // Push down the small conditions without nondeterministic expressions.
-            val pushedCondition = deterministic
-              .map(replaceAlias(_, aliasMap))
+            val pushedCondition = deterministic.map(replaceAlias(_, aliasMap))
               .reduce(And)
             Filter(
               nondeterministic.reduce(And),
@@ -1047,8 +1040,8 @@ object PushPredicateThroughAggregate
         val (pushDown, stayUp) = splitConjunctivePredicates(condition)
           .partition { cond =>
             val replaced = replaceAlias(cond, aliasMap)
-            replaced.references.subsetOf(
-              aggregate.child.outputSet) && replaced.deterministic
+            replaced.references.subsetOf(aggregate.child.outputSet) && replaced
+              .deterministic
           }
 
         if (pushDown.nonEmpty) {
@@ -1092,17 +1085,15 @@ object ReorderJoin extends Rule[LogicalPlan] with PredicateHelper {
       // find out the first join that have at least one join condition
       val conditionalJoin = rest.find { plan =>
         val refs = left.outputSet ++ plan.outputSet
-        conditions
-          .filterNot(canEvaluate(_, left))
-          .filterNot(canEvaluate(_, plan))
-          .exists(_.references.subsetOf(refs))
+        conditions.filterNot(canEvaluate(_, left))
+          .filterNot(canEvaluate(_, plan)).exists(_.references.subsetOf(refs))
       }
       // pick the next one if no condition left
       val right = conditionalJoin.getOrElse(rest.head)
 
       val joinedRefs = left.outputSet ++ right.outputSet
-      val (joinConditions, others) = conditions.partition(
-        _.references.subsetOf(joinedRefs))
+      val (joinConditions, others) = conditions
+        .partition(_.references.subsetOf(joinedRefs))
       val joined = Join(
         left,
         right,
@@ -1156,14 +1147,11 @@ object OuterJoinElimination extends Rule[LogicalPlan] with PredicateHelper {
       .filter(_.references.subsetOf(join.right.outputSet))
 
     val leftHasNonNullPredicate = leftConditions.exists(canFilterOutNull) ||
-      filter.constraints
-        .filter(_.isInstanceOf[IsNotNull])
+      filter.constraints.filter(_.isInstanceOf[IsNotNull])
         .exists(expr => join.left.outputSet.intersect(expr.references).nonEmpty)
     val rightHasNonNullPredicate = rightConditions.exists(canFilterOutNull) ||
-      filter.constraints
-        .filter(_.isInstanceOf[IsNotNull])
-        .exists(expr =>
-          join.right.outputSet.intersect(expr.references).nonEmpty)
+      filter.constraints.filter(_.isInstanceOf[IsNotNull]).exists(expr =>
+        join.right.outputSet.intersect(expr.references).nonEmpty)
 
     join.joinType match {
       case RightOuter if leftHasNonNullPredicate => Inner
@@ -1209,10 +1197,10 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
       condition: Seq[Expression],
       left: LogicalPlan,
       right: LogicalPlan) = {
-    val (leftEvaluateCondition, rest) = condition.partition(
-      _.references subsetOf left.outputSet)
-    val (rightEvaluateCondition, commonCondition) = rest.partition(
-      _.references subsetOf right.outputSet)
+    val (leftEvaluateCondition, rest) = condition
+      .partition(_.references subsetOf left.outputSet)
+    val (rightEvaluateCondition, commonCondition) = rest
+      .partition(_.references subsetOf right.outputSet)
 
     (leftEvaluateCondition, rightEvaluateCondition, commonCondition)
   }
@@ -1234,14 +1222,10 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
         joinType match {
           case Inner =>
             // push down the single side `where` condition into respective sides
-            val newLeft = leftFilterConditions
-              .reduceLeftOption(And)
-              .map(Filter(_, left))
-              .getOrElse(left)
-            val newRight = rightFilterConditions
-              .reduceLeftOption(And)
-              .map(Filter(_, right))
-              .getOrElse(right)
+            val newLeft = leftFilterConditions.reduceLeftOption(And)
+              .map(Filter(_, left)).getOrElse(left)
+            val newRight = rightFilterConditions.reduceLeftOption(And)
+              .map(Filter(_, right)).getOrElse(right)
             val newJoinCond = (commonFilterCondition ++ joinCondition)
               .reduceLeftOption(And)
 
@@ -1249,29 +1233,23 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
           case RightOuter =>
             // push down the right side only `where` condition
             val newLeft = left
-            val newRight = rightFilterConditions
-              .reduceLeftOption(And)
-              .map(Filter(_, right))
-              .getOrElse(right)
+            val newRight = rightFilterConditions.reduceLeftOption(And)
+              .map(Filter(_, right)).getOrElse(right)
             val newJoinCond = joinCondition
             val newJoin = Join(newLeft, newRight, RightOuter, newJoinCond)
 
-            (
-              leftFilterConditions ++ commonFilterCondition
-            ).reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
+            (leftFilterConditions ++ commonFilterCondition)
+              .reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
           case _ @(LeftOuter | LeftSemi) =>
             // push down the left side only `where` condition
-            val newLeft = leftFilterConditions
-              .reduceLeftOption(And)
-              .map(Filter(_, left))
-              .getOrElse(left)
+            val newLeft = leftFilterConditions.reduceLeftOption(And)
+              .map(Filter(_, left)).getOrElse(left)
             val newRight = right
             val newJoinCond = joinCondition
             val newJoin = Join(newLeft, newRight, joinType, newJoinCond)
 
-            (
-              rightFilterConditions ++ commonFilterCondition
-            ).reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
+            (rightFilterConditions ++ commonFilterCondition)
+              .reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
           case FullOuter       => f // DO Nothing for Full Outer Join
           case NaturalJoin(_)  => sys.error("Untransformed NaturalJoin node")
           case UsingJoin(_, _) => sys.error("Untransformed Using join node")
@@ -1288,23 +1266,17 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
         joinType match {
           case _ @(Inner | LeftSemi) =>
             // push down the single side only join filter for both sides sub queries
-            val newLeft = leftJoinConditions
-              .reduceLeftOption(And)
-              .map(Filter(_, left))
-              .getOrElse(left)
-            val newRight = rightJoinConditions
-              .reduceLeftOption(And)
-              .map(Filter(_, right))
-              .getOrElse(right)
+            val newLeft = leftJoinConditions.reduceLeftOption(And)
+              .map(Filter(_, left)).getOrElse(left)
+            val newRight = rightJoinConditions.reduceLeftOption(And)
+              .map(Filter(_, right)).getOrElse(right)
             val newJoinCond = commonJoinCondition.reduceLeftOption(And)
 
             Join(newLeft, newRight, joinType, newJoinCond)
           case RightOuter =>
             // push down the left side only join filter for left side sub query
-            val newLeft = leftJoinConditions
-              .reduceLeftOption(And)
-              .map(Filter(_, left))
-              .getOrElse(left)
+            val newLeft = leftJoinConditions.reduceLeftOption(And)
+              .map(Filter(_, left)).getOrElse(left)
             val newRight = right
             val newJoinCond = (rightJoinConditions ++ commonJoinCondition)
               .reduceLeftOption(And)
@@ -1313,10 +1285,8 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
           case LeftOuter =>
             // push down the right side only join filter for right sub query
             val newLeft = left
-            val newRight = rightJoinConditions
-              .reduceLeftOption(And)
-              .map(Filter(_, right))
-              .getOrElse(right)
+            val newRight = rightJoinConditions.reduceLeftOption(And)
+              .map(Filter(_, right)).getOrElse(right)
             val newJoinCond = (leftJoinConditions ++ commonJoinCondition)
               .reduceLeftOption(And)
 

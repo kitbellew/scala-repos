@@ -317,9 +317,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
 
       val in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
 
-      (intercept[java.lang.IllegalStateException] {
-        in.readObject
-      }).getMessage should ===(
+      (intercept[java.lang.IllegalStateException] { in.readObject })
+        .getMessage should ===(
         "Trying to deserialize a serialized ActorRef without an ActorSystem in scope." +
           " Use 'akka.serialization.Serialization.currentSystem.withValue(system) { ... }'")
     }
@@ -369,8 +368,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
     }
 
     "support advanced nested actorOfs" in {
-      val a = system.actorOf(Props(
-        new OuterActor(system.actorOf(Props(new InnerActor)))))
+      val a = system
+        .actorOf(Props(new OuterActor(system.actorOf(Props(new InnerActor)))))
       val inner = Await.result(a ? "innerself", timeout.duration)
 
       Await.result(a ? a, timeout.duration) should ===(a)

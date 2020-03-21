@@ -52,15 +52,14 @@ object PersistenceQueryDocSpec {
       with akka.persistence.query.scaladsl.AllPersistenceIdsQuery
       with akka.persistence.query.scaladsl.CurrentPersistenceIdsQuery {
 
-    private val refreshInterval: FiniteDuration =
-      config.getDuration("refresh-interval", MILLISECONDS).millis
+    private val refreshInterval: FiniteDuration = config
+      .getDuration("refresh-interval", MILLISECONDS).millis
 
     override def eventsByTag(
         tag: String,
         offset: Long = 0L): Source[EventEnvelope, NotUsed] = {
       val props = MyEventsByTagPublisher.props(tag, offset, refreshInterval)
-      Source
-        .actorPublisher[EventEnvelope](props)
+      Source.actorPublisher[EventEnvelope](props)
         .mapMaterializedValue(_ ⇒ NotUsed)
     }
 
@@ -159,8 +158,7 @@ object PersistenceQueryDocSpec {
       ReactiveStreamsCompatibleDBDriver.batchWriter
 
     // Using an example (Reactive Streams) Database driver
-    readJournal
-      .eventsByPersistenceId("user-1337")
+    readJournal.eventsByPersistenceId("user-1337")
       .map(envelope => envelope.event)
       .map(convertToReadSideTypes) // convert to datatype
       .grouped(20) // batch inserts into groups of 20
@@ -234,12 +232,11 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     //#events-by-tag
     // assuming journal is able to work with numeric offsets we can:
 
-    val blueThings: Source[EventEnvelope, NotUsed] = readJournal.eventsByTag(
-      "blue")
+    val blueThings: Source[EventEnvelope, NotUsed] = readJournal
+      .eventsByTag("blue")
 
     // find top 10 blue things:
-    val top10BlueThings: Future[Vector[Any]] = blueThings
-      .map(_.event)
+    val top10BlueThings: Future[Vector[Any]] = blueThings.map(_.event)
       .take(10) // cancels the query stream after pulling 10 elements
       .runFold(Vector.empty[Any])(_ :+ _)
 
@@ -253,17 +250,15 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     //#events-by-persistent-id
 
     //#advanced-journal-query-usage
-    val query: Source[RichEvent, QueryMetadata] = readJournal.byTagsWithMeta(
-      Set("red", "blue"))
+    val query: Source[RichEvent, QueryMetadata] = readJournal
+      .byTagsWithMeta(Set("red", "blue"))
 
-    query
-      .mapMaterializedValue { meta =>
-        println(
-          s"The query is: " +
-            s"ordered deterministically: ${meta.deterministicOrder}, " +
-            s"infinite: ${meta.infinite}")
-      }
-      .map { event => println(s"Event payload: ${event.payload}") }
+    query.mapMaterializedValue { meta =>
+      println(
+        s"The query is: " +
+          s"ordered deterministically: ${meta.deterministicOrder}, " +
+          s"infinite: ${meta.infinite}")
+    }.map { event => println(s"Event payload: ${event.payload}") }
       .runWith(Sink.ignore)
 
     //#advanced-journal-query-usage
@@ -291,12 +286,9 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     val writer = system.actorOf(writerProps, "bid-projection-writer")
 
     bidProjection.latestOffset.foreach { startFromOffset =>
-      readJournal
-        .eventsByTag("bid", startFromOffset)
-        .mapAsync(8) { envelope =>
-          (writer ? envelope.event).map(_ => envelope.offset)
-        }
-        .mapAsync(1) { offset => bidProjection.saveProgress(offset) }
+      readJournal.eventsByTag("bid", startFromOffset).mapAsync(8) { envelope =>
+        (writer ? envelope.event).map(_ => envelope.offset)
+      }.mapAsync(1) { offset => bidProjection.saveProgress(offset) }
         .runWith(Sink.ignore)
     }
     //#projection-into-different-store-actor-run
@@ -316,9 +308,7 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     //#projection-into-different-store-simple
     val store: ExampleStore = ???
 
-    readJournal
-      .eventsByTag("bid")
-      .mapAsync(1) { e => store.save(e) }
+    readJournal.eventsByTag("bid").mapAsync(1) { e => store.save(e) }
       .runWith(Sink.ignore)
     //#projection-into-different-store-simple
   }

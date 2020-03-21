@@ -97,11 +97,9 @@ trait DefaultWriteables extends LowPriorityWriteables {
     import java.net.URLEncoder
     Writeable(formData =>
       codec.encode(
-        formData
-          .map(item =>
-            item._2.map(c => item._1 + "=" + URLEncoder.encode(c, "UTF-8")))
-          .flatten
-          .mkString("&")))
+        formData.map(item =>
+          item._2.map(c => item._1 + "=" + URLEncoder.encode(c, "UTF-8")))
+          .flatten.mkString("&")))
   }
 
   /**

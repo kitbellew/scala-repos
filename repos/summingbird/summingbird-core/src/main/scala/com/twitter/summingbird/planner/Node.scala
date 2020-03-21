@@ -37,9 +37,9 @@ sealed trait Node[P <: Platform[P]] {
   def getName(dag: Dag[P]): String = dag.getNodeName(this)
 
   def collapseNamedNodes(sanitize: String => String): String = {
-    val membersCombined = members.reverse
-      .collect { case NamedProducer(_, n) => sanitize(n) }
-      .mkString(",")
+    val membersCombined = members.reverse.collect {
+      case NamedProducer(_, n) => sanitize(n)
+    }.mkString(",")
     if (membersCombined.size > 0) "|" + membersCombined + "|" else ""
   }
 
@@ -214,11 +214,9 @@ object Dag {
       // We visit every producer and connect the Node's represented by its dependant and dependancies.
       // Producers which live in the same node will result in a NOP in connect.
       stormNode.members.foldLeft(curDag) { (innerDag, dependantProducer) =>
-        Producer
-          .dependenciesOf(dependantProducer)
-          .foldLeft(innerDag) { (dag, dep) =>
-            dag.connect(dep, dependantProducer)
-          }
+        Producer.dependenciesOf(dependantProducer).foldLeft(innerDag) {
+          (dag, dep) => dag.connect(dep, dependantProducer)
+        }
       }
     }
 

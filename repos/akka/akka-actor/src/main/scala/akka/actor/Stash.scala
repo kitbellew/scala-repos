@@ -182,8 +182,8 @@ private[akka] trait StashSupport {
         s"Can't stash the same message $currMsg more than once")
     if (capacity <= 0 || theStash.size < capacity) theStash :+= currMsg
     else
-      throw new StashOverflowException(
-        s"Couldn't enqueue message ${currMsg.message.getClass.getName} from ${currMsg.sender} to stash of $self")
+      throw new StashOverflowException(s"Couldn't enqueue message ${currMsg
+        .message.getClass.getName} from ${currMsg.sender} to stash of $self")
   }
 
   /**
@@ -236,8 +236,8 @@ private[akka] trait StashSupport {
     */
   private[akka] def unstashAll(filterPredicate: Any ⇒ Boolean): Unit = {
     try {
-      val i = theStash.reverseIterator.filter(envelope ⇒
-        filterPredicate(envelope.message))
+      val i = theStash.reverseIterator
+        .filter(envelope ⇒ filterPredicate(envelope.message))
       while (i.hasNext) enqueueFirst(i.next())
     } finally { theStash = Vector.empty[Envelope] }
   }

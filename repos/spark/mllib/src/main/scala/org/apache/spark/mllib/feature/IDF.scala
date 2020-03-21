@@ -55,12 +55,10 @@ class IDF @Since("1.2.0") (@Since("1.2.0") val minDocFreq: Int) {
     */
   @Since("1.1.0")
   def fit(dataset: RDD[Vector]): IDFModel = {
-    val idf = dataset
-      .treeAggregate(
-        new IDF.DocumentFrequencyAggregator(minDocFreq = minDocFreq))(
-        seqOp = (df, v) => df.add(v),
-        combOp = (df1, df2) => df1.merge(df2))
-      .idf()
+    val idf = dataset.treeAggregate(
+      new IDF.DocumentFrequencyAggregator(minDocFreq = minDocFreq))(
+      seqOp = (df, v) => df.add(v),
+      combOp = (df1, df2) => df1.merge(df2)).idf()
     new IDFModel(idf)
   }
 
@@ -171,8 +169,8 @@ class IDFModel private[spark] (@Since("1.1.0") val idf: Vector)
   @Since("1.1.0")
   def transform(dataset: RDD[Vector]): RDD[Vector] = {
     val bcIdf = dataset.context.broadcast(idf)
-    dataset.mapPartitions(iter =>
-      iter.map(v => IDFModel.transform(bcIdf.value, v)))
+    dataset
+      .mapPartitions(iter => iter.map(v => IDFModel.transform(bcIdf.value, v)))
   }
 
   /**

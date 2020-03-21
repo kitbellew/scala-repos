@@ -58,8 +58,7 @@ object User extends LilaController {
               followable,
               relation,
               crosstable,
-              donor))
-              .withHeaders(CACHE_CONTROL -> "max-age=5")
+              donor)).withHeaders(CACHE_CONTROL -> "max-age=5")
         }
       }
     }
@@ -98,12 +97,10 @@ object User extends LilaController {
                 }
             }.map { status(_) }.mon(_.http.response.user.show.website),
             api = _ =>
-              userGames(u, filterOption, page)
-                .map {
-                  case (filterName, pag) =>
-                    Ok(Env.api.userGameApi.filter(filterName, pag))
-                }
-                .mon(_.http.response.user.show.mobile)
+              userGames(u, filterOption, page).map {
+                case (filterName, pag) =>
+                  Ok(Env.api.userGameApi.filter(filterName, pag))
+              }.mon(_.http.response.user.show.mobile)
           )
         else
           negotiate(
@@ -131,8 +128,8 @@ object User extends LilaController {
       }
       followable <- ctx.isAuth ?? { Env.pref.api followable u.id }
       blocked <- ctx.userId ?? { relationApi.fetchBlocks(u.id, _) }
-      searchForm = GameFilterMenu.searchForm(userGameSearch, filters.current)(
-        ctx.body)
+      searchForm = GameFilterMenu
+        .searchForm(userGameSearch, filters.current)(ctx.body)
     } yield html.user.show(
       u,
       info,
@@ -231,13 +228,8 @@ object User extends LilaController {
           Env.mod.logApi.userHistory(user.id) flatMap {
           case ((((email, spy), playerAggregateAssessment), history)) =>
             (Env.playban.api bans spy.usersSharingIp.map(_.id)) map { bans =>
-              html.user.mod(
-                user,
-                email,
-                spy,
-                playerAggregateAssessment,
-                bans,
-                history)
+              html.user
+                .mod(user, email, spy, playerAggregateAssessment, bans, history)
             }
         }
       }
@@ -298,8 +290,7 @@ object User extends LilaController {
 
   def autocomplete =
     Open { implicit ctx =>
-      get("term", ctx.req)
-        .filter(_.nonEmpty)
+      get("term", ctx.req).filter(_.nonEmpty)
         .fold(BadRequest("No search term provided").fuccess: Fu[Result]) {
           term => JsonOk(UserRepo usernamesLike term)
         }

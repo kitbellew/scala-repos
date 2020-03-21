@@ -45,8 +45,7 @@ import org.jetbrains.plugins.scala.lang.resolve.{
   */
 class SbtCompletionContributor extends ScalaCompletionContributor {
 
-  val afterInfixOperator = PlatformPatterns
-    .psiElement()
+  val afterInfixOperator = PlatformPatterns.psiElement()
     .withSuperParent(2, classOf[ScInfixExpr])
 
   extend(
@@ -124,14 +123,12 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
             case obj: ScObject
                 if isAccessible(obj) && ScalaPsiUtil.hasStablePath(obj) =>
               def fetchAndApply(element: ScTypedDefinition) {
-                val lookup = LookupElementManager
-                  .getLookupElement(
-                    new ScalaResolveResult(element),
-                    isClassName = true,
-                    isOverloadedForClassName = false,
-                    shouldImport = true,
-                    isInStableCodeReference = false)
-                  .head
+                val lookup = LookupElementManager.getLookupElement(
+                  new ScalaResolveResult(element),
+                  isClassName = true,
+                  isOverloadedForClassName = false,
+                  shouldImport = true,
+                  isInStableCodeReference = false).head
                 lookup.addLookupStrings(obj.name + "." + element.name)
                 applyVariant(lookup)
               }
@@ -163,9 +160,8 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                 if typed.getType().getOrAny.conforms(expectedType) =>
               variant.isLocalVariable =
                 (typed.isVar || typed.isVal) &&
-                  (typed.containingFile exists (
-                    _.getName == parameters.getOriginalFile.getName
-                  ))
+                  (typed.containingFile exists (_.getName == parameters
+                    .getOriginalFile.getName))
               apply(variant)
             case _ => // do nothing
           }
@@ -182,19 +178,17 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                 ScType.extractClass(proj) foreach collectAndApplyVariants
               case _ => // do nothing
             }
-            ScalaPsiUtil.getCompanionModule(
-              clazz) foreach collectAndApplyVariants
+            ScalaPsiUtil
+              .getCompanionModule(clazz) foreach collectAndApplyVariants
           case Some(p: PsiClass) if isAccessible(p) =>
             p.getFields.foreach(field => {
               if (field.hasModifierProperty("static") && isAccessible(field)) {
-                val lookup = LookupElementManager
-                  .getLookupElement(
-                    new ScalaResolveResult(field),
-                    isClassName = true,
-                    isOverloadedForClassName = false,
-                    shouldImport = true,
-                    isInStableCodeReference = false)
-                  .head
+                val lookup = LookupElementManager.getLookupElement(
+                  new ScalaResolveResult(field),
+                  isClassName = true,
+                  isOverloadedForClassName = false,
+                  shouldImport = true,
+                  isInStableCodeReference = false).head
                 lookup.addLookupStrings(p.getName + "." + field.getName)
                 applyVariant(lookup)
               }

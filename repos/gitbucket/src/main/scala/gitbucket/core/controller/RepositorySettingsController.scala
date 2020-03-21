@@ -161,8 +161,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         // Change repository HEAD
         using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
           git =>
-            git.getRepository
-              .updateRef(Constants.HEAD, true)
+            git.getRepository.updateRef(Constants.HEAD, true)
               .link(Constants.R_HEADS + form.defaultBranch)
         }
         flash += "info" -> "Repository default branch has been updated."
@@ -303,14 +302,9 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           val commits =
             if (repository.commitCount == 0) List.empty
             else
-              git.log
-                .add(git.getRepository.resolve(
-                  repository.repository.defaultBranch))
-                .setMaxCount(4)
-                .call
-                .iterator
-                .asScala
-                .map(new CommitInfo(_))
+              git.log.add(
+                git.getRepository.resolve(repository.repository.defaultBranch))
+                .setMaxCount(4).call.iterator.asScala.map(new CommitInfo(_))
                 .toList
           val pushedCommit = commits.drop(1)
 
@@ -321,13 +315,9 @@ trait RepositorySettingsControllerBase extends ControllerBase {
             repositoryInfo = repository,
             commits = pushedCommit,
             repositoryOwner = ownerAccount,
-            oldId = commits.lastOption
-              .map(_.id)
-              .map(ObjectId.fromString)
+            oldId = commits.lastOption.map(_.id).map(ObjectId.fromString)
               .getOrElse(ObjectId.zeroId()),
-            newId = commits.headOption
-              .map(_.id)
-              .map(ObjectId.fromString)
+            newId = commits.headOption.map(_.id).map(ObjectId.fromString)
               .getOrElse(ObjectId.zeroId())
           )
         }
@@ -349,20 +339,16 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         org.json4s.jackson.Serialization.write(Map(
           "url" -> url,
           "request" -> Await.result(
-            reqFuture
-              .map(req =>
-                Map(
-                  "headers" -> _headers(req.getAllHeaders),
-                  "payload" -> json))
+            reqFuture.map(req =>
+              Map("headers" -> _headers(req.getAllHeaders), "payload" -> json))
               .recover(toErrorMap),
             20 seconds),
           "responce" -> Await.result(
-            resFuture
-              .map(res =>
-                Map(
-                  "status" -> res.getStatusLine(),
-                  "body" -> EntityUtils.toString(res.getEntity()),
-                  "headers" -> _headers(res.getAllHeaders())))
+            resFuture.map(res =>
+              Map(
+                "status" -> res.getStatusLine(),
+                "body" -> EntityUtils.toString(res.getEntity()),
+                "headers" -> _headers(res.getAllHeaders())))
               .recover(toErrorMap),
             20 seconds
           )
@@ -441,12 +427,12 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     LockUtil.lock(s"${repository.owner}/${repository.name}") {
       deleteRepository(repository.owner, repository.name)
 
-      FileUtils.deleteDirectory(
-        getRepositoryDir(repository.owner, repository.name))
+      FileUtils
+        .deleteDirectory(getRepositoryDir(repository.owner, repository.name))
       FileUtils.deleteDirectory(
         getWikiRepositoryDir(repository.owner, repository.name))
-      FileUtils.deleteDirectory(
-        getTemporaryDir(repository.owner, repository.name))
+      FileUtils
+        .deleteDirectory(getTemporaryDir(repository.owner, repository.name))
     }
     redirect(s"/${repository.owner}")
   })
@@ -460,10 +446,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           name: String,
           value: String,
           messages: Messages): Option[String] =
-        if (getWebHook(
-              params("owner"),
-              params("repository"),
-              value).isDefined != needExists) {
+        if (getWebHook(params("owner"), params("repository"), value)
+              .isDefined != needExists) {
           Some(if (needExists) { "URL had not been registered yet." }
           else { "URL had been registered already." })
         } else { None }
@@ -521,8 +505,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           messages: Messages): Option[String] =
         params.get("repository").filter(_ != value).flatMap { _ =>
           params.get("owner").flatMap { userName =>
-            getRepositoryNamesOfUser(userName)
-              .find(_ == value)
+            getRepositoryNamesOfUser(userName).find(_ == value)
               .map(_ => "Repository already exists.")
           }
         }
@@ -544,8 +527,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
               Some("This is current repository owner.")
             } else {
               params.get("repository").flatMap { repositoryName =>
-                getRepositoryNamesOfUser(x.userName)
-                  .find(_ == repositoryName)
+                getRepositoryNamesOfUser(x.userName).find(_ == repositoryName)
                   .map { _ => "User already has same repository." }
               }
             }

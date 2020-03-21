@@ -134,8 +134,7 @@ class FormattedStringParserTest extends SimpleTestCase {
     val expressions = arguments.map(it =>
       ScalaPsiElementFactory.createExpressionFromText(it.toString, manager))
     val literal = ScalaPsiElementFactory
-      .parseElement('"' + formatString + '"', manager)
-      .asInstanceOf[ScLiteral]
+      .parseElement('"' + formatString + '"', manager).asInstanceOf[ScLiteral]
     FormattedStringParser.parseFormatCall(literal, expressions).toList
   }
 }

@@ -53,9 +53,8 @@ private[opening] final class OpeningApi(
   object attempt {
 
     def find(openingId: Opening.ID, userId: String): Fu[Option[Attempt]] =
-      attemptColl
-        .find(BSONDocument(
-          Attempt.BSONFields.id -> Attempt.makeId(openingId, userId)))
+      attemptColl.find(BSONDocument(
+        Attempt.BSONFields.id -> Attempt.makeId(openingId, userId)))
         .one[Attempt]
 
     def add(a: Attempt) = attemptColl insert a void
@@ -63,8 +62,8 @@ private[opening] final class OpeningApi(
     def hasPlayed(user: User, opening: Opening): Fu[Boolean] =
       attemptColl.count(
         BSONDocument(
-          Attempt.BSONFields.id -> Attempt
-            .makeId(opening.id, user.id)).some) map (0 !=)
+          Attempt.BSONFields.id -> Attempt.makeId(opening.id, user.id))
+          .some) map (0 !=)
 
     def playedIds(user: User, max: Int): Fu[BSONArray] = {
       val col = attemptColl
@@ -78,21 +77,17 @@ private[opening] final class OpeningApi(
       val playedIdsGroup = Group(BSONBoolean(true))(
         "ids" -> Push(Attempt.BSONFields.openingId))
 
-      col
-        .aggregate(
-          Match(BSONDocument(Attempt.BSONFields.userId -> user.id)),
-          List(Limit(max), playedIdsGroup))
-        .map(
-          _.documents.headOption
-            .flatMap(_.getAs[BSONArray]("ids"))
-            .getOrElse(BSONArray()))
+      col.aggregate(
+        Match(BSONDocument(Attempt.BSONFields.userId -> user.id)),
+        List(Limit(max), playedIdsGroup)).map(
+        _.documents.headOption.flatMap(_.getAs[BSONArray]("ids"))
+        .getOrElse(BSONArray()))
     }
   }
 
   object identify {
     def apply(fen: String, max: Int): Fu[List[String]] =
-      nameColl
-        .find(BSONDocument("_id" -> fen), BSONDocument("_id" -> false))
+      nameColl.find(BSONDocument("_id" -> fen), BSONDocument("_id" -> false))
         .one[BSONDocument] map { obj =>
         ~obj.??(_.getAs[List[String]]("names"))
       }

@@ -14,8 +14,8 @@ object RangeToIndices extends SimplificationType {
   override def hint: String = "Replace with .indices"
   override def description: String = "Range(0, seq.size)"
 
-  val Range = invocation("apply").from(Array(
-    "scala.collection.immutable.Range"))
+  val Range = invocation("apply")
+    .from(Array("scala.collection.immutable.Range"))
 
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
@@ -28,10 +28,8 @@ object RangeToIndices extends SimplificationType {
       expr: ScExpression,
       qual: ScExpression): Some[Simplification] = {
     Some(
-      replace(expr)
-        .withText(invocationText(qual, "indices"))
-        .withHint(s"Replace with ${qual.getText}.indices")
-        .highlightAll)
+      replace(expr).withText(invocationText(qual, "indices"))
+        .withHint(s"Replace with ${qual.getText}.indices").highlightAll)
   }
 }
 

@@ -18,18 +18,16 @@ class ScalaMethodParametersMacro extends Macro {
     import scala.collection.JavaConversions._
     Option(PsiTreeUtil.getParentOfType(
       context.getPsiElementAtStartOffset,
-      classOf[ScFunction]))
-      .flatMap(fun => Option(fun.getParameterList))
+      classOf[ScFunction])).flatMap(fun => Option(fun.getParameterList))
       .map(_.getParameters.map(param => new TextResult(param.getName)))
-      .map(resArr => new ListResult(resArr.toList))
-      .orNull
+      .map(resArr => new ListResult(resArr.toList)).orNull
   }
 
   override def getName: String = MacroUtil.scalaIdPrefix + "methodParameters"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle.message(
-      "macro.method.parameters")
+    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
+      .message("macro.method.parameters")
 
   override def getDefaultValue = "a"
 

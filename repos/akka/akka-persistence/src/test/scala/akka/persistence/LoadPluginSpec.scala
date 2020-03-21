@@ -34,8 +34,8 @@ class LoadJournalSpec
 
   "A journal with config parameter" must {
     "be created with plugin config" in {
-      val journalRef = Persistence(system).journalFor(
-        "akka.persistence.journal.inmem")
+      val journalRef = Persistence(system)
+        .journalFor("akka.persistence.journal.inmem")
       journalRef ! GetConfig
       expectMsgType[Config].getInt("extra-property") should be(17)
     }

@@ -108,8 +108,8 @@ private[akka] final class FanoutPublisherSink[In](
     val fanoutProcessor = ActorProcessorFactory[In, In](
       actorMaterializer.actorOf(
         context,
-        FanoutProcessorImpl.props(
-          actorMaterializer.effectiveSettings(attributes))))
+        FanoutProcessorImpl
+          .props(actorMaterializer.effectiveSettings(attributes))))
     (fanoutProcessor, fanoutProcessor)
   }
 
@@ -132,8 +132,7 @@ private[akka] final class SinkholeSink(
     extends SinkModule[Any, Future[Done]](shape) {
 
   override def create(context: MaterializationContext) = {
-    val effectiveSettings = ActorMaterializer
-      .downcast(context.materializer)
+    val effectiveSettings = ActorMaterializer.downcast(context.materializer)
       .effectiveSettings(context.effectiveAttributes)
     val p = Promise[Done]()
     (new SinkholeSubscriber[Any](p), p.future)
@@ -195,8 +194,7 @@ private[akka] final class ActorSubscriberSink[In](
     extends SinkModule[In, ActorRef](shape) {
 
   override def create(context: MaterializationContext) = {
-    val subscriberRef = ActorMaterializer
-      .downcast(context.materializer)
+    val subscriberRef = ActorMaterializer.downcast(context.materializer)
       .actorOf(context, props)
     (akka.stream.actor.ActorSubscriber[In](subscriberRef), subscriberRef)
   }
@@ -220,8 +218,8 @@ private[akka] final class ActorRefSink[In](
 
   override def create(context: MaterializationContext) = {
     val actorMaterializer = ActorMaterializer.downcast(context.materializer)
-    val effectiveSettings = actorMaterializer.effectiveSettings(
-      context.effectiveAttributes)
+    val effectiveSettings = actorMaterializer
+      .effectiveSettings(context.effectiveAttributes)
     val subscriberRef = actorMaterializer.actorOf(
       context,
       ActorRefSinkActor
@@ -386,8 +384,7 @@ final private[stream] class QueueSink[T]()
         type Received[E] = Try[Option[E]]
 
         val maxBuffer = inheritedAttributes
-          .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
-          .max
+          .getAttribute(classOf[InputBuffer], InputBuffer(16, 16)).max
         require(maxBuffer > 0, "Buffer size must be greater than 0")
 
         var buffer: Buffer[Received[T]] = _

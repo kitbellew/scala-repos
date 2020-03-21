@@ -32,12 +32,11 @@ final class Vertex(val label: String, var neighbors: List[Vertex])
 
   def sameAs(other: Vertex): Boolean = {
     (this ne other) &&
-    this.label == other.label && (
-      this.neighbors.length == other.neighbors.length &&
-      this.neighbors.zip(other.neighbors).forall {
-        case (thisv, otherv) => thisv.label == otherv.label
-      }
-    )
+    this.label == other.label && (this.neighbors.length == other.neighbors
+      .length &&
+    this.neighbors.zip(other.neighbors).forall {
+      case (thisv, otherv) => thisv.label == otherv.label
+    })
   }
 
   override def toString = "Vertex(" + label + ")"
@@ -100,8 +99,8 @@ object GraphReader extends RegexParsers {
         val vertexOpt = vertices.get(targetLabel)
 
         if (vertexOpt.isEmpty) {
-          val newVertex = graph.addVertex(
-            new Vertex(names(targetLabel), List()))
+          val newVertex = graph
+            .addVertex(new Vertex(names(targetLabel), List()))
           vertices.put(targetLabel, newVertex)
           newVertex
         } else { vertexOpt.get }
@@ -163,8 +162,8 @@ object WikiGraphPicklingBench extends WikiGraphBenchmark {
   implicit val ColonColonVertexTag = FastTypeTag
     .materializeFastTypeTag[::[Vertex]]
   import scala.reflect.runtime.{universe => ru}
-  implicit val myLittlePony: ru.Mirror = ru.runtimeMirror(
-    getClass.getClassLoader)
+  implicit val myLittlePony: ru.Mirror = ru
+    .runtimeMirror(getClass.getClassLoader)
   implicit val VectorVertexTag = FastTypeTag
     .materializeFastTypeTag[Vector[Vertex]]
   implicit val ListVertexTag = FastTypeTag.materializeFastTypeTag[List[Vertex]]

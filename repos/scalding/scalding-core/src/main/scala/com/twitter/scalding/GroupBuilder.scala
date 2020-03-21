@@ -333,8 +333,7 @@ class GroupBuilder(val groupFields: Fields)
   }
 
   def schedule(name: String, pipe: Pipe): Pipe = {
-    val maybeProjectedPipe = projectFields
-      .map { pipe.project(_) }
+    val maybeProjectedPipe = projectFields.map { pipe.project(_) }
       .getOrElse(pipe)
     groupMode match {
       case GroupByMode =>
@@ -354,9 +353,8 @@ class GroupBuilder(val groupFields: Fields)
           name,
           maybeProjectedPipe,
           groupFields,
-          spillThreshold.getOrElse(
-            0
-          ), // cascading considers 0 to be the default
+          spillThreshold
+            .getOrElse(0), // cascading considers 0 to be the default
           redlist.reverse.toArray: _*)
 
         overrideReducers(ag.getGroupBy())
@@ -443,9 +441,7 @@ class ScanLeftIterator[T, U](it: Iterator[T], init: U, fn: (U, T) => U)
   // Don't use pattern matching in a performance-critical section
   @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
   def next = {
-    prev = prev
-      .map { fn(_, it.next) }
-      .orElse(Some(init))
+    prev = prev.map { fn(_, it.next) }.orElse(Some(init))
     prev.get
   }
 }

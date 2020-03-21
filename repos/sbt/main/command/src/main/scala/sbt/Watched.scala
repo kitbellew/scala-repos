@@ -64,8 +64,8 @@ object Watched {
       repeat: String): State = {
     @tailrec
     def shouldTerminate: Boolean =
-      (System.in.available > 0) && (watched.terminateWatch(
-        System.in.read()) || shouldTerminate)
+      (System.in.available > 0) && (watched
+        .terminateWatch(System.in.read()) || shouldTerminate)
     val sourcesFinder = PathFinder { watched watchPaths s }
     val watchState = s get ContinuousState getOrElse WatchState.empty
 
@@ -73,10 +73,9 @@ object Watched {
 
     val (triggered, newWatchState, newState) =
       try {
-        val (triggered, newWatchState) = SourceModificationWatch.watch(
-          sourcesFinder,
-          watched.pollInterval,
-          watchState)(shouldTerminate)
+        val (triggered, newWatchState) = SourceModificationWatch
+          .watch(sourcesFinder, watched.pollInterval, watchState)(
+            shouldTerminate)
         (triggered, newWatchState, s)
       } catch {
         case e: Exception =>

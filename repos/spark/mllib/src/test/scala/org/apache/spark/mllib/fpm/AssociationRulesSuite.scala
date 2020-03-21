@@ -48,10 +48,7 @@ class AssociationRulesSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val ar = new AssociationRules()
 
-    val results1 = ar
-      .setMinConfidence(0.9)
-      .run(freqItemsets)
-      .collect()
+    val results1 = ar.setMinConfidence(0.9).run(freqItemsets).collect()
 
     /* Verify results using the `R` code:
        library(arules)
@@ -78,10 +75,7 @@ class AssociationRulesSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(
       results1.count(rule => math.abs(rule.confidence - 1.0d) < 1e-6) == 23)
 
-    val results2 = ar
-      .setMinConfidence(0)
-      .run(freqItemsets)
-      .collect()
+    val results2 = ar.setMinConfidence(0).run(freqItemsets).collect()
 
     /* Verify results using the `R` code:
        ars = apriori(transactions,

@@ -131,11 +131,8 @@ object lasso extends UFunc {
           outputs: DenseVector[Double],
           lambda: Double,
           workSize: Int): LassoResult =
-        LassoCalculator(
-          data,
-          outputs,
-          lambda,
-          new Array[Double](workSize)).result
+        LassoCalculator(data, outputs, lambda, new Array[Double](workSize))
+          .result
     }
 
   implicit val matrixVector

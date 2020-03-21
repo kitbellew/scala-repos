@@ -32,11 +32,8 @@ object AhcWSResponseSpec extends Specification with Mockito {
   "getAllHeaders" should {
     "get headers map which retrieves headers case insensitively" in {
       val srcResponse = mock[Response]
-      val srcHeaders = new DefaultHttpHeaders()
-        .add("Foo", "a")
-        .add("foo", "b")
-        .add("FOO", "b")
-        .add("Bar", "baz")
+      val srcHeaders = new DefaultHttpHeaders().add("Foo", "a").add("foo", "b")
+        .add("FOO", "b").add("Bar", "baz")
       srcResponse.getHeaders returns srcHeaders
       val response = new AhcWSResponse(srcResponse)
       val headers = response.getAllHeaders

@@ -99,8 +99,8 @@ private[sql] trait SQLTestUtils
     */
   protected def withSQLConf(pairs: (String, String)*)(f: => Unit): Unit = {
     val (keys, values) = pairs.unzip
-    val currentValues = keys.map(key =>
-      Try(sqlContext.conf.getConfString(key)).toOption)
+    val currentValues = keys
+      .map(key => Try(sqlContext.conf.getConfString(key)).toOption)
     (keys, values).zipped.foreach(sqlContext.conf.setConfString)
     try f
     finally {
@@ -206,9 +206,7 @@ private[sql] trait SQLTestUtils
   protected def stripSparkFilter(df: DataFrame): DataFrame = {
     val schema = df.schema
     val childRDD = df.queryExecution.sparkPlan
-      .asInstanceOf[org.apache.spark.sql.execution.Filter]
-      .child
-      .execute()
+      .asInstanceOf[org.apache.spark.sql.execution.Filter].child.execute()
       .map(row => Row.fromSeq(row.copy().toSeq(schema)))
 
     sqlContext.createDataFrame(childRDD, schema)

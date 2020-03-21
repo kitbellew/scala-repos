@@ -57,8 +57,8 @@ object DialogEvent {
   /**
     * This event occurs on dialog just before it is shown.
     */
-  val DialogShowing: EventType[jfxsc.DialogEvent] =
-    jfxsc.DialogEvent.DIALOG_SHOWING
+  val DialogShowing: EventType[jfxsc.DialogEvent] = jfxsc.DialogEvent
+    .DIALOG_SHOWING
 
   /**
     * This event occurs on dialog just after it is shown.
@@ -68,14 +68,14 @@ object DialogEvent {
   /**
     * This event occurs on dialog just before it is hidden.
     */
-  val DialogHiding: EventType[jfxsc.DialogEvent] =
-    jfxsc.DialogEvent.DIALOG_HIDING
+  val DialogHiding: EventType[jfxsc.DialogEvent] = jfxsc.DialogEvent
+    .DIALOG_HIDING
 
   /**
     * This event occurs on dialog just after it is hidden.
     */
-  val DialogHidden: EventType[jfxsc.DialogEvent] =
-    jfxsc.DialogEvent.DIALOG_HIDDEN
+  val DialogHidden: EventType[jfxsc.DialogEvent] = jfxsc.DialogEvent
+    .DIALOG_HIDDEN
 
   /**
     * This event is delivered to a
@@ -83,8 +83,8 @@ object DialogEvent {
     * event is not consumed by any installed dialog event handler, the default
     * handler for this event closes the corresponding dialog.
     */
-  val DialogCloseRequest: EventType[jfxsc.DialogEvent] =
-    jfxsc.DialogEvent.DIALOG_CLOSE_REQUEST
+  val DialogCloseRequest: EventType[jfxsc.DialogEvent] = jfxsc.DialogEvent
+    .DIALOG_CLOSE_REQUEST
 }
 
 /**

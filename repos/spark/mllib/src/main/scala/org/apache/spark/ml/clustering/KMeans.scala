@@ -195,10 +195,7 @@ object KMeansModel extends MLReadable[KMeansModel] {
       // Save model data: cluster centers
       val data = Data(instance.clusterCenters)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -212,9 +209,7 @@ object KMeansModel extends MLReadable[KMeansModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("clusterCenters")
+      val data = sqlContext.read.parquet(dataPath).select("clusterCenters")
         .head()
       val clusterCenters = data.getAs[Seq[Vector]](0).toArray
       val model =
@@ -289,13 +284,9 @@ class KMeans @Since("1.5.0") (@Since("1.5.0") override val uid: String)
       case Row(point: Vector) => point
     }
 
-    val algo = new MLlibKMeans()
-      .setK($(k))
-      .setInitializationMode($(initMode))
-      .setInitializationSteps($(initSteps))
-      .setMaxIterations($(maxIter))
-      .setSeed($(seed))
-      .setEpsilon($(tol))
+    val algo = new MLlibKMeans().setK($(k)).setInitializationMode($(initMode))
+      .setInitializationSteps($(initSteps)).setMaxIterations($(maxIter))
+      .setSeed($(seed)).setEpsilon($(tol))
     val parentModel = algo.run(rdd)
     val model = copyValues(new KMeansModel(uid, parentModel).setParent(this))
     val summary = new KMeansSummary(
@@ -335,10 +326,7 @@ class KMeansSummary private[clustering] (
     * Size of each cluster.
     */
   @Since("2.0.0")
-  lazy val size: Array[Int] = cluster.rdd
-    .map { case Row(clusterIdx: Int) => (clusterIdx, 1) }
-    .reduceByKey(_ + _)
-    .collect()
-    .sortBy(_._1)
-    .map(_._2)
+  lazy val size: Array[Int] = cluster.rdd.map {
+    case Row(clusterIdx: Int) => (clusterIdx, 1)
+  }.reduceByKey(_ + _).collect().sortBy(_._1).map(_._2)
 }

@@ -85,14 +85,8 @@ object DFSReadWriteTest {
   }
 
   def runLocalWordCount(fileContents: List[String]): Int = {
-    fileContents
-      .flatMap(_.split(" "))
-      .flatMap(_.split("\t"))
-      .filter(_.nonEmpty)
-      .groupBy(w => w)
-      .mapValues(_.size)
-      .values
-      .sum
+    fileContents.flatMap(_.split(" ")).flatMap(_.split("\t")).filter(_.nonEmpty)
+      .groupBy(w => w).mapValues(_.size).values.sum
   }
 
   def main(args: Array[String]): Unit = {
@@ -116,14 +110,8 @@ object DFSReadWriteTest {
     println("Reading file from DFS and running Word Count")
     val readFileRDD = sc.textFile(dfsFilename)
 
-    val dfsWordCount = readFileRDD
-      .flatMap(_.split(" "))
-      .flatMap(_.split("\t"))
-      .filter(_.nonEmpty)
-      .map(w => (w, 1))
-      .countByKey()
-      .values
-      .sum
+    val dfsWordCount = readFileRDD.flatMap(_.split(" ")).flatMap(_.split("\t"))
+      .filter(_.nonEmpty).map(w => (w, 1)).countByKey().values.sum
 
     sc.stop()
 

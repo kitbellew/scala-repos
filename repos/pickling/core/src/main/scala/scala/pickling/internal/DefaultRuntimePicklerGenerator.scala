@@ -41,10 +41,8 @@ class DefaultRuntimePicklerGenerator(reflectionLock: ReentrantLock)
           val mirror = ru.runtimeMirror(classLoader)
           val elemClass = clazz.getComponentType()
           val elemTag = FastTypeTag.mkRaw(elemClass, mirror)
-          val elemPickler = currentRuntime.picklers.genPickler(
-            classLoader,
-            elemClass,
-            elemTag)
+          val elemPickler = currentRuntime.picklers
+            .genPickler(classLoader, elemClass, elemTag)
           mkRuntimeTravPickler[Array[AnyRef]](
             elemClass,
             elemTag,

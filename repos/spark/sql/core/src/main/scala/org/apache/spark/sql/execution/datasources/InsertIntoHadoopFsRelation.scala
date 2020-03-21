@@ -72,11 +72,11 @@ private[sql] case class InsertIntoHadoopFsRelation(
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
     // Most formats don't do well with duplicate columns, so lets not allow that
-    if (query.schema.fieldNames.length != query.schema.fieldNames.distinct.length) {
-      val duplicateColumns = query.schema.fieldNames
-        .groupBy(identity)
-        .collect { case (x, ys) if ys.length > 1 => "\"" + x + "\"" }
-        .mkString(", ")
+    if (query.schema.fieldNames.length != query.schema.fieldNames.distinct
+          .length) {
+      val duplicateColumns = query.schema.fieldNames.groupBy(identity).collect {
+        case (x, ys) if ys.length > 1 => "\"" + x + "\""
+      }.mkString(", ")
       throw new AnalysisException(
         s"Duplicate column(s) : $duplicateColumns found, " +
           s"cannot save to file.")
@@ -84,9 +84,8 @@ private[sql] case class InsertIntoHadoopFsRelation(
 
     val hadoopConf = sqlContext.sparkContext.hadoopConfiguration
     val fs = outputPath.getFileSystem(hadoopConf)
-    val qualifiedOutputPath = outputPath.makeQualified(
-      fs.getUri,
-      fs.getWorkingDirectory)
+    val qualifiedOutputPath = outputPath
+      .makeQualified(fs.getUri, fs.getWorkingDirectory)
 
     val pathExists = fs.exists(qualifiedOutputPath)
     val doInsertion = (mode, pathExists) match {
@@ -120,8 +119,8 @@ private[sql] case class InsertIntoHadoopFsRelation(
       val partitionSet = AttributeSet(partitionColumns)
       val dataColumns = query.output.filterNot(partitionSet.contains)
 
-      val queryExecution =
-        Dataset.newDataFrame(sqlContext, query).queryExecution
+      val queryExecution = Dataset.newDataFrame(sqlContext, query)
+        .queryExecution
       SQLExecution.withNewExecutionId(sqlContext, queryExecution) {
         val relation = WriteRelation(
           sqlContext,

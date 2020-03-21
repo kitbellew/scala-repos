@@ -38,11 +38,8 @@ trait LinkingUnitComJSEnv extends LinkingUnitAsyncJSEnv with ComJSEnv {
         linkingUnit: LinkingUnit,
         postLibs: Seq[ResolvedJSDependency],
         code: VirtualJSFile): ComJSRunner = {
-      LinkingUnitComJSEnv.this.comRunner(
-        loadedLibs ++ preLibs,
-        linkingUnit,
-        postLibs,
-        code)
+      LinkingUnitComJSEnv.this
+        .comRunner(loadedLibs ++ preLibs, linkingUnit, postLibs, code)
     }
   }
 

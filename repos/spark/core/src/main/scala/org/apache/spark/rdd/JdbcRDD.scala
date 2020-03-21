@@ -67,13 +67,11 @@ class JdbcRDD[T: ClassTag](
   override def getPartitions: Array[Partition] = {
     // bounds are inclusive, hence the + 1 here and - 1 on end
     val length = BigInt(1) + upperBound - lowerBound
-    (0 until numPartitions)
-      .map(i => {
-        val start = lowerBound + ((i * length) / numPartitions)
-        val end = lowerBound + (((i + 1) * length) / numPartitions) - 1
-        new JdbcPartition(i, start.toLong, end.toLong)
-      })
-      .toArray
+    (0 until numPartitions).map(i => {
+      val start = lowerBound + ((i * length) / numPartitions)
+      val end = lowerBound + (((i + 1) * length) / numPartitions) - 1
+      new JdbcPartition(i, start.toLong, end.toLong)
+    }).toArray
   }
 
   override def compute(thePart: Partition, context: TaskContext): Iterator[T] =
@@ -92,7 +90,8 @@ class JdbcRDD[T: ClassTag](
       if (conn.getMetaData.getURL.matches("jdbc:mysql:.*")) {
         stmt.setFetchSize(Integer.MIN_VALUE)
         logInfo(
-          "statement fetch size set to: " + stmt.getFetchSize + " to force MySQL streaming ")
+          "statement fetch size set to: " + stmt
+            .getFetchSize + " to force MySQL streaming ")
       }
 
       stmt.setLong(1, part.lower)
@@ -128,8 +127,8 @@ class JdbcRDD[T: ClassTag](
 
 object JdbcRDD {
   def resultSetToObjectArray(rs: ResultSet): Array[Object] = {
-    Array.tabulate[Object](rs.getMetaData.getColumnCount)(i =>
-      rs.getObject(i + 1))
+    Array
+      .tabulate[Object](rs.getMetaData.getColumnCount)(i => rs.getObject(i + 1))
   }
 
   trait ConnectionFactory extends Serializable {

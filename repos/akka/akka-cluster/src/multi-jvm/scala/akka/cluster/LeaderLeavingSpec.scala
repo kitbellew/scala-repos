@@ -20,11 +20,9 @@ object LeaderLeavingMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        "akka.cluster.auto-down-unreachable-after = 0s"))
-      .withFallback(
-        MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(
+      "akka.cluster.auto-down-unreachable-after = 0s")).withFallback(
+      MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
 class LeaderLeavingMultiJvmNode1 extends LeaderLeavingSpec
@@ -90,13 +88,15 @@ abstract class LeaderLeavingSpec
 
           // verify that the LEADER is no longer part of the 'members' set
           awaitAssert(
-            clusterView.members
-              .map(_.address) should not contain (oldLeaderAddress))
+            clusterView.members.map(_.address) should not contain (
+              oldLeaderAddress
+            ))
 
           // verify that the LEADER is not part of the 'unreachable' set
           awaitAssert(
-            clusterView.unreachableMembers
-              .map(_.address) should not contain (oldLeaderAddress))
+            clusterView.unreachableMembers.map(_.address) should not contain (
+              oldLeaderAddress
+            ))
 
           // verify that we have a new LEADER
           awaitAssert(clusterView.leader should not be (oldLeaderAddress))

@@ -216,22 +216,22 @@ object ActorSelection {
                 val chldr = refWithCell.children
                 if (iter.isEmpty) {
                   // leaf
-                  val matchingChildren = chldr.filter(c ⇒
-                    p.pattern.matcher(c.path.name).matches)
+                  val matchingChildren = chldr
+                    .filter(c ⇒ p.pattern.matcher(c.path.name).matches)
                   if (matchingChildren.isEmpty && !sel.wildcardFanOut)
                     emptyRef.tell(sel, sender)
                   else matchingChildren.foreach(_.tell(sel.msg, sender))
                 } else {
-                  val matchingChildren = chldr.filter(c ⇒
-                    p.pattern.matcher(c.path.name).matches)
+                  val matchingChildren = chldr
+                    .filter(c ⇒ p.pattern.matcher(c.path.name).matches)
                   // don't send to emptyRef after wildcard fan-out
                   if (matchingChildren.isEmpty && !sel.wildcardFanOut)
                     emptyRef.tell(sel, sender)
                   else {
                     val m = sel.copy(
                       elements = iter.toVector,
-                      wildcardFanOut =
-                        sel.wildcardFanOut || matchingChildren.size > 1)
+                      wildcardFanOut = sel.wildcardFanOut || matchingChildren
+                        .size > 1)
                     matchingChildren.foreach(c ⇒
                       deliverSelection(
                         c.asInstanceOf[InternalActorRef],

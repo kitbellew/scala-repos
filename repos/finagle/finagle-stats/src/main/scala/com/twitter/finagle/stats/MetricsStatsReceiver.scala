@@ -153,12 +153,8 @@ object MetricsStatsReceiver {
           case Event(etype, when, delta, name: String, _, tid, sid)
               if etype eq this =>
             val (t, s) = serializeTrace(tid, sid)
-            val env = Json.Envelope(
-              id,
-              when.inMilliseconds,
-              t,
-              s,
-              StatAddData(name, delta))
+            val env = Json
+              .Envelope(id, when.inMilliseconds, t, s, StatAddData(name, delta))
             Try(Buf.Utf8(Json.serialize(env)))
 
           case _ => Throw(

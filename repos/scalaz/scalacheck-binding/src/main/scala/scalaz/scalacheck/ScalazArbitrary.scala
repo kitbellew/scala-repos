@@ -52,8 +52,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   implicit val arbBigInt: Arbitrary[BigInt] = Apply[Arbitrary]
     .apply2[Int, Int, BigInt](arb[Int], arb[Int])(_ + _)
 
-  implicit val arbBigInteger: Arbitrary[BigInteger] = Functor[Arbitrary].map(
-    arb[BigInt])(_.bigInteger)
+  implicit val arbBigInteger: Arbitrary[BigInteger] = Functor[Arbitrary]
+    .map(arb[BigInt])(_.bigInteger)
 
   implicit val BigIntegerMultiplicationArbitrary
       : Arbitrary[BigInteger @@ Multiplication] = Tag
@@ -124,18 +124,15 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   private[this] def withSize[A](size: Int)(f: Int => Gen[A]): Gen[Stream[A]] = {
     Applicative[Gen].sequence(Stream.fill(size)(Gen.choose(1, size))).flatMap {
       s =>
-        val ns = Traverse[Stream]
-          .traverseS(s) { n =>
-            for {
-              sum <- State.get[Int]
-              r <- if (sum >= size) { State.state[Int, Option[Int]](None) }
-              else if ((sum + n) > size) {
-                State((s: Int) => (s + n) -> Option(size - sum))
-              } else { State((s: Int) => (s + n) -> Option(n)) }
-            } yield r
-          }
-          .eval(0)
-          .flatten
+        val ns = Traverse[Stream].traverseS(s) { n =>
+          for {
+            sum <- State.get[Int]
+            r <- if (sum >= size) { State.state[Int, Option[Int]](None) }
+            else if ((sum + n) > size) {
+              State((s: Int) => (s + n) -> Option(size - sum))
+            } else { State((s: Int) => (s + n) -> Option(n)) }
+          } yield r
+        }.eval(0).flatten
 
         Applicative[Gen].sequence(ns.map(f))
     }
@@ -187,8 +184,9 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   }
 
   implicit def IterableArbitrary[A: Arbitrary]: Arbitrary[Iterable[A]] =
-    Apply[Arbitrary].apply2[A, List[A], Iterable[A]](arb[A], arb[List[A]])(
-      (a, list) => a :: list)
+    Apply[Arbitrary]
+      .apply2[A, List[A], Iterable[A]](arb[A], arb[List[A]])((a, list) =>
+        a :: list)
 
   implicit def TreeLocArbitrary[A: Arbitrary]: Arbitrary[TreeLoc[A]] =
     Arbitrary(Gen.sized(n => Gen.choose(0, n).flatMap(treeLocGenSized[A])))
@@ -404,8 +402,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       B: Arbitrary,
       C: Arbitrary,
       D: Arbitrary]: Arbitrary[LazyTuple4[A, B, C, D]] =
-    Applicative[Arbitrary].apply4(arb[A], arb[B], arb[C], arb[D])(
-      LazyTuple4(_, _, _, _))
+    Applicative[Arbitrary]
+      .apply4(arb[A], arb[B], arb[C], arb[D])(LazyTuple4(_, _, _, _))
 
   implicit def heapArbitrary[A](implicit O: Order[A], A: Arbitrary[List[A]]) = {
     Functor[Arbitrary].map(A)(as => Heap.fromData(as))

@@ -40,35 +40,35 @@ class WorkerSuite extends SparkFunSuite with Matchers {
 
   test("test isUseLocalNodeSSLConfig") {
     Worker.isUseLocalNodeSSLConfig(cmd("-Dasdf=dfgh")) shouldBe false
-    Worker.isUseLocalNodeSSLConfig(
-      cmd("-Dspark.ssl.useNodeLocalConf=true")) shouldBe true
-    Worker.isUseLocalNodeSSLConfig(
-      cmd("-Dspark.ssl.useNodeLocalConf=false")) shouldBe false
-    Worker.isUseLocalNodeSSLConfig(
-      cmd("-Dspark.ssl.useNodeLocalConf=")) shouldBe false
+    Worker
+      .isUseLocalNodeSSLConfig(
+        cmd("-Dspark.ssl.useNodeLocalConf=true")) shouldBe true
+    Worker
+      .isUseLocalNodeSSLConfig(
+        cmd("-Dspark.ssl.useNodeLocalConf=false")) shouldBe false
+    Worker
+      .isUseLocalNodeSSLConfig(
+        cmd("-Dspark.ssl.useNodeLocalConf=")) shouldBe false
   }
 
   test("test maybeUpdateSSLSettings") {
-    Worker
-      .maybeUpdateSSLSettings(
-        cmd("-Dasdf=dfgh", "-Dspark.ssl.opt1=x"),
-        conf("spark.ssl.opt1" -> "y", "spark.ssl.opt2" -> "z"))
+    Worker.maybeUpdateSSLSettings(
+      cmd("-Dasdf=dfgh", "-Dspark.ssl.opt1=x"),
+      conf("spark.ssl.opt1" -> "y", "spark.ssl.opt2" -> "z"))
       .javaOpts should contain theSameElementsInOrderAs Seq(
       "-Dasdf=dfgh",
       "-Dspark.ssl.opt1=x")
 
-    Worker
-      .maybeUpdateSSLSettings(
-        cmd("-Dspark.ssl.useNodeLocalConf=false", "-Dspark.ssl.opt1=x"),
-        conf("spark.ssl.opt1" -> "y", "spark.ssl.opt2" -> "z"))
+    Worker.maybeUpdateSSLSettings(
+      cmd("-Dspark.ssl.useNodeLocalConf=false", "-Dspark.ssl.opt1=x"),
+      conf("spark.ssl.opt1" -> "y", "spark.ssl.opt2" -> "z"))
       .javaOpts should contain theSameElementsInOrderAs Seq(
       "-Dspark.ssl.useNodeLocalConf=false",
       "-Dspark.ssl.opt1=x")
 
-    Worker
-      .maybeUpdateSSLSettings(
-        cmd("-Dspark.ssl.useNodeLocalConf=true", "-Dspark.ssl.opt1=x"),
-        conf("spark.ssl.opt1" -> "y", "spark.ssl.opt2" -> "z"))
+    Worker.maybeUpdateSSLSettings(
+      cmd("-Dspark.ssl.useNodeLocalConf=true", "-Dspark.ssl.opt1=x"),
+      conf("spark.ssl.opt1" -> "y", "spark.ssl.opt2" -> "z"))
       .javaOpts should contain theSameElementsAs Seq(
       "-Dspark.ssl.useNodeLocalConf=true",
       "-Dspark.ssl.opt1=y",
@@ -79,12 +79,8 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedExecutors (small number of executors)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedExecutors", 2.toString)
-    val rpcEnv = RpcEnv.create(
-      "test",
-      "localhost",
-      12345,
-      conf,
-      new SecurityManager(conf))
+    val rpcEnv = RpcEnv
+      .create("test", "localhost", 12345, conf, new SecurityManager(conf))
     val worker = new Worker(
       rpcEnv,
       50000,
@@ -118,12 +114,8 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedExecutors (more executors)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedExecutors", 30.toString)
-    val rpcEnv = RpcEnv.create(
-      "test",
-      "localhost",
-      12345,
-      conf,
-      new SecurityManager(conf))
+    val rpcEnv = RpcEnv
+      .create("test", "localhost", 12345, conf, new SecurityManager(conf))
     val worker = new Worker(
       rpcEnv,
       50000,
@@ -164,12 +156,8 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedDrivers (small number of drivers)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedDrivers", 2.toString)
-    val rpcEnv = RpcEnv.create(
-      "test",
-      "localhost",
-      12345,
-      conf,
-      new SecurityManager(conf))
+    val rpcEnv = RpcEnv
+      .create("test", "localhost", 12345, conf, new SecurityManager(conf))
     val worker = new Worker(
       rpcEnv,
       50000,
@@ -205,12 +193,8 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedDrivers (more drivers)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedDrivers", 30.toString)
-    val rpcEnv = RpcEnv.create(
-      "test",
-      "localhost",
-      12345,
-      conf,
-      new SecurityManager(conf))
+    val rpcEnv = RpcEnv
+      .create("test", "localhost", 12345, conf, new SecurityManager(conf))
     val worker = new Worker(
       rpcEnv,
       50000,

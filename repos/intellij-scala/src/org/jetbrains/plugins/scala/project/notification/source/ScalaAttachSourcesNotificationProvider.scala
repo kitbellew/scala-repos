@@ -48,19 +48,18 @@ class ScalaAttachSourcesNotificationProvider(
     val psiFile: PsiFile = PsiManager.getInstance(myProject).findFile(file)
     val isScala = psiFile.isInstanceOf[ScalaFile]
     if (!isScala)
-      return super.createNotificationPanel(
-        file,
-        fileEditor
-      ) //as Java has now different message
+      return super
+        .createNotificationPanel(
+          file,
+          fileEditor
+        ) //as Java has now different message
     val fqn: String =
       if (isScala) ScalaEditorFileSwapper.getFQN(psiFile) else getFQN(psiFile)
     if (fqn == null) return null
-    if (isScala && ScalaEditorFileSwapper.findSourceFile(
-          myProject,
-          file) != null) return null
-    if (!isScala && JavaEditorFileSwapper.findSourceFile(
-          myProject,
-          file) != null) return null
+    if (isScala && ScalaEditorFileSwapper
+          .findSourceFile(myProject, file) != null) return null
+    if (!isScala && JavaEditorFileSwapper
+          .findSourceFile(myProject, file) != null) return null
     val panel: EditorNotificationPanel = new EditorNotificationPanel
     val sourceFile: VirtualFile = findSourceFile(file)
     var defaultAction: AttachSourcesProvider.AttachSourcesAction = null
@@ -130,14 +129,14 @@ class ScalaAttachSourcesNotificationProvider(
               def run() {
                 SwingUtilities.invokeLater(new Runnable {
                   def run() {
-                    panel.setText(
-                      ScalaBundle.message("library.sources.not.found"))
+                    panel
+                      .setText(ScalaBundle.message("library.sources.not.found"))
                   }
                 })
               }
             }
-            val callback: ActionCallback = each.perform(
-              findOrderEntriesContainingFile(file))
+            val callback: ActionCallback = each
+              .perform(findOrderEntriesContainingFile(file))
             callback.doWhenRejected(onFinish)
             callback.doWhenDone(onFinish)
           }
@@ -152,9 +151,7 @@ class ScalaAttachSourcesNotificationProvider(
     val libs: util.List[LibraryOrderEntry] =
       new util.ArrayList[LibraryOrderEntry]
     val entries: util.List[OrderEntry] = ProjectRootManager
-      .getInstance(myProject)
-      .getFileIndex
-      .getOrderEntriesForFile(file)
+      .getInstance(myProject).getFileIndex.getOrderEntriesForFile(file)
     import scala.collection.JavaConversions._
     for (entry <- entries) {
       entry match {

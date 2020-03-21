@@ -25,8 +25,8 @@ class RateLimiterActorTest extends MarathonSpec {
 
   test("AddDelay increases delay and sends update") {
     limiterRef ! RateLimiterActor.AddDelay(app)
-    updateReceiver.expectMsg(
-      RateLimiterActor.DelayUpdate(app, clock.now() + backoff))
+    updateReceiver
+      .expectMsg(RateLimiterActor.DelayUpdate(app, clock.now() + backoff))
     val delay = askLimiter(RateLimiterActor.GetDelay(app))
       .asInstanceOf[RateLimiterActor.DelayUpdate]
     assert(delay.delayUntil == clock.now() + backoff)
@@ -34,8 +34,8 @@ class RateLimiterActorTest extends MarathonSpec {
 
   test("ResetDelay resets delay and sends update") {
     limiterRef ! RateLimiterActor.AddDelay(app)
-    updateReceiver.expectMsg(
-      RateLimiterActor.DelayUpdate(app, clock.now() + backoff))
+    updateReceiver
+      .expectMsg(RateLimiterActor.DelayUpdate(app, clock.now() + backoff))
     limiterRef ! RateLimiterActor.ResetDelay(app)
     updateReceiver.expectMsg(RateLimiterActor.DelayUpdate(app, clock.now()))
     val delay = askLimiter(RateLimiterActor.GetDelay(app))
@@ -70,10 +70,8 @@ class RateLimiterActorTest extends MarathonSpec {
     taskTracker = mock[TaskTracker]
     appRepository = mock[AppRepository]
     updateReceiver = TestProbe()
-    val props = RateLimiterActor.props(
-      rateLimiter,
-      appRepository,
-      updateReceiver.ref)
+    val props = RateLimiterActor
+      .props(rateLimiter, appRepository, updateReceiver.ref)
     limiterRef = actorSystem.actorOf(props, "limiter")
   }
 

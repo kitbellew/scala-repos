@@ -33,54 +33,36 @@ object JmxTool extends Logging {
   def main(args: Array[String]) {
     // Parse command line
     val parser = new OptionParser
-    val objectNameOpt = parser
-      .accepts(
-        "object-name",
-        "A JMX object name to use as a query. This can contain wild cards, and this option " +
-          "can be given multiple times to specify more than one query. If no objects are specified " +
-          "all objects will be queried."
-      )
-      .withRequiredArg
-      .describedAs("name")
-      .ofType(classOf[String])
-    val attributesOpt = parser
-      .accepts(
-        "attributes",
-        "The whitelist of attributes to query. This is a comma-separated list. If no " +
-          "attributes are specified all objects will be queried.")
-      .withRequiredArg
-      .describedAs("name")
-      .ofType(classOf[String])
-    val reportingIntervalOpt = parser
-      .accepts(
-        "reporting-interval",
-        "Interval in MS with which to poll jmx stats.")
-      .withRequiredArg
-      .describedAs("ms")
-      .ofType(classOf[java.lang.Integer])
-      .defaultsTo(2000)
+    val objectNameOpt = parser.accepts(
+      "object-name",
+      "A JMX object name to use as a query. This can contain wild cards, and this option " +
+        "can be given multiple times to specify more than one query. If no objects are specified " +
+        "all objects will be queried."
+    ).withRequiredArg.describedAs("name").ofType(classOf[String])
+    val attributesOpt = parser.accepts(
+      "attributes",
+      "The whitelist of attributes to query. This is a comma-separated list. If no " +
+        "attributes are specified all objects will be queried.").withRequiredArg
+      .describedAs("name").ofType(classOf[String])
+    val reportingIntervalOpt = parser.accepts(
+      "reporting-interval",
+      "Interval in MS with which to poll jmx stats.").withRequiredArg
+      .describedAs("ms").ofType(classOf[java.lang.Integer]).defaultsTo(2000)
     val helpOpt = parser.accepts("help", "Print usage information.")
-    val dateFormatOpt = parser
-      .accepts(
-        "date-format",
-        "The date format to use for formatting the time field. " +
-          "See java.text.SimpleDateFormat for options.")
-      .withRequiredArg
-      .describedAs("format")
-      .ofType(classOf[String])
-    val jmxServiceUrlOpt = parser
-      .accepts(
-        "jmx-url",
-        "The url to connect to to poll JMX data. See Oracle javadoc for JMXServiceURL for details.")
-      .withRequiredArg
-      .describedAs("service-url")
-      .ofType(classOf[String])
+    val dateFormatOpt = parser.accepts(
+      "date-format",
+      "The date format to use for formatting the time field. " +
+        "See java.text.SimpleDateFormat for options.").withRequiredArg
+      .describedAs("format").ofType(classOf[String])
+    val jmxServiceUrlOpt = parser.accepts(
+      "jmx-url",
+      "The url to connect to to poll JMX data. See Oracle javadoc for JMXServiceURL for details.")
+      .withRequiredArg.describedAs("service-url").ofType(classOf[String])
       .defaultsTo("service:jmx:rmi:///jndi/rmi://:9999/jmxrmi")
 
     if (args.length == 0)
-      CommandLineUtils.printUsageAndDie(
-        parser,
-        "Dump JMX values to standard output.")
+      CommandLineUtils
+        .printUsageAndDie(parser, "Dump JMX values to standard output.")
 
     val options = parser.parse(args: _*)
 
@@ -109,10 +91,8 @@ object JmxTool extends Logging {
         options.valuesOf(objectNameOpt).map(new ObjectName(_))
       else List(null)
 
-    val names = queries
-      .map((name: ObjectName) =>
-        mbsc.queryNames(name, null): mutable.Set[ObjectName])
-      .flatten
+    val names = queries.map((name: ObjectName) =>
+      mbsc.queryNames(name, null): mutable.Set[ObjectName]).flatten
 
     val numExpectedAttributes: Map[ObjectName, Int] =
       attributesWhitelistExists match {
@@ -127,10 +107,8 @@ object JmxTool extends Logging {
       }
 
     // print csv header
-    val keys = List("time") ++ queryAttributes(
-      mbsc,
-      names,
-      attributesWhitelist).keys.toArray.sorted
+    val keys = List("time") ++ queryAttributes(mbsc, names, attributesWhitelist)
+      .keys.toArray.sorted
     if (keys.size == numExpectedAttributes.map(_._2).sum + 1)
       println(keys.map("\"" + _ + "\"").mkString(","))
 
@@ -155,9 +133,8 @@ object JmxTool extends Logging {
     var attributes = new mutable.HashMap[String, Any]()
     for (name <- names) {
       val mbean = mbsc.getMBeanInfo(name)
-      for (attrObj <- mbsc.getAttributes(
-             name,
-             mbean.getAttributes.map(_.getName))) {
+      for (attrObj <- mbsc
+             .getAttributes(name, mbean.getAttributes.map(_.getName))) {
         val attr = attrObj.asInstanceOf[Attribute]
         attributesWhitelist match {
           case Some(allowedAttributes) =>

@@ -30,9 +30,8 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
   import SbtClient._
 
   val connector = SbtConnector("play-fork-run", "Play Fork Run", baseDirectory)
-  val connection = context.actorOf(
-    SbtConnectionProxy.props(connector),
-    "sbt-connection")
+  val connection = context
+    .actorOf(SbtConnectionProxy.props(connector), "sbt-connection")
 
   def receive: Receive = init
 
@@ -72,14 +71,12 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
   def active(client: ActorRef): Receive = {
     case Terminated(`client`) => shutdownWithClient(client)
     case Execute(input) =>
-      client ! SbtClientProxy.RequestExecution.ByCommandOrTask(
-        input,
-        interaction = None,
-        sendTo = self)
+      client ! SbtClientProxy.RequestExecution
+        .ByCommandOrTask(input, interaction = None, sendTo = self)
     case request @ Request(key, sendTo) =>
       val name = java.net.URLEncoder.encode(key, "utf-8")
-      val task = context
-        .child(name) getOrElse context.actorOf(SbtTask.props(key, client), name)
+      val task = context.child(name) getOrElse context
+        .actorOf(SbtTask.props(key, client), name)
       task ! request
     case Shutdown => shutdownWithClient(client)
   }
@@ -169,10 +166,8 @@ class SbtTask(name: String, client: ActorRef) extends Actor {
   def active(key: ScopedKey, requests: Seq[Request] = Seq.empty): Receive = {
     case request: Request =>
       if (requests.isEmpty)
-        client ! SbtClientProxy.RequestExecution.ByScopedKey(
-          key,
-          interaction = None,
-          sendTo = self)
+        client ! SbtClientProxy.RequestExecution
+          .ByScopedKey(key, interaction = None, sendTo = self)
       context become active(key, requests :+ request)
     case SbtClientProxy.ExecutionId(Success(tid), _)   => // ignore
     case SbtClientProxy.ExecutionId(Failure(error), _) => fail(error, requests)

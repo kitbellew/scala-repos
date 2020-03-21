@@ -119,8 +119,8 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "scalar subquery with 2 columns",
     testRelation.select(
-      (ScalarSubquery(testRelation.select('a, dateLit.as('b))) + Literal(1)).as(
-        'a)),
+      (ScalarSubquery(testRelation.select('a, dateLit.as('b))) + Literal(1))
+        .as('a)),
     "Scalar subquery must return only one column, but got 2" :: Nil
   )
 
@@ -132,8 +132,8 @@ class AnalysisErrorSuite extends AnalysisTest {
 
   errorTest(
     "single invalid type, single arg",
-    testRelation.select(
-      TestFunction(dateLit :: Nil, IntegerType :: Nil).as('a)),
+    testRelation
+      .select(TestFunction(dateLit :: Nil, IntegerType :: Nil).as('a)),
     "cannot resolve" :: "testfunction(CAST(NULL AS DATE))" :: "argument 1" :: "requires int type" ::
       "'CAST(NULL AS DATE)' is of date type" :: Nil
   )
@@ -214,9 +214,7 @@ class AnalysisErrorSuite extends AnalysisTest {
 
   errorTest(
     "unresolved attributes with a generated name",
-    testRelation2
-      .groupBy('a)(max('b))
-      .where(sum('b) > 0)
+    testRelation2.groupBy('a)(max('b)).where(sum('b) > 0)
       .orderBy('havingCondition.asc),
     "cannot resolve" :: "havingCondition" :: Nil
   )
@@ -224,8 +222,8 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "bad casts",
     testRelation.select(Literal(1).cast(BinaryType).as('badCast)),
-    "cannot cast" :: Literal(
-      1).dataType.simpleString :: BinaryType.simpleString :: Nil
+    "cannot cast" :: Literal(1).dataType.simpleString :: BinaryType
+      .simpleString :: Nil
   )
 
   errorTest(
@@ -242,14 +240,14 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "non-boolean filters",
     testRelation.where(Literal(1)),
-    "filter" :: "'1'" :: "not a boolean" :: Literal(
-      1).dataType.simpleString :: Nil)
+    "filter" :: "'1'" :: "not a boolean" :: Literal(1).dataType
+      .simpleString :: Nil)
 
   errorTest(
     "non-boolean join conditions",
     testRelation.join(testRelation, condition = Some(Literal(1))),
-    "condition" :: "'1'" :: "not a boolean" :: Literal(
-      1).dataType.simpleString :: Nil
+    "condition" :: "'1'" :: "not a boolean" :: Literal(1).dataType
+      .simpleString :: Nil
   )
 
   errorTest(
@@ -291,7 +289,8 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "intersect with unequal number of columns",
     testRelation.intersect(testRelation2),
-    "intersect" :: "number of columns" :: testRelation2.output.length.toString ::
+    "intersect" :: "number of columns" :: testRelation2.output.length
+      .toString ::
       testRelation.output.length.toString :: Nil
   )
 
@@ -374,15 +373,12 @@ class AnalysisErrorSuite extends AnalysisTest {
       DateType,
       TimestampType,
       ArrayType(IntegerType),
-      new StructType()
-        .add("f1", FloatType, nullable = true)
+      new StructType().add("f1", FloatType, nullable = true)
         .add("f2", StringType, nullable = true),
-      new StructType()
-        .add("f1", FloatType, nullable = true)
-        .add(
-          "f2",
-          ArrayType(BooleanType, containsNull = true),
-          nullable = true),
+      new StructType().add("f1", FloatType, nullable = true).add(
+        "f2",
+        ArrayType(BooleanType, containsNull = true),
+        nullable = true),
       new GroupableUDT()
     )
     supportedDataTypes.foreach { dataType =>
@@ -391,8 +387,7 @@ class AnalysisErrorSuite extends AnalysisTest {
 
     val unsupportedDataTypes = Seq(
       MapType(StringType, LongType),
-      new StructType()
-        .add("f1", FloatType, nullable = true)
+      new StructType().add("f1", FloatType, nullable = true)
         .add("f2", MapType(StringType, LongType), nullable = true),
       new UngroupableUDT()
     )

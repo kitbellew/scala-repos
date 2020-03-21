@@ -181,8 +181,8 @@ class JavaSparkContext(val sc: SparkContext)
   def parallelizeDoubles(
       list: java.util.List[java.lang.Double],
       numSlices: Int): JavaDoubleRDD =
-    JavaDoubleRDD.fromRDD(
-      sc.parallelize(list.asScala.map(_.doubleValue()), numSlices))
+    JavaDoubleRDD
+      .fromRDD(sc.parallelize(list.asScala.map(_.doubleValue()), numSlices))
 
   /** Distribute a local Scala collection to form an RDD. */
   def parallelizeDoubles(
@@ -405,12 +405,8 @@ class JavaSparkContext(val sc: SparkContext)
       minPartitions: Int): JavaPairRDD[K, V] = {
     implicit val ctagK: ClassTag[K] = ClassTag(keyClass)
     implicit val ctagV: ClassTag[V] = ClassTag(valueClass)
-    val rdd = sc.hadoopRDD(
-      conf,
-      inputFormatClass,
-      keyClass,
-      valueClass,
-      minPartitions)
+    val rdd = sc
+      .hadoopRDD(conf, inputFormatClass, keyClass, valueClass, minPartitions)
     new JavaHadoopRDD(rdd.asInstanceOf[HadoopRDD[K, V]])
   }
 
@@ -457,12 +453,8 @@ class JavaSparkContext(val sc: SparkContext)
       minPartitions: Int): JavaPairRDD[K, V] = {
     implicit val ctagK: ClassTag[K] = ClassTag(keyClass)
     implicit val ctagV: ClassTag[V] = ClassTag(valueClass)
-    val rdd = sc.hadoopFile(
-      path,
-      inputFormatClass,
-      keyClass,
-      valueClass,
-      minPartitions)
+    val rdd = sc
+      .hadoopFile(path, inputFormatClass, keyClass, valueClass, minPartitions)
     new JavaHadoopRDD(rdd.asInstanceOf[HadoopRDD[K, V]])
   }
 
@@ -828,9 +820,7 @@ class JavaSparkContext(val sc: SparkContext)
     * Note that this does not necessarily mean the caching or computation was successful.
     */
   def getPersistentRDDs: JMap[java.lang.Integer, JavaRDD[_]] = {
-    sc.getPersistentRDDs
-      .mapValues(s => JavaRDD.fromRDD(s))
-      .asJava
+    sc.getPersistentRDDs.mapValues(s => JavaRDD.fromRDD(s)).asJava
       .asInstanceOf[JMap[java.lang.Integer, JavaRDD[_]]]
   }
 

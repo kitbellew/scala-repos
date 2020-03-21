@@ -422,8 +422,7 @@ trait AnalyzerPlugins {
   private def invoke[T](op: NonCumulativeOp[T]): T = {
     if (macroPlugins.isEmpty) op.default
     else {
-      val results = macroPlugins
-        .filter(_.isActive())
+      val results = macroPlugins.filter(_.isActive())
         .map(plugin => (plugin, op.custom(plugin)))
       results.flatMap {
         case (p, Some(result)) => Some((p, result)); case _ => None

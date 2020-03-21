@@ -31,8 +31,7 @@ class ListTablesSuite
   import hiveContext._
   import hiveContext.implicits._
 
-  val df = sparkContext
-    .parallelize((1 to 10).map(i => (i, s"str$i")))
+  val df = sparkContext.parallelize((1 to 10).map(i => (i, s"str$i")))
     .toDF("key", "value")
 
   override def beforeAll(): Unit = {
@@ -46,8 +45,8 @@ class ListTablesSuite
   }
 
   override def afterAll(): Unit = {
-    sessionState.catalog.unregisterTable(TableIdentifier(
-      "ListTablesSuiteTable"))
+    sessionState.catalog
+      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
     sql("DROP TABLE IF EXISTS HiveListTablesSuiteTable")
     sql("DROP TABLE IF EXISTS ListTablesSuiteDB.HiveInDBListTablesSuiteTable")
     sql("DROP DATABASE IF EXISTS ListTablesSuiteDB")
@@ -64,8 +63,7 @@ class ListTablesSuite
           allTables.filter("tableName = 'hivelisttablessuitetable'"),
           Row("hivelisttablessuitetable", false))
         assert(
-          allTables
-            .filter("tableName = 'hiveindblisttablessuitetable'")
+          allTables.filter("tableName = 'hiveindblisttablessuitetable'")
             .count() === 0)
     }
   }
@@ -78,8 +76,7 @@ class ListTablesSuite
             allTables.filter("tableName = 'listtablessuitetable'"),
             Row("listtablessuitetable", true))
           assert(
-            allTables
-              .filter("tableName = 'hivelisttablessuitetable'")
+            allTables.filter("tableName = 'hivelisttablessuitetable'")
               .count() === 0)
           checkAnswer(
             allTables.filter("tableName = 'hiveindblisttablessuitetable'"),

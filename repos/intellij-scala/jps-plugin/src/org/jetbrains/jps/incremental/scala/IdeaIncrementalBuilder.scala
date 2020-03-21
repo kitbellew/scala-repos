@@ -58,8 +58,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     checkIncrementalTypeChange(context)
 
-    context.processMessage(new ProgressMessage(
-      "Searching for compilable files..."))
+    context
+      .processMessage(new ProgressMessage("Searching for compilable files..."))
 
     val sourceDependencies = SourceDependenciesProviderService
       .getSourceDependenciesFor(chunk)
@@ -77,24 +77,24 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     if (sources.isEmpty) return ExitCode.NOTHING_DONE
 
     if (hasBuildModules(chunk))
-      return ExitCode.NOTHING_DONE // *.scala files in SBT "build" modules are rightly excluded from compilation
+      return ExitCode
+        .NOTHING_DONE // *.scala files in SBT "build" modules are rightly excluded from compilation
 
     if (!hasScalaModules(chunk)) {
       val message =
-        "skipping Scala files without a Scala SDK in module(s) " + chunk.getPresentableShortName
+        "skipping Scala files without a Scala SDK in module(s) " + chunk
+          .getPresentableShortName
       context.processMessage(
         new CompilerMessage("scala", BuildMessage.Kind.WARNING, message))
       return ExitCode.NOTHING_DONE
     }
 
     val packageObjectsData = PackageObjectsData.getFor(context)
-    if (JavaBuilderUtil
-          .isForcedRecompilationAllJavaModules(context)) { //rebuild
+    if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context)) { //rebuild
       packageObjectsData.clear()
     } else {
       val additionalFiles = packageObjectsData
-        .invalidatedPackageObjects(sources)
-        .filter(_.exists)
+        .invalidatedPackageObjects(sources).filter(_.exists)
       if (additionalFiles.nonEmpty) {
         (sources ++ additionalFiles).foreach(f =>
           FSOperations.markDirty(context, CompilationRound.NEXT, f))
@@ -177,8 +177,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     val project = context.getProjectDescriptor
 
-    val compileOrder =
-      projectSettings(context).getCompilerSettings(chunk).getCompileOrder
+    val compileOrder = projectSettings(context).getCompilerSettings(chunk)
+      .getCompileOrder
     val extensionsToCollect = compileOrder match {
       case CompileOrder.Mixed => List(".scala", ".java")
       case _                  => List(".scala")
@@ -201,8 +201,7 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     for {
       target <- chunk.getTargets.asScala
-      tempRoot <- project.getBuildRootIndex
-        .getTempTargetRoots(target, context)
+      tempRoot <- project.getBuildRootIndex.getTempTargetRoots(target, context)
         .asScala
     } {
       FileUtil.processFilesRecursively(

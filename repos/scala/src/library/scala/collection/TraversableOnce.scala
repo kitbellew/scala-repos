@@ -133,7 +133,8 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     val i: Iterator[A] = self match {
       case it: Iterator[A] => it
       case _: GenIterable[_] =>
-        self.toIterator // If it might be parallel, be sure to .seq or use iterator!
+        self
+          .toIterator // If it might be parallel, be sure to .seq or use iterator!
       case _ => // Not parallel, not iterable--just traverse
         self.foreach(pf.runWith(b => return Some(b)))
         return None

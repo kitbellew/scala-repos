@@ -76,9 +76,7 @@ class TaskKiller @Inject() (
         force = force,
         toKill = appTasks)
 
-    appTasks.keys
-      .find(id => !taskTracker.hasAppTasksSync(id))
-      .map(id => Future.failed(UnknownAppException(id)))
-      .getOrElse(killTasks)
+    appTasks.keys.find(id => !taskTracker.hasAppTasksSync(id))
+      .map(id => Future.failed(UnknownAppException(id))).getOrElse(killTasks)
   }
 }

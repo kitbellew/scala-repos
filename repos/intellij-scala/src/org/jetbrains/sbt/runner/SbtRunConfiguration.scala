@@ -70,9 +70,8 @@ class SbtRunConfiguration(
     super.writeExternal(element)
     JDOMExternalizer.write(element, "tasks", getTasks)
     JDOMExternalizer.write(element, "vmparams", getJavaOptions)
-    EnvironmentVariablesComponent.writeExternal(
-      element,
-      getEnvironmentVariables)
+    EnvironmentVariablesComponent
+      .writeExternal(element, getEnvironmentVariables)
   }
 
   override def readExternal(element: Element) {
@@ -108,15 +107,13 @@ class SbtRunConfiguration(
 
     def createJavaParameters(): JavaParameters = {
       val params: JavaParameters = new JavaParameters
-      val jdk: Sdk = JavaParametersUtil.createProjectJdk(
-        configuration.getProject,
-        null)
+      val jdk: Sdk = JavaParametersUtil
+        .createProjectJdk(configuration.getProject, null)
       try {
         jdk.getSdkType match {
           case sdkType: AndroidSdkType =>
-            envirnomentVariables.put(
-              "ANDROID_HOME",
-              jdk.getSdkModificator.getHomePath)
+            envirnomentVariables
+              .put("ANDROID_HOME", jdk.getSdkModificator.getHomePath)
           case _ => // do nothing
         }
       } catch {
@@ -127,8 +124,8 @@ class SbtRunConfiguration(
         configuration.getProject,
         JavaParameters.JDK_ONLY,
         jdk)
-      val sbtSystemSettings: SbtSystemSettings = SbtSystemSettings.getInstance(
-        configuration.getProject)
+      val sbtSystemSettings: SbtSystemSettings = SbtSystemSettings
+        .getInstance(configuration.getProject)
       if (sbtSystemSettings.getCustomLauncherEnabled) {
         params.getClassPath.add(sbtSystemSettings.getCustomLauncherPath)
         params.setMainClass(determineMainClass(

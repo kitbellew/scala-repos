@@ -79,9 +79,8 @@ class ProjectedQuasiNewtonTest
       }
 
       val targetValue = 3 / (1.0 / 2 + 1)
-      val result = optimizer.minimize(
-        DiffFunction.withL2Regularization(f, 1.0),
-        init)
+      val result = optimizer
+        .minimize(DiffFunction.withL2Regularization(f, 1.0), init)
       result should beSimilarTo(
         DenseVector.ones[Double](init.size) * targetValue,
         allowedDeviation = 3e-3 * result.size)

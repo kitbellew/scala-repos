@@ -23,10 +23,8 @@ object AdjunctUsage extends App {
   // traverse the list with our stateful computation, producing a list
   // of booleans for "was this a repeat of the previous"
   val res1: List[Boolean] = Traverse[List]
-    .traverseS(nonRepeating)(checkForRepeats)
-    .eval(None)
-  val res2: List[Boolean] = Traverse[List]
-    .traverseS(repeating)(checkForRepeats)
+    .traverseS(nonRepeating)(checkForRepeats).eval(None)
+  val res2: List[Boolean] = Traverse[List].traverseS(repeating)(checkForRepeats)
     .eval(None)
 
   // when we collapse the lists of booleans, we expect the non-repeating list to all be false
@@ -127,8 +125,8 @@ object AdjunctUsage extends App {
   // state monad by itself.
   val bothAtOnce = {
     // yay for type scala's inference :(
-    implicit val adjMonad =
-      adjOptionInt.compose[Writer[Int, ?], Reader[Int, ?]](adjInt).monad
+    implicit val adjMonad = adjOptionInt
+      .compose[Writer[Int, ?], Reader[Int, ?]](adjInt).monad
     nonRepeating.traverseU(checkForRepeatsAdjAndSum).run(None).run(0).run
   }
 

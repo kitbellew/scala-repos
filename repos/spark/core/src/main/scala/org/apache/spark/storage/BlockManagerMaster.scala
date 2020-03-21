@@ -87,8 +87,8 @@ private[spark] class BlockManagerMaster(
   }
 
   def getExecutorEndpointRef(executorId: String): Option[RpcEndpointRef] = {
-    driverEndpoint.askWithRetry[Option[RpcEndpointRef]](GetExecutorEndpointRef(
-      executorId))
+    driverEndpoint
+      .askWithRetry[Option[RpcEndpointRef]](GetExecutorEndpointRef(executorId))
   }
 
   /**
@@ -177,20 +177,17 @@ private[spark] class BlockManagerMaster(
       Iterable[Future[Option[BlockStatus]]],
       Option[BlockStatus],
       Iterable[Option[BlockStatus]]]]
-    val blockStatus = timeout.awaitResult(
-      Future.sequence[Option[BlockStatus], Iterable](futures)(
+    val blockStatus = timeout
+      .awaitResult(Future.sequence[Option[BlockStatus], Iterable](futures)(
         cbf,
         ThreadUtils.sameThread))
     if (blockStatus == null) {
       throw new SparkException(
         "BlockManager returned null for BlockStatus query: " + blockId)
     }
-    blockManagerIds
-      .zip(blockStatus)
-      .flatMap {
-        case (blockManagerId, status) => status.map { s => (blockManagerId, s) }
-      }
-      .toMap
+    blockManagerIds.zip(blockStatus).flatMap {
+      case (blockManagerId, status) => status.map { s => (blockManagerId, s) }
+    }.toMap
   }
 
   /**

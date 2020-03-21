@@ -75,17 +75,10 @@ class MarathonSchedulerTest
 
   test("Publishes event when registered") {
     val driver = mock[SchedulerDriver]
-    val frameworkId = FrameworkID.newBuilder
-      .setValue("some_id")
-      .build()
+    val frameworkId = FrameworkID.newBuilder.setValue("some_id").build()
 
-    val masterInfo = MasterInfo
-      .newBuilder()
-      .setId("")
-      .setIp(0)
-      .setPort(5050)
-      .setHostname("some_host")
-      .build()
+    val masterInfo = MasterInfo.newBuilder().setId("").setIp(0).setPort(5050)
+      .setHostname("some_host").build()
 
     eventBus.subscribe(probe.ref, classOf[SchedulerRegisteredEvent])
 
@@ -103,13 +96,8 @@ class MarathonSchedulerTest
 
   test("Publishes event when reregistered") {
     val driver = mock[SchedulerDriver]
-    val masterInfo = MasterInfo
-      .newBuilder()
-      .setId("")
-      .setIp(0)
-      .setPort(5050)
-      .setHostname("some_host")
-      .build()
+    val masterInfo = MasterInfo.newBuilder().setId("").setIp(0).setPort(5050)
+      .setHostname("some_host").build()
 
     eventBus.subscribe(probe.ref, classOf[SchedulerReregisteredEvent])
 

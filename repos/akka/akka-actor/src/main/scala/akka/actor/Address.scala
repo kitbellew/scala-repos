@@ -58,8 +58,7 @@ final case class Address private (
     */
   @transient
   override lazy val toString: String = {
-    val sb = (new java.lang.StringBuilder(protocol))
-      .append("://")
+    val sb = (new java.lang.StringBuilder(protocol)).append("://")
       .append(system)
 
     if (host.isDefined) sb.append('@').append(host.get)
@@ -132,9 +131,8 @@ object AddressFromURIString {
 
   def unapply(uri: URI): Option[Address] =
     if (uri eq null) None
-    else if (uri.getScheme == null || (
-               uri.getUserInfo == null && uri.getHost == null
-             )) None
+    else if (uri.getScheme == null || (uri.getUserInfo == null && uri
+               .getHost == null)) None
     else if (uri.getUserInfo == null) { // case 1: “akka://system”
       if (uri.getPort != -1) None else Some(Address(uri.getScheme, uri.getHost))
     } else { // case 2: “akka://system@host:port”
@@ -170,9 +168,7 @@ object ActorPathExtractor extends PathUtils {
       val uri = new URI(addr)
       uri.getRawPath match {
         case null ⇒ None
-        case path ⇒
-          AddressFromURIString
-            .unapply(uri)
+        case path ⇒ AddressFromURIString.unapply(uri)
             .map((_, split(path, uri.getRawFragment).drop(1)))
       }
     } catch { case _: URISyntaxException ⇒ None }

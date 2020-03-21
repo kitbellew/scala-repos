@@ -178,19 +178,16 @@ object Plugins extends PluginsFunctions {
       // Ignore clauses for plugins that does not require anything else.
       // Avoids the requirement for pure Nature strings *and* possible
       // circular dependencies in the logic.
-      val allRequirementsClause = defined
-        .filterNot(_.isRoot)
+      val allRequirementsClause = defined.filterNot(_.isRoot)
         .flatMap(d => asRequirementsClauses(d))
-      val allEnabledByClause = defined
-        .filterNot(_.isRoot)
+      val allEnabledByClause = defined.filterNot(_.isRoot)
         .flatMap(d => asEnabledByClauses(d))
 
       // Note: Here is where the function begins.  We're given a list of plugins now.
       (requestedPlugins, log) => {
         def explicitlyDisabled(p: AutoPlugin): Boolean =
           hasExclude(requestedPlugins, p)
-        val alwaysEnabled: List[AutoPlugin] = defined
-          .filter(_.isAlwaysEnabled)
+        val alwaysEnabled: List[AutoPlugin] = defined.filter(_.isAlwaysEnabled)
           .filterNot(explicitlyDisabled)
         val knowlege0: Set[Atom] =
           ((flatten(requestedPlugins) ++ alwaysEnabled) collect {
@@ -200,12 +197,12 @@ object Plugins extends PluginsFunctions {
           (allRequirementsClause ::: allEnabledByClause) filterNot {
             _.head subsetOf knowlege0
           })
-        log.debug(
-          s"deducing auto plugins based on known facts ${knowlege0.toString} and clauses ${clauses.toString}")
+        log.debug(s"deducing auto plugins based on known facts ${knowlege0
+          .toString} and clauses ${clauses.toString}")
         Logic.reduce(
           clauses,
-          (flattenConvert(requestedPlugins) ++ convertAll(
-            alwaysEnabled)).toSet) match {
+          (flattenConvert(requestedPlugins) ++ convertAll(alwaysEnabled))
+            .toSet) match {
           case Left(problem) => throw AutoPluginException(problem)
           case Right(results) =>
             log.debug(s"  :: deduced result: ${results}")

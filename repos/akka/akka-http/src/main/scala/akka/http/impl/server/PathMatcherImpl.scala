@@ -21,5 +21,7 @@ private[http] class PathMatcherImpl[T: ClassTag](
     extends ExtractionImpl[T]
     with PathMatcher[T] {
   def optional: PathMatcher[Optional[T]] =
-    new PathMatcherImpl[Optional[T]](matcher.?.map(OptionConverters.toJava))
+    new PathMatcherImpl[Optional[T]](
+      matcher
+        .?.map(OptionConverters.toJava))
 }

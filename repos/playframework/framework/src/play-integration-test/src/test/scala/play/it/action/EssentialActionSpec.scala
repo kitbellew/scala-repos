@@ -30,7 +30,8 @@ object EssentialActionSpec extends PlaySpecification {
         app =>
           import app.materializer
           // run the test with the classloader of the current thread
-          Thread.currentThread.getContextClassLoader must not be applicationClassLoader
+          Thread.currentThread
+            .getContextClassLoader must not be applicationClassLoader
           call(action, FakeRequest())
           await(actionClassLoader.future) must be equalTo applicationClassLoader
       }

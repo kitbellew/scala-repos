@@ -52,16 +52,14 @@ trait ConstructorAnnotator {
             if (expression != null)
               for (t <- expression.getType(TypingContext.empty)) {
                 //TODO show parameter name
-                val (expectedText, actualText) = ScTypePresentation.different(
-                  expectedType,
-                  t)
+                val (expectedText, actualText) = ScTypePresentation
+                  .different(expectedType, t)
                 val message = ScalaBundle.message(
                   "type.mismatch.expected.actual",
                   expectedText,
                   actualText)
-                val annotation = holder.createErrorAnnotation(
-                  expression,
-                  message)
+                val annotation = holder
+                  .createErrorAnnotation(expression, message)
                 annotation.registerFix(ReportHighlightingErrorQuickFix)
               }
             else {
@@ -120,13 +118,14 @@ trait ConstructorAnnotator {
           case Some(c: ScPrimaryConstructor) => //it's ok
           case Some(fun: ScFunction)         =>
             //check order
-            if (fun.getTextRange.getStartOffset > constr.getTextRange.getStartOffset) {
+            if (fun.getTextRange.getStartOffset > constr.getTextRange
+                  .getStartOffset) {
               val annotation = holder.createErrorAnnotation(
                 self,
-                ScalaBundle.message(
-                  "called.constructor.definition.must.precede"))
-              annotation.setHighlightType(
-                ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+                ScalaBundle
+                  .message("called.constructor.definition.must.precede"))
+              annotation
+                .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
             }
           case _ =>
         }
@@ -135,8 +134,8 @@ trait ConstructorAnnotator {
             val annotation = holder.createErrorAnnotation(
               constr,
               ScalaBundle.message("constructor.invocation.expected"))
-            annotation.setHighlightType(
-              ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+            annotation
+              .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           case _ => //nothing to do in decompiled stuff
         }
     }

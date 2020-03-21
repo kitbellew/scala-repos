@@ -235,8 +235,10 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     assert(Utils.splitCommandString("a \"b c\" d") === Seq("a", "b c", "d"))
     assert(Utils.splitCommandString("\"b c\"") === Seq("b c"))
     assert(
-      Utils
-        .splitCommandString("a 'b\" c' \"d' e\"") === Seq("a", "b\" c", "d' e"))
+      Utils.splitCommandString("a 'b\" c' \"d' e\"") === Seq(
+        "a",
+        "b\" c",
+        "d' e"))
     assert(Utils.splitCommandString("a\t'b\nc'\nd") === Seq("a", "b\nc", "d"))
     assert(Utils.splitCommandString("a \"b\\\\c\"") === Seq("a", "b\\c"))
     assert(Utils.splitCommandString("a \"b\\\"c\"") === Seq("a", "b\"c"))
@@ -442,11 +444,13 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     assert(
       Utils.nonLocalPaths("hdfs:///spark.jar") === Array("hdfs:///spark.jar"))
     assert(
-      Utils.nonLocalPaths(
-        "file:/spark.jar,local:/smart.jar,family.py") === Array.empty)
+      Utils
+        .nonLocalPaths("file:/spark.jar,local:/smart.jar,family.py") === Array
+        .empty)
     assert(
-      Utils.nonLocalPaths(
-        "local:/spark.jar,file:/smart.jar,family.py") === Array.empty)
+      Utils
+        .nonLocalPaths("local:/spark.jar,file:/smart.jar,family.py") === Array
+        .empty)
     assert(
       Utils.nonLocalPaths("hdfs:/spark.jar,s3:/smart.jar") ===
         Array("hdfs:/spark.jar", "s3:/smart.jar"))
@@ -464,24 +468,25 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
 
     // Test Windows paths
     assert(
+      Utils.nonLocalPaths("C:/some/path.jar", testWindows = true) === Array
+        .empty)
+    assert(
       Utils
-        .nonLocalPaths("C:/some/path.jar", testWindows = true) === Array.empty)
+        .nonLocalPaths("file:/C:/some/path.jar", testWindows = true) === Array
+        .empty)
     assert(
-      Utils.nonLocalPaths(
-        "file:/C:/some/path.jar",
-        testWindows = true) === Array.empty)
+      Utils
+        .nonLocalPaths("file:///C:/some/path.jar", testWindows = true) === Array
+        .empty)
     assert(
-      Utils.nonLocalPaths(
-        "file:///C:/some/path.jar",
-        testWindows = true) === Array.empty)
+      Utils
+        .nonLocalPaths("local:/C:/some/path.jar", testWindows = true) === Array
+        .empty)
     assert(
-      Utils.nonLocalPaths(
-        "local:/C:/some/path.jar",
-        testWindows = true) === Array.empty)
-    assert(
-      Utils.nonLocalPaths(
-        "local:///C:/some/path.jar",
-        testWindows = true) === Array.empty)
+      Utils
+        .nonLocalPaths(
+          "local:///C:/some/path.jar",
+          testWindows = true) === Array.empty)
     assert(
       Utils.nonLocalPaths(
         "hdfs:/a.jar,C:/my.jar,s3:/another.jar",
@@ -571,10 +576,8 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
 
   test("loading properties from file") {
     val tmpDir = Utils.createTempDir()
-    val outFile = File.createTempFile(
-      "test-load-spark-properties",
-      "test",
-      tmpDir)
+    val outFile = File
+      .createTempFile("test-load-spark-properties", "test", tmpDir)
     try {
       System.setProperty("spark.test.fileNameLoadB", "2")
       Files.write(
@@ -583,9 +586,9 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
         outFile,
         StandardCharsets.UTF_8)
       val properties = Utils.getPropertiesFromFile(outFile.getAbsolutePath)
-      properties
-        .filter { case (k, v) => k.startsWith("spark.") }
-        .foreach { case (k, v) => sys.props.getOrElseUpdate(k, v) }
+      properties.filter { case (k, v) => k.startsWith("spark.") }.foreach {
+        case (k, v) => sys.props.getOrElseUpdate(k, v)
+      }
       val sparkConf = new SparkConf
       assert(sparkConf.getBoolean("spark.test.fileNameLoadA", false) === true)
       assert(sparkConf.getInt("spark.test.fileNameLoadB", 1) === 2)
@@ -607,10 +610,8 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     val tempDir = Utils.createTempDir()
     val sourceDir = new File(tempDir, "source-dir")
     val innerSourceDir = Utils.createTempDir(root = sourceDir.getPath)
-    val sourceFile = File.createTempFile(
-      "someprefix",
-      "somesuffix",
-      innerSourceDir)
+    val sourceFile = File
+      .createTempFile("someprefix", "somesuffix", innerSourceDir)
     val targetDir = new File(tempDir, "target-dir")
     Files.write("some text", sourceFile, StandardCharsets.UTF_8)
 
@@ -798,8 +799,9 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
       Utils.isDynamicAllocationEnabled(
         conf.set("spark.executor.instances", "0")) === true)
     assert(
-      Utils.isDynamicAllocationEnabled(
-        conf.set("spark.master", "local")) === false)
+      Utils
+        .isDynamicAllocationEnabled(
+          conf.set("spark.master", "local")) === false)
     assert(Utils.isDynamicAllocationEnabled(
       conf.set("spark.dynamicAllocation.testing", "true")))
   }

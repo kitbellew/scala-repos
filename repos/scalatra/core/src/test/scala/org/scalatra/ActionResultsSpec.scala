@@ -75,7 +75,8 @@ abstract class ActionResultsSpec extends MutableScalatraSpec {
 
     "infer contentType for Array[Byte]" in {
       get("/bytes") {
-        response.getContentType mustEqual "text/plain; charset=" + java.nio.charset.Charset.defaultCharset.displayName
+        response.getContentType mustEqual "text/plain; charset=" + java.nio
+          .charset.Charset.defaultCharset.displayName
       }
     }
 

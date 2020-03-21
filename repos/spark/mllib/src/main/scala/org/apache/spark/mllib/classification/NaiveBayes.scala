@@ -212,9 +212,8 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
       // Create JSON metadata.
       val metadata = compact(render(
         ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-          ("numFeatures" -> data.theta(0).length) ~ (
-          "numClasses" -> data.pi.length
-        )))
+          ("numFeatures" -> data.theta(0).length) ~ ("numClasses" -> data.pi
+          .length)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
 
       // Create Parquet data.
@@ -229,8 +228,7 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
       val dataRDD = sqlContext.read.parquet(dataPath(path))
       // Check schema explicitly since erasure makes it hard to use match-case for checking.
       checkSchema[Data](dataRDD.schema)
-      val dataArray = dataRDD
-        .select("labels", "pi", "theta", "modelType")
+      val dataArray = dataRDD.select("labels", "pi", "theta", "modelType")
         .take(1)
       assert(
         dataArray.length == 1,
@@ -266,9 +264,8 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
       // Create JSON metadata.
       val metadata = compact(render(
         ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-          ("numFeatures" -> data.theta(0).length) ~ (
-          "numClasses" -> data.pi.length
-        )))
+          ("numFeatures" -> data.theta(0).length) ~ ("numClasses" -> data.pi
+          .length)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
 
       // Create Parquet data.
@@ -417,8 +414,7 @@ class NaiveBayes private (
     // Aggregates term frequencies per label.
     // TODO: Calling combineByKey and collect creates two stages, we can implement something
     // TODO: similar to reduceByKeyLocally to save one stage.
-    val aggregated = data
-      .map(p => (p.label, p.features))
+    val aggregated = data.map(p => (p.label, p.features))
       .combineByKey[(Long, DenseVector)](
         createCombiner = (v: Vector) => {
           if (modelType == Bernoulli) { requireZeroOneBernoulliValues(v) }
@@ -434,9 +430,7 @@ class NaiveBayes private (
           BLAS.axpy(1.0, c2._2, c1._2)
           (c1._1 + c2._1, c1._2)
         }
-      )
-      .collect()
-      .sortBy(_._1)
+      ).collect().sortBy(_._1)
 
     val numLabels = aggregated.length
     var numDocuments = 0L

@@ -78,9 +78,8 @@ case class TungstenAggregate(
   // This is for testing. We force TungstenAggregationIterator to fall back to sort-based
   // aggregation once it has processed a given number of input rows.
   private val testFallbackStartsAt: Option[Int] = {
-    sqlContext.getConf(
-      "spark.sql.TungstenAggregate.testFallbackStartsAt",
-      null) match {
+    sqlContext
+      .getConf("spark.sql.TungstenAggregate.testFallbackStartsAt", null) match {
       case null | ""        => None
       case fallbackStartsAt => Some(fallbackStartsAt.toInt)
     }
@@ -132,8 +131,8 @@ case class TungstenAggregate(
 
   override def supportCodegen: Boolean = {
     // ImperativeAggregate is not supported right now
-    !aggregateExpressions.exists(
-      _.aggregateFunction.isInstanceOf[ImperativeAggregate])
+    !aggregateExpressions
+      .exists(_.aggregateFunction.isInstanceOf[ImperativeAggregate])
   }
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
@@ -161,8 +160,8 @@ case class TungstenAggregate(
     ctx.addMutableState("boolean", initAgg, s"$initAgg = false;")
 
     // generate variables for aggregation buffer
-    val functions = aggregateExpressions.map(
-      _.aggregateFunction.asInstanceOf[DeclarativeAggregate])
+    val functions = aggregateExpressions
+      .map(_.aggregateFunction.asInstanceOf[DeclarativeAggregate])
     val initExpr = functions.flatMap(f => f.initialValues)
     bufVars = initExpr.map { e =>
       val isNull = ctx.freshName("bufIsNull")
@@ -238,25 +237,23 @@ case class TungstenAggregate(
       ctx: CodegenContext,
       input: Seq[ExprCode]): String = {
     // only have DeclarativeAggregate
-    val functions = aggregateExpressions.map(
-      _.aggregateFunction.asInstanceOf[DeclarativeAggregate])
+    val functions = aggregateExpressions
+      .map(_.aggregateFunction.asInstanceOf[DeclarativeAggregate])
     val inputAttrs = functions.flatMap(_.aggBufferAttributes) ++ child.output
     val updateExpr = aggregateExpressions.flatMap { e =>
       e.mode match {
         case Partial | Complete =>
-          e.aggregateFunction
-            .asInstanceOf[DeclarativeAggregate]
+          e.aggregateFunction.asInstanceOf[DeclarativeAggregate]
             .updateExpressions
         case PartialMerge | Final =>
-          e.aggregateFunction
-            .asInstanceOf[DeclarativeAggregate]
+          e.aggregateFunction.asInstanceOf[DeclarativeAggregate]
             .mergeExpressions
       }
     }
     ctx.currentVars = bufVars ++ input
     // TODO: support subexpression elimination
-    val aggVals = updateExpr.map(
-      BindReferences.bindReference(_, inputAttrs).gen(ctx))
+    val aggVals = updateExpr
+      .map(BindReferences.bindReference(_, inputAttrs).gen(ctx))
     // aggregate buffer should be updated atomic
     val updates = aggVals.zipWithIndex.map {
       case (ev, i) => s"""
@@ -274,12 +271,11 @@ case class TungstenAggregate(
 
   private val groupingAttributes = groupingExpressions.map(_.toAttribute)
   private val groupingKeySchema = StructType.fromAttributes(groupingAttributes)
-  private val declFunctions = aggregateExpressions
-    .map(_.aggregateFunction)
+  private val declFunctions = aggregateExpressions.map(_.aggregateFunction)
     .filter(_.isInstanceOf[DeclarativeAggregate])
     .map(_.asInstanceOf[DeclarativeAggregate])
-  private val bufferSchema = StructType.fromAttributes(
-    aggregateBufferAttributes)
+  private val bufferSchema = StructType
+    .fromAttributes(aggregateBufferAttributes)
 
   // The name for HashMap
   private var hashMapTerm: String = _
@@ -321,8 +317,7 @@ case class TungstenAggregate(
 
     // update peak execution memory
     val mapMemory = hashMap.getPeakMemoryUsedBytes
-    val sorterMemory = Option(sorter)
-      .map(_.getPeakMemoryUsedBytes)
+    val sorterMemory = Option(sorter).map(_.getPeakMemoryUsedBytes)
       .getOrElse(0L)
     val peakMemory = Math.max(mapMemory, sorterMemory)
     val metrics = TaskContext.get().taskMetrics()
@@ -346,8 +341,8 @@ case class TungstenAggregate(
       val mergeExpr = declFunctions.flatMap(_.mergeExpressions)
       val mergeProjection = newMutableProjection(
         mergeExpr,
-        aggregateBufferAttributes ++ declFunctions.flatMap(
-          _.inputAggBufferAttributes),
+        aggregateBufferAttributes ++ declFunctions
+          .flatMap(_.inputAggBufferAttributes),
         subexpressionEliminationEnabled)()
       val joinedRow = new JoinedRow()
 
@@ -527,8 +522,8 @@ case class TungstenAggregate(
     ctx.currentVars = input
     val keyCode = GenerateUnsafeProjection.createCode(
       ctx,
-      groupingExpressions.map(e =>
-        BindReferences.bindReference[Expression](e, child.output)))
+      groupingExpressions
+        .map(e => BindReferences.bindReference[Expression](e, child.output)))
     val key = keyCode.value
     val buffer = ctx.freshName("aggBuffer")
 
@@ -536,12 +531,10 @@ case class TungstenAggregate(
     val updateExpr = aggregateExpressions.flatMap { e =>
       e.mode match {
         case Partial | Complete =>
-          e.aggregateFunction
-            .asInstanceOf[DeclarativeAggregate]
+          e.aggregateFunction.asInstanceOf[DeclarativeAggregate]
             .updateExpressions
         case PartialMerge | Final =>
-          e.aggregateFunction
-            .asInstanceOf[DeclarativeAggregate]
+          e.aggregateFunction.asInstanceOf[DeclarativeAggregate]
             .mergeExpressions
       }
     }
@@ -556,8 +549,8 @@ case class TungstenAggregate(
       new Array[ExprCode](aggregateBufferAttributes.length) ++ input
     ctx.INPUT_ROW = buffer
     // TODO: support subexpression elimination
-    val evals = updateExpr.map(
-      BindReferences.bindReference(_, inputAttr).gen(ctx))
+    val evals = updateExpr
+      .map(BindReferences.bindReference(_, inputAttr).gen(ctx))
     val updates = evals.zipWithIndex.map {
       case (ev, i) =>
         val dt = updateExpr(i).dataType
@@ -585,7 +578,8 @@ case class TungstenAggregate(
      UnsafeRow $buffer = null;
      if ($checkFallback) {
        // try to get the buffer from hash map
-       $buffer = $hashMapTerm.getAggregationBufferFromUnsafeRow($key, ${hashEval.value});
+       $buffer = $hashMapTerm.getAggregationBufferFromUnsafeRow($key, ${hashEval
+      .value});
      }
      if ($buffer == null) {
        if ($sorterTerm == null) {
@@ -596,7 +590,8 @@ case class TungstenAggregate(
        $resetCoulter
        // the hash map had be spilled, it should have enough memory now,
        // try  to allocate buffer again.
-       $buffer = $hashMapTerm.getAggregationBufferFromUnsafeRow($key, ${hashEval.value});
+       $buffer = $hashMapTerm.getAggregationBufferFromUnsafeRow($key, ${hashEval
+      .value});
        if ($buffer == null) {
          // failed to allocate the first page
          throw new OutOfMemoryError("No enough memory for aggregation");
@@ -629,9 +624,9 @@ case class TungstenAggregate(
 
 object TungstenAggregate {
   def supportsAggregate(aggregateBufferAttributes: Seq[Attribute]): Boolean = {
-    val aggregationBufferSchema = StructType.fromAttributes(
-      aggregateBufferAttributes)
-    UnsafeFixedWidthAggregationMap.supportsAggregationBufferSchema(
-      aggregationBufferSchema)
+    val aggregationBufferSchema = StructType
+      .fromAttributes(aggregateBufferAttributes)
+    UnsafeFixedWidthAggregationMap
+      .supportsAggregationBufferSchema(aggregationBufferSchema)
   }
 }

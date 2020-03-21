@@ -49,8 +49,8 @@ object ModelCollectionSpec {
   val thingModels = taggedThingModels + Swagger.modelToSwagger[Thing]
 
   case class OptionListThing(id: Long, things: Option[List[TaggedThing]])
-  val optionThingModels =
-    taggedThingModels + Swagger.modelToSwagger[OptionListThing]
+  val optionThingModels = taggedThingModels + Swagger
+    .modelToSwagger[OptionListThing]
 }
 
 class ModelCollectionSpec extends Specification {
@@ -89,8 +89,8 @@ class ModelCollectionSpec extends Specification {
     }
 
     "collect all the models in a nested structure" in {
-      Swagger.collectModels[TaggedThing](
-        Set.empty) must containTheSameElementsAs(
+      Swagger
+        .collectModels[TaggedThing](Set.empty) must containTheSameElementsAs(
         taggedThingModels.flatten.toSeq)
     }
 
@@ -114,21 +114,21 @@ class ModelCollectionSpec extends Specification {
     "collect models when provided as a list inside an option" in {
       val collected = Swagger.collectModels[OptionListThing](Set.empty)
       val r = collected.find(_.id == "OptionListThing")
-      r.flatMap(
-        _.properties.find(_._1 == "things").map(_._2.`type`)) must beSome(
+      r
+        .flatMap(
+          _.properties.find(_._1 == "things").map(_._2.`type`)) must beSome(
         DataType[List[TaggedThing]])
-      r.flatMap(
-        _.properties.find(_._1 == "things").map(_._2.required)) must beSome(
+      r
+        .flatMap(
+          _.properties.find(_._1 == "things").map(_._2.required)) must beSome(
         false)
     }
 
     "collect models when hiding in an option" in {
       val collected = Swagger.collectModels[Thing](Set.empty)
       collected must containTheSameElementsAs(thingModels.flatten.toSeq)
-      collected
-        .find(_.id == "Thing")
-        .flatMap(
-          _.properties.find(_._1 == "thing").map(_._2.`type`)) must beSome(
+      collected.find(_.id == "Thing").flatMap(
+        _.properties.find(_._1 == "thing").map(_._2.`type`)) must beSome(
         DataType[TaggedThing])
     }
 

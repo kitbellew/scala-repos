@@ -44,22 +44,19 @@ case class DescribeCommand(table: TableIdentifier, isExtended: Boolean)
       "col_name",
       StringType,
       nullable = false,
-      new MetadataBuilder()
-        .putString("comment", "name of the column")
+      new MetadataBuilder().putString("comment", "name of the column")
         .build())(),
     AttributeReference(
       "data_type",
       StringType,
       nullable = false,
-      new MetadataBuilder()
-        .putString("comment", "data type of the column")
+      new MetadataBuilder().putString("comment", "data type of the column")
         .build())(),
     AttributeReference(
       "comment",
       StringType,
       nullable = true,
-      new MetadataBuilder()
-        .putString("comment", "comment of the column")
+      new MetadataBuilder().putString("comment", "comment of the column")
         .build())()
   )
 }
@@ -163,8 +160,8 @@ case class RefreshTable(tableIdent: TableIdentifier) extends RunnableCommand {
     // cached version and make the new version cached lazily.
     val logicalPlan = sqlContext.sessionState.catalog.lookupRelation(tableIdent)
     // Use lookupCachedData directly since RefreshTable also takes databaseName.
-    val isCached =
-      sqlContext.cacheManager.lookupCachedData(logicalPlan).nonEmpty
+    val isCached = sqlContext.cacheManager.lookupCachedData(logicalPlan)
+      .nonEmpty
     if (isCached) {
       // Create a data frame to represent the table.
       // TODO: Use uncacheTable once it supports database name.

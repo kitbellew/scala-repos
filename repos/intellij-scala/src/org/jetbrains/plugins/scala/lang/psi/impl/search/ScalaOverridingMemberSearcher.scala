@@ -90,9 +90,8 @@ object ScalaOverridingMemberSearcher {
   def getOverridingMethods(method: ScNamedElement): Array[PsiNamedElement] = {
     val result = new ArrayBuffer[PsiNamedElement]
     inReadAction {
-      for (psiMethod <- ScalaOverridingMemberSearcher.search(
-             method,
-             deep = true)) { result += psiMethod }
+      for (psiMethod <- ScalaOverridingMemberSearcher
+             .search(method, deep = true)) { result += psiMethod }
     }
     result.toArray
   }
@@ -165,9 +164,10 @@ object ScalaOverridingMemberSearcher {
                 t: Signature,
                 node: TypeDefinitionMembers.SignatureNodes.Node) = signsIterator
                 .next()
-              if (PsiTreeUtil.getParentOfType(
-                    t.namedElement,
-                    classOf[PsiClass]) == inheritor) {
+              if (PsiTreeUtil
+                    .getParentOfType(
+                      t.namedElement,
+                      classOf[PsiClass]) == inheritor) {
                 val supersIterator = node.supers.iterator
                 while (supersIterator.hasNext) {
                   val s = supersIterator.next()
@@ -185,16 +185,14 @@ object ScalaOverridingMemberSearcher {
 
     var break = false
     val inheritors = inReadAction {
-      ClassInheritorsSearch
-        .search(parentClass, scope, true)
+      ClassInheritorsSearch.search(parentClass, scope, true)
         .toArray(PsiClass.EMPTY_ARRAY)
     }
     for (clazz <- inheritors if !break) { break = !process(clazz) }
 
     if (withSelfType) {
-      val inheritors = ScalaStubsUtil.getSelfTypeInheritors(
-        parentClass,
-        parentClass.getResolveScope)
+      val inheritors = ScalaStubsUtil
+        .getSelfTypeInheritors(parentClass, parentClass.getResolveScope)
       break = false
       for (clazz <- inheritors if !break) { break = !process(clazz) }
     }

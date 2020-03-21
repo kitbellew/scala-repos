@@ -11,7 +11,6 @@ object Test extends A2 {
   def main(args: Array[String]) {
     println(
       Seq(classOf[T1], classOf[A1], classOf[A2])
-        .flatMap(_.getDeclaredMethods.map(_.toString).sorted)
-        .mkString("\n"))
+        .flatMap(_.getDeclaredMethods.map(_.toString).sorted).mkString("\n"))
   }
 }

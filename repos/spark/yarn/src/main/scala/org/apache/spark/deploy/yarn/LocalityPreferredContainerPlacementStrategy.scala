@@ -113,14 +113,13 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
       hostToLocalTaskCount,
       allocatedHostToContainersMap,
       localityMatchedPendingAllocations)
-    val updatedLocalityAwareContainerNum =
-      updatedHostToContainerCount.values.sum
+    val updatedLocalityAwareContainerNum = updatedHostToContainerCount.values
+      .sum
 
     // The number of containers to allocate, divided into two groups, one with preferred locality,
     // and the other without locality preference.
-    val requiredLocalityFreeContainerNum = math.max(
-      0,
-      numContainer - updatedLocalityAwareContainerNum)
+    val requiredLocalityFreeContainerNum = math
+      .max(0, numContainer - updatedLocalityAwareContainerNum)
     val requiredLocalityAwareContainerNum =
       numContainer - requiredLocalityFreeContainerNum
 
@@ -140,8 +139,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
       // number, which is used for locality preferred host calculating.
       var preferredLocalityRatio = updatedHostToContainerCount.mapValues {
         ratio =>
-          val adjustedRatio =
-            ratio.toDouble * requiredLocalityAwareContainerNum / largestRatio
+          val adjustedRatio = ratio
+            .toDouble * requiredLocalityAwareContainerNum / largestRatio
           adjustedRatio.ceil.toInt
       }
 
@@ -170,8 +169,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
     */
   private def numExecutorsPending(numTasksPending: Int): Int = {
     val coresPerExecutor = resource.getVirtualCores
-    (numTasksPending * sparkConf.get(
-      CPUS_PER_TASK) + coresPerExecutor - 1) / coresPerExecutor
+    (numTasksPending * sparkConf
+      .get(CPUS_PER_TASK) + coresPerExecutor - 1) / coresPerExecutor
   }
 
   /**
@@ -202,9 +201,9 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
           count.toDouble * numExecutorsPending(
             localityAwareTasks) / totalLocalTaskNum
         // Take the locality of pending containers into consideration
-        val existedCount =
-          allocatedHostToContainersMap.get(host).map(_.size).getOrElse(0) +
-            pendingHostToContainersMap.getOrElse(host, 0.0)
+        val existedCount = allocatedHostToContainersMap.get(host).map(_.size)
+          .getOrElse(0) +
+          pendingHostToContainersMap.getOrElse(host, 0.0)
 
         // If existing container can not fully satisfy the expected number of container,
         // the required container number is expected count minus existed count. Otherwise the
@@ -236,8 +235,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
     }
 
     val possibleTotalContainerNum = pendingHostToContainerCount.values.sum
-    val localityMatchedPendingNum =
-      localityMatchedPendingAllocations.size.toDouble
+    val localityMatchedPendingNum = localityMatchedPendingAllocations.size
+      .toDouble
     pendingHostToContainerCount
       .mapValues(_ * localityMatchedPendingNum / possibleTotalContainerNum)
       .toMap

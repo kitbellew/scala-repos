@@ -54,19 +54,17 @@ trait ClassTag[T]
     runtimeClass match {
       case java.lang.Byte.TYPE  => new Array[Byte](len).asInstanceOf[Array[T]]
       case java.lang.Short.TYPE => new Array[Short](len).asInstanceOf[Array[T]]
-      case java.lang.Character.TYPE =>
-        new Array[Char](len).asInstanceOf[Array[T]]
+      case java.lang.Character.TYPE => new Array[Char](len)
+          .asInstanceOf[Array[T]]
       case java.lang.Integer.TYPE => new Array[Int](len).asInstanceOf[Array[T]]
       case java.lang.Long.TYPE    => new Array[Long](len).asInstanceOf[Array[T]]
       case java.lang.Float.TYPE   => new Array[Float](len).asInstanceOf[Array[T]]
-      case java.lang.Double.TYPE =>
-        new Array[Double](len).asInstanceOf[Array[T]]
-      case java.lang.Boolean.TYPE =>
-        new Array[Boolean](len).asInstanceOf[Array[T]]
+      case java.lang.Double.TYPE => new Array[Double](len)
+          .asInstanceOf[Array[T]]
+      case java.lang.Boolean.TYPE => new Array[Boolean](len)
+          .asInstanceOf[Array[T]]
       case java.lang.Void.TYPE => new Array[Unit](len).asInstanceOf[Array[T]]
-      case _ =>
-        java.lang.reflect.Array
-          .newInstance(runtimeClass, len)
+      case _ => java.lang.reflect.Array.newInstance(runtimeClass, len)
           .asInstanceOf[Array[T]]
     }
 
@@ -80,23 +78,23 @@ trait ClassTag[T]
     */
   def unapply(x: Any): Option[T] =
     if (null != x && ((runtimeClass.isInstance(x))
-        || (x.isInstanceOf[Byte] && runtimeClass.isAssignableFrom(
-          classOf[Byte]))
-        || (x.isInstanceOf[Short] && runtimeClass.isAssignableFrom(
-          classOf[Short]))
-        || (x.isInstanceOf[Char] && runtimeClass.isAssignableFrom(
-          classOf[Char]))
+        || (x.isInstanceOf[Byte] && runtimeClass
+          .isAssignableFrom(classOf[Byte]))
+        || (x.isInstanceOf[Short] && runtimeClass
+          .isAssignableFrom(classOf[Short]))
+        || (x.isInstanceOf[Char] && runtimeClass
+          .isAssignableFrom(classOf[Char]))
         || (x.isInstanceOf[Int] && runtimeClass.isAssignableFrom(classOf[Int]))
-        || (x.isInstanceOf[Long] && runtimeClass.isAssignableFrom(
-          classOf[Long]))
-        || (x.isInstanceOf[Float] && runtimeClass.isAssignableFrom(
-          classOf[Float]))
-        || (x.isInstanceOf[Double] && runtimeClass.isAssignableFrom(
-          classOf[Double]))
-        || (x.isInstanceOf[Boolean] && runtimeClass.isAssignableFrom(
-          classOf[Boolean]))
-        || (x.isInstanceOf[Unit] && runtimeClass.isAssignableFrom(
-          classOf[Unit])))) Some(x.asInstanceOf[T])
+        || (x.isInstanceOf[Long] && runtimeClass
+          .isAssignableFrom(classOf[Long]))
+        || (x.isInstanceOf[Float] && runtimeClass
+          .isAssignableFrom(classOf[Float]))
+        || (x.isInstanceOf[Double] && runtimeClass
+          .isAssignableFrom(classOf[Double]))
+        || (x.isInstanceOf[Boolean] && runtimeClass
+          .isAssignableFrom(classOf[Boolean]))
+        || (x.isInstanceOf[Unit] && runtimeClass
+          .isAssignableFrom(classOf[Unit])))) Some(x.asInstanceOf[T])
     else None
 
   // TODO: deprecate overloads in 2.12.0, remove in 2.13.0
@@ -113,16 +111,15 @@ trait ClassTag[T]
   private[this] def unapplyImpl(
       x: Any,
       primitiveCls: java.lang.Class[_]): Option[T] =
-    if (runtimeClass.isInstance(x) || runtimeClass.isAssignableFrom(
-          primitiveCls)) Some(x.asInstanceOf[T])
+    if (runtimeClass.isInstance(x) || runtimeClass
+          .isAssignableFrom(primitiveCls)) Some(x.asInstanceOf[T])
     else None
 
   // case class accessories
   override def canEqual(x: Any) = x.isInstanceOf[ClassTag[_]]
   override def equals(x: Any) =
     x.isInstanceOf[ClassTag[_]] && this.runtimeClass == x
-      .asInstanceOf[ClassTag[_]]
-      .runtimeClass
+      .asInstanceOf[ClassTag[_]].runtimeClass
   override def hashCode = scala.runtime.ScalaRunTime.hash(runtimeClass)
   override def toString = {
     def prettyprint(clazz: jClass[_]): String =

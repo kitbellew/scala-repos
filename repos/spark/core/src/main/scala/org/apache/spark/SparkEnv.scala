@@ -85,8 +85,7 @@ class SparkEnv(
 
   // A general, soft-reference map for metadata needed during HadoopRDD split computation
   // (e.g., HadoopFileRDD uses this to cache JobConfs and InputFormats).
-  private[spark] val hadoopJobMetadata = new MapMaker()
-    .softValues()
+  private[spark] val hadoopJobMetadata = new MapMaker().softValues()
     .makeMap[String, Any]()
 
   private var driverTmpDirToDelete: Option[String] = None
@@ -279,20 +278,16 @@ object SparkEnv extends Logging {
       // Look for a constructor taking a SparkConf and a boolean isDriver, then one taking just
       // SparkConf, then one taking no arguments
       try {
-        cls
-          .getConstructor(classOf[SparkConf], java.lang.Boolean.TYPE)
-          .newInstance(conf, new java.lang.Boolean(isDriver))
-          .asInstanceOf[T]
+        cls.getConstructor(classOf[SparkConf], java.lang.Boolean.TYPE)
+          .newInstance(conf, new java.lang.Boolean(isDriver)).asInstanceOf[T]
       } catch {
         case _: NoSuchMethodException =>
           try {
-            cls
-              .getConstructor(classOf[SparkConf])
-              .newInstance(conf)
+            cls.getConstructor(classOf[SparkConf]).newInstance(conf)
               .asInstanceOf[T]
           } catch {
-            case _: NoSuchMethodException =>
-              cls.getConstructor().newInstance().asInstanceOf[T]
+            case _: NoSuchMethodException => cls.getConstructor().newInstance()
+                .asInstanceOf[T]
           }
       }
     }
@@ -343,14 +338,12 @@ object SparkEnv extends Logging {
       "tungsten-sort" -> "org.apache.spark.shuffle.sort.SortShuffleManager"
     )
     val shuffleMgrName = conf.get("spark.shuffle.manager", "sort")
-    val shuffleMgrClass = shortShuffleMgrNames.getOrElse(
-      shuffleMgrName.toLowerCase,
-      shuffleMgrName)
+    val shuffleMgrClass = shortShuffleMgrNames
+      .getOrElse(shuffleMgrName.toLowerCase, shuffleMgrName)
     val shuffleManager = instantiateClass[ShuffleManager](shuffleMgrClass)
 
-    val useLegacyMemoryManager = conf.getBoolean(
-      "spark.memory.useLegacyMode",
-      false)
+    val useLegacyMemoryManager = conf
+      .getBoolean("spark.memory.useLegacyMode", false)
     val memoryManager: MemoryManager =
       if (useLegacyMemoryManager) {
         new StaticMemoryManager(conf, numUsableCores)
@@ -393,10 +386,8 @@ object SparkEnv extends Logging {
         // sinks specified in the metrics configuration file will want to incorporate this executor's
         // ID into the metrics they report.
         conf.set("spark.executor.id", executorId)
-        val ms = MetricsSystem.createMetricsSystem(
-          "executor",
-          conf,
-          securityManager)
+        val ms = MetricsSystem
+          .createMetricsSystem("executor", conf, securityManager)
         ms.start()
         ms
       }
@@ -406,8 +397,7 @@ object SparkEnv extends Logging {
     // directory.
     val sparkFilesDir: String =
       if (isDriver) {
-        Utils
-          .createTempDir(Utils.getLocalDir(conf), "userFiles")
+        Utils.createTempDir(Utils.getLocalDir(conf), "userFiles")
           .getAbsolutePath
       } else { "." }
 
@@ -477,10 +467,8 @@ object SparkEnv extends Logging {
     }.sorted
 
     // Class paths including all added jars and files
-    val classPathEntries = javaClassPath
-      .split(File.pathSeparator)
-      .filterNot(_.isEmpty)
-      .map((_, "System Classpath"))
+    val classPathEntries = javaClassPath.split(File.pathSeparator)
+      .filterNot(_.isEmpty).map((_, "System Classpath"))
     val addedJarsAndFiles = (addedJars ++ addedFiles).map((_, "Added By User"))
     val classPaths = (addedJarsAndFiles ++ classPathEntries).sorted
 

@@ -98,8 +98,8 @@ trait CompletionControl {
         case _       => ""
       }
 
-      val constructing =
-        ConstructingRegexp.findFirstMatchIn(preceding).isDefined
+      val constructing = ConstructingRegexp.findFirstMatchIn(preceding)
+        .isDefined
 
       val (src, p, patched) =
         if (defaultPrefix.isEmpty) {
@@ -112,12 +112,8 @@ trait CompletionControl {
           val contents = Array.ofDim[Char](orig.length + 1)
           System.arraycopy(orig, 0, contents, 0, point)
           contents(point) = 'a'
-          System.arraycopy(
-            orig,
-            point,
-            contents,
-            point + 1,
-            orig.length - point)
+          System
+            .arraycopy(orig, point, contents, point + 1, orig.length - point)
 
           // uses the same VirtualFile as the original
           val src = new BatchSourceFile(inputP.source.file, contents)
@@ -175,8 +171,8 @@ trait CompletionControl {
                 defaultPrefix,
                 constructing))
             case Import(expr, _) =>
-              val topLevel =
-                ImportTopLevelRegexp.findFirstMatchIn(preceding).isDefined
+              val topLevel = ImportTopLevelRegexp.findFirstMatchIn(preceding)
+                .isDefined
               if (topLevel) {
                 Some(ScopeContext(
                   src,
@@ -200,13 +196,11 @@ trait CompletionControl {
       contextOpt match {
         case Some(context) => CompletionInfoList(
             context.prefix,
-            makeAll(context, maxResults, caseSens)
-              .sortWith({ (c1, c2) =>
-                c1.relevance > c2.relevance ||
-                (c1.relevance == c2.relevance &&
-                c1.name.length < c2.name.length)
-              })
-              .take(maxResults)
+            makeAll(context, maxResults, caseSens).sortWith({ (c1, c2) =>
+              c1.relevance > c2.relevance ||
+              (c1.relevance == c2.relevance &&
+              c1.name.length < c2.name.length)
+            }).take(maxResults)
           )
         case _ => CompletionInfoList("", Nil)
       }
@@ -298,9 +292,8 @@ trait CompletionControl {
         m match {
           case m @ ScopeMember(sym, tpe, accessible, viaView) =>
             val p = sym.pos
-            val inSymbol = p.isRange && (
-              context.offset >= p.startOrCursor && context.offset <= p.endOrCursor
-            )
+            val inSymbol = p.isRange && (context.offset >= p
+              .startOrCursor && context.offset <= p.endOrCursor)
             if (!sym.isConstructor && !inSymbol) {
               buff ++= toCompletionInfo(
                 context,
@@ -398,22 +391,19 @@ trait Completion {
         val memberSyms = packageMembers(sym).filterNot { s =>
           s == NoSymbol || s.nameString.contains("$")
         }
-        memberSyms
-          .flatMap { s =>
-            val name =
-              if (s.hasPackageFlag) { s.nameString }
-              else { typeShortName(s) }
-            if (name.startsWith(prefix))
-              Some(CompletionInfo(
-                name,
-                CompletionSignature(List.empty, "", false),
-                isCallable = false,
-                50,
-                None))
-            else None
-          }
-          .toList
-          .sortBy(ci => (ci.relevance, ci.name))
+        memberSyms.flatMap { s =>
+          val name =
+            if (s.hasPackageFlag) { s.nameString }
+            else { typeShortName(s) }
+          if (name.startsWith(prefix))
+            Some(CompletionInfo(
+              name,
+              CompletionSignature(List.empty, "", false),
+              isCallable = false,
+              50,
+              None))
+          else None
+        }.toList.sortBy(ci => (ci.relevance, ci.name))
       case _ => List.empty
     }
   }
@@ -450,22 +440,19 @@ object CompletionUtil {
     val req = TypeCompletionsReq(prefix, maxResults)
     import scala.concurrent.ExecutionContext.Implicits.{global => exe}
     val askRes = Patterns.ask(indexer, req, Timeout(1000.milliseconds))
-    askRes
-      .map {
-        case s: SymbolSearchResults => s.syms.map { s =>
-            CompletionInfo(
-              s.localName,
-              CompletionSignature(List.empty, s.name, false),
-              isCallable = false,
-              40,
-              None)
-          }
-        case unknown =>
-          throw new IllegalStateException(
-            "Unexpected response type from request:" + unknown)
-      }
-      .map(Some(_))
-      .recover { case _ => None }
+    askRes.map {
+      case s: SymbolSearchResults => s.syms.map { s =>
+          CompletionInfo(
+            s.localName,
+            CompletionSignature(List.empty, s.name, false),
+            isCallable = false,
+            40,
+            None)
+        }
+      case unknown =>
+        throw new IllegalStateException(
+          "Unexpected response type from request:" + unknown)
+    }.map(Some(_)).recover { case _ => None }
   }
 
 }

@@ -73,7 +73,8 @@ class ScParameterImpl protected (
               exprs(0) match {
                 case literal: ScLiteral
                     if literal.getNode.getFirstChildNode != null &&
-                      literal.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tSYMBOL =>
+                      literal.getNode.getFirstChildNode
+                        .getElementType == ScalaTokenTypes.tSYMBOL =>
                   val literalText = literal.getText
                   if (literalText.length < 2) None
                   else Some(literalText.substring(1))
@@ -110,7 +111,8 @@ class ScParameterImpl protected (
       if (stub != null) {
         stub.asInstanceOf[ScParameterStub].getTypeText match {
           case ""
-              if stub.getParentStub != null && stub.getParentStub.getParentStub != null &&
+              if stub.getParentStub != null && stub.getParentStub
+                .getParentStub != null &&
                 stub.getParentStub.getParentStub.getParentStub
                   .isInstanceOf[ScFunctionStub] =>
             return Failure("Cannot infer type", Some(this))
@@ -175,14 +177,16 @@ class ScParameterImpl protected (
         if (length != 1) {
           if (index != length) {
             var n = node.getTreeNext
-            while (n != null && n.getElementType != ScalaTokenTypes.tRPARENTHESIS &&
+            while (n != null && n.getElementType != ScalaTokenTypes
+                     .tRPARENTHESIS &&
                    !n.getPsi.isInstanceOf[ScParameter]) {
               toRemove += n
               n = n.getTreeNext
             }
           } else {
             var n = node.getTreePrev
-            while (n != null && n.getElementType != ScalaTokenTypes.tLPARENTHESIS &&
+            while (n != null && n.getElementType != ScalaTokenTypes
+                     .tLPARENTHESIS &&
                    !n.getPsi.isInstanceOf[ScParameter]) {
               toRemove += n
               n = n.getTreePrev

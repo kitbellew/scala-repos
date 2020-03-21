@@ -28,10 +28,8 @@ class InlineImplicitConversionIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val expr: ScExpression = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScExpression],
-      false)
+    val expr: ScExpression = PsiTreeUtil
+      .getParentOfType(element, classOf[ScExpression], false)
     if (expr == null) return false
 
     val implicitConversions = expr.getImplicitConversions(fromUnder = true)
@@ -42,10 +40,8 @@ class InlineImplicitConversionIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val expr: ScExpression = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScExpression],
-      false)
+    val expr: ScExpression = PsiTreeUtil
+      .getParentOfType(element, classOf[ScExpression], false)
     if (expr == null || !expr.isValid) return
 
     val implicitConversions = expr.getImplicitConversions(fromUnder = true)

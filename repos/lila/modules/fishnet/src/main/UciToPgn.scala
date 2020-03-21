@@ -16,9 +16,9 @@ private object UciToPgn {
 
   def apply(replay: Replay, analysis: Analysis): WithErrors[Analysis] = {
 
-    val pliesWithAdviceAndVariation = (analysis.advices collect {
-      case a if a.info.hasVariation => a.ply
-    }).toSet
+    val pliesWithAdviceAndVariation =
+      (analysis.advices collect { case a if a.info.hasVariation => a.ply })
+        .toSet
 
     val onlyMeaningfulVariations: List[Info] = analysis.infos map { info =>
       if (pliesWithAdviceAndVariation(info.ply)) info else info.dropVariation
@@ -32,20 +32,20 @@ private object UciToPgn {
           replay moveAtPly ply map (_.fold(
             _.situationBefore,
             _.situationBefore)) toValid "No move found"
-        ucis ← variation
-          .map(Uci.Move.apply)
+        ucis ← variation.map(Uci.Move.apply)
           .sequence toValid "Invalid UCI moves " + variation
-        moves ← ucis.foldLeft[Valid[(Situation, List[Move])]](success(
-          situation -> Nil)) {
-          case (scalaz.Success((sit, moves)), uci) =>
-            sit.move(
-              uci.orig,
-              uci.dest,
-              uci.promotion) prefixFailuresWith s"ply $ply " map { move =>
-              move.situationAfter -> (move :: moves)
-            }
-          case (failure, _) => failure
-        }
+        moves ← ucis
+          .foldLeft[Valid[(Situation, List[Move])]](success(situation -> Nil)) {
+            case (scalaz.Success((sit, moves)), uci) =>
+              sit
+                .move(
+                  uci.orig,
+                  uci.dest,
+                  uci.promotion) prefixFailuresWith s"ply $ply " map { move =>
+                move.situationAfter -> (move :: moves)
+              }
+            case (failure, _) => failure
+          }
       } yield moves._2.reverse map Dumper.apply
 
     onlyMeaningfulVariations.foldLeft[WithErrors[List[Info]]]((Nil, Nil)) {

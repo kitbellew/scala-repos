@@ -28,8 +28,7 @@ class DataSource(val dsp: DataSourceParams)
 
     // create a RDD of (entityID, User)
     val usersRDD: RDD[(String, User)] = eventsDb
-      .aggregateProperties(appId = dsp.appId, entityType = "user")(sc)
-      .map {
+      .aggregateProperties(appId = dsp.appId, entityType = "user")(sc).map {
         case (entityId, properties) =>
           val user =
             try { User() }
@@ -42,19 +41,17 @@ class DataSource(val dsp: DataSourceParams)
               }
             }
           (entityId, user)
-      }
-      .cache()
+      }.cache()
 
     // get all "user" "follow" "followedUser" events
-    val followEventsRDD: RDD[FollowEvent] = eventsDb
-      .find(
-        appId = dsp.appId,
-        entityType = Some("user"),
-        eventNames = Some(List("follow")),
-        // targetEntityType is optional field of an event.
-        targetEntityType = Some(Some("user"))
-      )(sc)
-      // eventsDb.find() returns RDD[Event]
+    val followEventsRDD: RDD[FollowEvent] = eventsDb.find(
+      appId = dsp.appId,
+      entityType = Some("user"),
+      eventNames = Some(List("follow")),
+      // targetEntityType is optional field of an event.
+      targetEntityType = Some(Some("user"))
+    )(sc)
+    // eventsDb.find() returns RDD[Event]
       .map { event =>
         val followEvent =
           try {
@@ -75,8 +72,7 @@ class DataSource(val dsp: DataSourceParams)
             }
           }
         followEvent
-      }
-      .cache()
+      }.cache()
 
     new TrainingData(users = usersRDD, followEvents = followEventsRDD)
   }

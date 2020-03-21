@@ -47,8 +47,8 @@ class DataSourceTest {
     try {
       try Await.result(db.run(sqlu"dummy"), Duration.Inf)
       catch { case ex: SQLException => }
-      val (url, info) = MockDriver.getLast.getOrElse(
-        fail("No connection data recorded").asInstanceOf[Nothing])
+      val (url, info) = MockDriver.getLast
+        .getOrElse(fail("No connection data recorded").asInstanceOf[Nothing])
       assertEquals("jdbc:postgresql://host/dbname", url)
       assertEquals("user", info.getProperty("user"))
       assertEquals("pass", info.getProperty("password"))

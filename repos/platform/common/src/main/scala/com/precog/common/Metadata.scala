@@ -113,15 +113,13 @@ object Metadata {
         m2: => Map[MetadataType, Metadata]) =
       m1.foldLeft(m2) { (acc, t) =>
         val (mtype, meta) = t
-        acc + (
-          mtype -> acc.get(mtype).map(combineMetadata(_, meta)).getOrElse(meta)
-        )
+        acc + (mtype -> acc.get(mtype).map(combineMetadata(_, meta))
+          .getOrElse(meta))
       }
 
     def combineMetadata(m1: Metadata, m2: Metadata) =
-      m1.merge(m2)
-        .getOrElse(sys.error(
-          "Invalid attempt to combine incompatible metadata"))
+      m1.merge(m2).getOrElse(sys.error(
+        "Invalid attempt to combine incompatible metadata"))
   }
 }
 
@@ -152,9 +150,8 @@ case class BooleanValueStats(count: Long, trueCount: Long)
 }
 
 object BooleanValueStats extends MetadataType {
-  implicit val iso = Iso.hlist(
-    BooleanValueStats.apply _,
-    BooleanValueStats.unapply _)
+  implicit val iso = Iso
+    .hlist(BooleanValueStats.apply _, BooleanValueStats.unapply _)
   val schemaV1 = "count" :: "trueCount" :: HNil
   implicit val decomposerV1
       : Decomposer[BooleanValueStats] = decomposerV[BooleanValueStats](
@@ -224,9 +221,8 @@ case class DoubleValueStats(count: Long, min: Double, max: Double)
 }
 
 object DoubleValueStats extends MetadataType {
-  implicit val iso = Iso.hlist(
-    DoubleValueStats.apply _,
-    DoubleValueStats.unapply _)
+  implicit val iso = Iso
+    .hlist(DoubleValueStats.apply _, DoubleValueStats.unapply _)
   val schemaV1 = "count" :: "min" :: "max" :: HNil
   implicit val decomposerV1
       : Decomposer[DoubleValueStats] = decomposerV[DoubleValueStats](
@@ -261,9 +257,8 @@ case class BigDecimalValueStats(count: Long, min: BigDecimal, max: BigDecimal)
 }
 
 object BigDecimalValueStats extends MetadataType {
-  implicit val iso = Iso.hlist(
-    BigDecimalValueStats.apply _,
-    BigDecimalValueStats.unapply _)
+  implicit val iso = Iso
+    .hlist(BigDecimalValueStats.apply _, BigDecimalValueStats.unapply _)
   val schemaV1 = "count" :: "min" :: "max" :: HNil
   implicit val decomposerV1
       : Decomposer[BigDecimalValueStats] = decomposerV[BigDecimalValueStats](
@@ -298,9 +293,8 @@ case class StringValueStats(count: Long, min: String, max: String)
 }
 
 object StringValueStats extends MetadataType {
-  implicit val iso = Iso.hlist(
-    StringValueStats.apply _,
-    StringValueStats.unapply _)
+  implicit val iso = Iso
+    .hlist(StringValueStats.apply _, StringValueStats.unapply _)
   val schemaV1 = "count" :: "min" :: "max" :: HNil
   implicit val decomposerV1
       : Decomposer[StringValueStats] = decomposerV[StringValueStats](

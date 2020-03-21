@@ -238,9 +238,7 @@ private[graphx] abstract class VertexPartitionBaseOps[VD: ClassTag, Self[
     val hashMap = new GraphXPrimitiveKeyOpenHashMap[VertexId, VD]
     val arbitraryMerge = (a: VD, b: VD) => a
     for ((k, v) <- self.iterator) { hashMap.setMerge(k, v, arbitraryMerge) }
-    this
-      .withIndex(hashMap.keySet)
-      .withValues(hashMap._values)
+    this.withIndex(hashMap.keySet).withValues(hashMap._values)
       .withMask(hashMap.keySet.getBitSet)
   }
 

@@ -18,16 +18,13 @@ class TestTapFactoryTest extends WordSpec with Matchers {
       val testTapFactory = TestTapFactory(testSource, new Fields())
 
       def createIllegalTap(): Tap[Any, Any, Any] =
-        testTapFactory
-          .createTap(Read)(testMode)
+        testTapFactory.createTap(Read)(testMode)
           .asInstanceOf[Tap[Any, Any, Any]]
 
       the[IllegalArgumentException] thrownBy {
         createIllegalTap()
-      } should have message (
-        "requirement failed: " + TestTapFactory.sourceNotFoundError.format(
-          testSource)
-      )
+      } should have message ("requirement failed: " + TestTapFactory
+        .sourceNotFoundError.format(testSource))
     }
   }
 }

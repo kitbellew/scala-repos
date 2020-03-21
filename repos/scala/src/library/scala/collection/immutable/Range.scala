@@ -135,11 +135,8 @@ class Range(val start: Int, val end: Int, val step: Int)
   override def length = if (numRangeElements < 0) fail() else numRangeElements
 
   private def description =
-    "%d %s %d by %s".format(
-      start,
-      if (isInclusive) "to" else "until",
-      end,
-      step)
+    "%d %s %d by %s"
+      .format(start, if (isInclusive) "to" else "until", end, step)
   private def fail() =
     throw new IllegalArgumentException(
       description + ": seqs cannot contain more than Int.MaxValue elements.")
@@ -387,7 +384,8 @@ class Range(val start: Int, val end: Int, val step: Int)
             x.nonEmpty && start == x.start && { // ...so other must contain something and have same start
               val l0 = last
               (l0 == x.last && ( // And same end
-                start == l0 || step == x.step // And either the same step, or not take any steps
+                start == l0 || step == x
+                  .step // And either the same step, or not take any steps
               ))
             }
         }
@@ -513,8 +511,9 @@ object Range {
       BigDecimal(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
 
     def inclusive(start: Double, end: Double, step: Double) =
-      BigDecimal
-        .inclusive(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
+      BigDecimal.inclusive(toBD(start), toBD(end), toBD(step)) mapRange (
+        _.doubleValue
+      )
   }
 
   // As there is no appealing default step size for not-really-integral ranges,

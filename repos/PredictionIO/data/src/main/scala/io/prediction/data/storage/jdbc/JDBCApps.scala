@@ -40,7 +40,8 @@ class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
       val q =
         if (app.id == 0) {
           sql"""
-      insert into $tableName (name, description) values(${app.name}, ${app.description})
+      insert into $tableName (name, description) values(${app.name}, ${app
+            .description})
       """
         } else {
           sql"""
@@ -57,9 +58,7 @@ class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
           App(
             id = rs.int("id"),
             name = rs.string("name"),
-            description = rs.stringOpt("description")))
-        .single()
-        .apply()
+            description = rs.stringOpt("description"))).single().apply()
     }
 
   def getByName(name: String): Option[App] =
@@ -69,21 +68,16 @@ class JDBCApps(client: String, config: StorageClientConfig, prefix: String)
           App(
             id = rs.int("id"),
             name = rs.string("name"),
-            description = rs.stringOpt("description")))
-        .single()
-        .apply()
+            description = rs.stringOpt("description"))).single().apply()
     }
 
   def getAll(): Seq[App] =
     DB readOnly { implicit session =>
-      sql"SELECT id, name, description FROM $tableName"
-        .map(rs =>
-          App(
-            id = rs.int("id"),
-            name = rs.string("name"),
-            description = rs.stringOpt("description")))
-        .list()
-        .apply()
+      sql"SELECT id, name, description FROM $tableName".map(rs =>
+        App(
+          id = rs.int("id"),
+          name = rs.string("name"),
+          description = rs.stringOpt("description"))).list().apply()
     }
 
   def update(app: App): Unit =

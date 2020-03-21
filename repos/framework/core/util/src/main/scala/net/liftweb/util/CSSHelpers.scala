@@ -164,8 +164,7 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
 
       case Success(_, remaining) =>
         val remainingString = remaining.source
-          .subSequence(remaining.offset, remaining.source.length)
-          .toString
+          .subSequence(remaining.offset, remaining.source.length).toString
 
         common.Failure(
           s"Parser did not consume all input. Parser error? Unconsumed:\n$remainingString")

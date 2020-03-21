@@ -88,11 +88,9 @@ private[akka] object EventStreamUnsubscriber {
   def start(system: ActorSystem, stream: EventStream) = {
     val debug = system.settings.config
       .getBoolean("akka.actor.debug.event-stream")
-    system
-      .asInstanceOf[ExtendedActorSystem]
-      .systemActorOf(
-        props(stream, debug),
-        "eventStreamUnsubscriber-" + unsubscribersCount.incrementAndGet())
+    system.asInstanceOf[ExtendedActorSystem].systemActorOf(
+      props(stream, debug),
+      "eventStreamUnsubscriber-" + unsubscribersCount.incrementAndGet())
   }
 
 }
@@ -176,12 +174,9 @@ private[akka] object ActorClassificationUnsubscriber {
       debug: Boolean = false) = {
     val debug = system.settings.config
       .getBoolean("akka.actor.debug.event-stream")
-    system
-      .asInstanceOf[ExtendedActorSystem]
-      .systemActorOf(
-        props(bus, debug),
-        "actorClassificationUnsubscriber-" + unsubscribersCount
-          .incrementAndGet())
+    system.asInstanceOf[ExtendedActorSystem].systemActorOf(
+      props(bus, debug),
+      "actorClassificationUnsubscriber-" + unsubscribersCount.incrementAndGet())
   }
 
   private def props(eventBus: ManagedActorClassification, debug: Boolean) =

@@ -34,7 +34,8 @@ final class DataSet[V, @sp(Double) F, @sp(Double) K](
       case (v, i) => s"    %2d. ${v.label} (${varType(v)})" format (i + 1)
     } mkString "\n"
 
-    s"""$name - ${data.size} points with ${variables.size} variables (${space.dimensions} effective):
+    s"""$name - ${data.size} points with ${variables.size} variables (${space
+         .dimensions} effective):
        |$vars""".stripMargin
   }
 }
@@ -69,18 +70,18 @@ object DataSet {
 
     // Perform our second pass, converting strings to variables.
     val maps = builders map (_.result())
-    val (dimensions, datar) = lines.foldLeft(
-      (Int.MaxValue, List.empty[(CC[F], K)])) {
-      case ((dim, res), fields) =>
-        val bldr = cbf()
-        val vd = (maps zip fields).foldLeft(0) {
-          case (acc, (f, s)) =>
-            val vars = f(s)
-            bldr ++= vars
-            acc + vars.size
-        }
-        (math.min(dim, vd), (bldr.result(), out._2(fields(out._1))) :: res)
-    }
+    val (dimensions, datar) = lines
+      .foldLeft((Int.MaxValue, List.empty[(CC[F], K)])) {
+        case ((dim, res), fields) =>
+          val bldr = cbf()
+          val vd = (maps zip fields).foldLeft(0) {
+            case (acc, (f, s)) =>
+              val vars = f(s)
+              bldr ++= vars
+              acc + vars.size
+          }
+          (math.min(dim, vd), (bldr.result(), out._2(fields(out._1))) :: res)
+      }
 
     (dimensions, datar.reverse)
   }

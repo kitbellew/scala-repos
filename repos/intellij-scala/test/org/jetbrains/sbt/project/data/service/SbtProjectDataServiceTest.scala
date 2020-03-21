@@ -69,9 +69,8 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
       "-Werror")
     importProjectData(generateProject(Seq.empty, None, options, ""))
 
-    val compilerOptions = JavacConfiguration.getOptions(
-      getProject,
-      classOf[JavacConfiguration])
+    val compilerOptions = JavacConfiguration
+      .getOptions(getProject, classOf[JavacConfiguration])
     assertFalse(compilerOptions.DEBUGGING_INFO)
     assertTrue(compilerOptions.GENERATE_NO_WARNINGS)
     assertTrue(compilerOptions.DEPRECATION)
@@ -90,10 +89,8 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
     val expectedVersion = "0.13.8"
     importProjectData(
       generateProject(Seq.empty, None, Seq.empty, expectedVersion))
-    val actualVersion = SbtSystemSettings
-      .getInstance(getProject)
-      .getLinkedProjectSettings(getProject.getBasePath)
-      .sbtVersion
+    val actualVersion = SbtSystemSettings.getInstance(getProject)
+      .getLinkedProjectSettings(getProject.getBasePath).sbtVersion
     assertEquals(expectedVersion, actualVersion)
   }
 
@@ -182,8 +179,7 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
       .getInstance(getProject)
     val actualLanguageLevel = languageLevelProjectExtension.getLanguageLevel
     assertEquals(expectedLanguageLevel, actualLanguageLevel)
-    if (data.SdkUtils
-          .defaultJavaLanguageLevelIn(expectedSdk)
+    if (data.SdkUtils.defaultJavaLanguageLevelIn(expectedSdk)
           .fold(false)(_ != expectedLanguageLevel))
       assertFalse(languageLevelProjectExtension.getDefault)
   }

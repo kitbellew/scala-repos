@@ -118,8 +118,8 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       time = System.currentTimeMillis(),
       stageInfos = Seq(createStageInfo(0, 0), createStageInfo(1, 0)),
       createProperties(executionId)))
-    listener.onStageSubmitted(SparkListenerStageSubmitted(
-      createStageInfo(0, 0)))
+    listener
+      .onStageSubmitted(SparkListenerStageSubmitted(createStageInfo(0, 0)))
 
     assert(listener.getExecutionMetrics(0).isEmpty)
 
@@ -155,8 +155,8 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       accumulatorUpdates.mapValues(_ * 3))
 
     // Retrying a stage should reset the metrics
-    listener.onStageSubmitted(SparkListenerStageSubmitted(
-      createStageInfo(0, 1)))
+    listener
+      .onStageSubmitted(SparkListenerStageSubmitted(createStageInfo(0, 1)))
 
     listener.onExecutorMetricsUpdate(SparkListenerExecutorMetricsUpdate(
       "",
@@ -205,8 +205,8 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       accumulatorUpdates.mapValues(_ * 5))
 
     // Summit a new stage
-    listener.onStageSubmitted(SparkListenerStageSubmitted(
-      createStageInfo(1, 0)))
+    listener
+      .onStageSubmitted(SparkListenerStageSubmitted(createStageInfo(1, 0)))
 
     listener.onExecutorMetricsUpdate(SparkListenerExecutorMetricsUpdate(
       "",
@@ -398,9 +398,8 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
     val sqlMetric = SQLMetrics.createLongMetric(sparkContext, "beach umbrella")
     val nonSqlMetric = sparkContext.accumulator[Int](0, "baseball")
     val sqlMetricInfo = sqlMetric.toInfo(Some(sqlMetric.localValue), None)
-    val nonSqlMetricInfo = nonSqlMetric.toInfo(
-      Some(nonSqlMetric.localValue),
-      None)
+    val nonSqlMetricInfo = nonSqlMetric
+      .toInfo(Some(nonSqlMetric.localValue), None)
     val taskInfo = createTaskInfo(0, 0)
     taskInfo.accumulables ++= Seq(sqlMetricInfo, nonSqlMetricInfo)
     val taskEnd = SparkListenerTaskEnd(
@@ -432,13 +431,10 @@ class SQLListenerMemoryLeakSuite extends SparkFunSuite {
 
   test("no memory leak") {
     quietly {
-      val conf = new SparkConf()
-        .setMaster("local")
-        .setAppName("test")
-        .set(
-          "spark.task.maxFailures",
-          "1"
-        ) // Don't retry the tasks to run this test quickly
+      val conf = new SparkConf().setMaster("local").setAppName("test").set(
+        "spark.task.maxFailures",
+        "1"
+      ) // Don't retry the tasks to run this test quickly
         .set(
           "spark.sql.ui.retainedExecutions",
           "50"

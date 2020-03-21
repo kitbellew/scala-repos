@@ -61,8 +61,7 @@ class TypedColumn[-T, U](
   private[sql] def withInputType(
       inputEncoder: ExpressionEncoder[_],
       schema: Seq[Attribute]): TypedColumn[T, U] = {
-    val boundEncoder = inputEncoder
-      .bind(schema)
+    val boundEncoder = inputEncoder.bind(schema)
       .asInstanceOf[ExpressionEncoder[Any]]
     new TypedColumn[T, U](
       expr transform {
@@ -110,8 +109,8 @@ class Column(protected[sql] val expr: Expression) extends Logging {
     this(name match {
       case "*" => UnresolvedStar(None)
       case _ if name.endsWith(".*") =>
-        val parts = UnresolvedAttribute.parseAttributeName(
-          name.substring(0, name.length - 2))
+        val parts = UnresolvedAttribute
+          .parseAttributeName(name.substring(0, name.length - 2))
         UnresolvedStar(Some(parts))
       case _ => UnresolvedAttribute.quotedString(name)
     })

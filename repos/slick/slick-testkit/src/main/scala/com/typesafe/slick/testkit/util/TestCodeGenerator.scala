@@ -63,10 +63,8 @@ trait TestCodeGenerator {
           var current: String = null
           initScripts.foreach { initScript =>
             import tdb.profile.api._
-            Source
-              .fromURL(self.getClass.getResource(initScript))(Codec.UTF8)
-              .getLines()
-              .foreach { s =>
+            Source.fromURL(self.getClass.getResource(initScript))(Codec.UTF8)
+              .getLines().foreach { s =>
                 if (current eq null) current = s
                 else current = current + "\n" + s
                 if (s.trim.endsWith(";")) {
@@ -130,10 +128,7 @@ trait TestCodeGenerator {
 
 class TestCodeRunner(tests: TestCodeRunner.AllTests) {
   def run(cln: String): Unit = {
-    val t = Class
-      .forName(cln + "$")
-      .getField("MODULE$")
-      .get(null)
+    val t = Class.forName(cln + "$").getField("MODULE$").get(null)
       .asInstanceOf[TestCodeRunner.TestCase]
     val tdb = t.tdb
     println(s"Running test $cln on ${tdb.confName}")

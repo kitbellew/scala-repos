@@ -176,8 +176,8 @@ trait EvaluatorModule
                 }
 
                 // would have failed to type check otherwise
-                val prov =
-                  unifyProvenance(expr.relations)(leftProv, rightProv).get
+                val prov = unifyProvenance(expr.relations)(leftProv, rightProv)
+                  .get
 
                 (back, prov)
               }
@@ -212,8 +212,8 @@ trait EvaluatorModule
                 }
 
                 // would have failed to type check otherwise
-                val prov =
-                  unifyProvenance(expr.relations)(leftProv, rightProv).get
+                val prov = unifyProvenance(expr.relations)(leftProv, rightProv)
+                  .get
 
                 (back, prov)
               }
@@ -286,8 +286,8 @@ trait EvaluatorModule
             case ReductionBinding(red) => {
               val values = actualSets.head map { case (_, v) => v }
 
-              val result =
-                values collect red.prepare reduceOption red orElse red.zero
+              val result = values collect red
+                .prepare reduceOption red orElse red.zero
 
               result.toSeq map { v => (Vector(), v) }
             }
@@ -307,9 +307,8 @@ trait EvaluatorModule
 
           handleBinary(
             packed,
-            unifyProvenance(expr.relations)(
-              pred.provenance,
-              left.provenance).get,
+            unifyProvenance(expr.relations)(pred.provenance, left.provenance)
+              .get,
             loopForJoin(env, restrict)(right),
             right.provenance) {
             case (JArray(JBool(pred) :: left :: Nil), right) =>
@@ -532,10 +531,10 @@ trait EvaluatorModule
         right: Dataset,
         rightProv: Provenance)(
         pf: PartialFunction[(JValue, JValue), JValue]): Dataset = {
-      val intersected =
-        leftProv.possibilities intersect rightProv.possibilities filter { p =>
-          p != ValueProvenance && p != NullProvenance
-        }
+      val intersected = leftProv.possibilities intersect rightProv
+        .possibilities filter { p =>
+        p != ValueProvenance && p != NullProvenance
+      }
 
       if (intersected.isEmpty) cross(left, right)(pf)
       else join(left, leftProv, right, rightProv)(pf)
@@ -631,19 +630,18 @@ trait EvaluatorModule
             case (l, r) => CoproductProvenance(l, r)
           }
 
-          merged ++ (leftRec drop merged.length) ++ (
-            rightRec drop merged.length
-          )
+          merged ++ (leftRec drop merged.length) ++ (rightRec drop merged
+            .length)
         }
 
         case prov => prov :: Nil
       }
 
-    val (_, back) = loop(prov).foldLeft(
-      (Set[Provenance](), List[Provenance]())) {
-      case ((acc, result), prov) if acc(prov) => (acc, result)
-      case ((acc, result), prov)              => (acc + prov, prov :: result)
-    }
+    val (_, back) = loop(prov)
+      .foldLeft((Set[Provenance](), List[Provenance]())) {
+        case ((acc, result), prov) if acc(prov) => (acc, result)
+        case ((acc, result), prov)              => (acc + prov, prov :: result)
+      }
 
     back.reverse
   }

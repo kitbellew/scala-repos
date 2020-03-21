@@ -13,8 +13,7 @@ object Test {
     }
 
     def deser[T](bs: Array[Byte]): T =
-      new ObjectInputStream(new ByteArrayInputStream(bs))
-        .readObject()
+      new ObjectInputStream(new ByteArrayInputStream(bs)).readObject()
         .asInstanceOf[T]
 
     def cloneViaSerialization[T](t: T): T = deser(ser(t))

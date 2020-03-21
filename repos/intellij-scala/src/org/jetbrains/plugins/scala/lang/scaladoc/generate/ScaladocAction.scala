@@ -48,9 +48,8 @@ class ScaladocAction
         val runConfig =
           new ScaladocRunConfiguration(project, configurationDialog, config)
 
-        val runner: ProgramRunner[_ <: RunnerSettings] =
-          RunnerRegistry.getInstance
-            .getRunner(DefaultRunExecutor.EXECUTOR_ID, config)
+        val runner: ProgramRunner[_ <: RunnerSettings] = RunnerRegistry
+          .getInstance.getRunner(DefaultRunExecutor.EXECUTOR_ID, config)
         val builder: ExecutionEnvironmentBuilder =
           new ExecutionEnvironmentBuilder(
             project,

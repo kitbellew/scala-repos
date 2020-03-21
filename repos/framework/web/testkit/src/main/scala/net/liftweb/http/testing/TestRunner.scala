@@ -107,10 +107,10 @@ class TestRunner(
                   case _ =>
                     combineStack(ex.getCause, ex.getStackTrace.toList ::: base)
                 }
-              val trace = combineStack(e, Nil)
-                .takeWhile(e =>
-                  e.getClassName != myTrace.getClassName || e.getFileName != myTrace.getFileName || e.getMethodName != myTrace.getMethodName)
-                .dropRight(2)
+              val trace = combineStack(e, Nil).takeWhile(e =>
+                e.getClassName != myTrace.getClassName || e
+                  .getFileName != myTrace.getFileName || e
+                  .getMethodName != myTrace.getMethodName).dropRight(2)
               (false, trace, Full(e))
           }
 
@@ -145,10 +145,10 @@ class TestRunner(
                             ex.getCause,
                             ex.getStackTrace.toList ::: base)
                       }
-                    val trace = combineStack(e, Nil)
-                      .takeWhile(e =>
-                        e.getClassName != myTrace.getClassName || e.getFileName != myTrace.getFileName || e.getMethodName != myTrace.getMethodName)
-                      .dropRight(2)
+                    val trace = combineStack(e, Nil).takeWhile(e =>
+                      e.getClassName != myTrace.getClassName || e
+                        .getFileName != myTrace.getFileName || e
+                        .getMethodName != myTrace.getMethodName).dropRight(2)
                     (false, trace, Full(e))
                 }
 
@@ -186,11 +186,9 @@ class TestRunner(
 case class TestResults(res: List[Tracker]) {
   def stats = {
     val rev = res.reverse
-    val start = res
-      .map(_.at)
+    val start = res.map(_.at)
       .reduceLeft((a: Long, b: Long) => if (a < b) a else b)
-    val end = res
-      .map(_.at)
+    val end = res.map(_.at)
       .reduceLeft((a: Long, b: Long) => if (a > b) a else b)
     val assertCnt = res.filter(a => a.isAssert && !a.isBegin).length
     val testCnt = res.filter(a => a.isTest && !a.isBegin).length
@@ -200,12 +198,10 @@ case class TestResults(res: List[Tracker]) {
     val append = (failedTests, failedAsserts) match {
       case (ft, fa) if ft.length == 0 && fa.length == 0 => ""
       case (ft, fa) =>
-        "\n" + ft.length + " Failed Tests:\n" + ft
-          .map(v =>
-            v.name + " " + v.exception
-              .openOrThrowException("This should be safe")
-              .getMessage + " \n" +
-              v.trace.map(st => "           " + st.toString).mkString("\n"))
+        "\n" + ft.length + " Failed Tests:\n" + ft.map(v =>
+          v.name + " " + v.exception.openOrThrowException("This should be safe")
+            .getMessage + " \n" +
+            v.trace.map(st => "           " + st.toString).mkString("\n"))
           .mkString("\n")
     }
 

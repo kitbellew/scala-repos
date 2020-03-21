@@ -35,9 +35,7 @@ object Client {
       logLevel: Level = Level.OFF,
       statsReceiver: StatsReceiver = NullStatsReceiver): Client = {
     val factory = com.twitter.finagle.exp.Mysql.client
-      .withCredentials(username, password)
-      .withDatabase(dbname)
-      .newClient(host)
+      .withCredentials(username, password).withDatabase(dbname).newClient(host)
 
     apply(factory)
   }
@@ -123,8 +121,7 @@ private[mysql] class StdClient(factory: ServiceFactory[Request, Result])
             case ok: PrepareOK => svc(ExecuteRequest(ok.id, ps.toIndexedSeq))
             case r =>
               Future.exception(new Exception(
-                "Unexpected result %s when preparing %s"
-                  .format(r, sql)))
+                "Unexpected result %s when preparing %s".format(r, sql)))
           } ensure { svc.close() }
         }
     }

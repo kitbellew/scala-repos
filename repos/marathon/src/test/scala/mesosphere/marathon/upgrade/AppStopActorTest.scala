@@ -86,11 +86,11 @@ class AppStopActorTest
       ports = Nil,
       version = app.version.toString)
 
-    val Some(taskFailureA) = TaskFailure.FromMesosStatusUpdateEvent(
-      statusUpdateEventA)
+    val Some(taskFailureA) = TaskFailure
+      .FromMesosStatusUpdateEvent(statusUpdateEventA)
 
-    val Some(taskFailureB) = TaskFailure.FromMesosStatusUpdateEvent(
-      statusUpdateEventB)
+    val Some(taskFailureB) = TaskFailure
+      .FromMesosStatusUpdateEvent(statusUpdateEventB)
 
     system.eventStream.publish(statusUpdateEventA)
     system.eventStream.publish(statusUpdateEventB)
@@ -157,8 +157,7 @@ class AppStopActorTest
       MarathonTestHelper.runningTask("task_a"),
       MarathonTestHelper.runningTask("task_b"))
 
-    when(taskTracker.appTasksLaunchedSync(app.id))
-      .thenReturn(tasks)
+    when(taskTracker.appTasksLaunchedSync(app.id)).thenReturn(tasks)
       .thenReturn(Iterable.empty[Task])
 
     val ref = TestActorRef[AppStopActor](Props(

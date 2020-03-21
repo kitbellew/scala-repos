@@ -317,8 +317,7 @@ private[niflheim] class NIHDBActor private (
   private[this] var actorState: Option[State] = None
   private def state = {
     import scalaz.syntax.effect.id._
-    actorState getOrElse open
-      .flatMap(_.tap(s => IO(actorState = Some(s))))
+    actorState getOrElse open.flatMap(_.tap(s => IO(actorState = Some(s))))
       .unsafePerformIO
   }
 
@@ -341,9 +340,8 @@ private[niflheim] class NIHDBActor private (
       val currentRawFile = rawFileFor(txLog.currentBlockId)
       val (currentLog, rawLogOffsets) =
         if (currentRawFile.exists) {
-          val (handler, offsets, ok) = RawHandler.load(
-            txLog.currentBlockId,
-            currentRawFile)
+          val (handler, offsets, ok) = RawHandler
+            .load(txLog.currentBlockId, currentRawFile)
           if (!ok) {
             logger.warn(
               "Corruption detected and recovery performed on " + currentRawFile)
@@ -382,8 +380,8 @@ private[niflheim] class NIHDBActor private (
       // Re-fire any restored pending cooks
       blockState.pending.foreach {
         case (id, reader) =>
-          logger.debug(
-            "Restarting pending cook on block %s:%d".format(baseDir, id))
+          logger
+            .debug("Restarting pending cook on block %s:%d".format(baseDir, id))
           chef ! Prepare(id, cookSequence.getAndIncrement, cookedDir, reader)
       }
 
@@ -451,8 +449,8 @@ private[niflheim] class NIHDBActor private (
 
       state.currentBlocks = computeBlockMap(state.blockState)
 
-      currentState = currentState.copy(cookedMap =
-        currentState.cookedMap + (id -> file.getPath))
+      currentState = currentState
+        .copy(cookedMap = currentState.cookedMap + (id -> file.getPath))
 
       logger.debug("Cook complete on %d".format(id))
 
@@ -465,13 +463,12 @@ private[niflheim] class NIHDBActor private (
           baseDir.getCanonicalPath))
         if (responseRequested) sender ! Skipped
       } else {
-        val (skipValues, keepValues) = batch.partition(
-          _.offset <= currentState.maxOffset)
+        val (skipValues, keepValues) = batch
+          .partition(_.offset <= currentState.maxOffset)
         if (keepValues.isEmpty) {
           logger.warn(
-            "Skipping entirely seen batch of %d rows prior to offset %d".format(
-              batch.flatMap(_.values).size,
-              currentState.maxOffset))
+            "Skipping entirely seen batch of %d rows prior to offset %d"
+              .format(batch.flatMap(_.values).size, currentState.maxOffset))
           if (responseRequested) sender ! Skipped
         } else {
           val values = keepValues.flatMap(_.values)
@@ -493,9 +490,8 @@ private[niflheim] class NIHDBActor private (
               baseDir.getCanonicalPath))
             state.blockState.rawLog.close
             val toCook = state.blockState.rawLog
-            val newRaw = RawHandler.empty(
-              toCook.id + 1,
-              rawFileFor(toCook.id + 1))
+            val newRaw = RawHandler
+              .empty(toCook.id + 1, rawFileFor(toCook.id + 1))
 
             state.blockState = state.blockState.copy(
               pending = state.blockState.pending + (toCook.id -> toCook),
@@ -543,9 +539,8 @@ private[niflheim] object ProjectionState {
   def empty(authorities: Authorities) =
     ProjectionState(-1L, Map.empty, authorities)
 
-  implicit val projectionStateIso = Iso.hlist(
-    ProjectionState.apply _,
-    ProjectionState.unapply _)
+  implicit val projectionStateIso = Iso
+    .hlist(ProjectionState.apply _, ProjectionState.unapply _)
 
   // FIXME: Add version for this format
   val v1Schema = "maxOffset" :: "cookedMap" :: "authorities" :: HNil

@@ -49,9 +49,8 @@ trait PartitionSchemed[P, T]
 
   // The partition fields, offset by the value arity.
   def partitionFields =
-    PartitionUtil.toFields(
-      valueSetter.arity,
-      valueSetter.arity + partitionSetter.arity)
+    PartitionUtil
+      .toFields(valueSetter.arity, valueSetter.arity + partitionSetter.arity)
 
   /*
    Advertise all the sinkFields, both the value and partition ones, this needs to be like this even
@@ -80,16 +79,14 @@ trait PartitionSchemed[P, T]
         new LocalPartitionTap(
           fileTap,
           new TemplatePartition(partitionFields, template),
-          SinkMode.UPDATE)
-          .asInstanceOf[Tap[_, _, _]]
+          SinkMode.UPDATE).asInstanceOf[Tap[_, _, _]]
       }
       case Hdfs(_, _) => {
         val hfs = createHfsTap(hdfsScheme, path, SinkMode.REPLACE)
         new PartitionTap(
           hfs,
           new TemplatePartition(partitionFields, template),
-          SinkMode.UPDATE)
-          .asInstanceOf[Tap[_, _, _]]
+          SinkMode.UPDATE).asInstanceOf[Tap[_, _, _]]
       }
       case hdfsTest @ HadoopTest(_, _) => {
         val hfs = createHfsTap(
@@ -99,8 +96,7 @@ trait PartitionSchemed[P, T]
         new PartitionTap(
           hfs,
           new TemplatePartition(partitionFields, template),
-          SinkMode.UPDATE)
-          .asInstanceOf[Tap[_, _, _]]
+          SinkMode.UPDATE).asInstanceOf[Tap[_, _, _]]
       }
       case _ => TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
     }

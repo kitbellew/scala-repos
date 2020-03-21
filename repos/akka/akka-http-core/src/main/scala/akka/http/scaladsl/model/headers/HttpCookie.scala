@@ -79,13 +79,16 @@ final case class HttpCookie(
   HttpCookiePair.validate(name, value)
   require(
     domain.forall(domainChars.matchesAll),
-    s"'${domainChars.firstMismatch(domain.get).get}' not allowed in cookie domain ('${domain.get}')")
+    s"'${domainChars.firstMismatch(domain.get)
+      .get}' not allowed in cookie domain ('${domain.get}')")
   require(
     path.forall(pathOrExtChars.matchesAll),
-    s"'${pathOrExtChars.firstMismatch(path.get).get}' not allowed in cookie path ('${path.get}')")
+    s"'${pathOrExtChars.firstMismatch(path.get)
+      .get}' not allowed in cookie path ('${path.get}')")
   require(
     extension.forall(pathOrExtChars.matchesAll),
-    s"'${pathOrExtChars.firstMismatch(extension.get).get}' not allowed in cookie extension ('${extension.get}')"
+    s"'${pathOrExtChars.firstMismatch(extension.get)
+      .get}' not allowed in cookie extension ('${extension.get}')"
   )
 
   def render[R <: Rendering](r: R): r.type = {

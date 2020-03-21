@@ -90,9 +90,10 @@ object DatabaseConfig {
       if (nOld.isDefined)
         logger.warn(
           s"Use `${basePath}profile` instead of `${basePath}driver`. The latter is deprecated since Slick 3.2 and will be removed.")
-      nOld.getOrElse(
-        config.getString(basePath + "profile")
-      ) // trigger the correct error
+      nOld
+        .getOrElse(
+          config.getString(basePath + "profile")
+        ) // trigger the correct error
     }
 
     val untypedP =
@@ -171,21 +172,18 @@ object StaticDatabaseConfigMacros {
     import c.universe._
 
     def findUri(ann: Seq[c.universe.Annotation]): Option[String] =
-      ann
-        .map(a =>
-          c.typecheck(
-            a.tree,
-            pt = weakTypeOf[StaticDatabaseConfig],
-            silent = true))
-        .collectFirst {
-          case Apply(Select(_, _), List(Literal(Constant(uri: String)))) => uri
-        }
+      ann.map(a =>
+        c.typecheck(
+          a.tree,
+          pt = weakTypeOf[StaticDatabaseConfig],
+          silent = true)).collectFirst {
+        case Apply(Select(_, _), List(Literal(Constant(uri: String)))) => uri
+      }
 
-    val scopes = Iterator
-      .iterate(c.internal.enclosingOwner)(_.owner)
+    val scopes = Iterator.iterate(c.internal.enclosingOwner)(_.owner)
       .takeWhile(_ != NoSymbol)
-    val uriOpt =
-      scopes.map(s => findUri(s.annotations)).find(_.isDefined).flatten
+    val uriOpt = scopes.map(s => findUri(s.annotations)).find(_.isDefined)
+      .flatten
     uriOpt.getOrElse(c.abort(
       c.enclosingPosition,
       "No @StaticDatabaseConfig annotation found in enclosing scope"))

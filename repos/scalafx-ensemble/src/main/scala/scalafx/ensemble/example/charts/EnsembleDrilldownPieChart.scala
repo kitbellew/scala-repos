@@ -47,8 +47,8 @@ class EnsembleDrilldownPieChart extends EnsembleExample {
 
   def getContent = {
     //Drilldown Pie Chart style css
-    val drilldownPieChartCss =
-      this.getClass.getResource("DrilldownChart.css").toExternalForm
+    val drilldownPieChartCss = this.getClass.getResource("DrilldownChart.css")
+      .toExternalForm
 
     val pieChartData = ObservableBuffer(
       PieChart.Data("A", 20),

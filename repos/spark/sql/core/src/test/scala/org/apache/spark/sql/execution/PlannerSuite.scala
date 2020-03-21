@@ -69,23 +69,20 @@ class PlannerSuite extends SharedSQLContext {
   }
 
   test("count is partially aggregated") {
-    val query =
-      testData.groupBy('value).agg(count('key)).queryExecution.analyzed
+    val query = testData.groupBy('value).agg(count('key)).queryExecution
+      .analyzed
     testPartialAggregationPlan(query)
   }
 
   test("count distinct is partially aggregated") {
-    val query =
-      testData.groupBy('value).agg(countDistinct('key)).queryExecution.analyzed
+    val query = testData.groupBy('value).agg(countDistinct('key)).queryExecution
+      .analyzed
     testPartialAggregationPlan(query)
   }
 
   test("mixed aggregates are partially aggregated") {
-    val query = testData
-      .groupBy('value)
-      .agg(count('value), countDistinct('key))
-      .queryExecution
-      .analyzed
+    val query = testData.groupBy('value).agg(count('value), countDistinct('key))
+      .queryExecution.analyzed
     testPartialAggregationPlan(query)
   }
 
@@ -99,8 +96,7 @@ class PlannerSuite extends SharedSQLContext {
         val schema = StructType(fields)
         val row = Row.fromSeq(Seq.fill(fields.size)(null))
         val rowRDD = sparkContext.parallelize(row :: Nil)
-        sqlContext
-          .createDataFrame(rowRDD, schema)
+        sqlContext.createDataFrame(rowRDD, schema)
           .registerTempTable("testLimit")
 
         val planned = sql(
@@ -189,8 +185,8 @@ class PlannerSuite extends SharedSQLContext {
       sqlContext.registerDataFrameAsTable(df, "testPushed")
 
       withTempTable("testPushed") {
-        val exp = sql(
-          "select * from testPushed where key = 15").queryExecution.sparkPlan
+        val exp = sql("select * from testPushed where key = 15").queryExecution
+          .sparkPlan
         assert(exp.toString.contains(
           "PushedFilters: [IsNotNull(key), EqualTo(key,15)]"))
       }
@@ -205,10 +201,7 @@ class PlannerSuite extends SharedSQLContext {
   }
 
   test("terminal limit -> project -> sort should use TakeOrderedAndProject") {
-    val query = testData
-      .select('key, 'value)
-      .sort('key)
-      .select('value, 'key)
+    val query = testData.select('key, 'value).sort('key).select('value, 'key)
       .limit(2)
     val planned = query.queryExecution.executedPlan
     assert(planned.isInstanceOf[execution.TakeOrderedAndProject])
@@ -224,10 +217,7 @@ class PlannerSuite extends SharedSQLContext {
   }
 
   test("TakeOrderedAndProject can appear in the middle of plans") {
-    val query = testData
-      .select('key, 'value)
-      .sort('key)
-      .limit(2)
+    val query = testData.select('key, 'value).sort('key).limit(2)
       .filter('key === 3)
     val planned = query.queryExecution.executedPlan
     assert(planned.find(_.isInstanceOf[TakeOrderedAndProject]).isDefined)
@@ -280,9 +270,7 @@ class PlannerSuite extends SharedSQLContext {
   }
 
   test("collapse adjacent repartitions") {
-    val doubleRepartitioned = testData
-      .repartition(10)
-      .repartition(20)
+    val doubleRepartitioned = testData.repartition(10).repartition(20)
       .coalesce(5)
     def countRepartitions(plan: LogicalPlan): Int =
       plan.collect { case r: Repartition => r }.length

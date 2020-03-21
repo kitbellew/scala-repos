@@ -15,8 +15,7 @@ abstract class ChunkExclusionService {
 object ChunkExclusionService {
   def isExcluded(chunk: ModuleChunk): Boolean = {
     val providers = JpsServiceManager.getInstance
-      .getExtensions(classOf[ChunkExclusionService])
-      .asScala
+      .getExtensions(classOf[ChunkExclusionService]).asScala
     providers.exists(_.isExcluded(chunk))
   }
 }

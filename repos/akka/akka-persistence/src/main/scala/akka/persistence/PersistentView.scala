@@ -95,8 +95,8 @@ trait PersistentView
   private val viewSettings = extension.settings.view
 
   private[persistence] lazy val journal = extension.journalFor(journalPluginId)
-  private[persistence] lazy val snapshotStore = extension.snapshotStoreFor(
-    snapshotPluginId)
+  private[persistence] lazy val snapshotStore = extension
+    .snapshotStoreFor(snapshotPluginId)
 
   private var schedule: Option[Cancellable] = None
 

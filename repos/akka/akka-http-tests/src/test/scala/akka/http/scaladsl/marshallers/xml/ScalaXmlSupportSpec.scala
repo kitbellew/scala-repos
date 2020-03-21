@@ -34,13 +34,12 @@ class ScalaXmlSupportSpec
     }
     "unmarshal `text/xml` content in UTF-8 to NodeSeqs" in {
       Unmarshal(HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<int>Hällö</int>"))
-        .to[NodeSeq]
-        .map(_.text) should evaluateTo("Hällö")
+        .to[NodeSeq].map(_.text) should evaluateTo("Hällö")
     }
     "reject `application/octet-stream`" in {
-      Unmarshal(HttpEntity(
-        `application/octet-stream`,
-        ByteString("<int>Hällö</int>"))).to[NodeSeq].map(_.text) should
+      Unmarshal(
+        HttpEntity(`application/octet-stream`, ByteString("<int>Hällö</int>")))
+        .to[NodeSeq].map(_.text) should
         haveFailedWith(Unmarshaller.UnsupportedContentTypeException(
           nodeSeqContentTypeRanges: _*))
     }
@@ -51,7 +50,8 @@ class ScalaXmlSupportSpec
           val xml = s"""<?xml version="1.0" encoding="ISO-8859-1"?>
                      | <!DOCTYPE foo [
                      |   <!ELEMENT foo ANY >
-                     |   <!ENTITY xxe SYSTEM "${f.toURI}">]><foo>hello&xxe;</foo>""".stripMargin
+                     |   <!ENTITY xxe SYSTEM "${f
+                         .toURI}">]><foo>hello&xxe;</foo>""".stripMargin
 
           shouldHaveFailedWithSAXParseException(
             Unmarshal(HttpEntity(ContentTypes.`text/xml(UTF-8)`, xml))

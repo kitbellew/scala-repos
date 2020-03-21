@@ -80,13 +80,14 @@ package object linalg {
       skipLines: Int = 0): DenseMatrix[Double] = {
     val input = new FileReader(file)
     var mat = CSVReader.read(input, separator, quote, escape, skipLines)
-    mat = mat.takeWhile(line =>
-      line.length != 0 && line.head.nonEmpty) // empty lines at the end
+    mat = mat
+      .takeWhile(line =>
+        line.length != 0 && line.head.nonEmpty) // empty lines at the end
     input.close()
     if (mat.length == 0) { DenseMatrix.zeros[Double](0, 0) }
     else {
-      DenseMatrix.tabulate(mat.length, mat.head.length)((i, j) =>
-        mat(i)(j).toDouble)
+      DenseMatrix
+        .tabulate(mat.length, mat.head.length)((i, j) => mat(i)(j).toDouble)
     }
   }
 
@@ -338,7 +339,7 @@ package object linalg {
   /**
     * val to determine if breeze is using natives or f2jblas
     */
-  lazy val usingNatives =
-    com.github.fommil.netlib.BLAS.getInstance.getClass.getName != "com.github.fommil.netlib.F2jBLAS"
+  lazy val usingNatives = com.github.fommil.netlib.BLAS.getInstance.getClass
+    .getName != "com.github.fommil.netlib.F2jBLAS"
 
 }

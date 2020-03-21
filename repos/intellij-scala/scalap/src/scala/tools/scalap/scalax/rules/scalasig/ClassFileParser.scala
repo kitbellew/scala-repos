@@ -250,8 +250,8 @@ case class ClassFile(
       .map(attr => ClassFileParser.parseAnnotations(attr.byteCode))
 
   def annotation(name: String) =
-    annotations.flatMap(seq =>
-      seq.find(annot => constant(annot.typeIndex) == name))
+    annotations
+      .flatMap(seq => seq.find(annot => constant(annot.typeIndex) == name))
 }
 
 case class Attribute(nameIndex: Int, byteCode: ByteCode)

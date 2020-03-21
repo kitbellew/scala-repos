@@ -38,14 +38,12 @@ object ReplicationUtils extends Logging {
       newLeaderAndIsr: LeaderAndIsr,
       controllerEpoch: Int,
       zkVersion: Int): (Boolean, Int) = {
-    debug("Updated ISR for partition [%s,%d] to %s".format(
-      topic,
-      partitionId,
-      newLeaderAndIsr.isr.mkString(",")))
+    debug(
+      "Updated ISR for partition [%s,%d] to %s"
+        .format(topic, partitionId, newLeaderAndIsr.isr.mkString(",")))
     val path = getTopicPartitionLeaderAndIsrPath(topic, partitionId)
-    val newLeaderData = zkUtils.leaderAndIsrZkData(
-      newLeaderAndIsr,
-      controllerEpoch)
+    val newLeaderData = zkUtils
+      .leaderAndIsrZkData(newLeaderAndIsr, controllerEpoch)
     // use the epoch of the controller that made the leadership decision, instead of the current controller epoch
     val updatePersistentPath: (Boolean, Int) = zkUtils
       .conditionalUpdatePersistentPath(
@@ -110,14 +108,10 @@ object ReplicationUtils extends Logging {
     Json.parseFull(leaderAndIsrStr).flatMap { m =>
       val leaderIsrAndEpochInfo = m.asInstanceOf[Map[String, Any]]
       val leader = leaderIsrAndEpochInfo.get("leader").get.asInstanceOf[Int]
-      val epoch = leaderIsrAndEpochInfo
-        .get("leader_epoch")
-        .get
+      val epoch = leaderIsrAndEpochInfo.get("leader_epoch").get
         .asInstanceOf[Int]
       val isr = leaderIsrAndEpochInfo.get("isr").get.asInstanceOf[List[Int]]
-      val controllerEpoch = leaderIsrAndEpochInfo
-        .get("controller_epoch")
-        .get
+      val controllerEpoch = leaderIsrAndEpochInfo.get("controller_epoch").get
         .asInstanceOf[Int]
       val zkPathVersion = stat.getVersion
       debug(
@@ -132,8 +126,7 @@ object ReplicationUtils extends Logging {
   private def generateIsrChangeJson(
       isrChanges: Set[TopicAndPartition]): String = {
     val partitions = isrChanges
-      .map(tp => Map("topic" -> tp.topic, "partition" -> tp.partition))
-      .toArray
+      .map(tp => Map("topic" -> tp.topic, "partition" -> tp.partition)).toArray
     Json.encode(Map(
       "version" -> IsrChangeNotificationListener.version,
       "partitions" -> partitions))

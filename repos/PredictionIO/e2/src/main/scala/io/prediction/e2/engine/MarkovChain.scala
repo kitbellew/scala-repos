@@ -32,16 +32,12 @@ object MarkovChain {
     */
   def train(matrix: CoordinateMatrix, topN: Int): MarkovChainModel = {
     val noOfStates = matrix.numCols().toInt
-    val transitionVectors = matrix.entries
-      .keyBy(_.i.toInt)
-      .groupByKey()
+    val transitionVectors = matrix.entries.keyBy(_.i.toInt).groupByKey()
       .mapValues { rowEntries =>
         val total = rowEntries.map(_.value).sum
         val sortedTopN = rowEntries.toSeq
-          .sortBy(_.value)(Ordering.Double.reverse)
-          .take(topN)
-          .map(me => (me.j.toInt, me.value / total))
-          .sortBy(_._1)
+          .sortBy(_.value)(Ordering.Double.reverse).take(topN)
+          .map(me => (me.j.toInt, me.value / total)).sortBy(_._1)
 
         new SparseVector(
           noOfStates,
@@ -70,16 +66,14 @@ case class MarkovChainModel(
     */
   def predict(currentState: Seq[Double]): Seq[Double] = {
     // multiply the input with transition matrix row by row
-    val nextStateVectors = transitionVectors
-      .map {
-        case (rowIndex, vector) =>
-          val values = vector.indices.map { index =>
-            vector(index) * currentState(rowIndex)
-          }
+    val nextStateVectors = transitionVectors.map {
+      case (rowIndex, vector) =>
+        val values = vector.indices.map { index =>
+          vector(index) * currentState(rowIndex)
+        }
 
-          Vectors.sparse(currentState.size, vector.indices, values)
-      }
-      .collect()
+        Vectors.sparse(currentState.size, vector.indices, values)
+    }.collect()
 
     // sum up to get the total probabilities
     (0 until currentState.size).map { index =>

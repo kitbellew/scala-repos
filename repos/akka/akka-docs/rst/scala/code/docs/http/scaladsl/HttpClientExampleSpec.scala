@@ -28,9 +28,7 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
         : Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] =
       Http().outgoingConnection("akka.io")
     val responseFuture: Future[HttpResponse] = Source
-      .single(HttpRequest(uri = "/"))
-      .via(connectionFlow)
-      .runWith(Sink.head)
+      .single(HttpRequest(uri = "/")).via(connectionFlow).runWith(Sink.head)
     //#outgoing-connection-example
   }
 
@@ -50,8 +48,7 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
     // construct a pool client flow with context type `Int`
     val poolClientFlow = Http().cachedHostConnectionPool[Int]("akka.io")
     val responseFuture: Future[(Try[HttpResponse], Int)] = Source
-      .single(HttpRequest(uri = "/") -> 42)
-      .via(poolClientFlow)
+      .single(HttpRequest(uri = "/") -> 42).via(poolClientFlow)
       .runWith(Sink.head)
     //#host-level-example
   }
@@ -68,8 +65,8 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
     implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
 
-    val responseFuture: Future[HttpResponse] = Http().singleRequest(
-      HttpRequest(uri = "http://akka.io"))
+    val responseFuture: Future[HttpResponse] = Http()
+      .singleRequest(HttpRequest(uri = "http://akka.io"))
     //#single-request-example
   }
 
@@ -93,16 +90,14 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
       val http = Http(context.system)
 
       override def preStart() = {
-        http
-          .singleRequest(HttpRequest(uri = "http://akka.io"))
-          .pipeTo(self)
+        http.singleRequest(HttpRequest(uri = "http://akka.io")).pipeTo(self)
       }
 
       def receive = {
         case HttpResponse(StatusCodes.OK, headers, entity, _) =>
           log.info(
-            "Got response, body: " + entity.dataBytes.runFold(ByteString(""))(
-              _ ++ _))
+            "Got response, body: " + entity.dataBytes
+              .runFold(ByteString(""))(_ ++ _))
         case HttpResponse(code, _, _, _) =>
           log.info("Request failed, response code: " + code)
       }

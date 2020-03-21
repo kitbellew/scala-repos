@@ -150,8 +150,9 @@ trait BaseGetPoster {
       : ResponseType = {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
     val fullUrl = url + (params
-      .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
-      .mkString("&") match { case s if s.length == 0 => ""; case s => "?" + s })
+      .map(v => urlEncode(v._1) + "=" + urlEncode(v._2)).mkString("&") match {
+      case s if s.length == 0 => ""; case s => "?" + s
+    })
     val getter = new GetMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers) getter.setRequestHeader(name, value)
@@ -175,8 +176,9 @@ trait BaseGetPoster {
       : ResponseType = {
     val params = faux_params.toList.map(x => (x._1, x._2.toString))
     val fullUrl = url + (params
-      .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
-      .mkString("&") match { case s if s.length == 0 => ""; case s => "?" + s })
+      .map(v => urlEncode(v._1) + "=" + urlEncode(v._2)).mkString("&") match {
+      case s if s.length == 0 => ""; case s => "?" + s
+    })
     val getter = new DeleteMethod(baseUrl + fullUrl)
     getter.getParams().setCookiePolicy(CookiePolicy.RFC_2965)
     for ((name, value) <- headers) getter.setRequestHeader(name, value)
@@ -560,8 +562,8 @@ object TestHelpers {
     * @return the name of the JSON function associated with the Comet actor
     */
   def jsonFuncForCometName(cometName: String, body: String): Box[String] = {
-    val p = Pattern.compile(
-      """JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
+    val p = Pattern
+      .compile("""JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
     val m = p.matcher(body)
     if (m.find) Full(m.group(1)) else Empty
   }
@@ -609,8 +611,7 @@ object TestHelpers {
   def getCookie(
       headers: List[(String, String)],
       respHeaders: Map[String, List[String]]): Box[String] = {
-    val ret = (headers
-      .filter { case ("Cookie", _) => true; case _ => false }
+    val ret = (headers.filter { case ("Cookie", _) => true; case _ => false }
       .map(_._2) :::
       respHeaders.get("Set-Cookie").toList.flatMap(x => x)) match {
       case Nil       => Empty
@@ -640,8 +641,7 @@ object TestHelpers {
     }
 
     Map(
-      in.entrySet.iterator.toList
-        .filter(e => (e ne null) && (e.getKey != null))
+      in.entrySet.iterator.toList.filter(e => (e ne null) && (e.getKey != null))
         .map(e => morePulling(e)): _*)
   }
 }
@@ -899,11 +899,9 @@ abstract class BaseResponse(
   /**
     * The content type header of the response
     */
-  lazy val contentType: String = headers
-    .filter { case (name, value) => name equalsIgnoreCase "content-type" }
-    .toList
-    .headOption
-    .map(_._2.head) getOrElse ""
+  lazy val contentType: String = headers.filter {
+    case (name, value) => name equalsIgnoreCase "content-type"
+  }.toList.headOption.map(_._2.head) getOrElse ""
 
   /**
     * The response body as a UTF-8 encoded String

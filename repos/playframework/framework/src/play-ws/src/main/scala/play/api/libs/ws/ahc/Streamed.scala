@@ -41,8 +41,7 @@ private[play] object Streamed {
         // a reactive-streams `Publisher` needs to be returned to implement `execute2`. Though,
         // once `execute2` is removed, we should move the code here inside
         // `DefaultStreamedAsyncHandler.onCompleted`.
-        val source = Source
-          .fromPublisher(publisher)
+        val source = Source.fromPublisher(publisher)
           .map(bodyPart => ByteString(bodyPart.getBodyPartBytes))
         StreamedResponse(headers, source)
     }
@@ -64,8 +63,7 @@ private[play] object Streamed {
     import play.api.libs.iteratee.Execution.Implicits.trampoline
     promise.future.map {
       case (headers, publisher) =>
-        val enumerator = Streams
-          .publisherToEnumerator(publisher)
+        val enumerator = Streams.publisherToEnumerator(publisher)
           .map(_.getBodyPartBytes)
         (headers, enumerator)
     }

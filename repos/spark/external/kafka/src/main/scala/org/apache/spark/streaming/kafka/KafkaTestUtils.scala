@@ -188,9 +188,8 @@ private[kafka] class KafkaTestUtils extends Logging {
 
   /** Send the messages to the Kafka broker */
   def sendMessages(topic: String, messageToFreq: Map[String, Int]): Unit = {
-    val messages = messageToFreq.flatMap {
-      case (s, freq) => Seq.fill(freq)(s)
-    }.toArray
+    val messages = messageToFreq.flatMap { case (s, freq) => Seq.fill(freq)(s) }
+      .toArray
     sendMessages(topic, messages)
   }
 
@@ -258,8 +257,8 @@ private[kafka] class KafkaTestUtils extends Logging {
     def isPropagated =
       server.apis.metadataCache.getPartitionInfo(topic, partition) match {
         case Some(partitionState) =>
-          val leaderAndInSyncReplicas =
-            partitionState.leaderIsrAndControllerEpoch.leaderAndIsr
+          val leaderAndInSyncReplicas = partitionState
+            .leaderIsrAndControllerEpoch.leaderAndIsr
 
           ZkUtils.getLeaderForPartition(zkClient, topic, partition).isDefined &&
           Request.isValidBrokerId(leaderAndInSyncReplicas.leader) &&

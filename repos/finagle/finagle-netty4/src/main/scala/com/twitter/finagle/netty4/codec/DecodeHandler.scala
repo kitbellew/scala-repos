@@ -20,8 +20,8 @@ private[netty4] class DecodeHandler[In](decoderFactory: () => FrameDecoder[In])
     extends ChannelInboundHandlerAdapter {
   import DecodeHandler.log
 
-  private[this] val DecoderKey = AttributeKey.valueOf[FrameDecoder[In]](
-    "frame_decoder")
+  private[this] val DecoderKey = AttributeKey
+    .valueOf[FrameDecoder[In]]("frame_decoder")
 
   override def channelActive(ctx: ChannelHandlerContext): Unit = {
     ctx.attr(DecoderKey).set(decoderFactory())

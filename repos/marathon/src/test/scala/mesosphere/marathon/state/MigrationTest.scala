@@ -28,8 +28,7 @@ class MigrationTest
 
   test("migrations can be filtered by version") {
     val f = new Fixture
-    val all = f.migration.migrations
-      .filter(_._1 > StorageVersions(0, 0, 0))
+    val all = f.migration.migrations.filter(_._1 > StorageVersions(0, 0, 0))
       .sortBy(_._1)
     all should have size f.migration.migrations.size.toLong
 
@@ -76,8 +75,8 @@ class MigrationTest
     f.groupRepo.group("root") returns Future.successful(None)
     f.groupRepo.listVersions(any) returns Future.successful(Seq.empty)
 
-    val result =
-      f.migration.applyMigrationSteps(StorageVersions(0, 8, 0)).futureValue
+    val result = f.migration.applyMigrationSteps(StorageVersions(0, 8, 0))
+      .futureValue
     result should not be 'empty
     result should be(f.migration.migrations.map(_._1).drop(1))
   }
@@ -106,8 +105,8 @@ class MigrationTest
     f.groupRepo.rootGroup() returns Future.successful(None)
     f.groupRepo.store(any, any) returns Future.successful(Group.empty)
 
-    f.store.load("internal:storage:version") returns Future.successful(Some(
-      InMemoryEntity(
+    f.store.load("internal:storage:version") returns Future
+      .successful(Some(InMemoryEntity(
         id = "internal:storage:version",
         version = 0,
         bytes = minVersion.toByteArray)))
@@ -115,8 +114,8 @@ class MigrationTest
 
     Given("An unsupported storage version")
     val unsupportedVersion = StorageVersions(0, 2, 0)
-    f.store.load("internal:storage:version") returns Future.successful(Some(
-      InMemoryEntity(
+    f.store.load("internal:storage:version") returns Future
+      .successful(Some(InMemoryEntity(
         id = "internal:storage:version",
         version = 0,
         bytes = unsupportedVersion.toByteArray)))
@@ -144,9 +143,7 @@ class MigrationTest
         metrics = metrics,
         newState = () =>
           MarathonTaskState(
-            MarathonTask
-              .newBuilder()
-              .setId(UUID.randomUUID().toString)
+            MarathonTask.newBuilder().setId(UUID.randomUUID().toString)
               .build()),
         prefix = "task:"),
       metrics)

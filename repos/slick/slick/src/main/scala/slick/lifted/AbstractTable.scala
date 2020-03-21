@@ -52,15 +52,18 @@ abstract class AbstractTable[T](
     tableTag match {
       case _: BaseTag =>
         val sym = new AnonSymbol
-        TableExpansion(sym, tableNode, tableTag.taggedAs(Ref(sym)).*.toNode)
+        TableExpansion(
+          sym,
+          tableNode,
+          tableTag.taggedAs(Ref(sym))
+            .*.toNode)
       case t: RefTag => t.path
     }
 
   def create_* : Iterable[FieldSymbol] = collectFieldSymbols(*.toNode)
 
   protected[this] def collectFieldSymbols(n: Node): Iterable[FieldSymbol] =
-    n.collect { case Select(in, f: FieldSymbol) if in == tableNode => f }
-      .toSeq
+    n.collect { case Select(in, f: FieldSymbol) if in == tableNode => f }.toSeq
       .distinct
 
   /** Define a foreign key relationship.
@@ -88,9 +91,10 @@ abstract class AbstractTable[T](
     val q = targetTableQuery.asInstanceOf[Query[TT, U, Seq]]
     val generator = new AnonSymbol
     val aliased = q.shaped.encodeRef(Ref(generator))
-    val fv = Library.==.typed[Boolean](
-      unpackp.toNode(targetColumns(aliased.value)),
-      unpackp.toNode(sourceColumns))
+    val fv = Library
+      .==.typed[Boolean](
+        unpackp.toNode(targetColumns(aliased.value)),
+        unpackp.toNode(sourceColumns))
     val fk = ForeignKey(
       name,
       toNode,
@@ -128,16 +132,11 @@ abstract class AbstractTable[T](
     } yield q
 
   final def foreignKeys: Iterable[ForeignKey] =
-    tableConstraints
-      .collect { case q: ForeignKeyQuery[_, _] => q.fks }
-      .flatten
-      .toIndexedSeq
-      .sortBy(_.name)
+    tableConstraints.collect { case q: ForeignKeyQuery[_, _] => q.fks }.flatten
+      .toIndexedSeq.sortBy(_.name)
 
   final def primaryKeys: Iterable[PrimaryKey] =
-    tableConstraints
-      .collect { case k: PrimaryKey => k }
-      .toIndexedSeq
+    tableConstraints.collect { case k: PrimaryKey => k }.toIndexedSeq
       .sortBy(_.name)
 
   /** Define an index or a unique constraint. */

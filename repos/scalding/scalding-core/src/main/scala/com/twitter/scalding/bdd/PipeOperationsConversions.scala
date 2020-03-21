@@ -10,7 +10,8 @@ trait PipeOperationsConversions {
     def assertPipeSize(pipes: List[RichPipe], expectedSize: Int) =
       require(
         pipes.size == expectedSize,
-        "Cannot apply an operation for " + expectedSize + "pipes to " + pipes.size + " pipes. " +
+        "Cannot apply an operation for " + expectedSize + "pipes to " + pipes
+          .size + " pipes. " +
           "Verify matching of given and when clauses in test case definition"
       )
 

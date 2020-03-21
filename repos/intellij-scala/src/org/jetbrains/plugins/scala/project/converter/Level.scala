@@ -18,8 +18,8 @@ private object Level {
   val Values = Seq(ApplicationLevel, ProjectLevel, ModuleLevel)
 
   private val TitleToLevel = Values.map(level => (level.title, level)).toMap
-  private val FacetTitleToLevel =
-    Values.map(level => (level.facetTitle, level)).toMap
+  private val FacetTitleToLevel = Values.map(level => (level.facetTitle, level))
+    .toMap
 
   def fromTitle(title: String): Level =
     TitleToLevel.getOrElse(title, new CustomLevel(title))
@@ -33,15 +33,13 @@ private object Level {
 private object ProjectLevel extends Level("project", "Project") {
   def librariesIn(context: ConversionContext) =
     context.getProjectLibrariesSettings.getProjectLibraries.asScala
-      .map(LibraryData(_))
-      .toSeq
+      .map(LibraryData(_)).toSeq
 }
 
 private object ApplicationLevel extends Level("application", "Global") {
   def librariesIn(context: ConversionContext) =
     LibraryTablesRegistrar.getInstance.getLibraryTable.getLibraries
-      .map(LibraryData(_))
-      .toSeq
+      .map(LibraryData(_)).toSeq
 }
 
 private object ModuleLevel extends Level("module", "Module") {

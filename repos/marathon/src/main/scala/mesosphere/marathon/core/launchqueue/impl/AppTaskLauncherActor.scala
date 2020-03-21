@@ -144,10 +144,8 @@ private class AppTaskLauncherActor(
 
     super.postStop()
 
-    log.info(
-      "Stopped appTaskLaunchActor for {} version {}",
-      app.id,
-      app.version)
+    log
+      .info("Stopped appTaskLaunchActor for {} version {}", app.id, app.version)
   }
 
   override def receive: Receive = waitForInitialDelay
@@ -314,8 +312,8 @@ private class AppTaskLauncherActor(
   private[this] def receiveAddCount: Receive = {
     case AppTaskLauncherActor.AddTasks(newApp, addCount) =>
       val configChange = app.isUpgrade(newApp)
-      if (configChange || app.needsRestart(newApp) || app.isOnlyScaleChange(
-            newApp)) {
+      if (configChange || app.needsRestart(newApp) || app
+            .isOnlyScaleChange(newApp)) {
         app = newApp
         tasksToLaunch = addCount
 
@@ -359,8 +357,8 @@ private class AppTaskLauncherActor(
       tasksLeftToLaunch = tasksToLaunch,
       taskLaunchesInFlight = inFlightTaskOperations.size,
       // don't count tasks that are not launched in the tasksMap
-      tasksLaunched = tasksMap.values.count(
-        _.launched.isDefined) - inFlightTaskOperations.size,
+      tasksLaunched = tasksMap.values
+        .count(_.launched.isDefined) - inFlightTaskOperations.size,
       backOffUntil.getOrElse(clock.now())
     )
   }
@@ -376,11 +374,8 @@ private class AppTaskLauncherActor(
       sender ! MatchedTaskOps(offer.getId, Seq.empty)
 
     case ActorOfferMatcher.MatchOffer(deadline, offer) =>
-      val matchRequest = TaskOpFactory.Request(
-        app,
-        offer,
-        tasksMap,
-        tasksToLaunch)
+      val matchRequest = TaskOpFactory
+        .Request(app, offer, tasksMap, tasksToLaunch)
       val taskOp: Option[TaskOp] = taskOpFactory.buildTaskOp(matchRequest)
       taskOp match {
         case Some(op) => handleTaskOp(op, offer)
@@ -454,8 +449,8 @@ private class AppTaskLauncherActor(
     }
 
     val inFlight = inFlightTaskOperations.size
-    val tasksLaunchedOrRunning =
-      tasksMap.values.count(_.launched.isDefined) - inFlight
+    val tasksLaunchedOrRunning = tasksMap.values
+      .count(_.launched.isDefined) - inFlight
     val instanceCountDelta = tasksMap.size + tasksToLaunch - app.instances
     val matchInstanceStr =
       if (instanceCountDelta == 0) ""
@@ -478,8 +473,8 @@ private class AppTaskLauncherActor(
 
       if (shouldBeRegistered && !registeredAsMatcher) {
         log.debug("Registering for {}, {}.", app.id, app.version)
-        offerMatcherManager.addSubscription(myselfAsOfferMatcher)(
-          context.dispatcher)
+        offerMatcherManager
+          .addSubscription(myselfAsOfferMatcher)(context.dispatcher)
         registeredAsMatcher = true
       } else if (!shouldBeRegistered && registeredAsMatcher) {
         if (tasksToLaunch > 0) {
@@ -493,8 +488,8 @@ private class AppTaskLauncherActor(
             app.id,
             app.version)
         }
-        offerMatcherManager.removeSubscription(myselfAsOfferMatcher)(
-          context.dispatcher)
+        offerMatcherManager
+          .removeSubscription(myselfAsOfferMatcher)(context.dispatcher)
         registeredAsMatcher = false
       }
     }
@@ -502,8 +497,8 @@ private class AppTaskLauncherActor(
     def unregister(): Unit = {
       if (registeredAsMatcher) {
         log.info("Deregister as matcher.")
-        offerMatcherManager.removeSubscription(myselfAsOfferMatcher)(
-          context.dispatcher)
+        offerMatcherManager
+          .removeSubscription(myselfAsOfferMatcher)(context.dispatcher)
         registeredAsMatcher = false
       }
     }

@@ -32,19 +32,21 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
     val scalaSettings: ScalaCodeStyleSettings = parent.getSettings
       .getCustomSettings(classOf[ScalaCodeStyleSettings])
     val node = parent.getNode
-    if (child.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS ||
+    if (child.getElementType == ScalaDocTokenType
+          .DOC_COMMENT_LEADING_ASTERISKS ||
         child.getElementType == ScalaDocTokenType.DOC_COMMENT_END) {
-      return Indent.getSpaceIndent(
-        if (scalaSettings.USE_SCALADOC2_FORMATTING) 2 else 1)
+      return Indent
+        .getSpaceIndent(if (scalaSettings.USE_SCALADOC2_FORMATTING) 2 else 1)
     }
-    if ((
-          node.getElementType == ScalaTokenTypes.kIF || node.getElementType == ScalaTokenTypes.kELSE
-        ) &&
+    if ((node.getElementType == ScalaTokenTypes.kIF || node
+          .getElementType == ScalaTokenTypes.kELSE) &&
         parent.myLastNode != null) {
       child.getPsi match {
         case _: ScBlockExpr
-            if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-              settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2 =>
+            if settings.BRACE_STYLE == CommonCodeStyleSettings
+              .NEXT_LINE_SHIFTED ||
+              settings.BRACE_STYLE == CommonCodeStyleSettings
+                .NEXT_LINE_SHIFTED2 =>
           return Indent.getNormalIndent(scalaSettings.ALIGN_IF_ELSE)
         case _: ScBlockExpr =>
           return Indent.getSpaceIndent(0, scalaSettings.ALIGN_IF_ELSE)
@@ -53,7 +55,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
         case _ => return Indent.getSpaceIndent(0, scalaSettings.ALIGN_IF_ELSE)
       }
     }
-    if (node.getElementType == ScalaTokenTypes.kYIELD && child.getElementType != ScalaTokenTypes.kYIELD) {
+    if (node.getElementType == ScalaTokenTypes.kYIELD && child
+          .getElementType != ScalaTokenTypes.kYIELD) {
       return Indent.getNormalIndent
     }
 
@@ -63,12 +66,13 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           child.getPsi match {
             case _: ScBlockImpl => Indent.getNoneIndent
             case _: ScBlockExpr
-                if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                  settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2 =>
-              Indent.getNormalIndent
-            case _: ScBlockExpr  => Indent.getNoneIndent
-            case _: ScExpression => Indent.getNormalIndent
-            case _               => Indent.getNoneIndent
+                if settings.BRACE_STYLE == CommonCodeStyleSettings
+                  .NEXT_LINE_SHIFTED ||
+                  settings.BRACE_STYLE == CommonCodeStyleSettings
+                    .NEXT_LINE_SHIFTED2 => Indent.getNormalIndent
+            case _: ScBlockExpr         => Indent.getNoneIndent
+            case _: ScExpression        => Indent.getNormalIndent
+            case _                      => Indent.getNoneIndent
           }
         case Some(e) if child.isInstanceOf[PsiComment] => Indent.getNormalIndent
         //the above case is a hack added to fix SCL-6803; probably will backfire with unintended indents
@@ -78,9 +82,10 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
     def processMethodCall =
       child.getPsi match {
         case arg: ScArgumentExprList if arg.isBraceArgs =>
-          if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-              settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
-            Indent.getNormalIndent
+          if (settings.BRACE_STYLE == CommonCodeStyleSettings
+                .NEXT_LINE_SHIFTED ||
+              settings.BRACE_STYLE == CommonCodeStyleSettings
+                .NEXT_LINE_SHIFTED2) Indent.getNormalIndent
           else Indent.getNoneIndent
         case _ => Indent.getContinuationWithoutFirstIndent
       }
@@ -101,17 +106,15 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       }
 
     if (node.getElementType == ScalaTokenTypes.tLBRACE &&
-        Option(node.getTreeParent)
-          .map(_.getElementType)
-          .exists(
-            Set[IElementType](
-              ScalaElementTypes.TRY_BLOCK,
-              ScalaElementTypes.PACKAGING).contains)) {
+        Option(node.getTreeParent).map(_.getElementType).exists(
+          Set[IElementType](
+            ScalaElementTypes.TRY_BLOCK,
+            ScalaElementTypes.PACKAGING).contains)) {
       return if (child.getElementType == ScalaTokenTypes.tLBRACE ||
                  child.getElementType == ScalaTokenTypes.tRBRACE)
         Indent.getNoneIndent
-      else if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED)
-        Indent.getNoneIndent
+      else if (settings.BRACE_STYLE == CommonCodeStyleSettings
+                 .NEXT_LINE_SHIFTED) Indent.getNoneIndent
       else Indent.getNormalIndent()
     }
 
@@ -126,9 +129,10 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       case p: ScPackaging =>
         if (p.isExplicit) child.getElementType match {
           case ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tRBRACE =>
-            if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
-              Indent.getNormalIndent
+            if (settings.BRACE_STYLE == CommonCodeStyleSettings
+                  .NEXT_LINE_SHIFTED ||
+                settings.BRACE_STYLE == CommonCodeStyleSettings
+                  .NEXT_LINE_SHIFTED2) Indent.getNormalIndent
             else Indent.getNoneIndent
           case _ => Indent.getNoneIndent
         }
@@ -143,9 +147,10 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           case ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tRBRACE
               if parent.myLastNode == null =>
             //getting indent for braces from tryBlock
-            if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
-              Indent.getNormalIndent
+            if (settings.BRACE_STYLE == CommonCodeStyleSettings
+                  .NEXT_LINE_SHIFTED ||
+                settings.BRACE_STYLE == CommonCodeStyleSettings
+                  .NEXT_LINE_SHIFTED2) Indent.getNormalIndent
             else Indent.getNoneIndent
           case ScalaTokenTypes.kTRY => Indent.getNoneIndent
           case _                    => Indent.getNormalIndent
@@ -161,37 +166,38 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           case ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tRBRACE =>
             Indent.getNoneIndent
           case _
-              if settings.CLASS_BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED =>
-            Indent.getNoneIndent
-          case _ => Indent.getNormalIndent
+              if settings.CLASS_BRACE_STYLE == CommonCodeStyleSettings
+                .NEXT_LINE_SHIFTED => Indent.getNoneIndent
+          case _                   => Indent.getNormalIndent
         }
       case b: ScBlockExpr if b.getParent.isInstanceOf[ScFunction] =>
         child.getElementType match {
           case ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tRBRACE =>
             Indent.getNoneIndent
           case _
-              if settings.METHOD_BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED =>
-            Indent.getNoneIndent
-          case _ => Indent.getNormalIndent
+              if settings.METHOD_BRACE_STYLE == CommonCodeStyleSettings
+                .NEXT_LINE_SHIFTED => Indent.getNoneIndent
+          case _                   => Indent.getNormalIndent
         }
       case _: ScRefinement | _: ScExistentialClause | _: ScBlockExpr =>
         child.getElementType match {
           case ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tRBRACE =>
             Indent.getNoneIndent
           case _
-              if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED =>
-            Indent.getNoneIndent
-          case _ => Indent.getNormalIndent
+              if settings.BRACE_STYLE == CommonCodeStyleSettings
+                .NEXT_LINE_SHIFTED => Indent.getNoneIndent
+          case _                   => Indent.getNormalIndent
         }
       case _: ScTryStmt => Indent.getNoneIndent
       case _: ScFunction => child.getPsi match {
           case _: ScBlockExpr
-              if settings.METHOD_BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                settings.METHOD_BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2 =>
-            Indent.getNormalIndent
-          case _: ScBlockExpr  => Indent.getNoneIndent
-          case _: ScExpression => Indent.getNormalIndent
-          case _               => Indent.getNoneIndent
+              if settings.METHOD_BRACE_STYLE == CommonCodeStyleSettings
+                .NEXT_LINE_SHIFTED ||
+                settings.METHOD_BRACE_STYLE == CommonCodeStyleSettings
+                  .NEXT_LINE_SHIFTED2 => Indent.getNormalIndent
+          case _: ScBlockExpr         => Indent.getNoneIndent
+          case _: ScExpression        => Indent.getNormalIndent
+          case _                      => Indent.getNoneIndent
         }
       case _: ScMethodCall => processMethodCall
       case arg: ScArgumentExprList if arg.isBraceArgs =>
@@ -210,12 +216,13 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
         else
           child.getPsi match {
             case _: ScBlockExpr
-                if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                  settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2 =>
-              Indent.getNormalIndent
-            case _: ScBlockExpr  => Indent.getNoneIndent
-            case _: ScExpression => Indent.getNormalIndent
-            case _               => Indent.getNoneIndent
+                if settings.BRACE_STYLE == CommonCodeStyleSettings
+                  .NEXT_LINE_SHIFTED ||
+                  settings.BRACE_STYLE == CommonCodeStyleSettings
+                    .NEXT_LINE_SHIFTED2 => Indent.getNormalIndent
+            case _: ScBlockExpr         => Indent.getNoneIndent
+            case _: ScExpression        => Indent.getNormalIndent
+            case _                      => Indent.getNoneIndent
           }
       case _: ScCaseClause => child.getElementType match {
           case ScalaTokenTypes.kCASE | ScalaTokenTypes.tFUNTYPE =>
@@ -223,21 +230,23 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           case _ => child.getPsi match {
               case _: ScBlockImpl => Indent.getNoneIndent
               case _: ScBlockExpr
-                  if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                    settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2 =>
-                Indent.getNormalIndent
-              case _: ScBlockExpr => Indent.getNoneIndent
-              case _: ScGuard     => Indent.getNormalIndent
-              case _              => Indent.getNormalIndent
+                  if settings.BRACE_STYLE == CommonCodeStyleSettings
+                    .NEXT_LINE_SHIFTED ||
+                    settings.BRACE_STYLE == CommonCodeStyleSettings
+                      .NEXT_LINE_SHIFTED2 => Indent.getNormalIndent
+              case _: ScBlockExpr         => Indent.getNoneIndent
+              case _: ScGuard             => Indent.getNormalIndent
+              case _                      => Indent.getNormalIndent
             }
         }
       case block: ScBlockImpl => block.getParent match {
           case _: ScCaseClause | _: ScFunctionExpr => child.getPsi match {
               case _: ScBlockExpr
-                  if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                    settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2 =>
-                Indent.getNormalIndent
-              case _: ScBlockExpr => Indent.getNoneIndent
+                  if settings.BRACE_STYLE == CommonCodeStyleSettings
+                    .NEXT_LINE_SHIFTED ||
+                    settings.BRACE_STYLE == CommonCodeStyleSettings
+                      .NEXT_LINE_SHIFTED2 => Indent.getNormalIndent
+              case _: ScBlockExpr         => Indent.getNoneIndent
               case _ =>
                 if (scalaSettings.DO_NOT_INDENT_CASE_CLAUSE_BODY)
                   Indent.getNoneIndent
@@ -251,22 +260,25 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           if child.getElementType != ScalaElementTypes.TEMPLATE_BODY =>
         Indent.getContinuationIndent
       case _: ScExtendsBlock
-          if settings.CLASS_BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-            settings.CLASS_BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2 =>
-        Indent.getNormalIndent
-      case _: ScExtendsBlock => Indent.getNoneIndent //Template body
+          if settings.CLASS_BRACE_STYLE == CommonCodeStyleSettings
+            .NEXT_LINE_SHIFTED ||
+            settings.CLASS_BRACE_STYLE == CommonCodeStyleSettings
+              .NEXT_LINE_SHIFTED2 => Indent.getNormalIndent
+      case _: ScExtendsBlock      => Indent.getNoneIndent //Template body
       case cl: ScParameterClause
           if child.getElementType == ScalaTokenTypes.tRPARENTHESIS ||
             child.getElementType == ScalaTokenTypes.tLPARENTHESIS =>
         Indent.getNoneIndent
       case p: ScParameterClause
-          if scalaSettings.USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS && isConstructorArgOrMemberFunctionParameter(
+          if scalaSettings
+            .USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS && isConstructorArgOrMemberFunctionParameter(
             p) =>
         Indent.getSpaceIndent(
           scalaSettings.ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS,
           false)
       case p: ScParameterClause
-          if scalaSettings.USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS && isConstructorArgOrMemberFunctionParameter(
+          if scalaSettings
+            .USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS && isConstructorArgOrMemberFunctionParameter(
             p) =>
         Indent.getSpaceIndent(
           scalaSettings.ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS,
@@ -274,8 +286,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       case cl: ScParameterClause
           if scalaSettings.NOT_CONTINUATION_INDENT_FOR_PARAMS =>
         val parent = node.getTreeParent
-        if (parent != null && parent.getPsi
-              .isInstanceOf[ScParameters] && parent.getTreeParent != null) {
+        if (parent != null && parent.getPsi.isInstanceOf[ScParameters] && parent
+              .getTreeParent != null) {
           if (parent.getTreeParent.getPsi.isInstanceOf[ScFunctionExpr]) {
             return Indent.getNoneIndent
           }
@@ -295,7 +307,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
         else Indent.getNoneIndent
       case _: ScDocComment => Indent.getNoneIndent
       case _
-          if node.getElementType == ScalaTokenTypes.kEXTENDS && child.getElementType != ScalaTokenTypes.kEXTENDS =>
+          if node.getElementType == ScalaTokenTypes.kEXTENDS && child
+            .getElementType != ScalaTokenTypes.kEXTENDS =>
         Indent
           .getContinuationIndent() //this is here to not break whatever processing there is before
       case _ => Indent.getNoneIndent

@@ -47,8 +47,8 @@ object ScheduledService {
     * It delegates to JavaFX
     * [[http://docs.oracle.com/javase/8/javafx/api/javafx/concurrent/ScheduledService.html#EXPONENTIAL_BACKOFF_STRATEGY EXPONENTIAL_BACKOFF_STRATEGY]]
     */
-  val ExponentialBackoffStrategy =
-    jfxc.ScheduledService.EXPONENTIAL_BACKOFF_STRATEGY
+  val ExponentialBackoffStrategy = jfxc.ScheduledService
+    .EXPONENTIAL_BACKOFF_STRATEGY
 
   /**
     * A Callback implementation for the <code>backoffStrategy</code> property which
@@ -59,8 +59,8 @@ object ScheduledService {
     * It delegates to JavaFX
     * [[http://docs.oracle.com/javase/8/javafx/api/javafx/concurrent/ScheduledService.html#LOGARITHMIC_BACKOFF_STRATEGY LOGARITHMIC_BACKOFF_STRATEGY]]
     */
-  val LogarithmicBackoffStrategy =
-    jfxc.ScheduledService.LOGARITHMIC_BACKOFF_STRATEGY
+  val LogarithmicBackoffStrategy = jfxc.ScheduledService
+    .LOGARITHMIC_BACKOFF_STRATEGY
 
   /**
     * A Callback implementation for the <code>backoffStrategy</code> property which

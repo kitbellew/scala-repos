@@ -52,10 +52,11 @@ class AdminClientTest extends IntegrationTestHarness with Logging {
     "3"
   ) // don't want to lose offset
   this.serverConfig.setProperty(KafkaConfig.OffsetsTopicPartitionsProp, "1")
-  this.serverConfig.setProperty(
-    KafkaConfig.GroupMinSessionTimeoutMsProp,
-    "100"
-  ) // set small enough session timeout
+  this.serverConfig
+    .setProperty(
+      KafkaConfig.GroupMinSessionTimeoutMsProp,
+      "100"
+    ) // set small enough session timeout
   this.producerConfig.setProperty(ProducerConfig.ACKS_CONFIG, "all")
   this.consumerConfig.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId)
   this.consumerConfig.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, clientId)

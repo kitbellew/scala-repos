@@ -63,9 +63,8 @@ object ClientUtils extends Logging {
     // same broker
     val shuffledBrokers = Random.shuffle(brokers)
     while (i < shuffledBrokers.size && !fetchMetaDataSucceeded) {
-      val producer: SyncProducer = ProducerPool.createSyncProducer(
-        producerConfig,
-        shuffledBrokers(i))
+      val producer: SyncProducer = ProducerPool
+        .createSyncProducer(producerConfig, shuffledBrokers(i))
       info(
         "Fetching metadata from broker %s with correlation id %d for %d topic(s) %s"
           .format(shuffledBrokers(i), correlationId, topics.size, topics))
@@ -141,8 +140,8 @@ object ClientUtils extends Logging {
     var channel: BlockingChannel = null
     var connected = false
     while (!connected) {
-      val allBrokers = zkUtils.getAllBrokerEndPointsForChannel(
-        SecurityProtocol.PLAINTEXT)
+      val allBrokers = zkUtils
+        .getAllBrokerEndPointsForChannel(SecurityProtocol.PLAINTEXT)
       Random.shuffle(allBrokers).find { broker =>
         trace("Connecting to broker %s:%d.".format(broker.host, broker.port))
         try {
@@ -193,14 +192,13 @@ object ClientUtils extends Logging {
         try {
           if (!queryChannel.isConnected)
             queryChannel = channelToAnyBroker(zkUtils)
-          debug("Querying %s:%d to locate offset manager for %s.".format(
-            queryChannel.host,
-            queryChannel.port,
-            group))
+          debug(
+            "Querying %s:%d to locate offset manager for %s."
+              .format(queryChannel.host, queryChannel.port, group))
           queryChannel.send(GroupCoordinatorRequest(group))
           val response = queryChannel.receive()
-          val consumerMetadataResponse = GroupCoordinatorResponse.readFrom(
-            response.payload())
+          val consumerMetadataResponse = GroupCoordinatorResponse
+            .readFrom(response.payload())
           debug(
             "Consumer metadata response: " + consumerMetadataResponse.toString)
           if (consumerMetadataResponse.errorCode == Errors.NONE.code)
@@ -225,7 +223,8 @@ object ClientUtils extends Logging {
       }
 
       val coordinator = coordinatorOpt.get
-      if (coordinator.host == queryChannel.host && coordinator.port == queryChannel.port) {
+      if (coordinator.host == queryChannel.host && coordinator
+            .port == queryChannel.port) {
         offsetManagerChannelOpt = Some(queryChannel)
       } else {
         val connectString = "%s:%d".format(coordinator.host, coordinator.port)

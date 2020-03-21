@@ -141,8 +141,7 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
       */
     def fullJSNameOf(sym: Symbol): String = {
       assert(sym.isClass, s"fullJSNameOf called for non-class symbol $sym")
-      sym
-        .getAnnotation(JSFullNameAnnotation)
+      sym.getAnnotation(JSFullNameAnnotation)
         .flatMap(_.stringArg(0)) getOrElse { jsNameOf(sym) }
     }
 

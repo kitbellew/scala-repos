@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.twitter.scalding.serialization.macros.impl.ordered_serialization.providers
+package com.twitter.scalding.serialization.macros.impl.ordered_serialization
+  .providers
 
 import scala.language.experimental.macros
 import scala.reflect.macros.Context
@@ -280,19 +281,21 @@ object TraversablesOrderedBuf {
         maybeSort match {
           case DoSort =>
             q"""
-              _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.TraversableHelpers.sortedCompare[${innerBuf.tpe}]($elementA, $elementB)($innerOrd)
+              _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.TraversableHelpers.sortedCompare[${innerBuf
+              .tpe}]($elementA, $elementB)($innerOrd)
               """
 
           case NoSort =>
             q"""
-              _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.TraversableHelpers.iteratorCompare[${innerBuf.tpe}]($elementA.iterator, $elementB.iterator)($innerOrd)
+              _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.TraversableHelpers.iteratorCompare[${innerBuf
+              .tpe}]($elementA.iterator, $elementB.iterator)($innerOrd)
               """
         }
 
       }
 
-      override val lazyOuterVariables: Map[String, ctx.Tree] =
-        innerBuf.lazyOuterVariables
+      override val lazyOuterVariables: Map[String, ctx.Tree] = innerBuf
+        .lazyOuterVariables
 
       override def length(element: Tree): CompileTimeLengthTypes[c.type] = {
 

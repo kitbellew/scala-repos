@@ -331,8 +331,9 @@ class Settings(error: String => Unit, val printMsg: String => Unit = println(_))
       * TODO: Should be configurable
       */
     def isExcluded(qname: String) = {
-      excludedClassnamePatterns.exists(
-        _.findFirstMatchIn(qname).isDefined) && !notExcludedClasses(qname)
+      excludedClassnamePatterns
+        .exists(_.findFirstMatchIn(qname).isDefined) && !notExcludedClasses(
+        qname)
     }
 
     /** Common conversion targets that affect any class in Scala */

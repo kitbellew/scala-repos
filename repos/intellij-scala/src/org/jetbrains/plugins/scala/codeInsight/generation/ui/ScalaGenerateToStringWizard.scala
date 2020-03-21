@@ -33,8 +33,8 @@ class ScalaGenerateToStringWizard(
 
     if (this.isOK) {
       val settings = ScalaProjectSettings.getInstance(project)
-      settings.setGenerateToStringWithFieldNames(
-        toStringPanel.checkBox.isSelected)
+      settings
+        .setGenerateToStringWithFieldNames(toStringPanel.checkBox.isSelected)
     }
 
     result
@@ -77,8 +77,8 @@ class ScalaGenerateToStringWizard(
     updateStep()
 
     val settings = ScalaProjectSettings.getInstance(project)
-    toStringPanel.checkBox.setSelected(
-      settings.isGenerateToStringWithFieldNames)
+    toStringPanel.checkBox
+      .setSelected(settings.isGenerateToStringWithFieldNames)
   }
 
   toStringPanel.getTable.getModel

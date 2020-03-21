@@ -344,9 +344,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     * Update a record with a DBObject query
     */
   def update(obj: BaseRecord, update: DBObject): Unit = {
-    val query = (BasicDBObjectBuilder.start
-      .add("_id", idValue(obj))
-      .get)
+    val query = (BasicDBObjectBuilder.start.add("_id", idValue(obj)).get)
     this.update(query, update)
   }
 
@@ -366,13 +364,11 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
         val fieldsToSet = fullFields.map(pair =>
           (pair._1, pair._2.openOrThrowException("these are all Full")))
 
-        val fieldsToUnset: List[String] = otherFields
-          .filter(pair =>
-            pair._2 match {
-              case Empty => true
-              case _     => false
-            })
-          .map(_._1)
+        val fieldsToUnset: List[String] = otherFields.filter(pair =>
+          pair._2 match {
+            case Empty => true
+            case _     => false
+          }).map(_._1)
 
         if (fieldsToSet.length > 0 || fieldsToUnset.length > 0) {
           val dbo = BasicDBObjectBuilder.start
@@ -380,21 +376,17 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
           if (fieldsToSet.length > 0) {
             dbo.add(
               "$set",
-              fieldsToSet
-                .foldLeft(BasicDBObjectBuilder.start) { (builder, pair) =>
-                  builder.add(pair._1, pair._2)
-                }
-                .get)
+              fieldsToSet.foldLeft(BasicDBObjectBuilder.start) {
+                (builder, pair) => builder.add(pair._1, pair._2)
+              }.get)
           }
 
           if (fieldsToUnset.length > 0) {
             dbo.add(
               "$unset",
-              fieldsToUnset
-                .foldLeft(BasicDBObjectBuilder.start) { (builder, fieldName) =>
-                  builder.add(fieldName, 1)
-                }
-                .get)
+              fieldsToUnset.foldLeft(BasicDBObjectBuilder.start) {
+                (builder, fieldName) => builder.add(fieldName, 1)
+              }.get)
           }
 
           update(inst, dbo.get)

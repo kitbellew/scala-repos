@@ -37,15 +37,13 @@ object DottyDownloader extends Downloader {
       HttpConfigurable.getInstance().openHttpConnection(pomFileUrl)).map {
       connection =>
         try {
-          val bytes =
-            Source.fromInputStream(connection.getInputStream).mkString.getBytes
+          val bytes = Source.fromInputStream(connection.getInputStream).mkString
+            .getBytes
           MavenJDOMUtil.read(bytes, null)
         } finally { connection.disconnect() }
     }
-    element.toOption.toSeq
-      .flatMap(_.getDescendants.asScala)
-      .flatMap(toDependency _)
-      .toVector
+    element.toOption.toSeq.flatMap(_.getDescendants.asScala)
+      .flatMap(toDependency _).toVector
   }
 
   override protected def sbtCommandsFor(version: String) =

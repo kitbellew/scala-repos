@@ -103,13 +103,11 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
               + " to Int index.")
 
         ((uindex, iindex), (r.rating, r.t)) // MODIFIED
-      }
-      .filter {
+      }.filter {
         case ((u, i), v) =>
           // keep events with valid user and item index
           (u != -1) && (i != -1)
-      }
-      .reduceByKey {
+      }.reduceByKey {
         case (v1, v2) => // MODIFIED
           // if a user may rate same item with different value at different times,
           // use the latest value for this case.
@@ -118,13 +116,11 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           val (rating2, t2) = v2
           // keep the latest value
           if (t1 > t2) v1 else v2
-      }
-      .map {
+      }.map {
         case ((u, i), (rating, t)) => // MODIFIED
           // MLlibRating requires integer index for user and item
           MLlibRating(u, i, rating) // MODIFIED
-      }
-      .cache()
+      }.cache()
 
     // MLLib ALS cannot handle empty training data.
     require(
@@ -151,8 +147,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     }
 
     // join item with the trained productFeatures
-    val productFeatures =
-      items.leftOuterJoin(m.productFeatures).collectAsMap.toMap
+    val productFeatures = items.leftOuterJoin(m.productFeatures).collectAsMap
+      .toMap
 
     new ALSModel(
       rank = m.rank,
@@ -168,8 +164,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val productFeatures = model.productFeatures
 
     // convert whiteList's string ID to integer index
-    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
-      set.map(model.itemStringIntMap.get(_)).flatten)
+    val whiteList: Option[Set[Int]] = query.whiteList
+      .map(set => set.map(model.itemStringIntMap.get(_)).flatten)
 
     val blackList: Set[String] = query.blackList.getOrElse(Set[String]())
 
@@ -231,37 +227,35 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val finalBlackList: Set[Int] = (blackList ++ seenItems ++
       unavailableItems).map(x => model.itemStringIntMap.get(x)).flatten
 
-    val userFeature = model.userStringIntMap
-      .get(query.user)
-      .map { userIndex => userFeatures.get(userIndex) }
-      // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
+    val userFeature = model.userStringIntMap.get(query.user).map { userIndex =>
+      userFeatures.get(userIndex)
+    }
+    // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
       .flatten
 
     val topScores =
       if (userFeature.isDefined) {
         // the user has feature vector
         val uf = userFeature.get
-        val indexScores: Map[Int, Double] =
-          productFeatures.par // convert to parallel collection
-            .filter {
-              case (i, (item, feature)) =>
-                feature.isDefined &&
-                  isCandidateItem(
-                    i = i,
-                    item = item,
-                    categories = query.categories,
-                    whiteList = whiteList,
-                    blackList = finalBlackList)
-            }
-            .map {
-              case (i, (item, feature)) =>
-                // NOTE: feature must be defined, so can call .get
-                val s = dotProduct(uf, feature.get)
-                // Can adjust score here
-                (i, s)
-            }
-            .filter(_._2 > 0) // only keep items with score > 0
-            .seq // convert back to sequential collection
+        val indexScores: Map[Int, Double] = productFeatures
+          .par // convert to parallel collection
+          .filter {
+            case (i, (item, feature)) =>
+              feature.isDefined &&
+                isCandidateItem(
+                  i = i,
+                  item = item,
+                  categories = query.categories,
+                  whiteList = whiteList,
+                  blackList = finalBlackList)
+          }.map {
+            case (i, (item, feature)) =>
+              // NOTE: feature must be defined, so can call .get
+              val s = dotProduct(uf, feature.get)
+              // Can adjust score here
+              (i, s)
+          }.filter(_._2 > 0) // only keep items with score > 0
+          .seq // convert back to sequential collection
 
         val ord = Ordering.by[(Int, Double), Double](_._2).reverse
         val topScores = getTopN(indexScores, query.num)(ord).toArray
@@ -331,19 +325,18 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       }
     }.toSet
 
-    val recentList: Set[Int] =
-      recentItems.map(x => model.itemStringIntMap.get(x)).flatten
+    val recentList: Set[Int] = recentItems
+      .map(x => model.itemStringIntMap.get(x)).flatten
 
     val recentFeatures: Vector[Array[Double]] = recentList.toVector
     // productFeatures may not contain the requested item
-    .map { i =>
-      productFeatures.get(i).map { case (item, f) => f }.flatten
-    }.flatten
+      .map { i => productFeatures.get(i).map { case (item, f) => f }.flatten }
+      .flatten
 
     val indexScores: Map[Int, Double] =
       if (recentFeatures.isEmpty) {
-        logger.info(
-          s"No productFeatures vector for recent items ${recentItems}.")
+        logger
+          .info(s"No productFeatures vector for recent items ${recentItems}.")
         Map[Int, Double]()
       } else {
         productFeatures.par // convert to parallel collection
@@ -356,18 +349,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
                   categories = query.categories,
                   whiteList = whiteList,
                   blackList = blackList)
-          }
-          .map {
+          }.map {
             case (i, (item, feature)) =>
-              val s = recentFeatures
-                .map { rf =>
-                  cosine(rf, feature.get) // feature is defined
-                }
-                .reduce(_ + _)
+              val s = recentFeatures.map { rf =>
+                cosine(rf, feature.get) // feature is defined
+              }.reduce(_ + _)
               // Can adjust score here
               (i, s)
-          }
-          .filter(_._2 > 0) // keep items with score > 0
+          }.filter(_._2 > 0) // keep items with score > 0
           .seq // convert back to sequential collection
       }
 
@@ -433,16 +422,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     whiteList.map(_.contains(i)).getOrElse(true) &&
     !blackList.contains(i) &&
     // filter categories
-    categories
-      .map { cat =>
-        item.categories
-          .map { itemCat =>
-            // keep this item if has ovelap categories with the query
-            !(itemCat.toSet.intersect(cat).isEmpty)
-          }
-          .getOrElse(false) // discard this item if it has no categories
-      }
-      .getOrElse(true)
+    categories.map { cat =>
+      item.categories.map { itemCat =>
+        // keep this item if has ovelap categories with the query
+        !(itemCat.toSet.intersect(cat).isEmpty)
+      }.getOrElse(false) // discard this item if it has no categories
+    }.getOrElse(true)
 
   }
 

@@ -541,9 +541,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def withRowIndex(col1: Int, col2: Int)(implicit
       ordT: ORD[T]): Frame[(T, T), CX, T] = {
-    val newIx: Index[(T, T)] = Index.make(
-      this.colAt(col1).toVec,
-      this.colAt(col2).toVec)
+    val newIx: Index[(T, T)] = Index
+      .make(this.colAt(col1).toVec, this.colAt(col2).toVec)
     this.setRowIndex(newIx).filterAt { case c => !Set(col1, col2).contains(c) }
   }
 
@@ -578,9 +577,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def withColIndex(row1: Int, row2: Int)(implicit
       ordT: ORD[T]): Frame[RX, (T, T), T] = {
-    val newIx: Index[(T, T)] = Index.make(
-      this.rowAt(row1).toVec,
-      this.rowAt(row2).toVec)
+    val newIx: Index[(T, T)] = Index
+      .make(this.rowAt(row1).toVec, this.rowAt(row2).toVec)
     this.setColIndex(newIx).rfilterAt { case r => !Set(row1, row2).contains(r) }
   }
 
@@ -791,8 +789,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def flatMap[SX: ST: ORD, DX: ST: ORD, U: ST](
       f: ((RX, CX, T)) => Traversable[(SX, DX, U)]): Frame[SX, DX, U] = {
-    Series(
-      toSeq.flatMap(f).map { case (sx, dx, u) => ((sx, dx) -> u) }: _*).pivot
+    Series(toSeq.flatMap(f).map { case (sx, dx, u) => ((sx, dx) -> u) }: _*)
+      .pivot
   }
 
   /**
@@ -941,8 +939,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @param pred Series[_, Boolean] (or Vec[Boolean] which will implicitly convert)
     */
   def where(pred: Series[_, Boolean]): Frame[RX, CX, T] = {
-    val newVals = values.zipWithIndex.flatMap(z =>
-      if (pred.values(z._2)) Seq(z._1) else Seq.empty[Vec[T]])
+    val newVals = values.zipWithIndex
+      .flatMap(z => if (pred.values(z._2)) Seq(z._1) else Seq.empty[Vec[T]])
     val newIdx = VecImpl.where(Vec(this.colIx.toArray))(pred.values.toArray)
     Frame(newVals, rowIx, Index(newIdx))
   }
@@ -1051,9 +1049,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     val lft = indexer.lTake.map { loc =>
       values.map(_.take(loc))
     } getOrElse values
-    val rgt = indexer.rTake.map { loc =>
-      other.values.take(loc)
-    } getOrElse other.values
+    val rgt = indexer.rTake
+      .map { loc => other.values.take(loc) } getOrElse other.values
     Frame(lft :+ rgt, indexer.index, IndexIntRange(colIx.length + 1))
   }
 
@@ -1124,9 +1121,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     val lft = indexer.lTake.map { loc =>
       values.map(_.take(loc))
     } getOrElse values
-    val rgt = indexer.rTake.map { loc =>
-      other.values.take(loc)
-    } getOrElse other.values
+    val rgt = indexer.rTake
+      .map { loc => other.values.take(loc) } getOrElse other.values
     Panel(lft :+ rgt, indexer.index, IndexIntRange(colIx.length + 1))
   }
 
@@ -1189,19 +1185,15 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     val rJoin = rowIx.join(other.rowIx, rhow)
     val cJoin = colIx.join(other.colIx, chow)
 
-    val lvals: MatCols[T] = cJoin.lTake
-      .map(locs => values.take(locs))
+    val lvals: MatCols[T] = cJoin.lTake.map(locs => values.take(locs))
       .getOrElse(values)
-    val rvals: MatCols[U] = cJoin.rTake
-      .map(locs => other.values.take(locs))
+    val rvals: MatCols[U] = cJoin.rTake.map(locs => other.values.take(locs))
       .getOrElse(other.values)
 
     val vecs = for (i <- 0 until lvals.length) yield {
-      val lvec: Vec[T] = rJoin.lTake
-        .map(locs => lvals(i).take(locs))
+      val lvec: Vec[T] = rJoin.lTake.map(locs => lvals(i).take(locs))
         .getOrElse(lvals(i))
-      val rvec: Vec[U] = rJoin.rTake
-        .map(locs => rvals(i).take(locs))
+      val rvec: Vec[U] = rJoin.rTake.map(locs => rvals(i).take(locs))
         .getOrElse(rvals(i))
       (lvec, rvec)
     }
@@ -1346,10 +1338,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     ) // Final col index (colIx stacked w/unique pivot labels)
 
     val grps =
-      IndexGrouper(
-        rgt,
-        sorted =
-          false).groups // Group by pivot label. Each unique label will get its
+      IndexGrouper(rgt, sorted = false)
+        .groups // Group by pivot label. Each unique label will get its
     //   own column in the final frame.
     if (values.length > 0) {
       val len = uix.length
@@ -1363,11 +1353,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
         val ixer = rix.join(gIdx) //   to compute map to final (rix) locations;
 
         for (currVec <- values) { // For each column vec of original frame
-          val vals = currVec.take(
-            taker
-          ) //   take values corresponding to current pivot label
-          val v = ixer.rTake
-            .map(vals.take(_))
+          val vals = currVec
+            .take(taker) //   take values corresponding to current pivot label
+          val v = ixer.rTake.map(vals.take(_))
             .getOrElse(vals) //   map values to be in correspondence to rix
           result(loc) = v //   and save vec in array.
 
@@ -1602,9 +1590,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       val rsca = rowIx.scalarTag
       val rarr = rowIx.toArray
       val rinit = rsca.strList(rarr(0)).map(_.length)
-      val rlens = util
-        .grab(rarr, rhalf)
-        .map(rsca.strList(_))
+      val rlens = util.grab(rarr, rhalf).map(rsca.strList(_))
         .foldLeft(rinit)(maxf)
       val maxrl = rlens.sum + (rlens.length - 1)
 
@@ -1618,11 +1604,12 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
           if (lst.length > 0) lst.max else 0
         }
 
-      var prevColMask = clens.map(x =>
-        (
-          x._1,
-          false
-        )) // recalls whether we printed a column's label at level L-1
+      var prevColMask = clens
+        .map(x =>
+          (
+            x._1,
+            false
+          )) // recalls whether we printed a column's label at level L-1
       var prevColLabel = "" // recalls previous column's label at level L
 
       // build columns header
@@ -1634,8 +1621,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
           val fmt = "%" + clen(c) + "s "
           val res =
             if (l == labs.length - 1 || currLab != prevColLabel || prevColMask
-                  .get(c)
-                  .getOrElse(false)) {
+                  .get(c).getOrElse(false)) {
               prevColMask = prevColMask.updated(c, true)
               currLab.formatted(fmt)
             } else {
@@ -1671,8 +1657,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       def enumZip[A, B](a: List[A], b: List[B]): List[(Int, A, B)] =
         for (v <- (a.zipWithIndex zip b)) yield (v._1._2, v._1._1, v._2)
 
-      val prevRowLabels = Array.fill(
-        rowIx.scalarTag.strList(rowIx.raw(0)).size)("")
+      val prevRowLabels = Array
+        .fill(rowIx.scalarTag.strList(rowIx.raw(0)).size)("")
       def resetRowLabels(k: Int) {
         for (i <- k until prevRowLabels.length) prevRowLabels(i) = ""
       }
@@ -1733,9 +1719,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   override def equals(other: Any): Boolean =
     other match {
       case f: Frame[_, _, _] =>
-        (
-          this eq f
-        ) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
+        (this eq f) || rowIx == f.rowIx && colIx == f.colIx && values == f
+          .values
       case _ => false
     }
 }

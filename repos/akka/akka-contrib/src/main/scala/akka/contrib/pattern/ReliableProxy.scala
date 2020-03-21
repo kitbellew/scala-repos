@@ -135,8 +135,8 @@ private[akka] trait ReliableProxyDebugLogging extends ActorLogging {
   this: Actor ⇒
   val debug: Boolean =
     Try(
-      context.system.settings.config.getBoolean(
-        "akka.reliable-proxy.debug")) getOrElse false
+      context.system.settings.config
+        .getBoolean("akka.reliable-proxy.debug")) getOrElse false
 
   def enabled: Boolean = debug && log.isDebugEnabled
 
@@ -261,15 +261,14 @@ class ReliableProxy(
   val resendTimer = "resend"
   val reconnectTimer = "reconnect"
 
-  val retryGateClosedFor = Try(context.system.settings.config.getDuration(
-    "akka.remote.retry-gate-closed-for",
-    TimeUnit.MILLISECONDS)).map(_.longValue).getOrElse(5000L)
+  val retryGateClosedFor = Try(
+    context.system.settings.config
+      .getDuration("akka.remote.retry-gate-closed-for", TimeUnit.MILLISECONDS))
+    .map(_.longValue).getOrElse(5000L)
 
   val defaultConnectInterval = Try(context.system.settings.config.getDuration(
     "akka.reliable-proxy.default-connect-interval",
-    TimeUnit.MILLISECONDS))
-    .map(_.longValue)
-    .getOrElse(retryGateClosedFor)
+    TimeUnit.MILLISECONDS)).map(_.longValue).getOrElse(retryGateClosedFor)
     .millis
 
   val initialState = Connecting
@@ -279,8 +278,8 @@ class ReliableProxy(
   def createTunnel(target: ActorRef): Unit = {
     logDebug("Creating new tunnel for {}", target)
     tunnel = context.actorOf(
-      receiver(target, lastAckSerial).withDeploy(
-        Deploy(scope = RemoteScope(target.path.address))),
+      receiver(target, lastAckSerial)
+        .withDeploy(Deploy(scope = RemoteScope(target.path.address))),
       "tunnel")
 
     context.watch(tunnel)
@@ -289,7 +288,8 @@ class ReliableProxy(
     resetBackoff()
   }
 
-  if (targetPath.address.host.isEmpty && self.path.address == targetPath.address) {
+  if (targetPath.address.host.isEmpty && self.path.address == targetPath
+        .address) {
     logDebug(
       "Unnecessary to use ReliableProxy for local target: {}",
       targetPath)

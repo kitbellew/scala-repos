@@ -53,8 +53,8 @@ private[finagle] class ClockedDrainer(
     extends Thread("GcDrainer")
     with Lessor {
 
-  private[this] val lessees = Collections.newSetFromMap(
-    new ConcurrentHashMap[Lessee, java.lang.Boolean])
+  private[this] val lessees = Collections
+    .newSetFromMap(new ConcurrentHashMap[Lessee, java.lang.Boolean])
 
   private[this] val requestCount = new AtomicInteger(0)
   private[this] val narrival = new AtomicInteger(0)

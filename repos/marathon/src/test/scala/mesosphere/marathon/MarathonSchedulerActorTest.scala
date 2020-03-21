@@ -138,11 +138,9 @@ class MarathonSchedulerActorTest
     when(repo.allIds()).thenReturn(Future.successful(Seq(app.id.toString)))
     when(taskTracker.appTasksSync(app.id)).thenReturn(Iterable(taskA))
     when(taskTracker.marathonTaskSync(taskA.taskId))
-      .thenReturn(Some(taskA.marathonTask))
-      .thenReturn(None)
+      .thenReturn(Some(taskA.marathonTask)).thenReturn(None)
 
-    when(repo.currentVersion(app.id))
-      .thenReturn(Future.successful(Some(app)))
+    when(repo.currentVersion(app.id)).thenReturn(Future.successful(Some(app)))
       .thenReturn(Future.successful(Some(app.copy(instances = 0))))
     when(taskTracker.countLaunchedAppTasksSync(app.id)).thenReturn(0)
     when(repo.store(any)).thenReturn(Future.successful(app))
@@ -173,8 +171,8 @@ class MarathonSchedulerActorTest
 
       expectMsg(5.seconds, TasksKilled(app.id, Set(taskA.taskId)))
 
-      val Some(taskFailureEvent) = TaskFailure.FromMesosStatusUpdateEvent(
-        statusUpdateEvent)
+      val Some(taskFailureEvent) = TaskFailure
+        .FromMesosStatusUpdateEvent(statusUpdateEvent)
 
       awaitAssert(
         verify(taskFailureEventRepository, times(1))
@@ -195,11 +193,9 @@ class MarathonSchedulerActorTest
     when(repo.allIds()).thenReturn(Future.successful(Seq(app.id.toString)))
     when(taskTracker.appTasksSync(app.id)).thenReturn(Iterable[Task](taskA))
     when(taskTracker.marathonTaskSync(taskA.taskId))
-      .thenReturn(Some(taskA.marathonTask))
-      .thenReturn(None)
+      .thenReturn(Some(taskA.marathonTask)).thenReturn(None)
 
-    when(repo.currentVersion(app.id))
-      .thenReturn(Future.successful(Some(app)))
+    when(repo.currentVersion(app.id)).thenReturn(Future.successful(Some(app)))
       .thenReturn(Future.successful(Some(app.copy(instances = 0))))
     when(taskTracker.countLaunchedAppTasksSync(app.id)).thenReturn(0)
     when(repo.store(any)).thenReturn(Future.successful(app))

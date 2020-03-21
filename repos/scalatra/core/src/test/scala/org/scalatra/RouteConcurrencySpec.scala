@@ -25,9 +25,8 @@ class RouteConcurrencyServlet extends ScalatraServlet {
     } // add some more routes while we're removing
     y = Future { route.foreach { route => removeRoute("POST", route) } }
   } yield (x, y)
-  Await.result(
-    Future.sequence(b map (kv => kv._1.flatMap(_ => kv._2))),
-    5.seconds)
+  Await
+    .result(Future.sequence(b map (kv => kv._1.flatMap(_ => kv._2))), 5.seconds)
 
   get("/count/:method") { routes(HttpMethod(params("method"))).size.toString }
 }

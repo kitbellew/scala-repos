@@ -43,38 +43,34 @@ class PageRank(args: Args) extends Job(args) {
      * It doesn't matter what the initial degree is, we recompute below
      */
     .map(() -> ('rowtype, 'd_src)) { (u: Unit) => (NODESET, -1) }
-    .thenDo(doPageRank(STEPS) _)
-    .thenDo(computeError _)
-    .thenDo(output _)
+    .thenDo(doPageRank(STEPS) _).thenDo(computeError _).thenDo(output _)
 
   /**
     * Here is where we check for convergence and then run the next job if we're not converged
     */
   override def next: Option[Job] = {
-    args
-      .optional("convergence")
-      .flatMap { convErr =>
-        /*
-         * It's easy for this to seem broken, so think about it twice:
-         * We are swapping between two writing files: temp and output, with the ultimate
-         * goal to land up at output.  So, each next input is this output, but the temp
-         * and output should be swapping.
-         */
-        val nextArgs = args + ("input", Some(args("output"))) +
-          ("temp", Some(args("output"))) +
-          ("output", Some(args("temp"))) +
-          ("jobCount", Some((JOB_COUNT + 1).toString))
-        //Actually read the error:
-        val error = TypedTsv[Double](args("errorOut")).toIterator.next;
-        // The last job should be even numbered so output is not in temp.
-        // TODO: if we had a way to do HDFS operations easily (like rm, mv, tempname)
-        // this code would be cleaner and more efficient.  As is, we may go a whole extra
-        // set of operations past the point of convergence.
-        if (error > convErr.toDouble || (JOB_COUNT % 2 == 1)) {
-          //try again to get under the error
-          Some(clone(nextArgs))
-        } else { None }
-      }
+    args.optional("convergence").flatMap { convErr =>
+      /*
+       * It's easy for this to seem broken, so think about it twice:
+       * We are swapping between two writing files: temp and output, with the ultimate
+       * goal to land up at output.  So, each next input is this output, but the temp
+       * and output should be swapping.
+       */
+      val nextArgs = args + ("input", Some(args("output"))) +
+        ("temp", Some(args("output"))) +
+        ("output", Some(args("temp"))) +
+        ("jobCount", Some((JOB_COUNT + 1).toString))
+      //Actually read the error:
+      val error = TypedTsv[Double](args("errorOut")).toIterator.next;
+      // The last job should be even numbered so output is not in temp.
+      // TODO: if we had a way to do HDFS operations easily (like rm, mv, tempname)
+      // this code would be cleaner and more efficient.  As is, we may go a whole extra
+      // set of operations past the point of convergence.
+      if (error > convErr.toDouble || (JOB_COUNT % 2 == 1)) {
+        //try again to get under the error
+        Some(clone(nextArgs))
+      } else { None }
+    }
   }
 
   /**
@@ -111,8 +107,8 @@ class PageRank(args: Args) extends Job(args) {
       //compute the incremental rank due to the random jump:
       val randomJump = nodeRows.map('rank -> 'rank) { (rank: Double) => ALPHA }
       //expand the neighbor list inte an edge list and out-degree of the src
-      val edges = nodeRows
-        .flatMap(('dst, 'd_src) -> ('dst, 'd_src)) { args: (String, Long) =>
+      val edges = nodeRows.flatMap(('dst, 'd_src) -> ('dst, 'd_src)) {
+        args: (String, Long) =>
           if (args._1.length > 0) {
             val dsts = args._1.split(",")
             //Ignore the old degree:
@@ -122,9 +118,9 @@ class PageRank(args: Args) extends Job(args) {
             //Here is a node that points to no other nodes (dangling)
             Nil
           }
-        }
-        //Here we make a false row that we use to tell dst how much incoming
-        //Page rank it needs to add to itself:
+      }
+      //Here we make a false row that we use to tell dst how much incoming
+      //Page rank it needs to add to itself:
         .map(
           ('src, 'd_src, 'dst, 'rank, 'rowtype) -> (
             'src, 'd_src, 'dst, 'rank, 'rowtype
@@ -151,9 +147,9 @@ class PageRank(args: Args) extends Job(args) {
          * filter the result to keep only NODESET rows.
          */
         _.min('rowtype, 'dst, 'd_src)
-          .sum[Double](
-            'rank
-          ) //Sum the page-rank from both the nodeset and edge rows
+        .sum[Double](
+          'rank
+        ) //Sum the page-rank from both the nodeset and edge rows
       }
       //Must call ourselves in the tail position:
       doPageRank(steps - 1)(nextPr)
@@ -169,17 +165,11 @@ class PageRank(args: Args) extends Job(args) {
   //Optionally compute the average error:
   def computeError(pr: RichPipe): RichPipe = {
     args.optional("errorOut").map { errOut =>
-      Tsv(args("input")).read
-        .mapTo((0, 1, 2) -> ('src0, 'dst0, 'rank0)) {
-          tup: (Long, String, Double) =>
-            tup
-        }
-        .joinWithSmaller('src0 -> 'src, pr)
-        .mapTo(('rank0, 'rank) -> 'err) { ranks: (Double, Double) =>
-          scala.math.abs(ranks._1 - ranks._2)
-        }
-        .groupAll { _.average('err) }
-        .write(TypedTsv[Double](errOut))
+      Tsv(args("input")).read.mapTo((0, 1, 2) -> ('src0, 'dst0, 'rank0)) {
+        tup: (Long, String, Double) => tup
+      }.joinWithSmaller('src0 -> 'src, pr).mapTo(('rank0, 'rank) -> 'err) {
+        ranks: (Double, Double) => scala.math.abs(ranks._1 - ranks._2)
+      }.groupAll { _.average('err) }.write(TypedTsv[Double](errOut))
     }
     pr
   }

@@ -15,10 +15,8 @@ case class InnerClassSettings(
       val tp = output.returnType
       val typeText =
         if (canonTextForTypes) tp.canonicalText else tp.presentableText
-      val typed = ScalaExtractMethodUtils.typedName(
-        output.paramName,
-        typeText,
-        output.fromElement.getProject)
+      val typed = ScalaExtractMethodUtils
+        .typedName(output.paramName, typeText, output.fromElement.getProject)
       if (isCase) typed else s"val $typed"
     }
     val paramsText = outputs.map(paramText).mkString("(", ", ", ")")

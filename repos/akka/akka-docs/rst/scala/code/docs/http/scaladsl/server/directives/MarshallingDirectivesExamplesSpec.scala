@@ -48,8 +48,8 @@ class MarshallingDirectivesExamplesSpec extends RoutingSpec {
     val route = post {
       entity(as[JsValue]) { json =>
         complete(
-          s"Person: ${json.asJsObject.fields("name")} - favorite number: ${json.asJsObject
-            .fields("favoriteNumber")}")
+          s"Person: ${json.asJsObject.fields("name")} - favorite number: ${json
+            .asJsObject.fields("favoriteNumber")}")
       }
     }
 

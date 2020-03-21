@@ -42,9 +42,8 @@ final class Emitter private (
   private[this] var statsMethodsReused: Int = 0
   private[this] var statsMethodsInvalidated: Int = 0
 
-  val symbolRequirements: SymbolRequirement = Emitter.symbolRequirements(
-    semantics,
-    outputMode.esLevel)
+  val symbolRequirements: SymbolRequirement = Emitter
+    .symbolRequirements(semantics, outputMode.esLevel)
 
   // Private API for the Closure backend (could be opened if necessary)
   private[backend] def withOptimizeBracketSelects(
@@ -147,8 +146,8 @@ final class Emitter private (
     }
 
     if (linkedClass.hasInstances && kind.isAnyScalaJSDefinedClass) {
-      val ctor = classTreeCache.constructor.getOrElseUpdate(
-        classEmitter.genConstructor(linkedClass))
+      val ctor = classTreeCache.constructor
+        .getOrElseUpdate(classEmitter.genConstructor(linkedClass))
 
       // Normal methods
       val memberMethods = for (m <- linkedClass.memberMethods) yield {
@@ -159,8 +158,8 @@ final class Emitter private (
       }
 
       // Exported Members
-      val exportedMembers = classTreeCache.exportedMembers.getOrElseUpdate(
-        classEmitter.genExportedMembers(linkedClass))
+      val exportedMembers = classTreeCache.exportedMembers
+        .getOrElseUpdate(classEmitter.genExportedMembers(linkedClass))
 
       outputMode match {
         case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
@@ -169,9 +168,9 @@ final class Emitter private (
           addTree(exportedMembers)
 
         case OutputMode.ECMAScript6 =>
-          val allMembersBlock = js.Block(
-            ctor :: memberMethods ::: exportedMembers :: Nil)(
-            Position.NoPosition)
+          val allMembersBlock = js
+            .Block(ctor :: memberMethods ::: exportedMembers :: Nil)(
+              Position.NoPosition)
           val allMembers = allMembersBlock match {
             case js.Block(members) => members
             case js.Skip()         => Nil
@@ -201,7 +200,8 @@ final class Emitter private (
         linkedClass)))
     }
 
-    if (linkedClass.hasInstances && kind.isClass && linkedClass.hasRuntimeTypeInfo)
+    if (linkedClass.hasInstances && kind.isClass && linkedClass
+          .hasRuntimeTypeInfo)
       addTree(classTreeCache.setTypeData.getOrElseUpdate(
         classEmitter.genSetTypeData(linkedClass)))
 

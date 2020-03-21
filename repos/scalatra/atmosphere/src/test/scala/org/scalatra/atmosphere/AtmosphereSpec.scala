@@ -141,26 +141,21 @@ class AtmosphereSpec extends MutableScalatraSpec {
           DefaultOptionsBuilder,
           DefaultRequestBuilder]]
 
-      val req = client.newRequestBuilder
-        .method(Request.METHOD.GET)
-        .uri(baseUrl + "/test1")
-        .transport(Request.TRANSPORT.WEBSOCKET)
+      val req = client.newRequestBuilder.method(Request.METHOD.GET)
+        .uri(baseUrl + "/test1").transport(Request.TRANSPORT.WEBSOCKET)
 
       val opts = client.newOptionsBuilder().reconnect(false).build()
 
-      val socket = client
-        .create(opts)
-        .on(
-          Event.MESSAGE,
-          new Function[String] {
-            def on(r: String) = {
-              latch.countDown()
-              println(r)
-            }
-          })
-        .on(new Function[Throwable] {
-          def on(t: Throwable) = { t.printStackTrace }
-        })
+      val socket = client.create(opts).on(
+        Event.MESSAGE,
+        new Function[String] {
+          def on(r: String) = {
+            latch.countDown()
+            println(r)
+          }
+        }).on(new Function[Throwable] {
+        def on(t: Throwable) = { t.printStackTrace }
+      })
 
       socket.open(req.build()).fire("echo");
 

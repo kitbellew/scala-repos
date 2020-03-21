@@ -63,15 +63,13 @@ object Analyse extends LilaController {
                   pov,
                   data,
                   initialFen,
-                  Env.analyse
-                    .annotator(
-                      pgn,
-                      analysis,
-                      pov.game.opening,
-                      pov.game.winnerColor,
-                      pov.game.status,
-                      pov.game.clock)
-                    .toString,
+                  Env.analyse.annotator(
+                    pgn,
+                    analysis,
+                    pov.game.opening,
+                    pov.game.winnerColor,
+                    pov.game.status,
+                    pov.game.clock).toString,
                   analysis,
                   analysis map { a =>
                     AdvantageChart(
@@ -117,15 +115,13 @@ object Analyse extends LilaController {
           Ok(html.analyse.replayBot(
             pov,
             initialFen,
-            Env.analyse
-              .annotator(
-                pgn,
-                analysis,
-                pov.game.opening,
-                pov.game.winnerColor,
-                pov.game.status,
-                pov.game.clock)
-              .toString,
+            Env.analyse.annotator(
+              pgn,
+              analysis,
+              pov.game.opening,
+              pov.game.winnerColor,
+              pov.game.status,
+              pov.game.clock).toString,
             analysis,
             simul,
             crosstable

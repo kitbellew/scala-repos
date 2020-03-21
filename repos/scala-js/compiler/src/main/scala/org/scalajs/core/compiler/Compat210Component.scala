@@ -68,7 +68,8 @@ trait Compat210Component {
   // Impl classes disappeared in 2.12.0-M4
 
   lazy val scalaUsesImplClasses: Boolean =
-    definitions.SeqClass.implClass != NoSymbol // a trait we know has an impl class
+    definitions.SeqClass
+      .implClass != NoSymbol // a trait we know has an impl class
 
   implicit final class StdTermNamesCompat(self: global.nme.type) {
     def IMPL_CLASS_SUFFIX: String = sys.error("No impl classes in this version")
@@ -197,8 +198,8 @@ trait Compat210Component {
   // that were previously in definitions itself
 
   implicit final class RunCompat(self: Run) {
-    val runDefinitions: Compat210Component.this.global.definitions.type =
-      global.definitions
+    val runDefinitions: Compat210Component.this.global.definitions.type = global
+      .definitions
   }
 
   // Mode.FUNmode replaces analyzer.FUNmode

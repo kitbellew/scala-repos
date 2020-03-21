@@ -65,14 +65,9 @@ object Test extends App {
           .reflectConstructor(tpe.member(TermName("<init>")).asMethod)()))
     println(
       "class: " + failsafe(
-        im.reflectClass(tpe.member(TypeName("C")).asClass)
-          .reflectConstructor(
-            typeOf[C]
-              .member(TypeName("C"))
-              .asClass
-              .info
-              .member(termNames.CONSTRUCTOR)
-              .asMethod)()))
+        im.reflectClass(tpe.member(TypeName("C")).asClass).reflectConstructor(
+          typeOf[C].member(TypeName("C")).asClass.info
+            .member(termNames.CONSTRUCTOR).asMethod)()))
     println(
       "object: " + failsafe(
         im.reflectModule(tpe.member(TermName("O")).asModule).instance))

@@ -30,15 +30,14 @@ class CleanWorksheetAction() extends AnAction with TopComponentAction {
     val project = e.getProject
     if (project == null) return //EA-72055
 
-    val editor: Editor =
-      FileEditorManager.getInstance(project).getSelectedTextEditor
-    val file: VirtualFile = CommonDataKeys.VIRTUAL_FILE.getData(
-      e.getDataContext)
+    val editor: Editor = FileEditorManager.getInstance(project)
+      .getSelectedTextEditor
+    val file: VirtualFile = CommonDataKeys.VIRTUAL_FILE
+      .getData(e.getDataContext)
 
     if (editor == null || file == null) return
 
-    val psiFile: PsiFile = PsiDocumentManager
-      .getInstance(project)
+    val psiFile: PsiFile = PsiDocumentManager.getInstance(project)
       .getPsiFile(editor.getDocument)
     val viewer = WorksheetViewerInfo.getViewer(editor)
 
@@ -52,11 +51,8 @@ class CleanWorksheetAction() extends AnAction with TopComponentAction {
       inWriteAction {
         CleanWorksheetAction.resetScrollModel(viewer)
 
-        CleanWorksheetAction.cleanWorksheet(
-          psiFile.getNode,
-          editor,
-          viewer,
-          project)
+        CleanWorksheetAction
+          .cleanWorksheet(psiFile.getNode, editor, viewer, project)
 
         parent.remove(splitPane)
         parent.add(editor.getComponent, BorderLayout.CENTER)
@@ -99,8 +95,8 @@ object CleanWorksheetAction {
       project: Project) {
     val rightDocument = rightEditor.getDocument
 
-    WorksheetEditorPrinter.deleteWorksheetEvaluation(
-      node.getPsi.asInstanceOf[ScalaFile])
+    WorksheetEditorPrinter
+      .deleteWorksheetEvaluation(node.getPsi.asInstanceOf[ScalaFile])
 
     if (rightDocument != null && !project.isDisposed) {
       ApplicationManager.getApplication runWriteAction new Runnable {

@@ -132,8 +132,7 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   def deleteOthers: Zipper[A] = zipper(Stream.Empty, focus, Stream.Empty)
 
   def foldLeft[B](b: B)(f: (B, A) => B): B =
-    Stream
-      .cons(focus, rights)
+    Stream.cons(focus, rights)
       .foldLeft(lefts.foldRight(b)((a, b) => f(b, a)))(f)
 
   def foldRight[B](b: => B)(f: (A, => B) => B): B =
@@ -404,8 +403,8 @@ sealed abstract class ZipperInstances {
       override def foldMapLeft1[A, B](fa: Zipper[A])(z: A => B)(
           f: (B, A) => B) =
         fa.rights.foldLeft(
-          Foldable[Stream].foldMapRight1Opt(fa.lefts)(z)((a, b) =>
-            f(b, a)) match {
+          Foldable[Stream]
+            .foldMapRight1Opt(fa.lefts)(z)((a, b) => f(b, a)) match {
             case Some(b) => f(b, fa.focus)
             case None    => z(fa.focus)
           })(f)
@@ -443,9 +442,9 @@ sealed abstract class ZipperInstances {
     new Equal[Zipper[A]] {
       import std.stream.streamEqual
       def equal(a1: Zipper[A], a2: Zipper[A]) =
-        streamEqual[A].equal(a1.lefts, a2.lefts) && Equal[A].equal(
-          a1.focus,
-          a2.focus) && streamEqual[A].equal(a1.rights, a2.rights)
+        streamEqual[A].equal(a1.lefts, a2.lefts) && Equal[A]
+          .equal(a1.focus, a2.focus) && streamEqual[A]
+          .equal(a1.rights, a2.rights)
     }
 
   implicit def zipperShow[A: Show]: Show[Zipper[A]] =

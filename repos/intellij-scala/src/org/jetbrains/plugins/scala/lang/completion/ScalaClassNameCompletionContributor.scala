@@ -59,8 +59,7 @@ class ScalaClassNameCompletionContributor extends ScalaCompletionContributor {
   import org.jetbrains.plugins.scala.lang.completion.ScalaClassNameCompletionContributor._
   extend(
     CompletionType.BASIC,
-    PlatformPatterns
-      .psiElement(ScalaTokenTypes.tIDENTIFIER)
+    PlatformPatterns.psiElement(ScalaTokenTypes.tIDENTIFIER)
       .withParent(classOf[ScReferenceElement]),
     new CompletionProvider[CompletionParameters] {
       def addCompletions(
@@ -118,9 +117,8 @@ object ScalaClassNameCompletionContributor {
     val expectedTypesAfterNew: Array[ScType] =
       if (afterNewPattern.accepts(dummyPosition, context)) {
         val element = dummyPosition
-        val newExpr = PsiTreeUtil.getContextOfType(
-          element,
-          classOf[ScNewTemplateDefinition])
+        val newExpr = PsiTreeUtil
+          .getContextOfType(element, classOf[ScNewTemplateDefinition])
         //todo: probably we need to remove all abstracts here according to variance
         newExpr.expectedTypes().map {
           case ScAbstractType(_, lower, upper) => upper
@@ -131,8 +129,8 @@ object ScalaClassNameCompletionContributor {
       case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
         val position = dummyPosition
         //It's ok here to use parameters.getPosition
-        val offsetInString =
-          parameters.getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
+        val offsetInString = parameters.getOffset - parameters.getPosition
+          .getTextRange.getStartOffset + 1
         val interpolated = ScalaPsiElementFactory.createExpressionFromText(
           "s" + position.getText,
           position.getContext.getContext)
@@ -140,24 +138,16 @@ object ScalaClassNameCompletionContributor {
       case _ => (dummyPosition, false)
     }
     val invocationCount = parameters.getInvocationCount
-    if (!inString && !ScalaPsiUtil
-          .fileContext(position)
+    if (!inString && !ScalaPsiUtil.fileContext(position)
           .isInstanceOf[ScalaFile]) return true
-    val lookingForAnnotations: Boolean = psiElement
-      .afterLeaf("@")
+    val lookingForAnnotations: Boolean = psiElement.afterLeaf("@")
       .accepts(position)
-    val isInImport = ScalaPsiUtil.getContextOfType(
-      position,
-      false,
-      classOf[ScImportStmt]) != null
-    val stableRefElement = ScalaPsiUtil.getContextOfType(
-      position,
-      false,
-      classOf[ScStableCodeReferenceElement])
-    val refElement = ScalaPsiUtil.getContextOfType(
-      position,
-      false,
-      classOf[ScReferenceElement])
+    val isInImport = ScalaPsiUtil
+      .getContextOfType(position, false, classOf[ScImportStmt]) != null
+    val stableRefElement = ScalaPsiUtil
+      .getContextOfType(position, false, classOf[ScStableCodeReferenceElement])
+    val refElement = ScalaPsiUtil
+      .getContextOfType(position, false, classOf[ScReferenceElement])
     val onlyClasses = stableRefElement != null && !stableRefElement.getContext
       .isInstanceOf[ScConstructorPattern]
 
@@ -178,8 +168,8 @@ object ScalaClassNameCompletionContributor {
     }
 
     def addTypeForCompletion(typeToImport: TypeToImport) {
-      val isExcluded: Boolean = ApplicationManager.getApplication.runReadAction(
-        new Computable[Boolean] {
+      val isExcluded: Boolean = ApplicationManager.getApplication
+        .runReadAction(new Computable[Boolean] {
           def compute: Boolean = {
             typeToImport match {
               case ClassTypeToImport(classToImport) =>
@@ -189,8 +179,7 @@ object ScalaClassNameCompletionContributor {
                 if (containingClass == null) return false
                 JavaCompletionUtil.isInExcludedPackage(containingClass, false)
               case PrefixPackageToImport(pack) =>
-                JavaProjectCodeInsightSettings
-                  .getSettings(pack.getProject)
+                JavaProjectCodeInsightSettings.getSettings(pack.getProject)
                   .isExcluded(pack.getQualifiedName)
             }
           }
@@ -212,10 +201,8 @@ object ScalaClassNameCompletionContributor {
         case _: ScObject if !isInImport && onlyClasses => return
         case _                                         =>
       }
-      val renamed = renamesMap
-        .get(typeToImport.name)
-        .filter(_._2 == typeToImport.element)
-        .map(_._1)
+      val renamed = renamesMap.get(typeToImport.name)
+        .filter(_._2 == typeToImport.element).map(_._1)
       for {
         el <- LookupElementManager.getLookupElement(
           new ScalaResolveResult(typeToImport.element, nameShadow = renamed),
@@ -243,13 +230,12 @@ object ScalaClassNameCompletionContributor {
     val project = position.getProject
 
     val checkSynthetic = parameters.getOriginalFile.scalaLanguageLevel
-      .map(_ < Scala_2_9)
-      .getOrElse(true)
+      .map(_ < Scala_2_9).getOrElse(true)
 
     for {
       clazz <- SyntheticClasses.get(project).all.valuesIterator
-      if checkSynthetic || !ScType.baseTypesQualMap.contains(
-        clazz.qualifiedName)
+      if checkSynthetic || !ScType.baseTypesQualMap
+        .contains(clazz.qualifiedName)
     } addTypeForCompletion(ClassTypeToImport(clazz))
 
     val prefixMatcher = result.getPrefixMatcher
@@ -262,8 +248,7 @@ object ScalaClassNameCompletionContributor {
         def consume(psiClass: PsiClass) {
           //todo: filter according to position
           if (psiClass.isInstanceOf[PsiClassWrapper]) return
-          ScalaPsiUtil
-            .getCompanionModule(psiClass)
+          ScalaPsiUtil.getCompanionModule(psiClass)
             .foreach(clazz => addTypeForCompletion(ClassTypeToImport(clazz)))
           addTypeForCompletion(ClassTypeToImport(psiClass))
         }
@@ -273,8 +258,7 @@ object ScalaClassNameCompletionContributor {
     for {
       name <- ScalaPsiManager.instance(project).getStableTypeAliasesNames
       if prefixMatcher.prefixMatches(name)
-      alias <- ScalaPsiManager
-        .instance(project)
+      alias <- ScalaPsiManager.instance(project)
         .getStableAliasesByName(name, position.getResolveScope)
     } { addTypeForCompletion(TypeAliasToImport(alias)) }
 

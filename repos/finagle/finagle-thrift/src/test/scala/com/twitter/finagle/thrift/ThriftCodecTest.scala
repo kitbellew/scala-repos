@@ -57,9 +57,7 @@ class ThriftCodecTest extends FunSuite {
     assert(channel.upstreamEvents.size == 0)
     assert(channel.downstreamEvents.size == 1)
 
-    val message = channel
-      .downstreamEvents(0)
-      .asInstanceOf[MessageEvent]
+    val message = channel.downstreamEvents(0).asInstanceOf[MessageEvent]
       .getMessage()
     val buffer = message.asInstanceOf[ChannelBuffer]
     val transport = new ChannelBufferToTransport(buffer)
@@ -90,9 +88,7 @@ class ThriftCodecTest extends FunSuite {
     assert(channel.downstreamEvents.size == 0)
 
     // verify decode
-    val message = channel
-      .upstreamEvents(0)
-      .asInstanceOf[MessageEvent]
+    val message = channel.upstreamEvents(0).asInstanceOf[MessageEvent]
       .getMessage()
     val thriftCall = message
       .asInstanceOf[ThriftCall[Silly.bleep_args, Silly.bleep_result]]
@@ -121,9 +117,8 @@ class ThriftCodecTest extends FunSuite {
       assert(channel.upstreamEvents.size == 0)
       assert(channel.downstreamEvents.size == 0)
 
-      val remainder = buffer.copy(
-        buffer.readerIndex + numBytes,
-        buffer.readableBytes - numBytes)
+      val remainder = buffer
+        .copy(buffer.readerIndex + numBytes, buffer.readableBytes - numBytes)
       // receive remainder of call
       Channels.fireMessageReceived(channel, remainder)
 
@@ -131,9 +126,7 @@ class ThriftCodecTest extends FunSuite {
       assert(channel.upstreamEvents.size == 1)
       assert(channel.downstreamEvents.size == 0)
 
-      val message = channel
-        .upstreamEvents(0)
-        .asInstanceOf[MessageEvent]
+      val message = channel.upstreamEvents(0).asInstanceOf[MessageEvent]
         .getMessage()
       val thriftCall = message
         .asInstanceOf[ThriftCall[Silly.bleep_args, Silly.bleep_result]]
@@ -154,9 +147,7 @@ class ThriftCodecTest extends FunSuite {
     assert(channel.upstreamEvents.size == 0)
     assert(channel.downstreamEvents.size == 1)
 
-    val message = channel
-      .downstreamEvents(0)
-      .asInstanceOf[MessageEvent]
+    val message = channel.downstreamEvents(0).asInstanceOf[MessageEvent]
       .getMessage()
     val buffer = message.asInstanceOf[ChannelBuffer]
     val transport = new ChannelBufferToTransport(buffer)
@@ -186,9 +177,7 @@ class ThriftCodecTest extends FunSuite {
     assert(channel.downstreamEvents.size == 0)
 
     // verify decode
-    val message = channel
-      .upstreamEvents(0)
-      .asInstanceOf[MessageEvent]
+    val message = channel.upstreamEvents(0).asInstanceOf[MessageEvent]
       .getMessage()
     val result = message.asInstanceOf[ThriftReply[Silly.bleep_result]]
     assert(result != null)
@@ -213,18 +202,15 @@ class ThriftCodecTest extends FunSuite {
       assert(channel.upstreamEvents.size == 0)
       assert(channel.downstreamEvents.size == 0)
 
-      val remainder = buffer.copy(
-        buffer.readerIndex + numBytes,
-        buffer.readableBytes - numBytes)
+      val remainder = buffer
+        .copy(buffer.readerIndex + numBytes, buffer.readableBytes - numBytes)
       // receive remainder of call
       Channels.fireMessageReceived(channel, remainder)
 
       // call should be received
       assert(channel.upstreamEvents.size == 1)
       assert(channel.downstreamEvents.size == 0)
-      val message = channel
-        .upstreamEvents(0)
-        .asInstanceOf[MessageEvent]
+      val message = channel.upstreamEvents(0).asInstanceOf[MessageEvent]
         .getMessage()
       val result = message.asInstanceOf[ThriftReply[Silly.bleep_result]]
       assert(result != null)

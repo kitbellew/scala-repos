@@ -33,15 +33,14 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
         if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
           val file = element.getContainingFile
           val nextLeaf = file.findElementAt(endOffset(element))
-          if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains(
-                "\n")) {
+          if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText
+                .contains("\n")) {
             val whitespaceOffset = endOffset(nextLeaf)
             val offset = startOffset(element)
             val text = file.getText
             val textWithoutSemicolon = text.take(offset) + text.drop(offset + 1)
-            val newFile = ScalaPsiElementFactory.createScalaFile(
-              textWithoutSemicolon,
-              element.getManager)
+            val newFile = ScalaPsiElementFactory
+              .createScalaFile(textWithoutSemicolon, element.getManager)
             var elem1 = file.findElementAt(offset - 1)
             var elem2 = newFile.findElementAt(offset - 1)
             while (elem1 != null && endOffset(

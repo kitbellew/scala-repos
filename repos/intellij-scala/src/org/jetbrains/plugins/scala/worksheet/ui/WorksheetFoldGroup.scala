@@ -169,9 +169,8 @@ class WorksheetFoldGroup(
     val lower = unfolded.tailMap(line).entrySet().iterator()
     while (lower.hasNext) {
       val t = lower.next()
-      unfolded.put(
-        t.getKey,
-        if (expand) t.getValue + spaces else t.getValue - spaces)
+      unfolded
+        .put(t.getKey, if (expand) t.getValue + spaces else t.getValue - spaces)
     }
 
     if (expand) unfolded.put(line, unfolded.get(key) + spaces)
@@ -201,10 +200,8 @@ object WorksheetFoldGroup {
   def save(file: ScalaFile, group: WorksheetFoldGroup) {
     val virtualFile = file.getVirtualFile
     if (!virtualFile.isValid) return
-    FileAttributeUtilCache.writeAttribute(
-      WORKSHEET_PERSISTENT_FOLD_KEY,
-      file,
-      group.serialize())
+    FileAttributeUtilCache
+      .writeAttribute(WORKSHEET_PERSISTENT_FOLD_KEY, file, group.serialize())
   }
 
   def load(
@@ -213,9 +210,8 @@ object WorksheetFoldGroup {
       project: Project,
       splitter: WorksheetDiffSplitters.SimpleWorksheetSplitter,
       file: PsiFile) {
-    val bytes = FileAttributeUtilCache.readAttribute(
-      WORKSHEET_PERSISTENT_FOLD_KEY,
-      file)
+    val bytes = FileAttributeUtilCache
+      .readAttribute(WORKSHEET_PERSISTENT_FOLD_KEY, file)
     if (bytes == null) return
 
     lazy val group =

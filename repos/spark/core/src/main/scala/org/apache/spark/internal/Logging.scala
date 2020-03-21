@@ -109,16 +109,16 @@ private[spark] trait Logging {
     // org.apache.logging.slf4j.Log4jLoggerFactory
     val usingLog4j12 = "org.slf4j.impl.Log4jLoggerFactory".equals(binderClass)
     if (usingLog4j12) {
-      val log4j12Initialized =
-        LogManager.getRootLogger.getAllAppenders.hasMoreElements
+      val log4j12Initialized = LogManager.getRootLogger.getAllAppenders
+        .hasMoreElements
       // scalastyle:off println
       if (!log4j12Initialized) {
         val defaultLogProps = "org/apache/spark/log4j-defaults.properties"
         Option(Utils.getSparkClassLoader.getResource(defaultLogProps)) match {
           case Some(url) =>
             PropertyConfigurator.configure(url)
-            System.err.println(
-              s"Using Spark's default log4j profile: $defaultLogProps")
+            System.err
+              .println(s"Using Spark's default log4j profile: $defaultLogProps")
           case None =>
             System.err.println(s"Spark was unable to load $defaultLogProps")
         }
@@ -132,8 +132,8 @@ private[spark] trait Logging {
         val replLevel = Option(replLogger.getLevel()).getOrElse(Level.WARN)
         if (replLevel != rootLogger.getEffectiveLevel()) {
           System.err.printf("Setting default log level to \"%s\".\n", replLevel)
-          System.err.println(
-            "To adjust logging level use sc.setLogLevel(newLevel).")
+          System.err
+            .println("To adjust logging level use sc.setLogLevel(newLevel).")
           rootLogger.setLevel(replLevel)
         }
       }
@@ -156,9 +156,7 @@ private object Logging {
     // slf4j-to-jul bridge order to route their logs to JUL.
     val bridgeClass = Utils.classForName("org.slf4j.bridge.SLF4JBridgeHandler")
     bridgeClass.getMethod("removeHandlersForRootLogger").invoke(null)
-    val installed = bridgeClass
-      .getMethod("isInstalled")
-      .invoke(null)
+    val installed = bridgeClass.getMethod("isInstalled").invoke(null)
       .asInstanceOf[Boolean]
     if (!installed) { bridgeClass.getMethod("install").invoke(null) }
   } catch {

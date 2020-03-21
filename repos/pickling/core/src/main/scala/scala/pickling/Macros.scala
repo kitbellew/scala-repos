@@ -25,8 +25,8 @@ trait TypeAnalysis extends Macro {
         tools.directSubclasses(classSym).flatMap(cl => whyNotClosed(cl.asType))
       } else {
         List(s"'${sym.fullName}' allows unknown subclasses (it is not sealed or final isCaseClass=${isCaseClass(
-          sym)} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym.isSealed} directSubclasses=${tools
-          .directSubclasses(classSym)})")
+          sym)} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym
+          .isSealed} directSubclasses=${tools.directSubclasses(classSym)})")
       }
     } else { List(s"'${sym.fullName}' is not a class or trait") }
   }

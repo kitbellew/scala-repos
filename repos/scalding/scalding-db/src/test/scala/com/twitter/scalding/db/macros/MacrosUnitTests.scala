@@ -196,9 +196,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rsmd.getColumnTypeName(3)) thenReturn ("INT")
     when(rsmd.isNullable(3)) thenReturn (ResultSetMetaData.columnNullable)
     when(rsmd.getColumnTypeName(4)) thenReturn ("VARCHAR")
-    when(rsmd.isNullable(4)) thenReturn (
-      ResultSetMetaData.columnNullableUnknown
-    )
+    when(rsmd.isNullable(4)) thenReturn (ResultSetMetaData
+      .columnNullableUnknown)
 
     assert(columnDef.resultSetExtractor.validate(rsmd).isSuccess)
 
@@ -281,10 +280,7 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     )
 
     assert(
-      DBMacro
-        .toDBTypeDescriptor[User]
-        .columnDefn
-        .columns
+      DBMacro.toDBTypeDescriptor[User].columnDefn.columns
         .toList === expectedColumns)
 
   }
@@ -521,9 +517,8 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rsmd.getColumnTypeName(2)) thenReturn ("VARCHAR")
     when(rsmd.isNullable(2)) thenReturn (ResultSetMetaData.columnNullable)
     when(rsmd.getColumnTypeName(3)) thenReturn ("DATETIME")
-    when(rsmd.isNullable(3)) thenReturn (
-      ResultSetMetaData.columnNoNulls
-    ) // mismatch
+    when(rsmd.isNullable(3)) thenReturn (ResultSetMetaData
+      .columnNoNulls) // mismatch
 
     assert(columnDef.resultSetExtractor.validate(rsmd).isFailure)
   }

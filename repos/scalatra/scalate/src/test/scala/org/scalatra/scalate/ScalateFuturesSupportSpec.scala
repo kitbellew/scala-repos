@@ -106,8 +106,7 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
   get("/layout-strategy") {
     new AsyncResult {
       val is = Future {
-        templateEngine.layoutStrategy
-          .asInstanceOf[DefaultLayoutStrategy]
+        templateEngine.layoutStrategy.asInstanceOf[DefaultLayoutStrategy]
           .defaultLayouts mkString ";"
       }
     }

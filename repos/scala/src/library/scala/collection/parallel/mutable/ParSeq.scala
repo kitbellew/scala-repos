@@ -23,7 +23,7 @@ import scala.collection.parallel.Combiner
   *  @define coll mutable parallel sequence
   */
 trait ParSeq[T]
-    extends scala.collection /*.mutable*/ .GenSeq[
+    extends scala.collection /*.mutable*/.GenSeq[
       T
     ] // was: scala.collection.mutable.Seq[T]
     with ParIterable[T]

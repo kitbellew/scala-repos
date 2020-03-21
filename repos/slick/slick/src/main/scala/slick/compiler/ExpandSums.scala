@@ -13,9 +13,7 @@ class ExpandSums extends Phase {
   val name = "expandSums"
 
   def apply(state: CompilerState) =
-    if (state
-          .get(Phase.assignUniqueSymbols)
-          .map(_.nonPrimitiveOption)
+    if (state.get(Phase.assignUniqueSymbols).map(_.nonPrimitiveOption)
           .getOrElse(true)) state.map(expandSums)
     else state
 
@@ -61,7 +59,8 @@ class ExpandSums extends Phase {
 
         // Primitive OptionFold -> translate to null check
         case OptionFold(from :@ OptionType.Primitive(_), ifEmpty, map, gen) =>
-          val pred = Library.==.typed[Boolean](from, LiteralNode(null))
+          val pred = Library
+            .==.typed[Boolean](from, LiteralNode(null))
           val n2 = (ifEmpty, map) match {
             case (LiteralNode(true), LiteralNode(false)) => pred
             case (LiteralNode(false), LiteralNode(true)) =>
@@ -79,7 +78,8 @@ class ExpandSums extends Phase {
         case OptionFold(from, ifEmpty, map, gen) =>
           multi = true
           val left = from.select(ElementSymbol(1)).infer()
-          val pred = Library.==.typed[Boolean](left, LiteralNode(null))
+          val pred = Library
+            .==.typed[Boolean](left, LiteralNode(null))
           val n2 = (ifEmpty, map) match {
             case (LiteralNode(true), LiteralNode(false)) => pred
             case (LiteralNode(false), LiteralNode(true)) =>
@@ -124,7 +124,8 @@ class ExpandSums extends Phase {
 
         // Option-extended left outer, right outer or full outer join
         case bind @ Bind(bsym, Join(_, _, _, _, jt, _), _)
-            if jt == JoinType.LeftOption || jt == JoinType.RightOption || jt == JoinType.OuterOption =>
+            if jt == JoinType.LeftOption || jt == JoinType
+              .RightOption || jt == JoinType.OuterOption =>
           multi = true
           translateJoin(bind, discCandidates)
 
@@ -155,17 +156,16 @@ class ExpandSums extends Phase {
       pure) = bind
     val lComplex = !leftElemType.structural.isInstanceOf[AtomicType]
     val rComplex = !rightElemType.structural.isInstanceOf[AtomicType]
-    logger.debug(
-      s"Translating join ($jt, complex: $lComplex, $rComplex):",
-      bind)
+    logger
+      .debug(s"Translating join ($jt, complex: $lComplex, $rComplex):", bind)
 
     // Find an existing column that can serve as a discriminator
     def findDisc(t: Type): Option[List[TermSymbol]] = {
       val global: Set[List[TermSymbol]] = t match {
         case NominalType(ts, exp) =>
-          val c = discCandidates
-            .filter { case (t, ss) => t == ts && ss.nonEmpty }
-            .map(_._2)
+          val c = discCandidates.filter {
+            case (t, ss) => t == ts && ss.nonEmpty
+          }.map(_._2)
           logger.debug(
             "Discriminator candidates from surrounding Filter and Join predicates: " +
               c.map(Path.toString).mkString(", "))
@@ -191,8 +191,8 @@ class ExpandSums extends Phase {
           case _ => 0
         })
       }
-      logger.debug(
-        "Local candidates: " + local.map(Path.toString).mkString(", "))
+      logger
+        .debug("Local candidates: " + local.map(Path.toString).mkString(", "))
       local.headOption
     }
 
@@ -217,11 +217,9 @@ class ExpandSums extends Phase {
       val sideInCondition = Select(
         Ref(sym) :@ extendedElementType,
         ElementSymbol(2)).infer()
-      val on2 = on
-        .replace(
-          { case Ref(s) if s == sym => sideInCondition },
-          bottomUp = true)
-        .infer()
+      val on2 = on.replace(
+        { case Ref(s) if s == sym => sideInCondition },
+        bottomUp = true).infer()
       (extend, on2, createDisc)
     }
 
@@ -258,9 +256,10 @@ class ExpandSums extends Phase {
           val protoDisc = Select(ref, ElementSymbol(1)).infer()
           val rest = Select(ref, ElementSymbol(2))
           val disc = IfThenElse(ConstArray(
-            Library.==.typed[Boolean](
-              silentCast(OptionType(protoDisc.nodeType), protoDisc),
-              LiteralNode(null)),
+            Library
+              .==.typed[Boolean](
+                silentCast(OptionType(protoDisc.nodeType), protoDisc),
+                LiteralNode(null)),
             DiscNone,
             Disc1))
           ProductNode(ConstArray(disc, rest))
@@ -354,11 +353,10 @@ class ExpandSums extends Phase {
   def collectDiscriminatorCandidates(
       n: Node): Set[(TypeSymbol, List[TermSymbol])] =
     n.collectAll[(TypeSymbol, List[TermSymbol])] {
-        case OptionApply(ch) => ch.collect[(TypeSymbol, List[TermSymbol])] {
-            case PathOnTypeSymbol(ts, ss) => (ts, ss)
-          }
-      }
-      .toSet
+      case OptionApply(ch) => ch.collect[(TypeSymbol, List[TermSymbol])] {
+          case PathOnTypeSymbol(ts, ss) => (ts, ss)
+        }
+    }.toSet
 
   object PathOnTypeSymbol {
     def unapply(n: Node): Option[(TypeSymbol, List[TermSymbol])] =
@@ -380,14 +378,13 @@ class ExpandSums extends Phase {
     def tr(n: Node): Node =
       n.mapChildren(tr, keepType = true) match {
         // Expand multi-column SilentCasts
-        case cast @ Library.SilentCast(ch) :@ Type.Structural(
-              ProductType(typeCh)) =>
+        case cast @ Library.SilentCast(ch) :@ Type
+              .Structural(ProductType(typeCh)) =>
           invalidate(ch)
           val elems = typeCh.zipWithIndex.map {
             case (t, idx) =>
               tr(
-                Library.SilentCast
-                  .typed(t, ch.select(ElementSymbol(idx + 1)))
+                Library.SilentCast.typed(t, ch.select(ElementSymbol(idx + 1)))
                   .infer())
           }
           ProductNode(elems).infer()
@@ -450,10 +447,9 @@ class ExpandSums extends Phase {
     val n2 = tr(n)
     logger.debug("Invalidated TypeSymbols: " + invalid.mkString(", "))
     n2.replace(
-        {
-          case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
-        },
-        bottomUp = true)
-      .infer()
+      {
+        case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
+      },
+      bottomUp = true).infer()
   }
 }

@@ -28,15 +28,13 @@ class GraphBalanceSpec extends AkkaSpec {
       val c1 = TestSubscriber.manualProbe[Int]()
       val c2 = TestSubscriber.manualProbe[Int]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val balance = b.add(Balance[Int](2))
-          Source(List(1, 2, 3)) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
-          ClosedShape
-        })
-        .run()
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        val balance = b.add(Balance[Int](2))
+        Source(List(1, 2, 3)) ~> balance.in
+        balance.out(0) ~> Sink.fromSubscriber(c1)
+        balance.out(1) ~> Sink.fromSubscriber(c2)
+        ClosedShape
+      }).run()
 
       val sub1 = c1.expectSubscription()
       val sub2 = c2.expectSubscription()
@@ -62,8 +60,7 @@ class GraphBalanceSpec extends AkkaSpec {
             balance.out(0) ~> Sink.fromSubscriber(s1)
             balance.out(1) ~> p2Sink
             ClosedShape
-        })
-        .run()
+        }).run()
 
       val sub1 = s1.expectSubscription()
       sub1.request(1)
@@ -87,20 +84,17 @@ class GraphBalanceSpec extends AkkaSpec {
     "support waiting for demand from all non-cancelled downstream subscriptions" in assertAllStagesStopped {
       val s1 = TestSubscriber.manualProbe[Int]()
 
-      val (p2, p3) = RunnableGraph
-        .fromGraph(
-          GraphDSL.create(
-            Sink.asPublisher[Int](false),
-            Sink.asPublisher[Int](false))(Keep.both) {
-            implicit b ⇒ (p2Sink, p3Sink) ⇒
-              val balance = b.add(Balance[Int](3, waitForAllDownstreams = true))
-              Source(List(1, 2, 3)) ~> balance.in
-              balance.out(0) ~> Sink.fromSubscriber(s1)
-              balance.out(1) ~> p2Sink
-              balance.out(2) ~> p3Sink
-              ClosedShape
-          })
-        .run()
+      val (p2, p3) = RunnableGraph.fromGraph(
+        GraphDSL
+          .create(Sink.asPublisher[Int](false), Sink.asPublisher[Int](false))(
+            Keep.both) { implicit b ⇒ (p2Sink, p3Sink) ⇒
+            val balance = b.add(Balance[Int](3, waitForAllDownstreams = true))
+            Source(List(1, 2, 3)) ~> balance.in
+            balance.out(0) ~> Sink.fromSubscriber(s1)
+            balance.out(1) ~> p2Sink
+            balance.out(2) ~> p3Sink
+            ClosedShape
+          }).run()
 
       val sub1 = s1.expectSubscription()
       sub1.request(1)
@@ -125,15 +119,13 @@ class GraphBalanceSpec extends AkkaSpec {
     }
 
     "work with one-way merge" in {
-      val result = Source
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val balance = b.add(Balance[Int](1))
-          val source = b.add(Source(1 to 3))
+      val result = Source.fromGraph(GraphDSL.create() { implicit b ⇒
+        val balance = b.add(Balance[Int](1))
+        val source = b.add(Source(1 to 3))
 
-          source ~> balance.in
-          SourceShape(balance.out(0))
-        })
-        .runFold(Seq[Int]())(_ :+ _)
+        source ~> balance.in
+        SourceShape(balance.out(0))
+      }).runFold(Seq[Int]())(_ :+ _)
 
       Await.result(result, 3.seconds) should ===(Seq(1, 2, 3))
     }
@@ -152,8 +144,7 @@ class GraphBalanceSpec extends AkkaSpec {
             balance.out(3).grouped(15) ~> f4
             balance.out(4).grouped(15) ~> f5
             ClosedShape
-        })
-        .run()
+        }).run()
 
       Set(s1, s2, s3, s4, s5) flatMap (Await.result(_, 3.seconds)) should be(
         (0 to 14).toSet)
@@ -172,8 +163,7 @@ class GraphBalanceSpec extends AkkaSpec {
             balance.out(1) ~> o2
             balance.out(2) ~> o3
             ClosedShape
-        })
-        .run()
+        }).run()
 
       import system.dispatcher
       val sum = Future.sequence(results).map { res ⇒
@@ -194,8 +184,7 @@ class GraphBalanceSpec extends AkkaSpec {
             balance.out(1) ~> o2
             balance.out(2) ~> o3
             ClosedShape
-        })
-        .run()
+        }).run()
 
       p1.requestNext(1)
       p2.requestNext(2)
@@ -214,15 +203,13 @@ class GraphBalanceSpec extends AkkaSpec {
       val c1 = TestSubscriber.manualProbe[Int]()
       val c2 = TestSubscriber.manualProbe[Int]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val balance = b.add(Balance[Int](2))
-          Source(List(1, 2, 3)) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
-          ClosedShape
-        })
-        .run()
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        val balance = b.add(Balance[Int](2))
+        Source(List(1, 2, 3)) ~> balance.in
+        balance.out(0) ~> Sink.fromSubscriber(c1)
+        balance.out(1) ~> Sink.fromSubscriber(c2)
+        ClosedShape
+      }).run()
 
       val sub1 = c1.expectSubscription()
       sub1.cancel()
@@ -238,15 +225,13 @@ class GraphBalanceSpec extends AkkaSpec {
       val c1 = TestSubscriber.manualProbe[Int]()
       val c2 = TestSubscriber.manualProbe[Int]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val balance = b.add(Balance[Int](2))
-          Source(List(1, 2, 3)) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
-          ClosedShape
-        })
-        .run()
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        val balance = b.add(Balance[Int](2))
+        Source(List(1, 2, 3)) ~> balance.in
+        balance.out(0) ~> Sink.fromSubscriber(c1)
+        balance.out(1) ~> Sink.fromSubscriber(c2)
+        ClosedShape
+      }).run()
 
       val sub1 = c1.expectSubscription()
       val sub2 = c2.expectSubscription()
@@ -263,15 +248,13 @@ class GraphBalanceSpec extends AkkaSpec {
       val c1 = TestSubscriber.manualProbe[Int]()
       val c2 = TestSubscriber.manualProbe[Int]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val balance = b.add(Balance[Int](2))
-          Source.fromPublisher(p1.getPublisher) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
-          ClosedShape
-        })
-        .run()
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        val balance = b.add(Balance[Int](2))
+        Source.fromPublisher(p1.getPublisher) ~> balance.in
+        balance.out(0) ~> Sink.fromSubscriber(c1)
+        balance.out(1) ~> Sink.fromSubscriber(c2)
+        ClosedShape
+      }).run()
 
       val bsub = p1.expectSubscription()
       val sub1 = c1.expectSubscription()

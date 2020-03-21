@@ -100,29 +100,27 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
   def doTest() { doTest(getTestName(false) + ".scala") }
 
   def doTest(file: String) {
-    references
-      .zip(options)
-      .foreach(it => {
-        it._1 match {
-          case ref: ScReferenceElement =>
-            doEachTest(it._1.asInstanceOf[ScReferenceElement], it._2)
-          case ref: PsiMultiReference =>
-            val hostReferences = ref.getReferences
-            if (hostReferences.length == 2) {
-              hostReferences.find(_.isInstanceOf[ScReferenceElement]) match {
-                case Some(r: ScReferenceElement) => doEachTest(r, it._2)
-                case _ =>
-                  assert(
-                    assertion = false,
-                    message = "Multihost references are not supported")
-              }
-            } else {
-              assert(
-                assertion = false,
-                message = "Multihost references are not supported")
+    references.zip(options).foreach(it => {
+      it._1 match {
+        case ref: ScReferenceElement =>
+          doEachTest(it._1.asInstanceOf[ScReferenceElement], it._2)
+        case ref: PsiMultiReference =>
+          val hostReferences = ref.getReferences
+          if (hostReferences.length == 2) {
+            hostReferences.find(_.isInstanceOf[ScReferenceElement]) match {
+              case Some(r: ScReferenceElement) => doEachTest(r, it._2)
+              case _ =>
+                assert(
+                  assertion = false,
+                  message = "Multihost references are not supported")
             }
-        }
-      })
+          } else {
+            assert(
+              assertion = false,
+              message = "Multihost references are not supported")
+          }
+      }
+    })
   }
 
   def doEachTest(reference: ScReferenceElement, options: Parameters) {
@@ -141,13 +139,11 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
     }
 
     if (options.contains(Resolved) && options(Resolved) == "false") {
-      Assert.assertNull(
-        message(referenceName + " must NOT be resolved!"),
-        target)
+      Assert
+        .assertNull(message(referenceName + " must NOT be resolved!"), target)
     } else {
-      Assert.assertNotNull(
-        message(referenceName + " must BE resolved!"),
-        target)
+      Assert
+        .assertNotNull(message(referenceName + " must BE resolved!"), target)
 
       if (options.contains(Accessible) && options(Accessible) == "false") {
         Assert.assertFalse(
@@ -180,11 +176,12 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
 
       if (options.contains(File) || options.contains(Offset) || options
             .contains(Line)) {
-        val actual =
-          target.getContainingFile.getVirtualFile.getNameWithoutExtension
+        val actual = target.getContainingFile.getVirtualFile
+          .getNameWithoutExtension
         val expected =
           if (!options.contains(File) || options(File) == "this") {
-            reference.getElement.getContainingFile.getVirtualFile.getNameWithoutExtension
+            reference.getElement.getContainingFile.getVirtualFile
+              .getNameWithoutExtension
           } else options(File)
         assertEquals(File, expected, actual)
       }
@@ -208,8 +205,8 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
       if (options.contains(Type)) {
         val expectedClass = Class.forName(options(Type))
         val targetClass = target.getClass
-        val text =
-          Type + " - expected: " + expectedClass.getSimpleName + ", actual: " + targetClass.getSimpleName
+        val text = Type + " - expected: " + expectedClass
+          .getSimpleName + ", actual: " + targetClass.getSimpleName
         Assert.assertTrue(
           message(text),
           expectedClass.isAssignableFrom(targetClass))
@@ -218,14 +215,13 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
   }
 
   def lineOf(element: PsiElement) = {
-    element.getContainingFile.getText
-      .substring(0, element.getTextOffset)
+    element.getContainingFile.getText.substring(0, element.getTextOffset)
       .count(_ == '\n') + 1
   }
 
   def format(text: String, message: String, line: Int) = {
-    val lines = text.lines.zipWithIndex.map(p =>
-      if (p._2 + 1 == line) p._1 + " // " + message else p._1)
+    val lines = text.lines.zipWithIndex
+      .map(p => if (p._2 + 1 == line) p._1 + " // " + message else p._1)
     "\n\n" + lines.mkString("\n") + "\n"
   }
 }

@@ -251,8 +251,8 @@ case class JsPath(path: List[PathNode] = List()) {
       node match {
         case KeyPathNode(key) =>
           JsSuccess(
-            JsObject(json.fields.filterNot(_._1 == key)) ++ Json.obj(
-              key -> value))
+            JsObject(json.fields.filterNot(_._1 == key)) ++ Json
+              .obj(key -> value))
         case _ =>
           JsError(JsPath(), ValidationError("error.expected.keypathnode"))
       }
@@ -265,9 +265,7 @@ case class JsPath(path: List[PathNode] = List()) {
         case head :: tail => head(json) match {
             case Nil => JsError(lpath, ValidationError("error.path.missing"))
             case List(js) => js match {
-                case o: JsObject =>
-                  step(o, JsPath(tail))
-                    .repath(lpath)
+                case o: JsObject => step(o, JsPath(tail)).repath(lpath)
                     .flatMap(value => filterPathNode(json, head, value))
                 case _ =>
                   JsError(lpath, ValidationError("error.expected.jsobject"))

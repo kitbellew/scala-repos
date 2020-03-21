@@ -48,54 +48,51 @@ class ScalaCopyPastePostProcessor
     var associations: List[Association] = Nil
 
     try {
-      ProgressManager
-        .getInstance()
-        .runProcess(
-          new Runnable {
-            override def run(): Unit = {
-              breakable {
-                for ((startOffset, endOffset) <- startOffsets.zip(endOffsets);
-                     element <- getElementsStrictlyInRange(
-                       file,
-                       startOffset,
-                       endOffset);
-                     reference <- element.asOptionOf[ScReferenceElement];
-                     dependency <- Dependency.dependencyFor(reference)
-                     if dependency.isExternal;
-                     range = dependency.source.getTextRange.shiftRight(
-                       -startOffset)) {
-                  if (System.currentTimeMillis > timeBound) {
-                    Log.warn(
-                      "Time-out while collecting dependencies in %s:\n%s"
-                        .format(
-                          file.getName,
-                          file.getText.substring(startOffset, endOffset)))
-                    break()
-                  }
-                  associations ::= Association(
-                    dependency.kind,
-                    range,
-                    dependency.path)
+      ProgressManager.getInstance().runProcess(
+        new Runnable {
+          override def run(): Unit = {
+            breakable {
+              for ((startOffset, endOffset) <- startOffsets.zip(endOffsets);
+                   element <- getElementsStrictlyInRange(
+                     file,
+                     startOffset,
+                     endOffset);
+                   reference <- element.asOptionOf[ScReferenceElement];
+                   dependency <- Dependency.dependencyFor(reference)
+                   if dependency.isExternal;
+                   range = dependency.source.getTextRange
+                     .shiftRight(-startOffset)) {
+                if (System.currentTimeMillis > timeBound) {
+                  Log.warn(
+                    "Time-out while collecting dependencies in %s:\n%s".format(
+                      file.getName,
+                      file.getText.substring(startOffset, endOffset)))
+                  break()
                 }
+                associations ::= Association(
+                  dependency.kind,
+                  range,
+                  dependency.path)
               }
             }
-          },
-          new AbstractProgressIndicatorBase {
-            override def isCanceled: scala.Boolean = {
-              System.currentTimeMillis > timeBound || super.isCanceled
-            }
           }
-        )
+        },
+        new AbstractProgressIndicatorBase {
+          override def isCanceled: scala.Boolean = {
+            System.currentTimeMillis > timeBound || super.isCanceled
+          }
+        }
+      )
     } catch {
       case p: ProcessCanceledException =>
         Log.warn("Time-out while collecting dependencies in %s:\n%s".format(
           file.getName,
           file.getText.substring(startOffsets(0), endOffsets(0))))
       case e: Exception =>
-        val selections = (startOffsets, endOffsets).zipped.map((a, b) =>
-          file.getText.substring(a, b))
-        val attachments = selections.zipWithIndex.map(p =>
-          new Attachment(s"Selection-${p._2 + 1}.scala", p._1))
+        val selections = (startOffsets, endOffsets).zipped
+          .map((a, b) => file.getText.substring(a, b))
+        val attachments = selections.zipWithIndex
+          .map(p => new Attachment(s"Selection-${p._2 + 1}.scala", p._1))
         Log.error(LogMessageEx.createEvent(
           e.getMessage,
           ExceptionUtil.getThrowableText(e),
@@ -105,10 +102,8 @@ class ScalaCopyPastePostProcessor
   }
 
   protected def extractTransferableData0(content: Transferable) = {
-    content
-      .isDataFlavorSupported(Associations.Flavor)
-      .ifTrue(
-        content.getTransferData(Associations.Flavor).asInstanceOf[Associations])
+    content.isDataFlavorSupported(Associations.Flavor).ifTrue(
+      content.getTransferData(Associations.Flavor).asInstanceOf[Associations])
       .orNull
   }
 
@@ -121,12 +116,10 @@ class ScalaCopyPastePostProcessor
       value: Associations) {
     if (DumbService.getInstance(project).isDumb) return
 
-    if (ScalaApplicationSettings
-          .getInstance()
+    if (ScalaApplicationSettings.getInstance()
           .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.NO) return
 
-    val file = PsiDocumentManager
-      .getInstance(project)
+    val file = PsiDocumentManager.getInstance(project)
       .getPsiFile(editor.getDocument)
 
     if (!file.isInstanceOf[ScalaFile]) return
@@ -136,8 +129,7 @@ class ScalaCopyPastePostProcessor
     val offset = bounds.getStartOffset
 
     doRestoreAssociations(value, file, offset, project) { bindingsToRestore =>
-      if (ScalaApplicationSettings
-            .getInstance()
+      if (ScalaApplicationSettings.getInstance()
             .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.ASK) {
         val dialog = new RestoreReferencesDialog(
           project,
@@ -172,13 +164,12 @@ class ScalaCopyPastePostProcessor
       } yield Binding(
         element,
         association.path.asString(
-          ScalaCodeStyleSettings
-            .getInstance(project)
+          ScalaCodeStyleSettings.getInstance(project)
             .isImportMembersUsingUnderScore))).filter {
         case Binding(_, path) =>
           val index = path.lastIndexOf('.')
-          index != -1 && !Set("scala", "java.lang", "scala.Predef").contains(
-            path.substring(0, index))
+          index != -1 && !Set("scala", "java.lang", "scala.Predef")
+            .contains(path.substring(0, index))
       }
 
     if (bindings.isEmpty) return
@@ -209,8 +200,7 @@ class ScalaCopyPastePostProcessor
       startOffset: Int,
       endOffset: Int): Seq[PsiElement] = {
     val range = TextRange.create(startOffset, endOffset)
-    CollectHighlightsUtil
-      .getElementsInRange(file, startOffset, endOffset)
+    CollectHighlightsUtil.getElementsInRange(file, startOffset, endOffset)
       .filter(e => range.contains(e.getTextRange))
   }
 

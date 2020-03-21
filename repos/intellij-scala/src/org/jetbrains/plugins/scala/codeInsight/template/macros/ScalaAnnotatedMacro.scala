@@ -25,11 +25,8 @@ class ScalaAnnotatedMacro extends Macro {
       case _ if params.length > 0 => //TODO should params.length always equal 1?
         val project = context.getProject
         val scope = GlobalSearchScope.allScope(project)
-        Option(params.head.calculateResult(context))
-          .flatMap(res =>
-            ScalaPsiManager
-              .instance(project)
-              .getCachedClass(scope, res.toString))
+        Option(params.head.calculateResult(context)).flatMap(res =>
+          ScalaPsiManager.instance(project).getCachedClass(scope, res.toString))
           .map(AnnotatedMembersSearch.search(_, scope))
           .getOrElse(EmptyQuery.getEmptyQuery[PsiMember])
     }
@@ -38,13 +35,11 @@ class ScalaAnnotatedMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
       context: ExpressionContext): Result = {
-    Option(getAnnotatedMembers(params, context).findFirst())
-      .map(member =>
-        new TextResult(member match {
-          case psiClass: PsiClass => psiClass.getQualifiedName
-          case _                  => member.getName
-        }))
-      .orNull
+    Option(getAnnotatedMembers(params, context).findFirst()).map(member =>
+      new TextResult(member match {
+        case psiClass: PsiClass => psiClass.getQualifiedName
+        case _                  => member.getName
+      })).orNull
   }
 
   override def getName: String = MacroUtil.scalaIdPrefix + "annotated"
@@ -66,21 +61,15 @@ class ScalaAnnotatedMacro extends Macro {
     val project = context.getProject
     val outerClass: Option[PsiClass] = Option(secondParamName).flatMap {
       secondParamName =>
-        ScalaPsiManager
-          .instance(project)
+        ScalaPsiManager.instance(project)
           .getCachedClass(GlobalSearchScope.allScope(project), secondParamName)
     }
     import collection.JavaConversions._
-    getAnnotatedMembers(params, context)
-      .findAll()
-      .filter(outerClass.isDefined && outerClass.contains(_))
-      .map {
+    getAnnotatedMembers(params, context).findAll()
+      .filter(outerClass.isDefined && outerClass.contains(_)).map {
         case psiClass: PsiClass if !isShortName => psiClass.getQualifiedName
         case notClass                           => notClass.getName
-      }
-      .toSet[String]
-      .map(LookupElementBuilder.create)
-      .toArray
+      }.toSet[String].map(LookupElementBuilder.create).toArray
   }
 
   override def isAcceptableInContext(context: TemplateContextType): Boolean =

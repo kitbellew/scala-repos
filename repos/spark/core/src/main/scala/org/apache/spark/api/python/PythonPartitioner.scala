@@ -47,7 +47,8 @@ private[spark] class PythonPartitioner(
   override def equals(other: Any): Boolean =
     other match {
       case h: PythonPartitioner =>
-        h.numPartitions == numPartitions && h.pyPartitionFunctionId == pyPartitionFunctionId
+        h.numPartitions == numPartitions && h
+          .pyPartitionFunctionId == pyPartitionFunctionId
       case _ => false
     }
 

@@ -65,9 +65,8 @@ class ConsumerIterator[K, V](
     if (localCurrent == null || !localCurrent.hasNext) {
       if (consumerTimeoutMs < 0) currentDataChunk = channel.take
       else {
-        currentDataChunk = channel.poll(
-          consumerTimeoutMs,
-          TimeUnit.MILLISECONDS)
+        currentDataChunk = channel
+          .poll(consumerTimeoutMs, TimeUnit.MILLISECONDS)
         if (currentDataChunk == null) {
           // reset state to make the iterator re-iterable
           resetState()
@@ -103,9 +102,8 @@ class ConsumerIterator[K, V](
     }
     var item = localCurrent.next()
     // reject the messages that have already been consumed
-    while (item.offset < currentTopicInfo.getConsumeOffset && localCurrent.hasNext) {
-      item = localCurrent.next()
-    }
+    while (item.offset < currentTopicInfo.getConsumeOffset && localCurrent
+             .hasNext) { item = localCurrent.next() }
     consumedOffset = item.nextOffset
 
     item.message

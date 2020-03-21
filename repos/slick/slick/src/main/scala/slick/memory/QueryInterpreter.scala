@@ -81,13 +81,10 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Join(leftGen, rightGen, left, right, JoinType.Inner, by) =>
         val res = run(left).asInstanceOf[Coll].flatMap { l =>
           scope(leftGen) = l
-          run(right)
-            .asInstanceOf[Coll]
-            .filter { r =>
-              scope(rightGen) = r
-              asBoolean(run(by))
-            }
-            .map { r => new ProductValue(Vector(l, r)) }
+          run(right).asInstanceOf[Coll].filter { r =>
+            scope(rightGen) = r
+            asBoolean(run(by))
+          }.map { r => new ProductValue(Vector(l, r)) }
         }
         scope.remove(leftGen)
         scope.remove(rightGen)
@@ -95,13 +92,10 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Join(leftGen, rightGen, left, right, JoinType.Left, by) =>
         val res = run(left).asInstanceOf[Coll].flatMap { l =>
           scope(leftGen) = l
-          val inner = run(right)
-            .asInstanceOf[Coll]
-            .filter { r =>
-              scope(rightGen) = r
-              asBoolean(run(by))
-            }
-            .map { r => new ProductValue(Vector(l, r)) }
+          val inner = run(right).asInstanceOf[Coll].filter { r =>
+            scope(rightGen) = r
+            asBoolean(run(by))
+          }.map { r => new ProductValue(Vector(l, r)) }
           if (inner.headOption.isEmpty)
             Vector(new ProductValue(Vector(
               l,
@@ -114,13 +108,10 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Join(leftGen, rightGen, left, right, JoinType.Right, by) =>
         val res = run(right).asInstanceOf[Coll].flatMap { r =>
           scope(rightGen) = r
-          val inner = run(left)
-            .asInstanceOf[Coll]
-            .filter { l =>
-              scope(leftGen) = l
-              asBoolean(run(by))
-            }
-            .map { l => new ProductValue(Vector(l, r)) }
+          val inner = run(left).asInstanceOf[Coll].filter { l =>
+            scope(leftGen) = l
+            asBoolean(run(by))
+          }.map { l => new ProductValue(Vector(l, r)) }
           if (inner.headOption.isEmpty)
             Vector(new ProductValue(Vector(
               createNullRow(left.nodeType.asCollectionType.elementType),
@@ -133,13 +124,10 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Join(leftGen, rightGen, left, right, JoinType.Outer, by) =>
         val leftJoinRes = run(left).asInstanceOf[Coll].flatMap { l =>
           scope(leftGen) = l
-          val inner = run(right)
-            .asInstanceOf[Coll]
-            .filter { r =>
-              scope(rightGen) = r
-              asBoolean(run(by))
-            }
-            .map { r => new ProductValue(Vector(l, r)) }
+          val inner = run(right).asInstanceOf[Coll].filter { r =>
+            scope(rightGen) = r
+            asBoolean(run(by))
+          }.map { r => new ProductValue(Vector(l, r)) }
           if (inner.headOption.isEmpty)
             Vector(new ProductValue(Vector(
               l,
@@ -148,23 +136,17 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         }
         scope.remove(leftGen)
         scope.remove(rightGen)
-        val emptyRightRes = run(right)
-          .asInstanceOf[Coll]
-          .filter { r =>
-            scope(rightGen) = r
-            run(left)
-              .asInstanceOf[Coll]
-              .find { l =>
-                scope(leftGen) = l
-                asBoolean(run(by))
-              }
-              .isEmpty
-          }
-          .map { r =>
-            new ProductValue(Vector(
-              createNullRow(left.nodeType.asCollectionType.elementType),
-              r))
-          }
+        val emptyRightRes = run(right).asInstanceOf[Coll].filter { r =>
+          scope(rightGen) = r
+          run(left).asInstanceOf[Coll].find { l =>
+            scope(leftGen) = l
+            asBoolean(run(by))
+          }.isEmpty
+        }.map { r =>
+          new ProductValue(Vector(
+            createNullRow(left.nodeType.asCollectionType.elementType),
+            r))
+        }
         scope.remove(leftGen)
         scope.remove(rightGen)
         leftJoinRes ++ emptyRightRes
@@ -249,8 +231,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             val s = leftV.toSet
             rightV.filter(e => !s.contains(e))
           }
-      case GetOrElse(ch, default) =>
-        run(ch).asInstanceOf[Option[Any]].getOrElse(default())
+      case GetOrElse(ch, default) => run(ch)
+          .asInstanceOf[Option[Any]].getOrElse(default())
       case OptionApply(ch) => Option(run(ch))
       case c: IfThenElse =>
         val opt = n.nodeType.asInstanceOf[ScalaType[_]].nullable
@@ -265,8 +247,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             else res
           case _ =>
             val res = run(c.elseClause)
-            if (opt && !c.elseClause.nodeType
-                  .asInstanceOf[ScalaType[_]]
+            if (opt && !c.elseClause.nodeType.asInstanceOf[ScalaType[_]]
                   .nullable) Option(res)
             else res
         }
@@ -411,48 +392,31 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
     sym match {
       case Library.== => args(0)._2 == args(1)._2
       case Library.< =>
-        args(0)._1
-          .asInstanceOf[ScalaBaseType[Any]]
-          .ordering
+        args(0)._1.asInstanceOf[ScalaBaseType[Any]].ordering
           .lt(args(0)._2, args(1)._2)
       case Library.<= =>
-        args(0)._1
-          .asInstanceOf[ScalaBaseType[Any]]
-          .ordering
+        args(0)._1.asInstanceOf[ScalaBaseType[Any]].ordering
           .lteq(args(0)._2, args(1)._2)
       case Library.> =>
-        args(0)._1
-          .asInstanceOf[ScalaBaseType[Any]]
-          .ordering
+        args(0)._1.asInstanceOf[ScalaBaseType[Any]].ordering
           .gt(args(0)._2, args(1)._2)
       case Library.>= =>
-        args(0)._1
-          .asInstanceOf[ScalaBaseType[Any]]
-          .ordering
+        args(0)._1.asInstanceOf[ScalaBaseType[Any]].ordering
           .gteq(args(0)._2, args(1)._2)
       case Library.+ =>
-        args(0)._1
-          .asInstanceOf[ScalaNumericType[Any]]
-          .numeric
+        args(0)._1.asInstanceOf[ScalaNumericType[Any]].numeric
           .plus(args(0)._2, args(1)._2)
       case Library.- =>
-        args(0)._1
-          .asInstanceOf[ScalaNumericType[Any]]
-          .numeric
+        args(0)._1.asInstanceOf[ScalaNumericType[Any]].numeric
           .minus(args(0)._2, args(1)._2)
       case Library.* =>
-        args(0)._1
-          .asInstanceOf[ScalaNumericType[Any]]
-          .numeric
+        args(0)._1.asInstanceOf[ScalaNumericType[Any]].numeric
           .times(args(0)._2, args(1)._2)
       case Library.% =>
-        args(0)._1
-          .asInstanceOf[ScalaNumericType[Any]]
-          .numeric
-          .asInstanceOf[Integral[Any]]
-          .rem(args(0)._2, args(1)._2)
-      case Library.Abs =>
-        args(0)._1.asInstanceOf[ScalaNumericType[Any]].numeric.abs(args(0)._2)
+        args(0)._1.asInstanceOf[ScalaNumericType[Any]].numeric
+          .asInstanceOf[Integral[Any]].rem(args(0)._2, args(1)._2)
+      case Library.Abs => args(0)
+          ._1.asInstanceOf[ScalaNumericType[Any]].numeric.abs(args(0)._2)
       case Library.And =>
         args(0)._2.asInstanceOf[Boolean] && args(1)._2.asInstanceOf[Boolean]
       case Library.Cast =>
@@ -513,11 +477,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         var len = s.length
         while (len > 0 && s.charAt(len - 1) == ' ') len -= 1
         if (len == s.length) s else s.substring(0, len)
-      case Library.Sign =>
-        args(0)._1
-          .asInstanceOf[ScalaNumericType[Any]]
-          .numeric
-          .signum(args(0)._2)
+      case Library.Sign => args(0)
+          ._1.asInstanceOf[ScalaNumericType[Any]].numeric.signum(args(0)._2)
       case Library.Trim  => args(0)._2.asInstanceOf[String].trim
       case Library.UCase => args(0)._2.asInstanceOf[String].toUpperCase
       case Library.User  => ""
@@ -526,25 +487,20 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Library.Repeat if args.size == 2 =>
         args(0)._2.asInstanceOf[String] * args(1)._2.asInstanceOf[Int]
       case Library.Substring if args.size == 3 =>
-        args(0)._2
-          .asInstanceOf[String]
+        args(0)._2.asInstanceOf[String]
           .substring(args(1)._2.asInstanceOf[Int], args(2)._2.asInstanceOf[Int])
       case Library.Replace =>
-        args(0)._2
-          .asInstanceOf[String]
-          .replace(
-            args(1)._2.asInstanceOf[String],
-            args(2)._2.asInstanceOf[String])
+        args(0)._2.asInstanceOf[String].replace(
+          args(1)._2.asInstanceOf[String],
+          args(2)._2.asInstanceOf[String])
       case Library.Reverse => args(0)._2.asInstanceOf[String].reverse
       case Library.IndexOf =>
         args(0)._2.asInstanceOf[String].indexOf(args(1)._2.asInstanceOf[String])
       case Library.StartsWith =>
-        args(0)._2
-          .asInstanceOf[String]
+        args(0)._2.asInstanceOf[String]
           .startsWith(args(1)._2.asInstanceOf[String])
       case Library.EndsWith =>
-        args(0)._2
-          .asInstanceOf[String]
+        args(0)._2.asInstanceOf[String]
           .endsWith(args(1)._2.asInstanceOf[String])
     }
 

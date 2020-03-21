@@ -28,8 +28,7 @@ class OutputStreamWriter(
   def this(out: OutputStream, cs: Charset) =
     this(
       out,
-      cs.newEncoder
-        .onMalformedInput(CodingErrorAction.REPLACE)
+      cs.newEncoder.onMalformedInput(CodingErrorAction.REPLACE)
         .onUnmappableCharacter(CodingErrorAction.REPLACE))
 
   def this(out: OutputStream) = this(out, Charset.defaultCharset)

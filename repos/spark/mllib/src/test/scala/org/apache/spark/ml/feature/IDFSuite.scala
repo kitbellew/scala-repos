@@ -67,13 +67,10 @@ class IDFSuite
     })
     val expected = scaleDataWithIDF(data, idf)
 
-    val df = sqlContext
-      .createDataFrame(data.zip(expected))
+    val df = sqlContext.createDataFrame(data.zip(expected))
       .toDF("features", "expected")
 
-    val idfModel = new IDF()
-      .setInputCol("features")
-      .setOutputCol("idfValue")
+    val idfModel = new IDF().setInputCol("features").setOutputCol("idfValue")
       .fit(df)
 
     idfModel.transform(df).select("idfValue", "expected").collect().foreach {
@@ -96,15 +93,11 @@ class IDFSuite
     })
     val expected = scaleDataWithIDF(data, idf)
 
-    val df = sqlContext
-      .createDataFrame(data.zip(expected))
+    val df = sqlContext.createDataFrame(data.zip(expected))
       .toDF("features", "expected")
 
-    val idfModel = new IDF()
-      .setInputCol("features")
-      .setOutputCol("idfValue")
-      .setMinDocFreq(1)
-      .fit(df)
+    val idfModel = new IDF().setInputCol("features").setOutputCol("idfValue")
+      .setMinDocFreq(1).fit(df)
 
     idfModel.transform(df).select("idfValue", "expected").collect().foreach {
       case Row(x: Vector, y: Vector) =>
@@ -115,9 +108,7 @@ class IDFSuite
   }
 
   test("IDF read/write") {
-    val t = new IDF()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
+    val t = new IDF().setInputCol("myInputCol").setOutputCol("myOutputCol")
       .setMinDocFreq(5)
     testDefaultReadWrite(t)
   }
@@ -125,8 +116,7 @@ class IDFSuite
   test("IDFModel read/write") {
     val instance =
       new IDFModel("myIDFModel", new OldIDFModel(Vectors.dense(1.0, 2.0)))
-        .setInputCol("myInputCol")
-        .setOutputCol("myOutputCol")
+        .setInputCol("myInputCol").setOutputCol("myOutputCol")
     val newInstance = testDefaultReadWrite(instance)
     assert(newInstance.idf === instance.idf)
   }

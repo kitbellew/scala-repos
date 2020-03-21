@@ -171,8 +171,8 @@ object LinkedClass {
         sys.error(s"Illegal tree in ClassDef of class ${tree.getClass}")
     }
 
-    val classExportInfo = memberInfoByName.get(
-      Definitions.ExportedConstructorsName)
+    val classExportInfo = memberInfoByName
+      .get(Definitions.ExportedConstructorsName)
 
     new LinkedClass(
       classDef.name,

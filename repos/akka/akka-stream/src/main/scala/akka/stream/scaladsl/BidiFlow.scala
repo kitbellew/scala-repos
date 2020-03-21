@@ -64,9 +64,7 @@ final class BidiFlow[-I1, +O1, -I2, +O2, +Mat](
     val ins = copy.shape.inlets
     val outs = copy.shape.outlets
     new BidiFlow(
-      module
-        .compose(copy, combine)
-        .wire(shape.out1, ins(0))
+      module.compose(copy, combine).wire(shape.out1, ins(0))
         .wire(outs(1), shape.in2)
         .replaceShape(BidiShape(shape.in1, outs(0), ins(1), shape.out2)))
   }
@@ -117,10 +115,7 @@ final class BidiFlow[-I1, +O1, -I2, +O2, +Mat](
     val in = copy.shape.inlets.head
     val out = copy.shape.outlets.head
     new Flow(
-      module
-        .compose(copy, combine)
-        .wire(shape.out1, in)
-        .wire(out, shape.in2)
+      module.compose(copy, combine).wire(shape.out1, in).wire(out, shape.in2)
         .replaceShape(FlowShape(shape.in1, shape.out2)))
   }
 

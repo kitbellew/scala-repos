@@ -24,14 +24,9 @@ class StripNameTest extends FunSuite {
     val fn = { k: Int => Some((k % 2, k * k)) }
 
     val src = Producer.source[Memory, Int](input)
-    val mapped = src
-      .name("source")
-      .optionMap(fn)
-    val summed = mapped
-      .name("map")
-      .sumByKey(store)
-    val graph = summed
-      .name("sumByKey")
+    val mapped = src.name("source").optionMap(fn)
+    val summed = mapped.name("map").sumByKey(store)
+    val graph = summed.name("sumByKey")
 
     val deps = Dependants(graph)
     assert(
@@ -61,9 +56,8 @@ class StripNameTest extends FunSuite {
     }
 
     // The final stripped has no names:
-    assert(strippedDeps.nodes.collect {
-      case NamedProducer(_, _) => 1
-    }.sum == 0)
+    assert(strippedDeps.nodes.collect { case NamedProducer(_, _) => 1 }
+      .sum == 0)
   }
   test("merge name test") {
     /*
@@ -76,20 +70,15 @@ class StripNameTest extends FunSuite {
     val fn1 = { kstr: String => val k = kstr.toInt; Some((k % 2, k * k)) }
 
     val src0 = Producer.source[Memory, Int](input0)
-    val mapped0 = src0
-      .name("source0")
-      .optionMap(fn0)
+    val mapped0 = src0.name("source0").optionMap(fn0)
     val named0 = mapped0.name("map0")
 
     val src1 = Producer.source[Memory, String](input1)
-    val mapped1 = src1
-      .name("source1")
-      .optionMap(fn1)
+    val mapped1 = src1.name("source1").optionMap(fn1)
     val named1 = mapped1.name("map1")
 
     val summed = (named0 ++ named1).sumByKey(store)
-    val graph = summed
-      .name("sumByKey")
+    val graph = summed.name("sumByKey")
 
     val deps = Dependants(graph)
     def assertInitName(n: Producer[Memory, Any], s: List[String]) =
@@ -129,9 +118,8 @@ class StripNameTest extends FunSuite {
     }
 
     // The final stripped has no names:
-    assert(strippedDeps.nodes.collect {
-      case NamedProducer(_, _) => 1
-    }.sum == 0)
+    assert(strippedDeps.nodes.collect { case NamedProducer(_, _) => 1 }
+      .sum == 0)
   }
 
   test("Fan-out name test") {
@@ -211,8 +199,7 @@ class StripNameTest extends FunSuite {
       case p @ Summer(_, str, _) if str eq store1 => p
     }
     // The final stripped has no names:
-    assert(strippedDeps.nodes.collect {
-      case NamedProducer(_, _) => 1
-    }.sum == 0)
+    assert(strippedDeps.nodes.collect { case NamedProducer(_, _) => 1 }
+      .sum == 0)
   }
 }

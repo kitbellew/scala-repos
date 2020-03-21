@@ -65,8 +65,7 @@ object Executor {
     // (incremental updates) will use the batch of the previous run as
     // the starting batch, rendering this unnecessary.
     def startDate: Option[Timestamp] =
-      args
-        .optional("start-time")
+      args.optional("start-time")
         .map(RichDate(_)(TimeZone.getTimeZone("UTC"), DateParser.default).value)
 
     // The number of batches to process in this particular run. Imagine
@@ -83,26 +82,22 @@ object Executor {
     def shards: Int = args.getOrElse("shards", "0").toInt
 
     val options = Map(
-      "DEFAULT" -> Options()
-        .set(Reducers(reducers))
+      "DEFAULT" -> Options().set(Reducers(reducers))
         .set(FlatMapShards(shards))) ++ config.getNamedOptions
 
     val scaldPlatform = Scalding(config.name, options)
-      .withRegistrars(config.registrars)
-      .withConfigUpdater { c =>
+      .withRegistrars(config.registrars).withConfigUpdater { c =>
         com.twitter.scalding.Config
-          .tryFrom(config.transformConfig(c.toMap).toMap)
-          .get
+          .tryFrom(config.transformConfig(c.toMap).toMap).get
       }
 
     val toRun = scaldPlatform.plan(config.graph)
 
     try {
-      scaldPlatform
-        .run(
-          config.getWaitingState(hadoopConf, startDate, batches),
-          Hdfs(true, hadoopConf),
-          toRun)
+      scaldPlatform.run(
+        config.getWaitingState(hadoopConf, startDate, batches),
+        Hdfs(true, hadoopConf),
+        toRun)
     } catch {
       case f @ FlowPlanException(errs) =>
         /* This is generally due to data not being ready, don't give a failed error code */

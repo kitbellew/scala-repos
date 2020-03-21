@@ -23,16 +23,14 @@ object Formatting {
 
   def formattingPreferences = {
     import scalariform.formatter.preferences._
-    FormattingPreferences()
-      .setPreference(RewriteArrowSymbols, true)
+    FormattingPreferences().setPreference(RewriteArrowSymbols, true)
       .setPreference(AlignParameters, true)
       .setPreference(AlignSingleLineCaseStatements, true)
   }
 
   def docFormattingPreferences = {
     import scalariform.formatter.preferences._
-    FormattingPreferences()
-      .setPreference(RewriteArrowSymbols, false)
+    FormattingPreferences().setPreference(RewriteArrowSymbols, false)
       .setPreference(AlignParameters, true)
       .setPreference(AlignSingleLineCaseStatements, true)
   }

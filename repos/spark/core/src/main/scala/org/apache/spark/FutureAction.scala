@@ -261,8 +261,8 @@ private[spark] class JavaFutureActionWrapper[S, T](
   }
 
   override def jobIds(): java.util.List[java.lang.Integer] = {
-    Collections.unmodifiableList(
-      futureAction.jobIds.map(Integer.valueOf).asJava)
+    Collections
+      .unmodifiableList(futureAction.jobIds.map(Integer.valueOf).asJava)
   }
 
   private def getImpl(timeout: Duration): T = {

@@ -70,8 +70,8 @@ object ExpressionEncoder {
 
     val schema = ScalaReflection.schemaFor[T] match {
       case ScalaReflection.Schema(s: StructType, _) => s
-      case ScalaReflection.Schema(dt, nullable) =>
-        new StructType().add("value", dt, nullable)
+      case ScalaReflection.Schema(dt, nullable) => new StructType()
+          .add("value", dt, nullable)
     }
 
     new ExpressionEncoder[T](
@@ -114,24 +114,21 @@ object ExpressionEncoder {
         StructField(s"_${i + 1}", dataType, nullable)
     })
 
-    val cls = Utils.getContextOrSparkClassLoader.loadClass(
-      s"scala.Tuple${encoders.size}")
+    val cls = Utils.getContextOrSparkClassLoader
+      .loadClass(s"scala.Tuple${encoders.size}")
 
-    val toRowExpressions = encoders
-      .map {
-        case e if e.flat => e.toRowExpressions.head
-        case other       => CreateStruct(other.toRowExpressions)
-      }
-      .zipWithIndex
-      .map {
-        case (expr, index) => expr.transformUp {
-            case BoundReference(0, t, _) =>
-              Invoke(
-                BoundReference(0, ObjectType(cls), nullable = true),
-                s"_${index + 1}",
-                t)
-          }
-      }
+    val toRowExpressions = encoders.map {
+      case e if e.flat => e.toRowExpressions.head
+      case other       => CreateStruct(other.toRowExpressions)
+    }.zipWithIndex.map {
+      case (expr, index) => expr.transformUp {
+          case BoundReference(0, t, _) =>
+            Invoke(
+              BoundReference(0, ObjectType(cls), nullable = true),
+              s"_${index + 1}",
+              t)
+        }
+    }
 
     val fromRowExpressions = encoders.zipWithIndex.map {
       case (enc, index) =>
@@ -213,15 +210,15 @@ case class ExpressionEncoder[T](
   if (flat) require(toRowExpressions.size == 1)
 
   @transient
-  private lazy val extractProjection = GenerateUnsafeProjection.generate(
-    toRowExpressions)
+  private lazy val extractProjection = GenerateUnsafeProjection
+    .generate(toRowExpressions)
 
   @transient
   private lazy val inputRow = new GenericMutableRow(1)
 
   @transient
-  private lazy val constructProjection = GenerateSafeProjection.generate(
-    fromRowExpression :: Nil)
+  private lazy val constructProjection = GenerateSafeProjection
+    .generate(fromRowExpression :: Nil)
 
   /**
     * Returns this encoder where it has been bound to its own output (i.e. no remaping of columns
@@ -265,8 +262,7 @@ case class ExpressionEncoder[T](
     */
   def fromRow(row: InternalRow): T =
     try {
-      constructProjection(row)
-        .get(0, ObjectType(clsTag.runtimeClass))
+      constructProjection(row).get(0, ObjectType(clsTag.runtimeClass))
         .asInstanceOf[T]
     } catch {
       case e: Exception =>
@@ -297,8 +293,7 @@ case class ExpressionEncoder[T](
       throw new AnalysisException(
         s"Try to map ${st.simpleString} to Tuple${maxOrdinal + 1}, " +
           "but failed as the number of fields does not line up.\n" +
-          " - Input schema: " + StructType
-          .fromAttributes(schema)
+          " - Input schema: " + StructType.fromAttributes(schema)
           .simpleString + "\n" +
           " - Target schema: " + this.schema.simpleString)
     }
@@ -355,8 +350,8 @@ case class ExpressionEncoder[T](
     val plan = Project(Alias(deserializer, "")() :: Nil, LocalRelation(schema))
     val analyzedPlan = SimpleAnalyzer.execute(plan)
     SimpleAnalyzer.checkAnalysis(analyzedPlan)
-    copy(fromRowExpression =
-      SimplifyCasts(analyzedPlan).expressions.head.children.head)
+    copy(fromRowExpression = SimplifyCasts(analyzedPlan).expressions.head
+      .children.head)
   }
 
   /**
@@ -384,10 +379,9 @@ case class ExpressionEncoder[T](
     case b: BoundReference      => s"[${b.ordinal}]"
   })
 
-  protected val schemaString = schema
-    .zip(attrs)
-    .map { case (f, a) => s"${f.name}$a: ${f.dataType.simpleString}" }
-    .mkString(", ")
+  protected val schemaString = schema.zip(attrs).map {
+    case (f, a) => s"${f.name}$a: ${f.dataType.simpleString}"
+  }.mkString(", ")
 
   override def toString: String = s"class[$schemaString]"
 }

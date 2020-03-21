@@ -89,18 +89,15 @@ trait MySQLProfile extends JdbcProfile {
         meta: MColumn): ColumnBuilder =
       new ColumnBuilder(tableBuilder, meta) {
         override def default =
-          meta.columnDef
-            .map((_, tpe))
-            .collect {
-              case (v, "String")    => Some(Some(v))
-              case ("1", "Boolean") => Some(Some(true))
-              case ("0", "Boolean") => Some(Some(false))
-            }
-            .getOrElse {
-              val d = super.default
-              if (meta.nullable == Some(true) && d == None) { Some(None) }
-              else d
-            }
+          meta.columnDef.map((_, tpe)).collect {
+            case (v, "String")    => Some(Some(v))
+            case ("1", "Boolean") => Some(Some(true))
+            case ("0", "Boolean") => Some(Some(false))
+          }.getOrElse {
+            val d = super.default
+            if (meta.nullable == Some(true) && d == None) { Some(None) }
+            else d
+          }
         override def length: Option[Int] = {
           val l = super.length
           if (tpe == "String" && varying && l == Some(65535)) None else l
@@ -116,8 +113,8 @@ trait MySQLProfile extends JdbcProfile {
 
   override val columnTypes = new JdbcTypes
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler
-      .replace(new MySQLResolveZipJoins) - Phase.fixRowNumberOrdering
+    super.computeQueryCompiler.replace(new MySQLResolveZipJoins) - Phase
+      .fixRowNumberOrdering
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
   override def createUpsertBuilder(node: Insert): InsertBuilder =
@@ -137,17 +134,16 @@ trait MySQLProfile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        sym.flatMap(
-          _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
+        sym
+          .flatMap(
+            _.findColumnOption[RelationalProfile.ColumnOption.Length]) match {
           case Some(l) =>
             if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})"
           case None => defaultStringType match {
               case Some(s) => s
               case None =>
-                if (sym
-                      .flatMap(_.findColumnOption[
-                        RelationalProfile.ColumnOption.Default[_]])
-                      .isDefined ||
+                if (sym.flatMap(_.findColumnOption[
+                      RelationalProfile.ColumnOption.Default[_]]).isDefined ||
                     sym
                       .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
                       .isDefined) "VARCHAR(254)"
@@ -157,8 +153,8 @@ trait MySQLProfile extends JdbcProfile {
       case _ => super.defaultSqlTypeName(tmd, sym)
     }
 
-  protected lazy val defaultStringType = profileConfig.getStringOpt(
-    "defaultStringType")
+  protected lazy val defaultStringType = profileConfig
+    .getStringOpt("defaultStringType")
 
   class MySQLResolveZipJoins extends ResolveZipJoins {
     // MySQL does not support ROW_NUMBER() but you can manually increment a variable in the SELECT
@@ -290,9 +286,8 @@ trait MySQLProfile extends JdbcProfile {
                                                   java.lang.Integer.MAX_VALUE))
       val start = seq._start.getOrElse(if (desc) maxValue else minValue)
       val beforeStart = start - increment
-      if (!seq._cycle && (
-            seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc
-          ))
+      if (!seq._cycle && (seq._minValue.isDefined && desc || seq._maxValue
+            .isDefined && !desc))
         throw new SlickException(
           "Sequences with limited size and without CYCLE are not supported by MySQLProfile's sequence emulation")
       val incExpr =
@@ -311,7 +306,8 @@ trait MySQLProfile extends JdbcProfile {
           "insert into " + quoteIdentifier(
             seq.name + "_seq") + " values (" + beforeStart + ")",
           "create function " + quoteIdentifier(
-            seq.name + "_nextval") + "() returns " + sqlType + " begin update " +
+            seq
+              .name + "_nextval") + "() returns " + sqlType + " begin update " +
             quoteIdentifier(
               seq.name + "_seq") + " set id=last_insert_id(" + incExpr + "); return last_insert_id(); end",
           "create function " + quoteIdentifier(

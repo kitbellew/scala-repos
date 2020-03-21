@@ -273,8 +273,8 @@ class JetTest extends FunSuite with Matchers {
     jp.real should be(scala.math.pow(x, scala.math.sin(x)) +- maxError)
     jp.infinitesimal(0) should be(
       scala.math.exp(scala.math.sin(x) * scala.math.log(x)) *
-        (scala.math.cos(x) * scala.math.log(x) + scala.math.sin(
-          x) / x) +- maxError)
+        (scala.math.cos(x) * scala.math.log(x) + scala.math
+          .sin(x) / x) +- maxError)
     // Square root
     val sq = spire.math.sqrt(jx)
     sq.real should be(scala.math.sqrt(x))

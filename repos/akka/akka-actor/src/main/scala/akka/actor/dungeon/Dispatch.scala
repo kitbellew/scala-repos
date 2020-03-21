@@ -26,8 +26,7 @@ private[akka] trait Dispatch {
 
   @inline
   final def mailbox: Mailbox =
-    Unsafe.instance
-      .getObjectVolatile(this, AbstractActorCell.mailboxOffset)
+    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.mailboxOffset)
       .asInstanceOf[Mailbox]
 
   @tailrec
@@ -93,8 +92,8 @@ private[akka] trait Dispatch {
 
     if (sendSupervise) {
       // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-      parent.sendSystemMessage(
-        akka.dispatch.sysmsg.Supervise(self, async = false))
+      parent
+        .sendSystemMessage(akka.dispatch.sysmsg.Supervise(self, async = false))
     }
     this
   }

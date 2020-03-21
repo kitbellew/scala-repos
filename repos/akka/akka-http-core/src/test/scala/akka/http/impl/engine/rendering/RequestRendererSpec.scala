@@ -24,8 +24,8 @@ class RequestRendererSpec
     extends FreeSpec
     with Matchers
     with BeforeAndAfterAll {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING""")
   implicit val system = ActorSystem(getClass.getSimpleName, testConf)
@@ -385,9 +385,7 @@ class RequestRendererSpec
         request ⇒
           val byteStringSource = renderToSource(
             RequestRenderingContext(request, Host(serverAddress)))
-          val future = byteStringSource
-            .limit(1000)
-            .runWith(Sink.seq)
+          val future = byteStringSource.limit(1000).runWith(Sink.seq)
             .map(_.reduceLeft(_ ++ _).utf8String)
           Await.result(future, 250.millis)
       }

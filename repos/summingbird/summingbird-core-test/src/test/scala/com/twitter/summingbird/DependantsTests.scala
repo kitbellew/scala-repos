@@ -45,8 +45,8 @@ object DependantsTest extends Properties("Dependants") {
   }
   property("we don't depend on ourself") = forAll {
     (prod: Producer[Memory, _]) =>
-      !((Producer.dependenciesOf(prod) ++ Producer.transitiveDependenciesOf(
-        prod)).toSet.contains(prod))
+      !((Producer.dependenciesOf(prod) ++ Producer
+        .transitiveDependenciesOf(prod)).toSet.contains(prod))
   }
 
   property("if transitive deps == non-transitive, then parents are sources") =
@@ -66,9 +66,8 @@ object DependantsTest extends Properties("Dependants") {
         implies(tdepth == 0, t.isInstanceOf[Source[_, _]]) &&
         implies(
           tdepth > 0,
-          (
-            Producer.dependenciesOf(t).map { deps.depth(_).get }.max
-          ) < tdepth) &&
+          (Producer.dependenciesOf(t).map { deps.depth(_).get }
+            .max) < tdepth) &&
         implies(
           tdepth > 0,
           Producer.dependenciesOf(t).exists {
@@ -117,9 +116,7 @@ object DependantsTest extends Properties("Dependants") {
 
       val tails = allTails.toSet
       tails.map { dependantsOf(_) }.forall { _.get.isEmpty } && {
-        nodes
-          .filter { dependantsOf(_) == Some(Nil) }
-          .forall(tails)
+        nodes.filter { dependantsOf(_) == Some(Nil) }.forall(tails)
       }
     }
 
@@ -169,10 +166,9 @@ object DependantsTest extends Properties("Dependants") {
     forAll { (prod: Producer[Memory, _]) =>
       val dependants = Dependants(prod)
       dependants.nodes.forall { n =>
-        val output = dependants
-          .transitiveDependantsTillOutput(n)
-          .collect { case t: TailProducer[_, _] => t }
-          .toSet[Producer[Memory, Any]]
+        val output = dependants.transitiveDependantsTillOutput(n).collect {
+          case t: TailProducer[_, _] => t
+        }.toSet[Producer[Memory, Any]]
 
         (dependants.transitiveDependantsOf(n).toSet intersect output) == output
       }
@@ -184,16 +180,13 @@ object DependantsTest extends Properties("Dependants") {
       val dependants = Dependants(prod)
       dependants.nodes.forall { n =>
         val depTillWrite = dependants.transitiveDependantsTillOutput(n)
-        val writerDependencies = depTillWrite
-          .collect { case t: TailProducer[_, _] => t }
-          .flatMap { n => n :: Producer.transitiveDependenciesOf(n) }
-          .toSet
+        val writerDependencies = depTillWrite.collect {
+          case t: TailProducer[_, _] => t
+        }.flatMap { n => n :: Producer.transitiveDependenciesOf(n) }.toSet
 
-        depTillWrite
-          .collectFirst { case MergedProducer(_, _) => true }
-          .getOrElse(false) || writerDependencies.isEmpty || ((
-          depTillWrite.toSet intersect writerDependencies
-        ) == depTillWrite.toSet)
+        depTillWrite.collectFirst { case MergedProducer(_, _) => true }
+          .getOrElse(false) || writerDependencies.isEmpty || ((depTillWrite
+          .toSet intersect writerDependencies) == depTillWrite.toSet)
       }
     }
 
@@ -202,18 +195,14 @@ object DependantsTest extends Properties("Dependants") {
       val dependants = Dependants(prod)
       dependants.nodes.forall { n =>
         val tillWrite = dependants.transitiveDependantsTillOutput(n)
-        val outputChildren = tillWrite
-          .collect {
-            case s @ Summer(_, _, _)       => s
-            case w @ WrittenProducer(_, _) => w
-          }
-          .flatMap { dependants.transitiveDependantsOf(_) }
+        val outputChildren = tillWrite.collect {
+          case s @ Summer(_, _, _)       => s
+          case w @ WrittenProducer(_, _) => w
+        }.flatMap { dependants.transitiveDependantsOf(_) }
           .toSet[Producer[Memory, Any]]
-        tillWrite
-          .collectFirst { case MergedProducer(_, _) => true }
-          .getOrElse(false) || (
-          tillWrite.toSet & outputChildren.toSet
-        ).size == 0
+        tillWrite.collectFirst { case MergedProducer(_, _) => true }
+          .getOrElse(false) || (tillWrite.toSet & outputChildren.toSet)
+          .size == 0
       }
     }
 
@@ -222,13 +211,10 @@ object DependantsTest extends Properties("Dependants") {
     forAll { (prod: Producer[Memory, _]) =>
       val dependants = Dependants(prod)
       dependants.nodes.forall { n =>
-        dependants
-          .dependantsAfterMerge(n)
-          .collectFirst {
-            case m @ MergedProducer(_, _) => m
-            case a @ AlsoProducer(_, _)   => a
-          }
-          .isEmpty
+        dependants.dependantsAfterMerge(n).collectFirst {
+          case m @ MergedProducer(_, _) => m
+          case a @ AlsoProducer(_, _)   => a
+        }.isEmpty
       }
     }
   /*
@@ -249,12 +235,11 @@ object DependantsTest extends Properties("Dependants") {
       val cache = collection.mutable
         .Map[Producer[Memory, Any], Set[Producer[Memory, Any]]]()
 
-      dependants.nodes
-        .filterNot {
-          case MergedProducer(_, _) => true
-          case AlsoProducer(_, _)   => true
-          case _                    => false
-        } // for all non-merged/also nodes
+      dependants.nodes.filterNot {
+        case MergedProducer(_, _) => true
+        case AlsoProducer(_, _)   => true
+        case _                    => false
+      } // for all non-merged/also nodes
         .forall { n =>
           val nonMergeDeps = nonMergeDependencies(n)
           nonMergeDeps.forall { parent =>
@@ -276,14 +261,12 @@ object DependantsTest extends Properties("Dependants") {
       import dependants._
 
       nodes.forall { n =>
-        dependantsAfterMerge(n)
-          .flatMap(Producer.dependenciesOf)
-          .forall {
-            case node if node == n    => true
-            case AlsoProducer(_, _)   => true
-            case MergedProducer(_, _) => true
-            case _                    => false
-          }
+        dependantsAfterMerge(n).flatMap(Producer.dependenciesOf).forall {
+          case node if node == n    => true
+          case AlsoProducer(_, _)   => true
+          case MergedProducer(_, _) => true
+          case _                    => false
+        }
       }
     }
 }

@@ -93,8 +93,7 @@ class SecurityServiceSpec
   import Permission._
 
   val authService: HttpClient[JValue] = client
-    .contentType[JValue](application / (MimeTypes.json))
-    .path("/security/v1/")
+    .contentType[JValue](application / (MimeTypes.json)).path("/security/v1/")
   val apiKeyManager =
     new InMemoryAPIKeyManager[Future](blueeyes.util.Clock.System)
 
@@ -111,8 +110,7 @@ class SecurityServiceSpec
     createAPIKeyRaw(authAPIKey, request.serialize)
 
   def createAPIKeyRaw(authAPIKey: String, request: JValue) =
-    authService
-      .query("apiKey", authAPIKey)
+    authService.query("apiKey", authAPIKey)
       .post("/apikeys/")(request)(identity[JValue], tc)
 
   def getAPIKeyDetails(queryKey: String) =
@@ -134,16 +132,14 @@ class SecurityServiceSpec
       authAPIKey: String,
       updateKey: String,
       grantId: JValue) =
-    authService
-      .query("apiKey", authAPIKey)
+    authService.query("apiKey", authAPIKey)
       .post("/apikeys/" + updateKey + "/grants/")(grantId)(identity[JValue], tc)
 
   def createAPIKeyGrant(authAPIKey: String, request: v1.NewGrantRequest) =
     createAPIKeyGrantRaw(authAPIKey, request.serialize)
 
   def createAPIKeyGrantRaw(authAPIKey: String, request: JValue) =
-    authService
-      .query("apiKey", authAPIKey)
+    authService.query("apiKey", authAPIKey)
       .post("/grants/")(request)(identity[JValue], tc)
 
   def removeAPIKeyGrant(
@@ -156,8 +152,7 @@ class SecurityServiceSpec
     authService.query("apiKey", authAPIKey).get("/grants/" + grantId)
 
   def getGrantChildren(authAPIKey: String, grantId: String) =
-    authService
-      .query("apiKey", authAPIKey)
+    authService.query("apiKey", authAPIKey)
       .get("/grants/" + grantId + "/children/")
 
   def addGrantChild(
@@ -167,8 +162,7 @@ class SecurityServiceSpec
     addGrantChildRaw(authAPIKey, grantId, request.serialize)
 
   def addGrantChildRaw(authAPIKey: String, grantId: String, request: JValue) =
-    authService
-      .query("apiKey", authAPIKey)
+    authService.query("apiKey", authAPIKey)
       .post("/grants/" + grantId + "/children/")(request)(identity[JValue], tc)
 
   def deleteGrant(authAPIKey: String, grantId: String) =
@@ -178,9 +172,8 @@ class SecurityServiceSpec
     authService.query("apiKey", authAPIKey).get("/permissions/fs/" + path)
 
   def equalGrant(g1: Grant, g2: Grant) =
-    (g1.grantId == g2.grantId) && (g1.permissions == g2.permissions) && (
-      g1.expirationDate == g2.expirationDate
-    )
+    (g1.grantId == g2.grantId) && (g1.permissions == g2.permissions) && (g1
+      .expirationDate == g2.expirationDate)
 
   def mkNewGrantRequest(grant: Grant) =
     grant match {
@@ -215,26 +208,26 @@ class SecurityServiceSpec
   val user1 = Await.result(
     apiKeyManager.newStandardAPIKeyRecord("user1", Some("user1-key"), None),
     to)
-  val user1Grant =
-    Await.result(apiKeyManager.findGrant(user1.grants.head), to).get
+  val user1Grant = Await.result(apiKeyManager.findGrant(user1.grants.head), to)
+    .get
 
   val user2 = Await.result(
     apiKeyManager.newStandardAPIKeyRecord("user2", Some("user2-key"), None),
     to)
-  val user2Grant =
-    Await.result(apiKeyManager.findGrant(user2.grants.head), to).get
+  val user2Grant = Await.result(apiKeyManager.findGrant(user2.grants.head), to)
+    .get
 
   val user3 = Await.result(
     apiKeyManager.newStandardAPIKeyRecord("user3", Some("user3-key"), None),
     to)
-  val user3Grant =
-    Await.result(apiKeyManager.findGrant(user3.grants.head), to).get
+  val user3Grant = Await.result(apiKeyManager.findGrant(user3.grants.head), to)
+    .get
 
   val user4 = Await.result(
     apiKeyManager.newStandardAPIKeyRecord("user4", Some("user4-key"), None),
     to)
-  val user4Grant =
-    Await.result(apiKeyManager.findGrant(user4.grants.head), to).get
+  val user4Grant = Await.result(apiKeyManager.findGrant(user4.grants.head), to)
+    .get
   val user4DerivedGrant = Await.result(
     apiKeyManager.createGrant(
       None,
@@ -362,10 +355,8 @@ class SecurityServiceSpec
     }
 
     "create root-like API key with defaults" in {
-      val request = v1.NewAPIKeyRequest(
-        Some("root-like"),
-        None,
-        rootGrantRequests)
+      val request = v1
+        .NewAPIKeyRequest(Some("root-like"), None, rootGrantRequests)
       createAPIKey(rootAPIKey, request) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
@@ -629,8 +620,8 @@ class SecurityServiceSpec
       getPermissions(user1.apiKey, Path("/user1")) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) =>
-            val perms =
-              jperms.deserialize[Set[Permission]] map Permission.accessType
+            val perms = jperms.deserialize[Set[Permission]] map Permission
+              .accessType
             val types = Set("read", "write", "delete")
             perms must_== types
         }

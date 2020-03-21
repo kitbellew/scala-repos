@@ -77,8 +77,8 @@ case class ScalaChangeInfo(
 
   override val isReturnTypeChanged: Boolean = function match {
     case f: ScFunction =>
-      f.returnType.toOption.map(_.canonicalText) != Option(newType).map(
-        _.canonicalText)
+      f.returnType.toOption.map(_.canonicalText) != Option(newType)
+        .map(_.canonicalText)
     case _ => false
   }
 }

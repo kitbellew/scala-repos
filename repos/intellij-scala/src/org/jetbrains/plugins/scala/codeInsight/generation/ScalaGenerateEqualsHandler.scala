@@ -55,11 +55,11 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
       if (Messages.showYesNoDialog(
             project,
             text,
-            CodeInsightBundle.message(
-              "generate.equals.and.hashcode.already.defined.title"),
+            CodeInsightBundle
+              .message("generate.equals.and.hashcode.already.defined.title"),
             Messages.getQuestionIcon) == DialogWrapper.OK_EXIT_CODE) {
-        val deletedOk = ApplicationManager.getApplication.runWriteAction(
-          new Computable[Boolean] {
+        val deletedOk = ApplicationManager.getApplication
+          .runWriteAction(new Computable[Boolean] {
             def compute: Boolean = {
               try {
                 equalsMethod.get.delete()
@@ -124,10 +124,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
         |  $firstStmtText
         |  $calculationText
         |}""".stripMargin.replace("\r", "")
-    ScalaPsiElementFactory.createMethodWithContext(
-      methodText,
-      aClass,
-      aClass.extendsBlock)
+    ScalaPsiElementFactory
+      .createMethodWithContext(methodText, aClass, aClass.extendsBlock)
   }
 
   protected def createCanEqual(
@@ -142,15 +140,12 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
       ScSubstitutor.empty)
     val overrideMod = overrideModifier(aClass, sign)
     val text = s"$overrideMod $declText = other.isInstanceOf[${aClass.name}]"
-    ScalaPsiElementFactory.createMethodWithContext(
-      text,
-      aClass,
-      aClass.extendsBlock)
+    ScalaPsiElementFactory
+      .createMethodWithContext(text, aClass, aClass.extendsBlock)
   }
 
   protected def createEquals(aClass: ScClass, project: Project): ScFunction = {
-    val fieldComparisons = myEqualsFields
-      .map(_.name)
+    val fieldComparisons = myEqualsFields.map(_.name)
       .map(name => s"$name == that.$name")
     val declText = "def equals(other: Any): Boolean"
     val signature = new PhysicalSignature(
@@ -172,24 +167,19 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
                  |    $checksText
                  |  case _ $arrow false
                  |}""".stripMargin.replace("\r", "")
-    ScalaPsiElementFactory.createMethodWithContext(
-      text,
-      aClass,
-      aClass.extendsBlock)
+    ScalaPsiElementFactory
+      .createMethodWithContext(text, aClass, aClass.extendsBlock)
   }
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return
-    if (!FileDocumentManager.getInstance.requestWriting(
-          editor.getDocument,
-          project)) return
+    if (!FileDocumentManager.getInstance
+          .requestWriting(editor.getDocument, project)) return
 
     try {
-      val aClass = GenerationUtil
-        .classAtCaret(editor, file)
-        .getOrElse(
-          return
-        )
+      val aClass = GenerationUtil.classAtCaret(editor, file).getOrElse(
+        return
+      )
       val isOk = chooseOriginalMembers(aClass, project, editor)
       if (!isOk) return
 
@@ -202,8 +192,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
         val equalsMethod = Option(
           if (needEquals) createEquals(aClass, project) else null)
 
-        val needCanEqual =
-          needEquals && hasCanEqual(aClass).isEmpty && !aClass.hasFinalModifier
+        val needCanEqual = needEquals && hasCanEqual(aClass).isEmpty && !aClass
+          .hasFinalModifier
         val canEqualMethod = Option(
           if (needCanEqual) createCanEqual(aClass, project) else null)
 
@@ -221,20 +211,19 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
       case Some(c: ScClass) if !c.isCase => true
       case _                             => false
     }
-    file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType && isSuitableClass
+    file != null && ScalaFileType.SCALA_FILE_TYPE == file
+      .getFileType && isSuitableClass
   }
 
   private def hasEquals(aClass: ScClass): Option[ScFunction] = {
-    val method = ScalaPsiElementFactory.createMethodFromText(
-      "def equals(that: Any): Boolean",
-      aClass.getManager)
+    val method = ScalaPsiElementFactory
+      .createMethodFromText("def equals(that: Any): Boolean", aClass.getManager)
     findSuchMethod(aClass, "equals", method.methodType)
   }
 
   private def hasHashCode(aClass: ScClass): Option[ScFunction] = {
-    val method = ScalaPsiElementFactory.createMethodFromText(
-      "def hashCode(): Int",
-      aClass.getManager)
+    val method = ScalaPsiElementFactory
+      .createMethodFromText("def hashCode(): Int", aClass.getManager)
     findSuchMethod(aClass, "hashCode", method.methodType)
   }
 
@@ -249,8 +238,7 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
       aClass: ScClass,
       name: String,
       methodType: ScType): Option[ScFunction] = {
-    aClass.functions
-      .filter(_.name == name)
+    aClass.functions.filter(_.name == name)
       .find(fun => fun.methodType(None) equiv methodType)
   }
 
@@ -258,8 +246,7 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
       aClass: ScTemplateDefinition,
       signature: Signature): String = {
     val needModifier = ScalaOIUtil
-      .methodSignaturesToOverride(aClass, withSelfType = false)
-      .exists {
+      .methodSignaturesToOverride(aClass, withSelfType = false).exists {
         case sign: PhysicalSignature => sign.equiv(signature)
         case _                       => false
       }
@@ -269,9 +256,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
   private def overridesFromJavaObject(
       aClass: ScTemplateDefinition,
       signature: Signature): Boolean = {
-    val methodsToOverride = ScalaOIUtil.methodSignaturesToOverride(
-      aClass,
-      withSelfType = false)
+    val methodsToOverride = ScalaOIUtil
+      .methodSignaturesToOverride(aClass, withSelfType = false)
     methodsToOverride exists {
       case sign: PhysicalSignature if sign.equiv(signature) =>
         //used only for equals and hashcode methods

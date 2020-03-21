@@ -37,13 +37,10 @@ object LogisticRegressionSummaryExample {
     import sqlCtx.implicits._
 
     // Load training data
-    val training = sqlCtx.read
-      .format("libsvm")
+    val training = sqlCtx.read.format("libsvm")
       .load("data/mllib/sample_libsvm_data.txt")
 
-    val lr = new LogisticRegression()
-      .setMaxIter(10)
-      .setRegParam(0.3)
+    val lr = new LogisticRegression().setMaxIter(10).setRegParam(0.3)
       .setElasticNetParam(0.8)
 
     // Fit the model
@@ -72,11 +69,8 @@ object LogisticRegressionSummaryExample {
     // Set the model threshold to maximize F-Measure
     val fMeasure = binarySummary.fMeasureByThreshold
     val maxFMeasure = fMeasure.select(max("F-Measure")).head().getDouble(0)
-    val bestThreshold = fMeasure
-      .where($"F-Measure" === maxFMeasure)
-      .select("threshold")
-      .head()
-      .getDouble(0)
+    val bestThreshold = fMeasure.where($"F-Measure" === maxFMeasure)
+      .select("threshold").head().getDouble(0)
     lrModel.setThreshold(bestThreshold)
     // $example off$
 

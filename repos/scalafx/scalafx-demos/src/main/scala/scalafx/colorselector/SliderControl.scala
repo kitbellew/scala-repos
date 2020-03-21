@@ -70,10 +70,8 @@ class SliderControl(title: String) extends HBox {
     text = title
     style <== cssForeground
   }
-  lblTitle.font = Font.font(
-    lblTitle.font().family,
-    FontWeight.Bold,
-    lblTitle.font().size)
+  lblTitle.font = Font
+    .font(lblTitle.font().family, FontWeight.Bold, lblTitle.font().size)
 
   val sldValue = new Slider {
     id = "sldValue"
@@ -96,10 +94,8 @@ class SliderControl(title: String) extends HBox {
     hgrow = Priority.Never
     style <== cssForeground
   }
-  lblValue.font = Font.font(
-    lblValue.font().family,
-    FontWeight.Bold,
-    lblValue.font().size)
+  lblValue.font = Font
+    .font(lblValue.font().family, FontWeight.Bold, lblValue.font().size)
 
   children = List(chbSelected, lblTitle, sldValue, lblValue)
 

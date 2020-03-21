@@ -74,9 +74,7 @@ class HeartbeatReceiverSuite
     */
   override def beforeEach(): Unit = {
     super.beforeEach()
-    val conf = new SparkConf()
-      .setMaster("local[2]")
-      .setAppName("test")
+    val conf = new SparkConf().setMaster("local[2]").setAppName("test")
       .set("spark.dynamicAllocation.testing", "true")
     sc = spy(new SparkContext(conf))
     scheduler = mock(classOf[TaskSchedulerImpl])
@@ -173,9 +171,8 @@ class HeartbeatReceiverSuite
     // Set up a fake backend and cluster manager to simulate killing executors
     val rpcEnv = sc.env.rpcEnv
     val fakeClusterManager = new FakeClusterManager(rpcEnv)
-    val fakeClusterManagerRef = rpcEnv.setupEndpoint(
-      "fake-cm",
-      fakeClusterManager)
+    val fakeClusterManagerRef = rpcEnv
+      .setupEndpoint("fake-cm", fakeClusterManager)
     val fakeSchedulerBackend =
       new FakeSchedulerBackend(scheduler, rpcEnv, fakeClusterManagerRef)
     when(sc.schedulerBackend).thenReturn(fakeSchedulerBackend)
@@ -185,12 +182,10 @@ class HeartbeatReceiverSuite
     fakeSchedulerBackend.start()
     val dummyExecutorEndpoint1 = new FakeExecutorEndpoint(rpcEnv)
     val dummyExecutorEndpoint2 = new FakeExecutorEndpoint(rpcEnv)
-    val dummyExecutorEndpointRef1 = rpcEnv.setupEndpoint(
-      "fake-executor-1",
-      dummyExecutorEndpoint1)
-    val dummyExecutorEndpointRef2 = rpcEnv.setupEndpoint(
-      "fake-executor-2",
-      dummyExecutorEndpoint2)
+    val dummyExecutorEndpointRef1 = rpcEnv
+      .setupEndpoint("fake-executor-1", dummyExecutorEndpoint1)
+    val dummyExecutorEndpointRef2 = rpcEnv
+      .setupEndpoint("fake-executor-2", dummyExecutorEndpoint2)
     fakeSchedulerBackend.driverEndpoint.askWithRetry[RegisterExecutorResponse](
       RegisterExecutor(executorId1, dummyExecutorEndpointRef1, 0, Map.empty))
     fakeSchedulerBackend.driverEndpoint.askWithRetry[RegisterExecutorResponse](
@@ -232,8 +227,8 @@ class HeartbeatReceiverSuite
       executorShouldReregister: Boolean): Unit = {
     val metrics = new TaskMetrics
     val blockManagerId = BlockManagerId(executorId, "localhost", 12345)
-    val response = heartbeatReceiverRef.askWithRetry[HeartbeatResponse](
-      Heartbeat(
+    val response = heartbeatReceiverRef
+      .askWithRetry[HeartbeatResponse](Heartbeat(
         executorId,
         Array(1L -> metrics.accumulatorUpdates()),
         blockManagerId))
@@ -263,8 +258,7 @@ class HeartbeatReceiverSuite
   private def getTrackedExecutors: Map[String, Long] = {
     // We may receive undesired SparkListenerExecutorAdded from LocalBackend, so exclude it from
     // the map. See SPARK-10800.
-    heartbeatReceiver
-      .invokePrivate(_executorLastSeen())
+    heartbeatReceiver.invokePrivate(_executorLastSeen())
       .filterKeys(_ != SparkContext.DRIVER_IDENTIFIER)
   }
 }

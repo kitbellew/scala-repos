@@ -168,15 +168,12 @@ class CoreGuiceModule extends AbstractModule {
     bind(classOf[CoreModule]).to(classOf[CoreModuleImpl]).in(Scopes.SINGLETON)
 
     // FIXME: Because of cycle breaking in guice, it is hard to not wire it with Guice directly
-    bind(classOf[TaskStatusUpdateProcessor])
-      .annotatedWith(Names.named(
-        ThrottlingTaskStatusUpdateProcessor.dependencyTag))
-      .to(classOf[TaskStatusUpdateProcessorImpl])
-      .asEagerSingleton()
+    bind(classOf[TaskStatusUpdateProcessor]).annotatedWith(Names.named(
+      ThrottlingTaskStatusUpdateProcessor.dependencyTag))
+      .to(classOf[TaskStatusUpdateProcessorImpl]).asEagerSingleton()
 
     bind(classOf[TaskStatusUpdateProcessor])
-      .to(classOf[ThrottlingTaskStatusUpdateProcessor])
-      .asEagerSingleton()
+      .to(classOf[ThrottlingTaskStatusUpdateProcessor]).asEagerSingleton()
 
     bind(classOf[AppInfoModule]).asEagerSingleton()
   }

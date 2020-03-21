@@ -26,8 +26,8 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
     assert(receiver.counters.filterKeys(_.contains("clienterrors")).size == 3)
     assert(receiver.counters(Seq("clienterrors")) == 1)
     assert(
-      receiver.counters(
-        Seq("clienterrors", classOf[RuntimeException].getName)) == 1)
+      receiver
+        .counters(Seq("clienterrors", classOf[RuntimeException].getName)) == 1)
     assert(
       receiver.counters(Seq(
         "clienterrors",

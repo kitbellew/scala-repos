@@ -44,8 +44,7 @@ class InteractionSuite
           indices += i
           values += v
         })
-      Vectors
-        .sparse(encoder.outputSize, indices.result(), values.result())
+      Vectors.sparse(encoder.outputSize, indices.result(), values.result())
         .compressed
     }
     assert(encode(Array(1), 2.2) === Vectors.dense(2.2))
@@ -70,9 +69,8 @@ class InteractionSuite
   }
 
   test("numeric interaction") {
-    val data = sqlContext
-      .createDataFrame(
-        Seq((2, Vectors.dense(3.0, 4.0)), (1, Vectors.dense(1.0, 5.0))))
+    val data = sqlContext.createDataFrame(
+      Seq((2, Vectors.dense(3.0, 4.0)), (1, Vectors.dense(1.0, 5.0))))
       .toDF("a", "b")
     val groupAttr = new AttributeGroup(
       "b",
@@ -82,14 +80,12 @@ class InteractionSuite
     val df = data.select(
       col("a").as("a", NumericAttribute.defaultAttr.toMetadata()),
       col("b").as("b", groupAttr.toMetadata()))
-    val trans = new Interaction()
-      .setInputCols(Array("a", "b"))
+    val trans = new Interaction().setInputCols(Array("a", "b"))
       .setOutputCol("features")
     val res = trans.transform(df)
-    val expected = sqlContext
-      .createDataFrame(Seq(
-        (2, Vectors.dense(3.0, 4.0), Vectors.dense(6.0, 8.0)),
-        (1, Vectors.dense(1.0, 5.0), Vectors.dense(1.0, 5.0))))
+    val expected = sqlContext.createDataFrame(Seq(
+      (2, Vectors.dense(3.0, 4.0), Vectors.dense(6.0, 8.0)),
+      (1, Vectors.dense(1.0, 5.0), Vectors.dense(1.0, 5.0))))
       .toDF("a", "b", "features")
     assert(res.collect() === expected.collect())
     val attrs = AttributeGroup.fromStructField(res.schema("features"))
@@ -102,9 +98,8 @@ class InteractionSuite
   }
 
   test("nominal interaction") {
-    val data = sqlContext
-      .createDataFrame(
-        Seq((2, Vectors.dense(3.0, 4.0)), (1, Vectors.dense(1.0, 5.0))))
+    val data = sqlContext.createDataFrame(
+      Seq((2, Vectors.dense(3.0, 4.0)), (1, Vectors.dense(1.0, 5.0))))
       .toDF("a", "b")
     val groupAttr = new AttributeGroup(
       "b",
@@ -114,18 +109,15 @@ class InteractionSuite
     val df = data.select(
       col("a").as(
         "a",
-        NominalAttribute.defaultAttr
-          .withValues(Array("up", "down", "left"))
+        NominalAttribute.defaultAttr.withValues(Array("up", "down", "left"))
           .toMetadata()),
       col("b").as("b", groupAttr.toMetadata()))
-    val trans = new Interaction()
-      .setInputCols(Array("a", "b"))
+    val trans = new Interaction().setInputCols(Array("a", "b"))
       .setOutputCol("features")
     val res = trans.transform(df)
-    val expected = sqlContext
-      .createDataFrame(Seq(
-        (2, Vectors.dense(3.0, 4.0), Vectors.dense(0, 0, 0, 0, 3, 4)),
-        (1, Vectors.dense(1.0, 5.0), Vectors.dense(0, 0, 1, 5, 0, 0))))
+    val expected = sqlContext.createDataFrame(Seq(
+      (2, Vectors.dense(3.0, 4.0), Vectors.dense(0, 0, 0, 0, 3, 4)),
+      (1, Vectors.dense(1.0, 5.0), Vectors.dense(0, 0, 1, 5, 0, 0))))
       .toDF("a", "b", "features")
     assert(res.collect() === expected.collect())
     val attrs = AttributeGroup.fromStructField(res.schema("features"))
@@ -143,11 +135,9 @@ class InteractionSuite
   }
 
   test("default attr names") {
-    val data = sqlContext
-      .createDataFrame(Seq(
-        (2, Vectors.dense(0.0, 4.0), 1.0),
-        (1, Vectors.dense(1.0, 5.0), 10.0)))
-      .toDF("a", "b", "c")
+    val data = sqlContext.createDataFrame(Seq(
+      (2, Vectors.dense(0.0, 4.0), 1.0),
+      (1, Vectors.dense(1.0, 5.0), 10.0))).toDF("a", "b", "c")
     val groupAttr = new AttributeGroup(
       "b",
       Array[Attribute](
@@ -159,22 +149,20 @@ class InteractionSuite
       col("b").as("b", groupAttr.toMetadata()),
       col("c").as("c", NumericAttribute.defaultAttr.toMetadata())
     )
-    val trans = new Interaction()
-      .setInputCols(Array("a", "b", "c"))
+    val trans = new Interaction().setInputCols(Array("a", "b", "c"))
       .setOutputCol("features")
     val res = trans.transform(df)
-    val expected = sqlContext
-      .createDataFrame(Seq(
-        (
-          2,
-          Vectors.dense(0.0, 4.0),
-          1.0,
-          Vectors.dense(0, 0, 0, 0, 0, 0, 1, 0, 4)),
-        (
-          1,
-          Vectors.dense(1.0, 5.0),
-          10.0,
-          Vectors.dense(0, 0, 0, 0, 10, 50, 0, 0, 0))))
+    val expected = sqlContext.createDataFrame(Seq(
+      (
+        2,
+        Vectors.dense(0.0, 4.0),
+        1.0,
+        Vectors.dense(0, 0, 0, 0, 0, 0, 1, 0, 4)),
+      (
+        1,
+        Vectors.dense(1.0, 5.0),
+        10.0,
+        Vectors.dense(0, 0, 0, 0, 10, 50, 0, 0, 0))))
       .toDF("a", "b", "c", "features")
     assert(res.collect() === expected.collect())
     val attrs = AttributeGroup.fromStructField(res.schema("features"))
@@ -195,8 +183,7 @@ class InteractionSuite
   }
 
   test("read/write") {
-    val t = new Interaction()
-      .setInputCols(Array("myInputCol", "myInputCol2"))
+    val t = new Interaction().setInputCols(Array("myInputCol", "myInputCol2"))
       .setOutputCol("myOutputCol")
     testDefaultReadWrite(t)
   }

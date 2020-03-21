@@ -28,8 +28,8 @@ import HttpEntity._
 import ParserOutput._
 
 class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING
     akka.http.parsing.max-response-reason-length = 21""")
@@ -344,13 +344,12 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         .matcher[Seq[Either[ResponseOutput, StrictEqualHttpResponse]]] compose {
         input: Seq[String] ⇒
           collectBlocking {
-            rawParse(requestMethod, input: _*)
-              .mapAsync(1) {
-                case Right(response) ⇒
-                  compactEntity(response.entity).fast.map(x ⇒
-                    Right(response.withEntity(x)))
-                case Left(error) ⇒ FastFuture.successful(Left(error))
-              }
+            rawParse(requestMethod, input: _*).mapAsync(1) {
+              case Right(response) ⇒
+                compactEntity(response.entity).fast
+                  .map(x ⇒ Right(response.withEntity(x)))
+              case Left(error) ⇒ FastFuture.successful(Left(error))
+            }
           }.map(strictEqualify)
       }
 
@@ -359,12 +358,10 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         input: String*): Source[Either[ResponseOutput, HttpResponse], NotUsed] =
       Source(input.toList)
         .map(bytes ⇒ SessionBytes(TLSPlacebo.dummySession, ByteString(bytes)))
-        .transform(() ⇒ newParserStage(requestMethod))
-        .named("parser")
+        .transform(() ⇒ newParserStage(requestMethod)).named("parser")
         .splitWhen(x ⇒
           x.isInstanceOf[MessageStart] || x.isInstanceOf[EntityStreamError])
-        .prefixAndTail(1)
-        .collect {
+        .prefixAndTail(1).collect {
           case (
                 Seq(
                   ResponseStart(
@@ -385,8 +382,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
                 tail) ⇒
             tail.runWith(Sink.ignore)
             Left(x)
-        }
-        .concatSubstreams
+        }.concatSubstreams
 
     def collectBlocking[T](source: Source[T, Any]): Seq[T] =
       Await.result(source.limit(100000).runWith(Sink.seq), 500.millis)
@@ -412,12 +408,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
 
     private def compactEntityChunks(data: Source[ChunkStreamPart, Any])
         : Future[Source[ChunkStreamPart, Any]] =
-      data
-        .limit(100000)
-        .runWith(Sink.seq)
-        .fast
-        .map(source(_: _*))
-        .fast
+      data.limit(100000).runWith(Sink.seq).fast.map(source(_: _*)).fast
         .recover { case _: NoSuchElementException ⇒ source() }
 
     def prep(response: String) = response.stripMarginWithNewline("\r\n")

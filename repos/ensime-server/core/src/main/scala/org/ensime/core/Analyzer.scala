@@ -77,8 +77,8 @@ class Analyzer(
       case None =>
         log.warning("scala-library.jar not present, enabling Odersky mode")
     }
-    settings.classpath.value = config.compileClasspath.mkString(
-      JFile.pathSeparator)
+    settings.classpath.value = config.compileClasspath
+      .mkString(JFile.pathSeparator)
     settings.processArguments(config.compilerArgs, processAll = false)
     presCompLog.debug("Presentation Compiler settings:\n" + settings)
 
@@ -194,10 +194,8 @@ class Analyzer(
     case CompletionsReq(fileInfo, point, maxResults, caseSens, _reload) =>
       sender ! withExisting(fileInfo) {
         reporter.disable()
-        scalaCompiler.askCompletionsAt(
-          pos(fileInfo, point),
-          maxResults,
-          caseSens)
+        scalaCompiler
+          .askCompletionsAt(pos(fileInfo, point), maxResults, caseSens)
       }
     case UsesOfSymbolAtPointReq(file, point) =>
       sender ! withExisting(file) {
@@ -238,10 +236,8 @@ class Analyzer(
           typeFullName: String,
           memberName: Option[String],
           signatureString: Option[String]) =>
-      sender() ! scalaCompiler.askDocSignatureForSymbol(
-        typeFullName,
-        memberName,
-        signatureString)
+      sender() ! scalaCompiler
+        .askDocSignatureForSymbol(typeFullName, memberName, signatureString)
     case InspectPackageByPathReq(path: String) =>
       sender ! scalaCompiler.askPackageByPath(path).getOrElse(FalseResponse)
     case TypeAtPointReq(file, range: OffsetRange) =>
@@ -291,8 +287,7 @@ class Analyzer(
   def handleReloadFiles(files: List[SourceFileInfo]): RpcResponse = {
     val (existing, missingFiles) = files.partition(FileUtils.exists)
     if (missingFiles.nonEmpty) {
-      val missingFilePaths = missingFiles
-        .map { f => "\"" + f.file + "\"" }
+      val missingFilePaths = missingFiles.map { f => "\"" + f.file + "\"" }
         .mkString(",")
       EnsimeServerError(s"file(s): $missingFilePaths do not exist")
     } else {

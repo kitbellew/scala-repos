@@ -92,12 +92,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
   private def addressToProto(address: Address): cm.Address.Builder =
     address match {
       case Address(protocol, actorSystem, Some(host), Some(port)) ⇒
-        cm.Address
-          .newBuilder()
-          .setSystem(actorSystem)
-          .setHostname(host)
-          .setPort(port)
-          .setProtocol(protocol)
+        cm.Address.newBuilder().setSystem(actorSystem).setHostname(host)
+          .setPort(port).setProtocol(protocol)
       case _ ⇒
         throw new IllegalArgumentException(
           s"Address [$address] could not be serialized: host or port missing.")
@@ -170,62 +166,46 @@ class MessageSerializer(val system: ExtendedActorSystem)
       import cm.NodeMetrics.Number
       import cm.NodeMetrics.NumberType
       number match {
-        case n: jl.Double ⇒
-          Number
-            .newBuilder()
-            .setType(NumberType.Double)
+        case n: jl.Double ⇒ Number.newBuilder().setType(NumberType.Double)
             .setValue64(jl.Double.doubleToLongBits(n))
-        case n: jl.Long ⇒
-          Number.newBuilder().setType(NumberType.Long).setValue64(n)
-        case n: jl.Float ⇒
-          Number
-            .newBuilder()
-            .setType(NumberType.Float)
+        case n: jl.Long ⇒ Number.newBuilder().setType(NumberType.Long)
+            .setValue64(n)
+        case n: jl.Float ⇒ Number.newBuilder().setType(NumberType.Float)
             .setValue32(jl.Float.floatToIntBits(n))
-        case n: jl.Integer ⇒
-          Number.newBuilder().setType(NumberType.Integer).setValue32(n)
+        case n: jl.Integer ⇒ Number.newBuilder().setType(NumberType.Integer)
+            .setValue32(n)
         case _ ⇒
           val bos = new ByteArrayOutputStream
           val out = new ObjectOutputStream(bos)
           out.writeObject(number)
           out.close()
-          Number
-            .newBuilder()
-            .setType(NumberType.Serialized)
+          Number.newBuilder().setType(NumberType.Serialized)
             .setSerialized(ByteString.copyFrom(bos.toByteArray))
       }
     }
 
     def metricToProto(metric: Metric): cm.NodeMetrics.Metric.Builder = {
-      val builder = cm.NodeMetrics.Metric
-        .newBuilder()
+      val builder = cm.NodeMetrics.Metric.newBuilder()
         .setNameIndex(mapName(metric.name))
         .setNumber(numberToProto(metric.value))
       ewmaToProto(metric.average).map(builder.setEwma).getOrElse(builder)
     }
 
     def nodeMetricsToProto(nodeMetrics: NodeMetrics): cm.NodeMetrics.Builder =
-      cm.NodeMetrics
-        .newBuilder()
+      cm.NodeMetrics.newBuilder()
         .setAddressIndex(mapAddress(nodeMetrics.address))
         .setTimestamp(nodeMetrics.timestamp)
         .addAllMetrics(nodeMetrics.metrics.map(metricToProto(_).build).asJava)
 
-    val nodeMetrics: Iterable[cm.NodeMetrics] = allNodeMetrics.map(
-      nodeMetricsToProto(_).build)
+    val nodeMetrics: Iterable[cm.NodeMetrics] = allNodeMetrics
+      .map(nodeMetricsToProto(_).build)
 
-    cm.MetricsGossipEnvelope
-      .newBuilder()
-      .setFrom(addressToProto(envelope.from))
+    cm.MetricsGossipEnvelope.newBuilder().setFrom(addressToProto(envelope.from))
       .setGossip(
-        cm.MetricsGossip
-          .newBuilder()
-          .addAllAllAddresses(
-            allAddresses.map(addressToProto(_).build()).asJava)
+        cm.MetricsGossip.newBuilder().addAllAllAddresses(
+          allAddresses.map(addressToProto(_).build()).asJava)
           .addAllAllMetricNames(allMetricNames.asJava)
-          .addAllNodeMetrics(nodeMetrics.asJava))
-      .setReply(envelope.reply)
-      .build
+          .addAllNodeMetrics(nodeMetrics.asJava)).setReply(envelope.reply).build
   }
 
   private def metricsGossipEnvelopeFromBinary(
@@ -239,8 +219,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
     val mgossip = envelope.getGossip
     val addressMapping: Vector[Address] = mgossip.getAllAddressesList.asScala
       .map(addressFromProto)(breakOut)
-    val metricNameMapping: Vector[String] =
-      mgossip.getAllMetricNamesList.asScala.toVector
+    val metricNameMapping: Vector[String] = mgossip.getAllMetricNamesList
+      .asScala.toVector
 
     def ewmaFromProto(ewma: cm.NodeMetrics.EWMA): Option[EWMA] =
       Some(EWMA(ewma.getValue, ewma.getAlpha))

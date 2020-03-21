@@ -253,7 +253,8 @@ private[akka] class TLSActor(
 
   val userHasData = new TransferState {
     def isReady =
-      !corkUser && userInChoppingBlock.isReady && lastHandshakeStatus != NEED_UNWRAP
+      !corkUser && userInChoppingBlock
+        .isReady && lastHandshakeStatus != NEED_UNWRAP
     def isCompleted =
       inputBunch.isCancelled(UserIn) || inputBunch.isDepleted(UserIn)
   }
@@ -264,15 +265,14 @@ private[akka] class TLSActor(
   }
 
   // bidirectional case
-  val outbound =
-    (userHasData || engineNeedsWrap) && outputBunch.demandAvailableFor(
-      TransportOut)
-  val inbound = (transportInChoppingBlock && outputBunch.demandAvailableFor(
-    UserOut)) || userOutCancelled
+  val outbound = (userHasData || engineNeedsWrap) && outputBunch
+    .demandAvailableFor(TransportOut)
+  val inbound = (transportInChoppingBlock && outputBunch
+    .demandAvailableFor(UserOut)) || userOutCancelled
 
   // half-closed
-  val outboundHalfClosed =
-    engineNeedsWrap && outputBunch.demandAvailableFor(TransportOut)
+  val outboundHalfClosed = engineNeedsWrap && outputBunch
+    .demandAvailableFor(TransportOut)
   val inboundHalfClosed = transportInChoppingBlock && engineInboundOpen
 
   val bidirectional = TransferPhase(outbound || inbound) { () ⇒
@@ -324,8 +324,8 @@ private[akka] class TLSActor(
   private def doInbound(
       isOutboundClosed: Boolean,
       inboundState: TransferState): Boolean =
-    if (inputBunch.isDepleted(
-          TransportIn) && transportInChoppingBlock.isEmpty) {
+    if (inputBunch.isDepleted(TransportIn) && transportInChoppingBlock
+          .isEmpty) {
       if (tracing) log.debug("closing inbound")
       try engine.closeInbound()
       catch {
@@ -333,8 +333,8 @@ private[akka] class TLSActor(
       }
       completeOrFlush()
       false
-    } else if (inboundState != inboundHalfClosed && outputBunch.isCancelled(
-                 UserOut)) {
+    } else if (inboundState != inboundHalfClosed && outputBunch
+                 .isCancelled(UserOut)) {
       if (!isOutboundClosed && closing.ignoreCancel) {
         if (tracing) log.debug("ignoring UserIn cancellation")
         nextPhase(inboundClosed)
@@ -411,7 +411,8 @@ private[akka] class TLSActor(
     lastHandshakeStatus = result.getHandshakeStatus
     if (tracing)
       log.debug(
-        s"wrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${userInBuffer.remaining} out=${transportOutBuffer.position}")
+        s"wrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${userInBuffer
+          .remaining} out=${transportOutBuffer.position}")
     if (lastHandshakeStatus == FINISHED) handshakeFinished()
     runDelegatedTasks()
     result.getStatus match {
@@ -434,7 +435,8 @@ private[akka] class TLSActor(
     lastHandshakeStatus = result.getHandshakeStatus
     if (tracing)
       log.debug(
-        s"unwrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${transportInBuffer.remaining} out=${userOutBuffer.position}")
+        s"unwrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${transportInBuffer
+          .remaining} out=${userOutBuffer.position}")
     runDelegatedTasks()
     result.getStatus match {
       case OK ⇒ result.getHandshakeStatus match {

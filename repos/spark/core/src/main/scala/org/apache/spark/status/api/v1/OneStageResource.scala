@@ -70,9 +70,8 @@ private[v1] class OneStageResource(ui: SparkUI) {
             throw new BadParameterException("quantiles", "double", s)
         }
       }
-      AllStagesResource.taskMetricDistributions(
-        stage.ui.taskData.values,
-        quantiles)
+      AllStagesResource
+        .taskMetricDistributions(stage.ui.taskData.values, quantiles)
     }
   }
 
@@ -85,10 +84,9 @@ private[v1] class OneStageResource(ui: SparkUI) {
       @DefaultValue("ID")
       @QueryParam("sortBy") sortBy: TaskSorting): Seq[TaskData] = {
     withStageAttempt(stageId, stageAttemptId) { stage =>
-      val tasks = stage.ui.taskData.values
-        .map { AllStagesResource.convertTaskData }
-        .toIndexedSeq
-        .sorted(OneStageResource.ordering(sortBy))
+      val tasks = stage.ui.taskData.values.map {
+        AllStagesResource.convertTaskData
+      }.toIndexedSeq.sorted(OneStageResource.ordering(sortBy))
       tasks.slice(offset, offset + length)
     }
   }
@@ -152,8 +150,8 @@ object OneStageResource {
     val extractor: (TaskData => Long) = td =>
       taskSorting match {
         case ID => td.taskId
-        case INCREASING_RUNTIME =>
-          td.taskMetrics.map { _.executorRunTime }.getOrElse(-1L)
+        case INCREASING_RUNTIME => td.taskMetrics.map { _.executorRunTime }
+            .getOrElse(-1L)
         case DECREASING_RUNTIME =>
           -td.taskMetrics.map { _.executorRunTime }.getOrElse(-1L)
       }

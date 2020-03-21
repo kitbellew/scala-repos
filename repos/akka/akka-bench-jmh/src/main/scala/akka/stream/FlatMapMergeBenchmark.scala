@@ -15,8 +15,8 @@ import scala.concurrent.duration._
 @BenchmarkMode(Array(Mode.Throughput))
 class FlatMapMergeBenchmark {
   implicit val system = ActorSystem("FlatMapMergeBenchmark")
-  val materializerSettings = ActorMaterializerSettings(system).withDispatcher(
-    "akka.test.stream-dispatcher")
+  val materializerSettings = ActorMaterializerSettings(system)
+    .withDispatcher("akka.test.stream-dispatcher")
   implicit val materializer = ActorMaterializer(materializerSettings)
 
   val NumberOfElements = 100000

@@ -34,13 +34,12 @@ object WordCount {
     val WordCount = StateT.stateMonad[Boolean].compose[λ[α => Int]](Count)
 
     // Fuse the three applicatives together in parallel...
-    val A = Count
-      .product[λ[α => Int]](Count)
+    val A = Count.product[λ[α => Int]](Count)
       .product[λ[α => State[Boolean, Int]]](WordCount)
 
     // ... and execute them in a single traversal
-    val ((charCount, lineCount), wordCountState) = A.traverse(text)((c: Char) =>
-      ((1, test(c == '\n')), atWordStart(c)))
+    val ((charCount, lineCount), wordCountState) = A
+      .traverse(text)((c: Char) => ((1, test(c == '\n')), atWordStart(c)))
     val wordCount = wordCountState.eval(false)
 
     println("%d\t%d\t%d\t".format(lineCount, wordCount, charCount)) // 2	9	35

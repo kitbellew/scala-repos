@@ -47,8 +47,8 @@ object ExampleInfo {
       exampleName) + ".scala"
 
   def className(exampleName: String, groupName: String): String =
-    "scalafx.ensemble.example." + groupName.toLowerCase + ".Ensemble" + ExampleInfo
-      .formatNoSpaces(exampleName)
+    "scalafx.ensemble.example." + groupName
+      .toLowerCase + ".Ensemble" + ExampleInfo.formatNoSpaces(exampleName)
 }
 
 /** Creates stand alone example source code. */

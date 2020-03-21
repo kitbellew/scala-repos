@@ -84,8 +84,8 @@ class DefaultSSLEngineProvider(
             "side CA verification. Requires http://webid.info/ for client certificate verification.")
         Array[TrustManager](noCATrustManager)
       } else {
-        logger.debug(
-          "Using default trust store for client side CA verification")
+        logger
+          .debug("Using default trust store for client side CA verification")
         null
       }
 

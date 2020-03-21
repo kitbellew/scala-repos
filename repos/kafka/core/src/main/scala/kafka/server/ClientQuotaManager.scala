@@ -43,11 +43,11 @@ private case class ClientSensors(
   *
   */
 case class ClientQuotaManagerConfig(
-    quotaBytesPerSecondDefault: Long =
-      ClientQuotaManagerConfig.QuotaBytesPerSecondDefault,
+    quotaBytesPerSecondDefault: Long = ClientQuotaManagerConfig
+      .QuotaBytesPerSecondDefault,
     numQuotaSamples: Int = ClientQuotaManagerConfig.DefaultNumQuotaSamples,
-    quotaWindowSizeSeconds: Int =
-      ClientQuotaManagerConfig.DefaultQuotaWindowSizeSeconds)
+    quotaWindowSizeSeconds: Int = ClientQuotaManagerConfig
+      .DefaultQuotaWindowSizeSeconds)
 
 object ClientQuotaManagerConfig {
   val QuotaBytesPerSecondDefault = Long.MaxValue
@@ -159,9 +159,8 @@ class ClientQuotaManager(
     val quota = config.quota()
     val difference = clientMetric.value() - quota.bound
     // Use the precise window used by the rate calculation
-    val throttleTimeMs = difference / quota.bound * rateMetric.windowSize(
-      config,
-      time.milliseconds())
+    val throttleTimeMs = difference / quota.bound * rateMetric
+      .windowSize(config, time.milliseconds())
     throttleTimeMs.round.toInt
   }
 
@@ -264,8 +263,7 @@ class ClientQuotaManager(
   private def getQuotaMetricConfig(quota: Quota): MetricConfig = {
     new MetricConfig()
       .timeWindow(config.quotaWindowSizeSeconds, TimeUnit.SECONDS)
-      .samples(config.numQuotaSamples)
-      .quota(quota)
+      .samples(config.numQuotaSamples).quota(quota)
   }
 
   /**

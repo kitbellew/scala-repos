@@ -329,20 +329,14 @@ object StreamingTest {
   // TODO We should also do this with the Http protocol object, which would
   // require being able to pass in an arbitrary instance of the CodecFactory.
   def startServer(service: Service[Request, Response], mod: Modifier) =
-    ServerBuilder()
-      .codec(new Custom(identity, mod))
-      .bindTo(new InetSocketAddress(0))
-      .maxConcurrentRequests(1)
-      .name("server")
+    ServerBuilder().codec(new Custom(identity, mod))
+      .bindTo(new InetSocketAddress(0)).maxConcurrentRequests(1).name("server")
       .build(service)
 
   def connect(addr: SocketAddress, mod: Modifier, name: String = "client") =
-    ClientBuilder()
-      .codec(new Custom(mod, identity))
-      .hosts(Seq(addr.asInstanceOf[InetSocketAddress]))
-      .hostConnectionLimit(1)
-      .name(name)
-      .build()
+    ClientBuilder().codec(new Custom(mod, identity))
+      .hosts(Seq(addr.asInstanceOf[InetSocketAddress])).hostConnectionLimit(1)
+      .name(name).build()
 
   class Custom(cmod: Modifier, smod: Modifier)
       extends CodecFactory[Request, Response] {

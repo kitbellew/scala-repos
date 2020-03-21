@@ -186,8 +186,7 @@ class MultilayerPerceptronClassifier @Since("1.5.0") (
     val topology = FeedForwardTopology.multiLayerPerceptron(myLayers, true)
     val FeedForwardTrainer =
       new FeedForwardTrainer(topology, myLayers(0), myLayers.last)
-    FeedForwardTrainer.LBFGSOptimizer
-      .setConvergenceTol($(tol))
+    FeedForwardTrainer.LBFGSOptimizer.setConvergenceTol($(tol))
       .setNumIterations($(maxIter))
     FeedForwardTrainer.setStackSize($(blockSize))
     val mlpModel = FeedForwardTrainer.train(data)
@@ -218,8 +217,7 @@ class MultilayerPerceptronClassificationModel private[ml] (
   @Since("1.6.0")
   override val numFeatures: Int = layers.head
 
-  private val mlpModel = FeedForwardTopology
-    .multiLayerPerceptron(layers, true)
+  private val mlpModel = FeedForwardTopology.multiLayerPerceptron(layers, true)
     .getInstance(weights)
 
   /**

@@ -33,8 +33,8 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
     val scalaFile = myFixture.configureByText(
       "ScalaDummy.scala",
       scalaText.replace("\r", "").stripMargin.trim)
-    val oldSpecifyRetType =
-      ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY
+    val oldSpecifyRetType = ScalaApplicationSettings.getInstance
+      .SPECIFY_RETURN_TYPE_EXPLICITLY
     ScalaApplicationSettings.getInstance.SPECIFY_RETURN_TYPE_EXPLICITLY =
       needsInferType
     ScalaOIUtil.invokeOverrideImplement(

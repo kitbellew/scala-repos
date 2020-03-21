@@ -113,41 +113,23 @@ class MesosClusterSchedulerSuite
       "s1",
       new Date()))
     assert(response.success)
-    val offer = Offer
-      .newBuilder()
-      .addResources(
-        Resource
-          .newBuilder()
-          .setRole("*")
-          .setScalar(Scalar.newBuilder().setValue(1).build())
-          .setName("cpus")
-          .setType(Type.SCALAR))
-      .addResources(
-        Resource
-          .newBuilder()
-          .setRole("*")
-          .setScalar(Scalar.newBuilder().setValue(1000).build())
-          .setName("mem")
-          .setType(Type.SCALAR))
-      .addResources(
-        Resource
-          .newBuilder()
-          .setRole("role2")
-          .setScalar(Scalar.newBuilder().setValue(1).build())
-          .setName("cpus")
-          .setType(Type.SCALAR))
-      .addResources(
-        Resource
-          .newBuilder()
-          .setRole("role2")
-          .setScalar(Scalar.newBuilder().setValue(500).build())
-          .setName("mem")
-          .setType(Type.SCALAR))
+    val offer = Offer.newBuilder().addResources(
+      Resource.newBuilder().setRole("*")
+        .setScalar(Scalar.newBuilder().setValue(1).build()).setName("cpus")
+        .setType(Type.SCALAR)).addResources(
+      Resource.newBuilder().setRole("*")
+        .setScalar(Scalar.newBuilder().setValue(1000).build()).setName("mem")
+        .setType(Type.SCALAR)).addResources(
+      Resource.newBuilder().setRole("role2")
+        .setScalar(Scalar.newBuilder().setValue(1).build()).setName("cpus")
+        .setType(Type.SCALAR)).addResources(
+      Resource.newBuilder().setRole("role2")
+        .setScalar(Scalar.newBuilder().setValue(500).build()).setName("mem")
+        .setType(Type.SCALAR))
       .setId(OfferID.newBuilder().setValue("o1").build())
       .setFrameworkId(FrameworkID.newBuilder().setValue("f1").build())
       .setSlaveId(SlaveID.newBuilder().setValue("s1").build())
-      .setHostname("host1")
-      .build()
+      .setHostname("host1").build()
 
     val capture = ArgumentCaptor.forClass(classOf[Collection[TaskInfo]])
 

@@ -46,8 +46,7 @@ class DictionaryTest {
     js.Object.defineProperty(
       obj.asInstanceOf[js.Object],
       "nonconfig",
-      js.Dynamic
-        .literal(value = 4, writable = false)
+      js.Dynamic.literal(value = 4, writable = false)
         .asInstanceOf[js.PropertyDescriptor])
     assertEquals(4, obj("nonconfig"))
     assertThrows(classOf[Exception], obj.delete("nonconfig"))

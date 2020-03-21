@@ -142,8 +142,7 @@ class Dispatchers(
   private[akka] def config(id: String, appConfig: Config): Config = {
     import scala.collection.JavaConverters._
     def simpleName = id.substring(id.lastIndexOf('.') + 1)
-    idConfig(id)
-      .withFallback(appConfig)
+    idConfig(id).withFallback(appConfig)
       .withFallback(ConfigFactory.parseMap(Map("name" -> simpleName).asJava))
       .withFallback(defaultDispatcherConfig)
   }
@@ -198,8 +197,7 @@ class Dispatchers(
           classOf[Config] -> cfg,
           classOf[DispatcherPrerequisites] -> prerequisites)
         prerequisites.dynamicAccess
-          .createInstanceFor[MessageDispatcherConfigurator](fqn, args)
-          .recover({
+          .createInstanceFor[MessageDispatcherConfigurator](fqn, args).recover({
             case exception ⇒
               throw new ConfigurationException(
                 ("Cannot instantiate MessageDispatcherConfigurator type [%s], defined in [%s], " +
@@ -207,8 +205,7 @@ class Dispatchers(
                   "[akka.dispatch.DispatcherPrerequisites] parameters")
                   .format(fqn, cfg.getString("id")),
                 exception)
-          })
-          .get
+          }).get
     }
   }
 }
@@ -244,8 +241,8 @@ private[akka] object BalancingDispatcherConfigurator {
   private val defaultRequirement = ConfigFactory.parseString(
     "mailbox-requirement = akka.dispatch.MultipleConsumerSemantics")
   def amendConfig(config: Config): Config =
-    if (config.getString(
-          "mailbox-requirement") != Mailboxes.NoMailboxRequirement) config
+    if (config.getString("mailbox-requirement") != Mailboxes
+          .NoMailboxRequirement) config
     else defaultRequirement.withFallback(config)
 }
 
@@ -272,15 +269,15 @@ class BalancingDispatcherConfigurator(
     val mailboxType =
       if (config.hasPath("mailbox")) {
         val mt = mailboxes.lookup(config.getString("mailbox"))
-        if (!requirement.isAssignableFrom(
-              mailboxes.getProducedMessageQueueType(mt)))
+        if (!requirement
+              .isAssignableFrom(mailboxes.getProducedMessageQueueType(mt)))
           throw new IllegalArgumentException(
             s"BalancingDispatcher [$id] has 'mailbox' [${mt.getClass}] which is incompatible with 'mailbox-requirement' [$requirement]")
         mt
       } else if (config.hasPath("mailbox-type")) {
         val mt = mailboxes.lookup(id)
-        if (!requirement.isAssignableFrom(
-              mailboxes.getProducedMessageQueueType(mt)))
+        if (!requirement
+              .isAssignableFrom(mailboxes.getProducedMessageQueueType(mt)))
           throw new IllegalArgumentException(
             s"BalancingDispatcher [$id] has 'mailbox-type' [${mt.getClass}] which is incompatible with 'mailbox-requirement' [$requirement]")
         mt

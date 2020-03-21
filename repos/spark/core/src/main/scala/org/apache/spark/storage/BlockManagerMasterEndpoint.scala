@@ -60,8 +60,8 @@ private[spark] class BlockManagerMasterEndpoint(
   private val blockLocations =
     new JHashMap[BlockId, mutable.HashSet[BlockManagerId]]
 
-  private val askThreadPool = ThreadUtils.newDaemonCachedThreadPool(
-    "block-manager-ask-thread-pool")
+  private val askThreadPool = ThreadUtils
+    .newDaemonCachedThreadPool("block-manager-ask-thread-pool")
   private implicit val askExecutionContext = ExecutionContext
     .fromExecutorService(askThreadPool)
 
@@ -83,8 +83,8 @@ private[spark] class BlockManagerMasterEndpoint(
         storageLevel,
         deserializedSize,
         size))
-      listenerBus.post(SparkListenerBlockUpdated(
-        BlockUpdatedInfo(_updateBlockInfo)))
+      listenerBus
+        .post(SparkListenerBlockUpdated(BlockUpdatedInfo(_updateBlockInfo)))
 
     case GetLocations(blockId) => context.reply(getLocations(blockId))
 
@@ -145,13 +145,12 @@ private[spark] class BlockManagerMasterEndpoint(
 
     // Find all blocks for the given RDD, remove the block from both blockLocations and
     // the blockManagerInfo that is tracking the blocks.
-    val blocks = blockLocations.asScala.keys
-      .flatMap(_.asRDDId)
+    val blocks = blockLocations.asScala.keys.flatMap(_.asRDDId)
       .filter(_.rddId == rddId)
     blocks.foreach { blockId =>
       val bms: mutable.HashSet[BlockManagerId] = blockLocations.get(blockId)
-      bms.foreach(bm =>
-        blockManagerInfo.get(bm).foreach(_.removeBlock(blockId)))
+      bms
+        .foreach(bm => blockManagerInfo.get(bm).foreach(_.removeBlock(blockId)))
       blockLocations.remove(blockId)
     }
 
@@ -297,15 +296,13 @@ private[spark] class BlockManagerMasterEndpoint(
       filter: BlockId => Boolean,
       askSlaves: Boolean): Future[Seq[BlockId]] = {
     val getMatchingBlockIds = GetMatchingBlockIds(filter)
-    Future
-      .sequence(blockManagerInfo.values.map { info =>
-        val future =
-          if (askSlaves) {
-            info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
-          } else { Future { info.blocks.asScala.keys.filter(filter).toSeq } }
-        future
-      })
-      .map(_.flatten.toSeq)
+    Future.sequence(blockManagerInfo.values.map { info =>
+      val future =
+        if (askSlaves) {
+          info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
+        } else { Future { info.blocks.asScala.keys.filter(filter).toSeq } }
+      future
+    }).map(_.flatten.toSeq)
   }
 
   private def register(
@@ -323,10 +320,9 @@ private[spark] class BlockManagerMasterEndpoint(
           removeExecutor(id.executorId)
         case None =>
       }
-      logInfo("Registering block manager %s with %s RAM, %s".format(
-        id.hostPort,
-        Utils.bytesToString(maxMemSize),
-        id))
+      logInfo(
+        "Registering block manager %s with %s RAM, %s"
+          .format(id.hostPort, Utils.bytesToString(maxMemSize), id))
 
       blockManagerIdByExecutor(id.executorId) = id
 
@@ -359,11 +355,8 @@ private[spark] class BlockManagerMasterEndpoint(
       return true
     }
 
-    blockManagerInfo(blockManagerId).updateBlockInfo(
-      blockId,
-      storageLevel,
-      memSize,
-      diskSize)
+    blockManagerInfo(blockManagerId)
+      .updateBlockInfo(blockId, storageLevel, memSize, diskSize)
 
     var locations: mutable.HashSet[BlockManagerId] = null
     if (blockLocations.containsKey(blockId)) {
@@ -395,9 +388,7 @@ private[spark] class BlockManagerMasterEndpoint(
   private def getPeers(blockManagerId: BlockManagerId): Seq[BlockManagerId] = {
     val blockManagerIds = blockManagerInfo.keySet
     if (blockManagerIds.contains(blockManagerId)) {
-      blockManagerIds
-        .filterNot { _.isDriver }
-        .filterNot { _ == blockManagerId }
+      blockManagerIds.filterNot { _.isDriver }.filterNot { _ == blockManagerId }
         .toSeq
     } else { Seq.empty }
   }

@@ -35,31 +35,21 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
     sqlContext.range(10).write.saveAsTable("parquet_t0")
     sql("CREATE TABLE t0 AS SELECT * FROM parquet_t0")
 
-    sqlContext
-      .range(10)
-      .select('id as 'key, concat(lit("val_"), 'id) as 'value)
-      .write
-      .saveAsTable("parquet_t1")
+    sqlContext.range(10).select('id as 'key, concat(lit("val_"), 'id) as 'value)
+      .write.saveAsTable("parquet_t1")
 
-    sqlContext
-      .range(10)
-      .select('id as 'a, 'id as 'b, 'id as 'c, 'id as 'd)
-      .write
-      .saveAsTable("parquet_t2")
+    sqlContext.range(10).select('id as 'a, 'id as 'b, 'id as 'c, 'id as 'd)
+      .write.saveAsTable("parquet_t2")
 
     def createArray(id: Column): Column = {
       when(id % 3 === 0, lit(null)).otherwise(array('id, 'id + 1))
     }
 
-    sqlContext
-      .range(10)
-      .select(
-        createArray('id).as("arr"),
-        array(array('id), createArray('id)).as("arr2"),
-        lit("""{"f1": "1", "f2": "2", "f3": 3}""").as("json"),
-        'id)
-      .write
-      .saveAsTable("parquet_t3")
+    sqlContext.range(10).select(
+      createArray('id).as("arr"),
+      array(array('id), createArray('id)).as("arr2"),
+      lit("""{"f1": "1", "f2": "2", "f3": 3}""").as("json"),
+      'id).write.saveAsTable("parquet_t3")
   }
 
   override protected def afterAll(): Unit = {

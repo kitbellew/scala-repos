@@ -87,8 +87,8 @@ object string {
     }
 
     // we intentionally don't unquote "\$" here, so it can be used to escape interpolation later.
-    private val UNQUOTE_RE =
-      """\\(u[\dA-Fa-f]{4}|x[\dA-Fa-f]{2}|[/rnt\"\\])""".r
+    private val UNQUOTE_RE = """\\(u[\dA-Fa-f]{4}|x[\dA-Fa-f]{2}|[/rnt\"\\])"""
+      .r
 
     /**
       * Unquote an ASCII string that has been quoted in a style like
@@ -105,15 +105,11 @@ object string {
           // holy crap! this is terrible:
           case 'u' =>
             Character.valueOf(
-              Integer
-                .valueOf(m.group(1).substring(1), 16)
-                .asInstanceOf[Int]
+              Integer.valueOf(m.group(1).substring(1), 16).asInstanceOf[Int]
                 .toChar)
           case 'x' =>
             Character.valueOf(
-              Integer
-                .valueOf(m.group(1).substring(1), 16)
-                .asInstanceOf[Int]
+              Integer.valueOf(m.group(1).substring(1), 16).asInstanceOf[Int]
                 .toChar)
           case 'r' => '\r'
           case 'n' => '\n'

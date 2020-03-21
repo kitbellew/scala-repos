@@ -21,8 +21,7 @@ private[opening] final class Selector(
   def apply(me: Option[User]): Fu[Opening] =
     (me match {
       case None =>
-        openingColl
-          .find(BSONDocument())
+        openingColl.find(BSONDocument())
           .options(QueryOpts(skipN = Random nextInt anonSkipMax))
           .one[Opening] flatten "Can't find a opening for anon player!"
       case Some(user) =>
@@ -35,14 +34,12 @@ private[opening] final class Selector(
       user: User,
       tolerance: Int,
       ids: BSONArray): Fu[Opening] =
-    openingColl
-      .find(BSONDocument(
-        Opening.BSONFields.id -> BSONDocument("$nin" -> ids),
-        Opening.BSONFields.rating -> BSONDocument(
-          "$gt" -> BSONInteger(user.perfs.opening.intRating - tolerance),
-          "$lt" -> BSONInteger(user.perfs.opening.intRating + tolerance))
-      ))
-      .one[Opening] flatMap {
+    openingColl.find(BSONDocument(
+      Opening.BSONFields.id -> BSONDocument("$nin" -> ids),
+      Opening.BSONFields.rating -> BSONDocument(
+        "$gt" -> BSONInteger(user.perfs.opening.intRating - tolerance),
+        "$lt" -> BSONInteger(user.perfs.opening.intRating + tolerance))
+    )).one[Opening] flatMap {
       case Some(opening) => fuccess(opening)
       case None =>
         if ((tolerance + toleranceStep) <= toleranceMax)

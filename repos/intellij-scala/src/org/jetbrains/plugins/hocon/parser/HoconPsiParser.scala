@@ -48,12 +48,12 @@ class HoconPsiParser extends PsiParser {
 
           def entireLineComment =
             token == commentToken && (if (i > 0)
-                                        tokens.get(
-                                          i - 1) == LineBreakingWhitespace
+                                        tokens
+                                          .get(i - 1) == LineBreakingWhitespace
                                       else atStreamEdge)
           def noBlankLineWhitespace =
-            Whitespace
-              .contains(token) && text.charIterator.count(_ == '\n') <= 1
+            Whitespace.contains(token) && text.charIterator
+              .count(_ == '\n') <= 1
 
           if (i < 0) resultSoFar
           else if (noBlankLineWhitespace)
@@ -74,8 +74,8 @@ class HoconPsiParser extends PsiParser {
     var newLineSuppressedIndex: Int = 0
 
     def newLinesBeforeCurrentToken =
-      builder.rawTokenIndex > newLineSuppressedIndex && builder.rawLookup(
-        -1) == LineBreakingWhitespace
+      builder.rawTokenIndex > newLineSuppressedIndex && builder
+        .rawLookup(-1) == LineBreakingWhitespace
 
     def suppressNewLine(): Unit = {
       newLineSuppressedIndex = builder.rawTokenIndex
@@ -84,19 +84,16 @@ class HoconPsiParser extends PsiParser {
     def advanceLexer(): Unit = { builder.advanceLexer() }
 
     def matches(matcher: Matcher) =
-      (matcher.tokenSet.contains(builder.getTokenType) && (
-        !matcher.requireNoNewLine || !newLinesBeforeCurrentToken
-      )) ||
-        (matcher.matchNewLine && newLinesBeforeCurrentToken) || (
-        matcher.matchEof && builder.eof
-      )
+      (matcher.tokenSet.contains(builder.getTokenType) && (!matcher
+        .requireNoNewLine || !newLinesBeforeCurrentToken)) ||
+        (matcher.matchNewLine && newLinesBeforeCurrentToken) || (matcher
+        .matchEof && builder.eof)
 
     def matchesUnquoted(str: String) =
       matches(UnquotedChars) && builder.getTokenText == str
 
     def matchesUnquoted(pattern: Regex) =
-      matches(UnquotedChars) && pattern.pattern
-        .matcher(builder.getTokenText)
+      matches(UnquotedChars) && pattern.pattern.matcher(builder.getTokenText)
         .matches
 
     def pass(matcher: Matcher): Boolean = {
@@ -144,12 +141,11 @@ class HoconPsiParser extends PsiParser {
       val marker = builder.mark()
 
       val unclosedQuotedString = builder.getTokenType == QuotedString &&
-        !ProperlyClosedQuotedString.pattern
-          .matcher(builder.getTokenText)
+        !ProperlyClosedQuotedString.pattern.matcher(builder.getTokenText)
           .matches
-      val unclosedMultilineString =
-        builder.getTokenType == MultilineString && !builder.getTokenText
-          .endsWith("\"\"\"")
+      val unclosedMultilineString = builder
+        .getTokenType == MultilineString && !builder.getTokenText
+        .endsWith("\"\"\"")
 
       advanceLexer()
 
@@ -416,8 +412,8 @@ class HoconPsiParser extends PsiParser {
         advanceLexer()
 
         val gotPeriod = matches(Period)
-        val noPeriodWhitespace =
-          gotPeriod && builder.rawTokenIndex == integerRawTokenIdx + 1
+        val noPeriodWhitespace = gotPeriod && builder
+          .rawTokenIndex == integerRawTokenIdx + 1
 
         if (gotPeriod) {
           textBuilder ++= builder.getTokenText
@@ -425,8 +421,8 @@ class HoconPsiParser extends PsiParser {
         }
 
         val gotDecimalPart = gotPeriod && matchesUnquoted(DecimalPartPattern)
-        val noDecimalPartWhitespace =
-          gotDecimalPart && builder.rawTokenIndex == integerRawTokenIdx + 2
+        val noDecimalPartWhitespace = gotDecimalPart && builder
+          .rawTokenIndex == integerRawTokenIdx + 2
 
         if (gotDecimalPart) {
           textBuilder ++= builder.getTokenText

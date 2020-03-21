@@ -304,8 +304,9 @@ object GraphStages {
 
   def terminationWatcher[T]
       : GraphStageWithMaterializedValue[FlowShape[T, T], Future[Done]] =
-    TerminationWatcher.asInstanceOf[
-      GraphStageWithMaterializedValue[FlowShape[T, T], Future[Done]]]
+    TerminationWatcher
+      .asInstanceOf[GraphStageWithMaterializedValue[FlowShape[T, T], Future[
+        Done]]]
 
   private object TickSource {
     class TickSourceCancellable(cancelled: AtomicBoolean) extends Cancellable {
@@ -393,8 +394,8 @@ object GraphStages {
         setHandler(out, eagerTerminateOutput)
         override def preStart(): Unit = {
           val cb = getAsyncCallback[T](t ⇒ emit(out, t, () ⇒ completeStage()))
-          promise.future.foreach(cb.invoke)(
-            ExecutionContexts.sameThreadExecutionContext)
+          promise.future
+            .foreach(cb.invoke)(ExecutionContexts.sameThreadExecutionContext)
         }
       }
 
@@ -437,8 +438,8 @@ object GraphStages {
                 case scala.util.Success(v) ⇒ emit(out, v, () ⇒ completeStage())
                 case scala.util.Failure(t) ⇒ failStage(t)
               }.invoke _
-              future.onComplete(cb)(
-                ExecutionContexts.sameThreadExecutionContext)
+              future
+                .onComplete(cb)(ExecutionContexts.sameThreadExecutionContext)
               setHandler(
                 out,
                 eagerTerminateOutput

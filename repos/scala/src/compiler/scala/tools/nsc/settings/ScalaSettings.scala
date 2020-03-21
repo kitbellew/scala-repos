@@ -617,8 +617,8 @@ trait ScalaSettings
   def YoptWarningNoInlineMissingBytecode =
     YoptWarnings.contains(YoptWarningsChoices.noInlineMissingBytecode)
   def YoptWarningNoInlineMissingScalaInlineInfoAttr =
-    YoptWarnings.contains(
-      YoptWarningsChoices.noInlineMissingScalaInlineInfoAttr)
+    YoptWarnings
+      .contains(YoptWarningsChoices.noInlineMissingScalaInlineInfoAttr)
 
   val YoptTrace = StringSetting(
     "-Yopt-trace",
@@ -687,8 +687,7 @@ trait ScalaSettings
   val optimise = BooleanSetting(
     "-optimise",
     "Compiler flag for the optimizer in Scala 2.11")
-    .withAbbreviation("-optimize")
-    .withDeprecationMessage(
+    .withAbbreviation("-optimize").withDeprecationMessage(
       "In 2.12, -optimise enables -Yopt:l:classpath. Check -Yopt:help for using the Scala 2.12 optimizer.")
     .withPostSetHook(_ => Yopt.tryToSet(List(YoptChoices.lClasspath.name)))
   val Xexperimental = BooleanSetting(

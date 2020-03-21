@@ -139,18 +139,13 @@ trait ApiFormats extends ScalatraBase {
         val parts = f.split(";").map(_.trim)
         val i =
           if (parts.size > 1) {
-            val pars = parts(1)
-              .split("=")
-              .map(_.trim)
-              .grouped(2)
-              .find(isValidQPair)
-              .getOrElse(Array("q", "0"))
+            val pars = parts(1).split("=").map(_.trim).grouped(2)
+              .find(isValidQPair).getOrElse(Array("q", "0"))
             (pars(1).toDouble * 10).ceil.toInt
           } else 10
         acc + (i -> (parts(0) :: acc.get(i).getOrElse(List.empty)))
       }
-      accepted.toList
-        .sortWith((kv1, kv2) => kv1._1 > kv2._1)
+      accepted.toList.sortWith((kv1, kv2) => kv1._1 > kv2._1)
         .flatMap(_._2.reverse)
     } getOrElse Nil
   }
@@ -196,7 +191,8 @@ trait ApiFormats extends ScalatraBase {
   private def getFormat(implicit
       request: HttpServletRequest,
       response: HttpServletResponse): String = {
-    getFromResponseHeader orElse getFromParams orElse getFromAcceptHeader getOrElse defaultFormat.name
+    getFromResponseHeader orElse getFromParams orElse getFromAcceptHeader getOrElse defaultFormat
+      .name
   }
 
   protected[scalatra] override def withRouteMultiParams[S](
@@ -206,8 +202,8 @@ trait ApiFormats extends ScalatraBase {
     val routeParams: Map[String, Seq[String]] = {
       matchedRoute.map(_.multiParams).getOrElse(Map.empty).map {
         case (key, values) =>
-          key -> values.map(s =>
-            if (s.nonBlank) UriDecoder.secondStep(s) else s)
+          key -> values
+            .map(s => if (s.nonBlank) UriDecoder.secondStep(s) else s)
       }
     }
     if (routeParams.contains("format")) {
@@ -235,13 +231,11 @@ trait ApiFormats extends ScalatraBase {
   def format(implicit
       request: HttpServletRequest,
       response: HttpServletResponse): String = {
-    request
-      .get(FormatKey)
-      .fold({
-        val fmt = getFormat
-        request(FormatKey) = fmt
-        fmt
-      })(_.asInstanceOf[String])
+    request.get(FormatKey).fold({
+      val fmt = getFormat
+      request(FormatKey) = fmt
+      fmt
+    })(_.asInstanceOf[String])
   }
 
 }

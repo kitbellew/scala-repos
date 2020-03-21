@@ -53,9 +53,7 @@ object TriangleCount {
 
   def run[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED]): Graph[Int, ED] = {
     // Transform the edge data something cheap to shuffle and then canonicalize
-    val canonicalGraph = graph
-      .mapEdges(e => true)
-      .removeSelfEdges()
+    val canonicalGraph = graph.mapEdges(e => true).removeSelfEdges()
       .convertToCanonicalEdges()
     // Get the triangle counts
     val counters = runPreCanonicalized(canonicalGraph).vertices
@@ -69,8 +67,7 @@ object TriangleCount {
       graph: Graph[VD, ED]): Graph[Int, ED] = {
     // Construct set representations of the neighborhoods
     val nbrSets: VertexRDD[VertexSet] = graph
-      .collectNeighborIds(EdgeDirection.Either)
-      .mapValues { (vid, nbrs) =>
+      .collectNeighborIds(EdgeDirection.Either).mapValues { (vid, nbrs) =>
         val set = new VertexSet(nbrs.length)
         var i = 0
         while (i < nbrs.length) {

@@ -13,17 +13,13 @@ object RegressionTests extends TestSuite {
   implicit def strName(s: Symbol) = Name(identifier(s.name), Load)
   implicit def strIdent(s: Symbol) = identifier(s.name)
   val tests = TestSuite {
-    'multiple_comments - TestUtils.check(
-      Statements.file_input,
-      Seq(Ast.stmt.Pass),
-      """# a
+    'multiple_comments - TestUtils
+      .check(Statements.file_input, Seq(Ast.stmt.Pass), """# a
         |# b
         |pass""".stripMargin)
 
-    'multiple_newlines - TestUtils.check(
-      Statements.file_input,
-      Seq(Expr('a), Expr('b)),
-      """a
+    'multiple_newlines - TestUtils
+      .check(Statements.file_input, Seq(Expr('a), Expr('b)), """a
         |
         |b""".stripMargin)
 
@@ -40,16 +36,12 @@ object RegressionTests extends TestSuite {
         |    b""".stripMargin
     )
 
-    'backslash_breaks - TestUtils.check(
-      Statements.file_input,
-      Seq(Expr(Attribute('a, 'b, Load))),
-      """a\
+    'backslash_breaks - TestUtils
+      .check(Statements.file_input, Seq(Expr(Attribute('a, 'b, Load))), """a\
         |.b
         |""".stripMargin)
-    'multiline_string - TestUtils.check(
-      Statements.file_input,
-      Seq(Expr(Str("\n"))),
-      """'''
+    'multiline_string - TestUtils
+      .check(Statements.file_input, Seq(Expr(Str("\n"))), """'''
         |'''
         |""".stripMargin)
 
@@ -159,10 +151,8 @@ object RegressionTests extends TestSuite {
         |        c
         |""".stripMargin
     )
-    'bitand - TestUtils.check(
-      Statements.file_input,
-      Seq(Expr(BinOp('a, BitAnd, 'a))),
-      """a & a
+    'bitand - TestUtils
+      .check(Statements.file_input, Seq(Expr(BinOp('a, BitAnd, 'a))), """a & a
         |""".stripMargin)
     'octal - TestUtils.check(Statements.file_input, Seq(Expr(Num(0))), """0x0
         |""".stripMargin)

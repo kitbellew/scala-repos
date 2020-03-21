@@ -14,9 +14,8 @@ object Messages {
 }
 class Messages(locale: Locale, bundlePath: String = "i18n/messages") {
 
-  private[this] val bundle: ResourceBundle = ResourceBundle.getBundle(
-    bundlePath,
-    locale)
+  private[this] val bundle: ResourceBundle = ResourceBundle
+    .getBundle(bundlePath, locale)
 
   /**
     * Null-safe implementation is preferred by using Option. The caller can

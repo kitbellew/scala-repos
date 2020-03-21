@@ -48,8 +48,8 @@ trait BadClientHandlingSpec
     }
 
     "return a 400 error on invalid URI" in withServer() { port =>
-      val response = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/[", "HTTP/1.1", Map(), ""))(0)
+      val response = BasicHttpClient
+        .makeRequests(port)(BasicRequest("GET", "/[", "HTTP/1.1", Map(), ""))(0)
 
       response.status must_== 400
       response.body must beLeft
@@ -65,8 +65,8 @@ trait BadClientHandlingSpec
         def onServerError(request: RequestHeader, exception: Throwable) =
           Future.successful(Results.Ok)
       }) { port =>
-      val response = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/[", "HTTP/1.1", Map(), ""))(0)
+      val response = BasicHttpClient
+        .makeRequests(port)(BasicRequest("GET", "/[", "HTTP/1.1", Map(), ""))(0)
 
       response.status must_== 400
       response.body must beLeft("Bad path: /[")

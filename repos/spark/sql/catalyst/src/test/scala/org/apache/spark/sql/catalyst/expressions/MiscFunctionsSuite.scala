@@ -95,26 +95,16 @@ class MiscFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   private val arrayOfUDT = ArrayType(new ExamplePointUDT, false)
 
   testMurmur3Hash(
-    new StructType()
-      .add("null", NullType)
-      .add("boolean", BooleanType)
-      .add("byte", ByteType)
-      .add("short", ShortType)
-      .add("int", IntegerType)
-      .add("long", LongType)
-      .add("float", FloatType)
-      .add("double", DoubleType)
+    new StructType().add("null", NullType).add("boolean", BooleanType)
+      .add("byte", ByteType).add("short", ShortType).add("int", IntegerType)
+      .add("long", LongType).add("float", FloatType).add("double", DoubleType)
       .add("bigDecimal", DecimalType.SYSTEM_DEFAULT)
-      .add("smallDecimal", DecimalType.USER_DEFAULT)
-      .add("string", StringType)
-      .add("binary", BinaryType)
-      .add("date", DateType)
-      .add("timestamp", TimestampType)
-      .add("udt", new ExamplePointUDT))
+      .add("smallDecimal", DecimalType.USER_DEFAULT).add("string", StringType)
+      .add("binary", BinaryType).add("date", DateType)
+      .add("timestamp", TimestampType).add("udt", new ExamplePointUDT))
 
   testMurmur3Hash(
-    new StructType()
-      .add("arrayOfNull", arrayOfNull)
+    new StructType().add("arrayOfNull", arrayOfNull)
       .add("arrayOfString", arrayOfString)
       .add("arrayOfArrayOfString", ArrayType(arrayOfString))
       .add("arrayOfArrayOfInt", ArrayType(ArrayType(IntegerType)))
@@ -123,8 +113,7 @@ class MiscFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       .add("arrayOfUDT", arrayOfUDT))
 
   testMurmur3Hash(
-    new StructType()
-      .add("mapOfIntAndString", MapType(IntegerType, StringType))
+    new StructType().add("mapOfIntAndString", MapType(IntegerType, StringType))
       .add("mapOfStringAndArray", MapType(StringType, arrayOfString))
       .add("mapOfArrayAndInt", MapType(arrayOfString, IntegerType))
       .add("mapOfArray", MapType(arrayOfString, arrayOfString))
@@ -133,31 +122,25 @@ class MiscFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       .add("mapOfStruct", MapType(structOfString, structOfString)))
 
   testMurmur3Hash(
-    new StructType()
-      .add("structOfString", structOfString)
-      .add(
-        "structOfStructOfString",
-        new StructType().add("struct", structOfString))
+    new StructType().add("structOfString", structOfString).add(
+      "structOfStructOfString",
+      new StructType().add("struct", structOfString))
       .add("structOfArray", new StructType().add("array", arrayOfString))
-      .add("structOfMap", new StructType().add("map", mapOfString))
-      .add(
+      .add("structOfMap", new StructType().add("map", mapOfString)).add(
         "structOfArrayAndMap",
         new StructType().add("array", arrayOfString).add("map", mapOfString))
       .add("structOfUDT", structOfUDT))
 
   private def testMurmur3Hash(inputSchema: StructType): Unit = {
-    val inputGenerator =
-      RandomDataGenerator.forType(inputSchema, nullable = false).get
+    val inputGenerator = RandomDataGenerator
+      .forType(inputSchema, nullable = false).get
     val encoder = RowEncoder(inputSchema)
     val seed = scala.util.Random.nextInt()
     test(s"murmur3 hash: ${inputSchema.simpleString}") {
       for (_ <- 1 to 10) {
-        val input = encoder
-          .toRow(inputGenerator.apply().asInstanceOf[Row])
+        val input = encoder.toRow(inputGenerator.apply().asInstanceOf[Row])
           .asInstanceOf[UnsafeRow]
-        val literals = input
-          .toSeq(inputSchema)
-          .zip(inputSchema.map(_.dataType))
+        val literals = input.toSeq(inputSchema).zip(inputSchema.map(_.dataType))
           .map { case (value, dt) => Literal.create(value, dt) }
         // Only test the interpreted version has same result with codegen version.
         checkEvaluation(

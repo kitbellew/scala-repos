@@ -73,16 +73,14 @@ object SerializationBenchmark
       .foreach(_ => ())
 
   def kryoRoundTrip[T](k: KryoPool, ts: Iterator[T]): Unit =
-    ts.map { t => k.fromBytes(k.toBytesWithClass(t)) }
-      .foreach(_ => ())
+    ts.map { t => k.fromBytes(k.toBytesWithClass(t)) }.foreach(_ => ())
 
   def toArrayOrd[T](t: OrderedSerialization[T]): Ordering[Array[Byte]] =
     new Ordering[Array[Byte]] {
       def compare(a: Array[Byte], b: Array[Byte]) = {
         t.compareBinary(
-            new ByteArrayInputStream(a),
-            new ByteArrayInputStream(b))
-          .unsafeToInt
+          new ByteArrayInputStream(a),
+          new ByteArrayInputStream(b)).unsafeToInt
       }
     }
   def toArrayOrd[T](k: KryoPool, ord: Ordering[T]): Ordering[Array[Byte]] =
@@ -128,9 +126,8 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons.unsignedLongCompare(
-            a(pos),
-            a(pos + 1))
+          effectInt ^= UnsignedComparisons
+            .unsignedLongCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }
@@ -150,9 +147,8 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons.unsignedIntCompare(
-            a(pos),
-            a(pos + 1))
+          effectInt ^= UnsignedComparisons
+            .unsignedIntCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }
@@ -172,9 +168,8 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons.unsignedShortCompare(
-            a(pos),
-            a(pos + 1))
+          effectInt ^= UnsignedComparisons
+            .unsignedShortCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }
@@ -194,9 +189,8 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons.unsignedByteCompare(
-            a(pos),
-            a(pos + 1))
+          effectInt ^= UnsignedComparisons
+            .unsignedByteCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }
@@ -267,11 +261,9 @@ object SerializationBenchmark
     }
     measure method "sort typeclass: Int" in {
       val ordSer = implicitly[OrderedSerialization[Int]]
-      using(
-        collection[Int, List](smallSizes)
-          .map { items => items.map { Serialization.toBytes(_) }.toArray }) in {
-        ary => java.util.Arrays.sort(ary, toArrayOrd(ordSer))
-      }
+      using(collection[Int, List](smallSizes).map { items =>
+        items.map { Serialization.toBytes(_) }.toArray
+      }) in { ary => java.util.Arrays.sort(ary, toArrayOrd(ordSer)) }
     }
     measure method "sort kryo: Int" in {
       val kryo = KryoPool.withByteArrayOutputStream(
@@ -279,19 +271,15 @@ object SerializationBenchmark
         com.twitter.scalding.Config.default.getKryo.get)
 
       val ord = implicitly[Ordering[Int]]
-      using(
-        collection[Int, List](smallSizes)
-          .map { items => items.map { kryo.toBytesWithClass(_) }.toArray }) in {
-        ary => java.util.Arrays.sort(ary, toArrayOrd(kryo, ord))
-      }
+      using(collection[Int, List](smallSizes).map { items =>
+        items.map { kryo.toBytesWithClass(_) }.toArray
+      }) in { ary => java.util.Arrays.sort(ary, toArrayOrd(kryo, ord)) }
     }
     measure method "sort typeclass: Long" in {
       val ordSer = implicitly[OrderedSerialization[Long]]
-      using(
-        collection[Long, List](smallSizes)
-          .map { items => items.map { Serialization.toBytes(_) }.toArray }) in {
-        ary => java.util.Arrays.sort(ary, toArrayOrd(ordSer))
-      }
+      using(collection[Long, List](smallSizes).map { items =>
+        items.map { Serialization.toBytes(_) }.toArray
+      }) in { ary => java.util.Arrays.sort(ary, toArrayOrd(ordSer)) }
     }
     measure method "sort kryo: Long" in {
       val kryo = KryoPool.withByteArrayOutputStream(
@@ -299,19 +287,15 @@ object SerializationBenchmark
         com.twitter.scalding.Config.default.getKryo.get)
 
       val ord = implicitly[Ordering[Long]]
-      using(
-        collection[Long, List](smallSizes)
-          .map { items => items.map { kryo.toBytesWithClass(_) }.toArray }) in {
-        ary => java.util.Arrays.sort(ary, toArrayOrd(kryo, ord))
-      }
+      using(collection[Long, List](smallSizes).map { items =>
+        items.map { kryo.toBytesWithClass(_) }.toArray
+      }) in { ary => java.util.Arrays.sort(ary, toArrayOrd(kryo, ord)) }
     }
     measure method "sort typeclass: String" in {
       val ordSer = implicitly[OrderedSerialization[String]]
-      using(
-        collection[String, List](smallSizes)
-          .map { items => items.map { Serialization.toBytes(_) }.toArray }) in {
-        ary => java.util.Arrays.sort(ary, toArrayOrd(ordSer))
-      }
+      using(collection[String, List](smallSizes).map { items =>
+        items.map { Serialization.toBytes(_) }.toArray
+      }) in { ary => java.util.Arrays.sort(ary, toArrayOrd(ordSer)) }
     }
     measure method "sort kryo: String" in {
       val kryo = KryoPool.withByteArrayOutputStream(
@@ -319,20 +303,16 @@ object SerializationBenchmark
         com.twitter.scalding.Config.default.getKryo.get)
 
       val ord = implicitly[Ordering[String]]
-      using(
-        collection[String, List](smallSizes)
-          .map { items => items.map { kryo.toBytesWithClass(_) }.toArray }) in {
-        ary => java.util.Arrays.sort(ary, toArrayOrd(kryo, ord))
-      }
+      using(collection[String, List](smallSizes).map { items =>
+        items.map { kryo.toBytesWithClass(_) }.toArray
+      }) in { ary => java.util.Arrays.sort(ary, toArrayOrd(kryo, ord)) }
     }
 
     measure method "sort typeclass: (Int, (Long, String))" in {
       val ordSer = implicitly[OrderedSerialization[(Int, (Long, String))]]
-      using(
-        collection[(Int, (Long, String)), List](smallSizes)
-          .map { items => items.map { Serialization.toBytes(_) }.toArray }) in {
-        ary => java.util.Arrays.sort(ary, toArrayOrd(ordSer))
-      }
+      using(collection[(Int, (Long, String)), List](smallSizes).map { items =>
+        items.map { Serialization.toBytes(_) }.toArray
+      }) in { ary => java.util.Arrays.sort(ary, toArrayOrd(ordSer)) }
     }
     measure method "sort kryo: (Int, (Long, String))" in {
       val kryo = KryoPool.withByteArrayOutputStream(
@@ -340,11 +320,9 @@ object SerializationBenchmark
         com.twitter.scalding.Config.default.getKryo.get)
 
       val ord = implicitly[Ordering[(Int, (Long, String))]]
-      using(
-        collection[(Int, (Long, String)), List](smallSizes)
-          .map { items => items.map { kryo.toBytesWithClass(_) }.toArray }) in {
-        ary => java.util.Arrays.sort(ary, toArrayOrd(kryo, ord))
-      }
+      using(collection[(Int, (Long, String)), List](smallSizes).map { items =>
+        items.map { kryo.toBytesWithClass(_) }.toArray
+      }) in { ary => java.util.Arrays.sort(ary, toArrayOrd(kryo, ord)) }
     }
 
     /**

@@ -23,8 +23,7 @@ object ProjectTests extends TestSuite {
       Seq("git", "clone", repo, path.toString, "--depth", "1").!
     }
     def listFiles(s: java.io.File): Iterator[String] = {
-      val (dirs, files) = Option(s.listFiles()).toIterator
-        .flatMap(_.toIterator)
+      val (dirs, files) = Option(s.listFiles()).toIterator.flatMap(_.toIterator)
         .partition(_.isDirectory)
 
       files.map(_.getPath) ++ dirs.flatMap(listFiles)
@@ -33,30 +32,25 @@ object ProjectTests extends TestSuite {
     val pythonFiles: Seq[String] = listFiles(new java.io.File(path.toString))
       .filter(path =>
         path.toString.endsWith(".py") && !ignored.exists(path.endsWith))
-      .map(_.toString)
-      .toSeq
+      .map(_.toString).toSeq
 
-    val grouped = Await
-      .result(
-        Future.sequence(pythonFiles.map { p =>
-          Future {
-            print("-")
-            (
-              Seq(
-                "python",
-                "pythonparse/jvm/src/test/resources/pythonparse/parse.py",
-                p).!,
-              p)
-          }
-        }),
-        Duration.Inf)
-      .groupBy(_._1)
-      .mapValues(_.map(_._2))
+    val grouped = Await.result(
+      Future.sequence(pythonFiles.map { p =>
+        Future {
+          print("-")
+          (
+            Seq(
+              "python",
+              "pythonparse/jvm/src/test/resources/pythonparse/parse.py",
+              p).!,
+            p)
+        }
+      }),
+      Duration.Inf).groupBy(_._1).mapValues(_.map(_._2))
     val selfParsed = grouped(0) groupBy { x =>
       print(".")
       pythonparse.Statements.file_input
-        .parse(new String(Files.readAllBytes(Paths.get(x))))
-        .getClass
+        .parse(new String(Files.readAllBytes(Paths.get(x)))).getClass
     }
 
     selfParsed.get(classOf[fastparse.core.Parsed.Failure]) match {

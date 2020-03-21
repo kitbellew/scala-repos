@@ -40,21 +40,16 @@ class BinarizerSuite
   test("params") { ParamsSuite.checkParams(new Binarizer) }
 
   test("Binarize continuous features with default parameter") {
-    val defaultBinarized: Array[Double] = data.map(x =>
-      if (x > 0.0) 1.0 else 0.0)
+    val defaultBinarized: Array[Double] = data
+      .map(x => if (x > 0.0) 1.0 else 0.0)
     val dataFrame: DataFrame = sqlContext
-      .createDataFrame(data.zip(defaultBinarized))
-      .toDF("feature", "expected")
+      .createDataFrame(data.zip(defaultBinarized)).toDF("feature", "expected")
 
-    val binarizer: Binarizer = new Binarizer()
-      .setInputCol("feature")
+    val binarizer: Binarizer = new Binarizer().setInputCol("feature")
       .setOutputCol("binarized_feature")
 
-    binarizer
-      .transform(dataFrame)
-      .select("binarized_feature", "expected")
-      .collect()
-      .foreach {
+    binarizer.transform(dataFrame).select("binarized_feature", "expected")
+      .collect().foreach {
         case Row(x: Double, y: Double) =>
           assert(
             x === y,
@@ -64,22 +59,16 @@ class BinarizerSuite
 
   test("Binarize continuous features with setter") {
     val threshold: Double = 0.2
-    val thresholdBinarized: Array[Double] = data.map(x =>
-      if (x > threshold) 1.0 else 0.0)
+    val thresholdBinarized: Array[Double] = data
+      .map(x => if (x > threshold) 1.0 else 0.0)
     val dataFrame: DataFrame = sqlContext
-      .createDataFrame(data.zip(thresholdBinarized))
-      .toDF("feature", "expected")
+      .createDataFrame(data.zip(thresholdBinarized)).toDF("feature", "expected")
 
-    val binarizer: Binarizer = new Binarizer()
-      .setInputCol("feature")
-      .setOutputCol("binarized_feature")
-      .setThreshold(threshold)
+    val binarizer: Binarizer = new Binarizer().setInputCol("feature")
+      .setOutputCol("binarized_feature").setThreshold(threshold)
 
-    binarizer
-      .transform(dataFrame)
-      .select("binarized_feature", "expected")
-      .collect()
-      .foreach {
+    binarizer.transform(dataFrame).select("binarized_feature", "expected")
+      .collect().foreach {
         case Row(x: Double, y: Double) =>
           assert(
             x === y,
@@ -88,22 +77,17 @@ class BinarizerSuite
   }
 
   test("Binarize vector of continuous features with default parameter") {
-    val defaultBinarized: Array[Double] = data.map(x =>
-      if (x > 0.0) 1.0 else 0.0)
-    val dataFrame: DataFrame = sqlContext
-      .createDataFrame(Seq(
-        (Vectors.dense(data), Vectors.dense(defaultBinarized))))
+    val defaultBinarized: Array[Double] = data
+      .map(x => if (x > 0.0) 1.0 else 0.0)
+    val dataFrame: DataFrame = sqlContext.createDataFrame(Seq(
+      (Vectors.dense(data), Vectors.dense(defaultBinarized))))
       .toDF("feature", "expected")
 
-    val binarizer: Binarizer = new Binarizer()
-      .setInputCol("feature")
+    val binarizer: Binarizer = new Binarizer().setInputCol("feature")
       .setOutputCol("binarized_feature")
 
-    binarizer
-      .transform(dataFrame)
-      .select("binarized_feature", "expected")
-      .collect()
-      .foreach {
+    binarizer.transform(dataFrame).select("binarized_feature", "expected")
+      .collect().foreach {
         case Row(x: Vector, y: Vector) =>
           assert(x == y, "The feature value is not correct after binarization.")
       }
@@ -111,33 +95,25 @@ class BinarizerSuite
 
   test("Binarize vector of continuous features with setter") {
     val threshold: Double = 0.2
-    val defaultBinarized: Array[Double] = data.map(x =>
-      if (x > threshold) 1.0 else 0.0)
-    val dataFrame: DataFrame = sqlContext
-      .createDataFrame(Seq(
-        (Vectors.dense(data), Vectors.dense(defaultBinarized))))
+    val defaultBinarized: Array[Double] = data
+      .map(x => if (x > threshold) 1.0 else 0.0)
+    val dataFrame: DataFrame = sqlContext.createDataFrame(Seq(
+      (Vectors.dense(data), Vectors.dense(defaultBinarized))))
       .toDF("feature", "expected")
 
-    val binarizer: Binarizer = new Binarizer()
-      .setInputCol("feature")
-      .setOutputCol("binarized_feature")
-      .setThreshold(threshold)
+    val binarizer: Binarizer = new Binarizer().setInputCol("feature")
+      .setOutputCol("binarized_feature").setThreshold(threshold)
 
-    binarizer
-      .transform(dataFrame)
-      .select("binarized_feature", "expected")
-      .collect()
-      .foreach {
+    binarizer.transform(dataFrame).select("binarized_feature", "expected")
+      .collect().foreach {
         case Row(x: Vector, y: Vector) =>
           assert(x == y, "The feature value is not correct after binarization.")
       }
   }
 
   test("read/write") {
-    val t = new Binarizer()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setThreshold(0.1)
+    val t = new Binarizer().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setThreshold(0.1)
     testDefaultReadWrite(t)
   }
 }

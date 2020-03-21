@@ -46,12 +46,9 @@ final class FishnetApi(
       case Skill.Move     => acquireMove(client)
       case Skill.Analysis => acquireAnalysis(client)
       case Skill.All      => acquireMove(client) orElse acquireAnalysis(client)
-    }).chronometer
-      .mon(_.fishnet.acquire time client.skill.key)
-      .logIfSlow(100, logger)(_ => s"acquire ${client.skill}")
-      .result
-      .withTimeout(1 second, AcquireTimeout)
-      .recover {
+    }).chronometer.mon(_.fishnet.acquire time client.skill.key)
+      .logIfSlow(100, logger)(_ => s"acquire ${client.skill}").result
+      .withTimeout(1 second, AcquireTimeout).recover {
         case e: FutureSequencer.Timeout =>
           logger.warn(s"[${client.skill}] Fishnet.acquire ${e.getMessage}")
           none
@@ -70,18 +67,15 @@ final class FishnetApi(
 
   private def acquireAnalysis(client: Client): Fu[Option[JsonApi.Work]] =
     sequencer {
-      analysisColl
-        .find(BSONDocument("acquired" -> BSONDocument("$exists" -> false)))
-        .sort(BSONDocument(
-          "sender.system" -> 1, // user requests first, then lichess auto analysis
-          "createdAt" -> 1 // oldest requests first
-        ))
-        .one[Work.Analysis]
-        .flatMap {
-          _ ?? { work =>
-            repo.updateAnalysis(work assignTo client) inject work.some
-          }
+      analysisColl.find(BSONDocument(
+        "acquired" -> BSONDocument("$exists" -> false))).sort(BSONDocument(
+        "sender.system" -> 1, // user requests first, then lichess auto analysis
+        "createdAt" -> 1 // oldest requests first
+      )).one[Work.Analysis].flatMap {
+        _ ?? { work =>
+          repo.updateAnalysis(work assignTo client) inject work.some
         }
+      }
     }.map { _ map JsonApi.fromWork }
 
   def postMove(
@@ -105,10 +99,8 @@ final class FishnetApi(
           }
         case Some(work) => monitor.notAcquired(work, client)
       }
-    }.chronometer
-      .mon(_.fishnet.move.post)
-      .logIfSlow(100, logger)(_ => "post move")
-      .result
+    }.chronometer.mon(_.fishnet.move.post)
+      .logIfSlow(100, logger)(_ => "post move").result
 
   def postAnalysis(
       workId: Work.Id,
@@ -137,11 +129,9 @@ final class FishnetApi(
           monitor.notAcquired(work, client)
           fuccess(none)
       }
-    }.chronometer
-      .mon(_.fishnet.analysis.post)
-      .logIfSlow(200, logger) { res => s"post analysis for ${res.??(_.id)}" }
-      .result
-      .flatMap { _ ?? saveAnalysis }
+    }.chronometer.mon(_.fishnet.analysis.post).logIfSlow(200, logger) { res =>
+      s"post analysis for ${res.??(_.id)}"
+    }.result.flatMap { _ ?? saveAnalysis }
 
   def abort(workId: Work.Id, client: Client): Funit =
     sequencer {

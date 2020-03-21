@@ -60,8 +60,8 @@ private class ApertureLoadBandBalancer[Req, Rep](
     with LoadBand[Req, Rep]
     with Updating[Req, Rep] {
 
-  protected[this] val maxEffortExhausted = statsReceiver.counter(
-    "max_effort_exhausted")
+  protected[this] val maxEffortExhausted = statsReceiver
+    .counter("max_effort_exhausted")
 
 }
 
@@ -131,9 +131,8 @@ private trait Aperture[Req, Rep] {
         (ring, unit, max)
       }
 
-    private[this] val minAperture = math.min(
-      Aperture.this.minAperture,
-      maxAperture)
+    private[this] val minAperture = math
+      .min(Aperture.this.minAperture, maxAperture)
 
     @volatile
     private[Aperture] var aperture = initAperture

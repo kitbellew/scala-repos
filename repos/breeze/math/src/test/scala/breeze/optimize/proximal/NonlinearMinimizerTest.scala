@@ -491,9 +491,8 @@ class NonlinearMinimizerTest extends OptimizeTestBase with Matchers {
       0.04082)
     val proximalL1 = ProximalL1().setLambda(2.0)
     val nl = new NonlinearMinimizer(proximalL1)
-    val nlResult = nl.minimizeAndReturnState(
-      cost,
-      DenseVector.zeros[Double](25))
+    val nlResult = nl
+      .minimizeAndReturnState(cost, DenseVector.zeros[Double](25))
 
     println(s"L1 Proximal iter ${nlResult.iter}")
     assert(norm(nlResult.z - octaveL1, Inf) < 1e-4)

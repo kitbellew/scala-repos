@@ -65,8 +65,8 @@ object FunctionTest extends SpecLite {
   "Function0 bind eagerness" ! forAll { (number: Int) =>
     var modifiableNumber: Int = number
     val methodCall: () => Int = () => modifiableNumber
-    val mappedCall = Monad[Function0].bind(methodCall)((value: Int) =>
-      () => value + 3)
+    val mappedCall = Monad[Function0]
+      .bind(methodCall)((value: Int) => () => value + 3)
     modifiableNumber += 1
     mappedCall() must_=== (number + 4)
   }

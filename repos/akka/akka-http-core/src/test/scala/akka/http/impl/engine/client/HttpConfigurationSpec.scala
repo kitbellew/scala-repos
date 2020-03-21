@@ -25,8 +25,8 @@ class HttpConfigurationSpec extends AkkaSpec {
     }
     "have default client and pool `parsing` settings" in {
       ServerSettings(system).parserSettings.toString should ===(
-        ConnectionPoolSettings(
-          system).connectionSettings.parserSettings.toString)
+        ConnectionPoolSettings(system).connectionSettings.parserSettings
+          .toString)
     }
     "have default client and pool `client` settings" in {
       ClientConnectionSettings(system).toString should ===(
@@ -56,8 +56,8 @@ class HttpConfigurationSpec extends AkkaSpec {
           client.parserSettings.illegalHeaderWarnings should ===(On)
 
           val pool = ConnectionPoolSettings(sys)
-          pool.connectionSettings.parserSettings.illegalHeaderWarnings should ===(
-            Off)
+          pool.connectionSettings.parserSettings
+            .illegalHeaderWarnings should ===(Off)
 
           val server = ServerSettings(sys)
           server.parserSettings.illegalHeaderWarnings should ===(On)
@@ -104,8 +104,8 @@ class HttpConfigurationSpec extends AkkaSpec {
           client.parserSettings.illegalHeaderWarnings should ===(Off)
 
           val pool = ConnectionPoolSettings(sys)
-          pool.connectionSettings.parserSettings.illegalHeaderWarnings should ===(
-            Off)
+          pool.connectionSettings.parserSettings
+            .illegalHeaderWarnings should ===(Off)
 
           val server = ServerSettings(sys)
           server.parserSettings.illegalHeaderWarnings should ===(Off)
@@ -155,8 +155,7 @@ class HttpConfigurationSpec extends AkkaSpec {
   }
 
   def configuredSystem(overrides: String)(block: ActorSystem ⇒ Unit) = {
-    val config = ConfigFactory
-      .parseString(overrides)
+    val config = ConfigFactory.parseString(overrides)
       .withFallback(ConfigFactory.load())
     // we go via ActorSystem in order to hit the settings caching infrastructure
     val sys = ActorSystem("config-testing", config)

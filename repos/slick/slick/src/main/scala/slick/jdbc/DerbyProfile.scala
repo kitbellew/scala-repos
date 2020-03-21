@@ -111,7 +111,8 @@ trait DerbyProfile extends JdbcProfile {
     MTable.getTables(None, None, None, Some(Seq("TABLE")))
 
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler + Phase.rewriteBooleans + Phase.specializeParameters
+    super.computeQueryCompiler + Phase.rewriteBooleans + Phase
+      .specializeParameters
   override val columnTypes = new JdbcTypes
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)

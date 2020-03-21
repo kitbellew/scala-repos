@@ -85,10 +85,10 @@ object PartitionStrategy {
       val mixingPrime: VertexId = 1125899906842597L
       if (numParts == ceilSqrtNumParts * ceilSqrtNumParts) {
         // Use old method for perfect squared to ensure we get same results
-        val col: PartitionID =
-          (math.abs(src * mixingPrime) % ceilSqrtNumParts).toInt
-        val row: PartitionID =
-          (math.abs(dst * mixingPrime) % ceilSqrtNumParts).toInt
+        val col: PartitionID = (math.abs(src * mixingPrime) % ceilSqrtNumParts)
+          .toInt
+        val row: PartitionID = (math.abs(dst * mixingPrime) % ceilSqrtNumParts)
+          .toInt
         (col * ceilSqrtNumParts + row) % numParts
 
       } else {

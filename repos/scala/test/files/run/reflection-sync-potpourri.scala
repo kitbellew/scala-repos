@@ -24,9 +24,7 @@ object Test extends App {
     new Thread(s"Reflector-$i") {
       override def run(): Unit = {
         val s1 = foo("42")
-        val s2 = perms(diceRolls(i - 1))
-          .map(x => force(x))
-          .sorted
+        val s2 = perms(diceRolls(i - 1)).map(x => force(x)).sorted
           .mkString(", ")
         assert(s1 == "String" || s1 == "java.lang.String")
         assert(

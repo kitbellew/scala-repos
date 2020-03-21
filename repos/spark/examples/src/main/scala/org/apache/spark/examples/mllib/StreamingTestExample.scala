@@ -57,8 +57,7 @@ object StreamingTestExample {
     val batchDuration = Seconds(args(1).toLong)
     val numBatchesTimeout = args(2).toInt
 
-    val conf = new SparkConf()
-      .setMaster("local")
+    val conf = new SparkConf().setMaster("local")
       .setAppName("StreamingTestExample")
     val ssc = new StreamingContext(conf, batchDuration)
     ssc.checkpoint({
@@ -67,17 +66,13 @@ object StreamingTestExample {
     })
 
     // $example on$
-    val data = ssc
-      .textFileStream(dataDir)
-      .map(line =>
-        line.split(",") match {
-          case Array(label, value) =>
-            BinarySample(label.toBoolean, value.toDouble)
-        })
+    val data = ssc.textFileStream(dataDir).map(line =>
+      line.split(",") match {
+        case Array(label, value) =>
+          BinarySample(label.toBoolean, value.toDouble)
+      })
 
-    val streamingTest = new StreamingTest()
-      .setPeacePeriod(0)
-      .setWindowSize(0)
+    val streamingTest = new StreamingTest().setPeacePeriod(0).setWindowSize(0)
       .setTestMethod("welch")
 
     val out = streamingTest.registerStream(data)

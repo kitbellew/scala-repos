@@ -17,8 +17,8 @@ import sbt.io.{Hash, IO}
 object Script {
   final val Name = "script"
   lazy val command = Command.command(Name) { state =>
-    val scriptArg = state.remainingCommands.headOption getOrElse sys.error(
-      "No script file specified")
+    val scriptArg = state.remainingCommands.headOption getOrElse sys
+      .error("No script file specified")
     val script = new File(scriptArg).getAbsoluteFile
     val hash = Hash.halve(Hash.toHex(Hash(script.getAbsolutePath)))
     val base = new File(CommandUtil.bootDirectory(state), hash)
@@ -53,8 +53,8 @@ object Script {
 
     val newStructure = Load.reapply(session.original ++ append, structure)
     val arguments = state.remainingCommands.drop(1)
-    val newState =
-      arguments.mkString("run ", " ", "") :: state.copy(remainingCommands = Nil)
+    val newState = arguments.mkString("run ", " ", "") :: state
+      .copy(remainingCommands = Nil)
     Project.setProject(session, newStructure, newState)
   }
 

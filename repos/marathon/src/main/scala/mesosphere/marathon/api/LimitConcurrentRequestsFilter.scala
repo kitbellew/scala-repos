@@ -13,8 +13,7 @@ class LimitConcurrentRequestsFilter(concurrentOption: Option[Int])
 
   val concurrent = concurrentOption.getOrElse(0)
   val semaphore = new Semaphore(concurrent)
-  val filterFunction = concurrentOption
-    .map(_ => withSemaphore _)
+  val filterFunction = concurrentOption.map(_ => withSemaphore _)
     .getOrElse(pass _)
 
   def withSemaphore(

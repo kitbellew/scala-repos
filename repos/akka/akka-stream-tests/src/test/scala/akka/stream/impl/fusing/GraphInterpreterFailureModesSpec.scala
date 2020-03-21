@@ -79,9 +79,10 @@ class GraphInterpreterFailureModesSpec
     "handle failure on onUpstreamFailure" in new FailingStageSetup {
       lastEvents() should be(Set(PreStart(stage)))
 
-      upstream.fail(TE(
-        "another exception"
-      )) // this is not the exception that will be propagated
+      upstream
+        .fail(TE(
+          "another exception"
+        )) // this is not the exception that will be propagated
       failOnNextEvent()
       stepAll()
 

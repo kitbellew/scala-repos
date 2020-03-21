@@ -355,8 +355,7 @@ object Uri {
       charset: Charset = UTF8,
       mode: Uri.ParsingMode = Uri.ParsingMode.Relaxed): String =
     UriRendering
-      .renderUri(new StringRendering, apply(uri, charset, mode), charset)
-      .get
+      .renderUri(new StringRendering, apply(uri, charset, mode), charset).get
 
   /**
     * Converts a set of URI components to an "effective HTTP request URI" as defined by
@@ -522,10 +521,8 @@ object Uri {
       import CharUtils.{hexValue ⇒ hex}
       require(bytes.length == 32, "`bytes` must be a 32 character hex string")
       apply(
-        bytes.toCharArray
-          .grouped(2)
-          .map(s ⇒ (hex(s(0)) * 16 + hex(s(1))).toByte)
-          .toArray,
+        bytes.toCharArray.grouped(2)
+          .map(s ⇒ (hex(s(0)) * 16 + hex(s(1))).toByte).toArray,
         address)
     }
     private[http] def apply(bytes: Array[Byte], address: String): IPv6Host =
@@ -884,8 +881,8 @@ object Uri {
         }
 
         var lastPercentSignIndexPlus3 = ix + 3
-        while (lastPercentSignIndexPlus3 < string.length && string.charAt(
-                 lastPercentSignIndexPlus3) == '%')
+        while (lastPercentSignIndexPlus3 < string.length && string
+                 .charAt(lastPercentSignIndexPlus3) == '%')
           lastPercentSignIndexPlus3 += 3
         val bytesCount = (lastPercentSignIndexPlus3 - ix) / 3
         val bytes = new Array[Byte](bytesCount)
@@ -899,8 +896,8 @@ object Uri {
           } else oredBytes
 
         // if we have only ASCII chars and the charset is ASCII compatible we don't need to involve it in decoding
-        if (((decodeBytes() >> 7) == 0) && UriRendering.isAsciiCompatible(
-              charset)) {
+        if (((decodeBytes() >> 7) == 0) && UriRendering
+              .isAsciiCompatible(charset)) {
           @tailrec
           def appendBytes(i: Int = 0): Unit =
             if (i < bytesCount) {
@@ -1008,8 +1005,8 @@ object Uri {
       path: Path,
       queryString: Option[String],
       fragment: Option[String]): Uri =
-    if (path.isEmpty && scheme.isEmpty && authority.isEmpty && queryString.isEmpty && fragment.isEmpty)
-      Empty
+    if (path.isEmpty && scheme.isEmpty && authority.isEmpty && queryString
+          .isEmpty && fragment.isEmpty) Empty
     else
       new Uri(scheme, authority, path, queryString, fragment) {
         def isEmpty = false

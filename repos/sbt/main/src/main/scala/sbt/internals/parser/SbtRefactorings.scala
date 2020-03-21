@@ -27,8 +27,8 @@ private[sbt] object SbtRefactorings {
     val (file, lines) = configFile
     val split = SbtParser(FAKE_FILE, lines)
     val recordedCommands = recordCommands(commands, split)
-    val sortedRecordedCommands = recordedCommands.sortBy(_._1)(
-      REVERSE_ORDERING_INT)
+    val sortedRecordedCommands = recordedCommands
+      .sortBy(_._1)(REVERSE_ORDERING_INT)
 
     val newContent = replaceFromBottomToTop(
       lines.mkString(END_OF_LINE),

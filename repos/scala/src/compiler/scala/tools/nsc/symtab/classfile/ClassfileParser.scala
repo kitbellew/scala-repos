@@ -329,8 +329,8 @@ abstract class ClassfileParser {
         case CONSTANT_LONG    => in.getLong(start + 1)
         case CONSTANT_DOUBLE  => in.getDouble(start + 1)
         case CONSTANT_CLASS =>
-          getClassOrArrayType(
-            index).typeSymbol.tpe_* // !!! Is this necessary or desirable?
+          getClassOrArrayType(index).typeSymbol
+            .tpe_* // !!! Is this necessary or desirable?
         case _ => errorBadTag(start)
       })
     }
@@ -560,10 +560,8 @@ abstract class ClassfileParser {
     else {
       val name = readName()
       val info = readType()
-      val sym = ownerForFlags(jflags).newValue(
-        name.toTermName,
-        NoPosition,
-        sflags)
+      val sym = ownerForFlags(jflags)
+        .newValue(name.toTermName, NoPosition, sflags)
 
       // Note: the info may be overwritten later with a generic signature
       // parsed from SignatureATTR
@@ -602,10 +600,8 @@ abstract class ClassfileParser {
         in.skip(4); skipAttributes()
       } else {
         val name = readName()
-        val sym = ownerForFlags(jflags).newMethod(
-          name.toTermName,
-          NoPosition,
-          sflags)
+        val sym = ownerForFlags(jflags)
+          .newMethod(name.toTermName, NoPosition, sflags)
         var info = pool.getType(sym, u2)
         if (name == nme.CONSTRUCTOR) info match {
           case MethodType(params, restpe) =>
@@ -620,7 +616,8 @@ abstract class ClassfileParser {
                  * ClassfileParser for 1 executes, and clazz.owner is the package.
                  */
                 assert(
-                  params.head.tpe.typeSymbol == clazz.owner || clazz.owner.hasPackageFlag,
+                  params.head.tpe.typeSymbol == clazz.owner || clazz.owner
+                    .hasPackageFlag,
                   params.head.tpe.typeSymbol + ": " + clazz.owner)
                 params.tail
               case _ => params
@@ -722,8 +719,8 @@ abstract class ClassfileParser {
                 // isMonomorphicType is false if the info is incomplete, as it usually is here
                 // so have to check unsafeTypeParams.isEmpty before worrying about raw type case below,
                 // or we'll create a boatload of needless existentials.
-                else if (classSym.isMonomorphicType || classSym.unsafeTypeParams.isEmpty)
-                  tp
+                else if (classSym.isMonomorphicType || classSym.unsafeTypeParams
+                           .isEmpty) tp
                 else
                   debuglogResult(s"raw type from $classSym") {
                     // raw type - existentially quantify all type parameters
@@ -914,12 +911,8 @@ abstract class ClassfileParser {
             val scalaSigAnnot = parseAnnotations(attrLen)
             if (isScalaAnnot) scalaSigAnnot match {
               case Some(san: AnnotationInfo) =>
-                val bytes = san.assocs
-                  .find({ _._1 == nme.bytes })
-                  .get
-                  ._2
-                  .asInstanceOf[ScalaSigBytes]
-                  .bytes
+                val bytes = san.assocs.find({ _._1 == nme.bytes }).get._2
+                  .asInstanceOf[ScalaSigBytes].bytes
                 unpickler.unpickle(bytes, 0, clazz, staticModule, in.file.name)
               case None =>
                 throw new RuntimeException(
@@ -944,8 +937,7 @@ abstract class ClassfileParser {
             case pkg =>
               pkg.fullName(File.separatorChar) + File.separator + srcfileLeaf
           }
-          srcfile0 = settings.outputDirs
-            .srcFilesFor(in.file, srcpath)
+          srcfile0 = settings.outputDirs.srcFilesFor(in.file, srcpath)
             .find(_.exists)
         case tpnme.CodeATTR =>
           if (sym.owner.isInterface) {
@@ -974,8 +966,8 @@ abstract class ClassfileParser {
           val s = module.info.decls.lookup(n)
           if (s != NoSymbol) Some(LiteralAnnotArg(Constant(s)))
           else {
-            warning(
-              s"""While parsing annotations in ${in.file}, could not find $n in enum $module.\nThis is likely due to an implementation restriction: an annotation argument cannot refer to a member of the annotated class (SI-7014).""")
+            warning(s"""While parsing annotations in ${in
+              .file}, could not find $n in enum $module.\nThis is likely due to an implementation restriction: an annotation argument cannot refer to a member of the annotated class (SI-7014).""")
             None
           }
 
@@ -1029,9 +1021,9 @@ abstract class ClassfileParser {
               case Some(c) => nvpairs += ((name, c))
               case None    => hasError = true
             }
-          else if ((attrType == ScalaLongSignatureAnnotation.tpe) && (
-                     name == nme.bytes
-                   )) parseScalaLongSigBytes match {
+          else if ((
+                     attrType == ScalaLongSignatureAnnotation.tpe
+                   ) && (name == nme.bytes)) parseScalaLongSigBytes match {
             case Some(c) => nvpairs += ((name, c))
             case None    => hasError = true
           }
@@ -1112,24 +1104,18 @@ abstract class ClassfileParser {
       val owner = ownerForFlags(jflags)
       val scope = getScope(jflags)
       def newStub(name: Name) =
-        owner
-          .newStubSymbol(
-            name,
-            s"Class file for ${entry.externalName} not found")
-          .setFlag(JAVA)
+        owner.newStubSymbol(
+          name,
+          s"Class file for ${entry.externalName} not found").setFlag(JAVA)
 
       val (innerClass, innerModule) =
         if (file == NoAbstractFile) {
           (newStub(name.toTypeName), newStub(name.toTermName))
         } else {
-          val cls = owner.newClass(
-            name.toTypeName,
-            NoPosition,
-            sflags) setInfo completer
-          val mod = owner.newModule(
-            name.toTermName,
-            NoPosition,
-            sflags) setInfo completer
+          val cls = owner
+            .newClass(name.toTypeName, NoPosition, sflags) setInfo completer
+          val mod = owner
+            .newModule(name.toTermName, NoPosition, sflags) setInfo completer
           mod.moduleClass setInfo loaders.moduleClassLoader
           List(cls, mod.moduleClass) foreach (_.associatedFile = file)
           (cls, mod)

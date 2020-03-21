@@ -43,9 +43,8 @@ object Macros {
           .Expr[scala.reflect.runtime.universe.Expr[T => U]](reifiedTree)
         val template = c.universe.reify(new (T => U) with TypedFunction {
           override def toString =
-            c.Expr[String](
-                q"""${tp + " => " + ttag.tpe + " { " + b1.toString + " } "}""")
-              .splice // DEBUG
+            c.Expr[String](q"""${tp + " => " + ttag.tpe + " { " + b1
+              .toString + " } "}""").splice // DEBUG
           def tree = reifiedExpr.splice.tree
           val typeIn = c.Expr[String](q"${tp.toString}").splice
           val typeOut = c.Expr[String](q"${ttag.tpe.toString}").splice

@@ -42,10 +42,8 @@ trait DistributedPubSubMediatorRouterSpec {
 
       mediator ! DistributedPubSubMediator.Put(testActor)
 
-      mediator ! DistributedPubSubMediator.Send(
-        path,
-        msg,
-        localAffinity = false)
+      mediator ! DistributedPubSubMediator
+        .Send(path, msg, localAffinity = false)
       expectMsg(msg)
 
       mediator ! DistributedPubSubMediator.Remove(path)
@@ -77,16 +75,12 @@ trait DistributedPubSubMediatorRouterSpec {
 
     "keep the RouterEnvelope when sending to a topic for a group" in {
 
-      mediator ! DistributedPubSubMediator.Subscribe(
-        "topic",
-        Some("group"),
-        testActor)
+      mediator ! DistributedPubSubMediator
+        .Subscribe("topic", Some("group"), testActor)
       expectMsgClass(classOf[DistributedPubSubMediator.SubscribeAck])
 
-      mediator ! DistributedPubSubMediator.Publish(
-        "topic",
-        msg,
-        sendOneMessageToEachGroup = true)
+      mediator ! DistributedPubSubMediator
+        .Publish("topic", msg, sendOneMessageToEachGroup = true)
       expectMsg(msg)
 
       mediator ! DistributedPubSubMediator.Unsubscribe("topic", testActor)
@@ -134,8 +128,8 @@ class DistributedPubSubMediatorWithHashRouterSpec
             .parseString(DistributedPubSubMediatorRouterSpec.config("random"))
             .withFallback(system.settings.config)
             .getConfig("akka.cluster.pub-sub")
-          DistributedPubSubSettings(config).withRoutingLogic(
-            ConsistentHashingRoutingLogic(system))
+          DistributedPubSubSettings(config)
+            .withRoutingLogic(ConsistentHashingRoutingLogic(system))
         }
       }
     }

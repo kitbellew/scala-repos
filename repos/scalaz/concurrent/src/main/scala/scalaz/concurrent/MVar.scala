@@ -64,9 +64,10 @@ private[this] class MVarImpl[A](
           case Some(a) => IO(a)
           case None =>
             for {
-              _ <- readLatch.awaitPhase(
-                p
-              ) // we don't have a value so we wait for someone to put one
+              _ <- readLatch
+                .awaitPhase(
+                  p
+                ) // we don't have a value so we wait for someone to put one
               a <- read_ // someone has put a value so now we try to read it
             } yield a
         }
@@ -95,7 +96,8 @@ private[this] class MVarImpl[A](
                     read
                   ) // If the value has changed, the write will fail so we'll need to try it again.
                 else
-                  readLatch.release // If the write succeeded, release a thread waiting for a value.
+                  readLatch
+                    .release // If the write succeeded, release a thread waiting for a value.
             }
         })
     }

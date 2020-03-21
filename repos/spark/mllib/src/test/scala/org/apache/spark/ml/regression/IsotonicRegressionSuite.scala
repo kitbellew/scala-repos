@@ -30,17 +30,13 @@ class IsotonicRegressionSuite
     with DefaultReadWriteTest {
 
   private def generateIsotonicInput(labels: Seq[Double]): DataFrame = {
-    sqlContext
-      .createDataFrame(labels.zipWithIndex.map {
-        case (label, i) => (label, i.toDouble, 1.0)
-      })
-      .toDF("label", "features", "weight")
+    sqlContext.createDataFrame(labels.zipWithIndex.map {
+      case (label, i) => (label, i.toDouble, 1.0)
+    }).toDF("label", "features", "weight")
   }
 
   private def generatePredictionInput(features: Seq[Double]): DataFrame = {
-    sqlContext
-      .createDataFrame(features.map(Tuple1.apply))
-      .toDF("features")
+    sqlContext.createDataFrame(features.map(Tuple1.apply)).toDF("features")
   }
 
   test("isotonic regression predictions") {
@@ -49,12 +45,9 @@ class IsotonicRegressionSuite
 
     val model = ir.fit(dataset)
 
-    val predictions = model
-      .transform(dataset)
-      .select("prediction")
-      .rdd
-      .map { case Row(pred) => pred }
-      .collect()
+    val predictions = model.transform(dataset).select("prediction").rdd.map {
+      case Row(pred) => pred
+    }.collect()
 
     assert(predictions === Array(1, 2, 2, 2, 6, 16.5, 16.5, 17, 18))
 
@@ -72,12 +65,9 @@ class IsotonicRegressionSuite
     val features = generatePredictionInput(Seq(
       -2.0, -1.0, 0.5, 0.75, 1.0, 2.0, 9.0))
 
-    val predictions = model
-      .transform(features)
-      .select("prediction")
-      .rdd
-      .map { case Row(pred) => pred }
-      .collect()
+    val predictions = model.transform(features).select("prediction").rdd.map {
+      case Row(pred) => pred
+    }.collect()
 
     assert(predictions === Array(7, 7, 6, 5.5, 5, 4, 1))
   }
@@ -105,9 +95,7 @@ class IsotonicRegressionSuite
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(model)
 
-    model
-      .transform(dataset)
-      .select("label", "features", "prediction", "weight")
+    model.transform(dataset).select("label", "features", "prediction", "weight")
       .collect()
 
     assert(model.getLabelCol === "label")
@@ -120,11 +108,8 @@ class IsotonicRegressionSuite
   }
 
   test("set parameters") {
-    val isotonicRegression = new IsotonicRegression()
-      .setIsotonic(false)
-      .setWeightCol("w")
-      .setFeaturesCol("f")
-      .setLabelCol("l")
+    val isotonicRegression = new IsotonicRegression().setIsotonic(false)
+      .setWeightCol("w").setFeaturesCol("f").setLabelCol("l")
       .setPredictionCol("p")
 
     assert(!isotonicRegression.getIsotonic)
@@ -150,34 +135,26 @@ class IsotonicRegressionSuite
     }
 
     intercept[IllegalArgumentException] {
-      new IsotonicRegression()
-        .fit(dataset)
-        .setFeaturesCol("f")
+      new IsotonicRegression().fit(dataset).setFeaturesCol("f")
         .transform(dataset)
     }
   }
 
   test("vector features column with feature index") {
-    val dataset = sqlContext
-      .createDataFrame(Seq(
-        (4.0, Vectors.dense(0.0, 1.0)),
-        (3.0, Vectors.dense(0.0, 2.0)),
-        (5.0, Vectors.sparse(2, Array(1), Array(3.0)))))
-      .toDF("label", "features")
+    val dataset = sqlContext.createDataFrame(Seq(
+      (4.0, Vectors.dense(0.0, 1.0)),
+      (3.0, Vectors.dense(0.0, 2.0)),
+      (5.0, Vectors.sparse(2, Array(1), Array(3.0))))).toDF("label", "features")
 
-    val ir = new IsotonicRegression()
-      .setFeatureIndex(1)
+    val ir = new IsotonicRegression().setFeatureIndex(1)
 
     val model = ir.fit(dataset)
 
     val features = generatePredictionInput(Seq(2.0, 3.0, 4.0, 5.0))
 
-    val predictions = model
-      .transform(features)
-      .select("prediction")
-      .rdd
-      .map { case Row(pred) => pred }
-      .collect()
+    val predictions = model.transform(features).select("prediction").rdd.map {
+      case Row(pred) => pred
+    }.collect()
 
     assert(predictions === Array(3.5, 5.0, 5.0, 5.0))
   }

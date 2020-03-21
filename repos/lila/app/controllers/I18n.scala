@@ -18,9 +18,8 @@ object I18n extends LilaController {
       import play.api.data.Forms._
       import play.api.data._
       implicit val req = ctx.body
-      Form(
-        single("lang" -> text.verifying(env.pool contains _))).bindFromRequest
-        .fold(
+      Form(single("lang" -> text.verifying(env.pool contains _)))
+        .bindFromRequest.fold(
           _ => notFound,
           lang =>
             {
@@ -51,8 +50,8 @@ object I18n extends LilaController {
 
   def contribute =
     Open { implicit ctx =>
-      val mines =
-        (ctx.req.acceptLanguages map env.transInfos.get).toList.flatten.distinct
+      val mines = (ctx.req.acceptLanguages map env.transInfos.get).toList
+        .flatten.distinct
       Ok(html.i18n.contribute(env.transInfos.all, mines)).fuccess
     }
 
@@ -86,10 +85,8 @@ object I18n extends LilaController {
             env.forms.process(lang, metadata, data, me.username) inject {
               Redirect(routes.I18n.contribute)
                 .flashing("success" -> "1") withCookies
-                LilaCookie.cookie(
-                  env.hideCallsCookieName,
-                  "1",
-                  maxAge = Some(60 * 24))
+                LilaCookie
+                  .cookie(env.hideCallsCookieName, "1", maxAge = Some(60 * 24))
             }
           }
       }

@@ -67,9 +67,8 @@ class LogManager(
 
   createAndValidateLogDirs(logDirs)
   private val dirLocks = lockLogDirs(logDirs)
-  private val recoveryPointCheckpoints = logDirs
-    .map(dir =>
-      (dir, new OffsetCheckpoint(new File(dir, RecoveryPointCheckpointFile))))
+  private val recoveryPointCheckpoints = logDirs.map(dir =>
+    (dir, new OffsetCheckpoint(new File(dir, RecoveryPointCheckpointFile))))
     .toMap
   loadLogs()
 
@@ -114,7 +113,8 @@ class LogManager(
       val lock = new FileLock(new File(dir, LockFile))
       if (!lock.tryLock())
         throw new KafkaException(
-          "Failed to acquire lock on file .lock in " + lock.file.getParentFile.getAbsolutePath +
+          "Failed to acquire lock on file .lock in " + lock.file.getParentFile
+            .getAbsolutePath +
             ". A Kafka instance in another process or thread is using this directory.")
       lock
     }
@@ -164,9 +164,8 @@ class LogManager(
           debug("Loading log '" + logDir.getName + "'")
 
           val topicPartition = Log.parseTopicPartitionName(logDir)
-          val config = topicConfigs.getOrElse(
-            topicPartition.topic,
-            defaultConfig)
+          val config = topicConfigs
+            .getOrElse(topicPartition.topic, defaultConfig)
           val logRecoveryPoint = recoveryPoints.getOrElse(topicPartition, 0L)
 
           val current =
@@ -193,7 +192,8 @@ class LogManager(
     } catch {
       case e: ExecutionException => {
         error(
-          "There was an error in one of the threads during logs loading: " + e.getCause)
+          "There was an error in one of the threads during logs loading: " + e
+            .getCause)
         throw e.getCause
       }
     } finally { threadPools.foreach(_.shutdown()) }
@@ -280,7 +280,8 @@ class LogManager(
     } catch {
       case e: ExecutionException => {
         error(
-          "There was an error in one of the threads during LogManager shutdown: " + e.getCause)
+          "There was an error in one of the threads during LogManager shutdown: " + e
+            .getCause)
         throw e.getCause
       }
     } finally {
@@ -358,8 +359,7 @@ class LogManager(
   private def checkpointLogsInDir(dir: File): Unit = {
     val recoveryPoints = this.logsByDir.get(dir.toString)
     if (recoveryPoints.isDefined) {
-      this
-        .recoveryPointCheckpoints(dir)
+      this.recoveryPointCheckpoints(dir)
         .write(recoveryPoints.get.mapValues(_.recoveryPoint))
     }
   }
@@ -394,12 +394,11 @@ class LogManager(
       log = new Log(dir, config, recoveryPoint = 0L, scheduler, time)
       logs.put(topicAndPartition, log)
       info(
-        "Created log for partition [%s,%d] in %s with properties {%s}."
-          .format(
-            topicAndPartition.topic,
-            topicAndPartition.partition,
-            dataDir.getAbsolutePath,
-            { import JavaConversions._; config.originals.mkString(", ") }))
+        "Created log for partition [%s,%d] in %s with properties {%s}.".format(
+          topicAndPartition.topic,
+          topicAndPartition.partition,
+          dataDir.getAbsolutePath,
+          { import JavaConversions._; config.originals.mkString(", ") }))
       log
     }
   }
@@ -419,12 +418,10 @@ class LogManager(
         cleaner.updateCheckpoints(removedLog.dir.getParentFile)
       }
       removedLog.delete()
-      info(
-        "Deleted log for partition [%s,%d] in %s."
-          .format(
-            topicAndPartition.topic,
-            topicAndPartition.partition,
-            removedLog.dir.getAbsolutePath))
+      info("Deleted log for partition [%s,%d] in %s.".format(
+        topicAndPartition.topic,
+        topicAndPartition.partition,
+        removedLog.dir.getAbsolutePath))
     }
   }
 
@@ -516,8 +513,10 @@ class LogManager(
       try {
         val timeSinceLastFlush = time.milliseconds - log.lastFlushTime
         debug(
-          "Checking if flush is needed on " + topicAndPartition.topic + " flush interval  " + log.config.flushMs +
-            " last flushed " + log.lastFlushTime + " time since last flush: " + timeSinceLastFlush)
+          "Checking if flush is needed on " + topicAndPartition
+            .topic + " flush interval  " + log.config.flushMs +
+            " last flushed " + log
+            .lastFlushTime + " time since last flush: " + timeSinceLastFlush)
         if (timeSinceLastFlush >= log.config.flushMs) log.flush
       } catch {
         case e: Throwable =>

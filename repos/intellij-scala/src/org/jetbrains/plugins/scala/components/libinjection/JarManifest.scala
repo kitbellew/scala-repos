@@ -61,29 +61,25 @@ object JarManifest {
   def deserialize(
       f: VirtualFile,
       containingJar: VirtualFile = null): JarManifest = {
-    val jar = Option(containingJar).getOrElse(VfsUtilCore.getVirtualFileForJar(
-      f))
+    val jar = Option(containingJar)
+      .getOrElse(VfsUtilCore.getVirtualFileForJar(f))
     deserialize(XML.load(f.getInputStream), jar)
   }
 
   def deserialize(elem: Elem, containingJar: VirtualFile): JarManifest = {
     def buildInjectorDescriptor(n: Node): InjectorDescriptor = {
       val version = (n \ "@version").headOption.map(_.text.toInt).getOrElse(0)
-      val iface = (n \ "@interface").headOption
-        .map(_.text)
+      val iface = (n \ "@interface").headOption.map(_.text)
         .getOrElse(throw new InvalidManifestException(n, "interface"))
-      val impl = (n \ "@implementation").headOption
-        .map(_.text)
+      val impl = (n \ "@implementation").headOption.map(_.text)
         .getOrElse(throw new InvalidManifestException(n, "implementation"))
       val sources = (n \\ "source").map(_.text)
       InjectorDescriptor(version, iface, impl, sources)
     }
     def buildPluginDescriptor(n: Node): PluginDescriptor = {
-      val since = Version
-        .parse((n \ "@since-version").text)
+      val since = Version.parse((n \ "@since-version").text)
         .getOrElse(throw new InvalidManifestException(n, "since-version"))
-      val until = Version
-        .parse((n \ "@until-version").text)
+      val until = Version.parse((n \ "@until-version").text)
         .getOrElse(throw new InvalidManifestException(n, "until-version"))
       val injectors = (n \\ "psi-injector").map(buildInjectorDescriptor)
       PluginDescriptor(since, until, injectors)

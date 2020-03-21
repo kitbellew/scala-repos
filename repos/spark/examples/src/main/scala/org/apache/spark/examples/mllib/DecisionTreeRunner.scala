@@ -75,14 +75,12 @@ object DecisionTreeRunner {
 
     val parser = new OptionParser[Params]("DecisionTreeRunner") {
       head("DecisionTreeRunner: an example decision tree app.")
-      opt[String]("algo")
-        .text(
-          s"algorithm (${Algo.values.mkString(",")}), default: ${defaultParams.algo}")
+      opt[String]("algo").text(
+        s"algorithm (${Algo.values.mkString(",")}), default: ${defaultParams.algo}")
         .action((x, c) => c.copy(algo = Algo.withName(x)))
-      opt[String]("impurity")
-        .text(
-          s"impurity type (${ImpurityType.values.mkString(",")}), " +
-            s"default: ${defaultParams.impurity}")
+      opt[String]("impurity").text(
+        s"impurity type (${ImpurityType.values.mkString(",")}), " +
+          s"default: ${defaultParams.impurity}")
         .action((x, c) => c.copy(impurity = ImpurityType.withName(x)))
       opt[Int]("maxDepth")
         .text(s"max depth of the tree, default: ${defaultParams.maxDepth}")
@@ -90,60 +88,48 @@ object DecisionTreeRunner {
       opt[Int]("maxBins")
         .text(s"max number of bins, default: ${defaultParams.maxBins}")
         .action((x, c) => c.copy(maxBins = x))
-      opt[Int]("minInstancesPerNode")
-        .text(
-          s"min number of instances required at child nodes to create the parent split," +
-            s" default: ${defaultParams.minInstancesPerNode}")
+      opt[Int]("minInstancesPerNode").text(
+        s"min number of instances required at child nodes to create the parent split," +
+          s" default: ${defaultParams.minInstancesPerNode}")
         .action((x, c) => c.copy(minInstancesPerNode = x))
-      opt[Double]("minInfoGain")
-        .text(
-          s"min info gain required to create a split, default: ${defaultParams.minInfoGain}")
+      opt[Double]("minInfoGain").text(
+        s"min info gain required to create a split, default: ${defaultParams.minInfoGain}")
         .action((x, c) => c.copy(minInfoGain = x))
-      opt[Int]("numTrees")
-        .text(
-          s"number of trees (1 = decision tree, 2+ = random forest)," +
-            s" default: ${defaultParams.numTrees}")
+      opt[Int]("numTrees").text(
+        s"number of trees (1 = decision tree, 2+ = random forest)," +
+          s" default: ${defaultParams.numTrees}")
         .action((x, c) => c.copy(numTrees = x))
-      opt[String]("featureSubsetStrategy")
-        .text(
-          s"feature subset sampling strategy" +
-            s" (${RandomForest.supportedFeatureSubsetStrategies.mkString(", ")}), " +
-            s"default: ${defaultParams.featureSubsetStrategy}")
+      opt[String]("featureSubsetStrategy").text(
+        s"feature subset sampling strategy" +
+          s" (${RandomForest.supportedFeatureSubsetStrategies.mkString(", ")}), " +
+          s"default: ${defaultParams.featureSubsetStrategy}")
         .action((x, c) => c.copy(featureSubsetStrategy = x))
-      opt[Double]("fracTest")
-        .text(
-          s"fraction of data to hold out for testing.  If given option testInput, " +
-            s"this option is ignored. default: ${defaultParams.fracTest}")
+      opt[Double]("fracTest").text(
+        s"fraction of data to hold out for testing.  If given option testInput, " +
+          s"this option is ignored. default: ${defaultParams.fracTest}")
         .action((x, c) => c.copy(fracTest = x))
-      opt[Boolean]("useNodeIdCache")
-        .text(
-          s"whether to use node Id cache during training, " +
-            s"default: ${defaultParams.useNodeIdCache}")
+      opt[Boolean]("useNodeIdCache").text(
+        s"whether to use node Id cache during training, " +
+          s"default: ${defaultParams.useNodeIdCache}")
         .action((x, c) => c.copy(useNodeIdCache = x))
-      opt[String]("checkpointDir")
-        .text(
-          s"checkpoint directory where intermediate node Id caches will be stored, " +
-            s"default: ${defaultParams.checkpointDir match {
-              case Some(strVal) => strVal
-              case None         => "None"
-            }}")
-        .action((x, c) => c.copy(checkpointDir = Some(x)))
-      opt[Int]("checkpointInterval")
-        .text(
-          s"how often to checkpoint the node Id cache, " +
-            s"default: ${defaultParams.checkpointInterval}")
+      opt[String]("checkpointDir").text(
+        s"checkpoint directory where intermediate node Id caches will be stored, " +
+          s"default: ${defaultParams.checkpointDir match {
+            case Some(strVal) => strVal
+            case None         => "None"
+          }}").action((x, c) => c.copy(checkpointDir = Some(x)))
+      opt[Int]("checkpointInterval").text(
+        s"how often to checkpoint the node Id cache, " +
+          s"default: ${defaultParams.checkpointInterval}")
         .action((x, c) => c.copy(checkpointInterval = x))
-      opt[String]("testInput")
-        .text(
-          s"input path to test dataset.  If given, option fracTest is ignored." +
-            s" default: ${defaultParams.testInput}")
+      opt[String]("testInput").text(
+        s"input path to test dataset.  If given, option fracTest is ignored." +
+          s" default: ${defaultParams.testInput}")
         .action((x, c) => c.copy(testInput = x))
       opt[String]("dataFormat")
         .text("data format: libsvm (default), dense (deprecated in Spark v1.1)")
         .action((x, c) => c.copy(dataFormat = x))
-      arg[String]("<input>")
-        .text("input path to labeled examples")
-        .required()
+      arg[String]("<input>").text("input path to labeled examples").required()
         .action((x, c) => c.copy(input = x))
       checkConfig { params =>
         if (params.fracTest < 0 || params.fracTest > 1) {
@@ -206,8 +192,8 @@ object DecisionTreeRunner {
         val examples = {
           if (classIndexMap.isEmpty) { origExamples }
           else {
-            origExamples.map(lp =>
-              LabeledPoint(classIndexMap(lp.label), lp.features))
+            origExamples
+              .map(lp => LabeledPoint(classIndexMap(lp.label), lp.features))
           }
         }
         val numExamples = examples.count()
@@ -240,8 +226,8 @@ object DecisionTreeRunner {
             val testExamples = {
               if (classIndexMap.isEmpty) { origTestExamples }
               else {
-                origTestExamples.map(lp =>
-                  LabeledPoint(classIndexMap(lp.label), lp.features))
+                origTestExamples
+                  .map(lp => LabeledPoint(classIndexMap(lp.label), lp.features))
               }
             }
             Array(examples, testExamples)
@@ -381,12 +367,10 @@ object DecisionTreeRunner {
   private[mllib] def meanSquaredError(
       model: { def predict(features: Vector): Double },
       data: RDD[LabeledPoint]): Double = {
-    data
-      .map { y =>
-        val err = model.predict(y.features) - y.label
-        err * err
-      }
-      .mean()
+    data.map { y =>
+      val err = model.predict(y.features) - y.label
+      err * err
+    }.mean()
   }
   // scalastyle:on structural.type
 }

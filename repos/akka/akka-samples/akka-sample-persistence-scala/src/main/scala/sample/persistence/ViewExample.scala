@@ -55,10 +55,7 @@ object ViewExample extends App {
 
   import system.dispatcher
 
-  system.scheduler.schedule(
-    Duration.Zero,
-    2.seconds,
-    persistentActor,
-    "scheduled")
+  system.scheduler
+    .schedule(Duration.Zero, 2.seconds, persistentActor, "scheduled")
   system.scheduler.schedule(Duration.Zero, 5.seconds, view, "snap")
 }

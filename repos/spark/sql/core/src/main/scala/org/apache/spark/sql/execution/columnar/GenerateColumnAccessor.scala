@@ -180,7 +180,8 @@ object GenerateColumnAccessor
             return false;
           }
 
-          ${classOf[CachedBatch].getName} batch = (${classOf[CachedBatch].getName}) input.next();
+          ${classOf[CachedBatch].getName} batch = (${classOf[CachedBatch]
+      .getName}) input.next();
           currentRow = 0;
           numRowsInBatch = batch.numRows();
           for (int i = 0; i < columnIndexes.length; i ++) {
@@ -203,9 +204,7 @@ object GenerateColumnAccessor
 
     logDebug(s"Generated ColumnarIterator: ${CodeFormatter.format(code)}")
 
-    CodeGenerator
-      .compile(code)
-      .generate(Array.empty)
+    CodeGenerator.compile(code).generate(Array.empty)
       .asInstanceOf[ColumnarIterator]
   }
 }

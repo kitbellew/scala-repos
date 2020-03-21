@@ -112,8 +112,8 @@ class BasicFieldDescriptor[T](
         Some(bindingValidators.map(_ apply name).reduce(_ andThen _))
       else None
 
-    copy(validator =
-      validator.flatMap(v => nwValidators.map(v andThen)) orElse nwValidators)
+    copy(validator = validator
+      .flatMap(v => nwValidators.map(v andThen)) orElse nwValidators)
   }
 
   def copy(
@@ -195,10 +195,8 @@ trait DataboundFieldDescriptor[S, T] extends FieldDescriptor[T] {
     this.asInstanceOf[DataboundFieldDescriptor[V, T]]
 
   override def toString() =
-    "FieldDescriptor(name: %s, original: %s, value: %s)".format(
-      name,
-      original,
-      value)
+    "FieldDescriptor(name: %s, original: %s, value: %s)"
+      .format(name, original, value)
   def validate: ValidatedFieldDescriptor[S, T]
   def validateWith(
       bindingValidators: BindingValidator[T]*): DataboundFieldDescriptor[S, T]
@@ -254,10 +252,8 @@ class BoundFieldDescriptor[S, T](
       case _                             => false
     }
   override def toString() =
-    "BoundFieldDescriptor(name: %s, original: %s, converted: %s)".format(
-      name,
-      original,
-      value)
+    "BoundFieldDescriptor(name: %s, original: %s, converted: %s)"
+      .format(name, original, value)
 
   def validateWith(bindingValidators: BindingValidator[T]*)
       : DataboundFieldDescriptor[S, T] = {
@@ -343,10 +339,8 @@ class ValidatedBoundFieldDescriptor[S, T](
       case _                                      => false
     }
   override def toString() =
-    "BoundFieldDescriptor(name: %s, original: %s, converted: %s)".format(
-      name,
-      original,
-      value)
+    "BoundFieldDescriptor(name: %s, original: %s, converted: %s)"
+      .format(name, original, value)
 
   def validateWith(bindingValidators: BindingValidator[T]*)
       : DataboundFieldDescriptor[S, T] = {
@@ -418,8 +412,8 @@ object BindingValidators {
   class ValidatableSeq[T <: Seq[_]](b: FieldDescriptor[T]) {
     def notEmpty: FieldDescriptor[T] = notEmpty()
     def notEmpty(messageFormat: String = b.requiredError): FieldDescriptor[T] =
-      b.required.validateWith(BindingValidators.nonEmptyCollection(
-        messageFormat))
+      b.required
+        .validateWith(BindingValidators.nonEmptyCollection(messageFormat))
   }
 
   class ValidatableOrdered[T <% Ordered[T]](b: FieldDescriptor[T]) {
@@ -550,8 +544,7 @@ object BindingValidators {
       schemes: Seq[String] = Seq("http", "https")): BindingValidator[String] =
     (s: String) => {
       _ flatMap Validators
-        .validAbsoluteUrl(s, allowLocalHost, messageFormat, schemes)
-        .validate
+        .validAbsoluteUrl(s, allowLocalHost, messageFormat, schemes).validate
     }
 
   def validUrl(
@@ -559,8 +552,7 @@ object BindingValidators {
       messageFormat: String = "%s must be a valid url.",
       schemes: Seq[String] = Seq("http", "https")): BindingValidator[String] =
     (s: String) => {
-      _ flatMap Validators
-        .validUrl(s, allowLocalHost, messageFormat, schemes)
+      _ flatMap Validators.validUrl(s, allowLocalHost, messageFormat, schemes)
         .validate
     }
 
@@ -576,13 +568,11 @@ object BindingValidators {
       messageFormat: String = "%%s must match %s."): BindingValidator[String] =
     (s: String) => {
       _ flatMap {
-        Validators
-          .validConfirmation(
-            s,
-            against.name,
-            (against.value orElse against.defaultValue).orNull,
-            messageFormat)
-          .validate
+        Validators.validConfirmation(
+          s,
+          against.name,
+          (against.value orElse against.defaultValue).orNull,
+          messageFormat).validate
       }
     }
 

@@ -37,7 +37,10 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
   def ===[P2, R](e: Rep[P2])(implicit om: o#arg[B1, P2]#to[Boolean, R]) =
     om.column(Library.==, n, e.toNode)
   def =!=[P2, R](e: Rep[P2])(implicit om: o#arg[B1, P2]#to[Boolean, R]) =
-    om.column(Library.Not, Library.==.typed(om.liftedType, n, e.toNode))
+    om.column(
+      Library.Not,
+      Library
+        .==.typed(om.liftedType, n, e.toNode))
 
   def <[P2, R](e: Rep[P2])(implicit om: o#arg[B1, P2]#to[Boolean, R]) =
     om.column(Library.<, n, e.toNode)
@@ -99,10 +102,7 @@ final class OptionColumnExtensionMethods[B1](val c: Rep[Option[B1]])
     Rep.forNode[B1](GetOrElse(
       c.toNode,
       () => throw new SlickException("Read NULL value for column " + this)))(
-      c.asInstanceOf[Rep.TypedRep[_]]
-        .tpe
-        .asInstanceOf[OptionType]
-        .elementType
+      c.asInstanceOf[Rep.TypedRep[_]].tpe.asInstanceOf[OptionType].elementType
         .asInstanceOf[TypedType[B1]])
 }
 
@@ -246,8 +246,8 @@ final class AnyOptionExtensionMethods[O <: Rep[_], P](val r: O) extends AnyVal {
     // create a None for arbitrary types. Here we can use a None of the dummy type Option[Null].
     val gen = new AnonSymbol
     val mapv = f(OptionLift.baseValue[P, O](r, Ref(gen)))
-    mapv.encodeRef(
-      OptionFold(r.toNode, LiteralNode.nullOption, mapv.toNode, gen))
+    mapv
+      .encodeRef(OptionFold(r.toNode, LiteralNode.nullOption, mapv.toNode, gen))
   }
 
   /** Transform the value inside this Option */

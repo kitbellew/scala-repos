@@ -12,8 +12,8 @@ trait MapInstances {
 
     def bitraverseImpl[G[_]: Applicative, A, B, C, D](
         fab: Entry[A, B])(f: A => G[C], g: B => G[D]) =
-      Applicative[G].apply2(f(fab.getKey), g(fab.getValue))(
-        new SimpleImmutableEntry(_, _))
+      Applicative[G]
+        .apply2(f(fab.getKey), g(fab.getValue))(new SimpleImmutableEntry(_, _))
 
   }
 }

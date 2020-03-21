@@ -169,8 +169,8 @@ object Promise {
   private def initState[A]: State[A] = emptyState.asInstanceOf[State[A]]
   private val emptyState: State[Nothing] = Waiting(null, Nil)
   private val unsafe = Unsafe()
-  private val stateOff = unsafe.objectFieldOffset(
-    classOf[Promise[_]].getDeclaredField("state"))
+  private val stateOff = unsafe
+    .objectFieldOffset(classOf[Promise[_]].getDeclaredField("state"))
   private val AlwaysUnit: Any => Unit = scala.Function.const(()) _
 
   sealed trait Responder[A] {

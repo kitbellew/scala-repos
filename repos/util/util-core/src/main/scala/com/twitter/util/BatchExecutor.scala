@@ -129,8 +129,8 @@ private[util] class BatchExecutor[In, Out](
         case e: Throwable =>
           log.log(
             WARNING,
-            "unhandled exception caught in Future.batched: %s".format(
-              e.toString),
+            "unhandled exception caught in Future.batched: %s"
+              .format(e.toString),
             e)
       }
   }

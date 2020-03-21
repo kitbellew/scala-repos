@@ -107,19 +107,14 @@ private[spark] class SchedulerExtensionServices
     logInfo(
       s"Starting Yarn extension services with app $appId and attemptId $attemptId")
 
-    services = sparkContext.conf
-      .get(SCHEDULER_SERVICES)
-      .map { sClass =>
-        val instance = Utils
-          .classForName(sClass)
-          .newInstance()
-          .asInstanceOf[SchedulerExtensionService]
-        // bind this service
-        instance.start(binding)
-        logInfo(s"Service $sClass started")
-        instance
-      }
-      .toList
+    services = sparkContext.conf.get(SCHEDULER_SERVICES).map { sClass =>
+      val instance = Utils.classForName(sClass).newInstance()
+        .asInstanceOf[SchedulerExtensionService]
+      // bind this service
+      instance.start(binding)
+      logInfo(s"Service $sClass started")
+      instance
+    }.toList
   }
 
   /**

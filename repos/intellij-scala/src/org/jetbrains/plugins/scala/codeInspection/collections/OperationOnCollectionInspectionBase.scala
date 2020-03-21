@@ -47,24 +47,24 @@ object OperationOnCollectionInspectionBase {
   private val likeCollectionKey = "operation.on.collection.like.collection"
 
   private val inputMessages = Map(
-    likeCollectionKey -> InspectionBundle.message(
-      "operation.on.collection.like.collection.input.message"),
-    likeOptionKey -> InspectionBundle.message(
-      "operation.on.collection.like.option.input.message")
+    likeCollectionKey -> InspectionBundle
+      .message("operation.on.collection.like.collection.input.message"),
+    likeOptionKey -> InspectionBundle
+      .message("operation.on.collection.like.option.input.message")
   )
 
   private val inputTitles = Map(
-    likeCollectionKey -> InspectionBundle.message(
-      "operation.on.collection.like.collection.input.title"),
-    likeOptionKey -> InspectionBundle.message(
-      "operation.on.collection.like.option.input.title")
+    likeCollectionKey -> InspectionBundle
+      .message("operation.on.collection.like.collection.input.title"),
+    likeOptionKey -> InspectionBundle
+      .message("operation.on.collection.like.option.input.title")
   )
 
   private val panelTitles = Map(
-    likeCollectionKey -> InspectionBundle.message(
-      "operation.on.collection.like.collection.panel.title"),
-    likeOptionKey -> InspectionBundle.message(
-      "operation.on.collection.like.option.panel.title")
+    likeCollectionKey -> InspectionBundle
+      .message("operation.on.collection.like.collection.panel.title"),
+    likeOptionKey -> InspectionBundle
+      .message("operation.on.collection.like.option.panel.title")
   )
 }
 
@@ -94,8 +94,8 @@ abstract class OperationOnCollectionInspectionBase
         if getSimplificationTypesEnabled(idx)
       } yield st
 
-    simplificationTypes.flatMap(st =>
-      st.getSimplifications(expr) ++ st.getSimplification(expr))
+    simplificationTypes
+      .flatMap(st => st.getSimplifications(expr) ++ st.getSimplification(expr))
   }
 
   def getLikeCollectionClasses: Array[String] =
@@ -154,13 +154,12 @@ abstract class OperationOnCollectionInspectionBase
         val newArray = listModel.toArray collect { case s: String => s }
         setPatternLists(patternListKey)(newArray)
       }
-      val panel = ToolbarDecorator
-        .createDecorator(patternJBList)
+      val panel = ToolbarDecorator.createDecorator(patternJBList)
         .setAddAction(new AnActionButtonRunnable {
           def addPattern(pattern: String) {
             if (pattern == null) return
-            val index: Int =
-              -util.Arrays.binarySearch(listModel.toArray, pattern) - 1
+            val index: Int = -util.Arrays
+              .binarySearch(listModel.toArray, pattern) - 1
             if (index < 0) return
             JListCompatibility.add(listModel, index, pattern)
             resetValues()
@@ -170,8 +169,8 @@ abstract class OperationOnCollectionInspectionBase
           }
 
           def run(button: AnActionButton) {
-            val validator: InputValidator =
-              ScalaProjectSettingsUtil.getPatternValidator
+            val validator: InputValidator = ScalaProjectSettingsUtil
+              .getPatternValidator
             val inputMessage = inputMessages(patternListKey)
             val inputTitle = inputTitles(patternListKey)
             val newPattern: String = Messages.showInputDialog(
@@ -183,15 +182,12 @@ abstract class OperationOnCollectionInspectionBase
               validator)
             addPattern(newPattern)
           }
-        })
-        .setRemoveAction(new AnActionButtonRunnable {
+        }).setRemoveAction(new AnActionButtonRunnable {
           def run(t: AnActionButton) {
             patternJBList.getSelectedIndices.foreach(listModel.removeElementAt)
             resetValues()
           }
-        })
-        .disableUpDownActions
-        .createPanel
+        }).disableUpDownActions.createPanel
 
       val title = panelTitles(patternListKey)
       val border = BorderFactory.createTitledBorder(title)

@@ -29,9 +29,10 @@ private[akka] trait DeathWatch {
       case a: InternalActorRef ⇒
         if (a != self && !watchingContains(a)) {
           maintainAddressTerminatedSubscription(a) {
-            a.sendSystemMessage(
-              Watch(a, self)
-            ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+            a
+              .sendSystemMessage(
+                Watch(a, self)
+              ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
             watching += a
           }
         }
@@ -42,9 +43,10 @@ private[akka] trait DeathWatch {
     subject match {
       case a: InternalActorRef ⇒
         if (a != self && watchingContains(a)) {
-          a.sendSystemMessage(
-            Unwatch(a, self)
-          ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+          a
+            .sendSystemMessage(
+              Unwatch(a, self)
+            ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
           maintainAddressTerminatedSubscription(a) {
             watching = removeFromSet(a, watching)
           }
@@ -55,7 +57,8 @@ private[akka] trait DeathWatch {
 
   protected def receivedTerminated(t: Terminated): Unit =
     if (terminatedQueued(t.actor)) {
-      terminatedQueued -= t.actor // here we know that it is the SAME ref which was put in
+      terminatedQueued -= t
+        .actor // here we know that it is the SAME ref which was put in
       receiveMessage(t)
     }
 
@@ -72,9 +75,8 @@ private[akka] trait DeathWatch {
         watching = removeFromSet(actor, watching)
       }
       if (!isTerminating) {
-        self.tell(
-          Terminated(actor)(existenceConfirmed, addressTerminated),
-          actor)
+        self
+          .tell(Terminated(actor)(existenceConfirmed, addressTerminated), actor)
         terminatedQueuedFor(actor)
       }
     }
@@ -104,11 +106,9 @@ private[akka] trait DeathWatch {
       try {
         // Don't need to send to parent parent since it receives a DWN by default
         def sendTerminated(ifLocal: Boolean)(watcher: ActorRef): Unit =
-          if (watcher
-                .asInstanceOf[ActorRefScope]
+          if (watcher.asInstanceOf[ActorRefScope]
                 .isLocal == ifLocal && watcher != parent)
-            watcher
-              .asInstanceOf[InternalActorRef]
+            watcher.asInstanceOf[InternalActorRef]
               .sendSystemMessage(DeathWatchNotification(
                 self,
                 existenceConfirmed = true,

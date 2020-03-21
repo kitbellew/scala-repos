@@ -40,9 +40,7 @@ object CompilerData {
               absentJars.isEmpty,
               Some(jars),
               "Scala compiler JARs not found (module '" + chunk
-                .representativeTarget()
-                .getModule
-                .getName + "'): "
+                .representativeTarget().getModule.getName + "'): "
                 + absentJars.map(_.getPath).mkString(", ")
             )
         }
@@ -50,8 +48,7 @@ object CompilerData {
 
     compilerJars.flatMap { jars =>
       val incrementalityType = SettingsManager
-        .getProjectSettings(project.getProject)
-        .getIncrementalityType
+        .getProjectSettings(project.getProject).getIncrementalityType
       javaHome(context, module).map(CompilerData(jars, _, incrementalityType))
     }
   }
@@ -63,17 +60,15 @@ object CompilerData {
     val model = project.getModel
 
     Option(module.getSdk(JpsJavaSdkType.INSTANCE))
-      .toRight("No JDK in module " + module.getName)
-      .flatMap { moduleJdk =>
+      .toRight("No JDK in module " + module.getName).flatMap { moduleJdk =>
         val globalSettings = SettingsManager.getGlobalSettings(model.getGlobal)
 
         val jvmSdk =
-          if (globalSettings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE
-                .get(context) != null) {
+          if (globalSettings.isCompileServerEnabled && JavaBuilderUtil
+                .CONSTANT_SEARCH_SERVICE.get(context) != null) {
             Option(globalSettings.getCompileServerSdk).flatMap { sdkName =>
               val libraries = model.getGlobal.getLibraryCollection
-                .getLibraries(JpsJavaSdkType.INSTANCE)
-                .asScala
+                .getLibraries(JpsJavaSdkType.INSTANCE).asScala
               libraries.find(_.getName == sdkName).map(_.getProperties)
             }
           } else {
@@ -111,8 +106,8 @@ object CompilerData {
     if (sdk == null)
       return Left(s"Scala SDK not found in module ${module.getName}")
 
-    val files =
-      sdk.getProperties.asInstanceOf[LibrarySettings].getCompilerClasspath
+    val files = sdk.getProperties.asInstanceOf[LibrarySettings]
+      .getCompilerClasspath
 
     val library = find(files, "scala-library", ".jar") match {
       case Left(error) => Left(
@@ -129,18 +124,20 @@ object CompilerData {
       }
 
       compiler.flatMap { compilerJar =>
-        val extraJars = files.filterNot(file =>
-          file == libraryJar || file == compilerJar)
+        val extraJars = files
+          .filterNot(file => file == libraryJar || file == compilerJar)
 
         val reflectJarError = {
           readProperty(compilerJar, "compiler.properties", "version.number")
             .flatMap {
               case version
-                  if version.startsWith(
-                    "2.10"
-                  ) => // TODO implement a better version comparison
-                find(extraJars, "scala-reflect", ".jar").left.toOption
-                  .map(_ + " in Scala compiler classpath in Scala SDK " + sdk.getName)
+                  if version
+                    .startsWith(
+                      "2.10"
+                    ) => // TODO implement a better version comparison
+                find(extraJars, "scala-reflect", ".jar").left.toOption.map(
+                  _ + " in Scala compiler classpath in Scala SDK " + sdk
+                    .getName)
               case _ => None
             }
         }
@@ -159,10 +156,9 @@ object CompilerData {
       case Seq()     => Left("No '%s*%s'".format(prefix, suffix))
       case Seq(file) => Right(file)
       case Seq(duplicates @ _*) =>
-        Left("Multiple '%s*%s' files (%s)".format(
-          prefix,
-          suffix,
-          duplicates.map(_.getName).mkString(", ")))
+        Left(
+          "Multiple '%s*%s' files (%s)"
+            .format(prefix, suffix, duplicates.map(_.getName).mkString(", ")))
     }
   }
 }

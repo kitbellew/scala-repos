@@ -61,16 +61,15 @@ object RandomForestClassificationExample {
       val prediction = model.predict(point.features)
       (point.label, prediction)
     }
-    val testErr =
-      labelAndPreds.filter(r => r._1 != r._2).count.toDouble / testData.count()
+    val testErr = labelAndPreds.filter(r => r._1 != r._2).count
+      .toDouble / testData.count()
     println("Test Error = " + testErr)
     println("Learned classification forest model:\n" + model.toDebugString)
 
     // Save and load model
     model.save(sc, "target/tmp/myRandomForestClassificationModel")
-    val sameModel = RandomForestModel.load(
-      sc,
-      "target/tmp/myRandomForestClassificationModel")
+    val sameModel = RandomForestModel
+      .load(sc, "target/tmp/myRandomForestClassificationModel")
     // $example off$
   }
 }

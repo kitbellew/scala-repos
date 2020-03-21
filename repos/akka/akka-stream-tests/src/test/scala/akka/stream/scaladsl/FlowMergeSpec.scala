@@ -13,9 +13,7 @@ class FlowMergeSpec extends BaseTwoStreamsSetup {
 
   override def setup(p1: Publisher[Int], p2: Publisher[Int]) = {
     val subscriber = TestSubscriber.probe[Outputs]()
-    Source
-      .fromPublisher(p1)
-      .merge(Source.fromPublisher(p2))
+    Source.fromPublisher(p1).merge(Source.fromPublisher(p2))
       .runWith(Sink.fromSubscriber(subscriber))
     subscriber
   }
@@ -29,12 +27,7 @@ class FlowMergeSpec extends BaseTwoStreamsSetup {
       val source3 = Source(4 to 9)
       val probe = TestSubscriber.manualProbe[Int]()
 
-      source1
-        .merge(source2)
-        .merge(source3)
-        .map(_ * 2)
-        .map(_ / 2)
-        .map(_ + 1)
+      source1.merge(source2).merge(source3).map(_ * 2).map(_ / 2).map(_ + 1)
         .runWith(Sink.fromSubscriber(probe))
 
       val subscription = probe.expectSubscription()
@@ -98,11 +91,9 @@ class FlowMergeSpec extends BaseTwoStreamsSetup {
       val up2 = TestPublisher.manualProbe[Int]()
       val down = TestSubscriber.manualProbe[Int]()
 
-      val (graphSubscriber1, graphSubscriber2) = Source
-        .asSubscriber[Int]
+      val (graphSubscriber1, graphSubscriber2) = Source.asSubscriber[Int]
         .mergeMat(Source.asSubscriber[Int])((_, _))
-        .toMat(Sink.fromSubscriber(down))(Keep.left)
-        .run
+        .toMat(Sink.fromSubscriber(down))(Keep.left).run
 
       val downstream = down.expectSubscription()
       downstream.cancel()

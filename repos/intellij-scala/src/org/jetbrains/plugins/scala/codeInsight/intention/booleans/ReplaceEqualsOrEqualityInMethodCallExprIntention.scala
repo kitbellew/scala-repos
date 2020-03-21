@@ -31,25 +31,19 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScMethodCall],
-      false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil
+      .getParentOfType(element, classOf[ScMethodCall], false)
     if (methodCallExpr == null) return false
 
     if (!methodCallExpr.getInvokedExpr.isInstanceOf[ScReferenceExpression])
       return false
 
-    val oper = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getText
+    val oper = methodCallExpr.getInvokedExpr.asInstanceOf[ScReferenceExpression]
+      .nameId.getText
     if (oper != "equals" && oper != "==") return false
 
     val range: TextRange = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
+      .asInstanceOf[ScReferenceExpression].nameId.getTextRange
     val offset = editor.getCaretModel.getOffset
     if (!(range.getStartOffset <= offset && offset <= range.getEndOffset))
       return false
@@ -57,50 +51,34 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
     val replaceOper = Map("equals" -> "==", "==" -> "equals")
     setText("Replace '" + oper + "' with '" + replaceOper(oper) + "'")
 
-    if (methodCallExpr.getInvokedExpr
-          .asInstanceOf[ScReferenceExpression]
+    if (methodCallExpr.getInvokedExpr.asInstanceOf[ScReferenceExpression]
           .isQualified) return true
 
     false
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScMethodCall],
-      false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil
+      .getParentOfType(element, classOf[ScMethodCall], false)
     if (methodCallExpr == null || !methodCallExpr.isValid) return
 
     val start = methodCallExpr.getTextRange.getStartOffset
 
     val expr = new StringBuilder
     val replaceOper = Map("equals" -> "==", "==" -> "equals")
-    val oper = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getText
+    val oper = methodCallExpr.getInvokedExpr.asInstanceOf[ScReferenceExpression]
+      .nameId.getText
 
-    expr
-      .append(
-        methodCallExpr.getInvokedExpr
-          .asInstanceOf[ScReferenceExpression]
-          .qualifier
-          .get
-          .getText)
-      .append(".")
-      .append(replaceOper(oper))
+    expr.append(
+      methodCallExpr.getInvokedExpr.asInstanceOf[ScReferenceExpression]
+        .qualifier.get.getText).append(".").append(replaceOper(oper))
       .append(methodCallExpr.args.getText)
 
-    val newMethodCallExpr = ScalaPsiElementFactory.createExpressionFromText(
-      expr.toString(),
-      element.getManager)
+    val newMethodCallExpr = ScalaPsiElementFactory
+      .createExpressionFromText(expr.toString(), element.getManager)
 
-    val size = newMethodCallExpr
-      .asInstanceOf[ScMethodCall]
-      .getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
+    val size = newMethodCallExpr.asInstanceOf[ScMethodCall].getInvokedExpr
+      .asInstanceOf[ScReferenceExpression].nameId.getTextRange
       .getStartOffset - newMethodCallExpr.getTextRange.getStartOffset
 
     inWriteAction {

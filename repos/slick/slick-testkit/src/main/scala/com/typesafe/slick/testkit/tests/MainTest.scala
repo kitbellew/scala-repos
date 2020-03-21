@@ -95,21 +95,18 @@ class MainTest extends AsyncTest[JdbcTestDB] {
           }
           _ <- q2.result.head.map(_ shouldBe (Some("Nahasapeemapetilon"), 3))
         } yield allUsers)
-      }
-      .flatMap { allUsers =>
+      }.flatMap { allUsers =>
         //TODO verifyable non-random test
         val ordersInserts =
           for (u <- allUsers if u.first != "Apu" && u.first != "Snowball";
                i <- 1 to 2)
-            yield orders.map(o =>
-              (o.userID, o.product, o.shipped, o.rebate)) += (
-              u.id, "Gizmo " + (
-                (scala.math.random * 10) + 1
-              ).toInt, i == 2, Some(u.first == "Marge")
+            yield orders
+              .map(o => (o.userID, o.product, o.shipped, o.rebate)) += (
+              u.id, "Gizmo " + ((scala.math.random * 10) + 1)
+                .toInt, i == 2, Some(u.first == "Marge")
             )
         db.run(seq(ordersInserts: _*))
-      }
-      .flatMap { _ =>
+      }.flatMap { _ =>
         val q3 =
           for (u <- users.sortBy(_.first) if u.last.isDefined;
                o <- u.orders)
@@ -117,8 +114,7 @@ class MainTest extends AsyncTest[JdbcTestDB] {
         q3.result.statements.toSeq.length.should(_ >= 1)
         // All Orders by Users with a last name by first name:
         materialize(db.stream(q3.result)).map(s => s.length shouldBe 8)
-      }
-      .flatMap { _ =>
+      }.flatMap { _ =>
         val q4 = for {
           u <- users
           o <- u.orders
@@ -154,9 +150,7 @@ class MainTest extends AsyncTest[JdbcTestDB] {
             ("Carl", 6),
             ("Lenny", 8),
             ("Santa's Little Helper", 10))
-          r4b <- q4b
-            .to[Set]
-            .result
+          r4b <- q4b.to[Set].result
             .named("Latest Order per User, using maxOfPer")
           _ = r4b shouldBe Set(
             ("Homer", 2),
@@ -166,19 +160,14 @@ class MainTest extends AsyncTest[JdbcTestDB] {
             ("Santa's Little Helper", 10))
           _ <- q4d.result.map(r => r.length shouldBe 4)
         } yield ())
-      }
-      .flatMap { _ =>
-        val b1 = orders
-          .filter(o => o.shipped && o.shipped)
+      }.flatMap { _ =>
+        val b1 = orders.filter(o => o.shipped && o.shipped)
           .map(o => o.shipped && o.shipped)
-        val b2 = orders
-          .filter(o => o.shipped && o.rebate)
+        val b2 = orders.filter(o => o.shipped && o.rebate)
           .map(o => o.shipped && o.rebate)
-        val b3 = orders
-          .filter(o => o.rebate && o.shipped)
+        val b3 = orders.filter(o => o.rebate && o.shipped)
           .map(o => o.rebate && o.shipped)
-        val b4 = orders
-          .filter(o => o.rebate && o.rebate)
+        val b4 = orders.filter(o => o.rebate && o.rebate)
           .map(o => o.rebate && o.rebate)
         val b5 = orders.filter(o => !o.shipped).map(o => !o.shipped)
         val b6 = orders.filter(o => !o.rebate).map(o => !o.rebate)
@@ -212,8 +201,7 @@ class MainTest extends AsyncTest[JdbcTestDB] {
           _ = deleted shouldBe 2
           _ <- q6.result.head.map(_ shouldBe 0)
         } yield ())
-      }
-      .flatMap { _ =>
+      }.flatMap { _ =>
         val q7 = Compiled { (s: Rep[String]) =>
           users.filter(_.first === s).map(_.first)
         }
@@ -230,14 +218,12 @@ class MainTest extends AsyncTest[JdbcTestDB] {
           _ <- q7("Marge").delete
           _ <- q7("Marge").map(_.length).result.map(_ shouldBe 0)
         } yield ())
-      }
-      .flatMap { _ =>
+      }.flatMap { _ =>
         val q8 = for (u <- users if u.last.isEmpty) yield (u.first, u.last)
         q8.updateStatement
         val q9 = users.length
         q9.result.statements.toSeq.length.should(_ >= 1)
-        val q10 = users
-          .filter(_.last inSetBind Seq())
+        val q10 = users.filter(_.last inSetBind Seq())
           .map(u => (u.first, u.last))
 
         db.run(for {

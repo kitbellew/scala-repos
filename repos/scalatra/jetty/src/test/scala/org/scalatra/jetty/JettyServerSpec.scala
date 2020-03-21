@@ -33,8 +33,8 @@ class JettyServerSpec extends WordSpec with BeforeAndAfterAll {
       ScalatraListener.LifeCycleKey,
       classOf[JettyServerSpec.ScalatraBootstrap].getName)
     jetty.start()
-    port =
-      jetty.server.getConnectors.head.asInstanceOf[ServerConnector].getLocalPort
+    port = jetty.server.getConnectors.head.asInstanceOf[ServerConnector]
+      .getLocalPort
   }
 
   override protected def afterAll(): Unit = {
@@ -44,8 +44,8 @@ class JettyServerSpec extends WordSpec with BeforeAndAfterAll {
 
   "A JettyServer" should {
     "return hello" in {
-      val stream = Source.fromInputStream(
-        new URL("http://localhost:" + port + "/").openStream())
+      val stream = Source
+        .fromInputStream(new URL("http://localhost:" + port + "/").openStream())
       try { assert(stream.getLines().mkString === "hello") }
       finally { stream.close() }
     }

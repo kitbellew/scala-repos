@@ -439,11 +439,12 @@ sealed abstract class LongMap[+T]
             ) // TODO: remove [S] when SI-5548 is fixed
         }
       case (LongMap.Tip(key, value), x) =>
-        x.updateWith[S](
-          key,
-          value,
-          (x, y) => f(key, y, x)
-        ) // TODO: remove [S] when SI-5548 is fixed
+        x
+          .updateWith[S](
+            key,
+            value,
+            (x, y) => f(key, y, x)
+          ) // TODO: remove [S] when SI-5548 is fixed
       case (x, LongMap.Tip(key, value)) =>
         x.updateWith[S](key, value, (x, y) => f(key, x, y))
       case (LongMap.Nil, x) => x

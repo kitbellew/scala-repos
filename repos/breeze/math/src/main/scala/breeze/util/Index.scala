@@ -327,8 +327,8 @@ class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
   * @author dlwh
   */
 final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
-  private val offsets: Array[Int] =
-    indices.unfold(0) { (n, i) => n + i.size }.toArray
+  private val offsets: Array[Int] = indices.unfold(0) { (n, i) => n + i.size }
+    .toArray
 
   /** If you know which component, and which index in that component,
     * you can quickly get its mapped value with this function.

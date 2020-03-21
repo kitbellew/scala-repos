@@ -44,9 +44,7 @@ class SbtCompiler(
 
     val outputToAnalysisMap = compilationData.outputToCacheMap.map {
       case (output, cache) =>
-        val analysis = fileToStore(cache)
-          .get()
-          .map(_._1)
+        val analysis = fileToStore(cache).get().map(_._1)
           .getOrElse(Analysis.Empty)
         (output, analysis)
     }
@@ -54,8 +52,7 @@ class SbtCompiler(
     val incOptions = compilationData.sbtIncOptions match {
       case None => IncOptions.Default
       case Some(opt) =>
-        IncOptions.Default
-          .withNameHashing(opt.nameHashing)
+        IncOptions.Default.withNameHashing(opt.nameHashing)
           .withRecompileOnMacroDef(opt.recompileOnMacroDef)
           .withTransitiveStep(opt.transitiveStep)
           .withRecompileAllFraction(opt.recompileAllFraction)

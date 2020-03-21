@@ -51,10 +51,9 @@ class MacroExpandAction extends AnAction {
 
     UsageTrigger.trigger(ScalaBundle.message("macro.expand.action.id"))
 
-    val sourceEditor =
-      FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
-    val psiFile = PsiDocumentManager
-      .getInstance(e.getProject)
+    val sourceEditor = FileEditorManager.getInstance(e.getProject)
+      .getSelectedTextEditor
+    val psiFile = PsiDocumentManager.getInstance(e.getProject)
       .getPsiFile(sourceEditor.getDocument)
     val candidates = psiFile match {
       case file: ScalaFile => findCandidatesInFile(file)
@@ -67,15 +66,14 @@ class MacroExpandAction extends AnAction {
     val filtered = expansions.filter { exp =>
       psiFile.getVirtualFile.getPath == exp.place.sourceFile
     }
-    val ensugared = filtered.map(e =>
-      MacroExpansion(e.place, ensugarExpansion(e.body)))
+    val ensugared = filtered
+      .map(e => MacroExpansion(e.place, ensugarExpansion(e.body)))
     val resolved = tryResolveExpansionPlaces(ensugared)
 
     // if macro is under cursor, expand it, otherwise expand all macros in current file
-    resolved
-      .find(
-        _.expansion.place.line == sourceEditor.getCaretModel.getLogicalPosition.line + 1)
-      .map(expandMacroUnderCursor)
+    resolved.find(
+      _.expansion.place.line == sourceEditor.getCaretModel.getLogicalPosition
+        .line + 1).map(expandMacroUnderCursor)
       .getOrElse(expandAllMacroInCurrentFile(resolved))
   }
 
@@ -137,8 +135,8 @@ class MacroExpandAction extends AnAction {
         if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
           val file = element.getContainingFile
           val nextLeaf = file.findElementAt(element.getTextRange.getEndOffset)
-          if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains(
-                "\n")) { tobeDeleted += element }
+          if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText
+                .contains("\n")) { tobeDeleted += element }
         }
         element.acceptChildren(this)
       }
@@ -186,12 +184,10 @@ class MacroExpandAction extends AnAction {
                 block: ScBlock
               ) => // insert content of block expression(annotation can generate >1 expression)
             val children = block.getChildren
-            block.children
-              .find(_.isInstanceOf[ScalaPsiElement])
-              .foreach(p =>
-                p.putCopyableUserData(
-                  MacroExpandAction.EXPANDED_KEY,
-                  holder.getText))
+            block.children.find(_.isInstanceOf[ScalaPsiElement]).foreach(p =>
+              p.putCopyableUserData(
+                MacroExpandAction.EXPANDED_KEY,
+                holder.getText))
             holder.getParent.addRangeAfter(
               children.tail.head,
               children.dropRight(1).last,
@@ -239,8 +235,7 @@ class MacroExpandAction extends AnAction {
 
   def getRealOwner(expansion: MacroExpansion)(implicit
       e: AnActionEvent): Option[PsiElement] = {
-    val virtualFile = VirtualFileManager
-      .getInstance()
+    val virtualFile = VirtualFileManager.getInstance()
       .findFileByUrl("file://" + expansion.place.sourceFile)
     val psiFile = PsiManager.getInstance(e.getProject).findFile(virtualFile)
     psiFile.findElementAt(expansion.place.offset) match {
@@ -329,9 +324,7 @@ class MacroExpandAction extends AnAction {
 
     import scala.collection._
 
-    val module = ProjectRootManager
-      .getInstance(e.getProject)
-      .getFileIndex
+    val module = ProjectRootManager.getInstance(e.getProject).getFileIndex
       .getModuleForFile(file.getVirtualFile)
     if (module == null) return
     val state = module.scalaCompilerSettings.getState
@@ -345,10 +338,10 @@ class MacroExpandAction extends AnAction {
         .toolWindowGroup("macroexpand", ToolWindowId.PROJECT_VIEW)
         .createNotification(
           """Macro debugging options have been enabled for current module
-            |Please recompile the file to gather macro expansions""".stripMargin,
+            |Please recompile the file to gather macro expansions"""
+            .stripMargin,
           NotificationType.INFORMATION
-        )
-        .notify(e.getProject)
+        ).notify(e.getProject)
     }
   }
 }

@@ -51,16 +51,17 @@ object HttpRequestHandler {
       environment: Environment,
       configuration: Configuration): Seq[Binding[_]] = {
 
-    val fromConfiguration = Reflect.bindingsFromConfiguration[
-      HttpRequestHandler,
-      play.http.HttpRequestHandler,
-      play.core.j.JavaHttpRequestHandlerAdapter,
-      play.http.DefaultHttpRequestHandler,
-      JavaCompatibleHttpRequestHandler](
-      environment,
-      PlayConfig(configuration),
-      "play.http.requestHandler",
-      "RequestHandler")
+    val fromConfiguration = Reflect
+      .bindingsFromConfiguration[
+        HttpRequestHandler,
+        play.http.HttpRequestHandler,
+        play.core.j.JavaHttpRequestHandlerAdapter,
+        play.http.DefaultHttpRequestHandler,
+        JavaCompatibleHttpRequestHandler](
+        environment,
+        PlayConfig(configuration),
+        "play.http.requestHandler",
+        "RequestHandler")
 
     val javaComponentsBindings = Seq(
       BindingKey(classOf[play.core.j.JavaHandlerComponents])
@@ -84,8 +85,7 @@ object ActionCreator {
         environment,
         PlayConfig(configuration),
         "play.http.actionCreator",
-        "ActionCreator")
-      .fold(Seq[Binding[_]]()) { either =>
+        "ActionCreator").fold(Seq[Binding[_]]()) { either =>
         val impl = either.fold(identity, identity)
         Seq(BindingKey(classOf[ActionCreator]).to(impl))
       }
@@ -141,8 +141,8 @@ class DefaultHttpRequestHandler(
     // * path.startsWith(context) && path.charAt(context.length) == '/')
     //   - Path starts with context followed by a '/' character.
     context.isEmpty ||
-    (path.startsWith(context) && (path.length == context.length || path.charAt(
-      context.length) == '/'))
+    (path.startsWith(context) && (path.length == context.length || path
+      .charAt(context.length) == '/'))
   }
 
   def handlerForRequest(request: RequestHeader) = {

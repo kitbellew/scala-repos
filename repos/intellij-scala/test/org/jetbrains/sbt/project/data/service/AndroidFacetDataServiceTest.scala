@@ -48,8 +48,7 @@ class AndroidFacetDataServiceTest extends ProjectDataServiceTestCase {
   private def doTestFacetSetup(proguardConfig: Seq[String]): Unit = {
     importProjectData(generateProject(proguardConfig))
 
-    val module = ModuleManager
-      .getInstance(getProject)
+    val module = ModuleManager.getInstance(getProject)
       .findModuleByName("Module 1")
     assert(module != null)
 
@@ -70,8 +69,8 @@ class AndroidFacetDataServiceTest extends ProjectDataServiceTestCase {
 
     if (proguardConfig.nonEmpty) {
       import scala.collection.JavaConverters._
-      val proguardConfigPath = FileUtil.toSystemDependentName(
-        getProject.getBasePath + "/proguard-sbt.txt")
+      val proguardConfigPath = FileUtil
+        .toSystemDependentName(getProject.getBasePath + "/proguard-sbt.txt")
       assert(
         properties.myProGuardCfgFiles.asScala.toSeq == Seq(proguardConfigPath))
       val actualProguardConfig = using(Source.fromFile(proguardConfigPath))(

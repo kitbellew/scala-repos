@@ -78,7 +78,8 @@ object Build {
       // if the user has overridden the name, use the normal organization that is derived from the name.
       organization := {
         def isDefault(o: String) = thisProject.value.id == o
-        organization.?.value match {
+        organization
+          .?.value match {
           case Some(o) if !isDefault(o) => o
           case _                        => "default"
         }

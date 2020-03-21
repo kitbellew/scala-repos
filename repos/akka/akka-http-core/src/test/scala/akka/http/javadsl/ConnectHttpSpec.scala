@@ -59,8 +59,7 @@ class ConnectHttpSpec extends WordSpec with Matchers with BeforeAndAfterAll {
       connect.port should ===(443)
     }
     "connect toHostHttps HTTPS:443 using custom https context" in {
-      val connect = ConnectHttp
-        .toHostHttps("https://127.0.0.1")
+      val connect = ConnectHttp.toHostHttps("https://127.0.0.1")
         .withCustomHttpsContext(httpsContext)
       connect.isHttps should ===(true)
       connect.connectionContext.isPresent should equal(true)

@@ -22,16 +22,15 @@ object ScalastyleCodeInspection {
     val possibleLocations = Seq(".idea", "project")
 
     def findConfigFile(dir: VirtualFile) =
-      possibleConfigFileNames
-        .flatMap(name => Option(dir.findChild(name)))
+      possibleConfigFileNames.flatMap(name => Option(dir.findChild(name)))
         .headOption
 
     def findIn(project: Project): Option[VirtualFile] = {
       val root = project.getBaseDir
       if (root == null) return None
 
-      val dirs =
-        possibleLocations.flatMap(name => Option(root.findChild(name))) :+ root
+      val dirs = possibleLocations
+        .flatMap(name => Option(root.findChild(name))) :+ root
       dirs.flatMap(findConfigFile).headOption
     }
   }
@@ -41,8 +40,8 @@ object ScalastyleCodeInspection {
 
     def latest(scalastyleXml: VirtualFile): Option[ScalastyleConfiguration] = {
       def read(): TimestampedScalastyleConfiguration = {
-        val configuration = ScalastyleConfiguration.readFromString(new String(
-          scalastyleXml.contentsToByteArray()))
+        val configuration = ScalastyleConfiguration
+          .readFromString(new String(scalastyleXml.contentsToByteArray()))
         (scalastyleXml.getModificationStamp, configuration)
       }
 
@@ -69,10 +68,8 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
     def withConfiguration(
         f: ScalastyleConfiguration => Iterable[ProblemDescriptor])
         : Array[ProblemDescriptor] = {
-      ScalastyleCodeInspection
-        .configuration(file.getProject)
-        .map(c => f(c).toArray)
-        .getOrElse(Array.empty)
+      ScalastyleCodeInspection.configuration(file.getProject)
+        .map(c => f(c).toArray).getOrElse(Array.empty)
     }
 
     if (!file.isInstanceOf[ScalaFile]) Array.empty
@@ -82,8 +79,7 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
         val result = new ScalastyleChecker(None).checkFiles(
           configuration,
           Seq(new SourceSpec(file.getName, file.getText)))
-        val document = PsiDocumentManager
-          .getInstance(file.getProject)
+        val document = PsiDocumentManager.getInstance(file.getProject)
           .getDocument(file)
 
         def atPosition(
@@ -128,8 +124,7 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
                 column,
                 customMessage) =>
             findPsiElement(line, column)
-              .filter(e => e.isPhysical && !e.getTextRange.isEmpty)
-              .map { e =>
+              .filter(e => e.isPhysical && !e.getTextRange.isEmpty).map { e =>
                 val message = Messages.format(key, args, customMessage)
                 manager.createProblemDescriptor(
                   e,

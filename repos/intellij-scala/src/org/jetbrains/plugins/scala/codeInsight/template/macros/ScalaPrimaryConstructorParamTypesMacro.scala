@@ -11,8 +11,7 @@ class ScalaPrimaryConstructorParamTypesMacro extends Macro {
   override def calculateResult(
       params: Array[Expression],
       context: ExpressionContext): Result =
-    params.headOption
-      .map(_.calculateResult(context).toString)
+    params.headOption.map(_.calculateResult(context).toString)
       .map(MacroUtil.paramPairs(_).map(_._2)) match {
       case Some(head :: tail) =>
         new TextResult(

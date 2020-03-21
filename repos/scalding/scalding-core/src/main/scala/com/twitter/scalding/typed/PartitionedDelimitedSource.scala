@@ -92,8 +92,7 @@ case class PartitionedDelimitedSource[P, T](
         strict,
         quote,
         types,
-        safe)
-        .asInstanceOf[Scheme[_, _, _, _, _]])
+        safe).asInstanceOf[Scheme[_, _, _, _, _]])
     scheme.setSinkFields(fields)
     scheme
   }
@@ -110,8 +109,7 @@ case class PartitionedDelimitedSource[P, T](
         strict,
         quote,
         types,
-        safe)
-        .asInstanceOf[Scheme[Properties, InputStream, OutputStream, _, _]]
+        safe).asInstanceOf[Scheme[Properties, InputStream, OutputStream, _, _]]
     scheme.setSinkFields(fields)
     scheme
   }

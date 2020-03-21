@@ -69,16 +69,13 @@ class InferSchemaSuite extends SparkFunSuite {
 
   test("Type arrays are merged to highest common type") {
     assert(
-      CSVInferSchema
-        .mergeRowTypes(Array(StringType), Array(DoubleType))
+      CSVInferSchema.mergeRowTypes(Array(StringType), Array(DoubleType))
         .deep == Array(StringType).deep)
     assert(
-      CSVInferSchema
-        .mergeRowTypes(Array(IntegerType), Array(LongType))
+      CSVInferSchema.mergeRowTypes(Array(IntegerType), Array(LongType))
         .deep == Array(LongType).deep)
     assert(
-      CSVInferSchema
-        .mergeRowTypes(Array(DoubleType), Array(LongType))
+      CSVInferSchema.mergeRowTypes(Array(DoubleType), Array(LongType))
         .deep == Array(DoubleType).deep)
   }
 
@@ -94,9 +91,8 @@ class InferSchemaSuite extends SparkFunSuite {
   }
 
   test("Merging Nulltypes should yield Nulltype.") {
-    val mergedNullTypes = CSVInferSchema.mergeRowTypes(
-      Array(NullType),
-      Array(NullType))
+    val mergedNullTypes = CSVInferSchema
+      .mergeRowTypes(Array(NullType), Array(NullType))
     assert(mergedNullTypes.deep == Array(NullType).deep)
   }
 }

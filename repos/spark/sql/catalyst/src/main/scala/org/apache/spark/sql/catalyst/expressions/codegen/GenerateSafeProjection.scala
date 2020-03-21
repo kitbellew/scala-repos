@@ -129,7 +129,8 @@ object GenerateSafeProjection
       final MapData $tmp = $input;
       ${keyConverter.code}
       ${valueConverter.code}
-      final MapData $output = new $mapClass(${keyConverter.value}, ${valueConverter.value});
+      final MapData $output = new $mapClass(${keyConverter
+      .value}, ${valueConverter.value});
     """
 
     ExprCode(code, "false", output)

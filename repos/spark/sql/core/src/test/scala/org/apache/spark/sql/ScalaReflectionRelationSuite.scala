@@ -130,9 +130,7 @@ class ScalaReflectionRelationSuite extends SparkFunSuite with SharedSQLContext {
   test("query binary data") {
     Seq(ReflectBinary(Array[Byte](1))).toDF().registerTempTable("reflectBinary")
 
-    val result = sql("SELECT data FROM reflectBinary")
-      .collect()
-      .head(0)
+    val result = sql("SELECT data FROM reflectBinary").collect().head(0)
       .asInstanceOf[Array[Byte]]
     assert(result.toSeq === Seq[Byte](1))
   }

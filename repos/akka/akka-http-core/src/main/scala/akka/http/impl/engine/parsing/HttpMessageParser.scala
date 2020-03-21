@@ -590,9 +590,8 @@ private[http] abstract class HttpMessageParser[
         case EntityChunk(chunk) ⇒ chunk
         case EntityStreamError(info) ⇒ throw EntityStreamException(info)
       }
-      HttpEntity.Chunked(
-        contentType(cth),
-        HttpEntity.limitableChunkSource(chunks))
+      HttpEntity
+        .Chunked(contentType(cth), HttpEntity.limitableChunkSource(chunks))
     }
 
   def addTransferEncodingWithChunkedPeeled(

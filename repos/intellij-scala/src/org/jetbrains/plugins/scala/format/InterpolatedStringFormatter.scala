@@ -42,9 +42,8 @@ object InterpolatedStringFormatter extends StringFormatter {
         if (it.isLiteral && !it.isFormattingRequired) text
         else {
           val presentation =
-            if ((it.isComplexBlock || (
-                  !it.isLiteral && it.isAlphanumericIdentifier
-                )) && noBraces(parts, it)) "$" + text
+            if ((it.isComplexBlock || (!it.isLiteral && it
+                  .isAlphanumericIdentifier)) && noBraces(parts, it)) "$" + text
             else "${" + text + "}"
           if (it.isFormattingRequired) presentation + it.format
           else presentation
@@ -58,8 +57,8 @@ object InterpolatedStringFormatter extends StringFormatter {
     if (ind + 1 < parts.size) {
       parts(ind + 1) match {
         case Text(s) =>
-          return s.isEmpty || !ScalaNamesUtil.isIdentifier(
-            it.text + s.charAt(0)) ||
+          return s.isEmpty || !ScalaNamesUtil
+            .isIdentifier(it.text + s.charAt(0)) ||
             s.startsWith("`") || s.exists(_ == '$')
         case _ =>
       }

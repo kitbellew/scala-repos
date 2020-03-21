@@ -283,8 +283,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       port: Int): JavaReceiverInputDStream[T] = {
     implicit val cmt: ClassTag[T] = implicitly[ClassTag[AnyRef]]
       .asInstanceOf[ClassTag[T]]
-    JavaReceiverInputDStream.fromReceiverInputDStream(
-      ssc.rawSocketStream(hostname, port))
+    JavaReceiverInputDStream
+      .fromReceiverInputDStream(ssc.rawSocketStream(hostname, port))
   }
 
   /**
@@ -629,9 +629,8 @@ object JavaStreamingContext {
   def getOrCreate(
       checkpointPath: String,
       creatingFunc: JFunction0[JavaStreamingContext]): JavaStreamingContext = {
-    val ssc = StreamingContext.getOrCreate(
-      checkpointPath,
-      () => { creatingFunc.call().ssc })
+    val ssc = StreamingContext
+      .getOrCreate(checkpointPath, () => { creatingFunc.call().ssc })
     new JavaStreamingContext(ssc)
   }
 

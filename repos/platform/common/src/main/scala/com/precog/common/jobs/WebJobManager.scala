@@ -57,18 +57,13 @@ import scalaz.syntax.std.option._
 object WebJobManager {
   def apply(config: Configuration)(implicit
       ec: ExecutionContext): Validation[NEL[String], JobManager[Response]] = {
-    (config
-      .get[String]("service.protocol")
-      .toSuccess(
-        NEL("Configuraiton property service.protocol is required.")) |@|
-      config
-        .get[String]("service.host")
+    (config.get[String]("service.protocol").toSuccess(NEL(
+      "Configuraiton property service.protocol is required.")) |@|
+      config.get[String]("service.host")
         .toSuccess(NEL("Configuration property service.host is required")) |@|
-      config
-        .get[Int]("service.port")
+      config.get[Int]("service.port")
         .toSuccess(NEL("Configuration property service.port is required")) |@|
-      config
-        .get[String]("service.path")
+      config.get[String]("service.path")
         .toSuccess(NEL("Configuration property service.path is required"))) {
       (protocol, host, port, path) =>
         RealWebJobManager(protocol, host, port, path)
@@ -288,8 +283,7 @@ trait WebJobManager
       data: StreamT[Response, Array[Byte]]): Response[Either[String, Unit]] = {
     withRawClient { client0 =>
       eitherT(
-        mimeType
-          .foldLeft(client0)(_ contentType _)
+        mimeType.foldLeft(client0)(_ contentType _)
           .put[ByteChunk]("/jobs/" + jobId + "/result") {
             val t = ResponseStreamAsFutureStream
             Right(t(data))

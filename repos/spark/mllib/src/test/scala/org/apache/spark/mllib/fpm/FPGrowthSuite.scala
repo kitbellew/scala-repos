@@ -31,16 +31,12 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
       "s x o n r",
       "x z y m t s q e",
       "z",
-      "x z y r q t p")
-      .map(_.split(" "))
+      "x z y r q t p").map(_.split(" "))
     val rdd = sc.parallelize(transactions, 2).cache()
 
     val fpg = new FPGrowth()
 
-    val model6 = fpg
-      .setMinSupport(0.9)
-      .setNumPartitions(1)
-      .run(rdd)
+    val model6 = fpg.setMinSupport(0.9).setNumPartitions(1).run(rdd)
 
     /* Verify results using the `R` code:
        transactions = as(sapply(
@@ -59,10 +55,7 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
      */
     assert(model6.freqItemsets.count() === 0)
 
-    val model3 = fpg
-      .setMinSupport(0.5)
-      .setNumPartitions(2)
-      .run(rdd)
+    val model3 = fpg.setMinSupport(0.5).setNumPartitions(2).run(rdd)
     val freqItemsets3 = model3.freqItemsets.collect().map { itemset =>
       (itemset.items.toSet, itemset.freq)
     }
@@ -115,10 +108,7 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
     )
     assert(freqItemsets3.toSet === expected)
 
-    val model2 = fpg
-      .setMinSupport(0.3)
-      .setNumPartitions(4)
-      .run(rdd)
+    val model2 = fpg.setMinSupport(0.3).setNumPartitions(4).run(rdd)
 
     /* Verify results using the `R` code:
        fp = eclat(transactions, parameter = list(support = 0.3))
@@ -130,10 +120,7 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
      */
     assert(model2.freqItemsets.count() === 54)
 
-    val model1 = fpg
-      .setMinSupport(0.1)
-      .setNumPartitions(8)
-      .run(rdd)
+    val model1 = fpg.setMinSupport(0.1).setNumPartitions(8).run(rdd)
 
     /* Verify results using the `R` code:
        fp = eclat(transactions, parameter = list(support = 0.1))
@@ -153,8 +140,7 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
       "s x o n r",
       "x z y m t s q e",
       "z",
-      "x z y r q t p")
-      .map(_.split(" "))
+      "x z y r q t p").map(_.split(" "))
     val rdd = sc.parallelize(transactions, 2).cache()
 
     /* Verify results using the `R` code:
@@ -177,12 +163,8 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
        > sum(arsDF$confidence == 1)
        [1] 23
      */
-    val rules = (new FPGrowth())
-      .setMinSupport(0.5)
-      .setNumPartitions(2)
-      .run(rdd)
-      .generateAssociationRules(0.9)
-      .collect()
+    val rules = (new FPGrowth()).setMinSupport(0.5).setNumPartitions(2).run(rdd)
+      .generateAssociationRules(0.9).collect()
 
     assert(rules.size === 23)
     assert(rules.count(rule => math.abs(rule.confidence - 1.0d) < 1e-6) == 23)
@@ -196,16 +178,12 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
       "6 5 4 3 2 1",
       "2 4",
       "1 3",
-      "1 7")
-      .map(_.split(" ").map(_.toInt).toArray)
+      "1 7").map(_.split(" ").map(_.toInt).toArray)
     val rdd = sc.parallelize(transactions, 2).cache()
 
     val fpg = new FPGrowth()
 
-    val model6 = fpg
-      .setMinSupport(0.9)
-      .setNumPartitions(1)
-      .run(rdd)
+    val model6 = fpg.setMinSupport(0.9).setNumPartitions(1).run(rdd)
 
     /* Verify results using the `R` code:
        transactions = as(sapply(
@@ -225,10 +203,7 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
      */
     assert(model6.freqItemsets.count() === 0)
 
-    val model3 = fpg
-      .setMinSupport(0.5)
-      .setNumPartitions(2)
-      .run(rdd)
+    val model3 = fpg.setMinSupport(0.5).setNumPartitions(2).run(rdd)
     assert(
       model3.freqItemsets.first().items.getClass === Array(1).getClass,
       "frequent itemsets should use primitive arrays")
@@ -265,10 +240,7 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
       (Set(1, 2, 3), 4L))
     assert(freqItemsets3.toSet === expected)
 
-    val model2 = fpg
-      .setMinSupport(0.3)
-      .setNumPartitions(4)
-      .run(rdd)
+    val model2 = fpg.setMinSupport(0.3).setNumPartitions(4).run(rdd)
 
     /* Verify results using the `R` code:
        fp = eclat(transactions, parameter = list(support = 0.3))
@@ -280,10 +252,7 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
      */
     assert(model2.freqItemsets.count() === 15)
 
-    val model1 = fpg
-      .setMinSupport(0.1)
-      .setNumPartitions(8)
-      .run(rdd)
+    val model1 = fpg.setMinSupport(0.1).setNumPartitions(8).run(rdd)
 
     /* Verify results using the `R` code:
        fp = eclat(transactions, parameter = list(support = 0.1))
@@ -303,14 +272,10 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
       "s x o n r",
       "x z y m t s q e",
       "z",
-      "x z y r q t p")
-      .map(_.split(" "))
+      "x z y r q t p").map(_.split(" "))
     val rdd = sc.parallelize(transactions, 2).cache()
 
-    val model3 = new FPGrowth()
-      .setMinSupport(0.5)
-      .setNumPartitions(2)
-      .run(rdd)
+    val model3 = new FPGrowth().setMinSupport(0.5).setNumPartitions(2).run(rdd)
     val freqItemsets3 = model3.freqItemsets.collect().map { itemset =>
       (itemset.items.toSet, itemset.freq)
     }
@@ -335,14 +300,10 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
       "6 5 4 3 2 1",
       "2 4",
       "1 3",
-      "1 7")
-      .map(_.split(" ").map(_.toInt).toArray)
+      "1 7").map(_.split(" ").map(_.toInt).toArray)
     val rdd = sc.parallelize(transactions, 2).cache()
 
-    val model3 = new FPGrowth()
-      .setMinSupport(0.5)
-      .setNumPartitions(2)
-      .run(rdd)
+    val model3 = new FPGrowth().setMinSupport(0.5).setNumPartitions(2).run(rdd)
     val freqItemsets3 = model3.freqItemsets.collect().map { itemset =>
       (itemset.items.toSet, itemset.freq)
     }

@@ -44,10 +44,7 @@ abstract class ClientResponse {
   }
 
   def charset = {
-    header
-      .getOrElse("Content-Type", "")
-      .split(";")
-      .map(_.trim)
+    header.getOrElse("Content-Type", "").split(";").map(_.trim)
       .find(_.startsWith("charset=")) match {
       case Some(attr) => Some(attr.split("=")(1))
       case _          => None

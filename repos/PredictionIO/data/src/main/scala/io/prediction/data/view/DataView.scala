@@ -79,8 +79,7 @@ object DataView {
     }
     // detect changes to the case class
     val uid = java.io.ObjectStreamClass
-      .lookup(implicitly[reflect.ClassTag[E]].runtimeClass)
-      .getSerialVersionUID
+      .lookup(implicitly[reflect.ClassTag[E]].runtimeClass).getSerialVersionUID
     val hash = MurmurHash3.stringHash(s"$beginTime-$endTime-$version-$uid")
     val baseDir = s"${sys.env("PIO_FS_BASEDIR")}/view"
     val fileName = s"$baseDir/$name-$appName-$hash.parquet"
@@ -89,13 +88,11 @@ object DataView {
       case e: java.io.FileNotFoundException =>
         logger.info("Cached copy not found, reading from DB.")
         // if cached copy is found, use it. If not, grab from Storage
-        val result: RDD[E] = PEventStore
-          .find(
-            appName = appName,
-            channelName = channelName,
-            startTime = startTime,
-            untilTime = Some(endTime))(sc)
-          .flatMap((e) => conversionFunction(e))
+        val result: RDD[E] = PEventStore.find(
+          appName = appName,
+          channelName = channelName,
+          startTime = startTime,
+          untilTime = Some(endTime))(sc).flatMap((e) => conversionFunction(e))
         import sqlContext.implicits._ // needed for RDD.toDF()
         val resultDF = result.toDF()
 

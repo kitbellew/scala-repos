@@ -40,8 +40,8 @@ trait OverridingAnnotator {
       case _: ScFunctionDeclaration               => false
       case _: ScFun                               => true
       case method: PsiMethod
-          if method.getContainingClass != null && method.getContainingClass.isInterface =>
-        false
+          if method.getContainingClass != null && method.getContainingClass
+            .isInterface => false
       case method: PsiMethod
           if !method.hasAbstractModifier && !method.isConstructor => true
       case method: PsiMethod
@@ -76,8 +76,8 @@ trait OverridingAnnotator {
       method: ScFunction,
       holder: AnnotationHolder,
       isInSources: Boolean) {
-    val signaturesWithSelfType: Seq[Signature] =
-      method.superSignaturesIncludingSelfType
+    val signaturesWithSelfType: Seq[Signature] = method
+      .superSignaturesIncludingSelfType
     val signatures: Seq[Signature] = method.superSignatures
     checkStructural(method, signatures, isInSources)
     checkOverrideMembers(
@@ -135,9 +135,8 @@ trait OverridingAnnotator {
   def checkOverrideClassParameters(
       v: ScClassParameter,
       holder: AnnotationHolder) {
-    val supersWithSelfType = ScalaPsiUtil.superValsSignatures(
-      v,
-      withSelfType = true)
+    val supersWithSelfType = ScalaPsiUtil
+      .superValsSignatures(v, withSelfType = true)
     val supers = ScalaPsiUtil.superValsSignatures(v, withSelfType = false)
     checkOverrideMembers(
       v,
@@ -160,8 +159,7 @@ trait OverridingAnnotator {
     val supersWithSelfType = ScalaPsiUtil
       .superTypeMembers(tp, withSelfType = true)
       .filter(_.isInstanceOf[ScTypeAlias])
-    val supers = ScalaPsiUtil
-      .superTypeMembers(tp, withSelfType = false)
+    val supers = ScalaPsiUtil.superTypeMembers(tp, withSelfType = false)
       .filter(_.isInstanceOf[ScTypeAlias])
     checkOverrideMembers(
       tp,
@@ -186,8 +184,8 @@ trait OverridingAnnotator {
           member.nameId,
           ScalaBundle
             .message("member.overrides.nothing", memberType, member.name))
-        annotation.setHighlightType(
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        annotation
+          .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
         annotation.registerFix(new RemoveModifierQuickFix(owner, "override"))
       }
     } else if (isConcreteElement(ScalaPsiUtil.nameContext(member))) {
@@ -199,8 +197,8 @@ trait OverridingAnnotator {
           member.nameId,
           ScalaBundle
             .message("member.needs.override.modifier", memberType, member.name))
-        annotation.setHighlightType(
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        annotation
+          .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
 
         member match {
           case param: ScClassParameter
@@ -259,8 +257,8 @@ trait OverridingAnnotator {
           member.nameId,
           ScalaBundle
             .message("can.not.override.final", memberType, member.name))
-        annotation.setHighlightType(
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+        annotation
+          .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
       }
       member match {
         case f: ScFunctionDefinition =>
@@ -268,15 +266,15 @@ trait OverridingAnnotator {
             val annotation = holder.createErrorAnnotation(
               member.nameId,
               ScalaBundle.message("member.cannot.override.val", member.name))
-            annotation.setHighlightType(
-              ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+            annotation
+              .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           }
           def annotVar() = {
             val annotation = holder.createErrorAnnotation(
               member.nameId,
               ScalaBundle.message("member.cannot.override.var", member.name))
-            annotation.setHighlightType(
-              ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+            annotation
+              .setHighlightType(ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           }
           for (signature <- superSignatures) {
             signature match {

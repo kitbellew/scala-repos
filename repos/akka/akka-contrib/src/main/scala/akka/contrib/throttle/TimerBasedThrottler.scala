@@ -300,8 +300,7 @@ class TimerBasedThrottler(var rate: Rate) extends Actor with FSM[State, Data] {
     val queue = data.queue
     val nrOfMsgToSend = scala.math.min(queue.length, data.callsLeftInThisPeriod)
 
-    queue
-      .take(nrOfMsgToSend)
+    queue.take(nrOfMsgToSend)
       .foreach(x ⇒ data.target.get.tell(x.message, x.sender))
 
     data.copy(

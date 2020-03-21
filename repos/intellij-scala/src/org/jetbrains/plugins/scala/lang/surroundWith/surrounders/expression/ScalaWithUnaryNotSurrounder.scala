@@ -25,10 +25,9 @@ class ScalaWithUnaryNotSurrounder extends ScalaExpressionSurrounder {
     if (elements.length != 1) return false
     elements(0) match {
       case x: ScExpression
-          if x
-            .getTypeIgnoreBaseType(TypingContext.empty)
-            .getOrAny == psi.types.Boolean => return true
-      case _                               => return false
+          if x.getTypeIgnoreBaseType(TypingContext.empty).getOrAny == psi.types
+            .Boolean => return true
+      case _         => return false
     }
   }
   override def getSurroundSelectionRange(withUnaryNot: ASTNode): TextRange = {

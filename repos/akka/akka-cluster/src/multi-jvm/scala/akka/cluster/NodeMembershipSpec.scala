@@ -59,12 +59,12 @@ abstract class NodeMembershipSpec
     }
 
     "correct member age" taggedAs LongRunningTest in {
-      val firstMember =
-        clusterView.members.find(_.address == address(first)).get
-      val secondMember =
-        clusterView.members.find(_.address == address(second)).get
-      val thirdMember =
-        clusterView.members.find(_.address == address(third)).get
+      val firstMember = clusterView.members.find(_.address == address(first))
+        .get
+      val secondMember = clusterView.members.find(_.address == address(second))
+        .get
+      val thirdMember = clusterView.members.find(_.address == address(third))
+        .get
       firstMember.isOlderThan(thirdMember) should ===(true)
       thirdMember.isOlderThan(firstMember) should ===(false)
       secondMember.isOlderThan(thirdMember) should ===(true)

@@ -258,8 +258,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
   test("nullable of encoder schema") {
     def checkNullable[T: ExpressionEncoder](nullable: Boolean*): Unit = {
       assert(
-        implicitly[ExpressionEncoder[T]].schema
-          .map(_.nullable) === nullable.toSeq)
+        implicitly[ExpressionEncoder[T]].schema.map(_.nullable) === nullable
+          .toSeq)
     }
 
     // test for flat encoders
@@ -284,8 +284,7 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
     // test for tupled encoders
     {
       val schema = ExpressionEncoder
-        .tuple(ExpressionEncoder[Int], ExpressionEncoder[(String, Int)])
-        .schema
+        .tuple(ExpressionEncoder[Int], ExpressionEncoder[(String, Int)]).schema
       assert(schema(0).nullable === false)
       assert(schema(1).nullable === true)
       assert(schema(1).dataType.asInstanceOf[StructType](0).nullable === true)
@@ -344,27 +343,20 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
 
       if (!isCorrect) {
         val types = convertedBack match {
-          case c: Product =>
-            c.productIterator
-              .filter(_ != null)
-              .map(_.getClass.getName)
-              .mkString(",")
+          case c: Product => c.productIterator.filter(_ != null)
+              .map(_.getClass.getName).mkString(",")
           case other => other.getClass.getName
         }
 
         val encodedData =
           try {
-            row
-              .toSeq(encoder.schema)
-              .zip(schema)
-              .map {
-                case (
-                      a: ArrayData,
-                      AttributeReference(_, ArrayType(et, _), _, _)) =>
-                  a.toArray[Any](et).toSeq
-                case (other, _) => other
-              }
-              .mkString("[", ",", "]")
+            row.toSeq(encoder.schema).zip(schema).map {
+              case (
+                    a: ArrayData,
+                    AttributeReference(_, ArrayType(et, _), _, _)) =>
+                a.toArray[Any](et).toSeq
+              case (other, _) => other
+            }.mkString("[", ",", "]")
           } catch { case e: Throwable => s"Failed to toSeq: $e" }
 
         fail(s"""Encoded/Decoded data does not match input data

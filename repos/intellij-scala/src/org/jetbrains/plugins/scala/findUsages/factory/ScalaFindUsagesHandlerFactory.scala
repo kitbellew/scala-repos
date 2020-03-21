@@ -87,8 +87,7 @@ class ScalaFindUsagesHandlerFactory(project: Project)
       case function: ScFunction if function.isLocal => Array(function)
       case named: ScNamedElement if !forHighlightUsages =>
         val supers = RenameSuperMembersUtil
-          .allSuperMembers(named, withSelfType = true)
-          .filter(needToAsk)
+          .allSuperMembers(named, withSelfType = true).filter(needToAsk)
         if (supers.nonEmpty) chooseSuper(named.name, supers)
       case _ =>
     }
@@ -99,9 +98,9 @@ class ScalaFindUsagesHandlerFactory(project: Project)
   private def needToAsk(named: PsiNamedElement): Boolean = {
     named match {
       case fun: ScFunction
-          if fun.containingClass.qualifiedName.startsWith(
-            "scala.Function") && fun.name == "apply" => false
-      case _                                         => true
+          if fun.containingClass.qualifiedName
+            .startsWith("scala.Function") && fun.name == "apply" => false
+      case _                                                     => true
     }
   }
 }

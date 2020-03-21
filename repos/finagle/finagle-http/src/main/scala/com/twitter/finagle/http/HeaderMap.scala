@@ -102,9 +102,9 @@ class MapHeaderMap(underlying: mutable.Map[String, Seq[String]])
 
 object MapHeaderMap {
   def apply(headers: Tuple2[String, String]*): MapHeaderMap = {
-    val map = headers
-      .groupBy { case (k, v) => k.toLowerCase }
-      .mapValues { case values => values.map { _._2 } } // remove keys
+    val map = headers.groupBy { case (k, v) => k.toLowerCase }.mapValues {
+      case values => values.map { _._2 }
+    } // remove keys
     new MapHeaderMap(mutable.Map() ++ map)
   }
 }

@@ -154,8 +154,7 @@ object SessionSettings {
   /** Checks to see if any session settings are being discarded and issues a warning. */
   def checkSession(newSession: SessionSettings, oldState: State): Unit = {
     val oldSettings = (oldState get Keys.sessionSettings).toList
-      .flatMap(_.append)
-      .flatMap(_._2)
+      .flatMap(_.append).flatMap(_._2)
     if (newSession.append.isEmpty && oldSettings.nonEmpty)
       oldState.log.warn(
         "Discarding " + pluralize(
@@ -216,9 +215,8 @@ object SessionSettings {
           (ref -> news, olds)
         }
       val (newAppend, newOriginal) = newSettings.unzip
-      val newSession = session.copy(
-        append = newAppend.toMap,
-        original = newOriginal.flatten.toSeq)
+      val newSession = session
+        .copy(append = newAppend.toMap, original = newOriginal.flatten.toSeq)
       reapply(
         newSession
           .copy(original = newSession.mergeSettings, append = Map.empty),
@@ -231,12 +229,9 @@ object SessionSettings {
       settings: List[SessionSetting],
       original: Seq[Setting[_]],
       structure: BuildStructure): (Seq[SessionSetting], Seq[Setting[_]]) = {
-    val project = Project
-      .getProject(pref, structure)
+    val project = Project.getProject(pref, structure)
       .getOrElse(sys.error("Invalid project reference " + pref))
-    val writeTo: File = BuildPaths
-      .configurationSources(project.base)
-      .headOption
+    val writeTo: File = BuildPaths.configurationSources(project.base).headOption
       .getOrElse(new File(project.base, "build.sbt"))
     writeTo.createNewFile()
 
@@ -271,9 +266,8 @@ object SessionSettings {
       }
     val newSettings = settings diff replace
     val oldContent = IO.readLines(writeTo)
-    val (_, exist) = SbtRefactorings.applySessionSettings(
-      (writeTo, oldContent),
-      replace)
+    val (_, exist) = SbtRefactorings
+      .applySessionSettings((writeTo, oldContent), replace)
     val adjusted =
       if (newSettings.nonEmpty && needsTrailingBlank(exist)) exist :+ ""
       else exist
@@ -375,8 +369,8 @@ save, save-all
         "save" ^^^ new Save(false)) | token("clear-all" ^^^ new Clear(true)) |
         remove)
 
-  lazy val remove = token("remove") ~> token(Space) ~> natSelect.map(ranges =>
-    new Remove(ranges))
+  lazy val remove = token("remove") ~> token(Space) ~> natSelect
+    .map(ranges => new Remove(ranges))
 
   def natSelect = rep1sep(token(range, "<range>"), ',')
 

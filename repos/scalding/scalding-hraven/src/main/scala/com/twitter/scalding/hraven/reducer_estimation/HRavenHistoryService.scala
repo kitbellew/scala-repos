@@ -24,12 +24,10 @@ object HRavenClient {
   private final val clientReadTimeoutDefault = 30000
 
   def apply(conf: JobConf): Try[HRavenRestClient] =
-    conf
-      .getFirstKey(apiHostnameKey)
-      .map(new HRavenRestClient(
-        _,
-        conf.getInt(clientConnectTimeoutKey, clientConnectTimeoutDefault),
-        conf.getInt(clientReadTimeoutKey, clientReadTimeoutDefault)))
+    conf.getFirstKey(apiHostnameKey).map(new HRavenRestClient(
+      _,
+      conf.getInt(clientConnectTimeoutKey, clientConnectTimeoutDefault),
+      conf.getInt(clientReadTimeoutKey, clientReadTimeoutDefault)))
 }
 
 /**
@@ -65,12 +63,12 @@ object HRavenHistoryService extends HistoryService {
       * Logs a warning if nothing was found.
       */
     def getFirstKey(fields: String*): Try[String] =
-      fields
-        .collectFirst { case f if conf.get(f) != null => Success(conf.get(f)) }
-        .getOrElse {
-          LOG.warn("Missing required config param: " + fields.mkString(" or "))
-          Failure(MissingFieldsException(fields))
-        }
+      fields.collectFirst {
+        case f if conf.get(f) != null => Success(conf.get(f))
+      }.getOrElse {
+        LOG.warn("Missing required config param: " + fields.mkString(" or "))
+        Failure(MissingFieldsException(fields))
+      }
 
   }
   implicit def jobConfToRichConfig(conf: JobConf): RichConfig = RichConfig(conf)
@@ -97,37 +95,32 @@ object HRavenHistoryService extends HistoryService {
       batch,
       signature,
       nFetch,
-      RequiredJobConfigs: _*))
-      .flatMap { flows =>
-        Try {
-          // Ugly mutable code to add task info to flows
-          flows.asScala.foreach { flow =>
-            flow.getJobs.asScala.foreach { job =>
-              // client.fetchTaskDetails might throw IOException
-              val tasks = client.fetchTaskDetails(
-                flow.getCluster,
-                job.getJobId,
-                TaskDetailFields)
-              job.addTasks(tasks)
-            }
+      RequiredJobConfigs: _*)).flatMap { flows =>
+      Try {
+        // Ugly mutable code to add task info to flows
+        flows.asScala.foreach { flow =>
+          flow.getJobs.asScala.foreach { job =>
+            // client.fetchTaskDetails might throw IOException
+            val tasks = client
+              .fetchTaskDetails(flow.getCluster, job.getJobId, TaskDetailFields)
+            job.addTasks(tasks)
           }
-
-          val successfulFlows = flows.asScala
-            .filter(_.getHdfsBytesRead > 0)
-            .take(max)
-          if (successfulFlows.isEmpty) {
-            LOG.warn(
-              "Unable to find any successful flows in the last " + nFetch + " jobs.")
-          }
-          successfulFlows
         }
+
+        val successfulFlows = flows.asScala.filter(_.getHdfsBytesRead > 0)
+          .take(max)
+        if (successfulFlows.isEmpty) {
+          LOG.warn(
+            "Unable to find any successful flows in the last " + nFetch + " jobs.")
+        }
+        successfulFlows
       }
-      .recoverWith {
-        case e: IOException =>
-          LOG.error(
-            "Error making API request to hRaven. HRavenHistoryService will be disabled.")
-          Failure(e)
-      }
+    }.recoverWith {
+      case e: IOException =>
+        LOG.error(
+          "Error making API request to hRaven. HRavenHistoryService will be disabled.")
+        Failure(e)
+    }
 
   /**
     * Fetch info from hRaven for the last time the given JobStep ran.

@@ -69,9 +69,8 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
     <tr>
       <td>
         <a href={
-      "%s/storage/rdd?id=%s".format(
-        UIUtils.prependBaseUri(parent.basePath),
-        rdd.id)
+      "%s/storage/rdd?id=%s"
+        .format(UIUtils.prependBaseUri(parent.basePath), rdd.id)
     }>
           {rdd.name}
         </a>
@@ -96,10 +95,7 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
       // Don't show the tables if there is no stream block
       Nil
     } else {
-      val blocks = statuses
-        .flatMap(_.blocks)
-        .groupBy(_.blockId)
-        .toSeq
+      val blocks = statuses.flatMap(_.blocks).groupBy(_.blockId).toSeq
         .sortBy(_._1.toString)
 
       <div>
@@ -230,9 +226,9 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
     if (block.storageLevel.useDisk) { ("Disk", block.diskSize) }
     else if (block.storageLevel.useMemory && block.storageLevel.deserialized) {
       ("Memory", block.memSize)
-    } else if (block.storageLevel.useMemory && !block.storageLevel.deserialized) {
-      ("Memory Serialized", block.memSize)
-    } else {
+    } else if (block.storageLevel.useMemory && !block.storageLevel
+                 .deserialized) { ("Memory Serialized", block.memSize) }
+    else {
       throw new IllegalStateException(
         s"Invalid Storage Level: ${block.storageLevel}")
     }

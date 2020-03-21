@@ -61,8 +61,8 @@ final class RandomRoutingLogic extends RoutingLogic {
 final case class RandomPool(
     override val nrOfInstances: Int,
     override val resizer: Option[Resizer] = None,
-    override val supervisorStrategy: SupervisorStrategy =
-      Pool.defaultSupervisorStrategy,
+    override val supervisorStrategy: SupervisorStrategy = Pool
+      .defaultSupervisorStrategy,
     override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
     override val usePoolDispatcher: Boolean = false)
     extends Pool

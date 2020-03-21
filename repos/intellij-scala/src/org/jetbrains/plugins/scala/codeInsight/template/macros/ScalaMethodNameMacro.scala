@@ -22,8 +22,8 @@ class ScalaMethodNameMacro extends Macro {
   override def getName: String = MacroUtil.scalaIdPrefix + "methodName"
 
   override def getPresentableName: String =
-    MacroUtil.scalaPresentablePrefix + CodeInsightBundle.message(
-      "macro.methodname")
+    MacroUtil.scalaPresentablePrefix + CodeInsightBundle
+      .message("macro.methodname")
 
   override def getDefaultValue = "a"
 

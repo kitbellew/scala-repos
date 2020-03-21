@@ -29,21 +29,19 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
       index: Int,
       isSelected: Boolean,
       cellHasFocus: Boolean) = {
-    val attrFirstPart = EditorColorsManager
-      .getInstance()
-      .getGlobalScheme
+    val attrFirstPart = EditorColorsManager.getInstance().getGlobalScheme
       .getAttributes(DefaultHighlighter.IMPLICIT_FIRST_PART)
-    val attrSecondPart = EditorColorsManager
-      .getInstance()
-      .getGlobalScheme
+    val attrSecondPart = EditorColorsManager.getInstance().getGlobalScheme
       .getAttributes(DefaultHighlighter.IMPLICIT_SECOND_PART)
     val implicitFirstPart =
       if (attrFirstPart == null)
-        DefaultHighlighter.IMPLICIT_FIRST_PART.getDefaultAttributes.getForegroundColor
+        DefaultHighlighter.IMPLICIT_FIRST_PART.getDefaultAttributes
+          .getForegroundColor
       else attrFirstPart.getForegroundColor
     val implicitSecondPart =
       if (attrSecondPart == null)
-        DefaultHighlighter.IMPLICIT_SECOND_PART.getDefaultAttributes.getForegroundColor
+        DefaultHighlighter.IMPLICIT_SECOND_PART.getDefaultAttributes
+          .getForegroundColor
       else attrSecondPart.getForegroundColor
     val tuple = value.asInstanceOf[Parameters]
     val item = tuple.getNewExpression
@@ -57,8 +55,7 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
       cellHasFocus)
     comp match {
       case container: Container =>
-        val colored = container.getComponents
-          .apply(2)
+        val colored = container.getComponents.apply(2)
           .asInstanceOf[SimpleColoredComponent]
         if (item == actual) {
           colored.clear()
@@ -114,13 +111,13 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
   override def getElementText(element: PsiNamedElement) = {
     element match {
       case method: ScFunction =>
-        method.name + PresentationUtil.presentationString(
-          method.paramClauses) + ": " +
+        method.name + PresentationUtil
+          .presentationString(method.paramClauses) + ": " +
           PresentationUtil.presentationString(method.returnType.getOrAny)
       case b: ScBindingPattern =>
         b.name + ": " +
-          PresentationUtil.presentationString(
-            b.getType(TypingContext.empty).getOrAny)
+          PresentationUtil
+            .presentationString(b.getType(TypingContext.empty).getOrAny)
       case _ => element.name
     }
   }

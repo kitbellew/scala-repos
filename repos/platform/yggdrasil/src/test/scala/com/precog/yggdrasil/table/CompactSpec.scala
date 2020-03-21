@@ -81,8 +81,8 @@ trait CompactSpec[M[+_]]
     table match {
       case cTable: ColumnarTable =>
         cTable.slices.toStream.copoint.headOption.map { slice =>
-          val chosenPath =
-            Random.shuffle(slice.columns.keys.map(_.selector)).head
+          val chosenPath = Random.shuffle(slice.columns.keys.map(_.selector))
+            .head
           mkDeref(chosenPath)
         } getOrElse (mkDeref(CPath.Identity))
     }
@@ -91,7 +91,8 @@ trait CompactSpec[M[+_]]
     fullTable match {
       case cTable: ColumnarTable =>
         val slices =
-          cTable.slices.toStream.copoint // fuzzing must be done strictly otherwise sadness will ensue
+          cTable.slices.toStream
+            .copoint // fuzzing must be done strictly otherwise sadness will ensue
         val numSlices = slices.size
 
         val maskedSlices = slices.map { slice =>
@@ -109,10 +110,8 @@ trait CompactSpec[M[+_]]
             new Slice {
               val size = slice.size
               val columns = slice.columns.mapValues { col =>
-                (col |> cf.util.filter(
-                  0,
-                  slice.size,
-                  BitSetUtil.create(retained))).get
+                (col |> cf.util
+                  .filter(0, slice.size, BitSetUtil.create(retained))).get
               }
             }
           }
@@ -125,7 +124,8 @@ trait CompactSpec[M[+_]]
     fullTable match {
       case cTable: ColumnarTable =>
         val slices =
-          cTable.slices.toStream.copoint // fuzzing must be done strictly otherwise sadness will ensue
+          cTable.slices.toStream
+            .copoint // fuzzing must be done strictly otherwise sadness will ensue
         val numSlices = slices.size
 
         val maskedSlices = slices.map { slice =>
@@ -139,10 +139,8 @@ trait CompactSpec[M[+_]]
                 val retained = (0 until slice.size).map { (x: Int) =>
                   if (scala.util.Random.nextDouble < 0.75) Some(x) else None
                 }.flatten
-                (col |> cf.util.filter(
-                  0,
-                  slice.size,
-                  BitSetUtil.create(retained))).get
+                (col |> cf.util
+                  .filter(0, slice.size, BitSetUtil.create(retained))).get
               }
             new Slice {
               val size = slice.size

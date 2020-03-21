@@ -74,8 +74,9 @@ abstract class RemoteQuarantinePiercingSpec
           .quarantine(node(second).address, Some(uidFirst))
 
         // Quarantine is up -- Cannot communicate with remote system any more
-        system.actorSelection(
-          RootActorPath(secondAddress) / "user" / "subject") ! "identify"
+        system
+          .actorSelection(
+            RootActorPath(secondAddress) / "user" / "subject") ! "identify"
         expectNoMsg(2.seconds)
 
         // Shut down the other system -- which results in restart (see runOn(second))
@@ -96,14 +97,15 @@ abstract class RemoteQuarantinePiercingSpec
 
         // If we got here the Quarantine was successfully pierced since it is configured to last 1 day
 
-        system.actorSelection(
-          RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
+        system
+          .actorSelection(
+            RootActorPath(secondAddress) / "user" / "subject") ! "shutdown"
 
       }
 
       runOn(second) {
-        val addr =
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+        val addr = system.asInstanceOf[ExtendedActorSystem].provider
+          .getDefaultAddress
         system.actorOf(Props[Subject], "subject")
         enterBarrier("actors-started")
 

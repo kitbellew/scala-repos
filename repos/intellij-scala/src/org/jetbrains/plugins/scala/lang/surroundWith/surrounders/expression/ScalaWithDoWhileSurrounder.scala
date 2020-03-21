@@ -34,8 +34,8 @@ class ScalaWithDoWhileSurrounder extends ScalaExpressionSurrounder {
     }
     val doWhileStmt = element.asInstanceOf[ScDoStmt]
 
-    val conditionNode: ASTNode =
-      doWhileStmt.getNode.getLastChildNode.getTreePrev
+    val conditionNode: ASTNode = doWhileStmt.getNode.getLastChildNode
+      .getTreePrev
 
     val startOffset = conditionNode.getTextRange.getStartOffset
     val endOffset = conditionNode.getTextRange.getEndOffset

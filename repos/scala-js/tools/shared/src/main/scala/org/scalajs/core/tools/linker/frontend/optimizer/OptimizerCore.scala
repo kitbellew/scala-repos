@@ -145,8 +145,8 @@ private[optimizer] abstract class OptimizerCore(
           cause)
       case e: Throwable =>
         // This is a fatal exception. Don't wrap, just output debug info error
-        Console.err.println(
-          exceptionMsg(myself, attemptedInlining.distinct.toList, e))
+        Console.err
+          .println(exceptionMsg(myself, attemptedInlining.distinct.toList, e))
         throw e
     }
   }
@@ -377,8 +377,8 @@ private[optimizer] abstract class OptimizerCore(
                   returnedTypes = newSimpleState(Nil))
                 While(
                   newCond, {
-                    val bodyScope = scope.withEnv(
-                      scope.env.withLabelInfo(label, info))
+                    val bodyScope = scope
+                      .withEnv(scope.env.withLabelInfo(label, info))
                     transformStat(body)(bodyScope)
                   },
                   Some(Ident(newLabel, None)(labelIdent.pos)))
@@ -412,8 +412,8 @@ private[optimizer] abstract class OptimizerCore(
             newSimpleState(true),
             None))
         val newHandler = {
-          val handlerScope = scope.withEnv(
-            scope.env.withLocalDef(name, localDef))
+          val handlerScope = scope
+            .withEnv(scope.env.withLocalDef(name, localDef))
           transform(handler, isStat)(handlerScope)
         }
 
@@ -1087,8 +1087,8 @@ private[optimizer] abstract class OptimizerCore(
             PreTransRecordTree(
               RecordValue(
                 recordType,
-                recordType.fields.map(f =>
-                  fieldLocalDefs(f.name).newReplacement)),
+                recordType.fields
+                  .map(f => fieldLocalDefs(f.name).newReplacement)),
               tpe,
               cancelFun)
 
@@ -1359,8 +1359,8 @@ private[optimizer] abstract class OptimizerCore(
             val shouldInline = target.inlineable && (target.shouldInline ||
               shouldInlineBecauseOfArgs(target, treceiver :: targs))
             val allocationSites = (treceiver :: targs).map(_.tpe.allocationSite)
-            val beingInlined = scope.implsBeingInlined(
-              (allocationSites, target))
+            val beingInlined = scope
+              .implsBeingInlined((allocationSites, target))
 
             if (shouldInline && !beingInlined) {
               inline(
@@ -1411,9 +1411,8 @@ private[optimizer] abstract class OptimizerCore(
           callIntrinsic(intrinsicCode, None, targs, isStat, usePreTransform)(
             cont)
         } else {
-          val shouldInline = target.inlineable && (
-            target.shouldInline || shouldInlineBecauseOfArgs(target, targs)
-          )
+          val shouldInline = target.inlineable && (target
+            .shouldInline || shouldInlineBecauseOfArgs(target, targs))
           val allocationSites = targs.map(_.tpe.allocationSite)
           val beingInlined = scope.implsBeingInlined((allocationSites, target))
 
@@ -1536,7 +1535,8 @@ private[optimizer] abstract class OptimizerCore(
       }
 
     receiverAndArgs.exists(isLikelyOptimizable) || {
-      target.toString == "s_reflect_ClassTag$.apply__jl_Class__s_reflect_ClassTag" &&
+      target
+        .toString == "s_reflect_ClassTag$.apply__jl_Class__s_reflect_ClassTag" &&
       (receiverAndArgs.tail.head match {
         case PreTransTree(ClassOf(_), _) => true
         case _                           => false
@@ -1981,8 +1981,7 @@ private[optimizer] abstract class OptimizerCore(
           InlineClassBeingConstructedReplacement(
             inputFieldsLocalDefs,
             cancelFun))
-        val statsScope = bodyScope
-          .inlining(targetID)
+        val statsScope = bodyScope.inlining(targetID)
           .withEnv(bodyScope.env.withLocalDef("this", thisLocalDef))
         inlineClassConstructorBodyList(
           allocationSite,
@@ -2026,17 +2025,16 @@ private[optimizer] abstract class OptimizerCore(
                  */
                 cancelFun()
               }
-              val newFieldsLocalDefs = inputFieldsLocalDefs.updated(
-                fieldName,
-                localDef)
+              val newFieldsLocalDefs = inputFieldsLocalDefs
+                .updated(fieldName, localDef)
               val newThisLocalDef = LocalDef(
                 RefinedType(cls, isExact = true, isNullable = false),
                 false,
                 InlineClassBeingConstructedReplacement(
                   newFieldsLocalDefs,
                   cancelFun))
-              val restScope = scope.withEnv(
-                scope.env.withLocalDef("this", newThisLocalDef))
+              val restScope = scope
+                .withEnv(scope.env.withLocalDef("this", newThisLocalDef))
               inlineClassConstructorBodyList(
                 allocationSite,
                 newThisLocalDef,
@@ -2090,8 +2088,8 @@ private[optimizer] abstract class OptimizerCore(
               InlineClassBeingConstructedReplacement(
                 outputFieldsLocalDefs,
                 cancelFun))
-            val restScope = scope.withEnv(
-              scope.env.withLocalDef("this", newThisLocalDef))
+            val restScope = scope
+              .withEnv(scope.env.withLocalDef("this", newThisLocalDef))
             inlineClassConstructorBodyList(
               allocationSite,
               newThisLocalDef,
@@ -2493,8 +2491,8 @@ private[optimizer] abstract class OptimizerCore(
       case FloatLiteral(value) => foldToStringForString_+(
           DoubleLiteral(value.toDouble))
 
-      case DoubleLiteral(value) =>
-        jsNumberToString(value).fold(tree)(StringLiteral(_))
+      case DoubleLiteral(value) => jsNumberToString(value)
+          .fold(tree)(StringLiteral(_))
 
       case LongLiteral(value)    => StringLiteral(value.toString)
       case IntLiteral(value)     => StringLiteral(value.toString)
@@ -3310,27 +3308,28 @@ private[optimizer] abstract class OptimizerCore(
                   (bodyTree, (bodyTree.tpe, tpe) :: returnedTypes0)
               }
               val (actualTypes, origTypes) = returnedTypes.unzip
-              val refinedOrigType = origTypes.reduce(
-                constrainedLub(_, _, resultType))
-              actualTypes
-                .collectFirst { case actualType: RecordType => actualType }
-                .fold[TailRec[Tree]] {
-                  // None of the returned types are records
-                  cont(PreTransTree(
-                    doMakeTree(newBody, actualTypes),
-                    refinedOrigType))
-                } { recordType =>
-                  if (actualTypes.exists(t =>
-                        t != recordType && t != NothingType)) cancelFun()
+              val refinedOrigType = origTypes
+                .reduce(constrainedLub(_, _, resultType))
+              actualTypes.collectFirst {
+                case actualType: RecordType => actualType
+              }.fold[TailRec[Tree]] {
+                // None of the returned types are records
+                cont(PreTransTree(
+                  doMakeTree(newBody, actualTypes),
+                  refinedOrigType))
+              } { recordType =>
+                if (actualTypes
+                      .exists(t => t != recordType && t != NothingType))
+                  cancelFun()
 
-                  val resultTree = doMakeTree(newBody, actualTypes)
+                val resultTree = doMakeTree(newBody, actualTypes)
 
-                  if (origTypes.exists(t =>
-                        t != refinedOrigType && !t.isNothingType)) cancelFun()
+                if (origTypes
+                      .exists(t => t != refinedOrigType && !t.isNothingType))
+                  cancelFun()
 
-                  cont(
-                    PreTransRecordTree(resultTree, refinedOrigType, cancelFun))
-                }
+                cont(PreTransRecordTree(resultTree, refinedOrigType, cancelFun))
+              }
             }
           }(bodyScope)
         } { () =>

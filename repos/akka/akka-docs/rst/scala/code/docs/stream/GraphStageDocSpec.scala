@@ -118,8 +118,7 @@ class GraphStageDocSpec extends AkkaSpec {
     // tests:
     val stringLength = Flow.fromGraph(new Map[String, Int](_.length))
 
-    val result = Source(Vector("one", "two", "three"))
-      .via(stringLength)
+    val result = Source(Vector("one", "two", "three")).via(stringLength)
       .runFold(Seq.empty[Int])((elem, acc) => elem :+ acc)
 
     Await.result(result, 3.seconds) should ===(Seq(3, 3, 5))
@@ -157,8 +156,7 @@ class GraphStageDocSpec extends AkkaSpec {
     // tests:
     val evenFilter = Flow.fromGraph(new Filter[Int](_ % 2 == 0))
 
-    val result = Source(Vector(1, 2, 3, 4, 5, 6))
-      .via(evenFilter)
+    val result = Source(Vector(1, 2, 3, 4, 5, 6)).via(evenFilter)
       .runFold(Seq.empty[Int])((elem, acc) => elem :+ acc)
 
     Await.result(result, 3.seconds) should ===(Seq(2, 4, 6))
@@ -212,8 +210,7 @@ class GraphStageDocSpec extends AkkaSpec {
     // tests:
     val duplicator = Flow.fromGraph(new Duplicator[Int])
 
-    val result = Source(Vector(1, 2, 3))
-      .via(duplicator)
+    val result = Source(Vector(1, 2, 3)).via(duplicator)
       .runFold(Seq.empty[Int])((elem, acc) => elem :+ acc)
 
     Await.result(result, 3.seconds) should ===(Seq(1, 1, 2, 2, 3, 3))
@@ -255,8 +252,7 @@ class GraphStageDocSpec extends AkkaSpec {
     // tests:
     val duplicator = Flow.fromGraph(new Duplicator[Int])
 
-    val result = Source(Vector(1, 2, 3))
-      .via(duplicator)
+    val result = Source(Vector(1, 2, 3)).via(duplicator)
       .runFold(Seq.empty[Int])((elem, acc) => elem :+ acc)
 
     Await.result(result, 3.seconds) should ===(Seq(1, 1, 2, 2, 3, 3))
@@ -267,11 +263,8 @@ class GraphStageDocSpec extends AkkaSpec {
     val sink = Sink.fold[List[Int], Int](List.empty[Int])((acc, n) => acc :+ n)
 
     //#graph-stage-chain
-    val resultFuture = Source(1 to 5)
-      .via(new Filter(_ % 2 == 0))
-      .via(new Duplicator())
-      .via(new Map(_ / 2))
-      .runWith(sink)
+    val resultFuture = Source(1 to 5).via(new Filter(_ % 2 == 0))
+      .via(new Duplicator()).via(new Map(_ / 2)).runWith(sink)
 
     //#graph-stage-chain
 
@@ -322,12 +315,8 @@ class GraphStageDocSpec extends AkkaSpec {
     val in = TestPublisher.probe[Int]()
     val out = TestSubscriber.probe[Int]()
 
-    Source
-      .fromPublisher(in)
-      .via(duplicator)
-      .to(Sink.fromSubscriber(out))
-      .withAttributes(Attributes.inputBuffer(1, 1))
-      .run()
+    Source.fromPublisher(in).via(duplicator).to(Sink.fromSubscriber(out))
+      .withAttributes(Attributes.inputBuffer(1, 1)).run()
 
     val sub = in.expectSubscription()
 
@@ -386,8 +375,7 @@ class GraphStageDocSpec extends AkkaSpec {
     //#timed
 
     // tests:
-    val result = Source(Vector(1, 2, 3))
-      .via(new TimedGate[Int](2.second))
+    val result = Source(Vector(1, 2, 3)).via(new TimedGate[Int](2.second))
       .takeWithin(250.millis)
       .runFold(Seq.empty[Int])((elem, acc) => elem :+ acc)
 
@@ -442,8 +430,7 @@ class GraphStageDocSpec extends AkkaSpec {
     //#materialized
 
     // tests:
-    val flow = Source(Vector(1, 2, 3))
-      .viaMat(new FirstValue)(Keep.right)
+    val flow = Source(Vector(1, 2, 3)).viaMat(new FirstValue)(Keep.right)
       .to(Sink.ignore)
 
     val result: Future[Int] = flow.run()
@@ -519,17 +506,14 @@ class GraphStageDocSpec extends AkkaSpec {
     //#detached
 
     // tests:
-    val result1 = Source(Vector(1, 2, 3))
-      .via(new TwoBuffer)
+    val result1 = Source(Vector(1, 2, 3)).via(new TwoBuffer)
       .runFold(Vector.empty[Int])((acc, n) => acc :+ n)
 
     Await.result(result1, 3.seconds) should ===(Vector(1, 2, 3))
 
     val subscriber = TestSubscriber.manualProbe[Int]()
     val publisher = TestPublisher.probe[Int]()
-    val flow2 = Source
-      .fromPublisher(publisher)
-      .via(new TwoBuffer)
+    val flow2 = Source.fromPublisher(publisher).via(new TwoBuffer)
       .to(Sink.fromSubscriber(subscriber))
 
     val result2 = flow2.run()

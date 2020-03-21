@@ -208,7 +208,8 @@ class StreamingKMeans @Since("1.2.0") (
     */
   @Since("1.2.0")
   def setHalfLife(halfLife: Double, timeUnit: String): this.type = {
-    if (timeUnit != StreamingKMeans.BATCHES && timeUnit != StreamingKMeans.POINTS) {
+    if (timeUnit != StreamingKMeans.BATCHES && timeUnit != StreamingKMeans
+          .POINTS) {
       throw new IllegalArgumentException(
         "Invalid time unit for decay: " + timeUnit)
     }
@@ -242,8 +243,8 @@ class StreamingKMeans @Since("1.2.0") (
       weight: Double,
       seed: Long = Utils.random.nextLong): this.type = {
     val random = new XORShiftRandom(seed)
-    val centers = Array.fill(k)(Vectors.dense(
-      Array.fill(dim)(random.nextGaussian())))
+    val centers = Array
+      .fill(k)(Vectors.dense(Array.fill(dim)(random.nextGaussian())))
     val weights = Array.fill(k)(weight)
     model = new StreamingKMeansModel(centers, weights)
     this

@@ -18,8 +18,7 @@ class BinaryClockTest extends Specification {
     (BinaryFormat.clock(since).read(ByteArray.parseBytes(bytes), false, false))(
       chess.White)
   def isomorphism(c: Clock): Clock =
-    (BinaryFormat
-      .clock(since)
+    (BinaryFormat.clock(since)
       .read(BinaryFormat.clock(since) write c, false, false))(chess.White)
 
   "binary Clock" should {
@@ -28,12 +27,12 @@ class BinaryClockTest extends Specification {
     "write" in {
       write(clock) must_== { bits22 ::: List.fill(10)(_0_) }
       write(clock.giveTime(chess.White, 0.03f)) must_== {
-        bits22 ::: List("10000000", "00000000", "00000011") ::: List.fill(7)(
-          _0_)
+        bits22 ::: List("10000000", "00000000", "00000011") ::: List
+          .fill(7)(_0_)
       }
       write(clock.giveTime(chess.White, -0.03f)) must_== {
-        bits22 ::: List("00000000", "00000000", "00000011") ::: List.fill(7)(
-          _0_)
+        bits22 ::: List("00000000", "00000000", "00000011") ::: List
+          .fill(7)(_0_)
       }
       write(Clock(0, 3)) must_== {
         List(
@@ -50,11 +49,11 @@ class BinaryClockTest extends Specification {
     "read" in {
       read(bits22 ::: List.fill(11)(_0_)) must_== { clock }
       read(
-        bits22 ::: List("10000000", "00000000", "00000011") ::: List.fill(8)(
-          _0_)) must_== { clock.giveTime(chess.White, 0.03f) }
+        bits22 ::: List("10000000", "00000000", "00000011") ::: List
+          .fill(8)(_0_)) must_== { clock.giveTime(chess.White, 0.03f) }
       read(
-        bits22 ::: List("00000000", "00000000", "00000011") ::: List.fill(8)(
-          _0_)) must_== { clock.giveTime(chess.White, -0.03f) }
+        bits22 ::: List("00000000", "00000000", "00000011") ::: List
+          .fill(8)(_0_)) must_== { clock.giveTime(chess.White, -0.03f) }
     }
     "isomorphism" in {
 

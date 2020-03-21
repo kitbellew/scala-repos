@@ -72,8 +72,8 @@ object DoubleNegationUtil {
         val hasNegRight = hasNegation(right)
         val hasNegInfix = hasNegation(infix)
         val builder = new mutable.StringBuilder()
-        builder.append(
-          if (hasNegLeft) invertedNegationText(left) else left.getText)
+        builder
+          .append(if (hasNegLeft) invertedNegationText(left) else left.getText)
         builder.append(
           if (hasNegLeft && hasNegInfix && hasNegRight) " != " else " == ")
         builder.append(

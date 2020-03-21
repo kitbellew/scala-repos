@@ -130,7 +130,8 @@ class MasterSuite
       rpcEnv.awaitTermination()
     }
 
-    CustomRecoveryModeFactory.instantiationAttempts should be > instantiationAttempts
+    CustomRecoveryModeFactory
+      .instantiationAttempts should be > instantiationAttempts
   }
 
   test("master/worker web ui available") {
@@ -142,17 +143,13 @@ class MasterSuite
       eventually(timeout(5 seconds), interval(100 milliseconds)) {
         val json = Source
           .fromURL(s"http://localhost:${localCluster.masterWebUIPort}/json")
-          .getLines()
-          .mkString("\n")
+          .getLines().mkString("\n")
         val JArray(workers) = (parse(json) \ "workers")
         workers.size should be(2)
         workers.foreach { workerSummaryJson =>
           val JString(workerWebUi) = workerSummaryJson \ "webuiaddress"
           val workerResponse = parse(
-            Source
-              .fromURL(s"${workerWebUi}/json")
-              .getLines()
-              .mkString("\n"))
+            Source.fromURL(s"${workerWebUi}/json").getLines().mkString("\n"))
           (workerResponse \ "cores").extract[Int] should be(2)
         }
       }
@@ -477,12 +474,8 @@ class MasterSuite
   private def makeMaster(conf: SparkConf = new SparkConf): Master = {
     assert(_master === null, "Some Master's RpcEnv is leaked in tests")
     val securityMgr = new SecurityManager(conf)
-    val rpcEnv = RpcEnv.create(
-      Master.SYSTEM_NAME,
-      "localhost",
-      0,
-      conf,
-      securityMgr)
+    val rpcEnv = RpcEnv
+      .create(Master.SYSTEM_NAME, "localhost", 0, conf, securityMgr)
     _master = new Master(rpcEnv, rpcEnv.address, 0, securityMgr, conf)
     _master
   }
@@ -565,8 +558,8 @@ class MasterSuite
         2,
         ExecutorState.RUNNING)
     }
-    master.self.send(
-      WorkerLatestState("1", executors, driverIds = Seq("0", "1", "2")))
+    master.self
+      .send(WorkerLatestState("1", executors, driverIds = Seq("0", "1", "2")))
 
     eventually(timeout(10.seconds)) {
       assert(

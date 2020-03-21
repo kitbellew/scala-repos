@@ -92,7 +92,8 @@ class InlineWarningTest extends ClearAfterClass {
     val warn =
       """T::f()I is annotated @inline but cannot be inlined: the trait method call could not be rewritten to the static implementation method. Possible reason:
         |The method f(LT;)I could not be found in the class T$class or any of its parents.
-        |Note that the following parent classes could not be found on the classpath: T$class""".stripMargin
+        |Note that the following parent classes could not be found on the classpath: T$class"""
+        .stripMargin
 
     var c = 0
     compileSeparately(
@@ -146,11 +147,13 @@ class InlineWarningTest extends ClearAfterClass {
     val warns = List(
       """failed to determine if bar should be inlined:
         |The method bar()I could not be found in the class A or any of its parents.
-        |Note that the following parent classes are defined in Java sources (mixed compilation), no bytecode is available: A""".stripMargin,
+        |Note that the following parent classes are defined in Java sources (mixed compilation), no bytecode is available: A"""
+        .stripMargin,
       """B::flop()I is annotated @inline but could not be inlined:
         |Failed to check if B::flop()I can be safely inlined to B without causing an IllegalAccessError. Checking instruction INVOKESTATIC A.bar ()I failed:
         |The method bar()I could not be found in the class A or any of its parents.
-        |Note that the following parent classes are defined in Java sources (mixed compilation), no bytecode is available: A""".stripMargin
+        |Note that the following parent classes are defined in Java sources (mixed compilation), no bytecode is available: A"""
+        .stripMargin
     )
 
     var c = 0
@@ -161,14 +164,14 @@ class InlineWarningTest extends ClearAfterClass {
     assert(c == 1, c)
 
     // no warnings here
-    compileClasses(newCompiler(extraArgs =
-      InlineWarningTest.argsNoWarn + " -Yopt-warnings:none"))(
+    compileClasses(newCompiler(extraArgs = InlineWarningTest
+      .argsNoWarn + " -Yopt-warnings:none"))(
       scalaCode,
       List((javaCode, "A.java")))
 
     c = 0
-    compileClasses(newCompiler(extraArgs =
-      InlineWarningTest.argsNoWarn + " -Yopt-warnings:no-inline-mixed"))(
+    compileClasses(newCompiler(extraArgs = InlineWarningTest
+      .argsNoWarn + " -Yopt-warnings:no-inline-mixed"))(
       scalaCode,
       List((javaCode, "A.java")),
       allowMessage = i => { c += 1; warns.exists(i.msg contains _) })
@@ -194,7 +197,8 @@ class InlineWarningTest extends ClearAfterClass {
     val warn =
       """M::f()I is annotated @inline but could not be inlined:
         |The callee M::f()I contains the instruction INVOKESPECIAL M.nested$1 ()I
-        |that would cause an IllegalAccessError when inlined into class N""".stripMargin
+        |that would cause an IllegalAccessError when inlined into class N"""
+        .stripMargin
 
     var c = 0
     compile(code, allowMessage = i => { c += 1; i.msg contains warn })
@@ -220,7 +224,8 @@ class InlineWarningTest extends ClearAfterClass {
     val warn =
       """M::f(Lscala/Function1;)I could not be inlined:
         |The callee M::f(Lscala/Function1;)I contains the instruction INVOKESPECIAL M.nested$1 ()I
-        |that would cause an IllegalAccessError when inlined into class N""".stripMargin
+        |that would cause an IllegalAccessError when inlined into class N"""
+        .stripMargin
 
     var c = 0
     compile(
@@ -242,7 +247,8 @@ class InlineWarningTest extends ClearAfterClass {
 
     val warn = """C::f()I is annotated @inline but could not be inlined:
         |The callsite method C::t2()I
-        |does not have the same strictfp mode as the callee C::f()I.""".stripMargin
+        |does not have the same strictfp mode as the callee C::f()I."""
+      .stripMargin
 
     var c = 0
     compile(code, allowMessage = i => { c += 1; i.msg contains warn })

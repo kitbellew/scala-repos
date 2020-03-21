@@ -36,8 +36,7 @@ final class HyperLogLogClientServerIntegrationSuite
     withRedisClient { client =>
       val setup =
         List(PFAdd("foo", List("bar")), PFAdd("bar", List("baz"))) map client
-      val pfMergeResult = Future
-        .collect(setup)
+      val pfMergeResult = Future.collect(setup)
         .flatMap(_ => client(PFMerge("baz", List("foo", "bar"))))
       assert(Await.result(pfMergeResult) == OKStatusReply)
     }

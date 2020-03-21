@@ -105,35 +105,33 @@ private[finagle] object MultiReaderHelper {
       }.toSeq
 
       // We sequence here to ensure that `close` gets priority over reads.
-      Offer
-        .prioritize(
-          close.recv { _ => onClose(handles) },
-          Offer.choose(queues: _*) { m =>
-            messages ! trackMessage(m)
-            loop(handles)
-          },
-          Offer.choose(errors: _*) { h =>
+      Offer.prioritize(
+        close.recv { _ => onClose(handles) },
+        Offer.choose(queues: _*) { m =>
+          messages ! trackMessage(m)
+          loop(handles)
+        },
+        Offer.choose(errors: _*) { h =>
+          logger.info(
+            s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due to " +
+              s"it encountered error")
+          h.close()
+          val newHandles = handles - h
+          exposeNumReadHandles(newHandles)
+          loop(newHandles)
+        },
+        clusterUpdate.recv { newHandles =>
+          // Close any handles that exist in old set but not the new one.
+          (handles &~ newHandles) foreach { h =>
             logger.info(
-              s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due to " +
-                s"it encountered error")
+              s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due " +
+                s"to its host disappeared")
             h.close()
-            val newHandles = handles - h
-            exposeNumReadHandles(newHandles)
-            loop(newHandles)
-          },
-          clusterUpdate.recv { newHandles =>
-            // Close any handles that exist in old set but not the new one.
-            (handles &~ newHandles) foreach { h =>
-              logger.info(
-                s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due " +
-                  s"to its host disappeared")
-              h.close()
-            }
-            exposeNumReadHandles(newHandles)
-            loop(newHandles)
           }
-        )
-        .sync()
+          exposeNumReadHandles(newHandles)
+          loop(newHandles)
+        }
+      ).sync()
     }
 
     // Wait until the ReadHandles set is populated before initializing.
@@ -551,13 +549,11 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
     val event = config.va.changes map {
       case Addr.Bound(addrs, _) => {
         (currentHandles.keySet &~ addrs) foreach { addr =>
-          logger.info(
-            s"Host ${addr} left for reading queue ${config.queueName}")
+          logger
+            .info(s"Host ${addr} left for reading queue ${config.queueName}")
         }
         val newHandles = (addrs &~ currentHandles.keySet) map { addr =>
-          val factory = baseClientBuilder
-            .addrs(addr)
-            .buildFactory()
+          val factory = baseClientBuilder.addrs(addr).buildFactory()
 
           val client = createClient(factory)
 
@@ -618,12 +614,8 @@ abstract class MultiReaderBuilderMemcacheBase[Builder] private[kestrel] (
     ClientConfig.Yes]
 
   protected[kestrel] def defaultClientBuilder: MemcacheClientBuilder =
-    ClientBuilder()
-      .codec(Kestrel())
-      .connectTimeout(1.minute)
-      .requestTimeout(1.minute)
-      .hostConnectionLimit(1)
-      .daemon(true)
+    ClientBuilder().codec(Kestrel()).connectTimeout(1.minute)
+      .requestTimeout(1.minute).hostConnectionLimit(1).daemon(true)
 
   protected[kestrel] def createClient(
       factory: ServiceFactory[Command, Response]): Client = Client(factory)
@@ -683,11 +675,8 @@ class MultiReaderBuilderThrift private[kestrel] (
       : MultiReaderBuilderThrift = new MultiReaderBuilderThrift(config)
 
   protected[kestrel] def defaultClientBuilder: ThriftClientBuilder =
-    ClientBuilder()
-      .codec(ThriftClientFramedCodec(config.clientId))
-      .connectTimeout(1.minute)
-      .requestTimeout(1.minute)
-      .hostConnectionLimit(1)
+    ClientBuilder().codec(ThriftClientFramedCodec(config.clientId))
+      .connectTimeout(1.minute).requestTimeout(1.minute).hostConnectionLimit(1)
       .daemon(true)
 
   protected[kestrel] def createClient(

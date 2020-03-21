@@ -80,8 +80,8 @@ final private[stream] class QueueSource[T](
             case Fail ⇒
               val bufferOverflowException = new BufferOverflowException(
                 s"Buffer overflow (max capacity was: $maxBuffer)!")
-              offer.promise.success(QueueOfferResult.Failure(
-                bufferOverflowException))
+              offer.promise
+                .success(QueueOfferResult.Failure(bufferOverflowException))
               completion.failure(bufferOverflowException)
               failStage(bufferOverflowException)
             case Backpressure ⇒ pendingOffer match {
@@ -113,8 +113,8 @@ final private[stream] class QueueSource[T](
               case Fail ⇒
                 val bufferOverflowException = new BufferOverflowException(
                   s"Buffer overflow (max capacity was: $maxBuffer)!")
-                promise.success(
-                  QueueOfferResult.Failure(bufferOverflowException))
+                promise
+                  .success(QueueOfferResult.Failure(bufferOverflowException))
                 completion.failure(bufferOverflowException)
                 failStage(bufferOverflowException)
               case Backpressure ⇒

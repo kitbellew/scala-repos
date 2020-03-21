@@ -43,13 +43,9 @@ class ZKStore(
   override def load(key: ID): Future[Option[ZKEntity]] = {
     val node = root(key)
     require(node.parent == root, s"Nested paths are not supported: $key!")
-    node
-      .getData()
-      .asScala
-      .map { data =>
-        Some(ZKEntity(node, ZKData(data.bytes), Some(data.stat.getVersion)))
-      }
-      .recover { case ex: NoNodeException => None }
+    node.getData().asScala.map { data =>
+      Some(ZKEntity(node, ZKData(data.bytes), Some(data.stat.getVersion)))
+    }.recover { case ex: NoNodeException => None }
       .recover(exceptionTransform(s"Could not load key $key"))
   }
 
@@ -57,10 +53,9 @@ class ZKStore(
     val node = root(key)
     require(node.parent == root, s"Nested paths are not supported: $key")
     val data = ZKData(key, UUID.randomUUID(), content)
-    node
-      .create(data.toProto(compressionConf).toByteArray)
-      .asScala
-      .map { n => ZKEntity(n, data, Some(0)) } //first version after create is 0
+    node.create(data.toProto(compressionConf).toByteArray).asScala.map { n =>
+      ZKEntity(n, data, Some(0))
+    } //first version after create is 0
       .recover(exceptionTransform(s"Can not create entity $key"))
   }
 
@@ -74,10 +69,8 @@ class ZKStore(
     val version = zk.version.getOrElse(
       throw new StoreCommandFailedException(
         s"Can not store entity $entity, since there is no version!"))
-    zk.node
-      .setData(zk.data.toProto(compressionConf).toByteArray, version)
-      .asScala
-      .map { data => zk.copy(version = Some(data.stat.getVersion)) }
+    zk.node.setData(zk.data.toProto(compressionConf).toByteArray, version)
+      .asScala.map { data => zk.copy(version = Some(data.stat.getVersion)) }
       .recover(exceptionTransform(s"Can not update entity $entity"))
   }
 
@@ -87,19 +80,14 @@ class ZKStore(
   override def delete(key: ID): Future[Boolean] = {
     val node = root(key)
     require(node.parent == root, s"Nested paths are not supported: $key")
-    node
-      .exists()
-      .asScala
-      .flatMap { d => node.delete(d.stat.getVersion).asScala.map(_ => true) }
-      .recover { case ex: NoNodeException => false }
+    node.exists().asScala.flatMap { d =>
+      node.delete(d.stat.getVersion).asScala.map(_ => true)
+    }.recover { case ex: NoNodeException => false }
       .recover(exceptionTransform(s"Can not delete entity $key"))
   }
 
   override def allIds(): Future[Seq[ID]] = {
-    root
-      .getChildren()
-      .asScala
-      .map(_.children.map(_.name))
+    root.getChildren().asScala.map(_.children.map(_.name))
       .recover(exceptionTransform("Can not list all identifiers"))
   }
 
@@ -120,18 +108,12 @@ class ZKStore(
 
   private[this] def createPath(path: ZNode): Future[ZNode] = {
     def nodeExists(node: ZNode): Future[Boolean] =
-      node
-        .exists()
-        .asScala
-        .map(_ => true)
-        .recover { case ex: NoNodeException => false }
-        .recover(exceptionTransform("Can not query for exists"))
+      node.exists().asScala.map(_ => true).recover {
+        case ex: NoNodeException => false
+      }.recover(exceptionTransform("Can not query for exists"))
 
     def createNode(node: ZNode): Future[ZNode] =
-      node
-        .create()
-        .asScala
-        .recover { case ex: NodeExistsException => node }
+      node.create().asScala.recover { case ex: NodeExistsException => node }
         .recover(exceptionTransform("Can not create"))
 
     def createPath(node: ZNode): Future[ZNode] = {
@@ -163,13 +145,9 @@ case class ZKData(
       if (compression.enabled && bytes.length > compression.sizeLimit)
         (IO.gzipCompress(bytes.toArray), true)
       else (bytes.toArray, false)
-    Protos.ZKStoreEntry
-      .newBuilder()
-      .setName(name)
-      .setUuid(ByteString.copyFromUtf8(uuid.toString))
-      .setCompressed(compressed)
-      .setValue(ByteString.copyFrom(data))
-      .build()
+    Protos.ZKStoreEntry.newBuilder().setName(name)
+      .setUuid(ByteString.copyFromUtf8(uuid.toString)).setCompressed(compressed)
+      .setValue(ByteString.copyFrom(data)).build()
   }
 }
 object ZKData {

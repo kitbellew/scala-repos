@@ -69,8 +69,8 @@ object CoreWorkflow {
       val kryo = KryoInstantiator.newKryoInjection
 
       logger.info("Inserting persistent model")
-      Storage.getModelDataModels.insert(
-        Model(id = engineInstance.id, models = kryo(models)))
+      Storage.getModelDataModels
+        .insert(Model(id = engineInstance.id, models = kryo(models)))
 
       logger.info("Updating engine instance")
       val engineInstances = Storage.getMetaDataEngineInstances

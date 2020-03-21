@@ -136,8 +136,7 @@ object DebuggerUtil {
         buff.append("[]")
         buff.toName
       case ScParameterizedType(arr, Seq(arg))
-          if ScType
-            .extractClass(arr)
+          if ScType.extractClass(arr)
             .exists(_.qualifiedName == "scala.Array") =>
         val buff = new JVMNameBuffer()
         buff.append(getJVMQualifiedName(arg))
@@ -216,12 +215,11 @@ object DebuggerUtil {
         }
       case _ => None
     }
-    val simpleParameters = function.effectiveParameterClauses.flatMap(
-      _.effectiveParameters)
+    val simpleParameters = function.effectiveParameterClauses
+      .flatMap(_.effectiveParameters)
     val parameters =
       valueClassParameter ++: simpleParameters ++: localParameters
-    val paramTypes = parameters
-      .map(parameterForJVMSignature(_, subst))
+    val paramTypes = parameters.map(parameterForJVMSignature(_, subst))
       .mkString("(", "", ")")
     val resultType = function match {
       case fun: ScFunction if !fun.isConstructor =>
@@ -265,8 +263,7 @@ object DebuggerUtil {
       case _                     => returnType
     }
 
-    val paramText = argumentTypes
-      .map(getJVMStringForType(_, isParam = true))
+    val paramText = argumentTypes.map(getJVMStringForType(_, isParam = true))
       .mkString("(", "", ")")
     val returnTypeText = getJVMStringForType(trueReturnType, isParam = false)
     Some(paramText + returnTypeText)
@@ -393,9 +390,7 @@ object DebuggerUtil {
   }
 
   def isScala(refType: ReferenceType, default: Boolean = true): Boolean = {
-    ScalaPositionManager
-      .cachedSourceName(refType)
-      .map(_.endsWith(".scala"))
+    ScalaPositionManager.cachedSourceName(refType).map(_.endsWith(".scala"))
       .getOrElse(default)
   }
 
@@ -577,8 +572,8 @@ object DebuggerUtil {
             fun.containingClass match {
               case c: ScClass if isLocalClass(c) =>
                 visited += c
-                buf ++= localParamsForConstructor(c, visited).filter(
-                  atRightPlace)
+                buf ++= localParamsForConstructor(c, visited)
+                  .filter(atRightPlace)
               case _ =>
             }
           case td: ScTypedDefinition if isLocalV(td) && atRightPlace(td) =>
@@ -587,8 +582,8 @@ object DebuggerUtil {
         }
       }
     })
-    buf.toSeq.sortBy(e =>
-      (e.isInstanceOf[ScObject], e.getTextRange.getStartOffset))
+    buf.toSeq
+      .sortBy(e => (e.isInstanceOf[ScObject], e.getTextRange.getStartOffset))
   }
 
   def isLocalV(resolve: PsiElement): Boolean = {
@@ -612,8 +607,8 @@ object DebuggerUtil {
 
   def generatesAnonClass(newTd: ScNewTemplateDefinition) = {
     val extBl = newTd.extendsBlock
-    extBl.templateBody.nonEmpty || extBl.templateParents.exists(
-      _.typeElementsWithoutConstructor.nonEmpty)
+    extBl.templateBody.nonEmpty || extBl.templateParents
+      .exists(_.typeElementsWithoutConstructor.nonEmpty)
   }
 
   @tailrec
@@ -651,8 +646,8 @@ object DebuggerUtil {
       case _: ScAnnotationsHolder | _: ScCommentOwner =>
         val firstSignificant = elem.children.find {
           case ElementType(t)
-              if ScalaTokenTypes.WHITES_SPACES_AND_COMMENTS_TOKEN_SET.contains(
-                t)                       => false
+              if ScalaTokenTypes.WHITES_SPACES_AND_COMMENTS_TOKEN_SET
+                .contains(t)             => false
           case _: ScAnnotations          => false
           case e if e.getTextLength == 0 => false
           case _                         => true

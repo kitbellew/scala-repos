@@ -47,8 +47,8 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     object expandGlob extends Morphism1(FSNamespace, "expandGlob") {
       val tpe = UnaryOperationType(JTextT, JTextT)
 
-      val pattern = Pattern.compile(
-        """/?+((?:[a-zA-Z0-9\-\._~:?#@!$&'+=]+)|\*)""")
+      val pattern = Pattern
+        .compile("""/?+((?:[a-zA-Z0-9\-\._~:?#@!$&'+=]+)|\*)""")
 
       def expand_*(
           apiKey: APIKey,
@@ -59,8 +59,7 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             m.group(1).trim match {
               case "*" =>
                 prefixes traverse { prefix =>
-                  vfs
-                    .findDirectChildren(apiKey, prefix)
+                  vfs.findDirectChildren(apiKey, prefix)
                     .fold(_ => Set(), a => a) map { child =>
                     child map { prefix / _.path }
                   }
@@ -80,13 +79,13 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             input.transform(SourceValue.Single).slices flatMap { slice =>
               slice.columns.get(ColumnRef.identity(CString)) collect {
                 case col: StrColumn =>
-                  val expanded: Stream[M[Stream[Path]]] = Stream.tabulate(
-                    slice.size) { i =>
-                    expand_*(
-                      ctx.evalContext.apiKey,
-                      col(i),
-                      ctx.evalContext.basePath)
-                  }
+                  val expanded: Stream[M[Stream[Path]]] = Stream
+                    .tabulate(slice.size) { i =>
+                      expand_*(
+                        ctx.evalContext.apiKey,
+                        col(i),
+                        ctx.evalContext.basePath)
+                    }
 
                   StreamT wrapEffect {
                     expanded.sequence map { pathSets =>

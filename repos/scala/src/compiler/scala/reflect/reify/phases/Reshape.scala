@@ -63,8 +63,8 @@ trait Reshape {
           } filter isDiscarded
           if (reifyDebug && discardedParents.length > 0)
             println(
-              "discarding parents in Template: " + discardedParents.mkString(
-                ", "))
+              "discarding parents in Template: " + discardedParents
+                .mkString(", "))
           val parents1 = parents diff discardedParents
           val body1 = reshapeLazyVals(trimSyntheticCaseClassCompanions(body))
           Template(parents1, self, body1).copyAttrs(template)
@@ -187,8 +187,8 @@ trait Reshape {
       if (stats.nonEmpty) CannotReifyCompoundTypeTreeWithNonEmptyBody(ctt)
       assert(self eq noSelfType, self)
       val att = tmpl.attachments.get[CompoundTypeTreeOriginalAttachment]
-      val CompoundTypeTreeOriginalAttachment(parents1, stats1) = att.getOrElse(
-        CompoundTypeTreeOriginalAttachment(parents, stats))
+      val CompoundTypeTreeOriginalAttachment(parents1, stats1) = att
+        .getOrElse(CompoundTypeTreeOriginalAttachment(parents, stats))
       CompoundTypeTree(Template(parents1, self, stats1))
     }
 
@@ -281,10 +281,9 @@ trait Reshape {
       val name1 = name0.dropLocal
       val Modifiers(flags0, privateWithin0, annotations0) = mods0
       val flags1 = (flags0 & GetterFlags) & ~(STABLE | ACCESSOR | METHOD)
-      val mods1 = Modifiers(
-        flags1,
-        privateWithin0,
-        annotations0) setPositions mods0.positions
+      val mods1 =
+        Modifiers(flags1, privateWithin0, annotations0) setPositions mods0
+          .positions
       val mods2 = toPreTyperModifiers(mods1, ddef.symbol)
       ValDef(mods2, name1, tpt0, extractRhs(rhs0))
     }
@@ -314,8 +313,8 @@ trait Reshape {
               symdefs.values collectFirst {
                 case vdef: ValDef if vdef.name.dropLocal string_== name => vdef
               }
-            val valdef =
-              findValDef(name).orElse(findValDef(uncapitalize(name))).orNull
+            val valdef = findValDef(name).orElse(findValDef(uncapitalize(name)))
+              .orNull
             if (valdef != null)
               accessors(valdef) = accessors.getOrElse(valdef, Nil) :+ defdef
           }
@@ -334,13 +333,11 @@ trait Reshape {
               var flags1 = flags & ~LOCAL
               if (!ddef.symbol.isPrivate) flags1 = flags1 & ~PRIVATE
               val privateWithin1 = ddef.mods.privateWithin
-              val annotations1 = accessors(vdef).foldLeft(annotations)(
-                (curr, acc) =>
+              val annotations1 = accessors(vdef)
+                .foldLeft(annotations)((curr, acc) =>
                   curr ++ (acc.symbol.annotations map toPreTyperAnnotation))
-              Modifiers(
-                flags1,
-                privateWithin1,
-                annotations1) setPositions mods.positions
+              Modifiers(flags1, privateWithin1, annotations1) setPositions mods
+                .positions
             } else { mods }
           val mods2 = toPreTyperModifiers(mods1, vdef.symbol)
           val name1 = name.dropLocal
@@ -365,10 +362,9 @@ trait Reshape {
     }
 
     private def reshapeLazyVals(stats: List[Tree]): List[Tree] = {
-      val lazyvaldefs: Map[Symbol, DefDef] = stats
-        .collect({ case ddef: DefDef if ddef.mods.isLazy => ddef })
-        .map((ddef: DefDef) => ddef.symbol -> ddef)
-        .toMap
+      val lazyvaldefs: Map[Symbol, DefDef] = stats.collect({
+        case ddef: DefDef if ddef.mods.isLazy => ddef
+      }).map((ddef: DefDef) => ddef.symbol -> ddef).toMap
       // lazy valdef and defdef are in the same block.
       // only that valdef needs to have its rhs rebuilt from defdef
       stats flatMap (stat =>

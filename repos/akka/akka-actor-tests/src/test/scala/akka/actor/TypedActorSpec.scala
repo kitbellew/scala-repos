@@ -136,8 +136,8 @@ object TypedActorSpec {
     }
 
     def futureComposePigdogFrom(foo: Foo): Future[String] = {
-      implicit val timeout = TypedActor(
-        TypedActor.context.system).DefaultReturnTimeout
+      implicit val timeout = TypedActor(TypedActor.context.system)
+        .DefaultReturnTimeout
       foo.futurePigdog(500 millis).map(_.toUpperCase)
     }
 
@@ -241,8 +241,7 @@ class TypedActorSpec
 
   def newFooBar(dispatcher: String, d: FiniteDuration): Foo =
     TypedActor(system).typedActorOf(
-      TypedProps[Bar](classOf[Foo], classOf[Bar])
-        .withTimeout(Timeout(d))
+      TypedProps[Bar](classOf[Foo], classOf[Bar]).withTimeout(Timeout(d))
         .withDispatcher(dispatcher))
 
   def newStacked(): Stacked =
@@ -272,9 +271,8 @@ class TypedActorSpec
 
     "throw an IllegalStateExcpetion when TypedActor.self is called in the wrong scope" in {
       filterEvents(EventFilter[IllegalStateException]("Calling")) {
-        (intercept[IllegalStateException] {
-          TypedActor.self[Foo]
-        }).getMessage should ===(
+        (intercept[IllegalStateException] { TypedActor.self[Foo] })
+          .getMessage should ===(
           "Calling TypedActor.self outside of a TypedActor implementation method!")
       }
     }
@@ -388,8 +386,8 @@ class TypedActorSpec
           }
         }))
         val t = Await.result(
-          (boss ? TypedProps[Bar](classOf[Foo], classOf[Bar]).withTimeout(
-            2 seconds)).mapTo[Foo],
+          (boss ? TypedProps[Bar](classOf[Foo], classOf[Bar])
+            .withTimeout(2 seconds)).mapTo[Foo],
           timeout.duration)
 
         t.incr()
@@ -401,14 +399,12 @@ class TypedActorSpec
         }.getMessage should ===("expected")
         t.read() should ===(1) //Make sure state is not reset after failure
 
-        (intercept[IllegalStateException] {
-          t.failingJOptionPigdog
-        }).getMessage should ===("expected")
+        (intercept[IllegalStateException] { t.failingJOptionPigdog })
+          .getMessage should ===("expected")
         t.read() should ===(1) //Make sure state is not reset after failure
 
-        (intercept[IllegalStateException] {
-          t.failingOptionPigdog
-        }).getMessage should ===("expected")
+        (intercept[IllegalStateException] { t.failingOptionPigdog })
+          .getMessage should ===("expected")
 
         t.read() should ===(1) //Make sure state is not reset after failure
 
@@ -419,9 +415,8 @@ class TypedActorSpec
     "be restarted on failure" in {
       filterEvents(EventFilter[IllegalStateException]("expected")) {
         val t = newFooBar(Duration(2, "s"))
-        intercept[IllegalStateException] {
-          t.failingOptionPigdog()
-        }.getMessage should ===("expected")
+        intercept[IllegalStateException] { t.failingOptionPigdog() }
+          .getMessage should ===("expected")
         t.optionPigdog() should ===(Some("Pigdog"))
         mustStop(t)
 
@@ -453,8 +448,8 @@ class TypedActorSpec
     }
 
     "be able to support implementation only typed actors with complex interfaces" in {
-      val t: Stackable1 with Stackable2 = TypedActor(system).typedActorOf(
-        TypedProps[StackedImpl]())
+      val t: Stackable1 with Stackable2 = TypedActor(system)
+        .typedActorOf(TypedProps[StackedImpl]())
       t.stackable1 should ===("foo")
       t.stackable2 should ===("bar")
       mustStop(t)
@@ -475,83 +470,83 @@ class TypedActorSpec
 
     "be able to serialize and deserialize invocations" in {
       import java.io._
-      JavaSerializer.currentSystem.withValue(
-        system.asInstanceOf[ExtendedActorSystem]) {
-        val m = TypedActor.MethodCall(
-          classOf[Foo].getDeclaredMethod("pigdog"),
-          Array[AnyRef]())
-        val baos = new ByteArrayOutputStream(8192 * 4)
-        val out = new ObjectOutputStream(baos)
+      JavaSerializer.currentSystem
+        .withValue(system.asInstanceOf[ExtendedActorSystem]) {
+          val m = TypedActor.MethodCall(
+            classOf[Foo].getDeclaredMethod("pigdog"),
+            Array[AnyRef]())
+          val baos = new ByteArrayOutputStream(8192 * 4)
+          val out = new ObjectOutputStream(baos)
 
-        out.writeObject(m)
-        out.close()
+          out.writeObject(m)
+          out.close()
 
-        val in =
-          new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
+          val in =
+            new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
 
-        val mNew = in.readObject().asInstanceOf[TypedActor.MethodCall]
+          val mNew = in.readObject().asInstanceOf[TypedActor.MethodCall]
 
-        mNew.method should ===(m.method)
-      }
+          mNew.method should ===(m.method)
+        }
     }
 
     "be able to serialize and deserialize invocations' parameters" in {
       import java.io._
       val someFoo: Foo = new Bar
-      JavaSerializer.currentSystem.withValue(
-        system.asInstanceOf[ExtendedActorSystem]) {
-        val m = TypedActor.MethodCall(
-          classOf[Foo].getDeclaredMethod(
-            "testMethodCallSerialization",
-            Array[Class[_]](classOf[Foo], classOf[String], classOf[Int]): _*),
-          Array[AnyRef](someFoo, null, 1.asInstanceOf[AnyRef])
-        )
-        val baos = new ByteArrayOutputStream(8192 * 4)
-        val out = new ObjectOutputStream(baos)
+      JavaSerializer.currentSystem
+        .withValue(system.asInstanceOf[ExtendedActorSystem]) {
+          val m = TypedActor.MethodCall(
+            classOf[Foo].getDeclaredMethod(
+              "testMethodCallSerialization",
+              Array[Class[_]](classOf[Foo], classOf[String], classOf[Int]): _*),
+            Array[AnyRef](someFoo, null, 1.asInstanceOf[AnyRef])
+          )
+          val baos = new ByteArrayOutputStream(8192 * 4)
+          val out = new ObjectOutputStream(baos)
 
-        out.writeObject(m)
-        out.close()
+          out.writeObject(m)
+          out.close()
 
-        val in =
-          new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
+          val in =
+            new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
 
-        val mNew = in.readObject().asInstanceOf[TypedActor.MethodCall]
+          val mNew = in.readObject().asInstanceOf[TypedActor.MethodCall]
 
-        mNew.method should ===(m.method)
-        mNew.parameters should have size 3
-        mNew.parameters(0) should not be null
-        mNew.parameters(0).getClass should ===(classOf[Bar])
-        mNew.parameters(1) should ===(null)
-        mNew.parameters(2) should not be null
-        mNew.parameters(2).asInstanceOf[Int] should ===(1)
-      }
+          mNew.method should ===(m.method)
+          mNew.parameters should have size 3
+          mNew.parameters(0) should not be null
+          mNew.parameters(0).getClass should ===(classOf[Bar])
+          mNew.parameters(1) should ===(null)
+          mNew.parameters(2) should not be null
+          mNew.parameters(2).asInstanceOf[Int] should ===(1)
+        }
     }
 
     "be able to serialize and deserialize proxies" in {
       import java.io._
-      JavaSerializer.currentSystem.withValue(
-        system.asInstanceOf[ExtendedActorSystem]) {
-        val t = newFooBar(Duration(2, "s"))
+      JavaSerializer.currentSystem
+        .withValue(system.asInstanceOf[ExtendedActorSystem]) {
+          val t = newFooBar(Duration(2, "s"))
 
-        t.optionPigdog() should ===(Some("Pigdog"))
+          t.optionPigdog() should ===(Some("Pigdog"))
 
-        val baos = new ByteArrayOutputStream(8192 * 4)
-        val out = new ObjectOutputStream(baos)
+          val baos = new ByteArrayOutputStream(8192 * 4)
+          val out = new ObjectOutputStream(baos)
 
-        out.writeObject(t)
-        out.close()
+          out.writeObject(t)
+          out.close()
 
-        val in =
-          new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
+          val in =
+            new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
 
-        val tNew = in.readObject().asInstanceOf[Foo]
+          val tNew = in.readObject().asInstanceOf[Foo]
 
-        tNew should ===(t)
+          tNew should ===(t)
 
-        tNew.optionPigdog() should ===(Some("Pigdog"))
+          tNew.optionPigdog() should ===(Some("Pigdog"))
 
-        mustStop(t)
-      }
+          mustStop(t)
+        }
     }
 
     "be able to override lifecycle callbacks" in {

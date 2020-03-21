@@ -35,24 +35,19 @@ private[util] trait Props extends Logger {
     * @return the value of the property if defined
     */
   def get(name: String): Box[String] = {
-    lockedProviders
-      .flatMap(_.get(name))
-      .headOption
-      .map(interpolate)
+    lockedProviders.flatMap(_.get(name)).headOption.map(interpolate)
   }
 
   private[this] val interpolateRegex = """(.*?)\Q${\E(.*?)\Q}\E([^$]*)""".r
 
   private[this] def interpolate(value: String): String = {
     def lookup(key: String) = {
-      lockedInterpolationValues
-        .flatMap(_.get(key))
-        .headOption
+      lockedInterpolationValues.flatMap(_.get(key)).headOption
     }
 
     val interpolated = for {
-      interpolateRegex(before, key, after) <- interpolateRegex.findAllMatchIn(
-        value.toString)
+      interpolateRegex(before, key, after) <- interpolateRegex
+        .findAllMatchIn(value.toString)
     } yield {
       val lookedUp = lookup(key).getOrElse(("${" + key + "}"))
 
@@ -96,8 +91,8 @@ private[util] trait Props extends Logger {
       case Nil =>
       case bad =>
         throw new Exception(
-          "The following required properties are not defined: " + bad.mkString(
-            ","))
+          "The following required properties are not defined: " + bad
+            .mkString(","))
     }
   }
 
@@ -185,8 +180,7 @@ private[util] trait Props extends Logger {
     */
   lazy val mode: Props.RunModes.Value = {
     runModeInitialised = true
-    Box
-      .legacyNullTest((System.getProperty("run.mode")))
+    Box.legacyNullTest((System.getProperty("run.mode")))
       .map(_.toLowerCase) match {
       case Full("test")        => Test
       case Full("production")  => Production
@@ -417,8 +411,8 @@ private[util] trait Props extends Logger {
 
       case _ =>
         error(
-          "Failed to find a properties file (but properties were accessed).  Searched: " + tried.reverse
-            .mkString(", "))
+          "Failed to find a properties file (but properties were accessed).  Searched: " + tried
+            .reverse.mkString(", "))
         Map()
     }
   }

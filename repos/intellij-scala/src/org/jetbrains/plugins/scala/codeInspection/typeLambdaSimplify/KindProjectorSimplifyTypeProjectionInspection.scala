@@ -125,11 +125,13 @@ class KindProjectorSimplifyTypeProjectionInspection
                       ct.refinement match {
                         case Some(refinement) => refinement.types match {
                             case Seq(alias: ScTypeAliasDefinition)
-                                if alias.nameId.getText == projection.nameId.getText =>
+                                if alias.nameId.getText == projection.nameId
+                                  .getText =>
                               val aliasParam = alias.typeParameters
                               projection.parent match {
                                 case Some(p: ScParameterizedTypeElement)
-                                    if p.typeArgList.typeArgs.size == aliasParam.size =>
+                                    if p.typeArgList.typeArgs.size == aliasParam
+                                      .size =>
                                 //should be handled by AppliedTypeLambdaCanBeSimplifiedInspection
                                 case _ if aliasParam.nonEmpty =>
                                   if (alias.typeParameters.forall(
@@ -142,13 +144,15 @@ class KindProjectorSimplifyTypeProjectionInspection
                                           val styleSettings =
                                             ScalaCodeStyleSettings.getInstance(
                                               projection.getProject)
-                                          if (styleSettings.REPLACE_LAMBDA_WITH_GREEK_LETTER) {
+                                          if (styleSettings
+                                                .REPLACE_LAMBDA_WITH_GREEK_LETTER) {
                                             builder.append("λ")
                                           } else { builder.append("Lambda") }
                                           builder.append("[")
                                           val parameters = aliasParam.map {
                                             param: ScTypeParam =>
-                                              if (param.isCovariant || param.isContravariant || boundsDefined(
+                                              if (param.isCovariant || param
+                                                    .isContravariant || boundsDefined(
                                                     param)) {
                                                 s"`${param.getText}`"
                                               } else param.getText
@@ -164,8 +168,8 @@ class KindProjectorSimplifyTypeProjectionInspection
                                               sep = "",
                                               end = ""))
                                           builder.append(" => ")
-                                          builder.append(
-                                            alias.aliasedType.getOrAny)
+                                          builder
+                                            .append(alias.aliasedType.getOrAny)
                                           builder.append("]")
                                           builder.toString()
                                       }
@@ -209,9 +213,8 @@ class KindProjectorSimplifyTypeProjectionQuickFix(
     val elem = getElement
     if (!elem.isValid) return
 
-    val te = ScalaPsiElementFactory.createTypeElementFromText(
-      replacement,
-      elem.getManager)
+    val te = ScalaPsiElementFactory
+      .createTypeElementFromText(replacement, elem.getManager)
     elem.replace(te)
   }
 }

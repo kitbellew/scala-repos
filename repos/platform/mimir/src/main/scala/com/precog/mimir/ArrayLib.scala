@@ -37,16 +37,15 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       val tpe = UnaryOperationType(JArrayUnfixedT, JType.JUniverseT)
 
-      override val idPolicy = IdentityPolicy.Product(
-        IdentityPolicy.Retain.Merge,
-        IdentityPolicy.Synthesize)
+      override val idPolicy = IdentityPolicy
+        .Product(IdentityPolicy.Retain.Merge, IdentityPolicy.Synthesize)
 
       def apply(table: Table, ctx: MorphContext) =
         M point {
-          val derefed =
-            table transform trans.DerefObjectStatic(Leaf(Source), paths.Value)
-          val keys =
-            table transform trans.DerefObjectStatic(Leaf(Source), paths.Key)
+          val derefed = table transform trans
+            .DerefObjectStatic(Leaf(Source), paths.Value)
+          val keys = table transform trans
+            .DerefObjectStatic(Leaf(Source), paths.Key)
 
           val flattenedSlices = table.slices map { slice =>
             val keys = slice.deref(paths.Key)
@@ -60,27 +59,27 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             else {
               val maxLength = indices.max + 1
 
-              val columnTables = values.columns.foldLeft(
-                Map[ColumnRef, Array[Column]]()) {
-                case (
-                      acc,
-                      (
-                        ColumnRef(CPath(CPathIndex(idx), ptail @ _*), tpe),
-                        col)) => {
-                  // remap around the mod ring w.r.t. max length
-                  // s.t. f(i) = f'(i * max + arrayI)
+              val columnTables = values.columns
+                .foldLeft(Map[ColumnRef, Array[Column]]()) {
+                  case (
+                        acc,
+                        (
+                          ColumnRef(CPath(CPathIndex(idx), ptail @ _*), tpe),
+                          col)) => {
+                    // remap around the mod ring w.r.t. max length
+                    // s.t. f(i) = f'(i * max + arrayI)
 
-                  val finalRef = ColumnRef(CPath(ptail: _*), tpe)
-                  val colTable =
-                    acc get finalRef getOrElse (new Array[Column](maxLength))
+                    val finalRef = ColumnRef(CPath(ptail: _*), tpe)
+                    val colTable =
+                      acc get finalRef getOrElse (new Array[Column](maxLength))
 
-                  colTable(idx) = col
+                    colTable(idx) = col
 
-                  acc.updated(finalRef, colTable)
+                    acc.updated(finalRef, colTable)
+                  }
+
+                  case (acc, _) => acc
                 }
-
-                case (acc, _) => acc
-              }
 
               val valueCols = columnTables map {
                 case (ref @ ColumnRef(_, CUndefined), _) =>
@@ -167,9 +166,10 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                     with HomogeneousArrayColumn[a] {
                     val tpe = arrTpe
                     def apply(i: Int) =
-                      col(i).asInstanceOf[HomogeneousArrayColumn[a]](row(
-                        i
-                      )) // primitive arrays are still objects, so the erasure here is not a problem
+                      col(i)
+                        .asInstanceOf[HomogeneousArrayColumn[a]](row(
+                          i
+                        )) // primitive arrays are still objects, so the erasure here is not a problem
                   }
 
                   ref -> col
@@ -190,8 +190,8 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           }
 
           val size2 = UnknownSize
-          val flattenedTable = Table(flattenedSlices, UnknownSize).compact(
-            TransSpec1.Id)
+          val flattenedTable = Table(flattenedSlices, UnknownSize)
+            .compact(TransSpec1.Id)
           val finalTable = flattenedTable.canonicalize(
             yggConfig.minIdealSliceSize,
             Some(yggConfig.maxSliceSize))

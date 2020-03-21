@@ -36,9 +36,7 @@ object SimpleFPGrowth {
 
     val transactions: RDD[Array[String]] = data.map(s => s.trim.split(' '))
 
-    val fpg = new FPGrowth()
-      .setMinSupport(0.2)
-      .setNumPartitions(10)
+    val fpg = new FPGrowth().setMinSupport(0.2).setNumPartitions(10)
     val model = fpg.run(transactions)
 
     model.freqItemsets.collect().foreach { itemset =>

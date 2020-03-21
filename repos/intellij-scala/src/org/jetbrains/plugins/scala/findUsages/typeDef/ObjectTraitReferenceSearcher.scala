@@ -55,8 +55,8 @@ class ObjectTraitReferenceSearcher
             true
           }
         }
-        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
-          queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE
+          .getInstance(queryParameters.getProject)
         try {
           helper.processElementsWithWord(
             processor,

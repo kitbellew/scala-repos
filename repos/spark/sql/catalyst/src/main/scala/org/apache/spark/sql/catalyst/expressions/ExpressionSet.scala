@@ -71,8 +71,7 @@ class ExpressionSet protected (
 
   override def -(elem: Expression): ExpressionSet = {
     val newBaseSet = baseSet.clone().filterNot(_ == elem.canonicalized)
-    val newOriginals = originals
-      .clone()
+    val newOriginals = originals.clone()
       .filterNot(_.canonicalized == elem.canonicalized)
     new ExpressionSet(newBaseSet, newOriginals)
   }

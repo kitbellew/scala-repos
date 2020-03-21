@@ -27,8 +27,8 @@ class LEventAggregatorSpec extends Specification with TestEvents {
 
     "aggregate two entities' properties as DataMap correctly" in {
       val events = Vector(u1e5, u2e2, u1e3, u1e1, u2e3, u2e1, u1e4, u1e2)
-      val result: Map[String, DataMap] = LEventAggregator.aggregateProperties(
-        events.toIterator)
+      val result: Map[String, DataMap] = LEventAggregator
+        .aggregateProperties(events.toIterator)
 
       val expected = Map("u1" -> DataMap(u1), "u2" -> DataMap(u2))
 

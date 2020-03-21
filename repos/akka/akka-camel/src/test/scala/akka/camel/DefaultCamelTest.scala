@@ -24,8 +24,7 @@ class DefaultCamelTest
   import org.mockito.Mockito.{when, verify}
   val sys = mock[ExtendedActorSystem]
   val config = ConfigFactory.defaultReference()
-  when(sys.dynamicAccess) thenReturn system
-    .asInstanceOf[ExtendedActorSystem]
+  when(sys.dynamicAccess) thenReturn system.asInstanceOf[ExtendedActorSystem]
     .dynamicAccess
   when(sys.settings) thenReturn (new Settings(
     this.getClass.getClassLoader,

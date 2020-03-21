@@ -180,8 +180,8 @@ object CABRunLengthEncoder {
   def encode(minRun: Int, input: List[Token]): String = {
     val config = RunLengthConfig(minRun)
     val initialState = RunLengthState.initial(input)
-    val (output, result, finalState) =
-      untilM_(maybeEmit, done).run(config, initialState).run
+    val (output, result, finalState) = untilM_(maybeEmit, done)
+      .run(config, initialState).run
     output.shows
   }
 }

@@ -165,44 +165,44 @@ class StorageSuite extends SparkFunSuite {
     val status = storageStatus2
     // blocks that actually exist
     assert(
-      status.blocks.contains(TestBlockId("dan")) === status.containsBlock(
-        TestBlockId("dan")))
+      status.blocks.contains(TestBlockId("dan")) === status
+        .containsBlock(TestBlockId("dan")))
     assert(
-      status.blocks.contains(TestBlockId("man")) === status.containsBlock(
-        TestBlockId("man")))
+      status.blocks.contains(TestBlockId("man")) === status
+        .containsBlock(TestBlockId("man")))
     assert(
-      status.blocks.contains(RDDBlockId(0, 0)) === status.containsBlock(
-        RDDBlockId(0, 0)))
+      status.blocks.contains(RDDBlockId(0, 0)) === status
+        .containsBlock(RDDBlockId(0, 0)))
     assert(
-      status.blocks.contains(RDDBlockId(1, 1)) === status.containsBlock(
-        RDDBlockId(1, 1)))
+      status.blocks.contains(RDDBlockId(1, 1)) === status
+        .containsBlock(RDDBlockId(1, 1)))
     assert(
-      status.blocks.contains(RDDBlockId(2, 2)) === status.containsBlock(
-        RDDBlockId(2, 2)))
+      status.blocks.contains(RDDBlockId(2, 2)) === status
+        .containsBlock(RDDBlockId(2, 2)))
     assert(
-      status.blocks.contains(RDDBlockId(2, 3)) === status.containsBlock(
-        RDDBlockId(2, 3)))
+      status.blocks.contains(RDDBlockId(2, 3)) === status
+        .containsBlock(RDDBlockId(2, 3)))
     assert(
-      status.blocks.contains(RDDBlockId(2, 4)) === status.containsBlock(
-        RDDBlockId(2, 4)))
+      status.blocks.contains(RDDBlockId(2, 4)) === status
+        .containsBlock(RDDBlockId(2, 4)))
     // blocks that don't exist
     assert(
-      status.blocks.contains(TestBlockId("fan")) === status.containsBlock(
-        TestBlockId("fan")))
+      status.blocks.contains(TestBlockId("fan")) === status
+        .containsBlock(TestBlockId("fan")))
     assert(
-      status.blocks.contains(RDDBlockId(100, 0)) === status.containsBlock(
-        RDDBlockId(100, 0)))
+      status.blocks.contains(RDDBlockId(100, 0)) === status
+        .containsBlock(RDDBlockId(100, 0)))
   }
 
   test("storage status getBlock") {
     val status = storageStatus2
     // blocks that actually exist
     assert(
-      status.blocks.get(TestBlockId("dan")) === status.getBlock(TestBlockId(
-        "dan")))
+      status.blocks.get(TestBlockId("dan")) === status
+        .getBlock(TestBlockId("dan")))
     assert(
-      status.blocks.get(TestBlockId("man")) === status.getBlock(TestBlockId(
-        "man")))
+      status.blocks.get(TestBlockId("man")) === status
+        .getBlock(TestBlockId("man")))
     assert(
       status.blocks.get(RDDBlockId(0, 0)) === status.getBlock(RDDBlockId(0, 0)))
     assert(
@@ -215,11 +215,11 @@ class StorageSuite extends SparkFunSuite {
       status.blocks.get(RDDBlockId(2, 4)) === status.getBlock(RDDBlockId(2, 4)))
     // blocks that don't exist
     assert(
-      status.blocks.get(TestBlockId("fan")) === status.getBlock(TestBlockId(
-        "fan")))
+      status.blocks.get(TestBlockId("fan")) === status
+        .getBlock(TestBlockId("fan")))
     assert(
-      status.blocks.get(RDDBlockId(100, 0)) === status.getBlock(
-        RDDBlockId(100, 0)))
+      status.blocks.get(RDDBlockId(100, 0)) === status
+        .getBlock(RDDBlockId(100, 0)))
   }
 
   test("storage status num[Rdd]Blocks") {

@@ -18,13 +18,9 @@ class HoconLexerTest extends HoconFileSetTestCase("lexer") {
     val lexer = new HoconLexer
 
     lexer.start(fileContents)
-    val tokenIterator = Iterator
-      .iterate(lexer)(advance)
-      .takeWhile(_.getTokenType != null)
-      .map(l =>
-        (
-          l.getTokenType,
-          fileContents.substring(l.getTokenStart, l.getTokenEnd)))
+    val tokenIterator = Iterator.iterate(lexer)(advance).takeWhile(
+      _.getTokenType != null).map(l =>
+      (l.getTokenType, fileContents.substring(l.getTokenStart, l.getTokenEnd)))
 
     tokenIterator.map { case (token, str) => s"$token {$str}" }.mkString("\n")
   }

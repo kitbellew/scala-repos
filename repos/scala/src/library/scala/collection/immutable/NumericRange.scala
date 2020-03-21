@@ -51,11 +51,8 @@ abstract class NumericRange[T](
   import num._
 
   // See comment in Range for why this must be lazy.
-  private lazy val numRangeElements: Int = NumericRange.count(
-    start,
-    end,
-    step,
-    isInclusive)
+  private lazy val numRangeElements: Int = NumericRange
+    .count(start, end, step, isInclusive)
 
   override def length = numRangeElements
   override def isEmpty = length == 0
@@ -256,9 +253,8 @@ abstract class NumericRange[T](
       case x: NumericRange[_] =>
         (x canEqual this) && (length == x.length) && (
           (length == 0) || // all empty sequences are equal
-            (
-              start == x.start && last == x.last
-            ) // same length and same endpoints implies equality
+            (start == x.start && last == x
+              .last) // same length and same endpoints implies equality
         )
       case _ => super.equals(other)
     }

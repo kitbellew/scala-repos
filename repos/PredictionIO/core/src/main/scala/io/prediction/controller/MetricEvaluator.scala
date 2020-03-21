@@ -82,9 +82,8 @@ case class MetricEvaluatorResult[R](
     implicit lazy val formats = Utils.json4sDefaultFormats +
       new NameParamsSerializer
 
-    val bestEPStr = JsonExtractor.engineParamstoPrettyJson(
-      Both,
-      bestEngineParams)
+    val bestEPStr = JsonExtractor
+      .engineParamstoPrettyJson(Both, bestEngineParams)
 
     val strings = Seq(
       "MetricEvaluatorResult:",
@@ -152,8 +151,8 @@ object MetricEvaluator {
         engineFactory = evaluation.getClass.getName,
         datasource = new NameParams(engineParams.dataSourceParams),
         preparator = new NameParams(engineParams.preparatorParams),
-        algorithms = engineParams.algorithmParamsList.map(np =>
-          new NameParams(np)),
+        algorithms = engineParams.algorithmParamsList
+          .map(np => new NameParams(np)),
         serving = new NameParams(engineParams.servingParams))
   }
 }
@@ -200,8 +199,8 @@ class MetricEvaluator[EI, Q, P, A, R](
         new MetricEvaluator.NameParams(engineParams.dataSourceParams),
       preparator =
         new MetricEvaluator.NameParams(engineParams.preparatorParams),
-      algorithms = engineParams.algorithmParamsList.map(np =>
-        new MetricEvaluator.NameParams(np)),
+      algorithms = engineParams.algorithmParamsList
+        .map(np => new MetricEvaluator.NameParams(np)),
       serving = new MetricEvaluator.NameParams(engineParams.servingParams)
     )
 
@@ -219,8 +218,8 @@ class MetricEvaluator[EI, Q, P, A, R](
       engineEvalDataSet: Seq[(EngineParams, Seq[(EI, RDD[(Q, P, A)])])],
       params: WorkflowParams): MetricEvaluatorResult[R] = {
 
-    val evalResultList: Seq[(EngineParams, MetricScores[R])] =
-      engineEvalDataSet.zipWithIndex.par.map {
+    val evalResultList: Seq[(EngineParams, MetricScores[R])] = engineEvalDataSet
+      .zipWithIndex.par.map {
         case ((engineParams, evalDataSet), idx) =>
           val metricScores = MetricScores[R](
             metric.calculate(sc, evalDataSet),
@@ -234,8 +233,8 @@ class MetricEvaluator[EI, Q, P, A, R](
     evalResultList.zipWithIndex.foreach {
       case ((ep, r), idx) =>
         logger.info(s"Iteration $idx")
-        logger.info(
-          s"EngineParams: ${JsonExtractor.engineParamsToJson(Both, ep)}")
+        logger
+          .info(s"EngineParams: ${JsonExtractor.engineParamsToJson(Both, ep)}")
         logger.info(s"Result: $r")
     }
 

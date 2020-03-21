@@ -73,17 +73,17 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
           nextNode)
         val nodeName = "\"" + uniqueNodeName + "\""
 
-        val (newMappings, innerNameLookupTable) = dependants.foldLeft(
-          (List[String](), updatedLookupTable)) {
-          case ((mappings, innerNameLookupTable), childNode) =>
-            val (updatedLookupTable2, uniqueChildName) = getName(
-              innerNameLookupTable,
-              childNode)
-            val childName = "\"" + uniqueChildName + "\""
-            val mappingStr = "%s -> %s\n".format(nodeName, childName)
+        val (newMappings, innerNameLookupTable) = dependants
+          .foldLeft((List[String](), updatedLookupTable)) {
+            case ((mappings, innerNameLookupTable), childNode) =>
+              val (updatedLookupTable2, uniqueChildName) = getName(
+                innerNameLookupTable,
+                childNode)
+              val childName = "\"" + uniqueChildName + "\""
+              val mappingStr = "%s -> %s\n".format(nodeName, childName)
 
-            (mappingStr :: mappings, updatedLookupTable2)
-        }
+              (mappingStr :: mappings, updatedLookupTable2)
+          }
         (nodeName :: definitions, newMappings ++ mappings, innerNameLookupTable)
     }
   }
@@ -114,8 +114,7 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
       }
 
     val clusterMappings = dag.nodes.flatMap {
-      case node =>
-        dag.dependantsOf(node).collect {
+      case node => dag.dependantsOf(node).collect {
           case n =>
             "cluster_%s -> cluster_%s [style=dashed]"
               .format(node.hashCode.toHexString, n.hashCode.toHexString)

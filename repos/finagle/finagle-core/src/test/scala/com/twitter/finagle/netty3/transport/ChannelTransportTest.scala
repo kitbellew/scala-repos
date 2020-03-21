@@ -24,8 +24,7 @@ class ChannelTransportTest
   // mockito's vararg-v-singlearg 'thenReturns'. We force the
   // selection here by using reflection. Sad.
   def when[T](o: T) =
-    Mockito
-      .when(o)
+    Mockito.when(o)
       .asInstanceOf[{ def thenReturn[T](s: T): OngoingStubbing[T] }]
 
   val ch = mock[Channel]

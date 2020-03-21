@@ -361,11 +361,8 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     */
   def mult[B](m: Mat[B])(implicit evA: NUM[A], evB: NUM[B]): Mat[Double] = {
     if (numCols != m.numRows) {
-      val errMsg = "Cannot multiply (%d %d) x (%d %d)".format(
-        numRows,
-        numCols,
-        m.numRows,
-        m.numCols)
+      val errMsg = "Cannot multiply (%d %d) x (%d %d)"
+        .format(numRows, numCols, m.numRows, m.numCols)
       throw new IllegalArgumentException(errMsg)
     }
 
@@ -435,8 +432,7 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
 
     val maxStrLen = (a: Int, b: String) => a.max(b.length)
     val maxColLen = (c: Vec[A]) =>
-      (c.head(halfr) concat c.tail(halfr))
-        .map(scalarTag.show(_))
+      (c.head(halfr) concat c.tail(halfr)).map(scalarTag.show(_))
         .foldLeft(0)(maxStrLen)
     val colIdx = util.grab(Range(0, numCols), halfc)
     val lenSeq = colIdx.map { c => c -> maxColLen(col(c)) }
@@ -447,8 +443,8 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
       val buf = new StringBuilder()
       val strFn = (col: Int) => {
         val l = lenMap(col)
-        "%" + { if (l > 0) l else 1 } + "s " format scalarTag.show(
-          apply(r, col))
+        "%" + { if (l > 0) l else 1 } + "s " format scalarTag
+          .show(apply(r, col))
       }
       buf.append(util.buildStr(ncols, numCols, strFn))
       buf.append("\n")
@@ -480,9 +476,8 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
   override def equals(o: Any): Boolean =
     o match {
       case rv: Mat[_] =>
-        (
-          this eq rv
-        ) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
+        (this eq rv) || this.numRows == rv.numRows && this.numCols == rv
+          .numCols && {
           var i = 0
           var eq = true
           while (eq && i < length) {

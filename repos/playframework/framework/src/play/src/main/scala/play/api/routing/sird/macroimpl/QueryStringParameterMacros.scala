@@ -40,7 +40,8 @@ private[sird] object QueryStringParameterMacros {
           case paramEquals(param) => param
           case _ => c.abort(
               c.enclosingPosition.withPoint(startOfString),
-              "Invalid start of string for query string extractor '" + parts.head + "', extractor string must have format " + name + "\"param=$extracted\""
+              "Invalid start of string for query string extractor '" + parts
+                .head + "', extractor string must have format " + name + "\"param=$extracted\""
             )
         }
 

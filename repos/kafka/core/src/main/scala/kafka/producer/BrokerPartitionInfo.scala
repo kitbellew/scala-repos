@@ -70,23 +70,20 @@ class BrokerPartitionInfo(
             .format(metadata))
       }
     }
-    partitionMetadata
-      .map { m =>
-        m.leader match {
-          case Some(leader) =>
-            debug("Partition [%s,%d] has leader %d".format(
-              topic,
-              m.partitionId,
-              leader.id))
-            new PartitionAndLeader(topic, m.partitionId, Some(leader.id))
-          case None =>
-            debug("Partition [%s,%d] does not have a leader yet".format(
-              topic,
-              m.partitionId))
-            new PartitionAndLeader(topic, m.partitionId, None)
-        }
+    partitionMetadata.map { m =>
+      m.leader match {
+        case Some(leader) =>
+          debug(
+            "Partition [%s,%d] has leader %d"
+              .format(topic, m.partitionId, leader.id))
+          new PartitionAndLeader(topic, m.partitionId, Some(leader.id))
+        case None =>
+          debug("Partition [%s,%d] does not have a leader yet".format(
+            topic,
+            m.partitionId))
+          new PartitionAndLeader(topic, m.partitionId, None)
       }
-      .sortWith((s, t) => s.partitionId < t.partitionId)
+    }.sortWith((s, t) => s.partitionId < t.partitionId)
   }
 
   /**
@@ -95,11 +92,8 @@ class BrokerPartitionInfo(
     */
   def updateInfo(topics: Set[String], correlationId: Int) {
     var topicsMetadata: Seq[TopicMetadata] = Nil
-    val topicMetadataResponse = ClientUtils.fetchTopicMetadata(
-      topics,
-      brokers,
-      producerConfig,
-      correlationId)
+    val topicMetadataResponse = ClientUtils
+      .fetchTopicMetadata(topics, brokers, producerConfig, correlationId)
     topicsMetadata = topicMetadataResponse.topicsMetadata
     // throw partition specific exception
     topicsMetadata.foreach(tmd => {
@@ -112,7 +106,8 @@ class BrokerPartitionInfo(
           tmd.topic,
           Errors.forCode(tmd.errorCode).exception.getClass))
       tmd.partitionsMetadata.foreach(pmd => {
-        if (pmd.errorCode != Errors.NONE.code && pmd.errorCode == Errors.LEADER_NOT_AVAILABLE.code) {
+        if (pmd.errorCode != Errors.NONE.code && pmd.errorCode == Errors
+              .LEADER_NOT_AVAILABLE.code) {
           warn(
             "Error while fetching metadata %s for topic partition [%s,%d]: [%s]"
               .format(

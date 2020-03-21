@@ -71,8 +71,8 @@ class XorTTests extends CatsSuite {
       OrderLaws[XorT[ListWrapper, String, Int]].partialOrder)
     checkAll(
       "PartialOrder[XorT[ListWrapper, String, Int]]",
-      SerializableTests.serializable(
-        PartialOrder[XorT[ListWrapper, String, Int]]))
+      SerializableTests
+        .serializable(PartialOrder[XorT[ListWrapper, String, Int]]))
   }
 
   {
@@ -92,8 +92,8 @@ class XorTTests extends CatsSuite {
       SemigroupKTests[XorT[Option, ListWrapper[String], ?]].semigroupK[Int])
     checkAll(
       "SemigroupK[XorT[Option, ListWrapper[String], ?]]",
-      SerializableTests.serializable(
-        SemigroupK[XorT[Option, ListWrapper[String], ?]]))
+      SerializableTests
+        .serializable(SemigroupK[XorT[Option, ListWrapper[String], ?]]))
   }
 
   // make sure that the Monad and Traverse instances don't result in ambiguous
@@ -166,23 +166,23 @@ class XorTTests extends CatsSuite {
 
   test("recoverWith recovers handled values") {
     val xort = XorT.left[Id, String, Int]("xort")
-    xort.recoverWith {
-      case "xort" => XorT.right[Id, String, Int](5)
-    }.isRight should ===(true)
+    xort.recoverWith { case "xort" => XorT.right[Id, String, Int](5) }
+      .isRight should ===(true)
   }
 
   test("recoverWith ignores unhandled values") {
     val xort = XorT.left[Id, String, Int]("xort")
-    xort.recoverWith {
-      case "notxort" => XorT.right[Id, String, Int](5)
-    } should ===(xort)
+    xort
+      .recoverWith {
+        case "notxort" => XorT.right[Id, String, Int](5)
+      } should ===(xort)
   }
 
   test("recoverWith ignores the right side") {
     val xort = XorT.right[Id, String, Int](10)
-    xort.recoverWith {
-      case "xort" => XorT.right[Id, String, Int](5)
-    } should ===(xort)
+    xort
+      .recoverWith { case "xort" => XorT.right[Id, String, Int](5) } should ===(
+      xort)
   }
 
   test("transform consistent with value.map") {

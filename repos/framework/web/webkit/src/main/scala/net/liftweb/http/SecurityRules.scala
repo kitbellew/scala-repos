@@ -263,14 +263,12 @@ final case class ContentSecurityPolicy(
       "style-src" -> styleSources
     )
 
-    val restrictionString = allRestrictions
-      .collect {
-        case (category, restrictions) if restrictions.nonEmpty =>
-          category +
-            " " +
-            restrictions.map(_.sourceRestrictionString).mkString(" ")
-      }
-      .mkString("; ")
+    val restrictionString = allRestrictions.collect {
+      case (category, restrictions) if restrictions.nonEmpty =>
+        category +
+          " " +
+          restrictions.map(_.sourceRestrictionString).mkString(" ")
+    }.mkString("; ")
 
     reportUri.map { uri => s"$restrictionString; report-uri $uri" } getOrElse {
       restrictionString
@@ -363,8 +361,8 @@ object ContentSecurityPolicyViolation extends LazyLoggable {
 
           case _ =>
             logger.warn(
-              s"Got a content security violation report we couldn't interpret: '${request.body
-                .map(new String(_, "UTF-8"))}'.")
+              s"Got a content security violation report we couldn't interpret: '${request
+                .body.map(new String(_, "UTF-8"))}'.")
 
             Full(BadRequestResponse(
               "Unrecognized format for content security policy report."))

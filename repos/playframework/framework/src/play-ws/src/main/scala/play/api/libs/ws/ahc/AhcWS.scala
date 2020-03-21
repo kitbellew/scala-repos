@@ -250,10 +250,8 @@ case class AhcWSRequest(
       username: String,
       password: String,
       scheme: Realm.AuthScheme = Realm.AuthScheme.BASIC): Realm = {
-    new Realm.Builder(username, password)
-      .setScheme(scheme)
-      .setUsePreemptiveAuth(true)
-      .build()
+    new Realm.Builder(username, password).setScheme(scheme)
+      .setUsePreemptiveAuth(true).build()
   }
 
   def contentType: Option[String] = {
@@ -269,11 +267,9 @@ case class AhcWSRequest(
     // The builder has a bunch of mutable state and is VERY fiddly, so
     // should not be exposed to the outside world.
 
-    val builder = disableUrlEncoding
-      .map { disableEncodingFlag =>
-        new RequestBuilder(method, disableEncodingFlag)
-      }
-      .getOrElse { new RequestBuilder(method) }
+    val builder = disableUrlEncoding.map { disableEncodingFlag =>
+      new RequestBuilder(method, disableEncodingFlag)
+    }.getOrElse { new RequestBuilder(method) }
 
     // Set the URL.
     builder.setUrl(url)
@@ -310,7 +306,8 @@ case class AhcWSRequest(
           try {
             // Only parse out the form body if we are doing the signature calculation.
             if (ct.contains(
-                  HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED) && calc.isDefined) {
+                  HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED) && calc
+                  .isDefined) {
               // If we are taking responsibility for setting the request body, we should block any
               // externally defined Content-Length field (see #5221 for the details)
               val filteredHeaders = this.headers.filterNot {
@@ -320,8 +317,7 @@ case class AhcWSRequest(
 
               // extract the content type and the charset
               val charsetOption = Option(HttpUtils.parseCharset(ct))
-              val charset = charsetOption
-                .getOrElse { StandardCharsets.UTF_8 }
+              val charset = charsetOption.getOrElse { StandardCharsets.UTF_8 }
                 .name()
 
               // Get the string body given the given charset...
@@ -396,8 +392,7 @@ case class AhcWSRequest(
       val realmBuilder = new Realm.Builder(
         wsProxyServer.principal.orNull,
         wsProxyServer.password.orNull)
-      val scheme: Realm.AuthScheme = wsProxyServer.protocol
-        .getOrElse("http")
+      val scheme: Realm.AuthScheme = wsProxyServer.protocol.getOrElse("http")
         .toLowerCase(java.util.Locale.ENGLISH) match {
         case "http" | "https" => Realm.AuthScheme.BASIC
         case "kerberos"       => Realm.AuthScheme.KERBEROS
@@ -406,8 +401,8 @@ case class AhcWSRequest(
         case _                => scala.sys.error("Unrecognized protocol!")
       }
       realmBuilder.setScheme(scheme)
-      wsProxyServer.encoding.foreach(enc =>
-        realmBuilder.setCharset(Charset.forName(enc)))
+      wsProxyServer.encoding
+        .foreach(enc => realmBuilder.setCharset(Charset.forName(enc)))
       wsProxyServer.ntlmDomain.foreach(realmBuilder.setNtlmDomain)
       proxyBuilder.setRealm(realmBuilder)
     }

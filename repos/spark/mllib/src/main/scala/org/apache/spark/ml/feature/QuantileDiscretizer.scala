@@ -100,9 +100,8 @@ final class QuantileDiscretizer(override val uid: String)
     val samples = QuantileDiscretizer
       .getSampledInput(dataset.select($(inputCol)), $(numBuckets), $(seed))
       .map { case Row(feature: Double) => feature }
-    val candidates = QuantileDiscretizer.findSplitCandidates(
-      samples,
-      $(numBuckets) - 1)
+    val candidates = QuantileDiscretizer
+      .findSplitCandidates(samples, $(numBuckets) - 1)
     val splits = QuantileDiscretizer.getSplits(candidates)
     val bucketizer = new Bucketizer(uid).setSplits(splits)
     copyValues(bucketizer.setParent(this))
@@ -135,12 +134,10 @@ object QuantileDiscretizer
       "QuantileDiscretizer requires non-empty input dataset but was given an empty input.")
     val requiredSamples = math.max(numBins * numBins, minSamplesRequired)
     val fraction = math.min(requiredSamples.toDouble / totalSamples, 1.0)
-    dataset
-      .sample(
-        withReplacement = false,
-        fraction,
-        new XORShiftRandom(seed).nextInt())
-      .collect()
+    dataset.sample(
+      withReplacement = false,
+      fraction,
+      new XORShiftRandom(seed).nextInt()).collect()
   }
 
   /**

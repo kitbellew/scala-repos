@@ -72,31 +72,22 @@ class DeploymentActorTest
 
     val version2 = AppDefinition.VersionInfo.forNewConfig(Timestamp(1000))
     val app1New = app1.copy(instances = 1, versionInfo = version2)
-    val app2New = app2.copy(
-      instances = 2,
-      cmd = Some("otherCmd"),
-      versionInfo = version2)
+    val app2New = app2
+      .copy(instances = 2, cmd = Some("otherCmd"), versionInfo = version2)
 
     val targetGroup = Group(PathId("/foo/bar"), Set(app1New, app2New, app3))
 
     // setting started at to 0 to make sure this survives
-    val task1_1 = MarathonTestHelper.runningTask(
-      "task1_1",
-      appVersion = app1.version,
-      startedAt = 0)
-    val task1_2 = MarathonTestHelper.runningTask(
-      "task1_2",
-      appVersion = app1.version,
-      startedAt = 1000)
-    val task2_1 = MarathonTestHelper.runningTask(
-      "task2_1",
-      appVersion = app2.version)
-    val task3_1 = MarathonTestHelper.runningTask(
-      "task3_1",
-      appVersion = app3.version)
-    val task4_1 = MarathonTestHelper.runningTask(
-      "task4_1",
-      appVersion = app4.version)
+    val task1_1 = MarathonTestHelper
+      .runningTask("task1_1", appVersion = app1.version, startedAt = 0)
+    val task1_2 = MarathonTestHelper
+      .runningTask("task1_2", appVersion = app1.version, startedAt = 1000)
+    val task2_1 = MarathonTestHelper
+      .runningTask("task2_1", appVersion = app2.version)
+    val task3_1 = MarathonTestHelper
+      .runningTask("task3_1", appVersion = app3.version)
+    val task4_1 = MarathonTestHelper
+      .runningTask("task4_1", appVersion = app4.version)
 
     val plan = DeploymentPlan(origGroup, targetGroup)
 
@@ -218,9 +209,8 @@ class DeploymentActorTest
 
       plan.steps.zipWithIndex.foreach {
         case (step, num) =>
-          managerProbe.expectMsg(
-            5.seconds,
-            DeploymentStepInfo(plan, step, num + 1))
+          managerProbe
+            .expectMsg(5.seconds, DeploymentStepInfo(plan, step, num + 1))
       }
 
       managerProbe.expectMsg(5.seconds, DeploymentFinished(plan))
@@ -246,14 +236,10 @@ class DeploymentActorTest
 
     val targetGroup = Group(PathId("/foo/bar"), Set(appNew))
 
-    val task1_1 = MarathonTestHelper.runningTask(
-      "task1_1",
-      appVersion = app.version,
-      startedAt = 0)
-    val task1_2 = MarathonTestHelper.runningTask(
-      "task1_2",
-      appVersion = app.version,
-      startedAt = 1000)
+    val task1_1 = MarathonTestHelper
+      .runningTask("task1_1", appVersion = app.version, startedAt = 0)
+    val task1_2 = MarathonTestHelper
+      .runningTask("task1_2", appVersion = app.version, startedAt = 1000)
 
     when(tracker.appTasksLaunchedSync(app.id)).thenReturn(Set(task1_1, task1_2))
 
@@ -398,18 +384,12 @@ class DeploymentActorTest
 
     val targetGroup = Group(PathId("/foo/bar"), Set(app1New))
 
-    val task1_1 = MarathonTestHelper.runningTask(
-      "task1_1",
-      appVersion = app1.version,
-      startedAt = 0)
-    val task1_2 = MarathonTestHelper.runningTask(
-      "task1_2",
-      appVersion = app1.version,
-      startedAt = 500)
-    val task1_3 = MarathonTestHelper.runningTask(
-      "task1_3",
-      appVersion = app1.version,
-      startedAt = 1000)
+    val task1_1 = MarathonTestHelper
+      .runningTask("task1_1", appVersion = app1.version, startedAt = 0)
+    val task1_2 = MarathonTestHelper
+      .runningTask("task1_2", appVersion = app1.version, startedAt = 500)
+    val task1_3 = MarathonTestHelper
+      .runningTask("task1_3", appVersion = app1.version, startedAt = 1000)
 
     val plan = DeploymentPlan(
       original = origGroup,
@@ -451,9 +431,8 @@ class DeploymentActorTest
 
       plan.steps.zipWithIndex.foreach {
         case (step, num) =>
-          managerProbe.expectMsg(
-            5.seconds,
-            DeploymentStepInfo(plan, step, num + 1))
+          managerProbe
+            .expectMsg(5.seconds, DeploymentStepInfo(plan, step, num + 1))
       }
 
       managerProbe.expectMsg(5.seconds, DeploymentFinished(plan))

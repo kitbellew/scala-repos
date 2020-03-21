@@ -340,8 +340,8 @@ trait DagOptimizer[P <: Platform[P]] {
       case MergedProducer(
             left @ FlatMappedProducer(inleft, fnleft),
             right @ FlatMappedProducer(inright, fnright))
-          if (inleft == inright) && (on.fanOut(left) == 1) && (on.fanOut(
-            right) == 1) =>
+          if (inleft == inright) && (on.fanOut(left) == 1) && (on
+            .fanOut(right) == 1) =>
         FlatMappedProducer(inleft, MergeResults(fnleft, fnright))
     }
   }

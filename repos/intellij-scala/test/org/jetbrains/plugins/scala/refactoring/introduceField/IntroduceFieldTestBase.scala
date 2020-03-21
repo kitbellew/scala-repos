@@ -39,8 +39,8 @@ abstract class IntroduceFieldTestBase()
 
   protected def doTest() {
     val filePath = folderPath + getTestName(false) + ".scala"
-    val file = LocalFileSystem.getInstance.findFileByPath(
-      filePath.replace(File.separatorChar, '/'))
+    val file = LocalFileSystem.getInstance
+      .findFileByPath(filePath.replace(File.separatorChar, '/'))
     assert(file != null, "file " + filePath + " not found")
     var fileText = StringUtil.convertLineSeparators(
       FileUtil.loadFile(new File(file.getCanonicalPath), CharsetToolkit.UTF8))
@@ -70,12 +70,12 @@ abstract class IntroduceFieldTestBase()
       if (fileText.contains(initInDeclarationMarker)) Some(true)
       else if (fileText.contains(initLocallyMarker)) Some(false)
       else None
-    val selectedClassNumber =
-      fileText.indexOf(selectedClassNumberMarker) match {
-        case -1 => 0
-        case idx: Int =>
-          fileText.charAt(idx + selectedClassNumberMarker.length).toString.toInt
-      }
+    val selectedClassNumber = fileText
+      .indexOf(selectedClassNumberMarker) match {
+      case -1 => 0
+      case idx: Int =>
+        fileText.charAt(idx + selectedClassNumberMarker.length).toString.toInt
+    }
 
     //start to inline
     try {
@@ -117,8 +117,7 @@ abstract class IntroduceFieldTestBase()
       case e: Exception =>
         assert(
           assertion = false,
-          message = e.getMessage + "\n" + e.getStackTrace
-            .map(_.toString)
+          message = e.getMessage + "\n" + e.getStackTrace.map(_.toString)
             .mkString("  \n"))
     }
 

@@ -52,16 +52,13 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
 
     val state = udaf.terminatePartial()
 
-    val soi = ObjectInspectorFactory
-      .getReflectionObjectInspector(
-        classOf[UDAFPercentile.State],
-        ObjectInspectorOptions.JAVA)
-      .asInstanceOf[StructObjectInspector]
+    val soi = ObjectInspectorFactory.getReflectionObjectInspector(
+      classOf[UDAFPercentile.State],
+      ObjectInspectorOptions.JAVA).asInstanceOf[StructObjectInspector]
 
     val a = unwrap(state, soi).asInstanceOf[InternalRow]
 
-    val dt = new StructType()
-      .add("counts", MapType(LongType, LongType))
+    val dt = new StructType().add("counts", MapType(LongType, LongType))
       .add("percentiles", ArrayType(DoubleType))
     val b = wrap(a, soi, dt).asInstanceOf[UDAFPercentile.State]
 
@@ -69,17 +66,12 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     val sfPercentiles = soi.getStructFieldRef("percentiles")
 
     assert(
-      2 === soi
-        .getStructFieldData(b, sfCounts)
+      2 === soi.getStructFieldData(b, sfCounts)
         .asInstanceOf[util.Map[LongWritable, LongWritable]]
-        .get(new LongWritable(1L))
-        .get())
+        .get(new LongWritable(1L)).get())
     assert(
-      0.1 === soi
-        .getStructFieldData(b, sfPercentiles)
-        .asInstanceOf[util.ArrayList[DoubleWritable]]
-        .get(0)
-        .get())
+      0.1 === soi.getStructFieldData(b, sfPercentiles)
+        .asInstanceOf[util.ArrayList[DoubleWritable]].get(0).get())
   }
 
   // Timezone is fixed to America/Los_Angeles for those timezone sensitive tests (timestamp_*)
@@ -118,8 +110,8 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
   def toWritableInspector(dataType: DataType): ObjectInspector =
     dataType match {
       case ArrayType(tpe, _) =>
-        ObjectInspectorFactory.getStandardListObjectInspector(
-          toWritableInspector(tpe))
+        ObjectInspectorFactory
+          .getStandardListObjectInspector(toWritableInspector(tpe))
       case MapType(keyType, valueType, _) =>
         ObjectInspectorFactory.getStandardMapObjectInspector(
           toWritableInspector(keyType),
@@ -217,10 +209,10 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     val constantTypes = constantExprs.map(_.dataType)
     val constantData = constantExprs.map(_.eval())
     val constantNullData = constantData.map(_ => null)
-    val constantWritableOIs = constantExprs.map(e =>
-      toWritableInspector(e.dataType))
-    val constantNullWritableOIs = constantExprs.map(e =>
-      toInspector(Literal.create(null, e.dataType)))
+    val constantWritableOIs = constantExprs
+      .map(e => toWritableInspector(e.dataType))
+    val constantNullWritableOIs = constantExprs
+      .map(e => toInspector(Literal.create(null, e.dataType)))
 
     checkValues(
       constantData,

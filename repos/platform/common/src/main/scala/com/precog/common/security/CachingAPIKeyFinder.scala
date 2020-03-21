@@ -46,15 +46,14 @@ class CachingAPIKeyFinder[M[+_]: Monad](
     delegate: APIKeyFinder[M],
     settings: CachingAPIKeyFinderSettings = CachingAPIKeyFinderSettings.Default)
     extends APIKeyFinder[M] {
-  private val apiKeyCache = Cache.simple[APIKey, v1.APIKeyDetails](
-    settings.apiKeyCacheSettings: _*)
+  private val apiKeyCache = Cache
+    .simple[APIKey, v1.APIKeyDetails](settings.apiKeyCacheSettings: _*)
 
   protected def add(r: v1.APIKeyDetails) = IO { apiKeyCache.put(r.apiKey, r) }
 
   def findAPIKey(tid: APIKey, rootKey: Option[APIKey]) =
     apiKeyCache.get(tid) match {
-      case None =>
-        delegate.findAPIKey(tid, rootKey).map {
+      case None => delegate.findAPIKey(tid, rootKey).map {
           _ map { _ tap add unsafePerformIO }
         }
       case t => t.point[M]

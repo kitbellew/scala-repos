@@ -148,14 +148,11 @@ class MongoQueryExecutor(
             // TODO: Poor behavior on Mongo's part, returning database+collection names
             // See https://groups.google.com/forum/#!topic/mongodb-user/HbE5wNOfl6k for details
 
-            val finalNames = dbs
-              .foldLeft(dbs.toSet) {
-                case (acc, dbName) => acc.filterNot { t =>
-                    t.startsWith(dbName) && t != dbName
-                  }
-              }
-              .toList
-              .sorted
+            val finalNames = dbs.foldLeft(dbs.toSet) {
+              case (acc, dbName) => acc.filterNot { t =>
+                  t.startsWith(dbName) && t != dbName
+                }
+            }.toList.sorted
             Success(
               finalNames.map { d => d + "/" }.serialize.asInstanceOf[JArray])
 
@@ -164,12 +161,8 @@ class MongoQueryExecutor(
             Success(
               if (db == null) JArray(Nil)
               else
-                db.getCollectionNames.asScala
-                  .map { d => d + "/" }
-                  .toList
-                  .sorted
-                  .serialize
-                  .asInstanceOf[JArray])
+                db.getCollectionNames.asScala.map { d => d + "/" }.toList.sorted
+                  .serialize.asInstanceOf[JArray])
 
           case dbName :: collectionName :: Nil => Success(JArray(Nil))
 

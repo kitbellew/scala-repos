@@ -33,8 +33,7 @@ class TypedWriteIncrementalJob(args: Args) extends Job(args) {
 
   implicit val inj = Injection.connect[(Int, Int), (Array[Byte], Array[Byte])]
 
-  pipe
-    .map { k => (k, k) }
+  pipe.map { k => (k, k) }
     .writeIncremental(VersionedKeyValSource[Int, Int]("output"))
 }
 
@@ -44,10 +43,7 @@ class MoreComplexTypedWriteIncrementalJob(args: Args) extends Job(args) {
 
   implicit val inj = Injection.connect[(Int, Int), (Array[Byte], Array[Byte])]
 
-  pipe
-    .map { k => (k, k) }
-    .group
-    .sum
+  pipe.map { k => (k, k) }.group.sum
     .writeIncremental(VersionedKeyValSource[Int, Int]("output"))
 }
 
@@ -76,14 +72,10 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
           assert(outputBuffer.size === input.size)
           val singleInj = implicitly[Injection[Int, Array[Byte]]]
           assert(
-            input
-              .map { k => (k, k) }
-              .sortBy(_._1)
-              .toString === outputBuffer.sortBy(_._1).toList.toString)
+            input.map { k => (k, k) }.sortBy(_._1).toString === outputBuffer
+              .sortBy(_._1).toList.toString)
         }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   "A MoreComplexTypedWriteIncrementalJob" should {
@@ -95,14 +87,10 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
           assert(outputBuffer.size === input.size)
           val singleInj = implicitly[Injection[Int, Array[Byte]]]
           assert(
-            input
-              .map { k => (k, k) }
-              .sortBy(_._1)
-              .toString === outputBuffer.sortBy(_._1).toList.toString)
+            input.map { k => (k, k) }.sortBy(_._1).toString === outputBuffer
+              .sortBy(_._1).toList.toString)
         }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   "A ToIteratorJob" should {
@@ -113,9 +101,7 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
           outputBuffer: Buffer[(Int, Int)] =>
             val (keys, vals) = outputBuffer.unzip
             assert(keys.map { _ * 2 } === vals)
-        }
-        .run
-        .finish
+        }.run.finish
     }
   }
 

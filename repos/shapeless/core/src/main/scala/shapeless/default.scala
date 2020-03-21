@@ -247,13 +247,11 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
       if (m == NoSymbol) None else Some(m)
     }
 
-    val primaryConstructor = tpe.decls
-      .collectFirst {
-        case m if m.isMethod && m.asMethod.isPrimaryConstructor => m.asMethod
-      }
-      .getOrElse {
-        c.abort(c.enclosingPosition, s"Cannot get primary constructor of $tpe")
-      }
+    val primaryConstructor = tpe.decls.collectFirst {
+      case m if m.isMethod && m.asMethod.isPrimaryConstructor => m.asMethod
+    }.getOrElse {
+      c.abort(c.enclosingPosition, s"Cannot get primary constructor of $tpe")
+    }
 
     def methodHasDefaults(m: MethodSymbol): Boolean =
       m.asMethod.paramLists.flatten.exists(_.asTerm.isParamWithDefault)

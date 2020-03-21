@@ -48,8 +48,8 @@ trait PersistentFSM[S <: FSMState, D, E]
   /**
     * Map from state identifier to state instance
     */
-  lazy val statesMap: Map[String, S] =
-    stateNames.map(name ⇒ (name.identifier, name)).toMap
+  lazy val statesMap: Map[String, S] = stateNames
+    .map(name ⇒ (name.identifier, name)).toMap
 
   /**
     * Override this handler to define the action on Domain Event

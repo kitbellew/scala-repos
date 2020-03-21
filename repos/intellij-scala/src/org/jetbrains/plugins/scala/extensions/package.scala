@@ -67,8 +67,8 @@ package object extensions {
 
     def hasQueryLikeName = {
       def startsWith(name: String, prefix: String) =
-        name.length > prefix.length && name
-          .startsWith(prefix) && name.charAt(prefix.length).isUpper
+        name.length > prefix.length && name.startsWith(prefix) && name
+          .charAt(prefix.length).isUpper
 
       repr.getName match {
         case "getInstance" => false // TODO others?
@@ -95,7 +95,8 @@ package object extensions {
       """(?-i)(?:get|is|can|could|has|have|to)\p{Lu}.*""".r
 
     val MutatorNamePattern =
-      """(?-i)(?:do|set|add|remove|insert|delete|aquire|release|update)(?:\p{Lu}.*)""".r
+      """(?-i)(?:do|set|add|remove|insert|delete|aquire|release|update)(?:\p{Lu}.*)"""
+        .r
   }
 
   implicit class TraversableExt[CC[X] <: Traversable[X], A](val value: CC[A])
@@ -103,8 +104,7 @@ package object extensions {
     private type CanBuildTo[Elem, C[X]] = CanBuildFrom[Nothing, Elem, C[Elem]]
 
     def filterBy[T](aClass: Class[T])(implicit cbf: CanBuildTo[T, CC]): CC[T] =
-      value
-        .filter(aClass.isInstance(_))
+      value.filter(aClass.isInstance(_))
         .map[T, CC[T]](_.asInstanceOf[T])(collection.breakOut)
 
     def findBy[T](aClass: Class[T]): Option[T] =
@@ -268,8 +268,7 @@ package object extensions {
         ScalaPsiUtil.nameContext(typedDef) match {
           case m: ScMember => m.containingClass match {
               case t: ScTrait =>
-                val linearization = MixinNodes
-                  .linearization(clazz)
+                val linearization = MixinNodes.linearization(clazz)
                   .flatMap(tp =>
                     ScType.extractClass(tp, Some(clazz.getProject)))
                 var index = linearization.indexWhere(_ == t)
@@ -295,7 +294,8 @@ package object extensions {
           wrappers.foreach(w => processName(w.name))
         case method: PsiMethod if !method.isConstructor =>
           if (isStatic) {
-            if (method.containingClass != null && method.containingClass.qualifiedName != "java.lang.Object") {
+            if (method.containingClass != null && method.containingClass
+                  .qualifiedName != "java.lang.Object") {
               processMethod(StaticPsiMethodWrapper.getWrapper(method, clazz))
               processName(method.getName)
             }
@@ -306,8 +306,7 @@ package object extensions {
         case t: ScTypedDefinition
             if t.isVal || t.isVar ||
               (t.isInstanceOf[ScClassParameter] && t
-                .asInstanceOf[ScClassParameter]
-                .isCaseClassVal) =>
+                .asInstanceOf[ScClassParameter].isCaseClassVal) =>
           PsiTypedDefinitionWrapper.processWrappersFor(
             t,
             concreteClassFor(t),
@@ -485,25 +484,20 @@ package object extensions {
     }
 
     catching(classOf[Exception]).withTry {
-      progressManager.runProcessWithProgressSynchronously(
-        computable,
-        title,
-        false,
-        null)
+      progressManager
+        .runProcessWithProgressSynchronously(computable, title, false, null)
     }
   }
 
   def postponeFormattingWithin[T](project: Project)(body: => T): T = {
-    PostprocessReformattingAspect
-      .getInstance(project)
+    PostprocessReformattingAspect.getInstance(project)
       .postponeFormattingInside(new Computable[T] {
         def compute(): T = body
       })
   }
 
   def withDisabledPostprocessFormatting[T](project: Project)(body: => T): T = {
-    PostprocessReformattingAspect
-      .getInstance(project)
+    PostprocessReformattingAspect.getInstance(project)
       .disablePostprocessFormattingInside {
         new Computable[T] {
           override def compute(): T = body

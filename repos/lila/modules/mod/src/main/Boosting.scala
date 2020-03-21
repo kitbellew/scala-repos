@@ -26,13 +26,10 @@ final class BoostingApi(
     variant.ThreeCheck)
 
   def getBoostingRecord(id: String): Fu[Option[BoostingRecord]] =
-    collBoosting
-      .find(BSONDocument("_id" -> id))
-      .one[BoostingRecord]
+    collBoosting.find(BSONDocument("_id" -> id)).one[BoostingRecord]
 
   def createBoostRecord(record: BoostingRecord) =
-    collBoosting
-      .update(BSONDocument("_id" -> record.id), record, upsert = true)
+    collBoosting.update(BSONDocument("_id" -> record.id), record, upsert = true)
       .void
 
   def determineBoosting(

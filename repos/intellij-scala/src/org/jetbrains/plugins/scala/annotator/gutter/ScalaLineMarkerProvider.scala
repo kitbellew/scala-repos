@@ -77,8 +77,8 @@ class ScalaLineMarkerProvider(
   }
 
   def addSeparatorInfo(info: LineMarkerInfo[_ <: PsiElement]) = {
-    info.separatorColor = colorsManager.getGlobalScheme.getColor(
-      CodeInsightColors.METHOD_SEPARATORS_COLOR)
+    info.separatorColor = colorsManager.getGlobalScheme
+      .getColor(CodeInsightColors.METHOD_SEPARATORS_COLOR)
     info.separatorPlacement = SeparatorPlacement.TOP
     info
   }
@@ -118,8 +118,8 @@ class ScalaLineMarkerProvider(
       if (parent == null) return null
 
       def containsNamedElement(holder: ScDeclaredElementsHolder) =
-        holder.declaredElements.exists(
-          _.asInstanceOf[ScNamedElement].nameId == element)
+        holder.declaredElements
+          .exists(_.asInstanceOf[ScNamedElement].nameId == element)
 
       (parent, parent.getParent) match {
         case (method: ScFunction, _: ScTemplateBody)
@@ -141,9 +141,8 @@ class ScalaLineMarkerProvider(
             case _                           => return null
           }
           for (z <- bindings)
-            signatures ++= ScalaPsiUtil.superValsSignatures(
-              z,
-              withSelfType = true)
+            signatures ++= ScalaPsiUtil
+              .superValsSignatures(z, withSelfType = true)
           val icon =
             if (GutterUtil.isOverrides(x, signatures)) OVERRIDING_METHOD_ICON
             else IMPLEMENTING_METHOD_ICON
@@ -156,9 +155,8 @@ class ScalaLineMarkerProvider(
             return marker(token, icon, typez)
           }
         case (x: ScObject, _: ScTemplateBody) if x.nameId == element =>
-          val signatures = ScalaPsiUtil.superValsSignatures(
-            x,
-            withSelfType = true)
+          val signatures = ScalaPsiUtil
+            .superValsSignatures(x, withSelfType = true)
           val icon =
             if (GutterUtil.isOverrides(x, signatures)) OVERRIDING_METHOD_ICON
             else IMPLEMENTING_METHOD_ICON
@@ -275,8 +273,7 @@ private object GutterUtil {
       members: ArrayBuffer[PsiElement],
       result: util.Collection[LineMarkerInfo[_ <: PsiElement]]) {
     for (member <- members if !member.isInstanceOf[PsiMethod] || !member
-           .asInstanceOf[PsiMethod]
-           .isConstructor) {
+           .asInstanceOf[PsiMethod].isConstructor) {
       ProgressManager.checkCanceled()
       val offset = member.getTextOffset
       val members = member match {
@@ -287,10 +284,8 @@ private object GutterUtil {
       }
       val overrides = new ArrayBuffer[PsiNamedElement]
       for (member <- members)
-        overrides ++= ScalaOverridingMemberSearcher.search(
-          member,
-          deep = false,
-          withSelfType = true)
+        overrides ++= ScalaOverridingMemberSearcher
+          .search(member, deep = false, withSelfType = true)
       if (overrides.nonEmpty) {
         val icon =
           if (!GutterUtil.isAbstract(member)) OVERRIDEN_METHOD_MARKER_RENDERER

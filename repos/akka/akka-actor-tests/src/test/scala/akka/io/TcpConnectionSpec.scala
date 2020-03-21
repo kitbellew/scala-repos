@@ -98,9 +98,10 @@ class TcpConnectionSpec extends AkkaSpec("""
         clientChannel.socket.getKeepAlive should ===(
           true
         ) // only set after connection is established
-        EventFilter.warning(
-          pattern = "registration timeout",
-          occurrences = 1) intercept {
+        EventFilter
+          .warning(
+            pattern = "registration timeout",
+            occurrences = 1) intercept {
           selector.send(connectionActor, ChannelConnectable)
           clientChannel.socket.getKeepAlive should ===(false)
         }
@@ -151,8 +152,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       run {
         val serverSideChannel = acceptServerSideConnection(localServerChannel)
 
-        serverSideChannel.write(
-          ByteBuffer.wrap("immediatedata".getBytes("ASCII")))
+        serverSideChannel
+          .write(ByteBuffer.wrap("immediatedata".getBytes("ASCII")))
         serverSideChannel.configureBlocking(false)
         interestCallReceiver.expectMsg(OP_CONNECT)
 
@@ -163,9 +164,7 @@ class TcpConnectionSpec extends AkkaSpec("""
             .asInstanceOf[InetSocketAddress]))
 
         userHandler.send(connectionActor, Register(userHandler.ref))
-        userHandler
-          .expectMsgType[Received]
-          .data
+        userHandler.expectMsgType[Received].data
           .decodeString("ASCII") should ===("immediatedata")
         ignoreWindowsWorkaroundForTicket15766()
         interestCallReceiver.expectMsg(OP_READ)
@@ -250,12 +249,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       run {
         // hacky: we need a file for testing purposes, so try to get the biggest one from our own classpath
         val testFile = classOf[TcpConnectionSpec].getClassLoader
-          .asInstanceOf[URLClassLoader]
-          .getURLs
-          .filter(_.getProtocol == "file")
-          .map(url ⇒ new File(url.toURI))
-          .filter(_.exists)
-          .sortBy(-_.length)
+          .asInstanceOf[URLClassLoader].getURLs.filter(_.getProtocol == "file")
+          .map(url ⇒ new File(url.toURI)).filter(_.exists).sortBy(-_.length)
           .head
 
         // maximum of 100 MB
@@ -383,8 +378,7 @@ class TcpConnectionSpec extends AkkaSpec("""
     "respect pull mode" in new EstablishedConnectionTest(pullMode = true) {
       // override config to decrease default buffer size
       val config = ConfigFactory.load(
-        ConfigFactory
-          .parseString("akka.io.tcp.direct-buffer-size = 1k")
+        ConfigFactory.parseString("akka.io.tcp.direct-buffer-size = 1k")
           .withFallback(AkkaSpec.testConf))
       override implicit def system: ActorSystem =
         ActorSystem("respectPullModeTest", config)
@@ -402,9 +396,7 @@ class TcpConnectionSpec extends AkkaSpec("""
         connectionActor ! ResumeReading
         interestCallReceiver.expectMsg(OP_READ)
         selector.send(connectionActor, ChannelReadable)
-        connectionHandler
-          .expectMsgType[Received]
-          .data
+        connectionHandler.expectMsgType[Received].data
           .decodeString("ASCII") should ===(ts)
 
         interestCallReceiver.expectNoMsg(100.millis)
@@ -413,9 +405,7 @@ class TcpConnectionSpec extends AkkaSpec("""
         connectionActor ! ResumeReading
         interestCallReceiver.expectMsg(OP_READ)
         selector.send(connectionActor, ChannelReadable)
-        connectionHandler
-          .expectMsgType[Received]
-          .data
+        connectionHandler.expectMsgType[Received].data
           .decodeString("ASCII") should ===(us)
 
         // make sure that after reading all pending data we don't yet register for reading more data
@@ -429,9 +419,7 @@ class TcpConnectionSpec extends AkkaSpec("""
         interestCallReceiver.expectMsg(OP_READ)
         selector.send(connectionActor, ChannelReadable)
 
-        connectionHandler
-          .expectMsgType[Received]
-          .data
+        connectionHandler.expectMsgType[Received].data
           .decodeString("ASCII") should ===(vs)
       } finally system.terminate()
     }
@@ -656,9 +644,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         run {
           val sel = SelectorProvider.provider().openSelector()
           try {
-            val key = clientSideChannel.register(
-              sel,
-              SelectionKey.OP_CONNECT | SelectionKey.OP_READ)
+            val key = clientSideChannel
+              .register(sel, SelectionKey.OP_CONNECT | SelectionKey.OP_READ)
             // This timeout should be large enough to work on Windows
             sel.select(3000)
 
@@ -1184,9 +1171,7 @@ class TcpConnectionSpec extends AkkaSpec("""
       OP_READ -> "reading",
       OP_WRITE -> "writing")
     def interestsDesc(interests: Int): String =
-      interestsNames
-        .filter(i ⇒ (i._1 & interests) != 0)
-        .map(_._2)
+      interestsNames.filter(i ⇒ (i._1 & interests) != 0).map(_._2)
         .mkString(", ")
 
     def abortClose(channel: SocketChannel): Unit = {

@@ -49,8 +49,7 @@ class ScenariosTask(settings: Settings)
           "apiKey" -> account.apiKey,
           "q" -> "count(//foo)")
         val str = Http(res OK as.String)()
-        val json = JParser
-          .parseFromString(Http(res OK as.String)())
+        val json = JParser.parseFromString(Http(res OK as.String)())
           .valueOr(throw _)
         val count = json(0).deserialize[Double]
         count must_== 2

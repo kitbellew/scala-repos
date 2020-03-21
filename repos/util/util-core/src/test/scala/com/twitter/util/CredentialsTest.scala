@@ -65,9 +65,7 @@ password  : last_0f-the/international:playboys
   }
 
   test("handle special chars") {
-    val pass = (0 to 127)
-      .map(_.toChar)
-      .filter(c => c != '\r' && c != '\n')
+    val pass = (0 to 127).map(_.toChar).filter(c => c != '\r' && c != '\n')
       .mkString
     val content = s"username: root\npassword: $pass\n"
     assert(

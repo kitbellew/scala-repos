@@ -85,16 +85,17 @@ final class ScalaJSRunner private[testadapter] (
       val masterDeadline = VMTermTimeout.fromNow
       val summaryTry = Try {
         master.send("runnerDone")
-        val summary = ComUtils.receiveResponse(
-          master,
-          masterDeadline.timeLeft) { case ("ok", summary) => summary }
+        val summary = ComUtils
+          .receiveResponse(master, masterDeadline.timeLeft) {
+            case ("ok", summary) => summary
+          }
         master.close()
         summary
       }
 
       // Now we wait for everyone to be completely stopped
-      val slavesStopped = slaves.values.toList.map(s =>
-        Try(s.awaitOrStop(slavesDeadline.timeLeft)))
+      val slavesStopped = slaves.values.toList
+        .map(s => Try(s.awaitOrStop(slavesDeadline.timeLeft)))
       val masterStopped = Try(master.awaitOrStop(masterDeadline.timeLeft))
 
       // Cleanup

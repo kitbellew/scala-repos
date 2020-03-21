@@ -74,19 +74,18 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       evaluationContext: EvaluationContext,
       alreadyCollected: util.Set[String]): util.Set[TextWithImports] = {
 
-    val method = Try(
-      evaluationContext.getFrameProxy.location().method()).toOption
-    if (method.isEmpty || DebuggerUtils.isSynthetic(
-          method.get) || ScalaSyntheticProvider.isMacroDefined(method.get))
-      return Collections.emptySet()
+    val method = Try(evaluationContext.getFrameProxy.location().method())
+      .toOption
+    if (method.isEmpty || DebuggerUtils
+          .isSynthetic(method.get) || ScalaSyntheticProvider
+          .isMacroDefined(method.get)) return Collections.emptySet()
 
     val element = inReadAction(sourcePosition.getElementAt)
 
     if (element == null) Collections.emptySet()
     else
       getVisibleVariables(element, evaluationContext, alreadyCollected)
-        .map(toTextWithImports)
-        .asJava
+        .map(toTextWithImports).asJava
   }
 
   private def getVisibleVariables(
@@ -95,20 +94,14 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       alreadyCollected: util.Set[String]) = {
     val initialCandidates = inReadAction {
       val completionProcessor = new CollectingProcessor(elem)
-      PsiTreeUtil.treeWalkUp(
-        completionProcessor,
-        elem,
-        null,
-        ResolveState.initial)
-      completionProcessor.candidates
-        .filter(srr =>
-          !alreadyCollected.asScala
-            .map(ScalaParameterNameAdjuster.fixName)
-            .contains(srr.name))
-        .filter(canEvaluate(_, elem))
+      PsiTreeUtil
+        .treeWalkUp(completionProcessor, elem, null, ResolveState.initial)
+      completionProcessor.candidates.filter(srr =>
+        !alreadyCollected.asScala.map(ScalaParameterNameAdjuster.fixName)
+          .contains(srr.name)).filter(canEvaluate(_, elem))
     }
-    val candidates = initialCandidates.filter(
-      canEvaluateLong(_, elem, evaluationContext))
+    val candidates = initialCandidates
+      .filter(canEvaluateLong(_, elem, evaluationContext))
     val sorted = mutable.SortedSet()(Ordering.by[ScalaResolveResult, Int](
       _.getElement.getTextRange.getStartOffset))
     inReadAction { candidates.foreach(sorted += _) }
@@ -126,17 +119,13 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       case tp: ScTypedPattern if tp.name == "_" => false
       case cp: ScClassParameter if !cp.isEffectiveVal =>
         def notInThisClass(elem: PsiElement) = {
-          elem != null && !PsiTreeUtil.isAncestor(
-            cp.containingClass,
-            elem,
-            true)
+          elem != null && !PsiTreeUtil
+            .isAncestor(cp.containingClass, elem, true)
         }
-        val funDef = PsiTreeUtil.getParentOfType(
-          place,
-          classOf[ScFunctionDefinition])
-        val lazyVal = PsiTreeUtil.getParentOfType(
-          place,
-          classOf[ScPatternDefinition]) match {
+        val funDef = PsiTreeUtil
+          .getParentOfType(place, classOf[ScFunctionDefinition])
+        val lazyVal = PsiTreeUtil
+          .getParentOfType(place, classOf[ScPatternDefinition]) match {
           case null         => null
           case LazyVal(lzy) => lzy
           case _            => null
@@ -199,9 +188,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       named: PsiNamedElement,
       place: PsiElement): Boolean = {
     inReadAction {
-      val contextClass = ScalaEvaluatorBuilderUtil.getContextClass(
-        place,
-        strict = false)
+      val contextClass = ScalaEvaluatorBuilderUtil
+        .getContextClass(place, strict = false)
       val containingClass = ScalaEvaluatorBuilderUtil.getContextClass(named)
       if (contextClass == containingClass) return false
 
@@ -253,8 +241,7 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         case _ => None
       }
       forStmt.flatMap(_.enumerators).exists(_.isAncestorOf(named)) && forStmt
-        .flatMap(_.body)
-        .exists(!_.isAncestorOf(place))
+        .flatMap(_.body).exists(!_.isAncestorOf(place))
     }
   }
 }
@@ -290,6 +277,7 @@ private class CollectingProcessor(element: PsiElement)
       case other            => other
     }
     def usedInContainingBlock = usedNames.contains(candElem.name)
-    candElem.getContainingFile == containingFile && candElemContext.getTextRange.getEndOffset < startOffset && usedInContainingBlock
+    candElem.getContainingFile == containingFile && candElemContext.getTextRange
+      .getEndOffset < startOffset && usedInContainingBlock
   }
 }

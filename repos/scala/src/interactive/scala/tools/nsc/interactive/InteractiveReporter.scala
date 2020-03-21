@@ -29,8 +29,8 @@ abstract class InteractiveReporter extends Reporter {
         else if (pos.isDefined) {
           compiler.getUnit(pos.source) match {
             case Some(unit) =>
-              compiler.debugLog(
-                pos.source.file.name + ":" + pos.line + ": " + msg)
+              compiler
+                .debugLog(pos.source.file.name + ":" + pos.line + ": " + msg)
               unit.problems
             case None =>
               compiler.debugLog(

@@ -31,8 +31,8 @@ class PersistentActorDeferBenchmark {
   lazy val storageLocations = List(
     "akka.persistence.journal.leveldb.dir",
     "akka.persistence.journal.leveldb-shared.store.dir",
-    "akka.persistence.snapshot-store.local.dir").map(s ⇒
-    new File(system.settings.config.getString(s)))
+    "akka.persistence.snapshot-store.local.dir")
+    .map(s ⇒ new File(system.settings.config.getString(s)))
 
   var system: ActorSystem = _
 
@@ -49,9 +49,8 @@ class PersistentActorDeferBenchmark {
     probe = TestProbe()(system)
 
     storageLocations.foreach(FileUtils.deleteDirectory)
-    persistAsync_defer = system.actorOf(
-      Props(classOf[`persistAsync, defer`], data10k.last),
-      "a-1")
+    persistAsync_defer = system
+      .actorOf(Props(classOf[`persistAsync, defer`], data10k.last), "a-1")
     persistAsync_defer_replyASAP = system.actorOf(
       Props(classOf[`persistAsync, defer, respond ASAP`], data10k.last),
       "a-2")

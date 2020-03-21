@@ -154,8 +154,8 @@ trait NamesDefaults {
         case Select(New(tpt @ TypeTree()), _) if isConstr =>
           val targsInSource = tpt.tpe match {
             case TypeRef(pre, sym, args)
-                if (!args.forall(a =>
-                  context.undetparams contains a.typeSymbol)) =>
+                if (!args
+                  .forall(a => context.undetparams contains a.typeSymbol)) =>
               args.map(TypeTree(_))
             case _ => Nil
           }
@@ -174,9 +174,8 @@ trait NamesDefaults {
       def blockWithQualifier(qual: Tree, selected: Name) = {
         val sym = blockTyper.context.owner.newValue(
           unit.freshTermName(nme.QUAL_PREFIX),
-          newFlags = ARTIFACT) setInfo uncheckedBounds(qual.tpe) setPos (
-          qual.pos.makeTransparent
-        )
+          newFlags = ARTIFACT) setInfo uncheckedBounds(qual.tpe) setPos (qual
+          .pos.makeTransparent)
         blockTyper.context.scope enter sym
         val vd = atPos(sym.pos)(ValDef(sym, qual) setType NoType)
         // it stays in Vegas: SI-5720, SI-5727
@@ -190,21 +189,18 @@ trait NamesDefaults {
           // to still call 'typed' is to correctly infer singleton types, SI-5259.
           val selectPos =
             if (qual.pos.isRange && baseFun1.pos.isRange)
-              qual.pos
-                .union(baseFun1.pos)
+              qual.pos.union(baseFun1.pos)
                 .withStart(Math.min(qual.pos.end, baseFun1.pos.end))
             else baseFun1.pos
           val f = blockTyper.typedOperator(
-            Select(newQual, selected)
-              .setSymbol(baseFun1.symbol)
+            Select(newQual, selected).setSymbol(baseFun1.symbol)
               .setPos(selectPos))
           if (funTargs.isEmpty) f
           else TypeApply(f, funTargs).setType(baseFun.tpe)
         }
 
         val b = Block(List(vd), baseFunTransformed)
-          .setType(baseFunTransformed.tpe)
-          .setPos(baseFun.pos.makeTransparent)
+          .setType(baseFunTransformed.tpe).setPos(baseFun.pos.makeTransparent)
         context.namedApplyBlockInfo = Some(
           (b, NamedApplyInfo(Some(newQual), defaultTargs, Nil, blockTyper)))
         b
@@ -226,12 +222,14 @@ trait NamesDefaults {
           if (module == NoSymbol) None
           else {
             val ref = atPos(pos.focus)(gen.mkAttributedRef(pre, module))
-            if (treeInfo.admitsTypeSelection(
-                  ref
-                )) // fixes #4524. the type checker does the same for
-              ref.setType(
-                singleType(pre, module)
-              ) // typedSelect, it calls "stabilize" on the result.
+            if (treeInfo
+                  .admitsTypeSelection(
+                    ref
+                  )) // fixes #4524. the type checker does the same for
+              ref
+                .setType(
+                  singleType(pre, module)
+                ) // typedSelect, it calls "stabilize" on the result.
             Some(ref)
           }
         }
@@ -317,7 +315,8 @@ trait NamesDefaults {
                             //      singleton type without an original TypeTree fails to retypecheck after a resetAttrs (SI-7516),
                             //      which is important for (at least) macros.
                             arg.tpe
-                          }).widen // have to widen or types inferred from literal defaults will be singletons
+                          })
+              .widen // have to widen or types inferred from literal defaults will be singletons
             val s = context.owner.newValue(
               unit.freshTermName(nme.NAMEDARG_PREFIX),
               arg.pos,
@@ -363,8 +362,8 @@ trait NamesDefaults {
           if (transformedFun.isErroneous) setError(tree)
           else {
             assert(isNamedApplyBlock(transformedFun), transformedFun)
-            val NamedApplyInfo(qual, targs, vargss, blockTyper) =
-              context.namedApplyBlockInfo.get._2
+            val NamedApplyInfo(qual, targs, vargss, blockTyper) = context
+              .namedApplyBlockInfo.get._2
             val Block(stats, funOnly) = transformedFun
 
             // type the application without names; put the arguments in definition-site order
@@ -418,8 +417,7 @@ trait NamesDefaults {
                 val res = blockTyper.doTypedApply(tree, expr, refArgs, mode, pt)
                 res.setPos(res.pos.makeTransparent)
                 val block = Block(stats ::: valDefs.flatten, res)
-                  .setType(res.tpe)
-                  .setPos(tree.pos.makeTransparent)
+                  .setType(res.tpe).setPos(tree.pos.makeTransparent)
                 context.namedApplyBlockInfo = Some((
                   block,
                   NamedApplyInfo(qual, targs, vargss :+ refArgs, blockTyper)))
@@ -463,8 +461,8 @@ trait NamesDefaults {
         n.isEmpty || n.get == param.name || params.forall(_.name != n.get)
     } map (_._1)
 
-    val paramsWithoutPositionalArg = params.drop(
-      args.length - namedArgsOnChangedPosition.length)
+    val paramsWithoutPositionalArg = params
+      .drop(args.length - namedArgsOnChangedPosition.length)
 
     // missing parameters: those with a name which is not specified in one of the namedArgsOnChangedPosition
     val missingParams = paramsWithoutPositionalArg.filter(p =>
@@ -472,8 +470,8 @@ trait NamesDefaults {
         val n = argName(arg)
         n.isEmpty || n.get != p.name
       })
-    val allPositional =
-      missingParams.length == paramsWithoutPositionalArg.length
+    val allPositional = missingParams.length == paramsWithoutPositionalArg
+      .length
     (missingParams, allPositional)
   }
 
@@ -532,8 +530,8 @@ trait NamesDefaults {
     * the default getter.
     */
   def defaultGetter(param: Symbol, context: Context): Symbol = {
-    val i =
-      param.owner.paramss.flatten.indexWhere(p => p.name == param.name) + 1
+    val i = param.owner.paramss.flatten
+      .indexWhere(p => p.name == param.name) + 1
     if (i > 0) {
       val defGetterName = nme.defaultGetterName(param.owner.name, i)
       if (param.owner.isConstructor) {

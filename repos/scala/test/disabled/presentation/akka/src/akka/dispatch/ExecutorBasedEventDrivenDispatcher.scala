@@ -73,8 +73,8 @@ import java.util.concurrent.{
 class ExecutorBasedEventDrivenDispatcher(
     _name: String,
     val throughput: Int = Dispatchers.THROUGHPUT,
-    val throughputDeadlineTime: Int =
-      Dispatchers.THROUGHPUT_DEADLINE_TIME_MILLIS,
+    val throughputDeadlineTime: Int = Dispatchers
+      .THROUGHPUT_DEADLINE_TIME_MILLIS,
     val mailboxType: MailboxType = Dispatchers.MAILBOX_TYPE,
     val config: ThreadPoolConfig = ThreadPoolConfig())
     extends MessageDispatcher {
@@ -178,8 +178,8 @@ class ExecutorBasedEventDrivenDispatcher(
   private[akka] def start {}
 
   private[akka] def shutdown {
-    val old = executorService.getAndSet(
-      config.createLazyExecutorService(threadFactory))
+    val old = executorService
+      .getAndSet(config.createLazyExecutorService(threadFactory))
     if (old ne null) { old.shutdownNow() }
   }
 
@@ -247,8 +247,8 @@ trait ExecutableMailbox extends Runnable {
           val isDeadlineEnabled = dispatcher.throughputDeadlineTime > 0
           val deadlineNs =
             if (isDeadlineEnabled)
-              System.nanoTime + TimeUnit.MILLISECONDS.toNanos(
-                dispatcher.throughputDeadlineTime)
+              System.nanoTime + TimeUnit.MILLISECONDS
+                .toNanos(dispatcher.throughputDeadlineTime)
             else 0
           do {
             nextMessage.invoke

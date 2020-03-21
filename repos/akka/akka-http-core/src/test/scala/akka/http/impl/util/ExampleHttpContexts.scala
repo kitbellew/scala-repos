@@ -63,7 +63,6 @@ object ExampleHttpContexts {
   }
 
   def loadX509Certificate(resourceName: String): Certificate =
-    CertificateFactory
-      .getInstance("X.509")
+    CertificateFactory.getInstance("X.509")
       .generateCertificate(resourceStream(resourceName))
 }

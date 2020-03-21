@@ -237,8 +237,7 @@ trait RecordTypeMode extends PrimitiveTypeMode {
           with SquerylRecordNonNumericalExpression[Timestamp]
       case None =>
         new ConstantExpressionNode[Timestamp](
-          getValue(f)
-            .map(field => new Timestamp(field.getTimeInMillis))
+          getValue(f).map(field => new Timestamp(field.getTimeInMillis))
             .orNull)(createOutMapperTimestampType)
           with DateExpression[Timestamp]
           with SquerylRecordNonNumericalExpression[Timestamp]

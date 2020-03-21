@@ -62,8 +62,8 @@ trait JdbcMappingCompilerComponent {
       val tm =
         new TypeMappingResultConverter(rc, mapper.toBase, mapper.toMapped)
       mapper.fastPath match {
-        case Some(f) =>
-          f(tm).asInstanceOf[ResultConverter[JdbcResultConverterDomain, Any]]
+        case Some(f) => f(tm)
+            .asInstanceOf[ResultConverter[JdbcResultConverterDomain, Any]]
         case None => tm
       }
     }
@@ -93,8 +93,8 @@ trait JdbcMappingCompilerComponent {
       val ibr = ib.buildInsert
       (
         CompiledStatement(ibr.sql, ibr, serverSide.nodeType).infer(),
-        mapping.map(n =>
-          mappingCompiler.compileMapping(ib.transformMapping(n))))
+        mapping
+          .map(n => mappingCompiler.compileMapping(ib.transformMapping(n))))
     }
   }
 }

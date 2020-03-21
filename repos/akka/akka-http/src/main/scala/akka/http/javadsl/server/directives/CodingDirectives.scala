@@ -23,10 +23,10 @@ abstract class CodingDirectives extends CacheConditionDirectives {
     */
   @varargs
   def encodeResponse(innerRoute: Route, moreInnerRoutes: Route*): Route =
-    RouteStructure.EncodeResponse(
-      CodingDirectives._DefaultCodersToEncodeResponse)(
-      innerRoute,
-      moreInnerRoutes.toList)
+    RouteStructure
+      .EncodeResponse(CodingDirectives._DefaultCodersToEncodeResponse)(
+        innerRoute,
+        moreInnerRoutes.toList)
 
   /**
     * A directive that Wraps its inner routes with encoding support.
@@ -69,21 +69,21 @@ abstract class CodingDirectives extends CacheConditionDirectives {
     */
   @varargs
   def decodeRequest(innerRoute: Route, moreInnerRoutes: Route*): Route =
-    RouteStructure.DecodeRequest(
-      CodingDirectives._DefaultCodersToDecodeRequest)(
-      innerRoute,
-      moreInnerRoutes.toList)
+    RouteStructure
+      .DecodeRequest(CodingDirectives._DefaultCodersToDecodeRequest)(
+        innerRoute,
+        moreInnerRoutes.toList)
 }
 
 /**
   * Internal API
   */
 private[http] object CodingDirectives {
-  private[http] val _DefaultCodersToEncodeResponse =
-    scaladsl.server.directives.CodingDirectives.DefaultEncodeResponseEncoders
-      .map(c ⇒ Coder.values().find(_._underlyingScalaCoder() == c).get)
+  private[http] val _DefaultCodersToEncodeResponse = scaladsl.server.directives
+    .CodingDirectives.DefaultEncodeResponseEncoders
+    .map(c ⇒ Coder.values().find(_._underlyingScalaCoder() == c).get)
 
-  private[http] val _DefaultCodersToDecodeRequest =
-    scaladsl.server.directives.CodingDirectives.DefaultCoders
-      .map(c ⇒ Coder.values().find(_._underlyingScalaCoder() == c).get)
+  private[http] val _DefaultCodersToDecodeRequest = scaladsl.server.directives
+    .CodingDirectives.DefaultCoders
+    .map(c ⇒ Coder.values().find(_._underlyingScalaCoder() == c).get)
 }

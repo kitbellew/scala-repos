@@ -103,9 +103,8 @@ object EventId {
 case class IngestRecord(eventId: EventId, value: JValue)
 
 object IngestRecord {
-  implicit val ingestRecordIso = Iso.hlist(
-    IngestRecord.apply _,
-    IngestRecord.unapply _)
+  implicit val ingestRecordIso = Iso
+    .hlist(IngestRecord.apply _, IngestRecord.unapply _)
 
   val schemaV1 = "eventId" :: "jvalue" :: HNil
 
@@ -142,22 +141,15 @@ case class IngestMessage(
   }
 
   override def toString =
-    "IngestMessage(%s, %s, %s, (%d records), %s, %s, %s)".format(
-      apiKey,
-      path,
-      writeAs,
-      data.size,
-      jobId,
-      timestamp,
-      streamRef)
+    "IngestMessage(%s, %s, %s, (%d records), %s, %s, %s)"
+      .format(apiKey, path, writeAs, data.size, jobId, timestamp, streamRef)
 }
 
 object IngestMessage {
   import EventMessage._
 
-  implicit val ingestMessageIso = Iso.hlist(
-    IngestMessage.apply _,
-    IngestMessage.unapply _)
+  implicit val ingestMessageIso = Iso
+    .hlist(IngestMessage.apply _, IngestMessage.unapply _)
 
   val schemaV1 =
     "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: (
@@ -234,9 +226,8 @@ case class ArchiveMessage(
 
 object ArchiveMessage {
   import EventMessage._
-  implicit val archiveMessageIso = Iso.hlist(
-    ArchiveMessage.apply _,
-    ArchiveMessage.unapply _)
+  implicit val archiveMessageIso = Iso
+    .hlist(ArchiveMessage.apply _, ArchiveMessage.unapply _)
 
   val schemaV1 =
     "apiKey" :: "path" :: "jobId" :: "eventId" :: "timestamp" :: HNil
@@ -285,9 +276,8 @@ case class StoreFileMessage(
 }
 
 object StoreFileMessage {
-  implicit val storeFileMessageIso = Iso.hlist(
-    StoreFileMessage.apply _,
-    StoreFileMessage.unapply _)
+  implicit val storeFileMessageIso = Iso
+    .hlist(StoreFileMessage.apply _, StoreFileMessage.unapply _)
 
   val schemaV1 =
     "apiKey" :: "path" :: "writeAs" :: "jobId" :: "eventId" :: "content" :: "timestamp" :: "streamRef" :: HNil

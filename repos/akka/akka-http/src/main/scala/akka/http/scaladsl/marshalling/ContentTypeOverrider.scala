@@ -15,8 +15,7 @@ object ContentTypeOverrider {
   implicit def forEntity[T <: HttpEntity]: ContentTypeOverrider[T] =
     new ContentTypeOverrider[T] {
       def apply(value: T, newContentType: ContentType) =
-        value
-          .withContentType(newContentType)
+        value.withContentType(newContentType)
           .asInstanceOf[T] // can't be expressed in types
     }
 

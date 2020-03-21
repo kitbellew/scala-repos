@@ -15,12 +15,10 @@ trait BindingTemplate {
   self: Command with TypeConverterFactories =>
 
   val upperCaseName: Field[String] = bind[String]("name")
-    .transform(_.toUpperCase)
-    .optional("")
+    .transform(_.toUpperCase).optional("")
 
   val lowerCaseSurname: Field[String] = asString("surname")
-    .transform(_.toLowerCase)
-    .optional("")
+    .transform(_.toLowerCase).optional("")
 
   val age: Field[Int] = asType[Int]("age").optional(-1) // explicit
 
@@ -50,19 +48,16 @@ class MixAndMatchCommand extends ParamsOnlyCommand {
     description "The API token for this request"
     notes "Invalid data kills kittens"
     allowableValues "123")
-  val skip: Field[Int] = asInt("skip")
-    .sourcedFrom(Query)
+  val skip: Field[Int] = asInt("skip").sourcedFrom(Query)
     .description("The offset for this collection index")
-  val limit: Field[Int] = asType[Int]("limit")
-    .sourcedFrom(Query)
-    .withDefaultValue(20)
-    .description("the max number of items to return")
+  val limit: Field[Int] = asType[Int]("limit").sourcedFrom(Query)
+    .withDefaultValue(20).description("the max number of items to return")
 }
 
 class CommandWithConfirmationValidation extends ParamsOnlyCommand {
   val name: Field[String] = asString("name").notBlank
-  val passwordConfirmation: Field[String] = asString(
-    "passwordConfirmation").notBlank
+  val passwordConfirmation: Field[String] = asString("passwordConfirmation")
+    .notBlank
   val password: Field[String] = asString("password").notBlank
     .validForConfirmation(passwordConfirmation)
 }
@@ -172,8 +167,8 @@ class CommandSpec extends Specification {
         def fullName: Option[String] = Option { _fullname }
 
         afterBinding {
-          _fullname =
-            a.validation.toOption.get + " " + lower.validation.toOption.get
+          _fullname = a.validation.toOption.get + " " + lower.validation
+            .toOption.get
         }
       }
 

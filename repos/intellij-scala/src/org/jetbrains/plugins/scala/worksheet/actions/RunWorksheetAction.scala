@@ -58,8 +58,8 @@ class RunWorksheetAction extends AnAction with TopComponentAction {
       .getShortcuts("Scala.RunWorksheet")
     if (shortcuts.nonEmpty) {
       val shortcutText = " (" + KeymapUtil.getShortcutText(shortcuts(0)) + ")"
-      presentation.setText(
-        ScalaBundle.message("worksheet.execute.button") + shortcutText)
+      presentation
+        .setText(ScalaBundle.message("worksheet.execute.button") + shortcutText)
     }
 
     updateInner(presentation, e.getProject)
@@ -95,8 +95,7 @@ object RunWorksheetAction {
       return
     }
 
-    val psiFile = PsiDocumentManager
-      .getInstance(project)
+    val psiFile = PsiDocumentManager.getInstance(project)
       .getPsiFile(editor.getDocument)
     WorksheetProcessManager.stop(psiFile.getVirtualFile)
 
@@ -142,20 +141,18 @@ object RunWorksheetAction {
         }
 
         if (WorksheetCompiler isMakeBeforeRun psiFile) {
-          CompilerManager
-            .getInstance(project)
-            .make(
-              getModuleFor(file),
-              new CompileStatusNotification {
-                override def finished(
-                    aborted: Boolean,
-                    errors: Int,
-                    warnings: Int,
-                    compileContext: CompileContext) {
-                  if (!aborted && errors == 0) runnable()
-                }
+          CompilerManager.getInstance(project).make(
+            getModuleFor(file),
+            new CompileStatusNotification {
+              override def finished(
+                  aborted: Boolean,
+                  errors: Int,
+                  warnings: Int,
+                  compileContext: CompileContext) {
+                if (!aborted && errors == 0) runnable()
               }
-            )
+            }
+          )
         } else runnable()
       case _ =>
     }
@@ -219,7 +216,8 @@ object RunWorksheetAction {
     params.getProgramParametersList addParametersString worksheetField
     if (!consoleArgs.isEmpty)
       params.getProgramParametersList addParametersString consoleArgs
-    params.getProgramParametersList prepend mainClassName //IMPORTANT! this must be first program argument
+    params
+      .getProgramParametersList prepend mainClassName //IMPORTANT! this must be first program argument
 
     params
   }
@@ -229,9 +227,8 @@ object RunWorksheetAction {
 
     val editor = EditorHelper openInEditor file
 
-    val worksheetPrinter = WorksheetEditorPrinter.newWorksheetUiFor(
-      editor,
-      virtualFile)
+    val worksheetPrinter = WorksheetEditorPrinter
+      .newWorksheetUiFor(editor, virtualFile)
 
     val myProcessListener: ProcessAdapter = new ProcessAdapter {
       override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
@@ -258,12 +255,9 @@ object RunWorksheetAction {
       project: Project): Boolean =
     vFileOpt.exists {
       case vFile =>
-        ScratchFileService
-          .getInstance()
-          .getRootType(vFile)
+        ScratchFileService.getInstance().getRootType(vFile)
           .isInstanceOf[ScratchRootType] &&
-          ScalaProjectSettings
-            .getInstance(project)
+          ScalaProjectSettings.getInstance(project)
             .isTreatScratchFilesAsWorksheet
     }
 

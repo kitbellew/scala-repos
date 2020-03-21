@@ -19,15 +19,14 @@ class ScalaSyntheticProvider extends SyntheticTypeComponentProvider {
 
 object ScalaSyntheticProvider {
   def isSynthetic(typeComponent: TypeComponent): Boolean = {
-    val isScala = DebuggerUtil.isScala(
-      typeComponent.declaringType(),
-      default = false)
+    val isScala = DebuggerUtil
+      .isScala(typeComponent.declaringType(), default = false)
     if (!isScala) return false
 
     typeComponent match {
       case m: Method
-          if m.isConstructor && ScalaPositionManager.isAnonfunType(
-            m.declaringType()) => true
+          if m.isConstructor && ScalaPositionManager
+            .isAnonfunType(m.declaringType()) => true
       case m: Method
           if m.name() == "apply" && hasSpecializationMethod(
             m.declaringType()) && !isMacroDefined(m)         => true
@@ -38,7 +37,8 @@ object ScalaSyntheticProvider {
       case f: Field if f.name().startsWith("bitmap$")        => true
       case _ =>
         val machine: VirtualMachine = typeComponent.virtualMachine
-        machine != null && machine.canGetSyntheticAttribute && typeComponent.isSynthetic
+        machine != null && machine.canGetSyntheticAttribute && typeComponent
+          .isSynthetic
     }
   }
 
@@ -56,8 +56,8 @@ object ScalaSyntheticProvider {
     val methodName = m.name()
     if (!methodName.contains("$default$")) false
     else {
-      val lastDefault =
-        defaultArgPattern.findAllMatchIn(methodName).toSeq.lastOption
+      val lastDefault = defaultArgPattern.findAllMatchIn(methodName).toSeq
+        .lastOption
       lastDefault.map(_.matched) match {
         case Some(s) if methodName.endsWith(s) =>
           val origMethodName = methodName.stripSuffix(s)
@@ -101,9 +101,7 @@ object ScalaSyntheticProvider {
       case ct: ClassType =>
         val interfaces = ct.allInterfaces().asScala
         val vm = ct.virtualMachine()
-        val allTraitImpls = vm
-          .allClasses()
-          .asScala
+        val allTraitImpls = vm.allClasses().asScala
           .filter(_.name().endsWith("$class"))
         for {
           interface <- interfaces

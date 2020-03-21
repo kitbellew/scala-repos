@@ -47,8 +47,8 @@ class SchedulerActionsTest
     val app = AppDefinition(id = PathId("/myapp"))
 
     when(repo.expunge(app.id)).thenReturn(Future.successful(Seq(true)))
-    when(taskTracker.appTasks(eq(app.id))(any)).thenReturn(Future.successful(
-      Iterable.empty[Task]))
+    when(taskTracker.appTasks(eq(app.id))(any))
+      .thenReturn(Future.successful(Iterable.empty[Task]))
 
     val res = scheduler.stopApp(mock[SchedulerDriver], app)
 
@@ -71,8 +71,7 @@ class SchedulerActionsTest
     val stagedTask = MarathonTestHelper.stagedTask("task_2")
 
     import MarathonTestHelper.Implicits._
-    val stagedTaskWithSlaveId = MarathonTestHelper
-      .stagedTask("task_3")
+    val stagedTaskWithSlaveId = MarathonTestHelper.stagedTask("task_3")
       .withAgentInfo(_.copy(agentId = Some("slave 1")))
 
     val scheduler = new SchedulerActions(
@@ -96,8 +95,7 @@ class SchedulerActionsTest
 
     verify(driver).reconcileTasks(
       Set(runningTask, stagedTask, stagedTaskWithSlaveId)
-        .flatMap(_.launched.flatMap(_.status.mesosStatus))
-        .asJava)
+        .flatMap(_.launched.flatMap(_.status.mesosStatus)).asJava)
     verify(driver).reconcileTasks(java.util.Arrays.asList())
   }
 
@@ -120,8 +118,8 @@ class SchedulerActionsTest
 
     val app = AppDefinition(id = PathId("/myapp"))
 
-    when(taskTracker.tasksByApp()).thenReturn(Future.successful(
-      TasksByApp.empty))
+    when(taskTracker.tasksByApp())
+      .thenReturn(Future.successful(TasksByApp.empty))
     when(repo.allPathIds()).thenReturn(Future.successful(Seq()))
 
     Await.result(scheduler.reconcileTasks(driver), 5.seconds)
@@ -152,9 +150,8 @@ class SchedulerActionsTest
     val app = AppDefinition(id = PathId("/myapp"))
     val tasksOfApp = AppTasks.forTasks(app.id, Iterable(task))
     val orphanedApp = AppDefinition(id = PathId("/orphan"))
-    val tasksOfOrphanedApp = AppTasks.forTasks(
-      orphanedApp.id,
-      Iterable(orphanedTask))
+    val tasksOfOrphanedApp = AppTasks
+      .forTasks(orphanedApp.id, Iterable(orphanedTask))
 
     when(taskTracker.tasksByApp()).thenReturn(Future.successful(
       TasksByApp.of(tasksOfApp, tasksOfOrphanedApp)))

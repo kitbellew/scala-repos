@@ -70,11 +70,8 @@ object AkkaProtocolStressTest {
           // the proper ordering.
           if (seq > limit * 0.5) {
             controller ! ((maxSeq, losses))
-            context.system.scheduler.schedule(
-              1.second,
-              1.second,
-              self,
-              ResendFinal)
+            context.system.scheduler
+              .schedule(1.second, 1.second, self, ResendFinal)
             context.become(done)
           }
         } else {
@@ -100,8 +97,8 @@ class AkkaProtocolStressTest
     }),
     "echo")
 
-  val addressB =
-    systemB.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+  val addressB = systemB.asInstanceOf[ExtendedActorSystem].provider
+    .getDefaultAddress
   val rootB = RootActorPath(addressB)
   val here = {
     val path =
@@ -118,8 +115,8 @@ class AkkaProtocolStressTest
           .managementCommand(One(addressB, Drop(0.1, 0.1))),
         3.seconds.dilated)
 
-      val tester =
-        system.actorOf(Props(classOf[SequenceVerifier], here, self)) ! "start"
+      val tester = system
+        .actorOf(Props(classOf[SequenceVerifier], here, self)) ! "start"
 
       expectMsgPF(60.seconds) {
         case (received: Int, lost: Int) ⇒

@@ -49,11 +49,8 @@ abstract class DataType extends AbstractDataType {
 
   /** Name of the type used in JSON serialization. */
   def typeName: String = {
-    this.getClass.getSimpleName
-      .stripSuffix("$")
-      .stripSuffix("Type")
-      .stripSuffix("UDT")
-      .toLowerCase
+    this.getClass.getSimpleName.stripSuffix("$").stripSuffix("Type")
+      .stripSuffix("UDT").toLowerCase
   }
 
   private[sql] def jsonValue: JValue = typeName
@@ -115,9 +112,7 @@ object DataType {
       ShortType,
       ByteType,
       StringType,
-      CalendarIntervalType)
-      .map(t => t.typeName -> t)
-      .toMap
+      CalendarIntervalType).map(t => t.typeName -> t).toMap
   }
 
   /** Given the string representation of a type, return its DataType */
@@ -166,11 +161,8 @@ object DataType {
             ("class", JString(udtClass)),
             ("pyClass", _),
             ("sqlType", _),
-            ("type", JString("udt"))) =>
-        Utils
-          .classForName(udtClass)
-          .newInstance()
-          .asInstanceOf[UserDefinedType[_]]
+            ("type", JString("udt"))) => Utils.classForName(udtClass)
+          .newInstance().asInstanceOf[UserDefinedType[_]]
 
       // Python UDT
       case JSortedObject(

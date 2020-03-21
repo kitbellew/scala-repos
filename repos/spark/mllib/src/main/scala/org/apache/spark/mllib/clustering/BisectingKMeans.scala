@@ -152,8 +152,7 @@ class BisectingKMeans private (
     val d = input.map(_.size).first()
     logInfo(s"Feature dimension: $d.")
     // Compute and cache vector norms for fast distance computation.
-    val norms = input
-      .map(v => Vectors.norm(v, 2.0))
+    val norms = input.map(v => Vectors.norm(v, 2.0))
       .persist(StorageLevel.MEMORY_AND_DISK)
     val vectors = input.zip(norms).map {
       case (x, norm) => new VectorWithNorm(x, norm)
@@ -173,32 +172,30 @@ class BisectingKMeans private (
     val random = new Random(seed)
     var numLeafClustersNeeded = k - 1
     var level = 1
-    while (activeClusters.nonEmpty && numLeafClustersNeeded > 0 && level < LEVEL_LIMIT) {
+    while (activeClusters
+             .nonEmpty && numLeafClustersNeeded > 0 && level < LEVEL_LIMIT) {
       // Divisible clusters are sufficiently large and have non-trivial cost.
       var divisibleClusters = activeClusters.filter {
         case (_, summary) =>
-          (summary.size >= minSize) && (
-            summary.cost > MLUtils.EPSILON * summary.size
-          )
+          (summary.size >= minSize) && (summary.cost > MLUtils.EPSILON * summary
+            .size)
       }
       // If we don't need all divisible clusters, take the larger ones.
       if (divisibleClusters.size > numLeafClustersNeeded) {
-        divisibleClusters = divisibleClusters.toSeq
-          .sortBy { case (_, summary) => -summary.size }
-          .take(numLeafClustersNeeded)
-          .toMap
+        divisibleClusters = divisibleClusters.toSeq.sortBy {
+          case (_, summary) => -summary.size
+        }.take(numLeafClustersNeeded).toMap
       }
       if (divisibleClusters.nonEmpty) {
         val divisibleIndices = divisibleClusters.keys.toSet
         logInfo(s"Dividing ${divisibleIndices.size} clusters on level $level.")
-        var newClusterCenters = divisibleClusters
-          .flatMap {
-            case (index, summary) =>
-              val (left, right) = splitCenter(summary.center, random)
-              Iterator(
-                (leftChildIndex(index), left),
-                (rightChildIndex(index), right))
-          }
+        var newClusterCenters = divisibleClusters.flatMap {
+          case (index, summary) =>
+            val (left, right) = splitCenter(summary.center, random)
+            Iterator(
+              (leftChildIndex(index), left),
+              (rightChildIndex(index), right))
+        }
           .map(
             identity
           ) // workaround for a Scala bug (SI-7005) that produces a not serializable map
@@ -208,10 +205,9 @@ class BisectingKMeans private (
           newAssignments = updateAssignments(
             assignments,
             divisibleIndices,
-            newClusterCenters)
-            .filter {
-              case (index, _) => divisibleIndices.contains(parentIndex(index))
-            }
+            newClusterCenters).filter {
+            case (index, _) => divisibleIndices.contains(parentIndex(index))
+          }
           newClusters = summarize(d, newAssignments)
           newClusterCenters = newClusters.mapValues(_.center).map(identity)
         }
@@ -219,8 +215,7 @@ class BisectingKMeans private (
         val indices = updateAssignments(
           assignments,
           divisibleIndices,
-          newClusterCenters).keys
-          .persist(StorageLevel.MEMORY_AND_DISK)
+          newClusterCenters).keys.persist(StorageLevel.MEMORY_AND_DISK)
         assignments = indices.zip(vectors)
         inactiveClusters ++= activeClusters
         activeClusters = newClusters
@@ -281,12 +276,9 @@ private object BisectingKMeans extends Serializable {
   private def summarize(
       d: Int,
       assignments: RDD[(Long, VectorWithNorm)]): Map[Long, ClusterSummary] = {
-    assignments
-      .aggregateByKey(new ClusterSummaryAggregator(d))(
-        seqOp = (agg, v) => agg.add(v),
-        combOp = (agg1, agg2) => agg1.merge(agg2))
-      .mapValues(_.summary)
-      .collect()
+    assignments.aggregateByKey(new ClusterSummaryAggregator(d))(
+      seqOp = (agg, v) => agg.add(v),
+      combOp = (agg1, agg2) => agg1.merge(agg2)).mapValues(_.summary).collect()
       .toMap
   }
 
@@ -512,13 +504,9 @@ private[clustering] class ClusteringTreeNode private[clustering] (
       cost: Double): (Int, Double) = {
     if (isLeaf) { (index, cost) }
     else {
-      val (selectedChild, minCost) = children
-        .map { child =>
-          (
-            child,
-            KMeans.fastSquaredDistance(child.centerWithNorm, pointWithNorm))
-        }
-        .minBy(_._2)
+      val (selectedChild, minCost) = children.map { child =>
+        (child, KMeans.fastSquaredDistance(child.centerWithNorm, pointWithNorm))
+      }.minBy(_._2)
       selectedChild.predict(pointWithNorm, minCost)
     }
   }

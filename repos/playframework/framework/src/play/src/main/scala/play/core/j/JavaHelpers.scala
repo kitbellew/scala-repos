@@ -76,8 +76,7 @@ trait JavaHelpers {
       .withCookies(cookiesToScalaCookies(javaContext.response.cookies): _*)
 
     if (javaContext.session.isDirty && javaContext.flash.isDirty) {
-      wResult
-        .withSession(Session(javaContext.session.asScala.toMap))
+      wResult.withSession(Session(javaContext.session.asScala.toMap))
         .flashing(Flash(javaContext.flash.asScala.toMap))
     } else {
       if (javaContext.session.isDirty) {
@@ -138,8 +137,7 @@ trait JavaHelpers {
     try {
       JContext.current.set(javaContext)
       Option(f(javaContext.request())).map(cs =>
-        FutureConverters
-          .toScala(cs)
+        FutureConverters.toScala(cs)
           .map(createResult(javaContext, _))(trampoline))
     } finally { JContext.current.remove() }
   }
@@ -159,8 +157,7 @@ trait JavaHelpers {
       request: RequestHeader,
       f: JRequest => CompletionStage[JResult]): Future[Result] = {
     withContext(request) { javaContext =>
-      FutureConverters
-        .toScala(f(javaContext.request()))
+      FutureConverters.toScala(f(javaContext.request()))
         .map(createResult(javaContext, _))(trampoline)
     }
   }

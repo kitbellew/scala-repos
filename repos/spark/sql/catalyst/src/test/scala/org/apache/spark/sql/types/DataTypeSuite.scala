@@ -34,18 +34,15 @@ class DataTypeSuite extends SparkFunSuite {
   }
 
   test("construct with add") {
-    val struct = (new StructType)
-      .add("a", IntegerType, true)
-      .add("b", LongType, false)
-      .add("c", StringType, true)
+    val struct = (new StructType).add("a", IntegerType, true)
+      .add("b", LongType, false).add("c", StringType, true)
 
     assert(StructField("b", LongType, false) === struct("b"))
   }
 
   test("construct with add from StructField") {
     // Test creation from StructField type
-    val struct = (new StructType)
-      .add(StructField("a", IntegerType, true))
+    val struct = (new StructType).add(StructField("a", IntegerType, true))
       .add(StructField("b", LongType, false))
       .add(StructField("c", StringType, true))
 
@@ -54,9 +51,7 @@ class DataTypeSuite extends SparkFunSuite {
 
   test("construct with String DataType") {
     // Test creation with DataType as String
-    val struct = (new StructType)
-      .add("a", "int", true)
-      .add("b", "long", false)
+    val struct = (new StructType).add("a", "int", true).add("b", "long", false)
       .add("c", "string", true)
 
     assert(StructField("a", IntegerType, true) === struct("a"))
@@ -222,9 +217,7 @@ class DataTypeSuite extends SparkFunSuite {
   checkDataTypeJsonRepr(MapType(IntegerType, StringType, true))
   checkDataTypeJsonRepr(MapType(IntegerType, ArrayType(DoubleType), false))
 
-  val metadata = new MetadataBuilder()
-    .putString("name", "age")
-    .build()
+  val metadata = new MetadataBuilder().putString("name", "age").build()
   val structType = StructType(Seq(
     StructField("a", IntegerType, nullable = true),
     StructField("b", ArrayType(DoubleType), nullable = false),

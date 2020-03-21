@@ -49,8 +49,8 @@ class ScNamingPatternImpl(node: ASTNode)
     if (named == null) Failure("Cannot infer type", Some(this))
     else {
       expectedType match {
-        case Some(expectedType) =>
-          named.getType(TypingContext.empty).map(Bounds.glb(expectedType, _))
+        case Some(expectedType) => named.getType(TypingContext.empty)
+            .map(Bounds.glb(expectedType, _))
         case _ => named.getType(ctx)
       }
     }

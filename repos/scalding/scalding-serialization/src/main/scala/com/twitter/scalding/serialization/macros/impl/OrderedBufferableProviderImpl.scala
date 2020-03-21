@@ -28,9 +28,8 @@ object OrderedSerializationProviderImpl {
       buildDispatcher: => PartialFunction[c.Type, TreeOrderedBuf[c.type]])
       : PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
     case tpe
-        if (!tpe.toString.contains(ImplicitOrderedBuf.macroMarker) && !(
-          tpe.normalize == tpe
-        )) => buildDispatcher(tpe.normalize)
+        if (!tpe.toString.contains(ImplicitOrderedBuf.macroMarker) && !(tpe
+          .normalize == tpe)) => buildDispatcher(tpe.normalize)
   }
 
   def scaldingBasicDispatchers(c: Context)(
@@ -44,25 +43,19 @@ object OrderedSerializationProviderImpl {
     val caseObjectDispatcher = CaseObjectOrderedBuf.dispatch(c)
     val productDispatcher = ProductOrderedBuf.dispatch(c)(buildDispatcher)
     val stringDispatcher = StringOrderedBuf.dispatch(c)
-    val traversablesDispatcher = TraversablesOrderedBuf.dispatch(c)(
-      buildDispatcher)
+    val traversablesDispatcher = TraversablesOrderedBuf
+      .dispatch(c)(buildDispatcher)
     val unitDispatcher = UnitOrderedBuf.dispatch(c)
     val byteBufferDispatcher = ByteBufferOrderedBuf.dispatch(c)
-    val sealedTraitDispatcher = SealedTraitOrderedBuf.dispatch(c)(
-      buildDispatcher)
+    val sealedTraitDispatcher = SealedTraitOrderedBuf
+      .dispatch(c)(buildDispatcher)
 
-    OrderedSerializationProviderImpl
-      .normalizedDispatcher(c)(buildDispatcher)
-      .orElse(primitiveDispatcher)
-      .orElse(unitDispatcher)
-      .orElse(optionDispatcher)
-      .orElse(eitherDispatcher)
-      .orElse(stringDispatcher)
-      .orElse(byteBufferDispatcher)
-      .orElse(traversablesDispatcher)
-      .orElse(caseClassDispatcher)
-      .orElse(caseObjectDispatcher)
-      .orElse(productDispatcher)
+    OrderedSerializationProviderImpl.normalizedDispatcher(c)(buildDispatcher)
+      .orElse(primitiveDispatcher).orElse(unitDispatcher)
+      .orElse(optionDispatcher).orElse(eitherDispatcher)
+      .orElse(stringDispatcher).orElse(byteBufferDispatcher)
+      .orElse(traversablesDispatcher).orElse(caseClassDispatcher)
+      .orElse(caseObjectDispatcher).orElse(productDispatcher)
       .orElse(sealedTraitDispatcher)
   }
 
@@ -77,8 +70,7 @@ object OrderedSerializationProviderImpl {
       OrderedSerializationProviderImpl.dispatcher(c)
 
     scaldingBasicDispatchers(c)(buildDispatcher)
-      .orElse(fallbackImplicitDispatcher(c))
-      .orElse {
+      .orElse(fallbackImplicitDispatcher(c)).orElse {
         case tpe: Type =>
           c.abort(
             c.enclosingPosition,

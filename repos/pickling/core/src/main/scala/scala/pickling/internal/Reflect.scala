@@ -39,9 +39,10 @@ object Reflect {
       try cls.getDeclaredMethod(name, args: _*)
       catch {
         case nsf: NoSuchMethodException =>
-          if ((cls.getSuperclass != null) && cls.getSuperclass != classOf[
-                Object] && cls.getSuperclass != cls)
-            getMethodHelper(cls.getSuperclass)
+          if ((
+                cls.getSuperclass != null
+              ) && cls.getSuperclass != classOf[Object] && cls
+                .getSuperclass != cls) getMethodHelper(cls.getSuperclass)
           else
             throw new PicklingException(
               s"Could not find method [$name(${args.mkString(", ")})] in [$cls]")

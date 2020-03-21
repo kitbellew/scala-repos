@@ -82,8 +82,7 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
         // Otherwise, ask the tracker for all the blocks that have been allocated to this stream
         // for this batch
         val receiverTracker = ssc.scheduler.receiverTracker
-        val blockInfos = receiverTracker
-          .getBlocksOfBatch(validTime)
+        val blockInfos = receiverTracker.getBlocksOfBatch(validTime)
           .getOrElse(id, Seq.empty)
 
         // Register the input blocks information into InputInfoTracker
@@ -114,9 +113,8 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
       if (areWALRecordHandlesPresent) {
         // If all the blocks have WAL record handle, then create a WALBackedBlockRDD
         val isBlockIdValid = blockInfos.map { _.isBlockIdValid() }.toArray
-        val walRecordHandles = blockInfos.map {
-          _.walRecordHandleOption.get
-        }.toArray
+        val walRecordHandles = blockInfos.map { _.walRecordHandleOption.get }
+          .toArray
         new WriteAheadLogBackedBlockRDD[T](
           ssc.sparkContext,
           blockIds,

@@ -56,10 +56,8 @@ object ScopeFilter {
       */
     def all(sfilter: => ScopeFilter): Initialize[Seq[T]] =
       Def.bind(getData) { data =>
-        data.allScopes.toSeq
-          .filter(sfilter(data))
-          .map(s => Project.inScope(s, i))
-          .join
+        data.allScopes.toSeq.filter(sfilter(data))
+          .map(s => Project.inScope(s, i)).join
       }
   }
   final class TaskKeyAll[T] private[sbt] (i: Initialize[Task[T]]) {
@@ -71,10 +69,8 @@ object ScopeFilter {
     def all(sfilter: => ScopeFilter): Initialize[Task[Seq[T]]] =
       Def.bind(getData) { data =>
         import std.TaskExtra._
-        data.allScopes.toSeq
-          .filter(sfilter(data))
-          .map(s => Project.inScope(s, i))
-          .join(_.join)
+        data.allScopes.toSeq.filter(sfilter(data))
+          .map(s => Project.inScope(s, i)).join(_.join)
       }
   }
 
@@ -168,7 +164,8 @@ object ScopeFilter {
   private[this] val getData: Initialize[Data] = Def.setting {
     val build = Keys.loadedBuild.value
     val scopes = Def.StaticScopes.value
-    val thisRef = Keys.thisProjectRef.?.value
+    val thisRef = Keys.thisProjectRef
+      .?.value
     val current = thisRef match {
       case Some(ProjectRef(uri, _)) => uri
       case None                     => build.root

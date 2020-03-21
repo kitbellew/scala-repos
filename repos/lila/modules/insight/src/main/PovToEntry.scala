@@ -52,13 +52,10 @@ object PovToEntry {
             .byId(game.id)) map {
           case (fen, an) =>
             for {
-              boards <- chess.Replay
-                .boards(
-                  moveStrs = game.pgnMoves,
-                  initialFen = fen,
-                  variant = game.variant)
-                .toOption
-                .flatMap(_.toNel)
+              boards <- chess.Replay.boards(
+                moveStrs = game.pgnMoves,
+                initialFen = fen,
+                variant = game.variant).toOption.flatMap(_.toNel)
               movetimes <- game.moveTimes(pov.color).toNel
             } yield RichPov(
               pov = pov,

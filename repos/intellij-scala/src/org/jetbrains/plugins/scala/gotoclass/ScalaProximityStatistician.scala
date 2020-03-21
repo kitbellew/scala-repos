@@ -32,9 +32,7 @@ class ScalaProximityStatistician extends ProximityStatistician {
   override def serialize(
       element: PsiElement,
       location: ProximityLocation): StatisticsInfo = {
-    ScalaStatisticManager
-      .memberKey(element)
-      .map(el => new StatisticsInfo("scalaMember#", el))
-      .getOrElse(return null)
+    ScalaStatisticManager.memberKey(element)
+      .map(el => new StatisticsInfo("scalaMember#", el)).getOrElse(return null)
   }
 }

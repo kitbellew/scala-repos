@@ -167,8 +167,8 @@ trait MemberHandlers {
 
   abstract class MacroHandler(member: DefDef) extends MemberDefHandler(member) {
     override def referencedNames =
-      super.referencedNames.flatMap(name =>
-        List(name.toTermName, name.toTypeName))
+      super.referencedNames
+        .flatMap(name => List(name.toTermName, name.toTypeName))
     override def definesValue = false
     override def definesTerm: Option[TermName] = Some(name.toTermName)
     override def definesType: Option[TypeName] = None
@@ -195,10 +195,8 @@ trait MemberHandlers {
     override def resultExtractionCode(req: Request) = {
       val lhsType = string2code(req lookupTypeOf name)
       val res = string2code(req fullPath name)
-      """ + "%s: %s = " + %s + "\n" """.format(
-        string2code(lhs.toString),
-        lhsType,
-        res) + "\n"
+      """ + "%s: %s = " + %s + "\n" """
+        .format(string2code(lhs.toString), lhsType, res) + "\n"
     }
   }
 

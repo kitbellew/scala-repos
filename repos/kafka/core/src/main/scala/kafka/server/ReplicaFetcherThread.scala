@@ -194,8 +194,7 @@ class ReplicaFetcherThread(
     */
   def handleOffsetOutOfRange(topicAndPartition: TopicAndPartition): Long = {
     val replica = replicaMgr
-      .getReplica(topicAndPartition.topic, topicAndPartition.partition)
-      .get
+      .getReplica(topicAndPartition.topic, topicAndPartition.partition).get
 
     /**
       * Unclean leader election: A follower goes down, in the meanwhile the leader keeps appending messages. The follower comes back up
@@ -216,18 +215,16 @@ class ReplicaFetcherThread(
       // Prior to truncating the follower's log, ensure that doing so is not disallowed by the configuration for unclean leader election.
       // This situation could only happen if the unclean election configuration for a topic changes while a replica is down. Otherwise,
       // we should never encounter this situation since a non-ISR leader cannot be elected if disallowed by the broker configuration.
-      if (!LogConfig
-            .fromProps(
-              brokerConfig.originals,
-              AdminUtils.fetchEntityConfig(
-                replicaMgr.zkUtils,
-                ConfigType.Topic,
-                topicAndPartition.topic))
-            .uncleanLeaderElectionEnable) {
+      if (!LogConfig.fromProps(
+            brokerConfig.originals,
+            AdminUtils.fetchEntityConfig(
+              replicaMgr.zkUtils,
+              ConfigType.Topic,
+              topicAndPartition.topic)).uncleanLeaderElectionEnable) {
         // Log a fatal error and shutdown the broker to ensure that data loss does not unexpectedly occur.
         fatal(
-          "Halting because log truncation is not allowed for topic %s,".format(
-            topicAndPartition.topic) +
+          "Halting because log truncation is not allowed for topic %s,"
+            .format(topicAndPartition.topic) +
             " Current leader %d's latest offset %d is less than replica %d's latest offset %d"
               .format(
                 sourceBroker.id,
@@ -245,8 +242,8 @@ class ReplicaFetcherThread(
             replica.logEndOffset.messageOffset,
             sourceBroker.id,
             leaderEndOffset))
-      replicaMgr.logManager.truncateTo(Map(
-        topicAndPartition -> leaderEndOffset))
+      replicaMgr.logManager
+        .truncateTo(Map(topicAndPartition -> leaderEndOffset))
       leaderEndOffset
     } else {
 
@@ -284,9 +281,8 @@ class ReplicaFetcherThread(
             replica.logEndOffset.messageOffset,
             sourceBroker.id,
             leaderStartOffset))
-      val offsetToFetch = Math.max(
-        leaderStartOffset,
-        replica.logEndOffset.messageOffset)
+      val offsetToFetch = Math
+        .max(leaderStartOffset, replica.logEndOffset.messageOffset)
       // Only truncate log when current leader's log start offset is greater than follower's log end offset.
       if (leaderStartOffset > replica.logEndOffset.messageOffset)
         replicaMgr.logManager
@@ -328,8 +324,7 @@ class ReplicaFetcherThread(
           new RequestSend(sourceBroker.id.toString, header, request.toStruct)
         val clientRequest =
           new ClientRequest(time.milliseconds(), true, send, null)
-        networkClient
-          .blockingSendAndReceive(clientRequest, socketTimeout)(time)
+        networkClient.blockingSendAndReceive(clientRequest, socketTimeout)(time)
           .getOrElse {
             throw new SocketTimeoutException(
               s"No response received within $socketTimeout ms")
@@ -390,11 +385,9 @@ object ReplicaFetcherThread {
       extends AbstractFetcherThread.FetchRequest {
     def isEmpty: Boolean = underlying.fetchData.isEmpty
     def offset(topicAndPartition: TopicAndPartition): Long =
-      underlying.fetchData
-        .asScala(new TopicPartition(
-          topicAndPartition.topic,
-          topicAndPartition.partition))
-        .offset
+      underlying.fetchData.asScala(new TopicPartition(
+        topicAndPartition.topic,
+        topicAndPartition.partition)).offset
   }
 
   private[server] class PartitionData(

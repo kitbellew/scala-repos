@@ -256,12 +256,10 @@ private[sql] object ParquetFilters {
   private def getFieldMap(dataType: DataType): Array[(String, DataType)] =
     dataType match {
       case StructType(fields) =>
-        fields
-          .filter { f =>
-            !f.metadata.contains(StructType.metadataKeyForOptionalField) ||
-            !f.metadata.getBoolean(StructType.metadataKeyForOptionalField)
-          }
-          .map(f => f.name -> f.dataType) ++ fields.flatMap { f =>
+        fields.filter { f =>
+          !f.metadata.contains(StructType.metadataKeyForOptionalField) ||
+          !f.metadata.getBoolean(StructType.metadataKeyForOptionalField)
+        }.map(f => f.name -> f.dataType) ++ fields.flatMap { f =>
           getFieldMap(f.dataType)
         }
       case _ => Array.empty[(String, DataType)]
@@ -321,8 +319,8 @@ private[sql] object ParquetFilters {
           if dataTypeOf.contains(name) =>
         makeGtEq.lift(dataTypeOf(name)).map(_(name, value))
 
-      case sources.In(name, valueSet) =>
-        makeInSet.lift(dataTypeOf(name)).map(_(name, valueSet.toSet))
+      case sources.In(name, valueSet) => makeInSet.lift(dataTypeOf(name))
+          .map(_(name, valueSet.toSet))
 
       case sources.And(lhs, rhs) =>
         // At here, it is not safe to just convert one side if we do not understand the
@@ -374,8 +372,8 @@ private[sql] object ParquetFilters {
       .newInstance(PrimitiveTypeName.BINARY, OriginalType.ENUM)
       .asInstanceOf[AnyRef]
 
-    val addMethod =
-      classOf[ValidTypeMap].getDeclaredMethods.find(_.getName == "add").get
+    val addMethod = classOf[ValidTypeMap].getDeclaredMethods
+      .find(_.getName == "add").get
     addMethod.setAccessible(true)
     addMethod.invoke(null, classOf[Binary], enumTypeDescriptor)
   }

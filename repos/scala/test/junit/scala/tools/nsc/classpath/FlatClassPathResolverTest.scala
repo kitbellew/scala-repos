@@ -88,23 +88,23 @@ class FlatClassPathResolverTest {
         packageNamesFromList)
 
       val classFileNames = classes.map(_.name).sorted
-      val classFileNamesFromList =
-        classesAndSourcesFromList.filter(_.binary.isDefined).map(_.name).sorted
+      val classFileNamesFromList = classesAndSourcesFromList
+        .filter(_.binary.isDefined).map(_.name).sorted
       assertEquals(
         s"Methods list and classes for package '$inPackage' should return entries for the same class files",
         classFileNames,
         classFileNamesFromList)
 
       val sourceFileNames = sources.map(_.name).sorted
-      val sourceFileNamesFromList =
-        classesAndSourcesFromList.filter(_.source.isDefined).map(_.name).sorted
+      val sourceFileNamesFromList = classesAndSourcesFromList
+        .filter(_.source.isDefined).map(_.name).sorted
       assertEquals(
         s"Methods list and sources for package '$inPackage' should return entries for the same source files",
         sourceFileNames,
         sourceFileNamesFromList)
 
-      val uniqueNamesOfClassAndSourceFiles =
-        (classFileNames ++ sourceFileNames).toSet
+      val uniqueNamesOfClassAndSourceFiles = (classFileNames ++ sourceFileNames)
+        .toSet
       assertEquals(
         s"Class and source entries with the same name obtained via list for package '$inPackage' should be merged into one containing both files",
         uniqueNamesOfClassAndSourceFiles.size,
@@ -146,8 +146,8 @@ class FlatClassPathResolverTest {
 
       val flatCpPackages = flatClassPath.packages(inPackage).map(_.name)
       val pkgPrefix = PackageNameUtils.packagePrefix(inPackage)
-      val recursiveCpPackages = recursiveClassPathInPackage.packages.map(
-        pkgPrefix + _.name)
+      val recursiveCpPackages = recursiveClassPathInPackage.packages
+        .map(pkgPrefix + _.name)
       assertEquals(
         s"Packages in package '$inPackage' on flat cp should be the same as on the recursive cp",
         recursiveCpPackages,
@@ -155,9 +155,7 @@ class FlatClassPathResolverTest {
 
       val flatCpSources = flatClassPath.sources(inPackage).map(_.name).sorted
       val recursiveCpSources = recursiveClassPathInPackage.classes
-        .filter(_.source.nonEmpty)
-        .map(_.name)
-        .sorted
+        .filter(_.source.nonEmpty).map(_.name).sorted
       assertEquals(
         s"Source entries in package '$inPackage' on flat cp should be the same as on the recursive cp",
         recursiveCpSources,
@@ -165,9 +163,7 @@ class FlatClassPathResolverTest {
 
       val flatCpClasses = flatClassPath.classes(inPackage).map(_.name).sorted
       val recursiveCpClasses = recursiveClassPathInPackage.classes
-        .filter(_.binary.nonEmpty)
-        .map(_.name)
-        .sorted
+        .filter(_.binary.nonEmpty).map(_.name).sorted
       assertEquals(
         s"Class entries in package '$inPackage' on flat cp should be the same as on the recursive cp",
         recursiveCpClasses,

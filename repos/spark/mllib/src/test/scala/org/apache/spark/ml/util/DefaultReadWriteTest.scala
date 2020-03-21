@@ -52,9 +52,7 @@ trait DefaultReadWriteTest extends TempDirectory {
     instance.save(path)
     intercept[IOException] { instance.save(path) }
     instance.write.overwrite().save(path)
-    val loader = instance.getClass
-      .getMethod("read")
-      .invoke(null)
+    val loader = instance.getClass.getMethod("read").invoke(null)
       .asInstanceOf[MLReader[T]]
     val newInstance = loader.load(path)
 

@@ -52,12 +52,10 @@ final class Cached(mongoCache: MongoCache.Builder, defaultTtl: FiniteDuration) {
         chess.Division.empty
       else
         Option(cache getIfPresent game.id) | {
-          val div = chess.Replay
-            .boards(
-              moveStrs = game.pgnMoves,
-              initialFen = initialFen,
-              variant = game.variant)
-            .toOption
+          val div = chess.Replay.boards(
+            moveStrs = game.pgnMoves,
+            initialFen = initialFen,
+            variant = game.variant).toOption
             .fold(chess.Division.empty)(chess.Divider.apply)
           cache.put(game.id, div)
           div

@@ -326,11 +326,8 @@ trait JdbcBackend extends RelationalBackend {
         classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
         : Database = {
       val usedConfig = if (path.isEmpty) config else config.getConfig(path)
-      val source = JdbcDataSource.forConfig(
-        usedConfig,
-        driver,
-        path,
-        classLoader)
+      val source = JdbcDataSource
+        .forConfig(usedConfig, driver, path, classLoader)
       val executor = AsyncExecutor(
         path,
         usedConfig.getIntOr("numThreads", 20),
@@ -356,8 +353,8 @@ trait JdbcBackend extends RelationalBackend {
     final def prepareStatement(
         sql: String,
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
-        defaultConcurrency: ResultSetConcurrency =
-          ResultSetConcurrency.ReadOnly,
+        defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency
+          .ReadOnly,
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)
         : PreparedStatement = {
       JdbcBackend.logStatement("Preparing statement", sql)
@@ -365,10 +362,10 @@ trait JdbcBackend extends RelationalBackend {
         resultSetHoldability.withDefault(defaultHoldability) match {
           case ResultSetHoldability.Default =>
             val rsType = resultSetType.withDefault(defaultType).intValue
-            val rsConc =
-              resultSetConcurrency.withDefault(defaultConcurrency).intValue
-            if (rsType == ResultSet.TYPE_FORWARD_ONLY && rsConc == ResultSet.CONCUR_READ_ONLY)
-              conn.prepareStatement(sql)
+            val rsConc = resultSetConcurrency.withDefault(defaultConcurrency)
+              .intValue
+            if (rsType == ResultSet.TYPE_FORWARD_ONLY && rsConc == ResultSet
+                  .CONCUR_READ_ONLY) conn.prepareStatement(sql)
             else conn.prepareStatement(sql, rsType, rsConc)
           case h =>
             conn.prepareStatement(
@@ -387,8 +384,8 @@ trait JdbcBackend extends RelationalBackend {
         : PreparedStatement = {
       if (JdbcBackend.statementLogger.isDebugEnabled)
         JdbcBackend.logStatement(
-          "Preparing insert statement (returning: " + columnNames.mkString(
-            ",") + ")",
+          "Preparing insert statement (returning: " + columnNames
+            .mkString(",") + ")",
           sql)
       val s = loggingPreparedStatement(
         decorateStatement(conn.prepareStatement(sql, columnNames)))
@@ -412,8 +409,8 @@ trait JdbcBackend extends RelationalBackend {
 
     final def createStatement(
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
-        defaultConcurrency: ResultSetConcurrency =
-          ResultSetConcurrency.ReadOnly,
+        defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency
+          .ReadOnly,
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)
         : Statement = {
       val s = loggingStatement(decorateStatement(
@@ -436,8 +433,8 @@ trait JdbcBackend extends RelationalBackend {
     final def withPreparedStatement[T](
         sql: String,
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
-        defaultConcurrency: ResultSetConcurrency =
-          ResultSetConcurrency.ReadOnly,
+        defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency
+          .ReadOnly,
         defaultHoldability: ResultSetHoldability =
           ResultSetHoldability.Default)(f: (PreparedStatement => T)): T = {
       val st = prepareStatement(
@@ -471,8 +468,8 @@ trait JdbcBackend extends RelationalBackend {
     /** A wrapper around the JDBC Connection's createStatement method, that automatically closes the statement. */
     final def withStatement[T](
         defaultType: ResultSetType = ResultSetType.ForwardOnly,
-        defaultConcurrency: ResultSetConcurrency =
-          ResultSetConcurrency.ReadOnly,
+        defaultConcurrency: ResultSetConcurrency = ResultSetConcurrency
+          .ReadOnly,
         defaultHoldability: ResultSetHoldability =
           ResultSetHoldability.Default)(f: (Statement => T)): T = {
       val st = createStatement(
@@ -513,14 +510,14 @@ trait JdbcBackend extends RelationalBackend {
       }
 
     protected def loggingStatement(st: Statement): Statement =
-      if (JdbcBackend.statementLogger.isDebugEnabled || JdbcBackend.benchmarkLogger.isDebugEnabled)
-        new LoggingStatement(st)
+      if (JdbcBackend.statementLogger.isDebugEnabled || JdbcBackend
+            .benchmarkLogger.isDebugEnabled) new LoggingStatement(st)
       else st
 
     protected def loggingPreparedStatement(
         st: PreparedStatement): PreparedStatement =
-      if (JdbcBackend.statementLogger.isDebugEnabled || JdbcBackend.benchmarkLogger.isDebugEnabled)
-        new LoggingPreparedStatement(st)
+      if (JdbcBackend.statementLogger.isDebugEnabled || JdbcBackend
+            .benchmarkLogger.isDebugEnabled) new LoggingPreparedStatement(st)
       else st
 
     /** Start a `transactionally` block */
@@ -587,9 +584,8 @@ trait JdbcBackend extends RelationalBackend {
 
     def pushStatementParameters(p: JdbcBackend.StatementParameters): Unit = {
       val p2 =
-        if ((p.rsType eq null) || (p.rsConcurrency eq null) || (
-              p.rsHoldability eq null
-            ) || (p.statementInit eq null)) {
+        if ((p.rsType eq null) || (p.rsConcurrency eq null) || (p
+              .rsHoldability eq null) || (p.statementInit eq null)) {
           val curr =
             if (statementParameters eq null)
               JdbcBackend.defaultStatementParameters

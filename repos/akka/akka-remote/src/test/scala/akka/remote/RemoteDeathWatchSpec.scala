@@ -36,8 +36,7 @@ akka {
 
   val other = ActorSystem(
     "other",
-    ConfigFactory
-      .parseString("akka.remote.netty.tcp.port=2666")
+    ConfigFactory.parseString("akka.remote.netty.tcp.port=2666")
       .withFallback(system.settings.config))
 
   override def beforeTermination() {
@@ -122,8 +121,8 @@ akka {
 
     probe.expectNoMsg(5.seconds)
     system.eventStream.subscribe(probe.ref, classOf[Warning])
-    probe.expectNoMsg(
-      RARP(system).provider.remoteSettings.RetryGateClosedFor * 2)
+    probe
+      .expectNoMsg(RARP(system).provider.remoteSettings.RetryGateClosedFor * 2)
   }
 
 }

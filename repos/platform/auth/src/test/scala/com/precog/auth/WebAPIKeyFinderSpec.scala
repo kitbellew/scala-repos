@@ -49,10 +49,8 @@ class WebAPIKeyFinderSpec extends APIKeyFinderSpec[Future] with AkkaDefaults {
       val apiKeyManager = mgr
     }
     val (service, stoppable) = testService
-      .server(Configuration.parse(testService.config), executionContext)
-      .start
-      .get
-      .copoint
+      .server(Configuration.parse(testService.config), executionContext).start
+      .get.copoint
     val client = new HttpClient[ByteChunk] {
       def isDefinedAt(req: HttpRequest[ByteChunk]) = true
       def apply(req: HttpRequest[ByteChunk]) =

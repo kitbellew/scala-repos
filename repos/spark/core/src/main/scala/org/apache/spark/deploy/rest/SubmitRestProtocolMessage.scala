@@ -118,10 +118,8 @@ private[spark] object SubmitRestProtocolMessage {
     */
   def parseAction(json: String): String = {
     val value: Option[String] = parse(json) match {
-      case JObject(fields) =>
-        fields.collectFirst { case ("action", v) => v }.collect {
-          case JString(s) => s
-        }
+      case JObject(fields) => fields.collectFirst { case ("action", v) => v }
+          .collect { case JString(s) => s }
       case _ => None
     }
     value.getOrElse {
@@ -139,8 +137,7 @@ private[spark] object SubmitRestProtocolMessage {
     */
   def fromJson(json: String): SubmitRestProtocolMessage = {
     val className = parseAction(json)
-    val clazz = Utils
-      .classForName(packagePrefix + "." + className)
+    val clazz = Utils.classForName(packagePrefix + "." + className)
       .asSubclass[SubmitRestProtocolMessage](classOf[SubmitRestProtocolMessage])
     fromJson(json, clazz)
   }

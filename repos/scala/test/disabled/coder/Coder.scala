@@ -27,8 +27,8 @@ class SeqCoder(words: List[String]) {
   val wordsForNum: Map[String, List[String]] =
     words groupBy wordCode withDefaultValue List()
 
-  val memo = collection.mutable.Map[String, Set[List[String]]](
-    "" -> Set(List()))
+  val memo = collection.mutable
+    .Map[String, Set[List[String]]]("" -> Set(List()))
   val wfnmemo = collection.mutable.Map[(String, String), Set[List[String]]]()
   val subsmemo = collection.mutable
     .Map[(String, String, String), Set[List[String]]]()

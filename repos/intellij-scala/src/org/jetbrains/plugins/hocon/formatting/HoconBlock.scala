@@ -24,8 +24,7 @@ class HoconBlock(
   private val wrapCache = {
     val pathValueSeparatorType =
       if (node.getElementType == HoconElementType.ValuedField)
-        node.childrenIterator
-          .map(_.getElementType)
+        node.childrenIterator.map(_.getElementType)
           .find(HoconTokenSets.KeyValueSeparator.contains)
       else None
     new formatter.WrapCache(pathValueSeparatorType)
@@ -52,12 +51,9 @@ class HoconBlock(
         child1.asInstanceOf[HoconBlock].getNode,
         child2.asInstanceOf[HoconBlock].getNode)
 
-  lazy val children: Seq[Block] = formatter
-    .getChildren(node)
-    .filterNot(n =>
-      n.getTextLength == 0 || n.getElementType == TokenType.WHITE_SPACE)
-    .map(createChildBlock)
-    .toVector
+  lazy val children: Seq[Block] = formatter.getChildren(node).filterNot(n =>
+    n.getTextLength == 0 || n.getElementType == TokenType.WHITE_SPACE)
+    .map(createChildBlock).toVector
 
   private def createChildBlock(child: ASTNode) =
     new HoconBlock(

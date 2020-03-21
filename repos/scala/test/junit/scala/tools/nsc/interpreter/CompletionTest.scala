@@ -24,11 +24,8 @@ class CompletionTest {
   def t4438_arrayCompletion(): Unit = {
     val intp = newIMain()
     val completer = new PresentationCompilerCompleter(intp)
-    assert(
-      completer
-        .complete("Array(1, 2, 3) rev")
-        .candidates
-        .contains("reverseMap"))
+    assert(completer.complete("Array(1, 2, 3) rev").candidates.contains(
+      "reverseMap"))
   }
 
   @Test
@@ -64,9 +61,8 @@ class CompletionTest {
     // Output is sorted
     assertEquals(
       List("prefix_aaa", "prefix_nnn", "prefix_zzz"),
-      completer
-        .complete(
-          """class C { def prefix_nnn = 0; def prefix_zzz = 0; def prefix_aaa = 0; prefix_""")
+      completer.complete(
+        """class C { def prefix_nnn = 0; def prefix_zzz = 0; def prefix_aaa = 0; prefix_""")
         .candidates
     )
   }
@@ -252,13 +248,9 @@ class CompletionTest {
     val completer = new PresentationCompilerCompleter(intp)
     checkExact(completer, "class C(val a: Int, val b: Int) { this.")("a", "b")
     assert(
-      Set("asInstanceOf", "==")
-        .diff(
-          completer
-            .complete("class C(val a: Int, val b: Int) { this.")
-            .candidates
-            .toSet)
-        .isEmpty)
+      Set("asInstanceOf", "==").diff(
+        completer.complete("class C(val a: Int, val b: Int) { this.").candidates
+          .toSet).isEmpty)
     checkExact(completer, "case class D(a: Int, b: Int) { this.a")(
       "a",
       "asInstanceOf")

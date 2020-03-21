@@ -37,8 +37,8 @@ class ArgHelpTest extends WordSpec with Matchers {
       val args = List(OptionalArg("name", "Name of person"))
       val config = Config.unitTestDefault.setArgs(Args(""))
 
-      val returnValues =
-        helper.describe(args, job).waitFor(config, Local(true)).get.toList
+      val returnValues = helper.describe(args, job).waitFor(config, Local(true))
+        .get.toList
       assert(!helpCalled, "Help function was not called")
       assert(returnValues == List(1, 2, 3))
     }
@@ -51,8 +51,8 @@ class ArgHelpTest extends WordSpec with Matchers {
         helpCalled = true)
 
       val args = List(OptionalArg("name", "Name of person"))
-      val config = Config.unitTestDefault.setArgs(Args(
-        List("--help", "--name", "Bill", "--phone", "111")))
+      val config = Config.unitTestDefault
+        .setArgs(Args(List("--help", "--name", "Bill", "--phone", "111")))
 
       intercept[HelpException] {
         helper.validatedDescribe(args, job).waitFor(config, Local(true)).get
@@ -66,11 +66,11 @@ class ArgHelpTest extends WordSpec with Matchers {
       val args = List(
         OptionalArg("name", "Name of person"),
         OptionalArg("phone", "Person's phone"))
-      val config = Config.unitTestDefault.setArgs(Args(
-        List("--name", "Bill", "--phone", "111")))
+      val config = Config.unitTestDefault
+        .setArgs(Args(List("--name", "Bill", "--phone", "111")))
 
-      val returnValues =
-        ArgHelp.validatedDescribe(args, job).waitFor(config, Local(true)).get
+      val returnValues = ArgHelp.validatedDescribe(args, job)
+        .waitFor(config, Local(true)).get
       assert(returnValues == List(1, 2, 3))
     }
   }
@@ -84,9 +84,7 @@ class ArgHelpTest extends WordSpec with Matchers {
         List("--name", "Bill", "--phone", "111", "--address", "123")))
 
       intercept[DescriptionValidationException] {
-        ArgHelp
-          .validatedDescribe(args, job.unit)
-          .waitFor(config, Local(true))
+        ArgHelp.validatedDescribe(args, job.unit).waitFor(config, Local(true))
           .get
       }
     }

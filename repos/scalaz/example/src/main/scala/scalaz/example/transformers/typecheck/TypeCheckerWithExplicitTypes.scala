@@ -10,9 +10,7 @@ object TypeCheckerWithExplicitTypes {
   def typeError(msg: String) = sys.error(msg)
 
   def find(s: String, env: TypeEnv): Type =
-    env
-      .find(_._1 == s)
-      .map(p => success(p._2))
+    env.find(_._1 == s).map(p => success(p._2))
       .getOrElse(sys.error("not found: " + s))
 
   def compare(t1: Type, t2: Type, resultType: Type, errorMsg: String): Type =

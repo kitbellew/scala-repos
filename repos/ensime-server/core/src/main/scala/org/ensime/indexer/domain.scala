@@ -91,8 +91,7 @@ object ClassName {
   }
 
   def cleanupPackage(name: String): String = {
-    name
-      .replaceAll("\\.package\\$?\\.", ".")
+    name.replaceAll("\\.package\\$?\\.", ".")
       .replaceAll("\\.package\\$(?!$)", ".")
       .replaceAll("\\.package$", ".package\\$")
   }

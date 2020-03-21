@@ -53,10 +53,9 @@ private[http] trait LiftMerge {
   // Gather all page-specific JS into one JsCmd.
   private[this] def assemblePageSpecificJavaScript(eventJs: JsCmd): JsCmd = {
     val allJs =
-      LiftRules.javaScriptSettings
-        .vend()
-        .map { settingsFn => LiftJavaScript.initCmd(settingsFn(this)) }
-        .toList ++
+      LiftRules.javaScriptSettings.vend().map { settingsFn =>
+        LiftJavaScript.initCmd(settingsFn(this))
+      }.toList ++
         S.jsToAppend() ++
         List(eventJs)
 
@@ -82,8 +81,8 @@ private[http] trait LiftMerge {
     def waitUntilSnippetsDone() {
       val myMillis = millis
       snippetHashs.synchronized {
-        if (myMillis >= waitUntil || snippetHashs.isEmpty || !snippetHashs.values.toIterator
-              .contains(Empty)) ()
+        if (myMillis >= waitUntil || snippetHashs.isEmpty || !snippetHashs
+              .values.toIterator.contains(Empty)) ()
         else {
           snippetHashs.wait(waitUntil - myMillis)
           waitUntilSnippetsDone()
@@ -151,7 +150,8 @@ private[http] trait LiftMerge {
               startingState.copy(htmlDescendant = true && mergeHeadAndTail)
 
             case element: Elem
-                if element.label == "head" && htmlDescendant && !bodyDescendant =>
+                if element
+                  .label == "head" && htmlDescendant && !bodyDescendant =>
               headElement = element
 
               startingState.copy(headChild = true && mergeHeadAndTail)
@@ -187,51 +187,45 @@ private[http] trait LiftMerge {
           val bodyHead = childInfo.headInBodyChild && !headInBodyChild
           val bodyTail = childInfo.tailInBodyChild && !tailInBodyChild
 
-          HtmlNormalizer
-            .normalizeNode(node, contextPath, stripComments)
-            .map {
-              case normalized @ NodeAndEventJs(normalizedElement: Elem, _) =>
-                val normalizedChildren = normalizeMergeAndExtractEvents(
-                  normalizedElement.child,
-                  childInfo)
+          HtmlNormalizer.normalizeNode(node, contextPath, stripComments).map {
+            case normalized @ NodeAndEventJs(normalizedElement: Elem, _) =>
+              val normalizedChildren = normalizeMergeAndExtractEvents(
+                normalizedElement.child,
+                childInfo)
 
-                normalized.copy(
-                  normalizedElement.copy(child = normalizedChildren.nodes),
-                  js = normalized.js & normalizedChildren.js)
+              normalized.copy(
+                normalizedElement.copy(child = normalizedChildren.nodes),
+                js = normalized.js & normalizedChildren.js)
 
-              case other => other
+            case other => other
+          }.map { normalizedResults: NodeAndEventJs =>
+            node match {
+              case e: Elem
+                  if e.label == "node" &&
+                    e.prefix == "lift_deferred" =>
+                val deferredNodes: Seq[NodesAndEventJs] = for {
+                  idAttribute <- e.attributes("id").take(1)
+                  id = idAttribute.text
+                  nodes <- processedSnippets.get(id)
+                } yield { normalizeMergeAndExtractEvents(nodes, startingState) }
+
+                deferredNodes
+                  .foldLeft(soFar.append(normalizedResults))(_ append _)
+
+              case _ =>
+                if (headChild) { headChildren ++= normalizedResults.node }
+                else if (headInBodyChild) {
+                  addlHead ++= normalizedResults.node
+                } else if (tailInBodyChild) {
+                  addlTail ++= normalizedResults.node
+                } else if (_bodyChild && !bodyHead && !bodyTail) {
+                  bodyChildren ++= normalizedResults.node
+                }
+
+                if (bodyHead || bodyTail) { soFar.append(normalizedResults.js) }
+                else { soFar.append(normalizedResults) }
             }
-            .map { normalizedResults: NodeAndEventJs =>
-              node match {
-                case e: Elem
-                    if e.label == "node" &&
-                      e.prefix == "lift_deferred" =>
-                  val deferredNodes: Seq[NodesAndEventJs] = for {
-                    idAttribute <- e.attributes("id").take(1)
-                    id = idAttribute.text
-                    nodes <- processedSnippets.get(id)
-                  } yield {
-                    normalizeMergeAndExtractEvents(nodes, startingState)
-                  }
-
-                  deferredNodes.foldLeft(soFar.append(normalizedResults))(
-                    _ append _)
-
-                case _ =>
-                  if (headChild) { headChildren ++= normalizedResults.node }
-                  else if (headInBodyChild) {
-                    addlHead ++= normalizedResults.node
-                  } else if (tailInBodyChild) {
-                    addlTail ++= normalizedResults.node
-                  } else if (_bodyChild && !bodyHead && !bodyTail) {
-                    bodyChildren ++= normalizedResults.node
-                  }
-
-                  if (bodyHead || bodyTail) {
-                    soFar.append(normalizedResults.js)
-                  } else { soFar.append(normalizedResults) }
-              }
-            } getOrElse { soFar }
+          } getOrElse { soFar }
       }
     }
 
@@ -285,8 +279,8 @@ private[http] trait LiftMerge {
         if (stateful_? && (autoIncludeComet || LiftRules.enableLiftGC)) {
           ("data-lift-gc" -> RenderVersion.get) ::
             (if (autoIncludeComet) {
-               ("data-lift-session-id" -> (S.session.map(
-                 _.uniqueId) openOr "xx")) ::
+               ("data-lift-session-id" -> (S.session
+                 .map(_.uniqueId) openOr "xx")) ::
                  S.requestCometVersions.is.toList.map {
                    case CometVersionPair(guid, version) =>
                      (s"data-lift-comet-$guid" -> version.toString)
@@ -297,8 +291,8 @@ private[http] trait LiftMerge {
       htmlKids += nl
       htmlKids += headElement.copy(child = headChildren.toList)
       htmlKids += nl
-      htmlKids += bodyAttributes.foldLeft(
-        bodyElement.copy(child = bodyChildren.toList))(_ % _)
+      htmlKids += bodyAttributes
+        .foldLeft(bodyElement.copy(child = bodyChildren.toList))(_ % _)
       htmlKids += nl
 
       val tmpRet = Elem(

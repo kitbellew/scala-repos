@@ -42,8 +42,8 @@ case class CSRFConfig(
     cookieName: Option[String] = None,
     secureCookie: Boolean = false,
     httpOnlyCookie: Boolean = false,
-    createIfNotFound: RequestHeader => Boolean =
-      CSRFConfig.defaultCreateIfNotFound,
+    createIfNotFound: RequestHeader => Boolean = CSRFConfig
+      .defaultCreateIfNotFound,
     postBodyBuffer: Long = 102400,
     signTokens: Boolean = true,
     checkMethod: String => Boolean = !CSRFConfig.SafeMethods.contains(_),
@@ -78,8 +78,8 @@ case class CSRFConfig(
       checkContentType: ju.function.Predicate[Optional[String]]) =
     copy(checkContentType = checkContentType.asScala.compose(_.asJava))
   def withShouldProtect(shouldProtect: ju.function.Predicate[JRequestHeader]) =
-    copy(shouldProtect = shouldProtect.asScala.compose(new JRequestHeaderImpl(
-      _)))
+    copy(shouldProtect = shouldProtect.asScala
+      .compose(new JRequestHeaderImpl(_)))
   def withBypassCorsTrustedOrigins(bypass: Boolean) =
     copy(bypassCorsTrustedOrigins = bypass)
 }
@@ -90,16 +90,15 @@ object CSRFConfig {
   private def defaultCreateIfNotFound(request: RequestHeader) = {
     // If the request isn't accepting HTML, then it won't be rendering a form, so there's no point in generating a
     // CSRF token for it.
-    (request.method == "GET" || request.method == "HEAD") && (request.accepts(
-      "text/html") || request.accepts("application/xml+xhtml"))
+    (request.method == "GET" || request.method == "HEAD") && (request
+      .accepts("text/html") || request.accepts("application/xml+xhtml"))
   }
 
   private[play] val HeaderNoCheck = "nocheck"
 
   @deprecated("Use dependency injection", "2.5.0")
   def global =
-    Play.privateMaybeApplication
-      .map(_.injector.instanceOf[CSRFConfig])
+    Play.privateMaybeApplication.map(_.injector.instanceOf[CSRFConfig])
       .getOrElse(CSRFConfig())
 
   def fromConfiguration(conf: Configuration): CSRFConfig = {
@@ -116,10 +115,10 @@ object CSRFConfig {
         else { methodBlackList.contains }
       }
 
-    val contentTypeWhiteList =
-      config.get[Seq[String]]("contentType.whiteList").toSet
-    val contentTypeBlackList =
-      config.get[Seq[String]]("contentType.blackList").toSet
+    val contentTypeWhiteList = config.get[Seq[String]]("contentType.whiteList")
+      .toSet
+    val contentTypeBlackList = config.get[Seq[String]]("contentType.blackList")
+      .toSet
 
     val checkContentType: Option[String] => Boolean =
       if (contentTypeWhiteList.nonEmpty) {
@@ -285,24 +284,25 @@ object CSRF {
     import play.api.libs.iteratee.Execution.Implicits.trampoline
 
     def handle(req: Http.RequestHeader, msg: String) =
-      FutureConverters.toJava(
-        delegate.handle(req._underlyingHeader(), msg).map(_.asJava))
+      FutureConverters
+        .toJava(delegate.handle(req._underlyingHeader(), msg).map(_.asJava))
   }
 
   object ErrorHandler {
     def bindingsFromConfiguration(
         environment: Environment,
         configuration: Configuration): Seq[Binding[_]] = {
-      Reflect.bindingsFromConfiguration[
-        ErrorHandler,
-        CSRFErrorHandler,
-        JavaCSRFErrorHandlerAdapter,
-        JavaCSRFErrorHandlerDelegate,
-        CSRFHttpErrorHandler](
-        environment,
-        PlayConfig(configuration),
-        "play.filters.csrf.errorHandler",
-        "CSRFErrorHandler")
+      Reflect
+        .bindingsFromConfiguration[
+          ErrorHandler,
+          CSRFErrorHandler,
+          JavaCSRFErrorHandlerAdapter,
+          JavaCSRFErrorHandlerDelegate,
+          CSRFHttpErrorHandler](
+          environment,
+          PlayConfig(configuration),
+          "play.filters.csrf.errorHandler",
+          "CSRFErrorHandler")
     }
   }
 
@@ -316,9 +316,8 @@ class CSRFModule extends Module {
     Seq(
       bind[CSRFConfig].toProvider[CSRFConfigProvider],
       bind[CSRF.TokenProvider].toProvider[CSRF.TokenProviderProvider],
-      bind[CSRFFilter].toSelf) ++ ErrorHandler.bindingsFromConfiguration(
-      environment,
-      configuration)
+      bind[CSRFFilter].toSelf) ++ ErrorHandler
+      .bindingsFromConfiguration(environment, configuration)
   }
 }
 

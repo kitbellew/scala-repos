@@ -128,9 +128,8 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("pseudorandomness") {
-    val ratings = sc.parallelize(
-      ALSSuite.generateRatings(10, 20, 5, 0.5, false, false)._1,
-      2)
+    val ratings = sc
+      .parallelize(ALSSuite.generateRatings(10, 20, 5, 0.5, false, false)._1, 2)
     val model11 = ALS.train(ratings, 5, 1, 1.0, 2, 1)
     val model12 = ALS.train(ratings, 5, 1, 1.0, 2, 1)
     val u11 = model11.userFeatures.values.flatMap(_.toList).collect().toList
@@ -142,29 +141,17 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("Storage Level for RDDs in model") {
-    val ratings = sc.parallelize(
-      ALSSuite.generateRatings(10, 20, 5, 0.5, false, false)._1,
-      2)
+    val ratings = sc
+      .parallelize(ALSSuite.generateRatings(10, 20, 5, 0.5, false, false)._1, 2)
     var storageLevel = StorageLevel.MEMORY_ONLY
-    var model = new ALS()
-      .setRank(5)
-      .setIterations(1)
-      .setLambda(1.0)
-      .setBlocks(2)
-      .setSeed(1)
-      .setFinalRDDStorageLevel(storageLevel)
+    var model = new ALS().setRank(5).setIterations(1).setLambda(1.0)
+      .setBlocks(2).setSeed(1).setFinalRDDStorageLevel(storageLevel)
       .run(ratings)
     assert(model.productFeatures.getStorageLevel == storageLevel)
     assert(model.userFeatures.getStorageLevel == storageLevel)
     storageLevel = StorageLevel.DISK_ONLY
-    model = new ALS()
-      .setRank(5)
-      .setIterations(1)
-      .setLambda(1.0)
-      .setBlocks(2)
-      .setSeed(1)
-      .setFinalRDDStorageLevel(storageLevel)
-      .run(ratings)
+    model = new ALS().setRank(5).setIterations(1).setLambda(1.0).setBlocks(2)
+      .setSeed(1).setFinalRDDStorageLevel(storageLevel).run(ratings)
     assert(model.productFeatures.getStorageLevel == storageLevel)
     assert(model.userFeatures.getStorageLevel == storageLevel)
   }
@@ -233,16 +220,10 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
       negativeWeights,
       negativeFactors)
 
-    val model = new ALS()
-      .setUserBlocks(numUserBlocks)
-      .setProductBlocks(numProductBlocks)
-      .setRank(features)
-      .setIterations(iterations)
-      .setAlpha(1.0)
-      .setImplicitPrefs(implicitPrefs)
-      .setLambda(0.01)
-      .setSeed(0L)
-      .setNonnegative(!negativeFactors)
+    val model = new ALS().setUserBlocks(numUserBlocks)
+      .setProductBlocks(numProductBlocks).setRank(features)
+      .setIterations(iterations).setAlpha(1.0).setImplicitPrefs(implicitPrefs)
+      .setLambda(0.01).setSeed(0L).setNonnegative(!negativeFactors)
       .run(sc.parallelize(sampledRatings))
 
     val predictedU = new BDM[Double](users, features)

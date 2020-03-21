@@ -35,8 +35,8 @@ class ApiUtilsTest extends JUnitSuite {
     // Random-length strings
     for (i <- 0 to 100) {
       // Since we're using UTF-8 encoding, each encoded byte will be one to four bytes long
-      val s: String = ApiUtilsTest.rnd.nextString(
-        math.abs(ApiUtilsTest.rnd.nextInt()) % (Short.MaxValue / 4))
+      val s: String = ApiUtilsTest.rnd
+        .nextString(math.abs(ApiUtilsTest.rnd.nextInt()) % (Short.MaxValue / 4))
       val bb: ByteBuffer = ByteBuffer.allocate(ApiUtils.shortStringLength(s))
       ApiUtils.writeShortString(bb, s)
       bb.rewind()
@@ -48,8 +48,8 @@ class ApiUtilsTest extends JUnitSuite {
   def testShortStringASCII() {
     // Random-length strings
     for (i <- 0 to 100) {
-      val s: String = TestUtils.randomString(
-        math.abs(ApiUtilsTest.rnd.nextInt()) % Short.MaxValue)
+      val s: String = TestUtils
+        .randomString(math.abs(ApiUtilsTest.rnd.nextInt()) % Short.MaxValue)
       val bb: ByteBuffer = ByteBuffer.allocate(ApiUtils.shortStringLength(s))
       ApiUtils.writeShortString(bb, s)
       bb.rewind()

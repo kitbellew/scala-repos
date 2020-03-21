@@ -36,8 +36,8 @@ private[lobby] final class Lobby(
       (userOption.map(_.id) ?? blocking) foreach { blocks =>
         val lobbyUser = userOption map { LobbyUser.make(_, blocks) }
         replyTo ! HookRepo.vector.filter { hook =>
-          ~(hook.userId |@| lobbyUser.map(_.id))
-            .apply(_ == _) || Biter.canJoin(hook, lobbyUser)
+          ~(hook.userId |@| lobbyUser.map(_.id)).apply(_ == _) || Biter
+            .canJoin(hook, lobbyUser)
         }
       }
 
@@ -99,8 +99,7 @@ private[lobby] final class Lobby(
       implicit val timeout = makeTimeout seconds 1
       (socket ? GetUids mapTo manifest[SocketUids]).chronometer
         .logIfSlow(100, logger) { r => s"GetUids size=${r.uids.size}" }
-        .mon(_.lobby.socket.getUids)
-        .result
+        .mon(_.lobby.socket.getUids).result
         .logFailure(logger, err => s"broom cannot get uids from socket: $err")
         .pipeTo(self)
 
@@ -142,10 +141,10 @@ private[lobby] final class Lobby(
         Biter.canJoin(h, hook.user) ?? ! {
           (h.user |@| hook.user).tupled ?? {
             case (u1, u2) =>
-              GameRepo.lastGameBetween(
-                u1.id,
-                u2.id,
-                DateTime.now minusHours 1) map { _ ?? (_.aborted) }
+              GameRepo
+                .lastGameBetween(u1.id, u2.id, DateTime.now minusHours 1) map {
+                _ ?? (_.aborted)
+              }
           }
         } flatMap {
           case true  => fuccess(h.some)

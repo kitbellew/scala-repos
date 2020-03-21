@@ -194,9 +194,9 @@ private[runtime] object RuntimeString {
       len: Int): Boolean = {
     checkNull(thiz)
     if (other == null) { throw new NullPointerException() }
-    else if (toffset < 0 || ooffset < 0 || toffset + len > thiz.length || ooffset + len > other.length) {
-      false
-    } else if (len <= 0) { true }
+    else if (toffset < 0 || ooffset < 0 || toffset + len > thiz
+               .length || ooffset + len > other.length) { false }
+    else if (len <= 0) { true }
     else {
       val left = thiz.substring(toffset, toffset + len)
       val right = other.substring(ooffset, ooffset + len)

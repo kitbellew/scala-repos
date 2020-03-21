@@ -29,9 +29,9 @@ class DistributedProfile(val profiles: RelationalProfile*)
   val api: API = new API {}
 
   lazy val queryCompiler =
-    QueryCompiler.standard.addAfter(
-      new Distribute,
-      Phase.assignUniqueSymbols) ++ QueryCompiler.interpreterPhases + new MemoryCodeGen
+    QueryCompiler.standard
+      .addAfter(new Distribute, Phase.assignUniqueSymbols) ++ QueryCompiler
+      .interpreterPhases + new MemoryCodeGen
   lazy val updateCompiler = ??
   lazy val deleteCompiler = ??
   lazy val insertCompiler = ??
@@ -59,8 +59,7 @@ class DistributedProfile(val profiles: RelationalProfile*)
 
   class QueryExecutorDef[R](tree: Node, param: Any) {
     def run(implicit session: Backend#Session): R =
-      createDistributedQueryInterpreter(param, session)
-        .run(tree)
+      createDistributedQueryInterpreter(param, session).run(tree)
         .asInstanceOf[R]
   }
 
@@ -107,11 +106,10 @@ class DistributedProfile(val profiles: RelationalProfile*)
           val idx = profiles.indexOf(profile)
           if (idx < 0)
             throw new SlickException("No session found for profile " + profile)
-          val profileSession = session
-            .sessions(idx)
+          val profileSession = session.sessions(idx)
             .asInstanceOf[profile.Backend#Session]
-          val dv = profile.runSynchronousQuery[Any](compiled, param)(
-            profileSession)
+          val dv = profile
+            .runSynchronousQuery[Any](compiled, param)(profileSession)
           val wr = wrapScalaValue(dv, n.nodeType)
           if (logger.isDebugEnabled) logDebug("Wrapped value: " + wr)
           wr
@@ -121,8 +119,7 @@ class DistributedProfile(val profiles: RelationalProfile*)
               CompiledMapping(converter, tpe)) :@ CollectionType(cons, el) =>
           if (logger.isDebugEnabled) logDebug("Evaluating " + n)
           val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
-          val b = cons
-            .createBuilder(el.classTag)
+          val b = cons.createBuilder(el.classTag)
             .asInstanceOf[Builder[Any, Any]]
           b ++= fromV.map(v =>
             converter
@@ -168,8 +165,7 @@ class DistributedProfile(val profiles: RelationalProfile*)
               case t: TableNode =>
                 (
                   Set(
-                    t.profileTable
-                      .asInstanceOf[RelationalProfile#Table[_]]
+                    t.profileTable.asInstanceOf[RelationalProfile#Table[_]]
                       .tableProvider),
                   Set.empty)
               case Ref(sym) => scope.get(sym) match {

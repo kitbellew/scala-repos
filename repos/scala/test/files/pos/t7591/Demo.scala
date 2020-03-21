@@ -24,10 +24,8 @@ import scala.tools.cmd._
   */
 trait DemoSpec extends Spec with Meta.StdOpts with Interpolation {
   lazy val referenceSpec = DemoSpec
-  lazy val programInfo = Spec.Info(
-    "demo",
-    "Usage: demo [<options>]",
-    "scala.tools.cmd.Demo")
+  lazy val programInfo = Spec
+    .Info("demo", "Usage: demo [<options>]", "scala.tools.cmd.Demo")
 
   help("""Usage: demo [<options>]""")
   heading("Unary options:")
@@ -65,9 +63,8 @@ class Demo(args: List[String]) extends {
   def helpMsg = DemoSpec.helpMsg
   def demoSpecMethods = this.getClass.getMethods.toList
   private def isDemo(m: Method) =
-    (m.getName startsWith "opt") && !(m.getName contains "$") && (
-      m.getParameterTypes.isEmpty
-    )
+    (m.getName startsWith "opt") && !(m.getName contains "$") && (m
+      .getParameterTypes.isEmpty)
 
   def demoString(ms: List[Method]) = {
     val longest = ms map (_.getName.length) max

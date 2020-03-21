@@ -110,8 +110,7 @@ class CrossValidator @Since("1.2.0") (@Since("1.4.0") override val uid: String)
     splits.zipWithIndex.foreach {
       case ((training, validation), splitIndex) =>
         val trainingDataset = sqlCtx.createDataFrame(training, schema).cache()
-        val validationDataset = sqlCtx
-          .createDataFrame(validation, schema)
+        val validationDataset = sqlCtx.createDataFrame(validation, schema)
           .cache()
         // multi-model training
         logDebug(s"Train split $splitIndex with multiple sets of parameters.")
@@ -120,8 +119,8 @@ class CrossValidator @Since("1.2.0") (@Since("1.4.0") override val uid: String)
         var i = 0
         while (i < numModels) {
           // TODO: duplicate evaluator to take extra params from input
-          val metric = eval.evaluate(
-            models(i).transform(validationDataset, epm(i)))
+          val metric = eval
+            .evaluate(models(i).transform(validationDataset, epm(i)))
           logDebug(s"Got metric $metric for model trained with ${epm(i)}.")
           metrics(i) += metric
           i += 1
@@ -188,10 +187,8 @@ object CrossValidator extends MLReadable[CrossValidator] {
     override def load(path: String): CrossValidator = {
       val (metadata, estimator, evaluator, estimatorParamMaps, numFolds) =
         SharedReadWrite.load(path, sc, className)
-      new CrossValidator(metadata.uid)
-        .setEstimator(estimator)
-        .setEvaluator(evaluator)
-        .setEstimatorParamMaps(estimatorParamMaps)
+      new CrossValidator(metadata.uid).setEstimator(estimator)
+        .setEvaluator(evaluator).setEstimatorParamMaps(estimatorParamMaps)
         .setNumFolds(numFolds)
     }
   }
@@ -226,8 +223,7 @@ object CrossValidator extends MLReadable[CrossValidator] {
         case rformModel: RFormulaModel => Array(rformModel.pipelineModel)
         case _: Params                 => Array()
       }
-      val subStageMaps = subStages
-        .map(getUidMapImpl)
+      val subStageMaps = subStages.map(getUidMapImpl)
         .foldLeft(List.empty[(String, Params)])(_ ++ _)
       List((instance.uid, instance)) ++ subStageMaps
     }
@@ -253,8 +249,8 @@ object CrossValidator extends MLReadable[CrossValidator] {
       checkElement(instance.getEstimator, "estimator")
       // Check to make sure all Params apply to this estimator.  Throw an error if any do not.
       // Extraneous Params would cause problems when loading the estimatorParamMaps.
-      val uidToInstance: Map[String, Params] = CrossValidatorReader.getUidMap(
-        instance)
+      val uidToInstance: Map[String, Params] = CrossValidatorReader
+        .getUidMap(instance)
       instance.getEstimatorParamMaps.foreach {
         case pMap: ParamMap => pMap.toSeq.foreach {
             case ParamPair(p, v) => require(
@@ -286,12 +282,8 @@ object CrossValidator extends MLReadable[CrossValidator] {
       val jsonParams = List(
         "numFolds" -> parse(instance.numFolds.jsonEncode(instance.getNumFolds)),
         "estimatorParamMaps" -> parse(estimatorParamMapsJson))
-      DefaultParamsWriter.saveMetadata(
-        instance,
-        path,
-        sc,
-        extraMetadata,
-        Some(jsonParams))
+      DefaultParamsWriter
+        .saveMetadata(instance, path, sc, extraMetadata, Some(jsonParams))
 
       val evaluatorPath = new Path(path, "evaluator").toString
       instance.getEvaluator.asInstanceOf[MLWritable].save(evaluatorPath)
@@ -305,10 +297,8 @@ object CrossValidator extends MLReadable[CrossValidator] {
         expectedClassName: String)
         : (Metadata, Estimator[M], Evaluator, Array[ParamMap], Int) = {
 
-      val metadata = DefaultParamsReader.loadMetadata(
-        path,
-        sc,
-        expectedClassName)
+      val metadata = DefaultParamsReader
+        .loadMetadata(path, sc, expectedClassName)
 
       implicit val format = DefaultFormats
       val evaluatorPath = new Path(path, "evaluator").toString
@@ -318,15 +308,13 @@ object CrossValidator extends MLReadable[CrossValidator] {
       val estimator = DefaultParamsReader
         .loadParamsInstance[Estimator[M]](estimatorPath, sc)
 
-      val uidToParams =
-        Map(evaluator.uid -> evaluator) ++ CrossValidatorReader.getUidMap(
-          estimator)
+      val uidToParams = Map(evaluator.uid -> evaluator) ++ CrossValidatorReader
+        .getUidMap(estimator)
 
       val numFolds = (metadata.params \ "numFolds").extract[Int]
       val estimatorParamMaps: Array[ParamMap] =
         (metadata.params \ "estimatorParamMaps")
-          .extract[Seq[Seq[Map[String, String]]]]
-          .map { pMap =>
+          .extract[Seq[Seq[Map[String, String]]]].map { pMap =>
             val paramPairs = pMap.map {
               case pInfo: Map[String, String] =>
                 val est = uidToParams(pInfo("parent"))
@@ -335,8 +323,7 @@ object CrossValidator extends MLReadable[CrossValidator] {
                 param -> value
             }
             ParamMap(paramPairs: _*)
-          }
-          .toArray
+          }.toArray
       (metadata, estimator, evaluator, estimatorParamMaps, numFolds)
     }
   }
@@ -425,11 +412,10 @@ object CrossValidatorModel extends MLReadable[CrossValidatorModel] {
       val bestModelPath = new Path(path, "bestModel").toString
       val bestModel = DefaultParamsReader
         .loadParamsInstance[Model[_]](bestModelPath, sc)
-      val avgMetrics =
-        (metadata.metadata \ "avgMetrics").extract[Seq[Double]].toArray
+      val avgMetrics = (metadata.metadata \ "avgMetrics").extract[Seq[Double]]
+        .toArray
       val cv = new CrossValidatorModel(metadata.uid, bestModel, avgMetrics)
-      cv.set(cv.estimator, estimator)
-        .set(cv.evaluator, evaluator)
+      cv.set(cv.estimator, estimator).set(cv.evaluator, evaluator)
         .set(cv.estimatorParamMaps, estimatorParamMaps)
         .set(cv.numFolds, numFolds)
     }

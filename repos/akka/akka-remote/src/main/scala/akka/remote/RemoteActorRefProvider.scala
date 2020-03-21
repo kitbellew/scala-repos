@@ -356,13 +356,14 @@ private[akka] class RemoteActorRefProvider(
               } catch {
                 case NonFatal(e) ⇒
                   throw new ConfigurationException(
-                    s"configuration problem while creating [$path] with dispatcher [${props.dispatcher}] and mailbox [${props.mailbox}]",
+                    s"configuration problem while creating [$path] with dispatcher [${props
+                      .dispatcher}] and mailbox [${props.mailbox}]",
                     e)
               }
               val localAddress = transport.localAddressForRemote(addr)
               val rpath =
-                (RootActorPath(
-                  addr) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements)
+                (RootActorPath(addr) / "remote" / localAddress
+                  .protocol / localAddress.hostPort / path.elements)
                   .withUid(path.uid)
               new RemoteActorRef(
                 transport,
@@ -542,9 +543,8 @@ private[akka] class RemoteActorRefProvider(
     resolveActorRef(RootActorPath(ref.path.address) / "remote") !
       DaemonMsgCreate(props, deploy, ref.path.toSerializationFormat, supervisor)
 
-    remoteDeploymentWatcher ! RemoteDeploymentWatcher.WatchRemote(
-      ref,
-      supervisor)
+    remoteDeploymentWatcher ! RemoteDeploymentWatcher
+      .WatchRemote(ref, supervisor)
   }
 
   def getExternalAddressFor(addr: Address): Option[Address] = {
@@ -560,8 +560,8 @@ private[akka] class RemoteActorRefProvider(
   def getDefaultAddress: Address = transport.defaultAddress
 
   private def hasAddress(address: Address): Boolean =
-    address == local.rootPath.address || address == rootPath.address || transport
-      .addresses(address)
+    address == local.rootPath.address || address == rootPath
+      .address || transport.addresses(address)
 
   /**
     * Marks a remote system as out of sync and prevents reconnects until the quarantine timeout elapses.

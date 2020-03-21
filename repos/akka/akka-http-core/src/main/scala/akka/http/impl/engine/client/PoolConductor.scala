@@ -73,10 +73,10 @@ private object PoolConductor {
     GraphDSL.create() { implicit b ⇒
       import GraphDSL.Implicits._
 
-      val retryMerge = b.add(
-        MergePreferred[RequestContext](1, eagerComplete = true))
-      val slotSelector = b.add(
-        new SlotSelector(slotCount, pipeliningLimit, log))
+      val retryMerge = b
+        .add(MergePreferred[RequestContext](1, eagerComplete = true))
+      val slotSelector = b
+        .add(new SlotSelector(slotCount, pipeliningLimit, log))
       val route = b.add(new Route(slotCount))
       val retrySplit = b.add(Broadcast[RawSlotEvent](2))
       val flatten = Flow[RawSlotEvent].mapAsyncUnordered(slotCount) {
@@ -87,14 +87,12 @@ private object PoolConductor {
 
       retryMerge.out ~> slotSelector.in0
       slotSelector.out ~> route.in
-      retrySplit
-        .out(0)
+      retrySplit.out(0)
         .filter(
-          !_.isInstanceOf[
-            SlotEvent.RetryRequest]) ~> flatten ~> slotSelector.in1
-      retrySplit.out(1).collect {
-        case SlotEvent.RetryRequest(r) ⇒ r
-      } ~> retryMerge.preferred
+          !_.isInstanceOf[SlotEvent.RetryRequest]) ~> flatten ~> slotSelector
+        .in1
+      retrySplit.out(1)
+        .collect { case SlotEvent.RetryRequest(r) ⇒ r } ~> retryMerge.preferred
 
       Ports(retryMerge.in(0), retrySplit.in, route.outArray.toList)
     }

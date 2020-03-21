@@ -33,10 +33,8 @@ case class Interval[T: Ordering](start: Option[T], end: Option[T]) {
   }
 
   def disjoint(other: Interval[T]): Boolean = {
-    end
-      .flatMap(x => other.start.filter(_ > x))
-      .orElse(start.flatMap(x => other.end.filter(_ < x)))
-      .isDefined
+    end.flatMap(x => other.start.filter(_ > x))
+      .orElse(start.flatMap(x => other.end.filter(_ < x))).isDefined
   }
 
   def intersect(other: Interval[T]): Option[Interval[T]] = {

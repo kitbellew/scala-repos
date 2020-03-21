@@ -35,12 +35,8 @@ object ServerResultUtilsSpec extends Specification with IterateeSpecification {
         cookie: Option[(String, String)],
         result: Result): Option[Seq[Cookie]] = {
       val rh = CookieRequestHeader(cookie)
-      ServerResultUtils
-        .cleanFlashCookie(rh, result)
-        .header
-        .headers
-        .get("Set-Cookie")
-        .map(Cookies.decodeSetCookieHeader)
+      ServerResultUtils.cleanFlashCookie(rh, result).header.headers
+        .get("Set-Cookie").map(Cookies.decodeSetCookieHeader)
     }
 
     "do nothing when flash not present" in {

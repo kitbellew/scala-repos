@@ -58,9 +58,8 @@ private[spark] class MemoryStore(
   private val unrollMemoryMap = mutable.HashMap[Long, Long]()
 
   // Initial memory to request before unrolling any block
-  private val unrollMemoryThreshold: Long = conf.getLong(
-    "spark.storage.unrollMemoryThreshold",
-    1024 * 1024)
+  private val unrollMemoryThreshold: Long = conf
+    .getLong("spark.storage.unrollMemoryThreshold", 1024 * 1024)
 
   /** Total amount of memory available for storage, in bytes. */
   private def maxMemory: Long = memoryManager.maxStorageMemory
@@ -218,9 +217,8 @@ private[spark] class MemoryStore(
       // Acquire storage memory if necessary to store this block in memory.
       val enoughStorageMemory = {
         if (unrollMemoryUsedByThisBlock <= size) {
-          val acquiredExtra = memoryManager.acquireStorageMemory(
-            blockId,
-            size - unrollMemoryUsedByThisBlock)
+          val acquiredExtra = memoryManager
+            .acquireStorageMemory(blockId, size - unrollMemoryUsedByThisBlock)
           if (acquiredExtra) {
             transferUnrollToStorage(unrollMemoryUsedByThisBlock)
           }
@@ -348,8 +346,7 @@ private[spark] class MemoryStore(
             // an exclusive write lock on blocks which are candidates for eviction. We perform a
             // non-blocking "tryLock" here in order to ignore blocks which are locked for reading:
             if (blockManager.blockInfoManager
-                  .lockForWriting(blockId, blocking = false)
-                  .isDefined) {
+                  .lockForWriting(blockId, blocking = false).isDefined) {
               selectedBlocks += blockId
               freedMemory += pair.getValue.size
             }
@@ -369,9 +366,8 @@ private[spark] class MemoryStore(
               case DeserializedMemoryEntry(values, _) => Left(values)
               case SerializedMemoryEntry(buffer, _)   => Right(buffer)
             }
-            val newEffectiveStorageLevel = blockManager.dropFromMemory(
-              blockId,
-              () => data)
+            val newEffectiveStorageLevel = blockManager
+              .dropFromMemory(blockId, () => data)
             if (newEffectiveStorageLevel.isValid) {
               // The block is still present in at least one store, so release the lock
               // but don't delete the block info
@@ -417,8 +413,8 @@ private[spark] class MemoryStore(
       val success = memoryManager.acquireUnrollMemory(blockId, memory)
       if (success) {
         val taskAttemptId = currentTaskAttemptId()
-        unrollMemoryMap(taskAttemptId) =
-          unrollMemoryMap.getOrElse(taskAttemptId, 0L) + memory
+        unrollMemoryMap(taskAttemptId) = unrollMemoryMap
+          .getOrElse(taskAttemptId, 0L) + memory
       }
       success
     }

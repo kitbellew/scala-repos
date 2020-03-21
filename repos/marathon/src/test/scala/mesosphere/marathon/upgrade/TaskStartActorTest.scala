@@ -104,14 +104,14 @@ class TaskStartActorTest
 
   for ((counts, description) <- Seq(
          Some(
-           LaunchQueueTestHelper.zeroCounts.copy(tasksLeftToLaunch =
-             1)) -> "with one task left to launch",
+           LaunchQueueTestHelper.zeroCounts
+             .copy(tasksLeftToLaunch = 1)) -> "with one task left to launch",
          Some(
-           LaunchQueueTestHelper.zeroCounts.copy(taskLaunchesInFlight =
-             1)) -> "with one task in flight",
+           LaunchQueueTestHelper.zeroCounts
+             .copy(taskLaunchesInFlight = 1)) -> "with one task in flight",
          Some(
-           LaunchQueueTestHelper.zeroCounts.copy(tasksLaunched =
-             1)) -> "with one task already running"
+           LaunchQueueTestHelper.zeroCounts
+             .copy(tasksLaunched = 1)) -> "with one task already running"
        )) {
     test(s"Start success $description") {
       val promise = Promise[Unit]()
@@ -135,17 +135,16 @@ class TaskStartActorTest
       verify(launchQueue, Mockito.timeout(3000)).add(app, app.instances - 1)
 
       for (i <- 0 until (app.instances - 1))
-        system.eventStream
-          .publish(MesosStatusUpdateEvent(
-            "",
-            Task.Id(s"task-$i"),
-            "TASK_RUNNING",
-            "",
-            app.id,
-            "",
-            Nil,
-            Nil,
-            app.version.toString))
+        system.eventStream.publish(MesosStatusUpdateEvent(
+          "",
+          Task.Id(s"task-$i"),
+          "TASK_RUNNING",
+          "",
+          app.id,
+          "",
+          Nil,
+          Nil,
+          app.version.toString))
 
       Await.result(promise.future, 3.seconds) should be(())
 
@@ -158,9 +157,8 @@ class TaskStartActorTest
     val app = AppDefinition("/myApp".toPath, instances = 5)
 
     when(launchQueue.get(app.id)).thenReturn(None)
-    val task = MarathonTestHelper.startingTaskForApp(
-      app.id,
-      appVersion = Timestamp(1024))
+    val task = MarathonTestHelper
+      .startingTaskForApp(app.id, appVersion = Timestamp(1024))
     taskCreationHandler.created(task).futureValue
 
     val ref = TestActorRef(Props(
@@ -362,9 +360,8 @@ class TaskStartActorTest
     val app = AppDefinition("/myApp".toPath, instances = 5)
     when(launchQueue.get(app.id)).thenReturn(None)
 
-    val outdatedTask = MarathonTestHelper.stagedTaskForApp(
-      app.id,
-      appVersion = Timestamp(1024))
+    val outdatedTask = MarathonTestHelper
+      .stagedTaskForApp(app.id, appVersion = Timestamp(1024))
     val taskId = outdatedTask.taskId
     taskCreationHandler.created(outdatedTask).futureValue
 

@@ -49,8 +49,7 @@ private[summingbird] case class FileVersionTracking(
   def succeedVersion(version: Long) = fs.createNewFile(tokenPath(version))
 
   private def getOnDiskVersions: List[Try[Long]] =
-    listDir(root)
-      .filter(p => !(p.getName.startsWith("_")))
+    listDir(root).filter(p => !(p.getName.startsWith("_")))
       .filter(_.getName().endsWith(FINISHED_VERSION_SUFFIX))
       .map(f => parseVersion(f.toString()))
 
@@ -58,14 +57,10 @@ private[summingbird] case class FileVersionTracking(
     logger.debug("Version on disk : " + v.toString)
 
   def getAllVersions: List[Long] =
-    getOnDiskVersions
-      .map { v =>
-        logVersion(v)
-        v
-      }
-      .collect { case Success(s) => s }
-      .sorted
-      .reverse
+    getOnDiskVersions.map { v =>
+      logVersion(v)
+      v
+    }.collect { case Success(s) => s }.sorted.reverse
 
   def hasVersion(version: Long) = getAllVersions.contains(version)
 

@@ -31,9 +31,7 @@ object SdkUtils {
 
   def allAndroidSdks: Seq[projectRoots.Sdk] =
     inReadAction(
-      ProjectJdkTable
-        .getInstance()
-        .getSdksOfType(AndroidSdkType.getInstance())
+      ProjectJdkTable.getInstance().getSdksOfType(AndroidSdkType.getInstance())
         .asScala)
 
   def allJdks: Seq[projectRoots.Sdk] =

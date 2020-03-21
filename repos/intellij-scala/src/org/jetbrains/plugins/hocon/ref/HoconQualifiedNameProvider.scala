@@ -18,8 +18,7 @@ class HoconQualifiedNameProvider extends QualifiedNameProvider {
           path =>
             path.allKeys.map(_.iterator.map(_.getText).mkString(".")).orNull,
           field =>
-            field.keysInAllPaths
-              .map(_.iterator.map(_.getText).mkString("."))
+            field.keysInAllPaths.map(_.iterator.map(_.getText).mkString("."))
               .orNull
         )
       case _ => null

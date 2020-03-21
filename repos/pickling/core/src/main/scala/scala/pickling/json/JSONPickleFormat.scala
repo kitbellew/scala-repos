@@ -217,10 +217,7 @@ package json {
       FastTypeTag.Null.key -> (() => null),
       FastTypeTag.Ref.key -> (() =>
         lookupUnpicklee(
-          datum
-            .asInstanceOf[JSONObject]
-            .obj("$ref")
-            .asInstanceOf[Double]
+          datum.asInstanceOf[JSONObject].obj("$ref").asInstanceOf[Double]
             .toInt)),
       FastTypeTag.Int.key -> (() => datum.asInstanceOf[Double].toInt),
       FastTypeTag.Short.key -> (() => datum.asInstanceOf[Double].toShort),
@@ -232,52 +229,28 @@ package json {
       FastTypeTag.Char.key -> (() => datum.asInstanceOf[String].head),
       FastTypeTag.String.key -> (() => datum.asInstanceOf[String]),
       FastTypeTag.ArrayByte.key -> (() =>
-        datum
-          .asInstanceOf[JSONArray]
-          .list
-          .map(el => el.asInstanceOf[Double].toByte)
-          .toArray),
+        datum.asInstanceOf[JSONArray].list
+          .map(el => el.asInstanceOf[Double].toByte).toArray),
       FastTypeTag.ArrayShort.key -> (() =>
-        datum
-          .asInstanceOf[JSONArray]
-          .list
-          .map(el => el.asInstanceOf[Double].toShort)
-          .toArray),
+        datum.asInstanceOf[JSONArray].list
+          .map(el => el.asInstanceOf[Double].toShort).toArray),
       FastTypeTag.ArrayChar.key -> (() =>
-        datum
-          .asInstanceOf[JSONArray]
-          .list
-          .map(el => el.asInstanceOf[String].head)
-          .toArray),
+        datum.asInstanceOf[JSONArray].list
+          .map(el => el.asInstanceOf[String].head).toArray),
       FastTypeTag.ArrayInt.key -> (() =>
-        datum
-          .asInstanceOf[JSONArray]
-          .list
-          .map(el => el.asInstanceOf[Double].toInt)
-          .toArray),
+        datum.asInstanceOf[JSONArray].list
+          .map(el => el.asInstanceOf[Double].toInt).toArray),
       FastTypeTag.ArrayLong.key -> (() =>
-        datum
-          .asInstanceOf[JSONArray]
-          .list
-          .map(el => el.asInstanceOf[String].toLong)
-          .toArray),
+        datum.asInstanceOf[JSONArray].list
+          .map(el => el.asInstanceOf[String].toLong).toArray),
       FastTypeTag.ArrayBoolean.key -> (() =>
-        datum
-          .asInstanceOf[JSONArray]
-          .list
-          .map(el => el.asInstanceOf[Boolean])
+        datum.asInstanceOf[JSONArray].list.map(el => el.asInstanceOf[Boolean])
           .toArray),
       FastTypeTag.ArrayFloat.key -> (() =>
-        datum
-          .asInstanceOf[JSONArray]
-          .list
-          .map(el => el.asInstanceOf[Double].toFloat)
-          .toArray),
+        datum.asInstanceOf[JSONArray].list
+          .map(el => el.asInstanceOf[Double].toFloat).toArray),
       FastTypeTag.ArrayDouble.key -> (() =>
-        datum
-          .asInstanceOf[JSONArray]
-          .list
-          .map(el => el.asInstanceOf[Double])
+        datum.asInstanceOf[JSONArray].list.map(el => el.asInstanceOf[Double])
           .toArray)
     )
     private def mkNestedReader(datum: Any) = {
@@ -341,12 +314,9 @@ package json {
     def readField(name: String): JSONPickleReader = {
       datum match {
         case JSONObject(fields) =>
-          mkNestedReader(
-            fields
-              .get(name)
-              .getOrElse(
-                throw PicklingException(
-                  s"No field '$name' when unpickling, tag $lastReadTag, fields were $fields")))
+          mkNestedReader(fields.get(name).getOrElse(
+            throw PicklingException(
+              s"No field '$name' when unpickling, tag $lastReadTag, fields were $fields")))
       }
     }
     def endEntry(): Unit = {}

@@ -87,14 +87,14 @@ object ScalaJSGroupID {
 
     // Hack to work around bug in sbt macros (wrong way of collecting local
     // definitions)
-    val keysSym = rootMirror.staticModule(
-      "_root_.org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport")
+    val keysSym = rootMirror
+      .staticModule("_root_.org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport")
     val keys = c.Expr[ScalaJSPlugin.AutoImport.type](Ident(keysSym))
 
     reify {
       val cross = {
-        if (keys.splice.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
+        if (keys.splice.jsDependencies
+              .?.value.isDefined) ScalaJSCrossVersion.binary
         else CrossVersion.binary
       }
       ScalaJSGroupID.withCross(c.prefix.splice, artifactID.splice, cross)

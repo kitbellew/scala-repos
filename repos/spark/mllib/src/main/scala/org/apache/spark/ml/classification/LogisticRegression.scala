@@ -291,9 +291,7 @@ class LogisticRegression @Since("1.2.0") (
       handlePersistence: Boolean): LogisticRegressionModel = {
     val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
     val instances: RDD[Instance] = dataset
-      .select(col($(labelCol)), w, col($(featuresCol)))
-      .rdd
-      .map {
+      .select(col($(labelCol)), w, col($(featuresCol))).rdd.map {
         case Row(label: Double, weight: Double, features: Vector) =>
           Instance(label, weight, features)
       }
@@ -412,16 +410,18 @@ class LogisticRegression @Since("1.2.0") (
               $(tol))
           }
 
-        val initialCoefficientsWithIntercept = Vectors.zeros(
-          if ($(fitIntercept)) numFeatures + 1 else numFeatures)
+        val initialCoefficientsWithIntercept = Vectors
+          .zeros(if ($(fitIntercept)) numFeatures + 1 else numFeatures)
 
-        if (optInitialModel.isDefined && optInitialModel.get.coefficients.size != numFeatures) {
+        if (optInitialModel.isDefined && optInitialModel.get.coefficients
+              .size != numFeatures) {
           val vec = optInitialModel.get.coefficients
           logWarning(
             s"Initial coefficients provided ${vec} did not match the expected size ${numFeatures}")
         }
 
-        if (optInitialModel.isDefined && optInitialModel.get.coefficients.size == numFeatures) {
+        if (optInitialModel.isDefined && optInitialModel.get.coefficients
+              .size == numFeatures) {
           val initialCoefficientsWithInterceptArray =
             initialCoefficientsWithIntercept.toArray
           optInitialModel.get.coefficients.foreachActive {
@@ -446,8 +446,8 @@ class LogisticRegression @Since("1.2.0") (
                b = \log{P(1) / P(0)} = \log{count_1 / count_0}
              }}}
            */
-          initialCoefficientsWithIntercept.toArray(numFeatures) = math.log(
-            histogram(1) / histogram(0))
+          initialCoefficientsWithIntercept.toArray(numFeatures) = math
+            .log(histogram(1) / histogram(0))
         }
 
         val states = optimizer.iterations(
@@ -596,8 +596,8 @@ class LogisticRegressionModel private[spark] (
       : (LogisticRegressionModel, String) = {
     $(probabilityCol) match {
       case "" =>
-        val probabilityColName =
-          "probability_" + java.util.UUID.randomUUID.toString()
+        val probabilityColName = "probability_" + java.util.UUID.randomUUID
+          .toString()
         (
           copy(ParamMap.empty).setProbabilityCol(probabilityColName),
           probabilityColName)
@@ -730,10 +730,7 @@ object LogisticRegressionModel extends MLReadable[LogisticRegressionModel] {
         instance.intercept,
         instance.coefficients)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -748,11 +745,8 @@ object LogisticRegressionModel extends MLReadable[LogisticRegressionModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .format("parquet")
-        .load(dataPath)
-        .select("numClasses", "numFeatures", "intercept", "coefficients")
-        .head()
+      val data = sqlContext.read.format("parquet").load(dataPath)
+        .select("numClasses", "numFeatures", "intercept", "coefficients").head()
       // We will need numClasses, numFeatures in the future for multinomial logreg support.
       // val numClasses = data.getInt(0)
       // val numFeatures = data.getInt(1)
@@ -796,9 +790,8 @@ private[classification] class MultiClassSummarizer extends Serializable {
       totalInvalidCnt += 1
       this
     } else {
-      val (counts: Long, weightSum: Double) = distinctMap.getOrElse(
-        label.toInt,
-        (0L, 0.0))
+      val (counts: Long, weightSum: Double) = distinctMap
+        .getOrElse(label.toInt, (0L, 0.0))
       distinctMap.put(label.toInt, (counts + 1L, weightSum + weight))
       this
     }

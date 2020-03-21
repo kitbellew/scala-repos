@@ -33,9 +33,8 @@ trait EntityPage extends HtmlPage {
     val s = universe.settings
     (if (!s.doctitle.isDefault) s.doctitle.value + " " else "") +
       (if (!s.docversion.isDefault) s.docversion.value else "") +
-      (if ((
-             !s.doctitle.isDefault || !s.docversion.isDefault
-           ) && tpl.qualifiedName != "_root_") " - " + tpl.qualifiedName
+      (if ((!s.doctitle.isDefault || !s.docversion.isDefault) && tpl
+             .qualifiedName != "_root_") " - " + tpl.qualifiedName
        else "")
   }
 
@@ -128,15 +127,14 @@ trait EntityPage extends HtmlPage {
                     </li>
 
       // Get path from root
-      val rootToParentLis = tpl.toRoot.tail.reverse.zipWithIndex
-        .map {
-          case (pack, ind) =>
-            memberToHtml(
-              pack,
-              tpl,
-              indentation = ind,
-              isParent = (pack eq tpl.toRoot.tail.head))
-        }
+      val rootToParentLis = tpl.toRoot.tail.reverse.zipWithIndex.map {
+        case (pack, ind) =>
+          memberToHtml(
+            pack,
+            tpl,
+            indentation = ind,
+            isParent = (pack eq tpl.toRoot.tail.head))
+      }
 
       val parent = tpl.toRoot match {
         case _ :: parent :: _ if !parent.isRootPackage => Some(parent)
@@ -151,28 +149,25 @@ trait EntityPage extends HtmlPage {
       val currentPackageTpls =
         if (tpl.isPackage) tpl.templates
         else
-          parent.fold(Seq.empty[TemplateEntity with MemberEntity])(p =>
-            p.templates)
+          parent
+            .fold(Seq.empty[TemplateEntity with MemberEntity])(p => p.templates)
 
       val (subsToTpl, subsAfterTpl) = parentSub.partition(_.name <= tpl.name)
 
-      val subsToTplLis = subsToTpl.map(
-        memberToHtml(_, tpl, indentation = rootToParentLis.length))
-      val subsAfterTplLis = subsAfterTpl.map(
-        memberToHtml(_, tpl, indentation = rootToParentLis.length))
-      val currEntityLis = currentPackageTpls
-        .filter(x =>
-          !x.isPackage && (x.isTrait || x.isClass || x.isAbstractType))
-        .sortBy(_.name)
-        .map(entityToUl(
+      val subsToTplLis = subsToTpl
+        .map(memberToHtml(_, tpl, indentation = rootToParentLis.length))
+      val subsAfterTplLis = subsAfterTpl
+        .map(memberToHtml(_, tpl, indentation = rootToParentLis.length))
+      val currEntityLis = currentPackageTpls.filter(x =>
+        !x.isPackage && (x.isTrait || x.isClass || x.isAbstractType))
+        .sortBy(_.name).map(entityToUl(
           _,
           (if (tpl.isPackage) 0 else -1) + rootToParentLis.length))
-      val currSubLis = tpl.templates
-        .filter(_.isPackage)
-        .sortBy(_.name)
+      val currSubLis = tpl.templates.filter(_.isPackage).sortBy(_.name)
         .map(memberToHtml(_, tpl, indentation = rootToParentLis.length + 1))
 
-      if (subsToTpl.isEmpty && !tpl.isPackage) // current Entity is not a package, show packages before entity listing
+      if (subsToTpl.isEmpty && !tpl
+            .isPackage) // current Entity is not a package, show packages before entity listing
         rootToParentLis ++ subsToTplLis ++ subsAfterTplLis ++ currSubLis ++ currEntityLis
       else
         rootToParentLis ++ subsToTplLis ++ currSubLis ++ currEntityLis ++ subsAfterTplLis
@@ -214,8 +209,8 @@ trait EntityPage extends HtmlPage {
         </div>
     </div>
 
-  val valueMembers =
-    tpl.methods ++ tpl.values ++ tpl.templates.filter(x => x.isObject) sorted
+  val valueMembers = tpl.methods ++ tpl.values ++ tpl.templates
+    .filter(x => x.isObject) sorted
 
   val (absValueMembers, nonAbsValueMembers) =
     valueMembers partition (_.isAbstract)
@@ -306,9 +301,8 @@ trait EntityPage extends HtmlPage {
             <span class="filtertype">Ordering</span>
             <ol>
               {
-          if (!universe.settings.docGroups.value || (
-                tpl.members.map(_.group).distinct.length == 1
-              )) NodeSeq.Empty
+          if (!universe.settings.docGroups.value || (tpl.members.map(_.group)
+                .distinct.length == 1)) NodeSeq.Empty
           else <li class="group out"><span>Grouped</span></li>
         }
               <li class="alpha in"><span>Alphabetic</span></li>
@@ -400,10 +394,7 @@ trait EntityPage extends HtmlPage {
           else "Concrete Value Members"
         }</h3>
               <ol>
-                {
-          concValueMembers
-            .map(memberToHtml(_, tpl))
-        }
+                {concValueMembers.map(memberToHtml(_, tpl))}
               </ol>
             </div>
     }
@@ -429,9 +420,10 @@ trait EntityPage extends HtmlPage {
         {
       // linearization
       NodeSeq fromSeq (
-        for ((superTpl, superType) <- (
-               tpl.linearizationTemplates zip tpl.linearizationTypes
-             )) yield <div class="parent" name={superTpl.qualifiedName}>
+        for ((superTpl, superType) <- (tpl.linearizationTemplates zip tpl
+               .linearizationTypes)) yield <div class="parent" name={
+          superTpl.qualifiedName
+        }>
               <h3>Inherited from {
           typeToHtmlWithStupidTypes(tpl, superTpl, superType)
         }</h3>
@@ -457,9 +449,7 @@ trait EntityPage extends HtmlPage {
         {
       val allGroups = tpl.members.map(_.group).distinct
       val orderedGroups = allGroups
-        .map(group => (tpl.groupPriority(group), group))
-        .sorted
-        .map(_._2)
+        .map(group => (tpl.groupPriority(group), group)).sorted.map(_._2)
       // linearization
       NodeSeq fromSeq (for (group <- orderedGroups)
         yield <div class="group" name={group}>
@@ -657,12 +647,13 @@ trait EntityPage extends HtmlPage {
           val constraintText = conv.constraints match {
             case Nil => NodeSeq.Empty
             case List(constraint) =>
-              scala.xml.Text(
-                "This conversion will take place only if ") ++ constraintToHtml(
+              scala.xml
+                .Text(
+                  "This conversion will take place only if ") ++ constraintToHtml(
                 constraint) ++ scala.xml.Text(".")
             case List(constraint1, constraint2) =>
-              scala.xml.Text(
-                "This conversion will take place only if ") ++ constraintToHtml(
+              scala.xml
+                .Text("This conversion will take place only if ") ++ constraintToHtml(
                 constraint1) ++
                 scala.xml.Text(" and at the same time ") ++ constraintToHtml(
                 constraint2) ++ scala.xml.Text(".")
@@ -670,9 +661,9 @@ trait EntityPage extends HtmlPage {
               <br/> ++ "This conversion will take place only if all of the following constraints are met:" ++ <br/> ++ {
                 var index = 0
                 constraints map { constraint =>
-                  scala.xml.Text({
-                      index += 1; index
-                    } + ". ") ++ constraintToHtml(constraint) ++ <br/>
+                  scala.xml
+                    .Text({ index += 1; index } + ". ") ++ constraintToHtml(
+                    constraint) ++ <br/>
                 }
               }
           }
@@ -702,8 +693,8 @@ trait EntityPage extends HtmlPage {
                 <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala"
                 target="_blank">type ascription</a> ++ scala.xml.Text(":") ++
                 <br/> ++ <div class="cmt"><pre>{
-                "(" + EntityPage.lowerFirstLetter(
-                  tpl.name) + ": " + conv.targetType.name + ")." + mbr.name + params
+                "(" + EntityPage.lowerFirstLetter(tpl.name) + ": " + conv
+                  .targetType.name + ")." + mbr.name + params
               }</pre></div>
             }
 
@@ -803,9 +794,8 @@ trait EntityPage extends HtmlPage {
 
     val sourceLink: NodeSeq = mbr match {
       case dtpl: DocTemplateEntity
-          if (
-            isSelf && dtpl.sourceUrl.isDefined && dtpl.inSource.isDefined && !isReduced
-          ) =>
+          if (isSelf && dtpl.sourceUrl.isDefined && dtpl.inSource
+            .isDefined && !isReduced) =>
         val (absFile, _) = dtpl.inSource.get
         <dt>Source</dt>
         <dd>{
@@ -1285,14 +1275,15 @@ trait EntityPage extends HtmlPage {
     constraint match {
       case ktcc: KnownTypeClassConstraint =>
         scala.xml.Text(
-          ktcc.typeExplanation(
-            ktcc.typeParamName) + " (" + ktcc.typeParamName + ": ") ++
+          ktcc.typeExplanation(ktcc.typeParamName) + " (" + ktcc
+            .typeParamName + ": ") ++
           templateToHtml(ktcc.typeClassEntity) ++ scala.xml.Text(")")
       case tcc: TypeClassConstraint =>
         scala.xml.Text(tcc.typeParamName + " is ") ++
           <a href="http://stackoverflow.com/questions/2982276/what-is-a-context-bound-in-scala" target="_blank">
         context-bounded</a> ++ scala.xml.Text(
-          " by " + tcc.typeClassEntity.qualifiedName + " (" + tcc.typeParamName + ": ") ++
+          " by " + tcc.typeClassEntity.qualifiedName + " (" + tcc
+            .typeParamName + ": ") ++
           templateToHtml(tcc.typeClassEntity) ++ scala.xml.Text(")")
       case impl: ImplicitInScopeConstraint =>
         scala.xml.Text("an implicit value of type ") ++ typeToHtml(
@@ -1300,22 +1291,26 @@ trait EntityPage extends HtmlPage {
           hasLinks = true) ++ scala.xml.Text(" is in scope")
       case eq: EqualTypeParamConstraint =>
         scala.xml.Text(
-          eq.typeParamName + " is " + eq.rhs.name + " (" + eq.typeParamName + " =:= ") ++
+          eq.typeParamName + " is " + eq.rhs.name + " (" + eq
+            .typeParamName + " =:= ") ++
           typeToHtml(eq.rhs, hasLinks = true) ++ scala.xml.Text(")")
       case bt: BoundedTypeParamConstraint =>
         scala.xml.Text(
-          bt.typeParamName + " is a superclass of " + bt.lowerBound.name + " and a subclass of " +
+          bt.typeParamName + " is a superclass of " + bt.lowerBound
+            .name + " and a subclass of " +
             bt.upperBound.name + " (" + bt.typeParamName + " >: ") ++
-          typeToHtml(bt.lowerBound, hasLinks = true) ++ scala.xml.Text(
-          " <: ") ++
+          typeToHtml(bt.lowerBound, hasLinks = true) ++ scala.xml
+          .Text(" <: ") ++
           typeToHtml(bt.upperBound, hasLinks = true) ++ scala.xml.Text(")")
       case lb: LowerBoundedTypeParamConstraint =>
         scala.xml.Text(
-          lb.typeParamName + " is a superclass of " + lb.lowerBound.name + " (" + lb.typeParamName + " >: ") ++
+          lb.typeParamName + " is a superclass of " + lb.lowerBound
+            .name + " (" + lb.typeParamName + " >: ") ++
           typeToHtml(lb.lowerBound, hasLinks = true) ++ scala.xml.Text(")")
       case ub: UpperBoundedTypeParamConstraint =>
         scala.xml.Text(
-          ub.typeParamName + " is a subclass of " + ub.upperBound.name + " (" + ub.typeParamName + " <: ") ++
+          ub.typeParamName + " is a subclass of " + ub.upperBound
+            .name + " (" + ub.typeParamName + " <: ") ++
           typeToHtml(ub.upperBound, hasLinks = true) ++ scala.xml.Text(")")
     }
 }

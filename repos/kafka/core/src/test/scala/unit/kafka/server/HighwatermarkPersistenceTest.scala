@@ -38,8 +38,7 @@ import org.apache.kafka.common.utils.{MockTime => JMockTime}
 
 class HighwatermarkPersistenceTest {
 
-  val configs = TestUtils
-    .createBrokerConfigs(2, TestUtils.MockZkConnect)
+  val configs = TestUtils.createBrokerConfigs(2, TestUtils.MockZkConnect)
     .map(KafkaConfig.fromProps)
   val topic = "foo"
   val logManagers = configs map { config =>
@@ -215,10 +214,8 @@ class HighwatermarkPersistenceTest {
       replicaManager: ReplicaManager,
       topic: String,
       partition: Int): Long = {
-    replicaManager
-      .highWatermarkCheckpoints(
-        new File(replicaManager.config.logDirs(0)).getAbsolutePath)
-      .read
+    replicaManager.highWatermarkCheckpoints(
+      new File(replicaManager.config.logDirs(0)).getAbsolutePath).read
       .getOrElse(TopicAndPartition(topic, partition), 0L)
   }
 

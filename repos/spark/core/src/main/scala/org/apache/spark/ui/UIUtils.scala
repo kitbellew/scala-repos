@@ -127,10 +127,8 @@ private[spark] object UIUtils extends Logging {
   // Yarn has to go through a proxy so the base uri is provided and has to be on all links
   def uiRoot: String = {
     // SPARK-11484 - Use the proxyBase set by the AM, if not found then use env.
-    sys.props
-      .get("spark.ui.proxyBase")
-      .orElse(sys.env.get("APPLICATION_WEB_PROXY_BASE"))
-      .getOrElse("")
+    sys.props.get("spark.ui.proxyBase")
+      .orElse(sys.env.get("APPLICATION_WEB_PROXY_BASE")).getOrElse("")
   }
 
   def prependBaseUri(basePath: String = "", resource: String = ""): String = {
@@ -196,8 +194,7 @@ private[spark] object UIUtils extends Logging {
       }</a>
       </li>
     }
-    val helpButton: Seq[Node] = helpText
-      .map(tooltip(_, "bottom"))
+    val helpButton: Seq[Node] = helpText.map(tooltip(_, "bottom"))
       .getOrElse(Seq.empty)
 
     <html>
@@ -327,8 +324,8 @@ private[spark] object UIUtils extends Logging {
     val completeWidth = "width: %s%%".format((completed.toDouble / total) * 100)
     // started + completed can be > total when there are speculative tasks
     val boundedStarted = math.min(started, total - completed)
-    val startWidth = "width: %s%%".format(
-      (boundedStarted.toDouble / total) * 100)
+    val startWidth = "width: %s%%"
+      .format((boundedStarted.toDouble / total) * 100)
 
     <div class="progress">
       <span style="text-align:center; position:absolute; width:100%; left:0;">
@@ -429,8 +426,8 @@ private[spark] object UIUtils extends Logging {
     // as HTML, otherwise render as escaped string
     try {
       // Try to load the description as unescaped HTML
-      val xml = XML.loadString(
-        s"""<span class="description-input">$desc</span>""")
+      val xml = XML
+        .loadString(s"""<span class="description-input">$desc</span>""")
 
       // Verify that this has only anchors and span (we are wrapping in span)
       val allowedNodeLabels = Set("a", "span")

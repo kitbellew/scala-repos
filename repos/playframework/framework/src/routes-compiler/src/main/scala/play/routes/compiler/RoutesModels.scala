@@ -61,8 +61,7 @@ case class HandlerCall(
   val dynamic = if (instantiate) "@" else ""
   override def toString =
     dynamic + packageName + "." + controller + dynamic + "." + method + parameters
-      .map { params => "(" + params.mkString(", ") + ")" }
-      .getOrElse("")
+      .map { params => "(" + params.mkString(", ") + ")" }.getOrElse("")
 }
 
 /**
@@ -81,8 +80,7 @@ case class Parameter(
     extends Positional {
   override def toString =
     name + ":" + typeName + fixed.map(" = " + _).getOrElse("") + default
-      .map(" ?= " + _)
-      .getOrElse("")
+      .map(" ?= " + _).getOrElse("")
 }
 
 /**

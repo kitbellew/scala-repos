@@ -261,7 +261,8 @@ abstract class UnPickler {
           (module map {
             case (group, art) =>
               s"""\n(NOTE: It looks like the $art module is missing; try adding a dependency on "$group" : "$art".
-               |       See http://docs.scala-lang.org/overviews/ for more information.)""".stripMargin
+               |       See http://docs.scala-lang.org/overviews/ for more information.)"""
+                .stripMargin
           } getOrElse "")
         }
 
@@ -284,10 +285,12 @@ abstract class UnPickler {
                 val advice = moduleAdvice(s"${owner.fullName}.$name")
                 val missingMessage =
                   s"""|missing or invalid dependency detected while loading class file '$filename'.
-                      |Could not access ${name.longString} in ${owner.kindString} ${owner.fullName},
+                      |Could not access ${name.longString} in ${owner
+                       .kindString} ${owner.fullName},
                       |because it (or its dependencies) are missing. Check your build definition for
                       |missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
-                      |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner.fullName}.$advice""".stripMargin
+                      |A full rebuild may help if '$filename' was compiled against an incompatible version of ${owner
+                       .fullName}.$advice""".stripMargin
                 owner.newStubSymbol(name, missingMessage)
               }
             }
@@ -370,10 +373,8 @@ abstract class UnPickler {
           sym
         case MODULEsym =>
           val clazz =
-            at(
-              inforef,
-              () =>
-                readType()).typeSymbol // after NMT_TRANSITION, we can leave off the () => ... ()
+            at(inforef, () => readType())
+              .typeSymbol // after NMT_TRANSITION, we can leave off the () => ... ()
           if (isModuleRoot) moduleRoot setFlag pflags
           else owner.newLinkedModule(clazz, pflags)
         case VALsym =>
@@ -747,7 +748,8 @@ abstract class UnPickler {
 
     protected def errorBadSignature(msg: String) =
       throw new RuntimeException(
-        "malformed Scala signature of " + classRoot.name + " at " + readIndex + "; " + msg)
+        "malformed Scala signature of " + classRoot
+          .name + " at " + readIndex + "; " + msg)
 
     def inferMethodAlternative(
         fun: Tree,

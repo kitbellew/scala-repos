@@ -203,10 +203,8 @@ trait LabelledTypeClassCompanion[C[_]]
       : Wrap.Aux[FieldType[HK, HV] :+: TKV, HV :+: ct.value.V] =
     new Wrap[FieldType[HK, HV] :+: TKV] {
       type V = HV :+: ct.value.V
-      val unwrap = typeClass.coproduct(
-        key.value.name,
-        ch.value,
-        ct.value.unwrap)
+      val unwrap = typeClass
+        .coproduct(key.value.name, ch.value, ct.value.unwrap)
       def label(v: HV :+: ct.value.V): FieldType[HK, HV] :+: TKV =
         v match {
           case Inl(hv) => Inl(field[HK](hv))

@@ -32,7 +32,9 @@ class ScalaDocUnclosedTagWithoutParserInspection extends LocalInspectionTool {
         if (!ScaladocSyntaxElementType.canClose(
               firstElementType,
               s.getLastChild.getNode.getElementType) &&
-            firstElementType != ScalaDocTokenType.DOC_HEADER && firstElementType != ScalaDocTokenType.VALID_DOC_HEADER) {
+            firstElementType != ScalaDocTokenType
+              .DOC_HEADER && firstElementType != ScalaDocTokenType
+              .VALID_DOC_HEADER) {
 
           holder.registerProblem(holder.getManager.createProblemDescriptor(
             s.getFirstChild,
@@ -64,11 +66,9 @@ class ScalaDocEscapeTagQuickFix(s: ScDocSyntaxElement)
           syntElem.getFirstChild.getText.length())
       } else {
         MyScaladocParsing.escapeSequencesForWiki
-          .get(syntElem.getFirstChild.getText)
-          .get
+          .get(syntElem.getFirstChild.getText).get
       }
-    val doc = FileDocumentManager
-      .getInstance()
+    val doc = FileDocumentManager.getInstance()
       .getDocument(syntElem.getContainingFile.getVirtualFile)
     val range: TextRange = syntElem.getFirstChild.getTextRange
     doc.replaceString(range.getStartOffset, range.getEndOffset, replaceText)

@@ -30,27 +30,24 @@ import org.apache.spark.mllib.util.LinearDataGenerator
 class GeneralizedLinearPMMLModelExportSuite extends SparkFunSuite {
 
   test("linear regression PMML export") {
-    val linearInput = LinearDataGenerator.generateLinearInput(
-      3.0,
-      Array(10.0, 10.0),
-      1,
-      17)
+    val linearInput = LinearDataGenerator
+      .generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
     val linearRegressionModel =
       new LinearRegressionModel(linearInput(0).features, linearInput(0).label)
-    val linearModelExport = PMMLModelExportFactory.createPMMLModelExport(
-      linearRegressionModel)
+    val linearModelExport = PMMLModelExportFactory
+      .createPMMLModelExport(linearRegressionModel)
     // assert that the PMML format is as expected
     assert(linearModelExport.isInstanceOf[PMMLModelExport])
     val pmml = linearModelExport.getPmml
     assert(pmml.getHeader.getDescription === "linear regression")
     // check that the number of fields match the weights size
     assert(
-      pmml.getDataDictionary.getNumberOfFields === linearRegressionModel.weights.size + 1)
+      pmml.getDataDictionary.getNumberOfFields === linearRegressionModel.weights
+        .size + 1)
     // This verifies that there is a model attached to the pmml object and the model is a regression
     // one.  It also verifies that the pmml model has a regression table with the same number of
     // predictors of the model weights.
-    val pmmlRegressionModel = pmml.getModels
-      .get(0)
+    val pmmlRegressionModel = pmml.getModels.get(0)
       .asInstanceOf[RegressionModel]
     assert(
       pmmlRegressionModel.getRegressionTables.get(0).getNumericPredictors.size
@@ -58,27 +55,24 @@ class GeneralizedLinearPMMLModelExportSuite extends SparkFunSuite {
   }
 
   test("ridge regression PMML export") {
-    val linearInput = LinearDataGenerator.generateLinearInput(
-      3.0,
-      Array(10.0, 10.0),
-      1,
-      17)
+    val linearInput = LinearDataGenerator
+      .generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
     val ridgeRegressionModel =
       new RidgeRegressionModel(linearInput(0).features, linearInput(0).label)
-    val ridgeModelExport = PMMLModelExportFactory.createPMMLModelExport(
-      ridgeRegressionModel)
+    val ridgeModelExport = PMMLModelExportFactory
+      .createPMMLModelExport(ridgeRegressionModel)
     // assert that the PMML format is as expected
     assert(ridgeModelExport.isInstanceOf[PMMLModelExport])
     val pmml = ridgeModelExport.getPmml
     assert(pmml.getHeader.getDescription === "ridge regression")
     // check that the number of fields match the weights size
     assert(
-      pmml.getDataDictionary.getNumberOfFields === ridgeRegressionModel.weights.size + 1)
+      pmml.getDataDictionary.getNumberOfFields === ridgeRegressionModel.weights
+        .size + 1)
     // This verify that there is a model attached to the pmml object and the model is a regression
     // one.  It also verifies that the pmml model has a regression table with the same number of
     // predictors of the model weights.
-    val pmmlRegressionModel = pmml.getModels
-      .get(0)
+    val pmmlRegressionModel = pmml.getModels.get(0)
       .asInstanceOf[RegressionModel]
     assert(
       pmmlRegressionModel.getRegressionTables.get(0).getNumericPredictors.size
@@ -86,15 +80,12 @@ class GeneralizedLinearPMMLModelExportSuite extends SparkFunSuite {
   }
 
   test("lasso PMML export") {
-    val linearInput = LinearDataGenerator.generateLinearInput(
-      3.0,
-      Array(10.0, 10.0),
-      1,
-      17)
+    val linearInput = LinearDataGenerator
+      .generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
     val lassoModel =
       new LassoModel(linearInput(0).features, linearInput(0).label)
-    val lassoModelExport = PMMLModelExportFactory.createPMMLModelExport(
-      lassoModel)
+    val lassoModelExport = PMMLModelExportFactory
+      .createPMMLModelExport(lassoModel)
     // assert that the PMML format is as expected
     assert(lassoModelExport.isInstanceOf[PMMLModelExport])
     val pmml = lassoModelExport.getPmml
@@ -105,8 +96,7 @@ class GeneralizedLinearPMMLModelExportSuite extends SparkFunSuite {
     // This verify that there is a model attached to the pmml object and the model is a regression
     // one. It also verifies that the pmml model has a regression table with the same number of
     // predictors of the model weights.
-    val pmmlRegressionModel = pmml.getModels
-      .get(0)
+    val pmmlRegressionModel = pmml.getModels.get(0)
       .asInstanceOf[RegressionModel]
     assert(
       pmmlRegressionModel.getRegressionTables.get(0).getNumericPredictors.size

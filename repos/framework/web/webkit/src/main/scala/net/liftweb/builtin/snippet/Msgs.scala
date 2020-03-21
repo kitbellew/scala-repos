@@ -76,8 +76,7 @@ object Msgs extends DispatchSnippet {
         // Extract the title if provided, or default to none. Allow for XML nodes
         // so that people can localize, etc.
         val title: NodeSeq = (styles \\ noticeType.titleTag)
-          .filter(_.prefix == "lift")
-          .flatMap(_.child)
+          .filter(_.prefix == "lift").flatMap(_.child)
 
         // Extract any provided classes for the messages
         val cssClasses = ((styles \\ noticeType.styleTag) ++

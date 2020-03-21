@@ -72,8 +72,7 @@ object SourceGenerator {
     }
 
   private val scalariformPreferences = {
-    FormattingPreferences()
-      .setPreference(DoubleIndentClassDeclaration, true)
+    FormattingPreferences().setPreference(DoubleIndentClassDeclaration, true)
       .setPreference(PreserveDanglingCloseParenthesis, true)
   }
 

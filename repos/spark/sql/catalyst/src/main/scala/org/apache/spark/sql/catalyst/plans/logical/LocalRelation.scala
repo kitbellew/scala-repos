@@ -71,11 +71,11 @@ case class LocalRelation(output: Seq[Attribute], data: Seq[InternalRow] = Nil)
   override def sameResult(plan: LogicalPlan): Boolean =
     plan match {
       case LocalRelation(otherOutput, otherData) =>
-        otherOutput.map(_.dataType) == output.map(
-          _.dataType) && otherData == data
+        otherOutput.map(_.dataType) == output
+          .map(_.dataType) && otherData == data
       case _ => false
     }
 
-  override lazy val statistics = Statistics(sizeInBytes =
-    output.map(_.dataType.defaultSize).sum * data.length)
+  override lazy val statistics = Statistics(sizeInBytes = output
+    .map(_.dataType.defaultSize).sum * data.length)
 }

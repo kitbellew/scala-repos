@@ -16,8 +16,8 @@ import com.typesafe.config.{ConfigFactory, Config}
 import HttpMethods._
 
 object TestServer extends App {
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.loglevel = INFO
     akka.log-dead-letters = off
     akka.stream.materializer.debug.fuzzing-mode = off
@@ -32,9 +32,10 @@ object TestServer extends App {
             if req.header[UpgradeToWebSocket].isDefined ⇒
           req.header[UpgradeToWebSocket] match {
             case Some(upgrade) ⇒
-              upgrade.handleMessages(
-                echoWebSocketService
-              ) // needed for running the autobahn test suite
+              upgrade
+                .handleMessages(
+                  echoWebSocketService
+                ) // needed for running the autobahn test suite
             case None ⇒
               HttpResponse(400, entity = "Not a valid websocket request!")
           }
@@ -80,11 +81,10 @@ object TestServer extends App {
     Flow[Message] // just let message flow directly to the output
 
   def greeterWebSocketService: Flow[Message, Message, NotUsed] =
-    Flow[Message]
-      .collect {
-        case TextMessage.Strict(name) ⇒ TextMessage(s"Hello '$name'")
-        case tm: TextMessage ⇒
-          TextMessage(Source.single("Hello ") ++ tm.textStream)
-        // ignore binary messages
-      }
+    Flow[Message].collect {
+      case TextMessage.Strict(name) ⇒ TextMessage(s"Hello '$name'")
+      case tm: TextMessage ⇒
+        TextMessage(Source.single("Hello ") ++ tm.textStream)
+      // ignore binary messages
+    }
 }

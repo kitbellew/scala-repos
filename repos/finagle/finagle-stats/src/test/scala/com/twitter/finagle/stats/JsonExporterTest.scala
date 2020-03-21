@@ -65,7 +65,8 @@ class JsonExporterTest
     val filteredSample = exporter.filterSample(sample)
     assert(
       filteredSample.size == 1,
-      "Expected 1 metric to pass through the filter. Found: " + filteredSample.size)
+      "Expected 1 metric to pass through the filter. Found: " + filteredSample
+        .size)
     assert(
       filteredSample.contains("jvm_uptime"),
       "Expected to find jvm_uptime metric in unfiltered samples")
@@ -156,8 +157,8 @@ class JsonExporterTest
       override lazy val statsFilterRegex: Option[Regex] = mkRegex("jvm.*,vie")
     }
     val requestFiltered = Request("/admin/metrics.json?filtered=1&pretty=0")
-    val responseFiltered =
-      Await.result(exporter.apply(requestFiltered)).contentString
+    val responseFiltered = Await.result(exporter.apply(requestFiltered))
+      .contentString
     assert(
       responseFiltered.contains("views"),
       "'Views' should be present - 'vie' is not a match")

@@ -111,10 +111,10 @@ class FutureSpec
     "never completed" must {
       behave like emptyFuture(_(Promise().future))
       "return supplied value on timeout" in {
-        val failure =
-          Promise.failed[String](new RuntimeException("br0ken")).future
-        val otherFailure =
-          Promise.failed[String](new RuntimeException("last")).future
+        val failure = Promise.failed[String](new RuntimeException("br0ken"))
+          .future
+        val otherFailure = Promise.failed[String](new RuntimeException("last"))
+          .future
         val empty = Promise[String]().future
         val timedOut = Promise.successful[String]("Timedout").future
 
@@ -138,15 +138,13 @@ class FutureSpec
     "completed with an exception" must {
       val message = "Expected Exception"
       val future = Promise[String]()
-        .complete(Failure(new RuntimeException(message)))
-        .future
+        .complete(Failure(new RuntimeException(message))).future
       behave like futureWithException[RuntimeException](_(future, message))
     }
     "completed with an InterruptedException" must {
       val message = "Boxed InterruptedException"
       val future = Promise[String]()
-        .complete(Failure(new InterruptedException(message)))
-        .future
+        .complete(Failure(new InterruptedException(message))).future
       behave like futureWithException[RuntimeException](_(future, message))
     }
     "completed with a NonLocalReturnControl" must {
@@ -232,7 +230,8 @@ class FutureSpec
                       if a.getStackTrace.isEmpty || b.getStackTrace.isEmpty ⇒
                     a.getClass.toString == b.getClass.toString
                   case _ ⇒ false
-                }) :| result.value.get.toString + " is expected to be " + expected.toString
+                }) :| result.value.get
+                  .toString + " is expected to be " + expected.toString
               },
               minSuccessful(10000),
               workers(4)
@@ -286,8 +285,8 @@ class FutureSpec
             val actor2 = system.actorOf(Props(new Actor {
               def receive = {
                 case s: String ⇒
-                  sender() ! Status.Failure(new ArithmeticException(
-                    "/ by zero"))
+                  sender() ! Status
+                    .Failure(new ArithmeticException("/ by zero"))
               }
             }))
             val future = actor1 ? "Hello" flatMap {
@@ -478,11 +477,13 @@ class FutureSpec
       }
 
       "firstCompletedOf" in {
-        val futures = Vector.fill[Future[Int]](10)(
-          Promise[Int]().future) :+ Promise.successful[Int](5).future
-        Await.result(
-          Future.firstCompletedOf(futures),
-          timeout.duration) should ===(5)
+        val futures = Vector
+          .fill[Future[Int]](10)(Promise[Int]().future) :+ Promise
+          .successful[Int](5).future
+        Await
+          .result(
+            Future.firstCompletedOf(futures),
+            timeout.duration) should ===(5)
       }
 
       "find" in {
@@ -505,25 +506,22 @@ class FutureSpec
         val f = new IllegalStateException("test")
         intercept[IllegalStateException] {
           Await.result(
-            Promise
-              .failed[String](f)
-              .future zip Promise.successful("foo").future,
+            Promise.failed[String](f).future zip Promise.successful("foo")
+              .future,
             timeout)
         } should ===(f)
 
         intercept[IllegalStateException] {
           Await.result(
-            Promise
-              .successful("foo")
-              .future zip Promise.failed[String](f).future,
+            Promise.successful("foo").future zip Promise.failed[String](f)
+              .future,
             timeout)
         } should ===(f)
 
         intercept[IllegalStateException] {
           Await.result(
-            Promise
-              .failed[String](f)
-              .future zip Promise.failed[String](f).future,
+            Promise.failed[String](f).future zip Promise.failed[String](f)
+              .future,
             timeout)
         } should ===(f)
 
@@ -535,8 +533,8 @@ class FutureSpec
       "fold by composing" in {
         val futures = (1 to 10).toList map { i ⇒ Future(i) }
         Await.result(
-          futures.foldLeft(Future(0))((fr, fa) ⇒
-            for (r ← fr; a ← fa) yield (r + a)),
+          futures
+            .foldLeft(Future(0))((fr, fa) ⇒ for (r ← fr; a ← fa) yield (r + a)),
           timeout.duration) should ===(55)
       }
 
@@ -630,18 +628,15 @@ class FutureSpec
         val oddFutures = List.fill(100)(oddActor ? 'GetNext mapTo classTag[Int])
 
         assert(
-          Await
-            .result(Future.sequence(oddFutures), timeout.duration)
+          Await.result(Future.sequence(oddFutures), timeout.duration)
             .sum === 10000)
         system.stop(oddActor)
 
         val list = (1 to 100).toList
         assert(
-          Await
-            .result(
-              Future.traverse(list)(x ⇒ Future(x * 2 - 1)),
-              timeout.duration)
-            .sum === 10000)
+          Await.result(
+            Future.traverse(list)(x ⇒ Future(x * 2 - 1)),
+            timeout.duration).sum === 10000)
       }
 
       "handle Throwables" in {
@@ -756,10 +751,11 @@ class FutureSpec
         val complex = Future(()) map { _ ⇒
           val nested = Future(())
           nested foreach (_ ⇒ l1.open())
-          FutureSpec.ready(
-            l1,
-            TestLatch.DefaultTimeout
-          ) // make sure nested is completed
+          FutureSpec
+            .ready(
+              l1,
+              TestLatch.DefaultTimeout
+            ) // make sure nested is completed
           nested foreach (_ ⇒ l2.open())
           FutureSpec.ready(l2, TestLatch.DefaultTimeout)
         }
@@ -821,9 +817,10 @@ class FutureSpec
     }
     "transform result with map" in {
       f((future, result) ⇒
-        Await.result(
-          (future map (_.toString.length)),
-          timeout.duration) should ===(result.toString.length))
+        Await
+          .result(
+            (future map (_.toString.length)),
+            timeout.duration) should ===(result.toString.length))
     }
     "compose result with flatMap" in {
       f { (future, result) ⇒
@@ -854,9 +851,10 @@ class FutureSpec
     }
     "not recover from exception" in {
       f((future, result) ⇒
-        Await.result(
-          future.recover({ case _ ⇒ "pigdog" }),
-          timeout.duration) should ===(result))
+        Await
+          .result(
+            future.recover({ case _ ⇒ "pigdog" }),
+            timeout.duration) should ===(result))
     }
     "perform action on result" in {
       f { (future, result) ⇒

@@ -27,9 +27,8 @@ import akka.actor.RootActorPath
 object MultiNodeClusterSpec {
 
   def clusterConfigWithFailureDetectorPuppet: Config =
-    ConfigFactory
-      .parseString(
-        "akka.cluster.failure-detector.implementation-class = akka.cluster.FailureDetectorPuppet")
+    ConfigFactory.parseString(
+      "akka.cluster.failure-detector.implementation-class = akka.cluster.FailureDetectorPuppet")
       .withFallback(clusterConfig)
 
   def clusterConfig(failureDetectorPuppet: Boolean): Config =
@@ -142,8 +141,8 @@ trait MultiNodeClusterSpec
 
   def muteMarkingAsReachable(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled)
-      sys.eventStream.publish(Mute(
-        EventFilter.info(pattern = ".*Marking.* as REACHABLE.*")))
+      sys.eventStream
+        .publish(Mute(EventFilter.info(pattern = ".*Marking.* as REACHABLE.*")))
 
   override def afterAll(): Unit = {
     if (!log.isDebugEnabled) {

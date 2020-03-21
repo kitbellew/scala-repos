@@ -29,8 +29,8 @@ object ValueClassType {
 
   def isValueClass(cl: PsiClass) =
     cl match {
-      case scClass: ScClass =>
-        scClass.supers.map(_.qualifiedName).contains("scala.AnyVal")
+      case scClass: ScClass => scClass.supers.map(_.qualifiedName)
+          .contains("scala.AnyVal")
       case _ => false
     }
 }

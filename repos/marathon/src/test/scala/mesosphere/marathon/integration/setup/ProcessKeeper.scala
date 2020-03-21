@@ -49,7 +49,8 @@ object ProcessKeeper {
 
   def startZooKeeper(port: Int, workDir: String, wipeWorkDir: Boolean = true) {
     val args =
-      "-Dzookeeper.jmx.log4j.disable=true" :: "org.apache.zookeeper.server.ZooKeeperServerMain" :: port.toString :: workDir :: Nil
+      "-Dzookeeper.jmx.log4j.disable=true" :: "org.apache.zookeeper.server.ZooKeeperServerMain" :: port
+        .toString :: workDir :: Nil
     val workDirFile = new File(workDir)
     if (wipeWorkDir) {
       FileUtils.deleteDirectory(workDirFile)
@@ -175,8 +176,7 @@ object ProcessKeeper {
       cwd: File = new File("."),
       env: Map[String, String] = Map.empty,
       upWhen: String => Boolean): Process = {
-    val javaExecutable = sys.props
-      .get("java.home")
+    val javaExecutable = sys.props.get("java.home")
       .fold("java")(_ + "/bin/java")
     val classPath = sys.props.getOrElse("java.class.path", "target/classes")
     val memSettings = s"-Xmx${heapInMegs}m"
@@ -255,9 +255,10 @@ object ProcessKeeper {
   val PIDRE = """^\s*(\d+)\s+(\S*)$""".r
 
   def stopJavaProcesses(wantedMainClass: String): Unit = {
-    val pids = "jps -l".!!.split("\n").collect {
-      case PIDRE(pid, mainClass) if mainClass.contains(wantedMainClass) => pid
-    }
+    val pids = "jps -l"
+      .!!.split("\n").collect {
+        case PIDRE(pid, mainClass) if mainClass.contains(wantedMainClass) => pid
+      }
     if (pids.nonEmpty) {
       val killCommand = s"kill -9 ${pids.mkString(" ")}"
       log.warn(s"Left over processes, executing: $killCommand")

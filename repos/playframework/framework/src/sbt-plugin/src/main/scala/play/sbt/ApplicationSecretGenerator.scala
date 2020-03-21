@@ -15,9 +15,7 @@ object ApplicationSecretGenerator {
   def generateSecret = {
     val random = new SecureRandom()
 
-    (1 to 64)
-      .map { _ => (random.nextInt(75) + 48).toChar }
-      .mkString
+    (1 to 64).map { _ => (random.nextInt(75) + 48).toChar }.mkString
       .replaceAll("\\\\+", "/")
   }
 
@@ -53,12 +51,13 @@ object ApplicationSecretGenerator {
         val newLines =
           if (config.hasPath("play.crypto.secret")) {
             log.info(
-              "Replacing old application secret: " + config.getString(
-                "play.crypto.secret"))
+              "Replacing old application secret: " + config
+                .getString("play.crypto.secret"))
             getUpdatedSecretLines(secret, lines, config)
           } else {
             log.warn(
-              "Did not find application secret in " + appConfFile.getCanonicalPath)
+              "Did not find application secret in " + appConfFile
+                .getCanonicalPath)
             log.warn("Adding application secret to start of file")
             val secretConfig = s"""play.crypto.secret="$secret""""
             secretConfig :: lines
@@ -69,7 +68,8 @@ object ApplicationSecretGenerator {
         appConfFile
       } else {
         log.error(
-          "Could not find configuration file at " + appConfFile.getCanonicalPath)
+          "Could not find configuration file at " + appConfFile
+            .getCanonicalPath)
         throw new FeedbackProvidedException {}
       }
     }

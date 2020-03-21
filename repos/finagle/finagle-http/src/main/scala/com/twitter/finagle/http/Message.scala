@@ -95,8 +95,8 @@ abstract class Message extends HttpMessageProxy {
   def acceptMediaTypes: Seq[String] =
     accept.map {
       _.split(";", 2).headOption
-        .map(_.trim.toLowerCase) // media types are case-insensitive
-        .filter(_.nonEmpty) // skip blanks
+      .map(_.trim.toLowerCase) // media types are case-insensitive
+      .filter(_.nonEmpty) // skip blanks
     }.flatten
 
   /** Allow header */
@@ -458,8 +458,7 @@ object Message {
   val ContentTypeJavascript = MediaType.Javascript + ";" + CharsetUtf8
   val ContentTypeWwwFrom = MediaType.WwwForm + ";" + CharsetUtf8
 
-  private val HttpDateFormat = FastDateFormat.getInstance(
-    "EEE, dd MMM yyyy HH:mm:ss",
-    TimeZone.getTimeZone("GMT"))
+  private val HttpDateFormat = FastDateFormat
+    .getInstance("EEE, dd MMM yyyy HH:mm:ss", TimeZone.getTimeZone("GMT"))
   def httpDateFormat(date: Date): String = HttpDateFormat.format(date) + " GMT"
 }

@@ -63,8 +63,8 @@ abstract class CreateEntityQuickFix(
       case exp @ Parent(infix: ScInfixExpr) if infix.operation == exp =>
         checkBlock(infix.getBaseExpr)
       case it => it.qualifier match {
-          case Some(sup: ScSuperReference) =>
-            unambiguousSuper(sup).exists(!_.isInCompiledFile)
+          case Some(sup: ScSuperReference) => unambiguousSuper(sup)
+              .exists(!_.isInCompiledFile)
           case Some(qual) => checkBlock(qual)
           case None       => !it.isInCompiledFile
         }
@@ -95,10 +95,8 @@ abstract class CreateEntityQuickFix(
     val unimplementedBody =
       if (file.scalaLanguageLevel.exists(_ >= Scala_2_10)) " = ???" else ""
     val params = (genericParams ++: parameters).mkString
-    val text = placeholder.format(
-      keyword,
-      ref.nameId.getText,
-      params) + unimplementedBody
+    val text = placeholder
+      .format(keyword, ref.nameId.getText, params) + unimplementedBody
 
     val block = ref match {
       case it if it.isQualified       => ref.qualifier.flatMap(tryToFindBlock)
@@ -106,8 +104,9 @@ abstract class CreateEntityQuickFix(
       case _                          => None
     }
 
-    if (!FileModificationService.getInstance.prepareFileForWrite(
-          block.map(_.getContainingFile).getOrElse(file))) return
+    if (!FileModificationService.getInstance
+          .prepareFileForWrite(block.map(_.getContainingFile).getOrElse(file)))
+      return
 
     inWriteAction {
       val entity = block match {
@@ -123,8 +122,8 @@ abstract class CreateEntityQuickFix(
       val builder = new TemplateBuilderImpl(entity)
 
       for (aType <- entityType;
-           typeElement <- entity.children.findByType(
-             classOf[ScSimpleTypeElement])) {
+           typeElement <- entity.children
+             .findByType(classOf[ScSimpleTypeElement])) {
         builder.replaceElement(typeElement, aType)
       }
 
@@ -136,8 +135,8 @@ abstract class CreateEntityQuickFix(
 
       val template = builder.buildTemplate()
 
-      val isScalaConsole =
-        file.getName == ScalaLanguageConsoleView.SCALA_CONSOLE
+      val isScalaConsole = file.getName == ScalaLanguageConsoleView
+        .SCALA_CONSOLE
       if (!isScalaConsole) {
         val newEditor = positionCursor(entity.getLastChild)
         val range = entity.getTextRange
@@ -153,10 +152,8 @@ object CreateEntityQuickFix {
   private def materializeSytheticObject(obj: ScObject): ScObject = {
     val clazz = obj.fakeCompanionClassOrCompanionClass
     val objText = s"object ${clazz.name} {}"
-    val fromText = ScalaPsiElementFactory.createTemplateDefinitionFromText(
-      objText,
-      clazz.getParent,
-      clazz)
+    val fromText = ScalaPsiElementFactory
+      .createTemplateDefinitionFromText(objText, clazz.getParent, clazz)
     clazz.getParent.addAfter(fromText, clazz).asInstanceOf[ScObject]
   }
 
@@ -169,10 +166,8 @@ object CreateEntityQuickFix {
     exp match {
       case InstanceOfClass(td: ScTemplateDefinition) => Success(td.extendsBlock)
       case th: ScThisReference
-          if PsiTreeUtil.getParentOfType(
-            th,
-            classOf[ScExtendsBlock],
-            true) != null =>
+          if PsiTreeUtil
+            .getParentOfType(th, classOf[ScExtendsBlock], true) != null =>
         th.refTemplate match {
           case Some(ScTemplateDefinition.ExtendsBlock(block)) => Success(block)
           case None =>
@@ -209,8 +204,7 @@ object CreateEntityQuickFix {
       block.add(createTemplateBody(block.getManager))
 
     val children = block.templateBody.get.children.toSeq
-    val anchor = children
-      .find(_.isInstanceOf[ScSelfTypeElement])
+    val anchor = children.find(_.isInstanceOf[ScSelfTypeElement])
       .getOrElse(children.head)
     val holder = anchor.getParent
     val hasMembers = holder.children.findByType(classOf[ScMember]).isDefined

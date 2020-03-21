@@ -263,8 +263,7 @@ case class ExplainCommand(
     } catch {
       case cause: TreeNodeException[_] =>
         ("Error occurred during query planning: \n" + cause.getMessage)
-          .split("\n")
-          .map(Row(_))
+          .split("\n").map(Row(_))
     }
 }
 
@@ -387,16 +386,14 @@ case class ShowFunctions(db: Option[String], pattern: Option[String])
       case Some(p) =>
         try {
           val regex = java.util.regex.Pattern.compile(p)
-          sqlContext.sessionState.functionRegistry
-            .listFunction()
-            .filter(regex.matcher(_).matches())
-            .map(Row(_))
+          sqlContext.sessionState.functionRegistry.listFunction()
+            .filter(regex.matcher(_).matches()).map(Row(_))
         } catch {
           // probably will failed in the regex that user provided, then returns empty row.
           case _: Throwable => Seq.empty[Row]
         }
-      case None =>
-        sqlContext.sessionState.functionRegistry.listFunction().map(Row(_))
+      case None => sqlContext.sessionState.functionRegistry.listFunction()
+          .map(Row(_))
     }
 }
 

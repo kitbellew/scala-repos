@@ -91,11 +91,8 @@ class JsonFunctionsSuite extends QueryTest with SharedSQLContext {
 
   test("json_tuple filter and group") {
     val df: DataFrame = tuples.toDF("key", "jstring")
-    val expr = df
-      .select(functions.json_tuple($"jstring", "f1", "f2"))
-      .where($"c0".isNotNull)
-      .groupBy($"c1")
-      .count()
+    val expr = df.select(functions.json_tuple($"jstring", "f1", "f2"))
+      .where($"c0".isNotNull).groupBy($"c1").count()
 
     val expected = Row(null, 1) ::
       Row("2", 2) ::

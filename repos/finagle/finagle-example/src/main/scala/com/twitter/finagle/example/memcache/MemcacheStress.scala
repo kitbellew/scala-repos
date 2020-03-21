@@ -47,16 +47,13 @@ object MemcacheStress extends App {
   }
 
   def main() {
-    var builder = ClientBuilder()
-      .name("mc")
-      .codec(Memcached())
-      .hostConnectionLimit(config.concurrency())
-      .hosts(config.hosts())
+    var builder = ClientBuilder().name("mc").codec(Memcached())
+      .hostConnectionLimit(config.concurrency()).hosts(config.hosts())
 
     if (config.nworkers() > 0)
       builder = builder.channelFactory(new NioClientSocketChannelFactory(
-        Executors.newCachedThreadPool(new NamedPoolThreadFactory(
-          "memcacheboss")),
+        Executors
+          .newCachedThreadPool(new NamedPoolThreadFactory("memcacheboss")),
         Executors.newCachedThreadPool(new NamedPoolThreadFactory("memcacheIO")),
         config.nworkers()))
 

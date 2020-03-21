@@ -37,16 +37,13 @@ class InnerProductJob(args: Args) extends Job(args) {
   val in1 = Tsv("input1").read.mapTo((0, 1, 2) -> ('x2, 'y2, 's2)) {
     input: (Int, Int, Int) => input
   }
-  in0
-    .blockJoinWithSmaller(
-      'y1 -> 'y2,
-      in1,
-      leftReplication = l,
-      rightReplication = r,
-      joiner = j)
-    .map(('s1, 's2) -> 'score) { v: (Int, Int) => v._1 * v._2 }
-    .groupBy('x1, 'x2) { _.sum[Double]('score) }
-    .write(Tsv("output"))
+  in0.blockJoinWithSmaller(
+    'y1 -> 'y2,
+    in1,
+    leftReplication = l,
+    rightReplication = r,
+    joiner = j).map(('s1, 's2) -> 'score) { v: (Int, Int) => v._1 * v._2 }
+    .groupBy('x1, 'x2) { _.sum[Double]('score) }.write(Tsv("output"))
 }
 
 class BlockJoinPipeTest extends WordSpec with Matchers {
@@ -64,15 +61,11 @@ class BlockJoinPipeTest extends WordSpec with Matchers {
         left: Int = 1,
         right: Int = 1,
         joiner: String = "i")(callback: Buffer[(Int, Int, Double)] => Unit) {
-      JobTest(new InnerProductJob(_))
-        .source(Tsv("input0"), in1)
-        .source(Tsv("input1"), in2)
-        .arg("left", left.toString)
-        .arg("right", right.toString)
-        .arg("joiner", joiner)
+      JobTest(new InnerProductJob(_)).source(Tsv("input0"), in1)
+        .source(Tsv("input1"), in2).arg("left", left.toString)
+        .arg("right", right.toString).arg("joiner", joiner)
         .sink[(Int, Int, Double)](Tsv("output")) { outBuf => callback(outBuf) }
-        .run
-        .finish
+        .run.finish
     }
 
     "correctly compute product with 1 left block and 1 right block" in {

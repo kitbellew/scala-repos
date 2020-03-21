@@ -191,12 +191,8 @@ object GridPane {
       rowIndex: Int,
       columnspan: Int,
       rowspan: Int) {
-    jfxsl.GridPane.setConstraints(
-      child,
-      columnIndex,
-      rowIndex,
-      columnspan,
-      rowspan)
+    jfxsl.GridPane
+      .setConstraints(child, columnIndex, rowIndex, columnspan, rowspan)
   }
 
   /**

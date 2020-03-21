@@ -25,8 +25,7 @@ object Jackson {
       unmarshalling.Unmarshaller
         .messageUnmarshallerFromEntityUnmarshaller { // isn't implicitly inferred for unknown reasons
           unmarshalling.Unmarshaller.stringUnmarshaller
-            .forContentTypes(`application/json`)
-            .map { jsonString ⇒
+            .forContentTypes(`application/json`).map { jsonString ⇒
               val reader = objectMapper.reader(clazz)
               clazz.cast(reader.readValue(jsonString))
             }

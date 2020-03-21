@@ -44,8 +44,7 @@ class DistributedSuite
     val numPartitions = 10
 
     sc = new SparkContext("local-cluster[%s,1,1024]".format(numSlaves), "test")
-    val data = sc
-      .parallelize(1 to 100, numPartitions)
+    val data = sc.parallelize(1 to 100, numPartitions)
       .map(x => throw new NotSerializableExn(new NotSerializableClass))
     intercept[SparkException] { data.count() }
     resetSparkContext()
@@ -82,8 +81,7 @@ class DistributedSuite
     sc = new SparkContext(clusterUrl, "test", conf)
     // This data should be around 20 MB, so even with 4 mappers and 2 reducers, each map output
     // file should be about 2.5 MB
-    val pairs = sc
-      .parallelize(1 to 2000, 4)
+    val pairs = sc.parallelize(1 to 2000, 4)
       .map(x => (x % 16, new Array[Byte](10000)))
     val groups = pairs.groupByKey(2).map(x => (x._1, x._2.size)).collect()
     assert(groups.length === 16)
@@ -161,8 +159,7 @@ class DistributedSuite
 
   test("caching in memory, serialized, replicated") {
     sc = new SparkContext(clusterUrl, "test")
-    val data = sc
-      .parallelize(1 to 1000, 10)
+    val data = sc.parallelize(1 to 1000, 10)
       .persist(StorageLevel.MEMORY_ONLY_SER_2)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
@@ -179,8 +176,7 @@ class DistributedSuite
 
   test("caching in memory and disk, replicated") {
     sc = new SparkContext(clusterUrl, "test")
-    val data = sc
-      .parallelize(1 to 1000, 10)
+    val data = sc.parallelize(1 to 1000, 10)
       .persist(StorageLevel.MEMORY_AND_DISK_2)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
@@ -189,8 +185,7 @@ class DistributedSuite
 
   test("caching in memory and disk, serialized, replicated") {
     sc = new SparkContext(clusterUrl, "test")
-    val data = sc
-      .parallelize(1 to 1000, 10)
+    val data = sc.parallelize(1 to 1000, 10)
       .persist(StorageLevel.MEMORY_AND_DISK_SER_2)
 
     assert(data.count() === 1000)
@@ -199,8 +194,8 @@ class DistributedSuite
 
     // Get all the locations of the first partition and try to fetch the partitions
     // from those locations.
-    val blockIds =
-      data.partitions.indices.map(index => RDDBlockId(data.id, index)).toArray
+    val blockIds = data.partitions.indices
+      .map(index => RDDBlockId(data.id, index)).toArray
     val blockId = blockIds(0)
     val blockManager = SparkEnv.get.blockManager
     val blockTransfer = SparkEnv.get.blockTransferService
@@ -209,8 +204,7 @@ class DistributedSuite
         .fetchBlockSync(cmId.host, cmId.port, cmId.executorId, blockId.toString)
       val deserialized = blockManager
         .dataDeserialize(blockId, bytes.nioByteBuffer())
-        .asInstanceOf[Iterator[Int]]
-        .toList
+        .asInstanceOf[Iterator[Int]].toList
       assert(deserialized === (1 to 100).toList)
     }
   }
@@ -240,8 +234,7 @@ class DistributedSuite
       .set("spark.storage.unrollMemoryThreshold", "1024")
       .set("spark.testing.memory", (size * numPartitions).toString)
     sc = new SparkContext(clusterUrl, "test", conf)
-    val data = sc
-      .parallelize(1 to size, numPartitions)
+    val data = sc.parallelize(1 to size, numPartitions)
       .persist(StorageLevel.MEMORY_ONLY)
     assert(data.count() === size)
     assert(data.count() === size)
@@ -262,9 +255,7 @@ class DistributedSuite
       null,
       Nil,
       Map("TEST_VAR" -> "TEST_VALUE"))
-    val values = sc
-      .parallelize(1 to 2, 2)
-      .map(x => System.getenv("TEST_VAR"))
+    val values = sc.parallelize(1 to 2, 2).map(x => System.getenv("TEST_VAR"))
       .collect()
     assert(values.toSeq === Seq("TEST_VALUE", "TEST_VALUE"))
   }
@@ -302,12 +293,10 @@ class DistributedSuite
       assert(data.map(markNodeIfIdentity).collect.size === 2)
       // This relies on mergeCombiners being used to perform the actual reduce for this
       // test to actually be testing what it claims.
-      val grouped = data
-        .map(x => x -> x)
-        .combineByKey(
-          x => x,
-          (x: Boolean, y: Boolean) => x,
-          (x: Boolean, y: Boolean) => failOnMarkedIdentity(x))
+      val grouped = data.map(x => x -> x).combineByKey(
+        x => x,
+        (x: Boolean, y: Boolean) => x,
+        (x: Boolean, y: Boolean) => failOnMarkedIdentity(x))
       assert(grouped.collect.size === 1)
     }
   }
@@ -328,8 +317,7 @@ class DistributedSuite
 
       // Create a new replicated RDD to make sure that cached peer information doesn't cause
       // problems.
-      val data2 = sc
-        .parallelize(Seq(true, true), 2)
+      val data2 = sc.parallelize(Seq(true, true), 2)
         .persist(StorageLevel.MEMORY_ONLY_2)
       assert(data2.count === 2)
     }

@@ -13,8 +13,8 @@ object PersistentVolumeMatcher {
       waitingTasks: Iterable[Task.Reserved]): Option[VolumeMatch] = {
 
     // find all offered persistent volumes
-    val availableVolumes: Map[String, Mesos.Resource] =
-      offer.getResourcesList.asScala.collect {
+    val availableVolumes: Map[String, Mesos.Resource] = offer.getResourcesList
+      .asScala.collect {
         case resource: Mesos.Resource
             if resource.hasDisk && resource.getDisk.hasPersistence =>
           resource.getDisk.getPersistence.getId -> resource
@@ -22,8 +22,7 @@ object PersistentVolumeMatcher {
 
     def resourcesForTask(
         task: Task.Reserved): Option[Iterable[Mesos.Resource]] = {
-      if (task.reservation.volumeIds
-            .map(_.idString)
+      if (task.reservation.volumeIds.map(_.idString)
             .forall(availableVolumes.contains))
         Some(task.reservation.volumeIds.flatMap(id =>
           availableVolumes.get(id.idString)))

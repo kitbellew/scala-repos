@@ -32,8 +32,8 @@ case class Endpoint(ipv4: Int, port: Short) {
 object Endpoint {
   private[this] val log = Logger.getLogger(getClass.toString)
 
-  val Loopback = Endpoint.toIpv4(
-    InetAddress.getByAddress(Array[Byte](127, 0, 0, 1)))
+  val Loopback = Endpoint
+    .toIpv4(InetAddress.getByAddress(Array[Byte](127, 0, 0, 1)))
 
   val Unknown = new Endpoint(0, 0)
 

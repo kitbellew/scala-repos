@@ -106,8 +106,9 @@ case object Write extends AccessMode
 
 object HadoopSchemeInstance {
   def apply(scheme: Scheme[_, _, _, _, _]) =
-    scheme.asInstanceOf[
-      Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], _, _]]
+    scheme
+      .asInstanceOf[
+        Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], _, _]]
 }
 
 object CastHfsTap {
@@ -212,10 +213,7 @@ abstract class Source extends java.io.Serializable {
       conv: TupleConverter[T]): Stream[T] = {
     validateTaps(mode)
     val tap = createTap(Read)(mode)
-    mode
-      .openForRead(Config.defaultFrom(mode), tap)
-      .asScala
-      .map { conv(_) }
+    mode.openForRead(Config.defaultFrom(mode), tap).asScala.map { conv(_) }
       .toStream
   }
 }

@@ -158,10 +158,7 @@ object IDFModel extends MLReadable[IDFModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       val data = Data(instance.idf)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -173,10 +170,7 @@ object IDFModel extends MLReadable[IDFModel] {
     override def load(path: String): IDFModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("idf")
-        .head()
+      val data = sqlContext.read.parquet(dataPath).select("idf").head()
       val idf = data.getAs[Vector](0)
       val model = new IDFModel(metadata.uid, new feature.IDFModel(idf))
       DefaultParamsReader.getAndSetParams(model, metadata)

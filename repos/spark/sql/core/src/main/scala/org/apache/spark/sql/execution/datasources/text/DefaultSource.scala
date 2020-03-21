@@ -73,8 +73,7 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     verifySchema(dataSchema)
 
     val conf = job.getConfiguration
-    val compressionCodec = options
-      .get("compression")
+    val compressionCodec = options.get("compression")
       .map(CompressionCodecs.getCodecClassName)
     compressionCodec.foreach { codec =>
       CompressionCodecs.setCodecConfiguration(conf, codec)
@@ -107,33 +106,29 @@ class DefaultSource extends FileFormat with DataSourceRegister {
 
     val job = Job.getInstance(sqlContext.sparkContext.hadoopConfiguration)
     val conf = job.getConfiguration
-    val paths = inputFiles
-      .filterNot(_.getPath.getName startsWith "_")
-      .map(_.getPath)
-      .sortBy(_.toUri)
+    val paths = inputFiles.filterNot(_.getPath.getName startsWith "_")
+      .map(_.getPath).sortBy(_.toUri)
 
     if (paths.nonEmpty) { FileInputFormat.setInputPaths(job, paths: _*) }
 
-    sqlContext.sparkContext
-      .hadoopRDD(
-        conf.asInstanceOf[JobConf],
-        classOf[TextInputFormat],
-        classOf[LongWritable],
-        classOf[Text])
-      .mapPartitions { iter =>
-        val unsafeRow = new UnsafeRow(1)
-        val bufferHolder = new BufferHolder(unsafeRow)
-        val unsafeRowWriter = new UnsafeRowWriter(bufferHolder, 1)
+    sqlContext.sparkContext.hadoopRDD(
+      conf.asInstanceOf[JobConf],
+      classOf[TextInputFormat],
+      classOf[LongWritable],
+      classOf[Text]).mapPartitions { iter =>
+      val unsafeRow = new UnsafeRow(1)
+      val bufferHolder = new BufferHolder(unsafeRow)
+      val unsafeRowWriter = new UnsafeRowWriter(bufferHolder, 1)
 
-        iter.map {
-          case (_, line) =>
-            // Writes to an UnsafeRow directly
-            bufferHolder.reset()
-            unsafeRowWriter.write(0, line.getBytes, 0, line.getLength)
-            unsafeRow.setTotalSize(bufferHolder.totalSize())
-            unsafeRow
-        }
+      iter.map {
+        case (_, line) =>
+          // Writes to an UnsafeRow directly
+          bufferHolder.reset()
+          unsafeRowWriter.write(0, line.getBytes, 0, line.getLength)
+          unsafeRow.setTotalSize(bufferHolder.totalSize())
+          unsafeRow
       }
+    }
   }
 }
 
@@ -151,8 +146,8 @@ class TextOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId = configuration.get(
-          "spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration
+          .get("spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId.txt$extension")

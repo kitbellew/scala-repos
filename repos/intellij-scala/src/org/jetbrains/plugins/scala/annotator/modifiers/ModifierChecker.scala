@@ -87,8 +87,8 @@ private[annotator] object ModifierChecker {
                   checkDublicates(modifierPsi, "lazy")
                 case _: ScParameter =>
                   proccessError(
-                    ScalaBundle.message(
-                      "lazy.modifier.is.not.allowed.with.param"),
+                    ScalaBundle
+                      .message("lazy.modifier.is.not.allowed.with.param"),
                     modifierPsi,
                     holder,
                     new RemoveModifierQuickFix(owner, "lazy"))
@@ -122,8 +122,8 @@ private[annotator] object ModifierChecker {
                 case _: ScObject =>
                   if (checkDublicates(modifierPsi, "final")) {
                     proccessWarning(
-                      ScalaBundle.message(
-                        "final.modifier.is.redundant.with.object"),
+                      ScalaBundle
+                        .message("final.modifier.is.redundant.with.object"),
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "final"))
@@ -149,8 +149,7 @@ private[annotator] object ModifierChecker {
                     }
                   } else { checkDublicates(modifierPsi, "final") }
                 case e: ScClassParameter =>
-                  if (PsiTreeUtil
-                        .getParentOfType(e, classOf[ScTypeDefinition])
+                  if (PsiTreeUtil.getParentOfType(e, classOf[ScTypeDefinition])
                         .hasFinalModifier) {
                     if (checkDublicates(modifierPsi, "final")) {
                       proccessWarning(
@@ -185,8 +184,8 @@ private[annotator] object ModifierChecker {
                 case _: ScTrait =>
                   if (checkDublicates(modifierPsi, "abstract")) {
                     proccessWarning(
-                      ScalaBundle.message(
-                        "abstract.modifier.redundant.fot.traits"),
+                      ScalaBundle
+                        .message("abstract.modifier.redundant.fot.traits"),
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "abstract"))
@@ -198,8 +197,8 @@ private[annotator] object ModifierChecker {
                   if (!member.containingClass.isInstanceOf[ScTrait] && owner
                         .hasModifierProperty("override")) {
                     proccessError(
-                      ScalaBundle.message(
-                        "abstract.override.modifier.is.not.allowed"),
+                      ScalaBundle
+                        .message("abstract.override.modifier.is.not.allowed"),
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "abstract"))
@@ -214,8 +213,8 @@ private[annotator] object ModifierChecker {
             case "override" => owner match {
                 case _: ScTypeDefinition =>
                   proccessError(
-                    ScalaBundle.message(
-                      "override.modifier.is.not.allowed.for.classes"),
+                    ScalaBundle
+                      .message("override.modifier.is.not.allowed.for.classes"),
                     modifierPsi,
                     holder,
                     new RemoveModifierQuickFix(owner, "override"))
@@ -268,10 +267,9 @@ private[annotator] object ModifierChecker {
                               if (parameters.length != 1) errorResult()
                               else if (parameters.head.isRepeatedParameter)
                                 errorResult()
-                              else if (clauses.length > 2 || (
-                                         clauses.length == 2 && !clauses(
-                                           1).isImplicit
-                                       )) errorResult()
+                              else if (clauses.length > 2 || (clauses
+                                         .length == 2 && !clauses(1)
+                                         .isImplicit)) errorResult()
                             }
                           case _ => errorResult()
                         }

@@ -45,8 +45,8 @@ class ScalaBreakpointMethodFilter(
         case Some(jvmSign) => jvmSign.getName(process)
       }
       if (expSign == method.signature) return true
-      val sameNameMethods =
-        method.declaringType().methodsByName(method.name()).asScala
+      val sameNameMethods = method.declaringType().methodsByName(method.name())
+        .asScala
       sameNameMethods.exists { candidate =>
         candidate != method && candidate.isBridge && expSign == candidate
           .signature()
@@ -56,8 +56,8 @@ class ScalaBreakpointMethodFilter(
     val method: Method = location.method
     psiMethod match {
       case None => //is created for fun expression
-        method.name == "apply" || method.name.startsWith(
-          "apply$") || ScalaPositionManager.isIndyLambda(method)
+        method.name == "apply" || method.name
+          .startsWith("apply$") || ScalaPositionManager.isIndyLambda(method)
       case Some(m) =>
         val javaName = inReadAction(
           if (m.isConstructor) "<init>" else ScalaNamesUtil.toJavaName(m.name))
@@ -121,12 +121,10 @@ object ScalaBreakpointMethodFilter {
       tp: ScTemplateDefinition): Seq[ScBlockStatement] = {
     val membersAndExprs = tp.extendsBlock.templateBody.toSeq
       .flatMap(tb => tb.members ++ tb.exprs)
-    membersAndExprs
-      .collect {
-        case x @ (_: ScPatternDefinition | _: ScVariableDefinition |
-            _: ScExpression) => x.asInstanceOf[ScBlockStatement]
-      }
-      .sortBy(_.getTextOffset)
+    membersAndExprs.collect {
+      case x @ (_: ScPatternDefinition | _: ScVariableDefinition |
+          _: ScExpression) => x.asInstanceOf[ScBlockStatement]
+    }.sortBy(_.getTextOffset)
   }
 
   private def createSourcePosition(elem: PsiElement): SourcePosition = {

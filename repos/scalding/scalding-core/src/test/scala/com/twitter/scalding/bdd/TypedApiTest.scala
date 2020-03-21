@@ -60,13 +60,11 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
         List(("Joe", 40), ("Sarah", 22))
       } When {
         (gender: TypedPipe[(String, String)], age: TypedPipe[(String, Int)]) =>
-          gender.group
-            .join(age.group)
-            .toTypedPipe
-            .map { value: (String, (String, Int)) =>
+          gender.group.join(age.group).toTypedPipe.map {
+            value: (String, (String, Int)) =>
               val (name, (gender, age)) = value
               (name, gender, age)
-            }
+          }
       } Then { buffer: mutable.Buffer[(String, String, Int)] =>
         buffer.toList shouldBe List(("Joe", "M", 40), ("Sarah", "F", 22))
       }
@@ -77,14 +75,11 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
         List(UserWithGender("Joe", "M"), UserWithGender("Sarah", "F"))
       } And { List(UserWithAge("Joe", 40), UserWithAge("Sarah", 22)) } When {
         (gender: TypedPipe[UserWithGender], age: TypedPipe[UserWithAge]) =>
-          gender
-            .groupBy(_.name)
-            .join(age.groupBy(_.name))
-            .mapValues { value: (UserWithGender, UserWithAge) =>
+          gender.groupBy(_.name).join(age.groupBy(_.name)).mapValues {
+            value: (UserWithGender, UserWithAge) =>
               val (withGender, withAge) = value
               UserInfo(withGender.name, withGender.gender, withAge.age)
-            }
-            .values
+          }.values
       } Then { buffer: mutable.Buffer[UserInfo] =>
         buffer.toList shouldBe List(
           UserInfo("Joe", "M", 40),
@@ -103,14 +98,11 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
         val gender = pipes(0).asInstanceOf[TypedPipe[UserWithGender]]
         val age = pipes(1).asInstanceOf[TypedPipe[UserWithAge]]
 
-        gender
-          .groupBy(_.name)
-          .join(age.groupBy(_.name))
-          .mapValues { value: (UserWithGender, UserWithAge) =>
+        gender.groupBy(_.name).join(age.groupBy(_.name)).mapValues {
+          value: (UserWithGender, UserWithAge) =>
             val (withGender, withAge) = value
             UserInfo(withGender.name, withGender.gender, withAge.age)
-          }
-          .values
+        }.values
       } Then { buffer: mutable.Buffer[UserInfo] =>
         buffer.toList shouldBe List(
           UserInfo("Joe", "M", 40),
@@ -128,14 +120,11 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
           val gender = pipes(0).asInstanceOf[TypedPipe[UserWithGender]]
           val age = pipes(1).asInstanceOf[TypedPipe[UserWithAge]]
 
-          gender
-            .groupBy(_.name)
-            .join(age.groupBy(_.name))
-            .mapValues { value: (UserWithGender, UserWithAge) =>
+          gender.groupBy(_.name).join(age.groupBy(_.name)).mapValues {
+            value: (UserWithGender, UserWithAge) =>
               val (withGender, withAge) = value
               UserInfo(withGender.name, withGender.gender, withAge.age)
-            }
-            .values
+          }.values
         } Then { buffer: mutable.Buffer[UserInfo] =>
           buffer.toList shouldBe List(
             UserInfo("Joe", "M", 40),
@@ -157,12 +146,8 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
           val withIncome = pipes(3).asInstanceOf[TypedPipe[(String, Long)]]
           val withSmoker = pipes(4).asInstanceOf[TypedPipe[(String, Boolean)]]
 
-          withUserID.swap.group
-            .join(withGender.group)
-            .join(withAge.group)
-            .join(withIncome.group)
-            .join(withSmoker.group)
-            .flatMapValues {
+          withUserID.swap.group.join(withGender.group).join(withAge.group)
+            .join(withIncome.group).join(withSmoker.group).flatMapValues {
               case (
                     (((name: String, gender: String), age: Int), income: Long),
                     smoker) =>
@@ -177,8 +162,7 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
                   name,
                   floor(income / (lifeExpectancy - age))))
               case _ => None
-            }
-            .values
+            }.values
       } Then { buffer: mutable.Buffer[EstimatedContribution] =>
         buffer.toList shouldBe List(
           EstimatedContribution("Joe", 35.0),

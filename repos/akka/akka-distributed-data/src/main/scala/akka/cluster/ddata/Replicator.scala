@@ -60,14 +60,14 @@ object ReplicatorSettings {
       role = roleOption(config.getString("role")),
       gossipInterval =
         config.getDuration("gossip-interval", MILLISECONDS).millis,
-      notifySubscribersInterval =
-        config.getDuration("notify-subscribers-interval", MILLISECONDS).millis,
+      notifySubscribersInterval = config
+        .getDuration("notify-subscribers-interval", MILLISECONDS).millis,
       maxDeltaElements = config.getInt("max-delta-elements"),
       dispatcher = dispatcher,
       pruningInterval =
         config.getDuration("pruning-interval", MILLISECONDS).millis,
-      maxPruningDissemination =
-        config.getDuration("max-pruning-dissemination", MILLISECONDS).millis)
+      maxPruningDissemination = config
+        .getDuration("max-pruning-dissemination", MILLISECONDS).millis)
   }
 
   /**
@@ -160,8 +160,7 @@ object Replicator {
     * Factory method for the [[akka.actor.Props]] of the [[Replicator]] actor.
     */
   def props(settings: ReplicatorSettings): Props =
-    Props(new Replicator(settings))
-      .withDeploy(Deploy.local)
+    Props(new Replicator(settings)).withDeploy(Deploy.local)
       .withDispatcher(settings.dispatcher)
 
   sealed trait ReadConsistency {
@@ -606,13 +605,11 @@ object Replicator {
           for ((key, thisValue) ← pruning) {
             mergedRemovedNodePruning.get(key) match {
               case None ⇒
-                mergedRemovedNodePruning = mergedRemovedNodePruning.updated(
-                  key,
-                  thisValue)
+                mergedRemovedNodePruning = mergedRemovedNodePruning
+                  .updated(key, thisValue)
               case Some(thatValue) ⇒
-                mergedRemovedNodePruning = mergedRemovedNodePruning.updated(
-                  key,
-                  thisValue merge thatValue)
+                mergedRemovedNodePruning = mergedRemovedNodePruning
+                  .updated(key, thisValue merge thatValue)
             }
           }
 
@@ -625,8 +622,8 @@ object Replicator {
       def merge(otherData: ReplicatedData): DataEnvelope =
         if (otherData == DeletedData) DeletedEnvelope
         else
-          copy(data =
-            data merge cleaned(otherData, pruning).asInstanceOf[data.T])
+          copy(data = data merge cleaned(otherData, pruning)
+            .asInstanceOf[data.T])
 
       private def cleaned(
           c: ReplicatedData,
@@ -666,12 +663,10 @@ object Replicator {
         totChunks: Int)
         extends ReplicatorMessage {
       override def toString: String =
-        (digests
-          .map {
-            case (key, bytes) ⇒
-              key + " -> " + bytes.map(byte ⇒ f"$byte%02x").mkString("")
-          })
-          .mkString("Status(", ", ", ")")
+        (digests.map {
+          case (key, bytes) ⇒
+            key + " -> " + bytes.map(byte ⇒ f"$byte%02x").mkString("")
+        }).mkString("Status(", ", ", ")")
     }
     final case class Gossip(
         updatedData: Map[String, DataEnvelope],
@@ -868,26 +863,17 @@ final class Replicator(settings: ReplicatorSettings)
 
   //Start periodic gossip to random nodes in cluster
   import context.dispatcher
-  val gossipTask = context.system.scheduler.schedule(
-    gossipInterval,
-    gossipInterval,
-    self,
-    GossipTick)
+  val gossipTask = context.system.scheduler
+    .schedule(gossipInterval, gossipInterval, self, GossipTick)
   val notifyTask = context.system.scheduler.schedule(
     notifySubscribersInterval,
     notifySubscribersInterval,
     self,
     FlushChanges)
-  val pruningTask = context.system.scheduler.schedule(
-    pruningInterval,
-    pruningInterval,
-    self,
-    RemovedNodePruningTick)
-  val clockTask = context.system.scheduler.schedule(
-    gossipInterval,
-    gossipInterval,
-    self,
-    ClockTick)
+  val pruningTask = context.system.scheduler
+    .schedule(pruningInterval, pruningInterval, self, RemovedNodePruningTick)
+  val clockTask = context.system.scheduler
+    .schedule(gossipInterval, gossipInterval, self, ClockTick)
 
   val serializer = SerializationExtension(context.system)
     .serializerFor(classOf[DataEnvelope])
@@ -992,8 +978,7 @@ final class Replicator(settings: ReplicatorSettings)
       sender() ! reply
     } else
       context.actorOf(
-        ReadAggregator
-          .props(key, consistency, req, nodes, localValue, sender())
+        ReadAggregator.props(key, consistency, req, nodes, localValue, sender())
           .withDispatcher(context.props.dispatcher))
   }
 
@@ -1061,9 +1046,9 @@ final class Replicator(settings: ReplicatorSettings)
     getData(key) match {
       case Some(DataEnvelope(DeletedData, _)) ⇒ // already deleted
       case Some(envelope @ DataEnvelope(existing, _)) ⇒
-        if (existing.getClass == writeEnvelope.data.getClass || writeEnvelope.data == DeletedData) {
-          val merged = envelope
-            .merge(pruningCleanupTombstoned(writeEnvelope))
+        if (existing.getClass == writeEnvelope.data.getClass || writeEnvelope
+              .data == DeletedData) {
+          val merged = envelope.merge(pruningCleanupTombstoned(writeEnvelope))
             .addSeen(selfAddress)
           setData(key, merged)
         } else {
@@ -1326,9 +1311,8 @@ final class Replicator(settings: ReplicatorSettings)
     if (m.address == selfAddress) context stop self
     else if (matchingRole(m)) {
       nodes -= m.address
-      removedNodes = removedNodes.updated(
-        m.uniqueAddress,
-        allReachableClockTime)
+      removedNodes = removedNodes
+        .updated(m.uniqueAddress, allReachableClockTime)
       unreachable -= m.address
     }
   }
@@ -1367,9 +1351,8 @@ final class Replicator(settings: ReplicatorSettings)
       for ((key, (envelope, _)) ← dataEntries; removed ← removedSet) {
 
         def init(): Unit = {
-          val newEnvelope = envelope.initRemovedNodePruning(
-            removed,
-            selfUniqueAddress)
+          val newEnvelope = envelope
+            .initRemovedNodePruning(removed, selfUniqueAddress)
           log.debug("Initiated pruning of [{}] for data key [{}]", removed, key)
           setData(key, newEnvelope)
         }
@@ -1401,9 +1384,8 @@ final class Replicator(settings: ReplicatorSettings)
               if owner == selfUniqueAddress
                 && (nodes.isEmpty || nodes.forall(seen)) ⇒
             val newEnvelope = envelope.prune(removed)
-            pruningPerformed = pruningPerformed.updated(
-              removed,
-              allReachableClockTime)
+            pruningPerformed = pruningPerformed
+              .updated(removed, allReachableClockTime)
             log.debug(
               "Perform pruning of [{}] from [{}] to [{}]",
               key,
@@ -1453,26 +1435,25 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def pruningCleanupTombstoned(envelope: DataEnvelope): DataEnvelope =
-    tombstoneNodes.foldLeft(envelope)((c, removed) ⇒
-      pruningCleanupTombstoned(removed, c))
+    tombstoneNodes
+      .foldLeft(envelope)((c, removed) ⇒ pruningCleanupTombstoned(removed, c))
 
   def pruningCleanupTombstoned(
       removed: UniqueAddress,
       envelope: DataEnvelope): DataEnvelope = {
     val pruningCleanuped = pruningCleanupTombstoned(removed, envelope.data)
-    if ((pruningCleanuped ne envelope.data) || envelope.pruning.contains(
-          removed))
-      envelope.copy(
-        data = pruningCleanuped,
-        pruning = envelope.pruning - removed)
+    if ((pruningCleanuped ne envelope.data) || envelope.pruning
+          .contains(removed))
+      envelope
+        .copy(data = pruningCleanuped, pruning = envelope.pruning - removed)
     else envelope
   }
 
   def pruningCleanupTombstoned(data: ReplicatedData): ReplicatedData =
     if (tombstoneNodes.isEmpty) data
     else
-      tombstoneNodes.foldLeft(data)((c, removed) ⇒
-        pruningCleanupTombstoned(removed, c))
+      tombstoneNodes
+        .foldLeft(data)((c, removed) ⇒ pruningCleanupTombstoned(removed, c))
 
   def pruningCleanupTombstoned(
       removed: UniqueAddress,
@@ -1523,8 +1504,7 @@ private[akka] abstract class ReadWriteAggregator extends Actor {
     val primarySize = nodes.size - doneWhenRemainingSize
     if (primarySize >= nodes.size) (nodes, Set.empty[Address])
     else {
-      val (p, s) = scala.util.Random
-        .shuffle(nodes.toVector)
+      val (p, s) = scala.util.Random.shuffle(nodes.toVector)
         .splitAt(primarySize)
       (p, s.take(MaxSecondaryNodes))
     }
@@ -1591,8 +1571,8 @@ private[akka] class WriteAggregator(
     primaryNodes.foreach { replica(_) ! writeMsg }
 
     if (remaining.size == doneWhenRemainingSize) reply(ok = true)
-    else if (doneWhenRemainingSize < 0 || remaining.size < doneWhenRemainingSize)
-      reply(ok = false)
+    else if (doneWhenRemainingSize < 0 || remaining
+               .size < doneWhenRemainingSize) reply(ok = false)
   }
 
   def receive = {
@@ -1669,8 +1649,8 @@ private[akka] class ReadAggregator(
     primaryNodes.foreach { replica(_) ! readMsg }
 
     if (remaining.size == doneWhenRemainingSize) reply(ok = true)
-    else if (doneWhenRemainingSize < 0 || remaining.size < doneWhenRemainingSize)
-      reply(ok = false)
+    else if (doneWhenRemainingSize < 0 || remaining
+               .size < doneWhenRemainingSize) reply(ok = false)
   }
 
   def receive = {

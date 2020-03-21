@@ -327,8 +327,7 @@ object FunctionRegistry {
       if (varargCtor.isDefined) {
         // If there is an apply method that accepts Seq[Expression], use that one.
         Try(
-          varargCtor.get
-            .newInstance(expressions)
+          varargCtor.get.newInstance(expressions)
             .asInstanceOf[Expression]) match {
           case Success(e) => e
           case Failure(e) => throw new AnalysisException(e.getMessage)

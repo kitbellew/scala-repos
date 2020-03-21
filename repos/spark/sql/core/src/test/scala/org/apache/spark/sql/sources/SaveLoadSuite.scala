@@ -43,8 +43,8 @@ class SaveLoadSuite
     path = Utils.createTempDir()
     path.delete()
 
-    val rdd = sparkContext.parallelize(
-      (1 to 10).map(i => s"""{"a":$i, "b":"str${i}"}"""))
+    val rdd = sparkContext
+      .parallelize((1 to 10).map(i => s"""{"a":$i, "b":"str${i}"}"""))
     df = caseInsensitiveContext.read.json(rdd)
     df.registerTempTable("jsonTable")
   }
@@ -76,9 +76,7 @@ class SaveLoadSuite
       expectedDF.collect())
     val schema = StructType(StructField("b", StringType, true) :: Nil)
     checkAnswer(
-      caseInsensitiveContext.read
-        .format("json")
-        .schema(schema)
+      caseInsensitiveContext.read.format("json").schema(schema)
         .load(path.toString),
       sql(s"SELECT b FROM $tbl").collect())
   }
@@ -115,9 +113,8 @@ class SaveLoadSuite
   test("save and save again") {
     df.write.json(path.toString)
 
-    val message = intercept[AnalysisException] {
-      df.write.json(path.toString)
-    }.getMessage
+    val message = intercept[AnalysisException] { df.write.json(path.toString) }
+      .getMessage
 
     assert(
       message.contains("already exists"),

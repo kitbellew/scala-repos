@@ -111,8 +111,8 @@ trait Phased {
       Jvm,
       Terminal
     )
-    lazy val nameMap =
-      all.map(x => x.name -> x).toMap withDefaultValue NoPhaseName
+    lazy val nameMap = all.map(x => x.name -> x)
+      .toMap withDefaultValue NoPhaseName
     multi = all
 
     def apply(id: Int): PhaseName = all find (_.id == id) getOrElse NoPhaseName

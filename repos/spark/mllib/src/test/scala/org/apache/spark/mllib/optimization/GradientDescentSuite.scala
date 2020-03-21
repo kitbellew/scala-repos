@@ -94,8 +94,8 @@ class GradientDescentSuite
     }
 
     val dataRDD = sc.parallelize(data, 2).cache()
-    val initialWeightsWithIntercept = Vectors.dense(
-      initialWeights.toArray :+ 1.0)
+    val initialWeightsWithIntercept = Vectors
+      .dense(initialWeights.toArray :+ 1.0)
 
     val (_, loss) = GradientDescent.runMiniBatchSGD(
       dataRDD,
@@ -192,8 +192,8 @@ class GradientDescentSuite
     }
 
     val dataRDD = sc.parallelize(data, 2).cache()
-    val initialWeightsWithIntercept = Vectors.dense(
-      initialWeights.toArray :+ 1.0)
+    val initialWeightsWithIntercept = Vectors
+      .dense(initialWeights.toArray :+ 1.0)
 
     val (_, loss) = GradientDescent.runMiniBatchSGD(
       dataRDD,
@@ -219,13 +219,11 @@ class GradientDescentClusterSuite
   test("task size should be small") {
     val m = 4
     val n = 200000
-    val points = sc
-      .parallelize(0 until m, 2)
-      .mapPartitionsWithIndex { (idx, iter) =>
+    val points = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
+      (idx, iter) =>
         val random = new Random(idx)
         iter.map(i => (1.0, Vectors.dense(Array.fill(n)(random.nextDouble()))))
-      }
-      .cache()
+    }.cache()
     // If we serialize data directly in the task closure, the size of the serialized task would be
     // greater than 1MB and hence Spark would throw an error.
     val (weights, loss) = GradientDescent.runMiniBatchSGD(

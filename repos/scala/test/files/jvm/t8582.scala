@@ -34,10 +34,9 @@ object Test extends BytecodeTest {
   def printInner(cname: String): Unit = {
     val cnode = loadClassNode(cname)
     println(
-      cnode.innerClasses.asScala.toList
-        .map(i =>
-          s"className[${i.name}] outerClassName[${i.outerName}] innerName[${i.innerName}] access[${i.access}]")
-        .mkString(" ", "\n ", ""))
+      cnode.innerClasses.asScala.toList.map(i =>
+        s"className[${i.name}] outerClassName[${i.outerName}] innerName[${i
+          .innerName}] access[${i.access}]").mkString(" ", "\n ", ""))
   }
 
   def show() {

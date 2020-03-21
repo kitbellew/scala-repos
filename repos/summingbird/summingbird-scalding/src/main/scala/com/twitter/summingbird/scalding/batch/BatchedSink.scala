@@ -80,10 +80,9 @@ trait BatchedSink[T] extends Sink[T] {
       }
 
       // Maybe an inclusive interval of batches to pull from incoming
-      val batchesToWrite: Option[(BatchID, BatchID)] = batchStreams
-        .dropWhile { _._2.isDefined }
-        .map { _._1 }
-        .toList match {
+      val batchesToWrite: Option[(BatchID, BatchID)] = batchStreams.dropWhile {
+        _._2.isDefined
+      }.map { _._1 }.toList match {
         case Nil  => None
         case list => Some((list.min, list.max))
       }
@@ -92,27 +91,24 @@ trait BatchedSink[T] extends Sink[T] {
         case (lower, upper) =>
           // Compute the times we need to read of the deltas
           val incBatches = Interval.leftClosedRightOpen(lower, upper.next)
-          batchOps
-            .readBatched(incBatches, mode, incoming)
-            .right
-            .map {
-              case (inbatches, flow2Pipe) =>
-                (inbatches, writeBatches(inbatches, flow2Pipe))
-            }
+          batchOps.readBatched(incBatches, mode, incoming).right.map {
+            case (inbatches, flow2Pipe) =>
+              (inbatches, writeBatches(inbatches, flow2Pipe))
+          }
       }
       // This data is already on disk and will not be recomputed
-      val existing = batchStreams
-        .takeWhile { _._2.isDefined }
-        .collect { case (batch, Some(flow)) => (batch, flow) }
+      val existing = batchStreams.takeWhile { _._2.isDefined }.collect {
+        case (batch, Some(flow)) => (batch, flow)
+      }
 
       def mergeExistingAndBuilt(
           optBuilt: Option[(Interval[BatchID], FlowToPipe[T])])
           : Try[((Interval[Timestamp], Mode), FlowToPipe[T])] = {
         val (aBatches, aFlows) = existing.unzip
         val flows = aFlows ++ (optBuilt.map { _._2 })
-        val batches = aBatches ++ (optBuilt
-          .map { pair => BatchID.toIterable(pair._1) }
-          .getOrElse(Iterable.empty))
+        val batches = aBatches ++ (optBuilt.map { pair =>
+          BatchID.toIterable(pair._1)
+        }.getOrElse(Iterable.empty))
 
         if (flows.isEmpty)
           Left(List(

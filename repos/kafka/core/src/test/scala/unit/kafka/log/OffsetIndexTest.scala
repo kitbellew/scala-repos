@@ -52,8 +52,7 @@ class OffsetIndexTest extends JUnitSuite {
     // append some random values
     val base = idx.baseOffset.toInt + 1
     val size = idx.maxEntries
-    val vals: Seq[(Long, Int)] = monotonicSeq(base, size)
-      .map(_.toLong)
+    val vals: Seq[(Long, Int)] = monotonicSeq(base, size).map(_.toLong)
       .zip(monotonicSeq(0, size))
     vals.foreach { x => idx.append(x._1, x._2) }
 
@@ -65,8 +64,8 @@ class OffsetIndexTest extends JUnitSuite {
         idx.lookup(logical))
 
     // for non-present values we should find the offset of the largest value less than or equal to this
-    val valMap =
-      new immutable.TreeMap[Long, (Long, Int)]() ++ vals.map(p => (p._1, p))
+    val valMap = new immutable.TreeMap[Long, (Long, Int)]() ++ vals
+      .map(p => (p._1, p))
     val offsets = (idx.baseOffset until vals.last._1.toInt).toArray
     Collections.shuffle(Arrays.asList(offsets))
     for (offset <- offsets.take(30)) {

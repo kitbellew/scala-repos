@@ -55,8 +55,7 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
     val C = 1.0e-2
 
     val testData = LinearDataGenerator
-      .generateLinearInput(A, Array[Double](B, C), nPoints, 42)
-      .map {
+      .generateLinearInput(A, Array[Double](B, C), nPoints, 42).map {
         case LabeledPoint(label, features) =>
           LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
       }
@@ -78,8 +77,7 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
       weight2 + " not in [-0.001, 0.001]")
 
     val validationData = LinearDataGenerator
-      .generateLinearInput(A, Array[Double](B, C), nPoints, 17)
-      .map {
+      .generateLinearInput(A, Array[Double](B, C), nPoints, 17).map {
         case LabeledPoint(label, features) =>
           LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
       }
@@ -104,8 +102,7 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
     val C = 1.0e-2
 
     val testData = LinearDataGenerator
-      .generateLinearInput(A, Array[Double](B, C), nPoints, 42)
-      .map {
+      .generateLinearInput(A, Array[Double](B, C), nPoints, 42).map {
         case LabeledPoint(label, features) =>
           LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
       }
@@ -118,10 +115,7 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
     val testRDD = sc.parallelize(testData, 2).cache()
 
     val ls = new LassoWithSGD()
-    ls.optimizer
-      .setStepSize(1.0)
-      .setRegParam(0.01)
-      .setNumIterations(40)
+    ls.optimizer.setStepSize(1.0).setRegParam(0.01).setNumIterations(40)
       .setConvergenceTol(0.0005)
 
     val model = ls.run(testRDD, initialWeights)
@@ -137,8 +131,7 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
       weight2 + " not in [-0.001, 0.001]")
 
     val validationData = LinearDataGenerator
-      .generateLinearInput(A, Array[Double](B, C), nPoints, 17)
-      .map {
+      .generateLinearInput(A, Array[Double](B, C), nPoints, 17).map {
         case LabeledPoint(label, features) =>
           LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
       }
@@ -176,14 +169,12 @@ class LassoClusterSuite extends SparkFunSuite with LocalClusterSparkContext {
   test("task size should be small in both training and prediction") {
     val m = 4
     val n = 200000
-    val points = sc
-      .parallelize(0 until m, 2)
-      .mapPartitionsWithIndex { (idx, iter) =>
+    val points = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
+      (idx, iter) =>
         val random = new Random(idx)
         iter.map(i =>
           LabeledPoint(1.0, Vectors.dense(Array.fill(n)(random.nextDouble()))))
-      }
-      .cache()
+    }.cache()
     // If we serialize data directly in the task closure, the size of the serialized task would be
     // greater than 1MB and hence Spark would throw an error.
     val model = LassoWithSGD.train(points, 2)

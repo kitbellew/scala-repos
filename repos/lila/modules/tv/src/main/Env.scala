@@ -43,12 +43,10 @@ final class Env(
         ~_.flatMap(_.getAs[String]("text"))
       }
     def set(text: String) =
-      coll
-        .update(
-          BSONDocument("_id" -> "streamer"),
-          BSONDocument("text" -> text),
-          upsert = true)
-        .void
+      coll.update(
+        BSONDocument("_id" -> "streamer"),
+        BSONDocument("text" -> text),
+        upsert = true).void
   })
 
   object isStreamer {

@@ -76,10 +76,7 @@ class ServerMediator(project: Project) extends ProjectComponent {
         val test = extension.getCompilerOutputUrlForTests
         production == test
       }
-    val modulesWithClashes = ModuleManager
-      .getInstance(project)
-      .getModules
-      .toSeq
+    val modulesWithClashes = ModuleManager.getInstance(project).getModules.toSeq
       .filter(hasClashes)
 
     var result = true
@@ -91,8 +88,7 @@ class ServerMediator(project: Project) extends ProjectComponent {
             Messages.showYesNoDialog(
               project,
               "Production and test output paths are shared in: " + modulesWithClashes
-                .map(_.getName)
-                .mkString(" "),
+                .map(_.getName).mkString(" "),
               "Shared compile output paths in Scala module(s)",
               "Split output path(s) automatically",
               "Cancel compilation",
@@ -105,10 +101,10 @@ class ServerMediator(project: Project) extends ProjectComponent {
         if (splitAutomatically) {
           inWriteAction {
             modulesWithClashes.foreach { module =>
-              val model =
-                ModuleRootManager.getInstance(module).getModifiableModel
-              val extension = model.getModuleExtension(
-                classOf[CompilerModuleExtension])
+              val model = ModuleRootManager.getInstance(module)
+                .getModifiableModel
+              val extension = model
+                .getModuleExtension(classOf[CompilerModuleExtension])
 
               val outputUrlParts = extension.getCompilerOutputUrl match {
                 case null => Seq.empty

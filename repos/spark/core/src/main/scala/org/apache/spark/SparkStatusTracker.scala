@@ -45,8 +45,7 @@ class SparkStatusTracker private[spark] (sc: SparkContext) {
     */
   def getJobIdsForGroup(jobGroup: String): Array[Int] = {
     jobProgressListener.synchronized {
-      jobProgressListener.jobGroupToJobIds
-        .getOrElse(jobGroup, Seq.empty)
+      jobProgressListener.jobGroupToJobIds.getOrElse(jobGroup, Seq.empty)
         .toArray
     }
   }
@@ -91,8 +90,8 @@ class SparkStatusTracker private[spark] (sc: SparkContext) {
   def getStageInfo(stageId: Int): Option[SparkStageInfo] = {
     jobProgressListener.synchronized {
       for (info <- jobProgressListener.stageIdToInfo.get(stageId);
-           data <- jobProgressListener.stageIdToData.get(
-             (stageId, info.attemptId))) yield {
+           data <- jobProgressListener.stageIdToData
+             .get((stageId, info.attemptId))) yield {
         new SparkStageInfoImpl(
           stageId,
           info.attemptId,

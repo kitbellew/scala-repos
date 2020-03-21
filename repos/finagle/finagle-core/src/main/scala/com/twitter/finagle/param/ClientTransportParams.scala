@@ -38,8 +38,7 @@ class ClientTransportParams[A <: Stack.Parameterized[A]](
       case _                     => Ssl.client()
     }
 
-    self
-      .configured(Transport.TLSClientEngine(Some(socketAddressToEngine)))
+    self.configured(Transport.TLSClientEngine(Some(socketAddressToEngine)))
       .configured(Transporter.TLSHostname(Some(hostname)))
   }
 

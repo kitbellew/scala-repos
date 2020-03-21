@@ -101,24 +101,22 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
         settings.socketOptions,
         halfClose = false,
         settings.timeouts.idleTimeout)
-    connections
-      .map {
-        case Tcp.IncomingConnection(localAddress, remoteAddress, flow) ⇒
-          val layer = serverLayer(settings, Some(remoteAddress), log)
-          val flowWithTimeoutRecovered = flow.via(MapError {
-            case t: TimeoutException ⇒
-              new HttpConnectionTimeoutException(t.getMessage)
-          })
-          IncomingConnection(
-            localAddress,
-            remoteAddress,
-            layer atop tlsStage join flowWithTimeoutRecovered)
-      }
-      .mapMaterializedValue {
-        _.map(tcpBinding ⇒
-          ServerBinding(tcpBinding.localAddress)(() ⇒ tcpBinding.unbind()))(
-          fm.executionContext)
-      }
+    connections.map {
+      case Tcp.IncomingConnection(localAddress, remoteAddress, flow) ⇒
+        val layer = serverLayer(settings, Some(remoteAddress), log)
+        val flowWithTimeoutRecovered = flow.via(MapError {
+          case t: TimeoutException ⇒
+            new HttpConnectionTimeoutException(t.getMessage)
+        })
+        IncomingConnection(
+          localAddress,
+          remoteAddress,
+          layer atop tlsStage join flowWithTimeoutRecovered)
+    }.mapMaterializedValue {
+      _.map(tcpBinding ⇒
+        ServerBinding(tcpBinding.localAddress)(() ⇒ tcpBinding.unbind()))(
+        fm.executionContext)
+    }
   }
 
   /**
@@ -143,8 +141,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
         incomingConnection: IncomingConnection): Future[Unit] =
       try incomingConnection.flow
         .viaMat(StreamUtils.identityFinishReporter)(Keep.right)
-        .joinMat(handler)(Keep.left)
-        .run()
+        .joinMat(handler)(Keep.left).run()
       catch {
         case NonFatal(e) ⇒
           log.error(
@@ -163,9 +160,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
           // See https://github.com/akka/akka/issues/17992
           case NonFatal(_) ⇒ Future.successful(())
         }(fm.executionContext)
-      }
-      .to(Sink.ignore)
-      .run()
+      }.to(Sink.ignore).run()
   }
 
   /**
@@ -625,8 +620,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       log: LoggingAdapter = system.log)(implicit
       mat: Materializer): (Future[WebSocketUpgradeResponse], T) =
     webSocketClientFlow(request, connectionContext, localAddress, settings, log)
-      .joinMat(clientFlow)(Keep.both)
-      .run()
+      .joinMat(clientFlow)(Keep.both).run()
 
   /**
     * Triggers an orderly shutdown of all host connections pools currently maintained by the [[akka.actor.ActorSystem]].
@@ -703,7 +697,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       cachedGateway(hcps)
     } else {
       val msg =
-        s"Cannot determine request scheme and target endpoint as ${request.method} request to ${request.uri} doesn't have an absolute URI"
+        s"Cannot determine request scheme and target endpoint as ${request
+          .method} request to ${request.uri} doesn't have an absolute URI"
       throw new IllegalUriException(ErrorInfo(msg))
     }
 
@@ -723,13 +718,12 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
               throw e
           }
         val fastFuture = FastFuture.successful(gateway)
-        hostPoolCache.put(
-          setup,
-          fastFuture
-        ) // optimize subsequent gateway accesses
-        gatewayPromise.success(
-          gateway
-        ) // satisfy everyone who got a hold of our promise while we were starting up
+        hostPoolCache
+          .put(setup, fastFuture) // optimize subsequent gateway accesses
+        gatewayPromise
+          .success(
+            gateway
+          ) // satisfy everyone who got a hold of our promise while we were starting up
         whenShuttingDown.future.onComplete(_ ⇒
           hostPoolCache.remove(setup, fastFuture))(fm.executionContext)
         fastFuture
@@ -758,8 +752,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
         val result = Promise[
           (Try[HttpResponse], T)
         ]() // TODO: simplify to `transformWith` when on Scala 2.12
-        gatewayFuture
-          .flatMap(_(effectiveRequest))(fm.executionContext)
+        gatewayFuture.flatMap(_(effectiveRequest))(fm.executionContext)
           .onComplete(responseTry ⇒ result.success(responseTry -> userContext))(
             fm.executionContext)
         result.future

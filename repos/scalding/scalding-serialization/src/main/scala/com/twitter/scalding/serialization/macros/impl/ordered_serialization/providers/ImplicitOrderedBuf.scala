@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.twitter.scalding.serialization.macros.impl.ordered_serialization.providers
+package com.twitter.scalding.serialization.macros.impl.ordered_serialization
+  .providers
 
 import scala.language.experimental.macros
 import scala.reflect.macros.Context
@@ -43,9 +44,9 @@ object ImplicitOrderedBuf {
     import c.universe._
     def freshT(id: String) = newTermName(c.fresh(id))
 
-    val variableID = (
-      outerType.typeSymbol.fullName.hashCode.toLong + Int.MaxValue.toLong
-    ).toString
+    val variableID =
+      (outerType.typeSymbol.fullName.hashCode.toLong + Int.MaxValue.toLong)
+        .toString
     val variableNameStr = s"orderedSer_$variableID"
     val variableName = newTermName(variableNameStr)
     val typeAlias = newTypeName(c.fresh("MACROASKEDORDEREDSER"))

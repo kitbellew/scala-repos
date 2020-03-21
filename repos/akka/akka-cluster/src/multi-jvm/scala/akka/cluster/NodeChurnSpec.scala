@@ -80,9 +80,8 @@ abstract class NodeChurnSpec
 
   "Cluster with short lived members" must {
     "setup stable nodes" taggedAs LongRunningTest in within(15.seconds) {
-      val logListener = system.actorOf(
-        Props(classOf[LogListener], testActor),
-        "logListener")
+      val logListener = system
+        .actorOf(Props(classOf[LogListener], testActor), "logListener")
       system.eventStream.subscribe(logListener, classOf[Info])
       cluster.joinSeedNodes(seedNodes)
       awaitMembersUp(roles.size)
@@ -94,8 +93,8 @@ abstract class NodeChurnSpec
       // It will fail after a while if vector clock entries of removed nodes are not pruned.
       for (n ← 1 to rounds) {
         log.info("round-" + n)
-        val systems = Vector.fill(5)(
-          ActorSystem(system.name, system.settings.config))
+        val systems = Vector
+          .fill(5)(ActorSystem(system.name, system.settings.config))
         systems.foreach { s ⇒
           muteDeadLetters()(s)
           Cluster(s).joinSeedNodes(seedNodes)

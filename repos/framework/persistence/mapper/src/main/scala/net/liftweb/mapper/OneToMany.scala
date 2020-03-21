@@ -36,9 +36,9 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
   private[mapper] lazy val oneToManyFields: List[MappedOneToManyBase[Rec]] = {
     new FieldFinder[MappedOneToManyBase[Rec]](
       getSingleton,
-      net.liftweb.common
-        .Logger(classOf[OneToMany[K, T]])).accessorMethods map (_.invoke(this)
-      .asInstanceOf[MappedOneToManyBase[Rec]])
+      net.liftweb.common.Logger(classOf[OneToMany[K, T]])).accessorMethods map (
+      _.invoke(this).asInstanceOf[MappedOneToManyBase[Rec]]
+    )
   }
 
   /**
@@ -90,12 +90,10 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
       qp: QueryParam[O]*)
       extends MappedOneToManyBase[O](
         () => {
-          val ret = meta.findAll(
-            By(foreign, primaryKeyField.get) :: qp.toList: _*)
+          val ret = meta
+            .findAll(By(foreign, primaryKeyField.get) :: qp.toList: _*)
           for (child <- ret) {
-            foreign
-              .actualField(child)
-              .asInstanceOf[MappedForeignKey[K, O, T]]
+            foreign.actualField(child).asInstanceOf[MappedForeignKey[K, O, T]]
               .primeObj(net.liftweb.common.Full(OneToMany.this: T))
           }
           ret
@@ -241,8 +239,7 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
       unlinked = Nil
       delegate = delegate.filter { e =>
         foreign(e).get == OneToMany.this.primaryKeyField.get ||
-        foreign(e).obj
-          .map(_ eq OneToMany.this)
+        foreign(e).obj.map(_ eq OneToMany.this)
           .openOr(false) // obj is this but not Empty
       }
       delegate.forall(_.save)
@@ -251,10 +248,8 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     override def toString = {
       val c = getClass.getSimpleName
       val l = c.lastIndexOf("$")
-      c.substring(c.lastIndexOf("$", l - 1) + 1, l) + delegate.mkString(
-        "[",
-        ", ",
-        "]")
+      c.substring(c.lastIndexOf("$", l - 1) + 1, l) + delegate
+        .mkString("[", ", ", "]")
     }
   }
 

@@ -13,9 +13,7 @@ trait PluginService {
     Plugins.insert(plugin)
 
   def updatePlugin(plugin: Plugin)(implicit s: Session): Unit =
-    Plugins
-      .filter(_.pluginId === plugin.pluginId.bind)
-      .map(_.version)
+    Plugins.filter(_.pluginId === plugin.pluginId.bind).map(_.version)
       .update(plugin.version)
 
   def deletePlugin(pluginId: String)(implicit s: Session): Unit =

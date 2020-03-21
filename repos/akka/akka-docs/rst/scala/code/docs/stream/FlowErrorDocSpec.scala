@@ -51,9 +51,7 @@ class FlowErrorDocSpec extends AkkaSpec {
       case _: ArithmeticException => Supervision.Resume
       case _                      => Supervision.Stop
     }
-    val flow = Flow[Int]
-      .filter(100 / _ < 50)
-      .map(elem => 100 / (5 - elem))
+    val flow = Flow[Int].filter(100 / _ < 50).map(elem => 100 / (5 - elem))
       .withAttributes(ActorAttributes.supervisionStrategy(decider))
     val source = Source(0 to 5).via(flow)
 
@@ -72,12 +70,10 @@ class FlowErrorDocSpec extends AkkaSpec {
       case _: IllegalArgumentException => Supervision.Restart
       case _                           => Supervision.Stop
     }
-    val flow = Flow[Int]
-      .scan(0) { (acc, elem) =>
-        if (elem < 0) throw new IllegalArgumentException("negative not allowed")
-        else acc + elem
-      }
-      .withAttributes(ActorAttributes.supervisionStrategy(decider))
+    val flow = Flow[Int].scan(0) { (acc, elem) =>
+      if (elem < 0) throw new IllegalArgumentException("negative not allowed")
+      else acc + elem
+    }.withAttributes(ActorAttributes.supervisionStrategy(decider))
     val source = Source(List(1, 3, -1, 5, 7)).via(flow)
     val result = source.limit(1000).runWith(Sink.seq)
     // the negative element cause the scan stage to be restarted,

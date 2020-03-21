@@ -34,11 +34,8 @@ class ScDocCommentImpl(text: CharSequence)
       text)
     with ScDocComment {
   def version: Int = {
-    val firstLineIsEmpty = getNode
-      .getChildren(null)
-      .lift(2)
-      .exists(
-        _.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)
+    val firstLineIsEmpty = getNode.getChildren(null).lift(2).exists(
+      _.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)
 
     if (firstLineIsEmpty) 1 else 2
   }
@@ -83,7 +80,8 @@ class ScDocCommentImpl(text: CharSequence)
     var currentChild = getFirstChild
     val answer = mutable.ArrayBuilder.make[PsiDocTag]()
 
-    while (currentChild != null && currentChild.getNode.getElementType != ScalaDocTokenType.DOC_COMMENT_END) {
+    while (currentChild != null && currentChild.getNode
+             .getElementType != ScalaDocTokenType.DOC_COMMENT_END) {
       currentChild match {
         case docTag: ScDocTag
             if docTag.getNode.getElementType == ScalaDocElementTypes.DOC_TAG &&
@@ -106,8 +104,7 @@ class ScDocCommentImpl(text: CharSequence)
       cur = cur.getNextSibling
     }
     result.toArray[T](
-      java.lang.reflect.Array
-        .newInstance(aClass, result.size)
+      java.lang.reflect.Array.newInstance(aClass, result.size)
         .asInstanceOf[Array[T]])
   }
 

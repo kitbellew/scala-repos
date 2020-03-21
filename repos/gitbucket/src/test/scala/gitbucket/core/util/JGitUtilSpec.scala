@@ -8,8 +8,7 @@ class JGitUtilSpec extends FunSuite {
   test("getFileList(git: Git, revision: String, path)") {
     withTestRepository { git =>
       def list(branch: String, path: String) =
-        JGitUtil
-          .getFileList(git, branch, path)
+        JGitUtil.getFileList(git, branch, path)
           .map(finfo => (finfo.name, finfo.message, finfo.isDirectory))
       assert(list("master", ".") == Nil)
       assert(list("master", "dir/subdir") == Nil)
@@ -206,8 +205,7 @@ class JGitUtilSpec extends FunSuite {
   test("getFileList subfolder multi-origin (issue #721)") {
     withTestRepository { git =>
       def list(branch: String, path: String) =
-        JGitUtil
-          .getFileList(git, branch, path)
+        JGitUtil.getFileList(git, branch, path)
           .map(finfo => (finfo.name, finfo.message, finfo.isDirectory))
       createFile(git, "master", "README.md", "body1", message = "commit1")
       createFile(git, "branch", "test/text2.txt", "body2", message = "commit2")

@@ -61,9 +61,7 @@ class DailySuffixTypedTsvJob(args: Args)
     extends Job(args)
     with UtcDateRangeJob {
   try {
-    DailySuffixTypedTsvJob
-      .source("input0")
-      .read
+    DailySuffixTypedTsvJob.source("input0").read
       .write(TypedTsv[(String, Int)]("output0"))
   } catch { case e: Exception => e.printStackTrace() }
 }
@@ -74,54 +72,39 @@ class TypedDelimitedTest extends WordSpec with Matchers {
   val data = List(("aaa", 1), ("bbb", 2))
 
   "A TypedTsv Source" should {
-    JobTest(new TypedTsvJob(_))
-      .source(TypedTsv[(String, Int)]("input0"), data)
+    JobTest(new TypedTsvJob(_)).source(TypedTsv[(String, Int)]("input0"), data)
       .typedSink(TypedTsv[(String, Int)]("output0")) { buf =>
         "read and write data" in { buf shouldBe data }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   "A TypedCsv Source" should {
-    JobTest(new TypedCsvJob(_))
-      .source(TypedCsv[(String, Int)]("input0"), data)
+    JobTest(new TypedCsvJob(_)).source(TypedCsv[(String, Int)]("input0"), data)
       .typedSink(TypedCsv[(String, Int)]("output0")) { buf =>
         "read and write data" in { buf shouldBe data }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   "A TypedPsv Source" should {
-    JobTest(new TypedPsvJob(_))
-      .source(TypedPsv[(String, Int)]("input0"), data)
+    JobTest(new TypedPsvJob(_)).source(TypedPsv[(String, Int)]("input0"), data)
       .typedSink(TypedPsv[(String, Int)]("output0")) { buf =>
         "read and write data" in { buf shouldBe data }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   "A TypedOsv Source" should {
-    JobTest(new TypedOsvJob(_))
-      .source(TypedOsv[(String, Int)]("input0"), data)
+    JobTest(new TypedOsvJob(_)).source(TypedOsv[(String, Int)]("input0"), data)
       .typedSink(TypedOsv[(String, Int)]("output0")) { buf =>
         "read and write data" in { buf shouldBe data }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 
   "A DailySuffixTypedTsv Source" should {
     import DailySuffixTypedTsvJob._
-    JobTest(new DailySuffixTypedTsvJob(_))
-      .arg("date", strd1 + " " + strd2)
+    JobTest(new DailySuffixTypedTsvJob(_)).arg("date", strd1 + " " + strd2)
       .source(source("input0"), data)
       .typedSink(TypedTsv[(String, Int)]("output0")) { buf =>
         "read and write data" in { buf shouldBe data }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 }

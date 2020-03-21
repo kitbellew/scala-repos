@@ -161,8 +161,7 @@ final class ChiSqSelectorModel private[ml] (
     val featureAttributes: Array[Attribute] =
       if (origAttrGroup.attributes.nonEmpty) {
         origAttrGroup.attributes.get.zipWithIndex
-          .filter(x => selector.contains(x._2))
-          .map(_._1)
+          .filter(x => selector.contains(x._2)).map(_._1)
       } else {
         Array.fill[Attribute](selector.size)(NominalAttribute.defaultAttr)
       }
@@ -192,10 +191,7 @@ object ChiSqSelectorModel extends MLReadable[ChiSqSelectorModel] {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
       val data = Data(instance.selectedFeatures.toSeq)
       val dataPath = new Path(path, "data").toString
-      sqlContext
-        .createDataFrame(Seq(data))
-        .repartition(1)
-        .write
+      sqlContext.createDataFrame(Seq(data)).repartition(1).write
         .parquet(dataPath)
     }
   }
@@ -207,9 +203,7 @@ object ChiSqSelectorModel extends MLReadable[ChiSqSelectorModel] {
     override def load(path: String): ChiSqSelectorModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data = sqlContext.read
-        .parquet(dataPath)
-        .select("selectedFeatures")
+      val data = sqlContext.read.parquet(dataPath).select("selectedFeatures")
         .head()
       val selectedFeatures = data.getAs[Seq[Int]](0).toArray
       val oldModel = new feature.ChiSqSelectorModel(selectedFeatures)

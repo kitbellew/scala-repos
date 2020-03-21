@@ -52,8 +52,7 @@ abstract class ControllerBase
 
       if (path.startsWith("/console/")) {
         val account = httpRequest.getSession
-          .getAttribute(Keys.Session.LoginAccount)
-          .asInstanceOf[Account]
+          .getAttribute(Keys.Session.LoginAccount).asInstanceOf[Account]
         val baseUrl = this.baseUrl(httpRequest)
         if (account == null) {
           // Redirect to login form
@@ -95,8 +94,7 @@ abstract class ControllerBase
   }
 
   private def LoginAccount: Option[Account] =
-    request
-      .getAs[Account](Keys.Session.LoginAccount)
+    request.getAs[Account](Keys.Session.LoginAccount)
       .orElse(session.getAs[Account](Keys.Session.LoginAccount))
 
   def ajaxGet(path: String)(action: => Any): Route =
@@ -145,12 +143,12 @@ abstract class ControllerBase
           org.scalatra.Unauthorized(redirect("/signin"))
         } else {
           org.scalatra.Unauthorized(redirect(
-            "/signin?redirect=" + StringUtil.urlEncode(
-              defining(request.getQueryString) { queryString =>
-                request.getRequestURI.substring(
-                  request.getContextPath.length) + (if (queryString != null)
-                                                      "?" + queryString
-                                                    else "")
+            "/signin?redirect=" + StringUtil
+              .urlEncode(defining(request.getQueryString) { queryString =>
+                request.getRequestURI
+                  .substring(request.getContextPath.length) + (
+                  if (queryString != null) "?" + queryString else ""
+                )
               })))
         }
       }
@@ -201,8 +199,8 @@ case class Context(
     loginAccount: Option[Account],
     request: HttpServletRequest) {
   val path = settings.baseUrl.getOrElse(request.getContextPath)
-  val currentPath = request.getRequestURI.substring(
-    request.getContextPath.length)
+  val currentPath = request.getRequestURI
+    .substring(request.getContextPath.length)
   val baseUrl = settings.baseUrl(request)
   val host = new java.net.URL(baseUrl).getHost
   val platform = request.getHeader("User-Agent") match {
@@ -247,8 +245,8 @@ trait AccountManagementControllerBase extends ControllerBase {
       }
     } else {
       fileId.map { fileId =>
-        val filename = "avatar." + FileUtil.getExtension(
-          session.getAndRemove(Keys.Session.Upload(fileId)).get)
+        val filename = "avatar." + FileUtil
+          .getExtension(session.getAndRemove(Keys.Session.Upload(fileId)).get)
         FileUtils.moveFile(
           new java.io.File(getTemporaryDir(session.getId), fileId),
           new java.io.File(getUserUploadDir(userName), filename))
@@ -272,12 +270,10 @@ trait AccountManagementControllerBase extends ControllerBase {
           value: String,
           params: Map[String, String],
           messages: Messages): Option[String] =
-        getAccountByMailAddress(value, true)
-          .filter { x =>
-            if (paramName.isEmpty) true
-            else Some(x.userName) != params.get(paramName)
-          }
-          .map { _ => "Mail address is already registered." }
+        getAccountByMailAddress(value, true).filter { x =>
+          if (paramName.isEmpty) true
+          else Some(x.userName) != params.get(paramName)
+        }.map { _ => "Mail address is already registered." }
     }
 
 }

@@ -125,20 +125,20 @@ class BooleanSimplificationSuite extends PlanTest with PredicateHelper {
     new SimpleCatalystConf(caseSensitiveAnalysis = false))
 
   test("(a && b) || (a && c) => a && (b || c) when case insensitive") {
-    val plan = caseInsensitiveAnalyzer.execute(
-      testRelation.where(('a > 2 && 'b > 3) || ('A > 2 && 'b < 5)))
+    val plan = caseInsensitiveAnalyzer
+      .execute(testRelation.where(('a > 2 && 'b > 3) || ('A > 2 && 'b < 5)))
     val actual = Optimize.execute(plan)
-    val expected = caseInsensitiveAnalyzer.execute(
-      testRelation.where('a > 2 && ('b > 3 || 'b < 5)))
+    val expected = caseInsensitiveAnalyzer
+      .execute(testRelation.where('a > 2 && ('b > 3 || 'b < 5)))
     comparePlans(actual, expected)
   }
 
   test("(a || b) && (a || c) => a || (b && c) when case insensitive") {
-    val plan = caseInsensitiveAnalyzer.execute(
-      testRelation.where(('a > 2 || 'b > 3) && ('A > 2 || 'b < 5)))
+    val plan = caseInsensitiveAnalyzer
+      .execute(testRelation.where(('a > 2 || 'b > 3) && ('A > 2 || 'b < 5)))
     val actual = Optimize.execute(plan)
-    val expected = caseInsensitiveAnalyzer.execute(
-      testRelation.where('a > 2 || ('b > 3 && 'b < 5)))
+    val expected = caseInsensitiveAnalyzer
+      .execute(testRelation.where('a > 2 || ('b > 3 && 'b < 5)))
     comparePlans(actual, expected)
   }
 }

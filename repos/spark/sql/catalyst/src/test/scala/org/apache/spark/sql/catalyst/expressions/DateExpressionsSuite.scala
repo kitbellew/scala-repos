@@ -43,8 +43,8 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   }
 
   test("datetime function current_timestamp") {
-    val ct = DateTimeUtils.toJavaTimestamp(
-      CurrentTimestamp().eval(EmptyRow).asInstanceOf[Long])
+    val ct = DateTimeUtils
+      .toJavaTimestamp(CurrentTimestamp().eval(EmptyRow).asInstanceOf[Long])
     val t1 = System.currentTimeMillis()
     assert(math.abs(t1 - ct.getTime) < 5000)
   }
@@ -285,8 +285,8 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       TimeAdd(
         Literal(Timestamp.valueOf("2016-01-29 10:00:00")),
         Literal(new CalendarInterval(1, 123000L))),
-      DateTimeUtils.fromJavaTimestamp(
-        Timestamp.valueOf("2016-02-29 10:00:00.123"))
+      DateTimeUtils
+        .fromJavaTimestamp(Timestamp.valueOf("2016-02-29 10:00:00.123"))
     )
 
     checkEvaluation(
@@ -590,11 +590,9 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         DateTimeUtils.fromJavaDate(Date.valueOf("2015-07-24"))) / 1000L
     )
     val t1 = UnixTimestamp(CurrentTimestamp(), Literal("yyyy-MM-dd HH:mm:ss"))
-      .eval()
-      .asInstanceOf[Long]
+      .eval().asInstanceOf[Long]
     val t2 = UnixTimestamp(CurrentTimestamp(), Literal("yyyy-MM-dd HH:mm:ss"))
-      .eval()
-      .asInstanceOf[Long]
+      .eval().asInstanceOf[Long]
     assert(t2 - t1 <= 1)
     checkEvaluation(
       UnixTimestamp(
@@ -652,11 +650,9 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         DateTimeUtils.fromJavaDate(Date.valueOf("2015-07-24"))) / 1000L
     )
     val t1 = ToUnixTimestamp(CurrentTimestamp(), Literal("yyyy-MM-dd HH:mm:ss"))
-      .eval()
-      .asInstanceOf[Long]
+      .eval().asInstanceOf[Long]
     val t2 = ToUnixTimestamp(CurrentTimestamp(), Literal("yyyy-MM-dd HH:mm:ss"))
-      .eval()
-      .asInstanceOf[Long]
+      .eval().asInstanceOf[Long]
     assert(t2 - t1 <= 1)
     checkEvaluation(
       ToUnixTimestamp(

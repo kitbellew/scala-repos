@@ -98,8 +98,8 @@ private[http] object Handshake {
                 Graph[FlowShape[Message, Message], Any]],
               subprotocol: Option[String]): HttpResponse = {
             require(
-              subprotocol.forall(chosen ⇒
-                clientSupportedSubprotocols.contains(chosen)),
+              subprotocol
+                .forall(chosen ⇒ clientSupportedSubprotocols.contains(chosen)),
               s"Tried to choose invalid subprotocol '$subprotocol' which wasn't offered by the client: [${requestedProtocols
                 .mkString(", ")}]"
             )
@@ -260,8 +260,8 @@ private[http] object Handshake {
           caseInsensitive: Boolean): Option[HttpHeader] ⇒ Boolean = {
         case Some(`candidate`) if !caseInsensitive ⇒ true
         case Some(header)
-            if caseInsensitive && candidate.value.toRootLowerCase == header.value.toRootLowerCase ⇒
-          true
+            if caseInsensitive && candidate.value.toRootLowerCase == header
+              .value.toRootLowerCase ⇒ true
         case _ ⇒ false
       }
 
@@ -292,8 +292,7 @@ private[http] object Handshake {
 
       expectations(response) match {
         case None ⇒
-          val subs = response
-            .header[`Sec-WebSocket-Protocol`]
+          val subs = response.header[`Sec-WebSocket-Protocol`]
             .flatMap(_.protocols.headOption)
 
           if (subprotocols.isEmpty && subs.isEmpty)

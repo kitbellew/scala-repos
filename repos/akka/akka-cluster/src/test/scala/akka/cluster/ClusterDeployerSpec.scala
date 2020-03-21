@@ -52,10 +52,7 @@ class ClusterDeployerSpec extends AkkaSpec(ClusterDeployerSpec.deployerConf) {
 
     "be able to parse 'akka.actor.deployment._' with specified cluster pool" in {
       val service = "/user/service1"
-      val deployment = system
-        .asInstanceOf[ActorSystemImpl]
-        .provider
-        .deployer
+      val deployment = system.asInstanceOf[ActorSystemImpl].provider.deployer
         .lookup(service.split("/").drop(1))
       deployment should not be (None)
 
@@ -77,10 +74,7 @@ class ClusterDeployerSpec extends AkkaSpec(ClusterDeployerSpec.deployerConf) {
 
     "be able to parse 'akka.actor.deployment._' with specified cluster group" in {
       val service = "/user/service2"
-      val deployment = system
-        .asInstanceOf[ActorSystemImpl]
-        .provider
-        .deployer
+      val deployment = system.asInstanceOf[ActorSystemImpl].provider.deployer
         .lookup(service.split("/").drop(1))
       deployment should not be (None)
 
@@ -102,8 +96,8 @@ class ClusterDeployerSpec extends AkkaSpec(ClusterDeployerSpec.deployerConf) {
     }
 
     "have correct router mappings" in {
-      val mapping =
-        system.asInstanceOf[ActorSystemImpl].provider.deployer.routerTypeMapping
+      val mapping = system.asInstanceOf[ActorSystemImpl].provider.deployer
+        .routerTypeMapping
       mapping("adaptive-pool") should ===(
         classOf[akka.cluster.routing.AdaptiveLoadBalancingPool].getName)
       mapping("adaptive-group") should ===(

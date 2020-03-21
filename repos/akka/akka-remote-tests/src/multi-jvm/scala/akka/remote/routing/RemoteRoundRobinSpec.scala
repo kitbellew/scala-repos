@@ -152,11 +152,8 @@ class RemoteRoundRobinSpec
         val repliesFrom: Set[ActorRef] = (for (n ← 3 to 9) yield {
           // each message trigger a resize, incrementing number of routees with 1
           actor ! "hit"
-          Await
-            .result(actor ? GetRoutees, timeout.duration)
-            .asInstanceOf[Routees]
-            .routees
-            .size should ===(n)
+          Await.result(actor ? GetRoutees, timeout.duration)
+            .asInstanceOf[Routees].routees.size should ===(n)
           expectMsgType[ActorRef]
         }).toSet
 

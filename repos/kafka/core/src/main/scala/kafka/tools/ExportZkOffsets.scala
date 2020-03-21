@@ -43,25 +43,17 @@ object ExportZkOffsets extends Logging {
   def main(args: Array[String]) {
     val parser = new OptionParser
 
-    val zkConnectOpt = parser
-      .accepts("zkconnect", "ZooKeeper connect string.")
-      .withRequiredArg()
-      .defaultsTo("localhost:2181")
+    val zkConnectOpt = parser.accepts("zkconnect", "ZooKeeper connect string.")
+      .withRequiredArg().defaultsTo("localhost:2181").ofType(classOf[String])
+    val groupOpt = parser.accepts("group", "Consumer group.").withRequiredArg()
       .ofType(classOf[String])
-    val groupOpt = parser
-      .accepts("group", "Consumer group.")
-      .withRequiredArg()
-      .ofType(classOf[String])
-    val outFileOpt = parser
-      .accepts("output-file", "Output file")
-      .withRequiredArg()
-      .ofType(classOf[String])
+    val outFileOpt = parser.accepts("output-file", "Output file")
+      .withRequiredArg().ofType(classOf[String])
     parser.accepts("help", "Print this message.")
 
     if (args.length == 0)
-      CommandLineUtils.printUsageAndDie(
-        parser,
-        "Export consumer offsets to an output file.")
+      CommandLineUtils
+        .printUsageAndDie(parser, "Export consumer offsets to an output file.")
 
     val options = parser.parse(args: _*)
 
@@ -70,11 +62,8 @@ object ExportZkOffsets extends Logging {
       System.exit(0)
     }
 
-    CommandLineUtils.checkRequiredArgs(
-      parser,
-      options,
-      zkConnectOpt,
-      outFileOpt)
+    CommandLineUtils
+      .checkRequiredArgs(parser, options, zkConnectOpt, outFileOpt)
 
     val zkConnect = options.valueOf(zkConnectOpt)
     val groups = options.valuesOf(groupOpt)
@@ -128,10 +117,8 @@ object ExportZkOffsets extends Logging {
       zkUtils: ZkUtils,
       consumerGroup: String,
       topic: String): List[String] =
-    zkUtils
-      .getChildrenParentMayNotExist(
-        "/consumers/%s/offsets/%s".format(consumerGroup, topic))
-      .toList
+    zkUtils.getChildrenParentMayNotExist(
+      "/consumers/%s/offsets/%s".format(consumerGroup, topic)).toList
 
   private def getTopicsList(
       zkUtils: ZkUtils,

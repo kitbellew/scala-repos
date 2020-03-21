@@ -45,9 +45,8 @@ class LightMethodAdapter(
 
   override def findSuperMethodSignaturesIncludingStatic(
       checkAccess: Boolean): util.List[MethodSignatureBackedByPsiMethod] =
-    PsiSuperMethodImplUtil.findSuperMethodSignaturesIncludingStatic(
-      this,
-      checkAccess)
+    PsiSuperMethodImplUtil
+      .findSuperMethodSignaturesIncludingStatic(this, checkAccess)
 
   override def getHierarchicalMethodSignature: HierarchicalMethodSignature =
     PsiSuperMethodImplUtil.getHierarchicalMethodSignature(this)

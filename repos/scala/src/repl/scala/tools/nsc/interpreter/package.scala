@@ -42,7 +42,8 @@ package object interpreter extends ReplConfig with ReplStrings {
   val IR = Results
 
   implicit def postfixOps =
-    scala.language.postfixOps // make all postfix ops in this package compile without warning
+    scala.language
+      .postfixOps // make all postfix ops in this package compile without warning
 
   private[interpreter] implicit def javaCharSeqCollectionToScala(
       xs: JCollection[_ <: CharSequence]): List[String] = {
@@ -62,8 +63,7 @@ package object interpreter extends ReplConfig with ReplStrings {
       ru.runtimeMirror(ourClassloader),
       new TypeCreator {
         def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type =
-          m.staticClass(classTag[T].runtimeClass.getName)
-            .toTypeConstructor
+          m.staticClass(classTag[T].runtimeClass.getName).toTypeConstructor
             .asInstanceOf[U#Type]
       }
     )
@@ -100,7 +100,9 @@ package object interpreter extends ReplConfig with ReplStrings {
 
       filtered foreach {
         case (source, syms) =>
-          p("/* " + syms.size + " implicit members imported from " + source.fullName + " */")
+          p(
+            "/* " + syms.size + " implicit members imported from " + source
+              .fullName + " */")
 
           // This groups the members by where the symbol is defined
           val byOwner = syms groupBy (_.owner)

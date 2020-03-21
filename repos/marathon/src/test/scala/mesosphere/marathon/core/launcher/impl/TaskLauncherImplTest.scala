@@ -33,11 +33,9 @@ class TaskLauncherImplTest extends MarathonSpec {
   private[this] val launch1 = launch(MarathonTestHelper.makeOneCPUTask("task1"))
   private[this] val launch2 = launch(MarathonTestHelper.makeOneCPUTask("task2"))
   private[this] val ops = Seq(launch1, launch2)
-  private[this] val opsAsJava: util.List[Offer.Operation] =
-    ops.flatMap(_.offerOperations).asJava
-  private[this] val filter = Protos.Filters
-    .newBuilder()
-    .setRefuseSeconds(0)
+  private[this] val opsAsJava: util.List[Offer.Operation] = ops
+    .flatMap(_.offerOperations).asJava
+  private[this] val filter = Protos.Filters.newBuilder().setRefuseSeconds(0)
     .build()
 
   test("launchTasks without driver") {
@@ -81,9 +79,7 @@ class TaskLauncherImplTest extends MarathonSpec {
 
   test("declineOffer with driver and defined refuse seconds") {
     launcher.declineOffer(offerId, Some(123))
-    val filter = Protos.Filters
-      .newBuilder()
-      .setRefuseSeconds(123 / 1000.0)
+    val filter = Protos.Filters.newBuilder().setRefuseSeconds(123 / 1000.0)
       .build()
     verify(driverHolder.driver.get).declineOffer(offerId, filter)
   }

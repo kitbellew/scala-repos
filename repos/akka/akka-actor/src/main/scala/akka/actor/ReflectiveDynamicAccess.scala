@@ -19,8 +19,7 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader)
 
   override def getClassFor[T: ClassTag](fqcn: String): Try[Class[_ <: T]] =
     Try[Class[_ <: T]]({
-      val c = Class
-        .forName(fqcn, false, classLoader)
+      val c = Class.forName(fqcn, false, classLoader)
         .asInstanceOf[Class[_ <: T]]
       val t = implicitly[ClassTag[T]].runtimeClass
       if (t.isAssignableFrom(c)) c

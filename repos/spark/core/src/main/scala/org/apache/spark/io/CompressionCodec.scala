@@ -69,13 +69,11 @@ private[spark] object CompressionCodec {
   }
 
   def createCodec(conf: SparkConf, codecName: String): CompressionCodec = {
-    val codecClass = shortCompressionCodecNames.getOrElse(
-      codecName.toLowerCase,
-      codecName)
+    val codecClass = shortCompressionCodecNames
+      .getOrElse(codecName.toLowerCase, codecName)
     val codec =
       try {
-        val ctor = Utils
-          .classForName(codecClass)
+        val ctor = Utils.classForName(codecClass)
           .getConstructor(classOf[SparkConf])
         Some(ctor.newInstance(conf).asInstanceOf[CompressionCodec])
       } catch {
@@ -95,12 +93,12 @@ private[spark] object CompressionCodec {
   def getShortName(codecName: String): String = {
     if (shortCompressionCodecNames.contains(codecName)) { codecName }
     else {
-      shortCompressionCodecNames
-        .collectFirst { case (k, v) if v == codecName => k }
-        .getOrElse {
-          throw new IllegalArgumentException(
-            s"No short name for codec $codecName.")
-        }
+      shortCompressionCodecNames.collectFirst {
+        case (k, v) if v == codecName => k
+      }.getOrElse {
+        throw new IllegalArgumentException(
+          s"No short name for codec $codecName.")
+      }
     }
   }
 
@@ -122,8 +120,8 @@ private[spark] object CompressionCodec {
 class LZ4CompressionCodec(conf: SparkConf) extends CompressionCodec {
 
   override def compressedOutputStream(s: OutputStream): OutputStream = {
-    val blockSize =
-      conf.getSizeAsBytes("spark.io.compression.lz4.blockSize", "32k").toInt
+    val blockSize = conf
+      .getSizeAsBytes("spark.io.compression.lz4.blockSize", "32k").toInt
     new LZ4BlockOutputStream(s, blockSize)
   }
 
@@ -164,8 +162,8 @@ class SnappyCompressionCodec(conf: SparkConf) extends CompressionCodec {
   val version = SnappyCompressionCodec.version
 
   override def compressedOutputStream(s: OutputStream): OutputStream = {
-    val blockSize =
-      conf.getSizeAsBytes("spark.io.compression.snappy.blockSize", "32k").toInt
+    val blockSize = conf
+      .getSizeAsBytes("spark.io.compression.snappy.blockSize", "32k").toInt
     new SnappyOutputStreamWrapper(new SnappyOutputStream(s, blockSize))
   }
 

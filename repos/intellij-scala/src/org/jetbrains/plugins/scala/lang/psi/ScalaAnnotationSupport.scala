@@ -10,10 +10,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   */
 class ScalaAnnotationSupport extends PsiAnnotationSupport {
   def createLiteralValue(value: String, context: PsiElement): PsiLiteral = {
-    return ScalaPsiElementFactory
-      .createExpressionFromText(
-        "\"" + StringUtil.escapeStringCharacters(value) + "\"",
-        context.getManager)
-      .asInstanceOf[ScLiteral]
+    return ScalaPsiElementFactory.createExpressionFromText(
+      "\"" + StringUtil.escapeStringCharacters(value) + "\"",
+      context.getManager).asInstanceOf[ScLiteral]
   }
 }

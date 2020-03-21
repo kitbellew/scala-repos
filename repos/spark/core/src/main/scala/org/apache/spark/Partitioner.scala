@@ -125,11 +125,10 @@ class RangePartitioner[K: Ordering: ClassTag, V](
       // This is the sample size we need to have roughly balanced output partitions, capped at 1M.
       val sampleSize = math.min(20.0 * partitions, 1e6)
       // Assume the input partitions are roughly balanced and over-sample a little bit.
-      val sampleSizePerPartition =
-        math.ceil(3.0 * sampleSize / rdd.partitions.length).toInt
-      val (numItems, sketched) = RangePartitioner.sketch(
-        rdd.map(_._1),
-        sampleSizePerPartition)
+      val sampleSizePerPartition = math
+        .ceil(3.0 * sampleSize / rdd.partitions.length).toInt
+      val (numItems, sketched) = RangePartitioner
+        .sketch(rdd.map(_._1), sampleSizePerPartition)
       if (numItems == 0L) { Array.empty }
       else {
         // If a partition contains much more than the average number of items, we re-sample from it
@@ -154,8 +153,7 @@ class RangePartitioner[K: Ordering: ClassTag, V](
             imbalancedPartitions.contains)
           val seed = byteswap32(-rdd.id - 1)
           val reSampled = imbalanced
-            .sample(withReplacement = false, fraction, seed)
-            .collect()
+            .sample(withReplacement = false, fraction, seed).collect()
           val weight = (1.0 / fraction).toFloat
           candidates ++= reSampled.map(x => (x, weight))
         }
@@ -174,9 +172,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
     var partition = 0
     if (rangeBounds.length <= 128) {
       // If we have less than 128 partitions naive search
-      while (partition < rangeBounds.length && ordering.gt(
-               k,
-               rangeBounds(partition))) { partition += 1 }
+      while (partition < rangeBounds.length && ordering
+               .gt(k, rangeBounds(partition))) { partition += 1 }
     } else {
       // Determine which binary search method to use only once.
       partition = binarySearch(rangeBounds, k)
@@ -260,16 +257,12 @@ private[spark] object RangePartitioner {
       sampleSizePerPartition: Int): (Long, Array[(Int, Long, Array[K])]) = {
     val shift = rdd.id
     // val classTagK = classTag[K] // to avoid serializing the entire partitioner object
-    val sketched = rdd
-      .mapPartitionsWithIndex { (idx, iter) =>
-        val seed = byteswap32(idx ^ (shift << 16))
-        val (sample, n) = SamplingUtils.reservoirSampleAndCount(
-          iter,
-          sampleSizePerPartition,
-          seed)
-        Iterator((idx, n, sample))
-      }
-      .collect()
+    val sketched = rdd.mapPartitionsWithIndex { (idx, iter) =>
+      val seed = byteswap32(idx ^ (shift << 16))
+      val (sample, n) = SamplingUtils
+        .reservoirSampleAndCount(iter, sampleSizePerPartition, seed)
+      Iterator((idx, n, sample))
+    }.collect()
     val numItems = sketched.map(_._2).sum
     (numItems, sketched)
   }

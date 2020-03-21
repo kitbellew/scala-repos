@@ -54,23 +54,18 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
         }
 
         def propsProto = {
-          val builder = PropsData.newBuilder
-            .setClazz(props.clazz.getName)
+          val builder = PropsData.newBuilder.setClazz(props.clazz.getName)
             .setDeploy(deployProto(props.deploy))
           props.args map serialize foreach builder.addArgs
           props.args map (a ⇒
-            if (a == null) "null"
-            else a.getClass.getName) foreach builder.addClasses
+            if (a == null) "null" else a.getClass.getName) foreach builder
+            .addClasses
           builder.build
         }
 
-        DaemonMsgCreateData.newBuilder
-          .setProps(propsProto)
-          .setDeploy(deployProto(deploy))
-          .setPath(path)
-          .setSupervisor(serializeActorRef(supervisor))
-          .build
-          .toByteArray
+        DaemonMsgCreateData.newBuilder.setProps(propsProto)
+          .setDeploy(deployProto(deploy)).setPath(path)
+          .setSupervisor(serializeActorRef(supervisor)).build.toByteArray
 
       case _ ⇒
         throw new IllegalArgumentException(
@@ -102,12 +97,11 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
 
     def props = {
       import scala.collection.JavaConverters._
-      val clazz =
-        system.dynamicAccess.getClassFor[AnyRef](proto.getProps.getClazz).get
+      val clazz = system.dynamicAccess
+        .getClassFor[AnyRef](proto.getProps.getClazz).get
       val args: Vector[AnyRef] =
-        (
-          proto.getProps.getArgsList.asScala zip proto.getProps.getClassesList.asScala
-        ).map(deserialize)(collection.breakOut)
+        (proto.getProps.getArgsList.asScala zip proto.getProps.getClassesList
+          .asScala).map(deserialize)(collection.breakOut)
       Props(deploy(proto.getProps.getDeploy), clazz, args)
     }
 

@@ -62,9 +62,9 @@ object VFSPathUtils extends Logging {
   def escapePath(path: Path, toEscape: Set[String]) =
     Path(path.elements.map {
       case needsEscape
-          if toEscape.contains(needsEscape) || needsEscape.endsWith(
-            escapeSuffix) => needsEscape + escapeSuffix
-      case fine           => fine
+          if toEscape.contains(needsEscape) || needsEscape
+            .endsWith(escapeSuffix) => needsEscape + escapeSuffix
+      case fine                     => fine
     }.toList)
 
   def unescapePath(path: Path) =
@@ -146,15 +146,14 @@ object VFSPathUtils extends Logging {
                   case NotFound(message) =>
                     // Recurse on children to find one that is nonempty
                     containsNonemptyChild(
-                      Option(
-                        pathDir0.listFiles(
-                          pathFileFilter)).toList.flatten) map {
+                      Option(pathDir0.listFiles(pathFileFilter)).toList
+                        .flatten) map {
                       case true =>
                         \/.right(PathMetadata(path, PathMetadata.PathOnly))
                       case false =>
                         \/.left(NotFound(
-                          "All subpaths of %s appear to be empty.".format(
-                            path.path)))
+                          "All subpaths of %s appear to be empty."
+                            .format(path.path)))
                     }
 
                   case otherError => IO(\/.left(otherError))
@@ -162,9 +161,8 @@ object VFSPathUtils extends Logging {
                 {
                   case VersionEntry(uuid, dataType, timestamp) =>
                     containsNonemptyChild(
-                      Option(
-                        pathDir0.listFiles(
-                          pathFileFilter)).toList.flatten) map {
+                      Option(pathDir0.listFiles(pathFileFilter)).toList
+                        .flatten) map {
                       case true =>
                         \/.right(PathMetadata(
                           path,

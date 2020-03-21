@@ -122,9 +122,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       applicable.map(r => {
         var callByName = false
         def checkCallByName(clauses: Seq[ScParameterClause]): Unit = {
-          if (clauses.length > 0 && clauses(
-                0).parameters.length == 1 && clauses(0)
-                .parameters(0)
+          if (clauses.length > 0 && clauses(0).parameters
+                .length == 1 && clauses(0).parameters(0)
                 .isCallByNameParameter) { callByName = true }
         }
         r.element match {
@@ -176,22 +175,23 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                   ScMethodType(_, params, _),
                   typeParams) =>
               if (!existential) {
-                val s: ScSubstitutor = typeParams.foldLeft(
-                  ScSubstitutor.empty) {
-                  (subst: ScSubstitutor, tp: TypeParameter) =>
-                    subst.bindT(
-                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                      new ScUndefinedType(ScalaPsiManager.typeVariable(tp.ptp)))
-                }
+                val s: ScSubstitutor = typeParams
+                  .foldLeft(ScSubstitutor.empty) {
+                    (subst: ScSubstitutor, tp: TypeParameter) =>
+                      subst.bindT(
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+                        new ScUndefinedType(
+                          ScalaPsiManager.typeVariable(tp.ptp)))
+                  }
                 Left(params.map(p => p.copy(paramType = s.subst(p.paramType))))
               } else {
-                val s: ScSubstitutor = typeParams.foldLeft(
-                  ScSubstitutor.empty) {
-                  (subst: ScSubstitutor, tp: TypeParameter) =>
-                    subst.bindT(
-                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                      new ScTypeVariable(tp.name))
-                }
+                val s: ScSubstitutor = typeParams
+                  .foldLeft(ScSubstitutor.empty) {
+                    (subst: ScSubstitutor, tp: TypeParameter) =>
+                      subst.bindT(
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+                        new ScTypeVariable(tp.name))
+                  }
                 val arguments = typeParams.toList.map(tp =>
                   new ScExistentialArgument(
                     tp.name,
@@ -205,22 +205,23 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
               }
             case ScTypePolymorphicType(internal, typeParams) =>
               if (!existential) {
-                val s: ScSubstitutor = typeParams.foldLeft(
-                  ScSubstitutor.empty) {
-                  (subst: ScSubstitutor, tp: TypeParameter) =>
-                    subst.bindT(
-                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                      new ScUndefinedType(ScalaPsiManager.typeVariable(tp.ptp)))
-                }
+                val s: ScSubstitutor = typeParams
+                  .foldLeft(ScSubstitutor.empty) {
+                    (subst: ScSubstitutor, tp: TypeParameter) =>
+                      subst.bindT(
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+                        new ScUndefinedType(
+                          ScalaPsiManager.typeVariable(tp.ptp)))
+                  }
                 Right(s.subst(internal))
               } else {
-                val s: ScSubstitutor = typeParams.foldLeft(
-                  ScSubstitutor.empty) {
-                  (subst: ScSubstitutor, tp: TypeParameter) =>
-                    subst.bindT(
-                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                      new ScTypeVariable(tp.name))
-                }
+                val s: ScSubstitutor = typeParams
+                  .foldLeft(ScSubstitutor.empty) {
+                    (subst: ScSubstitutor, tp: TypeParameter) =>
+                      subst.bindT(
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+                        new ScTypeVariable(tp.name))
+                  }
                 val arguments = typeParams.toList.map(tp =>
                   new ScExistentialArgument(
                     tp.name,
@@ -251,12 +252,10 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
             if (lastRepeated(params1) && !lastRepeated(params2))
               params1 = params1.map {
                 case p: Parameter if p.isRepeated =>
-                  val seq = ScalaPsiManager
-                    .instance(r1.element.getProject)
+                  val seq = ScalaPsiManager.instance(r1.element.getProject)
                     .getCachedClass(
                       r1.element.getResolveScope,
-                      "scala.collection.Seq")
-                    .orNull
+                      "scala.collection.Seq").orNull
                   if (seq != null) {
                     val newParamType = p.paramType match {
                       case ScExistentialType(q, wilds) =>
@@ -284,9 +283,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
             val default: Expression = new Expression(
               if (params1.length > 0) params1.last.paramType else types.Nothing,
               elem)
-            val exprs: Seq[Expression] =
-              params1.map(p => new Expression(p.paramType, elem)) ++
-                Seq.fill(i)(default)
+            val exprs: Seq[Expression] = params1
+              .map(p => new Expression(p.paramType, elem)) ++
+              Seq.fill(i)(default)
             Compatibility.checkConformance(
               checkNames = false,
               params2,
@@ -482,10 +481,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       case f: ScFunction           => f.polymorphicType()
       case p: ScPrimaryConstructor => p.polymorphicType
       case m: PsiMethod =>
-        ResolveUtils.javaPolymorphicType(
-          m,
-          ScSubstitutor.empty,
-          elem.getResolveScope)
+        ResolveUtils
+          .javaPolymorphicType(m, ScSubstitutor.empty, elem.getResolveScope)
       case refPatt: ScReferencePattern =>
         refPatt.getParent /*id list*/ .getParent match {
           case pd: ScPatternDefinition

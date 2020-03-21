@@ -145,8 +145,8 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
 
     def toSlice(maxSize: Int): Slice = Slice(cols.toMap, size min maxSize)
 
-    val ops: Array[ColumnOps] = slice.columns.map(colOpsFor)(
-      collection.breakOut)
+    val ops: Array[ColumnOps] = slice.columns
+      .map(colOpsFor)(collection.breakOut)
 
     def insert(src: Int, dest: Int) {
       var k = 0

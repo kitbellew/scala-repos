@@ -37,10 +37,9 @@ class DataSource(val dsp: DataSourceParams)
     // create a RDD of (entityID, Item)
     // HOWTO: collecting items(movies)
     val itemsRDD = eventsDb
-      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc)
-      .flatMap {
-        case (entityId, properties) ⇒
-          ItemMarshaller.unmarshall(properties).map(entityId → _)
+      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc).flatMap {
+        case (entityId, properties) ⇒ ItemMarshaller.unmarshall(properties)
+            .map(entityId → _)
       }
 
     // get all user rate events
@@ -53,20 +52,18 @@ class DataSource(val dsp: DataSourceParams)
     )(sc)
 
     // collect ratings
-    val ratingsRDD = rateEventsRDD
-      .flatMap { event ⇒
-        try {
-          (event.event match {
-            case "rate" => event.properties.getOpt[Double]("rating")
-            case _ ⇒ None
-          }).map(Rating(event.entityId, event.targetEntityId.get, _))
-        } catch {
-          case e: Exception ⇒
-            logger.error(s"Cannot convert ${event} to Rating. Exception: ${e}.")
-            throw e
-        }
+    val ratingsRDD = rateEventsRDD.flatMap { event ⇒
+      try {
+        (event.event match {
+          case "rate" => event.properties.getOpt[Double]("rating")
+          case _ ⇒ None
+        }).map(Rating(event.entityId, event.targetEntityId.get, _))
+      } catch {
+        case e: Exception ⇒
+          logger.error(s"Cannot convert ${event} to Rating. Exception: ${e}.")
+          throw e
       }
-      .cache()
+    }.cache()
 
     new TrainingData(ratingsRDD, itemsRDD)
   }

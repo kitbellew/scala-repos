@@ -60,8 +60,8 @@ class BalloonConflictsReporter(editor: Editor) extends ConflictsReporter {
           null,
           MessageType.WARNING.getPopupBackground,
           null)
-        val balloon: Balloon =
-          builder.setFadeoutTime(-1).setShowCallout(false).createBalloon
+        val balloon: Balloon = builder.setFadeoutTime(-1).setShowCallout(false)
+          .createBalloon
         balloon.show(
           new RelativePoint(new Point(screenPoint.x, y)),
           Balloon.Position.above)

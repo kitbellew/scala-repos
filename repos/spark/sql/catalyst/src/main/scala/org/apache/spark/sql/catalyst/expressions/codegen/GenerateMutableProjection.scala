@@ -107,7 +107,8 @@ object GenerateMutableProjection
         return new SpecificMutableProjection(references);
       }
 
-      class SpecificMutableProjection extends ${classOf[BaseMutableProjection].getName} {
+      class SpecificMutableProjection extends ${classOf[BaseMutableProjection]
+      .getName} {
 
         private Object[] references;
         private MutableRow mutableRow;

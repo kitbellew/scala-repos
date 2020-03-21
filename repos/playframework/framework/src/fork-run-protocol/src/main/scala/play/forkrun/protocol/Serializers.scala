@@ -54,12 +54,10 @@ object Serializers {
         reader.beginCollection()
         reader.hintStaticallyElidedType()
         reader.hintTag(aTag)
-        val a: A = unpicklerA
-          .unpickleEntry(reader.readElement())
+        val a: A = unpicklerA.unpickleEntry(reader.readElement())
           .asInstanceOf[A]
         reader.hintTag(bTag)
-        val b: B = unpicklerB
-          .unpickleEntry(reader.readElement())
+        val b: B = unpicklerB.unpickleEntry(reader.readElement())
           .asInstanceOf[B]
         reader.endCollection()
 
@@ -191,18 +189,15 @@ object Serializers {
       def readIntField(key: String): Int =
         intPickler.unpickleEntry(reader.readField(key)).asInstanceOf[Int]
       def readIntOptField(key: String): Option[Int] =
-        intOptUnpickler
-          .unpickleEntry(reader.readField(key))
+        intOptUnpickler.unpickleEntry(reader.readField(key))
           .asInstanceOf[Option[Int]]
       def readStringField(key: String): String =
         stringPickler.unpickleEntry(reader.readField(key)).asInstanceOf[String]
       def readStringOptField(key: String): Option[String] =
-        stringOptUnpickler
-          .unpickleEntry(reader.readField(key))
+        stringOptUnpickler.unpickleEntry(reader.readField(key))
           .asInstanceOf[Option[String]]
       def readThrowableOptField(key: String): Option[Throwable] =
-        throwableOptUnpickler
-          .unpickleEntry(reader.readField(key))
+        throwableOptUnpickler.unpickleEntry(reader.readField(key))
           .asInstanceOf[Option[Throwable]]
 
       reader.pushHints()
@@ -219,8 +214,8 @@ object Serializers {
         case Some(l) =>
           new PlayException.ExceptionSource(title, description, cause.orNull) {
             val line: java.lang.Integer = l
-            val position: java.lang.Integer =
-              readIntOptField("position").map(new Integer(_)).orNull
+            val position: java.lang.Integer = readIntOptField("position")
+              .map(new Integer(_)).orNull
             val input: String = readStringOptField("input").orNull
             val sourceName: String = readStringOptField("sourceName").orNull
           }

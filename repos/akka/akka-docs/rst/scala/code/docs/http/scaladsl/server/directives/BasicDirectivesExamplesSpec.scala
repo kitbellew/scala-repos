@@ -57,9 +57,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
         extractMaterializer { mat =>
           complete {
             // explicitly use the materializer:
-            Source
-              .single(s"Materialized by ${mat.##}!")
-              .runWith(Sink.head)(mat)
+            Source.single(s"Materialized by ${mat.##}!").runWith(Sink.head)(mat)
           }
         }
       }
@@ -86,8 +84,7 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       extractMaterializer { materializer =>
         complete {
           // explicitly use the `materializer`:
-          Source
-            .single(s"Materialized by ${materializer.##}!")
+          Source.single(s"Materialized by ${materializer.##}!")
             .runWith(Sink.head)(materializer)
         }
       }
@@ -186,8 +183,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "withSettings-0" in compileOnlySpec {
     //#withSettings-0
-    val special = RoutingSettings(system).withFileIODispatcher(
-      "special-io-dispatcher")
+    val special = RoutingSettings(system)
+      .withFileIODispatcher("special-io-dispatcher")
 
     def sample() =
       path("sample") {

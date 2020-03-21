@@ -289,8 +289,8 @@ class DenseOptimizationSpaceTest_Double
     extends OptimizationSpaceTest[DenseMatrix[Double], DenseVector[
       Double], Double] {
   override implicit val space: MutableOptimizationSpace[DenseMatrix[
-    Double], DenseVector[Double], Double] =
-    MutableOptimizationSpace.DenseDoubleOptimizationSpace.denseDoubleOptSpace
+    Double], DenseVector[Double], Double] = MutableOptimizationSpace
+    .DenseDoubleOptimizationSpace.denseDoubleOptSpace
 
   val N = 30
   override implicit def genTripleM: Arbitrary[
@@ -333,8 +333,8 @@ class SparseOptimizationSpaceTest_Double
     extends OptimizationSpaceTest[CSCMatrix[Double], SparseVector[
       Double], Double] {
   override implicit val space: MutableOptimizationSpace[CSCMatrix[
-    Double], SparseVector[Double], Double] =
-    MutableOptimizationSpace.SparseDoubleOptimizationSpace.sparseDoubleOptSpace
+    Double], SparseVector[Double], Double] = MutableOptimizationSpace
+    .SparseDoubleOptimizationSpace.sparseDoubleOptSpace
 
   // TODO: generate arbitrarily dimensioned matrices
   val N = 30

@@ -260,13 +260,13 @@ class HiveContext private[hive] (
       // into the isolated client loader
       val metadataConf = new HiveConf(sc.hadoopConfiguration, classOf[HiveConf])
 
-      val defaultWarehouseLocation = metadataConf.get(
-        "hive.metastore.warehouse.dir")
+      val defaultWarehouseLocation = metadataConf
+        .get("hive.metastore.warehouse.dir")
       logInfo("default warehouse location is " + defaultWarehouseLocation)
 
       // `configure` goes second to override other settings.
-      val allConfig =
-        metadataConf.asScala.map(e => e.getKey -> e.getValue).toMap ++ configure
+      val allConfig = metadataConf.asScala.map(e => e.getKey -> e.getValue)
+        .toMap ++ configure
 
       val isolatedLoader =
         if (hiveMetastoreJars == "builtin") {
@@ -322,20 +322,17 @@ class HiveContext private[hive] (
           )
         } else {
           // Convert to files and expand any directories.
-          val jars = hiveMetastoreJars
-            .split(File.pathSeparator)
-            .flatMap {
-              case path if new File(path).getName() == "*" =>
-                val files = new File(path).getParentFile().listFiles()
-                if (files == null) {
-                  logWarning(s"Hive jar path '$path' does not exist.")
-                  Nil
-                } else {
-                  files.filter(_.getName().toLowerCase().endsWith(".jar"))
-                }
-              case path => new File(path) :: Nil
-            }
-            .map(_.toURI.toURL)
+          val jars = hiveMetastoreJars.split(File.pathSeparator).flatMap {
+            case path if new File(path).getName() == "*" =>
+              val files = new File(path).getParentFile().listFiles()
+              if (files == null) {
+                logWarning(s"Hive jar path '$path' does not exist.")
+                Nil
+              } else {
+                files.filter(_.getName().toLowerCase().endsWith(".jar"))
+              }
+            case path => new File(path) :: Nil
+          }.map(_.toURI.toURL)
 
           logInfo(
             s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion " +
@@ -412,13 +409,11 @@ class HiveContext private[hive] (
           val fileStatus = fs.getFileStatus(path)
           val size =
             if (fileStatus.isDirectory) {
-              fs.listStatus(path)
-                .map { status =>
-                  if (!status.getPath().getName().startsWith(stagingDir)) {
-                    calculateTableSize(fs, status.getPath)
-                  } else { 0L }
-                }
-                .sum
+              fs.listStatus(path).map { status =>
+                if (!status.getPath().getName().startsWith(stagingDir)) {
+                  calculateTableSize(fs, status.getPath)
+                } else { 0L }
+              }.sum
             } else { fileStatus.getLen }
 
           size
@@ -444,8 +439,7 @@ class HiveContext private[hive] (
 
         val tableParameters = relation.hiveQlTable.getParameters
         val oldTotalSize = Option(
-          tableParameters.get(StatsSetupConst.TOTAL_SIZE))
-          .map(_.toLong)
+          tableParameters.get(StatsSetupConst.TOTAL_SIZE)).map(_.toLong)
           .getOrElse(0L)
         val newTotalSize = getFileSizeForTable(hiveconf, relation.hiveQlTable)
         // Update the Hive metastore if the total size of the table is different than the size
@@ -453,9 +447,9 @@ class HiveContext private[hive] (
         // This logic is based on org.apache.hadoop.hive.ql.exec.StatsTask.aggregateStats().
         if (newTotalSize > 0 && newTotalSize != oldTotalSize) {
           sessionState.catalog.client
-            .alterTable(relation.table.copy(properties =
-              relation.table.properties +
-                (StatsSetupConst.TOTAL_SIZE -> newTotalSize.toString)))
+            .alterTable(relation.table.copy(properties = relation.table
+              .properties +
+              (StatsSetupConst.TOTAL_SIZE -> newTotalSize.toString)))
         }
       case otherRelation =>
         throw new UnsupportedOperationException(
@@ -497,10 +491,13 @@ class HiveContext private[hive] (
       ConfVars.METASTORE_EVENT_CLEAN_FREQ -> TimeUnit.SECONDS,
       ConfVars.METASTORE_EVENT_EXPIRY_DURATION -> TimeUnit.SECONDS,
       ConfVars.METASTORE_AGGREGATE_STATS_CACHE_TTL -> TimeUnit.SECONDS,
-      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_WRITER_WAIT -> TimeUnit.MILLISECONDS,
-      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_READER_WAIT -> TimeUnit.MILLISECONDS,
+      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_WRITER_WAIT -> TimeUnit
+        .MILLISECONDS,
+      ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_READER_WAIT -> TimeUnit
+        .MILLISECONDS,
       ConfVars.HIVES_AUTO_PROGRESS_TIMEOUT -> TimeUnit.SECONDS,
-      ConfVars.HIVE_LOG_INCREMENTAL_PLAN_PROGRESS_INTERVAL -> TimeUnit.MILLISECONDS,
+      ConfVars.HIVE_LOG_INCREMENTAL_PLAN_PROGRESS_INTERVAL -> TimeUnit
+        .MILLISECONDS,
       ConfVars.HIVE_STATS_JDBC_TIMEOUT -> TimeUnit.SECONDS,
       ConfVars.HIVE_STATS_RETRIES_WAIT -> TimeUnit.MILLISECONDS,
       ConfVars.HIVE_LOCK_SLEEP_BETWEEN_RETRIES -> TimeUnit.SECONDS,
@@ -511,9 +508,11 @@ class HiveContext private[hive] (
       ConfVars.HIVE_COMPACTOR_CHECK_INTERVAL -> TimeUnit.SECONDS,
       ConfVars.HIVE_COMPACTOR_CLEANER_RUN_INTERVAL -> TimeUnit.MILLISECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_HTTP_MAX_IDLE_TIME -> TimeUnit.MILLISECONDS,
-      ConfVars.HIVE_SERVER2_THRIFT_HTTP_WORKER_KEEPALIVE_TIME -> TimeUnit.SECONDS,
+      ConfVars.HIVE_SERVER2_THRIFT_HTTP_WORKER_KEEPALIVE_TIME -> TimeUnit
+        .SECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_HTTP_COOKIE_MAX_AGE -> TimeUnit.SECONDS,
-      ConfVars.HIVE_SERVER2_THRIFT_LOGIN_BEBACKOFF_SLOT_LENGTH -> TimeUnit.MILLISECONDS,
+      ConfVars.HIVE_SERVER2_THRIFT_LOGIN_BEBACKOFF_SLOT_LENGTH -> TimeUnit
+        .MILLISECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_LOGIN_TIMEOUT -> TimeUnit.SECONDS,
       ConfVars.HIVE_SERVER2_THRIFT_WORKER_KEEPALIVE_TIME -> TimeUnit.SECONDS,
       ConfVars.HIVE_SERVER2_ASYNC_EXEC_SHUTDOWN_TIMEOUT -> TimeUnit.SECONDS,
@@ -550,11 +549,9 @@ class HiveContext private[hive] (
   }
 
   private def functionOrMacroDDLPattern(command: String) =
-    Pattern
-      .compile(
-        ".*(create|drop)\\s+(temporary\\s+)?(function|macro).+",
-        Pattern.DOTALL)
-      .matcher(command)
+    Pattern.compile(
+      ".*(create|drop)\\s+(temporary\\s+)?(function|macro).+",
+      Pattern.DOTALL).matcher(command)
 
   protected[hive] def runSqlHive(sql: String): Seq[String] = {
     val command = sql.trim.toLowerCase
@@ -594,22 +591,19 @@ class HiveContext private[hive] (
                 name,
                 dataType,
                 Option(comment.asInstanceOf[String]).getOrElse(""))
-                .map(s => String.format(s"%-20s", s))
-                .mkString("\t")
+                .map(s => String.format(s"%-20s", s)).mkString("\t")
           }
-        case command: ExecutedCommand =>
-          command.executeCollect().map(_.getString(0))
+        case command: ExecutedCommand => command.executeCollect()
+            .map(_.getString(0))
 
         case other =>
-          val result: Seq[Seq[Any]] =
-            other.executeCollectPublic().map(_.toSeq).toSeq
+          val result: Seq[Seq[Any]] = other.executeCollectPublic().map(_.toSeq)
+            .toSeq
           // We need the types so we can output struct field names
           val types = analyzed.output.map(_.dataType)
           // Reformat to match hive tab delimited output.
-          result
-            .map(_.zip(types).map(HiveContext.toHiveString))
-            .map(_.mkString("\t"))
-            .toSeq
+          result.map(_.zip(types).map(HiveContext.toHiveString))
+            .map(_.mkString("\t")).toSeq
       }
 
     override def simpleString: String =
@@ -625,8 +619,7 @@ class HiveContext private[hive] (
     // Add jar to Hive and classloader
     executionHive.addJar(path)
     metadataHive.addJar(path)
-    Thread
-      .currentThread()
+    Thread.currentThread()
       .setContextClassLoader(executionHive.clientLoader.classLoader)
     super.addJar(path)
   }
@@ -733,8 +726,8 @@ private[hive] object HiveContext {
     // We have to mask all properties in hive-site.xml that relates to metastore data source
     // as we used a local metastore here.
     HiveConf.ConfVars.values().foreach { confvar =>
-      if (confvar.varname.contains("datanucleus") || confvar.varname.contains(
-            "jdo")
+      if (confvar.varname.contains("datanucleus") || confvar.varname
+            .contains("jdo")
           || confvar.varname.contains("hive.metastore.rawstore.impl")) {
         propMap.put(confvar.varname, confvar.getDefaultExpr())
       }
@@ -781,26 +774,16 @@ private[hive] object HiveContext {
 
   protected[sql] def toHiveString(a: (Any, DataType)): String =
     a match {
-      case (struct: Row, StructType(fields)) =>
-        struct.toSeq
-          .zip(fields)
-          .map {
-            case (v, t) =>
-              s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
-          }
-          .mkString("{", ",", "}")
-      case (seq: Seq[_], ArrayType(typ, _)) =>
-        seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
-      case (map: Map[_, _], MapType(kType, vType, _)) =>
-        map
-          .map {
-            case (key, value) =>
-              toHiveStructString((key, kType)) + ":" + toHiveStructString(
-                (value, vType))
-          }
-          .toSeq
-          .sorted
-          .mkString("{", ",", "}")
+      case (struct: Row, StructType(fields)) => struct.toSeq.zip(fields).map {
+          case (v, t) => s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
+        }.mkString("{", ",", "}")
+      case (seq: Seq[_], ArrayType(typ, _)) => seq.map(v => (v, typ))
+          .map(toHiveStructString).mkString("[", ",", "]")
+      case (map: Map[_, _], MapType(kType, vType, _)) => map.map {
+          case (key, value) =>
+            toHiveStructString((key, kType)) + ":" + toHiveStructString(
+              (value, vType))
+        }.toSeq.sorted.mkString("{", ",", "}")
       case (null, _)                     => "NULL"
       case (d: Int, DateType)            => new DateWritable(d).toString
       case (t: Timestamp, TimestampType) => new TimestampWritable(t).toString
@@ -815,26 +798,16 @@ private[hive] object HiveContext {
   /** Hive outputs fields of structs slightly differently than top level attributes. */
   protected def toHiveStructString(a: (Any, DataType)): String =
     a match {
-      case (struct: Row, StructType(fields)) =>
-        struct.toSeq
-          .zip(fields)
-          .map {
-            case (v, t) =>
-              s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
-          }
-          .mkString("{", ",", "}")
-      case (seq: Seq[_], ArrayType(typ, _)) =>
-        seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
-      case (map: Map[_, _], MapType(kType, vType, _)) =>
-        map
-          .map {
-            case (key, value) =>
-              toHiveStructString((key, kType)) + ":" + toHiveStructString(
-                (value, vType))
-          }
-          .toSeq
-          .sorted
-          .mkString("{", ",", "}")
+      case (struct: Row, StructType(fields)) => struct.toSeq.zip(fields).map {
+          case (v, t) => s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
+        }.mkString("{", ",", "}")
+      case (seq: Seq[_], ArrayType(typ, _)) => seq.map(v => (v, typ))
+          .map(toHiveStructString).mkString("[", ",", "]")
+      case (map: Map[_, _], MapType(kType, vType, _)) => map.map {
+          case (key, value) =>
+            toHiveStructString((key, kType)) + ":" + toHiveStructString(
+              (value, vType))
+        }.toSeq.sorted.mkString("{", ",", "}")
       case (null, _)                                   => "null"
       case (s: String, StringType)                     => "\"" + s + "\""
       case (decimal, DecimalType())                    => decimal.toString

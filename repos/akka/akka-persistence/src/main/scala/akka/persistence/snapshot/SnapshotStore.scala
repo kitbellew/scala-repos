@@ -24,10 +24,10 @@ trait SnapshotStore extends Actor with ActorLogging {
   private val breaker = {
     val cfg = extension.configFor(self)
     val maxFailures = cfg.getInt("circuit-breaker.max-failures")
-    val callTimeout =
-      cfg.getDuration("circuit-breaker.call-timeout", MILLISECONDS).millis
-    val resetTimeout =
-      cfg.getDuration("circuit-breaker.reset-timeout", MILLISECONDS).millis
+    val callTimeout = cfg
+      .getDuration("circuit-breaker.call-timeout", MILLISECONDS).millis
+    val resetTimeout = cfg
+      .getDuration("circuit-breaker.reset-timeout", MILLISECONDS).millis
     CircuitBreaker(
       context.system.scheduler,
       maxFailures,
@@ -65,12 +65,10 @@ trait SnapshotStore extends Actor with ActorLogging {
       } finally senderPersistentActor() ! evt // sender is persistentActor
 
     case d @ DeleteSnapshot(metadata) ⇒
-      breaker
-        .withCircuitBreaker(deleteAsync(metadata))
-        .map { case _ ⇒ DeleteSnapshotSuccess(metadata) }
-        .recover { case e ⇒ DeleteSnapshotFailure(metadata, e) }
-        .pipeTo(self)(senderPersistentActor())
-        .onComplete {
+      breaker.withCircuitBreaker(deleteAsync(metadata)).map {
+        case _ ⇒ DeleteSnapshotSuccess(metadata)
+      }.recover { case e ⇒ DeleteSnapshotFailure(metadata, e) }
+        .pipeTo(self)(senderPersistentActor()).onComplete {
           case _ ⇒ if (publish) context.system.eventStream.publish(d)
         }
 
@@ -82,12 +80,10 @@ trait SnapshotStore extends Actor with ActorLogging {
       finally senderPersistentActor() ! evt
 
     case d @ DeleteSnapshots(persistenceId, criteria) ⇒
-      breaker
-        .withCircuitBreaker(deleteAsync(persistenceId, criteria))
-        .map { case _ ⇒ DeleteSnapshotsSuccess(criteria) }
-        .recover { case e ⇒ DeleteSnapshotsFailure(criteria, e) }
-        .pipeTo(self)(senderPersistentActor())
-        .onComplete {
+      breaker.withCircuitBreaker(deleteAsync(persistenceId, criteria)).map {
+        case _ ⇒ DeleteSnapshotsSuccess(criteria)
+      }.recover { case e ⇒ DeleteSnapshotsFailure(criteria, e) }
+        .pipeTo(self)(senderPersistentActor()).onComplete {
           case _ ⇒ if (publish) context.system.eventStream.publish(d)
         }
 

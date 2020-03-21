@@ -115,8 +115,7 @@ object LzoGenericScheme {
     if ((conf.get(confKey) == null) || overrideConf) {
       val extern = Externalizer(conv)
       try {
-        ExternalizerSerializer.inj
-          .invert(ExternalizerSerializer.inj(extern))
+        ExternalizerSerializer.inj.invert(ExternalizerSerializer.inj(extern))
           .get
       } catch {
         case e: Exception =>
@@ -157,9 +156,8 @@ class LzoGenericScheme[M](
       classOf[SourceConfigBinaryConverterProvider[_]],
       conf)
 
-    DelegateCombineFileInputFormat.setDelegateInputFormat(
-      conf,
-      classOf[MultiInputFormat[_]])
+    DelegateCombineFileInputFormat
+      .setDelegateInputFormat(conf, classOf[MultiInputFormat[_]])
   }
 
   override def sinkConfInit(
@@ -174,8 +172,7 @@ class LzoGenericScheme[M](
     LzoGenericBlockOutputFormat.setGenericConverterClassConf(
       classOf[SinkConfigBinaryConverterProvider[_]],
       conf)
-    DeprecatedOutputFormatWrapper.setOutputFormat(
-      classOf[LzoGenericBlockOutputFormat[_]],
-      conf)
+    DeprecatedOutputFormatWrapper
+      .setOutputFormat(classOf[LzoGenericBlockOutputFormat[_]], conf)
   }
 }

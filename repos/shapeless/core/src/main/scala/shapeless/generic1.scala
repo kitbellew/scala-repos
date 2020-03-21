@@ -271,8 +271,8 @@ class Generic1Macros(val c: whitebox.Context) extends CaseClassMacros {
     val rnme = TypeName(c.freshName)
 
     val to = {
-      val toCases =
-        ctorsOf1(tpe) zip (Stream from 0) map (mkCoproductCases _).tupled
+      val toCases = ctorsOf1(tpe) zip (Stream from 0) map (mkCoproductCases _)
+        .tupled
       q"""_root_.shapeless.Coproduct.unsafeMkCoproduct((ft: Any) match { case ..$toCases }, ft).asInstanceOf[R[$nme]]"""
     }
 
@@ -434,13 +434,10 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
     val nme = TypeName(c.freshName)
 
     def balanced(args: List[Type]): Boolean =
-      args
-        .find(_.contains(lParam))
-        .map { pivot =>
-          !(pivot =:= lParamTpe) &&
-          args.forall { arg => arg =:= pivot || !arg.contains(lParam) }
-        }
-        .getOrElse(false)
+      args.find(_.contains(lParam)).map { pivot =>
+        !(pivot =:= lParamTpe) &&
+        args.forall { arg => arg =:= pivot || !arg.contains(lParam) }
+      }.getOrElse(false)
 
     val (oTpt, iTpt) = lDealiasedTpe match {
       case tpe @ TypeRef(pre, sym, args) if balanced(args) =>

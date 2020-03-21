@@ -36,14 +36,10 @@ object Stress {
 
     val statsReceiver = new SummarizingStatsReceiver
 
-    val client: Service[Request, Response] = ClientBuilder()
-      .codec(Http())
+    val client: Service[Request, Response] = ClientBuilder().codec(Http())
       .hosts(new InetSocketAddress(uri.getHost, uri.getPort))
-      .hostConnectionCoresize(concurrency)
-      .reportTo(statsReceiver)
-      .retries(3)
-      .hostConnectionLimit(concurrency)
-      .build()
+      .hostConnectionCoresize(concurrency).reportTo(statsReceiver).retries(3)
+      .hostConnectionLimit(concurrency).build()
 
     val completedRequests = new AtomicInteger(0)
 

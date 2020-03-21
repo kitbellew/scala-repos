@@ -27,9 +27,7 @@ private[memcached] object InternalMemcached {
       val server = new InProcessMemcached(address.getOrElse(
         new InetSocketAddress(InetAddress.getLoopbackAddress, 0)))
       Some(new TestMemcachedServer {
-        val address = server
-          .start()
-          .boundAddress
+        val address = server.start().boundAddress
           .asInstanceOf[InetSocketAddress]
         def stop() { server.stop(true) }
       })
@@ -128,14 +126,12 @@ private[memcached] object ExternalMemcached {
   }
 
   // Make sure the process is always killed eventually
-  Runtime
-    .getRuntime()
-    .addShutdownHook(new Thread {
-      override def run() {
-        processes foreach { p =>
-          p.destroy()
-          p.waitFor()
-        }
+  Runtime.getRuntime().addShutdownHook(new Thread {
+    override def run() {
+      processes foreach { p =>
+        p.destroy()
+        p.waitFor()
       }
-    })
+    }
+  })
 }

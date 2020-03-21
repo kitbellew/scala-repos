@@ -102,15 +102,14 @@ trait WithPlay {
   }
 
   implicit def LilaFuMonoid[A: Monoid]: Monoid[Fu[A]] =
-    Monoid.instance(
-      (x, y) => x zip y map { case (a, b) => a ⊹ b },
-      fuccess(∅[A]))
+    Monoid
+      .instance((x, y) => x zip y map { case (a, b) => a ⊹ b }, fuccess(∅[A]))
 
   implicit def LilaFuZero[A: Zero]: Zero[Fu[A]] =
     Zero.instance(fuccess(zero[A]))
 
-  implicit val LilaJsObjectZero: Zero[JsObject] = Zero.instance(JsObject(
-    Seq.empty))
+  implicit val LilaJsObjectZero: Zero[JsObject] = Zero
+    .instance(JsObject(Seq.empty))
 
   implicit def LilaJsResultZero[A]: Zero[JsResult[A]] =
     Zero.instance(JsError(Seq.empty))

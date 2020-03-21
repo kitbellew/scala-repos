@@ -21,8 +21,8 @@ class HttpHeaderParserSpec
     with Matchers
     with BeforeAndAfterAll {
 
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = ERROR
     akka.http.parsing.max-header-name-length = 60
@@ -299,10 +299,8 @@ class HttpHeaderParserSpec
     }
     def insert(line: String, value: AnyRef): Unit =
       if (parser.isEmpty)
-        HttpHeaderParser.insertRemainingCharsAsNewNodes(
-          parser,
-          ByteString(line),
-          value)
+        HttpHeaderParser
+          .insertRemainingCharsAsNewNodes(parser, ByteString(line), value)
       else HttpHeaderParser.insert(parser, ByteString(line), value)
 
     def parseLine(line: String) =

@@ -49,8 +49,8 @@ class ThriftServerFramedCodecTest extends FunSuite with MockitoSugar {
       header.setFlags(1L)
 
       val ignoreMsg = new OutputBuffer(protocolFactory)
-      ignoreMsg().writeMessageBegin(
-        new TMessage("ignoreme", TMessageType.CALL, 0))
+      ignoreMsg()
+        .writeMessageBegin(new TMessage("ignoreme", TMessageType.CALL, 0))
       new thrift.ConnectionOptions().write(ignoreMsg())
       ignoreMsg().writeMessageEnd()
 

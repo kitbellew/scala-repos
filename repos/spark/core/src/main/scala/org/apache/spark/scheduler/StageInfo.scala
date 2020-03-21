@@ -35,8 +35,8 @@ class StageInfo(
     val rddInfos: Seq[RDDInfo],
     val parentIds: Seq[Int],
     val details: String,
-    private[spark] val taskLocalityPreferences: Seq[Seq[TaskLocation]] =
-      Seq.empty) {
+    private[spark] val taskLocalityPreferences: Seq[Seq[TaskLocation]] = Seq
+      .empty) {
 
   /** When this stage was submitted from the DAGScheduler to a TaskScheduler. */
   var submissionTime: Option[Long] = None

@@ -42,9 +42,10 @@ class AbstractTestRerunFailedTestsAction(
       def getModules: Array[Module] = configuration.getModules
 
       def getTestName(failed: AbstractTestProxy): String = {
-        failed.getLocation(
-          getProject,
-          GlobalSearchScope.allScope(getProject)) match {
+        failed
+          .getLocation(
+            getProject,
+            GlobalSearchScope.allScope(getProject)) match {
           case PsiLocationWithName(_, _, testName) => testName
           case _                                   => failed.getName
         }
@@ -53,19 +54,17 @@ class AbstractTestRerunFailedTestsAction(
       def getState(
           executor: Executor,
           env: ExecutionEnvironment): RunProfileState = {
-        val extensionConfiguration =
-          properties.asInstanceOf[PropertiesExtension].getRunConfigurationBase
+        val extensionConfiguration = properties
+          .asInstanceOf[PropertiesExtension].getRunConfigurationBase
         val state = configuration.getState(executor, env)
         val patcher = state.asInstanceOf[TestCommandLinePatcher]
         val failedTests = getFailedTests(configuration.getProject)
         val buffer = new ArrayBuffer[(String, String)]
-        val classNames = patcher.getClasses
-          .map(s =>
-            {
-              val i = s.lastIndexOf(".")
-              if (i < 0) s else s.substring(i + 1)
-            } -> s)
-          .toMap
+        val classNames = patcher.getClasses.map(s =>
+          {
+            val i = s.lastIndexOf(".")
+            if (i < 0) s else s.substring(i + 1)
+          } -> s).toMap
         import scala.collection.JavaConversions._
         for (failed <- failedTests) { //todo: fix after adding location API
           def tail() {
@@ -87,12 +86,10 @@ class AbstractTestRerunFailedTestsAction(
           }
           if (extensionConfiguration != this && extensionConfiguration
                 .isInstanceOf[MyRunProfileAdapter] &&
-              extensionConfiguration
-                .asInstanceOf[MyRunProfileAdapter]
+              extensionConfiguration.asInstanceOf[MyRunProfileAdapter]
                 .previoslyFailed != null) {
             var added = false
-            for (f <- extensionConfiguration
-                   .asInstanceOf[MyRunProfileAdapter]
+            for (f <- extensionConfiguration.asInstanceOf[MyRunProfileAdapter]
                    .previoslyFailed if !added) {
               if (f._2 == getTestName(failed)) {
                 buffer += f

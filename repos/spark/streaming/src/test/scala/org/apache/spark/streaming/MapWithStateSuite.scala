@@ -57,8 +57,7 @@ class MapWithStateSuite
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    val conf = new SparkConf()
-      .setMaster("local")
+    val conf = new SparkConf().setMaster("local")
       .setAppName("MapWithStateSuite")
     conf.set("spark.streaming.clock", classOf[ManualClock].getName())
     sc = new SparkContext(conf)
@@ -240,13 +239,13 @@ class MapWithStateSuite
       new TestInputStream[(String, Int)](ssc, Seq.empty, numPartitions = 2)
 
     // Defining StateSpec inline with mapWithState and simple function implicitly gets the types
-    val simpleFunctionStateStream1 = inputStream.mapWithState(
-      StateSpec.function(simpleFunc).numPartitions(1))
+    val simpleFunctionStateStream1 = inputStream
+      .mapWithState(StateSpec.function(simpleFunc).numPartitions(1))
     testTypes(simpleFunctionStateStream1)
 
     // Separately defining StateSpec with simple function requires explicitly specifying types
-    val simpleFuncSpec = StateSpec.function[String, Int, Double, Long](
-      simpleFunc)
+    val simpleFuncSpec = StateSpec
+      .function[String, Int, Double, Long](simpleFunc)
     val simpleFunctionStateStream2 = inputStream.mapWithState(simpleFuncSpec)
     testTypes(simpleFunctionStateStream2)
 
@@ -256,15 +255,15 @@ class MapWithStateSuite
     testTypes(advFunctionStateStream1)
 
     // Defining StateSpec inline with mapWithState and advanced func implicitly gets the types
-    val advFunctionStateStream2 = inputStream.mapWithState(
-      StateSpec.function(simpleFunc).numPartitions(1))
+    val advFunctionStateStream2 = inputStream
+      .mapWithState(StateSpec.function(simpleFunc).numPartitions(1))
     testTypes(advFunctionStateStream2)
 
     // Defining StateSpec inline with mapWithState and advanced func implicitly gets the types
-    val advFuncSpec2 = StateSpec.function[String, Int, Double, Long](
-      advancedFunc)
-    val advFunctionStateStream3 = inputStream.mapWithState[Double, Long](
-      advFuncSpec2)
+    val advFuncSpec2 = StateSpec
+      .function[String, Int, Double, Long](advancedFunc)
+    val advFunctionStateStream3 = inputStream
+      .mapWithState[Double, Long](advFuncSpec2)
     testTypes(advFunctionStateStream3)
   }
 
@@ -346,8 +345,7 @@ class MapWithStateSuite
         None.asInstanceOf[Option[Int]]
       }
 
-    val mapWithStateSpec = StateSpec
-      .function(mappingFunc)
+    val mapWithStateSpec = StateSpec.function(mappingFunc)
       .initialState(sc.makeRDD(initialState))
     testOperation(inputData, mapWithStateSpec, outputData, stateData)
   }
@@ -452,8 +450,8 @@ class MapWithStateSuite
         val inputStream = new TestInputStream(ssc, Seq.empty[Seq[Int]], 2)
           .map(_ -> 1)
         val dummyFunc = (key: Int, value: Option[Int], state: State[Int]) => 0
-        val mapWithStateStream = inputStream.mapWithState(
-          StateSpec.function(dummyFunc))
+        val mapWithStateStream = inputStream
+          .mapWithState(StateSpec.function(dummyFunc))
         val internalmapWithStateStream =
           mapWithStateStream invokePrivate privateMethod()
 
@@ -465,7 +463,8 @@ class MapWithStateSuite
         ssc.start() // should initialize all the checkpoint durations
         assert(mapWithStateStream.checkpointDuration === null)
         assert(
-          internalmapWithStateStream.checkpointDuration === expectedCheckpointDuration)
+          internalmapWithStateStream
+            .checkpointDuration === expectedCheckpointDuration)
       } finally { ssc.stop(stopSparkContext = false) }
     }
 
@@ -508,8 +507,7 @@ class MapWithStateSuite
           state.get()
         }
 
-      val mapWithStateStream = dstream
-        .map { _ -> 1 }
+      val mapWithStateStream = dstream.map { _ -> 1 }
         .mapWithState(StateSpec.function(runningCount))
       // Set interval make sure there is one RDD checkpointing
       mapWithStateStream.checkpoint(checkpointDuration)
@@ -548,8 +546,7 @@ class MapWithStateSuite
     // Setup the stream computation
     val ssc = new StreamingContext(sc, Seconds(1))
     val inputStream = new TestInputStream(ssc, input, numPartitions = 2)
-    val trackeStateStream = inputStream
-      .map(x => (x, 1))
+    val trackeStateStream = inputStream.map(x => (x, 1))
       .mapWithState(mapWithStateSpec)
     val collectedOutputs = new ConcurrentLinkedQueue[Seq[T]]
     val outputStream = new TestOutputStream(trackeStateStream, collectedOutputs)

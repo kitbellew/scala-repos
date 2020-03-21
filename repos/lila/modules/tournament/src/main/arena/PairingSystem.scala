@@ -22,13 +22,10 @@ object PairingSystem extends AbstractPairingSystem {
       users: WaitingUsers,
       ranking: Ranking): Fu[Pairings] = {
     for {
-      lastOpponents <- PairingRepo.lastOpponents(
-        tour.id,
-        users.all,
-        Math.min(100, users.size * 4))
-      onlyTwoActivePlayers <- (tour.nbPlayers > 20).fold(
-        fuccess(false),
-        PlayerRepo.countActive(tour.id).map(2 ==))
+      lastOpponents <- PairingRepo
+        .lastOpponents(tour.id, users.all, Math.min(100, users.size * 4))
+      onlyTwoActivePlayers <- (tour.nbPlayers > 20)
+        .fold(fuccess(false), PlayerRepo.countActive(tour.id).map(2 ==))
       data = Data(tour, lastOpponents, ranking, onlyTwoActivePlayers)
       preps <- if (lastOpponents.hash.isEmpty) evenOrAll(data, users)
       else
@@ -37,16 +34,13 @@ object PairingSystem extends AbstractPairingSystem {
           case _   => evenOrAll(data, users)
         }
       pairings <- preps.map { prep =>
-        UserRepo.firstGetsWhite(
-          prep.user1.some,
-          prep.user2.some) map prep.toPairing
+        UserRepo.firstGetsWhite(prep.user1.some, prep.user2.some) map prep
+          .toPairing
       }.sequenceFu
     } yield pairings
-  }.chronometer
-    .logIfSlow(500, pairingLogger) { pairings =>
-      s"createPairings ${url(tour.id)} ${pairings.size} pairings"
-    }
-    .result
+  }.chronometer.logIfSlow(500, pairingLogger) { pairings =>
+    s"createPairings ${url(tour.id)} ${pairings.size} pairings"
+  }.result
 
   private def evenOrAll(data: Data, users: WaitingUsers) =
     makePreps(data, users.evenNumber) flatMap {
@@ -76,11 +70,9 @@ object PairingSystem extends AbstractPairingSystem {
             case Nil      => Nil
           }
       }
-  }.chronometer
-    .logIfSlow(200, pairingLogger) { preps =>
-      s"makePreps ${url(data.tour.id)} ${users.size} users, ${preps.size} preps"
-    }
-    .result
+  }.chronometer.logIfSlow(200, pairingLogger) { preps =>
+    s"makePreps ${url(data.tour.id)} ${users.size} users, ${preps.size} preps"
+  }.result
 
   private def naivePairings(
       tour: Tournament,
@@ -106,13 +98,11 @@ object PairingSystem extends AbstractPairingSystem {
       type Combination = List[RankedPairing]
 
       def justPlayedTogether(u1: String, u2: String): Boolean =
-        lastOpponents.hash.get(u1).contains(u2) || lastOpponents.hash
-          .get(u2)
+        lastOpponents.hash.get(u1).contains(u2) || lastOpponents.hash.get(u2)
           .contains(u1)
 
       def veryMuchJustPlayedTogether(u1: String, u2: String): Boolean =
-        lastOpponents.hash.get(u1).contains(u2) && lastOpponents.hash
-          .get(u2)
+        lastOpponents.hash.get(u1).contains(u2) && lastOpponents.hash.get(u2)
           .contains(u1)
 
       // optimized for speed
@@ -134,9 +124,8 @@ object PairingSystem extends AbstractPairingSystem {
       }
 
       def nextCombos(combo: Combination): List[Combination] =
-        players.filterNot { p =>
-          combo.exists(c => c._1 == p || c._2 == p)
-        } match {
+        players
+          .filterNot { p => combo.exists(c => c._1 == p || c._2 == p) } match {
           case a :: rest => rest.map { b => (a, b) :: combo }
           case _         => Nil
         }
@@ -176,16 +165,16 @@ object PairingSystem extends AbstractPairingSystem {
             case Found(best) =>
               best map { case (rp0, rp1) => rp0.player -> rp1.player }
             case _ =>
-              pairingLogger.warn(
-                "Could not make smart pairings for arena tournament")
+              pairingLogger
+                .warn("Could not make smart pairings for arena tournament")
               players map (_.player) grouped 2 collect {
                 case List(p1, p2) => (p1, p2)
               } toList
           }
       }) map { Pairing.prep(tour, _) }
       if (!continue)
-        pairingLogger.info(
-          s"smartPairings cutoff! [${nowMillis - startAt}ms] ${url(
+        pairingLogger
+          .info(s"smartPairings cutoff! [${nowMillis - startAt}ms] ${url(
             data.tour.id)} ${players.size} players, ${preps.size} preps")
       preps
     }

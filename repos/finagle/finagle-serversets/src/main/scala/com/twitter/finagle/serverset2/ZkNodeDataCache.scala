@@ -74,19 +74,18 @@ private[serverset2] abstract class ZkNodeDataCache[Entity](
     }
 
   private[this] val underlying: LoadingCache[String, Future[Seq[Entity]]] =
-    CacheBuilder
-      .newBuilder()
+    CacheBuilder.newBuilder()
       .build(new CacheLoader[String, Future[Seq[Entity]]] {
         override def load(path: String): Future[Seq[Entity]] = loadEntity(path)
       })
 
   private[this] val asMap = underlying.asMap
 
-  private[this] val entityCache = EvictingCache.lazily(new LoadingFutureCache(
-    underlying))
+  private[this] val entityCache = EvictingCache
+    .lazily(new LoadingFutureCache(underlying))
 
-  private[this] val gauge = statsReceiver.addGauge(
-    s"numberOf${entityType}Nodes") { underlying.size }
+  private[this] val gauge = statsReceiver
+    .addGauge(s"numberOf${entityType}Nodes") { underlying.size }
 
   protected def parseNode(path: String, data: String): Seq[Entity]
 

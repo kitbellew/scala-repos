@@ -74,12 +74,10 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
       val ephAddr3 = RandomSocket.nextAddress
 
       Seq(ephAddr1, ephAddr2, ephAddr3).foreach { sockAddr =>
-        serverSet
-          .join(
-            sockAddr,
-            Map[String, InetSocketAddress]().asJava,
-            sockAddr.getPort)
-          .update(ALIVE)
+        serverSet.join(
+          sockAddr,
+          Map[String, InetSocketAddress]().asJava,
+          sockAddr.getPort).update(ALIVE)
       }
 
       eventually { assert(clust().size == 3) }
@@ -100,8 +98,8 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
 
     test("resolve ALIVE endpoints") {
       val res = new ZkResolver(factory)
-      val va = res.bind(
-        "localhost:%d!/foo/bar/baz".format(inst.zookeeperAddress.getPort))
+      val va = res
+        .bind("localhost:%d!/foo/bar/baz".format(inst.zookeeperAddress.getPort))
       eventually { Var.sample(va) == Addr.Bound() }
 
       /*
@@ -112,12 +110,10 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
       val serverSet = new ServerSetImpl(inst.zookeeperClient, "/foo/bar/baz")
       val port1 = RandomSocket.nextPort()
       val port2 = RandomSocket.nextPort()
-      val sockAddr = Address.Inet(
-        new InetSocketAddress("127.0.0.1", port1),
-        Addr.Metadata.empty)
-      val blahAddr = Address.Inet(
-        new InetSocketAddress("10.0.0.1", port2),
-        Addr.Metadata.empty)
+      val sockAddr = Address
+        .Inet(new InetSocketAddress("127.0.0.1", port1), Addr.Metadata.empty)
+      val blahAddr = Address
+        .Inet(new InetSocketAddress("10.0.0.1", port2), Addr.Metadata.empty)
 
       val status = serverSet.join(
         sockAddr.addr,
@@ -149,12 +145,10 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
       val ephAddr2 = RandomSocket.nextAddress
       val ephAddr3 = RandomSocket.nextAddress
       Seq(ephAddr1, ephAddr2, ephAddr3).foreach { sockAddr =>
-        serverSet
-          .join(
-            sockAddr,
-            Map[String, InetSocketAddress](
-              sockAddr.getPort.toString -> sockAddr).asJava)
-          .update(ALIVE)
+        serverSet.join(
+          sockAddr,
+          Map[String, InetSocketAddress](sockAddr.getPort.toString -> sockAddr)
+            .asJava).update(ALIVE)
       }
 
       eventually { assert(clust().size == 3) }

@@ -24,10 +24,8 @@ class SbtAnnotator extends Annotator {
   def annotate(element: PsiElement, holder: AnnotationHolder): Unit =
     element match {
       case file: SbtFileImpl =>
-        val sbtVersion = SbtSystemSettings
-          .getInstance(file.getProject)
-          .getLinkedProjectSettings(file)
-          .safeMap(_.sbtVersion)
+        val sbtVersion = SbtSystemSettings.getInstance(file.getProject)
+          .getLinkedProjectSettings(file).safeMap(_.sbtVersion)
           .getOrElse(Sbt.LatestVersion)
         new Worker(file.children.toVector, sbtVersion, holder).annotate()
       case _ =>
@@ -59,8 +57,8 @@ class SbtAnnotator extends Annotator {
 
     private def annotateTypeMismatch(expression: ScExpression): Unit =
       expression.getType(TypingContext.empty).foreach { expressionType =>
-        if (expressionType.equiv(types.Nothing) || expressionType.equiv(
-              types.Null)) {
+        if (expressionType.equiv(types.Nothing) || expressionType
+              .equiv(types.Null)) {
           holder.createErrorAnnotation(
             expression,
             SbtBundle("sbt.annotation.expectedExpressionType"))

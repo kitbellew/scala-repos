@@ -54,10 +54,8 @@ class EndToEndTest extends FunSuite {
     val streamRequest = 1
     val httpRequest = from(
       StreamRequest(StreamRequest.Method.Get, "/")): HttpRequest
-    val info = StreamResponse.Info(
-      Version(1, 1),
-      StreamResponse.Status(200),
-      Nil)
+    val info = StreamResponse
+      .Info(Version(1, 1), StreamResponse.Status(200), Nil)
     val messages = new Broker[Buf]
     val error = new Broker[Throwable]
     val serverRes = MyStreamResponse(info, messages.recv, error.recv)
@@ -164,26 +162,19 @@ class EndToEndTest extends FunSuite {
           }
         })
 
-        val connectFuture = bootstrap
-          .connect(address)
-          .awaitUninterruptibly()
+        val connectFuture = bootstrap.connect(address).awaitUninterruptibly()
         assert(connectFuture.isSuccess)
         val channel = connectFuture.getChannel
 
         // first request is accepted
-        assert(
-          channel
-            .write(httpRequest)
-            .awaitUninterruptibly()
-            .isSuccess)
+        assert(channel.write(httpRequest).awaitUninterruptibly().isSuccess)
 
         messages !! Buf.Utf8("chunk1")
 
         assert(Await.result(recvd ?, 1.second) match {
           case e: ChannelStateEvent =>
-            e.getState == ChannelState.OPEN && (
-              java.lang.Boolean.TRUE equals e.getValue
-            )
+            e.getState == ChannelState.OPEN && (java.lang.Boolean.TRUE equals e
+              .getValue)
           case _ => false
         })
 
@@ -204,11 +195,7 @@ class EndToEndTest extends FunSuite {
         })
 
         // The following requests should be ignored
-        assert(
-          channel
-            .write(httpRequest)
-            .awaitUninterruptibly()
-            .isSuccess)
+        assert(channel.write(httpRequest).awaitUninterruptibly().isSuccess)
 
         // the streaming should continue
         messages !! Buf.Utf8("chunk2")
@@ -237,9 +224,8 @@ class EndToEndTest extends FunSuite {
         // And finally it's closed.
         assert(Await.result(recvd ?, 1.second) match {
           case e: ChannelStateEvent =>
-            e.getState == ChannelState.OPEN && (
-              java.lang.Boolean.FALSE equals e.getValue
-            )
+            e.getState == ChannelState.OPEN && (java.lang.Boolean.FALSE equals e
+              .getValue)
           case _ => false
         })
 
@@ -275,17 +261,12 @@ class EndToEndTest extends FunSuite {
   }
 
   workIt("straight") { serverRes =>
-    val server = ServerBuilder()
-      .codec(codec)
+    val server = ServerBuilder().codec(codec)
       .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-      .name("Streams")
-      .build(new MyService(serverRes))
+      .name("Streams").build(new MyService(serverRes))
     val address = server.boundAddress.asInstanceOf[InetSocketAddress]
-    val factory = ClientBuilder()
-      .codec(codec)
-      .hosts(Seq(address))
-      .hostConnectionLimit(1)
-      .buildFactory()
+    val factory = ClientBuilder().codec(codec).hosts(Seq(address))
+      .hostConnectionLimit(1).buildFactory()
 
     val underlying = Await.result(factory())
     val client = new ServiceProxy[Request, StreamResponse](underlying) {
@@ -297,29 +278,21 @@ class EndToEndTest extends FunSuite {
   }
 
   workIt("proxy") { serverRes =>
-    val server = ServerBuilder()
-      .codec(codec)
+    val server = ServerBuilder().codec(codec)
       .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-      .name("streamserver")
-      .build(new MyService(serverRes))
+      .name("streamserver").build(new MyService(serverRes))
 
-    val serverClient = ClientBuilder()
-      .codec(codec)
+    val serverClient = ClientBuilder().codec(codec)
       .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
-      .hostConnectionLimit(1)
-      .build()
+      .hostConnectionLimit(1).build()
 
-    val proxy = ServerBuilder()
-      .codec(codec)
+    val proxy = ServerBuilder().codec(codec)
       .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-      .name("streamproxy")
-      .build(serverClient)
+      .name("streamproxy").build(serverClient)
 
-    val factory = ClientBuilder()
-      .codec(codec)
+    val factory = ClientBuilder().codec(codec)
       .hosts(Seq(proxy.boundAddress.asInstanceOf[InetSocketAddress]))
-      .hostConnectionLimit(1)
-      .buildFactory()
+      .hostConnectionLimit(1).buildFactory()
 
     val underlying = Await.result(factory())
     val client = new ServiceProxy[Request, StreamResponse](underlying) {
@@ -344,17 +317,12 @@ class EndToEndTest extends FunSuite {
     }
 
     val addr = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-    val server = ServerBuilder()
-      .codec(Stream[StreamRequest]())
-      .bindTo(addr)
-      .name("s")
-      .build(s)
+    val server = ServerBuilder().codec(Stream[StreamRequest]()).bindTo(addr)
+      .name("s").build(s)
 
-    val client = ClientBuilder()
-      .codec(Stream[StreamRequest]())
+    val client = ClientBuilder().codec(Stream[StreamRequest]())
       .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
-      .hostConnectionLimit(1)
-      .build()
+      .hostConnectionLimit(1).build()
 
     val headers = Seq(Header("a", "b"), Header("c", "d"))
     val req = StreamRequest(StreamRequest.Method.Get, "/", headers = headers)
@@ -372,20 +340,15 @@ class EndToEndTest extends FunSuite {
     val c = new WorkItContext()
     import c.{synchronized => _sync, _}
 
-    val server = ServerBuilder()
-      .codec(codec)
+    val server = ServerBuilder().codec(codec)
       .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-      .name("Streams")
-      .build((new MyService(serverRes)).map { r: Request =>
+      .name("Streams").build((new MyService(serverRes)).map { r: Request =>
         synchronized { count += 1 }
         r
       })
-    val client = ClientBuilder()
-      .codec(codec)
+    val client = ClientBuilder().codec(codec)
       .hosts(Seq(server.boundAddress.asInstanceOf[InetSocketAddress]))
-      .hostConnectionLimit(1)
-      .retries(2)
-      .build()
+      .hostConnectionLimit(1).retries(2).build()
 
     val res = Await.result(client(streamRequest), 1.second)
     assert(count == 1)

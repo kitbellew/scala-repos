@@ -114,9 +114,8 @@ private[memory] class StorageMemoryPool(lock: Object)
       val remainingSpaceToFree = spaceToFree - spaceFreedByReleasingUnusedMemory
       if (remainingSpaceToFree > 0) {
         // If reclaiming free memory did not adequately shrink the pool, begin evicting blocks:
-        val spaceFreedByEviction = memoryStore.evictBlocksToFreeSpace(
-          None,
-          remainingSpaceToFree)
+        val spaceFreedByEviction = memoryStore
+          .evictBlocksToFreeSpace(None, remainingSpaceToFree)
         // When a block is released, BlockManager.dropFromMemory() calls releaseMemory(), so we do
         // not need to decrement _memoryUsed here. However, we do need to decrement the pool size.
         decrementPoolSize(spaceFreedByEviction)

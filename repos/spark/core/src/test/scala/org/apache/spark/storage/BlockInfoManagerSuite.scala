@@ -56,8 +56,8 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
   private def withTaskId[T](taskAttemptId: Long)(block: => T): T = {
     try {
-      TaskContext.setTaskContext(
-        new TaskContextImpl(0, 0, taskAttemptId, 0, null, null))
+      TaskContext
+        .setTaskContext(new TaskContextImpl(0, 0, taskAttemptId, 0, null, null))
       block
     } finally { TaskContext.unset() }
   }
@@ -111,9 +111,8 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
         blockInfoManager.lockNewBlockForWriting("block", newBlockInfo())
       }
     }
-    Thread.sleep(
-      300
-    ) // Hack to try to ensure that both future tasks are waiting
+    Thread
+      .sleep(300) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) { blockInfoManager.downgradeLock("block") }
     // After downgrading to a read lock, both threads should wake up and acquire the shared
     // read lock.
@@ -137,16 +136,14 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
         blockInfoManager.lockNewBlockForWriting("block", newBlockInfo())
       }
     }
-    Thread.sleep(
-      300
-    ) // Hack to try to ensure that both future tasks are waiting
+    Thread
+      .sleep(300) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) { blockInfoManager.removeBlock("block") }
     // After removing the block, the write lock is released. Both threads should wake up but only
     // one should acquire the write lock. The second thread should block until the winner of the
     // write race releases its lock.
-    val winningFuture: Future[Boolean] = Await.ready(
-      Future.firstCompletedOf(Seq(lock1Future, lock2Future)),
-      1.seconds)
+    val winningFuture: Future[Boolean] = Await
+      .ready(Future.firstCompletedOf(Seq(lock1Future, lock2Future)), 1.seconds)
     assert(winningFuture.value.get.get)
     val winningTID = blockInfoManager.get("block").get.writerTask
     assert(winningTID === 1 || winningTID === 2)
@@ -248,9 +245,8 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     val get2Future = Future {
       withTaskId(2) { blockInfoManager.lockForReading("block") }
     }
-    Thread.sleep(
-      300
-    ) // Hack to try to ensure that both future tasks are waiting
+    Thread
+      .sleep(300) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) { blockInfoManager.unlock("block") }
     assert(Await.result(get1Future, 1.seconds).isDefined)
     assert(Await.result(get2Future, 1.seconds).isDefined)
@@ -269,16 +265,13 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     val write2Future = Future {
       withTaskId(2) { blockInfoManager.lockForWriting("block") }
     }
-    Thread.sleep(
-      300
-    ) // Hack to try to ensure that both future tasks are waiting
+    Thread
+      .sleep(300) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) { blockInfoManager.unlock("block") }
     assert(
-      Await
-        .result(
-          Future.firstCompletedOf(Seq(write1Future, write2Future)),
-          1.seconds)
-        .isDefined)
+      Await.result(
+        Future.firstCompletedOf(Seq(write1Future, write2Future)),
+        1.seconds).isDefined)
     val firstWriteWinner = if (write1Future.isCompleted) 1 else 2
     withTaskId(firstWriteWinner) { blockInfoManager.unlock("block") }
     assert(Await.result(write1Future, 1.seconds).isDefined)
@@ -322,9 +315,8 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     val writeFuture = Future {
       withTaskId(2) { blockInfoManager.lockForWriting("block") }
     }
-    Thread.sleep(
-      300
-    ) // Hack to try to ensure that both future tasks are waiting
+    Thread
+      .sleep(300) // Hack to try to ensure that both future tasks are waiting
     withTaskId(0) { blockInfoManager.removeBlock("block") }
     assert(Await.result(getFuture, 1.seconds).isEmpty)
     assert(Await.result(writeFuture, 1.seconds).isEmpty)

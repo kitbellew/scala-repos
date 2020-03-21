@@ -26,8 +26,8 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
   val fgh = ByteString("fgh")
   val ijk = ByteString("ijk")
 
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory
+    .parseString("""
   akka.event-handlers = ["akka.testkit.TestEventListener"]
   akka.loglevel = WARNING""")
   implicit val system = ActorSystem(getClass.getSimpleName, testConf)
@@ -73,23 +73,16 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
     "support contentLength" - {
       "Strict" in { Strict(tpe, abc).contentLengthOption mustEqual Some(3) }
       "Default" in {
-        Default(
-          tpe,
-          11,
-          source(abc, de, fgh, ijk)).contentLengthOption mustEqual Some(11)
+        Default(tpe, 11, source(abc, de, fgh, ijk))
+          .contentLengthOption mustEqual Some(11)
       }
       "CloseDelimited" in {
-        CloseDelimited(
-          tpe,
-          source(abc, de, fgh, ijk)).contentLengthOption mustEqual None
+        CloseDelimited(tpe, source(abc, de, fgh, ijk))
+          .contentLengthOption mustEqual None
       }
       "Chunked" in {
-        Chunked(
-          tpe,
-          source(
-            Chunk(abc),
-            Chunk(fgh),
-            Chunk(ijk))).contentLengthOption mustEqual None
+        Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk)))
+          .contentLengthOption mustEqual None
       }
     }
     "support toStrict" - {
@@ -197,38 +190,28 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
           Default(tpe, 11, source(abc, de, fgh, ijk)).withoutSizeLimit)
         withReturnType[RequestEntity](
           Default(tpe, 11, source(abc, de, fgh, ijk))
-            .asInstanceOf[RequestEntity]
-            .withoutSizeLimit)
+            .asInstanceOf[RequestEntity].withoutSizeLimit)
         withReturnType[ResponseEntity](
           Default(tpe, 11, source(abc, de, fgh, ijk))
-            .asInstanceOf[ResponseEntity]
-            .withoutSizeLimit)
+            .asInstanceOf[ResponseEntity].withoutSizeLimit)
       }
       "CloseDelimited" in {
         withReturnType[CloseDelimited](
           CloseDelimited(tpe, source(abc, de, fgh, ijk)).withoutSizeLimit)
         withReturnType[ResponseEntity](
           CloseDelimited(tpe, source(abc, de, fgh, ijk))
-            .asInstanceOf[ResponseEntity]
-            .withoutSizeLimit)
+            .asInstanceOf[ResponseEntity].withoutSizeLimit)
       }
       "Chunked" in {
         withReturnType[Chunked](
-          Chunked(
-            tpe,
-            source(
-              Chunk(abc),
-              Chunk(fgh),
-              Chunk(ijk),
-              LastChunk)).withoutSizeLimit)
+          Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk))
+            .withoutSizeLimit)
         withReturnType[RequestEntity](
           Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk))
-            .asInstanceOf[RequestEntity]
-            .withoutSizeLimit)
+            .asInstanceOf[RequestEntity].withoutSizeLimit)
         withReturnType[ResponseEntity](
           Chunked(tpe, source(Chunk(abc), Chunk(fgh), Chunk(ijk), LastChunk))
-            .asInstanceOf[ResponseEntity]
-            .withoutSizeLimit)
+            .asInstanceOf[ResponseEntity].withoutSizeLimit)
       }
     }
   }
@@ -244,8 +227,7 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
   def withReturnType[T](expr: T) = expr
 
   def strictifyTo(strict: Strict): Matcher[HttpEntity] =
-    equal(strict)
-      .matcher[Strict]
+    equal(strict).matcher[Strict]
       .compose(x ⇒ Await.result(x.toStrict(250.millis), 250.millis))
 
   def transformTo(strict: Strict): Matcher[HttpEntity] =

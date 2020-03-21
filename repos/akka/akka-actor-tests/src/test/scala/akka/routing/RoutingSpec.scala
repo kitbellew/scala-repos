@@ -57,8 +57,8 @@ class RoutingSpec
   "routers in general" must {
 
     "evict terminated routees" in {
-      val router = system.actorOf(
-        RoundRobinPool(2).props(routeeProps = Props[Echo]))
+      val router = system
+        .actorOf(RoundRobinPool(2).props(routeeProps = Props[Echo]))
       router ! ""
       router ! ""
       val c1, c2 = expectMsgType[ActorRef]
@@ -102,9 +102,8 @@ class RoutingSpec
     }
 
     "use configured nr-of-instances when FromConfig" in {
-      val router = system.actorOf(
-        FromConfig.props(routeeProps = Props[TestActor]),
-        "router1")
+      val router = system
+        .actorOf(FromConfig.props(routeeProps = Props[TestActor]), "router1")
       router ! GetRoutees
       expectMsgType[Routees].routees.size should ===(3)
       watch(router)
@@ -148,8 +147,8 @@ class RoutingSpec
         //#custom-strategy
       }
       val router = system.actorOf(
-        RoundRobinPool(1, supervisorStrategy = escalator).props(routeeProps =
-          Props[TestActor]))
+        RoundRobinPool(1, supervisorStrategy = escalator)
+          .props(routeeProps = Props[TestActor]))
       //#supervision
       router ! GetRoutees
       EventFilter[ActorKilledException](occurrences = 1) intercept {
@@ -158,8 +157,7 @@ class RoutingSpec
       expectMsgType[ActorKilledException]
 
       val router2 = system.actorOf(
-        RoundRobinPool(1)
-          .withSupervisorStrategy(escalator)
+        RoundRobinPool(1).withSupervisorStrategy(escalator)
           .props(routeeProps = Props[TestActor]))
       router2 ! GetRoutees
       EventFilter[ActorKilledException](occurrences = 1) intercept {
@@ -173,8 +171,7 @@ class RoutingSpec
         case e ⇒ testActor ! e; SupervisorStrategy.Escalate
       }
       val router = system.actorOf(
-        FromConfig
-          .withSupervisorStrategy(escalator)
+        FromConfig.withSupervisorStrategy(escalator)
           .props(routeeProps = Props[TestActor]),
         "router1")
       router ! GetRoutees
@@ -208,8 +205,8 @@ class RoutingSpec
       system.actorOf(Props(new Actor {
         def receive = {
           case "start" ⇒
-            context.actorOf(
-              RoundRobinPool(2).props(routeeProps = Props(new Actor {
+            context
+              .actorOf(RoundRobinPool(2).props(routeeProps = Props(new Actor {
                 def receive = { case x ⇒ sender() ! x }
               }))) ? "hello" pipeTo sender()
         }
@@ -226,8 +223,8 @@ class RoutingSpec
         def receive = { case msg ⇒ testActor forward msg }
       }
 
-      val routedActor = system.actorOf(
-        NoRouter.props(routeeProps = Props(new Actor1)))
+      val routedActor = system
+        .actorOf(NoRouter.props(routeeProps = Props(new Actor1)))
       routedActor ! "hello"
       routedActor ! "end"
 

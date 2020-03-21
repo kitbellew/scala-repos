@@ -25,18 +25,18 @@ object ExecutionAppProperties extends Properties("ExecutionApp Properties") {
       inputArgs: Array[String],
       resultingHadoop: HadoopArgs,
       resultingNonHadoop: NonHadoopArgs): Unit = {
-    val errorMsg =
-      "Input Args: " + inputArgs.map("\"" + _ + "\"").mkString(",") + "\n" +
-        "Hadoop Args: " + resultingHadoop.toArray.mkString(",") + "\n" +
-        "Non-Hadoop Args: " + resultingNonHadoop.toArray.mkString(",") + "\n"
+    val errorMsg = "Input Args: " + inputArgs.map("\"" + _ + "\"")
+      .mkString(",") + "\n" +
+      "Hadoop Args: " + resultingHadoop.toArray.mkString(",") + "\n" +
+      "Non-Hadoop Args: " + resultingNonHadoop.toArray.mkString(",") + "\n"
     sys.error(errorMsg)
   }
 
   property("Non-hadoop random args will all end up in the right bucket") =
     forAll { (args: Array[String]) =>
       val (hadoopArgs, nonHadoop) = ExecutionApp.extractUserHadoopArgs(args)
-      val res =
-        hadoopArgs.toArray.isEmpty && nonHadoop.toArray.sameElements(args)
+      val res = hadoopArgs.toArray.isEmpty && nonHadoop.toArray
+        .sameElements(args)
       if (!res) debugPrint(args, hadoopArgs, nonHadoop)
       res
     }
@@ -47,8 +47,8 @@ object ExecutionAppProperties extends Properties("ExecutionApp Properties") {
       // as a result this file must exist. the parser enforces this.
       val inputHadoopArgs = Array("-libjars", "/etc/hosts")
       val totalArgStr = leftArgs ++ inputHadoopArgs ++ rightArgs
-      val (hadoopArgs, nonHadoop) = ExecutionApp.extractUserHadoopArgs(
-        totalArgStr)
+      val (hadoopArgs, nonHadoop) = ExecutionApp
+        .extractUserHadoopArgs(totalArgStr)
       val res = (!hadoopArgs.toArray.isEmpty) &&
         (nonHadoop.toArray.sameElements(leftArgs ++ rightArgs)) &&
         (inputHadoopArgs.sameElements(hadoopArgs.toArray))
@@ -61,8 +61,8 @@ object ExecutionAppProperties extends Properties("ExecutionApp Properties") {
     forAll { (leftArgs: Array[String], rightArgs: Array[String]) =>
       val inputHadoopArgs = Array("-Dx.y.z=123")
       val totalArgStr = leftArgs ++ inputHadoopArgs ++ rightArgs
-      val (hadoopArgs, nonHadoop) = ExecutionApp.extractUserHadoopArgs(
-        totalArgStr)
+      val (hadoopArgs, nonHadoop) = ExecutionApp
+        .extractUserHadoopArgs(totalArgStr)
       val res = (!hadoopArgs.toArray.isEmpty) &&
         (nonHadoop.toArray.sameElements(leftArgs ++ rightArgs)) &&
         (inputHadoopArgs.sameElements(hadoopArgs.toArray))

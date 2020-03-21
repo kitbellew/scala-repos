@@ -50,8 +50,8 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
     val usedExprIds = projectList.flatMap(_.collect {
       case a: Attribute => a.exprId
     })
-    val usedMoreThanOnce =
-      usedExprIds.groupBy(id => id).filter(_._2.size > 1).keySet
+    val usedMoreThanOnce = usedExprIds.groupBy(id => id).filter(_._2.size > 1)
+      .keySet
     references.filter(a => usedMoreThanOnce.contains(a.exprId))
   }
 
@@ -60,13 +60,12 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
       input: Seq[ExprCode],
       row: String): String = {
     val exprs = projectList.map(x =>
-      ExpressionCanonicalizer.execute(
-        BindReferences.bindReference(x, child.output)))
+      ExpressionCanonicalizer
+        .execute(BindReferences.bindReference(x, child.output)))
     ctx.currentVars = input
     val resultVars = exprs.map(_.gen(ctx))
     // Evaluation of non-deterministic expressions can't be deferred.
-    val nonDeterministicAttrs = projectList
-      .filterNot(_.deterministic)
+    val nonDeterministicAttrs = projectList.filterNot(_.deterministic)
       .map(_.toAttribute)
     s"""
        |${evaluateRequiredVariables(
@@ -130,28 +129,24 @@ case class Filter(condition: Expression, child: SparkPlan)
     val numOutput = metricTerm(ctx, "numOutputRows")
 
     // filter out the nulls
-    val filterOutNull = notNullAttributes
-      .map { a =>
-        val idx = child.output.indexOf(a)
-        s"if (${input(idx).isNull}) continue;"
-      }
-      .mkString("\n")
+    val filterOutNull = notNullAttributes.map { a =>
+      val idx = child.output.indexOf(a)
+      s"if (${input(idx).isNull}) continue;"
+    }.mkString("\n")
 
     ctx.currentVars = input
-    val predicates = otherPreds
-      .map { e =>
-        val bound = ExpressionCanonicalizer.execute(
-          BindReferences.bindReference(e, output))
-        val ev = bound.gen(ctx)
-        val nullCheck =
-          if (bound.nullable) { s"${ev.isNull} || " }
-          else { s"" }
-        s"""
+    val predicates = otherPreds.map { e =>
+      val bound = ExpressionCanonicalizer
+        .execute(BindReferences.bindReference(e, output))
+      val ev = bound.gen(ctx)
+      val nullCheck =
+        if (bound.nullable) { s"${ev.isNull} || " }
+        else { s"" }
+      s"""
          |${ev.code}
          |if (${nullCheck}!${ev.value}) continue;
        """.stripMargin
-      }
-      .mkString("\n")
+    }.mkString("\n")
 
     // Reset the isNull to false for the not-null columns, then the followed operators could
     // generate better code (remove dead branches).
@@ -240,8 +235,7 @@ case class Range(
     numElements)
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
-    sqlContext.sparkContext
-      .parallelize(0 until numSlices, numSlices)
+    sqlContext.sparkContext.parallelize(0 until numSlices, numSlices)
       .map(i => InternalRow(i)) :: Nil
   }
 
@@ -328,8 +322,7 @@ case class Range(
 
   protected override def doExecute(): RDD[InternalRow] = {
     val numOutputRows = longMetric("numOutputRows")
-    sqlContext.sparkContext
-      .parallelize(0 until numSlices, numSlices)
+    sqlContext.sparkContext.parallelize(0 until numSlices, numSlices)
       .mapPartitionsWithIndex((i, _) => {
         val partitionStart = (i * numElements) / numSlices * step + start
         val partitionEnd = (((i + 1) * numElements) / numSlices) * step + start
@@ -339,8 +332,8 @@ case class Range(
           else { Long.MinValue }
         val safePartitionStart = getSafeMargin(partitionStart)
         val safePartitionEnd = getSafeMargin(partitionEnd)
-        val rowSize =
-          UnsafeRow.calculateBitSetWidthInBytes(1) + LongType.defaultSize
+        val rowSize = UnsafeRow.calculateBitSetWidthInBytes(1) + LongType
+          .defaultSize
         val unsafeRow = UnsafeRow.createFromByteArray(rowSize, 1)
 
         new Iterator[InternalRow] {
@@ -377,9 +370,7 @@ case class Range(
   */
 case class Union(children: Seq[SparkPlan]) extends SparkPlan {
   override def output: Seq[Attribute] =
-    children
-      .map(_.output)
-      .transpose
+    children.map(_.output).transpose
       .map(attrs => attrs.head.withNullability(attrs.exists(_.nullable)))
 
   protected override def doExecute(): RDD[InternalRow] =

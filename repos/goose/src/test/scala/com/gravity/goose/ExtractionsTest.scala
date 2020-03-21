@@ -17,9 +17,8 @@ import java.util.Date
 class ExtractionsTest {
 
   def getHtml(filename: String): String = {
-    FileHelper.loadResourceFile(
-      TestUtils.staticHtmlDir + filename,
-      Goose.getClass)
+    FileHelper
+      .loadResourceFile(TestUtils.staticHtmlDir + filename, Goose.getClass)
   }
 
   @Test
@@ -247,8 +246,8 @@ class ExtractionsTest {
       "Publish date should equal: \"2010-08-18\"",
       expectedDateString,
       fmt.format(article.publishDate));
-    System.out.println(
-      "Publish Date Extracted: " + fmt.format(article.publishDate));
+    System.out
+      .println("Publish Date Extracted: " + fmt.format(article.publishDate));
 
   }
 

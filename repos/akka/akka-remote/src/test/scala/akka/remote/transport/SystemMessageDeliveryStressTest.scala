@@ -112,10 +112,8 @@ object SystemMessageDeliveryStressTest {
 }
 
 abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
-    extends AkkaSpec(
-      ConfigFactory
-        .parseString(cfg)
-        .withFallback(SystemMessageDeliveryStressTest.baseConfig))
+    extends AkkaSpec(ConfigFactory.parseString(cfg).withFallback(
+      SystemMessageDeliveryStressTest.baseConfig))
     with ImplicitSender
     with DefaultTimeout {
   import SystemMessageDeliveryStressTest._
@@ -131,10 +129,10 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
   val sysMsgVerifierA = new SystemMessageSequenceVerifier(systemA, probeA.ref)
   val sysMsgVerifierB = new SystemMessageSequenceVerifier(systemB, probeB.ref)
 
-  val addressA =
-    systemA.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
-  val addressB =
-    systemB.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+  val addressA = systemA.asInstanceOf[ExtendedActorSystem].provider
+    .getDefaultAddress
+  val addressB = systemB.asInstanceOf[ExtendedActorSystem].provider
+    .getDefaultAddress
 
   // We test internals here (system message delivery) so we are allowed to cheat
   val targetForA = RARP(systemA).provider.resolveActorRef(
@@ -203,9 +201,8 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
         val start = System.currentTimeMillis()
         probeB.expectMsg(10.minutes, m)
         probeA.expectMsg(10.minutes, m)
-        maxDelay = math.max(
-          maxDelay,
-          (System.currentTimeMillis() - start) / 1000)
+        maxDelay = math
+          .max(maxDelay, (System.currentTimeMillis() - start) / 1000)
       }
     }
   }

@@ -68,19 +68,14 @@ class PolynomialExpansionSuite
   )
 
   test("Polynomial expansion with default parameter") {
-    val df = sqlContext
-      .createDataFrame(data.zip(twoDegreeExpansion))
+    val df = sqlContext.createDataFrame(data.zip(twoDegreeExpansion))
       .toDF("features", "expected")
 
-    val polynomialExpansion = new PolynomialExpansion()
-      .setInputCol("features")
+    val polynomialExpansion = new PolynomialExpansion().setInputCol("features")
       .setOutputCol("polyFeatures")
 
-    polynomialExpansion
-      .transform(df)
-      .select("polyFeatures", "expected")
-      .collect()
-      .foreach {
+    polynomialExpansion.transform(df).select("polyFeatures", "expected")
+      .collect().foreach {
         case Row(expanded: DenseVector, expected: DenseVector) =>
           assert(expanded ~== expected absTol 1e-1)
         case Row(expanded: SparseVector, expected: SparseVector) =>
@@ -93,20 +88,14 @@ class PolynomialExpansionSuite
   }
 
   test("Polynomial expansion with setter") {
-    val df = sqlContext
-      .createDataFrame(data.zip(threeDegreeExpansion))
+    val df = sqlContext.createDataFrame(data.zip(threeDegreeExpansion))
       .toDF("features", "expected")
 
-    val polynomialExpansion = new PolynomialExpansion()
-      .setInputCol("features")
-      .setOutputCol("polyFeatures")
-      .setDegree(3)
+    val polynomialExpansion = new PolynomialExpansion().setInputCol("features")
+      .setOutputCol("polyFeatures").setDegree(3)
 
-    polynomialExpansion
-      .transform(df)
-      .select("polyFeatures", "expected")
-      .collect()
-      .foreach {
+    polynomialExpansion.transform(df).select("polyFeatures", "expected")
+      .collect().foreach {
         case Row(expanded: DenseVector, expected: DenseVector) =>
           assert(expanded ~== expected absTol 1e-1)
         case Row(expanded: SparseVector, expected: SparseVector) =>
@@ -119,20 +108,14 @@ class PolynomialExpansionSuite
   }
 
   test("Polynomial expansion with degree 1 is identity on vectors") {
-    val df = sqlContext
-      .createDataFrame(data.zip(data))
+    val df = sqlContext.createDataFrame(data.zip(data))
       .toDF("features", "expected")
 
-    val polynomialExpansion = new PolynomialExpansion()
-      .setInputCol("features")
-      .setOutputCol("polyFeatures")
-      .setDegree(1)
+    val polynomialExpansion = new PolynomialExpansion().setInputCol("features")
+      .setOutputCol("polyFeatures").setDegree(1)
 
-    polynomialExpansion
-      .transform(df)
-      .select("polyFeatures", "expected")
-      .collect()
-      .foreach {
+    polynomialExpansion.transform(df).select("polyFeatures", "expected")
+      .collect().foreach {
         case Row(expanded: Vector, expected: Vector) =>
           assert(expanded ~== expected absTol 1e-1)
         case _ =>
@@ -143,10 +126,8 @@ class PolynomialExpansionSuite
   }
 
   test("read/write") {
-    val t = new PolynomialExpansion()
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setDegree(3)
+    val t = new PolynomialExpansion().setInputCol("myInputCol")
+      .setOutputCol("myOutputCol").setDegree(3)
     testDefaultReadWrite(t)
   }
 }

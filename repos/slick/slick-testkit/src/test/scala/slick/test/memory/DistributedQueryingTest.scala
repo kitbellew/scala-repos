@@ -56,9 +56,8 @@ class DistributedQueryingTest {
   def test1: Unit = {
     try {
       try {
-        val db = DistributedBackend.Database(
-          Seq(dc1.db, dc2.db),
-          ExecutionContext.global);
+        val db = DistributedBackend
+          .Database(Seq(dc1.db, dc2.db), ExecutionContext.global);
         {
           import dc1.profile.api._
           Await.result(
@@ -77,12 +76,10 @@ class DistributedQueryingTest {
             db.run(DBIO.seq(
               ts.result.map(d => assertEquals(tData.toSet, d.toSet)),
               us.result.map(d => assertEquals(uData.toSet, d.toSet)),
-              ts.flatMap(t => us.map(u => (t, u)))
-                .result
-                .map(d =>
-                  assertEquals(
-                    tData.flatMap(t => uData.map(u => (t, u))).toSet,
-                    d.toSet))
+              ts.flatMap(t => us.map(u => (t, u))).result.map(d =>
+                assertEquals(
+                  tData.flatMap(t => uData.map(u => (t, u))).toSet,
+                  d.toSet))
             )),
             Duration.Inf
           )

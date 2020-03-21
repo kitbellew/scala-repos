@@ -35,8 +35,7 @@ class DontLeakActorsOnFailingConnectionSpecs
       # disable logs (very noisy tests - 100 exepected errors)
       loglevel = OFF
       stdout-loglevel = OFF
-    }""")
-    .withFallback(ConfigFactory.load())
+    }""").withFallback(ConfigFactory.load())
   implicit val system = ActorSystem(
     "DontLeakActorsOnFailingConnectionSpecs",
     config)
@@ -57,10 +56,8 @@ class DontLeakActorsOnFailingConnectionSpecs
         probe.within(5.seconds) {
           probe.awaitAssert {
             impl.supervisor.tell(StreamSupervisor.GetChildren, probe.ref)
-            val children = probe
-              .expectMsgType[StreamSupervisor.Children]
-              .children
-              .filter { c ⇒ c.path.toString contains name }
+            val children = probe.expectMsgType[StreamSupervisor.Children]
+              .children.filter { c ⇒ c.path.toString contains name }
             assert(
               children.isEmpty,
               s"expected no StreamSupervisor children, but got [${children.mkString(", ")}]")

@@ -29,11 +29,10 @@ import play.utils.PlayIO
 object Configuration {
 
   private[this] lazy val dontAllowMissingConfigOptions = ConfigParseOptions
-    .defaults()
-    .setAllowMissing(false)
+    .defaults().setAllowMissing(false)
 
-  private[this] lazy val dontAllowMissingConfig = ConfigFactory.load(
-    dontAllowMissingConfigOptions)
+  private[this] lazy val dontAllowMissingConfig = ConfigFactory
+    .load(dontAllowMissingConfigOptions)
 
   private[play] def load(
       classLoader: ClassLoader,
@@ -81,15 +80,13 @@ object Configuration {
       // Resolve another .conf file so that we can override values in Akka's
       // reference.conf, but still make it possible for users to override
       // Play's values in their application.conf.
-      val playOverridesConfig: Config = ConfigFactory.parseResources(
-        classLoader,
-        "play/reference-overrides.conf")
+      val playOverridesConfig: Config = ConfigFactory
+        .parseResources(classLoader, "play/reference-overrides.conf")
 
       // Resolve reference.conf ourselves because ConfigFactory.defaultReference resolves
       // values, and we won't have a value for `play.server.dir` until all our config is combined.
-      val referenceConfig: Config = ConfigFactory.parseResources(
-        classLoader,
-        "reference.conf")
+      val referenceConfig: Config = ConfigFactory
+        .parseResources(classLoader, "reference.conf")
 
       // Combine all the config together into one big config
       val combinedConfig: Config = Seq(
@@ -241,8 +238,8 @@ case class Configuration(underlying: Config) {
         case Some(values) =>
           throw reportError(
             path,
-            "Incorrect value, one of " + (values.reduceLeft(
-              _ + ", " + _)) + " was expected.")
+            "Incorrect value, one of " + (values
+              .reduceLeft(_ + ", " + _)) + " was expected.")
         case None => value
       }
     }
@@ -917,13 +914,10 @@ case class Configuration(underlying: Config) {
   private[play] def getDeprecatedStringOpt(
       key: String,
       deprecatedKey: String): Option[String] = {
-    getString(deprecatedKey)
-      .map { value =>
-        Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
-        value
-      }
-      .orElse(getString(key))
-      .filter(_.nonEmpty)
+    getString(deprecatedKey).map { value =>
+      Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
+      value
+    }.orElse(getString(key)).filter(_.nonEmpty)
   }
 
   /**
@@ -947,11 +941,11 @@ case class Configuration(underlying: Config) {
       key: String,
       deprecatedKey: String): FiniteDuration = {
     new FiniteDuration(
-      getNanoseconds(deprecatedKey).fold(
-        underlying.getDuration(key, TimeUnit.NANOSECONDS)) { value =>
-        Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
-        value
-      },
+      getNanoseconds(deprecatedKey)
+        .fold(underlying.getDuration(key, TimeUnit.NANOSECONDS)) { value =>
+          Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
+          value
+        },
       TimeUnit.NANOSECONDS)
   }
 
@@ -962,13 +956,12 @@ case class Configuration(underlying: Config) {
   private[play] def getDeprecatedDurationOpt(
       key: String,
       deprecatedKey: String): Option[FiniteDuration] = {
-    getNanoseconds(deprecatedKey)
-      .map { value =>
-        Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
-        value
-      }
-      .orElse(getNanoseconds(key))
-      .map { value => new FiniteDuration(value, TimeUnit.NANOSECONDS) }
+    getNanoseconds(deprecatedKey).map { value =>
+      Logger.warn(s"$deprecatedKey is deprecated, use $key instead")
+      value
+    }.orElse(getNanoseconds(key)).map { value =>
+      new FiniteDuration(value, TimeUnit.NANOSECONDS)
+    }
   }
 
 }
@@ -1048,13 +1041,11 @@ private[play] class PlayConfig(val underlying: Config) {
   def getDeprecated[A: ConfigLoader](
       path: String,
       deprecatedPaths: String*): A = {
-    deprecatedPaths
-      .collectFirst {
-        case deprecated if underlying.hasPath(deprecated) =>
-          reportDeprecation(path, deprecated)
-          get[A](deprecated)
-      }
-      .getOrElse { get[A](path) }
+    deprecatedPaths.collectFirst {
+      case deprecated if underlying.hasPath(deprecated) =>
+        reportDeprecation(path, deprecated)
+        get[A](deprecated)
+    }.getOrElse { get[A](path) }
   }
 
   /**
@@ -1187,8 +1178,8 @@ private[play] object ConfigLoader {
     _.getConfigList).map(_.asScala)
 
   implicit val playConfigLoader = configLoader.map(new PlayConfig(_))
-  implicit val seqPlayConfigLoader = seqConfigLoader.map(
-    _.map(new PlayConfig(_)))
+  implicit val seqPlayConfigLoader = seqConfigLoader
+    .map(_.map(new PlayConfig(_)))
 
   /**
     * Loads a value, interpreting a null value as None and any other value as Some(value).
@@ -1211,10 +1202,7 @@ private[play] object ConfigLoader {
       def load(config: Config, path: String): Map[String, A] = {
         val obj = config.getObject(path)
         val conf = obj.toConfig
-        obj
-          .keySet()
-          .asScala
-          .map { key => key -> valueLoader.load(conf, key) }
+        obj.keySet().asScala.map { key => key -> valueLoader.load(conf, key) }
           .toMap
       }
     }

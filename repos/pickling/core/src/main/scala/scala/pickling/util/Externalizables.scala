@@ -91,11 +91,9 @@ object Externalizables {
     }
 
     // per type a sorted list of indices
-    val perType = targs.zipWithIndex
-      .groupBy { case (targ, i) => targ }
-      .map {
-        case (targ, things) => (targ, (things.map { case (_, i) => i }).sorted)
-      }
+    val perType = targs.zipWithIndex.groupBy { case (targ, i) => targ }.map {
+      case (targ, things) => (targ, (things.map { case (_, i) => i }).sorted)
+    }
 
     def finalTree(tpe: Type): Tree =
       readTree(perType.getOrElse(tpe, List[Int]()))
@@ -219,11 +217,9 @@ object Externalizables {
     }
 
     // per type a sorted list of indices
-    val perType = targs.zipWithIndex
-      .groupBy { case (targ, i) => targ }
-      .map {
-        case (targ, things) => (targ, (things.map { case (_, i) => i }).sorted)
-      }
+    val perType = targs.zipWithIndex.groupBy { case (targ, i) => targ }.map {
+      case (targ, things) => (targ, (things.map { case (_, i) => i }).sorted)
+    }
 
     // create array-valued fields
     // val byteArr: Array[Int] = Array.ofDim[Int](3)
@@ -240,8 +236,7 @@ object Externalizables {
       q"val arrByteArr: Array[Array[Byte]] = Array.ofDim[Array[Byte]](1)", {
         val storageTpe = storage(typeOf[AnyRef])
         q"val anyRefArr: Array[$storageTpe] = Array.ofDim[$storageTpe](${perType
-          .getOrElse(typeOf[AnyRef], List[Int]())
-          .size})"
+          .getOrElse(typeOf[AnyRef], List[Int]()).size})"
       }
     )
 

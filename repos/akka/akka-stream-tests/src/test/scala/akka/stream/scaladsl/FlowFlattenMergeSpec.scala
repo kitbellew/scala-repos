@@ -29,26 +29,20 @@ class FlowFlattenMergeSpec extends AkkaSpec {
 
     "work in the nominal case" in {
       Source(List(src10(0), src10(10), src10(20), src10(30)))
-        .flatMapMerge(4, identity)
-        .runWith(toSet)
-        .futureValue should ===((0 until 40).toSet)
+        .flatMapMerge(4, identity).runWith(toSet).futureValue should ===(
+        (0 until 40).toSet)
     }
 
     "not be held back by one slow stream" in {
       Source(List(src10(0), src10(10), blocked, src10(20), src10(30)))
-        .flatMapMerge(3, identity)
-        .take(40)
-        .runWith(toSet)
+        .flatMapMerge(3, identity).take(40).runWith(toSet)
         .futureValue should ===((0 until 40).toSet)
     }
 
     "respect breadth" in {
       val seq = Source(
         List(src10(0), src10(10), src10(20), blocked, blocked, src10(30)))
-        .flatMapMerge(3, identity)
-        .take(40)
-        .runWith(toSeq)
-        .futureValue
+        .flatMapMerge(3, identity).take(40).runWith(toSeq).futureValue
 
       seq.take(30).toSet should ===((0 until 30).toSet)
       seq.drop(30).toSet should ===((30 until 40).toSet)
@@ -57,10 +51,7 @@ class FlowFlattenMergeSpec extends AkkaSpec {
     "propagate early failure from main stream" in {
       val ex = new Exception("buh")
       intercept[TestFailedException] {
-        Source
-          .failed(ex)
-          .flatMapMerge(1, identity)
-          .runWith(Sink.head)
+        Source.failed(ex).flatMapMerge(1, identity).runWith(Sink.head)
           .futureValue
       }.cause.get should ===(ex)
     }
@@ -69,19 +60,15 @@ class FlowFlattenMergeSpec extends AkkaSpec {
       val ex = new Exception("buh")
       intercept[TestFailedException] {
         (Source(List(blocked, blocked)) ++ Source.failed(ex))
-          .flatMapMerge(10, identity)
-          .runWith(Sink.head)
-          .futureValue
+          .flatMapMerge(10, identity).runWith(Sink.head).futureValue
       }.cause.get should ===(ex)
     }
 
     "propagate failure from map function" in {
       val ex = new Exception("buh")
       intercept[TestFailedException] {
-        Source(1 to 3)
-          .flatMapMerge(10, i ⇒ if (i == 3) throw ex else blocked)
-          .runWith(Sink.head)
-          .futureValue
+        Source(1 to 3).flatMapMerge(10, i ⇒ if (i == 3) throw ex else blocked)
+          .runWith(Sink.head).futureValue
       }.cause.get should ===(ex)
     }
 
@@ -89,9 +76,7 @@ class FlowFlattenMergeSpec extends AkkaSpec {
       val ex = new Exception("buh")
       val result = intercept[TestFailedException] {
         Source(List(blocked, blocked, Source.failed(ex)))
-          .flatMapMerge(10, identity)
-          .runWith(Sink.head)
-          .futureValue
+          .flatMapMerge(10, identity).runWith(Sink.head).futureValue
       }.cause.get should ===(ex)
     }
 
@@ -101,9 +86,7 @@ class FlowFlattenMergeSpec extends AkkaSpec {
       val p = Promise[Source[Int, NotUsed]]
       (Source(
         List(Source.fromPublisher(p1), Source.fromPublisher(p2))) ++ Source
-        .fromFuture(p.future))
-        .flatMapMerge(5, identity)
-        .runWith(Sink.head)
+        .fromFuture(p.future)).flatMapMerge(5, identity).runWith(Sink.head)
       p1.expectRequest()
       p2.expectRequest()
       p.failure(ex)
@@ -118,8 +101,7 @@ class FlowFlattenMergeSpec extends AkkaSpec {
       Source(List(
         Source.fromPublisher(p1),
         Source.fromPublisher(p2),
-        Source.fromFuture(p.future)))
-        .flatMapMerge(5, identity)
+        Source.fromFuture(p.future))).flatMapMerge(5, identity)
         .runWith(Sink.head)
       p1.expectRequest()
       p2.expectRequest()
@@ -130,22 +112,19 @@ class FlowFlattenMergeSpec extends AkkaSpec {
 
     "cancel substreams when failing map function" in {
       val settings = ActorMaterializerSettings(system)
-        .withSyncProcessingLimit(1)
-        .withInputBuffer(1, 1)
+        .withSyncProcessingLimit(1).withInputBuffer(1, 1)
       val mat = ActorMaterializer(settings)
       val p = TestPublisher.probe[Int]()
       val ex = new Exception("buh")
       val latch = TestLatch()
-      Source(1 to 3)
-        .flatMapMerge(
-          10,
-          {
-            case 1 ⇒ Source.fromPublisher(p)
-            case 2 ⇒
-              Await.ready(latch, 3.seconds)
-              throw ex
-          })
-        .runWith(Sink.head)(mat)
+      Source(1 to 3).flatMapMerge(
+        10,
+        {
+          case 1 ⇒ Source.fromPublisher(p)
+          case 2 ⇒
+            Await.ready(latch, 3.seconds)
+            throw ex
+        }).runWith(Sink.head)(mat)
       p.expectRequest()
       latch.countDown()
       p.expectCancellation()
@@ -156,8 +135,7 @@ class FlowFlattenMergeSpec extends AkkaSpec {
       val ex = new Exception("buh")
       val sink = Source(
         List(Source.fromPublisher(p1), Source.fromPublisher(p2)))
-        .flatMapMerge(5, identity)
-        .runWith(TestSink.probe)
+        .flatMapMerge(5, identity).runWith(TestSink.probe)
       sink.request(1)
       p1.expectRequest()
       p2.expectRequest()
@@ -168,8 +146,7 @@ class FlowFlattenMergeSpec extends AkkaSpec {
 
     "work with many concurrently queued events" in {
       val p = Source((0 until 100).map(i ⇒ src10(10 * i)))
-        .flatMapMerge(Int.MaxValue, identity)
-        .runWith(TestSink.probe)
+        .flatMapMerge(Int.MaxValue, identity).runWith(TestSink.probe)
       p.within(1.second) {
         p.ensureSubscription()
         p.expectNoMsg()

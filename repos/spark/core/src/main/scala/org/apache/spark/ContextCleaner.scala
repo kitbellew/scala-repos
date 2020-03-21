@@ -182,8 +182,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
   private def registerForCleanup(
       objectForCleanup: AnyRef,
       task: CleanupTask): Unit = {
-    referenceBuffer.add(
-      new CleanupTaskWeakReference(task, objectForCleanup, referenceQueue))
+    referenceBuffer
+      .add(new CleanupTaskWeakReference(task, objectForCleanup, referenceQueue))
   }
 
   /** Keep cleaning RDD, shuffle, and broadcast state. */

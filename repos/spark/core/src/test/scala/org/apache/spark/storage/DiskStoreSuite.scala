@@ -49,8 +49,7 @@ class DiskStoreSuite extends SparkFunSuite {
 
     // Not possible to do isInstanceOf due to visibility of HeapByteBuffer
     assert(
-      notMapped
-        .getChunks()
+      notMapped.getChunks()
         .forall(_.getClass.getName.endsWith("HeapByteBuffer")),
       "Expected HeapByteBuffer for un-mapped read")
     assert(

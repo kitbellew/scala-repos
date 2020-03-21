@@ -56,8 +56,8 @@ trait MapSubInstances0 extends MapSub {
           }
         }
     }
-    override val equalIsNatural: Boolean =
-      Equal[K].equalIsNatural && Equal[V].equalIsNatural
+    override val equalIsNatural: Boolean = Equal[K].equalIsNatural && Equal[V]
+      .equalIsNatural
   }
 
   private[std] trait MapFoldable[K] extends Foldable.FromFoldr[XMap[K, ?]] {
@@ -161,9 +161,8 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
       "Map[" +:
         Cord.mkCord(
           ", ",
-          m.toSeq.view.map {
-            case (k, v) => Cord(K show k, "->", V show v)
-          }: _*) :+ "]")
+          m.toSeq.view
+            .map { case (k, v) => Cord(K show k, "->", V show v) }: _*) :+ "]")
 
   implicit def mapOrder[K: Order, V: Order]: Order[XMap[K, V]] =
     new Order[XMap[K, V]] with MapEqual[K, V] {
@@ -174,13 +173,11 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
         import anyVal._
         import tuple._
         implicit val ok = Order[K].toScalaOrdering
-        Semigroup[Ordering]
-          .append(
-            Order[Int].order(x.size, y.size),
-            Order[Vector[(K, V)]]
-              .order(
-                x.toVector.sortBy((_: (K, V))._1),
-                y.toVector.sortBy((_: (K, V))._1)))
+        Semigroup[Ordering].append(
+          Order[Int].order(x.size, y.size),
+          Order[Vector[(K, V)]].order(
+            x.toVector.sortBy((_: (K, V))._1),
+            y.toVector.sortBy((_: (K, V))._1)))
       }
     }
 }
@@ -245,8 +242,7 @@ trait MapSubFunctions extends MapSub {
   final def getOrAdd[F[_], K, A](m: XMap[K, A], k: K)(fa: => F[A])(implicit
       F: Applicative[F],
       K: BuildKeyConstraint[K]): F[(XMap[K, A], A)] =
-    (m get k)
-      .map(a => F.point(m, a))
+    (m get k).map(a => F.point(m, a))
       .getOrElse(F.map(fa)(a => (ab_+(m, k, a), a)))
 }
 

@@ -121,8 +121,8 @@ trait ColumnarTableModuleSpec[M[+_]]
 
   override val defaultPrettyParams = Pretty.Params(2)
 
-  lazy val xlogger = LoggerFactory.getLogger(
-    "com.precog.yggdrasil.table.ColumnarTableModuleSpec")
+  lazy val xlogger = LoggerFactory
+    .getLogger("com.precog.yggdrasil.table.ColumnarTableModuleSpec")
 
   def streamToString(stream: StreamT[M, CharBuffer]): String = {
     def loop(stream: StreamT[M, CharBuffer], sb: StringBuilder): M[String] =
@@ -171,9 +171,7 @@ trait ColumnarTableModuleSpec[M[+_]]
 
     val expected = JArray(seq.toList)
 
-    val arrayM = table
-      .renderJson("[", ",", "]")
-      .foldLeft("")(_ + _.toString)
+    val arrayM = table.renderJson("[", ",", "]").foldLeft("")(_ + _.toString)
       .map(JParser.parseUnsafe)
 
     val minimized = minimize(expected) getOrElse JArray(Nil)
@@ -372,11 +370,8 @@ trait ColumnarTableModuleSpec[M[+_]]
         val dataset1 = fromJson(sample.toStream, Some(3))
         val dataset2 = fromJson(sample.toStream, Some(3))
 
-        dataset1
-          .cross(dataset1)(
-            InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
-          .slices
-          .uncons
+        dataset1.cross(dataset1)(
+          InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight))).slices.uncons
           .copoint must beLike {
           case Some((head, _)) =>
             head.size must beLessThanOrEqualTo(yggConfig.maxSliceSize)
@@ -449,8 +444,8 @@ trait ColumnarTableModuleSpec[M[+_]]
 
       "delete elements according to a JType" in checkObjectDelete
       "delete only field in object without removing from array" in {
-        val JArray(elements) = JParser.parseUnsafe(
-          """[
+        val JArray(elements) = JParser
+          .parseUnsafe("""[
           {"foo": 4, "bar": 12},
           {"foo": 5},
           {"bar": 45},
@@ -612,9 +607,7 @@ trait ColumnarTableModuleSpec[M[+_]]
         val expectedSlices = (sample.data.size.toDouble / defaultSliceSize).ceil
 
         val table = fromSample(sample)
-        val t0 = table
-          .transform(TransSpec1.Id)
-          .transform(TransSpec1.Id)
+        val t0 = table.transform(TransSpec1.Id).transform(TransSpec1.Id)
           .transform(TransSpec1.Id)
         t0.toJson.copoint must_== sample.data
 
@@ -631,9 +624,7 @@ trait ColumnarTableModuleSpec[M[+_]]
         val expectedSlices = (sample.data.size.toDouble / defaultSliceSize).ceil
 
         val table = fromSample(sample)
-        val t0 = table
-          .compact(TransSpec1.Id)
-          .compact(TransSpec1.Id)
+        val t0 = table.compact(TransSpec1.Id).compact(TransSpec1.Id)
           .compact(TransSpec1.Id)
         table.toJson.copoint must_== sample.data
         t0.toJson.copoint must_== sample.data

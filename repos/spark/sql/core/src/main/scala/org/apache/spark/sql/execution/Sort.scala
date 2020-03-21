@@ -66,15 +66,14 @@ case class Sort(
     val ordering = newOrdering(sortOrder, output)
 
     // The comparator for comparing prefix
-    val boundSortExpression = BindReferences.bindReference(
-      sortOrder.head,
-      output)
-    val prefixComparator = SortPrefixUtils.getPrefixComparator(
-      boundSortExpression)
+    val boundSortExpression = BindReferences
+      .bindReference(sortOrder.head, output)
+    val prefixComparator = SortPrefixUtils
+      .getPrefixComparator(boundSortExpression)
 
     // The generator for prefix
-    val prefixProjection = UnsafeProjection.create(Seq(
-      SortPrefix(boundSortExpression)))
+    val prefixProjection = UnsafeProjection
+      .create(Seq(SortPrefix(boundSortExpression)))
     val prefixComputer = new UnsafeExternalRowSorter.PrefixComputer {
       override def computePrefix(row: InternalRow): Long = {
         prefixProjection.apply(row).getLong(0)

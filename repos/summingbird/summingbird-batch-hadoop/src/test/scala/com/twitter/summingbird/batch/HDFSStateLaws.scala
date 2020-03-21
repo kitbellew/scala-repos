@@ -55,11 +55,10 @@ class HDFSStateLaws extends WordSpec {
       val nextPrepareState = nextState.begin
       nextPrepareState.requested match {
         case intersection @ Intersection(low, high) => {
-          val startBatchTime: Timestamp = batcher.earliestTimeOf(
-            batcher.batchOf(startDate))
+          val startBatchTime: Timestamp = batcher
+            .earliestTimeOf(batcher.batchOf(startDate))
           val expectedNextRunStartMillis: Long = startBatchTime
-            .incrementMinutes(numBatches * batchLength)
-            .milliSinceEpoch
+            .incrementMinutes(numBatches * batchLength).milliSinceEpoch
           assert(low.least.get.milliSinceEpoch == expectedNextRunStartMillis)
         }
         case _ => fail("requested interval should be an interseciton")
@@ -74,17 +73,14 @@ class HDFSStateLaws extends WordSpec {
 
   "make sure HDFSState creates partial checkpoint" in {
     withTmpDir { path =>
-      val startDate: Option[Timestamp] = Some("2012-12-26T09:45").map(
-        RichDate(_).value)
+      val startDate: Option[Timestamp] = Some("2012-12-26T09:45")
+        .map(RichDate(_).value)
       val numBatches: Long = 10
-      val config = HDFSState.Config(
-        path,
-        new Configuration,
-        startDate,
-        numBatches)
+      val config = HDFSState
+        .Config(path, new Configuration, startDate, numBatches)
       val waitingState: HDFSState = HDFSState(config)
-      val startBatchTime: Timestamp = batcher.earliestTimeOf(
-        batcher.batchOf(startDate.get))
+      val startBatchTime: Timestamp = batcher
+        .earliestTimeOf(batcher.batchOf(startDate.get))
       // Not aligned with batch size
       val partialIncompleteInterval: Interval[Timestamp] =
         leftClosedRightOpenInterval(
@@ -141,16 +137,13 @@ class HDFSStateLaws extends WordSpec {
     completeState(state.begin.willAccept(interval))
     interval match {
       case intersection @ Intersection(low, high) => {
-        BatchID
-          .range(
-            batcher.batchOf(low.least.get),
-            batcher.batchOf(high.greatest.get))
-          .foreach { t =>
-            val totPath = (path + "/" + batcher
-              .earliestTimeOf(t)
-              .milliSinceEpoch + ".version")
-            assert(new java.io.File(totPath).exists)
-          }
+        BatchID.range(
+          batcher.batchOf(low.least.get),
+          batcher.batchOf(high.greatest.get)).foreach { t =>
+          val totPath = (path + "/" + batcher.earliestTimeOf(t)
+            .milliSinceEpoch + ".version")
+          assert(new java.io.File(totPath).exists)
+        }
       }
       case _ => sys.error("interval should be an intersection")
     }

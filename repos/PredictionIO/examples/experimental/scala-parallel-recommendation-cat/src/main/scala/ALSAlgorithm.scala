@@ -80,36 +80,32 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val userStringIntMap = BiMap.stringInt(data.users.keys)
     val itemStringIntMap = BiMap.stringInt(data.items.keys)
 
-    val mllibRatings = data.viewEvents
-      .map { r =>
-        // Convert user and item String IDs to Int index for MLlib
-        val uindex = userStringIntMap.getOrElse(r.user, -1)
-        val iindex = itemStringIntMap.getOrElse(r.item, -1)
+    val mllibRatings = data.viewEvents.map { r =>
+      // Convert user and item String IDs to Int index for MLlib
+      val uindex = userStringIntMap.getOrElse(r.user, -1)
+      val iindex = itemStringIntMap.getOrElse(r.item, -1)
 
-        if (uindex == -1)
-          logger.info(
-            s"Couldn't convert nonexistent user ID ${r.user}"
-              + " to Int index.")
+      if (uindex == -1)
+        logger.info(
+          s"Couldn't convert nonexistent user ID ${r.user}"
+            + " to Int index.")
 
-        if (iindex == -1)
-          logger.info(
-            s"Couldn't convert nonexistent item ID ${r.item}"
-              + " to Int index.")
+      if (iindex == -1)
+        logger.info(
+          s"Couldn't convert nonexistent item ID ${r.item}"
+            + " to Int index.")
 
-        ((uindex, iindex), 1)
-      }
-      .filter {
-        case ((u, i), v) =>
-          // keep events with valid user and item index
-          (u != -1) && (i != -1)
-      }
-      .reduceByKey(_ + _) // aggregate all view events of same user-item pair
+      ((uindex, iindex), 1)
+    }.filter {
+      case ((u, i), v) =>
+        // keep events with valid user and item index
+        (u != -1) && (i != -1)
+    }.reduceByKey(_ + _) // aggregate all view events of same user-item pair
       .map {
         case ((u, i), v) =>
           // MLlibRating requires integer index for user and item
           MLlibRating(u, i, v)
-      }
-      .cache()
+      }.cache()
 
     // MLLib ALS cannot handle empty training data.
     require(
@@ -137,8 +133,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     }
 
     // join item with the trained productFeatures
-    val productFeatures =
-      items.leftOuterJoin(m.productFeatures).collectAsMap.toMap
+    val productFeatures = items.leftOuterJoin(m.productFeatures).collectAsMap
+      .toMap
 
     new ALSModel(
       rank = m.rank,
@@ -154,48 +150,46 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val productFeatures = model.productFeatures
 
     // convert whiteList's string ID to integer index
-    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
-      set.map(model.itemStringIntMap.get(_)).flatten)
+    val whiteList: Option[Set[Int]] = query.whiteList
+      .map(set => set.map(model.itemStringIntMap.get(_)).flatten)
 
     val blackList: Set[String] = query.blackList.getOrElse(Set[String]())
 
     // combine query's blackList
     // into final blackList.
     // convert seen Items list from String ID to interger Index
-    val finalBlackList: Set[Int] =
-      blackList.map(x => model.itemStringIntMap.get(x)).flatten
+    val finalBlackList: Set[Int] = blackList
+      .map(x => model.itemStringIntMap.get(x)).flatten
 
-    val userFeature = model.userStringIntMap
-      .get(query.user)
-      .map { userIndex => userFeatures.get(userIndex) }
-      // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
+    val userFeature = model.userStringIntMap.get(query.user).map { userIndex =>
+      userFeatures.get(userIndex)
+    }
+    // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
       .flatten
 
     val topScores =
       if (userFeature.isDefined) {
         // the user has feature vector
         val uf = userFeature.get
-        val indexScores: Map[Int, Double] =
-          productFeatures.par // convert to parallel collection
-            .filter {
-              case (i, (item, feature)) =>
-                feature.isDefined &&
-                  isCandidateItem(
-                    i = i,
-                    item = item,
-                    categories = query.categories,
-                    whiteList = whiteList,
-                    blackList = finalBlackList)
-            }
-            .map {
-              case (i, (item, feature)) =>
-                // NOTE: feature must be defined, so can call .get
-                val s = dotProduct(uf, feature.get)
-                // Can adjust score here
-                (i, s)
-            }
-            .filter(_._2 > 0) // only keep items with score > 0
-            .seq // convert back to sequential collection
+        val indexScores: Map[Int, Double] = productFeatures
+          .par // convert to parallel collection
+          .filter {
+            case (i, (item, feature)) =>
+              feature.isDefined &&
+                isCandidateItem(
+                  i = i,
+                  item = item,
+                  categories = query.categories,
+                  whiteList = whiteList,
+                  blackList = finalBlackList)
+          }.map {
+            case (i, (item, feature)) =>
+              // NOTE: feature must be defined, so can call .get
+              val s = dotProduct(uf, feature.get)
+              // Can adjust score here
+              (i, s)
+          }.filter(_._2 > 0) // only keep items with score > 0
+          .seq // convert back to sequential collection
 
         val ord = Ordering.by[(Int, Double), Double](_._2).reverse
         val topScores = getTopN(indexScores, query.num)(ord).toArray
@@ -260,16 +254,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     whiteList.map(_.contains(i)).getOrElse(true) &&
     !blackList.contains(i) &&
     // filter categories
-    categories
-      .map { cat =>
-        item.categories
-          .map { itemCat =>
-            // keep this item if has ovelap categories with the query
-            !(itemCat.toSet.intersect(cat).isEmpty)
-          }
-          .getOrElse(false) // discard this item if it has no categories
-      }
-      .getOrElse(true)
+    categories.map { cat =>
+      item.categories.map { itemCat =>
+        // keep this item if has ovelap categories with the query
+        !(itemCat.toSet.intersect(cat).isEmpty)
+      }.getOrElse(false) // discard this item if it has no categories
+    }.getOrElse(true)
 
   }
 

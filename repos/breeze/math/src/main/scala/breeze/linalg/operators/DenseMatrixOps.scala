@@ -72,14 +72,12 @@ trait DenseMatrixMultiplyStuff
 
       // if we have a weird stride...
       val a: DenseMatrix[Double] =
-        if (_a.majorStride < math.max(
-              if (_a.isTranspose) _a.cols else _a.rows,
-              1)) _a.copy
+        if (_a.majorStride < math
+              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
         else _a
       val b: DenseMatrix[Double] =
-        if (_b.majorStride < math.max(
-              if (_b.isTranspose) _b.cols else _b.rows,
-              1)) _b.copy
+        if (_b.majorStride < math
+              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
         else _b
 
       blas.dgemm(
@@ -356,14 +354,12 @@ trait DenseMatrixFloatMultiplyStuff
 
       // if we have a weird stride...
       val a: DenseMatrix[Float] =
-        if (_a.majorStride < math.max(
-              if (_a.isTranspose) _a.cols else _a.rows,
-              1)) _a.copy
+        if (_a.majorStride < math
+              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
         else _a
       val b: DenseMatrix[Float] =
-        if (_b.majorStride < math.max(
-              if (_b.isTranspose) _b.cols else _b.rows,
-              1)) _b.copy
+        if (_b.majorStride < math
+              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
         else _b
 
       blas.sgemm(
@@ -661,7 +657,8 @@ trait DenseMatrixOps {
           a := ac
           // gives a roughly 5-10x speedup
           // if a and b are both nicely and identically shaped, add them as though they were vectors
-        } else if (a.isTranspose == b.isTranspose && a.isContiguous && b.isContiguous) {
+        } else if (a.isTranspose == b.isTranspose && a.isContiguous && b
+                     .isContiguous) {
           vecOp(
             new DenseVector(a.data, a.offset, 1, a.size),
             new DenseVector(b.data, b.offset, 1, b.size))

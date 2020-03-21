@@ -166,8 +166,8 @@ case class Expand(
         val value = ctx.freshName("value")
         val code = s"""
           |boolean $isNull = true;
-          |${ctx.javaType(firstExpr.dataType)} $value = ${ctx.defaultValue(
-                        firstExpr.dataType)};
+          |${ctx.javaType(firstExpr.dataType)} $value = ${ctx
+                        .defaultValue(firstExpr.dataType)};
          """.stripMargin
         ExprCode(code, isNull, value)
       }
@@ -179,8 +179,7 @@ case class Expand(
         var updateCode = ""
         for (col <- exprs.indices) {
           if (!sameOutput(col)) {
-            val ev = BindReferences
-              .bindReference(exprs(col), child.output)
+            val ev = BindReferences.bindReference(exprs(col), child.output)
               .gen(ctx)
             updateCode +=
               s"""

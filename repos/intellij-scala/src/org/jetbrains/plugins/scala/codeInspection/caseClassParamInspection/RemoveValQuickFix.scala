@@ -17,12 +17,10 @@ class RemoveValQuickFix(param: ScClassParameter)
     val p = getElement
     if (!p.isValid) return
     p.findChildrenByType(ScalaTokenTypes.kVAL).foreach(_.delete())
-    CodeStyleManager
-      .getInstance(p.getProject)
-      .reformatText(
-        p.getContainingFile,
-        p.getModifierList.getTextRange.getStartOffset,
-        p.getModifierList.getTextRange.getEndOffset)
+    CodeStyleManager.getInstance(p.getProject).reformatText(
+      p.getContainingFile,
+      p.getModifierList.getTextRange.getStartOffset,
+      p.getModifierList.getTextRange.getEndOffset)
   }
 }
 

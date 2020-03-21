@@ -43,8 +43,8 @@ object SourcedException {
       case sourced: SourcedException
           if sourced.serviceName != SourcedException.UnspecifiedServiceName =>
         Some(sourced.serviceName)
-      case sourced: Failure =>
-        sourced.getSource(Failure.Source.Service).map(_.toString)
+      case sourced: Failure => sourced.getSource(Failure.Source.Service)
+          .map(_.toString)
       case _ => None
     }
 }
@@ -162,7 +162,8 @@ class NoBrokersAvailableException(
   def this(name: String = "unknown") = this(name, Dtab.empty, Dtab.empty)
 
   override def exceptionMessage =
-    s"No hosts are available for $name, Dtab.base=[${baseDtab.show}], Dtab.local=[${localDtab.show}]"
+    s"No hosts are available for $name, Dtab.base=[${baseDtab
+      .show}], Dtab.local=[${localDtab.show}]"
 }
 
 /**

@@ -135,15 +135,13 @@ private[http] object HttpServerBluePrint {
       extends GraphStage[FlowShape[RequestOutput, HttpRequest]] {
     val in = Inlet[RequestOutput]("PrepareRequests.in")
     val out = Outlet[HttpRequest]("PrepareRequests.out")
-    override val shape: FlowShape[RequestOutput, HttpRequest] = FlowShape.of(
-      in,
-      out)
+    override val shape: FlowShape[RequestOutput, HttpRequest] = FlowShape
+      .of(in, out)
 
     override def createLogic(inheritedAttributes: Attributes) =
       new GraphStageLogic(shape) with InHandler with OutHandler {
         val remoteAddress = inheritedAttributes
-          .get[HttpAttributes.RemoteAddress]
-          .flatMap(_.address)
+          .get[HttpAttributes.RemoteAddress].flatMap(_.address)
         var downstreamPullWaiting = false
         var completionDeferred = false
         var entitySource: SubSourceOutlet[RequestOutput] = _
@@ -172,17 +170,17 @@ private[http] object HttpServerBluePrint {
                   _,
                   _) ⇒
               val effectiveMethod =
-                if (method == HttpMethods.HEAD && settings.transparentHeadRequests)
-                  HttpMethods.GET
+                if (method == HttpMethods.HEAD && settings
+                      .transparentHeadRequests) HttpMethods.GET
                 else method
               val effectiveHeaders =
                 if (settings.remoteAddressHeader && remoteAddress.isDefined)
-                  headers.`Remote-Address`(
-                    RemoteAddress(remoteAddress.get)) +: hdrs
+                  headers
+                    .`Remote-Address`(RemoteAddress(remoteAddress.get)) +: hdrs
                 else hdrs
 
-              val entity = createEntity(
-                entityCreator) withSizeLimit settings.parserSettings.maxContentLength
+              val entity = createEntity(entityCreator) withSizeLimit settings
+                .parserSettings.maxContentLength
               push(
                 out,
                 HttpRequest(
@@ -308,12 +306,10 @@ private[http] object HttpServerBluePrint {
         case x ⇒ x
       }
 
-    Flow[SessionBytes]
-      .transform(() ⇒
-        // each connection uses a single (private) request parser instance for all its requests
-        // which builds a cache of all header instances seen on that connection
-        rootParser.createShallowCopy().stage)
-      .named("rootParser")
+    Flow[SessionBytes].transform(() ⇒
+      // each connection uses a single (private) request parser instance for all its requests
+      // which builds a cache of all header instances seen on that connection
+      rootParser.createShallowCopy().stage).named("rootParser")
       .map(establishAbsoluteUri)
   }
 
@@ -358,8 +354,8 @@ private[http] object HttpServerBluePrint {
           new InHandler {
             def onPush(): Unit = {
               val request = grab(requestIn)
-              val (entity, requestEnd) = HttpEntity.captureTermination(
-                request.entity)
+              val (entity, requestEnd) = HttpEntity
+                .captureTermination(request.entity)
               val access = new TimeoutAccessImpl(
                 request,
                 initialTimeout,
@@ -576,9 +572,11 @@ private[http] object HttpServerBluePrint {
                 log.warning(
                   """Sending 2xx response before end of request was received...
                 |Note that the connection will be closed after this response. Also, many clients will not read early responses!
-                |Consider waiting for the request end before dispatching this response!""".stripMargin)
+                |Consider waiting for the request end before dispatching this response!"""
+                    .stripMargin)
               val close = requestStart.closeRequested ||
-                requestStart.expect100Continue && oneHundredContinueResponsePending ||
+                requestStart
+                  .expect100Continue && oneHundredContinueResponsePending ||
                 isClosed(requestParsingIn) && openRequests.isEmpty ||
                 isEarlyResponse
               emit(
@@ -711,20 +709,18 @@ private[http] object HttpServerBluePrint {
           StreamedEntityCreator {
             createEntity.compose[Source[T, NotUsed]] {
               _.via(
-                Flow[T]
-                  .transform(() ⇒
-                    new PushPullStage[T, T] {
-                      private var oneHundredContinueSent = false
-                      def onPush(elem: T, ctx: Context[T]) = ctx.push(elem)
-                      def onPull(ctx: Context[T]) = {
-                        if (!oneHundredContinueSent) {
-                          oneHundredContinueSent = true
-                          emit100ContinueResponse.invoke(())
-                        }
-                        ctx.pull()
+                Flow[T].transform(() ⇒
+                  new PushPullStage[T, T] {
+                    private var oneHundredContinueSent = false
+                    def onPush(elem: T, ctx: Context[T]) = ctx.push(elem)
+                    def onPull(ctx: Context[T]) = {
+                      if (!oneHundredContinueSent) {
+                        oneHundredContinueSent = true
+                        emit100ContinueResponse.invoke(())
                       }
-                    })
-                  .named("expect100continueTrigger"))
+                      ctx.pull()
+                    }
+                  }).named("expect100continueTrigger"))
             }
           }
       }
@@ -813,11 +809,8 @@ private[http] object HttpServerBluePrint {
 
         private var activeTimers = 0
         private def timeout =
-          ActorMaterializer
-            .downcast(materializer)
-            .settings
-            .subscriptionTimeoutSettings
-            .timeout
+          ActorMaterializer.downcast(materializer).settings
+            .subscriptionTimeoutSettings.timeout
         private def addTimeout(s: SubscriptionTimeout): Unit = {
           if (activeTimers == 0) setKeepGoing(true)
           activeTimers += 1
@@ -847,12 +840,10 @@ private[http] object HttpServerBluePrint {
           val frameHandler = handlerFlow match {
             case Left(frameHandler) ⇒ frameHandler
             case Right(messageHandler) ⇒
-              WebSocket
-                .stack(
-                  serverSide = true,
-                  maskingRandomFactory = settings.websocketRandomFactory,
-                  log = log)
-                .join(messageHandler)
+              WebSocket.stack(
+                serverSide = true,
+                maskingRandomFactory = settings.websocketRandomFactory,
+                log = log).join(messageHandler)
           }
 
           val sinkIn = new SubSinkInlet[ByteString]("FrameSink")
@@ -873,8 +864,7 @@ private[http] object HttpServerBluePrint {
                   sinkIn.cancel()
                 }
               })
-            WebSocket.framing
-              .join(frameHandler)
+            WebSocket.framing.join(frameHandler)
               .runWith(Source.empty, sinkIn.sink)(subFusingMaterializer)
           } else {
             val sourceOut = new SubSourceOutlet[ByteString]("FrameSource")
@@ -919,8 +909,7 @@ private[http] object HttpServerBluePrint {
               override def onDownstreamFinish(): Unit = cancel(fromNet)
             })
 
-            WebSocket.framing
-              .join(frameHandler)
+            WebSocket.framing.join(frameHandler)
               .runWith(sourceOut.source, sinkIn.sink)(subFusingMaterializer)
           }
         }

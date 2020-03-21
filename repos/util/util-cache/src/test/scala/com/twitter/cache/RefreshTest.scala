@@ -13,9 +13,7 @@ class RefreshTest extends FunSuite with MockitoSugar {
 
   class Ctx {
     val provider = mock[() => Future[Int]]
-    when(provider())
-      .thenReturn(Future.value(1))
-      .thenReturn(Future.value(2))
+    when(provider()).thenReturn(Future.value(1)).thenReturn(Future.value(2))
 
     val ttl = 1.minute
     val memoizedFuture = Refresh.every(ttl) { provider() }
@@ -59,8 +57,7 @@ class RefreshTest extends FunSuite with MockitoSugar {
     import ctx._
 
     reset(provider)
-    when(provider())
-      .thenReturn(Future.exception(new RuntimeException))
+    when(provider()).thenReturn(Future.exception(new RuntimeException))
       .thenReturn(Future.value(2))
     intercept[RuntimeException] { Await.result(memoizedFuture()) }
     assert(Await.result(memoizedFuture()) == 2)
@@ -73,8 +70,7 @@ class RefreshTest extends FunSuite with MockitoSugar {
 
     val promise = Promise[Int]
     reset(provider)
-    when(provider())
-      .thenReturn(promise)
+    when(provider()).thenReturn(promise)
 
     val result1 = memoizedFuture()
     val result2 = memoizedFuture()

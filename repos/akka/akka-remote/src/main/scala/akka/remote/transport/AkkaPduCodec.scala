@@ -138,8 +138,8 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
 
     val envelopeBuilder = RemoteEnvelope.newBuilder
 
-    envelopeBuilder.setRecipient(
-      serializeActorRef(recipient.path.address, recipient))
+    envelopeBuilder
+      .setRecipient(serializeActorRef(recipient.path.address, recipient))
     senderOption foreach { ref ⇒
       envelopeBuilder.setSender(serializeActorRef(localAddress, ref))
     }
@@ -148,32 +148,27 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     envelopeBuilder.setMessage(serializedMessage)
     ackAndEnvelopeBuilder.setEnvelope(envelopeBuilder)
 
-    ByteString.ByteString1C(
-      ackAndEnvelopeBuilder.build.toByteArray
-    ) //Reuse Byte Array (naughty!)
+    ByteString
+      .ByteString1C(
+        ackAndEnvelopeBuilder.build.toByteArray
+      ) //Reuse Byte Array (naughty!)
   }
 
   override def constructPureAck(ack: Ack): ByteString =
     ByteString.ByteString1C(
-      AckAndEnvelopeContainer.newBuilder
-        .setAck(ackBuilder(ack))
-        .build()
+      AckAndEnvelopeContainer.newBuilder.setAck(ackBuilder(ack)).build()
         .toByteArray
     ) //Reuse Byte Array (naughty!)
 
   override def constructPayload(payload: ByteString): ByteString =
     ByteString.ByteString1C(
-      AkkaProtocolMessage
-        .newBuilder()
-        .setPayload(PByteString.copyFrom(payload.asByteBuffer))
-        .build
-        .toByteArray
+      AkkaProtocolMessage.newBuilder().setPayload(PByteString.copyFrom(
+        payload.asByteBuffer)).build.toByteArray
     ) //Reuse Byte Array (naughty!)
 
   override def constructAssociate(info: HandshakeInfo): ByteString = {
     val handshakeInfo = AkkaHandshakeInfo.newBuilder
-      .setOrigin(serializeAddress(info.origin))
-      .setUid(info.uid)
+      .setOrigin(serializeAddress(info.origin)).setUid(info.uid)
     info.cookie foreach handshakeInfo.setCookie
     constructControlMessagePdu(
       WireFormats.CommandType.ASSOCIATE,
@@ -263,7 +258,8 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
           if (handshakeInfo.hasCookie) Some(handshakeInfo.getCookie) else None
         Associate(HandshakeInfo(
           decodeAddress(handshakeInfo.getOrigin),
-          handshakeInfo.getUid.toInt, // 64 bits are allocated in the wire formats, but we use only 32 for now
+          handshakeInfo.getUid
+            .toInt, // 64 bits are allocated in the wire formats, but we use only 32 for now
           cookie))
       case CommandType.DISASSOCIATE ⇒ Disassociate(AssociationHandle.Unknown)
       case CommandType.DISASSOCIATE_SHUTTING_DOWN ⇒ Disassociate(
@@ -294,33 +290,24 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     handshakeInfo foreach controlMessageBuilder.setHandshakeInfo
 
     ByteString.ByteString1C(
-      AkkaProtocolMessage
-        .newBuilder()
-        .setInstruction(controlMessageBuilder.build)
-        .build
-        .toByteArray
+      AkkaProtocolMessage.newBuilder()
+        .setInstruction(controlMessageBuilder.build).build.toByteArray
     ) //Reuse Byte Array (naughty!)
   }
 
   private def serializeActorRef(
       defaultAddress: Address,
       ref: ActorRef): ActorRefData = {
-    ActorRefData.newBuilder
-      .setPath(
-        if (ref.path.address.host.isDefined) ref.path.toSerializationFormat
-        else ref.path.toSerializationFormatWithAddress(defaultAddress))
-      .build()
+    ActorRefData.newBuilder.setPath(
+      if (ref.path.address.host.isDefined) ref.path.toSerializationFormat
+      else ref.path.toSerializationFormatWithAddress(defaultAddress)).build()
   }
 
   private def serializeAddress(address: Address): AddressData =
     address match {
       case Address(protocol, system, Some(host), Some(port)) ⇒
-        AddressData.newBuilder
-          .setHostname(host)
-          .setPort(port)
-          .setSystem(system)
-          .setProtocol(protocol)
-          .build()
+        AddressData.newBuilder.setHostname(host).setPort(port).setSystem(system)
+          .setProtocol(protocol).build()
       case _ ⇒
         throw new IllegalArgumentException(
           s"Address [${address}] could not be serialized: host or port missing.")

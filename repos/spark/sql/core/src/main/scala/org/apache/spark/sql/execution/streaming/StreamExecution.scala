@@ -83,8 +83,7 @@ class StreamExecution(
 
   /** Returns current status of all the sources. */
   override def sourceStatuses: Array[SourceStatus] = {
-    sources
-      .map(s => new SourceStatus(s.toString, streamProgress.get(s)))
+    sources.map(s => new SourceStatus(s.toString, streamProgress.get(s)))
       .toArray
   }
 
@@ -192,16 +191,14 @@ class StreamExecution(
         val prevOffset = streamProgress.get(source)
         val newBatch = source.getNextBatch(prevOffset)
 
-        newBatch
-          .map { batch =>
-            newOffsets += ((source, batch.end))
-            val newPlan = batch.data.logicalPlan
+        newBatch.map { batch =>
+          newOffsets += ((source, batch.end))
+          val newPlan = batch.data.logicalPlan
 
-            assert(output.size == newPlan.output.size)
-            replacements ++= output.zip(newPlan.output)
-            newPlan
-          }
-          .getOrElse { LocalRelation(output) }
+          assert(output.size == newPlan.output.size)
+          replacements ++= output.zip(newPlan.output)
+          newPlan
+        }.getOrElse { LocalRelation(output) }
     }
 
     // Rewire the plan to use the new attributes that were returned by the source.
@@ -215,8 +212,8 @@ class StreamExecution(
 
       lastExecution = new QueryExecution(sqlContext, newPlan)
       val executedPlan = lastExecution.executedPlan
-      val optimizerTime =
-        (System.nanoTime() - optimizerStart).toDouble / 1000000
+      val optimizerTime = (System.nanoTime() - optimizerStart)
+        .toDouble / 1000000
       logDebug(s"Optimized batch in ${optimizerTime}ms")
 
       streamProgress.synchronized {

@@ -190,7 +190,8 @@ class SecurityManagerSuite extends SparkFunSuite with ResetSystemProperties {
 
     assert(securityManager.fileServerSSLOptions.trustStore.isDefined === true)
     assert(
-      securityManager.fileServerSSLOptions.trustStore.get.getName === "truststore")
+      securityManager.fileServerSSLOptions.trustStore.get
+        .getName === "truststore")
     assert(securityManager.fileServerSSLOptions.keyStore.isDefined === true)
     assert(
       securityManager.fileServerSSLOptions.keyStore.get.getName === "keystore")
@@ -204,14 +205,13 @@ class SecurityManagerSuite extends SparkFunSuite with ResetSystemProperties {
       securityManager.fileServerSSLOptions.keyPassword === Some("password"))
     assert(securityManager.fileServerSSLOptions.protocol === Some("TLSv1.2"))
     assert(
-      securityManager.fileServerSSLOptions.enabledAlgorithms === expectedAlgorithms)
+      securityManager.fileServerSSLOptions
+        .enabledAlgorithms === expectedAlgorithms)
   }
 
   test("ssl off setup") {
-    val file = File.createTempFile(
-      "SSLOptionsSuite",
-      "conf",
-      Utils.createTempDir())
+    val file = File
+      .createTempFile("SSLOptionsSuite", "conf", Utils.createTempDir())
 
     System.setProperty("spark.ssl.configFile", file.getAbsolutePath)
     val conf = new SparkConf()
@@ -230,8 +230,7 @@ class SecurityManagerSuite extends SparkFunSuite with ResetSystemProperties {
 
   test("secret authentication key") {
     val key = "very secret key"
-    val conf = new SparkConf()
-      .set(SecurityManager.SPARK_AUTH_CONF, "true")
+    val conf = new SparkConf().set(SecurityManager.SPARK_AUTH_CONF, "true")
       .set(SecurityManager.SPARK_AUTH_SECRET_CONF, key)
     assert(key === new SecurityManager(conf).getSecretKey())
 

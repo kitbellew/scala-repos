@@ -123,12 +123,10 @@ class ScalaIntroduceParameterHandler
         val bodyText = elems.map(_.getText).mkString
         s"$paramsText $arrow {\n$bodyText\n}"
     }
-    val expr = ScalaPsiElementFactory
-      .createExpressionWithContextFromText(
-        funText,
-        elems.head.getContext,
-        elems.head)
-      .asInstanceOf[ScFunctionExpr]
+    val expr = ScalaPsiElementFactory.createExpressionWithContextFromText(
+      funText,
+      elems.head.getContext,
+      elems.head).asInstanceOf[ScFunctionExpr]
     val toReturn = IntroduceImplicitParameterIntention
       .createExpressionToIntroduce(expr, withoutParameterTypes = true) match {
       case Left(e) => e
@@ -136,9 +134,7 @@ class ScalaIntroduceParameterHandler
     }
     ScalaPsiUtil.adjustTypes(toReturn, addImports = false)
     (
-      CodeStyleManager
-        .getInstance(project)
-        .reformat(toReturn)
+      CodeStyleManager.getInstance(project).reformat(toReturn)
         .asInstanceOf[ScExpression],
       expr.getNonValueType().getOrAny)
   }
@@ -183,12 +179,8 @@ class ScalaIntroduceParameterHandler
         (selModel.getSelectionStart, selModel.getSelectionEnd)
       ScalaRefactoringUtil.checkFile(file, project, editor, REFACTORING_NAME)
 
-      val exprWithTypes = ScalaRefactoringUtil.getExpression(
-        project,
-        editor,
-        file,
-        startOffset,
-        endOffset)
+      val exprWithTypes = ScalaRefactoringUtil
+        .getExpression(project, editor, file, startOffset, endOffset)
       val elems = exprWithTypes match {
         case Some((e, _)) => Seq(e)
         case None =>
@@ -198,11 +190,8 @@ class ScalaIntroduceParameterHandler
             trimComments = false)
       }
 
-      val hasWarnings = ScalaRefactoringUtil.showNotPossibleWarnings(
-        elems,
-        project,
-        editor,
-        REFACTORING_NAME)
+      val hasWarnings = ScalaRefactoringUtil
+        .showNotPossibleWarnings(elems, project, editor, REFACTORING_NAME)
       if (hasWarnings) return None
       if (haveReturnStmts(elems)) {
         showErrorHint(
@@ -224,9 +213,8 @@ class ScalaIntroduceParameterHandler
       editor: Editor): Option[ScalaIntroduceParameterData] = {
     val project = methodLike.getProject
 
-    val info = ReachingDefintionsCollector.collectVariableInfo(
-      elems,
-      methodLike)
+    val info = ReachingDefintionsCollector
+      .collectVariableInfo(elems, methodLike)
     val input = info.inputVariables
     val (types, argText, argClauseText) =
       if (input.nonEmpty || exprWithTypes.isEmpty) {
@@ -283,10 +271,8 @@ class ScalaIntroduceParameterHandler
           ScalaRefactoringUtil.unparExpr(expr),
           occurrencesScope)
         if (occurrences.length > 1)
-          occurrenceHighlighters = ScalaRefactoringUtil.highlightOccurrences(
-            project,
-            occurrences,
-            editor)
+          occurrenceHighlighters = ScalaRefactoringUtil
+            .highlightOccurrences(project, occurrences, editor)
 
         (occurrences, expr.getTextRange)
       case _ =>
@@ -399,7 +385,8 @@ class ScalaIntroduceParameterHandler
   def afterMethodChoosing(elem: PsiElement, editor: Editor)(
       action: ScMethodLike => Unit): Unit = {
     val validEnclosingMethods: Seq[ScMethodLike] = getEnclosingMethods(elem)
-    if (validEnclosingMethods.size > 1 && !ApplicationManager.getApplication.isUnitTestMode) {
+    if (validEnclosingMethods.size > 1 && !ApplicationManager.getApplication
+          .isUnitTestMode) {
       ScalaRefactoringUtil.showChooser[ScMethodLike](
         editor,
         validEnclosingMethods.toArray,
@@ -407,7 +394,8 @@ class ScalaIntroduceParameterHandler
         s"Choose function for $REFACTORING_NAME",
         getTextForElement,
         toHighlight)
-    } else if (validEnclosingMethods.size == 1 || ApplicationManager.getApplication.isUnitTestMode) {
+    } else if (validEnclosingMethods.size == 1 || ApplicationManager
+                 .getApplication.isUnitTestMode) {
       action(validEnclosingMethods.head)
     } else {
       showErrorHint(
@@ -429,8 +417,8 @@ class ScalaIntroduceParameterHandler
       elem <- elems
       ret @ (r: ScReturnStmt) <- elem.depthFirst
     } {
-      if (ret.returnFunction.isEmpty || !elem.isAncestorOf(
-            ret.returnFunction.get)) return true
+      if (ret.returnFunction.isEmpty || !elem
+            .isAncestorOf(ret.returnFunction.get)) return true
     }
     false
   }

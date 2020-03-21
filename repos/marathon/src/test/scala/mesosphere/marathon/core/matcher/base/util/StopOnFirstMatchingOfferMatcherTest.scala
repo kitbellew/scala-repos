@@ -56,12 +56,12 @@ class StopOnFirstMatchingOfferMatcherTest
     Given("a sequence of matchers, the second matching")
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(
-          offer.getId,
-          resendThisOffer = true)),
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(
-          offer.getId,
-          resendThisOffer = false))
+        offerMatcher(
+          OfferMatcher.MatchedTaskOps
+            .noMatch(offer.getId, resendThisOffer = true)),
+        offerMatcher(
+          OfferMatcher.MatchedTaskOps
+            .noMatch(offer.getId, resendThisOffer = false))
       )
     }
 
@@ -77,12 +77,12 @@ class StopOnFirstMatchingOfferMatcherTest
     Given("a sequence of matchers, the second matching")
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(
-          offer.getId,
-          resendThisOffer = false)),
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(
-          offer.getId,
-          resendThisOffer = true))
+        offerMatcher(
+          OfferMatcher.MatchedTaskOps
+            .noMatch(offer.getId, resendThisOffer = false)),
+        offerMatcher(
+          OfferMatcher.MatchedTaskOps
+            .noMatch(offer.getId, resendThisOffer = true))
       )
     }
 
@@ -95,8 +95,7 @@ class StopOnFirstMatchingOfferMatcherTest
   }
 
   class Fixture {
-    lazy val offer: MesosProtos.Offer = MarathonTestHelper
-      .makeBasicOffer()
+    lazy val offer: MesosProtos.Offer = MarathonTestHelper.makeBasicOffer()
       .build()
     lazy val deadline = Timestamp.now() + 30.seconds
 

@@ -35,11 +35,12 @@ abstract class ScalaMemberSelectionTableBase[
       case member: ScMember if member.containingClass.isInstanceOf[ScObject] =>
         null
       case member: ScMember
-          if member.hasAbstractModifier && myMemberInfoModel.isFixedAbstract(
-            memberInfo) != null => myMemberInfoModel.isFixedAbstract(memberInfo)
+          if member.hasAbstractModifier && myMemberInfoModel
+            .isFixedAbstract(memberInfo) != null =>
+        myMemberInfoModel.isFixedAbstract(memberInfo)
       case _ if !myMemberInfoModel.isAbstractEnabled(memberInfo) =>
-        val res: java.lang.Boolean = myMemberInfoModel.isAbstractWhenDisabled(
-          memberInfo)
+        val res: java.lang.Boolean = myMemberInfoModel
+          .isAbstractWhenDisabled(memberInfo)
         res
       case _ if memberInfo.isToAbstract => java.lang.Boolean.TRUE
       case _                            => java.lang.Boolean.FALSE
@@ -50,9 +51,9 @@ abstract class ScalaMemberSelectionTableBase[
     val info: I = myMemberInfos.get(rowIndex)
     info.getMember match {
       case member: ScMember
-          if member.hasAbstractModifier && myMemberInfoModel.isFixedAbstract(
-            info) == java.lang.Boolean.TRUE => false
-      case _                                => info.isChecked && myMemberInfoModel.isAbstractEnabled(info)
+          if member.hasAbstractModifier && myMemberInfoModel
+            .isFixedAbstract(info) == java.lang.Boolean.TRUE => false
+      case _                                                 => info.isChecked && myMemberInfoModel.isAbstractEnabled(info)
     }
   }
 

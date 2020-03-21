@@ -47,8 +47,8 @@ private[akka] object FanOut {
   class OutputBunch(outputCount: Int, impl: ActorRef, pump: Pump) {
     private var bunchCancelled = false
 
-    private val outputs = Array.tabulate(outputCount)(
-      new FanoutOutputs(_, impl, pump))
+    private val outputs = Array
+      .tabulate(outputCount)(new FanoutOutputs(_, impl, pump))
 
     private val marked = Array.ofDim[Boolean](outputCount)
     private var markedCount = 0
@@ -59,13 +59,15 @@ private[akka] object FanOut {
     private val completed = Array.ofDim[Boolean](outputCount)
     private val errored = Array.ofDim[Boolean](outputCount)
 
-    override def toString: String = s"""|OutputBunch
+    override def toString: String =
+      s"""|OutputBunch
           |  marked:    ${marked.mkString(", ")}
           |  pending:   ${pending.mkString(", ")}
           |  errored:   ${errored.mkString(", ")}
           |  completed: ${completed.mkString(", ")}
           |  cancelled: ${cancelled.mkString(", ")}
-          |    mark=$markedCount pend=$markedPending depl=$markedCancelled pref=$preferredId unmark=$unmarkCancelled""".stripMargin
+          |    mark=$markedCount pend=$markedPending depl=$markedCancelled pref=$preferredId unmark=$unmarkCancelled"""
+        .stripMargin
 
     private var unmarkCancelled = true
 
@@ -245,7 +247,8 @@ private[akka] object FanOut {
           if (demand < 1) // According to Reactive Streams Spec 3.9, with non-positive demand must yield onError
             error(
               id,
-              ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
+              ReactiveStreamsCompliance
+                .numberOfElementsInRequestMustBePositiveException)
           else {
             if (marked(id) && !pending(id)) markedPending += 1
             pending(id) = true
@@ -257,8 +260,8 @@ private[akka] object FanOut {
           cancelled(id) = true
           onCancel(id)
           outputs(id).subreceive(Cancel(null))
-        case SubstreamSubscribePending(id) ⇒
-          outputs(id).subreceive(SubscribePending)
+        case SubstreamSubscribePending(id) ⇒ outputs(id)
+            .subreceive(SubscribePending)
       })
 
   }

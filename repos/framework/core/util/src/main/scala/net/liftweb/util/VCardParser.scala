@@ -54,10 +54,8 @@ object VCardParser extends Parsers {
     case l => l.mkString
   }
   lazy val spaces = (elem(' ') | elem('\t') | elem('\n') | elem('\r')) *
-  lazy val key =
-    elem("key", { c => c.isLetterOrDigit || c == '-' || c == '_' }).+ ^^ {
-      case list => list.mkString
-    }
+  lazy val key = elem("key", { c => c.isLetterOrDigit || c == '-' || c == '_' })
+    .+ ^^ { case list => list.mkString }
   lazy val props = ((((elem(';') ~> key <~ elem('=')) ~ key) ^^ {
     case a ~ b                         => (a, b)
   }) | ((elem(';') ~> key) ^^ { case a => (a, "") })) *

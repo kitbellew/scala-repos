@@ -239,9 +239,8 @@ private[streaming] class ReceiverTracker(
     */
   def cleanupOldBlocksAndBatches(cleanupThreshTime: Time) {
     // Clean up old block and batch metadata
-    receivedBlockTracker.cleanupOldBatches(
-      cleanupThreshTime,
-      waitForCompletion = false)
+    receivedBlockTracker
+      .cleanupOldBatches(cleanupThreshTime, waitForCompletion = false)
 
     // Signal the receivers to delete old block data
     if (WriteAheadLogUtils.enableReceiverLog(ssc.conf)) {
@@ -323,9 +322,8 @@ private[streaming] class ReceiverTracker(
       lastErrorTime = lastErrorTime)
     val newReceiverTrackingInfo = receiverTrackingInfos.get(streamId) match {
       case Some(oldInfo) =>
-        oldInfo.copy(
-          state = ReceiverState.INACTIVE,
-          errorInfo = Some(errorInfo))
+        oldInfo
+          .copy(state = ReceiverState.INACTIVE, errorInfo = Some(errorInfo))
       case None =>
         logWarning("No prior receiver info")
         ReceiverTrackingInfo(
@@ -395,9 +393,8 @@ private[streaming] class ReceiverTracker(
   }
 
   private def scheduleReceiver(receiverId: Int): Seq[TaskLocation] = {
-    val preferredLocation = receiverPreferredLocations.getOrElse(
-      receiverId,
-      None)
+    val preferredLocation = receiverPreferredLocations
+      .getOrElse(receiverId, None)
     val scheduledLocations = schedulingPolicy.rescheduleReceiver(
       receiverId,
       preferredLocation,
@@ -440,18 +437,16 @@ private[streaming] class ReceiverTracker(
         blockManagerId.host,
         blockManagerId.executorId))
     } else {
-      ssc.sparkContext.env.blockManager.master.getMemoryStatus
-        .filter {
-          case (blockManagerId, _) =>
-            blockManagerId.executorId != SparkContext.DRIVER_IDENTIFIER // Ignore the driver location
-        }
-        .map {
-          case (blockManagerId, _) =>
-            ExecutorCacheTaskLocation(
-              blockManagerId.host,
-              blockManagerId.executorId)
-        }
-        .toSeq
+      ssc.sparkContext.env.blockManager.master.getMemoryStatus.filter {
+        case (blockManagerId, _) =>
+          blockManagerId.executorId != SparkContext
+            .DRIVER_IDENTIFIER // Ignore the driver location
+      }.map {
+        case (blockManagerId, _) =>
+          ExecutorCacheTaskLocation(
+            blockManagerId.host,
+            blockManagerId.executorId)
+      }.toSeq
     }
   }
 
@@ -465,11 +460,8 @@ private[streaming] class ReceiverTracker(
     */
   private def runDummySparkJob(): Unit = {
     if (!ssc.sparkContext.isLocal) {
-      ssc.sparkContext
-        .makeRDD(1 to 50, 50)
-        .map(x => (x, 1))
-        .reduceByKey(_ + _, 20)
-        .collect()
+      ssc.sparkContext.makeRDD(1 to 50, 50).map(x => (x, 1))
+        .reduceByKey(_ + _, 20).collect()
     }
     assert(getExecutors.nonEmpty)
   }
@@ -513,14 +505,13 @@ private[streaming] class ReceiverTracker(
     override def receive: PartialFunction[Any, Unit] = {
       // Local messages
       case StartAllReceivers(receivers) =>
-        val scheduledLocations = schedulingPolicy.scheduleReceivers(
-          receivers,
-          getExecutors)
+        val scheduledLocations = schedulingPolicy
+          .scheduleReceivers(receivers, getExecutors)
         for (receiver <- receivers) {
           val executors = scheduledLocations(receiver.streamId)
           updateReceiverScheduledExecutors(receiver.streamId, executors)
-          receiverPreferredLocations(receiver.streamId) =
-            receiver.preferredLocation
+          receiverPreferredLocations(receiver.streamId) = receiver
+            .preferredLocation
           startReceiver(receiver, executors)
         }
       case RestartReceiver(receiver) =>
@@ -534,9 +525,8 @@ private[streaming] class ReceiverTracker(
           } else {
             val oldReceiverInfo = receiverTrackingInfos(receiver.streamId)
             // Clear "scheduledLocations" to indicate we are going to do local scheduling
-            val newReceiverInfo = oldReceiverInfo.copy(
-              state = ReceiverState.INACTIVE,
-              scheduledLocations = None)
+            val newReceiverInfo = oldReceiverInfo
+              .copy(state = ReceiverState.INACTIVE, scheduledLocations = None)
             receiverTrackingInfos(receiver.streamId) = newReceiverInfo
             schedulingPolicy.rescheduleReceiver(
               receiver.streamId,
@@ -593,10 +583,8 @@ private[streaming] class ReceiverTracker(
       // Local messages
       case AllReceiverIds =>
         context.reply(
-          receiverTrackingInfos
-            .filter(_._2.state != ReceiverState.INACTIVE)
-            .keys
-            .toSeq)
+          receiverTrackingInfos.filter(_._2.state != ReceiverState.INACTIVE)
+            .keys.toSeq)
       case StopAllReceivers =>
         assert(isTrackerStopping || isTrackerStopped)
         stopReceivers()
@@ -609,8 +597,8 @@ private[streaming] class ReceiverTracker(
     private def getStoredScheduledExecutors(
         receiverId: Int): Seq[TaskLocation] = {
       if (receiverTrackingInfos.contains(receiverId)) {
-        val scheduledLocations = receiverTrackingInfos(
-          receiverId).scheduledLocations
+        val scheduledLocations = receiverTrackingInfos(receiverId)
+          .scheduledLocations
         if (scheduledLocations.nonEmpty) {
           val executors = getExecutors.toSet
           // Only return the alive executors
@@ -673,10 +661,10 @@ private[streaming] class ReceiverTracker(
           ssc.sc.makeRDD(Seq(receiver -> preferredLocations))
         }
       receiverRDD.setName(s"Receiver $receiverId")
-      ssc.sparkContext.setJobDescription(
-        s"Streaming job running receiver $receiverId")
-      ssc.sparkContext.setCallSite(
-        Option(ssc.getStartSite()).getOrElse(Utils.getCallSite()))
+      ssc.sparkContext
+        .setJobDescription(s"Streaming job running receiver $receiverId")
+      ssc.sparkContext
+        .setCallSite(Option(ssc.getStartSite()).getOrElse(Utils.getCallSite()))
 
       val future = ssc.sparkContext.submitJob[Receiver[_], Unit, Unit](
         receiverRDD,

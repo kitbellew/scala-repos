@@ -214,11 +214,8 @@ private[client] class Shim_v0_12 extends Shim with Logging {
     setDataLocationMethod.invoke(table, new URI(loc))
 
   override def getAllPartitions(hive: Hive, table: Table): Seq[Partition] =
-    getAllPartitionsMethod
-      .invoke(hive, table)
-      .asInstanceOf[JSet[Partition]]
-      .asScala
-      .toSeq
+    getAllPartitionsMethod.invoke(hive, table).asInstanceOf[JSet[Partition]]
+      .asScala.toSeq
 
   override def getPartitionsByFilter(
       hive: Hive,
@@ -235,8 +232,7 @@ private[client] class Shim_v0_12 extends Shim with Logging {
   override def getCommandProcessor(
       token: String,
       conf: HiveConf): CommandProcessor =
-    getCommandProcessorMethod
-      .invoke(null, token, conf)
+    getCommandProcessorMethod.invoke(null, token, conf)
       .asInstanceOf[CommandProcessor]
 
   override def getDriverResults(driver: Driver): Seq[String] = {
@@ -247,8 +243,8 @@ private[client] class Shim_v0_12 extends Shim with Logging {
 
   override def getMetastoreClientConnectRetryDelayMillis(
       conf: HiveConf): Long = {
-    conf.getIntVar(
-      HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY) * 1000
+    conf
+      .getIntVar(HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY) * 1000
   }
 
   override def loadPartition(
@@ -351,11 +347,8 @@ private[client] class Shim_v0_13 extends Shim_v0_12 {
     setDataLocationMethod.invoke(table, new Path(loc))
 
   override def getAllPartitions(hive: Hive, table: Table): Seq[Partition] =
-    getAllPartitionsMethod
-      .invoke(hive, table)
-      .asInstanceOf[JSet[Partition]]
-      .asScala
-      .toSeq
+    getAllPartitionsMethod.invoke(hive, table).asInstanceOf[JSet[Partition]]
+      .asScala.toSeq
 
   /**
     * Converts catalyst expression to the format that Hive's getPartitionsByFilter() expects, i.e.
@@ -365,27 +358,21 @@ private[client] class Shim_v0_13 extends Shim_v0_12 {
     */
   def convertFilters(table: Table, filters: Seq[Expression]): String = {
     // hive varchar is treated as catalyst string, but hive varchar can't be pushed down.
-    val varcharKeys = table.getPartitionKeys.asScala
-      .filter(col =>
-        col.getType.startsWith(serdeConstants.VARCHAR_TYPE_NAME) ||
-          col.getType.startsWith(serdeConstants.CHAR_TYPE_NAME))
-      .map(col => col.getName)
-      .toSet
+    val varcharKeys = table.getPartitionKeys.asScala.filter(col =>
+      col.getType.startsWith(serdeConstants.VARCHAR_TYPE_NAME) ||
+        col.getType.startsWith(serdeConstants.CHAR_TYPE_NAME))
+      .map(col => col.getName).toSet
 
-    filters
-      .collect {
-        case op @ BinaryComparison(a: Attribute, Literal(v, _: IntegralType)) =>
-          s"${a.name} ${op.symbol} $v"
-        case op @ BinaryComparison(Literal(v, _: IntegralType), a: Attribute) =>
-          s"$v ${op.symbol} ${a.name}"
-        case op @ BinaryComparison(a: Attribute, Literal(v, _: StringType))
-            if !varcharKeys.contains(a.name) =>
-          s"""${a.name} ${op.symbol} "$v""""
-        case op @ BinaryComparison(Literal(v, _: StringType), a: Attribute)
-            if !varcharKeys.contains(a.name) =>
-          s""""$v" ${op.symbol} ${a.name}"""
-      }
-      .mkString(" and ")
+    filters.collect {
+      case op @ BinaryComparison(a: Attribute, Literal(v, _: IntegralType)) =>
+        s"${a.name} ${op.symbol} $v"
+      case op @ BinaryComparison(Literal(v, _: IntegralType), a: Attribute) =>
+        s"$v ${op.symbol} ${a.name}"
+      case op @ BinaryComparison(a: Attribute, Literal(v, _: StringType))
+          if !varcharKeys.contains(a.name) => s"""${a.name} ${op.symbol} "$v""""
+      case op @ BinaryComparison(Literal(v, _: StringType), a: Attribute)
+          if !varcharKeys.contains(a.name) => s""""$v" ${op.symbol} ${a.name}"""
+    }.mkString(" and ")
   }
 
   override def getPartitionsByFilter(
@@ -401,8 +388,7 @@ private[client] class Shim_v0_13 extends Shim_v0_12 {
         getAllPartitionsMethod.invoke(hive, table).asInstanceOf[JSet[Partition]]
       } else {
         logDebug(s"Hive metastore filter is '$filter'.")
-        getPartitionsByFilterMethod
-          .invoke(hive, table, filter)
+        getPartitionsByFilterMethod.invoke(hive, table, filter)
           .asInstanceOf[JArrayList[Partition]]
       }
 
@@ -412,8 +398,7 @@ private[client] class Shim_v0_13 extends Shim_v0_12 {
   override def getCommandProcessor(
       token: String,
       conf: HiveConf): CommandProcessor =
-    getCommandProcessorMethod
-      .invoke(null, Array(token), conf)
+    getCommandProcessorMethod.invoke(null, Array(token), conf)
       .asInstanceOf[CommandProcessor]
 
   override def getDriverResults(driver: Driver): Seq[String] = {
@@ -535,12 +520,10 @@ private[client] class Shim_v0_14 extends Shim_v0_13 {
 
   override def getMetastoreClientConnectRetryDelayMillis(
       conf: HiveConf): Long = {
-    getTimeVarMethod
-      .invoke(
-        conf,
-        HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY,
-        TimeUnit.MILLISECONDS)
-      .asInstanceOf[Long]
+    getTimeVarMethod.invoke(
+      conf,
+      HiveConf.ConfVars.METASTORE_CLIENT_CONNECT_RETRY_DELAY,
+      TimeUnit.MILLISECONDS).asInstanceOf[Long]
   }
 
   protected def isSrcLocal(path: Path, conf: HiveConf): Boolean = {

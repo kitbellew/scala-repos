@@ -16,8 +16,7 @@ import docs.http.scaladsl.server.RoutingSpec
 class RangeDirectivesExamplesSpec extends RoutingSpec {
 
   override def testConfig: Config =
-    ConfigFactory
-      .parseString("akka.http.routing.range-coalescing-threshold=2")
+    ConfigFactory.parseString("akka.http.routing.range-coalescing-threshold=2")
       .withFallback(super.testConfig)
 
   "withRangeSupport" in {

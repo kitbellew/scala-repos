@@ -19,8 +19,8 @@ class ScalaWrappingAndBracesTest extends AbstractScalaFormatterTestBase {
   }
    */
   def testInfixExpressionWrapAsNeeded() {
-    getCommonSettings.BINARY_OPERATION_WRAP =
-      CommonCodeStyleSettings.WRAP_AS_NEEDED
+    getCommonSettings.BINARY_OPERATION_WRAP = CommonCodeStyleSettings
+      .WRAP_AS_NEEDED
     getSettings.setRightMargin(null, 20)
     getIndentOptions.CONTINUATION_INDENT_SIZE = 2
     val before = """
@@ -44,8 +44,8 @@ class ScalaWrappingAndBracesTest extends AbstractScalaFormatterTestBase {
   }
 
   def testInfixPatternWrapAsNeeded() {
-    getCommonSettings.BINARY_OPERATION_WRAP =
-      CommonCodeStyleSettings.WRAP_AS_NEEDED
+    getCommonSettings.BINARY_OPERATION_WRAP = CommonCodeStyleSettings
+      .WRAP_AS_NEEDED
     getSettings.setRightMargin(null, 20)
     getIndentOptions.CONTINUATION_INDENT_SIZE = 2
     val before = """
@@ -63,8 +63,8 @@ List(1, 2) match {
   }
 
   def testInfixTypeWrapAsNeeded() {
-    getCommonSettings.BINARY_OPERATION_WRAP =
-      CommonCodeStyleSettings.WRAP_AS_NEEDED
+    getCommonSettings.BINARY_OPERATION_WRAP = CommonCodeStyleSettings
+      .WRAP_AS_NEEDED
     getSettings.setRightMargin(null, 20)
     getIndentOptions.CONTINUATION_INDENT_SIZE = 2
     val before = """
@@ -78,8 +78,8 @@ val x: T + T + T +
   }
 
   def testInfixExprWrapAlways() {
-    getCommonSettings.BINARY_OPERATION_WRAP =
-      CommonCodeStyleSettings.WRAP_ALWAYS
+    getCommonSettings.BINARY_OPERATION_WRAP = CommonCodeStyleSettings
+      .WRAP_ALWAYS
     getSettings.setRightMargin(null, 20)
     getIndentOptions.CONTINUATION_INDENT_SIZE = 2
     val before = """
@@ -100,8 +100,8 @@ val x: T + T + T +
   }
 
   def testInfixExprWrapAllIfLong() {
-    getCommonSettings.BINARY_OPERATION_WRAP =
-      CommonCodeStyleSettings.WRAP_ON_EVERY_ITEM
+    getCommonSettings.BINARY_OPERATION_WRAP = CommonCodeStyleSettings
+      .WRAP_ON_EVERY_ITEM
     getSettings.setRightMargin(null, 20)
     getIndentOptions.CONTINUATION_INDENT_SIZE = 2
     val before = """
@@ -121,8 +121,8 @@ val x: T + T + T +
   }
 
   def testInfixExprDoNotWrap() {
-    getCommonSettings.BINARY_OPERATION_WRAP =
-      CommonCodeStyleSettings.DO_NOT_WRAP
+    getCommonSettings.BINARY_OPERATION_WRAP = CommonCodeStyleSettings
+      .DO_NOT_WRAP
     getSettings.setRightMargin(null, 20)
     getIndentOptions.CONTINUATION_INDENT_SIZE = 2
     val before = """
@@ -154,8 +154,8 @@ val i = 2 + 2 +
   }
 
   def testBinaryParentExpressionWrap() {
-    getCommonSettings.BINARY_OPERATION_WRAP =
-      CommonCodeStyleSettings.WRAP_AS_NEEDED
+    getCommonSettings.BINARY_OPERATION_WRAP = CommonCodeStyleSettings
+      .WRAP_AS_NEEDED
     getCommonSettings.PARENTHESES_EXPRESSION_LPAREN_WRAP = true
     getCommonSettings.PARENTHESES_EXPRESSION_RPAREN_WRAP = true
     getSettings.setRightMargin(null, 20)
@@ -224,8 +224,8 @@ foo(
   }
 
   def testMethodCallChainWrap() {
-    getCommonSettings.METHOD_CALL_CHAIN_WRAP =
-      CommonCodeStyleSettings.WRAP_ALWAYS
+    getCommonSettings.METHOD_CALL_CHAIN_WRAP = CommonCodeStyleSettings
+      .WRAP_ALWAYS
     val before = """
 foo(1, 2).foo(1, 2).foo(1, 2)
 """.replace("\r", "")
@@ -260,8 +260,8 @@ val x = foo.
 
   def testBraceStyle() {
     getCommonSettings.CLASS_BRACE_STYLE = CommonCodeStyleSettings.NEXT_LINE
-    getCommonSettings.METHOD_BRACE_STYLE =
-      CommonCodeStyleSettings.NEXT_LINE_SHIFTED
+    getCommonSettings.METHOD_BRACE_STYLE = CommonCodeStyleSettings
+      .NEXT_LINE_SHIFTED
     getCommonSettings.BRACE_STYLE = CommonCodeStyleSettings.NEXT_LINE_IF_WRAPPED
     val before = """
 class A {

@@ -130,8 +130,8 @@ class MultivariateGaussian @Since("1.3.0") (
 
     try {
       // log(pseudo-determinant) is sum of the logs of all non-zero singular values
-      val logPseudoDetSigma =
-        d.activeValuesIterator.filter(_ > tol).map(math.log).sum
+      val logPseudoDetSigma = d.activeValuesIterator.filter(_ > tol)
+        .map(math.log).sum
 
       // calculate the root-pseudo-inverse of the diagonal matrix of singular values
       // by inverting the square root of all non-zero values

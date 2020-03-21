@@ -35,7 +35,8 @@ object InfixExpr {
       return false
     }
     var exitOf = true
-    while (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && !builder.newlineBeforeCurrentToken && exitOf) {
+    while (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && !builder
+             .newlineBeforeCurrentToken && exitOf) {
       //need to know associativity
       val s = builder.getTokenText
 

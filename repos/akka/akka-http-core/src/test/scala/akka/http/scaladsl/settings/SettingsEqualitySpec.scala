@@ -21,9 +21,7 @@ class SettingsEqualitySpec extends WordSpec with Matchers {
       decode-max-bytes-per-chunk = 1m
       file-io-dispatcher = ${akka.stream.blocking-io-dispatcher}
     }
-  """)
-    .withFallback(ConfigFactory.load)
-    .resolve
+  """).withFallback(ConfigFactory.load).resolve
 
   "equality" should {
     "hold for ConnectionPoolSettings" in {

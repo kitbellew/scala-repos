@@ -30,8 +30,8 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
 
   def this() = this(None)
 
-  private val indexesDir =
-    testIndexesDir getOrElse SbtResolverIndexesManager.DEFAULT_INDEXES_DIR
+  private val indexesDir = testIndexesDir getOrElse SbtResolverIndexesManager
+    .DEFAULT_INDEXES_DIR
   private val indexes: mutable.Set[SbtResolverIndex] = mutable.Set.empty
   private val updatingIndexes: mutable.Set[SbtResolverIndex] = mutable.Set.empty
 
@@ -59,15 +59,13 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
     var indexesToUpdate = Seq.empty[SbtResolverIndex]
     updatingIndexes synchronized {
       indexesToUpdate = resolvers
-        .filterNot(r => updatingIndexes.exists(r.root == _.root))
-        .map(add)
+        .filterNot(r => updatingIndexes.exists(r.root == _.root)).map(add)
       updatingIndexes ++= indexesToUpdate
     }
 
     if (indexesToUpdate.isEmpty) return
 
-    ProgressManager
-      .getInstance()
+    ProgressManager.getInstance()
       .run(new Task.Backgroundable(null, "Indexing resolvers") {
         def run(progressIndicator: ProgressIndicator): Unit =
           indexesToUpdate.foreach {

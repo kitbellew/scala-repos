@@ -31,8 +31,7 @@ class BufBenchmark extends StdBenchAnnotations {
 
     byteArrayBuf = Buf.ByteArray.Owned(raw, start, end)
     byteBufferBuf = Buf.ByteBuffer.Owned(bb)
-    concatBuf = byteArrayBuf
-      .slice(0, size / 2)
+    concatBuf = byteArrayBuf.slice(0, size / 2)
       .concat(byteArrayBuf.slice(size / 2, size))
     all = Array(byteArrayBuf, byteBufferBuf, concatBuf)
 

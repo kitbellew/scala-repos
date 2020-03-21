@@ -111,8 +111,8 @@ package ll {
     def fname(sym: Symbol) = {
       val p = "" + sym.owner.name
       val x =
-        if (sym.owner.isPackageClass || sym.owner.isModuleClass || sym.owner.isTerm)
-          "."
+        if (sym.owner.isPackageClass || sym.owner.isModuleClass || sym.owner
+              .isTerm) "."
         else "#"
       sym.kindString + " " + p + x + sym.name
     }
@@ -136,9 +136,7 @@ package ll {
     }
 
     def permute(targs: List[Type]): List[String] = {
-      permuteAsSeenFrom(targs)
-        .groupBy(_._1)
-        .toList
+      permuteAsSeenFrom(targs).groupBy(_._1).toList
         .sortBy(_._1.toString) flatMap {
         case (site, xs) => block(fmt(site)) {
             fmt("type", "seen from prefix", "is") ::
@@ -161,15 +159,16 @@ package ll {
   def signaturesIn(info: Type): List[String] =
     (info.members.toList
       filterNot (s =>
-        s.isType || s.owner == ObjectClass || s.owner == AnyClass || s.isConstructor)
+        s.isType || s.owner == ObjectClass || s.owner == AnyClass || s
+          .isConstructor)
       map (_.defString))
 
   def check(source: String, unit: global.CompilationUnit) = {
     import syms._
 
     exitingTyper {
-      val typeArgs =
-        List[Type](IntClass.tpe, ListClass[Int]) ++ tparams.map(_.tpe)
+      val typeArgs = List[Type](IntClass.tpe, ListClass[Int]) ++ tparams
+        .map(_.tpe)
       permute(typeArgs) foreach println
     }
     for (x <- classes ++ terms) {

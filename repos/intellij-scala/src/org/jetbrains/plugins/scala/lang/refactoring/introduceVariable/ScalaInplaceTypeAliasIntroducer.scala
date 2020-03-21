@@ -23,8 +23,7 @@ object ScalaInplaceTypeAliasIntroducer {
       oldName: String,
       scopeItem: ScopeItem): ScalaInplaceTypeAliasIntroducer = {
 
-    editor
-      .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
+    editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
       .addScopeElement(scopeItem)
     new ScalaInplaceTypeAliasIntroducer(
       scNamedElement,
@@ -43,8 +42,8 @@ object ScalaInplaceTypeAliasIntroducer {
       myProject,
       new Runnable {
         def run() {
-          val revertInfo = myEditor.getUserData(
-            ScalaIntroduceVariableHandler.REVERT_INFO)
+          val revertInfo = myEditor
+            .getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
           val document = myEditor.getDocument
           if (revertInfo != null) {
             extensions.inWriteAction {
@@ -55,8 +54,7 @@ object ScalaInplaceTypeAliasIntroducer {
             val offset = revertInfo.caretOffset
             myEditor.getCaretModel.moveToOffset(offset)
             myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
-            PsiDocumentManager
-              .getInstance(myEditor.getProject)
+            PsiDocumentManager.getInstance(myEditor.getProject)
               .commitDocument(document)
           }
           if (!myProject.isDisposed && myProject.isOpen) {
@@ -92,8 +90,7 @@ class ScalaInplaceTypeAliasIntroducer(
       handler: RefactoringActionHandler,
       element: PsiElement): Boolean = {
     def checkEquals(typeAliasDefinition: ScTypeAliasDefinition) = {
-      editor
-        .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
+      editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
         .getNamedElement == element
     }
 
@@ -112,24 +109,19 @@ class ScalaInplaceTypeAliasIntroducer(
   protected override def moveOffsetAfter(success: Boolean): Unit = {
     if (success) {
       // don't know about element to refactor place
-    } else if (myInsertedName != null && !UndoManager
-                 .getInstance(myProject)
+    } else if (myInsertedName != null && !UndoManager.getInstance(myProject)
                  .isUndoInProgress
-               && !editor
-                 .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
+               && !editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
                  .isCallModalDialogInProgress) {
 
-      val revertInfo = myEditor.getUserData(
-        ScalaIntroduceVariableHandler.REVERT_INFO)
+      val revertInfo = myEditor
+        .getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
       if (revertInfo != null) {
         extensions.inWriteAction {
           val myFile: PsiFile = PsiDocumentManager
-            .getInstance(myEditor.getProject)
-            .getPsiFile(myEditor.getDocument)
-          myEditor.getDocument.replaceString(
-            0,
-            myFile.getTextLength,
-            revertInfo.fileText)
+            .getInstance(myEditor.getProject).getPsiFile(myEditor.getDocument)
+          myEditor.getDocument
+            .replaceString(0, myFile.getTextLength, revertInfo.fileText)
         }
         myEditor.getCaretModel.moveToOffset(revertInfo.caretOffset)
         myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)

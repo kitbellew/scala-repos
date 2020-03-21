@@ -47,9 +47,9 @@ class ScalaCaseClassParametersNameContributer
               if funcDef.syntheticCaseClass.isDefined =>
             funcDef.syntheticCaseClass.get.parameters
           case fundef: ScFunctionDefinition
-              if fundef.getName == "unapply" || fundef.getName == "unapplySeq" =>
-            fundef.getParameterList.params
-          case _ => return
+              if fundef.getName == "unapply" || fundef
+                .getName == "unapplySeq" => fundef.getParameterList.params
+          case _                         => return
         }
 
         if (caseClassParams.isEmpty) return
@@ -89,8 +89,7 @@ class ScalaCaseClassParametersNameContributer
       def byClassParamCompletionsItems(
           params: Seq[ScParameter],
           result: CompletionResultSet): Unit = {
-        params
-          .map(p => new ScalaLookupItem(p, p.name))
+        params.map(p => new ScalaLookupItem(p, p.name))
           .foreach(l => addLocalScalaLookUpItem(result, l))
       }
 
@@ -106,7 +105,8 @@ class ScalaCaseClassParametersNameContributer
             ScalaLookupItem.original(item) match {
               case s: ScalaLookupItem => s.element match {
                   case param: ScParameter
-                      if param.name == s.name /*not equals when name computed by type*/ =>
+                      if param.name == s
+                        .name /*not equals when name computed by type*/ =>
                     val positionInClassParameters = classParams.indexOf(param)
                     if (currentPosition == positionInClassParameters) -1
                     else math.abs(currentPosition - positionInClassParameters)
@@ -140,9 +140,8 @@ class ScalaCaseClassParametersNameContributer
           position,
           classOf[ScPatternArgumentList])).map(_.patterns)
 
-        if (patterns.isEmpty || (
-              patterns.isDefined && patterns.get.length > classParams.length
-            ))
+        if (patterns.isEmpty || (patterns.isDefined && patterns.get
+              .length > classParams.length))
           return ParameterWithPosition(
             None,
             -1

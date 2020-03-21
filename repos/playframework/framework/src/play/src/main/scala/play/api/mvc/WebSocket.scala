@@ -114,8 +114,8 @@ object WebSocket {
         : MessageFlowTransformer[String, String] = {
       new MessageFlowTransformer[String, String] {
         def transform(flow: Flow[String, String, _]) = {
-          AkkaStreams.bypassWith[Message, String, Message](
-            Flow[Message] collect {
+          AkkaStreams
+            .bypassWith[Message, String, Message](Flow[Message] collect {
               case TextMessage(text) => Left(text)
               case BinaryMessage(_) => Right(CloseMessage(
                   Some(CloseCodes.Unacceptable),
@@ -132,8 +132,8 @@ object WebSocket {
         : MessageFlowTransformer[ByteString, ByteString] = {
       new MessageFlowTransformer[ByteString, ByteString] {
         def transform(flow: Flow[ByteString, ByteString, _]) = {
-          AkkaStreams.bypassWith[Message, ByteString, Message](
-            Flow[Message] collect {
+          AkkaStreams
+            .bypassWith[Message, ByteString, Message](Flow[Message] collect {
               case BinaryMessage(data) => Left(data)
               case TextMessage(_) => Right(CloseMessage(
                   Some(CloseCodes.Unacceptable),
@@ -167,8 +167,8 @@ object WebSocket {
 
       new MessageFlowTransformer[JsValue, JsValue] {
         def transform(flow: Flow[JsValue, JsValue, _]) = {
-          AkkaStreams.bypassWith[Message, JsValue, Message](
-            Flow[Message].collect {
+          AkkaStreams
+            .bypassWith[Message, JsValue, Message](Flow[Message].collect {
               case BinaryMessage(data) =>
                 closeOnException(Json.parse(data.iterator.asInputStream))
               case TextMessage(text) => closeOnException(Json.parse(text))
@@ -187,15 +187,13 @@ object WebSocket {
         : MessageFlowTransformer[In, Out] = {
       jsonMessageFlowTransformer.map(
         json =>
-          Json
-            .fromJson[In](json)
-            .fold(
-              { errors =>
-                throw WebSocketCloseException(CloseMessage(
-                  Some(CloseCodes.Unacceptable),
-                  Json.stringify(JsError.toJson(errors))))
-              },
-              identity),
+          Json.fromJson[In](json).fold(
+            { errors =>
+              throw WebSocketCloseException(CloseMessage(
+                Some(CloseCodes.Unacceptable),
+                Json.stringify(JsError.toJson(errors))))
+            },
+            identity),
         out => Json.toJson(out)
       )
     }

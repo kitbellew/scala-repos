@@ -330,8 +330,7 @@ class InteroperabilityTest {
         check: function(raw) { return this.member ? this.member : raw; }
       };
       interoperabilityTestRawReceiver;
-    """)
-      .asInstanceOf[InteroperabilityTestRawReceiver]
+    """).asInstanceOf[InteroperabilityTestRawReceiver]
 
     assertEquals(7357, rawReceiver.check(7357))
 
@@ -460,8 +459,7 @@ class InteroperabilityTest {
         twice: function(c) { c = JSUtils().charToString(c); return c+c; }
       };
       obj;
-    """)
-      .asInstanceOf[InteroperabilityTestCharParam]
+    """).asInstanceOf[InteroperabilityTestCharParam]
 
     assertEquals("xx", obj.twice('x'))
   }
@@ -505,8 +503,7 @@ class InteroperabilityTest {
         test: function() { return 4; } // typed as String in the trait
       };
       obj;
-    """)
-      .asInstanceOf[InteroperabilityTestNoUnboxResultInStatement]
+    """).asInstanceOf[InteroperabilityTestNoUnboxResultInStatement]
     obj.test() // in statement position, should not throw
     if (hasCompliantAsInstanceOfs)
       assertThrows(
@@ -532,8 +529,7 @@ class InteroperabilityTest {
         testAny: function() { return {}; }
       };
       obj;
-    """)
-      .asInstanceOf[InteroperabilityTestAsInstanceOfResult]
+    """).asInstanceOf[InteroperabilityTestAsInstanceOfResult]
 
     assertThrows(classOf[Exception], obj.testChar())
     assertThrows(classOf[Exception], obj.testInt())

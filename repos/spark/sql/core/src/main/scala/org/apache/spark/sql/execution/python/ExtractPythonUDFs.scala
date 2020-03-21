@@ -70,12 +70,10 @@ private[spark] object ExtractPythonUDFs extends Rule[LogicalPlan] {
               // Trim away the new UDF value if it was only used for filtering or something.
               logical.Project(
                 plan.output,
-                plan
-                  .transformExpressions {
-                    case p: PythonUDF
-                        if p.fastEquals(udf) => evaluation.resultAttribute
-                  }
-                  .withNewChildren(newChildren))
+                plan.transformExpressions {
+                  case p: PythonUDF if p.fastEquals(udf) =>
+                    evaluation.resultAttribute
+                }.withNewChildren(newChildren))
 
             case None =>
               // If there is no Python UDF that is resolved, skip this round.

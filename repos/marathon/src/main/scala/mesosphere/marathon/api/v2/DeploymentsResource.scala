@@ -45,12 +45,11 @@ class DeploymentsResource @Inject() (
       @Context
       req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
-      val plan = result(service.listRunningDeployments())
-        .find(_.plan.id == id)
+      val plan = result(service.listRunningDeployments()).find(_.plan.id == id)
         .map(_.plan)
       plan.fold(notFound(s"DeploymentPlan $id does not exist")) { deployment =>
-        deployment.affectedApplications.foreach(
-          checkAuthorization(UpdateApp, _))
+        deployment.affectedApplications
+          .foreach(checkAuthorization(UpdateApp, _))
 
         deployment match {
           case plan: DeploymentPlan if force =>
@@ -70,8 +69,7 @@ class DeploymentsResource @Inject() (
       deployment: DeploymentPlan,
       currentStepInfo: DeploymentStepInfo): JsObject = {
 
-    val steps = deployment.steps
-      .map(step => step.actions.map(actionToMap))
+    val steps = deployment.steps.map(step => step.actions.map(actionToMap))
       .map(Json.toJson(_))
     Json.obj(
       "id" -> deployment.id,

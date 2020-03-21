@@ -44,10 +44,10 @@ trait APIKeyFinderSpec[M[+_]] extends Specification {
   "API key finders" should {
     "create and find API keys" in {
       withAPIKeyFinder(emptyAPIKeyManager) { keyFinder =>
-        val v1.APIKeyDetails(apiKey0, _, _, _, _) =
-          keyFinder.createAPIKey("Anything works.").copoint
-        val Some(v1.APIKeyDetails(apiKey1, _, _, _, _)) =
-          keyFinder.findAPIKey(apiKey0, None).copoint
+        val v1.APIKeyDetails(apiKey0, _, _, _, _) = keyFinder
+          .createAPIKey("Anything works.").copoint
+        val Some(v1.APIKeyDetails(apiKey1, _, _, _, _)) = keyFinder
+          .findAPIKey(apiKey0, None).copoint
         apiKey0 must_== apiKey1
       }
     }
@@ -72,8 +72,7 @@ trait APIKeyFinderSpec[M[+_]] extends Specification {
           DeletePermission(path, WrittenByAccount(accountId)),
           WritePermission(path, WriteAs(accountId)))
 
-        keyFinder
-          .hasCapability(key.apiKey, permissions, None)
+        keyFinder.hasCapability(key.apiKey, permissions, None)
           .copoint must beTrue
       }
     }
@@ -89,13 +88,8 @@ trait APIKeyFinderSpec[M[+_]] extends Specification {
         mgr <- M.point(emptyAPIKeyManager)
         key0 <- mgr.newStandardAPIKeyRecord("user1", None, None)
         key1 <- mgr.newStandardAPIKeyRecord("user2", None, None)
-        grant <- mgr.createGrant(
-          None,
-          None,
-          key0.apiKey,
-          Set.empty,
-          permissions,
-          None)
+        grant <- mgr
+          .createGrant(None, None, key0.apiKey, Set.empty, permissions, None)
       } yield (key0.apiKey, key1.apiKey, grant.grantId, mgr)).copoint
 
       withAPIKeyFinder(mgr) { keyFinder =>
@@ -158,11 +152,9 @@ trait APIKeyFinderSpec[M[+_]] extends Specification {
 
       withAPIKeyFinder(mgr) { keyFinder =>
         keyFinder.addGrant(key1, grantId).copoint must beTrue
-        keyFinder
-          .hasCapability(key1, permissions, Some(beforeExpiration))
+        keyFinder.hasCapability(key1, permissions, Some(beforeExpiration))
           .copoint must beTrue
-        keyFinder
-          .hasCapability(key1, permissions, Some(afterExpiration))
+        keyFinder.hasCapability(key1, permissions, Some(afterExpiration))
           .copoint must beFalse
       }
     }
@@ -176,15 +168,9 @@ trait APIKeyFinderSpec[M[+_]] extends Specification {
       } yield (rootKey, key0.apiKey, key1.apiKey, mgr)).copoint
 
       withAPIKeyFinder(mgr) { keyFinder =>
-        keyFinder
-          .findAPIKey(key0, Some(rootKey))
-          .copoint
-          .get
+        keyFinder.findAPIKey(key0, Some(rootKey)).copoint.get
           .issuerChain mustEqual List(rootKey)
-        keyFinder
-          .findAPIKey(key1, Some(rootKey))
-          .copoint
-          .get
+        keyFinder.findAPIKey(key1, Some(rootKey)).copoint.get
           .issuerChain mustEqual List(key0, rootKey)
       }
     }

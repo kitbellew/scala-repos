@@ -45,24 +45,24 @@ object Spinner {
     if (v != null) v.delegate else null
 
   /** The arrows are placed on the right of the Spinner, pointing horizontally (i.e. left and right). */
-  val StyleClassArrowsOnRightHorizontal =
-    jfxsc.Spinner.STYLE_CLASS_ARROWS_ON_RIGHT_HORIZONTAL
+  val StyleClassArrowsOnRightHorizontal = jfxsc.Spinner
+    .STYLE_CLASS_ARROWS_ON_RIGHT_HORIZONTAL
 
   /** The arrows are placed on the left of the Spinner, pointing vertically (i.e. up and down). */
-  val StyleClassArrowsOnLeftVertical =
-    jfxsc.Spinner.STYLE_CLASS_ARROWS_ON_LEFT_VERTICAL
+  val StyleClassArrowsOnLeftVertical = jfxsc.Spinner
+    .STYLE_CLASS_ARROWS_ON_LEFT_VERTICAL
 
   /** The arrows are placed on the left of the Spinner, pointing horizontally (i.e. left and right). */
-  val StyleClassArrowsOnLeftHorizontal =
-    jfxsc.Spinner.STYLE_CLASS_ARROWS_ON_LEFT_HORIZONTAL
+  val StyleClassArrowsOnLeftHorizontal = jfxsc.Spinner
+    .STYLE_CLASS_ARROWS_ON_LEFT_HORIZONTAL
 
   /** The arrows are placed above and beneath the spinner, stretching to take the entire width. */
-  val StyleClassSplitArrowsVertical =
-    jfxsc.Spinner.STYLE_CLASS_SPLIT_ARROWS_VERTICAL
+  val StyleClassSplitArrowsVertical = jfxsc.Spinner
+    .STYLE_CLASS_SPLIT_ARROWS_VERTICAL
 
   /** The decrement arrow is placed on the left of the Spinner, and the increment on the right. */
-  val StyleClassSplitArrowsHorizontal =
-    jfxsc.Spinner.STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL
+  val StyleClassSplitArrowsHorizontal = jfxsc.Spinner
+    .STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL
 
 }
 

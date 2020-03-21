@@ -31,10 +31,10 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
   val addressATest: Address = Address("test", "testsytemA", "testhostA", 4321)
   val addressBTest: Address = Address("test", "testsytemB", "testhostB", 5432)
 
-  val addressA: Address = addressATest.copy(protocol =
-    s"$schemeIdentifier.${addressATest.protocol}")
-  val addressB: Address = addressBTest.copy(protocol =
-    s"$schemeIdentifier.${addressATest.protocol}")
+  val addressA: Address = addressATest
+    .copy(protocol = s"$schemeIdentifier.${addressATest.protocol}")
+  val addressB: Address = addressBTest
+    .copy(protocol = s"$schemeIdentifier.${addressATest.protocol}")
   val nonExistingAddress = Address(
     schemeIdentifier + ".test",
     "nosystem",
@@ -44,9 +44,7 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
   def freshTransport(testTransport: TestTransport): Transport
   def wrapTransport(transport: Transport): Transport =
     if (withAkkaProtocol) {
-      val provider = system
-        .asInstanceOf[ExtendedActorSystem]
-        .provider
+      val provider = system.asInstanceOf[ExtendedActorSystem].provider
         .asInstanceOf[RemoteActorRefProvider]
       new AkkaProtocolTransport(
         transport,
@@ -83,13 +81,9 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       val transportB = newTransportB(registry)
 
       // Must complete the returned promise to receive events
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
+      Await.result(transportA.listen, timeout.duration)._2
         .success(ActorAssociationEventListener(self))
-      Await
-        .result(transportB.listen, timeout.duration)
-        ._2
+      Await.result(transportB.listen, timeout.duration)._2
         .success(ActorAssociationEventListener(self))
 
       awaitCond(registry.transportsReady(addressATest, addressBTest))
@@ -99,8 +93,8 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
         case InboundAssociation(handle) if handle.remoteAddress == addressA ⇒
       }
 
-      registry.logSnapshot.contains(
-        AssociateAttempt(addressATest, addressBTest)) should ===(true)
+      registry.logSnapshot
+        .contains(AssociateAttempt(addressATest, addressBTest)) should ===(true)
       awaitCond(registry.existsAssociation(addressATest, addressBTest))
     }
 
@@ -108,9 +102,7 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       val registry = new AssociationRegistry
       val transportA = newTransportA(registry)
 
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
+      Await.result(transportA.listen, timeout.duration)._2
         .success(ActorAssociationEventListener(self))
       awaitCond(registry.transportsReady(addressATest))
 
@@ -125,13 +117,9 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       val transportA = newTransportA(registry)
       val transportB = newTransportB(registry)
 
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
+      Await.result(transportA.listen, timeout.duration)._2
         .success(ActorAssociationEventListener(self))
-      Await
-        .result(transportB.listen, timeout.duration)
-        ._2
+      Await.result(transportB.listen, timeout.duration)._2
         .success(ActorAssociationEventListener(self))
 
       awaitCond(registry.transportsReady(addressATest, addressBTest))
@@ -174,13 +162,9 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       val transportA = newTransportA(registry)
       val transportB = newTransportB(registry)
 
-      Await
-        .result(transportA.listen, timeout.duration)
-        ._2
+      Await.result(transportA.listen, timeout.duration)._2
         .success(ActorAssociationEventListener(self))
-      Await
-        .result(transportB.listen, timeout.duration)
-        ._2
+      Await.result(transportB.listen, timeout.duration)._2
         .success(ActorAssociationEventListener(self))
 
       awaitCond(registry.transportsReady(addressATest, addressBTest))

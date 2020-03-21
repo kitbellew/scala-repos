@@ -47,17 +47,13 @@ private[puzzle] final class Daily(
   }
 
   private def findCurrent =
-    coll
-      .find(BSONDocument(
-        "day" -> BSONDocument(
-          "$gt" -> DateTime.now.minusMinutes(24 * 60 - 15))))
+    coll.find(BSONDocument(
+      "day" -> BSONDocument("$gt" -> DateTime.now.minusMinutes(24 * 60 - 15))))
       .one[Puzzle]
 
   private def findNew =
-    coll
-      .find(BSONDocument("day" -> BSONDocument("$exists" -> false)))
-      .sort(BSONDocument("vote.sum" -> -1))
-      .one[Puzzle] flatMap {
+    coll.find(BSONDocument("day" -> BSONDocument("$exists" -> false)))
+      .sort(BSONDocument("vote.sum" -> -1)).one[Puzzle] flatMap {
       case Some(puzzle) =>
         coll.update(
           BSONDocument("_id" -> puzzle.id),

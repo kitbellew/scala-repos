@@ -111,8 +111,8 @@ private[internal] trait TypeMaps {
         case tr @ TypeRef(pre, sym, args) =>
           val pre1 = this(pre)
           val args1 =
-            (if (trackVariance && args.nonEmpty && !variance.isInvariant && sym.typeParams.nonEmpty)
-               mapOverArgs(args, sym.typeParams)
+            (if (trackVariance && args.nonEmpty && !variance.isInvariant && sym
+                   .typeParams.nonEmpty) mapOverArgs(args, sym.typeParams)
              else args mapConserve this)
           if ((pre1 eq pre) && (args1 eq args)) tp
           else copyTypeRef(tp, pre1, tr.coevolveSym(pre1), args1)
@@ -170,9 +170,10 @@ private[internal] trait TypeMaps {
         case tv @ TypeVar(_, constr) =>
           if (constr.instValid) this(constr.inst)
           else
-            tv.applyArgs(
-              mapOverArgs(tv.typeArgs, tv.params)
-            ) //@M !args.isEmpty implies !typeParams.isEmpty
+            tv
+              .applyArgs(
+                mapOverArgs(tv.typeArgs, tv.params)
+              ) //@M !args.isEmpty implies !typeParams.isEmpty
         case AnnotatedType(annots, atp) =>
           val annots1 = mapOverAnnotations(annots)
           val atp1 = this(atp)
@@ -397,7 +398,8 @@ private[internal] trait TypeMaps {
               val word = if (variance.isPositive) "upper" else "lower"
               s"Widened lone occurrence of $tp1 inside existential to $word bound"
             }
-            if (!repl.typeSymbol.isBottomClass && count == 1 && !containsTypeParam)
+            if (!repl.typeSymbol
+                  .isBottomClass && count == 1 && !containsTypeParam)
               debuglogResult(msg)(repl)
             else tp1
           case _ => tp1
@@ -463,8 +465,8 @@ private[internal] trait TypeMaps {
       extends TypeMap
       with KeepOnlyTypeConstraints {
     private val seenFromPrefix: Type =
-      if (seenFromPrefix0.typeSymbolDirect.hasPackageFlag && !seenFromClass.hasPackageFlag)
-        seenFromPrefix0.packageObject.typeOfThis
+      if (seenFromPrefix0.typeSymbolDirect.hasPackageFlag && !seenFromClass
+            .hasPackageFlag) seenFromPrefix0.packageObject.typeOfThis
       else seenFromPrefix0
     // Some example source constructs relevant in asSeenFrom:
     //
@@ -528,12 +530,11 @@ private[internal] trait TypeMaps {
       capturedParams find (_.owner == clazz) match {
         case Some(p) => p.tpe
         case _ =>
-          val qvar =
-            clazz freshExistential nme.SINGLETON_SUFFIX setInfo singletonBounds(
-              pre)
+          val qvar = clazz freshExistential nme
+            .SINGLETON_SUFFIX setInfo singletonBounds(pre)
           _capturedParams ::= qvar
-          debuglog(
-            s"Captured This(${clazz.fullNameString}) seen from $seenFromPrefix: ${qvar.defString}")
+          debuglog(s"Captured This(${clazz
+            .fullNameString}) seen from $seenFromPrefix: ${qvar.defString}")
           qvar.tpe
       }
     }
@@ -704,8 +705,7 @@ private[internal] trait TypeMaps {
       if (pre1 eq pre) tp
       else if (pre1.isStable) singleType(pre1, sym)
       else
-        pre1
-          .memberType(sym)
+        pre1.memberType(sym)
           .resultType //todo: this should be rolled into existential abstraction
     }
 
@@ -1137,7 +1137,8 @@ private[internal] trait TypeMaps {
       else if (sym.isModuleClass) {
         val sourceModule1 = adaptToNewRun(pre, sym.sourceModule)
 
-        sourceModule1.moduleClass orElse sourceModule1.initialize.moduleClass orElse {
+        sourceModule1.moduleClass orElse sourceModule1.initialize
+          .moduleClass orElse {
           val msg =
             "Cannot adapt module class; sym = %s, sourceModule = %s, sourceModule.moduleClass = %s => sourceModule1 = %s, sourceModule1.moduleClass = %s"
           debuglog(msg.format(
@@ -1149,12 +1150,12 @@ private[internal] trait TypeMaps {
           sym
         }
       } else {
-        var rebind0 =
-          pre.findMember(sym.name, BRIDGE, 0, stableOnly = true) orElse {
-            if (sym.isAliasType) throw missingAliasException
-            devWarning(s"$pre.$sym no longer exist at phase $phase")
-            throw new MissingTypeControl // For build manager and presentation compiler purposes
-          }
+        var rebind0 = pre
+          .findMember(sym.name, BRIDGE, 0, stableOnly = true) orElse {
+          if (sym.isAliasType) throw missingAliasException
+          devWarning(s"$pre.$sym no longer exist at phase $phase")
+          throw new MissingTypeControl // For build manager and presentation compiler purposes
+        }
         /* The two symbols have the same fully qualified name */
         def corresponds(sym1: Symbol, sym2: Symbol): Boolean =
           sym1.name == sym2.name && (sym1.isPackageClass || corresponds(
@@ -1162,7 +1163,8 @@ private[internal] trait TypeMaps {
             sym2.owner))
         if (!corresponds(sym.owner, rebind0.owner)) {
           debuglog(
-            "ADAPT1 pre = " + pre + ", sym = " + sym.fullLocationString + ", rebind = " + rebind0.fullLocationString)
+            "ADAPT1 pre = " + pre + ", sym = " + sym
+              .fullLocationString + ", rebind = " + rebind0.fullLocationString)
           val bcs = pre.baseClasses.dropWhile(bc => !corresponds(bc, sym.owner))
           if (bcs.isEmpty)
             assert(
@@ -1178,7 +1180,8 @@ private[internal] trait TypeMaps {
         }
         rebind0.suchThat(sym => sym.isType || sym.isStable) orElse {
           debuglog(
-            "" + phase + " " + phase.flatClasses + sym.owner + sym.name + " " + sym.isType)
+            "" + phase + " " + phase.flatClasses + sym.owner + sym
+              .name + " " + sym.isType)
           throw new MalformedType(pre, sym.nameString)
         }
       }

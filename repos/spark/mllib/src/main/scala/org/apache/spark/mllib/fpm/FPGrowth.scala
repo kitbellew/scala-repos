@@ -126,9 +126,7 @@ object FPGrowthModel extends Loader[FPGrowthModel[_]] {
         StructField("freq", LongType))
       val schema = StructType(fields)
       val rowDataRDD = model.freqItemsets.map { x => Row(x.items, x.freq) }
-      sqlContext
-        .createDataFrame(rowDataRDD, schema)
-        .write
+      sqlContext.createDataFrame(rowDataRDD, schema).write
         .parquet(Loader.dataPath(path))
     }
 
@@ -248,21 +246,15 @@ class FPGrowth private (
       data: RDD[Array[Item]],
       minCount: Long,
       partitioner: Partitioner): Array[Item] = {
-    data
-      .flatMap { t =>
-        val uniq = t.toSet
-        if (t.length != uniq.size) {
-          throw new SparkException(
-            s"Items in a transaction must be unique but got ${t.toSeq}.")
-        }
-        t
+    data.flatMap { t =>
+      val uniq = t.toSet
+      if (t.length != uniq.size) {
+        throw new SparkException(
+          s"Items in a transaction must be unique but got ${t.toSeq}.")
       }
-      .map(v => (v, 1L))
-      .reduceByKey(partitioner, _ + _)
-      .filter(_._2 >= minCount)
-      .collect()
-      .sortBy(-_._2)
-      .map(_._1)
+      t
+    }.map(v => (v, 1L)).reduceByKey(partitioner, _ + _).filter(_._2 >= minCount)
+      .collect().sortBy(-_._2).map(_._1)
   }
 
   /**
@@ -279,21 +271,17 @@ class FPGrowth private (
       freqItems: Array[Item],
       partitioner: Partitioner): RDD[FreqItemset[Item]] = {
     val itemToRank = freqItems.zipWithIndex.toMap
-    data
-      .flatMap { transaction =>
-        genCondTransactions(transaction, itemToRank, partitioner)
-      }
-      .aggregateByKey(new FPTree[Int], partitioner.numPartitions)(
-        (tree, transaction) => tree.add(transaction, 1L),
-        (tree1, tree2) => tree1.merge(tree2))
-      .flatMap {
-        case (part, tree) =>
-          tree.extract(minCount, x => partitioner.getPartition(x) == part)
-      }
-      .map {
-        case (ranks, count) =>
-          new FreqItemset(ranks.map(i => freqItems(i)).toArray, count)
-      }
+    data.flatMap { transaction =>
+      genCondTransactions(transaction, itemToRank, partitioner)
+    }.aggregateByKey(new FPTree[Int], partitioner.numPartitions)(
+      (tree, transaction) => tree.add(transaction, 1L),
+      (tree1, tree2) => tree1.merge(tree2)).flatMap {
+      case (part, tree) =>
+        tree.extract(minCount, x => partitioner.getPartition(x) == part)
+    }.map {
+      case (ranks, count) =>
+        new FreqItemset(ranks.map(i => freqItems(i)).toArray, count)
+    }
   }
 
   /**

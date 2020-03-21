@@ -13,8 +13,8 @@ class FailureDetectorTest extends FunSuite {
 
   test("default settings with flag override") {
     sessionFailureDetector.let("threshold") {
-      val FailureDetector.Param(failDetectorConfig) =
-        FailureDetector.Param.param.default
+      val FailureDetector.Param(failDetectorConfig) = FailureDetector.Param
+        .param.default
       assert(
         FailureDetector(failDetectorConfig, ping, statsReceiver)
           .isInstanceOf[ThresholdFailureDetector])

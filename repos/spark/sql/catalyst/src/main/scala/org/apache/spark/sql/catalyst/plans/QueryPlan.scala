@@ -33,12 +33,10 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     */
   protected def getRelevantConstraints(
       constraints: Set[Expression]): Set[Expression] = {
-    constraints
-      .union(inferAdditionalConstraints(constraints))
-      .union(constructIsNotNullConstraints(constraints))
-      .filter(constraint =>
-        constraint.references.nonEmpty && constraint.references.subsetOf(
-          outputSet))
+    constraints.union(inferAdditionalConstraints(constraints))
+      .union(constructIsNotNullConstraints(constraints)).filter(constraint =>
+        constraint.references.nonEmpty && constraint.references
+          .subsetOf(outputSet))
   }
 
   /**
@@ -50,17 +48,15 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
       constraints: Set[Expression]): Set[Expression] = {
     // Currently we only propagate constraints if the condition consists of equality
     // and ranges. For all other cases, we return an empty set of constraints
-    constraints
-      .map {
-        case EqualTo(l, r)            => Set(IsNotNull(l), IsNotNull(r))
-        case GreaterThan(l, r)        => Set(IsNotNull(l), IsNotNull(r))
-        case GreaterThanOrEqual(l, r) => Set(IsNotNull(l), IsNotNull(r))
-        case LessThan(l, r)           => Set(IsNotNull(l), IsNotNull(r))
-        case LessThanOrEqual(l, r)    => Set(IsNotNull(l), IsNotNull(r))
-        case Not(EqualTo(l, r))       => Set(IsNotNull(l), IsNotNull(r))
-        case _                        => Set.empty[Expression]
-      }
-      .foldLeft(Set.empty[Expression])(_ union _.toSet)
+    constraints.map {
+      case EqualTo(l, r)            => Set(IsNotNull(l), IsNotNull(r))
+      case GreaterThan(l, r)        => Set(IsNotNull(l), IsNotNull(r))
+      case GreaterThanOrEqual(l, r) => Set(IsNotNull(l), IsNotNull(r))
+      case LessThan(l, r)           => Set(IsNotNull(l), IsNotNull(r))
+      case LessThanOrEqual(l, r)    => Set(IsNotNull(l), IsNotNull(r))
+      case Not(EqualTo(l, r))       => Set(IsNotNull(l), IsNotNull(r))
+      case _                        => Set.empty[Expression]
+    }.foldLeft(Set.empty[Expression])(_ union _.toSet)
   }
 
   /**
@@ -219,8 +215,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
   def transformAllExpressions(
       rule: PartialFunction[Expression, Expression]): this.type = {
     transform {
-      case q: QueryPlan[_] =>
-        q.transformExpressions(rule).asInstanceOf[PlanType]
+      case q: QueryPlan[_] => q.transformExpressions(rule)
+          .asInstanceOf[PlanType]
     }.asInstanceOf[this.type]
   }
 
@@ -314,10 +310,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
           ExprId(-1),
           a.qualifiers,
           isGenerated = a.isGenerated)
-        BindReferences.bindReference(
-          cleanedExprId,
-          allAttributes,
-          allowFailures = true)
+        BindReferences
+          .bindReference(cleanedExprId, allAttributes, allowFailures = true)
       case other =>
         BindReferences.bindReference(other, allAttributes, allowFailures = true)
     }

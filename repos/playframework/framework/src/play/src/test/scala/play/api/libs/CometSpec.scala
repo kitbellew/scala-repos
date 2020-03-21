@@ -45,8 +45,8 @@ class CometSpec extends Specification {
   "play comet" should {
 
     "work with enumerator" in {
-      val result = Results.Ok.chunked(
-        Enumerator("foo", "bar", "baz") &> Comet("callback.method"))
+      val result = Results.Ok
+        .chunked(Enumerator("foo", "bar", "baz") &> Comet("callback.method"))
       result.body.contentType must beSome(ContentTypes.HTML)
     }
 

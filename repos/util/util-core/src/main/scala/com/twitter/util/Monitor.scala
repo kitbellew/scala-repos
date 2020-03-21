@@ -47,9 +47,7 @@ trait Monitor {
   def orElse(next: Monitor): Monitor =
     new Monitor {
       def handle(exc: Throwable): Boolean = {
-        self
-          .tryHandle(exc)
-          .rescue { case exc1 => next.tryHandle(exc1) }
+        self.tryHandle(exc).rescue { case exc1 => next.tryHandle(exc1) }
           .isReturn
       }
     }

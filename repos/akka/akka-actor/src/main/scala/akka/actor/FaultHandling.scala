@@ -63,8 +63,8 @@ final case class ChildRestartStats(
         restartTimeWindowStartNanos = now
         now
       } else restartTimeWindowStartNanos
-    val insideWindow =
-      (now - windowStart) <= TimeUnit.MILLISECONDS.toNanos(window)
+    val insideWindow = (now - windowStart) <= TimeUnit.MILLISECONDS
+      .toNanos(window)
     if (insideWindow) {
       maxNrOfRetriesCount = retriesDone
       retriesDone <= retries
@@ -603,8 +603,7 @@ case class OneForOneStrategy(
    */
   private val retriesWindow = (
     SupervisorStrategy.maxNrOfRetriesOption(maxNrOfRetries),
-    SupervisorStrategy
-      .withinTimeRangeOption(withinTimeRange)
+    SupervisorStrategy.withinTimeRangeOption(withinTimeRange)
       .map(_.toMillis.toInt))
 
   def handleChildTerminated(

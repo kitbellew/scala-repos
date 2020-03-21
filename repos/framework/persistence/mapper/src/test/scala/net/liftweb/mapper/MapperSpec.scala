@@ -67,17 +67,13 @@ class MapperSpec extends Specification with BeforeExample {
       ("Mapper for " + provider.name) should {
 
         "schemify" in {
-          val elwood = SampleModel
-            .find(By(SampleModel.firstName, "Elwood"))
+          val elwood = SampleModel.find(By(SampleModel.firstName, "Elwood"))
             .openOrThrowException("Test")
-          val madeline = SampleModel
-            .find(By(SampleModel.firstName, "Madeline"))
+          val madeline = SampleModel.find(By(SampleModel.firstName, "Madeline"))
             .openOrThrowException("Test")
-          val archer = SampleModel
-            .find(By(SampleModel.firstName, "Archer"))
+          val archer = SampleModel.find(By(SampleModel.firstName, "Archer"))
             .openOrThrowException("Test")
-          val notNull = SampleModel
-            .find(By(SampleModel.firstName, "NotNull"))
+          val notNull = SampleModel.find(By(SampleModel.firstName, "NotNull"))
             .openOrThrowException("Test")
 
           elwood.firstName.get must_== "Elwood"
@@ -87,11 +83,10 @@ class MapperSpec extends Specification with BeforeExample {
           archer.moose.get must_== Empty
           notNull.moose.get must_== Full(99L)
 
-          val disabled = SampleModel.find(
-            By(SampleModel.status, SampleStatus.Disabled))
+          val disabled = SampleModel
+            .find(By(SampleModel.status, SampleStatus.Disabled))
 
-          val meow = SampleTag
-            .find(By(SampleTag.tag, "Meow"))
+          val meow = SampleTag.find(By(SampleTag.tag, "Meow"))
             .openOrThrowException("Test")
 
           meow.tag.get must_== "Meow"
@@ -107,13 +102,13 @@ class MapperSpec extends Specification with BeforeExample {
 
         "should use displayNameCalculator for displayName" in {
           val localeCalculator = LiftRules.localeCalculator
-          SampleModel.firstName.displayName must_== "DEFAULT:SampleModel.firstName"
+          SampleModel.firstName
+            .displayName must_== "DEFAULT:SampleModel.firstName"
 
           LiftRules.localeCalculator = (request: Box[HTTPRequest]) =>
-            request
-              .flatMap(_.locale)
-              .openOr(new Locale("xx", "YY"))
-          SampleModel.firstName.displayName must_== "xx_YY:SampleModel.firstName"
+            request.flatMap(_.locale).openOr(new Locale("xx", "YY"))
+          SampleModel.firstName
+            .displayName must_== "xx_YY:SampleModel.firstName"
 
           LiftRules.localeCalculator = localeCalculator
           success
@@ -202,9 +197,7 @@ class MapperSpec extends Specification with BeforeExample {
 
         "enforce NOT NULL" in {
           val nullString: String = null
-          SampleModel.create
-            .firstName("Not Null")
-            .notNull(nullString)
+          SampleModel.create.firstName("Not Null").notNull(nullString)
             .save must throwA[java.sql.SQLException]
         }
 
@@ -281,14 +274,11 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "work with Mixed case" in {
-          val elwood = Mixer
-            .find(By(Mixer.name, "Elwood"))
+          val elwood = Mixer.find(By(Mixer.name, "Elwood"))
             .openOrThrowException("Test")
-          val madeline = Mixer
-            .find(By(Mixer.name, "Madeline"))
+          val madeline = Mixer.find(By(Mixer.name, "Madeline"))
             .openOrThrowException("Test")
-          val archer = Mixer
-            .find(By(Mixer.name, "Archer"))
+          val archer = Mixer.find(By(Mixer.name, "Archer"))
             .openOrThrowException("Test")
 
           elwood.name.get must_== "Elwood"
@@ -301,14 +291,12 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "work with Mixed case update and delete" in {
-          val elwood = Mixer
-            .find(By(Mixer.name, "Elwood"))
+          val elwood = Mixer.find(By(Mixer.name, "Elwood"))
             .openOrThrowException("Test")
           elwood.name.get must_== "Elwood"
           elwood.name("FruitBar").weight(966).save
 
-          val fb = Mixer
-            .find(By(Mixer.weight, 966))
+          val fb = Mixer.find(By(Mixer.weight, 966))
             .openOrThrowException("Test")
 
           fb.name.get must_== "FruitBar"
@@ -322,14 +310,12 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "work with Mixed case update and delete for Dog2" in {
-          val elwood = Dog2
-            .find(By(Dog2.name, "Elwood"))
+          val elwood = Dog2.find(By(Dog2.name, "Elwood"))
             .openOrThrowException("Test")
           elwood.name.get must_== "Elwood"
           elwood.name("FruitBar").actualAge(966).save
 
-          val fb = Dog2
-            .find(By(Dog2.actualAge, 966))
+          val fb = Dog2.find(By(Dog2.actualAge, 966))
             .openOrThrowException("Test")
 
           fb.name.get must_== "FruitBar"
@@ -350,16 +336,10 @@ class MapperSpec extends Specification with BeforeExample {
           val i1 = Thing.create.name("frog").saveMe
           val i2 = Thing.create.name("dog").saveMe
 
-          Thing
-            .find(By(Thing.thing_id, i1.thing_id.get))
-            .openOrThrowException("Test")
-            .name
-            .get must_== "frog"
-          Thing
-            .find(By(Thing.thing_id, i2.thing_id.get))
-            .openOrThrowException("Test")
-            .name
-            .get must_== "dog"
+          Thing.find(By(Thing.thing_id, i1.thing_id.get))
+            .openOrThrowException("Test").name.get must_== "frog"
+          Thing.find(By(Thing.thing_id, i2.thing_id.get))
+            .openOrThrowException("Test").name.get must_== "dog"
         }
 
         "Precache works with OrderBy with Mixed Case" in {
@@ -432,20 +412,17 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "Save flag results in update rather than insert" in {
-          val elwood = SampleModel
-            .find(By(SampleModel.firstName, "Elwood"))
+          val elwood = SampleModel.find(By(SampleModel.firstName, "Elwood"))
             .openOrThrowException("Test")
           elwood.firstName.get must_== "Elwood"
           elwood.firstName("Frog").save
 
-          val frog = SampleModel
-            .find(By(SampleModel.firstName, "Frog"))
+          val frog = SampleModel.find(By(SampleModel.firstName, "Frog"))
             .openOrThrowException("Test")
           frog.firstName.get must_== "Frog"
 
           SampleModel.findAll().length must_== 4
-          SampleModel
-            .find(By(SampleModel.firstName, "Elwood"))
+          SampleModel.find(By(SampleModel.firstName, "Elwood"))
             .isEmpty must_== true
         }
 

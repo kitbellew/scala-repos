@@ -393,11 +393,11 @@ trait Row extends Serializable {
               return false
             }
           case f1: Float if java.lang.Float.isNaN(f1) =>
-            if (!o2.isInstanceOf[Float] || !java.lang.Float.isNaN(
-                  o2.asInstanceOf[Float])) { return false }
+            if (!o2.isInstanceOf[Float] || !java.lang.Float
+                  .isNaN(o2.asInstanceOf[Float])) { return false }
           case d1: Double if java.lang.Double.isNaN(d1) =>
-            if (!o2.isInstanceOf[Double] || !java.lang.Double.isNaN(
-                  o2.asInstanceOf[Double])) { return false }
+            if (!o2.isInstanceOf[Double] || !java.lang.Double
+                  .isNaN(o2.asInstanceOf[Double])) { return false }
           case d1: java.math.BigDecimal
               if o2.isInstanceOf[java.math.BigDecimal] =>
             if (d1.compareTo(o2.asInstanceOf[java.math.BigDecimal]) != 0) {

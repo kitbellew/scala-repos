@@ -48,9 +48,8 @@ object FailureAccrualFactory {
     .equalJittered(5.seconds, 300.seconds)
 
   private[finagle] val defaultPolicy = () =>
-    FailureAccrualPolicy.consecutiveFailures(
-      defaultConsecutiveFailures,
-      jitteredBackoff)
+    FailureAccrualPolicy
+      .consecutiveFailures(defaultConsecutiveFailures, jitteredBackoff)
 
   /**
     * Add jitter in `markDeadFor` to reduce correlation.
@@ -84,8 +83,8 @@ object FailureAccrualFactory {
     case class Replaced(factory: Timer => ServiceFactoryWrapper) extends Param
     case object Disabled extends Param
 
-    implicit val param: Stack.Param[Param] = Stack.Param(
-      Param.Configured(defaultPolicy))
+    implicit val param: Stack.Param[Param] = Stack
+      .Param(Param.Configured(defaultPolicy))
   }
 
   // -Implementation notes-
@@ -187,8 +186,7 @@ object FailureAccrualFactory {
             val classifier = params[param.ResponseClassifier].responseClassifier
             val endpoint = params[Transporter.EndpointAddr].addr
             wrapper(statsReceiver, p(), label, logger, endpoint, classifier)(
-              timer)
-              .andThen(next)
+              timer).andThen(next)
 
           case Param.Replaced(f) => f(params[param.Timer].timer).andThen(next)
 
@@ -358,7 +356,8 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
       if (logger.isLoggable(Level.DEBUG))
         logger.log(
           Level.DEBUG,
-          s"""FailureAccrualFactory marking connection to "$label" as dead. Remote Address: ${endpoint.toString}""")
+          s"""FailureAccrualFactory marking connection to "$label" as dead. Remote Address: ${endpoint
+            .toString}""")
       removedForCounter.incr(duration.inMilliseconds.toInt)
 
       didMarkDead()
@@ -381,42 +380,40 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
     }
 
   def apply(conn: ClientConnection) = {
-    underlying(conn)
-      .map { service =>
-        // N.B. the reason we can't simply filter the service factory is so that
-        // we can override the session status to reflect the broader endpoint status.
-        new Service[Req, Rep] {
-          def apply(request: Req): Future[Rep] = {
-            // If service has just been revived, accept no further requests.
-            // Note: Another request may have come in before state transitions to
-            // ProbeClosed, so > 1 requests may be processing while in the
-            // ProbeClosed state. The result of first to complete will determine
-            // whether the factory transitions to Alive (successful) or Dead
-            // (unsuccessful).
-            state match {
-              case ProbeOpen =>
-                probesCounter.incr()
-                svcFacSelf.synchronized {
-                  state match {
-                    case ProbeOpen => state = ProbeClosed
-                    case _         =>
-                  }
+    underlying(conn).map { service =>
+      // N.B. the reason we can't simply filter the service factory is so that
+      // we can override the session status to reflect the broader endpoint status.
+      new Service[Req, Rep] {
+        def apply(request: Req): Future[Rep] = {
+          // If service has just been revived, accept no further requests.
+          // Note: Another request may have come in before state transitions to
+          // ProbeClosed, so > 1 requests may be processing while in the
+          // ProbeClosed state. The result of first to complete will determine
+          // whether the factory transitions to Alive (successful) or Dead
+          // (unsuccessful).
+          state match {
+            case ProbeOpen =>
+              probesCounter.incr()
+              svcFacSelf.synchronized {
+                state match {
+                  case ProbeOpen => state = ProbeClosed
+                  case _         =>
                 }
-              case _ =>
-            }
-
-            service(request).respond { rep =>
-              if (isSuccess(ReqRep(request, rep))) didSucceed() else didFail()
-            }
+              }
+            case _ =>
           }
 
-          override def close(deadline: Time): Future[Unit] =
-            service.close(deadline)
-          override def status: Status =
-            Status.worst(service.status, FailureAccrualFactory.this.status)
+          service(request).respond { rep =>
+            if (isSuccess(ReqRep(request, rep))) didSucceed() else didFail()
+          }
         }
+
+        override def close(deadline: Time): Future[Unit] =
+          service.close(deadline)
+        override def status: Status =
+          Status.worst(service.status, FailureAccrualFactory.this.status)
       }
-      .onFailure(onServiceAcquisitionFailure)
+    }.onFailure(onServiceAcquisitionFailure)
   }
 
   override def status: Status =

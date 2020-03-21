@@ -40,12 +40,9 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       file: PsiFile,
       title: String)(action: IntroduceFieldContext[T] => Unit) {
     try {
-      val classes = ScalaPsiUtil
-        .getParents(elem, file)
-        .collect {
-          case t: ScTemplateDefinition if isSuitableClass(elem, t) => t
-        }
-        .toArray[PsiClass]
+      val classes = ScalaPsiUtil.getParents(elem, file).collect {
+        case t: ScTemplateDefinition if isSuitableClass(elem, t) => t
+      }.toArray[PsiClass]
       classes.size match {
         case 0 =>
         case 1 =>
@@ -70,18 +67,16 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
               false
             }
           }
-          NavigationUtil
-            .getPsiElementPopup(
-              classes,
-              new PsiClassListCellRenderer() {
-                override def getElementText(element: PsiClass): String =
-                  super.getElementText(element).replace("$", "")
-              },
-              title,
-              processor,
-              selection
-            )
-            .showInBestPositionFor(editor)
+          NavigationUtil.getPsiElementPopup(
+            classes,
+            new PsiClassListCellRenderer() {
+              override def getElementText(element: PsiClass): String =
+                super.getElementText(element).replace("$", "")
+            },
+            title,
+            processor,
+            selection
+          ).showInBestPositionFor(editor)
       }
     } catch { case _: IntroduceException => return }
   }
@@ -90,12 +85,10 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       expr: ScExpression,
       occurrences: Array[TextRange],
       aClass: ScTemplateDefinition): PsiElement = {
-    val commonParent = ScalaRefactoringUtil.commonParent(
-      aClass.getContainingFile,
-      occurrences: _*)
+    val commonParent = ScalaRefactoringUtil
+      .commonParent(aClass.getContainingFile, occurrences: _*)
     val firstOccOffset = occurrences.map(_.getStartOffset).min
-    val anchor = ScalaRefactoringUtil
-      .statementsAndMembersInClass(aClass)
+    val anchor = ScalaRefactoringUtil.statementsAndMembersInClass(aClass)
       .find(_.getTextRange.getEndOffset >= firstOccOffset)
     anchor.getOrElse {
       if (PsiTreeUtil.isAncestor(
@@ -119,8 +112,7 @@ object ScalaIntroduceFieldHandlerBase {
       expr: ScExpression,
       aClass: ScTemplateDefinition): Boolean = {
     val stmtsAndMmbrs = ScalaRefactoringUtil.statementsAndMembersInClass(aClass)
-    (Iterator(expr) ++ expr.parents)
-      .find(stmtsAndMmbrs.contains(_))
+    (Iterator(expr) ++ expr.parents).find(stmtsAndMmbrs.contains(_))
       .forall(ScalaRefactoringUtil.checkForwardReferences(expr, _))
   }
 
@@ -132,8 +124,8 @@ object ScalaIntroduceFieldHandlerBase {
     val parExpr: ScExpression = ScalaRefactoringUtil.findParentExpr(
       ScalaRefactoringUtil.commonParent(ifc.file, occurrences: _*))
     val container = ScalaRefactoringUtil.container(parExpr, ifc.file)
-    val stmtsAndMmbrs = ScalaRefactoringUtil.statementsAndMembersInClass(
-      ifc.aClass)
+    val stmtsAndMmbrs = ScalaRefactoringUtil
+      .statementsAndMembersInClass(ifc.aClass)
     val containerIsLocal =
       (Iterator(container) ++ new ParentsIterator(container))
         .exists(stmtsAndMmbrs.contains(_))

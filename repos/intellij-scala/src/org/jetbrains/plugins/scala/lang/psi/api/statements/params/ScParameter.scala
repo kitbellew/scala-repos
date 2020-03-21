@@ -90,12 +90,10 @@ trait ScParameter
     if (!isRepeatedParameter) return getType(ctx)
     getType(ctx) match {
       case f @ Success(tp: ScType, elem) =>
-        val seq = ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(
-            "scala.collection.Seq",
-            getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE)
+        val seq = ScalaPsiManager.instance(getProject).getCachedClass(
+          "scala.collection.Seq",
+          getResolveScope,
+          ScalaPsiManager.ClassCategory.TYPE)
         if (seq != null) {
           Success(ScParameterizedType(ScType.designator(seq), Seq(tp)), elem)
         } else f
@@ -104,10 +102,8 @@ trait ScParameter
   }
 
   def getDeclarationScope =
-    PsiTreeUtil.getParentOfType(
-      this,
-      classOf[ScParameterOwner],
-      classOf[ScFunctionExpr])
+    PsiTreeUtil
+      .getParentOfType(this, classOf[ScParameterOwner], classOf[ScFunctionExpr])
 
   def deprecatedName: Option[String]
 
@@ -240,10 +236,8 @@ trait ScParameter
       getContainingFile match {
         case file: ScalaFile =>
           if (file.isCompiled) {
-            val containingMember = PsiTreeUtil.getContextOfType(
-              this,
-              true,
-              classOf[ScMember])
+            val containingMember = PsiTreeUtil
+              .getContextOfType(this, true, classOf[ScMember])
             if (containingMember == null) res
             else {
               def extractFromParameterOwner(
@@ -281,11 +275,11 @@ trait ScParameter
             p.getParent match {
               case fun: ScFunction => fun.superMethod match {
                   case Some(method: ScFunction) =>
-                    val clauses: Seq[ScParameterClause] =
-                      method.paramClauses.clauses
+                    val clauses: Seq[ScParameterClause] = method.paramClauses
+                      .clauses
                     if (j >= clauses.length) return None
-                    val parameters: Seq[ScParameter] =
-                      clauses.apply(j).parameters
+                    val parameters: Seq[ScParameter] = clauses.apply(j)
+                      .parameters
                     if (i >= parameters.length) return None
                     Some(parameters.apply(i))
                   case _ => None

@@ -52,16 +52,15 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
     new FlatMapOperation[T, V] {
       def apply(t: T) =
         self(t).flatMap { tr =>
-          val next: Seq[Future[TraversableOnce[V]]] = tr.map {
-            fmo.apply(_)
-          }.toIndexedSeq
+          val next: Seq[Future[TraversableOnce[V]]] = tr.map { fmo.apply(_) }
+            .toIndexedSeq
           Future.collect(next).map(_.flatten) // flatten the inner
         }
 
       override def maybeFlush = {
         self.maybeFlush.flatMap { x: TraversableOnce[U] =>
-          val z: IndexedSeq[Future[TraversableOnce[V]]] =
-            x.map(fmo.apply(_)).toIndexedSeq
+          val z: IndexedSeq[Future[TraversableOnce[V]]] = x.map(fmo.apply(_))
+            .toIndexedSeq
           val w: Future[Seq[V]] = Future.collect(z).map(_.flatten)
           for {
             ws <- w

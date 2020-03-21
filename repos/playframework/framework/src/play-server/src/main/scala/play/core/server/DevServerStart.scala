@@ -67,8 +67,8 @@ object DevServerStart {
         val process = new RealServerProcess(args = Seq.empty)
         val path: File = buildLink.projectPath
 
-        val dirAndDevSettings: Map[String, String] =
-          ServerConfig.rootDirConfig(path) ++ buildLink.settings.asScala.toMap
+        val dirAndDevSettings: Map[String, String] = ServerConfig
+          .rootDirConfig(path) ++ buildLink.settings.asScala.toMap
 
         // Use plain Java call here in case of scala classloader mess
         {
@@ -159,8 +159,7 @@ object DevServerStart {
                                     line: Option[Int]) = {
                                   Option(buildLink.findSource(
                                     className,
-                                    line
-                                      .map(_.asInstanceOf[java.lang.Integer])
+                                    line.map(_.asInstanceOf[java.lang.Integer])
                                       .orNull)).flatMap {
                                     case Array(file: java.io.File, null) =>
                                       Some((file, None))
@@ -223,10 +222,8 @@ object DevServerStart {
 
           override def handleWebCommand(
               request: play.api.mvc.RequestHeader): Option[Result] = {
-            buildDocHandler
-              .maybeHandleDocRequest(request)
-              .asInstanceOf[Option[Result]]
-              .orElse(currentWebCommands.flatMap(
+            buildDocHandler.maybeHandleDocRequest(request)
+              .asInstanceOf[Option[Result]].orElse(currentWebCommands.flatMap(
                 _.handleWebCommand(request, buildLink, path)))
 
           }
@@ -267,9 +264,8 @@ object DevServerStart {
             Future.successful(())
           }
         )
-        val serverProvider = ServerProvider.fromConfiguration(
-          classLoader,
-          serverConfig.configuration)
+        val serverProvider = ServerProvider
+          .fromConfiguration(classLoader, serverConfig.configuration)
         serverProvider.createServer(serverContext)
       } catch { case e: ExceptionInInitializerError => throw e.getCause }
 

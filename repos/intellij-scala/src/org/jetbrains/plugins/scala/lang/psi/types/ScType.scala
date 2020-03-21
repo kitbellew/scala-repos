@@ -213,9 +213,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def typeParamsDepth(typeParams: Array[TypeParameter]): Int = {
     typeParams.map {
       case typeParam =>
-        val boundsDepth = typeParam
-          .lowerType()
-          .typeDepth
+        val boundsDepth = typeParam.lowerType().typeDepth
           .max(typeParam.upperType().typeDepth)
         if (typeParam.typeParams.nonEmpty) {
           (typeParamsDepth(typeParam.typeParams.toArray) + 1).max(boundsDepth)
@@ -241,8 +239,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         val returnTypeDepth = f.returnType.getOrAny.typeDepth
         typeParametersOwnerDepth(f, returnTypeDepth)
       case ta: ScTypeAliasDefinition =>
-        val aliasedDepth =
-          ta.aliasedType(TypingContext.empty).getOrAny.typeDepth
+        val aliasedDepth = ta.aliasedType(TypingContext.empty).getOrAny
+          .typeDepth
         typeParametersOwnerDepth(ta, aliasedDepth)
       case ta: ScTypeAliasDeclaration =>
         val boundsDepth = ta.lowerBound.getOrNothing.typeDepth
@@ -313,8 +311,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           case None         => None
         }
       case std @ StdType(_, _) =>
-        val asClass = std.asClass(
-          project.getOrElse(DecompilerUtil.obtainProject))
+        val asClass = std
+          .asClass(project.getOrElse(DecompilerUtil.obtainProject))
         if (asClass.isEmpty) return None
         Some((asClass.get, ScSubstitutor.empty))
       case _ => None
@@ -390,8 +388,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       case proj @ ScProjectionType(_, elem, _) => elem match {
           case o: ScObject => None
           case p: ScParameter if p.isStable =>
-            p.getRealParameterType(TypingContext.empty)
-              .toOption
+            p.getRealParameterType(TypingContext.empty).toOption
               .map(proj.actualSubst.subst)
           case t: ScTypedDefinition if t.isStable =>
             t.getType(TypingContext.empty).toOption.map(proj.actualSubst.subst)
@@ -446,9 +443,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
     tp match {
       case proj @ ScProjectionType(p, elem, _) => proj.actualElement match {
           case t: ScTypeAliasDefinition if t.typeParameters.isEmpty =>
-            t.aliasedType(TypingContext.empty)
-              .flatMap(t =>
-                expandAliases(proj.actualSubst.subst(t), visited + tp))
+            t.aliasedType(TypingContext.empty).flatMap(t =>
+              expandAliases(proj.actualSubst.subst(t), visited + tp))
           case t: ScTypeAliasDeclaration if t.typeParameters.isEmpty =>
             t.upperBound.flatMap(upper =>
               expandAliases(proj.actualSubst.subst(upper), visited + tp))
@@ -520,9 +516,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def designator(element: PsiNamedElement): ScType = {
     element match {
       case td: ScClass =>
-        StdType.QualNameToType.getOrElse(
-          td.qualifiedName,
-          new ScDesignatorType(element))
+        StdType.QualNameToType
+          .getOrElse(td.qualifiedName, new ScDesignatorType(element))
       case _ =>
         val clazzOpt = element match {
           case p: ScClassParameter => Option(p.containingClass)
@@ -557,10 +552,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         e.getRealParameterType(TypingContext.empty).toOption
       case e: PsiMethod if e.isConstructor => None
       case e: PsiMethod =>
-        create(
-          e.getReturnType,
-          named.getProject,
-          named.getResolveScope).toOption
+        create(e.getReturnType, named.getProject, named.getResolveScope)
+          .toOption
       case e: PsiVariable =>
         create(e.getType, named.getProject, named.getResolveScope).toOption
       case _ => None

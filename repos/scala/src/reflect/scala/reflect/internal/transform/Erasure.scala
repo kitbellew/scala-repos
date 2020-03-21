@@ -25,8 +25,8 @@ trait Erasure {
          * owners (e.g. when computing lubs, <root> is used). All packageClass symbols have `isJavaDefined == true`.
          */
         case TypeRef(_, sym, _)
-            if sym.isAbstractType && (!sym.owner.isJavaDefined || sym.hasFlag(
-              Flags.EXISTENTIAL))            => tp
+            if sym.isAbstractType && (!sym.owner.isJavaDefined || sym
+              .hasFlag(Flags.EXISTENTIAL))   => tp
         case ExistentialType(tparams, restp) => genericCore(restp)
         case _                               => NoType
       }

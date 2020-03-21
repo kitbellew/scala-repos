@@ -34,12 +34,11 @@ case class ProducePartitionStatus(
   var acksPending = false
 
   override def toString =
-    "[acksPending: %b, error: %d, startOffset: %d, requiredOffset: %d]"
-      .format(
-        acksPending,
-        responseStatus.errorCode,
-        responseStatus.baseOffset,
-        requiredOffset)
+    "[acksPending: %b, error: %d, startOffset: %d, requiredOffset: %d]".format(
+      acksPending,
+      responseStatus.errorCode,
+      responseStatus.baseOffset,
+      requiredOffset)
 }
 
 /**
@@ -92,14 +91,13 @@ class DelayedProduce(
     // check for each partition if it still has pending acks
     produceMetadata.produceStatus.foreach {
       case (topicAndPartition, status) =>
-        trace(
-          "Checking produce satisfaction for %s, current status %s"
-            .format(topicAndPartition, status))
+        trace("Checking produce satisfaction for %s, current status %s".format(
+          topicAndPartition,
+          status))
         // skip those partitions that have already been satisfied
         if (status.acksPending) {
-          val partitionOpt = replicaManager.getPartition(
-            topicAndPartition.topic,
-            topicAndPartition.partition)
+          val partitionOpt = replicaManager
+            .getPartition(topicAndPartition.topic, topicAndPartition.partition)
           val (hasEnough, errorCode) = partitionOpt match {
             case Some(partition) =>
               partition.checkEnoughReplicasReachOffset(status.requiredOffset)
@@ -138,8 +136,8 @@ class DelayedProduce(
     * Upon completion, return the current response status along with the error code per partition
     */
   override def onComplete() {
-    val responseStatus = produceMetadata.produceStatus.mapValues(status =>
-      status.responseStatus)
+    val responseStatus = produceMetadata.produceStatus
+      .mapValues(status => status.responseStatus)
     responseCallback(responseStatus)
   }
 }

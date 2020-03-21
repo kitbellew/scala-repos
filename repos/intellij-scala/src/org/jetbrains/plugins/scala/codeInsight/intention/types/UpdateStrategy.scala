@@ -97,9 +97,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
   }
 
   def removeFromPattern(pattern: ScTypedPattern) {
-    val newPattern = ScalaPsiElementFactory.createPatternFromText(
-      pattern.name,
-      pattern.getManager)
+    val newPattern = ScalaPsiElementFactory
+      .createPatternFromText(pattern.name, pattern.getManager)
     pattern.replace(newPattern)
   }
 
@@ -130,16 +129,12 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
   }
 
   def removeFromParameter(param: ScParameter) {
-    val newParam = ScalaPsiElementFactory.createParameterFromText(
-      param.name,
-      param.getManager)
-    val newClause = ScalaPsiElementFactory.createClauseForFunctionExprFromText(
-      newParam.getText,
-      param.getManager)
-    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
-      param,
-      classOf[ScFunctionExpr],
-      false)
+    val newParam = ScalaPsiElementFactory
+      .createParameterFromText(param.name, param.getManager)
+    val newClause = ScalaPsiElementFactory
+      .createClauseForFunctionExprFromText(newParam.getText, param.getManager)
+    val expr: ScFunctionExpr = PsiTreeUtil
+      .getParentOfType(param, classOf[ScFunctionExpr], false)
     if (expr != null) {
       val firstClause = expr.params.clauses.head
       val fcText = firstClause.getText
@@ -154,8 +149,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
       val parent = anchor.getParent
       val added = parent.addAfter(annotation, anchor)
       val colon = ScalaPsiElementFactory.createColon(context.getManager)
-      val whitespace = ScalaPsiElementFactory.createWhitespace(
-        context.getManager)
+      val whitespace = ScalaPsiElementFactory
+        .createWhitespace(context.getManager)
       parent.addAfter(whitespace, anchor)
       parent.addAfter(colon, anchor)
       added
@@ -184,22 +179,18 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
             }
         }
       case someOrNone
-          if Set("_root_.scala.Some", "_root_.scala.None").exists(
-            someOrNone.canonicalText.startsWith) =>
-        val replacement = BaseTypes
-          .get(someOrNone)
+          if Set("_root_.scala.Some", "_root_.scala.None")
+            .exists(someOrNone.canonicalText.startsWith) =>
+        val replacement = BaseTypes.get(someOrNone)
           .find(_.canonicalText.startsWith("_root_.scala.Option"))
           .getOrElse(someOrNone)
         Seq(typeElemFromType(replacement))
       case tp => ScType.extractClass(tp, Option(context.getProject)) match {
           case Some(sc: ScTypeDefinition)
               if (sc +: sc.supers).exists(isSealed) =>
-            val sealedType = BaseTypes
-              .get(tp)
-              .find(
-                ScType
-                  .extractClass(_, Option(context.getProject))
-                  .exists(isSealed))
+            val sealedType = BaseTypes.get(tp)
+              .find(ScType.extractClass(_, Option(context.getProject)).exists(
+                isSealed))
             (sealedType.toSeq :+ tp).map(typeElemFromType)
           case Some(sc: ScTypeDefinition)
               if sc.getTruncedQualifiedName.startsWith("scala.collection") =>
@@ -214,9 +205,7 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
               "_root_.scala.collection.mutable.Map[",
               "_root_.scala.collection.immutable.Map["
             )
-            val baseTypes = BaseTypes
-              .get(tp)
-              .map(_.canonicalText)
+            val baseTypes = BaseTypes.get(tp).map(_.canonicalText)
               .filter(t => goodTypes.exists(t.startsWith))
             (tp.canonicalText +: baseTypes).map(typeElemfromText)
           case _ => Seq(typeElemFromType(tp))

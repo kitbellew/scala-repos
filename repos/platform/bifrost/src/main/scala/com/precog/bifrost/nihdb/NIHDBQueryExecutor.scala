@@ -151,14 +151,14 @@ trait NIHDBQueryExecutorComponent {
 
       val defaultTimeout = yggConfig.maxEvalDuration
 
-      protected lazy val queryLogger = LoggerFactory.getLogger(
-        "com.precog.bifrost.ShardQueryExecutor")
+      protected lazy val queryLogger = LoggerFactory
+        .getLogger("com.precog.bifrost.ShardQueryExecutor")
 
       private val threadPooling = new PerAccountThreadPooling(extAccountFinder)
 
       implicit val actorSystem = ActorSystem("nihdbExecutorActorSystem")
-      implicit val executionContext = ExecutionContext.defaultExecutionContext(
-        actorSystem)
+      implicit val executionContext = ExecutionContext
+        .defaultExecutionContext(actorSystem)
       implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
       val jobActorSystem = ActorSystem("jobPollingActorSystem")
@@ -168,8 +168,8 @@ trait NIHDBQueryExecutorComponent {
           VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
           VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
       }
-      val masterChef = actorSystem.actorOf(
-        Props[Chef].withRouter(RoundRobinRouter(chefs)))
+      val masterChef = actorSystem
+        .actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
       //val accessControl = extApiKeyFinder
       val storageTimeout = yggConfig.storageTimeout
@@ -186,8 +186,8 @@ trait NIHDBQueryExecutorComponent {
         yggConfig.cookThreshold,
         storageTimeout)
 
-      private val projectionsActor = actorSystem.actorOf(Props(
-        new PathRoutingActor(
+      private val projectionsActor = actorSystem
+        .actorOf(Props(new PathRoutingActor(
           yggConfig.dataDir,
           storageTimeout.duration,
           yggConfig.quiescenceTimeout,
@@ -265,18 +265,14 @@ trait NIHDBQueryExecutorComponent {
           _ <- Stoppable.stop(Stoppable.fromFuture(
             gracefulStop(scheduleActor, yggConfig.schedulingTimeout.duration)(
               actorSystem)))
-          _ <- Stoppable.stop(
-            ingestSystem
-              .map(_.stoppable)
-              .getOrElse(Stoppable.fromFuture(Future(()))))
-          _ <- IngestSystem.actorStop(
-            yggConfig,
-            projectionsActor,
-            "projections")
+          _ <- Stoppable
+            .stop(ingestSystem.map(_.stoppable).getOrElse(Stoppable.fromFuture(
+              Future(()))))
+          _ <- IngestSystem
+            .actorStop(yggConfig, projectionsActor, "projections")
           _ <- IngestSystem.actorStop(yggConfig, masterChef, "masterChef")
           _ <- Stoppable.stop(scheduleStorageStoppable)
-          _ <- chefs
-            .map(IngestSystem.actorStop(yggConfig, _, "masterChef"))
+          _ <- chefs.map(IngestSystem.actorStop(yggConfig, _, "masterChef"))
             .sequence
         } yield {
           queryLogger.info("Actor ecossytem shutdown complete.")

@@ -63,8 +63,7 @@ object PhysicalOperation extends PredicateHelper {
     plan match {
       case Project(fields, child) if fields.forall(_.deterministic) =>
         val (_, filters, other, aliases) = collectProjectsAndFilters(child)
-        val substitutedFields = fields
-          .map(substitute(aliases))
+        val substitutedFields = fields.map(substitute(aliases))
           .asInstanceOf[Seq[NamedExpression]]
         (
           Some(substitutedFields),
@@ -92,19 +91,13 @@ object PhysicalOperation extends PredicateHelper {
       expr: Expression): Expression = {
     expr.transform {
       case a @ Alias(ref: AttributeReference, name) =>
-        aliases
-          .get(ref)
-          .map(
-            Alias(_, name)(a.exprId, a.qualifiers, isGenerated = a.isGenerated))
+        aliases.get(ref).map(
+          Alias(_, name)(a.exprId, a.qualifiers, isGenerated = a.isGenerated))
           .getOrElse(a)
 
       case a: AttributeReference =>
-        aliases
-          .get(a)
-          .map(Alias(_, a.name)(
-            a.exprId,
-            a.qualifiers,
-            isGenerated = a.isGenerated))
+        aliases.get(a).map(
+          Alias(_, a.name)(a.exprId, a.qualifiers, isGenerated = a.isGenerated))
           .getOrElse(a)
     }
   }
@@ -133,8 +126,7 @@ object ExtractEquiJoinKeys extends Logging with PredicateHelper {
         logDebug(s"Considering join on: $condition")
         // Find equi-join predicates that can be evaluated before the join, and thus can be used
         // as join keys.
-        val predicates = condition
-          .map(splitConjunctivePredicates)
+        val predicates = condition.map(splitConjunctivePredicates)
           .getOrElse(Nil)
         val joinKeys = predicates.flatMap {
           case EqualTo(l, r) if canEvaluate(l, left) && canEvaluate(r, right) =>

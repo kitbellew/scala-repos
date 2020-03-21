@@ -544,8 +544,8 @@ class SQLContext private[sql] (
     val className = beanClass.getName
     val rowRdd = rdd.mapPartitions { iter =>
       // BeanInfo is not serializable so we must rediscover it remotely for each partition.
-      val localBeanInfo = Introspector.getBeanInfo(
-        Utils.classForName(className))
+      val localBeanInfo = Introspector
+        .getBeanInfo(Utils.classForName(className))
       SQLContext.beansToRows(iter, localBeanInfo, attributeSeq)
     }
     Dataset.newDataFrame(this, LogicalRDD(attributeSeq, rowRdd)(this))
@@ -869,10 +869,9 @@ class SQLContext private[sql] (
     * @since 1.3.0
     */
   def tableNames(): Array[String] = {
-    sessionState.catalog
-      .getTables(None)
-      .map { case (tableName, _) => tableName }
-      .toArray
+    sessionState.catalog.getTables(None).map {
+      case (tableName, _) => tableName
+    }.toArray
   }
 
   /**
@@ -882,16 +881,14 @@ class SQLContext private[sql] (
     * @since 1.3.0
     */
   def tableNames(databaseName: String): Array[String] = {
-    sessionState.catalog
-      .getTables(Some(databaseName))
-      .map { case (tableName, _) => tableName }
-      .toArray
+    sessionState.catalog.getTables(Some(databaseName)).map {
+      case (tableName, _) => tableName
+    }.toArray
   }
 
   @transient
-  protected[sql] lazy val emptyResult = sparkContext.parallelize(
-    Seq.empty[InternalRow],
-    1)
+  protected[sql] lazy val emptyResult = sparkContext
+    .parallelize(Seq.empty[InternalRow], 1)
 
   /**
     * Parses the data type in our internal string representation. The data type string should
@@ -1048,17 +1045,16 @@ object SQLContext {
       beanInfo: BeanInfo,
       attrs: Seq[AttributeReference]): Iterator[InternalRow] = {
     val extractors = beanInfo.getPropertyDescriptors
-      .filterNot(_.getName == "class")
-      .map(_.getReadMethod)
+      .filterNot(_.getName == "class").map(_.getReadMethod)
     val methodsToConverts = extractors.zip(attrs).map {
       case (e, attr) =>
         (e, CatalystTypeConverters.createToCatalystConverter(attr.dataType))
     }
     data.map { element =>
       new GenericInternalRow(
-        methodsToConverts
-          .map { case (e, convert) => convert(e.invoke(element)) }
-          .toArray[Any]): InternalRow
+        methodsToConverts.map {
+          case (e, convert) => convert(e.invoke(element))
+        }.toArray[Any]): InternalRow
     }
   }
 

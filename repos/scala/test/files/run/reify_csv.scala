@@ -13,11 +13,9 @@ object Test extends App {
     |       pickler;   6;  serialize symbol tables
     |     refchecks;   7;  reference/override checking, translate nested objects
     |  selectiveanf;   8;
-    |      liftcode;   9;  reify trees""".stripMargin
-      .split("\n")
-      .map { _.trim() }
-      .drop(1)
-      .toList
+    |      liftcode;   9;  reify trees""".stripMargin.split("\n").map {
+      _.trim()
+    }.drop(1).toList
 
   val fields = csv.head.split(";").map { _.trim() }.toList
   println(fields)

@@ -72,20 +72,17 @@ trait IntegrationTest {
         root: AbstractTreeNode[_],
         currentParentName: String): Boolean = {
       root.getValue.isInstanceOf[TestStructureViewElement] && {
-        val presentation =
-          root.getValue.asInstanceOf[TreeElement].getPresentation
-        presentation.isInstanceOf[
-          TestItemRepresentation] && presentation.getPresentableText == nodeName &&
-        presentation
-          .asInstanceOf[TestItemRepresentation]
+        val presentation = root.getValue.asInstanceOf[TreeElement]
+          .getPresentation
+        presentation.isInstanceOf[TestItemRepresentation] && presentation
+          .getPresentableText == nodeName &&
+        presentation.asInstanceOf[TestItemRepresentation]
           .testStatus == status &&
         parentName.map(currentParentName == _).getOrElse(true)
       } ||
       root.getChildren.toList.exists(helper(
         _,
-        root.getValue
-          .asInstanceOf[TreeElement]
-          .getPresentation
+        root.getValue.asInstanceOf[TreeElement].getPresentation
           .getPresentableText))
     }
 
@@ -120,7 +117,8 @@ trait IntegrationTest {
       generatedName: String = ""): Boolean = {
     val config = configAndSettings.getConfiguration
     val testConfig = config.asInstanceOf[AbstractTestRunConfiguration]
-    testConfig.testKind == TestKind.ALL_IN_PACKAGE && testConfig.getTestPackagePath == packageName
+    testConfig.testKind == TestKind.ALL_IN_PACKAGE && testConfig
+      .getTestPackagePath == packageName
   }
 
   protected def checkConfig(
@@ -170,9 +168,8 @@ trait IntegrationTest {
         case 0 => List(_ => true) //got an empty list of names as initial input
         case 1 =>
           ((node: AbstractTestProxy) =>
-            node.getName == names.head && (
-              node.isLeaf || allowTail
-            )) :: acc //last element must be leaf
+            node.getName == names.head && (node
+              .isLeaf || allowTail)) :: acc //last element must be leaf
         case _ =>
           buildConditions(
             names.tail,
@@ -196,9 +193,7 @@ trait IntegrationTest {
       else
         children.toList
           .map(getPathFromResultTree(_, conditions.tail, allowTail))
-          .find(_.isDefined)
-          .flatten
-          .map(tail => root :: tail)
+          .find(_.isDefined).flatten.map(tail => root :: tail)
     } else { None }
   }
 
@@ -313,9 +308,8 @@ trait IntegrationTest {
     assert(testPathOpt.isDefined)
     val test = testPathOpt.get.last
     val project = getProject
-    val location = test.getLocation(
-      project,
-      GlobalSearchScope.projectScope(project))
+    val location = test
+      .getLocation(project, GlobalSearchScope.projectScope(project))
     val psiElement = location.getPsiElement
     val psiFile = psiElement.getContainingFile
     val textRange = psiElement.getTextRange

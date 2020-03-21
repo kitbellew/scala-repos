@@ -17,15 +17,10 @@ object TestOptions {
   def karafOptions(
       useDeployFolder: Boolean = false,
       extractInTargetFolder: Boolean = true): PaxOption = {
-    val kdc = karafDistributionConfiguration
-      .frameworkUrl(
-        maven
-          .groupId("org.apache.karaf")
-          .artifactId("apache-karaf")
-          .`type`("zip")
-          .version(System.getProperty("karaf.version")))
-      .karafVersion(System.getProperty("karaf.version"))
-      .name("Apache Karaf")
+    val kdc = karafDistributionConfiguration.frameworkUrl(
+      maven.groupId("org.apache.karaf").artifactId("apache-karaf").`type`("zip")
+        .version(System.getProperty("karaf.version")))
+      .karafVersion(System.getProperty("karaf.version")).name("Apache Karaf")
       .useDeployFolder(useDeployFolder)
 
     new DefaultCompositeOption(
@@ -43,9 +38,8 @@ object TestOptions {
       mavenBundle(
         "com.typesafe.akka",
         "akka-testkit_%s".format(scalaDepVersion)).versionAsInProject,
-      mavenBundle(
-        "org.scalatest",
-        "scalatest_%s".format(scalaDepVersion)).versionAsInProject,
+      mavenBundle("org.scalatest", "scalatest_%s".format(scalaDepVersion))
+        .versionAsInProject,
       junitBundles)
   }
 
@@ -72,12 +66,9 @@ object TestOptions {
 
   def akkaFeature(feature: String): PaxOption = {
     scanFeatures(
-      maven
-        .groupId("com.typesafe.akka.akka-sample-osgi-dining-hakkers")
-        .artifactId("akka-sample-osgi-dining-hakkers")
-        .`type`("xml")
-        .classifier("features")
-        .version(System.getProperty("project.version")),
+      maven.groupId("com.typesafe.akka.akka-sample-osgi-dining-hakkers")
+        .artifactId("akka-sample-osgi-dining-hakkers").`type`("xml")
+        .classifier("features").version(System.getProperty("project.version")),
       feature
     )
   }

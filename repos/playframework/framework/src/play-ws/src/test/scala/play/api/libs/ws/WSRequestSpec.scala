@@ -16,15 +16,11 @@ class WSRequestSpec extends Specification {
 
       ws.url("http://foo.com").uri.toString must equalTo("http://foo.com")
 
-      ws.url("http://foo.com")
-        .withQueryString("bar" -> "baz")
-        .uri
+      ws.url("http://foo.com").withQueryString("bar" -> "baz").uri
         .toString must equalTo("http://foo.com?bar=baz")
 
-      ws.url("http://foo.com")
-        .withQueryString("bar" -> "baz", "bar" -> "bah")
-        .uri
-        .toString must equalTo("http://foo.com?bar=bah&bar=baz")
+      ws.url("http://foo.com").withQueryString("bar" -> "baz", "bar" -> "bah")
+        .uri.toString must equalTo("http://foo.com?bar=bah&bar=baz")
 
     }
 
@@ -32,9 +28,7 @@ class WSRequestSpec extends Specification {
 
       val ws = app.injector.instanceOf[WSClient]
 
-      ws.url("http://foo.com")
-        .withQueryString("&" -> "=")
-        .uri
+      ws.url("http://foo.com").withQueryString("&" -> "=").uri
         .toString must equalTo("http://foo.com?%26=%3D")
 
     }

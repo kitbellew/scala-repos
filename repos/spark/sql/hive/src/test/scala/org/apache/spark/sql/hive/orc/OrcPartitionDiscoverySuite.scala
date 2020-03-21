@@ -197,10 +197,8 @@ class OrcPartitionDiscoverySuite
           makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
       }
 
-      read
-        .option(ConfVars.DEFAULTPARTITIONNAME.varname, defaultPartitionName)
-        .orc(base.getCanonicalPath)
-        .registerTempTable("t")
+      read.option(ConfVars.DEFAULTPARTITIONNAME.varname, defaultPartitionName)
+        .orc(base.getCanonicalPath).registerTempTable("t")
 
       withTempTable("t") {
         checkAnswer(
@@ -240,10 +238,8 @@ class OrcPartitionDiscoverySuite
           makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
       }
 
-      read
-        .option(ConfVars.DEFAULTPARTITIONNAME.varname, defaultPartitionName)
-        .orc(base.getCanonicalPath)
-        .registerTempTable("t")
+      read.option(ConfVars.DEFAULTPARTITIONNAME.varname, defaultPartitionName)
+        .orc(base.getCanonicalPath).registerTempTable("t")
 
       withTempTable("t") {
         checkAnswer(

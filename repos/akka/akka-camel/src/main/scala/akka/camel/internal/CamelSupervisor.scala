@@ -20,12 +20,10 @@ import akka.event.Logging
   * Top level supervisor for internal Camel actors
   */
 private[camel] class CamelSupervisor extends Actor with CamelSupport {
-  private val activationTracker = context.actorOf(
-    Props[ActivationTracker],
-    "activationTracker")
-  private val registry: ActorRef = context.actorOf(
-    Props(classOf[Registry], activationTracker),
-    "registry")
+  private val activationTracker = context
+    .actorOf(Props[ActivationTracker], "activationTracker")
+  private val registry: ActorRef = context
+    .actorOf(Props(classOf[Registry], activationTracker), "registry")
 
   override val supervisorStrategy = OneForOneStrategy() {
     case NonFatal(e) ⇒ Resume

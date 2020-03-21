@@ -14,21 +14,13 @@ object Test extends ScaladocModelTest {
     import access._
 
     def isAmbiguous(mbr: MemberEntity): Boolean =
-      mbr.byConversion
-        .map(
-          _.source.implicitsShadowing
-            .get(mbr)
-            .map(_.isAmbiguous)
-            .getOrElse(false))
-        .getOrElse(false)
+      mbr.byConversion.map(
+        _.source.implicitsShadowing.get(mbr).map(_.isAmbiguous)
+        .getOrElse(false)).getOrElse(false)
 
     // SEE THE test/resources/implicits-chaining-res.scala FOR THE EXPLANATION OF WHAT'S CHECKED HERE:
-    val base = root
-      ._package("scala")
-      ._package("test")
-      ._package("scaladoc")
-      ._package("implicits")
-      ._package("ambiguating")
+    val base = root._package("scala")._package("test")._package("scaladoc")
+      ._package("implicits")._package("ambiguating")
     var conv1: ImplicitConversion = null
     var conv2: ImplicitConversion = null
 

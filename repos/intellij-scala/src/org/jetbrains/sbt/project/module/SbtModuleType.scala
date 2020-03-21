@@ -20,8 +20,6 @@ class SbtModuleType extends ModuleType[EmptyModuleBuilder]("SBT_MODULE") {
 }
 
 object SbtModuleType {
-  val instance = Class
-    .forName("org.jetbrains.sbt.project.module.SbtModuleType")
-    .newInstance
-    .asInstanceOf[SbtModuleType]
+  val instance = Class.forName("org.jetbrains.sbt.project.module.SbtModuleType")
+    .newInstance.asInstanceOf[SbtModuleType]
 }

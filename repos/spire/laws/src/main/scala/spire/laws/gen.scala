@@ -25,13 +25,11 @@ object gen {
 
   lazy val ulong: Gen[ULong] = arbitrary[Long].map(new ULong(_))
 
-  lazy val trilean: Gen[Trilean] = Gen.oneOf(
-    Trilean.True,
-    Trilean.False,
-    Trilean.Unknown)
+  lazy val trilean: Gen[Trilean] = Gen
+    .oneOf(Trilean.True, Trilean.False, Trilean.Unknown)
 
-  lazy val fixedScale: Gen[FixedScale] = arbitrary[Short].map(n =>
-    new FixedScale(n & 0xffff))
+  lazy val fixedScale: Gen[FixedScale] = arbitrary[Short]
+    .map(n => new FixedScale(n & 0xffff))
 
   lazy val fixedPoint: Gen[FixedPoint] = arbitrary[Long].map(new FixedPoint(_))
 
@@ -167,18 +165,18 @@ object gen {
     }
 
   def freeGroup[A: Arbitrary]: Gen[FreeGroup[A]] =
-    for { aas <- arbitrary[List[Either[A, A]]] } yield aas.foldLeft(
-      FreeGroup.id[A]) {
-      case (acc, Left(a))  => acc |-| FreeGroup(a)
-      case (acc, Right(a)) => acc |+| FreeGroup(a)
-    }
+    for { aas <- arbitrary[List[Either[A, A]]] } yield aas
+      .foldLeft(FreeGroup.id[A]) {
+        case (acc, Left(a))  => acc |-| FreeGroup(a)
+        case (acc, Right(a)) => acc |+| FreeGroup(a)
+      }
 
   def freeAbGroup[A: Arbitrary]: Gen[FreeAbGroup[A]] =
-    for { tpls <- arbitrary[List[(A, Short)]] } yield tpls.foldLeft(
-      FreeAbGroup.id[A]) {
-      case (acc, (a, n)) =>
-        acc |+| Group[FreeAbGroup[A]].combinen(FreeAbGroup(a), n.toInt)
-    }
+    for { tpls <- arbitrary[List[(A, Short)]] } yield tpls
+      .foldLeft(FreeAbGroup.id[A]) {
+        case (acc, (a, n)) =>
+          acc |+| Group[FreeAbGroup[A]].combinen(FreeAbGroup(a), n.toInt)
+      }
 
   val perm: Gen[Perm] = Gen.parameterized { params =>
     import params.rng.nextInt

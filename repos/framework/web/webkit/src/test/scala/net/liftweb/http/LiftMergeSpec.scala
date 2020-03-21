@@ -57,10 +57,11 @@ class LiftMergeSpec extends Specification with XmlMatchers with Mockito {
   val testRules = new LiftRules()
   // Avoid extra appended elements by default.
   testRules.javaScriptSettings.default.set(() => () => Empty)
-  testRules.autoIncludeAjaxCalc.default.set(() =>
-    () => (_: LiftSession) => false)
-  testRules.excludePathFromContextPathRewriting.default
-    .set(() => { in: String => in.startsWith("exclude-me") })
+  testRules.autoIncludeAjaxCalc.default
+    .set(() => () => (_: LiftSession) => false)
+  testRules.excludePathFromContextPathRewriting.default.set(() => {
+    in: String => in.startsWith("exclude-me")
+  })
 
   "LiftMerge when doing the final page merge" should {
     "merge head segments in the page body in order into main head" in new WithRules(

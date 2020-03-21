@@ -75,8 +75,8 @@ case class BroadcastNestedLoopJoin(
       case RightOuter =>
         left.output.map(_.withNullability(true)) ++ right.output
       case FullOuter =>
-        left.output.map(_.withNullability(true)) ++ right.output.map(
-          _.withNullability(true))
+        left.output.map(_.withNullability(true)) ++ right.output
+          .map(_.withNullability(true))
       case LeftSemi => left.output
       case x =>
         throw new IllegalArgumentException(
@@ -183,8 +183,8 @@ case class BroadcastNestedLoopJoin(
       val joinedRow = new JoinedRow
 
       if (condition.isDefined) {
-        streamedIter.filter(l =>
-          buildRows.exists(r => boundCondition(joinedRow(l, r))))
+        streamedIter
+          .filter(l => buildRows.exists(r => boundCondition(joinedRow(l, r))))
       } else { streamedIter.filter(r => !buildRows.isEmpty) }
     }
   }
@@ -220,8 +220,8 @@ case class BroadcastNestedLoopJoin(
       Seq(matched).toIterator
     }
 
-    val matchedBroadcastRows = matchedBuildRows.fold(new BitSet(
-      relation.value.length))(_ | _)
+    val matchedBroadcastRows = matchedBuildRows
+      .fold(new BitSet(relation.value.length))(_ | _)
 
     if (joinType == LeftSemi) {
       assert(buildSide == BuildLeft)
@@ -276,9 +276,8 @@ case class BroadcastNestedLoopJoin(
       buf.toSeq
     }
 
-    sparkContext.union(
-      matchedStreamRows,
-      sparkContext.makeRDD(notMatchedBroadcastRows))
+    sparkContext
+      .union(matchedStreamRows, sparkContext.makeRDD(notMatchedBroadcastRows))
   }
 
   protected override def doExecute(): RDD[InternalRow] = {

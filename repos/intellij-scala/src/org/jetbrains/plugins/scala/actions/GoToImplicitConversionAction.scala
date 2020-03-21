@@ -104,8 +104,8 @@ class GoToImplicitConversionAction
       renderer.setFont(font)
       list.setFont(font)
       JListCompatibility.setCellRenderer(list, renderer)
-      list.getSelectionModel.addListSelectionListener(
-        new ListSelectionListener {
+      list.getSelectionModel
+        .addListSelectionListener(new ListSelectionListener {
           def valueChanged(e: ListSelectionEvent) {
             hintAlarm.cancelAllRequests
             val item = list.getSelectedValue.asInstanceOf[Parameters]
@@ -116,13 +116,9 @@ class GoToImplicitConversionAction
       JListCompatibility.GoToImplicitConversionAction.setList(list)
 
       val builder = JBPopupFactory.getInstance.createListPopupBuilder(list)
-      val popup = builder
-        .setTitle("Choose implicit conversion method:")
-        .setAdText("Press Alt+Enter")
-        .setMovable(false)
-        .setResizable(false)
-        .setRequestFocus(true)
-        .setItemChoosenCallback(new Runnable {
+      val popup = builder.setTitle("Choose implicit conversion method:")
+        .setAdText("Press Alt+Enter").setMovable(false).setResizable(false)
+        .setRequestFocus(true).setItemChoosenCallback(new Runnable {
           def run() {
             val entity = list.getSelectedValue.asInstanceOf[Parameters]
             entity.getNewExpression match {
@@ -134,8 +130,7 @@ class GoToImplicitConversionAction
               case _                        => //do nothing
             }
           }
-        })
-        .createPopup
+        }).createPopup
       popup.showInBestPositionFor(editor)
 
       if (actualIndex >= 0 && actualIndex < list.getModel.getSize) {
@@ -154,12 +149,8 @@ class GoToImplicitConversionAction
     if (editor.getSelectionModel.hasSelection) {
       val selectionStart = editor.getSelectionModel.getSelectionStart
       val selectionEnd = editor.getSelectionModel.getSelectionEnd
-      val opt = ScalaRefactoringUtil.getExpression(
-        project,
-        editor,
-        file,
-        selectionStart,
-        selectionEnd)
+      val opt = ScalaRefactoringUtil
+        .getExpression(project, editor, file, selectionStart, selectionEnd)
       opt match {
         case Some((expr, _)) => if (forExpr(expr)) return
         case _               =>
@@ -185,23 +176,16 @@ class GoToImplicitConversionAction
                 case _                                               => res += expr
               }
             case expr: ScExpression
-                if guard || expr
-                  .getImplicitConversions(fromUnder = false)
-                  ._2
+                if guard || expr.getImplicitConversions(fromUnder = false)._2
                   .isDefined ||
                   (ScUnderScoreSectionUtil.isUnderscoreFunction(expr) &&
-                    expr
-                      .getImplicitConversions(fromUnder = true)
-                      ._2
+                    expr.getImplicitConversions(fromUnder = true)._2
                       .isDefined) || (expr.getAdditionalExpression.isDefined &&
-                  expr.getAdditionalExpression.get._1
-                    .getImplicitConversions(
-                      fromUnder = false,
-                      expectedOption = Some(
-                        expr.getAdditionalExpression.get._2))
-                    ._2
-                    .isDefined) => res += expr
-            case _              =>
+                  expr.getAdditionalExpression.get._1.getImplicitConversions(
+                    fromUnder = false,
+                    expectedOption = Some(expr.getAdditionalExpression.get._2))
+                    ._2.isDefined) => res += expr
+            case _                 =>
           }
           parent = parent.getParent
         }
@@ -259,11 +243,8 @@ class GoToImplicitConversionAction
 
   class LightBulbHint(editor: Editor, project: Project, expr: ScExpression)
       extends JLabel {
-    private final val INACTIVE_BORDER: Border = BorderFactory.createEmptyBorder(
-      4,
-      4,
-      4,
-      4)
+    private final val INACTIVE_BORDER: Border = BorderFactory
+      .createEmptyBorder(4, 4, 4, 4)
     private final val ACTIVE_BORDER: Border = BorderFactory
       .createCompoundBorder(
         BorderFactory.createLineBorder(Color.BLACK, 1),
@@ -277,8 +258,8 @@ class GoToImplicitConversionAction
       setBorder(INACTIVE_BORDER)
       setIcon(IconLoader.findIcon("/actions/intentionBulb.png"))
 
-      val toolTipText: String = KeymapUtil.getFirstKeyboardShortcutText(
-        ActionManager.getInstance.getAction(
+      val toolTipText: String = KeymapUtil
+        .getFirstKeyboardShortcutText(ActionManager.getInstance.getAction(
           IdeActions.ACTION_SHOW_INTENTION_ACTIONS))
 
       if (toolTipText.length > 0) {
@@ -324,8 +305,7 @@ class GoToImplicitConversionAction
 
     def getCurrentItem: PsiNamedElement =
       GoToImplicitConversionAction.getList.getSelectedValue
-        .asInstanceOf[Parameters]
-        .getNewExpression
+        .asInstanceOf[Parameters].getNewExpression
 
     def getCurrentItemBounds: Rectangle = {
       val index: Int = GoToImplicitConversionAction.getList.getSelectedIndex

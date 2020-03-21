@@ -91,10 +91,10 @@ object ReplicationClient {
 class BaseReplicationClient(
     clients: Seq[Client],
     statsReceiver: StatsReceiver = NullStatsReceiver) {
-  private[this] val inconsistentContentCounter = statsReceiver.counter(
-    "inconsistent_content_count")
-  private[this] val failedCounter = statsReceiver.counter(
-    "failed_replication_count")
+  private[this] val inconsistentContentCounter = statsReceiver
+    .counter("inconsistent_content_count")
+  private[this] val failedCounter = statsReceiver
+    .counter("failed_replication_count")
 
   assert(!clients.isEmpty)
 
@@ -123,8 +123,8 @@ class BaseReplicationClient(
           val missing = currentRes.misses ++ currentRes.failures.keySet
           c.getResult(missing) flatMap {
             case res =>
-              val newRes = GetResult.merged(
-                Seq(GetResult(currentRes.hits), res))
+              val newRes = GetResult
+                .merged(Seq(GetResult(currentRes.hits), res))
               loopGet(tail, newRes)
           }
       }
@@ -269,8 +269,8 @@ class BaseReplicationClient(
 
     // cannot use collectAndResolve helper here as this is the only case where there's no common op
     Future.collect((clients zip casUniques) map {
-      case (c, u) =>
-        c.checkAndSet(key, flags, expiry, value, u).transform(Future.value)
+      case (c, u) => c.checkAndSet(key, flags, expiry, value, u)
+          .transform(Future.value)
     }) map { toReplicationStatus }
   }
 

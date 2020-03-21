@@ -46,12 +46,10 @@ object PersistentActorBoundedStashingSpec {
        |akka.persistence.internal-stash-overflow-strategy = "%s"
        |""".stripMargin
 
-  val throwConfig = String.format(
-    templateConfig,
-    "akka.persistence.ThrowExceptionConfigurator")
-  val discardConfig = String.format(
-    templateConfig,
-    "akka.persistence.DiscardConfigurator")
+  val throwConfig = String
+    .format(templateConfig, "akka.persistence.ThrowExceptionConfigurator")
+  val discardConfig = String
+    .format(templateConfig, "akka.persistence.DiscardConfigurator")
   val replyToConfig = String.format(
     templateConfig,
     "akka.persistence.PersistentActorBoundedStashingSpec$ReplyToWithRejectConfigurator")
@@ -60,14 +58,11 @@ object PersistentActorBoundedStashingSpec {
 
 class SteppingInMemPersistentActorBoundedStashingSpec(strategyConfig: String)
     extends PersistenceSpec(
-      SteppingInmemJournal
-        .config("persistence-bounded-stash")
-        .withFallback(
-          PersistenceSpec
-            .config(
-              "stepping-inmem",
-              "SteppingInMemPersistentActorBoundedStashingSpec",
-              extraConfig = Some(strategyConfig))))
+      SteppingInmemJournal.config("persistence-bounded-stash").withFallback(
+        PersistenceSpec.config(
+          "stepping-inmem",
+          "SteppingInMemPersistentActorBoundedStashingSpec",
+          extraConfig = Some(strategyConfig))))
     with BeforeAndAfterEach
     with ImplicitSender {
 

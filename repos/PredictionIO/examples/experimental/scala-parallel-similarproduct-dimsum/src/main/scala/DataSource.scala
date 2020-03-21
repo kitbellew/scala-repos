@@ -30,8 +30,7 @@ class DataSource(val dsp: DataSourceParams)
 
     // create a RDD of (entityID, User)
     val usersRDD: RDD[(String, User)] = eventsDb
-      .aggregateProperties(appId = dsp.appId, entityType = "user")(sc)
-      .map {
+      .aggregateProperties(appId = dsp.appId, entityType = "user")(sc).map {
         case (entityId, properties) =>
           val user =
             try { User() }
@@ -48,8 +47,7 @@ class DataSource(val dsp: DataSourceParams)
 
     // create a RDD of (entityID, Item)
     val itemsRDD: RDD[(String, Item)] = eventsDb
-      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc)
-      .map {
+      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc).map {
         case (entityId, properties) =>
           val item =
             try {
@@ -88,8 +86,8 @@ class DataSource(val dsp: DataSourceParams)
           }
         } catch {
           case e: Exception => {
-            logger.error(
-              s"Cannot convert ${event} to U2IEvent. Exception: ${e}.")
+            logger
+              .error(s"Cannot convert ${event} to U2IEvent. Exception: ${e}.")
             throw e
           }
         }

@@ -89,8 +89,7 @@ class MultiReaderTest
     }
 
     val hostQueuesMap = hosts.map { host =>
-      val queues = CacheBuilder
-        .newBuilder()
+      val queues = CacheBuilder.newBuilder()
         .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
           def load(k: Buf) = new LinkedBlockingDeque[Buf]
         })
@@ -200,8 +199,7 @@ class MultiReaderTest
     }
 
     val hostQueuesMap = hosts.map { host =>
-      val queues = CacheBuilder
-        .newBuilder()
+      val queues = CacheBuilder.newBuilder()
         .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
           def load(k: Buf) = new LinkedBlockingDeque[Buf]
         })
@@ -326,8 +324,7 @@ class MultiReaderTest
   test("Var[Addr]-based cluster should read messages from a ready cluster") {
     new AddrClusterHelper {
       val va = Var(Addr.Bound(hosts: _*))
-      val handle = MultiReader(va, queueName)
-        .clientBuilder(mockClientBuilder)
+      val handle = MultiReader(va, queueName).clientBuilder(mockClientBuilder)
         .build()
       val messages = configureMessageReader(handle)
       val sentMessages = 0 until N * 10 map { i => "message %d".format(i) }
@@ -347,8 +344,7 @@ class MultiReaderTest
     "Var[Addr]-based cluster should read messages as cluster hosts are added") {
     new AddrClusterHelper {
       val va = Var(Addr.Bound(hosts.head))
-      val handle = MultiReader(va, queueName)
-        .clientBuilder(mockClientBuilder)
+      val handle = MultiReader(va, queueName).clientBuilder(mockClientBuilder)
         .build()
       val messages = configureMessageReader(handle)
       val sentMessages = 0 until N * 10 map { i => "message %d".format(i) }
@@ -381,8 +377,7 @@ class MultiReaderTest
       var mutableHosts: Seq[Address] = hosts
       val va = Var(Addr.Bound(mutableHosts: _*))
       val rest = hosts.tail.reverse
-      val handle = MultiReader(va, queueName)
-        .clientBuilder(mockClientBuilder)
+      val handle = MultiReader(va, queueName).clientBuilder(mockClientBuilder)
         .build()
 
       val messages = configureMessageReader(handle)
@@ -412,12 +407,9 @@ class MultiReaderTest
           // expect fewer to be read on each pass
           val expectFirstN = N - hostIndex - 1
           eventually {
-            assert(
-              messages == sentMessages
-                .grouped(N)
-                .map { _.take(expectFirstN) }
-                .flatten
-                .toSet)
+            assert(messages == sentMessages.grouped(N).map {
+              _.take(expectFirstN)
+            }.flatten.toSet)
           }
       }
     }
@@ -427,8 +419,7 @@ class MultiReaderTest
     "Var[Addr]-based cluster should wait for cluster to become ready before snapping initial hosts") {
     new AddrClusterHelper {
       val va = Var(Addr.Bound())
-      val handle = MultiReader(va, queueName)
-        .clientBuilder(mockClientBuilder)
+      val handle = MultiReader(va, queueName).clientBuilder(mockClientBuilder)
         .build()
       val messages = configureMessageReader(handle)
       val error = handle.error.sync()
@@ -454,8 +445,7 @@ class MultiReaderTest
     "Var[Addr]-based cluster should report an error if all hosts are removed") {
     new AddrClusterHelper {
       val va = Var(Addr.Bound(hosts: _*))
-      val handle = MultiReader(va, queueName)
-        .clientBuilder(mockClientBuilder)
+      val handle = MultiReader(va, queueName).clientBuilder(mockClientBuilder)
         .build()
       val error = handle.error.sync()
       va.update(Addr.Bound())
@@ -469,8 +459,7 @@ class MultiReaderTest
     new AddrClusterHelper {
       val ex = new Exception("uh oh")
       val va: Var[Addr] with Updatable[Addr] = Var(Addr.Bound(hosts: _*))
-      val handle = MultiReader(va, queueName)
-        .clientBuilder(mockClientBuilder)
+      val handle = MultiReader(va, queueName).clientBuilder(mockClientBuilder)
         .build()
       val error = handle.error.sync()
       va.update(Addr.Failed(ex))
@@ -485,8 +474,7 @@ class MultiReaderTest
     new DynamicClusterHelper {
       val cluster = new DynamicCluster[SocketAddress](hosts)
       val handle = MultiReader(cluster, "the_queue")
-        .clientBuilder(mockClientBuilder)
-        .build()
+        .clientBuilder(mockClientBuilder).build()
       val messages = configureMessageReader(handle)
       val sentMessages = 0 until N * 10 map { i => "message %d".format(i) }
       assert(messages.size == 0)
@@ -507,8 +495,7 @@ class MultiReaderTest
       val (host, rest) = (hosts.head, hosts.tail)
       val cluster = new DynamicCluster[SocketAddress](List(host))
       val handle = MultiReader(cluster, "the_queue")
-        .clientBuilder(mockClientBuilder)
-        .build()
+        .clientBuilder(mockClientBuilder).build()
       val messages = configureMessageReader(handle)
       val sentMessages = 0 until N * 10 map { i => "message %d".format(i) }
       assert(messages.size == 0)
@@ -540,8 +527,7 @@ class MultiReaderTest
       val cluster = new DynamicCluster[SocketAddress](hosts)
       val rest = hosts.tail
       val handle = MultiReader(cluster, "the_queue")
-        .clientBuilder(mockClientBuilder)
-        .build()
+        .clientBuilder(mockClientBuilder).build()
 
       val messages = configureMessageReader(handle)
       val sentMessages = 0 until N * 10 map { i => "message %d".format(i) }
@@ -570,12 +556,9 @@ class MultiReaderTest
           // expect fewer to be read on each pass
           val expectFirstN = N - hostIndex - 1
           eventually {
-            assert(
-              messages == sentMessages
-                .grouped(N)
-                .map { _.take(expectFirstN) }
-                .flatten
-                .toSet)
+            assert(messages == sentMessages.grouped(N).map {
+              _.take(expectFirstN)
+            }.flatten.toSet)
           }
       }
     }
@@ -587,8 +570,7 @@ class MultiReaderTest
     new DynamicClusterHelper {
       val cluster = new DynamicCluster[SocketAddress](Seq())
       val handle = MultiReader(cluster, "the_queue")
-        .clientBuilder(mockClientBuilder)
-        .build()
+        .clientBuilder(mockClientBuilder).build()
       val messages = configureMessageReader(handle)
       val errors = (handle.error ?)
       val sentMessages = 0 until N * 10 map { i => "message %d".format(i) }
@@ -614,8 +596,7 @@ class MultiReaderTest
     new DynamicClusterHelper {
       val cluster = new DynamicCluster[SocketAddress](hosts)
       val handle = MultiReader(cluster, "the_queue")
-        .clientBuilder(mockClientBuilder)
-        .build()
+        .clientBuilder(mockClientBuilder).build()
       val e = (handle.error ?)
       hosts.foreach { host => cluster.del(host) }
 
@@ -630,8 +611,7 @@ class MultiReaderTest
     new DynamicClusterHelper {
       val cluster = new DynamicCluster[SocketAddress](hosts)
       val handle = MultiReader(cluster, "the_queue")
-        .clientBuilder(mockClientBuilder)
-        .build()
+        .clientBuilder(mockClientBuilder).build()
 
       val messages = configureMessageReader(handle)
       val sentMessages = 0 until N * 10 map { i => "message %d".format(i) }

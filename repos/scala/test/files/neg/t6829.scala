@@ -34,8 +34,8 @@ object currenttype2 {
     val pastHistory: List[G#State]
     lazy val currentHistory = state :: pastHistory
 
-    lazy val actions: Map[G#Agent, G#Action] =
-      agents.map(a => a -> a.chooseAction(state)).toMap
+    lazy val actions: Map[G#Agent, G#Action] = agents
+      .map(a => a -> a.chooseAction(state)).toMap
     lazy val nextState: G#State = rules.simulate(state, actions.toList)
 
     def step: AgentSimulation[G]

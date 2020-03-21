@@ -53,14 +53,13 @@ object JavaWebSocket extends JavaHelpers {
 
             val socketIn = new JWebSocket.In[A]
 
-            val sink = Flow[A]
-              .map { msg => socketIn.callbacks.asScala.foreach(_.accept(msg)) }
-              .to(Sink.onComplete { _ =>
-                socketIn.closeCallbacks.asScala.foreach(_.run())
-              })
+            val sink = Flow[A].map { msg =>
+              socketIn.callbacks.asScala.foreach(_.accept(msg))
+            }.to(Sink.onComplete { _ =>
+              socketIn.closeCallbacks.asScala.foreach(_.run())
+            })
 
-            val source = Source
-              .actorRef[A](256, OverflowStrategy.dropNew)
+            val source = Source.actorRef[A](256, OverflowStrategy.dropNew)
               .mapMaterializedValue { actor =>
                 val socketOut = new JWebSocket.Out[A] {
                   def write(frame: A) = { actor ! frame }

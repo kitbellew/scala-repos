@@ -31,8 +31,8 @@ class LatencyCompensationTest
       def make(
           prms: Stack.Params,
           next: Stack[ServiceFactory[String, String]]) = {
-        val LatencyCompensation
-          .Compensation(compensation) = prms[LatencyCompensation.Compensation]
+        val LatencyCompensation.Compensation(compensation) = prms[
+          LatencyCompensation.Compensation]
         assert(expected == compensation)
 
         Stack.Leaf(
@@ -113,9 +113,8 @@ class LatencyCompensationTest
       val server = Echo.serve("127.1:0", service)
       val ia = server.boundAddress.asInstanceOf[InetSocketAddress]
       val addr = Addr.Bound(Set[Address](Address(ia)), metadata)
-      val client = echoClient.newService(
-        Name.Bound(Var.value(addr), "id"),
-        "label")
+      val client = echoClient
+        .newService(Name.Bound(Var.value(addr), "id"), "label")
 
       try f(client)
       finally Await.result(client.close() join server.close(), 10.seconds)
@@ -150,8 +149,8 @@ class LatencyCompensationTest
     new Ctx {
       // set a compensation to 0 which should cause a failure if the caller does not
       // explicitly .configure the client with a compensation parameter.
-      LatencyCompensation.DefaultOverride.set(new Compensator(_ =>
-        Duration.Zero))
+      LatencyCompensation.DefaultOverride
+        .set(new Compensator(_ => Duration.Zero))
 
       metadata = Addr.Metadata("compensation" -> 2.seconds)
 

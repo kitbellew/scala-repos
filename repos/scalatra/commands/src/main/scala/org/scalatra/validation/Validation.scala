@@ -49,8 +49,7 @@ object Validation {
       allowLocalHost: Boolean,
       messageFormat: String = "%s must be a valid url.",
       schemes: Seq[String] = Seq("http", "https")) =
-    Validators
-      .validUrl(fieldName, allowLocalHost, messageFormat, schemes)
+    Validators.validUrl(fieldName, allowLocalHost, messageFormat, schemes)
       .validate(value)
 
   def validFormat(
@@ -66,13 +65,11 @@ object Validation {
       confirmationFieldName: String,
       confirmationValue: => String,
       messageFormat: String = "%%s must match %s."): FieldValidation[String] =
-    Validators
-      .validConfirmation(
-        fieldName,
-        confirmationFieldName,
-        confirmationValue,
-        messageFormat)
-      .validate(value)
+    Validators.validConfirmation(
+      fieldName,
+      confirmationFieldName,
+      confirmationValue,
+      messageFormat).validate(value)
 
   def greaterThan[T <% Ordered[T]](
       fieldName: String,
@@ -95,8 +92,7 @@ object Validation {
       min: T,
       messageFormat: String = "%%s must be greater than or equal to %s.")
       : FieldValidation[T] =
-    Validators
-      .greaterThanOrEqualTo(fieldName, min, messageFormat)
+    Validators.greaterThanOrEqualTo(fieldName, min, messageFormat)
       .validate(value)
 
   def lessThanOrEqualTo[T <% Ordered[T]](

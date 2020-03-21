@@ -80,10 +80,7 @@ class RenameLightProcessor extends RenamePsiElementProcessor {
       newName: String,
       usages: Array[UsageInfo],
       listener: RefactoringElementListener) {
-    ScalaRenameUtil.doRenameGenericNamedElement(
-      element,
-      newName,
-      usages,
-      listener)
+    ScalaRenameUtil
+      .doRenameGenericNamedElement(element, newName, usages, listener)
   }
 }

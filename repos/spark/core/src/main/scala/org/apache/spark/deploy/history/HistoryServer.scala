@@ -64,9 +64,8 @@ class HistoryServer(
     with ApplicationCacheOperations {
 
   // How many applications to retain
-  private val retainedApplications = conf.getInt(
-    "spark.history.retainedApplications",
-    50)
+  private val retainedApplications = conf
+    .getInt("spark.history.retainedApplications", 50)
 
   // application
   private val appCache =
@@ -111,8 +110,7 @@ class HistoryServer(
       // requested, and the proper data should be served at that point.
       // Also, make sure that the redirect url contains the query string present in the request.
       val requestURI = req.getRequestURI + Option(req.getQueryString)
-        .map("?" + _)
-        .getOrElse("")
+        .map("?" + _).getOrElse("")
       res.sendRedirect(res.encodeRedirectURL(requestURI))
     }
 
@@ -277,13 +275,10 @@ object HistoryServer extends Logging {
     initSecurity()
     val securityManager = new SecurityManager(conf)
 
-    val providerName = conf
-      .getOption("spark.history.provider")
+    val providerName = conf.getOption("spark.history.provider")
       .getOrElse(classOf[FsHistoryProvider].getName())
-    val provider = Utils
-      .classForName(providerName)
-      .getConstructor(classOf[SparkConf])
-      .newInstance(conf)
+    val provider = Utils.classForName(providerName)
+      .getConstructor(classOf[SparkConf]).newInstance(conf)
       .asInstanceOf[ApplicationHistoryProvider]
 
     val port = conf.getInt("spark.history.ui.port", 18080)

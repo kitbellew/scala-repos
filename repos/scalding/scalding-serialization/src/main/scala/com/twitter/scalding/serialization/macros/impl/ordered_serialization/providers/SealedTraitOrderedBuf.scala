@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package com.twitter.scalding.serialization.macros.impl.ordered_serialization.providers
+package com.twitter.scalding.serialization.macros.impl.ordered_serialization
+  .providers
 
 import com.twitter.scalding.serialization.macros.impl.ordered_serialization._
 
@@ -28,9 +29,9 @@ object SealedTraitOrderedBuf {
 
     val pf: PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
       case tpe
-          if (tpe.typeSymbol.isClass && (
-            tpe.typeSymbol.asClass.isAbstractClass || tpe.typeSymbol.asClass.isTrait
-          )) => SealedTraitOrderedBuf(c)(buildDispatcher, tpe)
+          if (tpe.typeSymbol.isClass && (tpe.typeSymbol.asClass
+            .isAbstractClass || tpe.typeSymbol.asClass.isTrait)) =>
+        SealedTraitOrderedBuf(c)(buildDispatcher, tpe)
     }
     pf
   }
@@ -41,8 +42,8 @@ object SealedTraitOrderedBuf {
     import c.universe._
     def freshT(id: String) = newTermName(c.fresh(s"$id"))
 
-    val knownDirectSubclasses =
-      outerType.typeSymbol.asClass.knownDirectSubclasses
+    val knownDirectSubclasses = outerType.typeSymbol.asClass
+      .knownDirectSubclasses
 
     if (knownDirectSubclasses.isEmpty)
       c.abort(
@@ -60,14 +61,12 @@ object SealedTraitOrderedBuf {
 
     val dispatcher = buildDispatcher
 
-    val subClasses: List[Type] =
-      knownDirectSubclasses.map(_.asType.toType).toList
-
-    val subData: List[(Int, Type, TreeOrderedBuf[c.type])] = subClasses
-      .map { t => (t, dispatcher(t)) }
-      .zipWithIndex
-      .map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }
+    val subClasses: List[Type] = knownDirectSubclasses.map(_.asType.toType)
       .toList
+
+    val subData: List[(Int, Type, TreeOrderedBuf[c.type])] = subClasses.map {
+      t => (t, dispatcher(t))
+    }.zipWithIndex.map { case ((tpe, tbuf), idx) => (idx, tpe, tbuf) }.toList
 
     require(
       subData.nonEmpty,
@@ -92,10 +91,8 @@ object SealedTraitOrderedBuf {
         SealedTraitLike.compare(c)(outerType, elementA, elementB)(subData)
       override def length(element: Tree): CompileTimeLengthTypes[c.type] =
         SealedTraitLike.length(c)(element)(subData)
-      override val lazyOuterVariables: Map[String, ctx.Tree] = subData
-        .map(_._3)
-        .map(_.lazyOuterVariables)
-        .reduce(_ ++ _)
+      override val lazyOuterVariables: Map[String, ctx.Tree] = subData.map(_._3)
+        .map(_.lazyOuterVariables).reduce(_ ++ _)
     }
   }
 }

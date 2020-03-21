@@ -45,8 +45,7 @@ abstract class ContextCleanerSuiteBase(
     with BeforeAndAfter
     with LocalSparkContext {
   implicit val defaultTimeout = timeout(10000 millis)
-  val conf = new SparkConf()
-    .setMaster("local[2]")
+  val conf = new SparkConf().setMaster("local[2]")
     .setAppName("ContextCleanerSuite")
     .set("spark.cleaner.referenceTracking.blocking", "true")
     .set("spark.cleaner.referenceTracking.blocking.shuffle", "true")
@@ -103,7 +102,8 @@ abstract class ContextCleanerSuiteBase(
     System
       .gc() // Make a best effort to run the garbage collection. It *usually* runs GC.
     // Wait until a weak reference object has been GCed
-    while (System.currentTimeMillis - startTime < 10000 && weakRef.get != null) {
+    while (System.currentTimeMillis - startTime < 10000 && weakRef
+             .get != null) {
       System.gc()
       Thread.sleep(200)
     }
@@ -136,8 +136,8 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
       new CleanerTester(sc, shuffleIds = shuffleDeps.map(_.shuffleId))
 
     // Explicit cleanup
-    shuffleDeps.foreach(s =>
-      cleaner.doCleanupShuffle(s.shuffleId, blocking = true))
+    shuffleDeps
+      .foreach(s => cleaner.doCleanupShuffle(s.shuffleId, blocking = true))
     tester.assertCleanup()
 
     // Verify that shuffles can be re-executed after cleaning up
@@ -230,8 +230,7 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
 
     // Verify that checkpoints are NOT cleaned up if the config is not enabled
     sc.stop()
-    val conf = new SparkConf()
-      .setMaster("local[2]")
+    val conf = new SparkConf().setMaster("local[2]")
       .setAppName("cleanupCheckpoint")
       .set("spark.cleaner.referenceTracking.cleanCheckpoints", "false")
     sc = new SparkContext(conf)
@@ -300,21 +299,18 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc.env.blockManager.master
-        .getMatchingBlockIds(
-          {
-            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-            case _                                             => false
-          },
-          askSlaves = true)
-        .isEmpty)
+      sc.env.blockManager.master.getMatchingBlockIds(
+        {
+          case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
+          case _                                             => false
+        },
+        askSlaves = true).isEmpty)
   }
 
   test("automatically cleanup RDD + shuffle + broadcast in distributed mode") {
     sc.stop()
 
-    val conf2 = new SparkConf()
-      .setMaster("local-cluster[2, 1, 1024]")
+    val conf2 = new SparkConf().setMaster("local-cluster[2, 1, 1024]")
       .setAppName("ContextCleanerSuite")
       .set("spark.cleaner.referenceTracking.blocking", "true")
       .set("spark.cleaner.referenceTracking.blocking.shuffle", "true")
@@ -343,14 +339,12 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc.env.blockManager.master
-        .getMatchingBlockIds(
-          {
-            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-            case _                                             => false
-          },
-          askSlaves = true)
-        .isEmpty)
+      sc.env.blockManager.master.getMatchingBlockIds(
+        {
+          case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
+          case _                                             => false
+        },
+        askSlaves = true).isEmpty)
   }
 }
 
@@ -366,8 +360,8 @@ class SortShuffleContextCleanerSuite
       new CleanerTester(sc, shuffleIds = shuffleDeps.map(_.shuffleId))
 
     // Explicit cleanup
-    shuffleDeps.foreach(s =>
-      cleaner.doCleanupShuffle(s.shuffleId, blocking = true))
+    shuffleDeps
+      .foreach(s => cleaner.doCleanupShuffle(s.shuffleId, blocking = true))
     tester.assertCleanup()
 
     // Verify that shuffles can be re-executed after cleaning up
@@ -395,8 +389,7 @@ class SortShuffleContextCleanerSuite
   test("automatically cleanup RDD + shuffle + broadcast in distributed mode") {
     sc.stop()
 
-    val conf2 = new SparkConf()
-      .setMaster("local-cluster[2, 1, 1024]")
+    val conf2 = new SparkConf().setMaster("local-cluster[2, 1, 1024]")
       .setAppName("ContextCleanerSuite")
       .set("spark.cleaner.referenceTracking.blocking", "true")
       .set("spark.cleaner.referenceTracking.blocking.shuffle", "true")
@@ -425,14 +418,12 @@ class SortShuffleContextCleanerSuite
     // Make sure the broadcasted task closure no longer exists after GC.
     val taskClosureBroadcastId = broadcastIds.max + 1
     assert(
-      sc.env.blockManager.master
-        .getMatchingBlockIds(
-          {
-            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-            case _                                             => false
-          },
-          askSlaves = true)
-        .isEmpty)
+      sc.env.blockManager.master.getMatchingBlockIds(
+        {
+          case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
+          case _                                             => false
+        },
+        askSlaves = true).isEmpty)
   }
 }
 

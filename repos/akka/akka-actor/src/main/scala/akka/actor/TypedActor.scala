@@ -96,10 +96,8 @@ trait TypedActorFactory {
     val i = props.interfaces //Cache this to avoid closing over the Props
     val ap = Props(new akka.actor.TypedActor.TypedActor[R, T](proxyVar, c(), i))
       .withDeploy(props.actorProps.deploy)
-    typedActor.createActorRefProxy(
-      props,
-      proxyVar,
-      actorFactory.actorOf(ap, name))
+    typedActor
+      .createActorRefProxy(props, proxyVar, actorFactory.actorOf(ap, name))
   }
 
   /**
@@ -235,14 +233,12 @@ object TypedActor
           case null ⇒ null
           case a if a.length == 0 ⇒ Array[AnyRef]()
           case a ⇒
-            val deserializedParameters: Array[AnyRef] = Array.ofDim[AnyRef](
-              a.length
-            ) //Mutable for the sake of sanity
+            val deserializedParameters: Array[AnyRef] = Array
+              .ofDim[AnyRef](a.length) //Mutable for the sake of sanity
             for (i ← 0 until a.length) {
               val (sId, manifest, bytes) = a(i)
               deserializedParameters(i) = serialization
-                .serializerByIdentity(sId)
-                .fromBinary(bytes, Option(manifest))
+                .serializerByIdentity(sId).fromBinary(bytes, Option(manifest))
             }
 
             deserializedParameters
@@ -312,12 +308,10 @@ object TypedActor
       extends Actor {
     // if we were remote deployed we need to create a local proxy
     if (!context.parent.asInstanceOf[InternalActorRef].isLocal)
-      TypedActor
-        .get(context.system)
-        .createActorRefProxy(
-          TypedProps(interfaces, createInstance),
-          proxyVar,
-          context.self)
+      TypedActor.get(context.system).createActorRefProxy(
+        TypedProps(interfaces, createInstance),
+        proxyVar,
+        context.self)
 
     private val me = withContext[T](createInstance)
 
@@ -357,7 +351,8 @@ object TypedActor
         me match {
           case l: PreRestart ⇒ l.preRestart(reason, message)
           case _ ⇒
-            context.children foreach context.stop //Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
+            context.children foreach context
+              .stop //Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
         }
       }
 
@@ -735,8 +730,8 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
     * or if the interface class is not an interface, all the interfaces it implements.
     */
   def withoutInterface(interface: Class[_ >: T]): TypedProps[T] =
-    this.copy(interfaces =
-      interfaces diff TypedProps.extractInterfaces(interface))
+    this.copy(interfaces = interfaces diff TypedProps
+      .extractInterfaces(interface))
 
   /**
     * Returns the akka.actor.Props representation of this TypedProps
@@ -801,18 +796,16 @@ class TypedActorExtension(val system: ExtendedActorSystem)
       actorRef: ⇒ ActorRef): R = {
     //Warning, do not change order of the following statements, it's some elaborate chicken-n-egg handling
     val actorVar = new AtomVar[ActorRef](null)
-    val proxy = Proxy
-      .newProxyInstance(
-        (props.loader orElse props.interfaces.collectFirst {
-          case any ⇒ any.getClassLoader
-        }).orNull, //If we have no loader, we arbitrarily take the loader of the first interface
-        props.interfaces.toArray,
-        new TypedActorInvocationHandler(
-          this,
-          actorVar,
-          props.timeout getOrElse DefaultReturnTimeout)
-      )
-      .asInstanceOf[R]
+    val proxy = Proxy.newProxyInstance(
+      (props.loader orElse props.interfaces
+        .collectFirst { case any ⇒ any.getClassLoader })
+        .orNull, //If we have no loader, we arbitrarily take the loader of the first interface
+      props.interfaces.toArray,
+      new TypedActorInvocationHandler(
+        this,
+        actorVar,
+        props.timeout getOrElse DefaultReturnTimeout)
+    ).asInstanceOf[R]
 
     if (proxyVar eq null) {
       actorVar set actorRef

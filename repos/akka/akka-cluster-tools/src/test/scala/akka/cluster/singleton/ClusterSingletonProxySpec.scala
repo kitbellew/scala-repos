@@ -20,8 +20,8 @@ class ClusterSingletonProxySpec
   val seed = new ActorSys()
   seed.cluster.join(seed.cluster.selfAddress)
 
-  val testSystems = (0 until 4).map(_ ⇒
-    new ActorSys(joinTo = Some(seed.cluster.selfAddress))) :+ seed
+  val testSystems = (0 until 4)
+    .map(_ ⇒ new ActorSys(joinTo = Some(seed.cluster.selfAddress))) :+ seed
 
   "The cluster singleton proxy" must {
     "correctly identify the singleton" in {
@@ -48,8 +48,8 @@ object ClusterSingletonProxySpec {
         ClusterSingletonManager.props(
           singletonProps = Props[Singleton],
           terminationMessage = PoisonPill,
-          settings = ClusterSingletonManagerSettings(system).withRemovalMargin(
-            5.seconds)),
+          settings = ClusterSingletonManagerSettings(system)
+            .withRemovalMargin(5.seconds)),
         name = "singletonManager"
       )
     }

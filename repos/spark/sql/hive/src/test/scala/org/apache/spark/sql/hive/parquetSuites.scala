@@ -180,9 +180,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     }
 
     (1 to 10).map(i => (i, s"str$i")).toDF("a", "b").registerTempTable("jt")
-    (1 to 10)
-      .map(i => Tuple1(Seq(new Integer(i), null)))
-      .toDF("a")
+    (1 to 10).map(i => Tuple1(Seq(new Integer(i), null))).toDF("a")
       .registerTempTable("jt_array")
 
     setConf(HiveContext.CONVERT_METASTORE_PARQUET, true)
@@ -276,8 +274,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     sql("insert into table test_insert_parquet select a, b from jt")
     checkAnswer(
       sql(s"SELECT intField, stringField FROM test_insert_parquet"),
-      (1 to 10).map(i => Row(i, s"str$i")) ++ (1 to 4).map(i =>
-        Row(i, s"str$i")))
+      (1 to 10).map(i => Row(i, s"str$i")) ++ (1 to 4)
+        .map(i => Row(i, s"str$i")))
     dropTables("test_insert_parquet")
   }
 
@@ -393,8 +391,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
   def collectHadoopFsRelation(df: DataFrame): HadoopFsRelation = {
     val plan = df.queryExecution.analyzed
-    plan
-      .collectFirst { case LogicalRelation(r: HadoopFsRelation, _, _) => r }
+    plan.collectFirst { case LogicalRelation(r: HadoopFsRelation, _, _) => r }
       .getOrElse { fail(s"Expecting a HadoopFsRelation 2, but got:\n$plan") }
   }
 
@@ -472,9 +469,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
         |  OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
       """.stripMargin)
 
-    var tableIdentifier = _catalog.QualifiedTableName(
-      "default",
-      "test_insert_parquet")
+    var tableIdentifier = _catalog
+      .QualifiedTableName("default", "test_insert_parquet")
 
     // First, make sure the converted test_parquet is not cached.
     assert(
@@ -519,9 +515,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
         |  OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
       """.stripMargin)
 
-    tableIdentifier = _catalog.QualifiedTableName(
-      "default",
-      "test_parquet_partitioned_cache_test")
+    tableIdentifier = _catalog
+      .QualifiedTableName("default", "test_parquet_partitioned_cache_test")
     assert(
       sessionState.catalog.cachedDataSourceTables
         .getIfPresent(tableIdentifier) === null)
@@ -630,17 +625,13 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
 
     // Create a DataFrame with two partitions. So, the created table will have two parquet files.
     val df1 = (1 to 10).map(Tuple1(_)).toDF("a").coalesce(2)
-    df1.write
-      .mode(SaveMode.Overwrite)
-      .format("parquet")
+    df1.write.mode(SaveMode.Overwrite).format("parquet")
       .saveAsTable("spark_6016_fix")
     checkAnswer(sql("select * from spark_6016_fix"), (1 to 10).map(i => Row(i)))
 
     // Create a DataFrame with four partitions. So, the created table will have four parquet files.
     val df2 = (1 to 10).map(Tuple1(_)).toDF("b").coalesce(4)
-    df2.write
-      .mode(SaveMode.Overwrite)
-      .format("parquet")
+    df2.write.mode(SaveMode.Overwrite).format("parquet")
       .saveAsTable("spark_6016_fix")
     // For the bug of SPARK-6016, we are caching two outdated footers for df1. Then,
     // since the new table has four parquet files, we are trying to read new footers from two files
@@ -712,10 +703,7 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
     val filePath2 = new File(tempDir, "testParquet2").getCanonicalPath
 
     val df = Seq(1, 2, 3).map(i => (i, i.toString)).toDF("int", "str")
-    val df2 = df
-      .as('x)
-      .join(df.as('y), $"x.str" === $"y.str")
-      .groupBy("y.str")
+    val df2 = df.as('x).join(df.as('y), $"x.str" === $"y.str").groupBy("y.str")
       .max("y.int")
     intercept[Throwable](df2.write.parquet(filePath))
 
@@ -748,30 +736,19 @@ abstract class ParquetPartitioningTest
 
     (1 to 10).foreach { p =>
       val partDir = new File(partitionedTableDir, s"p=$p")
-      sparkContext
-        .makeRDD(1 to 10)
-        .map(i => ParquetData(i, s"part-$p"))
-        .toDF()
-        .write
-        .parquet(partDir.getCanonicalPath)
+      sparkContext.makeRDD(1 to 10).map(i => ParquetData(i, s"part-$p")).toDF()
+        .write.parquet(partDir.getCanonicalPath)
     }
 
-    sparkContext
-      .makeRDD(1 to 10)
-      .map(i => ParquetData(i, s"part-1"))
-      .toDF()
-      .write
-      .parquet(new File(normalTableDir, "normal").getCanonicalPath)
+    sparkContext.makeRDD(1 to 10).map(i => ParquetData(i, s"part-1")).toDF()
+      .write.parquet(new File(normalTableDir, "normal").getCanonicalPath)
 
     partitionedTableDirWithKey = Utils.createTempDir()
 
     (1 to 10).foreach { p =>
       val partDir = new File(partitionedTableDirWithKey, s"p=$p")
-      sparkContext
-        .makeRDD(1 to 10)
-        .map(i => ParquetDataWithKey(p, i, s"part-$p"))
-        .toDF()
-        .write
+      sparkContext.makeRDD(1 to 10)
+        .map(i => ParquetDataWithKey(p, i, s"part-$p")).toDF().write
         .parquet(partDir.getCanonicalPath)
     }
 
@@ -779,37 +756,27 @@ abstract class ParquetPartitioningTest
 
     (1 to 10).foreach { p =>
       val partDir = new File(partitionedTableDirWithKeyAndComplexTypes, s"p=$p")
-      sparkContext
-        .makeRDD(1 to 10)
-        .map { i =>
-          ParquetDataWithKeyAndComplexTypes(
-            p,
-            i,
-            s"part-$p",
-            StructContainer(i, f"${i}_string"),
-            1 to i)
-        }
-        .toDF()
-        .write
-        .parquet(partDir.getCanonicalPath)
+      sparkContext.makeRDD(1 to 10).map { i =>
+        ParquetDataWithKeyAndComplexTypes(
+          p,
+          i,
+          s"part-$p",
+          StructContainer(i, f"${i}_string"),
+          1 to i)
+      }.toDF().write.parquet(partDir.getCanonicalPath)
     }
 
     partitionedTableDirWithComplexTypes = Utils.createTempDir()
 
     (1 to 10).foreach { p =>
       val partDir = new File(partitionedTableDirWithComplexTypes, s"p=$p")
-      sparkContext
-        .makeRDD(1 to 10)
-        .map { i =>
-          ParquetDataWithComplexTypes(
-            i,
-            s"part-$p",
-            StructContainer(i, f"${i}_string"),
-            1 to i)
-        }
-        .toDF()
-        .write
-        .parquet(partDir.getCanonicalPath)
+      sparkContext.makeRDD(1 to 10).map { i =>
+        ParquetDataWithComplexTypes(
+          i,
+          s"part-$p",
+          StructContainer(i, f"${i}_string"),
+          1 to i)
+      }.toDF().write.parquet(partDir.getCanonicalPath)
     }
   }
 
@@ -912,10 +879,9 @@ abstract class ParquetPartitioningTest
     test(s"hive udfs $table") {
       checkAnswer(
         sql(s"SELECT concat(stringField, stringField) FROM $table"),
-        sql(s"SELECT stringField FROM $table").rdd
-          .map { case Row(s: String) => Row(s + s) }
-          .collect()
-          .toSeq
+        sql(s"SELECT stringField FROM $table").rdd.map {
+          case Row(s: String) => Row(s + s)
+        }.collect().toSeq
       )
     }
   }

@@ -37,8 +37,7 @@ class TakeOrderedAndProjectSuite extends SparkPlanTest with SharedSQLContext {
   }
 
   private def generateRandomInputData(): DataFrame = {
-    val schema = new StructType()
-      .add("a", IntegerType, nullable = false)
+    val schema = new StructType().add("a", IntegerType, nullable = false)
       .add("b", IntegerType, nullable = false)
     val inputData = Seq.fill(10000)(Row(rand.nextInt(), rand.nextInt()))
     sqlContext.createDataFrame(

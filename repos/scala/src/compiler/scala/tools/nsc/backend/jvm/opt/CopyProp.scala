@@ -65,9 +65,7 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
       val it = method.instructions.iterator
       while (it.hasNext) it.next() match {
         case vi: VarInsnNode if vi.`var` >= numParams && isLoad(vi) =>
-          val aliases = aliasAnalysis
-            .frameAt(vi)
-            .asInstanceOf[AliasingFrame[_]]
+          val aliases = aliasAnalysis.frameAt(vi).asInstanceOf[AliasingFrame[_]]
             .aliasesOf(vi.`var`)
           if (aliases.size > 1) {
             val alias = usedOrMinAlias(aliases.iterator, vi.`var`)
@@ -120,24 +118,23 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           val canElim = vi.getOpcode != ASTORE || {
             val currentFieldValueProds = prodCons
               .initialProducersForValueAt(vi, vi.`var`)
-            currentFieldValueProds.size == 1 && (
-              currentFieldValueProds.head match {
-                case ParameterProducer(0) =>
-                  !isStaticMethod(
-                    method
-                  ) // current field value is `this`, which won't be gc'd anyway
-                case _: UninitializedLocalProducer =>
-                  true // field is not yet initialized, so current value cannot leak
-                case _ => false
-              }
-            )
+            currentFieldValueProds.size == 1 && (currentFieldValueProds
+              .head match {
+              case ParameterProducer(0) =>
+                !isStaticMethod(
+                  method
+                ) // current field value is `this`, which won't be gc'd anyway
+              case _: UninitializedLocalProducer =>
+                true // field is not yet initialized, so current value cannot leak
+              case _ => false
+            })
           }
           if (canElim) storesToDrop += vi
           else {
             val prods = prodCons
               .producersForValueAt(vi, prodCons.frameAt(vi).stackTop)
-            val isStoreNull =
-              prods.size == 1 && prods.head.getOpcode == ACONST_NULL
+            val isStoreNull = prods.size == 1 && prods.head
+              .getOpcode == ACONST_NULL
             toNullOut += ((vi, isStoreNull))
           }
 
@@ -241,8 +238,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                 case DUP  => true
                 case DUP2 => prodCons.frameAt(prod).peekStack(0).getSize == 2
                 case _ =>
-                  InstructionStackEffect.prod(
-                    InstructionStackEffect.forAsmAnalysis(
+                  InstructionStackEffect
+                    .prod(InstructionStackEffect.forAsmAnalysis(
                       prod,
                       prodCons.frameAt(prod))) == 1
               }
@@ -338,8 +335,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           val ProducedValue(prod, size) = queue.dequeue()
 
           def prodString =
-            s"Producer ${AsmUtils textify prod}@${method.instructions.indexOf(
-              prod)}\n${AsmUtils textify method}"
+            s"Producer ${AsmUtils textify prod}@${method.instructions
+              .indexOf(prod)}\n${AsmUtils textify method}"
           def popAfterProd(): Unit = toInsertAfter(prod) = getPop(size)
 
           (prod.getOpcode: @switch) match {
@@ -454,8 +451,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                 mi,
                 numArgs + 1
               ) // removes the producers of args and receiver
-            } else if (receiverProd.getOpcode == DUP && toRemove.contains(
-                         receiverProd)) {
+            } else if (receiverProd.getOpcode == DUP && toRemove
+                         .contains(receiverProd)) {
               val dupProds = producersIfSingleConsumer(
                 receiverProd,
                 prodCons.frameAt(receiverProd).stackTop)
@@ -616,7 +613,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           if (pairStartStack.nonEmpty) {
             (pairStartStack.top, top) match {
               case ((ldNull: InsnNode, depends), store: VarInsnNode)
-                  if ldNull.getOpcode == ACONST_NULL && store.getOpcode == ASTORE =>
+                  if ldNull.getOpcode == ACONST_NULL && store
+                    .getOpcode == ASTORE =>
                 pairStartStack.pop()
                 addDepends(mkRemovePair(store, ldNull, depends.toList))
                 // example: store; (null; store;) (store; load;) load

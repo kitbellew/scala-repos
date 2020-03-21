@@ -74,8 +74,8 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
 
   type SummerK = Key
   type SummerV = (Seq[S], Value)
-  lazy val sCache = summerBuilder.getSummer[SummerK, SummerV](
-    implicitly[Semigroup[(Seq[S], Value)]])
+  lazy val sCache = summerBuilder
+    .getSummer[SummerK, SummerV](implicitly[Semigroup[(Seq[S], Value)]])
 
   // Lazy transient as const futures are not serializable
   @transient
@@ -90,9 +90,8 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
       outData.toIterator.foreach {
         case (k, (listS, v)) =>
           val newK = summerShards.summerIdFor(k)
-          val (buffer, mmap) = mmMap.getOrElseUpdate(
-            newK,
-            (ListBuffer[S](), MMap[Key, Value]()))
+          val (buffer, mmap) = mmMap
+            .getOrElseUpdate(newK, (ListBuffer[S](), MMap[Key, Value]()))
           buffer ++= listS
           mmap += k -> v
       }
@@ -114,8 +113,7 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
       val itemL = items.toList
       if (itemL.size > 0) {
         state.fanOut(itemL.size)
-        sCache
-          .addAll(itemL.map { case (k, v) => k -> (List(state), v) })
+        sCache.addAll(itemL.map { case (k, v) => k -> (List(state), v) })
           .map(formatResult(_))
       } else { // Here we handle mapping to nothing, option map et. al
         Future.value(List((List(state), Future.value(Nil))))

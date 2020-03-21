@@ -97,10 +97,8 @@ trait LabelsControllerBase extends ControllerBase {
         form.labelName,
         form.color.substring(1))
       html.label(
-        getLabel(
-          repository.owner,
-          repository.name,
-          params("labelId").toInt).get,
+        getLabel(repository.owner, repository.name, params("labelId").toInt)
+          .get,
         // TODO futility
         countIssueGroupByLabels(
           repository.owner,
@@ -146,8 +144,8 @@ trait LabelsControllerBase extends ControllerBase {
           messages: Messages): Option[String] = {
         val owner = params("owner")
         val repository = params("repository")
-        getLabel(owner, repository, value).map(_ =>
-          "Name has already been taken.")
+        getLabel(owner, repository, value)
+          .map(_ => "Name has already been taken.")
       }
     }
 

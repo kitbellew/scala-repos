@@ -45,9 +45,9 @@ object Common {
     */
   def size(f: Hfs, conf: JobConf): Long = {
     val fs = f.getPath.getFileSystem(conf)
-    fs.globStatus(f.getPath)
-      .map { s => fs.getContentSummary(s.getPath).getLength }
-      .sum
+    fs.globStatus(f.getPath).map { s =>
+      fs.getContentSummary(s.getPath).getLength
+    }.sum
   }
 
   def inputSizes(step: FlowStep[JobConf]): Seq[(String, Long)] = {
@@ -181,15 +181,13 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
       conf.set(EstimatorConfig.originalNumReducers, stepNumReducers)
 
     // whether we should override explicitly-specified numReducers
-    val overrideExplicit = conf.getBoolean(
-      Config.ReducerEstimatorOverride,
-      false)
+    val overrideExplicit = conf
+      .getBoolean(Config.ReducerEstimatorOverride, false)
 
     Option(conf.get(Config.ReducerEstimators)).map { clsNames =>
       val clsLoader = Thread.currentThread.getContextClassLoader
 
-      val estimators = StringUtility
-        .fastSplit(clsNames, ",")
+      val estimators = StringUtility.fastSplit(clsNames, ",")
         .map(clsLoader.loadClass(_).newInstance.asInstanceOf[ReducerEstimator])
       val combinedEstimator = Monoid.sum(estimators)
 
@@ -200,9 +198,8 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
       val numReducers = combinedEstimator.estimateReducers(info)
 
       // save the estimate in the JobConf which should be saved by hRaven
-      conf.setInt(
-        EstimatorConfig.estimatedNumReducers,
-        numReducers.getOrElse(-1))
+      conf
+        .setInt(EstimatorConfig.estimatedNumReducers, numReducers.getOrElse(-1))
 
       // set number of reducers
       if (!setExplicitly || overrideExplicit) {

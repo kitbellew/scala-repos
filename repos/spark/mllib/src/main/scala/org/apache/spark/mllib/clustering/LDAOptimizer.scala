@@ -163,8 +163,8 @@ final class EMLDAOptimizer extends LDAOptimizer {
     }
 
     // Partition such that edges are grouped by document
-    this.graph = Graph(docTermVertices, edges).partitionBy(
-      PartitionStrategy.EdgePartition1D)
+    this.graph = Graph(docTermVertices, edges)
+      .partitionBy(PartitionStrategy.EdgePartition1D)
     this.k = k
     this.vocabSize = docs.take(1).head._2.size
     this.checkpointInterval = lda.getCheckpointInterval
@@ -235,9 +235,7 @@ final class EMLDAOptimizer extends LDAOptimizer {
 
   private def computeGlobalTopicTotals(): TopicCounts = {
     val numTopics = k
-    graph.vertices
-      .filter(isTermVertex)
-      .values
+    graph.vertices.filter(isTermVertex).values
       .fold(BDV.zeros[Double](numTopics))(_ += _)
   }
 
@@ -639,8 +637,8 @@ private[clustering] object OnlineLDAOptimizer {
       meanGammaChange = sum(abs(gammad - lastgamma)) / k
     }
 
-    val sstatsd =
-      expElogthetad.asDenseMatrix.t * (ctsVector :/ phiNorm).asDenseMatrix
+    val sstatsd = expElogthetad.asDenseMatrix.t * (ctsVector :/ phiNorm)
+      .asDenseMatrix
     (gammad, sstatsd)
   }
 }

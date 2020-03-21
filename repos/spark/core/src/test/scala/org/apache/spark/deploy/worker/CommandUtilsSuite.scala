@@ -73,8 +73,8 @@ class CommandUtilsSuite
       Seq(),
       Map())
     assert(
-      !cmd.javaOpts.exists(_.startsWith(
-        "-D" + SecurityManager.SPARK_AUTH_SECRET_CONF)))
+      !cmd.javaOpts
+        .exists(_.startsWith("-D" + SecurityManager.SPARK_AUTH_SECRET_CONF)))
     assert(!cmd.environment.contains(SecurityManager.ENV_AUTH_SECRET))
 
     // auth is set to false
@@ -86,8 +86,8 @@ class CommandUtilsSuite
       Seq(),
       Map())
     assert(
-      !cmd.javaOpts.exists(_.startsWith(
-        "-D" + SecurityManager.SPARK_AUTH_SECRET_CONF)))
+      !cmd.javaOpts
+        .exists(_.startsWith("-D" + SecurityManager.SPARK_AUTH_SECRET_CONF)))
     assert(!cmd.environment.contains(SecurityManager.ENV_AUTH_SECRET))
 
     // auth is set to true
@@ -99,8 +99,8 @@ class CommandUtilsSuite
       Seq(),
       Map())
     assert(
-      !cmd.javaOpts.exists(_.startsWith(
-        "-D" + SecurityManager.SPARK_AUTH_SECRET_CONF)))
+      !cmd.javaOpts
+        .exists(_.startsWith("-D" + SecurityManager.SPARK_AUTH_SECRET_CONF)))
     assert(cmd.environment(SecurityManager.ENV_AUTH_SECRET) === secret)
   }
 }

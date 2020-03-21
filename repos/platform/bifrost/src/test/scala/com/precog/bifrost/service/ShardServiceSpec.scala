@@ -118,8 +118,8 @@ trait TestShardService
   val rootAPIKey = apiKeyManager.rootAPIKey.copoint
 
   val testPath = Path("/test")
-  val testAPIKey =
-    apiKeyManager.newStandardAPIKeyRecord("test").map(_.apiKey).copoint
+  val testAPIKey = apiKeyManager.newStandardAPIKeyRecord("test").map(_.apiKey)
+    .copoint
 
   import Permission._
   val testPermissions = Set[Permission](
@@ -129,20 +129,16 @@ trait TestShardService
 
   val expiredPath = Path("expired")
 
-  val expiredAPIKey = apiKeyManager
-    .newStandardAPIKeyRecord("expired")
-    .map(_.apiKey)
-    .flatMap { expiredAPIKey =>
-      apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          testAPIKey,
-          testPermissions,
-          expiredAPIKey,
-          Some(new DateTime().minusYears(1000)))
-        .map(_ => expiredAPIKey)
-  } copoint
+  val expiredAPIKey = apiKeyManager.newStandardAPIKeyRecord("expired")
+    .map(_.apiKey).flatMap { expiredAPIKey =>
+      apiKeyManager.deriveAndAddGrant(
+        None,
+        None,
+        testAPIKey,
+        testPermissions,
+        expiredAPIKey,
+        Some(new DateTime().minusYears(1000))).map(_ => expiredAPIKey)
+    } copoint
 
   def configureShardState(config: Configuration) =
     Future {
@@ -224,16 +220,14 @@ trait TestShardService
       def unapply(fres: Future[HttpResponse[ByteChunk]])
           : Future[HttpResponse[QueryResult]] =
         fres map { response =>
-          val contentType = response.headers
-            .header[`Content-Type`]
+          val contentType = response.headers.header[`Content-Type`]
             .flatMap(_.mimeTypes.headOption)
           response.status.code match {
             case OK | Accepted => //assume application/json
               response map {
                 case Left(bytes) =>
                   Left(
-                    JParser
-                      .parseFromByteBuffer(ByteBuffer.wrap(bytes))
+                    JParser.parseFromByteBuffer(ByteBuffer.wrap(bytes))
                       .valueOr(throw _))
                 case Right(stream) =>
                   Right(
@@ -245,8 +239,7 @@ trait TestShardService
                 response map {
                   case Left(bytes) =>
                     Left(
-                      JParser
-                        .parseFromByteBuffer(ByteBuffer.wrap(bytes))
+                      JParser.parseFromByteBuffer(ByteBuffer.wrap(bytes))
                         .valueOr(throw _))
                   case Right(stream) =>
                     Right(
@@ -257,11 +250,9 @@ trait TestShardService
                   case Left(bb) => Left(JString(new String(bb.array, "UTF-8")))
                   case chunk =>
                     Right(StreamT.wrapEffect(
-                      chunkToFutureString
-                        .apply(chunk)
-                        .map(s =>
-                          CharBuffer.wrap(JString(s).renderCompact) :: StreamT
-                            .empty[Future, CharBuffer])))
+                      chunkToFutureString.apply(chunk).map(s =>
+                        CharBuffer.wrap(JString(s).renderCompact) :: StreamT
+                          .empty[Future, CharBuffer])))
                 }
               }
           }
@@ -292,9 +283,7 @@ trait TestShardService
 
 class ShardServiceSpec extends TestShardService {
   def syncClient(query: String, apiKey: Option[String] = Some(testAPIKey)) = {
-    apiKey
-      .map { queryService.query("apiKey", _) }
-      .getOrElse(queryService)
+    apiKey.map { queryService.query("apiKey", _) }.getOrElse(queryService)
       .query("q", query)
   }
 
@@ -311,19 +300,15 @@ class ShardServiceSpec extends TestShardService {
       query: String,
       apiKey: Option[String] = Some(testAPIKey),
       path: String = ""): Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { asyncService.query("apiKey", _) }
-      .getOrElse(asyncService)
-      .query("q", query)
-      .query("prefixPath", path)
-      .post[QueryResult]("") { Right(StreamT.empty[Future, CharBuffer]) }
+    apiKey.map { asyncService.query("apiKey", _) }.getOrElse(asyncService)
+      .query("q", query).query("prefixPath", path).post[QueryResult]("") {
+        Right(StreamT.empty[Future, CharBuffer])
+      }
   }
 
   def asyncQueryResults(jobId: JobId, apiKey: Option[String] = Some(testAPIKey))
       : Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { asyncService.query("apiKey", _) }
-      .getOrElse(asyncService)
+    apiKey.map { asyncService.query("apiKey", _) }.getOrElse(asyncService)
       .get(jobId)
   }
 
@@ -472,18 +457,14 @@ class ShardServiceSpec extends TestShardService {
   def meta(
       apiKey: Option[String] = Some(testAPIKey),
       path: String = "/test"): Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { metaService.query("apiKey", _) }
-      .getOrElse(metadataService)
+    apiKey.map { metaService.query("apiKey", _) }.getOrElse(metadataService)
       .get(path)
   }
 
   def browse(
       apiKey: Option[String] = Some(testAPIKey),
       path: String = "/test"): Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { metaService.query("apiKey", _) }
-      .getOrElse(metaService)
+    apiKey.map { metaService.query("apiKey", _) }.getOrElse(metaService)
       .get(path)
   }
 
@@ -491,12 +472,8 @@ class ShardServiceSpec extends TestShardService {
       apiKey: Option[String] = Some(testAPIKey),
       path: String = "/test",
       cpath: CPath = CPath.Identity): Future[HttpResponse[QueryResult]] = {
-    apiKey
-      .map { metaService.query("apiKey", _) }
-      .getOrElse(metaService)
-      .query("type", "structure")
-      .query("property", cpath.toString)
-      .get(path)
+    apiKey.map { metaService.query("apiKey", _) }.getOrElse(metaService)
+      .query("type", "structure").query("property", cpath.toString).get(path)
   }
 
   "Shard browse service" should {
@@ -627,10 +604,8 @@ trait TestPlatform extends ManagedPlatform {
       def execute(query: String, ctx: EvaluationContext, opts: QueryOptions) = {
         if (query == "bad query") {
           val mu = shardQueryMonad.jobId traverse { jobId =>
-            jobManager.addMessage(
-              jobId,
-              JobManager.channels.Error,
-              JString("ERROR!"))
+            jobManager
+              .addMessage(jobId, JobManager.channels.Error, JString("ERROR!"))
           }
 
           EitherT[JobQueryTF, EvaluationError, StreamT[JobQueryTF, Slice]] {
@@ -641,8 +616,8 @@ trait TestPlatform extends ManagedPlatform {
           }
         } else {
           EitherT[JobQueryTF, EvaluationError, StreamT[JobQueryTF, Slice]] {
-            shardQueryMonad.point(
-              \/.right(toSlice(JObject("value" -> JNum(2)))))
+            shardQueryMonad
+              .point(\/.right(toSlice(JObject("value" -> JNum(2)))))
           }
         }
       }

@@ -110,8 +110,7 @@ private[akka] trait PoolOverrideUnsetConfig[T <: Pool] extends Pool {
           val wssConf: PoolOverrideUnsetConfig[T] =
             if ((this.supervisorStrategy eq Pool.defaultSupervisorStrategy)
                 && (p.supervisorStrategy ne Pool.defaultSupervisorStrategy))
-              this
-                .withSupervisorStrategy(p.supervisorStrategy)
+              this.withSupervisorStrategy(p.supervisorStrategy)
                 .asInstanceOf[PoolOverrideUnsetConfig[T]]
             else this
 
@@ -225,10 +224,10 @@ trait Pool extends RouterConfig {
   private[akka] def enrichWithPoolDispatcher(
       routeeProps: Props,
       context: ActorContext): Props =
-    if (usePoolDispatcher && routeeProps.dispatcher == Dispatchers.DefaultDispatcherId)
+    if (usePoolDispatcher && routeeProps.dispatcher == Dispatchers
+          .DefaultDispatcherId)
       routeeProps.withDispatcher(
-        "akka.actor.deployment." + context.self.path.elements
-          .drop(1)
+        "akka.actor.deployment." + context.self.path.elements.drop(1)
           .mkString("/", "/", "")
           + ".pool-dispatcher")
     else routeeProps

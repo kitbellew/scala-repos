@@ -46,8 +46,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
   test("aggregateByKey") {
     val pairs = sc.parallelize(Array((1, 1), (1, 1), (3, 2), (5, 1), (5, 3)), 2)
 
-    val sets = pairs
-      .aggregateByKey(new HashSet[Int]())(_ += _, _ ++= _)
+    val sets = pairs.aggregateByKey(new HashSet[Int]())(_ += _, _ ++= _)
       .collect()
     assert(sets.size === 3)
     val valuesFor1 = sets.find(_._1 == 1).get._2
@@ -106,36 +105,30 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     for (n <- List(100, 1000, 1000000)) {
       val data = sc.parallelize(1 to n, 2)
       val fractionPositive = 0.3
-      val stratifiedData = data.keyBy(
-        StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data
+        .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
-      StratifiedAuxiliary.testSample(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSample(stratifiedData, samplingRate, defaultSeed, n)
     }
 
     // vary fractionPositive
     for (fractionPositive <- List(0.1, 0.3, 0.5, 0.7, 0.9)) {
       val n = 100
       val data = sc.parallelize(1 to n, 2)
-      val stratifiedData = data.keyBy(
-        StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data
+        .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
-      StratifiedAuxiliary.testSample(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSample(stratifiedData, samplingRate, defaultSeed, n)
     }
 
     // Use the same data for the rest of the tests
     val fractionPositive = 0.3
     val n = 100
     val data = sc.parallelize(1 to n, 2)
-    val stratifiedData = data.keyBy(
-      StratifiedAuxiliary.stratifier(fractionPositive))
+    val stratifiedData = data
+      .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
 
     // vary seed
     for (seed <- defaultSeed to defaultSeed + 5L) {
@@ -145,11 +138,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
 
     // vary sampling rate
     for (samplingRate <- List(0.01, 0.05, 0.1, 0.5)) {
-      StratifiedAuxiliary.testSample(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSample(stratifiedData, samplingRate, defaultSeed, n)
     }
   }
 
@@ -160,36 +150,30 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     for (n <- List(100, 1000, 1000000)) {
       val data = sc.parallelize(1 to n, 2)
       val fractionPositive = 0.3
-      val stratifiedData = data.keyBy(
-        StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data
+        .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
-      StratifiedAuxiliary.testSampleExact(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSampleExact(stratifiedData, samplingRate, defaultSeed, n)
     }
 
     // vary fractionPositive
     for (fractionPositive <- List(0.1, 0.3, 0.5, 0.7, 0.9)) {
       val n = 100
       val data = sc.parallelize(1 to n, 2)
-      val stratifiedData = data.keyBy(
-        StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data
+        .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
-      StratifiedAuxiliary.testSampleExact(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSampleExact(stratifiedData, samplingRate, defaultSeed, n)
     }
 
     // Use the same data for the rest of the tests
     val fractionPositive = 0.3
     val n = 100
     val data = sc.parallelize(1 to n, 2)
-    val stratifiedData = data.keyBy(
-      StratifiedAuxiliary.stratifier(fractionPositive))
+    val stratifiedData = data
+      .keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
 
     // vary seed
     for (seed <- defaultSeed to defaultSeed + 5L) {
@@ -199,11 +183,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
 
     // vary sampling rate
     for (samplingRate <- List(0.01, 0.05, 0.1, 0.5)) {
-      StratifiedAuxiliary.testSampleExact(
-        stratifiedData,
-        samplingRate,
-        defaultSeed,
-        n)
+      StratifiedAuxiliary
+        .testSampleExact(stratifiedData, samplingRate, defaultSeed, n)
     }
   }
 
@@ -232,8 +213,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       def numPartitions = 2
       def getPartition(key: Any) = key.asInstanceOf[Int]
     }
-    val pairs = sc
-      .parallelize(Array((1, 1), (1, 2), (1, 1), (0, 1)))
+    val pairs = sc.parallelize(Array((1, 1), (1, 2), (1, 1), (0, 1)))
       .partitionBy(p)
     val sums = pairs.reduceByKey(_ + _)
     assert(sums.collect().toSet === Set((1, 4), (0, 1)))
@@ -408,8 +388,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val rdd2 = sc.parallelize(Array((1, 'x'), (2, 'y'), (2, 'z'), (4, 'w')))
     val joined = rdd1.groupWith(rdd2).collect()
     assert(joined.size === 4)
-    val joinedSet =
-      joined.map(x => (x._1, (x._2._1.toList, x._2._2.toList))).toSet
+    val joinedSet = joined.map(x => (x._1, (x._2._1.toList, x._2._2.toList)))
+      .toSet
     assert(
       joinedSet === Set(
         (1, (List(1, 2), List('x'))),
@@ -425,8 +405,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val joined = rdd1.groupWith(rdd2, rdd3).collect()
     assert(joined.size === 4)
     val joinedSet = joined
-      .map(x => (x._1, (x._2._1.toList, x._2._2.toList, x._2._3.toList)))
-      .toSet
+      .map(x => (x._1, (x._2._1.toList, x._2._2.toList, x._2._3.toList))).toSet
     assert(
       joinedSet === Set(
         (1, (List(1, 2), List('x'), List('a'))),
@@ -442,11 +421,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val rdd4 = sc.parallelize(Array((2, '@')))
     val joined = rdd1.groupWith(rdd2, rdd3, rdd4).collect()
     assert(joined.size === 4)
-    val joinedSet = joined
-      .map(x =>
-        (
-          x._1,
-          (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
+    val joinedSet = joined.map(x =>
+      (x._1, (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
       .toSet
     assert(
       joinedSet === Set(
@@ -531,8 +507,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       def getPartition(key: Any) = key.asInstanceOf[Int]
     }
     // partitionBy so we have a narrow dependency
-    val a = sc
-      .parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")))
+    val a = sc.parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")))
       .partitionBy(p)
     // more partitions/no partitioner so a shuffle dependency
     val b = sc.parallelize(Array((2, "b"), (3, "cc"), (4, "d")), 4)
@@ -769,8 +744,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         seed: Long,
         n: Long): Unit = {
       val trials = stratifiedData.countByKey()
-      val expectedSampleSize = stratifiedData
-        .countByKey()
+      val expectedSampleSize = stratifiedData.countByKey()
         .mapValues(count => math.ceil(count * samplingRate).toInt)
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
       val sample =

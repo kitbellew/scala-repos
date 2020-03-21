@@ -50,9 +50,7 @@ class TypedMultiMapSpec
 
     "remove a value from all keys" in {
       val m1 = TypedMultiMap.empty[AbstractKey, KV]
-      val m2 = m1
-        .inserted(Key(1))(MyValue(42))
-        .inserted(Key(2))(MyValue(43))
+      val m2 = m1.inserted(Key(1))(MyValue(42)).inserted(Key(2))(MyValue(43))
         .inserted(Key(2))(MyValue(42))
       val m3 = m2.valueRemoved(MyValue(42))
       m3.get(Key(1)) should ===(Set.empty[MyValue[Int]])
@@ -62,9 +60,7 @@ class TypedMultiMapSpec
 
     "remove all values from a key" in {
       val m1 = TypedMultiMap.empty[AbstractKey, KV]
-      val m2 = m1
-        .inserted(Key(1))(MyValue(42))
-        .inserted(Key(2))(MyValue(43))
+      val m2 = m1.inserted(Key(1))(MyValue(42)).inserted(Key(2))(MyValue(43))
         .inserted(Key(2))(MyValue(42))
       val m3 = m2.keyRemoved(Key(1))
       m3.get(Key(1)) should ===(Set.empty[MyValue[Int]])

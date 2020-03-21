@@ -78,9 +78,8 @@ class SingleAppScalingTest
     waitForDeploymentId(deploymentId, (30 + instances).seconds)
 
     When("deleting the app")
-    val deleteResult: RestResult[ITDeploymentResult] = marathon.deleteApp(
-      appIdPath,
-      force = true)
+    val deleteResult: RestResult[ITDeploymentResult] = marathon
+      .deleteApp(appIdPath, force = true)
 
     Then("the delete should finish eventually")
     waitForChange(deleteResult)
@@ -113,9 +112,9 @@ class SingleAppScalingTest
       if (waitTime > 0) { Thread.sleep(waitTime) }
       //      val currentApp = marathon.app(appIdPath)
       val appJson = (marathon.listAppsInBaseGroup.entityJson \ "apps")
-        .as[Seq[JsObject]]
-        .filter { appJson => (appJson \ "id").as[String] == appIdPath.toString }
-        .head
+        .as[Seq[JsObject]].filter { appJson =>
+          (appJson \ "id").as[String] == appIdPath.toString
+        }.head
 
       val instances = (appJson \ "instances").as[Int]
       val tasksRunning = (appJson \ "tasksRunning").as[Int]
@@ -125,24 +124,20 @@ class SingleAppScalingTest
         s"XXX (starting) Current instance count: staged $tasksStaged, running $tasksRunning / $instances")
 
       appInfos += ScalingTestResultFiles.addTimestamp(startTime)(appJson)
-      metrics += ScalingTestResultFiles.addTimestamp(startTime)(
-        marathon.metrics().entityJson)
+      metrics += ScalingTestResultFiles
+        .addTimestamp(startTime)(marathon.metrics().entityJson)
     }
 
-    ScalingTestResultFiles.writeJson(
-      SingleAppScalingTest.appInfosFile,
-      appInfos.result())
-    ScalingTestResultFiles.writeJson(
-      SingleAppScalingTest.metricsFile,
-      metrics.result())
+    ScalingTestResultFiles
+      .writeJson(SingleAppScalingTest.appInfosFile, appInfos.result())
+    ScalingTestResultFiles
+      .writeJson(SingleAppScalingTest.metricsFile, metrics.result())
 
     log.info("XXX suspend")
-    val result = marathon
-      .updateApp(
-        appWithManyInstances.id,
-        AppUpdate(instances = Some(0)),
-        force = true)
-      .originalResponse
+    val result = marathon.updateApp(
+      appWithManyInstances.id,
+      AppUpdate(instances = Some(0)),
+      force = true).originalResponse
     log.info(s"XXX ${result.status}: ${result.entity}")
 
     WaitTestSupport.waitFor("app suspension", 10.seconds) {
@@ -165,9 +160,8 @@ class SingleAppScalingTest
     }
 
     log.info("XXX deleting")
-    val deleteResult: RestResult[ITDeploymentResult] = marathon.deleteApp(
-      appWithManyInstances.id,
-      force = true)
+    val deleteResult: RestResult[ITDeploymentResult] = marathon
+      .deleteApp(appWithManyInstances.id, force = true)
     waitForChange(deleteResult)
   }
 }

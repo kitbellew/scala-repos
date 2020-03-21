@@ -30,8 +30,7 @@ object ComparisonFailure {
 
     private[junit] def sharedPrefix(): String = {
       val end: Int = Math.min(expected.length, actual.length)
-      (0 until end)
-        .find(i => expected.charAt(i) != actual.charAt(i))
+      (0 until end).find(i => expected.charAt(i) != actual.charAt(i))
         .fold(expected.substring(0, end))(expected.substring(0, _))
     }
 
@@ -62,8 +61,8 @@ object ComparisonFailure {
       def compactPrefix(): String = {
         if (_sharedPrefix.length() <= MAX_CONTEXT_LENGTH) _sharedPrefix
         else
-          ELLIPSIS + _sharedPrefix.substring(
-            _sharedPrefix.length() - MAX_CONTEXT_LENGTH)
+          ELLIPSIS + _sharedPrefix
+            .substring(_sharedPrefix.length() - MAX_CONTEXT_LENGTH)
       }
 
       def compactSuffix(): String = {

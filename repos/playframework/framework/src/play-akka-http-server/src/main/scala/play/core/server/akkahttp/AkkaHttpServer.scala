@@ -76,23 +76,21 @@ class AkkaHttpServer(
     }
 
     val bindingFuture: Future[Http.ServerBinding] = serverSource
-      .to(connectionSink)
-      .run()
+      .to(connectionSink).run()
 
     val bindTimeout = PlayConfig(config.configuration)
       .get[Duration]("play.akka.http-bind-timeout")
     Await.result(bindingFuture, bindTimeout)
   }
 
-  private val httpServerBinding = config.port.map(port =>
-    createServerBinding(port, ConnectionContext.noEncryption()))
+  private val httpServerBinding = config.port
+    .map(port => createServerBinding(port, ConnectionContext.noEncryption()))
 
   private val httpsServerBinding = config.sslPort.map { port =>
     val connectionContext =
       try {
-        val engineProvider = ServerSSLEngine.createSSLEngineProvider(
-          config,
-          applicationProvider)
+        val engineProvider = ServerSSLEngine
+          .createSSLEngineProvider(config, applicationProvider)
         // There is a mismatch between the Play SSL API and the Akka IO SSL API, Akka IO takes an SSL context, and
         // couples it with all the configuration that it will eventually pass to the created SSLEngine. Play has a
         // factory for creating an SSLEngine, so the user can configure it themselves.  However, that means that in
@@ -192,10 +190,8 @@ class AkkaHttpServer(
 
         websocket(taggedRequestHeader).map {
           case Left(result) =>
-            modelConversion.convertResult(
-              taggedRequestHeader,
-              result,
-              request.protocol)
+            modelConversion
+              .convertResult(taggedRequestHeader, result, request.protocol)
           case Right(flow) =>
             WebSocketHandler.handleWebSocket(upgrade, flow, 16384)
         }
@@ -238,9 +234,8 @@ class AkkaHttpServer(
         // requests demand.  This is due to a semantic mismatch between Play and Akka-HTTP, Play signals to continue
         // by requesting demand, Akka-HTTP signals to continue by attaching a sink to the source. See
         // https://github.com/akka/akka/issues/17782 for more details.
-        requestBodySource
-          .map(source =>
-            Source.fromPublisher(new MaterializeOnDemandPublisher(source)))
+        requestBodySource.map(source =>
+          Source.fromPublisher(new MaterializeOnDemandPublisher(source)))
           .orElse(Some(Source.empty))
       } else { requestBodySource }
 
@@ -249,13 +244,10 @@ class AkkaHttpServer(
       case Some(s) => actionAccumulator.run(s)
     }
     val responseFuture: Future[HttpResponse] = resultFuture.map { result =>
-      val cleanedResult: Result = ServerResultUtils.cleanFlashCookie(
-        taggedRequestHeader,
-        result)
-      modelConversion.convertResult(
-        taggedRequestHeader,
-        cleanedResult,
-        request.protocol)
+      val cleanedResult: Result = ServerResultUtils
+        .cleanFlashCookie(taggedRequestHeader, result)
+      modelConversion
+        .convertResult(taggedRequestHeader, cleanedResult, request.protocol)
     }
     responseFuture
   }

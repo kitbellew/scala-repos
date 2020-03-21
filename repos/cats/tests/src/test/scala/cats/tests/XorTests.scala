@@ -60,8 +60,8 @@ class XorTests extends CatsSuite {
       OrderLaws[ListWrapper[String] Xor ListWrapper[Int]].partialOrder)
     checkAll(
       "PartialOrder[ListWrapper[String] Xor ListWrapper[Int]]",
-      SerializableTests.serializable(
-        PartialOrder[ListWrapper[String] Xor ListWrapper[Int]]))
+      SerializableTests
+        .serializable(PartialOrder[ListWrapper[String] Xor ListWrapper[Int]]))
   }
 
   {
@@ -72,8 +72,8 @@ class XorTests extends CatsSuite {
       OrderLaws[ListWrapper[String] Xor ListWrapper[Int]].eqv)
     checkAll(
       "Eq[ListWrapper[String] Xor ListWrapper[Int]]",
-      SerializableTests.serializable(
-        Eq[ListWrapper[String] Xor ListWrapper[Int]]))
+      SerializableTests
+        .serializable(Eq[ListWrapper[String] Xor ListWrapper[Int]]))
   }
 
   implicit val arbitraryXor: Arbitrary[Xor[Int, String]] = Arbitrary {
@@ -92,8 +92,7 @@ class XorTests extends CatsSuite {
 
   test("catchOnly catches matching exceptions") {
     assert(
-      Xor
-        .catchOnly[NumberFormatException] { "foo".toInt }
+      Xor.catchOnly[NumberFormatException] { "foo".toInt }
         .isInstanceOf[Xor.Left[NumberFormatException]])
   }
 
@@ -177,9 +176,8 @@ class XorTests extends CatsSuite {
 
   test("recoverWith recovers handled values") {
     val xor = Xor.left[String, Int]("xor")
-    xor.recoverWith {
-      case "xor" => Xor.right[String, Int](5)
-    }.isRight should ===(true)
+    xor.recoverWith { case "xor" => Xor.right[String, Int](5) }
+      .isRight should ===(true)
   }
 
   test("recoverWith ignores unhandled values") {

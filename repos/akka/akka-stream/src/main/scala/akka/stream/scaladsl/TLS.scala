@@ -91,8 +91,8 @@ object TLS {
   */
 object TLSPlacebo {
   // this constructs a session for (invalid) protocol SSL_NULL_WITH_NULL_NULL
-  private[akka] val dummySession =
-    SSLContext.getDefault.createSSLEngine.getSession
+  private[akka] val dummySession = SSLContext.getDefault.createSSLEngine
+    .getSession
 
   def apply(): scaladsl.BidiFlow[
     SslTlsOutbound,
@@ -111,8 +111,8 @@ object TLSPlacebo {
       val top = b.add(scaladsl.Flow[SslTlsOutbound].collect {
         case SendBytes(bytes) ⇒ bytes
       })
-      val bottom = b.add(
-        scaladsl.Flow[ByteString].map(SessionBytes(dummySession, _)))
+      val bottom = b
+        .add(scaladsl.Flow[ByteString].map(SessionBytes(dummySession, _)))
       BidiShape.fromFlows(top, bottom)
   })
 }

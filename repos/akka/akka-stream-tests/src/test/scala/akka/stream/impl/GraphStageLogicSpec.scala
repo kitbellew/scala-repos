@@ -138,79 +138,50 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
   "A GraphStageLogic" must {
 
     "read N and emit N before completing" in assertAllStagesStopped {
-      Source(1 to 10)
-        .via(ReadNEmitN(2))
-        .runWith(TestSink.probe)
-        .request(10)
-        .expectNext(1, 2)
-        .expectComplete()
+      Source(1 to 10).via(ReadNEmitN(2)).runWith(TestSink.probe).request(10)
+        .expectNext(1, 2).expectComplete()
     }
 
     "read N should not emit if upstream completes before N is sent" in assertAllStagesStopped {
-      Source(1 to 5)
-        .via(ReadNEmitN(6))
-        .runWith(TestSink.probe)
-        .request(10)
+      Source(1 to 5).via(ReadNEmitN(6)).runWith(TestSink.probe).request(10)
         .expectComplete()
     }
 
     "read N should not emit if upstream fails before N is sent" in assertAllStagesStopped {
       val error = new IllegalArgumentException("Don't argue like that!")
-      Source(1 to 5)
-        .map(x ⇒ if (x > 3) throw error else x)
-        .via(ReadNEmitN(6))
-        .runWith(TestSink.probe)
-        .request(10)
-        .expectError(error)
+      Source(1 to 5).map(x ⇒ if (x > 3) throw error else x).via(ReadNEmitN(6))
+        .runWith(TestSink.probe).request(10).expectError(error)
     }
 
     "read N should provide elements read if onComplete happens before N elements have been seen" in assertAllStagesStopped {
-      Source(1 to 5)
-        .via(ReadNEmitRestOnComplete(6))
-        .runWith(TestSink.probe)
-        .request(10)
-        .expectNext(1, 2, 3, 4, 5)
-        .expectComplete()
+      Source(1 to 5).via(ReadNEmitRestOnComplete(6)).runWith(TestSink.probe)
+        .request(10).expectNext(1, 2, 3, 4, 5).expectComplete()
     }
 
     "emit all things before completing" in assertAllStagesStopped {
 
-      Source.empty
-        .via(emit1234.named("testStage"))
-        .runWith(TestSink.probe)
-        .request(5)
-        .expectNext(1, 2, 3, 4)
-        .expectComplete()
+      Source.empty.via(emit1234.named("testStage")).runWith(TestSink.probe)
+        .request(5).expectNext(1, 2, 3, 4).expectComplete()
 
     }
 
     "emit all things before completing with two fused stages" in assertAllStagesStopped {
       val g = aggressive(Flow[Int].via(emit1234).via(emit5678))
 
-      Source.empty
-        .via(g)
-        .runWith(TestSink.probe)
-        .request(9)
-        .expectNextN(1 to 8)
+      Source.empty.via(g).runWith(TestSink.probe).request(9).expectNextN(1 to 8)
         .expectComplete()
     }
 
     "emit all things before completing with three fused stages" in assertAllStagesStopped {
       val g = aggressive(Flow[Int].via(emit1234).via(passThrough).via(emit5678))
 
-      Source.empty
-        .via(g)
-        .runWith(TestSink.probe)
-        .request(9)
-        .expectNextN(1 to 8)
+      Source.empty.via(g).runWith(TestSink.probe).request(9).expectNextN(1 to 8)
         .expectComplete()
     }
 
     "emit properly after empty iterable" in assertAllStagesStopped {
 
-      Source
-        .fromGraph(emitEmptyIterable)
-        .runWith(Sink.seq)
+      Source.fromGraph(emitEmptyIterable).runWith(Sink.seq)
         .futureValue should ===(List(42))
 
     }
@@ -254,10 +225,8 @@ class GraphStageLogicSpec extends AkkaSpec with GraphInterpreterSpecKit {
           }
       }
 
-      builder(g, passThrough)
-        .connect(Upstream, g.in)
-        .connect(g.out, passThrough.in)
-        .connect(passThrough.out, Downstream)
+      builder(g, passThrough).connect(Upstream, g.in)
+        .connect(g.out, passThrough.in).connect(passThrough.out, Downstream)
         .init()
 
       interpreter.complete(0)

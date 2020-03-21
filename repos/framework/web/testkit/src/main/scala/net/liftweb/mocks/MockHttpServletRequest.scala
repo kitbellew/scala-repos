@@ -271,8 +271,8 @@ class MockHttpServletRequest(
   var session: HttpSession = null
 
   // BEGIN PRIMARY CONSTRUCTOR LOGIC
-  if (contextPath.length > 0 && (contextPath(
-        0) != '/' || contextPath.last == '/')) {
+  if (contextPath.length > 0 && (contextPath(0) != '/' || contextPath
+        .last == '/')) {
     throw new IllegalArgumentException(
       "Context path must be empty, or must start with a '/' and not end with a '/': " + contextPath)
   }
@@ -423,8 +423,7 @@ class MockHttpServletRequest(
           k) ::: v :: Nil) // Ugly, but it works and keeps order
     }
 
-    newMap
-      .map { case (k, v) => (k, v.toArray) }
+    newMap.map { case (k, v) => (k, v.toArray) }
       .asInstanceOf[Map[String, Array[String]]]
 //    asMap(newMap.map{case (k,v) => (k,v.toArray)}.asInstanceOf[Map[Object,Object]])
   }
@@ -482,16 +481,12 @@ class MockHttpServletRequest(
       }
     }
 
-    Helpers
-      .tryo(
-        handler, {
-          // Have to use internetDateFormatter directly since parseInternetDate returns the epoch date on failure
-          Box
-            .!!(getHeader(h))
-            .map(Helpers.internetDateFormatter.parse(_).getTime)
-        }
-      )
-      .flatMap(x => x) openOr -1L
+    Helpers.tryo(
+      handler, {
+        // Have to use internetDateFormatter directly since parseInternetDate returns the epoch date on failure
+        Box.!!(getHeader(h)).map(Helpers.internetDateFormatter.parse(_).getTime)
+      }
+    ).flatMap(x => x) openOr -1L
   }
 
   def getHeader(h: String): String =

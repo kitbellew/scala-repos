@@ -46,8 +46,8 @@ object HttpServer {
       if (Some("open sesame") == request.headerMap.get(Fields.Authorization)) {
         continue(request)
       } else {
-        Future.exception(new IllegalArgumentException(
-          "You don't know the secret"))
+        Future
+          .exception(new IllegalArgumentException("You don't know the secret"))
       }
     }
   }
@@ -72,10 +72,7 @@ object HttpServer {
     val myService: Service[Request, Response] =
       handleExceptions andThen authorize andThen respond
 
-    val server: Server = ServerBuilder()
-      .codec(Http())
-      .bindTo(new InetSocketAddress(8080))
-      .name("httpserver")
-      .build(myService)
+    val server: Server = ServerBuilder().codec(Http())
+      .bindTo(new InetSocketAddress(8080)).name("httpserver").build(myService)
   }
 }

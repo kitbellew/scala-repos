@@ -37,9 +37,8 @@ private[spark] class DiskBlockManager(
     deleteFilesOnStop: Boolean)
     extends Logging {
 
-  private[spark] val subDirsPerLocalDir = conf.getInt(
-    "spark.diskStore.subDirectories",
-    64)
+  private[spark] val subDirsPerLocalDir = conf
+    .getInt("spark.diskStore.subDirectories", 64)
 
   /* Create one local directory for each path mentioned in spark.local.dir; then, inside this
    * directory, create multiple subdirectories that we will hash files into, in order to avoid
@@ -51,8 +50,8 @@ private[spark] class DiskBlockManager(
   }
   // The content of subDirs is immutable but the content of subDirs(i) is mutable. And the content
   // of subDirs(i) is protected by the lock of subDirs(i)
-  private val subDirs = Array.fill(localDirs.length)(new Array[File](
-    subDirsPerLocalDir))
+  private val subDirs = Array
+    .fill(localDirs.length)(new Array[File](subDirsPerLocalDir))
 
   private val shutdownHook = addShutdownHook()
 
@@ -92,18 +91,15 @@ private[spark] class DiskBlockManager(
   /** List all the files currently stored on disk by the disk manager. */
   def getAllFiles(): Seq[File] = {
     // Get all the files inside the array of array of directories
-    subDirs
-      .flatMap { dir =>
-        dir.synchronized {
-          // Copy the content of dir because it may be modified in other threads
-          dir.clone()
-        }
+    subDirs.flatMap { dir =>
+      dir.synchronized {
+        // Copy the content of dir because it may be modified in other threads
+        dir.clone()
       }
-      .filter(_ != null)
-      .flatMap { dir =>
-        val files = dir.listFiles()
-        if (files != null) files else Seq.empty
-      }
+    }.filter(_ != null).flatMap { dir =>
+      val files = dir.listFiles()
+      if (files != null) files else Seq.empty
+    }
   }
 
   /** List all the blocks currently stored on disk by the disk manager. */
@@ -151,11 +147,12 @@ private[spark] class DiskBlockManager(
   }
 
   private def addShutdownHook(): AnyRef = {
-    ShutdownHookManager.addShutdownHook(
-      ShutdownHookManager.TEMP_DIR_SHUTDOWN_PRIORITY + 1) { () =>
-      logInfo("Shutdown hook called")
-      DiskBlockManager.this.doStop()
-    }
+    ShutdownHookManager
+      .addShutdownHook(ShutdownHookManager.TEMP_DIR_SHUTDOWN_PRIORITY + 1) {
+        () =>
+          logInfo("Shutdown hook called")
+          DiskBlockManager.this.doStop()
+      }
   }
 
   /** Cleanup local dirs and stop shuffle sender. */

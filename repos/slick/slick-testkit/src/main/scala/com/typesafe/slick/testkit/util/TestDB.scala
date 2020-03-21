@@ -200,27 +200,27 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
         sequences <- localSequences
         _ <- DBIO.seq(
           (tables.map(t =>
-            sqlu"""drop table if exists #${profile.quoteIdentifier(
-              t)} cascade""") ++
+            sqlu"""drop table if exists #${profile
+              .quoteIdentifier(t)} cascade""") ++
             sequences.map(t =>
-              sqlu"""drop sequence if exists #${profile.quoteIdentifier(
-                t)} cascade""")): _*)
+              sqlu"""drop sequence if exists #${profile
+                .quoteIdentifier(t)} cascade""")): _*)
       } yield ()
     }
   def assertTablesExist(tables: String*) =
     DBIO.seq(
       tables.map(t =>
-        sql"""select 1 from #${profile
-          .quoteIdentifier(t)} where 1 < 0""".as[Int]): _*)
+        sql"""select 1 from #${profile.quoteIdentifier(t)} where 1 < 0"""
+          .as[Int]): _*)
   def assertNotTablesExist(tables: String*) =
     DBIO.seq(
       tables.map(t =>
-        sql"""select 1 from #${profile
-          .quoteIdentifier(t)} where 1 < 0""".as[Int].failed): _*)
+        sql"""select 1 from #${profile.quoteIdentifier(t)} where 1 < 0"""
+          .as[Int].failed): _*)
   def createSingleSessionDatabase(implicit
       session: profile.Backend#Session,
-      executor: AsyncExecutor = AsyncExecutor
-        .default()): profile.Backend#Database = {
+      executor: AsyncExecutor = AsyncExecutor.default())
+      : profile.Backend#Database = {
     val wrappedConn = new DelegateConnection(session.conn) {
       override def close(): Unit = ()
     }
@@ -277,10 +277,8 @@ abstract class ExternalJdbcTestDB(confName: String)
 
   override lazy val testClasses
       : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] = TestkitConfig
-    .getStrings(config, "testClasses")
-    .map(_.map(n =>
-      Class
-        .forName(n)
+    .getStrings(config, "testClasses").map(_.map(n =>
+      Class.forName(n)
         .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]]))
     .getOrElse(super.testClasses)
 
@@ -325,8 +323,6 @@ object ExternalTestDB {
       driverCache.getOrElseUpdate(
         (url, driverClass),
         new URLClassLoader(Array(new URL(url)), getClass.getClassLoader)
-          .loadClass(driverClass)
-          .newInstance
-          .asInstanceOf[Driver])
+          .loadClass(driverClass).newInstance.asInstanceOf[Driver])
     }
 }

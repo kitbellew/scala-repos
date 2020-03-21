@@ -41,8 +41,7 @@ class DataSource(val dsp: DataSourceParams)
       startTime = dsp.startTime,
       untilTime = dsp.untilTime)(sc)
 
-    val dstEvents: Array[Event] = eventsDb
-      .find(appId = dsp.dstAppId)(sc)
+    val dstEvents: Array[Event] = eventsDb.find(appId = dsp.dstAppId)(sc)
       .take(1)
 
     if (dstEvents.size > 0) {

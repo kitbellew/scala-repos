@@ -44,12 +44,8 @@ object Round extends LilaController with TheftPrevention {
           else
             get("sri") match {
               case Some(uid) =>
-                requestAiMove(pov) >> env.socketHandler.player(
-                  pov,
-                  uid,
-                  ~get("ran"),
-                  ctx.me,
-                  ctx.ip) map Right.apply
+                requestAiMove(pov) >> env.socketHandler
+                  .player(pov, uid, ~get("ran"), ctx.me, ctx.ip) map Right.apply
               case None => fuccess(Left(NotFound))
             }
         case None => fuccess(Left(NotFound))
@@ -88,9 +84,7 @@ object Round extends LilaController with TheftPrevention {
       api = apiVersion => {
         if (isTheft(pov)) fuccess(theftResponse)
         else
-          Env.api.roundApi
-            .player(pov, apiVersion)
-            .map { Ok(_) }
+          Env.api.roundApi.player(pov, apiVersion).map { Ok(_) }
             .mon(_.http.response.player.mobile)
       }
     ) map NoCache
@@ -107,7 +101,8 @@ object Round extends LilaController with TheftPrevention {
     ctx.me ?? { user =>
       GameRepo urgentGames user map {
         _ filter { pov =>
-          pov.game.id != game.id && pov.game.isSwitchable && pov.game.isSimul == game.isSimul
+          pov.game.id != game.id && pov.game.isSwitchable && pov.game
+            .isSimul == game.isSimul
         }
       }
     }

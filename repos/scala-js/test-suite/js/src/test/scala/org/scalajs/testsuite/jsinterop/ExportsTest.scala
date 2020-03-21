@@ -764,15 +764,13 @@ class ExportsTest {
     }
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
-    val funs = js
-      .eval(
-        """
+    val funs = js.eval(
+      """
         var funs = {
           testIsChar: function(foo) { return JSUtils().isChar(foo.bar(65)); },
           testCharValue: function(foo) { return JSUtils().charToString(foo.bar(65)); }
         }; funs;
-        """)
-      .asInstanceOf[js.Dynamic]
+        """).asInstanceOf[js.Dynamic]
 
     assertTrue(funs.testIsChar(foo).asInstanceOf[Boolean])
     assertEquals("A", funs.testCharValue(foo))
@@ -786,13 +784,11 @@ class ExportsTest {
     }
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
-    val f = js
-      .eval(
-        """
+    val f = js.eval(
+      """
         var f = function(foo) { return foo.bar(JSUtils().stringToChar('e')); };
         f;
-        """)
-      .asInstanceOf[js.Dynamic]
+        """).asInstanceOf[js.Dynamic]
 
     assertEquals('e'.toInt, f(foo))
   }
@@ -807,15 +803,13 @@ class ExportsTest {
     }
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
-    val funs = js
-      .eval(
-        """
+    val funs = js.eval(
+      """
         var funs = {
           testChar: function(foo) { return foo.bar(JSUtils().stringToChar('S')); },
           testInt: function(foo) { return foo.bar(68); }
         }; funs;
-        """)
-      .asInstanceOf[js.Dynamic]
+        """).asInstanceOf[js.Dynamic]
 
     assertEquals("char: S", funs.testChar(foo))
     assertEquals("int: 68", funs.testInt(foo))
@@ -928,8 +922,8 @@ class ExportsTest {
     assertEquals("22true", result1)
     val result2 = js.Dynamic.newInstance(constr)(lit(y = "foo")).result
     assertEquals("1foofalse", result2)
-    val result3 =
-      js.Dynamic.newInstance(constr)(lit(z = true, y = "foo")).result
+    val result3 = js.Dynamic.newInstance(constr)(lit(z = true, y = "foo"))
+      .result
     assertEquals("1footrue", result3)
   }
 
@@ -1219,8 +1213,8 @@ class ExportsTest {
 
   @Test
   def auto_exports_for_objects_extending_a_trait(): Unit = {
-    val accessor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportedTraitObject
+    val accessor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .AutoExportedTraitObject
     assertJSNotUndefined(accessor)
     assertEquals("function", js.typeOf(accessor))
     val obj = accessor()
@@ -1230,8 +1224,8 @@ class ExportsTest {
 
   @Test
   def auto_exports_for_objects_extending_a_class(): Unit = {
-    val accessor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportedClassObject
+    val accessor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .AutoExportedClassObject
     assertJSNotUndefined(accessor)
     assertEquals("function", js.typeOf(accessor))
     val obj = accessor()
@@ -1241,8 +1235,8 @@ class ExportsTest {
 
   @Test
   def auto_exports_for_Scala_js_defined_JS_objects_extending_a_trait(): Unit = {
-    val accessor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.SJSDefinedAutoExportedTraitObject
+    val accessor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .SJSDefinedAutoExportedTraitObject
     assertJSNotUndefined(accessor)
     assertEquals("function", js.typeOf(accessor))
     val obj = accessor()
@@ -1252,8 +1246,8 @@ class ExportsTest {
 
   @Test
   def auto_exports_for_Scala_js_defined_JS_objects_extending_a_class(): Unit = {
-    val accessor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.SJSDefinedAutoExportedClassObject
+    val accessor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .SJSDefinedAutoExportedClassObject
     assertJSNotUndefined(accessor)
     assertEquals("function", js.typeOf(accessor))
     val obj = accessor()
@@ -1264,8 +1258,8 @@ class ExportsTest {
   @Test
   def auto_exports_for_objects_extending_a_trait_with_ignoreInvalidDescendants()
       : Unit = {
-    val accessor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportIgnoreTraitObject
+    val accessor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .AutoExportIgnoreTraitObject
     assertJSNotUndefined(accessor)
     assertEquals("function", js.typeOf(accessor))
     val obj = accessor()
@@ -1276,8 +1270,8 @@ class ExportsTest {
   @Test
   def auto_exports_for_objects_extending_a_class_with_ignoreInvalidDescendants()
       : Unit = {
-    val accessor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportIgnoreClassObject
+    val accessor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .AutoExportIgnoreClassObject
     assertJSNotUndefined(accessor)
     assertEquals("function", js.typeOf(accessor))
     val obj = accessor()
@@ -1288,8 +1282,8 @@ class ExportsTest {
   @Test
   def auto_exports_for_Scala_js_defined_JS_objects_extending_a_class_with_ignoreInvalidDescendants()
       : Unit = {
-    val accessor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.SJSDefinedAutoExportedIgnoreClassObject
+    val accessor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .SJSDefinedAutoExportedIgnoreClassObject
     assertJSNotUndefined(accessor)
     assertEquals("function", js.typeOf(accessor))
     val obj = accessor()
@@ -1330,8 +1324,8 @@ class ExportsTest {
 
   @Test
   def auto_exports_for_classes_extending_a_trait(): Unit = {
-    val ctor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportedTraitClass
+    val ctor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .AutoExportedTraitClass
     assertJSNotUndefined(ctor)
     assertEquals("function", js.typeOf(ctor))
 
@@ -1346,8 +1340,8 @@ class ExportsTest {
 
   @Test
   def auto_exports_for_classes_extending_a_class(): Unit = {
-    val ctor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportedClassClass
+    val ctor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .AutoExportedClassClass
     assertJSNotUndefined(ctor)
     assertEquals("function", js.typeOf(ctor))
 
@@ -1362,8 +1356,8 @@ class ExportsTest {
 
   @Test
   def auto_exports_for_Scala_js_defined_JS_classes_extending_a_trait(): Unit = {
-    val ctor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.SJSDefinedAutoExportedTraitClass
+    val ctor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .SJSDefinedAutoExportedTraitClass
     assertJSNotUndefined(ctor)
     assertEquals("function", js.typeOf(ctor))
 
@@ -1375,8 +1369,8 @@ class ExportsTest {
 
   @Test
   def auto_exports_for_Scala_js_defined_JS_classes_extending_a_class(): Unit = {
-    val ctor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.SJSDefinedAutoExportedClassClass
+    val ctor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .SJSDefinedAutoExportedClassClass
     assertJSNotUndefined(ctor)
     assertEquals("function", js.typeOf(ctor))
 
@@ -1389,8 +1383,8 @@ class ExportsTest {
   @Test
   def auto_exports_for_classes_extending_a_trait_with_ignoreInvalidDescendants()
       : Unit = {
-    val ctor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportIgnoreTraitClass
+    val ctor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .AutoExportIgnoreTraitClass
     assertJSNotUndefined(ctor)
     assertEquals("function", js.typeOf(ctor))
 
@@ -1406,8 +1400,8 @@ class ExportsTest {
   @Test
   def auto_exports_for_classes_extending_a_class_with_ignoreInvalidDescendants()
       : Unit = {
-    val ctor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.AutoExportIgnoreClassClass
+    val ctor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .AutoExportIgnoreClassClass
     assertJSNotUndefined(ctor)
     assertEquals("function", js.typeOf(ctor))
 
@@ -1423,8 +1417,8 @@ class ExportsTest {
   @Test
   def auto_exports_for_Scala_js_defined_JS_classes_extending_a_class_with_ignoreInvalidDescendants()
       : Unit = {
-    val ctor =
-      js.Dynamic.global.org.scalajs.testsuite.jsinterop.SJSDefinedAutoExportedIgnoreClassClass
+    val ctor = js.Dynamic.global.org.scalajs.testsuite.jsinterop
+      .SJSDefinedAutoExportedIgnoreClassClass
     assertJSNotUndefined(ctor)
     assertEquals("function", js.typeOf(ctor))
 

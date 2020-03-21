@@ -46,15 +46,15 @@ object ReachingDefintionsCollector {
       classOf[ScControlFlowOwner],
       false)
     if (cfowner == null) {
-      val message = "cfowner == null: " + fragment
-        .map(_.getText)
+      val message = "cfowner == null: " + fragment.map(_.getText)
         .mkString("(", ", ", ")") + "\n" + "files: " +
         fragment.map(_.getContainingFile.getName).mkString("(", ", ", ")")
       throw new RuntimeException(message)
     }
-    val cfg = cfowner.getControlFlow(policy =
-      ExtractMethodControlFlowPolicy
-    ) //todo: make cache more right to not get PsiInvalidAccess
+    val cfg = cfowner
+      .getControlFlow(policy =
+        ExtractMethodControlFlowPolicy
+      ) //todo: make cache more right to not get PsiInvalidAccess
     val engine = new DfaEngine(
       cfg,
       ReachingDefinitionsInstance,
@@ -64,8 +64,8 @@ object ReachingDefintionsCollector {
     // instructions in given fragment
     val fragmentInstructions = filterByFragment(cfg, fragment)
 
-    val inputInfos = computeInputVaribles(fragmentInstructions).filter(info =>
-      !isVisible(info.element, place))
+    val inputInfos = computeInputVaribles(fragmentInstructions)
+      .filter(info => !isVisible(info.element, place))
     val outputInfos = computeOutputVariables(fragmentInstructions, dfaResult)
 
     FragmentVariableInfos(inputInfos, outputInfos)
@@ -77,9 +77,7 @@ object ReachingDefintionsCollector {
       place: PsiElement): Boolean = {
     def checkResolve(ref: PsiElement) =
       ref match {
-        case r: ScReferenceElement =>
-          r.multiResolve(false)
-            .map(_.getElement)
+        case r: ScReferenceElement => r.multiResolve(false).map(_.getElement)
             .exists(PsiEquivalenceUtil.areElementsEquivalent(_, element))
         case _ => false
       }
@@ -113,8 +111,7 @@ object ReachingDefintionsCollector {
         val decl = createDeclarationFromText(
           s"val dummyVal: ${element.name}",
           place.getContext,
-          place)
-          .asInstanceOf[ScValueDeclaration]
+          place).asInstanceOf[ScValueDeclaration]
         decl.typeElement match {
           case Some(st: ScSimpleTypeElement) =>
             st.reference.exists(checkResolve)

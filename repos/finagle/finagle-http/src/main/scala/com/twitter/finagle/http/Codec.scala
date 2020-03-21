@@ -152,8 +152,8 @@ case class Http(
         new ChannelPipelineFactory {
           def getPipeline() = {
             val pipeline = Channels.pipeline()
-            val maxInitialLineLengthInBytes =
-              _maxInitialLineLength.inBytes.toInt
+            val maxInitialLineLengthInBytes = _maxInitialLineLength.inBytes
+              .toInt
             val maxHeaderSizeInBytes = _maxHeaderSize.inBytes.toInt
             val maxChunkSize = 8192
             pipeline.addLast(
@@ -229,8 +229,8 @@ case class Http(
             }
 
             val maxRequestSizeInBytes = _maxRequestSize.inBytes.toInt
-            val maxInitialLineLengthInBytes =
-              _maxInitialLineLength.inBytes.toInt
+            val maxInitialLineLengthInBytes = _maxInitialLineLength.inBytes
+              .toInt
             val maxHeaderSizeInBytes = _maxHeaderSize.inBytes.toInt
             pipeline.addLast(
               "httpCodec",
@@ -254,9 +254,8 @@ case class Http(
               new PayloadSizeHandler(maxRequestSizeInBytes))
 
             // Response to ``Expect: Continue'' requests.
-            pipeline.addLast(
-              "respondToExpectContinue",
-              new RespondToExpectContinue)
+            pipeline
+              .addLast("respondToExpectContinue", new RespondToExpectContinue)
             if (!_streaming)
               pipeline.addLast(
                 "httpDechunker",
@@ -279,15 +278,12 @@ case class Http(
           underlying: ServiceFactory[Request, Response],
           params: Stack.Params): ServiceFactory[Request, Response] = {
         val param.Stats(stats) = params[param.Stats]
-        new HttpNackFilter(stats)
-          .andThen(new DtabFilter.Finagle[Request])
-          .andThen(new ServerContextFilter[Request, Response])
-          .andThenIf(
+        new HttpNackFilter(stats).andThen(new DtabFilter.Finagle[Request])
+          .andThen(new ServerContextFilter[Request, Response]).andThenIf(
             !_streaming -> new PayloadSizeFilter[Request, Response](
               stats,
               _.content.length,
-              _.content.length))
-          .andThen(underlying)
+              _.content.length)).andThen(underlying)
       }
 
       override def newTraceInitializer =
@@ -345,8 +341,8 @@ private object TraceInfo {
 
         spanId map { sid =>
           val traceId = SpanId.fromString(request.headers.get(Header.TraceId))
-          val parentSpanId = SpanId.fromString(
-            request.headers.get(Header.ParentSpanId))
+          val parentSpanId = SpanId
+            .fromString(request.headers.get(Header.ParentSpanId))
 
           val sampled = Option(request.headers.get(Header.Sampled)) flatMap {
             sampled => Try(sampled.toBoolean).toOption

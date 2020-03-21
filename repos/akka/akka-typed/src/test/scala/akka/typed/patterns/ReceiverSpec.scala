@@ -30,30 +30,26 @@ class ReceiverSpec extends TypedSpec {
 
   private def afterGetOneFirst(
       ctx: ActorContext[Command[Msg]]): Behavior[Command[Msg]] =
-    behavior[Msg]
-      .asInstanceOf[Behavior[Msg]]
+    behavior[Msg].asInstanceOf[Behavior[Msg]]
       .message(ctx.asInstanceOf[ActorContext[Msg]], Msg(1))
       .asInstanceOf[Behavior[Command[Msg]]]
       .message(ctx, GetOne(Duration.Zero)(dummyInbox.ref))
 
   private def afterGetOneLater(
       ctx: ActorContext[Command[Msg]]): Behavior[Command[Msg]] =
-    behavior[Msg]
-      .message(ctx, GetOne(1.second)(dummyInbox.ref))
+    behavior[Msg].message(ctx, GetOne(1.second)(dummyInbox.ref))
       .asInstanceOf[Behavior[Msg]]
       .message(ctx.asInstanceOf[ActorContext[Msg]], Msg(1))
       .asInstanceOf[Behavior[Command[Msg]]]
 
   private def afterGetOneTimeout(
       ctx: ActorContext[Command[Msg]]): Behavior[Command[Msg]] =
-    behavior[Msg]
-      .message(ctx, GetOne(1.nano)(dummyInbox.ref))
+    behavior[Msg].message(ctx, GetOne(1.nano)(dummyInbox.ref))
       .management(ctx, ReceiveTimeout)
 
   private def afterGetAll(
       ctx: ActorContext[Command[Msg]]): Behavior[Command[Msg]] =
-    behavior[Msg]
-      .message(ctx, GetAll(1.nano)(dummyInbox.ref))
+    behavior[Msg].message(ctx, GetAll(1.nano)(dummyInbox.ref))
       .asInstanceOf[Behavior[Msg]]
       .message(ctx.asInstanceOf[ActorContext[Msg]], Msg(1))
       .asInstanceOf[Behavior[Command[Msg]]]
@@ -61,8 +57,7 @@ class ReceiverSpec extends TypedSpec {
 
   private def afterGetAllTimeout(
       ctx: ActorContext[Command[Msg]]): Behavior[Command[Msg]] =
-    behavior[Msg]
-      .message(ctx, GetAll(1.nano)(dummyInbox.ref))
+    behavior[Msg].message(ctx, GetAll(1.nano)(dummyInbox.ref))
       .message(ctx, GetAll(Duration.Zero)(dummyInbox.ref))
 
   private def setup(name: String, behv: Behavior[Command[Msg]] = behavior[Msg])(

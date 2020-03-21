@@ -50,11 +50,9 @@ private[stream] object Fusing {
     /*
      * Then create a copy of the original Shape with the new copied ports.
      */
-    val shape = g.shape
-      .copyFromPorts(
-        struct.newInlets(g.shape.inlets),
-        struct.newOutlets(g.shape.outlets))
-      .asInstanceOf[S]
+    val shape = g.shape.copyFromPorts(
+      struct.newInlets(g.shape.inlets),
+      struct.newOutlets(g.shape.outlets)).asInstanceOf[S]
     /*
      * Extract the full topological information from the builder before
      * removing assembly-internal (fused) wirings in the next step.
@@ -298,8 +296,10 @@ private[stream] object Fusing {
       case _ if m.isAtomic ⇒ true // non-GraphStage atomic or has AsyncBoundary
       case _ ⇒ m.attributes.contains(AsyncBoundary)
     }
-    if (Debug) log(s"entering ${m.getClass} (hash=${struct.hash(
-      m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
+    if (Debug)
+      log(
+        s"entering ${m.getClass} (hash=${struct.hash(m)}, async=$async, name=${m
+          .attributes.nameLifted}, dispatcher=${dispatcher(m)})")
     val localGroup = if (async) struct.newGroup(indent) else openGroup
 
     if (m.isAtomic) {
@@ -424,9 +424,8 @@ private[stream] object Fusing {
           val subMat = subMatBuilder.result()
           if (Debug)
             log(
-              subMat
-                .map(p ⇒
-                  s"${p._1.getClass.getName}[${struct.hash(p._1)}] -> ${p._2}")
+              subMat.map(p ⇒
+                s"${p._1.getClass.getName}[${struct.hash(p._1)}] -> ${p._2}")
                 .mkString(
                   "subMat\n  " + "  " * indent,
                   "\n  " + "  " * indent,
@@ -437,8 +436,8 @@ private[stream] object Fusing {
             case f: FusedModule ⇒ f.info.downstreams.toSet
             case _ ⇒ m.downstreams.toSet
           }
-          val down = m.subModules.foldLeft(oldDownstreams)((set, m) ⇒
-            set -- m.downstreams)
+          val down = m.subModules
+            .foldLeft(oldDownstreams)((set, m) ⇒ set -- m.downstreams)
           down.foreach { case (start, end) ⇒ struct.wire(start, end, indent) }
           // now rewrite the materialized value computation based on the copied modules and their computation nodes
           val matNodeMapping
@@ -449,19 +448,14 @@ private[stream] object Fusing {
             m.materializedValueComputation,
             matNodeMapping)
           if (Debug)
-            log(
-              matNodeMapping.asScala
-                .map(p ⇒ s"${p._1} -> ${p._2}")
-                .mkString(
-                  "matNodeMapping\n  " + "  " * indent,
-                  "\n  " + "  " * indent,
-                  ""))
+            log(matNodeMapping.asScala.map(p ⇒ s"${p._1} -> ${p._2}").mkString(
+              "matNodeMapping\n  " + "  " * indent,
+              "\n  " + "  " * indent,
+              ""))
           // and finally rewire all MaterializedValueSources to their new computation nodes
           val matSrcs = struct.exitMatCtx()
           matSrcs.foreach { c ⇒
-            val ms = c.copyOf
-              .asInstanceOf[GraphStageModule]
-              .stage
+            val ms = c.copyOf.asInstanceOf[GraphStageModule].stage
               .asInstanceOf[MaterializedValueSource[Any]]
             val mapped = ms.computation match {
               case Atomic(sub) ⇒ subMat(sub)
@@ -702,8 +696,7 @@ private[stream] object Fusing {
 
     def hash(obj: AnyRef) = f"${System.identityHashCode(obj)}%08x"
     def printShape(s: Shape) =
-      s"${s.getClass.getSimpleName}(ins=${s.inlets
-        .map(hash)
+      s"${s.getClass.getSimpleName}(ins=${s.inlets.map(hash)
         .mkString(",")} outs=${s.outlets.map(hash).mkString(",")})"
 
     /**

@@ -62,12 +62,9 @@ class TypedJson[T <: AnyRef: Manifest](p: String)
 
   override def toIterator(implicit config: Config, mode: Mode): Iterator[T] = {
     val tap = createTap(Read)(mode)
-    mode
-      .openForRead(config, tap)
-      .asScala
-      .map { te =>
-        inj.invert(te.selectTuple('line).getObject(0).asInstanceOf[String]).get
-      }
+    mode.openForRead(config, tap).asScala.map { te =>
+      inj.invert(te.selectTuple('line).getObject(0).asInstanceOf[String]).get
+    }
   }
 }
 

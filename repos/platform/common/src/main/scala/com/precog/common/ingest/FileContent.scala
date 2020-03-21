@@ -110,16 +110,13 @@ object FileContent {
     def validated(jv: JValue) = {
       jv match {
         case JObject(fields) =>
-          (fields
-            .get("encoding")
+          (fields.get("encoding")
             .toSuccess(Invalid("File data object missing encoding field."))
             .flatMap(_.validated[ContentEncoding]) |@|
-            fields
-              .get("mimeType")
+            fields.get("mimeType")
               .toSuccess(Invalid("File data object missing MIME type."))
               .flatMap(_.validated[MimeType]) |@|
-            fields
-              .get("data")
+            fields.get("data")
               .toSuccess(Invalid("File data object missing data field."))
               .flatMap(_.validated[String])) {
             (encoding, mimeType, contentString) =>
@@ -128,7 +125,8 @@ object FileContent {
 
         case _ =>
           Failure(Invalid(
-            "File contents " + jv.renderCompact + " was not properly encoded as a JSON object."))
+            "File contents " + jv
+              .renderCompact + " was not properly encoded as a JSON object."))
       }
     }
   }

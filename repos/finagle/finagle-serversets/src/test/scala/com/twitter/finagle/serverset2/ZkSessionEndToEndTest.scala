@@ -76,12 +76,9 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
       val p = new Array[Byte](z.sessionPasswd.length)
       z.sessionPasswd.write(p, 0)
 
-      ClientBuilder()
-        .hosts(inst.zookeeperConnectString)
-        .sessionTimeout(zkTimeout)
-        .sessionId(z.sessionId)
-        .password(Buf.ByteArray.Owned(p))
-        .reader()
+      ClientBuilder().hosts(inst.zookeeperConnectString)
+        .sessionTimeout(zkTimeout).sessionId(z.sessionId)
+        .password(Buf.ByteArray.Owned(p)).reader()
     }
     Await.result(session2.state.changes.filter(connected).toFuture())
     session2.value.close()
@@ -139,12 +136,9 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
       val p = new Array[Byte](session1.sessionPasswd.length)
       session1.sessionPasswd.write(p, 0)
 
-      ClientBuilder()
-        .hosts(inst.zookeeperConnectString)
-        .sessionTimeout(zkTimeout)
-        .sessionId(session1.sessionId)
-        .password(Buf.ByteArray.Owned(p))
-        .reader()
+      ClientBuilder().hosts(inst.zookeeperConnectString)
+        .sessionTimeout(zkTimeout).sessionId(session1.sessionId)
+        .password(Buf.ByteArray.Owned(p)).reader()
     }
 
     val connected = new Promise[Unit]
@@ -164,8 +158,7 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
 
     // This will expire the session.
     val session1Expired = session1.state.changes
-      .filter(_ == WatchState.SessionState(SessionState.Expired))
-      .toFuture()
+      .filter(_ == WatchState.SessionState(SessionState.Expired)).toFuture()
     val zkConnected = varZkState.changes
       .filter(_ == WatchState.SessionState(SessionState.SyncConnected))
       .toFuture()

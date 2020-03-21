@@ -32,8 +32,7 @@ abstract class TestResponse(
   /**
     * Returns the strictified entity of the response. It will be strictified on first access.
     */
-  lazy val entity: HttpEntity.Strict = _response.entity
-    .toStrict(awaitAtMost)
+  lazy val entity: HttpEntity.Strict = _response.entity.toStrict(awaitAtMost)
     .awaitResult(awaitAtMost)
 
   /**
@@ -60,12 +59,10 @@ abstract class TestResponse(
     * Returns the entity of the response unmarshalled with the given ``Unmarshaller``.
     */
   def entityAs[T](unmarshaller: Unmarshaller[T]): T =
-    Unmarshal(response)
-      .to(
-        unmarshaller.asInstanceOf[UnmarshallerImpl[T]].scalaUnmarshaller,
-        ec,
-        materializer)
-      .awaitResult(awaitAtMost)
+    Unmarshal(response).to(
+      unmarshaller.asInstanceOf[UnmarshallerImpl[T]].scalaUnmarshaller,
+      ec,
+      materializer).awaitResult(awaitAtMost)
 
   /**
     * Returns the entity of the response interpreted as an UTF-8 encoded string.
@@ -87,10 +84,8 @@ abstract class TestResponse(
     * Returns the first header of the response which is of the given class.
     */
   def header[T <: HttpHeader](clazz: Class[T]): T =
-    response
-      .header(ClassTag(clazz))
-      .getOrElse(doFail(
-        s"Expected header of type ${clazz.getSimpleName} but wasn't found."))
+    response.header(ClassTag(clazz)).getOrElse(doFail(
+      s"Expected header of type ${clazz.getSimpleName} but wasn't found."))
 
   /**
     * Assert on the numeric status code.

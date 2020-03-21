@@ -29,8 +29,8 @@ class IntegralCompTest extends WordSpec with Matchers {
       //Boxed
       intComp.isIntegral(new java.lang.Long(2)) shouldBe true
       intComp.isIntegral(new java.lang.Integer(2)) shouldBe true
-      intComp.isIntegral(
-        new java.lang.Short(2.asInstanceOf[Short])) shouldBe true
+      intComp
+        .isIntegral(new java.lang.Short(2.asInstanceOf[Short])) shouldBe true
       intComp.isIntegral(new java.lang.Long(2)) shouldBe true
       intComp.isIntegral(new java.lang.Long(2)) shouldBe true
       //These are not integrals
@@ -49,16 +49,16 @@ class IntegralCompTest extends WordSpec with Matchers {
       intComp.compare(null, null) shouldBe 0
     }
     "have consistent hashcode" in {
-      List((box(1), box(1L)), (box(2), box(2L)), (box(3), box(3L)))
-        .foreach { pair =>
+      List((box(1), box(1L)), (box(2), box(2L)), (box(3), box(3L))).foreach {
+        pair =>
           intComp.compare(pair._1, pair._2) shouldBe 0
           intComp.hashCode(pair._1) shouldBe (intComp.hashCode(pair._2))
-        }
-      List((box(1), box(2L)), (box(2), box(3L)), (box(3), box(4L)))
-        .foreach { pair =>
+      }
+      List((box(1), box(2L)), (box(2), box(3L)), (box(3), box(4L))).foreach {
+        pair =>
           intComp.compare(pair._1, pair._2) should be < (0)
           intComp.compare(pair._2, pair._1) should be > (0)
-        }
+      }
     }
     "Compare strings properly" in {
       intComp.compare("hey", "you") shouldBe ("hey".compareTo("you"))

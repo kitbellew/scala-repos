@@ -79,16 +79,17 @@ object PlatformBuild extends Build {
       //Seq("-Ywarn-value-discard", "-unchecked", "-g:none") ++
       Seq("-unchecked", "-g:none") ++
         Option(System.getProperty("com.precog.build.optimize"))
-          .map { _ => Seq("-optimize") }
-          .getOrElse(Seq())
+          .map { _ => Seq("-optimize") }.getOrElse(Seq())
     },
     javacOptions ++= Seq("-source", "1.6", "-target", "1.6"),
     scalaVersion := "2.9.2",
     jarName in assembly <<= (name) map { name =>
-      name + "-assembly-" + ("git describe".!!.trim) + ".jar"
+      name + "-assembly-" + ("git describe"
+        .!!.trim) + ".jar"
     },
     target in assembly <<= target,
-    EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource,
+    EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc
+      .Resource,
     EclipseKeys.withSource := true,
     (unmanagedSourceDirectories in Compile) <<= (
       scalaSource in Compile,
@@ -151,8 +152,8 @@ object PlatformBuild extends Build {
     }
   )
 
-  val commonPluginsSettings =
-    ScctPlugin.instrumentSettings ++ cpdSettings ++ graphSettings ++ commonSettings
+  val commonPluginsSettings = ScctPlugin
+    .instrumentSettings ++ cpdSettings ++ graphSettings ++ commonSettings
   val commonNexusSettings = nexusSettings ++ commonPluginsSettings
   val commonAssemblySettings = sbtassembly.Plugin.assemblySettings ++ Seq(
     test in assembly := {}) ++ commonNexusSettings
@@ -166,9 +167,8 @@ object PlatformBuild extends Build {
     common % "compile->compile;test->test", yggdrasil % "compile->compile;test->test", util, bifrost, muspelheim % "compile->compile;test->test", logging % "test->test", auth, accounts, ingest, dvergr
   )
 
-  lazy val platform = Project(id = "platform", base = file("."))
-    .settings(
-      ScctPlugin.mergeReportSettings ++ ScctPlugin.instrumentSettings: _*)
+  lazy val platform = Project(id = "platform", base = file(".")).settings(
+    ScctPlugin.mergeReportSettings ++ ScctPlugin.instrumentSettings: _*)
     .aggregate(
       quirrel,
       mirror,
@@ -205,15 +205,13 @@ object PlatformBuild extends Build {
     .settings(commonNexusSettings: _*) dependsOn (quirrel)
 
   lazy val niflheim = Project(id = "niflheim", base = file("niflheim"))
-    .settings(commonAssemblySettings: _*)
-    .dependsOn(
+    .settings(commonAssemblySettings: _*).dependsOn(
       common % "compile->compile;test->test",
       util,
       logging % "test->test")
 
   lazy val yggdrasil = Project(id = "yggdrasil", base = file("yggdrasil"))
-    .settings(commonAssemblySettings: _*)
-    .dependsOn(
+    .settings(commonAssemblySettings: _*).dependsOn(
       common % "compile->compile;test->test",
       bytecode,
       util,
@@ -222,12 +220,9 @@ object PlatformBuild extends Build {
 
   lazy val yggdrasilProf = Project(
     id = "yggdrasilProf",
-    base = file("yggdrasilProf"))
-    .settings(
-      commonNexusSettings ++ jprofilerSettings ++ Seq(fullRunInputTask(
-        profileTask,
-        Test,
-        "com.precog.yggdrasil.test.Run")): _*)
+    base = file("yggdrasilProf")).settings(
+    commonNexusSettings ++ jprofilerSettings ++ Seq(
+      fullRunInputTask(profileTask, Test, "com.precog.yggdrasil.test.Run")): _*)
     .dependsOn(
       yggdrasil % "compile->compile;compile->test",
       logging % "test->test")
@@ -241,12 +236,10 @@ object PlatformBuild extends Build {
     .dependsOn(standalone, muspelheim % "compile->compile;test->test")
 
   lazy val desktop = Project(id = "desktop", base = file("desktop"))
-    .settings(commonAssemblySettings: _*)
-    .dependsOn(standalone, bifrost)
+    .settings(commonAssemblySettings: _*).dependsOn(standalone, bifrost)
 
   lazy val mimir = Project(id = "mimir", base = file("mimir"))
-    .settings(commonNexusSettings: _*)
-    .dependsOn(
+    .settings(commonNexusSettings: _*).dependsOn(
       util % "compile->compile;test->test",
       common,
       bytecode % "compile->compile;test->test",
@@ -266,8 +259,7 @@ object PlatformBuild extends Build {
   )
 
   lazy val ragnarok = Project(id = "ragnarok", base = file("ragnarok"))
-    .settings(commonAssemblySettings: _*)
-    .dependsOn(
+    .settings(commonAssemblySettings: _*).dependsOn(
       quirrel,
       mimir,
       yggdrasil,
@@ -276,8 +268,7 @@ object PlatformBuild extends Build {
       logging % "test->test")
 
   lazy val gjallerhorn = Project(id = "gjallerhorn", base = file("gjallerhorn"))
-    .settings(commonAssemblySettings: _*)
-    .dependsOn(
+    .settings(commonAssemblySettings: _*).dependsOn(
       quirrel,
       mimir,
       yggdrasil % "compile->test",
@@ -286,8 +277,7 @@ object PlatformBuild extends Build {
       logging % "test->test")
 
   lazy val performance = Project(id = "performance", base = file("performance"))
-    .settings(commonNexusSettings: _*)
-    .dependsOn(
+    .settings(commonNexusSettings: _*).dependsOn(
       ingest,
       common % "compile->compile;test->test",
       quirrel,
@@ -314,22 +304,19 @@ object PlatformBuild extends Build {
   )
 
   lazy val ingest = Project(id = "ingest", base = file("ingest"))
-    .settings(commonAssemblySettings: _*)
-    .dependsOn(
+    .settings(commonAssemblySettings: _*).dependsOn(
       common % "compile->compile;test->test",
       yggdrasil,
       logging % "test->test")
 
   lazy val dvergr = Project(id = "dvergr", base = file("dvergr"))
-    .settings(commonAssemblySettings: _*)
-    .dependsOn(
+    .settings(commonAssemblySettings: _*).dependsOn(
       common % "compile->compile;test->test",
       util,
       logging % "test->test")
 
   lazy val bifrost = Project(id = "bifrost", base = file("bifrost"))
-    .settings(commonAssemblySettings: _*)
-    .dependsOn(
+    .settings(commonAssemblySettings: _*).dependsOn(
       common % "compile->compile;test->test",
       muspelheim,
       surtr % "test->test")

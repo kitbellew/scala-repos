@@ -72,8 +72,8 @@ object TestResultLogger {
   /** Transforms the input to be completely silent when the subject module doesn't contain any tests. */
   def silenceWhenNoTests(d: Defaults.Main) =
     d.copy(
-      printStandard = d.printStandard.unless((results, _) =>
-        results.events.isEmpty),
+      printStandard = d.printStandard
+        .unless((results, _) => results.events.isEmpty),
       printNoTests = Null)
 
   object Defaults {

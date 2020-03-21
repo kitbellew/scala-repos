@@ -110,13 +110,13 @@ class PortsMatcher(
       mappings: Seq[PortMapping]): Option[Seq[PortWithRole]] = {
     takeEnoughPortsOrNone(expectedSize = mappings.size) {
       // non-dynamic hostPorts from port mappings
-      val hostPortsFromMappings: Set[Int] =
-        mappings.iterator.map(_.hostPort).filter(_ != 0).toSet
+      val hostPortsFromMappings: Set[Int] = mappings.iterator.map(_.hostPort)
+        .filter(_ != 0).toSet
 
       // available ports without the ports that have been preset in the port mappings
       val availablePortsWithoutStaticHostPorts: Iterator[PortWithRole] =
-        shuffledAvailablePorts.filter(portWithRole =>
-          !hostPortsFromMappings(portWithRole.port))
+        shuffledAvailablePorts
+          .filter(portWithRole => !hostPortsFromMappings(portWithRole.port))
 
       mappings.iterator.map {
         case PortMapping(
@@ -151,8 +151,8 @@ class PortsMatcher(
     */
   private[this] def takeEnoughPortsOrNone[T](expectedSize: Int)(
       ports: Iterator[Option[T]]): Option[Seq[T]] = {
-    val allocatedPorts =
-      ports.takeWhile(_.isDefined).take(expectedSize).flatten.toVector
+    val allocatedPorts = ports.takeWhile(_.isDefined).take(expectedSize).flatten
+      .toVector
     if (allocatedPorts.size == expectedSize) Some(allocatedPorts) else None
   }
 
@@ -296,9 +296,7 @@ object PortsMatcher {
 
       // These are created on demand if necessary
       def afterStartRange: Iterator[PortWithRole] =
-        shuffled
-          .slice(rangeIdx + 1, shuffled.length)
-          .iterator
+        shuffled.slice(rangeIdx + 1, shuffled.length).iterator
           .flatMap(_.portsWithRolesIterator)
       def beforeStartRange: Iterator[PortWithRole] =
         shuffled.slice(0, rangeIdx).iterator.flatMap(_.portsWithRolesIterator)

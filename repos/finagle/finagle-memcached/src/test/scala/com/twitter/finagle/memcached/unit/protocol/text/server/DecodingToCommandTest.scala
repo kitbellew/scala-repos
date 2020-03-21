@@ -50,9 +50,9 @@ class DecodingToCommandTest extends FunSuite {
           val set = command.asInstanceOf[Set]
           assert(set.key == Buf.Utf8(key))
           assert(set.value == Buf.Utf8(data))
-          assert(set.expiry.moreOrLessEquals(
-            expectedTime.expirationTime,
-            allowedDelta))
+          assert(
+            set.expiry
+              .moreOrLessEquals(expectedTime.expirationTime, allowedDelta))
       }
     }
   }

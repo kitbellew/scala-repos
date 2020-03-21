@@ -24,8 +24,8 @@ final class NoSnapshotStore extends SnapshotStore {
   final class NoSnapshotStoreException
       extends RuntimeException("No snapshot store configured!")
 
-  private val flop: Future[Nothing] = Future.failed(
-    new NoSnapshotStoreException)
+  private val flop: Future[Nothing] = Future
+    .failed(new NoSnapshotStoreException)
 
   private val none: Future[Option[SelectedSnapshot]] = Future.successful(None)
 

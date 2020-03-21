@@ -86,9 +86,8 @@ object ScalaOIUtil {
       isImplement: Boolean,
       methodName: String = null) {
     val elem = file.findElementAt(editor.getCaretModel.getOffset - 1)
-    val clazz = PsiTreeUtil.getParentOfType(
-      elem,
-      classOf[ScTemplateDefinition], /*strict = */ false)
+    val clazz = PsiTreeUtil
+      .getParentOfType(elem, classOf[ScTemplateDefinition], /*strict = */ false)
     if (clazz == null) return
 
     val classMembers =
@@ -140,8 +139,8 @@ object ScalaOIUtil {
           val anchor = getAnchor(editor.getCaretModel.getOffset, clazz)
           val inserted = GenerateMembersUtil
             .insertMembersBeforeAnchor(clazz, anchor.orNull, genInfos.reverse)
-          inserted.headOption.foreach(
-            _.positionCaret(editor, toEditMethodBody = true))
+          inserted.headOption
+            .foreach(_.positionCaret(editor, toEditMethodBody = true))
         }
       },
       clazz.getProject,
@@ -153,14 +152,12 @@ object ScalaOIUtil {
       clazz: ScTemplateDefinition,
       withOwn: Boolean = false,
       withSelfType: Boolean = false): Iterable[ClassMember] = {
-    allMembers(clazz, withSelfType)
-      .filter {
-        case sign: PhysicalSignature => needImplement(sign, clazz, withOwn)
-        case (named: PsiNamedElement, subst: ScSubstitutor) =>
-          needImplement(named, clazz, withOwn)
-        case _ => false
-      }
-      .flatMap(toClassMember(_, isImplement = true))
+    allMembers(clazz, withSelfType).filter {
+      case sign: PhysicalSignature => needImplement(sign, clazz, withOwn)
+      case (named: PsiNamedElement, subst: ScSubstitutor) =>
+        needImplement(named, clazz, withOwn)
+      case _ => false
+    }.flatMap(toClassMember(_, isImplement = true))
   }
 
   def isProductAbstractMethod(
@@ -193,21 +190,20 @@ object ScalaOIUtil {
   def getMembersToOverride(
       clazz: ScTemplateDefinition,
       withSelfType: Boolean): Iterable[ClassMember] = {
-    allMembers(clazz, withSelfType)
-      .filter {
-        case sign: PhysicalSignature => needOverride(sign, clazz)
-        case (named: PsiNamedElement, _: ScSubstitutor) =>
-          needOverride(named, clazz)
-        case _ => false
-      }
-      .flatMap(toClassMember(_, isImplement = false))
+    allMembers(clazz, withSelfType).filter {
+      case sign: PhysicalSignature => needOverride(sign, clazz)
+      case (named: PsiNamedElement, _: ScSubstitutor) =>
+        needOverride(named, clazz)
+      case _ => false
+    }.flatMap(toClassMember(_, isImplement = false))
   }
 
   def allMembers(
       clazz: ScTemplateDefinition,
       withSelfType: Boolean): Iterable[Object] = {
     if (withSelfType)
-      clazz.allMethodsIncludingSelfType ++ clazz.allTypeAliasesIncludingSelfType ++ clazz.allValsIncludingSelfType
+      clazz.allMethodsIncludingSelfType ++ clazz
+        .allTypeAliasesIncludingSelfType ++ clazz.allValsIncludingSelfType
     else clazz.allMethods ++ clazz.allTypeAliases ++ clazz.allVals
   }
 
@@ -227,10 +223,9 @@ object ScalaOIUtil {
             || x.hasModifierPropertyScala("final") => false
       case x if x.isConstructor                    => false
       case method
-          if !ResolveUtils.isAccessible(
-            method,
-            clazz.extendsBlock,
-            forCompletion = false) => false
+          if !ResolveUtils
+            .isAccessible(method, clazz.extendsBlock, forCompletion = false) =>
+        false
       case method =>
         var flag = false
         if (method match {
@@ -265,8 +260,8 @@ object ScalaOIUtil {
       case x if !withOwn && x.containingClass == clazz => false
       case x
           if x.containingClass != null && x.containingClass.isInterface &&
-            !x.containingClass.isInstanceOf[ScTrait] && x.hasModifierProperty(
-            "abstract") => true
+            !x.containingClass.isInstanceOf[ScTrait] && x
+            .hasModifierProperty("abstract") => true
       case x
           if x.hasModifierPropertyScala("abstract") && !x
             .isInstanceOf[ScFunctionDefinition] &&
@@ -285,10 +280,8 @@ object ScalaOIUtil {
       case x: PsiModifierListOwner if x.hasModifierPropertyScala("final") =>
         false
       case m: PsiMember
-          if !ResolveUtils.isAccessible(
-            m,
-            clazz.extendsBlock,
-            forCompletion = false) => false
+          if !ResolveUtils
+            .isAccessible(m, clazz.extendsBlock, forCompletion = false) => false
       case x @ (_: ScPatternDefinition | _: ScVariableDefinition)
           if x.asInstanceOf[ScMember].containingClass != clazz =>
         val declaredElements = x match {
@@ -301,8 +294,8 @@ object ScalaOIUtil {
           //containingClass == clazz so we sure that this is ScFunction (it is safe cast)
           signe.method match {
             case fun: ScFunction =>
-              if (fun.parameters.length == 0 && declaredElements.exists(
-                    _.name == fun.name)) flag = true
+              if (fun.parameters.length == 0 && declaredElements
+                    .exists(_.name == fun.name)) flag = true
             case _ => //todo: ScPrimaryConstructor?
           }
         }
@@ -325,10 +318,8 @@ object ScalaOIUtil {
       withOwn: Boolean): Boolean = {
     ScalaPsiUtil.nameContext(named) match {
       case m: PsiMember
-          if !ResolveUtils.isAccessible(
-            m,
-            clazz.extendsBlock,
-            forCompletion = false) => false
+          if !ResolveUtils
+            .isAccessible(m, clazz.extendsBlock, forCompletion = false) => false
       case x: ScValueDeclaration if withOwn || x.containingClass != clazz =>
         true
       case x: ScVariableDeclaration if withOwn || x.containingClass != clazz =>

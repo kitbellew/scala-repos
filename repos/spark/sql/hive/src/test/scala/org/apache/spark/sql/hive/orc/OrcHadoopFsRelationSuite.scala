@@ -51,22 +51,17 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
 
       for (p1 <- 1 to 2; p2 <- Seq("foo", "bar")) {
         val partitionDir = new Path(qualifiedBasePath, s"p1=$p1/p2=$p2")
-        sparkContext
-          .parallelize(for (i <- 1 to 3) yield (i, s"val_$i", p1))
-          .toDF("a", "b", "p1")
-          .write
-          .orc(partitionDir.toString)
+        sparkContext.parallelize(for (i <- 1 to 3) yield (i, s"val_$i", p1))
+          .toDF("a", "b", "p1").write.orc(partitionDir.toString)
       }
 
       val dataSchemaWithPartition = StructType(
         dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
 
       checkQueries(
-        hiveContext.read
-          .options(Map(
-            "path" -> file.getCanonicalPath,
-            "dataSchema" -> dataSchemaWithPartition.json))
-          .format(dataSourceName)
+        hiveContext.read.options(Map(
+          "path" -> file.getCanonicalPath,
+          "dataSchema" -> dataSchemaWithPartition.json)).format(dataSourceName)
           .load())
     }
   }
@@ -95,25 +90,20 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
     withTempPath { dir =>
       val path = s"${dir.getCanonicalPath}/table1"
       val df = (1 to 5).map(i => (i, (i % 2).toString)).toDF("a", "b")
-      df.write
-        .option("compression", "ZlIb")
-        .orc(path)
+      df.write.option("compression", "ZlIb").orc(path)
 
       // Check if this is compressed as ZLIB.
       val conf = sparkContext.hadoopConfiguration
       val fs = FileSystem.getLocal(conf)
-      val maybeOrcFile = new File(path)
-        .listFiles()
+      val maybeOrcFile = new File(path).listFiles()
         .find(_.getName.endsWith(".zlib.orc"))
       assert(maybeOrcFile.isDefined)
       val orcFilePath = new Path(maybeOrcFile.get.toPath.toString)
-      val orcReader = OrcFile.createReader(
-        orcFilePath,
-        OrcFile.readerOptions(conf))
+      val orcReader = OrcFile
+        .createReader(orcFilePath, OrcFile.readerOptions(conf))
       assert(orcReader.getCompression == CompressionKind.ZLIB)
 
-      val copyDf = sqlContext.read
-        .orc(path)
+      val copyDf = sqlContext.read.orc(path)
       checkAnswer(df, copyDf)
     }
   }

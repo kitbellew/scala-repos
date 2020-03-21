@@ -35,8 +35,8 @@ class Zk2ResolverTest
   @volatile
   var inst: ZkInstance = _
   val stabilizationEpoch = 40.seconds
-  val stabilizationTimeout = PatienceConfiguration.Timeout(
-    stabilizationEpoch * 2)
+  val stabilizationTimeout = PatienceConfiguration
+    .Timeout(stabilizationEpoch * 2)
   val stabilizationInterval = PatienceConfiguration.Interval(5.seconds)
 
   val shardId = 42
@@ -72,10 +72,8 @@ class Zk2ResolverTest
 
     val serverSet = new ServerSetImpl(inst.zookeeperClient, "/foo/bar")
     val joinAddr = RandomSocket()
-    val status = serverSet.join(
-      joinAddr,
-      Map.empty[String, InetSocketAddress].asJava,
-      shardId)
+    val status = serverSet
+      .join(joinAddr, Map.empty[String, InetSocketAddress].asJava, shardId)
     eventually {
       assert(
         va.sample() == Addr.Bound(address(joinAddr)),
@@ -105,10 +103,8 @@ class Zk2ResolverTest
     val serverSet = new ServerSetImpl(inst.zookeeperClient, "/foo/bar")
     val serviceAddr = RandomSocket()
     val epepAddr = RandomSocket()
-    val status = serverSet.join(
-      serviceAddr,
-      Map("epep" -> epepAddr).asJava,
-      shardId)
+    val status = serverSet
+      .join(serviceAddr, Map("epep" -> epepAddr).asJava, shardId)
     eventually {
       assert(
         va1.sample() == Addr.Bound(address(serviceAddr)),
@@ -133,12 +129,14 @@ class Zk2ResolverTest
   super.test("statsOf takes the first two components of the first hostname") {
     assert(Zk2Resolver.statsOf("foo-bar.baz.twitter.com") == "foo-bar.baz")
     assert(
-      Zk2Resolver.statsOf(
-        "foo-bar.baz.twitter.com,foo-bar2.baz.twitter.com") == "foo-bar.baz")
+      Zk2Resolver
+        .statsOf(
+          "foo-bar.baz.twitter.com,foo-bar2.baz.twitter.com") == "foo-bar.baz")
     assert(Zk2Resolver.statsOf("foo-bar,foo-baz") == "foo-bar")
     assert(
-      Zk2Resolver.statsOf(
-        "some-very-very-very-long-hostname") == "some-very-very-very-long-hostn")
+      Zk2Resolver
+        .statsOf(
+          "some-very-very-very-long-hostname") == "some-very-very-very-long-hostn")
     assert(Zk2Resolver.statsOf("localhost:2181") == "localhost:2181")
   }
 }

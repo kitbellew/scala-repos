@@ -66,9 +66,7 @@ object GeneratePredicate
     logDebug(
       s"Generated predicate '$predicate':\n${CodeFormatter.format(code)}")
 
-    val p = CodeGenerator
-      .compile(code)
-      .generate(ctx.references.toArray)
+    val p = CodeGenerator.compile(code).generate(ctx.references.toArray)
       .asInstanceOf[Predicate]
     (r: InternalRow) => p.eval(r)
   }

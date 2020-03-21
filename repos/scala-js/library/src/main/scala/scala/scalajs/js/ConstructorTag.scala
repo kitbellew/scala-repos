@@ -25,8 +25,7 @@ final class ConstructorTag[T <: Any] private[scalajs] (val constructor: Dynamic)
     *  method accepts `scala.Any`s as parameters.
     */
   def newInstance(args: scala.Any*): T =
-    Dynamic
-      .newInstance(constructor)(args.asInstanceOf[Seq[Any]]: _*)
+    Dynamic.newInstance(constructor)(args.asInstanceOf[Seq[Any]]: _*)
       .asInstanceOf[T]
 }
 

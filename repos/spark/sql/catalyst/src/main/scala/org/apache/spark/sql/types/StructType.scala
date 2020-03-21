@@ -109,8 +109,8 @@ case class StructType(fields: Array[StructField])
   def fieldNames: Array[String] = fields.map(_.name)
 
   private lazy val fieldNamesSet: Set[String] = fieldNames.toSet
-  private lazy val nameToField: Map[String, StructField] =
-    fields.map(f => f.name -> f).toMap
+  private lazy val nameToField: Map[String, StructField] = fields
+    .map(f => f.name -> f).toMap
   private lazy val nameToIndex: Map[String, Int] = fieldNames.zipWithIndex.toMap
 
   /**
@@ -294,14 +294,14 @@ case class StructType(fields: Array[StructField])
   override def defaultSize: Int = fields.map(_.dataType.defaultSize).sum
 
   override def simpleString: String = {
-    val fieldTypes = fields.map(field =>
-      s"${field.name}:${field.dataType.simpleString}")
+    val fieldTypes = fields
+      .map(field => s"${field.name}:${field.dataType.simpleString}")
     s"struct<${fieldTypes.mkString(",")}>"
   }
 
   override def sql: String = {
-    val fieldTypes = fields.map(f =>
-      s"${quoteIdentifier(f.name)}: ${f.dataType.sql}")
+    val fieldTypes = fields
+      .map(f => s"${quoteIdentifier(f.name)}: ${f.dataType.sql}")
     s"STRUCT<${fieldTypes.mkString(", ")}>"
   }
 
@@ -349,8 +349,8 @@ case class StructType(fields: Array[StructField])
   }
 
   @transient
-  private[sql] lazy val interpretedOrdering = InterpretedOrdering.forSchema(
-    this.fields.map(_.dataType))
+  private[sql] lazy val interpretedOrdering = InterpretedOrdering
+    .forSchema(this.fields.map(_.dataType))
 }
 
 object StructType extends AbstractDataType {
@@ -422,28 +422,23 @@ object StructType extends AbstractDataType {
         val rightMapped = fieldsMap(rightFields)
         leftFields.foreach {
           case leftField @ StructField(leftName, leftType, leftNullable, _) =>
-            rightMapped
-              .get(leftName)
-              .map {
-                case rightField @ StructField(_, rightType, rightNullable, _) =>
-                  leftField.copy(
-                    dataType = merge(leftType, rightType),
-                    nullable = leftNullable || rightNullable)
-              }
-              .orElse {
-                optionalMeta.putBoolean(metadataKeyForOptionalField, true)
-                Some(leftField.copy(metadata = optionalMeta.build()))
-              }
-              .foreach(newFields += _)
+            rightMapped.get(leftName).map {
+              case rightField @ StructField(_, rightType, rightNullable, _) =>
+                leftField.copy(
+                  dataType = merge(leftType, rightType),
+                  nullable = leftNullable || rightNullable)
+            }.orElse {
+              optionalMeta.putBoolean(metadataKeyForOptionalField, true)
+              Some(leftField.copy(metadata = optionalMeta.build()))
+            }.foreach(newFields += _)
         }
 
         val leftMapped = fieldsMap(leftFields)
-        rightFields
-          .filterNot(f => leftMapped.get(f.name).nonEmpty)
-          .foreach { f =>
+        rightFields.filterNot(f => leftMapped.get(f.name).nonEmpty).foreach {
+          f =>
             optionalMeta.putBoolean(metadataKeyForOptionalField, true)
             newFields += f.copy(metadata = optionalMeta.build())
-          }
+        }
 
         StructType(newFields)
 

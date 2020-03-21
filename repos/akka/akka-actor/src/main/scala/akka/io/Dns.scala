@@ -87,15 +87,12 @@ class DnsExt(system: ExtendedActorSystem) extends IO.Extension {
   }
 
   val provider: DnsProvider = system.dynamicAccess
-    .getClassFor[DnsProvider](Settings.ProviderObjectName)
-    .get
-    .newInstance()
+    .getClassFor[DnsProvider](Settings.ProviderObjectName).get.newInstance()
   val cache: Dns = provider.cache
 
   val manager: ActorRef = {
     system.systemActorOf(
-      props = Props(classOf[SimpleDnsManager], this)
-        .withDeploy(Deploy.local)
+      props = Props(classOf[SimpleDnsManager], this).withDeploy(Deploy.local)
         .withDispatcher(Settings.Dispatcher),
       name = "IO-DNS")
   }

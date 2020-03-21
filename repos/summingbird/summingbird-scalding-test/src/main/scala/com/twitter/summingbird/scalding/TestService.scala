@@ -60,28 +60,22 @@ class TestService[K, V](
 
   /** The lasts are computed from the streams */
   lazy val lasts: Map[BatchID, Iterable[(Timestamp, (K, V))]] = {
-    (
-      streams.toList
-        .sortBy(_._1)
-        .foldLeft(Map.empty[BatchID, Map[K, (Timestamp, V)]]) {
-          case (
-                map,
-                (
-                  batch: BatchID,
-                  writes: Iterable[(Timestamp, (K, Option[V]))])) =>
-            val thisBatch = writes.foldLeft(
-              map.get(batch).getOrElse(Map.empty[K, (Timestamp, V)])) {
-              case (innerMap, (time, (k, v))) => v match {
-                  case None    => innerMap - k
-                  case Some(v) => innerMap + (k -> (time -> v))
-                }
-            }
-            map + (batch -> thisBatch)
-        }
-        .mapValues { innerMap =>
-          innerMap.toSeq.map { case (k, (time, v)) => (time, (k, v)) }
-        }
-    ) + (minBatch -> Iterable.empty)
+    (streams.toList.sortBy(_._1).foldLeft(
+      Map.empty[BatchID, Map[K, (Timestamp, V)]]) {
+      case (
+            map,
+            (batch: BatchID, writes: Iterable[(Timestamp, (K, Option[V]))])) =>
+        val thisBatch = writes
+          .foldLeft(map.get(batch).getOrElse(Map.empty[K, (Timestamp, V)])) {
+            case (innerMap, (time, (k, v))) => v match {
+                case None    => innerMap - k
+                case Some(v) => innerMap + (k -> (time -> v))
+              }
+          }
+        map + (batch -> thisBatch)
+    }.mapValues { innerMap =>
+      innerMap.toSeq.map { case (k, (time, v)) => (time, (k, v)) }
+    }) + (minBatch -> Iterable.empty)
   }
 
   def lastMappable(b: BatchID): Mappable[(Timestamp, (K, V))] =

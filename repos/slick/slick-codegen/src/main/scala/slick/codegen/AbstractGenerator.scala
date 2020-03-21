@@ -23,13 +23,12 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
   val ddlEnabled = true
 
   /** Table code generators. */
-  final lazy val tables: Seq[Table] = model.tables
-    .map(Table)
+  final lazy val tables: Seq[Table] = model.tables.map(Table)
     .sortBy(_.TableClass.rawName.toLowerCase)
 
   /** Table code generators indexed by db table name. */
-  final lazy val tablesByName: Map[m.QualifiedName, Table] =
-    tables.map(t => t.model.name -> t).toMap
+  final lazy val tablesByName: Map[m.QualifiedName, Table] = tables
+    .map(t => t.model.name -> t).toMap
 
   // pulled out here to make this common use case simpler
   /** Maps database table name to Table class and value name
@@ -56,8 +55,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     table =>
 
     /** Column code generators in the order they appear in the model. */
-    final lazy val columnsPositional: IndexedSeq[Column] =
-      model.columns.map(Column).toIndexedSeq
+    final lazy val columnsPositional: IndexedSeq[Column] = model.columns
+      .map(Column).toIndexedSeq
 
     /** Database column positions in the desired user-facing order. Currently just moves the positions of AutoInc columns to the end if autoIncLastAsOption is enabled. */
     lazy val desiredColumnOrder: Seq[Int] = {
@@ -70,20 +69,20 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     }
 
     /** Column code generators in the desired user-facing order. */
-    final lazy val columns: Seq[Column] = desiredColumnOrder.map(
-      columnsPositional)
+    final lazy val columns: Seq[Column] = desiredColumnOrder
+      .map(columnsPositional)
 
     /** Column code generators indexed by db column name */
-    final lazy val columnsByName: Map[String, Column] =
-      columns.map(c => c.model.name -> c).toMap
+    final lazy val columnsByName: Map[String, Column] = columns
+      .map(c => c.model.name -> c).toMap
 
     /** Primary key code generator, if this table has one */
-    final lazy val primaryKey: Option[PrimaryKey] = model.primaryKey.map(
-      PrimaryKey)
+    final lazy val primaryKey: Option[PrimaryKey] = model.primaryKey
+      .map(PrimaryKey)
 
     /** Foreign key code generators */
-    final lazy val foreignKeys: Seq[ForeignKey] = model.foreignKeys.map(
-      ForeignKey)
+    final lazy val foreignKeys: Seq[ForeignKey] = model.foreignKeys
+      .map(ForeignKey)
 
     /** Index code generators */
     final lazy val indices: Seq[Index] = model.indices.map(Index)
@@ -204,8 +203,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
               .mkString(", ")
           else ""
         } + {
-          val collidingTerms =
-            columns.map(_.rawName) intersect slickTableTermMembersNoArgs
+          val collidingTerms = columns
+            .map(_.rawName) intersect slickTableTermMembersNoArgs
           if (collidingTerms.nonEmpty)
             "\nNOTE: The following names collided with Scala method names and were disambiguated: " + collidingTerms
               .mkString(", ")
@@ -240,8 +239,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Code for enabled definitions in this table class grouped into logical groups. */
       def body: Seq[Seq[Code]] =
-        definitions
-          .map(_.flatMap(_.getEnabled).map(_.docWithCode))
+        definitions.map(_.flatMap(_.getEnabled).map(_.docWithCode))
           .filter(_.nonEmpty)
     }
 
@@ -306,12 +304,10 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Generates code for the ColumnOptions (DBType, AutoInc, etc.) */
       def options: Iterable[Code] =
-        model.options
-          .filter {
-            case t: SqlProfile.ColumnOption.SqlType => dbType
-            case _                                  => true
-          }
-          .flatMap(columnOptionCode(_).toSeq)
+        model.options.filter {
+          case t: SqlProfile.ColumnOption.SqlType => dbType
+          case _                                  => true
+        }.flatMap(columnOptionCode(_).toSeq)
 
       /** Indicates if a (non-portable) DBType ColumnOption should be generated */
       def dbType: Boolean = false
@@ -321,18 +317,14 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Generates a literal represenation of the default value or None in case of an Option-typed autoinc column */
       def default: Option[Code] =
-        model.options
-          .collect {
-            case RelationalProfile.ColumnOption.Default(value) => value
-            case _ if fakeNullable                             => None
-          }
-          .map(defaultCode)
-          .headOption
+        model.options.collect {
+          case RelationalProfile.ColumnOption.Default(value) => value
+          case _ if fakeNullable                             => None
+        }.map(defaultCode).headOption
 
       def rawName: String = model.name.toCamelCase.uncapitalize
       def doc: String =
-        "Database column " + model.name + " " + model.options
-          .map(_.toString)
+        "Database column " + model.name + " " + model.options.map(_.toString)
           .mkString(", ")
     }
 
@@ -352,8 +344,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     abstract case class PrimaryKeyDef(val model: m.PrimaryKey) extends TermDef {
 
       /** Columns code generators in correct order */
-      final lazy val columns: Seq[Column] = model.columns
-        .map(_.name)
+      final lazy val columns: Seq[Column] = model.columns.map(_.name)
         .map(columnsByName)
 
       /** Name used in the db or a default name */
@@ -389,16 +380,15 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Referencing columns code generators */
       final lazy val referencingColumns: Seq[Column] = model.referencingColumns
-        .map(_.name)
-        .map(columnsByName)
+        .map(_.name).map(columnsByName)
 
       /** Referenced Table code generator */
       final lazy val referencedTable: Table = tablesByName(
         model.referencedTable)
 
       /** Referenced Columns code generators */
-      final lazy val referencedColumns: Seq[TableDef#Column] =
-        model.referencedColumns.map(_.name).map(referencedTable.columnsByName)
+      final lazy val referencedColumns: Seq[TableDef#Column] = model
+        .referencedColumns.map(_.name).map(referencedTable.columnsByName)
 
       /** Name used in the db or a default name */
       def dbName =
@@ -408,11 +398,12 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       final def onDelete: Code = actionCode(model.onDelete)
       def rawName: String =
         disambiguateTerm({
-          val fksToSameTable = foreignKeys.filter(
-            _.referencedTable == referencedTable)
+          val fksToSameTable = foreignKeys
+            .filter(_.referencedTable == referencedTable)
           require(
             fksToSameTable.filter(_.model.name.isEmpty).size <= 1,
-            s"Found multiple unnamed foreign keys to same table, please manually provide names using overrides. ${referencingTable.model.name.table} -> ${referencedTable.model.name.table}"
+            s"Found multiple unnamed foreign keys to same table, please manually provide names using overrides. ${referencingTable
+              .model.name.table} -> ${referencedTable.model.name.table}"
           )
           val baseName = referencedTable.TableClass.rawName.uncapitalize + "Fk"
           disambiguateTerm(
@@ -444,8 +435,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       private val id = freshIdxId
 
       /** Columns code generators */
-      final lazy val columns: Seq[Column] = model.columns
-        .map(_.name)
+      final lazy val columns: Seq[Column] = model.columns.map(_.name)
         .map(columnsByName)
 
       /** Name used in the db or a default name */
@@ -453,8 +443,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def rawName = disambiguateTerm("index" + id)
       def doc: String =
         (if (model.unique) "Uniqueness " else "") +
-          "Index over " + columns
-          .map(_.name)
+          "Index over " + columns.map(_.name)
           .mkString("(", ",", ")") + s" (database name ${dbName})"
     }
 
@@ -651,13 +640,10 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
       * (Warning: Not unicode-safe, uses String#apply)
       */
     final def toCamelCase: String =
-      str.toLowerCase
-        .split("_")
-        .map {
-          case "" => "_"
-          case s  => s
-        } // avoid possible collisions caused by multiple '_'
-        .map(_.capitalize)
-        .mkString("")
+      str.toLowerCase.split("_").map {
+        case "" => "_"
+        case s  => s
+      } // avoid possible collisions caused by multiple '_'
+        .map(_.capitalize).mkString("")
   }
 }

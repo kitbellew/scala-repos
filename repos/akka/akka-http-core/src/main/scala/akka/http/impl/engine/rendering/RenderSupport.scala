@@ -58,8 +58,7 @@ private object RenderSupport {
   }
 
   object ChunkTransformer {
-    val flow = Flow[ChunkStreamPart]
-      .transform(() ⇒ new ChunkTransformer)
+    val flow = Flow[ChunkStreamPart].transform(() ⇒ new ChunkTransformer)
       .named("renderChunks")
   }
 

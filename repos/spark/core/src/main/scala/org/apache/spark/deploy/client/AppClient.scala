@@ -77,7 +77,8 @@ private[spark] class AppClient(
     private val registerMasterThreadPool = ThreadUtils
       .newDaemonCachedThreadPool(
         "appclient-register-master-threadpool",
-        masterRpcAddresses.length // Make sure we can register with all masters at the same time
+        masterRpcAddresses
+          .length // Make sure we can register with all masters at the same time
       )
 
     // A scheduled executor for scheduling the registration actions
@@ -87,8 +88,8 @@ private[spark] class AppClient(
 
     // A thread pool to perform receive then reply actions in a thread so as not to block the
     // event loop.
-    private val askAndReplyThreadPool = ThreadUtils.newDaemonCachedThreadPool(
-      "appclient-receive-and-reply-threadpool")
+    private val askAndReplyThreadPool = ThreadUtils
+      .newDaemonCachedThreadPool("appclient-receive-and-reply-threadpool")
 
     override def onStart(): Unit = {
       try { registerWithMaster(1) }
@@ -190,11 +191,9 @@ private[spark] class AppClient(
             cores: Int,
             memory: Int) =>
         val fullId = appId + "/" + id
-        logInfo("Executor added: %s on %s (%s) with %d cores".format(
-          fullId,
-          workerId,
-          hostPort,
-          cores))
+        logInfo(
+          "Executor added: %s on %s (%s) with %d cores"
+            .format(fullId, workerId, hostPort, cores))
         listener.executorAdded(fullId, workerId, hostPort, cores, memory)
 
       case ExecutorUpdated(id, state, message, exitStatus) =>
@@ -208,7 +207,8 @@ private[spark] class AppClient(
 
       case MasterChanged(masterRef, masterWebUiUrl) =>
         logInfo(
-          "Master has changed, new master is at " + masterRef.address.toSparkURL)
+          "Master has changed, new master is at " + masterRef.address
+            .toSparkURL)
         master = Some(masterRef)
         alreadyDisconnected = false
         masterRef.send(MasterChangeAcknowledged(appId.get))

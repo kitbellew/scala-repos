@@ -102,12 +102,12 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
       import ctx.executionContext
       @volatile
       var rejectedFromInnerRoute = false
-      tapply({ list ⇒ c ⇒ rejectedFromInnerRoute = true; inner(list)(c) })(
-        ctx).fast.flatMap {
-        case RouteResult.Rejected(rejections) if !rejectedFromInnerRoute ⇒
-          recovery(rejections).tapply(inner)(ctx)
-        case x ⇒ FastFuture.successful(x)
-      }
+      tapply({ list ⇒ c ⇒ rejectedFromInnerRoute = true; inner(list)(c) })(ctx)
+        .fast.flatMap {
+          case RouteResult.Rejected(rejections) if !rejectedFromInnerRoute ⇒
+            recovery(rejections).tapply(inner)(ctx)
+          case x ⇒ FastFuture.successful(x)
+        }
     }
 
   /**
@@ -167,9 +167,8 @@ object Directive {
       underlying.filter(predicate, rejections: _*).tflatMap(_ ⇒ Empty)
 
     def filter(predicate: T ⇒ Boolean, rejections: Rejection*): Directive1[T] =
-      underlying.tfilter(
-        { case Tuple1(value) ⇒ predicate(value) },
-        rejections: _*)
+      underlying
+        .tfilter({ case Tuple1(value) ⇒ predicate(value) }, rejections: _*)
   }
 }
 

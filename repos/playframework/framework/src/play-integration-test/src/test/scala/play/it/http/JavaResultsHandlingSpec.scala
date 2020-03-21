@@ -36,9 +36,9 @@ trait JavaResultsHandlingSpec
   "Java results handling" should {
     def makeRequest[T](controller: MockController)(block: WSResponse => T) = {
       implicit val port = testServerPort
-      lazy val app: Application = GuiceApplicationBuilder()
-        .routes { case _ => JAction(app, controller) }
-        .build()
+      lazy val app: Application = GuiceApplicationBuilder().routes {
+        case _ => JAction(app, controller)
+      }.build()
 
       running(TestServer(port, app)) {
         val response = await(wsUrl("/").get())
@@ -50,9 +50,7 @@ trait JavaResultsHandlingSpec
       def action = {
         response.setHeader("Server", "foo")
         response.setHeader("server", "bar")
-        Results
-          .ok("Hello world")
-          .withHeader("Other", "foo")
+        Results.ok("Hello world").withHeader("Other", "foo")
           .withHeader("other", "bar")
       }
     }) { response =>
@@ -98,8 +96,10 @@ trait JavaResultsHandlingSpec
     }) { response =>
       response.header(CONTENT_TYPE) must beSome.like {
         case value =>
-          value.toLowerCase(
-            java.util.Locale.ENGLISH) must_== "text/event-stream; charset=utf-8"
+          value
+            .toLowerCase(
+              java.util.Locale
+                .ENGLISH) must_== "text/event-stream; charset=utf-8"
       }
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone
@@ -140,8 +140,7 @@ trait JavaResultsHandlingSpec
     "chunk event source results" in makeRequest(new MockController {
       def action = {
         import scala.collection.JavaConverters._
-        val dataSource = akka.stream.javadsl.Source
-          .from(List("a", "b").asJava)
+        val dataSource = akka.stream.javadsl.Source.from(List("a", "b").asJava)
           .map {
             new akka.japi.function.Function[String, EventSource.Event] {
               def apply(t: String) = EventSource.Event.event(t)
@@ -153,8 +152,8 @@ trait JavaResultsHandlingSpec
     }) { response =>
       response.header(CONTENT_TYPE) must beSome.like {
         case value =>
-          value.toLowerCase(
-            java.util.Locale.ENGLISH) must_== "text/event-stream"
+          value
+            .toLowerCase(java.util.Locale.ENGLISH) must_== "text/event-stream"
       }
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone

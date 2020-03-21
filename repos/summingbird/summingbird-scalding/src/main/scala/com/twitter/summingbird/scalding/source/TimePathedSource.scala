@@ -56,11 +56,8 @@ object TimePathedSource extends java.io.Serializable {
           case None => None
           case Some(newInit) if newInit.contains(init) =>
             sys.error(
-              "DateRange expansion ill-behaved: %s -> %s -> %s -> %s".format(
-                init,
-                expanded,
-                subset,
-                newInit))
+              "DateRange expansion ill-behaved: %s -> %s -> %s -> %s"
+                .format(init, expanded, subset, newInit))
           case Some(newInit) => minifyRec(newInit, expander, vertractor)
         }
     }
@@ -90,17 +87,12 @@ object TimePathedSource extends java.io.Serializable {
       "%1$tH" -> Hours(1),
       "%1$td" -> Days(1)(tz),
       "%1$tm" -> Months(1)(tz),
-      "%1$tY" -> Years(1)(tz))
-      .find { unitDur: (String, Duration) => pattern.contains(unitDur._1) }
-      .map(_._2)
+      "%1$tY" -> Years(1)(tz)).find { unitDur: (String, Duration) =>
+      pattern.contains(unitDur._1)
+    }.map(_._2)
 
     def allPaths(dateRange: DateRange): Iterable[(DateRange, String)] =
-      stepSize
-        .map {
-          dateRange
-            .each(_)
-            .map { dr => (dr, toPath(dr.start)) }
-        }
+      stepSize.map { dateRange.each(_).map { dr => (dr, toPath(dr.start)) } }
         .getOrElse(List(
           (dateRange, pattern)
         )) // This must not have any time after all
@@ -108,8 +100,7 @@ object TimePathedSource extends java.io.Serializable {
     def pathIsGood(p: String): Boolean = {
       val path = new Path(p)
       val valid = Option(path.getFileSystem(mode.conf).globStatus(path))
-        .map(_.length > 0)
-        .getOrElse(false)
+        .map(_.length > 0).getOrElse(false)
       logger.debug(
         "Tested input %s, Valid: %s. Conditions: Any files present, DateRange: %s"
           .format(p, valid, desired))
@@ -117,9 +108,7 @@ object TimePathedSource extends java.io.Serializable {
     }
 
     val vertractor = { (dr: DateRange) =>
-      allPaths(dr)
-        .takeWhile { case (_, path) => pathIsGood(path) }
-        .map(_._1)
+      allPaths(dr).takeWhile { case (_, path) => pathIsGood(path) }.map(_._1)
         .reduceOption { (older, newer) => DateRange(older.start, newer.end) }
     }
     minify(expander, vertractor)(desired)

@@ -33,9 +33,8 @@ object Test {
     val tools: List[Tool { type settingsType = self.settingsType }]
 
     protected def f: List[commonModuleType] = {
-      val inputGrists = tools.flatMap(
-        _.inputGrist
-      ) // val inputGrists: List[gristType] =
+      val inputGrists = tools
+        .flatMap(_.inputGrist) // val inputGrists: List[gristType] =
       inputGrists.map(_.module)
     }
 

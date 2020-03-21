@@ -114,10 +114,8 @@ class ReceivedBlockHandlerSuite
         case (data, blockIds, storeResults) =>
           // Verify the data in block manager is correct
           val storedData = blockIds.flatMap { blockId =>
-            blockManager
-              .getLocalValues(blockId)
-              .map(_.data.map(_.toString).toList)
-              .getOrElse(List.empty)
+            blockManager.getLocalValues(blockId)
+              .map(_.data.map(_.toString).toList).getOrElse(List.empty)
           }.toList
           storedData shouldEqual data
 
@@ -141,10 +139,8 @@ class ReceivedBlockHandlerSuite
         case (data, blockIds, storeResults) =>
           // Verify the data in block manager is correct
           val storedData = blockIds.flatMap { blockId =>
-            blockManager
-              .getLocalValues(blockId)
-              .map(_.data.map(_.toString).toList)
-              .getOrElse(List.empty)
+            blockManager.getLocalValues(blockId)
+              .map(_.data.map(_.toString).toList).getOrElse(List.empty)
           }.toList
           storedData shouldEqual data
 
@@ -433,17 +429,15 @@ class ReceivedBlockHandlerSuite
     // Handle error in iterator (e.g. divide-by-zero error)
     intercept[Exception] {
       val iterator = (10 to (-10, -1)).toIterator.map { _ / 0 }
-      receivedBlockHandler.storeBlock(
-        StreamBlockId(1, 1),
-        IteratorBlock(iterator))
+      receivedBlockHandler
+        .storeBlock(StreamBlockId(1, 1), IteratorBlock(iterator))
     }
 
     // Handler error in block manager storing (e.g. too big block)
     intercept[SparkException] {
       val byteBuffer = ByteBuffer.wrap(new Array[Byte](blockManagerSize + 1))
-      receivedBlockHandler.storeBlock(
-        StreamBlockId(1, 1),
-        ByteBufferBlock(byteBuffer))
+      receivedBlockHandler
+        .storeBlock(StreamBlockId(1, 1), ByteBufferBlock(byteBuffer))
     }
   }
 
@@ -476,17 +470,13 @@ class ReceivedBlockHandlerSuite
       blocks: Seq[ReceivedBlock])
       : (Seq[StreamBlockId], Seq[ReceivedBlockStoreResult]) = {
     val blockIds = Seq.fill(blocks.size)(generateBlockId())
-    val storeResults = blocks
-      .zip(blockIds)
-      .map {
-        case (block, id) =>
-          manualClock.advance(
-            500
-          ) // log rolling interval set to 1000 ms through SparkConf
-          logDebug("Inserting block " + id)
-          receivedBlockHandler.storeBlock(id, block)
-      }
-      .toList
+    val storeResults = blocks.zip(blockIds).map {
+      case (block, id) =>
+        manualClock
+          .advance(500) // log rolling interval set to 1000 ms through SparkConf
+        logDebug("Inserting block " + id)
+        receivedBlockHandler.storeBlock(id, block)
+    }.toList
     logDebug("Done inserting")
     (blockIds, storeResults)
   }

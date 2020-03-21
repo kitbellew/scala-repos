@@ -290,8 +290,8 @@ private[concurrent] object Promise {
 
     @throws(classOf[Exception])
     final def result(atMost: Duration)(implicit permit: CanAwait): T =
-      ready(
-        atMost).value.get.get // ready throws TimeoutException if timeout so value.get is safe here
+      ready(atMost).value.get
+        .get // ready throws TimeoutException if timeout so value.get is safe here
 
     def value: Option[Try[T]] = value0
 
@@ -332,8 +332,8 @@ private[concurrent] object Promise {
         case raw: List[_] =>
           val cur = raw.asInstanceOf[List[CallbackRunnable[T]]]
           if (compareAndSet(cur, v)) cur else tryCompleteAndGetListeners(v)
-        case dp: DefaultPromise[_] =>
-          compressedRoot(dp).tryCompleteAndGetListeners(v)
+        case dp: DefaultPromise[_] => compressedRoot(dp)
+            .tryCompleteAndGetListeners(v)
         case _ => null
       }
     }
@@ -350,8 +350,8 @@ private[concurrent] object Promise {
     private def dispatchOrAddCallback(runnable: CallbackRunnable[T]): Unit = {
       get() match {
         case r: Try[_] => runnable.executeWithValue(r.asInstanceOf[Try[T]])
-        case dp: DefaultPromise[_] =>
-          compressedRoot(dp).dispatchOrAddCallback(runnable)
+        case dp: DefaultPromise[_] => compressedRoot(dp)
+            .dispatchOrAddCallback(runnable)
         case listeners: List[_] =>
           if (compareAndSet(listeners, runnable :: listeners)) ()
           else dispatchOrAddCallback(runnable)
@@ -383,8 +383,7 @@ private[concurrent] object Promise {
           case dp: DefaultPromise[_] => compressedRoot(dp).link(target)
           case listeners: List[_] if compareAndSet(listeners, target) =>
             if (listeners.nonEmpty)
-              listeners
-                .asInstanceOf[List[CallbackRunnable[T]]]
+              listeners.asInstanceOf[List[CallbackRunnable[T]]]
                 .foreach(target.dispatchOrAddCallback(_))
           case _ => link(target)
         }

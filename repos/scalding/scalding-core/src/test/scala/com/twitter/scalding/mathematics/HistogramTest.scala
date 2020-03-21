@@ -20,18 +20,14 @@ import com.twitter.scalding._
 
 class HistogramJob(args: Args) extends Job(args) {
   try {
-    val hist = Tsv("input", 'n)
-      .groupAll { _.histogram('n -> 'hist) }
+    val hist = Tsv("input", 'n).groupAll { _.histogram('n -> 'hist) }
 
-    hist
-      .flatMapTo('hist -> ('bin, 'cdf)) { h: Histogram => h.cdf }
+    hist.flatMapTo('hist -> ('bin, 'cdf)) { h: Histogram => h.cdf }
       .write(Tsv("cdf-output"))
 
-    hist
-      .mapTo('hist -> ('min, 'max, 'sum, 'mean, 'stdDev)) { h: Histogram =>
-        (h.min, h.max, h.sum, h.mean, h.stdDev)
-      }
-      .write(Tsv("stats-output"))
+    hist.mapTo('hist -> ('min, 'max, 'sum, 'mean, 'stdDev)) { h: Histogram =>
+      (h.min, h.max, h.sum, h.mean, h.stdDev)
+    }.write(Tsv("stats-output"))
 
   } catch { case e: Exception => e.printStackTrace() }
 }
@@ -47,8 +43,7 @@ class HistogramJobTest extends WordSpec with Matchers {
     (4.0, 0.9),
     (8.0, 1.0))
   "A HistogramJob" should {
-    JobTest(new HistogramJob(_))
-      .source(Tsv("input", ('n)), inputData)
+    JobTest(new HistogramJob(_)).source(Tsv("input", ('n)), inputData)
       .sink[(Double, Double, Double, Double, Double)](Tsv("stats-output")) {
         buf =>
           val (min, max, sum, mean, stdDev) = buf.head
@@ -67,11 +62,8 @@ class HistogramJobTest extends WordSpec with Matchers {
           "correctly compute the stdDev" in {
             stdDev shouldBe 1.989974874 +- 0.000000001
           }
-      }
-      .sink[(Double, Double)](Tsv("cdf-output")) { buf =>
+      }.sink[(Double, Double)](Tsv("cdf-output")) { buf =>
         "correctly compute a CDF" in { buf.toSet shouldBe cdfOutput }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 }

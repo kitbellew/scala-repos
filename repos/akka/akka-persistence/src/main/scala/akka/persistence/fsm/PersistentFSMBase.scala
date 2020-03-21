@@ -180,9 +180,10 @@ trait PersistentFSMBase[S, D, E]
     * @return descriptor for staying in current state
     */
   final def stay(): State =
-    goto(currentState.stateName).withNotification(
-      false
-    ) // cannot directly use currentState because of the timeout field
+    goto(currentState.stateName)
+      .withNotification(
+        false
+      ) // cannot directly use currentState because of the timeout field
 
   /**
     * Produce change descriptor to stop this FSM actor with reason "Normal".
@@ -517,10 +518,9 @@ trait PersistentFSMBase[S, D, E]
         val t = timeout.get
         if (t.isFinite && t.length >= 0) {
           import context.dispatcher
-          timeoutFuture = Some(context.system.scheduler.scheduleOnce(
-            t,
-            self,
-            TimeoutMarker(generation)))
+          timeoutFuture = Some(
+            context.system.scheduler
+              .scheduleOnce(t, self, TimeoutMarker(generation)))
         }
       }
     }

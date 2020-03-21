@@ -42,8 +42,7 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val driverId = Option(request.getParameter("driverId"))
     val logType = request.getParameter("logType")
     val offset = Option(request.getParameter("offset")).map(_.toLong)
-    val byteLength = Option(request.getParameter("byteLength"))
-      .map(_.toInt)
+    val byteLength = Option(request.getParameter("byteLength")).map(_.toInt)
       .getOrElse(defaultBytes)
 
     val logDir = (appId, executorId, driverId) match {
@@ -71,8 +70,7 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val driverId = Option(request.getParameter("driverId"))
     val logType = request.getParameter("logType")
     val offset = Option(request.getParameter("offset")).map(_.toLong)
-    val byteLength = Option(request.getParameter("byteLength"))
-      .map(_.toInt)
+    val byteLength = Option(request.getParameter("byteLength")).map(_.toInt)
       .getOrElse(defaultBytes)
 
     val (logDir, params, pageName) = (appId, executorId, driverId) match {
@@ -100,12 +98,11 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val backButton =
       if (startByte > 0) {
         <a href={
-          "?%s&logType=%s&offset=%s&byteLength=%s"
-            .format(
-              params,
-              logType,
-              math.max(startByte - byteLength, 0),
-              byteLength)
+          "?%s&logType=%s&offset=%s&byteLength=%s".format(
+            params,
+            logType,
+            math.max(startByte - byteLength, 0),
+            byteLength)
         }>
           <button type="button" class="btn btn-default">
             Previous {Utils.bytesToString(math.min(byteLength, startByte))}
@@ -120,11 +117,8 @@ private[ui] class LogPage(parent: WorkerWebUI)
     val nextButton =
       if (endByte < logLength) {
         <a href={
-          "?%s&logType=%s&offset=%s&byteLength=%s".format(
-            params,
-            logType,
-            endByte,
-            byteLength)
+          "?%s&logType=%s&offset=%s&byteLength=%s"
+            .format(params, logType, endByte, byteLength)
         }>
           <button type="button" class="btn btn-default">
             Next {
@@ -178,9 +172,8 @@ private[ui] class LogPage(parent: WorkerWebUI)
     }
 
     try {
-      val files = RollingFileAppender.getSortedRolledOverFiles(
-        logDirectory,
-        logType)
+      val files = RollingFileAppender
+        .getSortedRolledOverFiles(logDirectory, logType)
       logDebug(
         s"Sorted log files of type $logType in $logDirectory:\n${files.mkString("\n")}")
 

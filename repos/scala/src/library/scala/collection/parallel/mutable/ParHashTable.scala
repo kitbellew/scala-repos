@@ -73,10 +73,8 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
         append("current entry: " + es)
         append("underlying from " + idx + " until " + until)
         append(
-          itertable
-            .slice(idx, until)
-            .map(x => if (x != null) x.toString else "n/a")
-            .mkString(" | "))
+          itertable.slice(idx, until).map(x =>
+            if (x != null) x.toString else "n/a").mkString(" | "))
         append("\\--------------------/")
       }
     }
@@ -93,9 +91,10 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
           // second iterator params
           val sidx = idx + divsz + 1 // + 1 preserves iteration invariant
           val suntil = until
-          val ses = itertable(sidx - 1).asInstanceOf[
-            Entry
-          ] // sidx - 1 ensures counting from the right spot
+          val ses = itertable(sidx - 1)
+            .asInstanceOf[
+              Entry
+            ] // sidx - 1 ensures counting from the right spot
           val stotal = calcNumElems(
             sidx - 1,
             suntil,

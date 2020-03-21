@@ -75,16 +75,12 @@ class ProtectedBranchServiceSpec
         generateNewUserWithDBRepository("user1", "repo1")
         enableBranchProtection("user1", "repo1", "branch", false, Nil)
         assert(
-          getProtectedBranchInfo(
-            "user1",
-            "repo1",
-            "branch").includeAdministrators == false)
+          getProtectedBranchInfo("user1", "repo1", "branch")
+            .includeAdministrators == false)
         enableBranchProtection("user1", "repo1", "branch", true, Nil)
         assert(
-          getProtectedBranchInfo(
-            "user1",
-            "repo1",
-            "branch").includeAdministrators == false)
+          getProtectedBranchInfo("user1", "repo1", "branch")
+            .includeAdministrators == false)
       }
     }
     it("getProtectedBranchList") {

@@ -105,8 +105,8 @@ class BinomialHeap[T <% Ordered[T]]
     Iterators.merge((trees map treeIterator): _*)(comp)
 
   private def treeIterator(n: Node[T]): Iterator[T] = {
-    Iterators.merge(
-      (Iterator.single(n.x) :: (n.children map treeIterator)): _*)(comp)
+    Iterators
+      .merge((Iterator.single(n.x) :: (n.children map treeIterator)): _*)(comp)
   }
 
   override def toString() = iterator.mkString("Heap(", ",", ")")

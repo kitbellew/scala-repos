@@ -95,8 +95,8 @@ trait MVCHelper extends LiftRules.DispatchPF {
         () => resp
 
       case _ => S.init(Box !! in, curSession.is) {
-          val resp =
-            dispatch.find(_.isDefinedAt(path)).get.apply(path).toResponse
+          val resp = dispatch.find(_.isDefinedAt(path)).get.apply(path)
+            .toResponse
 
           () => resp
         }
@@ -147,11 +147,8 @@ trait MVCHelper extends LiftRules.DispatchPF {
           session <- S.session
           req <- S.request
           template <- templateForPath(req)
-          resp <- session.processTemplate(
-            Full(bind(template)),
-            req,
-            req.path,
-            200)
+          resp <- session
+            .processTemplate(Full(bind(template)), req, req.path, 200)
         } yield resp
       }
 

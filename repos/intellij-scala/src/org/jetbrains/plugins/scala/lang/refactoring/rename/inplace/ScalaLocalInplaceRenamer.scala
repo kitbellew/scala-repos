@@ -38,8 +38,8 @@ class ScalaLocalInplaceRenamer(
       initialName,
       oldName) {
 
-  private val elementRange = editor.getDocument.createRangeMarker(
-    elementToRename.getTextRange)
+  private val elementRange = editor.getDocument
+    .createRangeMarker(elementToRename.getTextRange)
 
   def this(
       @NotNull
@@ -55,8 +55,7 @@ class ScalaLocalInplaceRenamer(
   override def collectAdditionalElementsToRename(
       stringUsages: util.List[Pair[PsiElement, TextRange]]): Unit = {
     val stringToSearch: String = ScalaNamesUtil.scalaName(elementToRename)
-    val currentFile: PsiFile = PsiDocumentManager
-      .getInstance(myProject)
+    val currentFile: PsiFile = PsiDocumentManager.getInstance(myProject)
       .getPsiFile(myEditor.getDocument)
     if (stringToSearch != null) {
       TextOccurrencesUtil.processUsagesInStringsAndComments(

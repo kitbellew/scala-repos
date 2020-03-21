@@ -83,22 +83,24 @@ object SnapshotFailureRobustnessSpec {
 
   class DeleteFailingLocalSnapshotStore extends LocalSnapshotStore {
     override def deleteAsync(metadata: SnapshotMetadata): Future[Unit] = {
-      super.deleteAsync(
-        metadata
-      ) // we actually delete it properly, but act as if it failed
-      Future.failed(new IOException(
-        "Failed to delete snapshot for some reason!"))
+      super
+        .deleteAsync(
+          metadata
+        ) // we actually delete it properly, but act as if it failed
+      Future
+        .failed(new IOException("Failed to delete snapshot for some reason!"))
     }
 
     override def deleteAsync(
         persistenceId: String,
         criteria: SnapshotSelectionCriteria): Future[Unit] = {
-      super.deleteAsync(
-        persistenceId,
-        criteria
-      ) // we actually delete it properly, but act as if it failed
-      Future.failed(new IOException(
-        "Failed to delete snapshot for some reason!"))
+      super
+        .deleteAsync(
+          persistenceId,
+          criteria
+        ) // we actually delete it properly, but act as if it failed
+      Future
+        .failed(new IOException("Failed to delete snapshot for some reason!"))
     }
   }
 }

@@ -154,10 +154,8 @@ class ScalaFindUsagesHandler(
           isSingleFile,
           this)
       case _ =>
-        super.getFindUsagesDialog(
-          isSingleFile,
-          toShowInNewTab,
-          mustOpenInNewTab)
+        super
+          .getFindUsagesDialog(isSingleFile, toShowInNewTab, mustOpenInNewTab)
     }
   }
 
@@ -230,8 +228,7 @@ class ScalaFindUsagesHandler(
         }
         if (s.isImplementingTypeDefinitions) {
           val res = new mutable.HashSet[PsiClass]()
-          ClassInheritorsSearch
-            .search(clazz, true)
+          ClassInheritorsSearch.search(clazz, true)
             .forEach(new Processor[PsiClass] {
               def process(t: PsiClass): Boolean = {
                 t match {
@@ -252,9 +249,8 @@ class ScalaFindUsagesHandler(
     inReadAction {
       element match {
         case function: ScFunction if !function.isLocal =>
-          for (elem <- ScalaOverridingMemberSearcher.search(
-                 function,
-                 deep = true)) {
+          for (elem <- ScalaOverridingMemberSearcher
+                 .search(function, deep = true)) {
             val processed = super.processElementUsages(elem, processor, options)
             if (!processed) return false
           }

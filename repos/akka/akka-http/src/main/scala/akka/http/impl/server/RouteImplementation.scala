@@ -97,12 +97,10 @@ private[http] object RouteImplementation
 
         case MethodFilter(m) ⇒ method(m.asScala)
         case Extract(extractions) ⇒ extractRequestContext.flatMap { ctx ⇒
-            extractions
-              .map { e ⇒
-                e.directive.flatMap(
-                  addExtraction(e.asInstanceOf[RequestVal[Any]], _))
-              }
-              .reduce(_ & _)
+            extractions.map { e ⇒
+              e.directive
+                .flatMap(addExtraction(e.asInstanceOf[RequestVal[Any]], _))
+            }.reduce(_ & _)
           }
 
         case BasicAuthentication(authenticator) ⇒ authenticateBasicAsync(
@@ -125,11 +123,8 @@ private[http] object RouteImplementation
                   }
               }
 
-              authenticator
-                .authenticate(javaCreds)
-                .toScala
-                .map(_.asScala)(
-                  akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
+              authenticator.authenticate(javaCreds).toScala.map(_.asScala)(
+                akka.dispatch.ExecutionContexts.sameThreadExecutionContext)
             }
           ).flatMap { user ⇒
             addExtraction(authenticator.asInstanceOf[RequestVal[Any]], user)
@@ -155,9 +150,7 @@ private[http] object RouteImplementation
                   }
               }
 
-              authenticator
-                .authenticate(javaCreds)
-                .toScala
+              authenticator.authenticate(javaCreds).toScala
                 .map(_.asScala)(sameThreadExecutionContext)
             }
           ).flatMap { user ⇒
@@ -176,8 +169,8 @@ private[http] object RouteImplementation
         case SchemeFilter(schemeName) ⇒ scheme(schemeName)
 
         case HandleExceptions(handler) ⇒
-          val pf: akka.http.scaladsl.server.ExceptionHandler =
-            akka.http.scaladsl.server.ExceptionHandler {
+          val pf: akka.http.scaladsl.server.ExceptionHandler = akka.http
+            .scaladsl.server.ExceptionHandler {
               case e: RuntimeException ⇒ apply(handler.handle(e))
             }
           handleExceptions(pf)
@@ -192,8 +185,8 @@ private[http] object RouteImplementation
       }
 
     route match {
-      case route: DirectiveRoute ⇒
-        directiveFor(route).apply(fromAlternatives(route.children))
+      case route: DirectiveRoute ⇒ directiveFor(route)
+          .apply(fromAlternatives(route.children))
       case GetFromResource(path, contentType, classLoader) ⇒
         getFromResource(path, contentType.asScala, classLoader)
       case GetFromResourceDirectory(path, classLoader, resolver) ⇒
@@ -223,8 +216,7 @@ private[http] object RouteImplementation
       case dyn: DynamicDirectiveRoute1[t1Type] ⇒
         def runToRoute(t1: t1Type): ScalaRoute =
           apply(
-            dyn
-              .createDirective(t1)
+            dyn.createDirective(t1)
               .route(dyn.innerRoute, dyn.moreInnerRoutes: _*))
 
         requestValToDirective(dyn.value1)(runToRoute)
@@ -232,8 +224,7 @@ private[http] object RouteImplementation
       case dyn: DynamicDirectiveRoute2[t1Type, t2Type] ⇒
         def runToRoute(t1: t1Type, t2: t2Type): ScalaRoute =
           apply(
-            dyn
-              .createDirective(t1, t2)
+            dyn.createDirective(t1, t2)
               .route(dyn.innerRoute, dyn.moreInnerRoutes: _*))
 
         (requestValToDirective(dyn.value1) & requestValToDirective(dyn.value2))(
@@ -243,8 +234,7 @@ private[http] object RouteImplementation
         (
             ctx ⇒
               o.handle(new RequestContextImpl(ctx))
-                .asInstanceOf[RouteResultImpl]
-                .underlying)
+                .asInstanceOf[RouteResultImpl].underlying)
       case p: Product ⇒ extractExecutionContext { implicit ec ⇒
           complete((500, s"Not implemented: ${p.productPrefix}"))
         }
@@ -270,15 +260,12 @@ private[http] object RouteImplementation
         Tuple1(prefix._1 ++ suffix._1)
     }
     def toScala(matcher: PathMatcher[_]): ScalaPathMatcher[ValMap] =
-      matcher
-        .asInstanceOf[PathMatcherImpl[_]]
-        .matcher
+      matcher.asInstanceOf[PathMatcherImpl[_]].matcher
         .transform(_.map(v ⇒ Tuple1(Map(matcher -> v._1))))
     def addExtractions(valMap: T): Directive0 =
       transformExtractionMap(
         _.addAll(valMap.asInstanceOf[Map[RequestVal[_], Any]]))
-    val reduced: ScalaPathMatcher[ValMap] = matchers
-      .map(toScala)
+    val reduced: ScalaPathMatcher[ValMap] = matchers.map(toScala)
       .reduce(_.~(_)(AddToMapJoin))
     directive(reduced.asInstanceOf[PathMatcher1[T]]).flatMap(addExtractions)
   }

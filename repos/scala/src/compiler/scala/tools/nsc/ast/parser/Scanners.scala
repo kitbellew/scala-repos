@@ -255,7 +255,8 @@ trait Scanners extends ScannersCommon {
       *  @pre inStringInterpolation
       */
     private def inMultiLineInterpolation =
-      inStringInterpolation && sepRegions.tail.nonEmpty && sepRegions.tail.head == STRINGPART
+      inStringInterpolation && sepRegions.tail.nonEmpty && sepRegions.tail
+        .head == STRINGPART
 
     /** read next token and return last offset
       */
@@ -549,8 +550,8 @@ trait Scanners extends ScannersCommon {
               getOperatorRest()
             } else {
               syntaxError(
-                "illegal character '" + ("" + '\\' + 'u' + "%04x".format(
-                  ch.toInt)) + "'")
+                "illegal character '" + ("" + '\\' + 'u' + "%04x"
+                  .format(ch.toInt)) + "'")
               nextChar()
             }
           }

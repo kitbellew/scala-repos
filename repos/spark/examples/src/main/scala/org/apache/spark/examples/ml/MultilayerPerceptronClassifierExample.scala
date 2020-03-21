@@ -38,8 +38,7 @@ object MultilayerPerceptronClassifierExample {
 
     // $example on$
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = sqlContext.read
-      .format("libsvm")
+    val data = sqlContext.read.format("libsvm")
       .load("data/mllib/sample_multiclass_classification_data.txt")
     // Split the data into train and test
     val splits = data.randomSplit(Array(0.6, 0.4), seed = 1234L)
@@ -50,11 +49,8 @@ object MultilayerPerceptronClassifierExample {
     // and output of size 3 (classes)
     val layers = Array[Int](4, 5, 4, 3)
     // create the trainer and set its parameters
-    val trainer = new MultilayerPerceptronClassifier()
-      .setLayers(layers)
-      .setBlockSize(128)
-      .setSeed(1234L)
-      .setMaxIter(100)
+    val trainer = new MultilayerPerceptronClassifier().setLayers(layers)
+      .setBlockSize(128).setSeed(1234L).setMaxIter(100)
     // train the model
     val model = trainer.fit(train)
     // compute precision on the test set

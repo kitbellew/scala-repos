@@ -76,9 +76,7 @@ object PCDataXmlParserSpec extends Specification with XmlMatchers {
     }
 
     "Parse a document with xml and doctype" in {
-      PCDataXmlParser(data3)
-        .openOrThrowException("Test")
-        .apply(0)
+      PCDataXmlParser(data3).openOrThrowException("Test").apply(0)
         .label must_== "html"
     }
 

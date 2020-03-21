@@ -59,11 +59,10 @@ object NameSuggester {
     for (tpe <- types.reverse) { generateNamesByType(tpe)(names, validator) }
     generateNamesByExpr(expr)(names, validator)
 
-    val result =
-      (for (name <- names if name != "" && ScalaNamesUtil.isIdentifier(
-              name) || name == "class") yield {
-        if (name != "class") name else "clazz"
-      }).toList.reverse.toArray
+    val result = (for (name <- names if name != "" && ScalaNamesUtil
+                         .isIdentifier(name) || name == "class") yield {
+      if (name != "class") name else "clazz"
+    }).toList.reverse.toArray
     if (result.size > 0) result
     else Array(validator.validateName("value", increaseNumber = true))
   }
@@ -73,12 +72,10 @@ object NameSuggester {
     generateNamesByType(typez)(
       names,
       emptyValidator(DecompilerUtil.obtainProject))
-    val result = names
-      .map {
-        case "class" => "clazz"
-        case s       => s
-      }
-      .filter(name => name != "" && ScalaNamesUtil.isIdentifier(name))
+    val result = names.map {
+      case "class" => "clazz"
+      case s       => s
+    }.filter(name => name != "" && ScalaNamesUtil.isIdentifier(name))
     if (result.length == 0) { Array("value") }
     else result.reverse.toArray
   }
@@ -124,8 +121,7 @@ object NameSuggester {
         case ScDesignatorType(e) =>
           val camelNames = getCamelNames(e.name)
           camelNames.foreach(addPlural)
-        case _ =>
-          namesByType(arg, withPlurals = false, shortVersion = false)
+        case _ => namesByType(arg, withPlurals = false, shortVersion = false)
             .foreach(addPlural)
       }
     }
@@ -171,12 +167,11 @@ object NameSuggester {
         val baseJavaMapClassName = "java.util.Map"
         val eitherClassName = "scala.util.Either"
         def isInheritor(c: PsiClass, baseFqn: String) = {
-          val baseClass = JavaPsiFacade
-            .getInstance(project)
+          val baseClass = JavaPsiFacade.getInstance(project)
             .findClass(baseFqn, GlobalSearchScope.allScope(project))
-          baseClass != null && (c.isInheritor(
-            baseClass,
-            true) || ScEquivalenceUtil.areClassesEquivalent(c, baseClass))
+          baseClass != null && (c
+            .isInheritor(baseClass, true) || ScEquivalenceUtil
+            .areClassesEquivalent(c, baseClass))
         }
         val needPrefix = Map(
           "scala.Option" -> "maybe",

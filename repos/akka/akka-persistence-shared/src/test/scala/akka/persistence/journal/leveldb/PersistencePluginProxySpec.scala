@@ -55,12 +55,10 @@ object PersistencePluginProxySpec {
       |akka.extensions = ["akka.persistence.Persistence"]
       |akka.persistence.journal.auto-start-journals = [""]
       |akka.persistence.journal.proxy.target-journal-address = "${system
-                                   .asInstanceOf[ExtendedActorSystem]
-                                   .provider
+                                   .asInstanceOf[ExtendedActorSystem].provider
                                    .getDefaultAddress}"
       |akka.persistence.snapshot-store.proxy.target-snapshot-store-address = "${system
-                                   .asInstanceOf[ExtendedActorSystem]
-                                   .provider
+                                   .asInstanceOf[ExtendedActorSystem].provider
                                    .getDefaultAddress}"
     """.stripMargin)
 
@@ -86,7 +84,8 @@ object PersistencePluginProxySpec {
 
 class PersistencePluginProxySpec
     extends AkkaSpec(
-      PersistencePluginProxySpec.startTargetConfig withFallback PersistencePluginProxySpec.config)
+      PersistencePluginProxySpec
+        .startTargetConfig withFallback PersistencePluginProxySpec.config)
     with Cleanup {
   import PersistencePluginProxySpec._
 
@@ -104,8 +103,8 @@ class PersistencePluginProxySpec
   "A persistence proxy" can {
     "be shared by multiple actor systems" in {
 
-      val address =
-        system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
+      val address = system.asInstanceOf[ExtendedActorSystem].provider
+        .getDefaultAddress
 
       val probeA = new TestProbe(systemA)
       val probeB = new TestProbe(systemB)
@@ -121,10 +120,10 @@ class PersistencePluginProxySpec
       probeA.expectMsg("a1")
       probeB.expectMsg("b1")
 
-      val recoveredAppA = systemA.actorOf(
-        Props(classOf[ExampleApp], probeA.ref))
-      val recoveredAppB = systemB.actorOf(
-        Props(classOf[ExampleApp], probeB.ref))
+      val recoveredAppA = systemA
+        .actorOf(Props(classOf[ExampleApp], probeA.ref))
+      val recoveredAppB = systemB
+        .actorOf(Props(classOf[ExampleApp], probeB.ref))
 
       recoveredAppA ! "a2"
       recoveredAppB ! "b2"

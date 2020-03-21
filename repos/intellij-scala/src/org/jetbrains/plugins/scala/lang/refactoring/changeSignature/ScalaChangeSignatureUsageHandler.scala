@@ -87,9 +87,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       case Some(result) => result
       case None         => return
     }
-    val newTypeElem = ScalaPsiElementFactory.createTypeElementFromText(
-      substType.canonicalText,
-      element.getManager)
+    val newTypeElem = ScalaPsiElementFactory
+      .createTypeElementFromText(substType.canonicalText, element.getManager)
 
     val oldTypeElem = element match {
       case fun: ScFunction                                     => fun.returnTypeElement
@@ -111,10 +110,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           case cp: ScClassParameter    => (cp.getParent, cp)
           case ctx                     => (ctx, ctx.getLastChild)
         }
-        AddOnlyStrategy.withoutEditor.addTypeAnnotation(
-          substType,
-          context,
-          anchor)
+        AddOnlyStrategy.withoutEditor
+          .addTypeAnnotation(substType, context, anchor)
     }
   }
 
@@ -152,9 +149,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
                   NameSuggester.suggestNamesByType(param.paramType)(0)
               }
           paramsBuf = paramsBuf :+ paramName
-          val text = ScalaPsiElementFactory.createExpressionFromText(
-            paramName,
-            arg.getManager)
+          val text = ScalaPsiElementFactory
+            .createExpressionFromText(paramName, arg.getManager)
           arg.replaceExpression(text, removeParenthesis = true)
         }
         (paramsBuf, inv.getText)
@@ -174,9 +170,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       else names
     val clause = params.mkString("(", ", ", ")")
     val newFunExprText = s"$clause => $exprText"
-    val funExpr = ScalaPsiElementFactory.createExpressionFromText(
-      newFunExprText,
-      usage.expr.getManager)
+    val funExpr = ScalaPsiElementFactory
+      .createExpressionFromText(newFunExprText, usage.expr.getManager)
     val replaced = usage.expr
       .replaceExpression(funExpr, removeParenthesis = true)
       .asInstanceOf[ScFunctionExpr]
@@ -193,7 +188,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
   protected def handleChangedParameters(
       change: ChangeInfo,
       usage: ScalaNamedElementUsageInfo): Unit = {
-    if (!change.isParameterNamesChanged && !change.isParameterSetOrOrderChanged && !change.isParameterTypesChanged)
+    if (!change.isParameterNamesChanged && !change
+          .isParameterSetOrOrderChanged && !change.isParameterTypesChanged)
       return
 
     val named = usage.namedElement
@@ -208,10 +204,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     }
     keywordToChange.foreach { kw =>
       val defKeyword = ScalaPsiElementFactory
-        .createMethodFromText("def foo {}", named.getManager)
-        .children
-        .find(_.getText == "def")
-        .get
+        .createMethodFromText("def foo {}", named.getManager).children
+        .find(_.getText == "def").get
       if (change.getNewParameters.nonEmpty) kw.replace(defKeyword)
     }
 
@@ -219,14 +213,11 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     val nameId = named.nameId
     val newClauses = named match {
       case cl: ScClass =>
-        ScalaPsiElementFactory.createClassParamClausesWithContext(
-          paramsText,
-          cl)
+        ScalaPsiElementFactory
+          .createClassParamClausesWithContext(paramsText, cl)
       case _ =>
-        ScalaPsiElementFactory.createParamClausesWithContext(
-          paramsText,
-          named,
-          nameId)
+        ScalaPsiElementFactory
+          .createParamClausesWithContext(paramsText, named, nameId)
     }
     val result = usage.paramClauses match {
       case Some(p) => p.replace(newClauses)
@@ -277,10 +268,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
         case Some(Seq(text))                      => text
         case _                                    => "()"
       }
-      val expr = ScalaPsiElementFactory.createExpressionWithContextFromText(
-        argText,
-        infix,
-        infix.getArgExpr)
+      val expr = ScalaPsiElementFactory
+        .createExpressionWithContextFromText(argText, infix, infix.getArgExpr)
       infix.getArgExpr.replaceExpression(expr, removeParenthesis = true)
     }
   }
@@ -291,10 +280,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     val constr = usage.constr
     val typeElem = constr.typeElement
     val text = typeElem.getText + argsText(change, usage)
-    val newConstr = ScalaPsiElementFactory.createConstructorFromText(
-      text,
-      constr.getContext,
-      constr)
+    val newConstr = ScalaPsiElementFactory
+      .createConstructorFromText(text, constr.getContext, constr)
 
     constr.replace(newConstr)
   }
@@ -306,10 +293,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     val ref = usage.refExpr
     val text = ref.getText + argsText(change, usage)
-    val call = ScalaPsiElementFactory.createExpressionWithContextFromText(
-      text,
-      ref.getContext,
-      ref)
+    val call = ScalaPsiElementFactory
+      .createExpressionWithContextFromText(text, ref.getContext, ref)
     ref.replaceExpression(call, removeParenthesis = true)
   }
 
@@ -321,10 +306,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     val postfix = usage.postfix
     val qualRef = ScalaPsiElementFactory.createEquivQualifiedReference(postfix)
     val text = qualRef.getText + argsText(change, usage)
-    val call = ScalaPsiElementFactory.createExpressionWithContextFromText(
-      text,
-      postfix.getContext,
-      postfix)
+    val call = ScalaPsiElementFactory
+      .createExpressionWithContextFromText(text, postfix.getContext, postfix)
     postfix.replaceExpression(call, removeParenthesis = true)
   }
 
@@ -333,10 +316,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       usage: MethodCallUsageInfo): Unit = {
     val call = usage.call
     val newText = usage.ref.getText + argsText(change, usage)
-    val newCall = ScalaPsiElementFactory.createExpressionWithContextFromText(
-      newText,
-      call.getContext,
-      call)
+    val newCall = ScalaPsiElementFactory
+      .createExpressionWithContextFromText(newText, call.getContext, call)
     call.replace(newCall)
   }
 
@@ -465,22 +446,20 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     elem match {
       case scRef: ScReferenceElement =>
         val newId = ScalaPsiElementFactory
-          .createIdentifier(newName, scRef.getManager)
-          .getPsi
+          .createIdentifier(newName, scRef.getManager).getPsi
         scRef.nameId.replace(newId)
       case jRef: PsiReferenceExpression => jRef.getReferenceNameElement match {
           case nameId: PsiIdentifier =>
-            val factory: PsiElementFactory =
-              JavaPsiFacade.getInstance(jRef.getProject).getElementFactory
-            val newNameIdentifier: PsiIdentifier = factory.createIdentifier(
-              newName)
+            val factory: PsiElementFactory = JavaPsiFacade
+              .getInstance(jRef.getProject).getElementFactory
+            val newNameIdentifier: PsiIdentifier = factory
+              .createIdentifier(newName)
             nameId.replace(newNameIdentifier)
           case _ =>
         }
       case _ =>
         elem.replace(
-          ScalaPsiElementFactory
-            .createIdentifier(newName, elem.getManager)
+          ScalaPsiElementFactory.createIdentifier(newName, elem.getManager)
             .getPsi)
     }
   }
@@ -494,8 +473,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       val method = change.getMethod
       paramInfo match {
         case sInfo: ScalaParameterInfo =>
-          val text =
-            UsageUtil.substitutor(usage).subst(sInfo.scType).canonicalText
+          val text = UsageUtil.substitutor(usage).subst(sInfo.scType)
+            .canonicalText
           val `=> ` =
             if (sInfo.isByName)
               ScalaPsiUtil.functionArrow(method.getProject) + " "
@@ -504,8 +483,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           `=> ` + text + `*`
         case jInfo: JavaParameterInfo =>
           val javaType = jInfo.createType(method, method.getManager)
-          val scType = UsageUtil
-            .substitutor(usage)
+          val scType = UsageUtil.substitutor(usage)
             .subst(ScType.create(javaType, method.getProject))
           (scType, javaType) match {
             case (JavaArrayType(tpe), _: PsiEllipsisType) =>
@@ -521,8 +499,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       else
         change match {
           case sc: ScalaChangeInfo
-              if !sc.function.isConstructor && sc.function != usage.namedElement =>
-            None
+              if !sc.function.isConstructor && sc.function != usage
+                .namedElement => None
           case sc: ScalaChangeInfo if sc.isAddDefaultArgs =>
             paramInfo.getDefaultValue match {
               case "" | null => Some(" ")
@@ -544,11 +522,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     }
 
     def paramText(p: ParameterInfo) = {
-      val typedName = ScalaExtractMethodUtils.typedName(
-        newParamName(p),
-        paramType(p),
-        project,
-        byName = false)
+      val typedName = ScalaExtractMethodUtils
+        .typedName(newParamName(p), paramType(p), project, byName = false)
       val default = scalaDefaultValue(p).fold("")(" = " + _)
       val keywordsAndAnnots = p match {
         case spi: ScalaParameterInfo => spi.keywordsAndAnnotations
@@ -559,11 +534,10 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     change match {
       case sc: ScalaChangeInfo =>
-        sc.newParams
-          .map(cl => cl.map(paramText).mkString("(", ", ", ")"))
+        sc.newParams.map(cl => cl.map(paramText).mkString("(", ", ", ")"))
           .mkString
-      case _ =>
-        change.getNewParameters.toSeq.map(paramText).mkString("(", ", ", ")")
+      case _ => change.getNewParameters.toSeq.map(paramText)
+          .mkString("(", ", ", ")")
     }
   }
 

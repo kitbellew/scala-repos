@@ -24,8 +24,7 @@ case class ExportArgs(
 
 object Export {
   def eventsToFile(ca: ConsoleArgs): Int = {
-    val channelArg = ca.export.channel
-      .map(ch => Seq("--channel", ch))
+    val channelArg = ca.export.channel.map(ch => Seq("--channel", ch))
       .getOrElse(Nil)
     Runner.runOnSpark(
       "io.prediction.tools.export.EventsToFile",

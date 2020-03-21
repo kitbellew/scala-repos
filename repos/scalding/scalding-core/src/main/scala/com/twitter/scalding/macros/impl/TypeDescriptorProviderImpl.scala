@@ -54,10 +54,8 @@ object TypeDescriptorProviderImpl {
     import c.universe._
 
     def flattenOnce(t: Type): List[Type] =
-      t.declarations
-        .collect { case m: MethodSymbol if m.isCaseAccessor => m }
-        .map(_.returnType.asSeenFrom(t, t.typeSymbol.asClass))
-        .toList
+      t.declarations.collect { case m: MethodSymbol if m.isCaseAccessor => m }
+        .map(_.returnType.asSeenFrom(t, t.typeSymbol.asClass)).toList
 
     def go(t: Type, offset: Int): (Int, Option[Int]) = {
       val thisColumn = (offset + 1, Some(offset))

@@ -62,12 +62,8 @@ class RandomForestClassifierSuite
       rf: RandomForestClassifier) {
     val categoricalFeatures = Map.empty[Int, Int]
     val numClasses = 2
-    val newRF = rf
-      .setImpurity("Gini")
-      .setMaxDepth(2)
-      .setNumTrees(1)
-      .setFeatureSubsetStrategy("auto")
-      .setSeed(123)
+    val newRF = rf.setImpurity("Gini").setMaxDepth(2).setNumTrees(1)
+      .setFeatureSubsetStrategy("auto").setSeed(123)
     compareAPIs(
       orderedLabeledPoints50_1000,
       newRF,
@@ -99,8 +95,7 @@ class RandomForestClassifierSuite
   test(
     "Binary classification with continuous features and node Id cache:" +
       " comparing DecisionTree vs. RandomForest(numTrees = 1)") {
-    val rf = new RandomForestClassifier()
-      .setCacheNodeIds(true)
+    val rf = new RandomForestClassifier().setCacheNodeIds(true)
     binaryClassificationTestWithContinuousFeatures(rf)
   }
 
@@ -116,12 +111,8 @@ class RandomForestClassifierSuite
     val categoricalFeatures = Map(0 -> 3, 2 -> 2, 4 -> 4)
     val numClasses = 3
 
-    val rf = new RandomForestClassifier()
-      .setImpurity("Gini")
-      .setMaxDepth(5)
-      .setNumTrees(2)
-      .setFeatureSubsetStrategy("sqrt")
-      .setSeed(12345)
+    val rf = new RandomForestClassifier().setImpurity("Gini").setMaxDepth(5)
+      .setNumTrees(2).setFeatureSubsetStrategy("sqrt").setSeed(12345)
     compareAPIs(rdd, rf, categoricalFeatures, numClasses)
   }
 
@@ -130,12 +121,8 @@ class RandomForestClassifierSuite
     val categoricalFeatures = Map.empty[Int, Int]
     val numClasses = 2
 
-    val rf1 = new RandomForestClassifier()
-      .setImpurity("Gini")
-      .setMaxDepth(2)
-      .setCacheNodeIds(true)
-      .setNumTrees(3)
-      .setFeatureSubsetStrategy("auto")
+    val rf1 = new RandomForestClassifier().setImpurity("Gini").setMaxDepth(2)
+      .setCacheNodeIds(true).setNumTrees(3).setFeatureSubsetStrategy("auto")
       .setSeed(123)
     compareAPIs(rdd, rf1, categoricalFeatures, numClasses)
 
@@ -145,25 +132,19 @@ class RandomForestClassifierSuite
 
   test("predictRaw and predictProbability") {
     val rdd = orderedLabeledPoints5_20
-    val rf = new RandomForestClassifier()
-      .setImpurity("Gini")
-      .setMaxDepth(3)
-      .setNumTrees(3)
-      .setSeed(123)
+    val rf = new RandomForestClassifier().setImpurity("Gini").setMaxDepth(3)
+      .setNumTrees(3).setSeed(123)
     val categoricalFeatures = Map.empty[Int, Int]
     val numClasses = 2
 
-    val df: DataFrame = TreeTests.setMetadata(
-      rdd,
-      categoricalFeatures,
-      numClasses)
+    val df: DataFrame = TreeTests
+      .setMetadata(rdd, categoricalFeatures, numClasses)
     val model = rf.fit(df)
 
     // copied model must have the same parent.
     MLTestingUtils.checkCopy(model)
 
-    val predictions = model
-      .transform(df)
+    val predictions = model.transform(df)
       .select(rf.getPredictionCol, rf.getRawPredictionCol, rf.getProbabilityCol)
       .collect()
 
@@ -185,21 +166,15 @@ class RandomForestClassifierSuite
   /////////////////////////////////////////////////////////////////////////////
   test("Feature importance with toy data") {
     val numClasses = 2
-    val rf = new RandomForestClassifier()
-      .setImpurity("Gini")
-      .setMaxDepth(3)
-      .setNumTrees(3)
-      .setFeatureSubsetStrategy("all")
-      .setSubsamplingRate(1.0)
+    val rf = new RandomForestClassifier().setImpurity("Gini").setMaxDepth(3)
+      .setNumTrees(3).setFeatureSubsetStrategy("all").setSubsamplingRate(1.0)
       .setSeed(123)
 
     // In this data, feature 1 is very important.
     val data: RDD[LabeledPoint] = TreeTests.featureImportanceData(sc)
     val categoricalFeatures = Map.empty[Int, Int]
-    val df: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses)
+    val df: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses)
 
     val importances = rf.fit(df).featureImportances
     val mostImportantFeature = importances.argmax
@@ -258,10 +233,8 @@ private object RandomForestClassifierSuite extends SparkFunSuite {
       rf.getNumTrees,
       rf.getFeatureSubsetStrategy,
       rf.getSeed.toInt)
-    val newData: DataFrame = TreeTests.setMetadata(
-      data,
-      categoricalFeatures,
-      numClasses)
+    val newData: DataFrame = TreeTests
+      .setMetadata(data, categoricalFeatures, numClasses)
     val newModel = rf.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldModelAsNew = RandomForestClassificationModel.fromOld(
@@ -272,8 +245,7 @@ private object RandomForestClassifierSuite extends SparkFunSuite {
     TreeTests.checkEqual(oldModelAsNew, newModel)
     assert(newModel.hasParent)
     assert(
-      !newModel.trees.head
-        .asInstanceOf[DecisionTreeClassificationModel]
+      !newModel.trees.head.asInstanceOf[DecisionTreeClassificationModel]
         .hasParent)
     assert(newModel.numClasses === numClasses)
     assert(newModel.numFeatures === numFeatures)

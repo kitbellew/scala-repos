@@ -45,8 +45,8 @@ trait GenJSExports extends SubComponent {
         decldExports: List[Symbol]): List[js.Tree] = {
 
       val newlyDecldExports = decldExports.filterNot { isOverridingExport _ }
-      val newlyDecldExportNames =
-        newlyDecldExports.map(_.name.toTermName).toList.distinct
+      val newlyDecldExportNames = newlyDecldExports.map(_.name.toTermName)
+        .toList.distinct
 
       newlyDecldExportNames map { genMemberExport(classSym, _) }
     }
@@ -54,8 +54,7 @@ trait GenJSExports extends SubComponent {
     def genJSClassDispatchers(
         classSym: Symbol,
         dispatchMethodsNames: List[String]): List[js.Tree] = {
-      dispatchMethodsNames
-        .map(genJSClassDispatcher(classSym, _))
+      dispatchMethodsNames.map(genJSClassDispatcher(classSym, _))
         .filter(_ != js.EmptyTree)
     }
 
@@ -72,9 +71,8 @@ trait GenJSExports extends SubComponent {
       if (ctorExports.isEmpty) { Nil }
       else {
         val exports = for {
-          (jsName, specs) <- ctorExports.groupBy(
-            _._1.jsName
-          ) // group by exported name
+          (jsName, specs) <- ctorExports
+            .groupBy(_._1.jsName) // group by exported name
         } yield {
           val (namedExports, normalExports) = specs.partition(_._1.isNamed)
 
@@ -148,9 +146,8 @@ trait GenJSExports extends SubComponent {
         pos: Position) = {
 
       if (hasRepeatedParam(trgSym)) {
-        reporter.error(
-          pos,
-          "You may not name-export a method with a *-parameter")
+        reporter
+          .error(pos, "You may not name-export a method with a *-parameter")
       }
 
       val jsArgs = for {
@@ -184,8 +181,8 @@ trait GenJSExports extends SubComponent {
       val (jsName, isProp) = jsInterop.jsExportInfo(name)
 
       // Check if we have a conflicting export of the other kind
-      val conflicting = classSym.info.member(
-        jsInterop.scalaExportName(jsName, !isProp))
+      val conflicting = classSym.info
+        .member(jsInterop.scalaExportName(jsName, !isProp))
 
       if (conflicting != NoSymbol) {
         val kind = if (isProp) "property" else "method"
@@ -342,8 +339,7 @@ trait GenJSExports extends SubComponent {
       }
 
       // Create a map: argCount -> methods (methods may appear multiple times)
-      val methodByArgCount = methodArgCounts
-        .groupBy(_._1)
+      val methodByArgCount = methodArgCounts.groupBy(_._1)
         .mapValues(_.map(_._2).toSet)
 
       // Minimum number of arguments that must be given
@@ -639,8 +635,8 @@ trait GenJSExports extends SubComponent {
       }
 
       // normal arguments
-      val jsArgRefs = (1 to normalArgc).toList.map(i =>
-        genFormalArgRef(i, minArgc))
+      val jsArgRefs = (1 to normalArgc).toList
+        .map(i => genFormalArgRef(i, minArgc))
 
       // Generate JS code to prepare arguments (default getters and unboxes)
       val jsArgPrep = genPrepareArgs(jsArgRefs, sym) ++ jsVarArgPrep
@@ -690,8 +686,8 @@ trait GenJSExports extends SubComponent {
                     companionModule.moduleClass
                   } else { sym.owner }
                 }
-                val defaultGetter = trgSym.tpe.member(
-                  nme.defaultGetterName(sym.name, i + 1))
+                val defaultGetter = trgSym.tpe
+                  .member(nme.defaultGetterName(sym.name, i + 1))
 
                 assert(
                   defaultGetter.exists,
@@ -705,9 +701,7 @@ trait GenJSExports extends SubComponent {
 
                 // Pass previous arguments to defaultGetter
                 val defaultGetterArgs = result
-                  .take(defaultGetter.tpe.params.size)
-                  .toList
-                  .map(_.ref)
+                  .take(defaultGetter.tpe.params.size).toList.map(_.ref)
 
                 if (isRawJSType(trgSym.toTypeConstructor)) {
                   assert(isScalaJSDefinedJSClass(defaultGetter.owner))
@@ -858,8 +852,8 @@ trait GenJSExports extends SubComponent {
       if (coll.isEmpty) acc
       else if (coll.tail.isEmpty) coll.head :: acc
       else {
-        val (lhs, rhs) = coll.span(x =>
-          !coll.forall(y => (x eq y) || !ord.lteq(f(x), f(y))))
+        val (lhs, rhs) = coll
+          .span(x => !coll.forall(y => (x eq y) || !ord.lteq(f(x), f(y))))
         assert(!rhs.isEmpty, s"cycle while ordering $coll")
         loop(lhs ::: rhs.tail, rhs.head :: acc)
       }

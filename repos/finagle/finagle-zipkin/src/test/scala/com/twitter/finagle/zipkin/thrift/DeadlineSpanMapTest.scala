@@ -28,8 +28,8 @@ class DeadlineSpanMapTest extends FunSuite {
         SpanId(123),
         None)
 
-      val span = map.update(traceId)(
-        _.setServiceName("service").setName("name"))
+      val span = map
+        .update(traceId)(_.setServiceName("service").setName("name"))
       tc.advance(10.seconds) // advance timer
       timer.tick() // execute scheduled event
 

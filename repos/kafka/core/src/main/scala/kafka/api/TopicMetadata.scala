@@ -53,8 +53,7 @@ case class TopicMetadata(
   def sizeInBytes: Int = {
     2 /* error code */ +
       shortStringLength(topic) +
-      4 + partitionsMetadata
-      .map(_.sizeInBytes)
+      4 + partitionsMetadata.map(_.sizeInBytes)
       .sum /* size and partition data array */
   }
 
@@ -75,16 +74,16 @@ case class TopicMetadata(
       case Errors.NONE => partitionsMetadata.foreach { partitionMetadata =>
           Errors.forCode(partitionMetadata.errorCode) match {
             case Errors.NONE =>
-              topicMetadataInfo.append(
-                "\nMetadata for partition [%s,%d] is %s".format(
+              topicMetadataInfo
+                .append("\nMetadata for partition [%s,%d] is %s".format(
                   topic,
                   partitionMetadata.partitionId,
                   partitionMetadata.toString()))
             case Errors.REPLICA_NOT_AVAILABLE =>
               // this error message means some replica other than the leader is not available. The consumer
               // doesn't care about non leader replicas, so ignore this
-              topicMetadataInfo.append(
-                "\nMetadata for partition [%s,%d] is %s".format(
+              topicMetadataInfo
+                .append("\nMetadata for partition [%s,%d] is %s".format(
                   topic,
                   partitionMetadata.partitionId,
                   partitionMetadata.toString()))
@@ -99,9 +98,8 @@ case class TopicMetadata(
         }
       case error: Errors =>
         topicMetadataInfo.append(
-          "\nNo partition metadata for topic %s due to %s".format(
-            topic,
-            error.exceptionName))
+          "\nNo partition metadata for topic %s due to %s"
+            .format(topic, error.exceptionName))
     }
     topicMetadataInfo.append("}")
     topicMetadataInfo.toString()

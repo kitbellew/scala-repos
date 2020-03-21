@@ -98,11 +98,9 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
 
     val compressedBuffer = ByteBuffer
     // Reserves 4 bytes for compression scheme ID
-      .allocate(headerSize + 4 + compressedSize)
-      .order(ByteOrder.nativeOrder)
+      .allocate(headerSize + 4 + compressedSize).order(ByteOrder.nativeOrder)
       // Write the header
-      .putInt(nullCount)
-      .put(nulls)
+      .putInt(nullCount).put(nulls)
 
     logDebug(
       s"Compressor for [$columnName]: $encoder, ratio: ${encoder.compressionRatio}")

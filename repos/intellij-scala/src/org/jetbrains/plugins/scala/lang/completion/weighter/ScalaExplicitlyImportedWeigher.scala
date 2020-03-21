@@ -29,12 +29,12 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
     if (position == null) return None
     val index = qual.lastIndexOf('.')
     val qualNoPoint = if (index < 0) null else qual.substring(0, index)
-    val tuple: (ArrayBuffer[ScImportStmt], Long) = position.getUserData(
-      ScalaExplicitlyImportedWeigher.key)
+    val tuple: (ArrayBuffer[ScImportStmt], Long) = position
+      .getUserData(ScalaExplicitlyImportedWeigher.key)
     var buffer: ArrayBuffer[ScImportStmt] =
       if (tuple != null) tuple._1 else null
-    val currentModCount =
-      position.getManager.getModificationTracker.getModificationCount
+    val currentModCount = position.getManager.getModificationTracker
+      .getModificationCount
     if (buffer == null || tuple._2 != currentModCount) {
       @tailrec
       def treeWalkup(place: PsiElement, lastParent: PsiElement) {
@@ -128,9 +128,8 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
     val elementFile: PsiFile = element.getContainingFile
     val positionFile: PsiFile = position.getContainingFile
     if (!positionFile.isInstanceOf[ScalaFile]) return 0
-    if (positionFile != null && elementFile != null && positionFile.getOriginalFile == elementFile.getOriginalFile) {
-      return 3
-    }
+    if (positionFile != null && elementFile != null && positionFile
+          .getOriginalFile == elementFile.getOriginalFile) { return 3 }
     element match {
       case clazz: PsiClass if clazz.qualifiedName != null =>
         val qual: String = clazz.qualifiedName

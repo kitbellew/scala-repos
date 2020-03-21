@@ -59,8 +59,7 @@ object DriverRegistrationSpec extends Specification {
       "default" ->
         Configuration
           .from(Map("driver" -> "acolyte.jdbc.Driver", "url" -> jdbcUrl))
-          .underlying
-          .withFallback(ConfigFactory.defaultReference.getConfig(
+          .underlying.withFallback(ConfigFactory.defaultReference.getConfig(
             "play.db.prototype"))))
   }
 }

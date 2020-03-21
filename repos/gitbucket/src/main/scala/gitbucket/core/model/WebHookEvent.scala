@@ -28,9 +28,8 @@ trait WebHookEventComponent extends TemplateComponent {
         url: Column[String]) =
       byRepository(userName, repositoryName) && (this.url === url)
     def byWebHook(webhook: WebHooks) =
-      byRepository(webhook.userName, webhook.repositoryName) && (
-        this.url === webhook.url
-      )
+      byRepository(webhook.userName, webhook.repositoryName) && (this
+        .url === webhook.url)
     def byPrimaryKey(
         owner: String,
         repository: String,

@@ -54,8 +54,8 @@ abstract class SbtImportNotificationProvider(
   protected def refreshProject(): Unit = {
     FileDocumentManager.getInstance.saveAllDocuments()
     ExternalSystemUtil.refreshProjects(
-      new ImportSpecBuilder(project, SbtProjectSystem.Id).forceWhenUptodate(
-        true))
+      new ImportSpecBuilder(project, SbtProjectSystem.Id)
+        .forceWhenUptodate(true))
   }
 
   protected def importProject(file: VirtualFile): Unit = {
@@ -76,16 +76,15 @@ abstract class SbtImportNotificationProvider(
 
         val sbtSystemSettings = SbtSystemSettings.getInstance(project)
 
-        val projects = ContainerUtilRt.newHashSet(
-          sbtSystemSettings.getLinkedProjectsSettings)
+        val projects = ContainerUtilRt
+          .newHashSet(sbtSystemSettings.getLinkedProjectsSettings)
         projects.add(projectSettings)
         sbtSystemSettings.setLinkedProjectsSettings(projects)
 
-        ExternalSystemApiUtil.executeProjectChangeAction(
-          new DisposeAwareProjectChange(project) {
+        ExternalSystemApiUtil
+          .executeProjectChangeAction(new DisposeAwareProjectChange(project) {
             def execute() {
-              ProjectRootManagerEx
-                .getInstanceEx(project)
+              ProjectRootManagerEx.getInstanceEx(project)
                 .mergeRootsChangesDuring(new Runnable {
                   def run() {
                     val dataManager: ProjectDataManager = ServiceManager
@@ -112,9 +111,9 @@ abstract class SbtImportNotificationProvider(
   }
 
   protected def getExternalProject(filePath: String): Option[String] =
-    (!project.isDisposed && Sbt.isProjectDefinitionFile(
-      project,
-      filePath.toFile)).option(project.getBasePath)
+    (!project.isDisposed && Sbt
+      .isProjectDefinitionFile(project, filePath.toFile))
+      .option(project.getBasePath)
 
   protected def getProjectSettings(
       file: VirtualFile): Option[SbtProjectSettings] =

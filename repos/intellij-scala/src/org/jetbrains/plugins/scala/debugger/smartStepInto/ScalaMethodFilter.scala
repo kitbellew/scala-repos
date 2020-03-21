@@ -25,12 +25,11 @@ class ScalaMethodFilter(
     callingExpressionLines: Range[Integer])
     extends MethodFilter {
   private val unknownName: String = "!unknownName!"
-  private val myTargetMethodSignature = DebuggerUtil.getFunctionJVMSignature(
-    function)
+  private val myTargetMethodSignature = DebuggerUtil
+    .getFunctionJVMSignature(function)
   private val myDeclaringClassName = {
-    val clazz = PsiTreeUtil.getParentOfType(
-      function,
-      classOf[ScTemplateDefinition])
+    val clazz = PsiTreeUtil
+      .getParentOfType(function, classOf[ScTemplateDefinition])
     if (clazz == null) JVMNameUtil.getJVMRawText(unknownName)
     else
       DebuggerUtil.getClassJVMName(
@@ -59,9 +58,8 @@ class ScalaMethodFilter(
     else if (myTargetMethodSignature != null && method
                .signature() != myTargetMethodSignature.getName(process)) false
     else {
-      DebuggerUtilsEx.isAssignableFrom(
-        locationTypeName,
-        location.declaringType) &&
+      DebuggerUtilsEx
+        .isAssignableFrom(locationTypeName, location.declaringType) &&
       !ScalaPositionManager.shouldSkip(location, process)
     }
   }

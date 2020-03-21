@@ -38,8 +38,8 @@ private[akka] case class ActorMaterializerImpl(
   private val _logger = Logging.getLogger(system, this)
   override def logger = _logger
 
-  if (settings.fuzzingMode && !system.settings.config.hasPath(
-        "akka.stream.secret-test-fuzzing-warning-disable")) {
+  if (settings.fuzzingMode && !system.settings.config
+        .hasPath("akka.stream.secret-test-fuzzing-warning-disable")) {
     _logger.warning(
       "Fuzzing mode is enabled on this system. If you see this warning on your production system then " +
         "set akka.stream.materializer.debug.fuzzing-mode to off.")
@@ -211,8 +211,8 @@ private[akka] case class ActorMaterializerImpl(
             ActorMaterializerImpl.this)
 
           val impl =
-            if (subflowFuser != null && !effectiveAttributes.contains(
-                  Attributes.AsyncBoundary)) { subflowFuser(shell) }
+            if (subflowFuser != null && !effectiveAttributes
+                  .contains(Attributes.AsyncBoundary)) { subflowFuser(shell) }
             else {
               val props = ActorGraphInterpreter.props(shell)
               actorOf(
@@ -243,10 +243,8 @@ private[akka] case class ActorMaterializerImpl(
           op match {
             case DirectProcessor(processorFactory, _) ⇒ processorFactory()
             case _ ⇒
-              val (opprops, mat) = ActorProcessorFactory.props(
-                ActorMaterializerImpl.this,
-                op,
-                effectiveAttributes)
+              val (opprops, mat) = ActorProcessorFactory
+                .props(ActorMaterializerImpl.this, op, effectiveAttributes)
               ActorProcessorFactory[Any, Any](actorOf(
                 opprops,
                 stageName(effectiveAttributes),
@@ -285,18 +283,16 @@ private[akka] case class ActorMaterializerImpl(
           systemService = false)
       case ref: RepointableActorRef ⇒
         if (ref.isStarted)
-          ref.underlying
-            .asInstanceOf[ActorCell]
-            .attachChild(
-              props.withDispatcher(dispatcher),
-              name,
-              systemService = false)
+          ref.underlying.asInstanceOf[ActorCell].attachChild(
+            props.withDispatcher(dispatcher),
+            name,
+            systemService = false)
         else {
           implicit val timeout = ref.system.settings.CreationTimeout
           val f =
-            (supervisor ? StreamSupervisor.Materialize(
-              props.withDispatcher(dispatcher),
-              name)).mapTo[ActorRef]
+            (supervisor ? StreamSupervisor
+              .Materialize(props.withDispatcher(dispatcher), name))
+              .mapTo[ActorRef]
           Await.result(f, timeout.duration)
         }
       case unknown ⇒

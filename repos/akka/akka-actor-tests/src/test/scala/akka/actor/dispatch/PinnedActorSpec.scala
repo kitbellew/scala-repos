@@ -50,8 +50,8 @@ class PinnedActorSpec
     }
 
     "support ask/reply" in {
-      val actor = system.actorOf(
-        Props[TestActor].withDispatcher("pinned-dispatcher"))
+      val actor = system
+        .actorOf(Props[TestActor].withDispatcher("pinned-dispatcher"))
       assert("World" === Await.result(actor ? "Hello", timeout.duration))
       system.stop(actor)
     }

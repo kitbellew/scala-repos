@@ -130,13 +130,13 @@ object RandomForestRegressor {
 
   /** Accessor for supported impurity settings: variance */
   @Since("1.4.0")
-  final val supportedImpurities: Array[String] =
-    TreeRegressorParams.supportedImpurities
+  final val supportedImpurities: Array[String] = TreeRegressorParams
+    .supportedImpurities
 
   /** Accessor for supported featureSubsetStrategy settings: auto, all, onethird, sqrt, log2 */
   @Since("1.4.0")
-  final val supportedFeatureSubsetStrategies: Array[String] =
-    RandomForestParams.supportedFeatureSubsetStrategies
+  final val supportedFeatureSubsetStrategies: Array[String] = RandomForestParams
+    .supportedFeatureSubsetStrategies
 }
 
 /**
@@ -171,8 +171,8 @@ final class RandomForestRegressionModel private[ml] (
     _trees.asInstanceOf[Array[DecisionTreeModel]]
 
   // Note: We may add support for weights (based on tree performance) later on.
-  private lazy val _treeWeights: Array[Double] = Array.fill[Double](numTrees)(
-    1.0)
+  private lazy val _treeWeights: Array[Double] = Array
+    .fill[Double](numTrees)(1.0)
 
   @Since("1.4.0")
   override def treeWeights: Array[Double] = _treeWeights
@@ -218,9 +218,8 @@ final class RandomForestRegressionModel private[ml] (
     *  - Normalize feature importance vector to sum to 1.
     */
   @Since("1.5.0")
-  lazy val featureImportances: Vector = RandomForest.featureImportances(
-    trees,
-    numFeatures)
+  lazy val featureImportances: Vector = RandomForest
+    .featureImportances(trees, numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
   private[ml] def toOld: OldRandomForestModel = {

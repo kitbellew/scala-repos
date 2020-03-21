@@ -67,9 +67,10 @@ class Sampler {
   def sampleTrace(traceId: TraceId, sampleRate: Float): Option[Boolean] = {
     traceId.sampled match {
       case None =>
-        if (math.abs(
-              traceId.traceId.toLong ^ Sampler.salt) % 10000 < sampleRate * 10000)
-          Sampler.SomeTrue
+        if (math
+              .abs(
+                traceId.traceId.toLong ^ Sampler
+                  .salt) % 10000 < sampleRate * 10000) Sampler.SomeTrue
         else Sampler.SomeFalse
       case sample @ Some(_) => sample
     }

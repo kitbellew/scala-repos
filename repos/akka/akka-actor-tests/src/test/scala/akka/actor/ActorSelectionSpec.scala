@@ -382,8 +382,7 @@ class ActorSelectionSpec
     "have a stringly serializable path" in {
       system.actorSelection(system / "c2").toSerializationFormat should ===(
         "akka://ActorSelectionSpec/user/c2")
-      system
-        .actorSelection(system / "c2" / "c21")
+      system.actorSelection(system / "c2" / "c21")
         .toSerializationFormat should ===(
         "akka://ActorSelectionSpec/user/c2/c21")
       ActorSelection(c2, "/").toSerializationFormat should ===(
@@ -408,12 +407,10 @@ class ActorSelectionSpec
       val creator = TestProbe()
       implicit def self = creator.ref
       val top = system.actorOf(p, "a")
-      val b1 = Await.result(
-        (top ? Create("b1")).mapTo[ActorRef],
-        timeout.duration)
-      val b2 = Await.result(
-        (top ? Create("b2")).mapTo[ActorRef],
-        timeout.duration)
+      val b1 = Await
+        .result((top ? Create("b1")).mapTo[ActorRef], timeout.duration)
+      val b2 = Await
+        .result((top ? Create("b2")).mapTo[ActorRef], timeout.duration)
       val c = Await.result((b2 ? Create("c")).mapTo[ActorRef], timeout.duration)
       val d = Await.result((c ? Create("d")).mapTo[ActorRef], timeout.duration)
 

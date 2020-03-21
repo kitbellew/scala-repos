@@ -86,8 +86,7 @@ class ScalaFileImpl(
       val stub = getStub
       if (stub != null) { return stub.getFileName }
       val virtualFile = getVirtualFile
-      DecompilerUtil
-        .decompile(virtualFile, virtualFile.contentsToByteArray)
+      DecompilerUtil.decompile(virtualFile, virtualFile.contentsToByteArray)
         .sourceName
     } else ""
   }
@@ -104,10 +103,8 @@ class ScalaFileImpl(
     if (!isCompiled) this
     else {
       val inner: String = getPackageNameInner
-      val pName = inner + typeDefinitions
-        .find(_.isPackageObject)
-        .map((if (inner.length > 0) "." else "") + _.name)
-        .getOrElse("")
+      val pName = inner + typeDefinitions.find(_.isPackageObject)
+        .map((if (inner.length > 0) "." else "") + _.name).getOrElse("")
       val sourceFile = sourceName
       val relPath =
         if (pName.length == 0) sourceFile
@@ -116,8 +113,7 @@ class ScalaFileImpl(
       // Look in libraries' sources
       val vFile = getContainingFile.getVirtualFile
       val index = ProjectRootManager.getInstance(getProject).getFileIndex
-      val entries = index
-        .getOrderEntriesForFile(vFile)
+      val entries = index.getOrderEntriesForFile(vFile)
         .toArray(OrderEntry.EMPTY_ARRAY)
       var entryIterator = entries.iterator
       while (entryIterator.hasNext) {
@@ -224,9 +220,7 @@ class ScalaFileImpl(
     val vFile = getVirtualFile
 
     vFile != null && (vFile.getExtension == ScalaFileType.WORKSHEET_EXTENSION ||
-    ScratchFileService
-      .getInstance()
-      .getRootType(vFile)
+    ScratchFileService.getInstance().getRootType(vFile)
       .isInstanceOf[ScratchRootType] &&
     ScalaProjectSettings.getInstance(getProject).isTreatScratchFilesAsWorksheet)
   }
@@ -234,8 +228,8 @@ class ScalaFileImpl(
   def setPackageName(name: String) {
     // TODO support multiple base packages simultaneously
     val basePackageName = {
-      val basePackages =
-        ScalaProjectSettings.getInstance(getProject).getBasePackages.asScala
+      val basePackages = ScalaProjectSettings.getInstance(getProject)
+        .getBasePackages.asScala
       basePackages.find(name.startsWith).getOrElse("")
     }
 
@@ -265,8 +259,7 @@ class ScalaFileImpl(
       val documentManager = PsiDocumentManager.getInstance(getProject)
       val document = documentManager.getDocument(this)
 
-      val prefixText = children
-        .findByType(classOf[ScPackaging])
+      val prefixText = children.findByType(classOf[ScPackaging])
         .map(it => getText.substring(0, it.getTextRange.getStartOffset))
         .filter(!_.isEmpty)
 
@@ -275,9 +268,8 @@ class ScalaFileImpl(
         if (vector.nonEmpty) {
           val packagingsText = {
             val path = {
-              val splits =
-                ScalaFileImpl.toVector(base) :: ScalaFileImpl.splitsIn(
-                  ScalaFileImpl.pathIn(this))
+              val splits = ScalaFileImpl.toVector(base) :: ScalaFileImpl
+                .splitsIn(ScalaFileImpl.pathIn(this))
               splits.foldLeft(List(vector))(ScalaFileImpl.splitAt)
             }
             path.map(_.mkString("package ", ".", "")).mkString("", "\n", "\n\n")
@@ -298,8 +290,7 @@ class ScalaFileImpl(
 
     for ((aClass, oldClass) <- typeDefinitions.zip(data)) {
       CodeEditUtil.setNodeGenerated(oldClass.getNode, true)
-      PostprocessReformattingAspect
-        .getInstance(getProject)
+      PostprocessReformattingAspect.getInstance(getProject)
         .disablePostprocessFormattingInside {
           new Runnable {
             def run() {
@@ -330,8 +321,8 @@ class ScalaFileImpl(
       case s: ScFileStub => s
       case _ =>
         val faultyContainer: VirtualFile = PsiUtilCore.getVirtualFile(this)
-        ScalaFileImpl.LOG.error(
-          "Scala File has wrong stub file: " + faultyContainer)
+        ScalaFileImpl.LOG
+          .error("Scala File has wrong stub file: " + faultyContainer)
         if (faultyContainer != null && faultyContainer.isValid) {
           FileBasedIndex.getInstance.requestReindex(faultyContainer)
         }
@@ -420,8 +411,8 @@ class ScalaFileImpl(
     this,
     ScalaPsiManager.instance(getProject).modificationTracker)
   protected def isScalaPredefinedClass: Boolean = {
-    typeDefinitions.length == 1 && Set("scala", "scala.Predef").contains(
-      typeDefinitions.head.qualifiedName)
+    typeDefinitions.length == 1 && Set("scala", "scala.Predef")
+      .contains(typeDefinitions.head.qualifiedName)
   }
 
   def isScalaPredefinedClassInner =
@@ -451,11 +442,8 @@ class ScalaFileImpl(
   }
 
   def packagingRanges: Seq[TextRange] =
-    depthFirst
-      .filterByType(classOf[ScPackaging])
-      .flatMap(_.reference)
-      .map(_.getTextRange)
-      .toList
+    depthFirst.filterByType(classOf[ScPackaging]).flatMap(_.reference)
+      .map(_.getTextRange).toList
 
   def getFileResolveScope: GlobalSearchScope = {
     val vFile = getOriginalFile.getVirtualFile
@@ -463,10 +451,8 @@ class ScalaFileImpl(
     else {
       val resolveScopeManager = ResolveScopeManager.getInstance(getProject)
       if (isCompiled) {
-        val orderEntries = ProjectRootManager
-          .getInstance(getProject)
-          .getFileIndex
-          .getOrderEntriesForFile(vFile)
+        val orderEntries = ProjectRootManager.getInstance(getProject)
+          .getFileIndex.getOrderEntriesForFile(vFile)
         LibraryScopeCache.getInstance(getProject).getLibraryScope(orderEntries)
       } else resolveScopeManager.getDefaultResolveScope(vFile)
     }
@@ -515,8 +501,8 @@ class ScalaFileImpl(
 }
 
 object ScalaFileImpl {
-  private val LOG: Logger = Logger.getInstance(
-    "#org.jetbrains.plugins.scala.lang.psi.impl.ScalaFileImpl")
+  private val LOG: Logger = Logger
+    .getInstance("#org.jetbrains.plugins.scala.lang.psi.impl.ScalaFileImpl")
   private val QualifiedPackagePattern = "(.+)\\.(.+?)".r
   val SCRIPT_KEY = new Key[java.lang.Boolean]("Is Script Key")
   val CONTEXT_KEY = new Key[PsiElement]("context.key")
@@ -545,10 +531,10 @@ object ScalaFileImpl {
         if (s.isWorksheetFile) return true
         val file: VirtualFile = s.getVirtualFile
         if (file == null) return false
-        val index =
-          ProjectRootManager.getInstance(place.getProject).getFileIndex
-        !(index.isInSourceContent(file) || index.isInLibraryClasses(
-          file) || index.isInLibrarySource(file))
+        val index = ProjectRootManager.getInstance(place.getProject)
+          .getFileIndex
+        !(index.isInSourceContent(file) || index
+          .isInLibraryClasses(file) || index.isInLibrarySource(file))
       case _ => false
     }
   }

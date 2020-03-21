@@ -60,8 +60,8 @@ object LabeledPoint {
     } else { // dense format used before v1.0
       val parts = s.split(',')
       val label = java.lang.Double.parseDouble(parts(0))
-      val features = Vectors.dense(
-        parts(1).trim().split(' ').map(java.lang.Double.parseDouble))
+      val features = Vectors
+        .dense(parts(1).trim().split(' ').map(java.lang.Double.parseDouble))
       LabeledPoint(label, features)
     }
   }

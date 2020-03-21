@@ -28,9 +28,7 @@ object nsieve {
 
       def pad(i: Int, width: Int) = {
         val s = i.toString
-        List
-          .range(0, width - s.length)
-          .map((i) => " ")
+        List.range(0, width - s.length).map((i) => " ")
           .foldLeft("")((a, b) => a + b) + s
       }
 

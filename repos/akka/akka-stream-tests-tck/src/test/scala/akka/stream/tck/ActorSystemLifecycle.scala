@@ -25,8 +25,8 @@ trait ActorSystemLifecycle {
   @BeforeClass
   def createActorSystem(): Unit = {
     _system = ActorSystem(Logging.simpleName(getClass), AkkaSpec.testConf)
-    _system.eventStream.publish(TestEvent.Mute(
-      EventFilter[RuntimeException]("Test exception")))
+    _system.eventStream
+      .publish(TestEvent.Mute(EventFilter[RuntimeException]("Test exception")))
   }
 
   @AfterClass

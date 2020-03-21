@@ -208,11 +208,9 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
     buildValue(elems.toIndexedSeq)
   }
   def toNode(value: Mixed): Node =
-    ProductNode(ConstArray.from(
-      shapes.iterator
-        .zip(getIterator(value))
-        .map { case (p, f) => p.toNode(f.asInstanceOf[p.Mixed]) }
-        .toIterable))
+    ProductNode(ConstArray.from(shapes.iterator.zip(getIterator(value)).map {
+      case (p, f) => p.toNode(f.asInstanceOf[p.Mixed])
+    }.toIterable))
 }
 
 /** Base class for ProductNodeShapes with a type mapping */
@@ -411,25 +409,24 @@ object ShapedValue {
           TermName(c.freshName()))
     }.toIndexedSeq
     val (f, g) =
-      if (uTag.tpe <:< c
-            .typeOf[slick.collection.heterogeneous.HList]) { // Map from HList
+      if (uTag.tpe <:< c.typeOf[slick.collection.heterogeneous.HList]) { // Map from HList
         val rTypeAsHList = fields.foldRight[Tree](
           tq"_root_.slick.collection.heterogeneous.HNil.type") {
           case ((_, t, _), z) =>
             tq"_root_.slick.collection.heterogeneous.HCons[$t, $z]"
         }
-        val pat = fields.foldRight[Tree](
-          pq"_root_.slick.collection.heterogeneous.HNil") {
-          case ((_, _, n), z) =>
-            pq"_root_.slick.collection.heterogeneous.HCons($n, $z)"
-        }
-        val cons = fields.foldRight[Tree](
-          q"_root_.slick.collection.heterogeneous.HNil") {
-          case ((n, _, _), z) => q"v.$n :: $z"
-        }
+        val pat = fields
+          .foldRight[Tree](pq"_root_.slick.collection.heterogeneous.HNil") {
+            case ((_, _, n), z) =>
+              pq"_root_.slick.collection.heterogeneous.HCons($n, $z)"
+          }
+        val cons = fields
+          .foldRight[Tree](q"_root_.slick.collection.heterogeneous.HNil") {
+            case ((n, _, _), z) => q"v.$n :: $z"
+          }
         (
-          q"({ case $pat => new $rTag(..${fields.map(
-            _._3)}) } : ($rTypeAsHList => $rTag)): ($uTag => $rTag)",
+          q"({ case $pat => new $rTag(..${fields
+            .map(_._3)}) } : ($rTypeAsHList => $rTag)): ($uTag => $rTag)",
           q"{ case v => $cons }: ($rTag => $uTag)")
       } else if (fields.length == 1) { // Map from single value
         (
@@ -442,9 +439,8 @@ object ShapedValue {
       }
 
     val fpName = Constant(
-      "Fast Path of (" + fields
-        .map(_._2)
-        .mkString(", ") + ").mapTo[" + rTag.tpe + "]")
+      "Fast Path of (" + fields.map(_._2).mkString(", ") + ").mapTo[" + rTag
+        .tpe + "]")
     val fpChildren = fields.map { case (_, t, n)     => q"val $n = next[$t]" }
     val fpReadChildren = fields.map { case (_, _, n) => q"$n.read(r)" }
     val fpSetChildren = fields.map {
@@ -508,8 +504,7 @@ object ProvenShape {
       : Shape[FlatShapeLevel, ProvenShape[T], T, P] =
     new Shape[FlatShapeLevel, ProvenShape[T], T, P] {
       def pack(value: Mixed): Packed =
-        value.shape
-          .pack(value.value.asInstanceOf[value.shape.Mixed])
+        value.shape.pack(value.value.asInstanceOf[value.shape.Mixed])
           .asInstanceOf[Packed]
       def packedShape: Shape[FlatShapeLevel, Packed, Unpacked, Packed] =
         shape.packedShape

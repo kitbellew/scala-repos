@@ -87,9 +87,8 @@ class EndToEndTest
     Dtab.unwind {
       Dtab.local ++= Dtab.read("/foo=>/bar; /web=>/$/inet/twitter.com/80")
       for (n <- 0 until 2) {
-        val rsp = Await.result(
-          client(Request(Path.empty, Buf.Empty)),
-          30.seconds)
+        val rsp = Await
+          .result(client(Request(Path.empty, Buf.Empty)), 30.seconds)
         val Buf.Utf8(str) = rsp.body
         assert(
           str == "Dtab(2)\n\t/foo => /bar\n\t/web => /$/inet/twitter.com/80\n")
@@ -132,10 +131,8 @@ class EndToEndTest
     var count: Int = 0
     var client: Service[Request, Response] = null
 
-    val server = Mux.server
-      .configured(param.Tracer(tracer))
-      .configured(param.Label("theServer"))
-      .serve(
+    val server = Mux.server.configured(param.Tracer(tracer))
+      .configured(param.Label("theServer")).serve(
         "localhost:*",
         new Service[Request, Response] {
           def apply(req: Request) = {
@@ -144,10 +141,8 @@ class EndToEndTest
           }
         })
 
-    client = Mux.client
-      .configured(param.Tracer(tracer))
-      .configured(param.Label("theClient"))
-      .newService(server)
+    client = Mux.client.configured(param.Tracer(tracer))
+      .configured(param.Label("theClient")).newService(server)
 
     Await.result(client(Request.empty), 30.seconds)
 
@@ -303,13 +298,11 @@ EOF
       }
       val lessor = new FakeLessor
 
-      val server = Mux.server
-        .configured(Lessor.Param(lessor))
-        .serve(
-          "localhost:*",
-          new Service[mux.Request, mux.Response] {
-            def apply(req: Request) = ???
-          })
+      val server = Mux.server.configured(Lessor.Param(lessor)).serve(
+        "localhost:*",
+        new Service[mux.Request, mux.Response] {
+          def apply(req: Request) = ???
+        })
 
       val sr = new InMemoryStatsReceiver
 
@@ -360,14 +353,10 @@ EOF
       def apply(req: Request) =
         Future.value(Response(req.body.concat(req.body)))
     }
-    val server = Mux.server
-      .withLabel("server")
-      .withStatsReceiver(sr)
+    val server = Mux.server.withLabel("server").withStatsReceiver(sr)
       .serve("localhost:*", service)
 
-    val client = Mux.client
-      .withLabel("client")
-      .withStatsReceiver(sr)
+    val client = Mux.client.withLabel("client").withStatsReceiver(sr)
       .newService(server)
 
     Await.ready(client(Request(Path.empty, Buf.Utf8("." * 10))))

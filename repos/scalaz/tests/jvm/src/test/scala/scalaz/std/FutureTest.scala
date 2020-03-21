@@ -73,8 +73,8 @@ class FutureTest extends SpecLite {
   }
 
   "Nondeterminism[Future]" should {
-    implicit val es: ExecutionContext = ExecutionContext.fromExecutor(
-      Executors.newFixedThreadPool(1))
+    implicit val es: ExecutionContext = ExecutionContext
+      .fromExecutor(Executors.newFixedThreadPool(1))
 
     "fetch first completed future in chooseAny" ! forAll { (xs: Vector[Int]) =>
       val promises = Vector.fill(xs.size)(Promise[Int]())

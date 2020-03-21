@@ -138,9 +138,10 @@ class ScSubstitutor(
     if (level > ScSubstitutor.followLimit)
       throw new RuntimeException(
         "Too much followers for substitutor: " + this.toString)
-    if (follower == null && tvMap.size + aliasesMap.size == 0 && updateThisType.isEmpty && !myDependentMethodTypesFunDefined)
-      s
-    else if (s.getFollower == null && s.tvMap.size + s.aliasesMap.size == 0 && s.updateThisType.isEmpty && !s.myDependentMethodTypesFunDefined)
+    if (follower == null && tvMap.size + aliasesMap.size == 0 && updateThisType
+          .isEmpty && !myDependentMethodTypesFunDefined) s
+    else if (s.getFollower == null && s.tvMap.size + s.aliasesMap.size == 0 && s
+               .updateThisType.isEmpty && !s.myDependentMethodTypesFunDefined)
       this
     else {
       val res = new ScSubstitutor(
@@ -286,9 +287,8 @@ class ScSubstitutor(
                           withoutAliases = true) match {
                           case Some((cl: PsiClass, _)) =>
                             if (cl == clazz) tp
-                            else if (ScalaPsiUtil.cachedDeepIsInheritor(
-                                       cl,
-                                       clazz)) tp
+                            else if (ScalaPsiUtil
+                                       .cachedDeepIsInheritor(cl, clazz)) tp
                             else null
                           case _ =>
                             selfType match {
@@ -333,9 +333,9 @@ class ScSubstitutor(
                         ScType.extractClass(tps) match {
                           case Some(cl) =>
                             if (cl == clazz) return tp
-                            else if (ScalaPsiUtil.cachedDeepIsInheritor(
-                                       cl,
-                                       clazz)) return tp
+                            else if (ScalaPsiUtil
+                                       .cachedDeepIsInheritor(cl, clazz))
+                              return tp
                           case _ =>
                         }
                       }
@@ -491,8 +491,8 @@ class ScSubstitutor(
           comps.map(substInternal),
           signatureMap.map {
             case (s: Signature, tp: ScType) =>
-              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
-                _.map(f => () => substInternal(f())))
+              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes
+                .map(_.map(f => () => substInternal(f())))
               val tParams: Array[TypeParameter] =
                 if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
                 else s.typeParams.map(substTypeParam)
@@ -524,8 +524,8 @@ class ScSubstitutor(
         //todo: this is ugly workaround for
         result = updateThisType match {
           case Some(thisType @ ScDesignatorType(param: ScParameter)) =>
-            val paramType =
-              param.getRealParameterType(TypingContext.empty).getOrAny
+            val paramType = param.getRealParameterType(TypingContext.empty)
+              .getOrAny
             if (paramType.conforms(middleRes)) thisType else middleRes
           case _ => middleRes
         }
@@ -539,10 +539,10 @@ class ScSubstitutor(
 class ScUndefinedSubstitutor(
     val upperMap: Map[(String, PsiElement), HashSet[ScType]] = HashMap.empty,
     val lowerMap: Map[(String, PsiElement), HashSet[ScType]] = HashMap.empty,
-    val upperAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] =
-      HashMap.empty,
-    val lowerAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] =
-      HashMap.empty) {
+    val upperAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] = HashMap
+      .empty,
+    val lowerAdditionalMap: Map[(String, PsiElement), HashSet[ScType]] = HashMap
+      .empty) {
 
   def copy(
       upperMap: Map[(String, PsiElement), HashSet[ScType]] = upperMap,
@@ -561,7 +561,8 @@ class ScUndefinedSubstitutor(
   type Name = (String, PsiElement)
 
   def isEmpty: Boolean =
-    upperMap.isEmpty && lowerMap.isEmpty && upperAdditionalMap.isEmpty && lowerAdditionalMap.isEmpty
+    upperMap.isEmpty && lowerMap.isEmpty && upperAdditionalMap
+      .isEmpty && lowerAdditionalMap.isEmpty
 
   //todo: this is can be rewritten in more fast way
   def addSubst(subst: ScUndefinedSubstitutor): ScUndefinedSubstitutor = {
@@ -706,15 +707,13 @@ class ScUndefinedSubstitutor(
 
   val additionalNames: Set[Name] = {
     //We need to exclude Nothing names from this set, see SCL-5736
-    lowerAdditionalMap
-      .filter(_._2.exists(!_.equiv(Nothing)))
+    lowerAdditionalMap.filter(_._2.exists(!_.equiv(Nothing)))
       .keySet ++ upperAdditionalMap.keySet
   }
 
   val names: Set[Name] = {
     //We need to exclude Nothing names from this set, see SCL-5736
-    upperMap.keySet ++ lowerMap
-      .filter(_._2.exists(!_.equiv(Nothing)))
+    upperMap.keySet ++ lowerMap.filter(_._2.exists(!_.equiv(Nothing)))
       .keySet ++ additionalNames
   }
 
@@ -735,13 +734,11 @@ class ScUndefinedSubstitutor(
       tvMap.get(name) match {
         case Some(tp) => Some(tp)
         case _ =>
-          (lowerMap
-            .get(name)
-            .map(set =>
-              lowerAdditionalMap.get(name) match {
-                case Some(set1) => set ++ set1
-                case _          => set
-              }) match {
+          (lowerMap.get(name).map(set =>
+            lowerAdditionalMap.get(name) match {
+              case Some(set1) => set ++ set1
+              case _          => set
+            }) match {
             case Some(set) => Some(set)
             case _         => lowerAdditionalMap.get(name)
           }) match {
@@ -796,13 +793,11 @@ class ScUndefinedSubstitutor(
               }
             case None =>
           }
-          (upperMap
-            .get(name)
-            .map(set =>
-              upperAdditionalMap.get(name) match {
-                case Some(set1) => set ++ set1
-                case _          => set
-              }) match {
+          (upperMap.get(name).map(set =>
+            upperAdditionalMap.get(name) match {
+              case Some(set1) => set ++ set1
+              case _          => set
+            }) match {
             case Some(set) => Some(set)
             case _         => upperAdditionalMap.get(name)
           }) match {

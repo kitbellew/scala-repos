@@ -52,9 +52,7 @@ class GroupedIteratorSuite extends SparkFunSuite {
   }
 
   test("group by 2 columns") {
-    val schema = new StructType()
-      .add("i", IntegerType)
-      .add("l", LongType)
+    val schema = new StructType().add("i", IntegerType).add("l", LongType)
       .add("s", StringType)
     val encoder = RowEncoder(schema)
 

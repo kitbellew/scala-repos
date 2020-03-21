@@ -47,9 +47,7 @@ class ForwardToLeaderIntegrationTest
         .count(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER) == 1)
     assert(
       result.originalResponse.headers
-        .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER)
-        .get
-        .value
+        .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER).get.value
         == s"http://localhost:${ports.head}")
   }
 
@@ -69,18 +67,14 @@ class ForwardToLeaderIntegrationTest
         .count(_.name == JavaUrlConnectionRequestForwarder.HEADER_VIA) == 1)
     assert(
       result.originalResponse.headers
-        .find(_.name == JavaUrlConnectionRequestForwarder.HEADER_VIA)
-        .get
-        .value
+        .find(_.name == JavaUrlConnectionRequestForwarder.HEADER_VIA).get.value
         == s"1.1 localhost:${ports(1)}")
     assert(
       result.originalResponse.headers
         .count(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER) == 1)
     assert(
       result.originalResponse.headers
-        .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER)
-        .get
-        .value
+        .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER).get.value
         == s"http://localhost:${ports.head}")
   }
 
@@ -99,12 +93,12 @@ class ForwardToLeaderIntegrationTest
 
     val pingURL = new URL(s"https://localhost:${ports.head}/ping")
     val connection = SSLContextTestUtil.sslConnection(pingURL)
-    val via = connection.getHeaderField(
-      JavaUrlConnectionRequestForwarder.HEADER_VIA)
-    val leader = connection.getHeaderField(
-      LeaderProxyFilter.HEADER_MARATHON_LEADER)
-    val response = IO.using(connection.getInputStream)(
-      IO.copyInputStreamToString)
+    val via = connection
+      .getHeaderField(JavaUrlConnectionRequestForwarder.HEADER_VIA)
+    val leader = connection
+      .getHeaderField(LeaderProxyFilter.HEADER_MARATHON_LEADER)
+    val response = IO
+      .using(connection.getInputStream)(IO.copyInputStreamToString)
     assert(response == "pong\n")
     assert(via == null)
     assert(leader == s"https://localhost:${ports.head}")
@@ -139,12 +133,12 @@ class ForwardToLeaderIntegrationTest
 
     val pingURL = new URL(s"https://localhost:${ports(1)}/ping")
     val connection = SSLContextTestUtil.sslConnection(pingURL)
-    val via = connection.getHeaderField(
-      JavaUrlConnectionRequestForwarder.HEADER_VIA)
-    val leader = connection.getHeaderField(
-      LeaderProxyFilter.HEADER_MARATHON_LEADER)
-    val response = IO.using(connection.getInputStream)(
-      IO.copyInputStreamToString)
+    val via = connection
+      .getHeaderField(JavaUrlConnectionRequestForwarder.HEADER_VIA)
+    val leader = connection
+      .getHeaderField(LeaderProxyFilter.HEADER_MARATHON_LEADER)
+    val response = IO
+      .using(connection.getInputStream)(IO.copyInputStreamToString)
     assert(response == "pong\n")
     assert(via == s"1.1 localhost:${ports(1)}")
     assert(leader == s"https://localhost:${ports.head}")

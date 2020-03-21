@@ -31,13 +31,9 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
       if (x.size > y.size) { (x, y, true) }
       else { (y, x, false) }
     small.foldLeft(big) { (oldMap, kv) =>
-      val newV = big
-        .get(kv._1)
-        .map { bigV =>
-          if (bigOnLeft) semigroup.op(bigV, kv._2)
-          else semigroup.op(kv._2, bigV)
-        }
-        .getOrElse(kv._2)
+      val newV = big.get(kv._1).map { bigV =>
+        if (bigOnLeft) semigroup.op(bigV, kv._2) else semigroup.op(kv._2, bigV)
+      }.getOrElse(kv._2)
       oldMap + (kv._1 -> newV)
     }
   }

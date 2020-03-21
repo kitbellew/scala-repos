@@ -30,16 +30,14 @@ class NotifyLaunchQueueStepImplTest
       MarathonTaskStatus(status))
 
     Given("a status update")
-    f.launchQueue.notifyOfTaskUpdate(expectedUpdate) returns Future.successful(
-      None)
+    f.launchQueue.notifyOfTaskUpdate(expectedUpdate) returns Future
+      .successful(None)
 
     When("calling processUpdate")
-    f.step
-      .processUpdate(
-        updateTimestamp,
-        task = MarathonTestHelper.mininimalTask(appId),
-        status = status)
-      .futureValue
+    f.step.processUpdate(
+      updateTimestamp,
+      task = MarathonTestHelper.mininimalTask(appId),
+      status = status).futureValue
 
     Then("the update is passed to the LaunchQueue")
     verify(f.launchQueue).notifyOfTaskUpdate(expectedUpdate)
@@ -51,13 +49,9 @@ class NotifyLaunchQueueStepImplTest
   private[this] val updateTimestamp = Timestamp(100)
   private[this] val taskStatusMessage = "some update"
 
-  private[this] val runningTaskStatus = TaskStatus
-    .newBuilder()
-    .setState(TaskState.TASK_RUNNING)
-    .setTaskId(taskId)
-    .setSlaveId(slaveId)
-    .setMessage(taskStatusMessage)
-    .build()
+  private[this] val runningTaskStatus = TaskStatus.newBuilder()
+    .setState(TaskState.TASK_RUNNING).setTaskId(taskId).setSlaveId(slaveId)
+    .setMessage(taskStatusMessage).build()
 
   class Fixture {
     val launchQueue = mock[LaunchQueue]

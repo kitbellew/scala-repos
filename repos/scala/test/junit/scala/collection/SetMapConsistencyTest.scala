@@ -337,9 +337,9 @@ class SetMapConsistencyTest {
           case _ => None
         }
         throw new Exception(
-          s"Disagreement after ${what.result} between ${map1.title} and ${map2.title} because ${map1.keys
-            .map(map2 has _)
-            .mkString(",")} ${map2.keys.map(map1 has _).mkString(",")} at step $i:\n$map1\n$map2\n$temp")
+          s"Disagreement after ${what.result} between ${map1.title} and ${map2
+            .title} because ${map1.keys.map(map2 has _).mkString(",")} ${map2.keys
+            .map(map1 has _).mkString(",")} at step $i:\n$map1\n$map2\n$temp")
       }
       what ++= " (%d) ".format(i)
       if (rn.nextInt(10) == 0) {
@@ -424,8 +424,9 @@ class SetMapConsistencyTest {
       () => boxIhm[Int],
       () => boxIlm[Int],
       () => boxItm[Int])
-    assert(
-      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), intKeys, 2000) })
+    assert(maps.sliding(2).forall { ms =>
+      churn(ms(0)(), ms(1)(), intKeys, 2000)
+    })
   }
 
   @Test
@@ -440,8 +441,9 @@ class SetMapConsistencyTest {
       () => boxMohm[Long],
       () => boxIhm[Long],
       () => boxIlm[Long])
-    assert(
-      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), longKeys, 10000) })
+    assert(maps.sliding(2).forall { ms =>
+      churn(ms(0)(), ms(1)(), longKeys, 10000)
+    })
   }
 
   @Test
@@ -468,8 +470,9 @@ class SetMapConsistencyTest {
       () => boxJavaM[Any],
       () => boxIhm[Any],
       () => boxIlm[Any])
-    assert(
-      maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), anyKeys, 10000) })
+    assert(maps.sliding(2).forall { ms =>
+      churn(ms(0)(), ms(1)(), anyKeys, 10000)
+    })
   }
 
   @Test
@@ -551,17 +554,15 @@ class SetMapConsistencyTest {
     stringKeys.zipWithIndex.foreach { case (k, i) => arm(k) = i }
 
     assert {
-      arm.map {
-        case (k, v) => (if (k == null) "" else k + k) -> v.toString
-      }.getClass == arm.getClass
+      arm.map { case (k, v) => (if (k == null) "" else k + k) -> v.toString }
+        .getClass == arm.getClass
     }
 
     assert {
       val arm2 = new AnyRefMap[java.lang.Integer, Unit](2000000)
       for (i <- 0 until 1000000) arm2(java.lang.Integer.valueOf(i)) = ()
       arm2.size == 1000000 &&
-      (0 to 1100000 by 100000)
-        .map(java.lang.Integer.valueOf)
+      (0 to 1100000 by 100000).map(java.lang.Integer.valueOf)
         .forall(i => (arm2 contains i) == i < 1000000)
     }
 
@@ -592,8 +593,7 @@ class SetMapConsistencyTest {
       List(null, "cod", "sparrow", "Rarity").forall(i =>
         arm2.get(i) == hm2.get(i) &&
           arm2.getOrElse(i, "") == hm2.getOrElse(i, "") &&
-          arm2(i) == hm2
-            .get(i)
+          arm2(i) == hm2.get(i)
             .getOrElse(if (i == null) "null" else i.toString) &&
           arm2.getOrNull(i) == hm2.get(i).orNull)
     }
@@ -602,8 +602,7 @@ class SetMapConsistencyTest {
   @Test
   def extraFilterTests() {
     type M = scala.collection.Map[Int, Boolean]
-    val manyKVs = (0 to 1000)
-      .map(i => i * i * i)
+    val manyKVs = (0 to 1000).map(i => i * i * i)
       .map(x => x -> ((x * x * x) < 0))
     val rn = new scala.util.Random(42)
     def mhm: M = { val m = new cm.HashMap[Int, Boolean]; m ++= manyKVs; m }

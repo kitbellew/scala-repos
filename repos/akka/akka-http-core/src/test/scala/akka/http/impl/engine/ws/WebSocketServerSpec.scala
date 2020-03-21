@@ -37,10 +37,10 @@ class WebSocketServerSpec
             val upgrade = request.header[UpgradeToWebSocket]
             upgrade.isDefined shouldBe true
 
-            val source = Source(List(1, 2, 3, 4, 5)).map(num ⇒
-              TextMessage.Strict(s"Message $num"))
-            val handler = Flow.fromSinkAndSourceMat(Sink.ignore, source)(
-              Keep.none)
+            val source = Source(List(1, 2, 3, 4, 5))
+              .map(num ⇒ TextMessage.Strict(s"Message $num"))
+            val handler = Flow
+              .fromSinkAndSourceMat(Sink.ignore, source)(Keep.none)
             val response = upgrade.get.handleMessages(handler)
             responses.sendNext(response)
 
@@ -98,9 +98,8 @@ class WebSocketServerSpec
           val upgrade = request.header[UpgradeToWebSocket]
           upgrade.isDefined shouldBe true
 
-          val response = upgrade.get.handleMessages(
-            Flow[Message]
-          ) // simple echoing
+          val response = upgrade.get
+            .handleMessages(Flow[Message]) // simple echoing
           responses.sendNext(response)
 
           expectResponseWithWipedDate(

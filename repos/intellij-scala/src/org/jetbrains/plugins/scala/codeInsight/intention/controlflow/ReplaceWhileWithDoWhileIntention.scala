@@ -34,17 +34,16 @@ class ReplaceWhileWithDoWhileIntention extends PsiElementBaseIntentionAction {
       body <- whileStmt.body
     } {
       val offset = editor.getCaretModel.getOffset
-      if (offset >= whileStmt.getTextRange.getStartOffset && offset <= condition.getTextRange.getStartOffset - 1)
-        return true
+      if (offset >= whileStmt.getTextRange.getStartOffset && offset <= condition
+            .getTextRange.getStartOffset - 1) return true
     }
 
     false
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val whileStmt: ScWhileStmt = PsiTreeUtil.getParentOfType(
-      element,
-      classOf[ScWhileStmt])
+    val whileStmt: ScWhileStmt = PsiTreeUtil
+      .getParentOfType(element, classOf[ScWhileStmt])
     if (whileStmt == null || !whileStmt.isValid) return
 
     for {
@@ -61,8 +60,7 @@ class ReplaceWhileWithDoWhileIntention extends PsiElementBaseIntentionAction {
 
       inWriteAction {
         whileStmt.replaceExpression(newStmt, removeParenthesis = true)
-        PsiDocumentManager
-          .getInstance(project)
+        PsiDocumentManager.getInstance(project)
           .commitDocument(editor.getDocument)
       }
     }

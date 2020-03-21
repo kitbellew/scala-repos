@@ -157,8 +157,8 @@ private[immutable] abstract class HashSetCombiner[T]
     val bucks = buckets.filter(_ != null).map(_.headPtr)
     val root = new Array[HashSet[T]](bucks.length)
 
-    combinerTaskSupport.executeAndWaitResult(
-      new CreateTrie(bucks, root, 0, bucks.length))
+    combinerTaskSupport
+      .executeAndWaitResult(new CreateTrie(bucks, root, 0, bucks.length))
 
     var bitmap = 0
     var i = 0
@@ -204,11 +204,8 @@ private[immutable] abstract class HashSetCombiner[T]
         while (i < chunksz) {
           val v = chunkarr(i).asInstanceOf[T]
           val hc = trie.computeHash(v)
-          trie = trie.updated0(
-            v,
-            hc,
-            rootbits
-          ) // internal API, private[collection]
+          trie = trie
+            .updated0(v, hc, rootbits) // internal API, private[collection]
           i += 1
         }
         i = 0

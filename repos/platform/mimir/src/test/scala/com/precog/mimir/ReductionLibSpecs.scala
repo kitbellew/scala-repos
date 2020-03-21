@@ -360,8 +360,9 @@ trait ReductionLibSpecs[M[+_]]
     "count" >> {
       val input = dag.Reduce(
         Count,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 22)
     }
@@ -369,8 +370,9 @@ trait ReductionLibSpecs[M[+_]]
     "geometricMean" >> {
       val input = dag.Reduce(
         GeometricMean,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 0)
     }
@@ -378,8 +380,9 @@ trait ReductionLibSpecs[M[+_]]
     "mean" >> {
       val input = dag.Reduce(
         Mean,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 1.8888888888888888)
     }
@@ -387,8 +390,9 @@ trait ReductionLibSpecs[M[+_]]
     "max" >> {
       val input = dag.Reduce(
         Max,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 12)
     }
@@ -396,16 +400,16 @@ trait ReductionLibSpecs[M[+_]]
     "min" >> {
       val input = dag.Reduce(
         Min,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, -3)
     }
 
     "maxTime" >> {
-      val input = dag.Reduce(
-        MaxTime,
-        parseDateTimeFuzzy("/hom/iso8601AcrossSlices"))(line)
+      val input = dag
+        .Reduce(MaxTime, parseDateTimeFuzzy("/hom/iso8601AcrossSlices"))(line)
 
       val result = testEval(input)
 
@@ -419,9 +423,8 @@ trait ReductionLibSpecs[M[+_]]
     }
 
     "minTime" >> {
-      val input = dag.Reduce(
-        MinTime,
-        parseDateTimeFuzzy("/hom/iso8601AcrossSlices"))(line)
+      val input = dag
+        .Reduce(MinTime, parseDateTimeFuzzy("/hom/iso8601AcrossSlices"))(line)
 
       val result = testEval(input)
 
@@ -437,8 +440,9 @@ trait ReductionLibSpecs[M[+_]]
     "standard deviation" >> {
       val input = dag.Reduce(
         StdDev,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 4.121608220220312)
     }
@@ -446,8 +450,9 @@ trait ReductionLibSpecs[M[+_]]
     "sum" >> {
       val input = dag.Reduce(
         Sum,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 17)
     }
@@ -455,8 +460,9 @@ trait ReductionLibSpecs[M[+_]]
     "sumSq" >> {
       val input = dag.Reduce(
         SumSq,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 185)
     }
@@ -464,8 +470,9 @@ trait ReductionLibSpecs[M[+_]]
     "variance" >> {
       val input = dag.Reduce(
         Variance,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 16.987654320987655)
     }
@@ -475,8 +482,9 @@ trait ReductionLibSpecs[M[+_]]
     "count" >> {
       val input = dag.Reduce(
         Count,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 22)
     }
@@ -484,8 +492,9 @@ trait ReductionLibSpecs[M[+_]]
     "geometricMean" >> {
       val input = dag.Reduce(
         GeometricMean,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 0)
     }
@@ -493,8 +502,9 @@ trait ReductionLibSpecs[M[+_]]
     "mean" >> {
       val input = dag.Reduce(
         Mean,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 0.9090909090909090909090909090909091)
     }
@@ -502,8 +512,9 @@ trait ReductionLibSpecs[M[+_]]
     "max" >> {
       val input = dag.Reduce(
         Max,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 15)
     }
@@ -511,16 +522,16 @@ trait ReductionLibSpecs[M[+_]]
     "min" >> {
       val input = dag.Reduce(
         Min,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, -14)
     }
 
     "maxTime" >> {
-      val input = dag.Reduce(
-        MaxTime,
-        parseDateTimeFuzzy("/het/iso8601AcrossSlices"))(line)
+      val input = dag
+        .Reduce(MaxTime, parseDateTimeFuzzy("/het/iso8601AcrossSlices"))(line)
 
       val result = testEval(input)
 
@@ -534,9 +545,8 @@ trait ReductionLibSpecs[M[+_]]
     }
 
     "minTime" >> {
-      val input = dag.Reduce(
-        MinTime,
-        parseDateTimeFuzzy("/het/iso8601AcrossSlices"))(line)
+      val input = dag
+        .Reduce(MinTime, parseDateTimeFuzzy("/het/iso8601AcrossSlices"))(line)
 
       val result = testEval(input)
 
@@ -552,8 +562,9 @@ trait ReductionLibSpecs[M[+_]]
     "standard deviation" >> {
       val input = dag.Reduce(
         StdDev,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 10.193175483934386)
     }
@@ -561,8 +572,9 @@ trait ReductionLibSpecs[M[+_]]
     "sum" >> {
       val input = dag.Reduce(
         Sum,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 20)
     }
@@ -570,8 +582,9 @@ trait ReductionLibSpecs[M[+_]]
     "sumSq" >> {
       val input = dag.Reduce(
         SumSq,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 2304)
     }
@@ -579,8 +592,9 @@ trait ReductionLibSpecs[M[+_]]
     "variance" >> {
       val input = dag.Reduce(
         Variance,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line))(line)
+        dag
+          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+            line))(line)
 
       determineResult(input, 103.9008264462809917355371900826446)
     }

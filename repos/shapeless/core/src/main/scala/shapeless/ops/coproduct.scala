@@ -1372,8 +1372,8 @@ object coproduct {
       def lteq(x: H :+: T, y: H :+: T): Boolean =
         (x, y) match {
           case (Inl(xh), Inl(yh)) => ordering.compare(xh, yh) <= 0
-          case (Inr(xt), Inr(yt)) =>
-            partialOrdering.tryCompare(xt, yt).fold(false)(_ <= 0)
+          case (Inr(xt), Inr(yt)) => partialOrdering.tryCompare(xt, yt)
+              .fold(false)(_ <= 0)
           case _ => false
         }
 

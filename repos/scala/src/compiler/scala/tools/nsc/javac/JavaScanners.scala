@@ -304,9 +304,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 
               case '\"' =>
                 in.next()
-                while (in.ch != '\"' && (
-                         in.isUnicode || in.ch != CR && in.ch != LF && in.ch != SU
-                       )) { getlitch() }
+                while (in.ch != '\"' && (in.isUnicode || in.ch != CR && in
+                         .ch != LF && in.ch != SU)) { getlitch() }
                 if (in.ch == '\"') {
                   token = STRINGLIT
                   setName()
@@ -739,8 +738,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       val limit: Double =
         if (token == DOUBLELIT) Double.MaxValue else Float.MaxValue
       try {
-        val value: Double = java.lang.Double
-          .valueOf(name.toString)
+        val value: Double = java.lang.Double.valueOf(name.toString)
           .doubleValue()
         if (value > limit) syntaxError("floating point number too large")
         if (negated) -value else value

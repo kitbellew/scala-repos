@@ -52,9 +52,8 @@ object ProdServerStart {
       Play.start(application)
 
       // Start the server
-      val serverProvider: ServerProvider = ServerProvider.fromConfiguration(
-        process.classLoader,
-        config.configuration)
+      val serverProvider: ServerProvider = ServerProvider
+        .fromConfiguration(process.classLoader, config.configuration)
       val server = serverProvider.createServer(config, application)
       process.addShutdownHook {
         server.stop()
@@ -76,18 +75,14 @@ object ProdServerStart {
   def readServerConfigSettings(process: ServerProcess): ServerConfig = {
     val configuration: Configuration = {
       val rootDirArg: Option[File] = process.args.headOption.map(new File(_))
-      val rootDirConfig = rootDirArg.fold(Map.empty[String, String])(dir =>
-        ServerConfig.rootDirConfig(dir))
-      Configuration.load(
-        process.classLoader,
-        process.properties,
-        rootDirConfig,
-        true)
+      val rootDirConfig = rootDirArg
+        .fold(Map.empty[String, String])(dir => ServerConfig.rootDirConfig(dir))
+      Configuration
+        .load(process.classLoader, process.properties, rootDirConfig, true)
     }
 
     val rootDir: File = {
-      val path = configuration
-        .getString("play.server.dir")
+      val path = configuration.getString("play.server.dir")
         .getOrElse(throw ServerStartException("No root server path supplied"))
       val file = new File(path)
       if (!(file.exists && file.isDirectory)) {
@@ -116,8 +111,7 @@ object ProdServerStart {
     if (!(httpPort orElse httpsPort).isDefined)
       throw ServerStartException("Must provide either an HTTP or HTTPS port")
 
-    val address = configuration
-      .getString("play.server.http.address")
+    val address = configuration.getString("play.server.http.address")
       .getOrElse("0.0.0.0")
 
     ServerConfig(
@@ -136,8 +130,7 @@ object ProdServerStart {
   def createPidFile(
       process: ServerProcess,
       configuration: Configuration): Option[File] = {
-    val pidFilePath = configuration
-      .getString("play.server.pidfile.path")
+    val pidFilePath = configuration.getString("play.server.pidfile.path")
       .getOrElse(throw ServerStartException("Pid file path not configured"))
     if (pidFilePath == "/dev/null") None
     else {

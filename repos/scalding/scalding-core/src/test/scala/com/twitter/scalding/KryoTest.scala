@@ -55,9 +55,8 @@ class KryoTest extends WordSpec with Matchers {
   def getSerialization = {
     val conf = new Configuration
     val chillConf = new HadoopConfig(conf)
-    ConfiguredInstantiator.setReflect(
-      chillConf,
-      classOf[serialization.KryoHadoop])
+    ConfiguredInstantiator
+      .setReflect(chillConf, classOf[serialization.KryoHadoop])
     new KryoSerialization(conf)
   }
 
@@ -140,9 +139,9 @@ class KryoTest extends WordSpec with Matchers {
     }
     "handle arrays" in {
       def arrayRT[T](arr: Array[T]) {
-        serializationRT(List(arr))(0)
-          .asInstanceOf[Array[T]]
-          .toList shouldBe (arr.toList)
+        serializationRT(List(arr))(0).asInstanceOf[Array[T]].toList shouldBe (
+          arr.toList
+        )
       }
       arrayRT(Array(0))
       arrayRT(Array(0.1))

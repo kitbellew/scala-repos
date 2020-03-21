@@ -24,8 +24,8 @@ import akka.testkit.AkkaSpec
 
 class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
-  val settings = ActorMaterializerSettings(system).withDispatcher(
-    "akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system)
+    .withDispatcher("akka.actor.default-dispatcher")
   implicit val materializer = ActorMaterializer(settings)
 
   val TestLines = {
@@ -44,8 +44,7 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
   "SynchronousFile Sink" must {
     "write lines to a file" in assertAllStagesStopped {
       targetFile { f ⇒
-        val completion = Source(TestByteStrings)
-          .runWith(FileIO.toFile(f))
+        val completion = Source(TestByteStrings).runWith(FileIO.toFile(f))
 
         val result = Await.result(completion, 3.seconds)
         result.count should equal(6006)
@@ -56,8 +55,7 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
     "create new file if not exists" in assertAllStagesStopped {
       targetFile(
         { f ⇒
-          val completion = Source(TestByteStrings)
-            .runWith(FileIO.toFile(f))
+          val completion = Source(TestByteStrings).runWith(FileIO.toFile(f))
 
           val result = Await.result(completion, 3.seconds)
           result.count should equal(6006)
@@ -70,9 +68,7 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
     "by default write into existing file" in assertAllStagesStopped {
       targetFile { f ⇒
         def write(lines: List[String]) =
-          Source(lines)
-            .map(ByteString(_))
-            .runWith(FileIO.toFile(f))
+          Source(lines).map(ByteString(_)).runWith(FileIO.toFile(f))
 
         val completion1 = write(TestLines)
         Await.result(completion1, 3.seconds)
@@ -91,8 +87,7 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
     "allow appending to file" in assertAllStagesStopped {
       targetFile { f ⇒
         def write(lines: List[String] = TestLines) =
-          Source(lines)
-            .map(ByteString(_))
+          Source(lines).map(ByteString(_))
             .runWith(FileIO.toFile(f, Set(StandardOpenOption.APPEND)))
 
         val completion1 = write()
@@ -116,17 +111,13 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
         implicit val timeout = Timeout(3.seconds)
 
         try {
-          Source
-            .fromIterator(() ⇒ Iterator.continually(TestByteStrings.head))
+          Source.fromIterator(() ⇒ Iterator.continually(TestByteStrings.head))
             .runWith(FileIO.toFile(f))(materializer)
 
-          materializer
-            .asInstanceOf[ActorMaterializerImpl]
-            .supervisor
+          materializer.asInstanceOf[ActorMaterializerImpl].supervisor
             .tell(StreamSupervisor.GetChildren, testActor)
           val ref = expectMsgType[Children].children
-            .find(_.path.toString contains "fileSource")
-            .get
+            .find(_.path.toString contains "fileSource").get
           assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
         } finally shutdown(sys)
       }
@@ -141,20 +132,14 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
         implicit val timeout = Timeout(3.seconds)
 
         try {
-          Source
-            .fromIterator(() ⇒ Iterator.continually(TestByteStrings.head))
-            .to(FileIO.toFile(f))
-            .withAttributes(ActorAttributes.dispatcher(
-              "akka.actor.default-dispatcher"))
-            .run()(materializer)
+          Source.fromIterator(() ⇒ Iterator.continually(TestByteStrings.head))
+            .to(FileIO.toFile(f)).withAttributes(ActorAttributes.dispatcher(
+              "akka.actor.default-dispatcher")).run()(materializer)
 
-          materializer
-            .asInstanceOf[ActorMaterializerImpl]
-            .supervisor
+          materializer.asInstanceOf[ActorMaterializerImpl].supervisor
             .tell(StreamSupervisor.GetChildren, testActor)
           val ref = expectMsgType[Children].children
-            .find(_.path.toString contains "File")
-            .get
+            .find(_.path.toString contains "File").get
           assertDispatcher(ref, "akka.actor.default-dispatcher")
         } finally shutdown(sys)
       }

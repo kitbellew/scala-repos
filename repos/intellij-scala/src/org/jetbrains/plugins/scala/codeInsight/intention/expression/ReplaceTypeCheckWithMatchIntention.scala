@@ -42,8 +42,8 @@ class ReplaceTypeCheckWithMatchIntention extends PsiElementBaseIntentionAction {
       if findIsInstanceOfCalls(condition, onlyFirst = false) contains iioCall
     } {
       val offset = editor.getCaretModel.getOffset
-      if (offset >= iioCall.getTextRange.getStartOffset && offset <= iioCall.getTextRange.getEndOffset)
-        return true
+      if (offset >= iioCall.getTextRange.getStartOffset && offset <= iioCall
+            .getTextRange.getEndOffset) return true
     }
     false
   }
@@ -62,8 +62,7 @@ class ReplaceTypeCheckWithMatchIntention extends PsiElementBaseIntentionAction {
         onlyFirst = false)
       for (matchStmt <- matchStmtOption) {
         val newMatch = inWriteAction {
-          ifStmt
-            .replaceExpression(matchStmt, removeParenthesis = true)
+          ifStmt.replaceExpression(matchStmt, removeParenthesis = true)
             .asInstanceOf[ScMatchStmt]
         }
         if (!ApplicationManager.getApplication.isUnitTestMode) {

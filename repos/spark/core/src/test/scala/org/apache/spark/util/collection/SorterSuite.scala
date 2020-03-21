@@ -53,10 +53,9 @@ class SorterSuite extends SparkFunSuite with Logging {
     }
 
     // Map from generated keys to values, to verify correctness later
-    val kvMap = keyValueArray
-      .grouped(2)
-      .map { case Array(k, v) => k.doubleValue() -> v.intValue() }
-      .toMap
+    val kvMap = keyValueArray.grouped(2).map {
+      case Array(k, v) => k.doubleValue() -> v.intValue()
+    }.toMap
 
     Arrays.sort(keys)
     new Sorter(new KVArraySortDataFormat[Double, Number])
@@ -132,8 +131,7 @@ class SorterSuite extends SparkFunSuite with Logging {
           kvTupleArray,
           new Comparator[AnyRef] {
             override def compare(x: AnyRef, y: AnyRef): Int =
-              x.asInstanceOf[(JFloat, _)]
-                ._1
+              x.asInstanceOf[(JFloat, _)]._1
                 .compareTo(y.asInstanceOf[(JFloat, _)]._1)
           })
       },

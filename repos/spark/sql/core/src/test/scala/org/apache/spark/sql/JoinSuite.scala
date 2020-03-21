@@ -35,8 +35,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
   test("equi-join is hash-join") {
     val x = testData2.as("x")
     val y = testData2.as("y")
-    val join =
-      x.join(y, $"x.a" === $"y.a", "inner").queryExecution.optimizedPlan
+    val join = x.join(y, $"x.a" === $"y.a", "inner").queryExecution
+      .optimizedPlan
     val planned = sqlContext.sessionState.planner.EquiJoinSelection(join)
     assert(planned.size === 1)
   }
@@ -176,10 +176,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
   test("multiple-key equi-join is hash-join") {
     val x = testData2.as("x")
     val y = testData2.as("y")
-    val join = x
-      .join(y, ($"x.a" === $"y.a") && ($"x.b" === $"y.b"))
-      .queryExecution
-      .optimizedPlan
+    val join = x.join(y, ($"x.a" === $"y.a") && ($"x.b" === $"y.b"))
+      .queryExecution.optimizedPlan
     val planned = sqlContext.sessionState.planner.EquiJoinSelection(join)
     assert(planned.size === 1)
   }
@@ -222,18 +220,14 @@ class JoinSuite extends QueryTest with SharedSQLContext {
   }
 
   test("big inner join, 4 matches per row") {
-    val bigData = testData
-      .unionAll(testData)
-      .unionAll(testData)
+    val bigData = testData.unionAll(testData).unionAll(testData)
       .unionAll(testData)
     val bigDataX = bigData.as("x")
     val bigDataY = bigData.as("y")
 
     checkAnswer(
       bigDataX.join(bigDataY).where($"x.key" === $"y.key"),
-      testData.rdd
-        .flatMap(row => Seq.fill(16)(Row.merge(row, row)))
-        .collect()
+      testData.rdd.flatMap(row => Seq.fill(16)(Row.merge(row, row))).collect()
         .toSeq)
   }
 

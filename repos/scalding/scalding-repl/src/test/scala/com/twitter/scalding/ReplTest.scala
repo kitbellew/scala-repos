@@ -58,8 +58,8 @@ class ReplTest extends WordSpec {
         // actually running a new flow to check the contents (just check that
         // it's a TypedPipe from a MemorySink or SequenceFile)
         assert(
-          s.toString.contains("IterablePipe") || s.toString.contains(
-            "TypedPipeFactory"))
+          s.toString.contains("IterablePipe") || s.toString
+            .contains("TypedPipeFactory"))
 
         val pipeName = mode match {
           case m: HadoopMode => m.jobConf.get("hadoop.tmp.dir")
@@ -70,9 +70,7 @@ class ReplTest extends WordSpec {
       }
 
       "can be mapped and saved -- TypedPipe[String]" in {
-        val s = TypedPipe
-          .from(TextLine(helloPath))
-          .flatMap(_.split("\\s+"))
+        val s = TypedPipe.from(TextLine(helloPath)).flatMap(_.split("\\s+"))
           .snapshot
 
         val out = TypedTsv[String](testPath + "output1.txt")
@@ -85,23 +83,17 @@ class ReplTest extends WordSpec {
       }
 
       "tuples -- TypedPipe[(String,Int)]" in {
-        val s = TypedPipe
-          .from(TextLine(helloPath))
-          .flatMap(_.split("\\s+"))
-          .map(w => (w.toLowerCase, w.length))
-          .snapshot
+        val s = TypedPipe.from(TextLine(helloPath)).flatMap(_.split("\\s+"))
+          .map(w => (w.toLowerCase, w.length)).snapshot
 
         val output = s.toList
         assert(
-          output === helloRef
-            .flatMap(_.split("\\s+"))
+          output === helloRef.flatMap(_.split("\\s+"))
             .map(w => (w.toLowerCase, w.length)))
       }
 
       "grouped -- Grouped[String,String]" which {
-        val grp = TypedPipe
-          .from(TextLine(helloPath))
-          .groupBy(_.toLowerCase)
+        val grp = TypedPipe.from(TextLine(helloPath)).groupBy(_.toLowerCase)
 
         val correct = helloRef.map(l => (l.toLowerCase, l))
 
@@ -112,18 +104,15 @@ class ReplTest extends WordSpec {
       }
 
       "joined -- CoGrouped[String, Long]" which {
-        val linesByWord = TypedPipe
-          .from(TextLine(helloPath))
-          .flatMap(_.split("\\s+"))
-          .groupBy(_.toLowerCase)
+        val linesByWord = TypedPipe.from(TextLine(helloPath))
+          .flatMap(_.split("\\s+")).groupBy(_.toLowerCase)
         val wordScores = TypedPipe
           .from(TypedTsv[(String, Double)](tutorialData + "/word_scores.tsv"))
           .group
 
-        val grp = linesByWord
-          .join(wordScores)
-          .mapValues { case (text, score) => score }
-          .sum
+        val grp = linesByWord.join(wordScores).mapValues {
+          case (text, score) => score
+        }.sum
 
         val correct = Map("hello" -> 1.0, "goodbye" -> 3.0, "world" -> 4.0)
 
@@ -149,11 +138,8 @@ class ReplTest extends WordSpec {
 
     "run entire flow" in {
       resetFlowDef()
-      val hello = TypedPipe
-        .from(TextLine(helloPath))
-        .flatMap(_.split("\\s+"))
-        .map(_.toLowerCase)
-        .distinct
+      val hello = TypedPipe.from(TextLine(helloPath)).flatMap(_.split("\\s+"))
+        .map(_.toLowerCase).distinct
 
       val out = TypedTsv[String](testPath + "words.tsv")
 
@@ -182,8 +168,8 @@ class ReplTest extends WordSpec {
       }
       "tuple" in {
         assert(
-          hello.map(l => (l, l.length)).toList === helloRef.map(l =>
-            (l, l.length)))
+          hello.map(l => (l, l.length)).toList === helloRef
+            .map(l => (l, l.length)))
       }
     }
   }

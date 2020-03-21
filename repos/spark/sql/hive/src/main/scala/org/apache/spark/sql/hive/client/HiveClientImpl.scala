@@ -109,8 +109,8 @@ private[hive] class HiveClientImpl(
     // instance of SparkConf is needed for the original value of spark.yarn.keytab
     // and spark.yarn.principal set in SparkSubmit, as yarn.Client resets the
     // keytab configuration for the link name in distributed cache
-    if (sparkConf.contains("spark.yarn.principal") && sparkConf.contains(
-          "spark.yarn.keytab")) {
+    if (sparkConf.contains("spark.yarn.principal") && sparkConf
+          .contains("spark.yarn.keytab")) {
       val principalName = sparkConf.get("spark.yarn.principal")
       val keytabFileName = sparkConf.get("spark.yarn.keytab")
       if (!new File(keytabFileName).exists()) {
@@ -171,10 +171,10 @@ private[hive] class HiveClientImpl(
   }
 
   // We use hive's conf for compatibility.
-  private val retryLimit = conf.getIntVar(
-    HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES)
-  private val retryDelayMillis = shim.getMetastoreClientConnectRetryDelayMillis(
-    conf)
+  private val retryLimit = conf
+    .getIntVar(HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES)
+  private val retryDelayMillis = shim
+    .getMetastoreClientConnectRetryDelayMillis(conf)
 
   /**
     * Runs `f` with multiple retries in case the hive metastore is temporarily unreachable.
@@ -182,8 +182,8 @@ private[hive] class HiveClientImpl(
   private def retryLocked[A](f: => A): A =
     clientLoader.synchronized {
       // Hive sometimes retries internally, so set a deadline to avoid compounding delays.
-      val deadline =
-        System.nanoTime + (retryLimit * retryDelayMillis * 1e6).toLong
+      val deadline = System.nanoTime + (retryLimit * retryDelayMillis * 1e6)
+        .toLong
       var numTries = 0
       var caughtException: Exception = null
       do {
@@ -208,8 +208,8 @@ private[hive] class HiveClientImpl(
     var target = e
     while (target != null) {
       val msg = target.getMessage()
-      if (msg != null && msg.matches(
-            "(?s).*(TApplication|TProtocol|TTransport)Exception.*")) {
+      if (msg != null && msg
+            .matches("(?s).*(TApplication|TProtocol|TTransport)Exception.*")) {
         return true
       }
       target = target.getCause()
@@ -335,8 +335,8 @@ private[hive] class HiveClientImpl(
             inputFormat = Option(h.getInputFormatClass).map(_.getName),
             outputFormat = Option(h.getOutputFormatClass).map(_.getName),
             serde = Option(h.getSerializationLib),
-            serdeProperties =
-              h.getTTable.getSd.getSerdeInfo.getParameters.asScala.toMap
+            serdeProperties = h.getTTable.getSd.getSerdeInfo.getParameters
+              .asScala.toMap
           ),
           properties = h.getParameters.asScala.toMap,
           viewOriginalText = Option(h.getViewOriginalText),
@@ -380,9 +380,8 @@ private[hive] class HiveClientImpl(
     withHiveState {
       val addPartitionDesc = new AddPartitionDesc(db, table, ignoreIfExists)
       parts.foreach { s =>
-        addPartitionDesc.addPartition(
-          s.spec.asJava,
-          s.storage.locationUri.orNull)
+        addPartitionDesc
+          .addPartition(s.spec.asJava, s.storage.locationUri.orNull)
       }
       client.createPartitions(addPartitionDesc)
     }
@@ -411,11 +410,9 @@ private[hive] class HiveClientImpl(
       val hiveTable = toHiveTable(catalogTable)
       specs.zip(newSpecs).foreach {
         case (oldSpec, newSpec) =>
-          val hivePart = getPartitionOption(catalogTable, oldSpec)
-            .map { p => toHivePartition(p.copy(spec = newSpec), hiveTable) }
-            .getOrElse {
-              throw new NoSuchPartitionException(db, table, oldSpec)
-            }
+          val hivePart = getPartitionOption(catalogTable, oldSpec).map { p =>
+            toHivePartition(p.copy(spec = newSpec), hiveTable)
+          }.getOrElse { throw new NoSuchPartitionException(db, table, oldSpec) }
           client.renamePartition(hiveTable, oldSpec.asJava, hivePart)
       }
     }
@@ -452,8 +449,7 @@ private[hive] class HiveClientImpl(
       predicates: Seq[Expression]): Seq[CatalogTablePartition] =
     withHiveState {
       val hiveTable = toHiveTable(table)
-      shim
-        .getPartitionsByFilter(client, hiveTable, predicates)
+      shim.getPartitionsByFilter(client, hiveTable, predicates)
         .map(fromHivePartition)
     }
 
@@ -553,12 +549,8 @@ private[hive] class HiveClientImpl(
       replace: Boolean,
       holdDDLTime: Boolean): Unit =
     withHiveState {
-      shim.loadTable(
-        client,
-        new Path(loadPath),
-        tableName,
-        replace,
-        holdDDLTime)
+      shim
+        .loadTable(client, new Path(loadPath), tableName, replace, holdDDLTime)
     }
 
   def loadDynamicPartitions(
@@ -650,13 +642,11 @@ private[hive] class HiveClientImpl(
    * -------------------------------------------------------- */
 
   private def toInputFormat(name: String) =
-    Utils
-      .classForName(name)
+    Utils.classForName(name)
       .asInstanceOf[Class[_ <: org.apache.hadoop.mapred.InputFormat[_, _]]]
 
   private def toOutputFormat(name: String) =
-    Utils
-      .classForName(name)
+    Utils.classForName(name)
       .asInstanceOf[Class[
         _ <: org.apache.hadoop.hive.ql.io.HiveOutputFormat[_, _]]]
 
@@ -707,11 +697,9 @@ private[hive] class HiveClientImpl(
     table.storage.locationUri.foreach { loc =>
       shim.setDataLocation(hiveTable, loc)
     }
-    table.storage.inputFormat
-      .map(toInputFormat)
+    table.storage.inputFormat.map(toInputFormat)
       .foreach(hiveTable.setInputFormatClass)
-    table.storage.outputFormat
-      .map(toOutputFormat)
+    table.storage.outputFormat.map(toOutputFormat)
       .foreach(hiveTable.setOutputFormatClass)
     table.storage.serde.foreach(hiveTable.setSerializationLib)
     table.storage.serdeProperties.foreach {
@@ -749,8 +737,8 @@ private[hive] class HiveClientImpl(
         inputFormat = Option(apiPartition.getSd.getInputFormat),
         outputFormat = Option(apiPartition.getSd.getOutputFormat),
         serde = Option(apiPartition.getSd.getSerdeInfo.getSerializationLib),
-        serdeProperties =
-          apiPartition.getSd.getSerdeInfo.getParameters.asScala.toMap
+        serdeProperties = apiPartition.getSd.getSerdeInfo.getParameters.asScala
+          .toMap
       )
     )
   }

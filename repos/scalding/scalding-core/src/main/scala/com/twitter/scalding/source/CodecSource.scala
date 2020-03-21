@@ -79,12 +79,9 @@ class CodecSource[T] private (
 
   override def toIterator(implicit config: Config, mode: Mode): Iterator[T] = {
     val tap = createTap(Read)(mode)
-    mode
-      .openForRead(config, tap)
-      .asScala
-      .flatMap { te =>
-        checkedInversion(
-          te.selectTuple(sourceFields).getObject(0).asInstanceOf[BytesWritable])
-      }
+    mode.openForRead(config, tap).asScala.flatMap { te =>
+      checkedInversion(
+        te.selectTuple(sourceFields).getObject(0).asInstanceOf[BytesWritable])
+    }
   }
 }

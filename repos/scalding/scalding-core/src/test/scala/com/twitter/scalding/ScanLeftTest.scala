@@ -7,17 +7,14 @@ import org.scalatest.{Matchers, WordSpec}
   * Then add another column for each group which is the rank order of the height.
   */
 class AddRankingWithScanLeft(args: Args) extends Job(args) {
-  Tsv("input1", ('gender, 'height)).read
-    .groupBy('gender) { group =>
-      group.sortBy('height).reverse
-      group.scanLeft(('height) -> ('rank))((0L)) {
-        (rank: Long, user_id: Double) => { (rank + 1L) }
-      }
+  Tsv("input1", ('gender, 'height)).read.groupBy('gender) { group =>
+    group.sortBy('height).reverse
+    group.scanLeft(('height) -> ('rank))((0L)) {
+      (rank: Long, user_id: Double) => { (rank + 1L) }
     }
-    // scanLeft generates an extra line per group, thus remove it
-    .filter('height) { x: String => x != null }
-    .debug
-    .write(Tsv("result1"))
+  }
+  // scanLeft generates an extra line per group, thus remove it
+    .filter('height) { x: String => x != null }.debug.write(Tsv("result1"))
 }
 
 class ScanLeftTest extends WordSpec with Matchers {
@@ -49,8 +46,6 @@ class ScanLeftTest extends WordSpec with Matchers {
         "create correct ranking per group, 1st being the heighest person of that group" in {
           outBuf1.toSet shouldBe expectedOutput1
         }
-      }
-      .run
-      .finish
+      }.run.finish
   }
 }

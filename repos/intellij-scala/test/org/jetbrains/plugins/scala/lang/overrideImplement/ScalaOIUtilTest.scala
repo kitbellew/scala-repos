@@ -110,8 +110,8 @@ class ScalaOIUtilTest extends SimpleTestCase {
         suffix = Suffix) code: String) = {
     val text: String = "" + code + Suffix
     val file: ScalaFile = text.parse
-    val templateDefinitions: Seq[ScTemplateDefinition] =
-      file.children.filterByType(classOf[ScTemplateDefinition]).toSeq
+    val templateDefinitions: Seq[ScTemplateDefinition] = file.children
+      .filterByType(classOf[ScTemplateDefinition]).toSeq
     val lastDefinition: ScTemplateDefinition = templateDefinitions.last
     val members = ScalaOIUtil.getMembersToImplement(lastDefinition)
     members.map(_.getText)

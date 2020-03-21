@@ -32,11 +32,7 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
       val identity = GraphStages.identity[Int]
 
       Await.result(
-        Source(1 to 100)
-          .via(identity)
-          .via(identity)
-          .via(identity)
-          .grouped(200)
+        Source(1 to 100).via(identity).via(identity).via(identity).grouped(200)
           .runWith(Sink.head),
         3.seconds) should ===(1 to 100)
     }
@@ -84,9 +80,9 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
         override def toString = "IdentityBidi"
       }
 
-      val identity = BidiFlow
-        .fromGraph(identityBidi)
-        .join(Flow[Int].map { x ⇒ x })
+      val identity = BidiFlow.fromGraph(identityBidi).join(Flow[Int].map { x ⇒
+        x
+      })
 
       Await.result(
         Source(1 to 10).via(identity).grouped(100).runWith(Sink.head),
@@ -272,8 +268,7 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
             bidi.in2 <~ Source(1 to 100)
             bidi.out1 ~> out1
             ClosedShape
-        })
-        .run()
+        }).run()
 
       Await.result(f1, 3.seconds) should ===(1 to 100)
       Await.result(f2, 3.seconds) should ===(1 to 10)
@@ -306,9 +301,8 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
       EventFilter[IllegalArgumentException](
         pattern = "Error in stage.*",
         occurrences = 1).intercept {
-        Await.result(
-          Source.fromGraph(failyStage).runWith(Sink.ignore),
-          3.seconds)
+        Await
+          .result(Source.fromGraph(failyStage).runWith(Sink.ignore), 3.seconds)
       }
 
     }
@@ -371,18 +365,16 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
 
       val upstream = TestPublisher.probe[Int]()
 
-      RunnableGraph
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          import GraphDSL.Implicits._
-          val faily = b.add(failyStage)
+      RunnableGraph.fromGraph(GraphDSL.create() { implicit b ⇒
+        import GraphDSL.Implicits._
+        val faily = b.add(failyStage)
 
-          Source.fromPublisher(upstream) ~> faily.in
-          faily.out0 ~> Sink.fromSubscriber(downstream0)
-          faily.out1 ~> Sink.fromSubscriber(downstream1)
+        Source.fromPublisher(upstream) ~> faily.in
+        faily.out0 ~> Sink.fromSubscriber(downstream0)
+        faily.out1 ~> Sink.fromSubscriber(downstream1)
 
-          ClosedShape
-        })
-        .run()(noFuzzMat)
+        ClosedShape
+      }).run()(noFuzzMat)
 
       evilLatch.countDown()
       downstream0.expectSubscriptionAndError(te)

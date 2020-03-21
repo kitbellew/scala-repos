@@ -53,13 +53,13 @@ private[akka] object FanIn {
   abstract class InputBunch(inputCount: Int, bufferSize: Int, pump: Pump) {
     private var allCancelled = false
 
-    private val inputs: Array[BatchingInputBuffer] = Array.tabulate(
-      inputCount) { i ⇒
-      new BatchingInputBuffer(bufferSize, pump) {
-        override protected def onError(e: Throwable): Unit =
-          InputBunch.this.onError(i, e)
+    private val inputs: Array[BatchingInputBuffer] = Array
+      .tabulate(inputCount) { i ⇒
+        new BatchingInputBuffer(bufferSize, pump) {
+          override protected def onError(e: Throwable): Unit =
+            InputBunch.this.onError(i, e)
+        }
       }
-    }
 
     private[this] final val states = Array.ofDim[State](inputCount)
     private var markCount = 0
@@ -103,14 +103,16 @@ private[akka] object FanIn {
     private[this] final def marked(index: Int, on: Boolean): Unit =
       setState(index, Marked, on)
 
-    override def toString: String = s"""|InputBunch
+    override def toString: String =
+      s"""|InputBunch
           |  marked:    ${states.iterator.map(marked(_)).mkString(", ")}
           |  pending:   ${states.iterator.map(pending(_)).mkString(", ")}
           |  depleted:  ${states.iterator.map(depleted(_)).mkString(", ")}
           |  completed: ${states.iterator.map(completed(_)).mkString(", ")}
           |  cancelled: ${states.iterator.map(cancelled(_)).mkString(", ")}
           |
-          |    mark=$markCount pend=$markedPending depl=$markedDepleted pref=$preferredId""".stripMargin
+          |    mark=$markCount pend=$markedPending depl=$markedDepleted pref=$preferredId"""
+        .stripMargin
 
     private var preferredId = 0
     private var _lastDequeuedId = 0
@@ -252,8 +254,8 @@ private[akka] object FanIn {
     // FIXME: Eliminate re-wraps
     def subreceive: SubReceive =
       new SubReceive({
-        case OnSubscribe(id, subscription) ⇒
-          inputs(id).subreceive(ActorSubscriber.OnSubscribe(subscription))
+        case OnSubscribe(id, subscription) ⇒ inputs(id)
+            .subreceive(ActorSubscriber.OnSubscribe(subscription))
         case OnNext(id, elem) ⇒
           if (marked(id) && !pending(id)) markedPending += 1
           pending(id, on = true)

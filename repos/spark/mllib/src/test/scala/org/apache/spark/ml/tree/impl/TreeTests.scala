@@ -52,8 +52,7 @@ private[ml] object TreeTests extends SparkFunSuite {
     val numFeatures = data.first().features.size
     val featuresAttributes = Range(0, numFeatures).map { feature =>
       if (categoricalFeatures.contains(feature)) {
-        NominalAttribute.defaultAttr
-          .withIndex(feature)
+        NominalAttribute.defaultAttr.withIndex(feature)
           .withNumValues(categoricalFeatures(feature))
       } else { NumericAttribute.defaultAttr.withIndex(feature) }
     }.toArray

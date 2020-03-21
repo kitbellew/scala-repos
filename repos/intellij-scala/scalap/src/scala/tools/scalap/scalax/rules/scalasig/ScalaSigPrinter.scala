@@ -123,8 +123,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
 
   def isCaseClassObject(o: ObjectSymbol): Boolean = {
     val TypeRefType(prefix, classSymbol: ClassSymbol, typeArgs) = o.infoType
-    o.isFinal && (classSymbol.children.find(x =>
-      x.isCase && x.isInstanceOf[MethodSymbol]) match {
+    o.isFinal && (classSymbol.children
+      .find(x => x.isCase && x.isInstanceOf[MethodSymbol]) match {
       case Some(_) => true
       case None    => false
     })
@@ -577,14 +577,14 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                     case TypeRefType(_, symbol, _) => symbol == parent
                     case t: TypeBoundsType         => false
                     case RefinedType(symbol, refs) =>
-                      symbol == parent || !refs.forall(tp =>
-                        !checkContainsSelf(Some(tp), parent))
+                      symbol == parent || !refs
+                        .forall(tp => !checkContainsSelf(Some(tp), parent))
                     case ClassInfoType(symbol, refs) =>
-                      symbol == parent || !refs.forall(tp =>
-                        !checkContainsSelf(Some(tp), parent))
+                      symbol == parent || !refs
+                        .forall(tp => !checkContainsSelf(Some(tp), parent))
                     case ClassInfoTypeWithCons(symbol, refs, _) =>
-                      symbol == parent || !refs.forall(tp =>
-                        !checkContainsSelf(Some(tp), parent))
+                      symbol == parent || !refs
+                        .forall(tp => !checkContainsSelf(Some(tp), parent))
                     case ImplicitMethodType(resultType, _) => false
                     case MethodType(resultType, _)         => false
                     case NullaryMethodType(resultType)     => false
@@ -687,9 +687,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         toString(typeRef, sep)
       //case DeBruijnIndexType(typeLevel, typeIndex) =>
       case ExistentialType(typeRef, symbols) =>
-        val refs = symbols
-          .map(toString)
-          .filter(!_.startsWith("_"))
+        val refs = symbols.map(toString).filter(!_.startsWith("_"))
           .map("type " + _)
         toString(typeRef, sep) + (if (refs.nonEmpty)
                                     refs.mkString(" forSome {", "; ", "}")
@@ -720,9 +718,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   def typeArgString(typeArgs: Seq[Type]): String =
     if (typeArgs.isEmpty) ""
     else
-      typeArgs
-        .map(toString)
-        .map(StringUtil.trimStart(_, "=> "))
+      typeArgs.map(toString).map(StringUtil.trimStart(_, "=> "))
         .mkString("[", ", ", "]")
 
   def typeParamString(params: Seq[TypeSymbol]): String =
@@ -748,8 +744,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     "\\$u2192" -> "→",
     "\\$hash" -> "#"
   )
-  val pattern = Pattern.compile(
-    _syms.keys.foldLeft("")((x, y) => if (x == "") y else x + "|" + y))
+  val pattern = Pattern
+    .compile(_syms.keys.foldLeft("")((x, y) => if (x == "") y else x + "|" + y))
   val placeholderPattern = "_\\$(\\d)+"
 
   private val keywordList = Set(
@@ -814,7 +810,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         /** Is character a math or other symbol in Unicode?  */
         def isSpecial(c: Char) = {
           val chtp = Character.getType(c)
-          chtp == Character.MATH_SYMBOL.toInt || chtp == Character.OTHER_SYMBOL.toInt
+          chtp == Character.MATH_SYMBOL.toInt || chtp == Character.OTHER_SYMBOL
+            .toInt
         }
 
         /** Can character form part of a Scala operator name? */
@@ -838,8 +835,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         else false
       }
       val result = NameTransformer.decode(name)
-      if (!isIdentifier(result) || keywordList.contains(
-            result) || result == "=") "`" + result + "`"
+      if (!isIdentifier(result) || keywordList
+            .contains(result) || result == "=") "`" + result + "`"
       else result
     }
     val stripped = stripPrivatePrefix(name)

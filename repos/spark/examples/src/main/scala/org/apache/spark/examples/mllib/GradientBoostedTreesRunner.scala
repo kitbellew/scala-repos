@@ -53,33 +53,27 @@ object GradientBoostedTreesRunner {
 
     val parser = new OptionParser[Params]("GradientBoostedTrees") {
       head("GradientBoostedTrees: an example decision tree app.")
-      opt[String]("algo")
-        .text(
-          s"algorithm (${Algo.values.mkString(",")}), default: ${defaultParams.algo}")
+      opt[String]("algo").text(
+        s"algorithm (${Algo.values.mkString(",")}), default: ${defaultParams.algo}")
         .action((x, c) => c.copy(algo = x))
       opt[Int]("maxDepth")
         .text(s"max depth of the tree, default: ${defaultParams.maxDepth}")
         .action((x, c) => c.copy(maxDepth = x))
-      opt[Int]("numIterations")
-        .text(
-          s"number of iterations of boosting," + s" default: ${defaultParams.numIterations}")
+      opt[Int]("numIterations").text(
+        s"number of iterations of boosting," + s" default: ${defaultParams.numIterations}")
         .action((x, c) => c.copy(numIterations = x))
-      opt[Double]("fracTest")
-        .text(
-          s"fraction of data to hold out for testing.  If given option testInput, " +
-            s"this option is ignored. default: ${defaultParams.fracTest}")
+      opt[Double]("fracTest").text(
+        s"fraction of data to hold out for testing.  If given option testInput, " +
+          s"this option is ignored. default: ${defaultParams.fracTest}")
         .action((x, c) => c.copy(fracTest = x))
-      opt[String]("testInput")
-        .text(
-          s"input path to test dataset.  If given, option fracTest is ignored." +
-            s" default: ${defaultParams.testInput}")
+      opt[String]("testInput").text(
+        s"input path to test dataset.  If given, option fracTest is ignored." +
+          s" default: ${defaultParams.testInput}")
         .action((x, c) => c.copy(testInput = x))
       opt[String]("dataFormat")
         .text("data format: libsvm (default), dense (deprecated in Spark v1.1)")
         .action((x, c) => c.copy(dataFormat = x))
-      arg[String]("<input>")
-        .text("input path to labeled examples")
-        .required()
+      arg[String]("<input>").text("input path to labeled examples").required()
         .action((x, c) => c.copy(input = x))
       checkConfig { params =>
         if (params.fracTest < 0 || params.fracTest > 1) {

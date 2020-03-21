@@ -17,13 +17,14 @@ object Example extends Specification {
 
   "Parse address in an Applicative style" in {
     val json = parse(""" {"street": "Manhattan 2", "zip": "00223" } """)
-    val a1 = field[String]("zip")(json) <*> (field[String]("street")(
-      json) map Address.curried)
+    val a1 =
+      field[String]("zip")(json) <*> (field[String]("street")(json) map Address
+        .curried)
     val a2 = (field[String]("street")(json) |@| field[String]("zip")(json)) {
       Address
     }
-    val a3 = Address.applyJSON(field[String]("street"), field[String]("zip"))(
-      json)
+    val a3 = Address
+      .applyJSON(field[String]("street"), field[String]("zip"))(json)
     a1 mustEqual Success(Address("Manhattan 2", "00223"))
     a2 mustEqual a1
     a3 mustEqual a1

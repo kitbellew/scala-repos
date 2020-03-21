@@ -18,9 +18,8 @@ trait CommitsService {
       commitId: String,
       includePullRequest: Boolean)(implicit s: Session) =
     CommitComments filter { t =>
-      t.byCommit(owner, repository, commitId) && (
-        t.issueId.isEmpty || includePullRequest
-      )
+      t.byCommit(owner, repository, commitId) && (t.issueId
+        .isEmpty || includePullRequest)
     } list
 
   def getCommitComment(owner: String, repository: String, commentId: String)(
@@ -56,10 +55,9 @@ trait CommitsService {
 
   def updateCommitComment(commentId: Int, content: String)(implicit
       s: Session) =
-    CommitComments
-      .filter(_.byPrimaryKey(commentId))
-      .map { t => t.content -> t.updatedDate }
-      .update(content, currentDate)
+    CommitComments.filter(_.byPrimaryKey(commentId)).map { t =>
+      t.content -> t.updatedDate
+    }.update(content, currentDate)
 
   def deleteCommitComment(commentId: Int)(implicit s: Session) =
     CommitComments filter (_.byPrimaryKey(commentId)) delete

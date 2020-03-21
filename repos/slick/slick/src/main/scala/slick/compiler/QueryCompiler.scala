@@ -112,10 +112,9 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
       n2: Node): Set[RefId[Dumpable]] = {
     if (n1 eq n2) Set.empty
     else {
-      val chres = n1.children.iterator
-        .zip(n2.children.iterator)
-        .map { case (n1, n2) => detectRebuiltLeafs(n1, n2) }
-        .foldLeft(Set.empty[RefId[Dumpable]])(_ ++ _)
+      val chres = n1.children.iterator.zip(n2.children.iterator).map {
+        case (n1, n2) => detectRebuiltLeafs(n1, n2)
+      }.foldLeft(Set.empty[RefId[Dumpable]])(_ ++ _)
       if (chres.isEmpty) Set(RefId(n2)) else chres
     }
   }
